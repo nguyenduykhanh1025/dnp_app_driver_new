@@ -1,16 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File Upload</title>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/js/dist/dropzone.js}"></script>
+
+
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+<link th:href="@{/js/dist/dropzone.css}" rel="stylesheet"/>
+
+</head>
 <body>
-  <h1>ĐỌC FILE EDI</h1>
-  <hr/>
-  <h4>Upload File:</h4>
-  <form method="POST" th:action="@{/EDI/file}" enctype="multipart/form-data">
-    <input type="file" name="file"/> <br/><br/>
-    <button type="submit">Submit</button>
-  </form>
-  <hr/>
-  <div th:if="${message}">
-    <h2 th:text="${message}"/>
-  </div>
+	<div class="container-fluid">
+		<div class="panel panel-default" id="fileupload_main_panel">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-12">
+						<form enctype="multipart/form-data"
+							action="/EDI/file" method="POST"
+							class="dropzone" id="file">
+
+							<span id="fileUploadStatus"> </span>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
