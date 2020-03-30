@@ -1,0 +1,73 @@
+package ${packageName}.service;
+
+import java.util.List;
+import ${packageName}.domain.${ClassName};
+#if($table.tree)
+import vn.com.irtech.eport.common.core.domain.Ztree;
+#end
+
+/**
+ * ${functionName}Service Interface
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface I${ClassName}Service 
+{
+    /**
+     * Get ${functionName}
+     * 
+     * @param ${pkColumn.javaField} ${functionName}ID
+     * @return ${functionName}
+     */
+    public ${ClassName} select${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField});
+
+    /**
+     * Get ${functionName} List
+     * 
+     * @param ${className} ${functionName}
+     * @return ${functionName} List
+     */
+    public List<${ClassName}> select${ClassName}List(${ClassName} ${className});
+
+    /**
+     * Add ${functionName}
+     * 
+     * @param ${className} ${functionName}
+     * @return result
+     */
+    public int insert${ClassName}(${ClassName} ${className});
+
+    /**
+     * Update ${functionName}
+     * 
+     * @param ${className} ${functionName}
+     * @return result
+     */
+    public int update${ClassName}(${ClassName} ${className});
+
+    /**
+     * Batch Delete ${functionName}
+     * 
+     * @param ids Entity Ids
+     * @return result
+     */
+    public int delete${ClassName}ByIds(String ids);
+
+    /**
+     * Delete ${functionName}
+     * 
+     * @param ${pkColumn.javaField} ${functionName}ID
+     * @return result
+     */
+    public int delete${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField});
+#if($table.tree)
+
+    /**
+     * Get ${functionName} Tree List
+     * 
+     * @return All ${functionName} Info
+     */
+    public List<Ztree> select${ClassName}Tree();
+#end
+}

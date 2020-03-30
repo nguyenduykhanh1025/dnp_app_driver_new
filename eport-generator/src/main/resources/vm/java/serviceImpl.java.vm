@@ -1,0 +1,141 @@
+package ${packageName}.service.impl;
+
+import java.util.List;
+#if($table.tree)
+import java.util.ArrayList;
+import vn.com.irtech.eport.common.core.domain.Ztree;
+#end
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime' || $column.javaField == 'updateTime')
+import vn.com.irtech.eport.common.utils.DateUtils;
+#break
+#end
+#end
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.${ClassName};
+import ${packageName}.service.I${ClassName}Service;
+import vn.com.irtech.eport.common.core.text.Convert;
+
+/**
+ * ${functionName}Service Business Processing
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Service
+public class ${ClassName}ServiceImpl implements I${ClassName}Service 
+{
+    @Autowired
+    private ${ClassName}Mapper ${className}Mapper;
+
+    /**
+     * Get ${functionName}
+     * 
+     * @param ${pkColumn.javaField} ${functionName}ID
+     * @return ${functionName}
+     */
+    @Override
+    public ${ClassName} select${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField})
+    {
+        return ${className}Mapper.select${ClassName}ById(${pkColumn.javaField});
+    }
+
+    /**
+     * Get ${functionName} List
+     * 
+     * @param ${className} ${functionName}
+     * @return ${functionName}
+     */
+    @Override
+    public List<${ClassName}> select${ClassName}List(${ClassName} ${className})
+    {
+        return ${className}Mapper.select${ClassName}List(${className});
+    }
+
+    /**
+     * Add ${functionName}
+     * 
+     * @param ${className} ${functionName}
+     * @return result
+     */
+    @Override
+    public int insert${ClassName}(${ClassName} ${className})
+    {
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime')
+        ${className}.setCreateTime(DateUtils.getNowDate());
+#end
+#end
+        return ${className}Mapper.insert${ClassName}(${className});
+    }
+
+    /**
+     * Update ${functionName}
+     * 
+     * @param ${className} ${functionName}
+     * @return result
+     */
+    @Override
+    public int update${ClassName}(${ClassName} ${className})
+    {
+#foreach ($column in $columns)
+#if($column.javaField == 'updateTime')
+        ${className}.setUpdateTime(DateUtils.getNowDate());
+#end
+#end
+        return ${className}Mapper.update${ClassName}(${className});
+    }
+
+    /**
+     * Delete ${functionName} By ID
+     * 
+     * @param ids Entity ID
+     * @return result
+     */
+    @Override
+    public int delete${ClassName}ByIds(String ids)
+    {
+        return ${className}Mapper.delete${ClassName}ByIds(Convert.toStrArray(ids));
+    }
+
+    /**
+     * Delete ${functionName}
+     * 
+     * @param ${pkColumn.javaField} ${functionName}ID
+     * @return result
+     */
+    @Override
+    public int delete${ClassName}ById(${pkColumn.javaType} ${pkColumn.javaField})
+    {
+        return ${className}Mapper.delete${ClassName}ById(${pkColumn.javaField});
+    }
+#if($table.tree)
+
+    /**
+     * Get ${functionName} Tree List
+     * 
+     * @return All ${functionName} Info
+     */
+    @Override
+    public List<Ztree> select${ClassName}Tree()
+    {
+        List<${ClassName}> ${className}List = ${className}Mapper.select${ClassName}List(new ${ClassName}());
+        List<Ztree> ztrees = new ArrayList<Ztree>();
+        for (${ClassName} ${className} : ${className}List)
+        {
+            Ztree ztree = new Ztree();
+#set($TreeCode=$treeCode.substring(0,1).toUpperCase() + ${treeCode.substring(1)})
+#set($TreeParentCode=$treeParentCode.substring(0,1).toUpperCase() + ${treeParentCode.substring(1)})
+#set($TreeName=$treeName.substring(0,1).toUpperCase() + ${treeName.substring(1)})
+            ztree.setId(${className}.get${TreeCode}());
+            ztree.setpId(${className}.get${TreeParentCode}());
+            ztree.setName(${className}.get${TreeName}());
+            ztree.setTitle(${className}.get${TreeName}());
+            ztrees.add(ztree);
+        }
+        return ztrees;
+    }
+#end
+}
