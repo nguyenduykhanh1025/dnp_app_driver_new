@@ -100,26 +100,11 @@ public class SysEDIController extends BaseController
         List<SysEdi> list = sysEdiService.selectSysEdiList(sysEdi);
         return getDataTable(list);
     }
-
     @GetMapping("/list")
     public String viewList()
     {
         return "EDI/List";
     }
-	@RequiresPermissions("system:edi:export")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    @ResponseBody
-    public AjaxResult export(SysEdi sysEdi)
-    {
-        List<SysEdi> list = sysEdiService.selectSysEdiList(sysEdi);
-        ExcelUtil<SysEdi> util = new ExcelUtil<SysEdi>(SysEdi.class);
-        return util.exportExcel(list, "edi");
-	}
-	@RequiresPermissions("system:edi:add")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.INSERT)
-    @PostMapping("/add")
-    @ResponseBody
     public AjaxResult addEDI(SysEdi edi)
     {
        
@@ -149,15 +134,8 @@ public class SysEDIController extends BaseController
 			//ContNo
 			if(s.contains("EQD+CN"))
 			{
-				// if(map.get("contNo")!= null)
-				// {
-				// 	String[] contNo = s.split("\\+");
-				// 	contNo[2] = map.get("contNo")+"+".concat(contNo[2]);
-				// 	map.put("contNo",contNo[2]);
-				// 	continue;
-				// }
+			
 				String[] contNo = s.split("\\+");
-                // map.put("contNo",contNo[2]);
                 edi.setContNo(contNo[2]);
 			}
 			//OrderNo
@@ -172,7 +150,6 @@ public class SysEDIController extends BaseController
 			{
 				String[] releaseTo = s.split("\\+");
 				releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length() - 1);
-                // map.put("releaseTo",releaseTo[3]);
                 edi.setReleaseTo(releaseTo[3]);
 			}
 			//validToDay
@@ -188,25 +165,22 @@ public class SysEDIController extends BaseController
 			if(s.contains("LOC+99"))
 			{
 				String[] emptyContDepot = s.split("\\+");
-				emptyContDepot[3] = emptyContDepot[3].substring(0, emptyContDepot[3].length() - 1);
-                // map.put("emptyContDepot",emptyContDepot[3]);		\
+				emptyContDepot[3] = emptyContDepot[3].substring(0, emptyContDepot[3].length());
                 edi.setEmptycontDepot(emptyContDepot[3]);		
 			}
 			if(s.contains("FTX+AAI"))
 			{
 				String[] haulage = s.split("\\+");
-                haulage[4] = haulage[4].substring(0, haulage[4].length() - 1);
+				haulage[4] = haulage[4].substring(0, haulage[4].length());
+				
                 if(!haulage[4].isEmpty()){
                     Long i = Long.parseLong(haulage[4]);
-                    edi.setHaulage(i);
-                }      
+					edi.setHaulage(i);
+				}  
+				sysEdiService.insertSysEdi(edi);    
 			}
         }
-        sysEdiService.insertSysEdi(edi);
 		return true;
 	}
-    
-    
-    
     
 }
