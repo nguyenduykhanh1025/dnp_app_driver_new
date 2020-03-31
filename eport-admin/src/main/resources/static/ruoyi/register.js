@@ -28,9 +28,9 @@ function register() {
         },
         success: function(r) {
             if (r.code == 0) {
-            	layer.alert("<font color='red'>恭喜你，您的账号 " + username + " 注册成功！</font>", {
+            	layer.alert("<font color='red'>Xin chúc mừng, tài khoản " + username + "  đã tạo thành công !</font>", {
         	        icon: 1,
-        	        title: "系统提示"
+        	        title: "Hệ Thống"
         	    },
         	    function(index) {
         	        //关闭弹窗
@@ -66,16 +66,16 @@ function validateRule() {
         },
         messages: {
             username: {
-                required: icon + "请输入您的用户名",
-                minlength: icon + "用户名不能小于2个字符"
+                required: icon + "Hãy nhập tên đăng nhập",
+                minlength: icon + "Tên đăng nhập tối thiểu 2 ký tự"
             },
             password: {
-            	required: icon + "请输入您的密码",
-                minlength: icon + "密码不能小于5个字符",
+            	required: icon + "Hãy nhập mật khẩu",
+                minlength: icon + "Mật khẩu tối thiểu 5 ký tự",
             },
             confirmPassword: {
-                required: icon + "请再次输入您的密码",
-                equalTo: icon + "两次密码输入不一致"
+                required: icon + "Hãy nhập xác nhận mật khẩu",
+                equalTo: icon + "Xác nhận mật khẩu không trùng"
             }
         }
     })

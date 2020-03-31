@@ -55,10 +55,10 @@ function validateRule() {
         },
         messages: {
             username: {
-                required: icon + "请输入您的用户名",
+                required: icon + "Hãy nhập tài khoản",
             },
             password: {
-                required: icon + "请输入您的密码",
+                required: icon + "Hãy nhập mật khẩu",
             }
         }
     })
@@ -66,9 +66,9 @@ function validateRule() {
 
 function validateKickout() {
 	if (getParam("kickout") == 1) {
-	    layer.alert("<font color='red'>您已在别处登录，请您修改密码或重新登录</font>", {
+	    layer.alert("<font color='red'>Có máy khác vừa login. Hãy đổi mật khẩu hoặc login lại.</font>", {
 	        icon: 0,
-	        title: "系统提示"
+	        title: "Hệ Thống"
 	    },
 	    function(index) {
 	        //关闭弹窗

@@ -261,7 +261,7 @@ $(function() {
             var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
             $('.mainContent').find('iframe.RuoYi_iframe').hide().parents('.mainContent').append(str1);
             
-            $.modal.loading("数据加载中，请稍后...");
+            $.modal.loading("Đang xử lý, vui lòng chờ...");
             
             $('.mainContent iframe:visible').load(function () {
             	$.modal.closeLoading();
@@ -523,14 +523,14 @@ $(function() {
         autoHide: true,
         items: {
             "close_current": {
-                name: "关闭当前",
+                name: "Đóng Tab",
                 icon: "fa-close",
                 callback: function(key, opt) {
                 	opt.$trigger.find('i').trigger("click");
                 }
             },
             "close_other": {
-                name: "关闭其他",
+                name: "Đóng Tab Khác",
                 icon: "fa-window-close-o",
                 callback: function(key, opt) {
                 	setActiveTab(this);
@@ -538,7 +538,7 @@ $(function() {
                 }
             },
             "close_left": {
-                name: "关闭左侧",
+                name: "Đóng Tab Bên Trái",
                 icon: "fa-reply",
                 callback: function(key, opt) {
                 	setActiveTab(this);
@@ -553,7 +553,7 @@ $(function() {
                 }
             },
             "close_right": {
-                name: "关闭右侧",
+                name: "Đóng Tab Bên Phải",
                 icon: "fa-share",
                 callback: function(key, opt) {
                 	setActiveTab(this);
@@ -564,7 +564,7 @@ $(function() {
                 }
             },
             "close_all": {
-                name: "全部关闭",
+                name: "Đóng Tất Cả",
                 icon: "fa-window-close",
                 callback: function(key, opt) {
                     tabCloseAll();
@@ -572,7 +572,7 @@ $(function() {
             },
             "step": "---------",
             "full": {
-                name: "全屏显示",
+                name: "Toàn Màn Hình",
                 icon: "fa-arrows-alt",
                 callback: function(key, opt) {
                 	setActiveTab(this);
@@ -581,20 +581,20 @@ $(function() {
                 }
             },
             "refresh": {
-                name: "刷新页面",
+                name: "Refresh",
                 icon: "fa-refresh",
                 callback: function(key, opt) {
                 	setActiveTab(this);
                 	var target = $('.RuoYi_iframe[data-id="' + this.data('id') + '"]');
                 	var url = target.attr('src');
-                    $.modal.loading("数据加载中，请稍后...");
+                    $.modal.loading("Đang xử lý, vui lòng chờ...");
                     target.attr('src', url).load(function () {
                     	$.modal.closeLoading();
                     });
                 }
             },
             "open": {
-                name: "新窗口打开",
+                name: "Mở Cửa Sổ Mới",
                 icon: "fa-link",
                 callback: function(key, opt) {
                 	var target = $('.RuoYi_iframe[data-id="' + this.data('id') + '"]');

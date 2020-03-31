@@ -269,7 +269,7 @@ function createMenuItem(dataUrl, menuName) {
         var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" data-panel="' + panelUrl + '" seamless></iframe>';
         $('.mainContent', topWindow).find('iframe.RuoYi_iframe').hide().parents('.mainContent').append(str1);
         
-        window.parent.$.modal.loading("数据加载中，请稍后...");
+        window.parent.$.modal.loading("Đang xử lý, vui lòng chờ...");
         $('.mainContent iframe:visible', topWindow).load(function () {
         	window.parent.$.modal.closeLoading();
         });
@@ -316,11 +316,11 @@ var storage = {
 $.ajaxSetup({
     complete: function(XMLHttpRequest, textStatus) {
         if (textStatus == 'timeout') {
-        	$.modal.alertWarning("服务器超时，请稍后再试！");
+        	$.modal.alertWarning("Hết thời gian chờ Server, hãy thử lại!");
         	$.modal.enable();
             $.modal.closeLoading();
         } else if (textStatus == "parsererror" || textStatus == "error") {
-        	$.modal.alertWarning("服务器错误，请联系管理员！");
+        	$.modal.alertWarning("Lỗi Server, hãy liên hệ với admin.");
         	$.modal.enable();
             $.modal.closeLoading();
         }

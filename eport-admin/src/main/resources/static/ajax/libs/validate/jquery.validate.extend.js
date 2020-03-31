@@ -8,14 +8,14 @@ $(document).ready(function(){
 	//手机号码验证身份证正则合并：(^\d{15}$)|(^\d{17}([0-9]|X)$)
 	jQuery.validator.addMethod("isPhone",function(value,element){
 		var length = value.length;
-		var phone=/^1[3|4|5|6|7|8|9][0-9]\d{8}$/;
+		var phone=/^0[3|4|5|6|7|8|9][0-9]\d{8}$/;
 		return this.optional(element)||(length == 11 && phone.test(value));
-	},"请填写正确的11位手机号");
+	},"Hãy nhập số điện thoại 10 hoặc 11 số");
 	//电话号码验证
 	jQuery.validator.addMethod("isTel",function(value,element){
 		var tel = /^(0\d{2,3}-)?\d{7,8}$/g;//区号3,4位,号码7,8位
 		return this.optional(element) || (tel.test(value));
-	},"请填写正确的座机号码");
+	},"Hãy nhập số điện thoại di động");
 	//姓名校验
 	jQuery.validator.addMethod("isName",function(value,element){
 		var name=/^[\u4e00-\u9fa5]{2,6}$/;
