@@ -5587,7 +5587,7 @@
     
     $.fn.fileinputLocales.zh = {
         fileSingle: '文件',
-        filePlural: '个文件',
+        filePlural: 'MM',
         browseLabel: '选择 &hellip;',
         removeLabel: '移除',
         removeTitle: '清除选中文件',
@@ -5628,7 +5628,7 @@
         },
         msgUploadAborted: '该文件上传被中止',
         msgUploadThreshold: '处理中...',
-        msgUploadBegin: '正在初始化...',
+        msgUploadBegin: 'ssss...',
         msgUploadEnd: '完成',
         msgUploadResume: 'Resuming upload...',
         msgUploadEmpty: '无效的文件上传.',
@@ -5658,7 +5658,7 @@
             uploadBatch: '批量上传',
             uploadExtra: '表单数据上传'
         },
-        dropZoneTitle: '拖拽文件到这里 &hellip;<br>支持多文件同时上传',
+        dropZoneTitle: 'Kéo file &hellip;<br>Vào đây',
         dropZoneClickTitle: '<br>(或点击{files}按钮选择文件)',
         fileActionSettings: {
             removeTitle: '删除文件',
