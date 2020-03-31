@@ -9,7 +9,7 @@
             return pageNumber + ' 条记录每页';
         },
         formatShowingRows: function (pageFrom, pageTo, totalRows) {
-            return '第 ' + pageFrom + ' 到 ' + pageTo + ' 条，共  ' + totalRows + ' 条记录。';
+            return 'First ' + pageFrom + ' To ' + pageTo + ' Article, total ' + totalRows + ' Records。';
         },
         formatSearch: function () {
             return '搜索';
