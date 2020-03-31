@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-	<th:block th:include="include :: header('用户个人信息')" />
+	<th:block th:include="include :: header('User personal information')" />
 </head>
 
-<body class="gray-bg" style="font: 14px Helvetica Neue, Helvetica, PingFang SC, 微软雅黑, Tahoma, Arial, sans-serif !important;">
+<body class="gray-bg" style="font: 14px Helvetica Neue, Helvetica, PingFang SC, Microsoft Yahei, Tahoma, Arial, sans-serif !important;">
     <input id="userId" name="userId" type="hidden" th:value="${user.userId}" />
     <section class="section-content">
     <div class="row">
         <div class="col-sm-3 pr5">
             <div class="ibox float-e-margins">
                 <div class="ibox-title ibox-title-gray dashboard-header gray-bg">
-                    <h5>个人资料</h5>
+                    <h5>Personal information</h5>
                 </div>
                 <div class="ibox-content">
                     <div class="text-center">
                         <p><img class="img-circle img-lg" th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}"></p>
-                        <p><a href="javascript:avatar()">修改头像</a></p>
+                        <p><a href="javascript:avatar()">Modify avatar</a></p>
                     </div>
                     <ul class="list-group list-group-striped">
                         <li class="list-group-item"><i class="fa fa-user"></i>
-                            <b class="font-noraml">登录名称：</b>
+                            <b class="font-noraml">Login name：</b>
                             <p class="pull-right">[[${user.loginName}]]</p>
                         </li>
                         <li class="list-group-item"><i class="fa fa-phone"></i>
-                            <b  class="font-noraml">手机号码：</b>
+                            <b  class="font-noraml">Cellphone number：</b>
                             <p class="pull-right">[[${user.phonenumber}]]</p>
                         </li>
                         <li class="list-group-item" th:if="${user.dept?.deptName != null}"><i class="fa fa-group"></i>
-                            <b  class="font-noraml">所属部门：</b>
-                            <p class="pull-right" >[[${user.dept?.deptName}]] / [[${#strings.defaultString(postGroup,'无岗位')}]]</p>
+                            <b  class="font-noraml">Department：</b>
+                            <p class="pull-right" >[[${user.dept?.deptName}]] / [[${#strings.defaultString(postGroup,'No post')}]]</p>
                         </li>
                         <li class="list-group-item"><i class="fa fa-envelope-o"></i>
-                            <b  class="font-noraml">邮箱地址：</b>
+                            <b  class="font-noraml">Email address：</b>
                             <p class="pull-right" >[[${user.email}]]</p>
                         </li>
                         <li class="list-group-item"><i class="fa fa-calendar"></i>
-                            <b  class="font-noraml">创建时间：</b>
+                            <b  class="font-noraml">Creation time：</b>
                             <p class="pull-right" >[[${#dates.format(user.createTime, 'yyyy-MM-dd')}]]</p>
                         </li>
                     </ul>
@@ -47,55 +47,55 @@
         <div class="col-sm-9 about">
             <div class="ibox float-e-margins">
                 <div class="ibox-title ibox-title-gray dashboard-header">
-                    <h5>基本资料</h5>
+                    <h5>Basic information</h5>
                 </div>
                 <div class="ibox-content">
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#user_info" data-toggle="tab" aria-expanded="true">基本资料</a></li>
-                            <li><a href="#modify_password" data-toggle="tab" aria-expanded="false">修改密码</a></li>
+                            <li class="active"><a href="#user_info" data-toggle="tab" aria-expanded="true">Basic information</a></li>
+                            <li><a href="#modify_password" data-toggle="tab" aria-expanded="false">Change Password</a></li>
                         </ul>
                         <div class="tab-content">
-                            <!--用户信息-->
+                            <!--User Info-->
                             <div class="tab-pane active" id="user_info" th:object="${user}">
                                 <form class="form-horizontal" id="form-user-edit">
-                                    <!--隐藏ID-->
+                                    <!--Hide ID-->
                                     <input name="id" id="id" type="hidden">
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">用户名称：</label>
+                                        <label class="col-sm-2 control-label">User name：</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="userName" th:field="*{userName}" placeholder="请输入用户名称">
+                                            <input type="text" class="form-control" name="userName" th:field="*{userName}" placeholder="Please enter a username">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">手机号码：</label>
+                                        <label class="col-sm-2 control-label">Cellphone number：</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="phonenumber" maxlength="11" th:field="*{phonenumber}" placeholder="请输入手机号码">
+                                            <input type="text" class="form-control" name="phonenumber" maxlength="11" th:field="*{phonenumber}" placeholder="Please enter the phone number">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">邮箱：</label>
+                                        <label class="col-sm-2 control-label">Mailbox：</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="email" th:field="*{email}" placeholder="请输入邮箱">
+                                            <input type="text" class="form-control" name="email" th:field="*{email}" placeholder="Please input your email">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">性别：</label>
+                                        <label class="col-sm-2 control-label">Gender：</label>
                                         <div class="col-sm-10">
                                             <div class="radio-box">
 												<input type="radio" id="radio1" th:field="*{sex}" name="sex" value="0">
-												<label for="radio1">男</label>
+												<label for="radio1">Male</label>
 											</div>
 											<div class="radio-box">
 												<input type="radio" id="radio2" th:field="*{sex}" name="sex" value="1">
-												<label for="radio2">女</label>
+												<label for="radio2">Female</label>
 											</div>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
-                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitUserInfo()"><i class="fa fa-check"></i>保 存</button>&nbsp;
-                                            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitUserInfo()"><i class="fa fa-check"></i>Save</button>&nbsp;
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down </button>
                                         </div>
                                     </div>
                                 </form>
@@ -105,27 +105,27 @@
                             <div class="tab-pane" id="modify_password">
                                 <form class="form-horizontal" id="form-user-resetPwd">
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">旧密码：</label>
+                                        <label class="col-sm-2 control-label">Old password:</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control" name="oldPassword" placeholder="请输入旧密码">
+                                            <input type="password" class="form-control" name="oldPassword" placeholder="Please enter the old password">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">新密码：</label>
+                                        <label class="col-sm-2 control-label">New password：</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="请输入新密码">
+                                            <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Please enter a new password">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">确认密码：</label>
+                                        <label class="col-sm-2 control-label">Confirm password：</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control" name="confirmPassword" placeholder="请确认密码">
+                                            <input type="password" class="form-control" name="confirmPassword" placeholder="Please confirm your password">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
-                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitChangPassword()"><i class="fa fa-check"></i>保 存</button>&nbsp;
-                                            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitChangPassword()"><i class="fa fa-check"></i>Save</button>&nbsp;
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down</button>
                                         </div>
                                     </div>
                                 </form>
@@ -143,7 +143,7 @@
 	    /*用户管理-头像*/
 	    function avatar() {
 	        var url = ctx + 'system/user/profile/avatar';
-	        $.modal.open("修改头像", url);
+	        $.modal.open("Modify avata", url);
 	    }
 	    
 	    /*用户信息-修改*/
@@ -196,15 +196,15 @@
 			},
 			messages: {
 				"userName": {
-	                required: "请输入用户名称",
+	                required: "Please enter a username",
 	            },
 				"email": {
-					required: "请输入邮箱",
-		            remote: "Email已经存在"
+					required: "please input your email",
+		            remote: "Email already exists"
 		        },
 				"phonenumber":{
-					required: "请输入手机号码",
-		        	remote: "手机号码已经存在"
+					required: "Please enter the phone number",
+		        	remote: "Phone number already exists"
 				}
 		    },
 		    focusCleanup: true
@@ -245,17 +245,17 @@
 			},
 			messages: {
 	            oldPassword: {
-	                required: "请输入原密码",
-	                remote: "原密码错误"
+	                required: "Please enter the original password",
+	                remote: "The original password is wrong"
 	            },
 	            newPassword: {
-	                required: "请输入新密码",
-	                minlength: "密码不能小于6个字符",
-	                maxlength: "密码不能大于20个字符"
+	                required: "Please enter a new password",
+	                minlength: "Password must be at least 6 characters",
+	                maxlength: "Password cannot be longer than 20 characters"
 	            },
 	            confirmPassword: {
-	                required: "请再次输入新密码",
-	                equalTo: "两次密码输入不一致"
+	                required: "Please enter new password again",
+	                equalTo: "Passwords entered twice are inconsistent"
 	            }
 
 	        },
