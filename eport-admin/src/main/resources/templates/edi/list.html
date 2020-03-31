@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('List 【请填写功能名称】')" />
+    <th:block th:include="include :: header('List eDO')" />
 </head>
 <body class="gray-bg">
      <div class="container-div">
@@ -11,15 +11,15 @@
                     <div class="select-list">
                         <ul>
                             <li>
-                                <label>Mã cont：</label>
+                                <label>Mã Cont</label>
                                 <input type="text" name="contNo"/>
                             </li>
                             <li>
-                                <label>Số bill：</label>
+                                <label>Số BL</label>
                                 <input type="text" name="buildNo"/>
                             </li>
                             <li>
-                                <label>Order Number：</label>
+                                <label>Order#</label>
                                 <input type="text" name="orderNo"/>
                             </li>
                             <li>
@@ -54,7 +54,7 @@
     <script th:inline="javascript">
         var editFlag = [[${@permission.hasPermi('system:edi:edit')}]];
         var removeFlag = [[${@permission.hasPermi('system:edi:remove')}]];
-        var prefix = ctx + "EDI";
+        var prefix = ctx + "edi";
 
         $(function() {
             var options = {
@@ -63,13 +63,13 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
-                modalName: "【请填写功能名称】",
+                modalName: "【eDO】",
                 columns: [{
                     checkbox: true
                 },
                 {
                     field: 'ediId', 
-                    title: '${comment}',
+                    title: 'ID',
                     visible: false
                 },
                 {
@@ -78,15 +78,15 @@
                 },
                 {
                     field: 'contNo', 
-                    title: 'Số cont'
+                    title: 'Số Cont'
                 },
                 {
                     field: 'buildNo', 
-                    title: 'Số bill'
+                    title: 'Số Bill'
                 },
                 {
                     field: 'businessUnit', 
-                    title: 'Chủ khai thác hàng'
+                    title: 'Chủ khai thác'
                 },
                 {
                     field: 'orderNo', 

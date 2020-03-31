@@ -20,7 +20,7 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 /**
- * 【请填写功能名称】Controller
+ * eDOController
  * 
  * @author ruoyi
  * @date 2020-03-31
@@ -42,7 +42,7 @@ public class SysEdiController extends BaseController
     }
 
     /**
-     * Get 【请填写功能名称】 List
+     * Get eDO List
      */
     @RequiresPermissions("system:edi:list")
     @PostMapping("/list")
@@ -55,10 +55,10 @@ public class SysEdiController extends BaseController
     }
 
     /**
-     * Export 【请填写功能名称】 List
+     * Export edo List
      */
     @RequiresPermissions("system:edi:export")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.EXPORT)
+    @Log(title = "eDO", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(SysEdi sysEdi)
@@ -69,7 +69,7 @@ public class SysEdiController extends BaseController
     }
 
     /**
-     * Add 【请填写功能名称】
+     * Add eDO
      */
     @GetMapping("/add")
     public String add()
@@ -78,10 +78,10 @@ public class SysEdiController extends BaseController
     }
 
     /**
-     * Add or Update 【请填写功能名称】
+     * Add or Update eDO
      */
     @RequiresPermissions("system:edi:add")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.INSERT)
+    @Log(title = "eDO", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(SysEdi sysEdi)
@@ -90,7 +90,7 @@ public class SysEdiController extends BaseController
     }
 
     /**
-     * Update 【请填写功能名称】
+     * Update eDO
      */
     @GetMapping("/edit/{ediId}")
     public String edit(@PathVariable("ediId") Long ediId, ModelMap mmap)
@@ -101,10 +101,10 @@ public class SysEdiController extends BaseController
     }
 
     /**
-     * Update Save 【请填写功能名称】
+     * Update Save eDO
      */
     @RequiresPermissions("system:edi:edit")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.UPDATE)
+    @Log(title = "eDO", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(SysEdi sysEdi)
@@ -113,10 +113,10 @@ public class SysEdiController extends BaseController
     }
 
     /**
-     * Delete 【请填写功能名称】
+     * Delete eDO
      */
     @RequiresPermissions("system:edi:remove")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.DELETE)
+    @Log(title = "eDO", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
     public AjaxResult remove(String ids)

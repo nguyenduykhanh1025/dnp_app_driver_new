@@ -1,9 +1,9 @@
-ruoyi:
-  name: RuoYi
+eport:
+  name: DNG ePort
   version: 4.2.0
-  copyrightYear: 2019
+  copyrightYear: 2020
   demoEnabled: true
-  profile: D:/ruoyi/uploadPath
+  profile: D:/eport/upload
   addressEnabled: true
 
 server:

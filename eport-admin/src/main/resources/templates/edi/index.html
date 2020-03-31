@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File Upload</title>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
+
+
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+<link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet"/>
+
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="panel panel-default" id="fileupload_main_panel">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-12">
+						<form enctype="multipart/form-data"
+							action="/EDI/file" method="POST"
+							class="dropzone" id="file">
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+	
+	</script>
+</body>
+</html>

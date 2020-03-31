@@ -11,8 +11,6 @@ import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.fastjson.JSONObject;
-
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,32 +22,36 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import vn.com.irtech.eport.common.annotation.Log;
+import com.alibaba.fastjson.JSONObject;
+
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.system.domain.SysEdi;
 import vn.com.irtech.eport.system.service.ISysEdiService;
 
 
 @Controller
-@RequestMapping("/EDI")
+@RequestMapping("/edi")
 public class SysEDIController extends BaseController
 {
 
 	@Autowired
 	private ISysEdiService sysEdiService;
 	
-
 	
 	@GetMapping("/index")
     public String test()
     {
-        return "EDI/index";
+        return "edi/index";
     }
-    
+
+	@GetMapping("/add")
+    public String add()
+    {
+        return "edi/add";
+    }
+	
     @RequestMapping(value = "/file",method = { RequestMethod.POST })
 	public @ResponseBody Object upload(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
 		if (file.isEmpty()) {
@@ -74,7 +76,7 @@ public class SysEDIController extends BaseController
 		return getSuccessMessage().toString();
     }
     public File getFolderUpload() {
-        File folderUpload = new File(System.getProperty("user.home") + "/EDI");
+        File folderUpload = new File(System.getProperty("user.home") + "/edi");
         if (!folderUpload.exists()) {
           folderUpload.mkdirs();
         }
@@ -103,7 +105,7 @@ public class SysEDIController extends BaseController
     @GetMapping("/list")
     public String viewList()
     {
-        return "EDI/List";
+        return "edi/list";
     }
     public AjaxResult addEDI(SysEdi edi)
     {

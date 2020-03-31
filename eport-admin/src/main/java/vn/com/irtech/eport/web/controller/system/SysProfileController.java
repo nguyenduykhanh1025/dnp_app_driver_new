@@ -75,7 +75,7 @@ public class SysProfileController extends BaseController
         return prefix + "/resetPwd";
     }
 
-    @Log(title = "重置密码", businessType = BusinessType.UPDATE)
+    @Log(title = "Reset password", businessType = BusinessType.UPDATE)
     @PostMapping("/resetPwd")
     @ResponseBody
     public AjaxResult resetPwd(String oldPassword, String newPassword)
@@ -94,7 +94,7 @@ public class SysProfileController extends BaseController
         }
         else
         {
-            return error("修改密码失败，旧密码错误");
+            return error("Failed to change password, old password is wrong");
         }
     }
 
@@ -123,7 +123,7 @@ public class SysProfileController extends BaseController
     /**
      * 修改用户
      */
-    @Log(title = "个人信息", businessType = BusinessType.UPDATE)
+    @Log(title = "Profile", businessType = BusinessType.UPDATE)
     @PostMapping("/update")
     @ResponseBody
     public AjaxResult update(SysUser user)
@@ -144,7 +144,7 @@ public class SysProfileController extends BaseController
     /**
      * 保存头像
      */
-    @Log(title = "个人信息", businessType = BusinessType.UPDATE)
+    @Log(title = "Profile", businessType = BusinessType.UPDATE)
     @PostMapping("/updateAvatar")
     @ResponseBody
     public AjaxResult updateAvatar(@RequestParam("avatarfile") MultipartFile file)
@@ -166,7 +166,7 @@ public class SysProfileController extends BaseController
         }
         catch (Exception e)
         {
-            log.error("修改头像失败！", e);
+            log.error("Failed to modify avatar!", e);
             return error(e.getMessage());
         }
     }

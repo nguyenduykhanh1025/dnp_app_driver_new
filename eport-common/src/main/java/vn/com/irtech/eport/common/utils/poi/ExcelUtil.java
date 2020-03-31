@@ -160,7 +160,7 @@ public class ExcelUtil<T>
 
         if (sheet == null)
         {
-            throw new IOException("文件sheet不存在");
+            throw new IOException("sheet not exist");
         }
 
         int rows = sheet.getPhysicalNumberOfRows();
@@ -349,8 +349,8 @@ public class ExcelUtil<T>
         }
         catch (Exception e)
         {
-            log.error("导出Excel异常{}", e.getMessage());
-            throw new BusinessException("导出Excel失败，请联系网站管理员！");
+            log.error("Export Excel exception {}", e.getMessage());
+            throw new BusinessException("Failed to export Excel, please contact the admin!");
         }
         finally
         {
@@ -552,7 +552,7 @@ public class ExcelUtil<T>
         }
         catch (Exception e)
         {
-            log.error("导出Excel失败{}", e);
+            log.error("Failed to export Excel {}", e);
         }
         return cell;
     }
