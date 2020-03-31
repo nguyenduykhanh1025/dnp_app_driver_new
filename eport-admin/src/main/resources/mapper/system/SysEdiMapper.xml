@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.system.mapper.SysEdiMapper">
+    
+    <resultMap type="SysEdi" id="SysEdiResult">
+        <result property="ediId"    column="edi_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="buildNo"    column="build_no"    />
+        <result property="businessUnit"    column="business_unit"    />
+        <result property="contNo"    column="cont_no"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="releaseTo"    column="release_to"    />
+        <result property="validtoDay"    column="validto_day"    />
+        <result property="emptycontDepot"    column="emptycont_depot"    />
+        <result property="haulage"    column="haulage"    />
+    </resultMap>
+
+    <sql id="selectSysEdiVo">
+        select edi_id, user_id, build_no, business_unit, cont_no, order_no, release_to, validto_day, emptycont_depot, haulage from sys_edi
+    </sql>
+
+    <select id="selectSysEdiList" parameterType="SysEdi" resultMap="SysEdiResult">
+        <include refid="selectSysEdiVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="buildNo != null  and buildNo != ''"> and build_no = #{buildNo}</if>
+            <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
+            <if test="contNo != null  and contNo != ''"> and cont_no = #{contNo}</if>
+            <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
+            <if test="releaseTo != null  and releaseTo != ''"> and release_to = #{releaseTo}</if>
+            <if test="validtoDay != null "> and validto_day = #{validtoDay}</if>
+            <if test="emptycontDepot != null  and emptycontDepot != ''"> and emptycont_depot = #{emptycontDepot}</if>
+            <if test="haulage != null "> and haulage = #{haulage}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysEdiById" parameterType="Long" resultMap="SysEdiResult">
+        <include refid="selectSysEdiVo"/>
+        where edi_id = #{ediId}
+    </select>
+        
+    <insert id="insertSysEdi" parameterType="SysEdi" useGeneratedKeys="true" keyProperty="ediId">
+        insert into sys_edi
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="buildNo != null  and buildNo != ''">build_no,</if>
+            <if test="businessUnit != null  and businessUnit != ''">business_unit,</if>
+            <if test="contNo != null  and contNo != ''">cont_no,</if>
+            <if test="orderNo != null  and orderNo != ''">order_no,</if>
+            <if test="releaseTo != null  and releaseTo != ''">release_to,</if>
+            <if test="validtoDay != null ">validto_day,</if>
+            <if test="emptycontDepot != null  and emptycontDepot != ''">emptycont_depot,</if>
+            <if test="haulage != null ">haulage,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="buildNo != null  and buildNo != ''">#{buildNo},</if>
+            <if test="businessUnit != null  and businessUnit != ''">#{businessUnit},</if>
+            <if test="contNo != null  and contNo != ''">#{contNo},</if>
+            <if test="orderNo != null  and orderNo != ''">#{orderNo},</if>
+            <if test="releaseTo != null  and releaseTo != ''">#{releaseTo},</if>
+            <if test="validtoDay != null ">#{validtoDay},</if>
+            <if test="emptycontDepot != null  and emptycontDepot != ''">#{emptycontDepot},</if>
+            <if test="haulage != null ">#{haulage},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysEdi" parameterType="SysEdi">
+        update sys_edi
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="buildNo != null  and buildNo != ''">build_no = #{buildNo},</if>
+            <if test="businessUnit != null  and businessUnit != ''">business_unit = #{businessUnit},</if>
+            <if test="contNo != null  and contNo != ''">cont_no = #{contNo},</if>
+            <if test="orderNo != null  and orderNo != ''">order_no = #{orderNo},</if>
+            <if test="releaseTo != null  and releaseTo != ''">release_to = #{releaseTo},</if>
+            <if test="validtoDay != null ">validto_day = #{validtoDay},</if>
+            <if test="emptycontDepot != null  and emptycontDepot != ''">emptycont_depot = #{emptycontDepot},</if>
+            <if test="haulage != null ">haulage = #{haulage},</if>
+        </trim>
+        where edi_id = #{ediId}
+    </update>
+
+    <delete id="deleteSysEdiById" parameterType="Long">
+        delete from sys_edi where edi_id = #{ediId}
+    </delete>
+
+    <delete id="deleteSysEdiByIds" parameterType="String">
+        delete from sys_edi where edi_id in 
+        <foreach item="ediId" collection="array" open="(" separator="," close=")">
+            #{ediId}
+        </foreach>
+    </delete>
+    
+</mapper>
