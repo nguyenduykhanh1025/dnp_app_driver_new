@@ -53,7 +53,7 @@ public class SysJobController extends BaseController
         return getDataTable(list);
     }
 
-    @Log(title = "定时任务", businessType = BusinessType.EXPORT)
+    @Log(title = "Job", businessType = BusinessType.EXPORT)
     @RequiresPermissions("monitor:job:export")
     @PostMapping("/export")
     @ResponseBody
@@ -61,10 +61,10 @@ public class SysJobController extends BaseController
     {
         List<SysJob> list = jobService.selectJobList(job);
         ExcelUtil<SysJob> util = new ExcelUtil<SysJob>(SysJob.class);
-        return util.exportExcel(list, "定时任务");
+        return util.exportExcel(list, "Jobs");
     }
 
-    @Log(title = "定时任务", businessType = BusinessType.DELETE)
+    @Log(title = "Job", businessType = BusinessType.DELETE)
     @RequiresPermissions("monitor:job:remove")
     @PostMapping("/remove")
     @ResponseBody
@@ -86,7 +86,7 @@ public class SysJobController extends BaseController
     /**
      * 任务调度状态修改
      */
-    @Log(title = "定时任务", businessType = BusinessType.UPDATE)
+    @Log(title = "Job", businessType = BusinessType.UPDATE)
     @RequiresPermissions("monitor:job:changeStatus")
     @PostMapping("/changeStatus")
     @ResponseBody
@@ -100,7 +100,7 @@ public class SysJobController extends BaseController
     /**
      * 任务调度立即执行一次
      */
-    @Log(title = "定时任务", businessType = BusinessType.UPDATE)
+    @Log(title = "Job", businessType = BusinessType.UPDATE)
     @RequiresPermissions("monitor:job:changeStatus")
     @PostMapping("/run")
     @ResponseBody
@@ -122,7 +122,7 @@ public class SysJobController extends BaseController
     /**
      * 新增保存调度
      */
-    @Log(title = "定时任务", businessType = BusinessType.INSERT)
+    @Log(title = "Job", businessType = BusinessType.INSERT)
     @RequiresPermissions("monitor:job:add")
     @PostMapping("/add")
     @ResponseBody
@@ -144,7 +144,7 @@ public class SysJobController extends BaseController
     /**
      * 修改保存调度
      */
-    @Log(title = "定时任务", businessType = BusinessType.UPDATE)
+    @Log(title = "Job", businessType = BusinessType.UPDATE)
     @RequiresPermissions("monitor:job:edit")
     @PostMapping("/edit")
     @ResponseBody

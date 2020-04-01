@@ -129,7 +129,7 @@ public class CacheUtils
         {
             cache.remove(it.next());
         }
-        logger.info("清理缓存： {} => {}", cacheName, keys);
+        logger.info("Clear cache： {} => {}", cacheName, keys);
     }
 
     /**
@@ -154,7 +154,7 @@ public class CacheUtils
         {
             remove(it.next());
         }
-        logger.info("清理缓存： {} => {}", cacheName, keys);
+        logger.info("Clear cache： {} => {}", cacheName, keys);
     }
 
     /**
@@ -179,7 +179,7 @@ public class CacheUtils
         Cache<String, Object> cache = cacheManager.getCache(cacheName);
         if (cache == null)
         {
-            throw new RuntimeException("当前系统中没有定义“" + cacheName + "”这个缓存。");
+            throw new RuntimeException("Cache “" + cacheName + "” not exist.");
         }
         return cache;
     }

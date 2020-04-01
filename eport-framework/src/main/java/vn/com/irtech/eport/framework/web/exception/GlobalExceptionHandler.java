@@ -16,7 +16,7 @@ import vn.com.irtech.eport.common.utils.ServletUtils;
 import vn.com.irtech.eport.common.utils.security.PermissionUtils;
 
 /**
- * 全局异常处理器
+ * Global exception handler
  * 
  * @author admin
  */
@@ -26,7 +26,7 @@ public class GlobalExceptionHandler
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     /**
-     * 权限校验失败 如果请求为ajax返回json，普通请求跳转页面
+     * 权Limit verification failed If the request returns json for ajax, the normal request jumps to the page
      */
     @ExceptionHandler(AuthorizationException.class)
     public Object handleAuthorizationException(HttpServletRequest request, AuthorizationException e)
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler
     }
 
     /**
-     * 请求方式不支持
+     * Request method is not supported
      */
     @ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
     public AjaxResult handleException(HttpRequestMethodNotSupportedException e)
@@ -55,27 +55,27 @@ public class GlobalExceptionHandler
     }
 
     /**
-     * 拦截未知的运行时异常
+     * Intercepting unknown runtime exceptions
      */
     @ExceptionHandler(RuntimeException.class)
     public AjaxResult notFount(RuntimeException e)
     {
-        log.error("运行时异常:", e);
-        return AjaxResult.error("运行时异常:" + e.getMessage());
+        log.error("Runtime Exception:", e);
+        return AjaxResult.error("Runtime Exception:" + e.getMessage());
     }
 
     /**
-     * 系统异常
+     * System exception
      */
     @ExceptionHandler(Exception.class)
     public AjaxResult handleException(Exception e)
     {
         log.error(e.getMessage(), e);
-        return AjaxResult.error("服务器错误，请联系管理员");
+        return AjaxResult.error("Server error, please contact the administrator");
     }
 
     /**
-     * 业务异常
+     * Business abnormal
      */
     @ExceptionHandler(BusinessException.class)
     public Object businessException(HttpServletRequest request, BusinessException e)
@@ -95,7 +95,7 @@ public class GlobalExceptionHandler
     }
 
     /**
-     * 自定义验证异常
+     * Custom validation exception
      */
     @ExceptionHandler(BindException.class)
     public AjaxResult validatedBindException(BindException e)
@@ -106,11 +106,11 @@ public class GlobalExceptionHandler
     }
 
     /**
-     * 演示模式异常
+     * Demo mode exception
      */
     @ExceptionHandler(DemoModeException.class)
     public AjaxResult demoModeException(DemoModeException e)
     {
-        return AjaxResult.error("演示模式，不允许操作");
+        return AjaxResult.error("Demo mode, no operation allowed");
     }
 }

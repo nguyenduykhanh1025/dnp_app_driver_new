@@ -79,7 +79,7 @@ public class ReflectUtils
         Field field = getAccessibleField(obj, fieldName);
         if (field == null)
         {
-            logger.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
+            logger.debug("Class [" + obj.getClass() + "] not found field [" + fieldName + "] ");
             return null;
         }
         E result = null;
@@ -89,7 +89,7 @@ public class ReflectUtils
         }
         catch (IllegalAccessException e)
         {
-            logger.error("不可能抛出的异常{}", e.getMessage());
+            logger.error("Impossible thrown exception {}", e.getMessage());
         }
         return result;
     }
@@ -103,7 +103,7 @@ public class ReflectUtils
         if (field == null)
         {
             // throw new IllegalArgumentException("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
-            logger.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + fieldName + "] 字段 ");
+            logger.debug("Class  [" + obj.getClass() + "] not found field [" + fieldName + "] ");
             return;
         }
         try
@@ -112,7 +112,7 @@ public class ReflectUtils
         }
         catch (IllegalAccessException e)
         {
-            logger.error("不可能抛出的异常: {}", e.getMessage());
+            logger.error("Impossible throw exception: {}", e.getMessage());
         }
     }
 
@@ -132,7 +132,7 @@ public class ReflectUtils
         Method method = getAccessibleMethod(obj, methodName, parameterTypes);
         if (method == null)
         {
-            logger.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + methodName + "] 方法 ");
+            logger.debug("Class [" + obj.getClass() + "] not found method [" + methodName + "] ");
             return null;
         }
         try
@@ -158,7 +158,7 @@ public class ReflectUtils
         if (method == null)
         {
             // 如果为空不报错，直接返回空。
-            logger.debug("在 [" + obj.getClass() + "] 中，没有找到 [" + methodName + "] 方法 ");
+            logger.debug("Class [" + obj.getClass() + "] not found method [" + methodName + "] ");
             return null;
         }
         try

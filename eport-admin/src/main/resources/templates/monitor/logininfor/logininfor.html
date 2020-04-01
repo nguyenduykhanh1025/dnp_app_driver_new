@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-	<th:block th:include="include :: header('登录日志列表')" />
+	<th:block th:include="include :: header('Login log list')" />
 </head>
 <body class="gray-bg">
 	<div class="container-div">
@@ -11,26 +11,26 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								<label>登录地址：</label><input type="text" name="ipaddr"/>
+								Login address:<input type="text" name="ipaddr"/>
 							</li>
 							<li>
-								<label>登录名称：</label><input type="text" name="loginName"/>
+								Login name:<input type="text" name="loginName"/>
 							</li>
 							<li>
-								<label>登录状态：</label><select name="status" th:with="type=${@dict.getType('sys_common_status')}">
-									<option value="">所有</option>
+								Login status:<select name="status" th:with="type=${@dict.getType('sys_common_status')}">
+									<option value="">All</option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li class="select-time">
-								<label>登录时间： </label>
-								<input type="text" class="time-input" id="startTime" placeholder="开始时间" name="params[beginTime]"/>
+								<label>Log in time: </label>
+								<input type="text" class="time-input" id="startTime" placeholder="Starting time" name="params[beginTime]"/>
 								<span>-</span>
-								<input type="text" class="time-input" id="endTime" placeholder="结束时间" name="params[endTime]"/>
+								<input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endTime]"/>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
 							</li>
 						</ul>
 					</div>
@@ -39,16 +39,16 @@
 			
 			<div class="btn-group-sm" id="toolbar" role="group">
 				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="monitor:logininfor:remove">
-		            <i class="fa fa-remove"></i> 删除
+		            <i class="fa fa-remove"></i>Delete
 		        </a>
 		        <a class="btn btn-danger" onclick="$.operate.clean()" shiro:hasPermission="monitor:logininfor:remove">
-	                <i class="fa fa-trash"></i> 清空
+	                <i class="fa fa-trash"></i> Clear
 	            </a>
 				<a class="btn btn-primary single disabled" onclick="unlock()" shiro:hasPermission="monitor:logininfor:unlock">
-					<i class="fa fa-unlock"></i> 解锁
+					<i class="fa fa-unlock"></i> Unlock
 				</a>
 	            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="monitor:logininfor:export">
-		            <i class="fa fa-download"></i> 导出
+		            <i class="fa fa-download"></i> Export
 		        </a>
 	        </div>
         
@@ -71,7 +71,7 @@
 		        exportUrl: prefix + "/export",
 		        sortName: "loginTime",
 		        sortOrder: "desc",
-		        modalName: "登录日志",
+		        modalName: "Login log",
 		        escape: true,
 		        showPageGo: true,
 		        rememberSelected: true,
@@ -81,32 +81,32 @@
 		        },
 		        {
 		            field: 'infoId',
-		            title: '访问编号'
+		            title: 'Id'
 		        },
 		        {
 		            field: 'loginName',
-		            title: '登录名称',
+		            title: 'Login name',
 		            sortable: true
 		        },
 		        {
 		            field: 'ipaddr',
-		            title: '登录地址'
+		            title: 'Login address'
 		        },
 		        {
 		            field: 'loginLocation',
-		            title: '登录地点'
+		            title: 'Registration location'
 		        },
 		        {
 		            field: 'browser',
-		            title: '浏览器'
+		            title: 'Browser'
 		        },
 		        {
 		            field: 'os',
-		            title: '操作系统'
+		            title: 'Operating system'
 		        },
 		        {
 		            field: 'status',
-		            title: '登录状态',
+		            title: 'Login status',
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	return $.table.selectDictLabel(datas, value);
@@ -114,11 +114,11 @@
 		        },
 		        {
 		            field: 'msg',
-		            title: '操作信息'
+		            title: 'Information'
 		        },
 		        {
 		            field: 'loginTime',
-		            title: '登录时间',
+		            title: 'Log in time',
 		            sortable: true
 		        }]
 		    };
