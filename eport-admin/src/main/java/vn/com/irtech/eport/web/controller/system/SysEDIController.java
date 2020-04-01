@@ -56,7 +56,8 @@ public class SysEDIController extends BaseController
 		if (file.isEmpty()) {
 			System.out.println("File empty");
         }
-        String data = "";
+		String data = "";
+		JSONObject obj = new JSONObject();
 		try {
 			  String fileName = file.getOriginalFilename();
 		      File filenew = new File(this.getFolderUpload(), fileName);
@@ -67,12 +68,12 @@ public class SysEDIController extends BaseController
 				data += myReader.nextLine();
 		      }
               myReader.close();
-              String[] text = data.split("'");
-              this.ReadEDI(text);
+			  String[] text = data.split("'");
+              obj = this.ReadEDI(text);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return getSuccessMessage().toString();
+		return obj;
     }
     public File getFolderUpload() {
         File folderUpload = new File("D:/eport/upload");
@@ -96,6 +97,16 @@ public class SysEDIController extends BaseController
     @RequiresPermissions("system:edi:list")
     @ResponseBody
     public TableDataInfo list(SysEdi sysEdi)
+    {
+        startPage();
+        List<SysEdi> list = sysEdiService.selectSysEdiList(sysEdi);
+        return getDataTable(list);
+	}
+	
+	@GetMapping("/datatestlist")
+    @RequiresPermissions("system:edi:list")
+    @ResponseBody
+    public TableDataInfo listtest(SysEdi sysEdi)
     {
         startPage();
         List<SysEdi> list = sysEdiService.selectSysEdiList(sysEdi);
@@ -173,9 +184,12 @@ public class SysEDIController extends BaseController
 			if(s.contains("LOC+99"))
 			{
 				String[] emptyContDepot = s.split("\\+");
-				emptyContDepot[3] = emptyContDepot[3].substring(0, emptyContDepot[3].length());
+				if(emptyContDepot[3] != null){
+					emptyContDepot[3] = emptyContDepot[3].substring(0, emptyContDepot[3].length());
 				obj.put("LOC+99", emptyContDepot[3]);
-                edi.setEmptycontDepot(emptyContDepot[3]);		
+                edi.setEmptycontDepot(emptyContDepot[3]);
+				}
+						
 			}
 			if(s.contains("FTX+AAI"))
 			{
