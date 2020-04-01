@@ -25,14 +25,14 @@ public class AddressUtils
         // 内网不查询
         if (IpUtils.internalIp(ip))
         {
-            return "内网IP";
+            return "Intranet IP";
         }
         if (Global.isAddressEnabled())
         {
             String rspStr = HttpUtils.sendPost(IP_URL, "ip=" + ip);
             if (StringUtils.isEmpty(rspStr))
             {
-                log.error("获取地理位置异常 {}", ip);
+                log.error("Get geolocation exception {}", ip);
                 return address;
             }
             JSONObject obj;
@@ -46,7 +46,7 @@ public class AddressUtils
             }
             catch (Exception e)
             {
-                log.error("获取地理位置异常 {}", ip);
+                log.error("Get geolocation exception{}", ip);
             }
         }
         return address;

@@ -37,15 +37,15 @@ public class SysRegisterService
 
         if (!StringUtils.isEmpty(ServletUtils.getRequest().getAttribute(ShiroConstants.CURRENT_CAPTCHA)))
         {
-            msg = "验证码错误";
+            msg = "Captcha error";
         }
         else if (StringUtils.isEmpty(username))
         {
-            msg = "用户名不能为空";
+            msg = "Username can not be empty";
         }
         else if (StringUtils.isEmpty(password))
         {
-            msg = "用户密码不能为空";
+            msg = "User password cannot be empty";
         }
         else if (password.length() < UserConstants.PASSWORD_MIN_LENGTH
                 || password.length() > UserConstants.PASSWORD_MAX_LENGTH)
@@ -55,11 +55,11 @@ public class SysRegisterService
         else if (username.length() < UserConstants.USERNAME_MIN_LENGTH
                 || username.length() > UserConstants.USERNAME_MAX_LENGTH)
         {
-            msg = "账户长度必须在2到20个字符之间";
+            msg = "Account length must be between 2 and 20 characters";
         }
         else if (UserConstants.USER_NAME_NOT_UNIQUE.equals(userService.checkLoginNameUnique(username)))
         {
-            msg = "保存用户'" + username + "'失败，注册账号已存在";
+            msg = "Create user '" + username + "' failed, Registered account already exists";
         }
         else
         {
@@ -68,7 +68,7 @@ public class SysRegisterService
             boolean regFlag = userService.registerUser(user);
             if (!regFlag)
             {
-                msg = "注册失败,请联系系统管理人员";
+                msg = "Registration failed, please contact system administrator";
             }
             else
             {

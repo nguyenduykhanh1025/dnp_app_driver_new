@@ -490,7 +490,7 @@ public class ExcelUtil<T>
      */
     public void setDataValidation(Excel attr, Row row, int column)
     {
-        if (attr.name().indexOf("注：") >= 0)
+        if (attr.name().indexOf("Note:") >= 0)
         {
             sheet.setColumnWidth(column, 6000);
         }
