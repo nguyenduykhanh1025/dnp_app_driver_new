@@ -7,11 +7,11 @@
 <title>File Upload</title>
 <script th:src="@{/js/jquery.min.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
-<script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
+<script th:src="@{/js/dist/dropzone.js}"></script>
 
 
 <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
-<link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet"/>
+<link th:href="@{/js/dist/dropzone.css}" rel="stylesheet"/>
 
 </head>
 <body>
@@ -20,59 +20,17 @@
 			<div class="panel-body">
 				<div class="row">
 					<div class="col-md-12">
-						<div id="bannarzone" style="min-height: 120px"></div>
-						<!--<form enctype="multipart/form-data" action="/edi/file" method="POST" id="ediDrop">
-						</form>-->
+						<form enctype="multipart/form-data"
+							action="/edi/file" method="POST"
+							class="dropzone" id="file">
+						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<script>
-		var myAvatarzone = new Dropzone("#bannarzone", {
-        url: "/edi/file",//文件提交地址
-        method: "post",  //也可用put
-        paramName: "file", //默认为file
-//        maxFiles: 1,//一次性上传的文件数量上限
-//        maxFilesize: 2, //文件大小，单位：MB
-        acceptedFiles: ".txt", //上传的类型
-        addRemoveLinks: true,
-//        parallelUploads: 1,//一次上传的文件数量
-        //previewsContainer:"#preview",//上传图片的预览窗口
-        dictDefaultMessage: '拖动文件至此或者点击上传',
-        dictMaxFilesExceeded: "您最多只能上传1个文件！",
-        dictResponseError: 'Upload error!',
-        dictInvalidFileType: "Invalid EDI file. Please upload txt file only.",
-        dictFallbackMessage: "浏览器不受支持",
-        dictFileTooBig: "文件过大上传文件最大支持.",
-        dictRemoveLinks: "删除",
-        dictCancelUpload: "取消",
-        init: function () {
-            this.on("addedfile", function (file) {
-				//上传文件时触发的事件
-				//console.log("File added" + file);
-                // console.log("Success: " + file);
-            });
-            this.on("success", function (data) {
-                //上传成功触发的事件
-                if (data != "") {
-					// $("#avatarImgId").val(data.data);
-					console.log("Success: " + data);
-                }
- 
-            });
-            this.on("error", function (file, data) {
-				//上传失败触发的事件
-				console.log("error", data, file);
-            });
-            this.on("removedfile", function (file) {//删除文件触发结果
-                //console.log(file);
-				// $("#avatarImgId").val("");
-				// console.log("Remove", file);
-            });
-        }
-    });
-	// var dz = $("#bannarzone").dropzone({ url: "/edi/file" });
+	
 	</script>
 </body>
 </html>

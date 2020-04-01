@@ -51,13 +51,11 @@ public class SysEDIController extends BaseController
     {
         return "edi/add";
     }
-	
-    @RequestMapping(value = "/file",method = { RequestMethod.POST })
-	public @ResponseBody JSONObject upload(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
+	@RequestMapping(value = "/file",method = { RequestMethod.POST })
+	public @ResponseBody Object upload(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
 		if (file.isEmpty()) {
 			System.out.println("File empty");
-		}
-		JSONObject obj = new JSONObject();
+        }
         String data = "";
 		try {
 			  String fileName = file.getOriginalFilename();
@@ -69,15 +67,15 @@ public class SysEDIController extends BaseController
 				data += myReader.nextLine();
 		      }
               myReader.close();
-			  String[] text = data.split("'");
-              obj = this.ReadEDI(text);
+              String[] text = data.split("'");
+              this.ReadEDI(text);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return obj;
+		return getSuccessMessage().toString();
     }
     public File getFolderUpload() {
-        File folderUpload = new File(System.getProperty("user.home") + "/edi");
+        File folderUpload = new File("D:/eport/upload");
         if (!folderUpload.exists()) {
           folderUpload.mkdirs();
         }
