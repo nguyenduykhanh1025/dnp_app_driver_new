@@ -51,8 +51,7 @@ public class SysEDIController extends BaseController
     {
         return "edi/add";
     }
-	
-    @RequestMapping(value = "/file",method = { RequestMethod.POST })
+	@RequestMapping(value = "/file",method = { RequestMethod.POST })
 	public @ResponseBody Object upload(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
 		if (file.isEmpty()) {
 			System.out.println("File empty");
@@ -76,7 +75,7 @@ public class SysEDIController extends BaseController
 		return getSuccessMessage().toString();
     }
     public File getFolderUpload() {
-        File folderUpload = new File(System.getProperty("user.home") + "/edi");
+        File folderUpload = new File("D:/eport/upload");
         if (!folderUpload.exists()) {
           folderUpload.mkdirs();
         }
@@ -114,30 +113,34 @@ public class SysEDIController extends BaseController
     }
 
 
-    private boolean ReadEDI(String[] text)
+    private JSONObject ReadEDI(String[] text)
 	{
         SysEdi edi = new SysEdi();
-        ZoneId defaultZoneId = ZoneId.systemDefault();
+		ZoneId defaultZoneId = ZoneId.systemDefault();
+		JSONObject obj = new JSONObject();
 		for(String s : text)
 		{
 			//buildNo
 			if(s.contains("RFF+BM"))
 			{
 				int numberIndex = s.length();
-                s = s.substring(8, numberIndex);
+				s = s.substring(8, numberIndex);
+				obj.put("RFF+BM", s);
                 edi.setBuildNo(s);
 			}
 			//businessunit
 			if(s.contains("UNB+UNOA"))
 			{
-  				String[] businessUnit = s.split("\\+");
-                edi.setBusinessUnit(businessUnit[2]);		
+				String[] businessUnit = s.split("\\+");
+				obj.put("UNB+UNOA", businessUnit[2]);
+				edi.setBusinessUnit(businessUnit[2]);	
 			}
 			//ContNo
 			if(s.contains("EQD+CN"))
 			{
 			
 				String[] contNo = s.split("\\+");
+				obj.put("EQD+CN",contNo[2]);
                 edi.setContNo(contNo[2]);
 			}
 			//OrderNo
@@ -145,6 +148,7 @@ public class SysEDIController extends BaseController
 			{
 				int numberIndex = s.length();
 				s = s.substring(9, numberIndex);
+				obj.put("RFF+AAJ", s);
 				edi.setOrderNo(s);
 			}
 			//releaseTo
@@ -152,6 +156,7 @@ public class SysEDIController extends BaseController
 			{
 				String[] releaseTo = s.split("\\+");
 				releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length() - 1);
+				obj.put("NAD+BJ", releaseTo[3]);
                 edi.setReleaseTo(releaseTo[3]);
 			}
 			//validToDay
@@ -160,7 +165,8 @@ public class SysEDIController extends BaseController
 				String[] validToDay = s.split("\\:");
                 validToDay[1] = validToDay[1].substring(0, validToDay[1].length() - 4);
                 LocalDate date = LocalDate.parse(validToDay[1], DateTimeFormatter.BASIC_ISO_DATE);
-                Date date2 = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+				Date date2 = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+				obj.put("DTM+400", date2);
 				edi.setValidtoDay(date2);
 			}                                                                                                                                                                                                                                                                                                                                                                                           
 			//emptyContDepot
@@ -168,6 +174,7 @@ public class SysEDIController extends BaseController
 			{
 				String[] emptyContDepot = s.split("\\+");
 				emptyContDepot[3] = emptyContDepot[3].substring(0, emptyContDepot[3].length());
+				obj.put("LOC+99", emptyContDepot[3]);
                 edi.setEmptycontDepot(emptyContDepot[3]);		
 			}
 			if(s.contains("FTX+AAI"))
@@ -178,11 +185,12 @@ public class SysEDIController extends BaseController
                 if(!haulage[4].isEmpty()){
                     Long i = Long.parseLong(haulage[4]);
 					edi.setHaulage(i);
-				}  
+					obj.put("FTX+AAI", haulage[4]);
+				} 
 				sysEdiService.insertSysEdi(edi);    
 			}
         }
-		return true;
+		return obj;
 	}
     
 }

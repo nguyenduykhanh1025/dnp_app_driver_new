@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-	<th:block th:include="include :: header('分配角色选择用户')" />
+	<th:block th:include="include :: header('Assign roles to select users')" />
 </head>
 
 <body class="gray-bg">
@@ -13,14 +13,14 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								登录名称：<input type="text" name="loginName"/>
+								Login name:<input type="text" name="loginName"/>
 							</li>
 							<li>
-								手机号码：<input type="text" name="phonenumber"/>
+								Phone number:<input type="text" name="phonenumber"/>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
 							</li>
 						</ul>
 					</div>
@@ -49,7 +49,7 @@
 		        queryParams: queryParams,
 		        sortName: "createTime",
 		        sortOrder: "desc",
-		        modalName: "用户",
+		        modalName: "user",
 		        showSearch: false,
 		        showRefresh: false,
 		        showToggle: false,
@@ -62,29 +62,29 @@
 		        },
 		        {
 		            field: 'userId',
-		            title: '用户ID',
+		            title: 'Id',
 		            visible: false
 		        },
 		        {
 		            field: 'loginName',
-		            title: '登录名称',
+		            title: 'Login name',
 		            sortable: true
 		        },
 		        {
 		            field: 'userName',
-		            title: '用户名称'
+		            title: 'User name'
 		        },
 		        {
 		            field: 'email',
-		            title: '邮箱'
+		            title: 'Email'
 		        },
 		        {
 		            field: 'phonenumber',
-		            title: '手机'
+		            title: 'Phone'
 		        },
 		        {
 		        	field: 'status',
-		        	title: '用户状态',
+		        	title: 'Status',
 		        	align: 'center',
 		        	formatter: function (value, row, index) {
 		        		return $.table.selectDictLabel(datas, value);
@@ -92,7 +92,7 @@
 		        },
 		        {
 		            field: 'createTime',
-		            title: '创建时间',
+		            title: 'Created',
 		            sortable: true
 		        }]
 		    };
@@ -105,11 +105,11 @@
 			return search;
 		}
 		
-		/* 添加用户-选择用户-提交 */
+		/* Add User-Select User-Submit */
 		function submitHandler() {
 			var rows = $.table.selectFirstColumns();
 			if (rows.length == 0) {
-       			$.modal.alertWarning("请至少选择一条记录");
+       			$.modal.alertWarning("Please select at least one record");
        			return;
        		}
 			var data = { "roleId": $("#roleId").val(), "userIds": rows.join() };

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-	<th:block th:include="include :: header('菜单列表')" />
+	<th:block th:include="include :: header('Menu list')" />
 </head>
 <body class="gray-bg">
     <div class="container-div">
@@ -11,17 +11,17 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								菜单名称：<input type="text" name="menuName"/>
+								Menu name:<input type="text" name="menuName"/>
 							</li>
 							<li>
-								菜单状态：<select name="visible" th:with="type=${@dict.getType('sys_show_hide')}">
-									<option value="">所有</option>
+								Menu status：<select name="visible" th:with="type=${@dict.getType('sys_show_hide')}">
+									<option value="">All</option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.treeTable.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
-								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.treeTable.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
 							</li>
 						</ul>
 					</div>
@@ -30,13 +30,13 @@
                 
             <div class="btn-group-sm" id="toolbar" role="group">
 		        <a class="btn btn-success" onclick="$.operate.add(0)" shiro:hasPermission="system:menu:add">
-                    <i class="fa fa-plus"></i> 新增
+                    <i class="fa fa-plus"></i> Add
                 </a>
                 <a class="btn btn-primary" onclick="$.operate.edit()" shiro:hasPermission="system:menu:edit">
-		            <i class="fa fa-edit"></i> 修改
+		            <i class="fa fa-edit"></i> Edit
 		        </a>
                 <a class="btn btn-info" id="expandAllBtn">
-                    <i class="fa fa-exchange"></i> 展开/折叠
+                    <i class="fa fa-exchange"></i> Expand / collapse
                 </a>
 	        </div>
        		 <div class="col-sm-12 select-table table-striped">
@@ -64,13 +64,13 @@
 		        createUrl: prefix + "/add/{id}",
 		        updateUrl: prefix + "/edit/{id}",
 		        removeUrl: prefix + "/remove/{id}",
-		        modalName: "菜单",
+		        modalName: "Menu",
 		        columns: [{
                     field: 'selectItem', 
                     radio: true
                  },
                  {
-		            title: '菜单名称',
+		            title: 'Menu name',
 		            field: 'menuName',
 		            width: '20%',
 		            formatter: function(value, row, index) {
@@ -83,13 +83,13 @@
 		        },
 		        {
 		            field: 'orderNum',
-		            title: '排序',
+		            title: 'Sort',
 		            width: '10%',
 		            align: "left"
 		        },
 		        {
 		            field: 'url',
-		            title: '请求地址',
+		            title: 'Request address',
 		            width: '15%',
 		            align: "left",
 		            formatter: function(value, row, index) {
@@ -97,25 +97,25 @@
                     }
 		        },
 		        {
-		            title: '类型',
+		            title: 'Types of',
 		            field: 'menuType',
 		            width: '10%',
 		            align: "left",
 		            formatter: function(value, item, index) {
 		                if (item.menuType == 'M') {
-		                    return '<span class="label label-success">目录</span>';
+		                    return '<span class="label label-success">Table of Contents</span>';
 		                }
 		                else if (item.menuType == 'C') {
-		                    return '<span class="label label-primary">菜单</span>';
+		                    return '<span class="label label-primary">Menu</span>';
 		                }
 		                else if (item.menuType == 'F') {
-		                    return '<span class="label label-warning">按钮</span>';
+		                    return '<span class="label label-warning">Button</span>';
 		                }
 		            }
 		        },
 		        {
 		            field: 'visible',
-		            title: '可见',
+		            title: 'Visible',
 		            width: '10%',
 		            align: "left",
 		            formatter: function(value, row, index) {
@@ -127,7 +127,7 @@
 		        },
 		        {
 		            field: 'perms',
-		            title: '权限标识',
+		            title: 'Permission ID',
 		            width: '15%',
 		            align: "left",
 		            formatter: function(value, row, index) {
@@ -135,7 +135,7 @@
                     }
 		        },
 		        {
-		            title: '操作',
+		            title: 'Operating',
 		            width: '20%',
 		            align: "left",
 		            formatter: function(value, row, index) {
