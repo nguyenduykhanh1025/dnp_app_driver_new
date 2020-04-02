@@ -50,6 +50,11 @@ public class SysEDIController extends BaseController
     public String add()
     {
         return "edi/add";
+	}
+	@GetMapping("/hanson")
+    public String hanson()
+    {
+        return "edi/add";
     }
 	@RequestMapping(value = "/file",method = { RequestMethod.POST })
 	public @ResponseBody Object upload(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
@@ -102,7 +107,11 @@ public class SysEDIController extends BaseController
         List<SysEdi> list = sysEdiService.selectSysEdiList(sysEdi);
         return getDataTable(list);
 	}
-	
+	@GetMapping("/viewdatatestlist")
+	public String viewdatatestlist()
+	{
+		return ("/edi/viewdatatestlist");
+	}
 	@GetMapping("/datatestlist")
     @RequiresPermissions("system:edi:list")
     @ResponseBody
@@ -136,30 +145,30 @@ public class SysEDIController extends BaseController
 			{
 				int numberIndex = s.length();
 				s = s.substring(8, numberIndex);
-				obj.put("RFF+BM", s);
+				obj.put("buildNo", s);
                 edi.setBuildNo(s);
 			}
-			//businessunit
+			//businessUnit
 			if(s.contains("UNB+UNOA"))
 			{
 				String[] businessUnit = s.split("\\+");
-				obj.put("UNB+UNOA", businessUnit[2]);
+				obj.put("businessUnit", businessUnit[2]);
 				edi.setBusinessUnit(businessUnit[2]);	
 			}
-			//ContNo
+			//contNo
 			if(s.contains("EQD+CN"))
 			{
 			
 				String[] contNo = s.split("\\+");
-				obj.put("EQD+CN",contNo[2]);
+				obj.put("contNo",contNo[2]);
                 edi.setContNo(contNo[2]);
 			}
-			//OrderNo
+			//orderNo
 			if(s.contains("RFF+AAJ"))	
 			{
 				int numberIndex = s.length();
 				s = s.substring(9, numberIndex);
-				obj.put("RFF+AAJ", s);
+				obj.put("orderNo", s);
 				edi.setOrderNo(s);
 			}
 			//releaseTo
@@ -167,7 +176,7 @@ public class SysEDIController extends BaseController
 			{
 				String[] releaseTo = s.split("\\+");
 				releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length() - 1);
-				obj.put("NAD+BJ", releaseTo[3]);
+				obj.put("releaseTo", releaseTo[3]);
                 edi.setReleaseTo(releaseTo[3]);
 			}
 			//validToDay
@@ -177,7 +186,7 @@ public class SysEDIController extends BaseController
                 validToDay[1] = validToDay[1].substring(0, validToDay[1].length() - 4);
                 LocalDate date = LocalDate.parse(validToDay[1], DateTimeFormatter.BASIC_ISO_DATE);
 				Date date2 = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
-				obj.put("DTM+400", date2);
+				obj.put("validToDay", date2);
 				edi.setValidtoDay(date2);
 			}                                                                                                                                                                                                                                                                                                                                                                                           
 			//emptyContDepot
@@ -186,11 +195,12 @@ public class SysEDIController extends BaseController
 				String[] emptyContDepot = s.split("\\+");
 				if(emptyContDepot[3] != null){
 					emptyContDepot[3] = emptyContDepot[3].substring(0, emptyContDepot[3].length());
-				obj.put("LOC+99", emptyContDepot[3]);
+				obj.put("emptyContDepot", emptyContDepot[3]);
                 edi.setEmptycontDepot(emptyContDepot[3]);
 				}
 						
 			}
+			//haulage
 			if(s.contains("FTX+AAI"))
 			{
 				String[] haulage = s.split("\\+");
@@ -199,7 +209,7 @@ public class SysEDIController extends BaseController
                 if(!haulage[4].isEmpty()){
                     Long i = Long.parseLong(haulage[4]);
 					edi.setHaulage(i);
-					obj.put("FTX+AAI", haulage[4]);
+					obj.put("haulage", haulage[4]);
 				} 
 				sysEdiService.insertSysEdi(edi);    
 			}
