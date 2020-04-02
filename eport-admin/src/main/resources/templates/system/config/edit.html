@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-	<th:block th:include="include :: header('修改参数')" />
+	<th:block th:include="include :: header('Change parameters')" />
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-config-edit" th:object="${config}">
             <input id="configId" name="configId" th:field="*{configId}"  type="hidden">
             <div class="form-group">	
-                <label class="col-sm-3 control-label is-required">参数名称：</label>
+                <label class="col-sm-3 control-label is-required">Parameter name：</label>
                 <div class="col-sm-8">
                     <input id="configName" name="configName" th:field="*{configName}" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group">	
-                <label class="col-sm-3 control-label is-required">参数键名：</label>
+                <label class="col-sm-3 control-label is-required">Parameter key name：</label>
                 <div class="col-sm-8">
                     <input id="configKey" name="configKey" th:field="*{configKey}" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group">	
-                <label class="col-sm-3 control-label is-required">参数键值：</label>
+                <label class="col-sm-3 control-label is-required">Parameter key：</label>
                 <div class="col-sm-8">
                     <input id="configValue" name="configValue" th:field="*{configValue}" class="form-control" type="text" required>
                 </div>
             </div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">系统内置：</label>
+				<label class="col-sm-3 control-label">Built-in system：</label>
 				<div class="col-sm-8">
 				    <div class="radio-box" th:each="dict : ${@dict.getType('sys_yes_no')}">
 						<input type="radio" th:id="${dict.dictCode}" name="configType" th:value="${dict.dictValue}" th:field="*{configType}">
@@ -35,7 +35,7 @@
 				</div>
 			</div>
 			<div class="form-group">	
-	            <label class="col-sm-3 control-label">备注：</label>
+	            <label class="col-sm-3 control-label">Note：</label>
 	            <div class="col-sm-8">
 	                <textarea id="remark" name="remark" class="form-control">[[*{remark}]]</textarea>
 	            </div>
@@ -70,7 +70,7 @@
 	        },
 	        messages: {
 	            "configKey": {
-	                remote: "参数键名已经存在"
+	                remote: "Parameter key name already exists"
 	            }
 	        },
 	        focusCleanup: true

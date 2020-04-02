@@ -279,18 +279,18 @@ public class DemoOperateController extends BaseController
                     user.setUserId(userId);
                     users.put(userId, user);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、用户 " + user.getUserName() + " 导入成功");
+                    successMsg.append("<br/>" + successNum + "、người dùng" + user.getUserName() + " 导入成功");
                 }
                 else if (isUpdateSupport)
                 {
                     users.put(user.getUserId(), user);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、用户 " + user.getUserName() + " 更新成功");
+                    successMsg.append("<br/>" + successNum + "、người dùng  " + user.getUserName() + " 更新成功");
                 }
                 else
                 {
                     failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、用户 " + user.getUserName() + " 已存在");
+                    failureMsg.append("<br/>" + failureNum + "、người dùng " + user.getUserName() + " 已存在");
                 }
             }
             catch (Exception e)

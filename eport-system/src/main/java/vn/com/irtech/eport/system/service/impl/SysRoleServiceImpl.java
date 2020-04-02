@@ -154,7 +154,7 @@ public class SysRoleServiceImpl implements ISysRoleService
             SysRole role = selectRoleById(roleId);
             if (countUserRoleByRoleId(roleId) > 0)
             {
-                throw new BusinessException(String.format("%1$s已分配,不能删除", role.getRoleName()));
+                throw new BusinessException(String.format("%1$sAssigned and cannot be deleted", role.getRoleName()));
             }
         }
         return roleMapper.deleteRoleByIds(roleIds);
@@ -303,7 +303,7 @@ public class SysRoleServiceImpl implements ISysRoleService
     {
         if (StringUtils.isNotNull(role.getRoleId()) && role.isAdmin())
         {
-            throw new BusinessException("不允许操作超级管理员角色");
+            throw new BusinessException("Operation of super administrator role is not allowed");
         }
     }
 

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-	<th:block th:include="include :: header('用户分配角色')" />
+	<th:block th:include="include :: header('User-assigned roles')" />
 </head>
 <body>
     <div class="main-content">
         <form id="form-user-add" class="form-horizontal">
             <input type="hidden" id="userId" name="userId" th:value="${user.userId}">
-            <h4 class="form-header h4">基本信息</h4>
+            <h4 class="form-header h4">Basic Information</h4>
             <div class="row">
             	<div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">用户名称：</label>
+                        <label class="col-sm-4 control-label is-required">User name：</label>
                         <div class="col-sm-8">
                             <input name="userName" class="form-control" type="text" disabled th:value="${user.userName}">
                         </div>
@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">登录账号：</label>
+                        <label class="col-sm-4 control-label is-required">Login account:</label>
                         <div class="col-sm-8">
                             <input name="loginName" class="form-control" type="text" disabled th:value="${user.loginName}">
                         </div>
@@ -27,7 +27,7 @@
                 </div> 
             </div>
            
-            <h4 class="form-header h4">分配角色</h4>
+            <h4 class="form-header h4">Assigning Roles</h4>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="col-sm-12 select-table table-striped">
@@ -40,8 +40,8 @@
       
     <div class="row">
         <div class="col-sm-offset-5 col-sm-10">
-            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
-            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>Save</button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down </button>
         </div>
     </div>
 	<th:block th:include="include :: footer" />
@@ -71,28 +71,28 @@
 		        },
 		        {
 		            field: 'roleId',
-		            title: '角色编号'
+		            title: 'Id'
 		        },
 		        {
 		            field: 'roleName',
-		            title: '角色名称',
+		            title: 'Role Name',
 		            sortable: true
 		        },
 		        {
 		            field: 'roleKey',
-		            title: '权限字符',
+		            title: 'Permission character',
 		            sortable: true
 		        },
 		        {
 		            field: 'createTime',
-		            title: '创建时间',
+		            title: 'Creation time',
 		            sortable: true
 		        }]
 		    };
 		    $.table.init(options);
 		});
 	    
-	    /* 添加角色-提交 */
+	    /* Add role-submit */
         function submitHandler(index, layero){
         	var rows = $.table.selectFirstColumns();
         	var data = { "userId": $("#userId").val(), "roleIds": rows.join() };

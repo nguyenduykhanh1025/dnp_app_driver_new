@@ -385,7 +385,7 @@ public class SysUserServiceImpl implements ISysUserService
     {
         if (StringUtils.isNotNull(user.getUserId()) && user.isAdmin())
         {
-            throw new BusinessException("不允许操作超级管理员用户");
+            throw new BusinessException("Operation of super administrator user is not allowed");
         }
     }
 
@@ -446,7 +446,7 @@ public class SysUserServiceImpl implements ISysUserService
     {
         if (StringUtils.isNull(userList) || userList.size() == 0)
         {
-            throw new BusinessException("导入用户数据不能为空！");
+            throw new BusinessException("Import user data cannot be empty!");
         }
         int successNum = 0;
         int failureNum = 0;
@@ -465,37 +465,37 @@ public class SysUserServiceImpl implements ISysUserService
                     user.setCreateBy(operName);
                     this.insertUser(user);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、账号 " + user.getLoginName() + " 导入成功");
+                    successMsg.append("<br/>" + successNum + ", Import " + user.getLoginName() + " success");
                 }
                 else if (isUpdateSupport)
                 {
                     user.setUpdateBy(operName);
                     this.updateUser(user);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、账号 " + user.getLoginName() + " 更新成功");
+                    successMsg.append("<br/>" + successNum + ", Update " + user.getLoginName() + "  success");
                 }
                 else
                 {
                     failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、账号 " + user.getLoginName() + " 已存在");
+                    failureMsg.append("<br/>" + failureNum + ", User " + user.getLoginName() + " exist");
                 }
             }
             catch (Exception e)
             {
                 failureNum++;
-                String msg = "<br/>" + failureNum + "、账号 " + user.getLoginName() + " 导入失败：";
+                String msg = "<br/>" + failureNum + ", Import  " + user.getLoginName() + " failed";
                 failureMsg.append(msg + e.getMessage());
                 log.error(msg, e);
             }
         }
         if (failureNum > 0)
         {
-            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+            failureMsg.insert(0, "Sorry, the import failed! " + failureNum + " records, the data format is incorrect. The errors are as follows:");
             throw new BusinessException(failureMsg.toString());
         }
         else
         {
-            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+            successMsg.insert(0, "Congratulations, all the data has been successfully imported (" + successNum + " records )!, Data are as follows:");
         }
         return successMsg.toString();
     }
