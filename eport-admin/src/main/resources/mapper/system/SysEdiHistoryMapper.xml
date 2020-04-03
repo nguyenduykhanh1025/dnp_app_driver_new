@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.system.mapper.SysEdiHistoryMapper">
+    
+    <resultMap type="SysEdiHistory" id="SysEdiHistoryResult">
+        <result property="ediId"    column="edi_id"    />
+        <result property="validtoDay"    column="validto_day"    />
+        <result property="emptycontDepot"    column="emptycont_depot"    />
+        <result property="haulage"    column="haulage"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysEdiHistoryVo">
+        select edi_id, validto_day, emptycont_depot, haulage, update_by, update_time from sys_edi_history
+    </sql>
+
+    <select id="selectSysEdiHistoryList" parameterType="SysEdiHistory" resultMap="SysEdiHistoryResult">
+        <include refid="selectSysEdiHistoryVo"/>
+        <where>  
+            <if test="ediId != null "> and edi_id = #{ediId}</if>
+            <if test="validtoDay != null "> and validto_day = #{validtoDay}</if>
+            <if test="emptycontDepot != null  and emptycontDepot != ''"> and emptycont_depot = #{emptycontDepot}</if>
+            <if test="haulage != null "> and haulage = #{haulage}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysEdiHistoryById" parameterType="Long" resultMap="SysEdiHistoryResult">
+        <include refid="selectSysEdiHistoryVo"/>
+        where edi_id = #{ediId}
+    </select>
+        
+    <insert id="insertSysEdiHistory" parameterType="SysEdiHistory">
+        insert into sys_edi_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ediId != null ">edi_id,</if>
+            <if test="validtoDay != null ">validto_day,</if>
+            <if test="emptycontDepot != null  and emptycontDepot != ''">emptycont_depot,</if>
+            <if test="haulage != null ">haulage,</if>
+            <if test="updateBy != null ">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ediId != null ">#{ediId},</if>
+            <if test="validtoDay != null ">#{validtoDay},</if>
+            <if test="emptycontDepot != null  and emptycontDepot != ''">#{emptycontDepot},</if>
+            <if test="haulage != null ">#{haulage},</if>
+            <if test="updateBy != null ">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysEdiHistory" parameterType="SysEdiHistory">
+        update sys_edi_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="validtoDay != null ">validto_day = #{validtoDay},</if>
+            <if test="emptycontDepot != null  and emptycontDepot != ''">emptycont_depot = #{emptycontDepot},</if>
+            <if test="haulage != null ">haulage = #{haulage},</if>
+            <if test="updateBy != null ">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where edi_id = #{ediId}
+    </update>
+
+    <delete id="deleteSysEdiHistoryById" parameterType="Long">
+        delete from sys_edi_history where edi_id = #{ediId}
+    </delete>
+
+    <delete id="deleteSysEdiHistoryByIds" parameterType="String">
+        delete from sys_edi_history where edi_id in 
+        <foreach item="ediId" collection="array" open="(" separator="," close=")">
+            #{ediId}
+        </foreach>
+    </delete>
+    
+</mapper>

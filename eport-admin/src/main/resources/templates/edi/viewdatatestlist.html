@@ -13,14 +13,12 @@
     var rs;
     $.ajax({
     url: "datalist",
-    method: 'post'
+     method: 'post'
     }).done(function(data) {
         rs = data;
-    });
-        
         var container = document.getElementById('viewEdi');
                 var hot = new Handsontable(container, {
-                data: rs,
+                data: rs.rows,
                             columns: [
                               {
                                 data: 'contNo',
@@ -75,6 +73,7 @@
                 hiddenColumns: true
               
 });
+    });
 </script>
 </body>
 </html>

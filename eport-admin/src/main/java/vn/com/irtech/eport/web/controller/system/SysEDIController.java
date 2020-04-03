@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.alibaba.fastjson.JSONObject;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.alibaba.fastjson.JSONObject;
 
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -62,7 +63,7 @@ public class SysEDIController extends BaseController
 			System.out.println("File empty");
         }
 		String data = "";
-		JSONObject obj = new JSONObject();
+		List<JSONObject> obj = new ArrayList<>();
 		try {
 			  String fileName = file.getOriginalFilename();
 		      File filenew = new File(this.getFolderUpload(), fileName);
@@ -133,14 +134,16 @@ public class SysEDIController extends BaseController
     }
 
 
-    private JSONObject ReadEDI(String[] text)
+    private List<JSONObject> ReadEDI(String[] text)
 	{
         SysEdi edi = new SysEdi();
 		ZoneId defaultZoneId = ZoneId.systemDefault();
 		JSONObject obj = new JSONObject();
+		List<JSONObject> listObj = new ArrayList<>();
 		for(String s : text)
 		{
 			//buildNo
+			
 			if(s.contains("RFF+BM"))
 			{
 				int numberIndex = s.length();
@@ -210,11 +213,14 @@ public class SysEDIController extends BaseController
                     Long i = Long.parseLong(haulage[4]);
 					edi.setHaulage(i);
 					obj.put("haulage", haulage[4]);
-				} 
-				sysEdiService.insertSysEdi(edi);    
+				}
+				// edi.setStatus(2);
+				sysEdiService.insertSysEdi(edi);  
+				listObj.add(obj);
+				obj = new JSONObject();
 			}
         }
-		return obj;
+		return listObj;
 	}
     
 }

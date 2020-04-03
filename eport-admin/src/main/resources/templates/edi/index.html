@@ -32,7 +32,8 @@
     <div id="viewEdi"></div>
 
 	<script>
-    
+    var statusTable = false;
+    var dataObj;
 		var myAvatarzone = new Dropzone("#bannarzone", {
         url: "/edi/file",//文件提交地址
         method: "post",  //也可用put
@@ -43,7 +44,7 @@
         addRemoveLinks: true,
 //        parallelUploads: 1,//一次上传的文件数量
         //previewsContainer:"#preview",//上传图片的预览窗口
-        dictDefaultMessage: 'KÉO FILE VÀO ĐÂY ĐỂ INPORT',
+        dictDefaultMessage: 'KÉO THẢ FILE, HOẶC NHẤP VÀO ĐÂY ĐỂ NHẬP EDI',
         dictMaxFilesExceeded: "您最多只能上传1个文件！",
         dictResponseError: 'Upload error!',
         dictInvalidFileType: "Invalid EDI file. Please upload txt file only.",
@@ -57,12 +58,17 @@
             });
             this.on("success", function (data) {
                 if (data != "") {
-					         var rs = JSON.parse( data.xhr.response);
+                   var rs = JSON.parse( data.xhr.response);
+                   dataObj = rs;
                 }
-                console.log(rs);
+                if(statusTable == true)
+                {
+                   
+                   return;
+                }
                 var container = document.getElementById('viewEdi');
                 var hot = new Handsontable(container, {
-                data: rs,
+                data: dataObj,
                             columns: [
                               {
                                 data: 'contNo',
@@ -116,8 +122,8 @@
                 collapsibleColumns: true,
                 hiddenColumns: true
               });
+              statusTable = true;
             });
-            
             this.on("error", function (file, data) {
 				
 				console.log("error", data, file);

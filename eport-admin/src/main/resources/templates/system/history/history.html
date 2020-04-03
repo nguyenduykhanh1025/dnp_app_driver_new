@@ -12,27 +12,7 @@
                         <ul>
                             <li>
                                 <label>${comment}：</label>
-                                <input type="text" name="userId"/>
-                            </li>
-                            <li>
-                                <label>${comment}：</label>
-                                <input type="text" name="buildNo"/>
-                            </li>
-                            <li>
-                                <label>${comment}：</label>
-                                <input type="text" name="businessUnit"/>
-                            </li>
-                            <li>
-                                <label>${comment}：</label>
-                                <input type="text" name="contNo"/>
-                            </li>
-                            <li>
-                                <label>${comment}：</label>
-                                <input type="text" name="orderNo"/>
-                            </li>
-                            <li>
-                                <label>${comment}：</label>
-                                <input type="text" name="releaseTo"/>
+                                <input type="text" name="ediId"/>
                             </li>
                             <li class="select-time">
                                 <label>${comment}：</label>
@@ -49,12 +29,6 @@
                                 <input type="text" name="haulage"/>
                             </li>
                             <li>
-                                <label>${comment}：</label>
-                                <select name="status">
-                                    <option value="">All</option>
-                                </select>
-                            </li>
-                            <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
                             </li>
@@ -64,16 +38,16 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:edi:add">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:history:add">
                     <i class="fa fa-plus"></i> Add
                 </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:edi:edit">
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:history:edit">
                     <i class="fa fa-edit"></i> Edit
                 </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:edi:remove">
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:history:remove">
                     <i class="fa fa-remove"></i> Delete
                 </a>
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:edi:export">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:history:export">
                     <i class="fa fa-download"></i> Export
                 </a>
             </div>
@@ -84,9 +58,9 @@
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('system:edi:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('system:edi:remove')}]];
-        var prefix = ctx + "system/edi";
+        var editFlag = [[${@permission.hasPermi('system:history:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('system:history:remove')}]];
+        var prefix = ctx + "system/history";
 
         $(function() {
             var options = {
@@ -101,31 +75,6 @@
                 },
                 {
                     field: 'ediId', 
-                    title: '${comment}',
-                    visible: false
-                },
-                {
-                    field: 'userId', 
-                    title: '${comment}'
-                },
-                {
-                    field: 'buildNo', 
-                    title: '${comment}'
-                },
-                {
-                    field: 'businessUnit', 
-                    title: '${comment}'
-                },
-                {
-                    field: 'contNo', 
-                    title: '${comment}'
-                },
-                {
-                    field: 'orderNo', 
-                    title: '${comment}'
-                },
-                {
-                    field: 'releaseTo', 
                     title: '${comment}'
                 },
                 {
@@ -138,10 +87,6 @@
                 },
                 {
                     field: 'haulage', 
-                    title: '${comment}'
-                },
-                {
-                    field: 'status', 
                     title: '${comment}'
                 },
                 {
