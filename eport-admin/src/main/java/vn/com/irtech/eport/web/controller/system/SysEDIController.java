@@ -147,59 +147,78 @@ public class SysEDIController extends BaseController
 			if(s.contains("RFF+BM"))
 			{
 				int numberIndex = s.length();
-				s = s.substring(8, numberIndex);
-				obj.put("buildNo", s);
-                edi.setBuildNo(s);
+				if(!s.isEmpty())
+				{
+					s = s.substring(8, numberIndex);
+					obj.put("buildNo", s);
+					edi.setBuildNo(s);
+				}
 			}
 			//businessUnit
 			if(s.contains("UNB+UNOA"))
 			{
 				String[] businessUnit = s.split("\\+");
-				obj.put("businessUnit", businessUnit[2]);
-				edi.setBusinessUnit(businessUnit[2]);	
+				if(!s.isEmpty())
+				{
+					obj.put("businessUnit", businessUnit[2]);
+					edi.setBusinessUnit(businessUnit[2]);
+				}
 			}
 			//contNo
 			if(s.contains("EQD+CN"))
 			{
 			
 				String[] contNo = s.split("\\+");
-				obj.put("contNo",contNo[2]);
-                edi.setContNo(contNo[2]);
+				if(!s.isEmpty())
+				{
+					obj.put("contNo",contNo[2]);
+                	edi.setContNo(contNo[2]);
+				}
+				
 			}
 			//orderNo
 			if(s.contains("RFF+AAJ"))	
 			{
 				int numberIndex = s.length();
-				s = s.substring(9, numberIndex);
-				obj.put("orderNo", s);
-				edi.setOrderNo(s);
+				if(!s.isEmpty())
+				{
+					s = s.substring(8, numberIndex);
+					obj.put("orderNo", s);
+					edi.setOrderNo(s);
+				}
 			}
 			//releaseTo
 			if(s.contains("NAD+BJ"))
 			{
 				String[] releaseTo = s.split("\\+");
-				releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length() - 1);
-				obj.put("releaseTo", releaseTo[3]);
-                edi.setReleaseTo(releaseTo[3]);
+				if(!releaseTo[3].isEmpty())
+				{
+					releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length() - 1);
+					obj.put("releaseTo", releaseTo[3]);
+					edi.setReleaseTo(releaseTo[3]);
+				}
 			}
 			//validToDay
 			if(s.contains("DTM+400"))
 			{
 				String[] validToDay = s.split("\\:");
-                validToDay[1] = validToDay[1].substring(0, validToDay[1].length() - 4);
-                LocalDate date = LocalDate.parse(validToDay[1], DateTimeFormatter.BASIC_ISO_DATE);
-				Date date2 = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
-				obj.put("validToDay", date2);
-				edi.setValidtoDay(date2);
+				if(!validToDay[1].isEmpty())
+				{
+					validToDay[1] = validToDay[1].substring(0, validToDay[1].length() - 4);
+					LocalDate date = LocalDate.parse(validToDay[1], DateTimeFormatter.BASIC_ISO_DATE);
+					Date date2 = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+					obj.put("validToDay", date2);
+					edi.setValidtoDay(date2);
+				}
 			}                                                                                                                                                                                                                                                                                                                                                                                           
 			//emptyContDepot
 			if(s.contains("LOC+99"))
 			{
-				String[] emptyContDepot = s.split("\\+");
-				if(emptyContDepot[3] != null){
-					emptyContDepot[3] = emptyContDepot[3].substring(0, emptyContDepot[3].length());
-				obj.put("emptyContDepot", emptyContDepot[3]);
-                edi.setEmptycontDepot(emptyContDepot[3]);
+				String[] emptyContDepotA = s.split("\\+");
+				if(!emptyContDepotA[3].isEmpty()){
+					String[] emptyContDepot = emptyContDepotA[3].split(":");
+					obj.put("emptyContDepot", emptyContDepot[0]);
+					edi.setEmptycontDepot(emptyContDepot[0]);
 				}
 						
 			}

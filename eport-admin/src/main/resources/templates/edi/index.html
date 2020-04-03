@@ -1,141 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>File Upload</title>
-<script th:src="@{/js/jquery.min.js}"></script>
-<script th:src="@{/js/bootstrap.min.js}"></script>
-<script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
-<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
-<link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet"/>
-<script th:src="@{/ajax/libs/handsontable/handsontable.full.min.js}"></script>
-<link th:href="@{/ajax/libs/handsontable/handsontable.full.min.css}" rel="stylesheet" media="screen"/>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>File Upload</title>
+  <script th:src="@{/js/jquery.min.js}"></script>
+  <script th:src="@{/js/bootstrap.min.js}"></script>
+  <script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet" />
+  <script th:src="@{/ajax/libs/handsontable/handsontable.full.min.js}"></script>
+  <link th:href="@{/ajax/libs/handsontable/handsontable.full.min.css}" rel="stylesheet" media="screen" />
 
 </head>
-<body>
-	<div class="container-fluid">
-		<div class="panel panel-default" id="fileupload_main_panel">
-			<div class="panel-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div id="bannarzone" class="dropzone" style="min-height: 120px"></div>
-						<!--<form enctype="multipart/form-data" action="/edi/file" method="POST" id="ediDrop">
-						</form>-->
-					</div>
-				</div>
-			</div>
-		</div>
-    </div>
-    <li><a class="menuItem" th:href="@{/edi/viewdatatestlist}">Test data return</a></li>
-    <div id="viewEdi"></div>
 
-	<script>
+<body>
+  <div class="container-fluid">
+    <div class="panel panel-default" id="fileupload_main_panel">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div id="bannarzone" class="dropzone" style="min-height: 120px"></div>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <li><a class="menuItem" th:href="@{/edi/viewdatatestlist}">Test data return</a></li>
+  <div id="viewEdi"></div>
+
+  <script>
+    var hot;
     var statusTable = false;
     var dataObj;
-		var myAvatarzone = new Dropzone("#bannarzone", {
-        url: "/edi/file",//文件提交地址
-        method: "post",  //也可用put
-        paramName: "file", //默认为file
-//        maxFiles: 1,//一次性上传的文件数量上限
-//        maxFilesize: 2, //文件大小，单位：MB
-        acceptedFiles: ".txt", //上传的类型
-        addRemoveLinks: true,
-//        parallelUploads: 1,//一次上传的文件数量
-        //previewsContainer:"#preview",//上传图片的预览窗口
-        dictDefaultMessage: 'KÉO THẢ FILE, HOẶC NHẤP VÀO ĐÂY ĐỂ NHẬP EDI',
-        dictMaxFilesExceeded: "您最多只能上传1个文件！",
-        dictResponseError: 'Upload error!',
-        dictInvalidFileType: "Invalid EDI file. Please upload txt file only.",
-        // dictFallbackMessage: "浏览器不受支持",
-        // dictFileTooBig: "文件过大上传文件最大支持.",
-        // dictRemoveLinks: "删除",
-        // dictCancelUpload: "取消",
-        init: function () {
-            this.on("addedfile", function (file) {
+    var myAvatarzone = new Dropzone("#bannarzone", {
+      url: "/edi/file",
+      method: "post", 
+      paramName: "file", 
+      maxFiles: 5,
+      maxFilesize: 2, //MB
+      acceptedFiles: ".txt",
+      addRemoveLinks: true,
+      //parallelUploads: 1,//Maxfile upload
+      //previewsContainer:"#viewEdi",// previews Content
+      dictDefaultMessage: 'KÉO THẢ FILE, HOẶC NHẤP VÀO ĐÂY ĐỂ NHẬP EDI',
+     // dictMaxFilesExceeded: "You can upload only one!",
+      dictResponseError: 'Upload error!',
+      dictInvalidFileType: "Invalid EDI file. Please upload txt file only.",
+      // dictFallbackMessage: "Browser not support",
+      dictFileTooBig: "File max size!",
+      init: function () {
+        this.on("addedfile", function (file) {
 
-            });
-            this.on("success", function (data) {
-                if (data != "") {
-                   var rs = JSON.parse( data.xhr.response);
-                   dataObj = rs;
-                }
-                if(statusTable == true)
-                {
-                   
-                   return;
-                }
-                var container = document.getElementById('viewEdi');
-                var hot = new Handsontable(container, {
-                data: dataObj,
-                            columns: [
-                              {
-                                data: 'contNo',
-                                type: 'text'
-                              },
-                              {
-                                data: 'buildNo',
-                                type: 'text'
-                              },
-                              {
-                                data: 'businessUnit',
-                                type: 'text'
-                              },
-                              {
-                                data: 'orderNo',
-                                type: 'text'
-                              },
-                              {
-                                data: 'releaseTo',
-                                type: 'text'
-                              },
-                              {
-                                data: 'validToDay',
-                                type: 'date',
-                                dateFormat: 'MM/DD/YYYY'
-                              },
-                              {
-                                data: 'emptyContDepot',
-                                type: 'text'
-                              },
-                              {
-                                data: 'haulage',
-                                type: 'numeric',
-                              }
-                            ],
-                rowHeaders: true,
-                colHeaders: [
-                  'Số Cont',
-                  'Số Bill',
-                  'Chủ khai thác',
-                  'Order Number',
-                  'Người nhận hàng',
-                  'Ngày hết hạn lưu cont',
-                  'Nơi hạ rỗng',
-                  'Số ngày miễn lưu vỏ'
-                ],
-                filters: true,
-                dropdownMenu: true,
-                mergeCells: true,
-                contextMenu: true,
-                collapsibleColumns: true,
-                hiddenColumns: true
-              });
-              statusTable = true;
-            });
-            this.on("error", function (file, data) {
-				
-				console.log("error", data, file);
-            });
-            this.on("removedfile", function (file) {//删除文件触发结果
+        });
+        this.on("success", function (data) {
+          if (data != "") {
+            var rs = JSON.parse(data.xhr.response);
+            if (dataObj == null) {
+              dataObj = rs;
+              console.log(dataObj);
+            }else {
+              dataObj.push(rs);
+            }
 
-            });
-        }
+          }
+            
+            if(statusTable == true)
+            {
+              console.log(dataObj);
+              // hot.loadData(dataObj);
+              hot.render();
+              return;
+            }
+            loadView();
+          // statusTable = true;
+          // console.log(statusTable);
+        });
+        this.on("error", function (file, data) {
+
+          console.log("error", data, file);
+        });
+        this.on("removedfile", function (file) { //删除文件触发结果
+
+        });
+      }
     });
   </script>
   <script>
-  
+    function loadView()
+    {
+         var container = document.getElementById('viewEdi');
+            hot = new Handsontable(container, {
+            data: dataObj,
+            columns: [{
+                data: 'contNo',
+                type: 'text'
+              },
+              {
+                data: 'buildNo',
+                type: 'text'
+              },
+              {
+                data: 'businessUnit',
+                type: 'text'
+              },
+              {
+                data: 'orderNo',
+                type: 'text'
+              },
+              {
+                data: 'releaseTo',
+                type: 'text'
+              },
+              {
+                data: 'validToDay',
+                type: 'date',
+                dateFormat: 'MM/DD/YYYY'
+              },
+              {
+                data: 'emptyContDepot',
+                type: 'text'
+              },
+              {
+                data: 'haulage',
+                type: 'numeric',
+              }
+            ],
+            rowHeaders: true,
+            colHeaders: [
+              'Số Cont',
+              'Số Bill',
+              'Chủ khai thác',
+              'Order Number',
+              'Người nhận hàng',
+              'Ngày hết hạn lưu cont',
+              'Nơi hạ rỗng',
+              'Số ngày miễn lưu vỏ'
+            ],
+            
+            // contextMenu: ['row_below'],
+            // filters: true,
+            // dropdownMenu: true,
+            // mergeCells: true,
+            // contextMenu: true,
+            // collapsibleColumns: true,
+            // hiddenColumns: true
+            
+          });
+          statusTable = true;
+        }
   </script>
 </body>
+
 </html>
