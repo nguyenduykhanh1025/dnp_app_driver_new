@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.system.domain.SysEdi;
-import vn.com.irtech.eport.system.service.ISysEdiService;
+import vn.com.irtech.eport.system.domain.SysEdiHistory;
+import vn.com.irtech.eport.system.service.ISysEdiHistoryService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
@@ -26,46 +26,46 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
  * @date 2020-04-03
  */
 @Controller
-@RequestMapping("/system/edi")
-public class SysEdiController extends BaseController
+@RequestMapping("/system/history")
+public class SysEdiHistoryController extends BaseController
 {
-    private String prefix = "system/edi";
+    private String prefix = "system/history";
 
     @Autowired
-    private ISysEdiService sysEdiService;
+    private ISysEdiHistoryService sysEdiHistoryService;
 
-    @RequiresPermissions("system:edi:view")
+    @RequiresPermissions("system:history:view")
     @GetMapping()
-    public String edi()
+    public String history()
     {
-        return prefix + "/edi";
+        return prefix + "/history";
     }
 
     /**
      * Get 【请填写功能名称】 List
      */
-    @RequiresPermissions("system:edi:list")
+    @RequiresPermissions("system:history:list")
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(SysEdi sysEdi)
+    public TableDataInfo list(SysEdiHistory sysEdiHistory)
     {
         startPage();
-        List<SysEdi> list = sysEdiService.selectSysEdiList(sysEdi);
+        List<SysEdiHistory> list = sysEdiHistoryService.selectSysEdiHistoryList(sysEdiHistory);
         return getDataTable(list);
     }
 
     /**
      * Export 【请填写功能名称】 List
      */
-    @RequiresPermissions("system:edi:export")
+    @RequiresPermissions("system:history:export")
     @Log(title = "【请填写功能名称】", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(SysEdi sysEdi)
+    public AjaxResult export(SysEdiHistory sysEdiHistory)
     {
-        List<SysEdi> list = sysEdiService.selectSysEdiList(sysEdi);
-        ExcelUtil<SysEdi> util = new ExcelUtil<SysEdi>(SysEdi.class);
-        return util.exportExcel(list, "edi");
+        List<SysEdiHistory> list = sysEdiHistoryService.selectSysEdiHistoryList(sysEdiHistory);
+        ExcelUtil<SysEdiHistory> util = new ExcelUtil<SysEdiHistory>(SysEdiHistory.class);
+        return util.exportExcel(list, "history");
     }
 
     /**
@@ -80,13 +80,13 @@ public class SysEdiController extends BaseController
     /**
      * Add or Update 【请填写功能名称】
      */
-    @RequiresPermissions("system:edi:add")
+    @RequiresPermissions("system:history:add")
     @Log(title = "【请填写功能名称】", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(SysEdi sysEdi)
+    public AjaxResult addSave(SysEdiHistory sysEdiHistory)
     {
-        return toAjax(sysEdiService.insertSysEdi(sysEdi));
+        return toAjax(sysEdiHistoryService.insertSysEdiHistory(sysEdiHistory));
     }
 
     /**
@@ -95,32 +95,32 @@ public class SysEdiController extends BaseController
     @GetMapping("/edit/{ediId}")
     public String edit(@PathVariable("ediId") Long ediId, ModelMap mmap)
     {
-        SysEdi sysEdi = sysEdiService.selectSysEdiById(ediId);
-        mmap.put("sysEdi", sysEdi);
+        SysEdiHistory sysEdiHistory = sysEdiHistoryService.selectSysEdiHistoryById(ediId);
+        mmap.put("sysEdiHistory", sysEdiHistory);
         return prefix + "/edit";
     }
 
     /**
      * Update Save 【请填写功能名称】
      */
-    @RequiresPermissions("system:edi:edit")
+    @RequiresPermissions("system:history:edit")
     @Log(title = "【请填写功能名称】", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(SysEdi sysEdi)
+    public AjaxResult editSave(SysEdiHistory sysEdiHistory)
     {
-        return toAjax(sysEdiService.updateSysEdi(sysEdi));
+        return toAjax(sysEdiHistoryService.updateSysEdiHistory(sysEdiHistory));
     }
 
     /**
      * Delete 【请填写功能名称】
      */
-    @RequiresPermissions("system:edi:remove")
+    @RequiresPermissions("system:history:remove")
     @Log(title = "【请填写功能名称】", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        return toAjax(sysEdiService.deleteSysEdiByIds(ids));
+        return toAjax(sysEdiHistoryService.deleteSysEdiHistoryByIds(ids));
     }
 }
