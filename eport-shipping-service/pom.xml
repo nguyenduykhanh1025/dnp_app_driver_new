@@ -19,7 +19,7 @@
     
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-common</artifactId>
+            <artifactId>eport-system</artifactId>
         </dependency>
         
     </dependencies>

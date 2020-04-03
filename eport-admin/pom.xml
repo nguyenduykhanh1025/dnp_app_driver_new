@@ -55,6 +55,10 @@
             <artifactId>eport-framework</artifactId>
         </dependency>
         
+        <dependency>
+            <groupId>vn.com.irtech.eport</groupId>
+            <artifactId>eport-shipping-admin</artifactId>
+        </dependency>
 <!--         <dependency> -->
 <!--             <groupId>vn.com.irtech.eport</groupId> -->
 <!--             <artifactId>eport-quartz</artifactId> -->
