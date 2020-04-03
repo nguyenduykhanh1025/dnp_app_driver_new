@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<script th:src="@{/ajax/libs/handsontable/handsontable.full.min.js}"></script>
+<link th:href="@{/ajax/libs/handsontable/handsontable.full.min.css}" rel="stylesheet" media="screen"/>
+
+
+</head>
+<body>
+  <div id="example"></div>
+<script>
+  
+  var data = [
+  // ["", "Ford", "Tesla", "Toyota", "Honda"],
+  ["2017", 10, 11, 12, 13, 12, 13, 13],
+  ["2018", 20, 11, 14, 13, 12, 13, 13],
+  ["2019", 30, 15, 12, 13, 12, 13, 13]
+];
+
+var container = document.getElementById('example');
+var hot = new Handsontable(container, {
+  data: data,
+  rowHeaders: true,
+  colHeaders: [
+    'Số Cont',
+    'Số Bill',
+    'Chủ khai thác',
+    'Order Number',
+    'Người nhận hàng',
+    'Ngày hết hạn lưu cont',
+    'Nơi hạ rỗng',
+    'Số ngày miễn lưu vỏ'
+  ],
+  filters: true,
+  dropdownMenu: true,
+});
+</script>
+</body>
+</html>
