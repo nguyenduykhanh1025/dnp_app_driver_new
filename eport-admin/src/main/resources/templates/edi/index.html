@@ -59,32 +59,28 @@
         this.on("success", function (data) {
           if (data != "") {
             var rs = JSON.parse(data.xhr.response);
+            console.log(rs);
             if (dataObj == null) {
               dataObj = rs;
               console.log(dataObj);
             }else {
-              dataObj.push(rs);
+              rs.forEach(element => {
+                  dataObj.push(element);
+              });
             }
-
-          }
-            
+           }
             if(statusTable == true)
             {
-              console.log(dataObj);
-              // hot.loadData(dataObj);
               hot.render();
               return;
             }
             loadView();
-          // statusTable = true;
-          // console.log(statusTable);
         });
         this.on("error", function (file, data) {
 
-          console.log("error", data, file);
+            console.log("error", data, file);
         });
-        this.on("removedfile", function (file) { //删除文件触发结果
-
+        this.on("removedfile", function (file) { 
         });
       }
     });
