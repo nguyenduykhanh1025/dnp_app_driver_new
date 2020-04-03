@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.web.controller.common;
+package vn.com.irtech.eport.shipping.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +19,6 @@ import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.FileUtils;
 
 /**
- * 通用请求处理
  * 
  * @author admin
  */
@@ -31,12 +30,6 @@ public class CommonController
     @Autowired
     private ServerConfig serverConfig;
 
-    /**
-     * 通用下载请求
-     * 
-     * @param fileName 文件名称
-     * @param delete 是否删除
-     */
     @GetMapping("common/download")
     public void fileDownload(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
     {

@@ -1,4 +1,4 @@
-package vn.com.irtech.eport;
+package vn.com.irtech.eport.shipping;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -6,11 +6,11 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 /**
  * @author admin
  */
-public class EportServletInitializer extends SpringBootServletInitializer
+public class EportShippingServletInitializer extends SpringBootServletInitializer
 {
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application)
     {
-        return application.sources(EportApplication.class);
+        return application.sources(EportShippingApplication.class);
     }
 }
