@@ -12,31 +12,31 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								System module:<input type="text" name="title"/>
+								[[#{log.operator.systemModule}]]<input type="text" name="title"/>
 							</li>
 							<li>
-								Operator:<input type="text" name="operName"/>
+								[[#{log.operator.operator }]]<input type="text" name="operName"/>
 							</li>
 							<li class="select-selectpicker">
-								<label>Operation type: </label><select id="businessTypes" th:with="type=${@dict.getType('sys_oper_type')}" class="selectpicker" data-none-selected-text="Please choose" multiple>
+								<label th:text="#{log.operator.operationType }"></label><select id="businessTypes" th:with="type=${@dict.getType('sys_oper_type')}" class="selectpicker" data-none-selected-text="Please choose" multiple>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li>
-								<label>Operation status:</label><select name="status" th:with="type=${@dict.getType('sys_common_status')}">
-									<option value="">All</option>
+								<label th:text="#{log.operator.operationStatus}"></label><select name="status" th:with="type=${@dict.getType('sys_common_status')}">
+									<option value="" th:text="#{log.operator.all}"></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li class="select-time">
-								<label>Operating time: </label>
-								<input type="text" class="time-input" id="startTime" placeholder="Starting time" name="params[beginTime]"/>
+								<label th:text="#{log.operator.operatingTime}"></label>
+								<input type="text" class="time-input" id="startTime" th:placeholder="#{log.operator.startTime}" name="params[beginTime]"/>
 								<span>-</span>
-								<input type="text" class="time-input" id="endTime" placeholder="End time" name="params[endTime]"/>
+								<input type="text" class="time-input" id="endTime" th:placeholder="#{log.operator.endTime}" name="params[endTime]"/>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="searchPre()"><i class="fa fa-search"></i>&nbsp;Search</a>
-								<a class="btn btn-warning btn-rounded btn-sm" onclick="resetPre()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="searchPre()"><i class="fa fa-search" th:text="#{log.operator.search}"></i>&nbsp;</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="resetPre()"><i class="fa fa-refresh" th:text="#{log.operator.reset}"></i>&nbsp;</a>
 							</li>
 						</ul>
 					</div>
@@ -45,13 +45,13 @@
 			
 			<div class="btn-group-sm" id="toolbar" role="group">
 				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="monitor:operlog:remove">
-		            <i class="fa fa-remove"></i>Delete
+		            <i class="fa fa-remove" th:text="#{log.operator.delete}"></i>
 		        </a>
 		        <a class="btn btn-danger" onclick="$.operate.clean()" shiro:hasPermission="monitor:operlog:remove">
-	                <i class="fa fa-trash"></i> Clear
+	                <i class="fa fa-trash" th:text="#{log.operator.clear}"></i >
 	            </a>
 	            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="monitor:operlog:export">
-		            <i class="fa fa-download"></i> Export
+		            <i class="fa fa-download" th:text="#{log.operator.export}"></i> 
 		        </a>
 	        </div>
 	        
@@ -77,7 +77,7 @@
 		        exportUrl: prefix + "/export",
 		        sortName: "operTime",
 		        sortOrder: "desc",
-		        modalName: "操作日志",
+		        modalName: "Operation log",
 		        escape: true,
 		        showPageGo: true,
 		        rememberSelected: true,
@@ -87,15 +87,15 @@
 		        },
 		        {
 		            field: 'operId',
-		            title: 'Id'
+		            title: /*[[#{log.operator.table.id}]]*/
 		        },
 		        {
 		            field: 'title',
-		            title: 'System module'
+		            title: /*[[#{log.operator.table.systemModule}]]*/
 		        },
 		        {
 		            field: 'businessType',
-		            title: 'Operation type',
+		            title: /*[[#{log.operator.table.operationType}]]*/,
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	return $.table.selectDictLabel(datas, value);
@@ -103,24 +103,24 @@
 		        },
 		        {
 		            field: 'operName',
-		            title: 'Operator',
+		            title: /*[[#{log.operator.table.operator}]]*/,
 		            sortable: true
 		        },
 		        {
 		            field: 'deptName',
-		            title: 'Department name'
+		            title: /*[[#{log.operator.table.departmentName}]]*/
 		        },
 		        {
 		            field: 'operIp',
-		            title: 'Host'
+		            title: /*[[#{log.operator.table.host}]]*/
 		        },
 		        {
 		            field: 'operLocation',
-		            title: 'Operating place'
+		            title: /*[[#{log.operator.table.operatingPlace }]]*/
 		        },
 		        {
 		            field: 'status',
-		            title: 'Operation status',
+		            title: /*[[#{log.operator.table.operationStatus }]]*/,
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		                if (value == 0) {
@@ -132,11 +132,11 @@
 		        },
 		        {
 		            field: 'operTime',
-		            title: 'Operating time',
+		            title: /*[[#{log.operator.table.operatingTime}]]*/,
 		            sortable: true
 		        },
 		        {
-		            title: 'Operating',
+		            title: /*[[#{log.operator.table.operating}]]*/,
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		                var actions = [];

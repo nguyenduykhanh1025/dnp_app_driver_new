@@ -8,7 +8,7 @@
 		<form class="form-horizontal m" id="form-menu-add">
 			<input id="treeId" name="parentId" type="hidden" th:value="${menu.menuId}" />
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Superior menu：</label>
+				<label class="col-sm-3 control-label" th:text="#{menu.add.superior}"></label>
 				<div class="col-sm-8">
 				    <div class="input-group">
 					    <input class="form-control" type="text" onclick="selectMenuTree()" id="treeName" readonly="true" th:value="${menu.menuName}">
@@ -17,51 +17,51 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label is-required">Menu type：</label>
+				<label class="col-sm-3 control-label is-required" th:text="#{menu.add.type}"></label>
 				<div class="col-sm-8">
-					<label class="radio-box"> <input type="radio" name="menuType" value="M" /> Table of Contents </label> 
-					<label class="radio-box"> <input type="radio" name="menuType" value="C" /> Menu </label> 
-					<label class="radio-box"> <input type="radio" name="menuType" value="F" /> Button</label>
+					<label class="radio-box"> <input type="radio" name="menuType" value="M" th:text="#{menu.add.table}"> </label> 
+					<label class="radio-box"> <input type="radio" name="menuType" value="C" th:text="#{menu.add.menu}">  </label> 
+					<label class="radio-box"> <input type="radio" name="menuType" value="F" th:text="#{menu.add.button}"></label>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label is-required">Menu name：</label>
+				<label class="col-sm-3 control-label is-required" th:text="#{menu.add.name}"></label>
 				<div class="col-sm-8">
 					<input class="form-control" type="text" name="menuName" id="menuName" required>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Request address：</label>
+				<label class="col-sm-3 control-label" th:text="#{menu.add.address}"></label>
 				<div class="col-sm-8">
 					<input id="url" name="url" class="form-control" type="text">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Open way：</label>
+				<label class="col-sm-3 control-label" th:text="#{menu.add.openWay}"></label>
 				<div class="col-sm-8">
 					<select id="target" name="target" class="form-control m-b">
-	                    <option value="menuItem">Book mark</option>
-	                    <option value="menuBlank">New window</option>
+	                    <option value="menuItem" th:text="#{menu.add.bookMark}"></option>
+	                    <option value="menuBlank" th:text="#{menu.add.newWindow}"></option>
 	                </select>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Permission ID：</label>
+				<label class="col-sm-3 control-label" th:text="#{menu.add.permission}"></label>
 				<div class="col-sm-8">
 					<input id="perms" name="perms" class="form-control" type="text">
-					<span class="help-block m-b-none"><i class="fa fa-info-circle"></i> The permission identifier defined in the controller, such as：@RequiresPermissions("")</span>
+					<span class="help-block m-b-none" ><i class="fa fa-info-circle" th:text="#{menu.add.note}"></i> </span>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label is-required">Display sort：</label>
+				<label class="col-sm-3 control-label is-required" th:text="#{menu.add.displaySort}"></label>
 				<div class="col-sm-8">
 					<input class="form-control" type="text" name="orderNum" required>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Icon：</label>
+				<label class="col-sm-3 control-label" th:text="#{menu.add.icon}"></label>
 				<div class="col-sm-8">
-					<input id="icon" name="icon" class="form-control" type="text" placeholder="Select icon">
+					<input id="icon" name="icon" class="form-control" type="text" th:placeholder="#{menu.add.icon.placeholder}">
                     <div class="ms-parent" style="width: 100%;">
                         <div class="icon-drop animated flipInX" style="display: none;max-height:200px;overflow-y:auto">
                             <div data-th-include="system/menu/icon"></div>
@@ -70,7 +70,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Menu status：</label>
+				<label class="col-sm-3 control-label" th:text="#{menu.add.menuStatus}"></label>
 				<div class="col-sm-8">
 				    <div class="radio-box" th:each="dict : ${@dict.getType('sys_show_hide')}">
 						<input type="radio" th:id="${dict.dictCode}" name="visible" th:value="${dict.dictValue}" th:checked="${dict.default}">
