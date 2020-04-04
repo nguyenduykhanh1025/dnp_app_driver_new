@@ -59,13 +59,20 @@
         this.on("success", function (data) {
           if (data != "") {
             var rs = JSON.parse(data.xhr.response);
-            console.log(rs);
+            //console.log(data.upload.uuid);
             if (dataObj == null) {
               dataObj = rs;
-              console.log(dataObj);
+              dataObj.forEach(element => {
+                  element["file"] = data.upload.uuid; 
+              });
+              //console.log(dataObj);
             }else {
               rs.forEach(element => {
+                // add file-id to element
+                  //element.push("fid", data.upload.uuid);
+                  element["file"] = data.upload.uuid;
                   dataObj.push(element);
+                  //console.log(dataObj);
               });
             }
            }
@@ -81,9 +88,16 @@
             console.log("error", data, file);
         });
         this.on("removedfile", function (file) { 
+              var fileId = file.upload.uuid;
+              dataObj.forEach(element => {
+                  if(element["file"] == fileId)
+                  {
+                    //CODE REMOVE FILE
+                  }
+              });
+
         });
       }
->>>>>>> f38e197aed87d8ed8db5dbf21abf87e4f78d7949
     });
   </script>
   <script>
@@ -137,15 +151,6 @@
               'Nơi hạ rỗng',
               'Số ngày miễn lưu vỏ'
             ],
-            
-            // contextMenu: ['row_below'],
-            // filters: true,
-            // dropdownMenu: true,
-            // mergeCells: true,
-            // contextMenu: true,
-            // collapsibleColumns: true,
-            // hiddenColumns: true
-            
           });
           statusTable = true;
         }
