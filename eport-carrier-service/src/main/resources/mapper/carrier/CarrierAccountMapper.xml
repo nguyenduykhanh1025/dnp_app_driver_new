@@ -40,6 +40,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCarrierAccountVo"/>
         where id = #{id}
     </select>
+    
+    <select id="selectByEmail" parameterType="String" resultMap="CarrierAccountResult">
+	    <include refid="selectCarrierAccountVo"/>
+		where email = #{email}
+	</select>
         
     <insert id="insertCarrierAccount" parameterType="CarrierAccount" useGeneratedKeys="true" keyProperty="id">
         insert into carrier_account

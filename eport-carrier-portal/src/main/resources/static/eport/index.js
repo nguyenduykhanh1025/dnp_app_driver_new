@@ -261,7 +261,7 @@ $(function() {
             var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
             $('.mainContent').find('iframe.RuoYi_iframe').hide().parents('.mainContent').append(str1);
             
-            $.modal.loading("Đang xử lý, vui lòng chờ...");
+            $.modal.loading(" Đang xử lý, vui lòng chờ...");
             
             $('.mainContent iframe:visible').load(function () {
             	$.modal.closeLoading();

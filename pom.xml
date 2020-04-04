@@ -192,6 +192,11 @@
 	        </dependency>
 	        <dependency>
 	            <groupId>vn.com.irtech.eport</groupId>
+	            <artifactId>eport-carrier-framework</artifactId>
+	            <version>${eport.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>vn.com.irtech.eport</groupId>
 	            <artifactId>eport-carrier-admin</artifactId>
 	            <version>${eport.version}</version>
 	        </dependency>
@@ -213,6 +218,7 @@
         <module>eport-common</module>
         <module>eport-carrier-admin</module>
         <module>eport-carrier-portal</module>
+        <module>eport-carrier-framework</module>
         <module>eport-carrier-service</module>
     </modules>
     <packaging>pom</packaging>
