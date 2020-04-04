@@ -1,13 +1,15 @@
 package vn.com.irtech.eport.carrier.service.impl;
 
 import java.util.List;
-import vn.com.irtech.eport.common.utils.DateUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.com.irtech.eport.carrier.mapper.CarrierAccountMapper;
+
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
+import vn.com.irtech.eport.carrier.mapper.CarrierAccountMapper;
 import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.DateUtils;
 
 /**
  * Carrier AccountService Business Processing
@@ -94,4 +96,14 @@ public class CarrierAccountServiceImpl implements ICarrierAccountService
     {
         return carrierAccountMapper.deleteCarrierAccountById(id);
     }
+
+	@Override
+	public CarrierAccount selectByEmail(String email) {
+		return carrierAccountMapper.selectByEmail(email);
+	}
+
+	@Override
+	public int resetUserPwd(CarrierAccount user) {
+		return updateCarrierAccount(user);
+	}
 }

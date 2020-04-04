@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-carrier-service</artifactId>
+            <artifactId>eport-carrier-framework</artifactId>
         </dependency>
         
     </dependencies>

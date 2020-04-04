@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.carrier;
+package vn.com.irtech.eport;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

@@ -58,4 +58,12 @@ public interface CarrierAccountMapper
      * @return result
      */
     public int deleteCarrierAccountByIds(String[] ids);
+
+    /**
+     * Select Carrier by email
+     * 
+     * @param email
+     * @return
+     */
+	public CarrierAccount selectByEmail(String email);
 }
