@@ -183,6 +183,23 @@
 	            <artifactId>eport-common</artifactId>
 	            <version>${eport.version}</version>
 	        </dependency>
+
+	        <!--Shipping lines -->
+	        <dependency>
+	            <groupId>vn.com.irtech.eport</groupId>
+	            <artifactId>eport-carrier-portal</artifactId>
+	            <version>${eport.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>vn.com.irtech.eport</groupId>
+	            <artifactId>eport-carrier-admin</artifactId>
+	            <version>${eport.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>vn.com.irtech.eport</groupId>
+	            <artifactId>eport-carrier-service</artifactId>
+	            <version>${eport.version}</version>
+	        </dependency>
 	        
         </dependencies>
     </dependencyManagement>
@@ -194,6 +211,9 @@
 		<module>eport-quartz</module>
 		<module>eport-generator</module>
         <module>eport-common</module>
+        <module>eport-carrier-admin</module>
+        <module>eport-carrier-portal</module>
+        <module>eport-carrier-service</module>
     </modules>
     <packaging>pom</packaging>
 

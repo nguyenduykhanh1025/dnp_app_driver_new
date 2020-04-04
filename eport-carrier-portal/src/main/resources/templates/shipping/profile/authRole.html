@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('User-assigned roles')" />
+</head>
+<body>
+    <div class="main-content">
+        <form id="form-user-add" class="form-horizontal">
+            <input type="hidden" id="userId" name="userId" th:value="${user.userId}">
+            <h4 class="form-header h4">Basic Information</h4>
+            <div class="row">
+            	<div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">User name：</label>
+                        <div class="col-sm-8">
+                            <input name="userName" class="form-control" type="text" disabled th:value="${user.userName}">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">Login account:</label>
+                        <div class="col-sm-8">
+                            <input name="loginName" class="form-control" type="text" disabled th:value="${user.loginName}">
+                        </div>
+                    </div>
+                </div> 
+            </div>
+           
+            <h4 class="form-header h4">Assigning Roles</h4>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="col-sm-12 select-table table-striped">
+					    <table id="bootstrap-table"></table>
+					</div>
+                </div>
+            </div>
+        </form>
+    </div>
+      
+    <div class="row">
+        <div class="col-sm-offset-5 col-sm-10">
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>Save</button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down </button>
+        </div>
+    </div>
+	<th:block th:include="include :: footer" />
+	<script th:inline="javascript">
+	    var prefix = ctx + "system/user/authRole";
+	    var userRoles = [[${userRoles}]]
+	    
+	    $(function() {
+		    var options = {
+		        url: ctx + "system/role/list",
+		        sortName: "roleSort",
+		        showSearch: false,
+                showRefresh: false,
+                showToggle: false,
+                showColumns: false,
+                clickToSelect: true,
+		        columns: [{
+		            checkbox: true,
+		            formatter:function (value, row, index) {
+		            	for (var i = 0; i < userRoles.length; i++) {
+		            	    if (userRoles[i].roleId == row.roleId) {
+		            	        return { checked: true };
+		            	    }
+		            	}
+		            	return { checked: false };
+		            }
+		        },
+		        {
+		            field: 'roleId',
+		            title: 'Id'
+		        },
+		        {
+		            field: 'roleName',
+		            title: 'Role Name',
+		            sortable: true
+		        },
+		        {
+		            field: 'roleKey',
+		            title: 'Permission character',
+		            sortable: true
+		        },
+		        {
+		            field: 'createTime',
+		            title: 'Creation time',
+		            sortable: true
+		        }]
+		    };
+		    $.table.init(options);
+		});
+	    
+	    /* Add role-submit */
+        function submitHandler(index, layero){
+        	var rows = $.table.selectFirstColumns();
+        	var data = { "userId": $("#userId").val(), "roleIds": rows.join() };
+			$.operate.saveTab(prefix + "/insertAuthRole", data);
+        }
+    </script>
+</body>
+</html>
