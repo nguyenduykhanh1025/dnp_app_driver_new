@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 	<packaging>jar</packaging>
-    <artifactId>eport-admin</artifactId>
+    <artifactId>eport-carrier-portal</artifactId>
 	
 	<description>
-	    Web Service Entrance
+	    Shipping lines web portal
 	</description>
 
     <dependencies>
@@ -27,47 +27,13 @@
 			<optional>true</optional> <!-- Indicates that dependencies are not passed -->
 		</dependency>
 
-		<!-- swagger2-->
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-		</dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.5.21</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-models</artifactId>
-            <version>1.5.21</version>
-        </dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-		</dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-framework</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-carrier-admin</artifactId>
-        </dependency>
-
-<!--         <dependency> -->
-<!--             <groupId>vn.com.irtech.eport</groupId> -->
-<!--             <artifactId>eport-quartz</artifactId> -->
-<!--         </dependency> -->
-        
-        <dependency>
-            <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-generator</artifactId>
+            <artifactId>eport-carrier-service</artifactId>
         </dependency>
         
     </dependencies>
