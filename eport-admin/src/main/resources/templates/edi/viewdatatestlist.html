@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+<head>
+
+<script th:src="@{/ajax/libs/handsontable/handsontable.full.min.js}"></script>
+<link th:href="@{/ajax/libs/handsontable/handsontable.full.min.css}" rel="stylesheet" media="screen"/>
+<script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+
+</head>
+<body>
+  <div id="viewEdi"></div>
+<script>
+    var rs;
+    $.ajax({
+    url: "datalist",
+     method: 'post'
+    }).done(function(data) {
+        rs = data;
+        var container = document.getElementById('viewEdi');
+                var hot = new Handsontable(container, {
+                data: rs.rows,
+                            columns: [
+                              {
+                                data: 'contNo',
+                                type: 'text'
+                              },
+                              {
+                                data: 'buildNo',
+                                type: 'text'
+                              },
+                              {
+                                data: 'businessUnit',
+                                type: 'text'
+                              },
+                              {
+                                data: 'orderNo',
+                                type: 'text'
+                              },
+                              {
+                                data: 'releaseTo',
+                                type: 'text'
+                              },
+                              {
+                                data: 'validToDay',
+                                type: 'date',
+                                dateFormat: 'MM/DD/YYYY'
+                              },
+                              {
+                                data: 'emptyContDepot',
+                                type: 'text'
+                              },
+                              {
+                                data: 'haulage',
+                                type: 'numeric',
+                              }
+                            ],
+                rowHeaders: true,
+                colHeaders: [
+                  'Số Cont',
+                  'Số Bill',
+                  'Chủ khai thác',
+                  'Order Number',
+                  'Người nhận hàng',
+                  'Ngày hết hạn lưu cont',
+                  'Nơi hạ rỗng',
+                  'Số ngày miễn lưu vỏ'
+                ],
+                filters: true,
+                dropdownMenu: true,
+                mergeCells: true,
+                contextMenu: true,
+                collapsibleColumns: true,
+                hiddenColumns: true
+              
+});
+    });
+</script>
+</body>
+</html>

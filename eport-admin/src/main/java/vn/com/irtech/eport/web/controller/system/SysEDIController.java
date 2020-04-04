@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.alibaba.fastjson.JSONObject;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import com.alibaba.fastjson.JSONObject;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -48,6 +50,11 @@ public class SysEDIController extends BaseController
     public String add()
     {
         return "edi/add";
+	}
+	@GetMapping("/hanson")
+    public String hanson()
+    {
+        return "edi/add";
     }
 	@RequestMapping(value = "/file",method = { RequestMethod.POST })
 	public @ResponseBody Object upload(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
@@ -55,7 +62,7 @@ public class SysEDIController extends BaseController
 			System.out.println("File empty");
         }
 		String data = "";
-		JSONObject obj = new JSONObject();
+		List<JSONObject> obj = new ArrayList<>();
 		try {
 			  String fileName = file.getOriginalFilename();
 		      File filenew = new File(this.getFolderUpload(), fileName);
@@ -100,7 +107,11 @@ public class SysEDIController extends BaseController
         List<SysEdi> list = sysEdiService.selectSysEdiList(sysEdi);
         return getDataTable(list);
 	}
-	
+	@GetMapping("/viewdatatestlist")
+	public String viewdatatestlist()
+	{
+		return ("/edi/viewdatatestlist");
+	}
 	@GetMapping("/datatestlist")
     @RequiresPermissions("system:edi:list")
     @ResponseBody
@@ -122,73 +133,95 @@ public class SysEDIController extends BaseController
     }
 
 
-    private JSONObject ReadEDI(String[] text)
+    private List<JSONObject> ReadEDI(String[] text)
 	{
         SysEdi edi = new SysEdi();
 		ZoneId defaultZoneId = ZoneId.systemDefault();
 		JSONObject obj = new JSONObject();
+		List<JSONObject> listObj = new ArrayList<>();
 		for(String s : text)
 		{
 			//buildNo
+			
 			if(s.contains("RFF+BM"))
 			{
 				int numberIndex = s.length();
-				s = s.substring(8, numberIndex);
-				obj.put("RFF+BM", s);
-                edi.setBuildNo(s);
+				if(!s.isEmpty())
+				{
+					s = s.substring(8, numberIndex);
+					obj.put("buildNo", s);
+					edi.setBuildNo(s);
+				}
 			}
-			//businessunit
+			//businessUnit
 			if(s.contains("UNB+UNOA"))
 			{
 				String[] businessUnit = s.split("\\+");
-				obj.put("UNB+UNOA", businessUnit[2]);
-				edi.setBusinessUnit(businessUnit[2]);	
+				if(!s.isEmpty())
+				{
+					obj.put("businessUnit", businessUnit[2]);
+					edi.setBusinessUnit(businessUnit[2]);
+				}
 			}
-			//ContNo
+			//contNo
 			if(s.contains("EQD+CN"))
 			{
 			
 				String[] contNo = s.split("\\+");
-				obj.put("EQD+CN",contNo[2]);
-                edi.setContNo(contNo[2]);
+				if(!s.isEmpty())
+				{
+					obj.put("contNo",contNo[2]);
+                	edi.setContNo(contNo[2]);
+				}
+				
 			}
-			//OrderNo
+			//orderNo
 			if(s.contains("RFF+AAJ"))	
 			{
 				int numberIndex = s.length();
-				s = s.substring(9, numberIndex);
-				obj.put("RFF+AAJ", s);
-				edi.setOrderNo(s);
+				if(!s.isEmpty())
+				{
+					s = s.substring(8, numberIndex);
+					obj.put("orderNo", s);
+					edi.setOrderNo(s);
+				}
 			}
 			//releaseTo
 			if(s.contains("NAD+BJ"))
 			{
 				String[] releaseTo = s.split("\\+");
-				releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length() - 1);
-				obj.put("NAD+BJ", releaseTo[3]);
-                edi.setReleaseTo(releaseTo[3]);
+				if(!releaseTo[3].isEmpty())
+				{
+					releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length() - 1);
+					obj.put("releaseTo", releaseTo[3]);
+					edi.setReleaseTo(releaseTo[3]);
+				}
 			}
 			//validToDay
 			if(s.contains("DTM+400"))
 			{
 				String[] validToDay = s.split("\\:");
-                validToDay[1] = validToDay[1].substring(0, validToDay[1].length() - 4);
-                LocalDate date = LocalDate.parse(validToDay[1], DateTimeFormatter.BASIC_ISO_DATE);
-				Date date2 = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
-				obj.put("DTM+400", date2);
-				edi.setValidtoDay(date2);
+				if(!validToDay[1].isEmpty())
+				{
+					validToDay[1] = validToDay[1].substring(0, validToDay[1].length() - 4);
+					LocalDate date = LocalDate.parse(validToDay[1], DateTimeFormatter.BASIC_ISO_DATE);
+					Date date2 = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+					obj.put("validToDay", date2);
+					edi.setValidtoDay(date2);
+				}
 			}                                                                                                                                                                                                                                                                                                                                                                                           
 			//emptyContDepot
 			if(s.contains("LOC+99"))
 			{
-				String[] emptyContDepot = s.split("\\+");
-				if(emptyContDepot[3] != null){
-					emptyContDepot[3] = emptyContDepot[3].substring(0, emptyContDepot[3].length());
-				obj.put("LOC+99", emptyContDepot[3]);
-                edi.setEmptycontDepot(emptyContDepot[3]);
+				String[] emptyContDepotA = s.split("\\+");
+				if(!emptyContDepotA[3].isEmpty()){
+					String[] emptyContDepot = emptyContDepotA[3].split(":");
+					obj.put("emptyContDepot", emptyContDepot[0]);
+					edi.setEmptycontDepot(emptyContDepot[0]);
 				}
 						
 			}
+			//haulage
 			if(s.contains("FTX+AAI"))
 			{
 				String[] haulage = s.split("\\+");
@@ -197,12 +230,15 @@ public class SysEDIController extends BaseController
                 if(!haulage[4].isEmpty()){
                     Long i = Long.parseLong(haulage[4]);
 					edi.setHaulage(i);
-					obj.put("FTX+AAI", haulage[4]);
-				} 
-				sysEdiService.insertSysEdi(edi);    
+					obj.put("haulage", haulage[4]);
+				}
+				// edi.setStatus(2);
+				sysEdiService.insertSysEdi(edi);  
+				listObj.add(obj);
+				obj = new JSONObject();
 			}
         }
-		return obj;
+		return listObj;
 	}
     
 }

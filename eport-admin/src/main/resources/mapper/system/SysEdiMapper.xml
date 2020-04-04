@@ -15,10 +15,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="validtoDay"    column="validto_day"    />
         <result property="emptycontDepot"    column="emptycont_depot"    />
         <result property="haulage"    column="haulage"    />
+        <result property="status"    column="status"    />
     </resultMap>
 
     <sql id="selectSysEdiVo">
-        select edi_id, user_id, build_no, business_unit, cont_no, order_no, release_to, validto_day, emptycont_depot, haulage from sys_edi
+        select edi_id, user_id, build_no, business_unit, cont_no, order_no, release_to, validto_day, emptycont_depot, haulage, status from sys_edi
     </sql>
 
     <select id="selectSysEdiList" parameterType="SysEdi" resultMap="SysEdiResult">
@@ -33,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validtoDay != null "> and validto_day = #{validtoDay}</if>
             <if test="emptycontDepot != null  and emptycontDepot != ''"> and emptycont_depot = #{emptycontDepot}</if>
             <if test="haulage != null "> and haulage = #{haulage}</if>
+            <if test="status != null "> and status = #{status}</if>
         </where>
     </select>
     
@@ -53,6 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validtoDay != null ">validto_day,</if>
             <if test="emptycontDepot != null  and emptycontDepot != ''">emptycont_depot,</if>
             <if test="haulage != null ">haulage,</if>
+            <if test="status != null ">status,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userId != null ">#{userId},</if>
@@ -64,6 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validtoDay != null ">#{validtoDay},</if>
             <if test="emptycontDepot != null  and emptycontDepot != ''">#{emptycontDepot},</if>
             <if test="haulage != null ">#{haulage},</if>
+            <if test="status != null ">#{status},</if>
          </trim>
     </insert>
 
@@ -79,6 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validtoDay != null ">validto_day = #{validtoDay},</if>
             <if test="emptycontDepot != null  and emptycontDepot != ''">emptycont_depot = #{emptycontDepot},</if>
             <if test="haulage != null ">haulage = #{haulage},</if>
+            <if test="status != null ">status = #{status},</if>
         </trim>
         where edi_id = #{ediId}
     </update>
