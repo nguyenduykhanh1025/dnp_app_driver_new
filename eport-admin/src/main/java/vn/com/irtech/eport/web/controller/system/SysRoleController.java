@@ -59,7 +59,7 @@ public class SysRoleController extends BaseController
         return getDataTable(list);
     }
 
-    @Log(title = "角色管理", businessType = BusinessType.EXPORT)
+    @Log(title = "Role Management", businessType = BusinessType.EXPORT)
     @RequiresPermissions("system:role:export")
     @PostMapping("/export")
     @ResponseBody
@@ -83,7 +83,7 @@ public class SysRoleController extends BaseController
      * 新增保存角色
      */
     @RequiresPermissions("system:role:add")
-    @Log(title = "角色管理", businessType = BusinessType.INSERT)
+    @Log(title = "Role Management", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(@Validated SysRole role)
@@ -116,7 +116,7 @@ public class SysRoleController extends BaseController
      * 修改保存角色
      */
     @RequiresPermissions("system:role:edit")
-    @Log(title = "角色管理", businessType = BusinessType.UPDATE)
+    @Log(title = "Role Management", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(@Validated SysRole role)
@@ -124,11 +124,11 @@ public class SysRoleController extends BaseController
         roleService.checkRoleAllowed(role);
         if (UserConstants.ROLE_NAME_NOT_UNIQUE.equals(roleService.checkRoleNameUnique(role)))
         {
-            return error("修改角色'" + role.getRoleName() + "'失败，角色名称已存在");
+            return error("Update Role '" + role.getRoleName() + "' failed, Role name already exists");
         }
         else if (UserConstants.ROLE_KEY_NOT_UNIQUE.equals(roleService.checkRoleKeyUnique(role)))
         {
-            return error("修改角色'" + role.getRoleName() + "'失败，角色权限已存在");
+            return error("Update Role '" + role.getRoleName() + "' failed, Role permissions already exist");
         }
         role.setUpdateBy(ShiroUtils.getLoginName());
         ShiroUtils.clearCachedAuthorizationInfo();
@@ -149,7 +149,7 @@ public class SysRoleController extends BaseController
      * 保存角色分配数据权限
      */
     @RequiresPermissions("system:role:edit")
-    @Log(title = "角色管理", businessType = BusinessType.UPDATE)
+    @Log(title = "Role Management", businessType = BusinessType.UPDATE)
     @PostMapping("/authDataScope")
     @ResponseBody
     public AjaxResult authDataScopeSave(SysRole role)
@@ -165,7 +165,7 @@ public class SysRoleController extends BaseController
     }
 
     @RequiresPermissions("system:role:remove")
-    @Log(title = "角色管理", businessType = BusinessType.DELETE)
+    @Log(title = "Role Management", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String ids)
@@ -212,7 +212,7 @@ public class SysRoleController extends BaseController
     /**
      * 角色状态修改
      */
-    @Log(title = "角色管理", businessType = BusinessType.UPDATE)
+    @Log(title = "Role Management", businessType = BusinessType.UPDATE)
     @RequiresPermissions("system:role:edit")
     @PostMapping("/changeStatus")
     @ResponseBody
@@ -249,7 +249,7 @@ public class SysRoleController extends BaseController
     /**
      * 取消授权
      */
-    @Log(title = "角色管理", businessType = BusinessType.GRANT)
+    @Log(title = "Role Management", businessType = BusinessType.GRANT)
     @PostMapping("/authUser/cancel")
     @ResponseBody
     public AjaxResult cancelAuthUser(SysUserRole userRole)
@@ -260,7 +260,7 @@ public class SysRoleController extends BaseController
     /**
      * 批量取消授权
      */
-    @Log(title = "角色管理", businessType = BusinessType.GRANT)
+    @Log(title = "Role Management", businessType = BusinessType.GRANT)
     @PostMapping("/authUser/cancelAll")
     @ResponseBody
     public AjaxResult cancelAuthUserAll(Long roleId, String userIds)
@@ -294,7 +294,7 @@ public class SysRoleController extends BaseController
     /**
      * 批量选择用户授权
      */
-    @Log(title = "角色管理", businessType = BusinessType.GRANT)
+    @Log(title = "Role Management", businessType = BusinessType.GRANT)
     @PostMapping("/authUser/selectAll")
     @ResponseBody
     public AjaxResult selectAuthUserAll(Long roleId, String userIds)

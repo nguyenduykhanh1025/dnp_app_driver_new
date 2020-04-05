@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('List 【Please fill in the function name】')" />
+    <th:block th:include="include :: header('List 【请填写功能名称】')" />
 </head>
 <body class="gray-bg">
      <div class="container-div">
@@ -49,6 +49,12 @@
                                 <input type="text" name="haulage"/>
                             </li>
                             <li>
+                                <label>${comment}：</label>
+                                <select name="status">
+                                    <option value="">All</option>
+                                </select>
+                            </li>
+                            <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
                             </li>
@@ -89,7 +95,7 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
-                modalName: "【Please fill in the function name】",
+                modalName: "【请填写功能名称】",
                 columns: [{
                     checkbox: true
                 },
@@ -132,6 +138,10 @@
                 },
                 {
                     field: 'haulage', 
+                    title: '${comment}'
+                },
+                {
+                    field: 'status', 
                     title: '${comment}'
                 },
                 {

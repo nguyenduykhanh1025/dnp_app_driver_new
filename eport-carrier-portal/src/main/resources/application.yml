@@ -1,0 +1,80 @@
+eport:
+  name: DNG ePort
+  version: 4.2.0
+  copyrightYear: 2020
+  demoEnabled: true
+  profile: D:/eport/upload
+  addressEnabled: true
+
+server:
+  port: 7070
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 100
+    min-spare-threads: 30
+ 
+logging:
+  level:
+    vn.com.irtech.eport: debug
+    org.springframework: warn
+
+user:
+  password:
+    maxRetryCount: 5
+
+spring:
+  thymeleaf:
+    mode: HTML
+    encoding: utf-8
+    cache: false
+  messages:
+    basename: static/i18n/messages
+  jackson:
+    time-zone: GMT+7
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles: 
+    active: druid
+  servlet:
+     multipart:
+       max-file-size:  10MB
+       max-request-size:  20MB
+  devtools:
+    restart:
+      enabled: true
+
+mybatis:
+    typeAliasesPackage: vn.com.irtech.eport.**.domain
+    mapperLocations: classpath*:mapper/**/*Mapper.xml
+    configLocation: classpath:mybatis/mybatis-config.xml
+
+pagehelper: 
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql 
+
+shiro:
+  user:
+    loginUrl: /login
+    unauthorizedUrl: /unauth
+    indexUrl: /index
+    captchaEnabled: true
+    captchaType: math
+  cookie:
+    domain: 
+    path: /
+    httpOnly: true
+    maxAge: 30
+  session:
+    expireTime: 30
+    dbSyncPeriod: 1
+    validationInterval: 10
+    maxSession: -1
+    kickoutAfter: false
+
+xss: 
+  enabled: true
+  excludes: /system/notice/*
+  urlPatterns: /system/*,/monitor/*,/tool/*

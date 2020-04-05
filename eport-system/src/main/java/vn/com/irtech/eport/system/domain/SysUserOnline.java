@@ -7,7 +7,7 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import vn.com.irtech.eport.common.enums.OnlineStatus;
 
 /**
- * 当前在线会话 sys_user_online
+ * Current online session sys_user_online
  * 
  * @author admin
  */
@@ -15,37 +15,37 @@ public class SysUserOnline extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
     
-    /** 用户会话id */
+    /** User session id */
     private String sessionId;
 
-    /** 部门名称 */
+    /** Department name*/
     private String deptName;
 
-    /** 登录名称 */
+    /** Login name */
     private String loginName;
 
-    /** 登录IP地址 */
+    /** Login IP address */
     private String ipaddr;
 
-    /** 登录地址 */
+    /** Login address*/
     private String loginLocation;
 
-    /** 浏览器类型 */
+    /** Browser type */
     private String browser;
 
-    /** 操作系统 */
+    /** operating system */
     private String os;
 
-    /** session创建时间 */
+    /** session creation time */
     private Date startTimestamp;
 
-    /** session最后访问时间 */
+    /** session last access time */
     private Date lastAccessTime;
 
-    /** 超时时间，单位为分钟 */
+    /** Timeout time, in minutes */
     private Long expireTime;
 
-    /** 在线状态 */
+    /** online status */
     private OnlineStatus status = OnlineStatus.on_line;
 
     public String getSessionId()
