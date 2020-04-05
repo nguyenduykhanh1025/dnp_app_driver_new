@@ -59,7 +59,7 @@
         this.on("success", function (data) {
           if (data != "") {
             var rs = JSON.parse(data.xhr.response);
-            //console.log(data.upload.uuid);
+            console.log(data.upload.uuid);
             if (dataObj == null) {
               dataObj = rs;
               dataObj.forEach(element => {
@@ -72,7 +72,7 @@
                   //element.push("fid", data.upload.uuid);
                   element["file"] = data.upload.uuid;
                   dataObj.push(element);
-                  //console.log(dataObj);
+                  console.log(dataObj);
               });
             }
            }
@@ -89,13 +89,18 @@
         });
         this.on("removedfile", function (file) { 
               var fileId = file.upload.uuid;
+              console.log(fileId);
+              var i = 0;
               dataObj.forEach(element => {
                   if(element["file"] == fileId)
                   {
-                    //CODE REMOVE FILE
+                    console.log(element);
+                    dataObj.splice(i,1);
                   }
+                  i++;
+                  console.log(dataObj); 
               });
-
+              hot.render();
         });
       }
     });
