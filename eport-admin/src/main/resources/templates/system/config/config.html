@@ -11,26 +11,26 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								Parameter name：<input type="text" name="configName"/>
+								[[#{config.name}]]<input type="text" name="configName"/>
 							</li>
 							<li>
-								Parameter key name:<input type="text" name="configKey"/>
+								[[#{config.keyName}]]<input type="text" name="configKey"/>
 							</li>
 							<li>
-								System built-in:<select name="configType" th:with="type=${@dict.getType('sys_yes_no')}">
-									<option value="">All</option>
+								[[#{config.system}]]<select name="configType" th:with="type=${@dict.getType('sys_yes_no')}">
+									<option value="" th:text="#{config.all}" ></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li class="select-time">
-								<label>Create time： </label>
-								<input type="text" class="time-input" id="startTime" placeholder="Starting time" name="params[beginTime]"/>
+								<label th:text="#{config.time}"> </label>
+								<input type="text" class="time-input" id="startTime" th:placeholder="#{config.start}" name="params[beginTime]"/>
 								<span>-</span>
-								<input type="text" class="time-input" id="endTime" placeholder="End time" name="params[endTime]"/>
+								<input type="text" class="time-input" id="endTime" th:placeholder="#{config.end}" name="params[endTime]"/>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
-								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search" th:text="#{config.search}"></i>&nbsp;</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh" th:text="#{config.reset}"></i>&nbsp;</a>
 							</li>
 						</ul>
 					</div>
@@ -39,19 +39,19 @@
 			
 	        <div class="btn-group-sm" id="toolbar" role="group">
 		        <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:config:add">
-		            <i class="fa fa-plus"></i> Add
+		            <i class="fa fa-plus" th:text="#{config.add}"></i> 
 		        </a>
 		        <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:config:edit">
-		            <i class="fa fa-edit"></i> Edit
+		            <i class="fa fa-edit" th:text="#{config.edit}"></i> 
 		        </a>
 		        <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:config:remove">
-		            <i class="fa fa-remove"></i>Delete
+		            <i class="fa fa-remove" th:text="#{config.delete}"></i>
 		        </a>
 		        <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:config:export">
-		            <i class="fa fa-download"></i> Export
+		            <i class="fa fa-download" th:text="#{config.export}"></i> 
 		        </a>
 		        <a class="btn btn-danger" onclick="clearCache()" shiro:hasPermission="system:config:remove">
-		            <i class="fa fa-refresh"></i> Clear cache
+		            <i class="fa fa-refresh" th:text="#{config.clearCache}"></i> 
 		        </a>
 	        </div>
 	        <div class="col-sm-12 select-table table-striped">
@@ -81,29 +81,29 @@
                 },
                 {
                     field: 'configId',
-                    title: 'Id'
+                    title: /*[[#{config.table.id }]]*/
                 },
                 {
                     field: 'configName',
-                    title: 'Parameter name',
+                    title: /*[[#{config.table.name }]]*/,
                     formatter: function(value, row, index) {
                     	return $.table.tooltip(value);
                     }
                 },
                 {
                     field: 'configKey',
-                    title: 'Parameter key name',
+                    title: /*[[#{config.table.keyName }]]*/,
                     formatter: function(value, row, index) {
                     	return $.table.tooltip(value);
                     }
                 },
                 {
                     field: 'configValue',
-                    title: 'Parameter key'
+                    title: /*[[#{config.table.key }]]*/
                 },
                 {
                     field: 'configType',
-                    title: 'Built-in system',
+                    title: /*[[#{config.table.system}]]*/,
                     align: 'center',
                     formatter: function(value, row, index) {
                     	return $.table.selectDictLabel(datas, value);
@@ -111,7 +111,7 @@
                 },
                 {
                     field: 'remark',
-                    title: 'Note',
+                    title: /*[[#{config.table.note}]]*/,
                     align: 'center',
                     formatter: function(value, row, index) {
                     	return $.table.tooltip(value, 10, "open");
@@ -119,10 +119,10 @@
                 },
                 {
                     field: 'createTime',
-                    title: 'Creation time'
+                    title: /*[[#{config.table.time}]]*/
                 },
                 {
-                    title: 'Status',
+                    title: /*[[#{config.table.status}]]*/,
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];
