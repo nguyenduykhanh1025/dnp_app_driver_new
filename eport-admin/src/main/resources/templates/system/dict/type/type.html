@@ -11,26 +11,26 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								Dictionary name:<input type="text" name="dictName"/>
+								[[#{Dictionary.name}]]<input type="text" name="dictName"/>
 							</li>
 							<li>
-								Dictionary type:<input type="text" name="dictType"/>
+								[[#{Dictionary.type}]]<input type="text" name="dictType"/>
 							</li>
 							<li>
-								Dictionary status：<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
-									<option value="">All</option>
+								[[#{Dictionary.status}]]<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+									<option value="" th:text="#{Dictionary.all}"></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li class="select-time">
-								<label>Created: </label>
-								<input type="text" class="time-input" id="startTime" placeholder="Starting time" name="params[beginTime]"/>
+								<label th:text="#{Dictionary.created}"></label>
+								<input type="text" class="time-input" id="startTime" th:placeholder="#{Dictionary.start}" name="params[beginTime]"/>
 								<span>-</span>
-								<input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endTime]"/>
+								<input type="text" class="time-input" id="endTime" th:placeholder="#{Dictionary.end}" name="params[endTime]"/>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
-							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search" th:text="#{Dictionary.search}"></i>&nbsp;</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh" th:text="#{Dictionary.reset}"></i>&nbsp;</a>
 							</li>
 						</ul>
 					</div>
@@ -39,19 +39,19 @@
 			
 	       <div class="btn-group-sm" id="toolbar" role="group">
 	            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:dict:add">
-	                <i class="fa fa-plus"></i> Add
+	                <i class="fa fa-plus" th:text="#{Dictionary.add}"></i> 
 	            </a>
 	            <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:dict:edit">
-		            <i class="fa fa-edit"></i> Edit
+		            <i class="fa fa-edit" th:text="#{Dictionary.edit}"></i> 
 		        </a>
 				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:dict:remove">
-		            <i class="fa fa-remove"></i> Delete
+		            <i class="fa fa-remove" th:text="#{Dictionary.delete}"></i> 
 		        </a>
 		        <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:dict:export">
-		            <i class="fa fa-download"></i> Export
+		            <i class="fa fa-download" th:text="#{Dictionary.export}"></i> 
 		        </a>
 		        <a class="btn btn-danger" onclick="clearCache()" shiro:hasPermission="system:dict:remove">
-		            <i class="fa fa-refresh"></i> Clear cache
+		            <i class="fa fa-refresh" th:text="#{Dictionary.clearCache}"></i>
 		        </a>
 	        </div>
 	        
@@ -83,16 +83,16 @@
 		        },
 		        {
 		            field: 'dictId',
-		            title: 'Id'
+		            title: /*[[#{Dictionary.table.id}]]*/
 		        },
 		        {
 		            field: 'dictName',
-		            title: 'Dictionary name',
+		            title: /*[[#{Dictionary.table.name}]]*/,
 		            sortable: true
 		        },
 		        {
 		            field: 'dictType',
-		            title: 'Dictionary type',
+		            title: /*[[#{Dictionary.table.type}]]*/,
 		            sortable: true,
 		            formatter: function(value, row, index) {
 		                return '<a href="javascript:void(0)" onclick="detail(\'' + row.dictId + '\')">' + value + '</a>';
@@ -100,7 +100,7 @@
 		        },
 		        {
 		            field: 'status',
-		            title: 'Status',
+		            title: /*[[#{Dictionary.table.status}]]*/,
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	return $.table.selectDictLabel(datas, value);
@@ -108,19 +108,19 @@
 		        },
 		        {
 		            field: 'remark',
-		            title: 'Note',
+		            title: /*[[#{Dictionary.table.note}]]*/,
 		            formatter: function(value, row, index) {
                         return $.table.tooltip(value);
 			        }
 		        },
 		        {
 		            field: 'createTime',
-		            title: 'Creation time',
+		            title: /*[[#{Dictionary.table.time}]]*/,
 		            sortable: true
 		        },
 		        {
 		            title: 'Action',
-		            align: 'center',
+		            align: /*[[#{Dictionary.table.action}]]*/,
 		            formatter: function(value, row, index) {
 		                var actions = [];
 		                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.dictId + '\')"><i class="fa fa-edit"></i>Edit</a> ');

@@ -14,7 +14,7 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label is-required" th:text="#{user.name2}"></label>
                         <div class="col-sm-8">
-                            <input name="userName" placeholder="Please enter a username" class="form-control" type="text" maxlength="30" required>
+                            <input name="userName" th:placeholder="#{user.placeholder.username}" class="form-control" type="text" maxlength="30" required>
                         </div>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
                         <label class="col-sm-4 control-label is-required" th:text="#{user.department}"></label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                            	<input name="deptName" onclick="selectDeptTree()" id="treeName" type="text" placeholder="Please select the department" class="form-control" required>
+                            	<input name="deptName" onclick="selectDeptTree()" id="treeName" type="text" th:placeholder="#{user.placeholder.department}" class="form-control" required>
                                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label is-required" th:text="#{user.phone}"></label>
                         <div class="col-sm-8">
-                            <input id="phonenumber" name="phonenumber" placeholder="Please enter the phone number" class="form-control" type="text" maxlength="11" required>
+                            <input id="phonenumber" name="phonenumber" th:placeholder="#{user.placeholder.phone}" class="form-control" type="text" maxlength="11" required>
                         </div>
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label is-required" th:text="#{user.email2}"></label>
                         <div class="col-sm-8">
-                            <input id="email" name="email" class="form-control email" type="text" maxlength="20" placeholder="please input your email" required>
+                            <input id="email" name="email" class="form-control email" type="text" maxlength="20" th:placeholder="#{user.placeholder.email}" required>
                         </div>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label is-required" th:text="#{user.loginName}"></label>
                         <div class="col-sm-8">
-                            <input id="loginName" name="loginName" placeholder="Please enter a login account" class="form-control" type="text" maxlength="30" required>
+                            <input id="loginName" name="loginName" th:placeholder="#{user.placeholder.loginName}" class="form-control" type="text" maxlength="30" required>
                         </div>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                     <div class="form-group">
                         <label class="col-sm-4 control-label is-required" th:text="#{user.pass}"></label>
                         <div class="col-sm-8">
-                            <input name="password" placeholder="Please enter your password" class="form-control" type="password" th:value="${@config.getKey('sys.user.initPassword')}" required>
+                            <input name="password" th:placeholder="#{user.placeholder.password}" class="form-control" type="password" th:value="${@config.getKey('sys.user.initPassword')}" required>
                         </div>
                     </div>
                 </div>
