@@ -87,7 +87,7 @@ public class CarrierEquipmentDoController extends BaseController
     @ResponseBody
     public AjaxResult addSave(EquipmentDo equipmentDo)
     {
-        return toAjax(equipmentDoService.insertEquipmentDo(equipmentDo));
+      return toAjax(equipmentDoService.insertEquipmentDo(equipmentDo));
     }
 
     /**
