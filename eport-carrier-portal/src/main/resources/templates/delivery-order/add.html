@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add new DO</title>
+    <link
+      th:href="@{/handsontable-6.2.2/dist/handsontable.full.min.css}"
+      rel="stylesheet"
+      media="screen"
+    />
+  </head>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      font: 12px sans-serif;
+    }
+
+    .handsontable th {
+      background: #03a9f4;
+    }
+
+    .handsontable td.above-fifty {
+      color: #33691e;
+      background: #dcedc8;
+    }
+
+    .handsontable td.below-fifty {
+      color: #777777;
+      background: #fefefe;
+    }
+
+    .hot-container {
+        overflow: hidden;
+    }
+  </style>
+  <body>
+    <div id="example" class="hot handsontable htColumnHeaders"></div>
+    <script
+      th:src="@{/handsontable-6.2.2/dist/handsontable.full.min.js}"
+    ></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var data =  [
+            ["<b>Amy</b>", 56, "Winners", "New York", 55],
+            ["James", 80, "Black Window", "Texas", 49],
+            ["Tom", 79, "Got the Challenge", "Huston", 65],
+            ["Lucia", 101, "Black Widow", "Texas", 47],
+            ["Adam", 67, "Come Back", "Miami", 53],
+            ["Anthony", 78, "Need for Score", "Anchorage", 56]
+          ];
+        function myData() {
+          return data;
+        }
+
+        var example = document.getElementById("example"),
+          hot;
+
+        hot = new Handsontable(example, {
+          data: myData(),
+          stretchH: 'all',
+          width: '100%',
+          colHeaders: ["Name", "Points", "Team Name", "City", "Age"],
+          licenseKey: "non-commercial-and-evaluation",
+          columns: [
+            {
+              renderer: 'html'
+            },
+            {
+              type: "autocomplete",
+              source: availablePoints(),
+              strict: true,
+            },
+            {
+              type: "numeric",
+            },
+            {},
+            {
+              type: "autocomplete",
+              source: ageOfCompetitor(),
+              strict: true,
+            },
+          ],
+        });
+
+        function availablePoints() {
+          var tab = [];
+          for (var i = 30; i < 111; i++) {
+            tab.push(i);
+          }
+          return tab;
+        }
+
+        function ageOfCompetitor() {
+          var tab = [];
+          for (var i = 40; i < 130; i++) {
+            tab.push(i);
+          }
+          return tab;
+        }
+
+        hot.updateSettings({
+          cells: function (row, col) {
+            var cellProp = {};
+            if (col === 4 && hot.getDataAtCell(row, col) > 49) {
+              cellProp.className = " above-fifty";
+            } else if (col === 4) {
+              cellProp.className = " below-fifty";
+            }
+            return cellProp;
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

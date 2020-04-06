@@ -45,4 +45,10 @@ public class CarrierIndexController extends BaseController
         mmap.put("version", Global.getVersion());
         return "main";
     }
+
+    @GetMapping("/do/add")
+    public String addDO(ModelMap map)
+    {
+      return "delivery-order/add";
+    }
 }
