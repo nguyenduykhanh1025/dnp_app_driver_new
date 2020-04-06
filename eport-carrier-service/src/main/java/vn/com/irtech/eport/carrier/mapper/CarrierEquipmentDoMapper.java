@@ -28,6 +28,8 @@ public interface CarrierEquipmentDoMapper
      */
     public List<CarrierEquipmentDo> selectEquipmentDoList(CarrierEquipmentDo equipmentDo);
 
+
+    public List<CarrierEquipmentDo> selectEquipmentDoListDo();
     /**
      * Add Exchange Delivery Order
      * 
@@ -58,4 +60,6 @@ public interface CarrierEquipmentDoMapper
      * @return result
      */
     public int deleteEquipmentDoByIds(String[] ids);
+
+	
 }

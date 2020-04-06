@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.carrier.domain.CarrierEquipmentDo;
+import vn.com.irtech.eport.carrier.service.CarrierIEquipmentDoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -39,6 +41,9 @@ public class CarrierEquipmentDoController extends BaseController
     @Autowired
     private IEquipmentDoService equipmentDoService;
 
+    @Autowired
+    private CarrierIEquipmentDoService carrierrEquipmentDoService;
+
     @GetMapping()
     public String EquipmentDo()
     {
@@ -53,11 +58,18 @@ public class CarrierEquipmentDoController extends BaseController
     @ResponseBody
     public TableDataInfo list(EquipmentDo equipmentDo)
     {
-        
         List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
         return getDataTable(list);
     }
+     
 
+    @PostMapping("/listDo")
+    @ResponseBody
+    public Object listDo(int page)
+    {
+        List<CarrierEquipmentDo> List = carrierrEquipmentDoService.selectEquipmentDoListDo();
+        return List;
+    }
     /**
      * Export Exchange Delivery Order List
      */

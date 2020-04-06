@@ -158,6 +158,16 @@
             </div>
             <div class="col-sm-12 select-table table-striped">
                 <div id="example" class="hot handsontable htColumnHeaders"></div>
+                <nav aria-label="..." style="float: right;">
+                    <ul class="pagination">
+                      <li class="page-item">
+                        <a class="page-link" onclick="prevPage()">Previous</a>
+                      </li>
+                      <li>
+                        <a class="page-link" onclick="nextPage()">Next</a>
+                      </li>
+                    </ul>
+                  </nav>
             </div>
         </div>
     </div>
@@ -171,20 +181,23 @@
  
     <script>
         
-       
+        var hot;
+        var currentPage = 1;
         document.addEventListener("DOMContentLoaded", function () {
             var prefix = "/carrier/do";
             var dataObj;
             $(document).ready(function() {
                 $.ajax({
-                    url: prefix + "/list",
+                    url: prefix + "/listDo",
                     method: "POST",
+                    data: {
+                        page: currentPage,
+                    }
                 }).success(function(result) {
                     //console.log(result);
-                    dataObj = result.rows;
-                    console.log(dataObj);
-                    var example = document.getElementById("example"),
-            hot;
+                    dataObj = result;
+                    console.log(result);
+                    var example = document.getElementById("example");
                     hot = new Handsontable(example, {
                         data: dataObj,
                     // startRows: 10,
@@ -254,7 +267,18 @@
                 });
             });
             console.log(dataObj);
-         
+            function nextPage(){
+                $.ajax({
+                    url: prefix + "/list",
+                    method: "POST",
+                    data : {
+                        page: currentPage
+                        },
+                }).success(function(result) {
+                    dataObj = result.rows;
+                    hot.render();
+                })
+            }
       </script>
 </body>
 </html>

@@ -44,7 +44,7 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     {
         return equipmentDoMapper.selectEquipmentDoList(equipmentDo);
     }
-
+    
     /**
      * Add Exchange Delivery Order
      * 
