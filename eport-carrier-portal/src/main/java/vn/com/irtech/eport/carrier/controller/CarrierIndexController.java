@@ -47,15 +47,4 @@ public class CarrierIndexController extends BaseController
         return "main";
     }
 
-    @GetMapping("/do/add")
-    public String addDO(ModelMap map)
-    {
-      return "delivery-order/add";
-    }
-    @GetMapping("/index2")
-    public String index2()
-    {
-        return ("equipment/index");
-    }
-
 }
