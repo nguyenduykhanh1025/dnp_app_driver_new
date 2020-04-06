@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -89,15 +88,6 @@ public class SysEDIController extends BaseController
         return folderUpload;
       }
 
-	private JSONObject getSuccessMessage() {
-		JSONObject jsonObject = null;
-		try {
-			jsonObject = new JSONObject();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return jsonObject;
-	}
 	
 	@PostMapping("/datalist")
     @RequiresPermissions("system:edi:list")
@@ -215,7 +205,7 @@ public class SysEDIController extends BaseController
 			if(s.contains("LOC+99"))
 			{
 				String[] emptyContDepotA = s.split("\\+");
-				if(!emptyContDepotA[3].isEmpty()){
+				if(emptyContDepotA.length > 4){
 					String[] emptyContDepot = emptyContDepotA[3].split(":");
 					obj.put("emptyContDepot", emptyContDepot[0]);
 					edi.setEmptycontDepot(emptyContDepot[0]);
