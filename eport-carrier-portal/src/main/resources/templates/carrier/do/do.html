@@ -2,7 +2,42 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <link
+    th:href="@{/handsontable-6.2.2/dist/handsontable.full.min.css}"
+    rel="stylesheet"
+    media="screen"
+    />
 </head>
+<style>
+     body {
+      padding: 0;
+      margin: 0;
+      background: #ffffff;
+    }
+
+    th,
+    td {
+      font: 12px sans-serif;
+    }
+
+    .handsontable th {
+      background: #03a9f4;
+    }
+
+    .handsontable td.above-fifty {
+      color: #33691e;
+      background: #dcedc8;
+    }
+
+    .handsontable td.below-fifty {
+      color: #777777;
+      background: #fefefe;
+    }
+
+    .hot-container {
+        overflow: hidden;
+    }
+</style>
 <body class="gray-bg">
      <div class="container-div">
         <div class="row">
@@ -122,124 +157,104 @@
                 </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
-                <table id="bootstrap-table"></table>
+                <div id="example" class="hot handsontable htColumnHeaders"></div>
             </div>
         </div>
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-      
-        var prefix = ctx + "carrier/do";
 
-        $(function() {
-            var options = {
-                url: prefix + "/list",
-                createUrl: prefix + "/add",
-                updateUrl: prefix + "/edit/{id}",
-                removeUrl: prefix + "/remove",
-                exportUrl: prefix + "/export",
-                modalName: "Exchange Delivery Order",
-                columns: [{
-                    checkbox: true
-                },
-                {
-                    field: 'id', 
-                    title: 'ID',
-                    visible: false
-                },
-                {
-                    field: 'shippingLineId', 
-                    title: 'ID Hang Tau'
-                },
-                {
-                    field: 'shippingLineCode', 
-                    title: 'Ma Hang Tau'
-                },
-                {
-                    field: 'documentId', 
-                    title: 'Document'
-                },
-                {
-                    field: 'orderNumber', 
-                    title: 'So Lenh'
-                },
-                {
-                    field: 'billOfLading', 
-                    title: 'So B/L'
-                },
-                {
-                    field: 'businessUnit', 
-                    title: 'Don Vi Khai Thac'
-                },
-                {
-                    field: 'consignee', 
-                    title: 'Chu Hang'
-                },
-                {
-                    field: 'containerNumber', 
-                    title: 'So Cont'
-                },
-                {
-                    field: 'expiredDem', 
-                    title: 'Han Lenh'
-                },
-                {
-                    field: 'emptyContainerDepot', 
-                    title: 'Noi Ha Rong'
-                },
-                {
-                    field: 'detFreeTime', 
-                    title: 'So Ngay Mien Luu Vo Cont'
-                },
-                {
-                    field: 'secureCode', 
-                    title: 'Ma Bao Mat'
-                },
-                {
-                    field: 'releaseDate', 
-                    title: 'Ngay Release'
-                },
-                {
-                    field: 'vessel', 
-                    title: 'Tau'
-                },
-                {
-                    field: 'voyNo', 
-                    title: 'Chuyen'
-                },
-                {
-                    field: 'status', 
-                    title: 'DO Status'
-                },
-                {
-                    field: 'processStatus', 
-                    title: 'Process Status'
-                },
-                {
-                    field: 'documentStatus', 
-                    title: 'Document Status'
-                },
-                {
-                    field: 'releaseStatus', 
-                    title: 'Release Status'
-                },
-                {
-                    field: 'createSource', 
-                    title: 'Nguon Tao: eport, edi, catos'
-                },
-                {
-                    title: 'Action',
-                    align: 'center',
-                    formatter: function(value, row, index) {
-                        var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>Edit</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Delete</a>');
-                        return actions.join('');
-                    }
-                }]
-            };
-            $.table.init(options);
-        });
     </script>
+    <script
+        th:src="@{/handsontable-6.2.2/dist/handsontable.full.min.js}"
+    ></script>
+ 
+    <script>
+        
+       
+        document.addEventListener("DOMContentLoaded", function () {
+            var prefix = "/carrier/do";
+            var dataObj;
+            $(document).ready(function() {
+                $.ajax({
+                    url: prefix + "/list",
+                    method: "POST",
+                }).success(function(result) {
+                    //console.log(result);
+                    dataObj = result.rows;
+                    console.log(dataObj);
+                    var example = document.getElementById("example"),
+            hot;
+                    hot = new Handsontable(example, {
+                        data: dataObj,
+                    // startRows: 10,
+                        stretchH: 'all',
+                        width: '100%',
+                        colHeaders: ["STT",
+                        "Mã hãng tàu<br>Carrier",
+                        "Số vận đơn<br> Bill No",
+                        "Số container<br>Container No",
+                        "Tên khách hàng<br>Consignee",
+                        "Hạn lệnh<br> Valid to date",
+                        "Nơi hạ vỏ<br> Empty depot",
+                        "Số ngày miễn lưu vỏ<br> DET freetime",
+                        "Tên tàu<br>Vessel",
+                        "Chuyến<br>Voyage",
+                        "Trạng thái<br>Note"],
+                        filter: "true",
+                        licenseKey: "non-commercial-and-evaluation",
+                        columns: [{
+                            data: 'carrierId',
+                            type: 'text'
+                        },
+                        {
+                            data: 'businessUnit',
+                            type: 'text'
+                        },
+                        {
+                            data: 'billOfLading',
+                            type: 'text'
+                        },
+                        {
+                            data: 'releaseDate',
+                            type: 'text'
+                        },
+                        {
+                            data: 'containerNumber',
+                            type: 'text'
+                        },
+                        {
+                            data: 'releaseDate',
+                            type: 'date',
+                            dateFormat: 'MM/DD/YYYY'
+                        },
+                        {
+                            data: 'emptyContainerDepot',
+                            type: 'text'
+                        },
+                        {
+                            data: 'detFreeTime',
+                            type: 'numeric',
+                        },
+                        {
+                            data: 'vessel',
+                            type: 'numeric',
+                        },
+                        {
+                            data: 'voy_no',
+                            type: 'numeric',
+                        },
+                        {
+                            data: 'status',
+                            type: 'numeric',
+                        }
+                        ],
+                    });
+                    });
+                });
+            });
+            console.log(dataObj);
+         
+      </script>
 </body>
 </html>
