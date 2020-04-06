@@ -33,6 +33,11 @@ public class CarrierEquipmentDoServiceImpl implements CarrierIEquipmentDoService
         return equipmentDoMapper.selectEquipmentDoById(id);
     }
 
+
+    public List<CarrierEquipmentDo> selectEquipmentDoListDo()
+    {
+        return equipmentDoMapper.selectEquipmentDoListDo();
+    }
     /**
      * Get Exchange Delivery Order List
      * 

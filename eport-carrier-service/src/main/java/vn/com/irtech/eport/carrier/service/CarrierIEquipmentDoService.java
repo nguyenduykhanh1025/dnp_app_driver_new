@@ -27,6 +27,8 @@ public interface CarrierIEquipmentDoService
      */
     public List<CarrierEquipmentDo> selectEquipmentDoList(CarrierEquipmentDo equipmentDo);
 
+    public List<CarrierEquipmentDo> selectEquipmentDoListDo();
+
     /**
      * Add Exchange Delivery Order
      * 

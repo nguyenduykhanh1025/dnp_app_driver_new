@@ -45,13 +45,6 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
         return equipmentDoMapper.selectEquipmentDoList(equipmentDo);
     }
     
-
-
-    @Override
-    public List<EquipmentDo> selectEquipmentDoListDo()
-    {
-        return equipmentDoMapper.selectEquipmentDoListDo();
-    }
     /**
      * Add Exchange Delivery Order
      * 
