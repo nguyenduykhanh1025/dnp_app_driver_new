@@ -65,5 +65,13 @@ public interface CarrierAccountMapper
      * @param email
      * @return
      */
-	public CarrierAccount selectByEmail(String email);
+    public CarrierAccount selectByEmail(String email);
+    
+    /**
+	 * Check email unique
+	 * 
+	 * @param email
+	 * @return
+	 */
+	public int checkEmailUnique(String email);
 }
