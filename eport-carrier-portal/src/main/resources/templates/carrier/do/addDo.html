@@ -63,7 +63,7 @@
   <body>
     <div class="container">
       <div id="example" class="hot handsontable htColumnHeaders"></div>
-      <hr>
+      <hr />
       <div class="footer-add">
         <button type="button" class="btn btn-primary" onclick="addAll()">
           Xác nhận
@@ -86,6 +86,14 @@
       // Get table element
       var example = document.getElementById("example"),
         hot;
+      // Empty row
+      emptyValidator = function (value, callback) {
+        if (!value || 0 === value.length) {
+          callback(false);
+        } else {
+          callback(true);
+        }
+      };
       // Load table
       document.addEventListener("DOMContentLoaded", function () {
         hot = new Handsontable(example, {
@@ -107,18 +115,35 @@
           ],
           filter: "true",
           licenseKey: "non-commercial-and-evaluation",
-          columns: [{}, 
+          columns: [
+            {},
             {
-              readOnly: true
+              readOnly: true,
             },
-            {}, {}, {}, 
             {
-              type: 'date',
-              dateFormat: 'MM/DD/YYYY',
+              validator: emptyValidator,
+            },
+            {
+              validator: emptyValidator,
+            },
+            {
+              validator: emptyValidator,
+            },
+            {
+              type: "date",
+              dateFormat: "MM/DD/YYYY",
               correctFormat: true,
-              defaultDate: new Date()
-            }, 
-            {}, {}, {}, {}, {}],
+              defaultDate: new Date(),
+              validator: emptyValidator,
+            },
+            {
+              type: "numeric",
+            },
+            {},
+            {},
+            {},
+            {},
+          ],
         });
 
         function availablePoints() {
@@ -140,31 +165,55 @@
         hot.updateSettings({
           cells: function (row, col) {
             var cellProp = {};
-            if (col === 4 && hot.getDataAtCell(row, col) > 49) {
+            if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
               cellProp.className = " above-fifty";
-            } else if (col === 4) {
+            } else if (col === 5) {
               cellProp.className = " below-fifty";
             }
             return cellProp;
           },
         });
       });
+
+      function isGoodDate(dt) {
+        var reGoodDate = /^((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})*$/;
+        return reGoodDate.test(dt);
+      }
+
       function addAll() {
-        currentData = hot.getData();
-        var jsonData = JSON.stringify(currentData);
-        // currentData.forEach(element => {
-        //   //JSON.parse(element);
-        //   element  = JSON.stringify(element);
-        // });
-        console.log(jsonData);
-        $.ajax({
-          url: "/carrier/do/add",
-          method: "post",
-          data: {
-            equipmentDo: jsonData
+        // Get the data in the cells
+        var myTableData = hot.getData();
+
+        // If the last row is empty, remove it before validation
+        if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
+          // hot.updateSettings({minSpareRows: 0});
+
+          // Remove the last row if it's empty
+          hot.alter(
+            "remove_row",
+            parseInt(myTableData.length - 1),
+            (keepEmptyRows = false)
+          );
+        }
+
+        // Validate the cells and submit the form via ajax or whatever
+        hot.validateCells(function (result, obj) {
+          if (result == true) {
+            var jsonData = JSON.stringify(myTableData);
+
+            $.ajax({
+              url: "/carrier/do/add",
+              method: "post",
+              data: {
+                equipmentDo: jsonData,
+              },
+            }).done(function (result) {
+              console.log(result);
+            });
+            console.log("submitted");
+          } else {
+            //hotInstance.updateSettings({minSpareRows: 1});
           }
-        }).done(function(result) {
-          console.log(result);
         });
       }
     </script>
