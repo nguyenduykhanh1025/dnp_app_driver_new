@@ -214,7 +214,7 @@ public class SysEDIController extends BaseController
 			if(s.contains("LOC+99"))
 			{
 				String[] emptyContDepotA = s.split("\\+");
-				if(!emptyContDepotA[3].isEmpty()){
+				if(emptyContDepotA.length > 4){
 					String[] emptyContDepot = emptyContDepotA[3].split(":");
 					obj.put("emptyContDepot", emptyContDepot[0]);
 					edi.setEmptycontDepot(emptyContDepot[0]);
