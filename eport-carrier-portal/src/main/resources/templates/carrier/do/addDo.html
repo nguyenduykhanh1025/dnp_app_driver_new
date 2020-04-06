@@ -9,6 +9,7 @@
       rel="stylesheet"
       media="screen"
     />
+    <link th:href="@{/bootstrap-4.4.1/bootstrap.min.css}" rel="stylesheet" />
   </head>
   <style>
     body {
@@ -23,7 +24,15 @@
     }
 
     .handsontable th {
-      background: #03a9f4;
+      background: #63aeff;
+      color: #fff;
+      /* font-weight: 300; */
+      text-align: center;
+      vertical-align: middle;
+      font-size: 1rem;
+      line-height: 2;
+      padding: 5px 2px !important;
+      font-family: inherit;
     }
 
     .handsontable td.above-fifty {
@@ -37,51 +46,103 @@
     }
 
     .hot-container {
-        overflow: hidden;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .footer-add {
+      display: flex;
+      justify-content: flex-end;
     }
   </style>
   <body>
-    <div id="example" class="hot handsontable htColumnHeaders"></div>
+    <div class="container">
+      <div id="example" class="hot handsontable htColumnHeaders"></div>
+      <hr />
+      <div class="footer-add">
+        <button type="button" class="btn btn-primary" onclick="addAll()">
+          Xác nhận
+        </button>
+      </div>
+    </div>
+    <!-- Jquery -->
+    <script
+      th:src="@{/bootstrap-4.4.1/jquery-3.4.1.min.js}"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <!-- Boostrap -->
+    <script th:src="@{/bootstrap-4.4.1/bootstrap.min.js}"></script>
+    <!-- Handsondtable -->
     <script
       th:src="@{/handsontable-6.2.2/dist/handsontable.full.min.js}"
     ></script>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        var data =  [
-          [], [], [],[], []
-        ];
-        function myData() {
-          return data;
+      // Get table element
+      var example = document.getElementById("example"),
+        hot;
+      // Empty row
+      emptyValidator = function (value, callback) {
+        if (!value || 0 === value.length) {
+          callback(false);
+        } else {
+          callback(true);
         }
-
-        var example = document.getElementById("example"),
-          hot;
-
+      };
+      // Load table
+      document.addEventListener("DOMContentLoaded", function () {
         hot = new Handsontable(example, {
-          startRows: 1,
-          stretchH: 'all',
-          width: '100%',
-          colHeaders: ["Mã hãng tàu", "Points", "Team Name", "City", "Age"],
+          startRows: 5,
+          stretchH: "all",
+          width: "100%",
+          colHeaders: [
+            "STT",
+            "Mã hãng tàu <br> Carrier",
+            "Số vận đơn (*)<br>Bill No.",
+            "Số container (*) <br> Container No.",
+            "Tên khách hàng (*) <br> Consignee",
+            "Hạn lệnh (*) <br> Valid to date",
+            "Nơi hạ vỏ <br> Empty depot",
+            "Số ngày miễn lưu vỏ <br> DET freetime",
+            "Tên tàu <br> Vessel",
+            "Chuyến <br> Voyage",
+            "Ghi chú",
+          ],
           filter: "true",
           licenseKey: "non-commercial-and-evaluation",
           columns: [
+            {},
             {
-              renderer: 'html'
+              readOnly: true,
             },
             {
-              type: "autocomplete",
-              source: availablePoints(),
-              strict: true,
+              validator: emptyValidator,
+            },
+            {
+              validator: emptyValidator,
+            },
+            {
+              validator: emptyValidator,
+            },
+            {
+              type: "date",
+              dateFormat: "MM/DD/YYYY",
+              correctFormat: true,
+              defaultDate: new Date(),
+              validator: emptyValidator,
             },
             {
               type: "numeric",
             },
             {},
-            {
-              type: "autocomplete",
-              source: ageOfCompetitor(),
-              strict: true,
-            },
+            {},
+            {},
+            {},
           ],
         });
 
@@ -104,15 +165,57 @@
         hot.updateSettings({
           cells: function (row, col) {
             var cellProp = {};
-            if (col === 4 && hot.getDataAtCell(row, col) > 49) {
+            if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
               cellProp.className = " above-fifty";
-            } else if (col === 4) {
+            } else if (col === 5) {
               cellProp.className = " below-fifty";
             }
             return cellProp;
           },
         });
       });
+
+      function isGoodDate(dt) {
+        var reGoodDate = /^((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})*$/;
+        return reGoodDate.test(dt);
+      }
+
+      function addAll() {
+        // Get the data in the cells
+        var myTableData = hot.getData();
+
+        // If the last row is empty, remove it before validation
+        if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
+          // hot.updateSettings({minSpareRows: 0});
+
+          // Remove the last row if it's empty
+          hot.alter(
+            "remove_row",
+            parseInt(myTableData.length - 1),
+            (keepEmptyRows = false)
+          );
+        }
+
+        // Validate the cells and submit the form via ajax or whatever
+        hot.validateCells(function (result, obj) {
+          if (result == true) {
+            var jsonData = JSON.stringify(myTableData);
+
+            $.ajax({
+              url: "/carrier/do/add",
+              method: "post",
+              data: {
+                equipmentDo: jsonData,
+              },
+            }).done(function (result) {
+              console.log(result);
+            });
+            console.log("submitted");
+          } else {
+            //hotInstance.updateSettings({minSpareRows: 1});
+          }
+        });
+      }
     </script>
   </body>
 </html>
