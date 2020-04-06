@@ -50,11 +50,10 @@ public class CarrierEquipmentDoController extends BaseController
     @ResponseBody
     public TableDataInfo list(EquipmentDo equipmentDo)
     {
-        
         List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
         return getDataTable(list);
     }
-
+     
     /**
      * Export Exchange Delivery Order List
      */
