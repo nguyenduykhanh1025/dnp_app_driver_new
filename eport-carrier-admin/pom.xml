@@ -20,6 +20,10 @@
         <!-- Common utils-->
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>
+            <artifactId>eport-framework</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>vn.com.irtech.eport</groupId>
             <artifactId>eport-carrier-service</artifactId>
         </dependency>
 
