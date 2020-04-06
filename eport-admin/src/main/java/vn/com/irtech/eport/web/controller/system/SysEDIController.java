@@ -88,15 +88,6 @@ public class SysEDIController extends BaseController
         return folderUpload;
       }
 
-	private JSONObject getSuccessMessage() {
-		JSONObject jsonObject = null;
-		try {
-			jsonObject = new JSONObject();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return jsonObject;
-	}
 	
 	@PostMapping("/datalist")
     @RequiresPermissions("system:edi:list")
