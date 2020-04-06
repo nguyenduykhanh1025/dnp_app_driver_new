@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('Add Exchange Delivery Order')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-do-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">ID Hang Tau：</label>
+                <div class="col-sm-8">
+                    <input name="shippingLineId" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">Ma Hang Tau：</label>
+                <div class="col-sm-8">
+                    <input name="shippingLineCode" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Document：</label>
+                <div class="col-sm-8">
+                    <input name="documentId" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">So Lenh：</label>
+                <div class="col-sm-8">
+                    <input name="orderNumber" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">So B/L：</label>
+                <div class="col-sm-8">
+                    <input name="billOfLading" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">Don Vi Khai Thac：</label>
+                <div class="col-sm-8">
+                    <input name="businessUnit" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">Chu Hang：</label>
+                <div class="col-sm-8">
+                    <input name="consignee" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label is-required">So Cont：</label>
+                <div class="col-sm-8">
+                    <input name="containerNumber" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Han Lenh：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input name="expiredDem" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Noi Ha Rong：</label>
+                <div class="col-sm-8">
+                    <input name="emptyContainerDepot" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">So Ngay Mien Luu Vo Cont：</label>
+                <div class="col-sm-8">
+                    <input name="detFreeTime" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Ma Bao Mat：</label>
+                <div class="col-sm-8">
+                    <input name="secureCode" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Ngay Release：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                        <input name="releaseDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Tau：</label>
+                <div class="col-sm-8">
+                    <input name="vessel" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Chuyen：</label>
+                <div class="col-sm-8">
+                    <input name="voyNo" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">DO Status：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box">
+                        <input type="radio" name="status" value="">
+                        <label th:for="status" th:text="未知"></label>
+                    </div>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> Code generation please select dictionary attributes</span>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Process Status：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box">
+                        <input type="radio" name="processStatus" value="">
+                        <label th:for="processStatus" th:text="未知"></label>
+                    </div>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> Code generation please select dictionary attributes</span>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Document Status：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box">
+                        <input type="radio" name="documentStatus" value="">
+                        <label th:for="documentStatus" th:text="未知"></label>
+                    </div>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> Code generation please select dictionary attributes</span>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Release Status：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box">
+                        <input type="radio" name="releaseStatus" value="">
+                        <label th:for="releaseStatus" th:text="未知"></label>
+                    </div>
+                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> Code generation please select dictionary attributes</span>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Nguon Tao: eport, edi, catos：</label>
+                <div class="col-sm-8">
+                    <input name="createSource" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript">
+        var prefix = ctx + "system/do"
+        $("#form-do-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-do-add').serialize());
+            }
+        }
+
+        $("input[name='expiredDem']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='releaseDate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

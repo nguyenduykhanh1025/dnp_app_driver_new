@@ -11,6 +11,8 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
+
+
 /**
  * 
  * @author admin
@@ -44,4 +46,10 @@ public class CarrierIndexController extends BaseController
         mmap.put("version", Global.getVersion());
         return "main";
     }
+    @GetMapping("/index2")
+    public String index2()
+    {
+        return ("equipment/index");
+    }
+
 }
