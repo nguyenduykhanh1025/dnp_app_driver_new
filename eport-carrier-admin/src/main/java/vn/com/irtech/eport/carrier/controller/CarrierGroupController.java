@@ -86,6 +86,7 @@ public class CarrierGroupController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CarrierGroup carrierGroup)
     {
+        
         return toAjax(carrierGroupService.insertCarrierGroup(carrierGroup));
     }
 

@@ -17,6 +17,8 @@ import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 /**
@@ -33,6 +35,9 @@ public class CarrierAccountController extends BaseController
 
     @Autowired
     private ICarrierAccountService carrierAccountService;
+
+    @Autowired
+    private SysPasswordService passwordService;
 
     @RequiresPermissions("carrier:account:view")
     @GetMapping()
@@ -86,6 +91,12 @@ public class CarrierAccountController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CarrierAccount carrierAccount)
     {
+        if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail()).equals("1")) {
+            return error("Email already exist");
+        }
+        carrierAccount.setSalt(ShiroUtils.randomSalt());
+        carrierAccount.setPassword(passwordService.encryptPassword(carrierAccount.getEmail()
+        , carrierAccount.getPassword(), carrierAccount.getSalt()));
         return toAjax(carrierAccountService.insertCarrierAccount(carrierAccount));
     }
 

@@ -105,5 +105,21 @@ public class CarrierAccountServiceImpl implements ICarrierAccountService
 	@Override
 	public int resetUserPwd(CarrierAccount user) {
 		return updateCarrierAccount(user);
-	}
+    }
+    
+    /**
+	 * Check email unique
+	 * 
+	 * @param email
+	 * @return
+	 */
+    @Override
+	public String checkEmailUnique(String email) {
+        int count = carrierAccountMapper.checkEmailUnique(email);
+        if (count > 0)
+        {
+            return "1";
+        }
+        return "0";
+    }
 }

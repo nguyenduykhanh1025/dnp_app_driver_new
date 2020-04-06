@@ -73,4 +73,12 @@ public interface ICarrierAccountService {
 	 * @return
 	 */
 	public int resetUserPwd(CarrierAccount user);
+
+	/**
+	 * Check email unique
+	 * 
+	 * @param email
+	 * @return
+	 */
+	public String checkEmailUnique(String email);
 }
