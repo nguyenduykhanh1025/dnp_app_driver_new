@@ -117,4 +117,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="checkEmailUnique" parameterType="String" resultType="int">
+		select count(1) from carrier_account where email=#{email}
+	</select>
 </mapper>

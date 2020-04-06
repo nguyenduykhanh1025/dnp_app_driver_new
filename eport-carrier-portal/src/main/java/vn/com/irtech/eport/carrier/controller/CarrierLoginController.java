@@ -52,7 +52,7 @@ public class CarrierLoginController extends BaseController {
 
 		return "login";
 	}
-
+	
 	@PostMapping("/login")
 	@ResponseBody
 	public AjaxResult ajaxLogin(String username, String password, Boolean rememberMe) {
@@ -79,7 +79,7 @@ public class CarrierLoginController extends BaseController {
 	@GetMapping("/resetPwd/{userId}")
 	public String resetPwd(@PathVariable("userId") Long userId, ModelMap mmap) {
 		mmap.put("user", carrierService.selectCarrierAccountById(userId));
-		return prefix + "/resetPwd";
+		return prefix + "/profile/resetPwd";
 	}
 
 	@RequiresPermissions("system:user:resetPwd")
