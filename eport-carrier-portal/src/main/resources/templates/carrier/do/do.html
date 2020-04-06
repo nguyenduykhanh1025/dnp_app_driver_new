@@ -188,15 +188,15 @@
             var dataObj;
             $(document).ready(function() {
                 $.ajax({
-                    url: prefix + "/list",
+                    url: prefix + "/listDo",
                     method: "POST",
                     data: {
                         page: currentPage,
                     }
                 }).success(function(result) {
                     //console.log(result);
-                    dataObj = result.rows;
-                    console.log(dataObj);
+                    dataObj = result;
+                    console.log(result);
                     var example = document.getElementById("example");
                     hot = new Handsontable(example, {
                         data: dataObj,

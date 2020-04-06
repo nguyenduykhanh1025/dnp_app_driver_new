@@ -54,6 +54,14 @@ public class CarrierEquipmentDoController extends BaseController
         return getDataTable(list);
     }
      
+
+    @PostMapping("/listDo")
+    @ResponseBody
+    public Object listDo(int page)
+    {
+        List<EquipmentDo> List = equipmentDoService.selectEquipmentDoListDo();
+        return List;
+    }
     /**
      * Export Exchange Delivery Order List
      */
