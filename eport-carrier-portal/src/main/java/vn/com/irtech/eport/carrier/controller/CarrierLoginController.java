@@ -79,7 +79,7 @@ public class CarrierLoginController extends BaseController {
 	@GetMapping("/resetPwd/{userId}")
 	public String resetPwd(@PathVariable("userId") Long userId, ModelMap mmap) {
 		mmap.put("user", carrierService.selectCarrierAccountById(userId));
-		return prefix + "/resetPwd";
+		return prefix + "/profile/resetPwd";
 	}
 
 	@RequiresPermissions("system:user:resetPwd")
