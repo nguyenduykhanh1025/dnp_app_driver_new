@@ -50,7 +50,7 @@ public class CarrierEquipmentDoController extends BaseController
     @ResponseBody
     public TableDataInfo list(EquipmentDo equipmentDo)
     {
-        startPage();
+        
         List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
         return getDataTable(list);
     }
