@@ -32,7 +32,6 @@ public class CarrierIndexController extends BaseController
         mmap.put("copyrightYear", Global.getCopyrightYear());
         return "index";
     }
-
     @GetMapping("/switchSkin")
     public String switchSkin(ModelMap mmap)
     {
