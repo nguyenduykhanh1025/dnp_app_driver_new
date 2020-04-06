@@ -52,7 +52,7 @@ public class CarrierLoginController extends BaseController {
 
 		return "login";
 	}
-
+	
 	@PostMapping("/login")
 	@ResponseBody
 	public AjaxResult ajaxLogin(String username, String password, Boolean rememberMe) {
