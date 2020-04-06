@@ -1,196 +1,165 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en">
+
 <head>
-    <th:block th:include="include :: header('Add Exchange Delivery Order')" />
-    <th:block th:include="include :: datetimepicker-css" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>File Upload</title>
+  <script th:src="@{/js/jquery.min.js}"></script>
+  <script th:src="@{/js/bootstrap.min.js}"></script>
+  <script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+  <link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet" />
+  <script th:src="@{/ajax/libs/handsontable/handsontable.full.min.js}"></script>
+  <link th:href="@{/ajax/libs/handsontable/handsontable.full.min.css}" rel="stylesheet" media="screen" />
+
 </head>
-<body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-do-add">
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">ID Nhan Vien Hang Tau：</label>
-                <div class="col-sm-8">
-                    <input name="carrierId" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Ma Hang Tau：</label>
-                <div class="col-sm-8">
-                    <input name="carrierCode" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">So Lenh (Optional)：</label>
-                <div class="col-sm-8">
-                    <input name="orderNumber" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">So B/L：</label>
-                <div class="col-sm-8">
-                    <input name="billOfLading" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Don Vi Khai Thac (Optional)：</label>
-                <div class="col-sm-8">
-                    <input name="businessUnit" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Chu Hang：</label>
-                <div class="col-sm-8">
-                    <input name="consignee" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">So Cont：</label>
-                <div class="col-sm-8">
-                    <input name="containerNumber" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Han Lenh：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="expiredDem" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Noi Ha Rong：</label>
-                <div class="col-sm-8">
-                    <input name="emptyContainerDepot" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">So Ngay Mien Luu Vo Cont：</label>
-                <div class="col-sm-8">
-                    <input name="detFreeTime" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Ma Bao Mat (optional)：</label>
-                <div class="col-sm-8">
-                    <input name="secureCode" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Ngay Release：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="releaseDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Tau：</label>
-                <div class="col-sm-8">
-                    <input name="vessel" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Chuyen：</label>
-                <div class="col-sm-8">
-                    <input name="voyNo" class="form-control" type="text">
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">DO Type：</label>
-                <div class="col-sm-8">
-                    <select name="doType" class="form-control m-b">
-                        <option value="">所有</option>
-                    </select>
-                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> Code generation please select dictionary attributes</span>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">DO Status：</label>
-                <div class="col-sm-8">
-                    <div class="radio-box" th:each="dict : ${@dict.getType('sys_do_status')}">
-                        <input type="radio" th:id="${'status_' + dict.dictCode}" name="status" th:value="${dict.dictValue}" th:checked="${dict.default}">
-                        <label th:for="${'status_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Process Status：</label>
-                <div class="col-sm-8">
-                    <div class="radio-box" th:each="dict : ${@dict.getType('sys_do_process_status')}">
-                        <input type="radio" th:id="${'processStatus_' + dict.dictCode}" name="processStatus" th:value="${dict.dictValue}" th:checked="${dict.default}">
-                        <label th:for="${'processStatus_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Document Status：</label>
-                <div class="col-sm-8">
-                    <div class="radio-box" th:each="dict : ${@dict.getType('sys_do_document_status')}">
-                        <input type="radio" th:id="${'documentStatus_' + dict.dictCode}" name="documentStatus" th:value="${dict.dictValue}" th:checked="${dict.default}">
-                        <label th:for="${'documentStatus_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Document Receipt Date：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="documentReceiptDate" class="form-control" placeholder="yyyy-MM-dd" type="text">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Release Status：</label>
-                <div class="col-sm-8">
-                    <div class="radio-box">
-                        <input type="radio" name="releaseStatus" value="">
-                        <label th:for="releaseStatus" th:text="未知"></label>
-                    </div>
-                    <span class="help-block m-b-none"><i class="fa fa-info-circle"></i> Code generation please select dictionary attributes</span>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Nguon Tao: eport, edi, catos：</label>
-                <div class="col-sm-8">
-                    <input name="createSource" class="form-control" type="text">
-                </div>
-            </div>
-        </form>
+
+<body>
+  <div class="container-fluid">
+    <div class="panel panel-default" id="fileupload_main_panel">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div id="bannarzone" class="dropzone" style="min-height: 120px"></div>
+           
+          </div>
+        </div>
+      </div>
     </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <script type="text/javascript">
-        var prefix = ctx + "equipment/do"
-        $("#form-do-add").validate({
-            focusCleanup: true
-        });
+  </div>
+  <li><a class="menuItem" th:href="@{/edi/viewdatatestlist}">Test data return</a></li>
+  <div id="viewEdi"></div>
 
-        function submitHandler() {
-            if ($.validate.form()) {
-                $.operate.save(prefix + "/add", $('#form-do-add').serialize());
+  <script>
+    var hot;
+    var statusTable = false;
+    var dataObj;
+    var myAvatarzone = new Dropzone("#bannarzone", {
+      url: "/equipment/do/file",
+      method: "post", 
+      paramName: "file", 
+      //maxFiles: 5,
+      maxFilesize: 2, //MB
+      acceptedFiles: ".txt",
+      addRemoveLinks: true,
+      //parallelUploads: 1,//Maxfile upload
+      //previewsContainer:"#viewEdi",// previews Content
+      dictDefaultMessage: 'KÉO THẢ FILE, HOẶC NHẤP VÀO ĐÂY ĐỂ NHẬP EDI',
+     // dictMaxFilesExceeded: "You can upload only one!",
+      dictResponseError: 'Upload error!',
+      dictInvalidFileType: "Invalid EDI file. Please upload txt file only.",
+      // dictFallbackMessage: "Browser not support",
+      dictFileTooBig: "File max size!",
+      init: function () {
+        this.on("addedfile", function (file) {
+
+        });
+        this.on("success", function (data) {
+          if (data != "") {
+            var rs = JSON.parse(data.xhr.response);
+            console.log(data.upload.uuid);
+            if (dataObj == null) {
+              dataObj = rs;
+              dataObj.forEach(element => {
+                  element["file"] = data.upload.uuid; 
+              });
+              //console.log(dataObj);
+            }else {
+              rs.forEach(element => {
+                // add file-id to element
+                  //element.push("fid", data.upload.uuid);
+                  element["file"] = data.upload.uuid;
+                  dataObj.push(element);
+                  console.log(dataObj);
+              });
             }
+           }
+            if(statusTable == true)
+            {
+              hot.render();
+              return;
+            }
+            loadView();
+        });
+        this.on("error", function (file, data) {
+
+            console.log("error", data, file);
+        });
+        this.on("removedfile", function (file) { 
+              var fileId = file.upload.uuid;
+              console.log(fileId);
+              var i = 0;
+              for(i; i<dataObj.length;i++)
+              {
+                  if(dataObj[i].file == fileId)
+                  {
+                    dataObj.splice(i,1);
+                    i--;
+                  }
+              }
+              console.log("i",i); 
+              hot.render();
+        });
+      }
+    });
+  </script>
+  <script>
+    function loadView()
+    {
+         var container = document.getElementById('viewEdi');
+            hot = new Handsontable(container, {
+            data: dataObj,
+            columns: [{
+                data: 'contNo',
+                type: 'text'
+              },
+              {
+                data: 'buildNo',
+                type: 'text'
+              },
+              {
+                data: 'businessUnit',
+                type: 'text'
+              },
+              {
+                data: 'orderNo',
+                type: 'text'
+              },
+              {
+                data: 'releaseTo',
+                type: 'text'
+              },
+              {
+                data: 'validToDay',
+                type: 'date',
+                dateFormat: 'MM/DD/YYYY'
+              },
+              {
+                data: 'emptyContDepot',
+                type: 'text'
+              },
+              {
+                data: 'haulage',
+                type: 'numeric',
+              }
+            ],
+            rowHeaders: true,
+            colHeaders: [
+              'Số Cont',
+              'Số Bill',
+              'Chủ khai thác',
+              'Order Number',
+              'Người nhận hàng',
+              'Ngày hết hạn lưu cont',
+              'Nơi hạ rỗng',
+              'Số ngày miễn lưu vỏ'
+            ],
+          });
+          statusTable = true;
         }
-
-        $("input[name='expiredDem']").datetimepicker({
-            format: "yyyy-mm-dd",
-            minView: "month",
-            autoclose: true
-        });
-
-        $("input[name='releaseDate']").datetimepicker({
-            format: "yyyy-mm-dd",
-            minView: "month",
-            autoclose: true
-        });
-
-        $("input[name='documentReceiptDate']").datetimepicker({
-            format: "yyyy-mm-dd",
-            minView: "month",
-            autoclose: true
-        });
-    </script>
+  </script>
 </body>
+
 </html>

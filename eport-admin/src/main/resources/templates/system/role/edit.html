@@ -9,26 +9,26 @@
 		<form class="form-horizontal m" id="form-role-edit" th:object="${role}">
 			<input id="roleId" name="roleId" type="hidden" th:field="*{roleId}"/>
 			<div class="form-group">
-				<label class="col-sm-3 control-label is-required">Role Name：</label>
+				<label class="col-sm-3 control-label is-required" th:text="#{role.add.name}"></label>
 				<div class="col-sm-8">
 					<input class="form-control" type="text" name="roleName" id="roleName" th:field="*{roleName}" required>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label is-required">Permission character：</label>
+				<label class="col-sm-3 control-label is-required" th:text="#{role.add.permissionCharacter}"></label>
 				<div class="col-sm-8">
 					<input class="form-control" type="text" name="roleKey" id="roleKey" th:field="*{roleKey}" required>
-					<span class="help-block m-b-none"><i class="fa fa-info-circle"></i> Permission characters defined in the controller, such as：@RequiresRoles("")</span>
+					<span class="help-block m-b-none" th:text="#{role.add.permissionCharacters}"><i class="fa fa-info-circle" ></i></span>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label is-required">Display order：</label>
+				<label class="col-sm-3 control-label is-required" th:text="#{role.add.displayOrder}"></label>
 				<div class="col-sm-8">
 					<input class="form-control" type="text" name="roleSort" id="roleSort" th:field="*{roleSort}" required>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Status:</label>
+				<label class="col-sm-3 control-label" th:text="#{role.add.Status}"></label>
 				<div class="col-sm-8">
 					<label class="toggle-switch switch-solid">
                         <input type="checkbox" id="status" th:checked="${role.status == '0' ? true : false}">
@@ -37,13 +37,13 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Note：</label>
+				<label class="col-sm-3 control-label" th:text="#{role.add.note}"></label>
 				<div class="col-sm-8">
 					<input id="remark" name="remark" class="form-control" type="text" th:field="*{remark}">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Menu permissions</label>
+				<label class="col-sm-3 control-label" th:text="#{role.add.menu}"></label>
 				<div class="col-sm-8">
 					<div id="menuTrees" class="ztree"></div>
 				</div>

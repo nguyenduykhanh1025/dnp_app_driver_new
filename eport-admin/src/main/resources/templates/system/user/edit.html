@@ -9,19 +9,19 @@
         <form class="form-horizontal" id="form-user-edit" th:object="${user}">
             <input name="userId"  type="hidden"  th:field="*{userId}" />
 			<input name="deptId"  type="hidden"  th:field="*{deptId}" id="treeId"/>
-            <h4 class="form-header h4">Basic Information</h4>
+            <h4 class="form-header h4" th:text="#{user.information}"></h4>
             <div class="row">
             	<div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">User name:</label>
+                        <label class="col-sm-4 control-label is-required" th:text="#{user.name2}"></label>
                         <div class="col-sm-8">
-                            <input name="userName" placeholder="Please enter a username" class="form-control" type="text" maxlength="30" th:field="*{userName}" required>
+                            <input name="userName" th:placeholder="#{user.placeholder.username}" class="form-control" type="text" maxlength="30" th:field="*{userName}" required>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">Attribution department:</label>
+                        <label class="col-sm-4 control-label is-required" th:text="#{user.department}"></label>
                         <div class="col-sm-8">
                             <div class="input-group">
                                 <input class="form-control" type="text" name="deptName" onclick="selectDeptTree()" id="treeName" th:field="*{dept.deptName}" required>
@@ -34,17 +34,17 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">Phone number:</label>
+                        <label class="col-sm-4 control-label is-required" th:text="#{user.phone}"></label>
                         <div class="col-sm-8">
-                            <input name="phonenumber" placeholder="Please enter the phone number" class="form-control" type="text" maxlength="11" th:field="*{phonenumber}" required>
+                            <input name="phonenumber" th:placeholder="#{user.placeholder.phone}" class="form-control" type="text" maxlength="11" th:field="*{phonenumber}" required>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">Email：</label>
+                        <label class="col-sm-4 control-label is-required" th:text="#{user.email2}" ></label>
                         <div class="col-sm-8">
-                            <input name="email" class="form-control email" type="text" maxlength="20" placeholder="Please input your email" th:field="*{email}" required>
+                            <input name="email" class="form-control email" type="text" maxlength="20" th:placeholder="#{user.placeholder.email}" th:field="*{email}" required>
                         </div>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">Login account：</label>
+                        <label class="col-sm-4 control-label is-required" th:text="#{user.loginName}"></label>
                         <div class="col-sm-8">
                             <input class="form-control" type="text" readonly="true" th:field="*{loginName}"/>
                         </div>
@@ -60,7 +60,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">User status：</label>
+                        <label class="col-sm-4 control-label" th:text="#{user.status}"></label>
                         <div class="col-sm-8">
                             <label class="toggle-switch switch-solid">
 	                            <input type="checkbox" id="status" th:checked="${user.status == '0' ? true : false}">
@@ -73,7 +73,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Post：</label>
+                        <label class="col-sm-4 control-label" th:text="#{user.post}"></label>
                         <div class="col-sm-8">
                             <select id="post" class="form-control select2-multiple" multiple>
 								<option th:each="post:${posts}" th:value="${post.postId}" th:text="${post.postName}" th:selected="${post.flag}" th:disabled="${post.status == '1'}"></option>
@@ -83,7 +83,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">User gender：</label>
+                        <label class="col-sm-4 control-label" th:text="#{user.gender}"></label>
                         <div class="col-sm-8">
                             <select name="sex" class="form-control m-b" th:with="type=${@dict.getType('sys_user_sex')}">
 				                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{sex}"></option>
@@ -95,7 +95,7 @@
             <div class="row">
             	<div class="col-sm-12">
                     <div class="form-group">
-                        <label class="col-xs-2 control-label">Character：</label>
+                        <label class="col-xs-2 control-label" th:text="#{user.character}"></label>
                         <div class="col-xs-10">
                             <label th:each="role:${roles}" class="check-box">
 								<input name="role" type="checkbox" th:value="${role.roleId}" th:text="${role.roleName}" th:checked="${role.flag}" th:disabled="${role.status == '1'}">
@@ -104,11 +104,11 @@
                     </div>
                 </div>
             </div>
-            <h4 class="form-header h4">Other information</h4>
+            <h4 class="form-header h4" th:text="#{user.otherInformation}"></h4>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <label class="col-xs-2 control-label">Remarks:</label>
+                        <label class="col-xs-2 control-label" th:text="#{user.remarks}"></label>
                         <div class="col-xs-10">
                             <textarea name="remark" maxlength="500" class="form-control" rows="3">[[*{remark}]]</textarea>
                         </div>
@@ -119,8 +119,8 @@
     </div>
     <div class="row">
         <div class="col-sm-offset-5 col-sm-10">
-            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>Save</button>&nbsp;
-            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down </button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check" th:text="#{user.save}"></i></button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all" th:text="#{user.shutDown}"></i></button>
         </div>
     </div>
 	<th:block th:include="include :: footer" />

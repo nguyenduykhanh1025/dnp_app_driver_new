@@ -11,20 +11,20 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								Post code:<input type="text" name="postCode"/>
+								[[#{post.code}]]<input type="text" name="postCode"/>
 							</li>
 							<li>
-								Position Name：<input type="text" name="postName"/>
+								[[#{post.name}]]<input type="text" name="postName"/>
 							</li>
 							<li>
-								Post status：<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
-									<option value="">All</option>
+								[[#{post.status}]]<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+									<option value="" th:text="#{post.all}"></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
-							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search" th:text="#{post.search}"></i>&nbsp;</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh" th:text="#{post.reset}"></i>&nbsp;</a>
 							</li>
 						</ul>
 					</div>
@@ -33,16 +33,16 @@
 			
 			<div class="btn-group-sm" id="toolbar" role="group">
 				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:post:add">
-	                <i class="fa fa-plus"></i> Add
+	                <i class="fa fa-plus" th:text="#{post.add}"></i> 
 	            </a>
 				<a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:post:edit">
-		            <i class="fa fa-edit"></i> Edit
+		            <i class="fa fa-edit"  th:text="#{post.edit}"></i> 
 		        </a>
 				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:post:remove">
-		            <i class="fa fa-remove"></i> Delete
+		            <i class="fa fa-remove" th:text="#{post.delete}"></i> 
 		        </a>
 				<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:post:export">
-		            <i class="fa fa-download"></i> Export
+		            <i class="fa fa-download" th:text="#{post.export}"></i> 
 		        </a>
 	        </div>
 	        
@@ -72,26 +72,26 @@
 		        },
 		        {
 		            field: 'postId',
-		            title: 'Post number'
+		            title: /*[[#{post.table.number }]]*/
 		        },
 		        {
 		            field: 'postCode',
-		            title: 'Post code',
+		            title: /*[[#{post.table.code}]]*/,
 		            sortable: true
 		        },
 		        {
 		            field: 'postName',
-		            title: 'Position Name',
+		            title: /*[[#{post.table.name }]]*/,
 		            sortable: true
 		        },
 		        {
 		            field: 'postSort',
-		            title: 'Display order',
+		            title: /*[[#{post.table.displayOrder }]]*/,
 		            sortable: true
 		        },
 		        {
 		            field: 'status',
-		            title: 'Status',
+		            title: /*[[#{post.table.status }]]*/,
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	return $.table.selectDictLabel(datas, value);
@@ -99,11 +99,11 @@
 		        },
 		        {
 		            field: 'createTime',
-		            title: 'Creation time',
+		            title: /*[[#{post.table.creationTime }]]*/,
 		            sortable: true
 		        },
 		        {
-		            title: 'Status',
+		            title: /*[[#{post.table.action }]]*/,
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		                var actions = [];

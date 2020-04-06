@@ -38,11 +38,11 @@ CREATE TABLE IF NOT EXISTS `carrier_account` (
 
 -- Dumping structure for table eport.carrier_group
 CREATE TABLE IF NOT EXISTS `carrier_group` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `group_code` varchar(5) COLLATE utf8_bin NOT NULL,
-  `group_name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `operate_code` varchar(50) COLLATE utf8_bin NOT NULL,
-  `main_email` varchar(255) COLLATE utf8_bin NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `group_code` varchar(5) COLLATE utf8_bin NOT NULL COMMENT 'Group Code',
+  `group_name` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Group Name',
+  `operate_code` varchar(50) COLLATE utf8_bin NOT NULL COMMENT 'Operate Codes',
+  `main_email` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Main Emails',
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Creator',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',

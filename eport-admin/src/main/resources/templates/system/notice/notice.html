@@ -11,20 +11,20 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								Announcement Title:<input type="text" name="noticeTitle"/>
+								[[#{notification.title}]]<input type="text" name="noticeTitle"/>
 							</li>
 							<li>
-								Operator:<input type="text" name="createBy"/>
+								[[#{notification.operator}]]<input type="text" name="createBy"/>
 							</li>
 							<li>
-								Announcement type:<select name="noticeType" th:with="type=${@dict.getType('sys_notice_type')}">
-									<option value="">All</option>
+								[[#{notification.type}]]<select name="noticeType" th:with="type=${@dict.getType('sys_notice_type')}">
+									<option value="" th:text="#{notification.all}" ></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
-								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search" th:text="#{notification.search}"></i>&nbsp;</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh" th:text="#{notification.reset}"></i>&nbsp;</a>
 							</li>
 						</ul>
 					</div>
@@ -33,13 +33,13 @@
 			
 	        <div class="btn-group-sm" id="toolbar" role="group">
 		        <a class="btn btn-success" onclick="$.operate.addFull()" shiro:hasPermission="system:notice:add">
-		            <i class="fa fa-plus"></i> Add
+		            <i class="fa fa-plus" th:text="#{notification.add}"></i> 
 		        </a>
 		        <a class="btn btn-primary single disabled" onclick="$.operate.editFull()" shiro:hasPermission="system:notice:edit">
-		            <i class="fa fa-edit"></i> Edit
+		            <i class="fa fa-edit" th:text="#{notification.edit}"></i> 
 		        </a>
 		        <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:notice:remove">
-		            <i class="fa fa-remove"></i> Delete
+		            <i class="fa fa-remove" th:text="#{notification.delete}"></i> 
 		        </a>
 	        </div>
 	        
@@ -68,15 +68,15 @@
 		        },
 				{
 					field : 'noticeId', 
-					title : 'ID' 
+					title : /*[[#{notification.id }]]*/
 				},
 				{
 					field : 'noticeTitle', 
-					title : 'Announcement title' 
+					title : /*[[#{notification.title}]]*/
 				},
 				{
 		            field: 'noticeType',
-		            title: 'Announcement type',
+		            title: /*[[#{notification.type}]]*/,
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	return $.table.selectDictLabel(types, value);
@@ -84,7 +84,7 @@
 		        },
 				{
 		            field: 'status',
-		            title: 'Status',
+		            title:  /*[[#{notification.status}]]*/,
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	return $.table.selectDictLabel(datas, value);
@@ -92,15 +92,15 @@
 		        },
 				{
 					field : 'createBy', 
-					title : 'creator' 
+					title :  /*[[#{notification.creator}]]*/ 
 				},
 				{
 		            field: 'createTime',
-		            title: 'Creation time',
+		            title:  /*[[#{notification.time}]]*/,
 		            sortable: true
 		        },
 		        {
-		            title: 'Action',
+		            title:  /*[[#{notification.action}]]*/,
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	var actions = [];
