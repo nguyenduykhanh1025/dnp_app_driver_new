@@ -7,7 +7,7 @@ import vn.com.irtech.eport.system.domain.SysEdi;
  * 【请填写功能名称】Mapper Interface
  * 
  * @author ruoyi
- * @date 2020-03-31
+ * @date 2020-04-03
  */
 public interface SysEdiMapper 
 {

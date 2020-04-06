@@ -49,6 +49,12 @@
                                 <input type="text" name="haulage"/>
                             </li>
                             <li>
+                                <label>${comment}：</label>
+                                <select name="status">
+                                    <option value="">All</option>
+                                </select>
+                            </li>
+                            <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
                             </li>
@@ -132,6 +138,10 @@
                 },
                 {
                     field: 'haulage', 
+                    title: '${comment}'
+                },
+                {
+                    field: 'status', 
                     title: '${comment}'
                 },
                 {

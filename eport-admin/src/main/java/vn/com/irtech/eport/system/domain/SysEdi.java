@@ -10,7 +10,7 @@ import java.util.Date;
  * 【请填写功能名称】 Object sys_edi
  * 
  * @author ruoyi
- * @date 2020-03-31
+ * @date 2020-04-03
  */
 public class SysEdi extends BaseEntity
 {
@@ -54,6 +54,10 @@ public class SysEdi extends BaseEntity
     /** $column.columnComment */
     @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
     private Long haulage;
+
+    /** $column.columnComment */
+    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    private Long status;
 
     public void setEdiId(Long ediId) 
     {
@@ -145,6 +149,15 @@ public class SysEdi extends BaseEntity
     {
         return haulage;
     }
+    public void setStatus(Long status) 
+    {
+        this.status = status;
+    }
+
+    public Long getStatus() 
+    {
+        return status;
+    }
 
     @Override
     public String toString() {
@@ -159,6 +172,7 @@ public class SysEdi extends BaseEntity
             .append("validtoDay", getValidtoDay())
             .append("emptycontDepot", getEmptycontDepot())
             .append("haulage", getHaulage())
+            .append("status", getStatus())
             .toString();
     }
 }

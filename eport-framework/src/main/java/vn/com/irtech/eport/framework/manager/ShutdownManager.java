@@ -42,7 +42,7 @@ public class ShutdownManager
         {
             try
             {
-                logger.info("====关闭会话验证任务====");
+                logger.info("====Close session verification task====");
                 springSessionValidationScheduler.disableSessionValidation();
             }
             catch (Exception e)
@@ -59,7 +59,7 @@ public class ShutdownManager
     {
         try
         {
-            logger.info("====关闭后台任务任务线程池====");
+            logger.info("====Close background task thread pool====");
             AsyncManager.me().shutdown();
         }
         catch (Exception e)
@@ -72,7 +72,7 @@ public class ShutdownManager
     {
         try
         {
-            logger.info("====关闭缓存====");
+            logger.info("====Close cache====");
             if (ehCacheManager != null)
             {
                 CacheManager cacheManager = ehCacheManager.getCacheManager();
