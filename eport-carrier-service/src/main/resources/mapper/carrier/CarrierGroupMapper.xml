@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.carrier.mapper.CarrierGroupMapper">
+    
+    <resultMap type="CarrierGroup" id="CarrierGroupResult">
+        <result property="id"    column="id"    />
+        <result property="groupCode"    column="group_code"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="operateCode"    column="operate_code"    />
+        <result property="mainEmail"    column="main_email"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCarrierGroupVo">
+        select id, group_code, group_name, operate_code, main_email, create_by, create_time, update_by, update_time from carrier_group
+    </sql>
+
+    <select id="selectCarrierGroupList" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
+        <include refid="selectCarrierGroupVo"/>
+        <where>  
+            <if test="groupCode != null  and groupCode != ''"> and group_code = #{groupCode}</if>
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="operateCode != null  and operateCode != ''"> and operate_code like concat('%', #{operateCode}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectCarrierGroupById" parameterType="Long" resultMap="CarrierGroupResult">
+        <include refid="selectCarrierGroupVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCarrierGroup" parameterType="CarrierGroup" useGeneratedKeys="true" keyProperty="id">
+        insert into carrier_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupCode != null  and groupCode != ''">group_code,</if>
+            <if test="groupName != null  and groupName != ''">group_name,</if>
+            <if test="operateCode != null  and operateCode != ''">operate_code,</if>
+            <if test="mainEmail != null  and mainEmail != ''">main_email,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupCode != null  and groupCode != ''">#{groupCode},</if>
+            <if test="groupName != null  and groupName != ''">#{groupName},</if>
+            <if test="operateCode != null  and operateCode != ''">#{operateCode},</if>
+            <if test="mainEmail != null  and mainEmail != ''">#{mainEmail},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCarrierGroup" parameterType="CarrierGroup">
+        update carrier_group
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupCode != null  and groupCode != ''">group_code = #{groupCode},</if>
+            <if test="groupName != null  and groupName != ''">group_name = #{groupName},</if>
+            <if test="operateCode != null  and operateCode != ''">operate_code = #{operateCode},</if>
+            <if test="mainEmail != null  and mainEmail != ''">main_email = #{mainEmail},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCarrierGroupById" parameterType="Long">
+        delete from carrier_group where id = #{id}
+    </delete>
+
+    <delete id="deleteCarrierGroupByIds" parameterType="String">
+        delete from carrier_group where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

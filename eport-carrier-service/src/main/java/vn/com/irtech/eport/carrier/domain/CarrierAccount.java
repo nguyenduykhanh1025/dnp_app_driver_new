@@ -21,7 +21,7 @@ public class CarrierAccount extends BaseEntity
 
     /** Master Account */
     @Excel(name = "Master Account")
-    private Long masterId;
+    private Long groupId;
 
     /** Shipping Line Code */
     @Excel(name = "Carrier Code")
@@ -64,14 +64,14 @@ public class CarrierAccount extends BaseEntity
     {
         return id;
     }
-    public void setMasterId(Long masterId) 
+    public void setGroupId(Long groupId) 
     {
-        this.masterId = masterId;
+        this.groupId = groupId;
     }
 
-    public Long getMasterId() 
+    public Long getGroupId() 
     {
-        return masterId;
+        return groupId;
     }
     public void setCarrierCode(String carrierCode) 
     {
@@ -159,7 +159,7 @@ public class CarrierAccount extends BaseEntity
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
-            .append("masterId", getMasterId())
+            .append("groupId", getGroupId())
             .append("carrierCode", getCarrierCode())
             .append("email", getEmail())
             .append("password", getPassword())

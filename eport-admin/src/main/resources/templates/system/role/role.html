@@ -11,26 +11,26 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								Role Name:<input type="text" name="roleName"/>
+								[[#{role.name}]]<input type="text" name="roleName"/>
 							</li>
 							<li>
-								Permission characters:<input type="text" name="roleKey"/>
+								[[#{role.permissionCharacters}]]<input type="text" name="roleKey"/>
 							</li>
 							<li>
-								Role status:<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
-									<option value="">All</option>
+								[[#{role.status}]]<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+									<option value="" th:text="#{role.all}"></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li class="select-time">
-								<label>Created: </label>
-								<input type="text" class="time-input" id="startTime" placeholder="Starting time" name="params[beginTime]"/>
+								<label th:text="#{role.created}"></label>
+								<input type="text" class="time-input" id="startTime" th:placeholder="#{role.startTime}" name="params[beginTime]"/>
 								<span>-</span>
-								<input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endTime]"/>
+								<input type="text" class="time-input" id="endTime" th:placeholder="#{role.endTime}" name="params[endTime]"/>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
-							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search" th:text="#{role.search}"></i>&nbsp;</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh" th:text="#{role.reset}"></i>&nbsp;</a>
 							</li>
 						</ul>
 					</div>
@@ -39,16 +39,16 @@
 		
 			<div class="btn-group-sm" id="toolbar" role="group">
 				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:role:add">
-	                <i class="fa fa-plus"></i> Add
+	                <i class="fa fa-plus" th:text="#{role.add}"></i>
 	            </a>
 	            <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:role:edit">
-		            <i class="fa fa-edit"></i> Edit
+		            <i class="fa fa-edit" th:text="#{role.edit}"></i>
 		        </a>
 				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:role:remove">
-		            <i class="fa fa-remove"></i> Delete
+		            <i class="fa fa-remove" th:text="#{role.delete}"></i>
 		        </a>
 		        <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:role:export">
-		            <i class="fa fa-download"></i> Export
+		            <i class="fa fa-download" th:text="#{role.export}"></i>
 		        </a>
 	        </div>
 	        
@@ -78,38 +78,38 @@
 		        },
 		        {
 		            field: 'roleId',
-		            title: 'Id'
+		            title: /*[[#{role.id}]]*/
 		        },
 		        {
 		            field: 'roleName',
-		            title: 'Role Name',
+		            title: /*[[#{role.roleName}]]*/,
 		            sortable: true
 		        },
 		        {
 		            field: 'roleKey',
-		            title: 'Permission character',
+		            title: /*[[#{role.table.permissionCharacters}]]*/,
 		            sortable: true
 		        },
 		        {
 		            field: 'roleSort',
-		            title: 'Display order',
+		            title: /*[[#{role.table.displayOrder}]]*/,
 		            sortable: true
 		        },
 		        {
 		        	visible: editFlag == 'hidden' ? false : true,
 		        	title: 'Role status',
-		        	align: 'center',
+		        	align: /*[[#{role.table.roleStatus}]]*/,
 		        	formatter: function (value, row, index) {
 		        		return statusTools(row);
 		        	}
 		        },
 		        {
 		            field: 'createTime',
-		            title: 'Creation time',
+		            title: /*[[#{role.table.creationTime}]]*/,
 		            sortable: true
 		        },
 		        {
-		            title: 'Action',
+		            title: /*[[#{role.table.action}]]*/,
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		                var actions = [];
