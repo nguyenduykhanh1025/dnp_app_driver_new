@@ -9,6 +9,7 @@
       rel="stylesheet"
       media="screen"
     />
+    <link th:href="@{/bootstrap-4.4.1/bootstrap.min.css}" rel="stylesheet" />
   </head>
   <style>
     body {
@@ -23,7 +24,15 @@
     }
 
     .handsontable th {
-      background: #03a9f4;
+      background: #63aeff;
+      color: #fff;
+      /* font-weight: 300; */
+      text-align: center;
+      vertical-align: middle;
+      font-size: 1rem;
+      line-height: 2;
+      padding: 5px 2px !important;
+      font-family: inherit;
     }
 
     .handsontable td.above-fifty {
@@ -37,52 +46,79 @@
     }
 
     .hot-container {
-        overflow: hidden;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .footer-add {
+      display: flex;
+      justify-content: flex-end;
     }
   </style>
   <body>
-    <div id="example" class="hot handsontable htColumnHeaders"></div>
+    <div class="container">
+      <div id="example" class="hot handsontable htColumnHeaders"></div>
+      <hr>
+      <div class="footer-add">
+        <button type="button" class="btn btn-primary" onclick="addAll()">
+          Xác nhận
+        </button>
+      </div>
+    </div>
+    <!-- Jquery -->
+    <script
+      th:src="@{/bootstrap-4.4.1/jquery-3.4.1.min.js}"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <!-- Boostrap -->
+    <script th:src="@{/bootstrap-4.4.1/bootstrap.min.js}"></script>
+    <!-- Handsondtable -->
     <script
       th:src="@{/handsontable-6.2.2/dist/handsontable.full.min.js}"
     ></script>
     <script>
+      // Get table element
+      var example = document.getElementById("example"),
+        hot;
+      // Load table
       document.addEventListener("DOMContentLoaded", function () {
-        var data =  [
-          [], [], [],[], []
-        ];
-        function myData() {
-          return data;
-        }
-
-        var example = document.getElementById("example"),
-          hot;
-
         hot = new Handsontable(example, {
-          startRows: 1,
-          stretchH: 'all',
-          width: '100%',
-          colHeaders: ["Mã hãng tàu", "Points", "Team Name", "City", "Age"],
+          startRows: 5,
+          stretchH: "all",
+          width: "100%",
+          colHeaders: [
+            "STT",
+            "Mã hãng tàu <br> Carrier",
+            "Số vận đơn (*)<br>Bill No.",
+            "Số container (*) <br> Container No.",
+            "Tên khách hàng (*) <br> Consignee",
+            "Hạn lệnh (*) <br> Valid to date",
+            "Nơi hạ vỏ <br> Empty depot",
+            "Số ngày miễn lưu vỏ <br> DET freetime",
+            "Tên tàu <br> Vessel",
+            "Chuyến <br> Voyage",
+            "Ghi chú",
+          ],
           filter: "true",
           licenseKey: "non-commercial-and-evaluation",
-          columns: [
+          columns: [{}, 
             {
-              renderer: 'html'
+              readOnly: true
             },
+            {}, {}, {}, 
             {
-              type: "autocomplete",
-              source: availablePoints(),
-              strict: true,
-            },
-            {
-              type: "numeric",
-            },
-            {},
-            {
-              type: "autocomplete",
-              source: ageOfCompetitor(),
-              strict: true,
-            },
-          ],
+              type: 'date',
+              dateFormat: 'MM/DD/YYYY',
+              correctFormat: true,
+              defaultDate: new Date()
+            }, 
+            {}, {}, {}, {}, {}],
         });
 
         function availablePoints() {
@@ -113,6 +149,24 @@
           },
         });
       });
+      function addAll() {
+        currentData = hot.getData();
+        var jsonData = JSON.stringify(currentData);
+        // currentData.forEach(element => {
+        //   //JSON.parse(element);
+        //   element  = JSON.stringify(element);
+        // });
+        console.log(jsonData);
+        $.ajax({
+          url: "/carrier/do/add",
+          method: "post",
+          data: {
+            equipmentDo: jsonData
+          }
+        }).done(function(result) {
+          console.log(result);
+        });
+      }
     </script>
   </body>
 </html>

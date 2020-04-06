@@ -1,7 +1,9 @@
 package vn.com.irtech.eport.carrier.controller;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.alibaba.fastjson.JSONArray;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.annotation.Log;
@@ -85,9 +88,9 @@ public class CarrierEquipmentDoController extends BaseController
     @Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(EquipmentDo equipmentDo)
+    public AjaxResult addSave(@RequestParam(value = "equipmentDo") JSONArray equipmentDo)
     {
-      return toAjax(equipmentDoService.insertEquipmentDo(equipmentDo));
+      return toAjax(1);
     }
 
     /**
@@ -110,7 +113,7 @@ public class CarrierEquipmentDoController extends BaseController
     @ResponseBody
     public AjaxResult editSave(EquipmentDo equipmentDo)
     {
-        return toAjax(equipmentDoService.updateEquipmentDo(equipmentDo));
+      return toAjax(equipmentDoService.updateEquipmentDo(equipmentDo));
     }
 
     /**
@@ -122,6 +125,6 @@ public class CarrierEquipmentDoController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
+      return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
     }
 }
