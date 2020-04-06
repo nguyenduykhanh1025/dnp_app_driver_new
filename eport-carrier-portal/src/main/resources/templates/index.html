@@ -13,7 +13,7 @@
     <link th:href="@{/css/animate.css}" rel="stylesheet"/>
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
     <link th:href="@{/css/skins.css}" rel="stylesheet"/>
-    <link th:href="@{/ruoyi/css/ry-ui.css?v=4.2.0}" rel="stylesheet"/>
+    <link th:href="@{/eport/css/eport.css?v=4.2.0}" rel="stylesheet"/>
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow: hidden">
 <div id="wrapper">
@@ -76,12 +76,11 @@
 	                <li><a title="全屏显示" href="javascript:void(0)" id="fullScreen"><i class="fa fa-arrows-alt"></i> Full Screen</a></li>
                     <li class="dropdown user-menu">
 						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
-							<img th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}" class="user-image">
-							<span class="hidden-xs">[[${#strings.defaultString(user.userName, '-')}]]</span>
+							<span class="hidden-xs">[[${#strings.defaultString(user.email, '-')}]]</span>
 						</a>
 						<ul class="dropdown-menu">
 							<li class="mt5">
-								<a th:href="@{/system/user/profile}" class="menuItem">
+								<a th:href="@{/user/profile}" class="menuItem">
 								<i class="fa fa-user"></i> Profile</a>
 							</li>
 							<li>
@@ -104,7 +103,7 @@
             </button>
             <nav class="page-tabs menuTabs">
                 <div class="page-tabs-content">
-                    <a href="javascript:;" class="active menuTab" data-id="/system/main">Home</a>
+                    <a href="javascript:;" class="active menuTab" data-id="/main">Home</a>
                 </div>
             </nav>
             <button class="roll-nav roll-right tabRight">
@@ -116,8 +115,8 @@
         <a id="ax_close_max" class="ax_close_max" href="#" title="Close Full Screen"> <i class="fa fa-times-circle-o"></i> </a>
                     
         <div class="row mainContent" id="content-main">
-            <iframe class="RuoYi_iframe" name="iframe0" width="100%" height="100%" data-id="/system/main"
-                    th:src="@{/system/main}" frameborder="0" seamless></iframe>
+            <iframe class="eport_iframe" name="iframe0" width="100%" height="100%" data-id="/main"
+                    th:src="@{/main}" frameborder="0" seamless></iframe>
         </div>
         <div class="footer">
             <div class="pull-right">Copyright IRTech © [[${copyrightYear}]]</div>
@@ -133,9 +132,9 @@
 <script th:src="@{/js/jquery.contextMenu.min.js}"></script>
 <script th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
 <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
-<script th:src="@{/ruoyi/js/ry-ui.js?v=4.2.0}"></script>
-<script th:src="@{/ruoyi/js/common.js?v=4.2.0}"></script>
-<script th:src="@{/ruoyi/index.js}"></script>
+<script th:src="@{/eport/js/eport.js?v=4.2.0}"></script>
+<script th:src="@{/eport/js/common.js?v=4.2.0}"></script>
+<script th:src="@{/eport/index.js}"></script>
 <script th:src="@{/ajax/libs/fullscreen/jquery.fullscreen.js}"></script>
 <script th:inline="javascript">
 var ctx = [[@{/}]];
@@ -152,7 +151,7 @@ if($.common.isNotEmpty(skin)){
 }
 
 function resetPwd() {
-    var url = ctx + 'system/user/profile/resetPwd';
+    var url = ctx + 'user/profile/resetPwd';
     $.modal.open("Reset Password", url, '770', '380');
 }
 
@@ -162,7 +161,7 @@ function switchSkin() {
 		shadeClose : true,
 		title : "Change Theme",
 		area : ["530px", "386px"],
-		content : [ctx + "system/switchSkin", 'no']
+		content : [ctx + "switchSkin", 'no']
 	})
 }
 
