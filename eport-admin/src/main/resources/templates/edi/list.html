@@ -285,29 +285,6 @@
             }
             function search(){
                 $("#formId").submit(function(e) {
-                    var data0 = {id:19,
-                                carrierId:1,
-                                carrierCode:"1",
-                                orderNumber:"19",
-                                billOfLading:"11111sfsf",
-                                businessUnit:"WHA",
-                                consignee:"THE GIOI DI DONG",
-                                containerNumber:"ABC1234567",
-                                expiredDem:"2020-04-30 00:00:00",
-                                emptyContainerDepot:"WU HAN",
-                                detFreeTime:9,
-                                secureCode:null,
-                                releaseDate:"2020-04-30 00:00:00",
-                                vessel:"TITANIC",
-                                voyNo:null,
-                                doType:null,
-                                status:"2",
-                                processStatus:"2",
-                                documentStatus:"2",
-                                documentReceiptDate:null,
-                                releaseStatus:"2",
-                                createSource:null
-                             };
                     e.preventDefault(); // avoid to execute the actual submit of the form.
                     var form = $(this);
                     var obj = form.serialize();
