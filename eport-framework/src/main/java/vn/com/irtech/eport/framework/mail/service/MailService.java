@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.framework.config;
+package vn.com.irtech.eport.framework.mail.service;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +16,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 @Service
-public class MailConfig {
+public class MailService {
   @Autowired
 	private JavaMailSender mailSender;
 	

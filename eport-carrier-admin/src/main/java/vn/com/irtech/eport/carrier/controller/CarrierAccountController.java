@@ -23,6 +23,7 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.config.MailConfig;
+import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 
@@ -45,7 +46,7 @@ public class CarrierAccountController extends BaseController
     private SysPasswordService passwordService;
 
     @Autowired
-    private MailConfig mailService;
+    private MailService mailService;
 
     @RequiresPermissions("carrier:account:view")
     @GetMapping()
@@ -102,17 +103,24 @@ public class CarrierAccountController extends BaseController
         if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail()).equals("1")) {
             return error("Email already exist");
         }
+        Map<String, Object> variables = new HashMap<>();
+		variables.put("username", carrierAccount.getEmail());
+		variables.put("password", carrierAccount.getPassword());
         carrierAccount.setSalt(ShiroUtils.randomSalt());
         carrierAccount.setPassword(passwordService.encryptPassword(carrierAccount.getEmail()
         , carrierAccount.getPassword(), carrierAccount.getSalt()));
-        Map<String, Object> variables = new HashMap<>();
-				variables.put("username", "username");
-        variables.put("password", "password");
-        try {
-        mailService.prepareAndSend("Title", "tronghieu8531@gmail.com", variables);
-          
-        } catch (Exception e) {
-        }
+        new Thread() {
+        	public void run() {
+        		try {
+                    mailService.prepareAndSend("Title", carrierAccount.getEmail(), variables);
+                      
+                    } catch (Exception e) {
+                    	e.printStackTrace();
+                    }
+        	}
+        	
+        }.start();
+        
         return toAjax(carrierAccountService.insertCarrierAccount(carrierAccount));
     }
 
