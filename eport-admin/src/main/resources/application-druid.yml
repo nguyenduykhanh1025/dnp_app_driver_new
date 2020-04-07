@@ -40,3 +40,25 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
+    #Email Setting
+    mail:
+        protocol: smtp
+        host: mail.danangport.com
+        port: 465
+        username: admin_erp@danangport.com
+        password: _V9y!~pR;XU)
+        properties:
+            mail:
+                store:
+                    protocol: pop3
+                smtp:
+                    auth: true
+                    ssl:
+                        enable: true
+                    starttls:
+                        enable: true
+                        required: true
+                    socketFactory:
+                        port: 465
+                        fallback: true
+                        class: javax.net.ssl.SSLSocketFactory
