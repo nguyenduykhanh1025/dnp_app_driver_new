@@ -3,6 +3,7 @@ package vn.com.irtech.eport.carrier.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -99,7 +101,9 @@ public class CarrierAccountController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CarrierAccount carrierAccount)
     {
-        if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail()).equals("1")) {
+        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierAccount.getEmail())) {
+            return error("Invalid Email!");
+        } else if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail()).equals("1")) {
             return error("Email already exist");
         }
         Map<String, Object> variables = new HashMap<>();
@@ -109,16 +113,19 @@ public class CarrierAccountController extends BaseController
         carrierAccount.setPassword(passwordService.encryptPassword(carrierAccount.getEmail()
         , carrierAccount.getPassword(), carrierAccount.getSalt()));
         carrierAccount.setCreateBy(ShiroUtils.getSysUser().getUserName());
-        new Thread() {
-        	public void run() {
-        		try {
-                    mailService.prepareAndSend("Title", carrierAccount.getEmail(), variables);  
-                    } catch (Exception e) {
-                    	e.printStackTrace();
-                    }
-        	}
-        }.start();      
-        return toAjax(carrierAccountService.insertCarrierAccount(carrierAccount));
+        if (carrierAccountService.insertCarrierAccount(carrierAccount) == 1) {
+            new Thread() {
+                public void run() {
+                    try {
+                        mailService.prepareAndSend("Cấp tài khoản truy cập", carrierAccount.getEmail(), variables);  
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                }
+            }.start();
+            return success();
+        }             
+        return error();
     }
 
     /**
@@ -141,7 +148,10 @@ public class CarrierAccountController extends BaseController
     @ResponseBody
     public AjaxResult editSave(CarrierAccount carrierAccount)
     {
-    	carrierAccount.setCreateBy(ShiroUtils.getSysUser().getUserName());
+        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierAccount.getEmail())) {
+            return error("Invalid Email!");
+        }
+    	carrierAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierAccountService.updateCarrierAccount(carrierAccount));
     }
 
@@ -155,5 +165,52 @@ public class CarrierAccountController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(carrierAccountService.deleteCarrierAccountByIds(ids));
+    }
+
+    /**
+     * Carrier account status modification
+     */
+    @Log(title = "Carrier Account", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("carrier:account:edit")
+    @PostMapping("/changeStatus")
+    @ResponseBody
+    public AjaxResult changeStatus(CarrierAccount carrierAccount)
+    {
+        carrierAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
+        return toAjax(carrierAccountService.updateCarrierAccount(carrierAccount));
+    }
+
+    @Log(title = "Reset password", businessType = BusinessType.UPDATE)
+    @GetMapping("/resetPwd/{id}")
+    public String resetPwd(@PathVariable("id") Long id, ModelMap mmap)
+    {
+        mmap.put("carrierAccount", carrierAccountService.selectCarrierAccountById(id));
+        return prefix + "/resetPwd";
+    }
+
+    @Log(title = "Reset password", businessType = BusinessType.UPDATE)
+    @PostMapping("/resetPwd")
+    @ResponseBody
+    public AjaxResult resetPwdSave(CarrierAccount carrierAccount)
+    {
+        Map<String, Object> variables = new HashMap<>();
+		variables.put("username", carrierAccount.getEmail());
+        variables.put("password", carrierAccount.getPassword());
+        carrierAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
+        carrierAccount.setSalt(ShiroUtils.randomSalt());
+        carrierAccount.setPassword(passwordService.encryptPassword(carrierAccount.getEmail(), carrierAccount.getPassword(), carrierAccount.getSalt()));
+        if (carrierAccountService.updateCarrierAccount(carrierAccount) == 1) {
+            new Thread() {
+                public void run() {
+                    try {
+                        mailService.prepareAndSend("Thiết lập lại mật khẩu", carrierAccount.getEmail(), variables);  
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                }
+            }.start();
+            return success();
+        }             
+        return error();
     }
 }
