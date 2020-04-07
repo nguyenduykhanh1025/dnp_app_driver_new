@@ -6,34 +6,31 @@
 <body class="gray-bg">
      <div class="container-div">
         <div class="row">
-            <div class="col-sm-12 search-collapse">
+            <div class="btn-group-sm" id="toolbar" role="group">
                 <form id="formId">
                     <div class="select-list">
                         <ul>
                             <li>
-                                <label>Shipping Line Code：</label>
-                                <input type="text" name="carrierCode"/>
+                                <!-- <label>Shipping Line Code：</label> -->
+                                <input type="text" name="carrierCode" placeholder="Shipping Line Code" style="width: 140px;"/>
                             </li>
                             <li>
-                                <label>Email：</label>
-                                <input type="text" name="email"/>
+                                <!-- <label>Email：</label> -->
+                                <input type="text" name="email" placeholder="Email" style="width: 180px;"/>
                             </li>
-                            <li>
+                            <!-- <li>
                                 <label>Status：</label>
                                 <select name="status">
                                     <option value="">All</option>
                                 </select>
-                            </li>
+                            </li> -->
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
                             </li>
                         </ul>
-                    </div>
+                    </div>                  
                 </form>
-            </div>
-
-            <div class="btn-group-sm" id="toolbar" role="group">
                 <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="carrier:account:add">
                     <i class="fa fa-plus"></i> Add
                 </a>
@@ -75,25 +72,26 @@
                     visible: false
                 },
                 {
-                    field: 'masterId', 
-                    title: 'Master Account'
+                    field: 'groupId', 
+                    title: 'Group Name'
                 },
                 {
                     field: 'carrierCode', 
-                    title: 'Shipping Line Code'
+                    title: 'Shipping Line Code',
+                    width: '50px'
                 },
                 {
                     field: 'email', 
                     title: 'Email'
                 },
-                {
-                    field: 'password', 
-                    title: 'Password'
-                },
-                {
-                    field: 'salt', 
-                    title: 'Salt'
-                },
+                // {
+                //     field: 'password', 
+                //     title: 'Password'
+                // },
+                // {
+                //     field: 'salt', 
+                //     title: 'Salt'
+                // },
                 {
                     field: 'fullName', 
                     title: 'Ho Va Ten'
@@ -110,10 +108,10 @@
                     field: 'loginDate', 
                     title: 'Login Date'
                 },
-                {
-                    field: 'remark', 
-                    title: 'Remark'
-                },
+                // {
+                //     field: 'remark', 
+                //     title: 'Remark'
+                // },
                 {
                     title: 'Action',
                     align: 'center',

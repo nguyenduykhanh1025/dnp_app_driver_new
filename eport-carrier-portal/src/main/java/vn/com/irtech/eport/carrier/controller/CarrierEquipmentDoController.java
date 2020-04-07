@@ -50,6 +50,8 @@ public class CarrierEquipmentDoController extends BaseController
         return prefix + "/do";
     }
 
+    private JSONArray equipmentDoList;
+
     /**
      * Get Exchange Delivery Order List
      */
@@ -101,9 +103,15 @@ public class CarrierEquipmentDoController extends BaseController
     @Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(@RequestParam(value = "equipmentDo") JSONArray equipmentDo)
-    {
-      return toAjax(1);
+    public AjaxResult addSave(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo)
+    {   
+        equipmentDo.ifPresent(value -> equipmentDoList = value);
+        if (equipmentDoList != null) {
+            for (Object obj : equipmentDoList) {
+                System.out.println(obj);
+            }
+        }
+        return toAjax(1);
     }
 
     /**
