@@ -17,6 +17,7 @@ import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 /**
@@ -86,7 +87,7 @@ public class CarrierGroupController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CarrierGroup carrierGroup)
     {
-        
+        carrierGroup.setCreateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierGroupService.insertCarrierGroup(carrierGroup));
     }
 
@@ -110,6 +111,7 @@ public class CarrierGroupController extends BaseController
     @ResponseBody
     public AjaxResult editSave(CarrierGroup carrierGroup)
     {
+    	carrierGroup.setCreateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierGroupService.updateCarrierGroup(carrierGroup));
     }
 

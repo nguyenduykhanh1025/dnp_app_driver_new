@@ -3,6 +3,8 @@
 <head>
     <th:block th:include="include :: header('Add Carrier Account')" />
     <th:block th:include="include :: datetimepicker-css" />
+    <link href="/resources/select2/select2.min.css" rel="stylesheet" />
+    <link href="/resources/select2/mdb.min.css" rel="stylesheet"/>
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
@@ -72,6 +74,9 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
+    <script src="/resources/select2/jquery-3.4.1.min.js"></script>
+    <script src="/resources/select2/mdb.min.js"></script>
+    <script src="/resources/select2/select2.min.js"></script>
     <script type="text/javascript">
         var prefix = ctx + "carrier/account"
         $("#form-account-add").validate({
