@@ -58,4 +58,12 @@ public interface CarrierGroupMapper
      * @return result
      */
     public int deleteCarrierGroupByIds(String[] ids);
+
+    /**
+     * Search carrier group by name
+     * 
+     * @param keyword 
+     * @return result
+     */
+    public List<CarrierGroup> selectCarrierGroupListByName(CarrierGroup carrierGroup);
 }

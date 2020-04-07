@@ -58,4 +58,12 @@ public interface ICarrierGroupService
      * @return result
      */
     public int deleteCarrierGroupById(Long id);
+
+    /**
+     * Search carrier group by name
+     * 
+     * @param keyword 
+     * @return result
+     */
+    public List<CarrierGroup> selectCarrierGroupListByName(CarrierGroup carrierGroup);
 }
