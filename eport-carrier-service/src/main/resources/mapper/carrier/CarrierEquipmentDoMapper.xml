@@ -57,9 +57,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          <!-- LIMIT ${(pageNo-1)*pageSize},${pageSize}; -->
         LIMIT ${10};
     </select>
-    <select id="selectEquipmentDoListDo" resultMap="EquipmentDoResult">
-        <include refid="selectEquipmentDoVo"/>    
-        LIMIT ${10};    
+    <select id="selectEquipmentDoListDo" parameterType="int" resultMap="EquipmentDoResult">
+        <include refid="selectEquipmentDoVo"/>   
+        ORDER BY id DESC  
+        LIMIT #{page.offset} , ${10};
     </select>
     <select id="selectEquipmentDoById" parameterType="Long" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>

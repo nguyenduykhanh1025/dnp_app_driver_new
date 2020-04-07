@@ -34,9 +34,9 @@ public class CarrierEquipmentDoServiceImpl implements CarrierIEquipmentDoService
     }
 
 
-    public List<CarrierEquipmentDo> selectEquipmentDoListDo()
+    public List<CarrierEquipmentDo> selectEquipmentDoListDo(int page)
     {
-        return equipmentDoMapper.selectEquipmentDoListDo();
+        return equipmentDoMapper.selectEquipmentDoListDo(page);
     }
     /**
      * Get Exchange Delivery Order List

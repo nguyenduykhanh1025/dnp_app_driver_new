@@ -29,7 +29,7 @@ public interface CarrierEquipmentDoMapper
     public List<CarrierEquipmentDo> selectEquipmentDoList(CarrierEquipmentDo equipmentDo);
 
 
-    public List<CarrierEquipmentDo> selectEquipmentDoListDo();
+    public List<CarrierEquipmentDo> selectEquipmentDoListDo(int page);
     /**
      * Add Exchange Delivery Order
      * 

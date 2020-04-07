@@ -67,7 +67,8 @@ public class CarrierEquipmentDoController extends BaseController
     @ResponseBody
     public Object listDo(int page)
     {
-        List<CarrierEquipmentDo> List = carrierrEquipmentDoService.selectEquipmentDoListDo();
+        page = page * 10;
+        List<CarrierEquipmentDo> List = carrierrEquipmentDoService.selectEquipmentDoListDo(page);
         return List;
     }
     /**

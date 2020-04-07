@@ -31,7 +31,7 @@ build/*
 nbbuild/
 nbdist/
 .nb-gradle/
-
+upload
 ### VSCode ###
 .vscode/*
 !.vscode/settings.json
