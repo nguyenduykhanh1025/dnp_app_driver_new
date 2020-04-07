@@ -2,6 +2,7 @@ package vn.com.irtech.eport.carrier.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
@@ -91,6 +93,13 @@ public class CarrierGroupController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CarrierGroup carrierGroup)
     {
+        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierGroup.getMainEmail())) {
+            return error("Invalid Email!");
+        } else if (carrierGroupService.checkGroupCodeUnique(carrierGroup.getGroupCode()).equals("1")) {
+            return error("Group code already exist");
+        } else if (carrierGroupService.checkMainEmailUnique(carrierGroup.getMainEmail()).equals("1")) {
+            return error("Email already exist");
+        }
         carrierGroup.setCreateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierGroupService.insertCarrierGroup(carrierGroup));
     }
@@ -115,6 +124,9 @@ public class CarrierGroupController extends BaseController
     @ResponseBody
     public AjaxResult editSave(CarrierGroup carrierGroup)
     {
+        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierGroup.getMainEmail())) {
+            return error("Invalid Email!");
+        }
     	carrierGroup.setCreateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierGroupService.updateCarrierGroup(carrierGroup));
     }

@@ -66,4 +66,20 @@ public interface CarrierGroupMapper
      * @return result
      */
     public List<CarrierGroup> selectCarrierGroupListByName(CarrierGroup carrierGroup);
+
+    /**
+	 * Check group code unique
+	 * 
+	 * @param groupCode
+	 * @return
+	 */
+    public int checkGroupCodeUnique(String groupCode);
+    
+    /**
+	 * Check main email unique
+	 * 
+	 * @param mainEmail
+	 * @return
+	 */
+    public int checkMainEmailUnique(String mainEmail);
 }

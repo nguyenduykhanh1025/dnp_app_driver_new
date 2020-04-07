@@ -6,32 +6,29 @@
 <body class="gray-bg">
      <div class="container-div">
         <div class="row">
-            <div class="col-sm-12 search-collapse">
+            <div class="btn-group-sm" id="toolbar" role="group">
                 <form id="formId">
                     <div class="select-list">
                         <ul>
                             <li>
-                                <label>Group Code：</label>
-                                <input type="text" name="groupCode"/>
+                                <!-- <label>Group Code：</label> -->
+                                <input type="text" name="groupCode" id="groupCode" placeholder="Group Code"/>
                             </li>
                             <li>
-                                <label>Group Name：</label>
-                                <input type="text" name="groupName"/>
+                                <!-- <label>Group Name：</label> -->
+                                <input type="text" name="groupName" id="groupName" placeholder="Group Name"/>
                             </li>
                             <li>
-                                <label>Operate Codes：</label>
-                                <input type="text" name="operateCode"/>
+                                <!-- <label>Operate Codes：</label> -->
+                                <input type="text" name="operateCode" id="operateCode" placeholder="Operate Code"/>
                             </li>
                             <li>
-                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="fa fa-search"></i>&nbsp;Search</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
                             </li>
                         </ul>
                     </div>
                 </form>
-            </div>
-
-            <div class="btn-group-sm" id="toolbar" role="group">
                 <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="carrier:account:add">
                     <i class="fa fa-plus"></i> Add
                 </a>
@@ -100,6 +97,27 @@
                 }]
             };
             $.table.init(options);
+        });
+
+        document.getElementById("groupCode").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
+        });
+
+        document.getElementById("groupName").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
+        });
+
+        document.getElementById("operateCode").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
         });
     </script>
 </body>
