@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.carrier.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,16 +13,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.enums.BusinessType;
+
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.framework.config.MailConfig;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 /**
  * Carrier AccountController
@@ -38,6 +43,9 @@ public class CarrierAccountController extends BaseController
 
     @Autowired
     private SysPasswordService passwordService;
+
+    @Autowired
+    private MailConfig mailService;
 
     @RequiresPermissions("carrier:account:view")
     @GetMapping()
@@ -97,6 +105,14 @@ public class CarrierAccountController extends BaseController
         carrierAccount.setSalt(ShiroUtils.randomSalt());
         carrierAccount.setPassword(passwordService.encryptPassword(carrierAccount.getEmail()
         , carrierAccount.getPassword(), carrierAccount.getSalt()));
+        Map<String, Object> variables = new HashMap<>();
+				variables.put("username", "username");
+        variables.put("password", "password");
+        try {
+        mailService.prepareAndSend("Title", "tronghieu8531@gmail.com", variables);
+          
+        } catch (Exception e) {
+        }
         return toAjax(carrierAccountService.insertCarrierAccount(carrierAccount));
     }
 
