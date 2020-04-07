@@ -94,4 +94,15 @@ public class CarrierGroupServiceImpl implements ICarrierGroupService
     {
         return carrierGroupMapper.deleteCarrierGroupById(id);
     }
+
+    /**
+     * Search carrier group by name
+     * 
+     * @param keyword 
+     * @return result
+     */
+    @Override
+    public List<CarrierGroup> selectCarrierGroupListByName(CarrierGroup carrierGroup) {
+        return carrierGroupMapper.selectCarrierGroupListByName(carrierGroup);
+    }
 }

@@ -23,6 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCarrierGroupList" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
         <include refid="selectCarrierGroupVo"/>
         <where>  
+            <if test="id != null  and id != ''"> and id = #{id}</if>
             <if test="groupCode != null  and groupCode != ''"> and group_code = #{groupCode}</if>
             <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
             <if test="operateCode != null  and operateCode != ''"> and operate_code like concat('%', #{operateCode}, '%')</if>
@@ -32,6 +33,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCarrierGroupById" parameterType="Long" resultMap="CarrierGroupResult">
         <include refid="selectCarrierGroupVo"/>
         where id = #{id}
+    </select>
+
+    <select id="selectCarrierGroupListByName" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
+        <include refid="selectCarrierGroupVo"/>
+        <where>  
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+        </where>
     </select>
         
     <insert id="insertCarrierGroup" parameterType="CarrierGroup" useGeneratedKeys="true" keyProperty="id">

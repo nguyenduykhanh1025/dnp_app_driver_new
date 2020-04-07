@@ -1,6 +1,10 @@
 package vn.com.irtech.eport.carrier.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.fastjson.JSONObject;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -125,5 +129,36 @@ public class CarrierGroupController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(carrierGroupService.deleteCarrierGroupByIds(ids));
+    }
+
+    /**
+     * Search Carrier Group Name
+     */
+    @RequestMapping("/searchGroupNameByKeyword")
+    @ResponseBody
+    public List<JSONObject> searchGroupNameByKeyword(String keyword) {
+        CarrierGroup carrierGroup = new CarrierGroup();
+        carrierGroup.setGroupName(keyword);
+        List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupListByName(carrierGroup);
+        List<JSONObject> result = new ArrayList<>();
+        int limit = 0; 
+		for (CarrierGroup i : carrierGroups) {
+			JSONObject json = new JSONObject();
+			json.put("id", i.getId());
+			json.put("text", i.getGroupName());
+            result.add(json);
+            limit++;
+            if (limit == 5) {
+                break;
+            }
+		}
+        return result;
+    }
+
+    @RequestMapping("/getGroupNameById")
+    @ResponseBody
+    public String getGroupNameById(long id) {
+        CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(id);
+        return carrierGroup.getGroupName();
     }
 }
