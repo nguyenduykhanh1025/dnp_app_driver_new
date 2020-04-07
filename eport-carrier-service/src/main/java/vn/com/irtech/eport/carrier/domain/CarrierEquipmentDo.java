@@ -53,7 +53,7 @@ public class CarrierEquipmentDo extends BaseEntity
 
     /** Han Lenh */
     @Excel(name = "Han Lenh", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date expiredDem;
+    private String expiredDem;
 
     /** Noi Ha Rong */
     @Excel(name = "Noi Ha Rong")
@@ -69,7 +69,7 @@ public class CarrierEquipmentDo extends BaseEntity
 
     /** Ngay Release */
     @Excel(name = "Ngay Release", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date releaseDate;
+    private String releaseDate;
 
     /** Tau */
     @Excel(name = "Tau")
@@ -180,12 +180,12 @@ public class CarrierEquipmentDo extends BaseEntity
     {
         return containerNumber;
     }
-    public void setExpiredDem(Date expiredDem) 
+    public void setExpiredDem(String expiredDem) 
     {
         this.expiredDem = expiredDem;
     }
 
-    public Date getExpiredDem() 
+    public String getExpiredDem() 
     {
         return expiredDem;
     }
@@ -216,12 +216,12 @@ public class CarrierEquipmentDo extends BaseEntity
     {
         return secureCode;
     }
-    public void setReleaseDate(Date releaseDate) 
+    public void setReleaseDate(String releaseDate) 
     {
         this.releaseDate = releaseDate;
     }
 
-    public Date getReleaseDate() 
+    public String getReleaseDate() 
     {
         return releaseDate;
     }
