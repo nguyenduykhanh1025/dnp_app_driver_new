@@ -32,7 +32,12 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     {
         return equipmentDoMapper.selectEquipmentDoById(id);
     }
+    
 
+    public List<EquipmentDo> selectEquipmentDoListHome(int page)
+    {
+        return equipmentDoMapper.selectEquipmentDoListHome(page);
+    }
     /**
      * Get Exchange Delivery Order List
      * 

@@ -28,7 +28,7 @@ public interface EquipmentDoMapper
     public List<EquipmentDo> selectEquipmentDoList(EquipmentDo equipmentDo);
 
 
-    public List<EquipmentDo> selectEquipmentDoListDo();
+    public List<EquipmentDo> selectEquipmentDoListHome(int page);
     /**
      * Add Exchange Delivery Order
      * 
@@ -60,6 +60,8 @@ public interface EquipmentDoMapper
      * @return result
      */
     public int deleteEquipmentDoByIds(String[] ids);
+
+	
 
 	
 }
