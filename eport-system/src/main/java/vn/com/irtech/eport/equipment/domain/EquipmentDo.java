@@ -1,10 +1,12 @@
 package vn.com.irtech.eport.equipment.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
-import java.util.Date;
 
 /**
  * Exchange Delivery Order Object equipment_do
@@ -15,7 +17,7 @@ import java.util.Date;
 public class EquipmentDo extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
-
+    
     /** ID */
     private Long id;
 

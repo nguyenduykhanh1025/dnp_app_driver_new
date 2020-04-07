@@ -1,7 +1,12 @@
 package vn.com.irtech.eport.equipment.mapper;
 
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
+import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 
 /**
  * Exchange Delivery OrderMapper Interface
@@ -25,10 +30,11 @@ public interface EquipmentDoMapper
      * @param equipmentDo Exchange Delivery Order
      * @return Exchange Delivery Order List
      */
-    public List<EquipmentDo> selectEquipmentDoList(EquipmentDo equipmentDo);
+    public List<EquipmentDo> selectEquipmentDoListAdmin(EquipmentDoPaging EquipmentDo);
+    
+    public List<EquipmentDo> selectEquipmentDoListTest(EquipmentDo EquipmentDo,@Param("page") int page);
 
-
-    public List<EquipmentDo> selectEquipmentDoListHome(int page);
+    public List<EquipmentDo> selectEquipmentDoList(EquipmentDo EquipmentDo);
     /**
      * Add Exchange Delivery Order
      * 
@@ -60,6 +66,12 @@ public interface EquipmentDoMapper
      * @return result
      */
     public int deleteEquipmentDoByIds(String[] ids);
+
+	public List<EquipmentDo> selectEquipmentDoListTest(int page, EquipmentDo equipmentDo);
+
+	public List<EquipmentDo> selectEquipmentDoListTestPaging(EquipmentDoPaging equipmentDo);
+
+	
 
 	
 

@@ -37,7 +37,56 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectEquipmentDoVo">
         select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time from equipment_do
     </sql>
-
+     <select id="selectEquipmentDoListTest" parameterType="equipmentDo" resultMap="EquipmentDoResult">
+        <include refid="selectEquipmentDoVo"/>
+        <where>  
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
+            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
+            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
+            <if test="detFreeTime != null  and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
+            <if test="documentReceiptDate != null "> and document_receipt_date = #{documentReceiptDate}</if>
+            <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
+            <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
+            <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+        </where>
+        ORDER BY id DESC  
+        LIMIT #{page} 
+        OFFSET 10;
+    </select>
+    <select id="selectEquipmentDoListTestPaging" parameterType="equipmentDo" resultMap="EquipmentDoResult">
+        <include refid="selectEquipmentDoVo"/>
+        <where>  
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
+            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
+            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
+            <if test="detFreeTime != null  and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
+            <if test="documentReceiptDate != null "> and document_receipt_date = #{documentReceiptDate}</if>
+            <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
+            <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
+            <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+        </where>
+        ORDER BY id DESC  
+        LIMIT 10
+        OFFSET #{page};
+    </select>
     <select id="selectEquipmentDoList" parameterType="EquipmentDo"  resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
         <where>  
@@ -60,9 +109,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
         </where>
         ORDER BY id DESC  
-        LIMIT #{page.offset} , ${10};
     </select>
-    <select id="selectEquipmentDoListHome" parameterType="int" resultMap="EquipmentDoResult">
+    <select id="selectEquipmentDoListAdmin" parameterType="int" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>   
         ORDER BY id DESC  
         LIMIT #{page.offset} , ${10};

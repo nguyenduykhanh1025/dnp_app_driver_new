@@ -1,8 +1,6 @@
 package vn.com.irtech.eport.carrier.controller;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -57,33 +55,33 @@ public class CarrierEquipmentDoController extends BaseController {
    * Get Exchange Delivery Order List
    */
 
-  @PostMapping("/list")
+  @PostMapping("/listDo")
   @ResponseBody
-  public TableDataInfo list(EquipmentDo equipmentDo) {
-    List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
+  public TableDataInfo list(EquipmentDo EquipmentDo) {
+    List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(EquipmentDo);
     return getDataTable(list);
   }
 
-  @PostMapping("/listDo")
-  @ResponseBody
-  public Object listDo(int page) {
-    page = page * 10;
-    List<EquipmentDo> List = equipmentDoService.selectEquipmentDoListHome(page);
-    return List;
-  }
+  // @PostMapping("/listDo")
+  // @ResponseBody
+  // public Object listDo(int page) {
+  //   page = page * 10;
+  //   List<EquipmentDo> List = equipmentDoService.selectEquipmentDoListHome(page);
+  //   return List;
+  // }
 
   /**
    * Export Exchange Delivery Order List
    */
 
-  @Log(title = "Exchange Delivery Order", businessType = BusinessType.EXPORT)
-  @PostMapping("/export")
-  @ResponseBody
-  public AjaxResult export(EquipmentDo equipmentDo) {
-    List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
-    ExcelUtil<EquipmentDo> util = new ExcelUtil<EquipmentDo>(EquipmentDo.class);
-    return util.exportExcel(list, "do");
-  }
+  // @Log(title = "Exchange Delivery Order", businessType = BusinessType.EXPORT)
+  // @PostMapping("/export")
+  // @ResponseBody
+  // public AjaxResult export(EquipmentDo equipmentDo) {
+  //   List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
+  //   ExcelUtil<EquipmentDo> util = new ExcelUtil<EquipmentDo>(EquipmentDo.class);
+  //   return util.exportExcel(list, "do");
+  // }
 
   /**
    * Add Exchange Delivery Order
