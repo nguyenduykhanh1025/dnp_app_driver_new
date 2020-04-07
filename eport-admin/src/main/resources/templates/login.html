@@ -26,22 +26,22 @@
             <div class="col-sm-7">
                 <div class="signin-info">
                     <div class="logopanel m-b">
-                        <h1><img alt="[ Logo ]" src="../static/ruoyi.png" th:src="@{/ruoyi.png}"></h1>
+                        <h1><img class="img-circle img-lg" alt="[ Logo ]" src="../static/img/logo.png" th:src="@{/img/logo.png}"></h1>
                     </div>
                     <div class="m-b"></div>
                     <h4>Welcome <strong>to ePort</strong></h4>
-                    <ul class="m-b">
+<!--                     <ul class="m-b">
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> SpringBoot</li>
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Mybatis</li>
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Shiro</li>
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Thymeleaf</li>
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Bootstrap</li>
-                    </ul>
+                    </ul> -->
                     <strong th:if="${@config.getKey('sys.account.registerUser')}">Forgot your password ? <a th:href="@{/register}">Register&raquo;</a></strong>
                 </div>
             </div>
             <div class="col-sm-5">
-                <form id="signupForm" autocomplete="off">Login</h4>
+                <form id="signupForm" autocomplete="off" >Login</h4>
                     <p class="m-t-md">Please login</p>
                     <input type="text"     name="username" class="form-control uname"     placeholder="Username" value="admin"    />
                     <input type="password" name="password" class="form-control pword"     placeholder="Password"   value="admin123" />
