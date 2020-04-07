@@ -22,7 +22,6 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
-import vn.com.irtech.eport.framework.config.MailConfig;
 import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
