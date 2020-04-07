@@ -29,10 +29,9 @@ target/
 nbproject/private/
 build/*
 nbbuild/
-dist/
 nbdist/
 .nb-gradle/
-
+upload
 ### VSCode ###
 .vscode/*
 !.vscode/settings.json
