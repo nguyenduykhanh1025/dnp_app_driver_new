@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -45,6 +46,10 @@ public class CarrierEquipmentDoController extends BaseController {
   @Autowired
   private IEquipmentDoService equipmentDoService;
 
+  private CarrierAccount currentUser;
+
+  @Autowired
+  private ICarrierGroupService carrierGroupService;
 
   @GetMapping()
   public String EquipmentDo() {
@@ -104,36 +109,37 @@ public class CarrierEquipmentDoController extends BaseController {
   @ResponseBody
   public AjaxResult addSave(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
     equipmentDo.ifPresent(value -> equipmentDoList = value);
-    CarrierAccount currentUser = ShiroUtils.getSysUser();
+    currentUser = ShiroUtils.getSysUser();
     if (equipmentDoList != null) {
       String[] strList = new String[10];
-      for (int index = 1; index < equipmentDoList.size(); index++) {
-        for (int i = 0; i < 9; i++) {
+      for (int index = 0; index < equipmentDoList.size(); index++) {
+        // Resolve " mark in array
+        String st = equipmentDoList.get(index++).toString();
+        strList[0] = st.substring(st.indexOf("[") + 1, st.length());
+        for (int i = 1; i < 9; i++) {
           strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
         }
-        String a = equipmentDoList.get(index++).toString();
+        String a = equipmentDoList.get(index).toString();
+        // Resolve ] mark in last element
         if (index == equipmentDoList.size()) {
           strList[9] = a.substring(0, a.length() - 2);
         } else {
           strList[9] = a.substring(0, a.length() - 1);
         }
+        // Resolve null string
         for (int i = 0; i <= 9; i++) {
           if (strList[i].trim().equals("null")) {
             strList[i] = null;
           }
         }
+        // Insert new DO
         EquipmentDo equipment = new EquipmentDo();
         equipment.setCarrierId(currentUser.getId());
+        equipment.setCarrierCode("1234");
         equipment.setBillOfLading(strList[1]);
-        equipment.setCarrierCode(strList[0]);
         equipment.setContainerNumber(strList[2]);
         equipment.setConsignee(strList[3]);
-        // strList[4] is date
-        // DateFormat sourceFormat = new SimpleDateFormat("dd/MM/yyyy");
-        // String dateAsString = strList[4];
-        // Date date = sourceFormat.parse(dateAsString);
-        Date date = AppToolUtils.formatStringToDate(strList[4], "dd/MM/yyyy");
-        equipment.setExpiredDem(date);
+        equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[4], "dd/MM/yyyy"));
         equipment.setEmptyContainerDepot(strList[5]);
         if (strList[6] != null) {
           equipment.setDetFreeTime(Integer.parseInt(strList[6]));
@@ -181,6 +187,12 @@ public class CarrierEquipmentDoController extends BaseController {
   @ResponseBody
   public AjaxResult remove(String ids) {
     return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
+  }
+
+  @GetMapping("/getCarrierCode")
+  @ResponseBody
+  public String getCarrierCode() {
+    return carrierGroupService.selectCarrierGroupById(ShiroUtils.getUserId()).getGroupName();
   }
 
 }
