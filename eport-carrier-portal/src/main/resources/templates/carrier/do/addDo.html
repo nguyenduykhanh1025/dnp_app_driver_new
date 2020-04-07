@@ -35,14 +35,32 @@
       font-family: inherit;
     }
 
+    .handsontable thead th.ht__highlight {
+      background: #63aeff;
+    }
+
     .handsontable td.above-fifty {
       color: #33691e;
       background: #dcedc8;
     }
 
-    .handsontable td.below-fifty {
-      color: #777777;
+    /* .handsontable td.below-fifty {
       background: #fefefe;
+    } */
+
+    .handsontable td.current {
+      background-color: #dcedc8;
+      color: #000;
+    }
+
+    .handsontable .htDimmed {
+      background-color: #777;
+      color: #fff;
+    }
+
+    /* Validate fail */
+    .handsontable td.htInvalid {
+      color: #fff;
     }
 
     .hot-container {
@@ -58,6 +76,11 @@
     .footer-add {
       display: flex;
       justify-content: flex-end;
+    }
+
+    .red {
+      color: red;
+      text-transform: none;
     }
   </style>
   <body>
@@ -86,7 +109,19 @@
       // Get table element
       var example = document.getElementById("example"),
         hot;
-      // Empty row
+      // Empty row and format date
+      dateValidator = function (value, callback) {
+        if (!value || 0 === value.length) {
+          callback(false);
+        } else {
+          if (isGoodDate(value)) {
+            callback(true);
+          } else {
+            callback(false);
+          }
+        }
+      };
+      //Empty row
       emptyValidator = function (value, callback) {
         if (!value || 0 === value.length) {
           callback(false);
@@ -97,16 +132,21 @@
       // Load table
       document.addEventListener("DOMContentLoaded", function () {
         hot = new Handsontable(example, {
-          startRows: 5,
+          startRows: 2,
           stretchH: "all",
           width: "100%",
+          minSpareCols: 1,
+          fillHandle: {
+            direction: "vertical",
+            autoInsertRow: true,
+          },
           colHeaders: [
             "STT",
             "Mã hãng tàu <br> Carrier",
-            "Số vận đơn (*)<br>Bill No.",
-            "Số container (*) <br> Container No.",
-            "Tên khách hàng (*) <br> Consignee",
-            "Hạn lệnh (*) <br> Valid to date",
+            "Số vận đơn <i class='red'>(*)</i><br>Bill No.",
+            "Số container <i class='red'>(*)</i><br> Container No.",
+            "Tên khách hàng <i class='red'>(*)</i><br> Consignee",
+            "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
             "Nơi hạ vỏ <br> Empty depot",
             "Số ngày miễn lưu vỏ <br> DET freetime",
             "Tên tàu <br> Vessel",
@@ -116,7 +156,9 @@
           filter: "true",
           licenseKey: "non-commercial-and-evaluation",
           columns: [
-            {},
+            {
+              readOnly: true,
+            },
             {
               readOnly: true,
             },
@@ -131,10 +173,10 @@
             },
             {
               type: "date",
-              dateFormat: "MM/DD/YYYY",
+              dateFormat: "DD/MM/YYYY",
               correctFormat: true,
               defaultDate: new Date(),
-              validator: emptyValidator,
+              validator: dateValidator,
             },
             {
               type: "numeric",
@@ -145,28 +187,17 @@
             {},
           ],
         });
-
-        function availablePoints() {
-          var tab = [];
-          for (var i = 30; i < 111; i++) {
-            tab.push(i);
-          }
-          return tab;
-        }
-
-        function ageOfCompetitor() {
-          var tab = [];
-          for (var i = 40; i < 130; i++) {
-            tab.push(i);
-          }
-          return tab;
+        var totalRow = hot.countRows();
+        for (var i = 1; i <= totalRow; i++) {
+          hot.setDataAtCell(i - 1, 0, i);
+          hot.setDataAtCell(i - 1, 1, "WHA");
         }
 
         hot.updateSettings({
           cells: function (row, col) {
             var cellProp = {};
             if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
-              cellProp.className = " above-fifty";
+              //cellProp.className = " above-fifty";
             } else if (col === 5) {
               cellProp.className = " below-fifty";
             }
@@ -176,7 +207,7 @@
       });
 
       function isGoodDate(dt) {
-        var reGoodDate = /^((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})*$/;
+        var reGoodDate = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/g;
         return reGoodDate.test(dt);
       }
 
