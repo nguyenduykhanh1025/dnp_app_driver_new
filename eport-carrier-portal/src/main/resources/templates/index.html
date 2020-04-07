@@ -109,54 +109,34 @@
       <!--右侧部分开始-->
       <div id="page-wrapper" class="gray-bg dashbard-1">
         <div class="row border-bottom">
-          <nav
-            class="navbar navbar-static-top"
-            role="navigation"
-            style="margin-bottom: 0;"
-          >
-            <div class="navbar-header">
-              <a
-                class="navbar-minimalize minimalize-styl-2"
-                style="color: #fff;"
-                href="#"
-                title="Collapse"
-              >
-                <i class="fa fa-bars"></i>
-              </a>
-            </div>
-            <ul class="nav navbar-top-links navbar-right welcome-message">
-              <li>
-                <a title="全屏显示" href="javascript:void(0)" id="fullScreen"
-                  ><i class="fa fa-arrows-alt"></i> Full Screen</a
-                >
-              </li>
-              <li class="dropdown user-menu">
-                <a
-                  href="javascript:void(0)"
-                  class="dropdown-toggle"
-                  data-hover="dropdown"
-                >
-                  <span class="hidden-xs"
-                    >[[${#strings.defaultString(user.email, '-')}]]</span
-                  >
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="mt5">
-                    <a th:href="@{/user/profile}" class="menuItem">
-                      <i class="fa fa-user"></i> Profile</a
-                    >
-                  </li>
-                  <li>
-                    <a onclick="resetPwd()">
-                      <i class="fa fa-key"></i> Change Password</a
-                    >
-                  </li>
-                  <li class="divider"></li>
-                  <li>
-                    <a th:href="@{logout}">
-                      <i class="fa fa-sign-out"></i> Logout</a
-                    >
-                  </li>
+            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2" style="color:#FFF;" href="#" title="Collapse">
+                    	<i class="fa fa-bars"></i>
+                    </a>
+				</div>
+                <ul class="nav navbar-top-links navbar-right welcome-message">
+	                <li><a title="全屏显示" href="javascript:void(0)" id="fullScreen"><i class="fa fa-arrows-alt"></i> Full Screen</a></li>
+                    <li class="dropdown user-menu">
+						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
+							<span class="hidden-xs">[[${#strings.defaultString(user.email, '-')}]]</span>
+						</a>
+						<ul class="dropdown-menu">
+							<li class="mt5">
+								<a th:href="@{/carrier/profile}">
+								<i class="fa fa-user"></i> Profile</a>
+							</li>
+							<li>
+								<a onclick="resetPwd()">
+								<i class="fa fa-key"></i> Change Password</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a th:href="@{logout}">
+								<i class="fa fa-sign-out"></i> Logout</a>
+							</li>
+						</ul>
+					</li>
                 </ul>
               </li>
             </ul>
