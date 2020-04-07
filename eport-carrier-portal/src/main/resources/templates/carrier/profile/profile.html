@@ -14,10 +14,9 @@
                     <h5>Personal information</h5>
                 </div>
                 <div class="ibox-content">
-<!--                     <div class="text-center">
-                        <p><img class="img-circle img-lg" th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}"></p>
-                        <p><a href="javascript:avatar()">Modify avatar</a></p>
-                    </div> -->
+                    <div class="text-center">
+                        <p><img class="img-circle img-lg" th:src="@{/img/userdefault.jpg}"></p>
+                    </div>
                     <ul class="list-group list-group-striped">
                         <li class="list-group-item"><i class="fa fa-envelope-o"></i>
                             <b class="font-noraml">Login name</b>
@@ -27,12 +26,12 @@
                             <b  class="font-noraml">Full name</b>
                             <p class="pull-right">[[${user.fullName}]]</p>
                         </li>
-<!--                         <li class="list-group-item"><i class="fa fa-envelope-o"></i>
-                            <b  class="font-noraml">Email addressï¼š</b>
-                            <p class="pull-right" >[[${user.email}]]</p>
-                        </li> -->
+                        <li class="list-group-item"><i class="fa fa- fa-calendar"></i>
+                            <b  class="font-noraml">Create time</b>
+                            <p class="pull-right" >[[${user.CreateTime}]]</p>
+                        </li>
 <!--                         <li class="list-group-item"><i class="fa fa-calendar"></i>
-                            <b  class="font-noraml">Remarkï¼š</b>
+                            <b  class="font-noraml">RemarkÃ¯Â¼Å¡</b>
                             <p class="pull-right" >[[${user.Remark}]]</p>
                         </li> -->
                     </ul>
@@ -63,21 +62,33 @@
                                             <input type="text" disabled class="form-control" name="email" th:field="*{email}" placeholder="Please enter a email">
                                         </div>
                                     </div>
-<!--                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Cellphone numberï¼š</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="phonenumber" maxlength="11" th:field="*{phonenumber}" placeholder="Please enter the phone number">
-                                        </div>
-                                    </div> -->
-<!--                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Mailboxï¼š</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="email" th:field="*{email}" placeholder="Please input your email">
-                                        </div>
-                                    </div> -->
                                     <div class="form-group">
+                                        <label class="col-sm-2 control-label">Full Name</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="fullName" maxlength="30" th:field="*{fullName}" placeholder="Please enter the full name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Master Account</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="groupId" th:field="*{groupId}" placeholder="Please input remark">
+<!--                                             <li>
+												<select name="groupId" th:with="type=${@dict.getType('sys_normal_disable')}">
+													<option value="" text="Select choose"></option>
+													<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.Id}"></option>
+												</select>
+											</li> -->
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Remark</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="remark" th:field="*{remark}" placeholder="Please input remark">
+                                        </div>
+                                    </div>
+<!--                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Gender</label>
-<!--                                         <div class="col-sm-10">
+                                        <div class="col-sm-10">
                                             <div class="radio-box">
 												<input type="radio" id="radio1" th:field="*{sex}" name="sex" value="0">
 												<label for="radio1">Male</label>
@@ -86,8 +97,8 @@
 												<input type="radio" id="radio2" th:field="*{sex}" name="sex" value="1">
 												<label for="radio2">Female</label>
 											</div>
-                                        </div> -->
-                                    </div>
+                                        </div>
+                                    </div> -->
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
                                             <button type="button" class="btn btn-sm btn-primary" onclick="submitUserInfo()"><i class="fa fa-check"></i>Save</button>&nbsp;
@@ -97,7 +108,7 @@
                                 </form>
                             </div>
                             
-                            <!--ä¿®æ”¹å¯†ç �-->
+                            <!--Ã¤Â¿Â®Ã¦â€�Â¹Ã¥Â¯â€ Ã§Â ï¿½-->
                             <div class="tab-pane" id="modify_password">
                                 <form class="form-horizontal" id="form-user-resetPwd">
                                     <div class="form-group">
@@ -136,13 +147,13 @@
     
     <th:block th:include="include :: footer" />
     <script>
-	    /*ç”¨æˆ·ç®¡ç�†-å¤´åƒ�*/
+	    /*Ã§â€�Â¨Ã¦Ë†Â·Ã§Â®Â¡Ã§ï¿½â€ -Ã¥Â¤Â´Ã¥Æ’ï¿½*/
 /* 	    function avatar() {
 	        var url = ctx + 'system/user/profile/avatar';
 	        $.modal.open("Modify avata", url);
 	    } */
 	    
-	    /*ç”¨æˆ·ä¿¡æ�¯-ä¿®æ”¹*/
+	    /*Ã§â€�Â¨Ã¦Ë†Â·Ã¤Â¿Â¡Ã¦ï¿½Â¯-Ã¤Â¿Â®Ã¦â€�Â¹*/
 	    $("#form-user-edit").validate({
 			onkeyup: false,
 			rules:{
@@ -212,7 +223,7 @@
 	        }
 	    }
 	    
-	    /*ç”¨æˆ·ç®¡ç�†-ä¿®æ”¹å¯†ç �*/
+	    /*Ã§â€�Â¨Ã¦Ë†Â·Ã§Â®Â¡Ã§ï¿½â€ -Ã¤Â¿Â®Ã¦â€�Â¹Ã¥Â¯â€ Ã§Â ï¿½*/
 	    $("#form-user-resetPwd").validate({
 	    	onkeyup: false,
 			rules:{
