@@ -45,6 +45,8 @@ public interface IEquipmentDoService
      */
     public int updateEquipmentDo(EquipmentDo equipmentDo);
 
+    public List<EquipmentDo> selectEquipmentDoListHome(int page);
+
     /**
      * Batch Delete Exchange Delivery Order
      * 
