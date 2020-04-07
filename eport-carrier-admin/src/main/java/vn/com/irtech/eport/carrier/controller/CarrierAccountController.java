@@ -108,18 +108,16 @@ public class CarrierAccountController extends BaseController
         carrierAccount.setSalt(ShiroUtils.randomSalt());
         carrierAccount.setPassword(passwordService.encryptPassword(carrierAccount.getEmail()
         , carrierAccount.getPassword(), carrierAccount.getSalt()));
+        carrierAccount.setCreateBy(ShiroUtils.getSysUser().getUserName());
         new Thread() {
         	public void run() {
         		try {
-                    mailService.prepareAndSend("Title", carrierAccount.getEmail(), variables);
-                      
+                    mailService.prepareAndSend("Title", carrierAccount.getEmail(), variables);  
                     } catch (Exception e) {
                     	e.printStackTrace();
                     }
         	}
-        	
-        }.start();
-        
+        }.start();      
         return toAjax(carrierAccountService.insertCarrierAccount(carrierAccount));
     }
 
@@ -143,6 +141,7 @@ public class CarrierAccountController extends BaseController
     @ResponseBody
     public AjaxResult editSave(CarrierAccount carrierAccount)
     {
+    	carrierAccount.setCreateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierAccountService.updateCarrierAccount(carrierAccount));
     }
 
