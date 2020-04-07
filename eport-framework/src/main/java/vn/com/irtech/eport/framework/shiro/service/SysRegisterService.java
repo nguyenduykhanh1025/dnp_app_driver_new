@@ -59,7 +59,7 @@ public class SysRegisterService
         }
         else if (UserConstants.USER_NAME_NOT_UNIQUE.equals(userService.checkLoginNameUnique(username)))
         {
-            msg = "Create user '" + username + "' failed, Registered account already exists";
+            msg = "Create user '" + username + "' , Registered account already exists";
         }
         else
         {

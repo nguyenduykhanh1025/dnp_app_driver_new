@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
-import vn.com.irtech.eport.carrier.domain.CarrierEquipmentDo;
-import vn.com.irtech.eport.carrier.service.CarrierIEquipmentDoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -47,8 +45,6 @@ public class CarrierEquipmentDoController extends BaseController {
   @Autowired
   private IEquipmentDoService equipmentDoService;
 
-  @Autowired
-  private CarrierIEquipmentDoService carrierEquipmentDoService;
 
   @GetMapping()
   public String EquipmentDo() {
@@ -72,7 +68,7 @@ public class CarrierEquipmentDoController extends BaseController {
   @ResponseBody
   public Object listDo(int page) {
     page = page * 10;
-    List<CarrierEquipmentDo> List = carrierEquipmentDoService.selectEquipmentDoListDo(page);
+    List<EquipmentDo> List = equipmentDoService.selectEquipmentDoListHome(page);
     return List;
   }
 
