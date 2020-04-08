@@ -92,7 +92,7 @@
                             th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
                             th:text="${fmenu.menuName}"
                             th:href="@{${fmenu.url}}"
-                            >四级菜单</a
+                            >Menu cấp 4</a
                           >
                         </li>
                       </ul>
@@ -116,7 +116,7 @@
                     </a>
 				</div>
                 <ul class="nav navbar-top-links navbar-right welcome-message">
-	                <li><a title="全屏显示" href="javascript:void(0)" id="fullScreen"><i class="fa fa-arrows-alt"></i> Full Screen</a></li>
+	                <li><a title="Hiển thị toàn màn hình" href="javascript:void(0)" id="fullScreen"><i class="fa fa-arrows-alt"></i> Full Screen</a></li>
                     <li class="dropdown user-menu">
 						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
 							<span class="hidden-xs">[[${#strings.defaultString(user.email, '-')}]]</span>

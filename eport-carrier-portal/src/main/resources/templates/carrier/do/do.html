@@ -8,12 +8,92 @@
     rel="stylesheet"
     media="screen"
     />
-   
+    <link th:href="@{/bootstrap-4.4.1/bootstrap.min.css}" rel="stylesheet" />
 </head>
+<style>
+  body {
+    padding: 0;
+    margin: 0;
+    background: #ffffff;
+  }
 
-<body class="gray-bg">
+  th,
+  td {
+    font: 12px sans-serif;
+  }
+
+  .handsontable th {
+    background: #63aeff;
+    color: #fff;
+    /* font-weight: 300; */
+    text-align: center;
+    vertical-align: middle;
+    font-size: 1rem;
+    line-height: 2;
+    padding: 5px 2px !important;
+    font-family: inherit;
+  }
+
+  .handsontable tbody th {
+    height: 32px !important;
+  }
+
+  .handsontable thead th.ht__highlight {
+    background: #63aeff;
+  }
+
+  .handsontable td.above-fifty {
+    color: #33691e;
+    background: #dcedc8;
+  }
+
+  /* .handsontable td.not-date {
+    background: #fefefe;
+  } */
+
+  .handsontable td.current {
+    background-color: #dcedc8;
+    color: #000;
+  }
+
+  .handsontable .htDimmed {
+    background-color: #777 !important;
+    color: #fff !important;
+  }
+
+  /* Validate fail */
+  .handsontable td.htInvalid {
+    color: #fff;
+  }
+
+  .hot-container {
+    overflow: hidden;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .footer-add {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .red {
+    color: red !important;
+    text-transform: none;
+  }
+
+  .pagination-div{
+    display: flex;
+    justify-content: flex-end;
+  }
+</style>
+<body class="gray-bg container">
      <div class="container-div">
-        <div class="row">
+        <div class="row" style="height: auto;">
             <div class="col-sm-12 search-collapse">
                 <form id="formId">
                     <div class="select-list">
@@ -75,14 +155,14 @@
                                 </select>
                             </li> -->
                             <li>
-                                <button type="submit"  class="btn btn-primary btn-rounded btn-sm" onclick="search()"><i class="fa fa-search"></i>&nbsp;Search</button>
-                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+                                <button type="submit"  class="btn btn-primary btn-rounded btn-lg" onclick="search()"><i class="fa fa-search"></i>&nbsp;Search</button>
+                                <a class="btn btn-warning btn-rounded btn-lg" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
                             </li>
                         </ul>
                     </div>
                 </form>
             </div>
-            <div class="btn-group-sm" id="toolbar" role="group" >
+            <div class="btn-group-md" role="group" style="height: 50px;">
                 <a class="btn btn-success" onclick="$.operate.add()" style="margin-top: 10px">
                     <i class="fa fa-plus"></i> Add
                 </a>
@@ -96,9 +176,10 @@
                     <i class="fa fa-download"></i> Export
                 </a>
             </div>
-            <div class="col-sm-12 select-table table-striped">
+            <div class="container">
                 <div id="example" class="hot handsontable htColumnHeaders"></div>
-                <nav aria-label="..." style="float: right;">
+                <div class="pagination-div">
+                  <nav aria-label="...">
                     <ul class="pagination">
                       <li class="page-item">
                         <button type="submit" class="btn btn-primary" id="prevPage" onclick="prevPage()">Previous</button>
@@ -108,15 +189,23 @@
                       </li>
                     </ul>
                   </nav>
+                </div>
+                
             </div>
         </div>
     </div>
-    <th:block th:include="include :: footer" />
-    <script th:inline="javascript">
-
-    </script>
+    <!-- <th:block th:include="include :: footer" /> -->
+    <!-- Jquery -->
     <script
-        th:src="@{/handsontable-6.2.2/dist/handsontable.full.min.js}"
+      th:src="@{/bootstrap-4.4.1/jquery-3.4.1.min.js}"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <!-- Boostrap -->
+    <script th:src="@{/bootstrap-4.4.1/bootstrap.min.js}"></script>
+    <!-- Handsondtable -->
+    <script
+      th:src="@{/handsontable-6.2.2/dist/handsontable.full.min.js}"
     ></script>
  
     <script>
@@ -133,7 +222,7 @@
                     data: {
                         page: currentPage,
                     }
-                }).success(function(result) {
+                }).done(function(result) {
                     dataObj = result.rows;
                     var example = document.getElementById("example");
                     //loadData
@@ -228,7 +317,7 @@
                     url: prefix + "/list",
                     method: "POST",
                     data : form.serialize(),
-                }).success(function(result) {
+                }).done(function(result) {
                     dataObj = result.rows;
                     console.log(currentPage);
                     hot.loadData(dataObj);
@@ -260,7 +349,7 @@
                     url: prefix + "/list",
                     method: "POST",
                     data : form.serialize(),
-                }).success(function(result) {
+                }).done(function(result) {
                     dataObj = result.rows;
                     hot.loadData(dataObj);
                     hot.render();
@@ -278,7 +367,7 @@
                         url: prefix + "/list",
                         type: "POST",
                         data: form.serialize(),
-                        success: function(rs)
+                        done: function(rs)
                         {
                             dataObj = rs.rows;
                             hot.loadData(dataObj);

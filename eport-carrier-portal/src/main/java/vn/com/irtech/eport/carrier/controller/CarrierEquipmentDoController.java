@@ -110,6 +110,9 @@ public class CarrierEquipmentDoController extends BaseController {
         // Resolve " mark in array
         String st = equipmentDoList.get(index++).toString();
         strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
+        if (index == 1) {
+          strList[0] = strList[0].substring(strList[0].indexOf("[")+2, strList[0].length());
+        }
         for (int i = 1; i < 8; i++) {
           strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
         }
@@ -117,13 +120,14 @@ public class CarrierEquipmentDoController extends BaseController {
         // Resolve ]} mark in last element
         int listSize = equipmentDoList.size();
         if (index == listSize-1) {
-          strList[8] = a.substring(0, a.length() - 2);
+          strList[8] = strList[8].substring(0, strList[8].indexOf("]"));
+          strList[8] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
         } else {
-          strList[8] = a.substring(0, a.length() - 1);
+          strList[8] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
         }
         // Resolve null string
         for (int i = 0; i <= 8; i++) {
-          if (strList[i].trim().equals("null")) {
+          if (strList[i].trim().equals("")) {
             strList[i] = null;
           }
         }
