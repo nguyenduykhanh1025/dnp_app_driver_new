@@ -23,11 +23,11 @@ public class MailService {
 	@Autowired
 	TemplateEngine templateEngine;
  
-    public void prepareAndSend(String subject, String recipient, Map<String, Object> variables) throws MessagingException {
+    public void prepareAndSend(String subject, String recipient, Map<String, Object> variables, String template) throws MessagingException {
         // Prepare the evaluation context
         Context ctx = new Context();
         ctx.setVariables(variables);
-        String htmlContent = templateEngine.process("email", ctx);
+        String htmlContent = templateEngine.process(template, ctx);
         // Prepare message using a Spring helper
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,

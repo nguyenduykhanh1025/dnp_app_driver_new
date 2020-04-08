@@ -65,5 +65,21 @@ public interface ICarrierGroupService
      * @param keyword 
      * @return result
      */
-    public List<CarrierGroup> selectCarrierGroupListByName(CarrierGroup carrierGroup);
+    public List<CarrierGroup> selectCarrierGroupListByCode(CarrierGroup carrierGroup);
+
+    /**
+	 * Check group code unique
+	 * 
+	 * @param groupCode
+	 * @return
+	 */
+    public String checkGroupCodeUnique(String groupCode);
+    
+    /**
+	 * Check main email unique
+	 * 
+	 * @param mainEmail
+	 * @return
+	 */
+	public String checkMainEmailUnique(String mainEmail);
 }
