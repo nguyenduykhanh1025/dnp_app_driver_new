@@ -2,202 +2,108 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
-    
-    <link
-    th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}"
-    rel="stylesheet"
-    media="screen"
-    />
+	<th:block th:include="include :: easyui-css" />
 </head>
-<style>
-  body {
-    padding: 0;
-    margin: 0;
-    background: #ffffff;
-  }
-
-  th,
-  td {
-    font: 12px sans-serif;
-  }
-
-  .handsontable th {
-    background: #63aeff;
-    color: #fff;
-    /* font-weight: 300; */
-    text-align: center;
-    vertical-align: middle;
-    font-size: 1rem;
-    line-height: 2;
-    padding: 5px 2px !important;
-    font-family: inherit;
-  }
-
-  .handsontable tbody th {
-    height: 32px !important;
-  }
-
-  .handsontable thead th.ht__highlight {
-    background: #63aeff;
-  }
-
-  .handsontable td.above-fifty {
-    color: #33691e;
-    background: #dcedc8;
-  }
-
-  /* .handsontable td.not-date {
-    background: #fefefe;
-  } */
-
-  .handsontable td.current {
-    background-color: #dcedc8;
-    color: #000;
-  }
-
-  .handsontable .htDimmed {
-    background-color: #fff !important;
-    color: #000 !important;
-  }
-
-  /* Validate fail */
-  .handsontable td.htInvalid {
-    color: #fff;
-  }
-
-  .hot-container {
-    overflow: hidden;
-  }
-
-  .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .footer-add {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .red {
-    color: red !important;
-    text-transform: none;
-  }
-
-  .pagination-div{
-    display: flex;
-    justify-content: flex-end;
-  }
-</style>
-<body class="gray-bg container">
-     <div class="container-div">
-        <div class="row" style="height: auto;">
-            <div class="col-sm-12 search-collapse">
+<body class="gray-bg">
+        <div class="row">
+            <div class="col-sm-12 select-table" style="margin-top:0px">
+            <!-- Search form -->
+            <div class="col-sm-12">
                 <form id="formId">
                     <div class="select-list">
                         <ul>
                             <li>
-                                <label>Số lệnh：</label>
-                                <input type="text" id="order_Number" name="orderNumber"/>
+                                <input type="text" name="fromDate" id="fromDate" placeholder="Từ ngày">
                             </li>
                             <li>
-                                <label>So bill：</label>
-                                <input type="text" id="bill_Of_Lading" name="billOfLading"/>
+                                <input type="text" name="toDate" id="toDate" placeholder="Đến ngày">
                             </li>
                             <li>
-                                <label>Mã hãng tàu：</label>
-                                <input type="text" id="carrier_Code" name="carrierCode"/>
+                                <input type="text" name="voyageNo" id="voyageNo" placeholder="Chuyến tàu">
                             </li>
                             <li>
-                                <label>Số cont：</label>
-                                <input type="text" id="container_Number" name="containerNumber"/>
-                            </li>
-                            <!-- <li class="select-time">
-                                <label>Hạn lệnh：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="Start Time" name="params[beginExpiredDem]"/>
-                                <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endExpiredDem]"/>
-                            </li> -->
-                            <li>
-                                <label>Nơi hạ rỗng：</label>
-                                <input type="text" id="empty_Container_Depot" name="emptyContainerDepot"/>
+                                <input type="text" name="contNo" id="contNo" placeholder="Số Cont">
                             </li>
                             <li>
-                                <label>Số ngày miễn lưu vỏ：</label>
-                                <input type="number" id="det_Free_Time" name="detFreeTime"/>
-                            </li>
-                            <!-- <li class="select-time">
-                                <label>Ngay Release：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="Start Time" name="params[beginReleaseDate]"/>
-                                <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endReleaseDate]"/>
-                            </li> -->
-                            <li>
-                                <label>Tàu：</label>
-                                <input type="text" id="vessel" name="vessel"/>
+                                <input type="text" name="BlNo" id="blNo" placeholder="Vận đơn/BL No">
                             </li>
                             <li>
-                                <label>Chuyến：</label>
-                                <input type="text" id="voyNo" name="voyNo"/>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
                             </li>
-                            <!-- <li>
-                                <label>DO Status：</label>
-                                <select name="status">
-                                    <option value="">All</option>
-                                </select>
-                            </li>
-                            <li>
-                                <label>Process Status：</label>
-                                <select name="processStatus">
-                                    <option value="">All</option>
-                                </select>
-                            </li> -->
-                            
                         </ul>
                     </div>
                 </form>
             </div>
-            <div class="btn-group-md" role="group" style="height: 50px;">
-                <a class="btn btn-success" onclick="$.operate.add()" style="margin-top: 10px">
-                    <i class="fa fa-plus"></i> Add
-                </a>
-                <!-- <a class="btn btn-primary single disabled" onclick="$.operate.edit()" style="margin-top: 10px">
-                    <i class="fa fa-edit"></i> Edit
-                </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"style="margin-top: 10px" >
-                    <i class="fa fa-remove"></i> Delete
-                </a> -->
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" style="margin-top: 10px">
-                    <i class="fa fa-download"></i> Export
-                </a>
-            </div>
-            <div class="container">
-                <div id="example" class="hot handsontable htColumnHeaders"></div>
-                <div class="pagination-div">
-                  <nav aria-label="...">
-                    <ul class="pagination">
-                        <li class="page-item">
-                            <button style="margin-right: 15px;" class="btn btn-primary"  onclick="update()">Lưu</button>
-                          </li>
-                      <li class="page-item">
-                        <button type="submit" style="margin-right: 5px;" class="btn btn-primary" id="prevPage" onclick="prevPage()">Previous</button>
-                      </li>
-                      <li>
-                        <button type="submit"  id="nextPage" class="btn btn-primary" onclick="nextPage()">Next</button>
-                      </li>
-                    </ul>
-                  </nav>
-                </div>
-                
+            <!-- Table toolbar -->
+            <div class=" col-sm-12 fixed-table-toolbar">
+            <div class="bs-bars pull-left" style="margin-bottom:5px"><div class="btn-group-sm" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()">
+	                <i class="fa fa-plus"></i> Thêm DO
+	            </a>
+	            <a class="btn btn-primary single disabled" onclick="$.operate.edit()">
+		            <i class="fa fa-edit"></i> Đổi Hạn Lệnh
+		        </a>
+	        </div></div>
+	        <div class="columns columns-right btn-group pull-right" style="margin-bottom:5px">
+	            <button class="btn btn-default btn-outline" type="button" name="showSearch" title="Tìm kiếm"><i class="glyphicon glyphicon-search"></i></button>
+	            <button class="btn btn-default btn-outline" type="button" name="refresh" title="Refresh"><i class="glyphicon glyphicon-refresh icon-refresh"></i></button>
+	        </div>
+	        </div>
+            <!-- /table toolbar -->
+            <div class="col-sm-12 table-container">
+            <table id="dg" style="width:100%;height:500px" pageList="[25,50,100,150,200]">
+		        <thead>
+		            <tr>
+		                <th data-options="field:'ck',checkbox:true"></th>
+		                <th data-options="field:'carrierCode',halign:'center',resizable:true" width="80">Hãng tàu <br/>Carrier</th>
+		                <th data-options="field:'billOfLading',halign:'center'," sortable="true" width="110">Số vận đơn<br/>B/L No</th>
+		                <th data-options="field:'containerNumber',halign:'center'," sortable="true" width="110">Số cont<br>Container No</th>
+		                <th data-options="field:'consignee',halign:'center'" sortable="true" width="250">Khách hàng<br>Consignee</th>
+		                <th data-options="field:'expiredDem',halign:'center',align:'right'" sortable="true" width="110">Hạn lệnh<br>Expired Date</th>
+		                <th data-options="field:'emptyContainerDepot',halign:'center'" width="200">Nơi hạ rỗng<br>Empty Depot</th>
+		                <th data-options="field:'detFreeTime',halign:'center',align:'right'" width="80">Ngày miễn<br>DET free</th>
+		                <th data-options="field:'vessel',halign:'center'" width="100">Tên tàu<br>Vessel</th>
+		                <th data-options="field:'voyNo',halign:'center'" width="100">Chuyến tàu<br>Voyage No</th>
+		                <th data-options="field:'status',align:'center'" width="80">Trạng thái</th>
+		            </tr>
+		        </thead>
+		    </table>
             </div>
         </div>
     </div>
     <th:block th:include="include :: footer" />
-    <!-- Handsondtable -->
-    <script th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"></script>
- 
+	<th:block th:include="include :: easyui-js" />
+ <script type="text/javascript">
+        $(function(){
+            var dg = $('#dg').datagrid({
+            	url: ctx+'carrier/do/list2',
+            	singleSelection: true,
+            	clientPaging: false,
+            	pagination: true,
+                rownumbers: true,
+                pageSize:50,
+                loader: function(param, success, error){
+            		console.log(param)
+            		var opts = $(this).datagrid('options');
+            		if (!opts.url) return false;
+            		$.ajax({
+            			type: opts.method,
+            			url: opts.url,
+            			data: {"pageNum":param.page,"pageSize":param.rows,"orderByColumn":param.sort,"isAsc":param.order},
+            			dataType: 'json',
+            			success: function(data){
+            				success(data);
+            			},
+            			error: function(){
+            				error.apply(this, arguments);
+            			}
+            		});
+            	}
+            });
+        });
+    </script>
     <script>
+    /* 
         var hot;
         var currentPage = 0;
         var prefix = "/carrier/do";
@@ -479,7 +385,7 @@
                 searchEven()
             });
         }
-
+*/
       </script>
 </body>
 </html>

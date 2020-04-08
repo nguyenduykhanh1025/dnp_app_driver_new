@@ -61,13 +61,21 @@ public class CarrierEquipmentDoController extends BaseController {
    * Get Exchange Delivery Order List
    */
 
-  @PostMapping("/list")
+  @PostMapping("/list2")
 	@ResponseBody
 	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
 		int page = EquipmentDo.getPage();
 		page = page * 10;
 		EquipmentDo.setPage(page);
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingCarrier(EquipmentDo);
+		return getDataTable(list);
+	}
+
+	@RequestMapping("/list")
+	@ResponseBody
+	public TableDataInfo list(EquipmentDo edo) {
+		startPage();
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(edo);
 		return getDataTable(list);
 	}
 
