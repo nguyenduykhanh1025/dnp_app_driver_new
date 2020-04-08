@@ -131,7 +131,6 @@ public class CarrierEquipmentDoController extends BaseController {
             strList[i] = null;
           }
         }
-        // Insert new DO
         EquipmentDo equipment = new EquipmentDo();
         equipment.setCarrierId(currentUser.getId());
         equipment.setCarrierCode(carrierGroupService.selectCarrierGroupById(ShiroUtils.getUserId()).getGroupName());
@@ -149,7 +148,6 @@ public class CarrierEquipmentDoController extends BaseController {
         // set who created this record
         equipment.setCreateBy(currentUser.getFullName());
         equipment.setCreateTime(new Date());
-        // Insert to database
         equipmentDoService.insertEquipmentDo(equipment);
       }
     }
@@ -177,9 +175,9 @@ public class CarrierEquipmentDoController extends BaseController {
         for (int i = 1; i < 12; i++) {
           strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
         }
-        String a = equipmentDoList.get(index).toString();
+        // String a = equipmentDoList.get(index).toString();
         // Resolve ]} mark in last element
-        int listSize = equipmentDoList.size();
+        // int listSize = equipmentDoList.size();
         // if (index == listSize-1) {
         //   strList[11] = strList[11].substring(0, strList[11].indexOf("]"));
         //   strList[11] = a.substring(0, a.length() - 2).replace('"', ' ').trim();

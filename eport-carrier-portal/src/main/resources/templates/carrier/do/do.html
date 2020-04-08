@@ -163,12 +163,12 @@
                 <a class="btn btn-success" onclick="$.operate.add()" style="margin-top: 10px">
                     <i class="fa fa-plus"></i> Add
                 </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" style="margin-top: 10px">
+                <!-- <a class="btn btn-primary single disabled" onclick="$.operate.edit()" style="margin-top: 10px">
                     <i class="fa fa-edit"></i> Edit
                 </a>
                 <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"style="margin-top: 10px" >
                     <i class="fa fa-remove"></i> Delete
-                </a>
+                </a> -->
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" style="margin-top: 10px">
                     <i class="fa fa-download"></i> Export
                 </a>
@@ -179,13 +179,13 @@
                   <nav aria-label="...">
                     <ul class="pagination">
                         <li class="page-item">
-                            <a   onclick="update()">Lưu</a>
+                            <button style="margin-right: 15px;" class="btn btn-primary"  onclick="update()">Lưu</button>
                           </li>
                       <li class="page-item">
-                        <button type="submit" class="btn btn-primary" id="prevPage" onclick="prevPage()">Previous</button>
+                        <button type="submit" style="margin-right: 5px;" class="btn btn-primary" id="prevPage" onclick="prevPage()">Previous</button>
                       </li>
                       <li>
-                        <button type="submit" id="nextPage" class="btn btn-primary" onclick="nextPage()">Next</button>
+                        <button type="submit"  id="nextPage" class="btn btn-primary" onclick="nextPage()">Next</button>
                       </li>
                     </ul>
                   </nav>
