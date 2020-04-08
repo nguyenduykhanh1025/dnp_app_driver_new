@@ -12,15 +12,15 @@
                         <ul>
                             <li>
                                 <!-- <label>Group Code：</label> -->
-                                <input type="text" name="groupCode" id="groupCode" placeholder="Group Code"/>
+                                <input type="text" name="groupCode" id="groupCode" placeholder="Mã hãng tàu"/>
                             </li>
                             <li>
                                 <!-- <label>Group Name：</label> -->
-                                <input type="text" name="groupName" id="groupName" placeholder="Group Name"/>
+                                <input type="text" name="groupName" id="groupName" placeholder="Tên hãng tàu"/>
                             </li>
                             <li>
                                 <!-- <label>Operate Codes：</label> -->
-                                <input type="text" name="operateCode" id="operateCode" placeholder="Operate Code"/>
+                                <input type="text" name="operateCode" id="operateCode" placeholder="Operate Codes"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="fa fa-search"></i>&nbsp;Search</a>
@@ -71,11 +71,11 @@
                 },
                 {
                     field: 'groupCode', 
-                    title: 'Group Code'
+                    title: 'Mã hãng tàu',//'Group Code'
                 },
                 {
                     field: 'groupName', 
-                    title: 'Group Name'
+                    title: 'Tên hãng tàu',//'Group Name'
                 },
                 {
                     field: 'operateCode', 
@@ -83,10 +83,10 @@
                 },
                 {
                     field: 'mainEmail', 
-                    title: 'Main Email'
+                    title: 'Email'//'Main Email'
                 },
                 {
-                    title: 'Action',
+                    title: 'Hành động',//'Action',
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];
