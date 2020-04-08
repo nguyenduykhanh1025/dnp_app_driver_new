@@ -23,6 +23,7 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.utils.AddressUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
@@ -104,11 +105,14 @@ public class CarrierAccountController extends BaseController
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierAccount.getEmail())) {
             return error("Invalid Email!");
         } else if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail()).equals("1")) {
-            return error("Email already exist");
+            return error("Email already exist!");
+        } else if (carrierAccount.getPassword().length() < 6) {
+            return error("Password cannot less than 6 characters!");
         }
         Map<String, Object> variables = new HashMap<>();
-		variables.put("username", carrierAccount.getEmail());
-		variables.put("password", carrierAccount.getPassword());
+		variables.put("username", carrierAccount.getFullName());
+        variables.put("password", carrierAccount.getPassword());
+        variables.put("email", carrierAccount.getEmail());
         carrierAccount.setSalt(ShiroUtils.randomSalt());
         carrierAccount.setPassword(passwordService.encryptPassword(carrierAccount.getEmail()
         , carrierAccount.getPassword(), carrierAccount.getSalt()));
@@ -117,7 +121,7 @@ public class CarrierAccountController extends BaseController
             new Thread() {
                 public void run() {
                     try {
-                        mailService.prepareAndSend("Cấp tài khoản truy cập", carrierAccount.getEmail(), variables);  
+                        mailService.prepareAndSend("Cấp tài khoản truy cập", carrierAccount.getEmail(), variables, "email");  
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -194,8 +198,10 @@ public class CarrierAccountController extends BaseController
     public AjaxResult resetPwdSave(CarrierAccount carrierAccount)
     {
         Map<String, Object> variables = new HashMap<>();
-		variables.put("username", carrierAccount.getEmail());
+		variables.put("username", carrierAccount.getFullName());
         variables.put("password", carrierAccount.getPassword());
+        variables.put("email", carrierAccount.getEmail());
+        //variables.put("link", AddressUtils.IP_URL);
         carrierAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
         carrierAccount.setSalt(ShiroUtils.randomSalt());
         carrierAccount.setPassword(passwordService.encryptPassword(carrierAccount.getEmail(), carrierAccount.getPassword(), carrierAccount.getSalt()));
@@ -203,7 +209,7 @@ public class CarrierAccountController extends BaseController
             new Thread() {
                 public void run() {
                     try {
-                        mailService.prepareAndSend("Thiết lập lại mật khẩu", carrierAccount.getEmail(), variables);  
+                        mailService.prepareAndSend("Thiết lập lại mật khẩu", carrierAccount.getEmail(), variables, "resetPassword");  
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

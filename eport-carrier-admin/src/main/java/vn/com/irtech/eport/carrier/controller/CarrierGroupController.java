@@ -146,18 +146,18 @@ public class CarrierGroupController extends BaseController
     /**
      * Search Carrier Group Name
      */
-    @RequestMapping("/searchGroupNameByKeyword")
+    @RequestMapping("/searchGroupCodeByKeyword")
     @ResponseBody
     public List<JSONObject> searchGroupNameByKeyword(String keyword) {
         CarrierGroup carrierGroup = new CarrierGroup();
         carrierGroup.setGroupName(keyword);
-        List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupListByName(carrierGroup);
+        List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupListByCode(carrierGroup);
         List<JSONObject> result = new ArrayList<>();
         int limit = 0; 
 		for (CarrierGroup i : carrierGroups) {
 			JSONObject json = new JSONObject();
 			json.put("id", i.getId());
-			json.put("text", i.getGroupName());
+			json.put("text", i.getGroupCode());
             result.add(json);
             limit++;
             if (limit == 5) {
@@ -167,10 +167,10 @@ public class CarrierGroupController extends BaseController
         return result;
     }
 
-    @RequestMapping("/getGroupNameById")
+    @RequestMapping("/getGroupCodeById")
     @ResponseBody
-    public String getGroupNameById(long id) {
+    public String getGroupCodeById(long id) {
         CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(id);
-        return carrierGroup.getGroupName();
+        return carrierGroup.getGroupCode();
     }
 }

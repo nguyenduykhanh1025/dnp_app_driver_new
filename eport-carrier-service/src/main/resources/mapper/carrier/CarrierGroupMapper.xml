@@ -35,10 +35,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
-    <select id="selectCarrierGroupListByName" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
+    <select id="selectCarrierGroupListByCode" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
         <include refid="selectCarrierGroupVo"/>
         <where>  
-            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="groupCode != null  and groupCode != ''"> and group_name like concat('%', #{groupCode}, '%')</if>
         </where>
     </select>
         
