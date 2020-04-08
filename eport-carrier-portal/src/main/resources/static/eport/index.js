@@ -1,6 +1,5 @@
 /**
- * 首页方法封装处理
- * Copyright (c) 2019 ruoyi
+ * Home Method Encapsulation
  */
 layer.config({
     extend: 'moon/style.css',
@@ -13,7 +12,7 @@ $(function() {
     // MetsiMenu
     $('#side-menu').metisMenu();
 
-    // 固定菜单栏
+    // Fixed menu bar
     $(function() {
         $('.sidebar-collapse').slimScroll({
             height: '96%',
@@ -22,7 +21,7 @@ $(function() {
         });
     });
 
-    // 菜单切换
+    // Menu switch
     $('.navbar-minimalize').click(function() {
     	if (isMobile) {
     		$("body").toggleClass("canvas-menu");
@@ -46,7 +45,7 @@ $(function() {
 
     $('.nav-close').click(NavToggle);
 
-    //ios浏览器兼容性处理
+    //IOS browser compatibility processing
     if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
         $('#content-main').css('overflow-y', 'auto');
     }
@@ -93,10 +92,10 @@ function SmoothlyMenu() {
 }
 
 /**
- * iframe处理
+ * iframe processing
  */
 $(function() {
-    //计算元素集合的总宽度
+    //Calculate the total width of the set of elements
     function calSumWidth(elements) {
         var width = 0;
         $(elements).each(function() {
@@ -105,14 +104,14 @@ $(function() {
         return width;
     }
     
-    // 激活指定选项卡
+    // Activate the specified tab
     function setActiveTab(element) {
         if (!$(element).hasClass('active')) {
             var currentId = $(element).data('id');
-            // 显示tab对应的内容区
-            $('.RuoYi_iframe').each(function() {
+            // Display the content area corresponding to the tab
+            $('.eport_iframe').each(function() {
                 if ($(this).data('id') == currentId) {
-                    $(this).show().siblings('.RuoYi_iframe').hide();
+                    $(this).show().siblings('.eport_iframe').hide();
                 }
             });
             $(element).addClass('active').siblings('.menuTab').removeClass('active');
@@ -120,15 +119,15 @@ $(function() {
         }
     }
 
-    //滚动到指定选项卡
+    //Scroll to the specified tab
     function scrollToTab(element) {
         var marginLeftVal = calSumWidth($(element).prevAll()),
         marginRightVal = calSumWidth($(element).nextAll());
-        // 可视区域非tab宽度
+        // Viewable area non-tab width
         var tabOuterWidth = calSumWidth($(".content-tabs").children().not(".menuTabs"));
-        //可视区域tab宽度
+        //Viewable area tab width
         var visibleWidth = $(".content-tabs").outerWidth(true) - tabOuterWidth;
-        //实际滚动宽度
+        //Actual scroll width
         var scrollVal = 0;
         if ($(".page-tabs-content").outerWidth() < visibleWidth) {
             scrollVal = 0;
@@ -150,14 +149,14 @@ $(function() {
         "fast");
     }
 
-    //查看左侧隐藏的选项卡
+    //See the hidden tabs on the left
     function scrollTabLeft() {
         var marginLeftVal = Math.abs(parseInt($('.page-tabs-content').css('margin-left')));
-        // 可视区域非tab宽度
+        // Viewable area non-tab width
         var tabOuterWidth = calSumWidth($(".content-tabs").children().not(".menuTabs"));
-        //可视区域tab宽度
+        //Viewable area tab width
         var visibleWidth = $(".content-tabs").outerWidth(true) - tabOuterWidth;
-        //实际滚动宽度
+        //Actual scroll width
         var scrollVal = 0;
         if (($(".page-tabs-content").width()) < visibleWidth) {
             return false;
@@ -183,14 +182,14 @@ $(function() {
         "fast");
     }
 
-    //查看右侧隐藏的选项卡
+    //See the hidden tabs on the right
     function scrollTabRight() {
         var marginLeftVal = Math.abs(parseInt($('.page-tabs-content').css('margin-left')));
-        // 可视区域非tab宽度
+        // Viewable area non-tab width
         var tabOuterWidth = calSumWidth($(".content-tabs").children().not(".menuTabs"));
-        //可视区域tab宽度
+        //Viewable area tab width
         var visibleWidth = $(".content-tabs").outerWidth(true) - tabOuterWidth;
-        //实际滚动宽度
+        //Actual scroll width
         var scrollVal = 0;
         if ($(".page-tabs-content").width() < visibleWidth) {
             return false;
@@ -216,7 +215,7 @@ $(function() {
         }
     }
 
-    //通过遍历给菜单项加上data-index属性
+    //Add data-index attribute to menu item by traversing
     $(".menuItem").each(function(index) {
         if (!$(this).attr('data-index')) {
             $(this).attr('data-index', index);
@@ -224,7 +223,7 @@ $(function() {
     });
 
     function menuItem() {
-        // 获取标识数据
+        // Get identification data
         var dataUrl = $(this).attr('href'),
         dataIndex = $(this).data('index'),
         menuName = $.trim($(this).text()),
@@ -234,16 +233,16 @@ $(function() {
         setIframeUrl($(this).attr("href"));
         if (dataUrl == undefined || $.trim(dataUrl).length == 0) return false;
 
-        // 选项卡菜单已存在
+        // Tab menu already exists
         $('.menuTab').each(function() {
             if ($(this).data('id') == dataUrl) {
                 if (!$(this).hasClass('active')) {
                     $(this).addClass('active').siblings('.menuTab').removeClass('active');
                     scrollToTab(this);
-                    // 显示tab对应的内容区
-                    $('.mainContent .RuoYi_iframe').each(function() {
+                    // Display the content area corresponding to the tab
+                    $('.mainContent .eport_iframe').each(function() {
                         if ($(this).data('id') == dataUrl) {
-                            $(this).show().siblings('.RuoYi_iframe').hide();
+                            $(this).show().siblings('.eport_iframe').hide();
                             return false;
                         }
                     });
@@ -252,16 +251,16 @@ $(function() {
                 return false;
             }
         });
-        // 选项卡菜单不存在
+        // Tab menu does not exist
         if (flag) {
             var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '">' + menuName + ' <i class="fa fa-times-circle"></i></a>';
             $('.menuTab').removeClass('active');
 
             // 添加选项卡对应的iframe
-            var str1 = '<iframe class="RuoYi_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
-            $('.mainContent').find('iframe.RuoYi_iframe').hide().parents('.mainContent').append(str1);
+            var str1 = '<iframe class="eport_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" seamless></iframe>';
+            $('.mainContent').find('iframe.eport_iframe').hide().parents('.mainContent').append(str1);
             
-            $.modal.loading(" Đang xử lý, vui lòng chờ...");
+            $.modal.loading(" Đang xử lý...");
             
             $('.mainContent iframe:visible').load(function () {
             	$.modal.closeLoading();
@@ -299,9 +298,9 @@ $(function() {
                 var activeId = $(this).parents('.menuTab').next('.menuTab:eq(0)').data('id');
                 $(this).parents('.menuTab').next('.menuTab:eq(0)').addClass('active');
 
-                $('.mainContent .RuoYi_iframe').each(function() {
+                $('.mainContent .eport_iframe').each(function() {
                     if ($(this).data('id') == activeId) {
-                        $(this).show().siblings('.RuoYi_iframe').hide();
+                        $(this).show().siblings('.eport_iframe').hide();
                         return false;
                     }
                 });
@@ -318,7 +317,7 @@ $(function() {
                 $(this).parents('.menuTab').remove();
 
                 // 移除tab对应的内容区
-                $('.mainContent .RuoYi_iframe').each(function() {
+                $('.mainContent .eport_iframe').each(function() {
                     if ($(this).data('id') == closeTabId) {
                         $(this).remove();
                         return false;
@@ -330,9 +329,9 @@ $(function() {
             if ($(this).parents('.menuTab').prev('.menuTab').size()) {
                 var activeId = $(this).parents('.menuTab').prev('.menuTab:last').data('id');
                 $(this).parents('.menuTab').prev('.menuTab:last').addClass('active');
-                $('.mainContent .RuoYi_iframe').each(function() {
+                $('.mainContent .eport_iframe').each(function() {
                     if ($(this).data('id') == activeId) {
-                        $(this).show().siblings('.RuoYi_iframe').hide();
+                        $(this).show().siblings('.eport_iframe').hide();
                         return false;
                     }
                 });
@@ -341,7 +340,7 @@ $(function() {
                 $(this).parents('.menuTab').remove();
 
                 // 移除tab对应的内容区
-                $('.mainContent .RuoYi_iframe').each(function() {
+                $('.mainContent .eport_iframe').each(function() {
                     if ($(this).data('id') == closeTabId) {
                         $(this).remove();
                         return false;
@@ -350,9 +349,9 @@ $(function() {
                 
                 if($.common.isNotEmpty(panelUrl)){
             		$('.menuTab[data-id="' + panelUrl + '"]').addClass('active').siblings('.menuTab').removeClass('active');
-            		$('.mainContent .RuoYi_iframe').each(function() {
+            		$('.mainContent .eport_iframe').each(function() {
                         if ($(this).data('id') == panelUrl) {
-                            $(this).show().siblings('.RuoYi_iframe').hide();
+                            $(this).show().siblings('.eport_iframe').hide();
                             return false;
                         }
             		});
@@ -365,7 +364,7 @@ $(function() {
             $(this).parents('.menuTab').remove();
 
             // 移除相应tab对应的内容区
-            $('.mainContent .RuoYi_iframe').each(function() {
+            $('.mainContent .eport_iframe').each(function() {
                 if ($(this).data('id') == closeTabId) {
                     $(this).remove();
                     return false;
@@ -389,9 +388,9 @@ $(function() {
         if (!$(this).hasClass('active')) {
             var currentId = $(this).data('id');
             // 显示tab对应的内容区
-            $('.mainContent .RuoYi_iframe').each(function() {
+            $('.mainContent .eport_iframe').each(function() {
                 if ($(this).data('id') == currentId) {
-                    $(this).show().siblings('.RuoYi_iframe').hide();
+                    $(this).show().siblings('.eport_iframe').hide();
                     return false;
                 }
             });
@@ -406,7 +405,7 @@ $(function() {
     // 刷新iframe
     function refreshTab() {
     	var currentId = $('.page-tabs-content').find('.active').attr('data-id');
-    	var target = $('.RuoYi_iframe[data-id="' + currentId + '"]');
+    	var target = $('.eport_iframe[data-id="' + currentId + '"]');
         var url = target.attr('src');
         target.attr('src', url).ready();
     }
@@ -414,7 +413,7 @@ $(function() {
     // 页签全屏
     function fullScreenTab() {
     	var currentId = $('.page-tabs-content').find('.active').attr('data-id');
-    	var target = $('.RuoYi_iframe[data-id="' + currentId + '"]');
+    	var target = $('.eport_iframe[data-id="' + currentId + '"]');
 	    target.fullScreen(true);
     }
     
@@ -426,7 +425,7 @@ $(function() {
     //关闭其他选项卡
     function tabCloseOther() {
         $('.page-tabs-content').children("[data-id]").not(":first").not(".active").each(function() {
-            $('.RuoYi_iframe[data-id="' + $(this).data('id') + '"]').remove();
+            $('.eport_iframe[data-id="' + $(this).data('id') + '"]').remove();
             $(this).remove();
         });
         $('.page-tabs-content').css("margin-left", "0");
@@ -435,11 +434,11 @@ $(function() {
     // 关闭全部选项卡
     function tabCloseAll() {
     	$('.page-tabs-content').children("[data-id]").not(":first").each(function() {
-            $('.RuoYi_iframe[data-id="' + $(this).data('id') + '"]').remove();
+            $('.eport_iframe[data-id="' + $(this).data('id') + '"]').remove();
             $(this).remove();
         });
         $('.page-tabs-content').children("[data-id]:first").each(function() {
-            $('.RuoYi_iframe[data-id="' + $(this).data('id') + '"]').show();
+            $('.eport_iframe[data-id="' + $(this).data('id') + '"]').show();
             $(this).addClass("active");
         });
         $('.page-tabs-content').css("margin-left", "0");
@@ -546,7 +545,7 @@ $(function() {
                 	    if ($(this).hasClass('active')) {
                 	        setActiveTab(this);
                 	    }
-                	    $('.RuoYi_iframe[data-id="' + $(this).data('id') + '"]').remove();
+                	    $('.eport_iframe[data-id="' + $(this).data('id') + '"]').remove();
                 	    $(this).remove();
                 	});
                 	$('.page-tabs-content').css("margin-left", "0");
@@ -576,7 +575,7 @@ $(function() {
                 icon: "fa-arrows-alt",
                 callback: function(key, opt) {
                 	setActiveTab(this);
-                    var target = $('.RuoYi_iframe[data-id="' + this.data('id') + '"]');
+                    var target = $('.eport_iframe[data-id="' + this.data('id') + '"]');
                 	target.fullScreen(true);
                 }
             },
@@ -585,9 +584,9 @@ $(function() {
                 icon: "fa-refresh",
                 callback: function(key, opt) {
                 	setActiveTab(this);
-                	var target = $('.RuoYi_iframe[data-id="' + this.data('id') + '"]');
+                	var target = $('.eport_iframe[data-id="' + this.data('id') + '"]');
                 	var url = target.attr('src');
-                    $.modal.loading("Đang xử lý, vui lòng chờ...");
+                    $.modal.loading(" Đang xử lý...");
                     target.attr('src', url).load(function () {
                     	$.modal.closeLoading();
                     });
@@ -597,7 +596,7 @@ $(function() {
                 name: "Mở Cửa Sổ Mới",
                 icon: "fa-link",
                 callback: function(key, opt) {
-                	var target = $('.RuoYi_iframe[data-id="' + this.data('id') + '"]');
+                	var target = $('.eport_iframe[data-id="' + this.data('id') + '"]');
                     window.open(target.attr('src'));
                 }
             },
