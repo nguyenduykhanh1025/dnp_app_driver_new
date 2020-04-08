@@ -270,11 +270,14 @@
             validator: dateValidator,
           },
           {
+            
+          },
+          {
             type: "numeric",
           },
           {},
           {},
-          {},
+          {}
         ],
       };
 
@@ -350,10 +353,10 @@
             (keepEmptyRows = false)
           );
         }
-        var cleanedGridData = {};
+        var cleanedGridData = [];
         $.each(myTableData, function (rowKey, object) {
           if (!hot.isEmptyRow(rowKey)) {
-            cleanedGridData[rowKey] = object;
+            cleanedGridData.push(object);
           }
         });
         $.each(cleanedGridData, function (key, object) {
@@ -380,8 +383,10 @@
           main_key = key;
         });
         main_key++;
+        console.log(cleanedGridData);
         if (main_key == count) {
           var jsonData = JSON.stringify(cleanedGridData);
+          console.log(jsonData);
           $.ajax({
             url: "/carrier/do/add",
             method: "post",
