@@ -40,9 +40,12 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
 
     @Override
     public List<EquipmentDo> selectEquipmentDoListAdmin(EquipmentDoPaging EquipmentDo) {
-        return equipmentDoMapper.selectEquipmentDoListPaging(EquipmentDo);
+        return equipmentDoMapper.selectEquipmentDoListPagingAdmin(EquipmentDo);
     }
-   
+    @Override
+    public List<EquipmentDo> selectEquipmentDoListCarrier(EquipmentDoPaging EquipmentDo) {
+        return equipmentDoMapper.selectEquipmentDoListPagingCarrier(EquipmentDo);
+    }
   
       /**
      * Get Exchange Delivery Order List

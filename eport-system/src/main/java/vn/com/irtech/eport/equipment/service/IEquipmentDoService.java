@@ -32,6 +32,7 @@ public interface IEquipmentDoService
      */
     public List<EquipmentDo> selectEquipmentDoListAdmin(EquipmentDoPaging EquipmentDo);
 
+    public List<EquipmentDo> selectEquipmentDoListCarrier(EquipmentDoPaging EquipmentDo);
 
     public List<EquipmentDo> selectEquipmentDoList(EquipmentDo EquipmentDo);
 
