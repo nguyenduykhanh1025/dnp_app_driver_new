@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="carrierCode != null  and carrierCode != ''"><bind name="pattern" value="'%' + carrierCode + '%'"/> and carrier_code like #{pattern}</if>
             <if test="email != null  and email != ''"><bind name="pattern" value="'%' + email + '%'"/> and email like #{pattern}</if>
-            <!-- <if test="status != null  and status != ''"> and status = #{status}</if> -->
+            <if test="status != null  and status != ''"> and status = #{status}</if>
         </where>
     </select>
     

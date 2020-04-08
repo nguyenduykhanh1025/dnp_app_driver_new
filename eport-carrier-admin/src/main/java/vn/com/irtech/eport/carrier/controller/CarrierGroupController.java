@@ -148,9 +148,9 @@ public class CarrierGroupController extends BaseController
      */
     @RequestMapping("/searchGroupCodeByKeyword")
     @ResponseBody
-    public List<JSONObject> searchGroupNameByKeyword(String keyword) {
+    public List<JSONObject> searchGroupCodeByKeyword(String keyword) {
         CarrierGroup carrierGroup = new CarrierGroup();
-        carrierGroup.setGroupName(keyword);
+        carrierGroup.setGroupCode(keyword.toLowerCase());
         List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupListByCode(carrierGroup);
         List<JSONObject> result = new ArrayList<>();
         int limit = 0; 

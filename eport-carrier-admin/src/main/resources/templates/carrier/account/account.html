@@ -12,18 +12,20 @@
                         <ul>
                             <li>
                                 <!-- <label>Shipping Line Code：</label> -->
-                                <input type="text" id="carrierCode" name="carrierCode" placeholder="Shipping Line Code" style="width: 140px;"/>
+                                <input type="text" id="carrierCode" name="carrierCode" placeholder="Mã vận chuyển" style="width: 140px;"/>
                             </li>
                             <li>
                                 <!-- <label>Email：</label> -->
                                 <input type="text" id="email" name="email" placeholder="Email" style="width: 180px;"/>
                             </li>
-                            <!-- <li>
-                                <label>Status：</label>
-                                <select name="status">
-                                    <option value="">All</option>
+                            <li>
+                                <!-- <label>Status：</label> -->
+                                <select name="status" onchange="$('#searchBtn').click()">
+                                    <option value="">Trạng thái</option>
+                                    <option value="0">Hoạt động</option>
+                                    <option value="1">Không hoạt động</option>
                                 </select>
-                            </li> -->
+                            </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="fa fa-search"></i>&nbsp;Search</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
@@ -73,11 +75,11 @@
                 },
                 {
                     field: 'groupId', 
-                    title: 'Group Code'
+                    title: 'Mã hãng tàu'//'Group Code'
                 },
                 {
                     field: 'carrierCode', 
-                    title: 'Shipping Line Code',
+                    title: 'Mã vận chuyển',//'Shipping Line Code',
                     width: '50px'
                 },
                 {
@@ -94,10 +96,10 @@
                 // },
                 {
                     field: 'fullName', 
-                    title: 'Ho Va Ten'
+                    title: 'Họ và tên'
                 },
                 {
-                    title: 'status',
+                    title: 'Trạng thái',//'status',
 		        	align: 'center',
 		        	formatter: function (value, row, index) {
 		        		return statusTools(row);
@@ -105,18 +107,18 @@
                 },
                 {
                     field: 'loginIp', 
-                    title: 'Login IP'
+                    title: 'IP đăng nhập'//'Login IP'
                 },
                 {
                     field: 'loginDate', 
-                    title: 'Login Date'
+                    title: 'Thời gian đăng nhập'//'Login Date'
                 },
                 // {
                 //     field: 'remark', 
                 //     title: 'Remark'
                 // },
                 {
-                    title: 'Action',
+                    title: 'Hành động',//'Action',
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];

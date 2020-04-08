@@ -38,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectCarrierGroupListByCode" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
         <include refid="selectCarrierGroupVo"/>
         <where>  
-            <if test="groupCode != null  and groupCode != ''"> and group_name like concat('%', #{groupCode}, '%')</if>
+            <if test="groupCode != null  and groupCode != ''"> and lower(group_code) like concat('%', #{groupCode}, '%')</if>
         </where>
     </select>
         
