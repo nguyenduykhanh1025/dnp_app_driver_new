@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
-            <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
@@ -66,6 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectEquipmentDoVo"/>
         <where>  
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
