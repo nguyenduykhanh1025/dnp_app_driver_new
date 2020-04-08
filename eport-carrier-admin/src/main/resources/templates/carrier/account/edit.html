@@ -11,14 +11,14 @@
         <form class="form-horizontal m" id="form-account-edit" th:object="${carrierAccount}">
             <input name="id" th:field="*{id}" type="hidden">
             <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Group Code: </label>
+                <label class="col-sm-3 control-label is-required">Mã hãng tàu: </label>
                 <div class="col-sm-8">
                     <input type="hidden" name="groupId" th:field="*{groupId}" id="groupId">
                     <select class="groupCode" id="groupCode" style="width: 300px;"></select>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Shipping Line Code：</label>
+                <label class="col-sm-3 control-label is-required">Mã vận chuyển：</label>
                 <div class="col-sm-8">
                     <input name="carrierCode" th:field="*{carrierCode}" class="form-control" type="text" required>
                 </div>
@@ -42,21 +42,21 @@
                 </div>
             </div> -->
             <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Ho Va Ten：</label>
+                <label class="col-sm-3 control-label is-required">Họ và tên：</label>
                 <div class="col-sm-8">
                     <input name="fullName" th:field="*{fullName}" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label">Status：</label>
+                <label class="col-sm-3 control-label">Trạng thái：</label>
                 <div class="col-sm-8">
                     <input type="radio" name="status" th:field="*{status}" value="0">
-                    <label th:for="status" th:text="enable"></label>
+                    <label th:for="status">Hoạt động</label>
                     <input type="radio" name="status" th:field="*{status}" value="1">
-                    <label th:for="status" th:text="disable"></label>
+                    <label th:for="status">Không hoạt động</label>
                 </div>
             </div>
-            <div class="form-group">    
+            <!-- <div class="form-group">    
                 <label class="col-sm-3 control-label">Login IP：</label>
                 <div class="col-sm-8">
                     <input name="loginIp" th:field="*{loginIp}" readonly class="form-control" type="text">
@@ -70,7 +70,7 @@
                         <input name="loginDate" th:value="${#dates.format(carrierAccount.loginDate, 'dd-MM-yyyy HH:mm:ss')}" class="form-control" placeholder="dd-MM-yyyy" readonly type="text">
                     </div>
                 </div>
-            </div>
+            </div> -->
         </form>
     </div>
     <th:block th:include="include :: footer" />
@@ -89,11 +89,11 @@
             }
         }
 
-        $("input[name='loginDate']").datetimepicker({
-            dateFormat: "dd-MM-yyyy",
-            minView: "month",
-            language: 'en'
-        });
+        // $("input[name='loginDate']").datetimepicker({
+        //     dateFormat: "dd-MM-yyyy",
+        //     minView: "month",
+        //     language: 'en'
+        // });
         $(document).ready(function () {
             $('.groupCode').select2({
                 ajax: {
@@ -111,7 +111,7 @@
                         }
                     }
                 },
-                placeholder: 'Search for group code',
+                placeholder: 'Nhập mã hãng tàu',
                 minimumInputLength: 1,
             });
 
