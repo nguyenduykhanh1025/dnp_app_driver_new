@@ -30,9 +30,9 @@ public interface IEquipmentDoService
      * @param equipmentDo Exchange Delivery Order
      * @return Exchange Delivery Order List
      */
-    public List<EquipmentDo> selectEquipmentDoListAdmin(EquipmentDoPaging EquipmentDo);
+    public List<EquipmentDo> selectEquipmentDoListPagingAdmin(EquipmentDoPaging EquipmentDo);
 
-    public List<EquipmentDo> selectEquipmentDoListCarrier(EquipmentDoPaging EquipmentDo);
+    public List<EquipmentDo> selectEquipmentDoListPagingCarrier(EquipmentDoPaging EquipmentDo);
 
     public List<EquipmentDo> selectEquipmentDoList(EquipmentDo EquipmentDo);
 

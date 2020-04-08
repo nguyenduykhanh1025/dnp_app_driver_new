@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,12 +26,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import vn.com.irtech.eport.carrier.domain.CarrierAccount;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.json.JSONObject.JSONArray;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.system.domain.SysEdi;
 import vn.com.irtech.eport.system.service.ISysEdiService;
 
@@ -45,7 +51,8 @@ public class SysEDIController extends BaseController
 	
 	@Autowired
  	private IEquipmentDoService equipmentDoService;
-	
+
+  	private CarrierAccount currentUser;
 
 	//  Return data list search
 	@PostMapping("/list")
@@ -54,10 +61,48 @@ public class SysEDIController extends BaseController
 		int page = EquipmentDo.getPage();
 		page = page * 10;
 		EquipmentDo.setPage(page);
-		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListAdmin(EquipmentDo);
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingCarrier(EquipmentDo);
 		return getDataTable(list);
 	}
 	// Return data list paging
+	 //update
+	//  @Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
+	//  @PostMapping("/update")
+	//  @ResponseBody
+	//  public AjaxResult update(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
+	//    equipmentDo.ifPresent(value -> equipmentDoList = value);
+	//    currentUser = ShiroUtils.getSysUser();
+	//    if (equipmentDoList != null) {
+	// 	 String[] strList = new String[13];
+	// 	 for (int index = 0; index < equipmentDoList.size(); index++) {
+	// 	   // Resolve " mark in array
+	// 	   String st = equipmentDoList.get(index++).toString();
+	// 	   System.out.println("strList   "+ st);
+	// 	   strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
+	// 	   if (index == 1) {
+	// 		 strList[0] = strList[0].substring(strList[0].indexOf("[")+2, strList[0].length());
+	// 	   }
+	// 	   for (int i = 1; i < 12; i++) {
+	// 		 strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
+	// 	   }
+	// 	   String a = equipmentDoList.get(index).toString();
+	// 	   Resolve ]} mark in last element
+	// 	   int listSize = equipmentDoList.size();
+	// 	   if (index == listSize-1) {
+	// 	     strList[11] = strList[11].substring(0, strList[11].indexOf("]"));
+	// 	     strList[11] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
+	// 	   } else {
+	// 	     strList[11] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
+	// 	   }
+		  
+	// 	   EquipmentDo equipment = new EquipmentDo();
+	// 	   equipment.setStatus(strList[11]);
+	// 	   equipment.setId(Long.parseLong(strList[0]));
+	// 	   equipmentDoService.updateEquipmentDo(equipment);
+	// 	 }
+	//    }
+	//    return toAjax(1);
+	//  }
 	@PostMapping("/listDo")
   	@ResponseBody
 	public Object listDo(EquipmentDo EquipmentDo) {
