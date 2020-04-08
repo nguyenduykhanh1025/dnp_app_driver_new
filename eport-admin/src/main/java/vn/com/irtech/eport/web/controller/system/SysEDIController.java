@@ -54,7 +54,7 @@ public class SysEDIController extends BaseController
 		int page = EquipmentDo.getPage();
 		page = page * 10;
 		EquipmentDo.setPage(page);
-		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListAdmin(EquipmentDo);
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingAdmin(EquipmentDo);
 		return getDataTable(list);
 	}
 	// Return data list paging
