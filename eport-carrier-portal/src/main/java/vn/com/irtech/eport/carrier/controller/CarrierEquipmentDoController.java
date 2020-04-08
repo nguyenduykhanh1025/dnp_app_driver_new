@@ -27,6 +27,7 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.AppToolUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
+import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 
@@ -60,33 +61,28 @@ public class CarrierEquipmentDoController extends BaseController {
    * Get Exchange Delivery Order List
    */
 
-  @PostMapping("/listDo")
-  @ResponseBody
-  public TableDataInfo list(EquipmentDo EquipmentDo) {
-    List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(EquipmentDo);
-    return getDataTable(list);
-  }
-
-  // @PostMapping("/listDo")
-  // @ResponseBody
-  // public Object listDo(int page) {
-  //   page = page * 10;
-  //   List<EquipmentDo> List = equipmentDoService.selectEquipmentDoListHome(page);
-  //   return List;
-  // }
+  @PostMapping("/list")
+	@ResponseBody
+	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
+		int page = EquipmentDo.getPage();
+		page = page * 10;
+		EquipmentDo.setPage(page);
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListCarrier(EquipmentDo);
+		return getDataTable(list);
+	}
 
   /**
    * Export Exchange Delivery Order List
    */
 
-  // @Log(title = "Exchange Delivery Order", businessType = BusinessType.EXPORT)
-  // @PostMapping("/export")
-  // @ResponseBody
-  // public AjaxResult export(EquipmentDo equipmentDo) {
-  //   List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
-  //   ExcelUtil<EquipmentDo> util = new ExcelUtil<EquipmentDo>(EquipmentDo.class);
-  //   return util.exportExcel(list, "do");
-  // }
+  @Log(title = "Exchange Delivery Order", businessType = BusinessType.EXPORT)
+  @PostMapping("/export")
+  @ResponseBody
+  public AjaxResult export(EquipmentDo equipmentDo) {
+    List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
+    ExcelUtil<EquipmentDo> util = new ExcelUtil<EquipmentDo>(EquipmentDo.class);
+    return util.exportExcel(list, "do");
+  }
 
   /**
    * Add Exchange Delivery Order
