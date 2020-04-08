@@ -1,13 +1,17 @@
 package vn.com.irtech.eport.equipment.service.impl;
 
 import java.util.List;
-import vn.com.irtech.eport.common.utils.DateUtils;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.com.irtech.eport.equipment.mapper.EquipmentDoMapper;
-import vn.com.irtech.eport.equipment.domain.EquipmentDo;
-import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
+
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.equipment.domain.EquipmentDo;
+import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
+import vn.com.irtech.eport.equipment.mapper.EquipmentDoMapper;
+import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 
 /**
  * Exchange Delivery OrderService Business Processing
@@ -32,24 +36,32 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     {
         return equipmentDoMapper.selectEquipmentDoById(id);
     }
-    
 
-    public List<EquipmentDo> selectEquipmentDoListHome(int page)
-    {
-        return equipmentDoMapper.selectEquipmentDoListHome(page);
+
+    @Override
+    public List<EquipmentDo> selectEquipmentDoListAdmin(EquipmentDoPaging EquipmentDo) {
+        return equipmentDoMapper.selectEquipmentDoListPaging(EquipmentDo);
     }
-    /**
+   
+  
+      /**
      * Get Exchange Delivery Order List
      * 
      * @param equipmentDo Exchange Delivery Order
      * @return Exchange Delivery Order
      */
     @Override
-    public List<EquipmentDo> selectEquipmentDoList(EquipmentDo equipmentDo)
+    public List<EquipmentDo> selectEquipmentDoList(EquipmentDo EquipmentDo)
     {
-        return equipmentDoMapper.selectEquipmentDoList(equipmentDo);
+        return equipmentDoMapper.selectEquipmentDoList(EquipmentDo);
     }
-    
+  
+    @Override
+    public List<EquipmentDo> selectEquipmentDoListTest(EquipmentDo EquipmentDo,@Param("page") int page) {
+
+        return equipmentDoMapper.selectEquipmentDoListTest(EquipmentDo,page);
+    }
+
     /**
      * Add Exchange Delivery Order
      * 
@@ -99,4 +111,12 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     {
         return equipmentDoMapper.deleteEquipmentDoById(id);
     }
+
+    
+
+    
+
+   
+
+   
 }

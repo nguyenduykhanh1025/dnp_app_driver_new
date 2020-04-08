@@ -1,7 +1,12 @@
 package vn.com.irtech.eport.equipment.service;
 
+import java.util.HashMap;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
+import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 
 /**
  * Exchange Delivery OrderService Interface
@@ -25,10 +30,19 @@ public interface IEquipmentDoService
      * @param equipmentDo Exchange Delivery Order
      * @return Exchange Delivery Order List
      */
-    public List<EquipmentDo> selectEquipmentDoList(EquipmentDo equipmentDo);
+    public List<EquipmentDo> selectEquipmentDoListAdmin(EquipmentDoPaging EquipmentDo);
 
 
-    
+    public List<EquipmentDo> selectEquipmentDoList(EquipmentDo EquipmentDo);
+
+   
+    /**
+     * GetlistDO
+     * 
+     * @param page Exchange Delivery Order
+     * @return result
+     */
+    public List<EquipmentDo> selectEquipmentDoListTest(EquipmentDo EquipmentDo, @Param("page") int page);
     /**
      * Add Exchange Delivery Order
      * 
@@ -45,7 +59,7 @@ public interface IEquipmentDoService
      */
     public int updateEquipmentDo(EquipmentDo equipmentDo);
 
-    public List<EquipmentDo> selectEquipmentDoListHome(int page);
+   
 
     /**
      * Batch Delete Exchange Delivery Order

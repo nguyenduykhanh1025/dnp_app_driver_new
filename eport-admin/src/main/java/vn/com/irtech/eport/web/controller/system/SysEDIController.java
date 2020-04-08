@@ -24,9 +24,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.equipment.domain.EquipmentDo;
+import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
+import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.system.domain.SysEdi;
 import vn.com.irtech.eport.system.service.ISysEdiService;
 
@@ -39,7 +43,35 @@ public class SysEDIController extends BaseController
 	@Autowired
 	private ISysEdiService sysEdiService;
 	
+	@Autowired
+ 	private IEquipmentDoService equipmentDoService;
 	
+
+	//  Return data list search
+	@PostMapping("/list")
+	@ResponseBody
+	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
+		int page = EquipmentDo.getPage();
+		page = page * 10;
+		EquipmentDo.setPage(page);
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListAdmin(EquipmentDo);
+		return getDataTable(list);
+	}
+	// Return data list paging
+	@PostMapping("/listDo")
+  	@ResponseBody
+	public Object listDo(EquipmentDo EquipmentDo) {
+		//page = page * 10;
+		List<EquipmentDo> List = equipmentDoService.selectEquipmentDoList(EquipmentDo);
+		return List;
+  	}
+
+	// Return view
+	@GetMapping ("/listView")
+	public String getView()
+	{
+		return "edi/list";
+	}
 	@GetMapping("/index")
     public String test()
     {
@@ -111,11 +143,6 @@ public class SysEDIController extends BaseController
         startPage();
         List<SysEdi> list = sysEdiService.selectSysEdiList(sysEdi);
         return getDataTable(list);
-    }
-    @GetMapping("/list")
-    public String viewList()
-    {
-        return "edi/list";
     }
     public AjaxResult addEDI(SysEdi edi)
     {
