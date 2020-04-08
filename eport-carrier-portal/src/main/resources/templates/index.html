@@ -15,110 +15,17 @@
     <link th:href="@{/css/skins.css}" rel="stylesheet" />
     <link th:href="@{/eport/css/eport.css?v=4.2.0}" rel="stylesheet" />
   </head>
-  <body
-    class="fixed-sidebar full-height-layout gray-bg"
-    style="overflow: hidden;"
+  <body class="top-navigation full-height-layout white-bg" style="overflow: hidden;"
   >
     <div id="wrapper">
-      <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="nav-close">
-          <i class="fa fa-times-circle"></i>
-        </div>
-        <a th:href="@{/index}">
-          <li class="logo hidden-xs">
-            <span class="logo-lg">ePORT</span>
-          </li>
-        </a>
-        <div class="sidebar-collapse">
-          <ul class="nav" id="side-menu">
-            <li>
-              <a href="#"
-                ><i class="fa fa-home"></i> <span class="nav-label">Home</span>
-                <span class="fa arrow"></span
-              ></a>
-              <ul class="nav nav-second-level">
-                <li>
-                  <li><a href="/carrier/do">Danh sách DO</a></li>
-                </li>
-                  <li><a href="/carrier/do/add">Khai báo DO</a></li>
-                </li>
-              </ul>
-            </li>
-            <li th:each="menu : ${menus}">
-              <a
-                th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
-                th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
-              >
-                <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
-                <span class="nav-label" th:text="${menu.menuName}"
-                  >Top Menu</span
-                >
-                <span
-                  th:class="${menu.url == '' || menu.url == '#'} ? |fa arrow|"
-                ></span>
-              </a>
-              <ul class="nav nav-second-level collapse">
-                <li th:each="cmenu : ${menu.children}">
-                  <a
-                    th:if="${#lists.isEmpty(cmenu.children)}"
-                    th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
-                    th:utext="${cmenu.menuName}"
-                    th:href="@{${cmenu.url}}"
-                    >2nd Menu</a
-                  >
-                  <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#"
-                    >[[${cmenu.menuName}]]<span class="fa arrow"></span
-                  ></a>
-                  <ul
-                    th:if="${not #lists.isEmpty(cmenu.children)}"
-                    class="nav nav-third-level"
-                  >
-                    <li th:each="emenu : ${cmenu.children}">
-                      <a
-                        th:if="${#lists.isEmpty(emenu.children)}"
-                        th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
-                        th:text="${emenu.menuName}"
-                        th:href="@{${emenu.url}}"
-                        >3rd Menu</a
-                      >
-                      <a th:if="${not #lists.isEmpty(emenu.children)}" href="#"
-                        >[[${emenu.menuName}]]<span class="fa arrow"></span
-                      ></a>
-                      <ul
-                        th:if="${not #lists.isEmpty(emenu.children)}"
-                        class="nav nav-four-level"
-                      >
-                        <li th:each="fmenu : ${emenu.children}">
-                          <a
-                            th:if="${#lists.isEmpty(fmenu.children)}"
-                            th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
-                            th:text="${fmenu.menuName}"
-                            th:href="@{${fmenu.url}}"
-                            >Menu cấp 4</a
-                          >
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </nav>
-      <!--左侧导航结束-->
-
-      <!--右侧部分开始-->
+      <!--Right content-->
       <div id="page-wrapper" class="gray-bg dashbard-1">
         <div class="row border-bottom">
             <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header">
-                    <a class="navbar-minimalize minimalize-styl-2" style="color:#FFF;" href="#" title="Collapse">
-                    	<i class="fa fa-bars"></i>
-                    </a>
-				</div>
                 <ul class="nav navbar-top-links navbar-right welcome-message">
-	                <li><a title="Hiển thị toàn màn hình" href="javascript:void(0)" id="fullScreen"><i class="fa fa-arrows-alt"></i> Full Screen</a></li>
+	                <li>
+	                	<a title="Quản Lý DO" th:href="@{/carrier/do}" href="/carrier/do" class="menuItem"><i class="fa fa-arrows-alt"></i> Quản Lý DO</a>
+	                </li>
                     <li class="dropdown user-menu">
 						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
 							<span class="hidden-xs">[[${#strings.defaultString(user.email, '-')}]]</span>
@@ -140,8 +47,6 @@
 						</ul>
 					</li>
                 </ul>
-              </li>
-            </ul>
           </nav>
         </div>
         <div class="row content-tabs">
@@ -151,7 +56,7 @@
           <nav class="page-tabs menuTabs">
             <div class="page-tabs-content">
               <a href="javascript:;" class="active menuTab" data-id="/main"
-                >Home</a
+                >Trang Chủ</a
               >
             </div>
           </nav>
@@ -163,12 +68,7 @@
           </a>
         </div>
 
-        <a
-          id="ax_close_max"
-          class="ax_close_max"
-          href="#"
-          title="Close Full Screen"
-        >
+        <a id="ax_close_max" class="ax_close_max" href="#" title="Close" >
           <i class="fa fa-times-circle-o"></i>
         </a>
 

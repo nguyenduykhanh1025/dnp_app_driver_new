@@ -4,11 +4,10 @@
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     
     <link
-    th:href="@{/handsontable-6.2.2/dist/handsontable.full.min.css}"
+    th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}"
     rel="stylesheet"
     media="screen"
     />
-    <link th:href="@{/bootstrap-4.4.1/bootstrap.min.css}" rel="stylesheet" />
 </head>
 <style>
   body {
@@ -194,19 +193,9 @@
             </div>
         </div>
     </div>
-    <!-- <th:block th:include="include :: footer" /> -->
-    <!-- Jquery -->
-    <script
-      th:src="@{/bootstrap-4.4.1/jquery-3.4.1.min.js}"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"
-    ></script>
-    <!-- Boostrap -->
-    <script th:src="@{/bootstrap-4.4.1/bootstrap.min.js}"></script>
+    <th:block th:include="include :: footer" />
     <!-- Handsondtable -->
-    <script
-      th:src="@{/handsontable-6.2.2/dist/handsontable.full.min.js}"
-    ></script>
+    <script th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"></script>
  
     <script>
         var hot;
@@ -253,7 +242,7 @@
                         "Trạng thái<br>DO status",
                         "Ghi chú<br>Note"],
                         filter: "true",
-                        licenseKey: "non-commercial-and-evaluation",
+                        //licenseKey: "non-commercial-and-evaluation",
                         columns: [
                         {
                             data: 'id',
