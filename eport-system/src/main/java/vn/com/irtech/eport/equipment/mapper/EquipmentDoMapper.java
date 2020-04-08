@@ -69,7 +69,7 @@ public interface EquipmentDoMapper
 
 	public List<EquipmentDo> selectEquipmentDoListTest(int page, EquipmentDo equipmentDo);
 
-	public List<EquipmentDo> selectEquipmentDoListTestPaging(EquipmentDoPaging equipmentDo);
+	public List<EquipmentDo> selectEquipmentDoListPaging(EquipmentDoPaging equipmentDo);
 
 	
 

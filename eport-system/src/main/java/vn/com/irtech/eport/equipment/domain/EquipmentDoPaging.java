@@ -105,7 +105,7 @@ public class EquipmentDoPaging extends BaseEntity
         this.id = id;
     }
 
-    public int page() 
+    public int getPage() 
     {
         return page;
     }

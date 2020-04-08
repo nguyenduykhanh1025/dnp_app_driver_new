@@ -51,7 +51,7 @@ public class SysEDIController extends BaseController
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
-		int page = 1;
+		int page = EquipmentDo.getPage();
 		page = page * 10;
 		EquipmentDo.setPage(page);
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListAdmin(EquipmentDo);
