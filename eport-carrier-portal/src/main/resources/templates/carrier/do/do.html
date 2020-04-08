@@ -51,14 +51,14 @@
 	        </div>
             <!-- /table toolbar -->
             <div class="col-sm-12 table-container">
-            <table id="dg" style="width:100%;height:500px" pageList="[25,50,100,150,200]">
+            <table id="dg" style="width:100%;height:500px" pageList="[20,50,100,150,200]">
 		        <thead>
 		            <tr>
 		                <th data-options="field:'ck',checkbox:true"></th>
 		                <th data-options="field:'carrierCode',halign:'center',resizable:true" width="80">Hãng tàu <br/>Carrier</th>
 		                <th data-options="field:'billOfLading',halign:'center'," sortable="true" width="110">Số vận đơn<br/>B/L No</th>
 		                <th data-options="field:'containerNumber',halign:'center'," sortable="true" width="110">Số cont<br>Container No</th>
-		                <th data-options="field:'consignee',halign:'center'" sortable="true" width="250">Khách hàng<br>Consignee</th>
+		                <th data-options="field:'consignee',halign:'center'" width="250">Khách hàng<br>Consignee</th>
 		                <th data-options="field:'expiredDem',halign:'center',align:'right'" sortable="true" width="110">Hạn lệnh<br>Expired Date</th>
 		                <th data-options="field:'emptyContainerDepot',halign:'center'" width="200">Nơi hạ rỗng<br>Empty Depot</th>
 		                <th data-options="field:'detFreeTime',halign:'center',align:'right'" width="80">Ngày miễn<br>DET free</th>
@@ -76,7 +76,7 @@
  <script type="text/javascript">
         $(function(){
             var dg = $('#dg').datagrid({
-            	url: ctx+'carrier/do/list2',
+            	url: ctx+'carrier/do/list',
             	singleSelection: true,
             	clientPaging: false,
             	pagination: true,
