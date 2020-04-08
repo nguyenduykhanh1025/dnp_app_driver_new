@@ -115,7 +115,7 @@ public class CarrierEquipmentDoController extends BaseController {
       for (int index = 0; index < equipmentDoList.size(); index++) {
         // Resolve " mark in array
         String st = equipmentDoList.get(index++).toString();
-        strList[0] = st.substring(st.indexOf("[") + 1, st.length());
+        strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
         for (int i = 1; i < 8; i++) {
           strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
         }
