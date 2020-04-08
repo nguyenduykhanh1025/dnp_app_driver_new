@@ -290,11 +290,11 @@
                     e.preventDefault(); // avoid to execute the actual submit of the form.
                     var form = $(this);
                     var data = form.serialize();
+                    console.log("SSS"+data);
                     $.ajax({
-                        url: prefix + "/list",
+                        url: prefix + "/listDo",
                         type: "POST",
                         data: {
-                            page : currentPage,
                             data : data,
                         }, // serializes the form's elements.
                         success: function(data)

@@ -16,25 +16,25 @@
        </td>
        <td>
         <div>
-         <div style="font-weight:bold;font-family:Tahoma;font-size:10pt">Kính gửi Quý khách hàng,</div><br/>
+         <div style="font-weight:bold;font-family:Tahoma;font-size:10pt">Kính gửi <span th:text="${username}"></span><span>,</span></div><br/>
          <div style="padding-bottom:5px;font-family:Tahoma;font-size:10pt">
             Cảng Đà Nẵng trân trọng thông báo<br>
-            Thông tin tài khoản đăng nhập tra cứu hóa đơn điện tử của Quý công ty là:
+            Thông tin tài khoản đăng nhập:
          </div>
          <br>
          <div style="padding-bottom:5px">
           <table>
             <tr>
               <td style="font-weight:bold;font-family:Tahoma;font-size:10pt;padding-right: 10pt">Tên đăng nhập:</td>
-              <td><span style="font-family:Tahoma;font-size:10pt" th:text="${username}">Username</span></td>
+              <td><span style="font-family:Tahoma;font-size:10pt" th:text="${email}">Username</span></td>
             </tr>
             <tr>
               <td style="font-weight:bold;font-family:Tahoma;font-size:10pt;padding-right: 10pt">Mật khẩu:</td>
               <td><span style="font-family:Tahoma;font-size:10pt" th:text="${password}">Password</span></td>
             </tr>
             <tr>
-              <td style="font-weight:bold;font-family:Tahoma;font-size:10pt;padding-right: 10pt">Địa chỉ tra cứu:</td>
-              <td><a style="font-family:Tahoma;font-size:10pt" href="http://hoadon.danangport.com" target="_blank">http://hoadon.danangport.com</a></td>
+              <td style="font-weight:bold;font-family:Tahoma;font-size:10pt;padding-right: 10pt">Địa chỉ truy cập:</td>
+              <td><a style="font-family:Tahoma;font-size:10pt" href="" target="_blank"></a></td>
             </tr>
           </table>
          </div>
