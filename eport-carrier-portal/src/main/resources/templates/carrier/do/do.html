@@ -149,7 +149,7 @@
                         data: dataObj,
                         stretchH: 'all',
                         width: '100%',
-                        colHeaders: ["STT",
+                        colHeaders: [
                         "Mã hãng tàu<br>Carrier",
                         "Số lệnh<br> OrderNumber",
                         "Số vận đơn<br> Bill No",
@@ -160,13 +160,11 @@
                         "Số ngày miễn lưu vỏ<br> DET freetime",
                         "Tên tàu<br>Vessel",
                         "Chuyến<br>Voyage",
-                        "Trạng thái<br>Note"],
+                        "Trạng thái<br>DO status",
+                        "Ghi chú<br>Note"],
                         filter: "true",
                         licenseKey: "non-commercial-and-evaluation",
-                        columns: [{
-                            data: 'carrierId',
-                            type: 'text'
-                        },
+                        columns: [
                         {
                             data: 'carrierCode',
                             type: 'text'
@@ -188,7 +186,7 @@
                             type: 'text'
                         },
                         {
-                            data: 'releaseDate',
+                            data: 'expired_dem',
                             type: 'date',
                             dateFormat: 'MM/DD/YYYY'
                         },
@@ -211,6 +209,10 @@
                         {
                             data: 'status',
                             type: 'numeric',
+                        },
+                        {
+                            data: 'remark',
+                            type: 'text',
                         }
                         ],
                     });
@@ -287,29 +289,7 @@
                 $( "#pageSet" ).remove();
             }
 
-            //LoadDataHandSon
-            function log_events(event, data) {
-            var str;
-            for (var d = 0; d < data.length; d++) {
-                try {
-                str = JSON.stringify(data[d]);
-                } catch (e) {
-                str = data[d].toString(); // JSON.stringify breaks on circular reference to a HTML node
-                }
-
-                if (str === void 0) {
-                continue;
-                }
-
-                if (str != null) {
-                var row = str.substring(2, str.indexOf(","));
-                    
-                }
-
-                break;
-            }
-            }
-    
+           
             
       </script>
 </body>
