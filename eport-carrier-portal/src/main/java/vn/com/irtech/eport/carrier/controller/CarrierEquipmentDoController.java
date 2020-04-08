@@ -111,23 +111,24 @@ public class CarrierEquipmentDoController extends BaseController {
     equipmentDo.ifPresent(value -> equipmentDoList = value);
     currentUser = ShiroUtils.getSysUser();
     if (equipmentDoList != null) {
-      String[] strList = new String[10];
+      String[] strList = new String[9];
       for (int index = 0; index < equipmentDoList.size(); index++) {
         // Resolve " mark in array
         String st = equipmentDoList.get(index++).toString();
         strList[0] = st.substring(st.indexOf("[") + 1, st.length());
-        for (int i = 1; i < 9; i++) {
+        for (int i = 1; i < 8; i++) {
           strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
         }
         String a = equipmentDoList.get(index).toString();
-        // Resolve ] mark in last element
-        if (index == equipmentDoList.size()) {
-          strList[9] = a.substring(0, a.length() - 2);
+        // Resolve ]} mark in last element
+        int listSize = equipmentDoList.size();
+        if (index == listSize-1) {
+          strList[8] = a.substring(0, a.length() - 2);
         } else {
-          strList[9] = a.substring(0, a.length() - 1);
+          strList[8] = a.substring(0, a.length() - 1);
         }
         // Resolve null string
-        for (int i = 0; i <= 9; i++) {
+        for (int i = 0; i <= 8; i++) {
           if (strList[i].trim().equals("null")) {
             strList[i] = null;
           }
@@ -135,18 +136,18 @@ public class CarrierEquipmentDoController extends BaseController {
         // Insert new DO
         EquipmentDo equipment = new EquipmentDo();
         equipment.setCarrierId(currentUser.getId());
-        equipment.setCarrierCode("1234");
-        equipment.setBillOfLading(strList[1]);
-        equipment.setContainerNumber(strList[2]);
-        equipment.setConsignee(strList[3]);
-        equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[4], "dd/MM/yyyy"));
-        equipment.setEmptyContainerDepot(strList[5]);
-        if (strList[6] != null) {
-          equipment.setDetFreeTime(Integer.parseInt(strList[6]));
+        equipment.setCarrierCode(carrierGroupService.selectCarrierGroupById(ShiroUtils.getUserId()).getGroupName());
+        equipment.setBillOfLading(strList[0]);
+        equipment.setContainerNumber(strList[1]);
+        equipment.setConsignee(strList[2]);
+        equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[3], "dd/MM/yyyy"));
+        equipment.setEmptyContainerDepot(strList[4]);
+        if (strList[5] != null) {
+          equipment.setDetFreeTime(Integer.parseInt(strList[5]));
         }
-        equipment.setVessel(strList[7]);
-        equipment.setVoyNo(strList[8]);
-        equipment.setRemark(strList[9]);
+        equipment.setVessel(strList[6]);
+        equipment.setVoyNo(strList[7]);
+        equipment.setRemark(strList[8]);
         // set who created this record
         equipment.setCreateBy(currentUser.getFullName());
         equipment.setCreateTime(new Date());
