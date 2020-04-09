@@ -10,7 +10,7 @@
       media="screen"
     />
     <link
-      th:href="@{/ajax/libs/handsontable/manualColumnMove/manualColumnMove.css}"
+      th:href="@{/ajax/libs/handsontable/6.2.2/manualColumnMove/manualColumnMove.css}"
       rel="stylesheet"
       media="screen"
     />
@@ -155,7 +155,7 @@
                     </div>
                 </form>
             </div>
-            <div class="container" style="margin-top: 10px;">
+            <div class="container col-md-12" style="margin-top: 10px;">
                 <div id="example" class="hot handsontable htColumnHeaders htRowHeaders"></div>
                 <nav aria-label="Page navigation">
                 <div class="pagination-div">
@@ -186,10 +186,10 @@
      th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
    ></script>
    <script
-     th:src="@{/ajax/libs/handsontable/columnSorting/columnSorting.js}"
+     th:src="@{/ajax/libs/handsontable/6.2.2/columnSorting/columnSorting.js}"
    ></script>
    <script
-     th:src="@{/ajax/libs/handsontable/manualColumnMove/manualColumnMove.js}"
+     th:src="@{/ajax/libs/handsontable/6.2.2/manualColumnMove/manualColumnMove.js}"
    ></script>
      <th:block th:include="include :: footer" />
     <script>
@@ -221,7 +221,7 @@
                     hot = new Handsontable(example, {
                         data: dataObj,
                         stretchH: 'all',
-                        height: 480,
+                        height: 500,
                         contextMenu: true,                   
                         colHeaders: [
                         "ID<br>id",
@@ -279,6 +279,7 @@
                         {
                             data: 'detFreeTime',
                             type: 'numeric',
+                            readOnly: true
                             
                         },
                         {
