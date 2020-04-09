@@ -12,7 +12,7 @@
                         <ul>
                             <li style="margin-top: 0;">
                                 <!-- <label>Shipping Line Code：</label> -->
-                                <input type="text" id="carrierCode" name="carrierCode" placeholder="Mã vận chuyển" style="width: 140px;"/>
+                                <input type="text" hidden id="carrierCode" name="carrierCode" placeholder="Mã hãng tàu" style="width: 140px;"/>
                             </li>
                             <li style="margin-top: 0;">
                                 <!-- <label>Email：</label> -->
@@ -74,13 +74,14 @@
                     visible: false
                 },
                 {
-                    field: 'groupId', 
-                    title: 'Mã hãng tàu'//'Group Code'
+                    field: 'carrierGroup.groupCode', 
+                    title: 'Mã hãng tàu',//'Group Code',
+                    width: '50px'
                 },
                 {
-                    field: 'carrierCode', 
-                    title: 'Mã vận chuyển',//'Shipping Line Code',
-                    width: '50px'
+                    field: 'carrierGroup.groupName', 
+                    title: 'Tên hãng tàu',//'Shipping Line Code',
+                    width: '70px'
                 },
                 {
                     field: 'email', 
