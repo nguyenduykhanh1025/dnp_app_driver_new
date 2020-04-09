@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add new DO</title>
     <link
-      th:href="@{/handsontable-6.2.2/dist/handsontable.full.min.css}"
+      th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}"
       rel="stylesheet"
       media="screen"
     />
-    <link th:href="@{/bootstrap-4.4.1/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link th:href="@{/css/jquery.toast.min.css}" rel="stylesheet" />
   </head>
   <style>
     body {
@@ -64,7 +65,8 @@
 
     /* Validate fail */
     .handsontable td.htInvalid {
-      color: #fff;
+      color: #721c24;
+      background-color: #f8d7da !important;
     }
 
     .hot-container {
@@ -88,84 +90,6 @@
     }
   </style>
   <body>
-    <!-- Toast error -->
-    <div
-      class="toast alert alert-danger"
-      id="toast1"
-      role="alert"
-      aria-live="polite"
-      aria-atomic="true"
-      data-delay="3000"
-      style="
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        z-index: 1000;
-        background-color: #f8d7da !important;
-        border-color: #f5c6cb !important;
-      "
-    >
-      <div
-        class="toast-header"
-        style="
-          color: #721c24;
-          background-color: #f8d7da !important;
-          border-color: #f5c6cb !important;
-        "
-      >
-        <strong class="mr-auto">Lỗi</strong>
-        <button
-          type="button"
-          class="ml-2 mb-1 close"
-          data-dismiss="toast"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="toast-body">
-        Có lỗi ở trong trang tính, vui lòng kiểm tra dữ liệu.
-      </div>
-    </div>
-    <!-- =================================== -->
-    <div
-      class="toast alert alert-success"
-      role="alert"
-      id="toast2"
-      aria-live="assertive"
-      data-delay="3000"
-      aria-atomic="true"
-      style="
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        z-index: 1000;
-        background-color: #d4edda !important;
-        border-color: #c3e6cb !important;
-      "
-    >
-      <div
-        class="toast-header"
-        style="
-          color: #155724;
-          background-color: #d4edda !important;
-          border-color: #c3e6cb !important;
-        "
-      >
-        <strong class="mr-auto">Thành công</strong>
-        <button
-          type="button"
-          class="ml-2 mb-1 close"
-          data-dismiss="toast"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="toast-body">
-        Khai báo DO thành công
-      </div>
-    </div>
     <!-- =================================== -->
     <div class="container">
       <h2 style="text-align: center;">Khai báo Delivery Order</h2>
@@ -187,21 +111,16 @@
       </div>
     </div>
     <!-- Jquery -->
-    <script
-      th:src="@{/bootstrap-4.4.1/jquery-3.4.1.min.js}"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"
-    ></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
     <!-- Boostrap -->
-    <script th:src="@{/bootstrap-4.4.1/bootstrap.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <!-- Jquery toast -->
+    <script th:src="@{/js/jquery.toast.min.js}"></script>
     <!-- Handsondtable -->
     <script
-      th:src="@{/handsontable-6.2.2/dist/handsontable.full.min.js}"
+      th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
     ></script>
     <script>
-      // Get table element
-      $(".toast").toast();
-      $("#bsalert").alert();
       var example = document.getElementById("example"),
         hot,
         $hooksList,
@@ -269,15 +188,13 @@
             defaultDate: new Date(),
             validator: dateValidator,
           },
-          {
-            
-          },
+          {},
           {
             type: "numeric",
           },
           {},
           {},
-          {}
+          {},
         ],
       };
 
@@ -376,17 +293,23 @@
             object[3] == null ||
             !isGoodDate(object[3])
           ) {
-            $("#toast1").toast("show");
+            $.toast({
+              heading: "Lỗi",
+              text:
+                "Có lỗi xảy ra ！Vui lòng kiểm tra lại dữ liệu trên trang tính.",
+              showHideTransition: "fade",
+              icon: "error",
+              position: "top-right"
+            });
           } else {
             count++;
           }
           main_key = key;
         });
         main_key++;
-        console.log(cleanedGridData);
+
         if (main_key == count) {
           var jsonData = JSON.stringify(cleanedGridData);
-          console.log(jsonData);
           $.ajax({
             url: "/carrier/do/add",
             method: "post",
@@ -394,7 +317,14 @@
               equipmentDo: jsonData,
             },
           }).done(function (result) {
-            $("#toast2").toast("show");
+            $.toast({
+              heading: "Thành công",
+              text:
+                "Khai báo DO thành công ！",
+              showHideTransition: "fade",
+              icon: "success",
+              position: "top-right"
+            });
             hot.loadData([]);
             hot.render();
           });

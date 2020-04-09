@@ -128,14 +128,14 @@ public class CarrierEquipmentDoController extends BaseController {
         // Resolve ]} mark in last element
         int listSize = equipmentDoList.size();
         if (index == listSize-1) {
-          strList[8] = strList[8].substring(0, strList[8].indexOf("]"));
+          strList[8] = a.substring(0, a.indexOf("]"));
           strList[8] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
         } else {
           strList[8] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
         }
         // Resolve null string
         for (int i = 0; i <= 8; i++) {
-          if (strList[i].trim().equals("")) {
+          if (strList[i].trim().equals("null")) {
             strList[i] = null;
           }
         }
