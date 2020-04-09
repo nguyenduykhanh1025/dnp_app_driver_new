@@ -57,6 +57,9 @@ public class CarrierGroupController extends BaseController
     public TableDataInfo list(CarrierGroup carrierGroup)
     {
         startPage();
+        carrierGroup.setGroupCode(carrierGroup.getGroupCode().toLowerCase());
+        carrierGroup.setGroupName(carrierGroup.getGroupName().toLowerCase());
+        carrierGroup.setOperateCode(carrierGroup.getOperateCode().toLowerCase());
         List<CarrierGroup> list = carrierGroupService.selectCarrierGroupList(carrierGroup);
         return getDataTable(list);
     }
@@ -95,9 +98,9 @@ public class CarrierGroupController extends BaseController
     {
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierGroup.getMainEmail())) {
             return error("Invalid Email!");
-        } else if (carrierGroupService.checkGroupCodeUnique(carrierGroup.getGroupCode()).equals("1")) {
+        } else if (carrierGroupService.checkGroupCodeUnique(carrierGroup.getGroupCode().toLowerCase()).equals("1")) {
             return error("Group code already exist");
-        } else if (carrierGroupService.checkMainEmailUnique(carrierGroup.getMainEmail()).equals("1")) {
+        } else if (carrierGroupService.checkMainEmailUnique(carrierGroup.getMainEmail().toLowerCase()).equals("1")) {
             return error("Email already exist");
         }
         carrierGroup.setCreateBy(ShiroUtils.getSysUser().getUserName());
