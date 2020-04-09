@@ -1,109 +1,238 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-<head>
+<html
+  lang="zh"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+>
+  <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
-	<th:block th:include="include :: easyui-css" />
-</head>
-<body class="gray-bg">
-        <div class="row">
-            <div class="col-sm-12 select-table" style="margin-top:0px">
-            <!-- Search form -->
-            <div class="col-sm-12">
-                <form id="formId">
-                    <div class="select-list">
-                        <ul>
-                            <li>
-                                <input type="text" name="fromDate" id="fromDate" placeholder="Từ ngày">
-                            </li>
-                            <li>
-                                <input type="text" name="toDate" id="toDate" placeholder="Đến ngày">
-                            </li>
-                            <li>
-                                <input type="text" name="voyageNo" id="voyageNo" placeholder="Chuyến tàu">
-                            </li>
-                            <li>
-                                <input type="text" name="contNo" id="contNo" placeholder="Số Cont">
-                            </li>
-                            <li>
-                                <input type="text" name="BlNo" id="blNo" placeholder="Vận đơn/BL No">
-                            </li>
-                            <li>
-                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
-                            </li>
-                        </ul>
-                    </div>
-                </form>
+    <th:block th:include="include :: easyui-css" />
+  </head>
+  <body class="gray-bg">
+    <div class="row">
+      <div class="col-sm-12 select-table" style="margin-top: 0px;">
+        <!-- Search form -->
+        <div class="col-sm-12">
+          <form id="formId">
+            <div class="select-list">
+              <ul>
+                <li>
+                  <input
+                    type="text"
+                    name="fromDate"
+                    id="fromDate"
+                    placeholder="Từ ngày"
+                  />
+                </li>
+                <li>
+                  <input
+                    type="text"
+                    name="toDate"
+                    id="toDate"
+                    placeholder="Đến ngày"
+                  />
+                </li>
+                <li>
+                  <input
+                    type="text"
+                    name="voyageNo"
+                    id="voyageNo"
+                    placeholder="Chuyến tàu"
+                  />
+                </li>
+                <li>
+                  <input
+                    type="text"
+                    name="contNo"
+                    id="contNo"
+                    placeholder="Số Cont"
+                  />
+                </li>
+                <li>
+                  <input
+                    type="text"
+                    name="BlNo"
+                    id="blNo"
+                    placeholder="Vận đơn/BL No"
+                  />
+                </li>
+                <li>
+                  <a
+                    class="btn btn-primary btn-rounded btn-sm"
+                    onclick="$.table.search()"
+                    id="searchBtn"
+                    ><i class="glyphicon glyphicon-search"></i> Tìm Kiếm</a
+                  >
+                </li>
+              </ul>
             </div>
-            <!-- Table toolbar -->
-            <div class=" col-sm-12 fixed-table-toolbar">
-            <div class="bs-bars pull-left" style="margin-bottom:5px"><div class="btn-group-sm" id="toolbar" role="group">
-				<a class="btn btn-success" onclick="$.operate.add()">
-	                <i class="fa fa-plus"></i> Thêm DO
-	            </a>
-	            <a class="btn btn-primary single disabled" onclick="$.operate.edit()">
-		            <i class="fa fa-edit"></i> Đổi Hạn Lệnh
-		        </a>
-	        </div></div>
-	        <div class="columns columns-right btn-group pull-right" style="margin-bottom:5px">
-	            <button class="btn btn-default btn-outline" type="button" name="showSearch" title="Tìm kiếm"><i class="glyphicon glyphicon-search"></i></button>
-	            <button class="btn btn-default btn-outline" type="button" name="refresh" title="Refresh"><i class="glyphicon glyphicon-refresh icon-refresh"></i></button>
-	        </div>
-	        </div>
-            <!-- /table toolbar -->
-            <div class="col-sm-12 table-container">
-            <table id="dg" style="width:100%;height:500px" pageList="[20,50,100,150,200]">
-		        <thead>
-		            <tr>
-		                <th data-options="field:'ck',checkbox:true"></th>
-		                <th data-options="field:'carrierCode',halign:'center',resizable:true" width="80">Hãng tàu <br/>Carrier</th>
-		                <th data-options="field:'billOfLading',halign:'center'," sortable="true" width="110">Số vận đơn<br/>B/L No</th>
-		                <th data-options="field:'containerNumber',halign:'center'," sortable="true" width="110">Số cont<br>Container No</th>
-		                <th data-options="field:'consignee',halign:'center'" width="250">Khách hàng<br>Consignee</th>
-		                <th data-options="field:'expiredDem',halign:'center',align:'right'" sortable="true" width="110">Hạn lệnh<br>Expired Date</th>
-		                <th data-options="field:'emptyContainerDepot',halign:'center'" width="200">Nơi hạ rỗng<br>Empty Depot</th>
-		                <th data-options="field:'detFreeTime',halign:'center',align:'right'" width="80">Ngày miễn<br>DET free</th>
-		                <th data-options="field:'vessel',halign:'center'" width="100">Tên tàu<br>Vessel</th>
-		                <th data-options="field:'voyNo',halign:'center'" width="100">Chuyến tàu<br>Voyage No</th>
-		                <th data-options="field:'status',align:'center'" width="80">Trạng thái</th>
-		            </tr>
-		        </thead>
-		    </table>
-            </div>
+          </form>
         </div>
+        <!-- Table toolbar -->
+        <div class="col-sm-12 fixed-table-toolbar">
+          <div class="bs-bars pull-left" style="margin-bottom: 5px;">
+            <div class="btn-group-sm" id="toolbar" role="group">
+              <a class="btn btn-success" onclick="$.operate.add()">
+                <i class="fa fa-plus"></i> Thêm DO
+              </a>
+              <a
+                class="btn btn-primary single disabled"
+                onclick="getSelectedRow();"
+                id="itCloseToTheDeadlineeeeeeeeeeeeeeee"
+              >
+                <i class="fa fa-edit"></i> Đổi Hạn Lệnh
+              </a>
+            </div>
+          </div>
+          <div
+            class="columns columns-right btn-group pull-right"
+            style="margin-bottom: 5px;"
+          >
+            <button
+              class="btn btn-default btn-outline"
+              type="button"
+              name="showSearch"
+              title="Tìm kiếm"
+            >
+              <i class="glyphicon glyphicon-search"></i>
+            </button>
+            <button
+              class="btn btn-default btn-outline"
+              type="button"
+              name="refresh"
+              title="Refresh"
+            >
+              <i class="glyphicon glyphicon-refresh icon-refresh"></i>
+            </button>
+          </div>
+        </div>
+        <!-- /table toolbar -->
+        <div class="col-sm-12 table-container">
+          <table
+            id="dg"
+            style="width: 100%; height: 500px;"
+            pageList="[20,50,100,150,200]"
+          >
+            <thead>
+              <tr>
+                <th data-options="field:'id',checkbox:true"></th>
+                <th
+                  data-options="field:'carrierCode',halign:'center',resizable:true"
+                  width="80"
+                >
+                  Hãng tàu <br />Carrier
+                </th>
+                <th
+                  data-options="field:'billOfLading',halign:'center',"
+                  sortable="true"
+                  width="110"
+                >
+                  Số vận đơn<br />B/L No
+                </th>
+                <th
+                  data-options="field:'containerNumber',halign:'center',"
+                  sortable="true"
+                  width="110"
+                >
+                  Số cont<br />Container No
+                </th>
+                <th
+                  data-options="field:'consignee',halign:'center'"
+                  width="250"
+                >
+                  Khách hàng<br />Consignee
+                </th>
+                <th
+                  data-options="field:'expiredDem',halign:'center',align:'right'"
+                  sortable="true"
+                  width="110"
+                >
+                  Hạn lệnh<br />Expired Date
+                </th>
+                <th
+                  data-options="field:'emptyContainerDepot',halign:'center'"
+                  width="200"
+                >
+                  Nơi hạ rỗng<br />Empty Depot
+                </th>
+                <th
+                  data-options="field:'detFreeTime',halign:'center',align:'right'"
+                  width="80"
+                >
+                  Ngày miễn<br />DET free
+                </th>
+                <th data-options="field:'vessel',halign:'center'" width="100">
+                  Tên tàu<br />Vessel
+                </th>
+                <th data-options="field:'voyNo',halign:'center'" width="100">
+                  Chuyến tàu<br />Voyage No
+                </th>
+                <th data-options="field:'status',align:'center'" width="80">
+                  Trạng thái
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
     </div>
     <th:block th:include="include :: footer" />
-	<th:block th:include="include :: easyui-js" />
- <script type="text/javascript">
-        $(function(){
-            var dg = $('#dg').datagrid({
-            	url: ctx+'carrier/do/list',
-            	singleSelection: true,
-            	clientPaging: false,
-            	pagination: true,
-                rownumbers: true,
-                pageSize:50,
-                loader: function(param, success, error){
-            		console.log(param)
-            		var opts = $(this).datagrid('options');
-            		if (!opts.url) return false;
-            		$.ajax({
-            			type: opts.method,
-            			url: opts.url,
-            			data: {"pageNum":param.page,"pageSize":param.rows,"orderByColumn":param.sort,"isAsc":param.order},
-            			dataType: 'json',
-            			success: function(data){
-            				success(data);
-            			},
-            			error: function(){
-            				error.apply(this, arguments);
-            			}
-            		});
-            	}
+    <th:block th:include="include :: easyui-js" />
+    <script type="text/javascript">
+      $(function () {
+        var dg = $("#dg").datagrid({
+          url: ctx + "carrier/do/list",
+          singleSelection: true,
+          clientPaging: false,
+          pagination: true,
+          rownumbers: true,
+          pageSize: 50,
+          loader: function (param, success, error) {
+            var opts = $(this).datagrid("options");
+            if (!opts.url) return false;
+            $.ajax({
+              type: opts.method,
+              url: opts.url,
+              data: {
+                pageNum: param.page,
+                pageSize: param.rows,
+                orderByColumn: param.sort,
+                isAsc: param.order,
+              },
+              dataType: "json",
+              success: function (data) {
+                success(data);
+              },
+              error: function () {
+                error.apply(this, arguments);
+              },
             });
+          },
         });
+      });
+      
+      $(document).on("click", ".datagrid-cell-check input[name='id']", function () {
+        var checked = $('input:checkbox:checked').length;
+        if (checked != 0) {
+          $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").removeClass("disabled");
+        } else {
+          $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").addClass("disabled");
+        }
+      })
+      var selectedRow ;
+
+      function getSelectedRow() {
+        selectedRow = $(".datagrid-cell-check input[name='id']:checked")
+          .map(function () {
+            return this.value;
+          })
+          .get();
+        console.log(selectedRow);
+      }
+      
     </script>
     <script>
-    /* 
+      /* 
         var hot;
         var currentPage = 0;
         var prefix = "/carrier/do";
@@ -386,6 +515,6 @@
             });
         }
 */
-      </script>
-</body>
+    </script>
+  </body>
 </html>
