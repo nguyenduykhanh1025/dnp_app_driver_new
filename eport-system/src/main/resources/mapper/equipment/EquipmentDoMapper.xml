@@ -46,7 +46,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
-            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
@@ -57,6 +56,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="expiredDemStartDay != null"> and expired_dem = #{expiredDemStartDay} OR expired_dem > #{expiredDemStartDay}</if>
+            <if test="expiredDemEndDay != null"> and expired_dem = #{expiredDemEndDay} OR expired_dem &lt; #{expiredDemEndDay}</if>
+            <if test="expiredDemStartDay != null and expiredDemEndDay != null"> and expired_dem BETWEEN #{expiredDemStartDay} AND #{expiredDemEndDay}</if>
         </where>
         ORDER BY id DESC  
         LIMIT 10
