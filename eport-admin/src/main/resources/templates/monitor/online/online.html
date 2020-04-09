@@ -124,7 +124,7 @@
 
 		// 单条强退
 		function forceLogout(sessionId) {
-		    $.modal.confirm("确定要强制选中用户下线吗？", function() {
+		    $.modal.confirm("Đồng ý要强制选中用户下线吗？", function() {
 		    	var data = { "sessionId": sessionId };
 		        $.operate.post(prefix + "/forceLogout", data);
 		    })

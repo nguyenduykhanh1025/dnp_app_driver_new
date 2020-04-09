@@ -42,7 +42,7 @@ public class DictUtils
     }
 
     /**
-     * 清空字典缓存
+     * Clear字典缓存
      */
     public static void clearDictCache()
     {

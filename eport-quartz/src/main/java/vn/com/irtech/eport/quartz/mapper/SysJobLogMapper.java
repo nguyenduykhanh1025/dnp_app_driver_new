@@ -58,7 +58,7 @@ public interface SysJobLogMapper
     public int deleteJobLogById(Long jobId);
 
     /**
-     * 清空任务日志
+     * Clear任务日志
      */
     public void cleanJobLog();
 }

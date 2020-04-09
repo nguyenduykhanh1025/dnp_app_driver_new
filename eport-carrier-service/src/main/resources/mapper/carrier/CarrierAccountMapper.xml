@@ -21,6 +21,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <association property="carrierGroup"    column="group_id" javaType="CarrierGroup" resultMap="carrierGroupResult" />
+    </resultMap>
+
+    <resultMap type="CarrierGroup" id="carrierGroupResult">
+        <result property="id"    column="id"    />
+        <result property="groupCode"    column="group_code"    />
+        <result property="groupName"    column="group_name"    />
     </resultMap>
 
     <sql id="selectCarrierAccountVo">
@@ -28,11 +35,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <select id="selectCarrierAccountList" parameterType="CarrierAccount" resultMap="CarrierAccountResult">
-        <include refid="selectCarrierAccountVo"/>
+        select c.id, c.group_id, c.carrier_code, c.email, c.password, c.salt, c.full_name, c.status, c.del_flag
+        , c.login_ip, c.login_date, c.remark, c.create_by, c.create_time, c.update_by, c.update_time, g.id, g.group_code, g.group_name  
+        from carrier_account c left join carrier_group g on c.group_id = g.id
         <where>  
-            <if test="carrierCode != null  and carrierCode != ''"><bind name="carrierCodePattern" value="'%' + carrierCode + '%'"/> and lower(carrier_code) like #{carrierCodePattern}</if>
-            <if test="email != null  and email != ''"><bind name="emailPattern" value="'%' + email + '%'"/> and lower(email) like #{emailPattern}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="carrierCode != null  and carrierCode != ''"><bind name="carrierCodePattern" value="'%' + carrierCode + '%'"/> and lower(c.carrier_code) like #{carrierCodePattern}</if>
+            <if test="email != null  and email != ''"><bind name="emailPattern" value="'%' + email + '%'"/> and lower(c.email) like #{emailPattern}</if>
+            <if test="status != null  and status != ''"> and c.status = #{status}</if>
         </where>
     </select>
     
