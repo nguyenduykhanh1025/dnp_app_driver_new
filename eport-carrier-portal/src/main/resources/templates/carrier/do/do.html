@@ -1,14 +1,64 @@
 <!DOCTYPE html>
 <html
-  lang="zh"
+  lang="en"
   xmlns:th="http://www.thymeleaf.org"
   xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
 >
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/jquery.toast.min.css}" rel="stylesheet" />
   </head>
+  <style>
+    .clickable { cursor: pointer; }
+  </style>
   <body class="gray-bg">
+    <div
+      class="modal fade"
+      id="modalSubscriptionForm"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header text-center">
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h3 class="modal-title w-100 font-weight-bold">
+              Thay đổi hạn lệnh của container
+            </h3>
+            
+          </div>
+          <div class="modal-body mx-3">
+            <div class="md-form mb-5">
+              <p>Các container đang chọn: <b id="container-details"></b></p>
+            </div>
+            <br>
+            <div class="md-form mb-4 form-group">
+              <label data-error="wrong" data-success="right" for="form2">
+                Nhập ngày mới <i class="fa fa-calendar prefix grey-text"></i>
+              </label>
+              
+              <input type="text" id="form2" class="time-input form-control validate clickable" />
+            </div>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button class="btn btn-primary" onclick="submit()">
+              Xác nhận
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-sm-12 select-table" style="margin-top: 0px;">
         <!-- Search form -->
@@ -79,6 +129,8 @@
                 class="btn btn-primary single disabled"
                 onclick="getSelectedRow();"
                 id="itCloseToTheDeadlineeeeeeeeeeeeeeee"
+                data-toggle="modal"
+                data-target="#modalSubscriptionForm"
               >
                 <i class="fa fa-edit"></i> Đổi Hạn Lệnh
               </a>
@@ -178,8 +230,11 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <!-- Jquery toast -->
+    <script th:src="@{/js/jquery.toast.min.js}"></script>
     <script type="text/javascript">
-      $(function () {
+    load();
+    function load() {
         var dg = $("#dg").datagrid({
           url: ctx + "carrier/do/list",
           singleSelection: true,
@@ -209,27 +264,74 @@
             });
           },
         });
-      });
+    }
       
-      $(document).on("click", ".datagrid-cell-check input[name='id']", function () {
-        var checked = $('input:checkbox:checked').length;
-        if (checked != 0) {
-          $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").removeClass("disabled");
-        } else {
-          $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").addClass("disabled");
-        }
-      })
-      var selectedRow ;
 
+      //Handle click checkbox event
+      $(document).on(
+        "click",
+        ".datagrid-row, .datagrid-header-check",
+        function () {
+          var checked = $("input:checkbox:checked").length;
+          if (!checked) {
+            $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").addClass("disabled");
+          } else {
+            $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").removeClass("disabled");
+          }
+        }
+      );
+      var selectedRow;
+      var selectedContainer;
+
+      //Get selected row of table
       function getSelectedRow() {
         selectedRow = $(".datagrid-cell-check input[name='id']:checked")
           .map(function () {
             return this.value;
           })
           .get();
-        console.log(selectedRow);
+        //var jsson = JSON.stringify(selectedRow);
+        $.ajax({
+          url: "/carrier/do/getContainer",
+          method: "get",
+          data: {
+            containerId: selectedRow
+          },
+          success: function(result){
+            var text = "[";
+            result.forEach(element => {
+              text += element + ", ";
+            });
+            $("#container-details").html(text.substring(0, text.length - 2) + "]");
+          }
+        })
       }
-      
+
+      //Resolve update action
+      function submit() {
+        var date = $("#form2").val();
+        $.ajax({
+          url: "/carrier/do/updateExpire",
+          method: 'post',
+          data: {
+            containerId: selectedRow,
+            newDate: date,
+          },
+          success: function(result){
+            $.toast({
+              heading: "Thành công",
+              text:
+                "Khai báo DO thành công ！",
+              showHideTransition: "fade",
+              icon: "success",
+              position: "top-right"
+            });
+            $("#container-details").html("");
+            $('.modal').modal('toggle');
+            load();
+          }
+        })
+      }
     </script>
     <script>
       /* 

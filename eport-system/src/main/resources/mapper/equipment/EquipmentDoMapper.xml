@@ -34,6 +34,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
+    <resultMap type="String" id="ContainerNumberListResult">
+        <result property="containerNumber"    column="container_number"    />
+    </resultMap>
+
     <sql id="selectEquipmentDoVo">
         select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time from equipment_do
     </sql>
@@ -225,4 +229,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="getContainerNumberById" parameterType="Long" resultType="String">
+      select container_number from equipment_do where id = #{id}
+    </select>
+
+    <select id="getContainerNumberListByIds" parameterType="String" resultMap="ContainerNumberListResult">
+      select container_number from equipment_do where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+        #{id}
+      </foreach>
+    </select>
 </mapper>

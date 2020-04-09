@@ -1,8 +1,10 @@
 package vn.com.irtech.eport.carrier.controller;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.alibaba.fastjson.JSONArray;
@@ -56,6 +58,7 @@ public class CarrierEquipmentDoController extends BaseController {
   }
 
   private JSONArray equipmentDoList;
+  private JSONArray containerIdList;
 
   /**
    * Get Exchange Delivery Order List
@@ -234,10 +237,28 @@ public class CarrierEquipmentDoController extends BaseController {
     return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
   }
 
-  @GetMapping("/getCarrierCode")
+  @GetMapping("/getContainer")
   @ResponseBody
-  public String getCarrierCode() {
-    return carrierGroupService.selectCarrierGroupById(ShiroUtils.getUserId()).getGroupName();
+  public List<String> getContainerCode(@RequestParam(value = "containerId[]") String containerId) {
+    // for (String i : containerId) {
+    //   //EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(Long.parseLong(i));
+      
+    //   containerList.add(equipmentDoService.getContainerNumberById(Long.parseLong(i)));
+    // }
+    return equipmentDoService.getContainerNumberListByIds(containerId);
+  }
+
+  @PostMapping("/updateExpire")
+  @ResponseBody
+  public AjaxResult updateExprireDem(@RequestParam(value = "containerId[]") String containerId, @RequestParam(value = "newDate") String newDate) {
+    String[] doList = containerId.split(",");
+    for (String i : doList) {
+      EquipmentDo edo = new EquipmentDo();
+      edo.setId(Long.parseLong(i));
+      edo.setExpiredDem(AppToolUtils.formatStringToDate(newDate, "yyyy-MM-dd"));
+      equipmentDoService.updateEquipmentDo(edo);
+    }
+    return toAjax(1);
   }
 
 }
