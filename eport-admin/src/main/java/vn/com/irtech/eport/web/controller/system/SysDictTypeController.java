@@ -129,7 +129,7 @@ public class SysDictTypeController extends BaseController
     }
 
     /**
-     * 清空缓存
+     * Clear缓存
      */
     @RequiresPermissions("system:dict:remove")
     @Log(title = "字典类型", businessType = BusinessType.CLEAN)

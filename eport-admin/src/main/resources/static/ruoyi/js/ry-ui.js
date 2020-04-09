@@ -980,7 +980,7 @@ var table = {
         			$.operate.submit(url, "post", "json", data);
         		});
             },
-            // 清空信息
+            // Clear信息
             clean: function() {
             	table.set();
             	$.modal.confirm("Xác nhận xóa tất cả " + table.options.modalName + "?", function() {
@@ -1437,11 +1437,11 @@ var table = {
                 }
                 return value.toString().replace(/(^\s*)|(\s*$)|\r|\n/g, "");
             },
-            // 比较两个字符串（大小写敏感）
+            // 比较两 ký tự串（大小写敏感）
             equals: function (str, that) {
             	return str == that;
             },
-            // 比较两个字符串（大小写不敏感）
+            // 比较两 ký tự串（大小写不敏感）
             equalsIgnoreCase: function (str, that) {
             	return String(str).toUpperCase() === String(that).toUpperCase();
             },
@@ -1492,7 +1492,7 @@ var table = {
                 }
                 return result;
             },
-            // 数组中的所有元素放入一个字符串
+            // 数组中的所有元素放入一 ký tự串
             join: function(array, separator) {
             	if ($.common.isEmpty(array)) {
             	    return null;

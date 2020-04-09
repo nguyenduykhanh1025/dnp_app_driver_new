@@ -73,7 +73,7 @@ public class SysDictData extends BaseEntity
     }
 
     @NotBlank(message = "字典标签不能为空")
-    @Size(min = 0, max = 100, message = "字典标签长度不能超过100个字符")
+    @Size(min = 0, max = 100, message = "字典标签长度不能超过100 ký tự")
     public String getDictLabel()
     {
         return dictLabel;
@@ -85,7 +85,7 @@ public class SysDictData extends BaseEntity
     }
 
     @NotBlank(message = "字典键值不能为空")
-    @Size(min = 0, max = 100, message = "字典键值长度不能超过100个字符")
+    @Size(min = 0, max = 100, message = "字典键值长度不能超过100 ký tự")
     public String getDictValue()
     {
         return dictValue;
@@ -97,7 +97,7 @@ public class SysDictData extends BaseEntity
     }
 
     @NotBlank(message = "字典类型不能为空")
-    @Size(min = 0, max = 100, message = "字典类型长度不能超过100个字符")
+    @Size(min = 0, max = 100, message = "字典类型长度不能超过100 ký tự")
     public String getDictType()
     {
         return dictType;
@@ -108,7 +108,7 @@ public class SysDictData extends BaseEntity
         this.dictType = dictType;
     }
 
-    @Size(min = 0, max = 100, message = "样式属性长度不能超过100个字符")
+    @Size(min = 0, max = 100, message = "样式属性长度不能超过100 ký tự")
     public String getCssClass()
     {
         return cssClass;

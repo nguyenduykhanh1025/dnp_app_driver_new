@@ -95,7 +95,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * * 判断一个字符串是否为空串
+     * * 判断一 ký tự串是否为空串
      * 
      * @param str String
      * @return true：为空 false：非空
@@ -106,7 +106,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * * 判断一个字符串是否为非空串
+     * * 判断一 ký tự串是否为非空串
      * 
      * @param str String
      * @return true：非空串 false：空串

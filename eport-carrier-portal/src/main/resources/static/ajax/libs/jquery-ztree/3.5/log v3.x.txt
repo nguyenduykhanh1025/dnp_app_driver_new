@@ -49,7 +49,7 @@
    * 【修改】隐藏父节点后，使用 expandAll 方法导致 父节点展开的 bug
    * 【修改】使用 jQuery v1.7 以上时，设置 zTree 容器 ul 隐藏（visibility: hidden;）后， 调用 selectNode 导致 IE 浏览器报错 Can't move focus 的 bug
    * 【修改】正在异步加载时，执行 destory 或 init 方法后，异步加载的节点影响新树的 bug
-   * 【修改】方法 reAsyncChildNodes 在 refresh 的时候未清空内部 cache 导致内存泄露 的 bug
+   * 【修改】方法 reAsyncChildNodes 在 refresh 的时候未Clear内部 cache 导致内存泄露 的 bug
    * 【修改】批量节点拖拽到其他父节点内（inner）时，导致顺序反转 的 bug
    * 【修改】对于 使用 html格式的 节点无法触发 双击事件 的 bug
    * 【修改】onCheck 回调中的 event ，保证与触发事件中的 event 一致
@@ -61,7 +61,7 @@
 
 *2012.09.03* v3.4
    * 【增加】 Demo —— OutLook 样式的左侧菜单
-   * 【增加】清空 zTree 的方法 $.fn.zTree.destory(treeId) & zTree.destory()
+   * 【增加】Clear zTree 的方法 $.fn.zTree.destory(treeId) & zTree.destory()
 
    * 【修改】core核心文件内 _eventProxy 方法中获取 tId 的方法，提高 DOM 的灵活性
    * 【修改】初始化时 多层父节点的 checkbox 半选状态计算错误的 bug
@@ -96,7 +96,7 @@
    * 【修改】IE7的环境下无子节点的父节点反复展开出现多余空行的 bug
    * 【修改】异步加载时，如果出现网络异常等，会导致 图标显示错误的 bug
    * 【修改】dataFilter中 return null 导致异常 的 bug
-   * 【修改】removeChildNodes 方法清空子节点后，无法正常添加节点的 bug
+   * 【修改】removeChildNodes 方法Clear子节点后，无法正常添加节点的 bug
    * 【修改】moveNode 后节点中的自定义元素的事件丢失的 bug
    * 【修改】moveNode 方法中设置 isSilent = true 时，如果移动到已展开的 父节点后，出现异常的 bug
    * 【修改】onClick/onDrag/onDrop 回调中 event 不是原始 event 的 bug
