@@ -59,7 +59,7 @@ public interface ISysConfigService
     public int deleteConfigByIds(String ids);
 
     /**
-     * 清空缓存数据
+     * Clear缓存数据
      */
     public void clearCache();
 

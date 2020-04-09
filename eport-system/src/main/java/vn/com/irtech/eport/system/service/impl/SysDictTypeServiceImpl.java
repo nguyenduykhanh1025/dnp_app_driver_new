@@ -142,7 +142,7 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService
     }
 
     /**
-     * 清空缓存数据
+     * Clear缓存数据
      */
     public void clearCache()
     {
