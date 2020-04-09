@@ -24,9 +24,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectCarrierGroupVo"/>
         <where>  
             <if test="id != null  and id != ''"> and id = #{id}</if>
-            <if test="groupCode != null  and groupCode != ''"> and group_code like concat('%', #{groupCode}, '%')</if>
-            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
-            <if test="operateCode != null  and operateCode != ''"> and operate_code like concat('%', #{operateCode}, '%')</if>
+            <if test="groupCode != null  and groupCode != ''"> and lower(group_code) like concat('%', #{groupCode}, '%')</if>
+            <if test="groupName != null  and groupName != ''"> and lower(group_name) like concat('%', #{groupName}, '%')</if>
+            <if test="operateCode != null  and operateCode != ''"> and lower(operate_code) like concat('%', #{operateCode}, '%')</if>
         </where>
     </select>
     
@@ -93,11 +93,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <select id="checkGroupCodeUnique" parameterType="String" resultType="int">
-		select count(1) from carrier_group where group_code=#{groupCode}
+		select count(1) from carrier_group where lower(group_code)=#{groupCode}
 	</select>
 
     <select id="checkMainEmailUnique" parameterType="String" resultType="int">
-		select count(1) from carrier_group where main_email=#{mainEmail}
+		select count(1) from carrier_group where lower(main_email)=#{mainEmail}
 	</select>
     
 </mapper>

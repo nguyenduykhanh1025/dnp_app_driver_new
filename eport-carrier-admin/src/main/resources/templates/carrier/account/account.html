@@ -10,15 +10,15 @@
                 <form id="formId">
                     <div class="select-list">
                         <ul>
-                            <li>
+                            <li style="margin-top: 0;">
                                 <!-- <label>Shipping Line Code：</label> -->
                                 <input type="text" id="carrierCode" name="carrierCode" placeholder="Mã vận chuyển" style="width: 140px;"/>
                             </li>
-                            <li>
+                            <li style="margin-top: 0;">
                                 <!-- <label>Email：</label> -->
                                 <input type="text" id="email" name="email" placeholder="Email" style="width: 180px;"/>
                             </li>
-                            <li>
+                            <li style="margin-top: 0;">
                                 <!-- <label>Status：</label> -->
                                 <select name="status" onchange="$('#searchBtn').click()">
                                     <option value="">Trạng thái</option>
@@ -26,9 +26,9 @@
                                     <option value="1">Không hoạt động</option>
                                 </select>
                             </li>
-                            <li>
+                            <li style="margin-top: 0;">
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="fa fa-search"></i>&nbsp;Search</a>
-                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+                                <!-- <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a> -->
                             </li>
                         </ul>
                     </div>                  
