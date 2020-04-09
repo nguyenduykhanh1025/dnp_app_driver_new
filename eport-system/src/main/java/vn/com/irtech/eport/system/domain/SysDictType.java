@@ -43,7 +43,7 @@ public class SysDictType extends BaseEntity
     }
 
     @NotBlank(message = "字典名称不能为空")
-    @Size(min = 0, max = 100, message = "字典类型名称长度不能超过100个字符")
+    @Size(min = 0, max = 100, message = "字典类型名称长度不能超过100 ký tự")
     public String getDictName()
     {
         return dictName;
@@ -55,7 +55,7 @@ public class SysDictType extends BaseEntity
     }
 
     @NotBlank(message = "字典类型不能为空")
-    @Size(min = 0, max = 100, message = "字典类型类型长度不能超过100个字符")
+    @Size(min = 0, max = 100, message = "字典类型类型长度不能超过100 ký tự")
     public String getDictType()
     {
         return dictType;

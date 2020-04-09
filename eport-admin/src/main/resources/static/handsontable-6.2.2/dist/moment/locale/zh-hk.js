@@ -14,7 +14,7 @@
 
 var zhHk = moment.defineLocale('zh-hk', {
     months : '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
-    monthsShort : '1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月'.split('_'),
+    monthsShort : '1 tháng_2 tháng_3 tháng_4 tháng_5 tháng_6 tháng_7 tháng_8 tháng_9 tháng_10 tháng_11 tháng_12 tháng'.split('_'),
     weekdays : '星期日_星期一_星期二_星期三_星期四_星期五_星期六'.split('_'),
     weekdaysShort : '週日_週一_週二_週三_週四_週五_週六'.split('_'),
     weekdaysMin : '日_一_二_三_四_五_六'.split('_'),
@@ -22,13 +22,13 @@ var zhHk = moment.defineLocale('zh-hk', {
         LT : 'HH:mm',
         LTS : 'HH:mm:ss',
         L : 'YYYY/MM/DD',
-        LL : 'YYYY年M月D日',
-        LLL : 'YYYY年M月D日 HH:mm',
-        LLLL : 'YYYY年M月D日dddd HH:mm',
+        LL : 'YYYY nămM thángD日',
+        LLL : 'YYYY nămM thángD日 HH:mm',
+        LLLL : 'YYYY nămM thángD日dddd HH:mm',
         l : 'YYYY/M/D',
-        ll : 'YYYY年M月D日',
-        lll : 'YYYY年M月D日 HH:mm',
-        llll : 'YYYY年M月D日dddd HH:mm'
+        ll : 'YYYY nămM thángD日',
+        lll : 'YYYY nămM thángD日 HH:mm',
+        llll : 'YYYY nămM thángD日dddd HH:mm'
     },
     meridiemParse: /凌晨|早上|上午|中午|下午|晚上/,
     meridiemHour : function (hour, meridiem) {
@@ -67,7 +67,7 @@ var zhHk = moment.defineLocale('zh-hk', {
         lastWeek : '[上]ddddLT',
         sameElse : 'L'
     },
-    dayOfMonthOrdinalParse: /\d{1,2}(日|月|週)/,
+    dayOfMonthOrdinalParse: /\d{1,2}(日| tháng|週)/,
     ordinal : function (number, period) {
         switch (period) {
             case 'd' :
@@ -75,7 +75,7 @@ var zhHk = moment.defineLocale('zh-hk', {
             case 'DDD' :
                 return number + '日';
             case 'M' :
-                return number + '月';
+                return number + ' tháng';
             case 'w' :
             case 'W' :
                 return number + '週';
@@ -94,10 +94,10 @@ var zhHk = moment.defineLocale('zh-hk', {
         hh : '%d 小時',
         d : '1 天',
         dd : '%d 天',
-        M : '1 個月',
-        MM : '%d 個月',
-        y : '1 年',
-        yy : '%d 年'
+        M : '1 個 tháng',
+        MM : '%d 個 tháng',
+        y : '1  năm',
+        yy : '%d  năm'
     }
 });
 

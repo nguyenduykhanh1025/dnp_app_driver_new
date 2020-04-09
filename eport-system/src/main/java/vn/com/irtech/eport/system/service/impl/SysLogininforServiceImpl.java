@@ -56,7 +56,7 @@ public class SysLogininforServiceImpl implements ISysLogininforService
     }
 
     /**
-     * 清空系统登录日志
+     * Clear系统登录日志
      */
     @Override
     public void cleanLogininfor()

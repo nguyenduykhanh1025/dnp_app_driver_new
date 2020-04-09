@@ -965,7 +965,7 @@
                         }
                     });
 
-                // 存在清空按钮
+                // 存在Clear按钮
                 if ($iClear.length) {
                     $iClear.click(function () {
                         setOrGetDataId($input, '').val('');

@@ -12,21 +12,21 @@
 
 var ja = moment.defineLocale('ja', {
     months : '1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月'.split('_'),
-    monthsShort : '1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月'.split('_'),
-    weekdays : '日曜日_月曜日_火曜日_水曜日_木曜日_金曜日_土曜日'.split('_'),
-    weekdaysShort : '日_月_火_水_木_金_土'.split('_'),
-    weekdaysMin : '日_月_火_水_木_金_土'.split('_'),
+    monthsShort : '1 tháng_2 tháng_3 tháng_4 tháng_5 tháng_6 tháng_7 tháng_8 tháng_9 tháng_10 tháng_11 tháng_12 tháng'.split('_'),
+    weekdays : '日曜日_ tháng曜日_火曜日_水曜日_木曜日_金曜日_土曜日'.split('_'),
+    weekdaysShort : '日_ tháng_火_水_木_金_土'.split('_'),
+    weekdaysMin : '日_ tháng_火_水_木_金_土'.split('_'),
     longDateFormat : {
         LT : 'HH:mm',
         LTS : 'HH:mm:ss',
         L : 'YYYY/MM/DD',
-        LL : 'YYYY年M月D日',
-        LLL : 'YYYY年M月D日 HH:mm',
-        LLLL : 'YYYY年M月D日 HH:mm dddd',
+        LL : 'YYYY nămM thángD日',
+        LLL : 'YYYY nămM thángD日 HH:mm',
+        LLLL : 'YYYY nămM thángD日 HH:mm dddd',
         l : 'YYYY/MM/DD',
-        ll : 'YYYY年M月D日',
-        lll : 'YYYY年M月D日 HH:mm',
-        llll : 'YYYY年M月D日 HH:mm dddd'
+        ll : 'YYYY nămM thángD日',
+        lll : 'YYYY nămM thángD日 HH:mm',
+        llll : 'YYYY nămM thángD日 HH:mm dddd'
     },
     meridiemParse: /午前|午後/i,
     isPM : function (input) {
@@ -69,10 +69,10 @@ var ja = moment.defineLocale('ja', {
         hh : '%d時間',
         d : '1日',
         dd : '%d日',
-        M : '1ヶ月',
-        MM : '%dヶ月',
-        y : '1年',
-        yy : '%d年'
+        M : '1ヶ tháng',
+        MM : '%dヶ tháng',
+        y : '1 năm',
+        yy : '%d năm'
     }
 });
 
