@@ -36,7 +36,7 @@ public class DynamicDataSourceContextHolder
     }
 
     /**
-     * 清空数据源变量
+     * Clear数据源变量
      */
     public static void clearDataSourceType()
     {

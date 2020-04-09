@@ -63,7 +63,7 @@ public class SysMenu extends BaseEntity
     }
 
     @NotBlank(message = "菜单名称不能为空")
-    @Size(min = 0, max = 50, message = "菜单名称长度不能超过50个字符")
+    @Size(min = 0, max = 50, message = "菜单名称长度不能超过50 ký tự")
     public String getMenuName()
     {
         return menuName;
@@ -105,7 +105,7 @@ public class SysMenu extends BaseEntity
         this.orderNum = orderNum;
     }
 
-    @Size(min = 0, max = 200, message = "请求地址不能超过200个字符")
+    @Size(min = 0, max = 200, message = "请求地址不能超过200 ký tự")
     public String getUrl()
     {
         return url;
@@ -147,7 +147,7 @@ public class SysMenu extends BaseEntity
         this.visible = visible;
     }
 
-    @Size(min = 0, max = 100, message = "权限标识长度不能超过100个字符")
+    @Size(min = 0, max = 100, message = "权限标识长度不能超过100 ký tự")
     public String getPerms()
     {
         return perms;

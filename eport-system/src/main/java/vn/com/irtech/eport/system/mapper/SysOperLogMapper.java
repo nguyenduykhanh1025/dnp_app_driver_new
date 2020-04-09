@@ -42,7 +42,7 @@ public interface SysOperLogMapper
     public SysOperLog selectOperLogById(Long operId);
     
     /**
-     * 清空操作日志
+     * Clear操作日志
      */
     public void cleanOperLog();
 }
