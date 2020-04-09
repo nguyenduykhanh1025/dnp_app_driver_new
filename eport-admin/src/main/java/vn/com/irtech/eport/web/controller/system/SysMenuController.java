@@ -89,7 +89,7 @@ public class SysMenuController extends BaseController
         {
             menu = new SysMenu();
             menu.setMenuId(0L);
-            menu.setMenuName("主目录");
+            menu.setMenuName("Main directory");
         }
         mmap.put("menu", menu);
         return prefix + "/add";
