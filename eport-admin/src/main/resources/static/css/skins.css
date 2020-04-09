@@ -95,7 +95,7 @@
 
 .skin-blue .nav>li.active {
 	color: #fff;
-	background: #293846;
+	/* background: #293846; */
 	border-left: 3px solid #3c8dbc;
 }
 
@@ -791,7 +791,7 @@
 }
 
 .theme-dark .nav>li.active {
-	background: #293846;
+	/* background: #293846; */
 }
 
 .theme-dark .navbar-static-side {

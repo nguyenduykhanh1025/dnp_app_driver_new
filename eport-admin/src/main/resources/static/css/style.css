@@ -206,7 +206,7 @@ body.body-small .navbar-top-links li:last-child {
 
 .nav>li.active {
     border-left: 4px solid #19aa8d;
-    background: #293846;
+    /* background: #293846; */
 }
 
 .nav.nav-second-level>li.active {
@@ -3166,7 +3166,7 @@ video {
 #page-wrapper {
     padding: 0 15px;
     position: inherit;
-    margin: 0 0 0 200px;
+    /* margin: 0 0 0 200px; */
 }
 
 .title-action {
