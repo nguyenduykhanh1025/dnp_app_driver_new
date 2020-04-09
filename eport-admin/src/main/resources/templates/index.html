@@ -18,7 +18,7 @@
   </head>
   <body
     class="fixed-sidebar full-height-layout gray-bg "
-    style="overflow: hidden;"
+    style="overflow: hidden; color: #ffffff;"
   >
     <div id="wrapper">
       <!--左侧导航开始-->
@@ -44,10 +44,6 @@
                   class="dropdown-toggle"
                   data-hover="dropdown"
                 >
-                  <img
-                    th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}"
-                    class="user-image"
-                  />
                   <span class="hidden-xs"
                     >[[${#strings.defaultString(user.userName, '-')}]]</span
                   >
