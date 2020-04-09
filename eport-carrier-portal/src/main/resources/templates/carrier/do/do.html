@@ -109,7 +109,7 @@
                 <li>
                   <a
                     class="btn btn-primary btn-rounded btn-sm"
-                    onclick="$.table.search()"
+                    onclick="$.operate.search()"
                     id="searchBtn"
                     ><i class="glyphicon glyphicon-search"></i> Tìm Kiếm</a
                   >
@@ -233,6 +233,18 @@
     <!-- Jquery toast -->
     <script th:src="@{/js/jquery.toast.min.js}"></script>
     <script type="text/javascript">
+    // open add layer iframe
+    //**********************************
+    var prefix = ctx + "carrier/do";
+    $(function() {
+      var options = {
+        url: prefix + "/list",
+        createUrl: prefix + "/add",
+      };
+      $.table.init(options);
+    });
+    //**********************************
+
     load();
     function load() {
         var dg = $("#dg").datagrid({
