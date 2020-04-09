@@ -133,7 +133,7 @@ public class SysConfigController extends BaseController
     }
 
     /**
-     * 清空缓存
+     * Clear缓存
      */
     @RequiresPermissions("system:config:remove")
     @Log(title = "参数管理", businessType = BusinessType.CLEAN)

@@ -4,6 +4,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
+import vn.com.irtech.eport.common.annotation.Excels;
+import vn.com.irtech.eport.common.annotation.Excel.Type;
 import java.util.Date;
 
 /**
@@ -45,6 +47,11 @@ public class CarrierAccount extends BaseEntity
     /** Status（0 Normal 1 Disabled） */
     @Excel(name = "Status", readConverterExp = "0=Normal,1=Disabled")
     private String status;
+
+    @Excels({
+        @Excel(name = "Group Code", targetAttr = "carrierGroup", type = Type.EXPORT)
+    })
+    private CarrierGroup carrierGroup;
 
     /** Delete Flag (0 nomal 2 deleted) */
     private String delFlag;
@@ -155,6 +162,18 @@ public class CarrierAccount extends BaseEntity
         return loginDate;
     }
 
+    public CarrierGroup getCarrierGroup() {
+        if (carrierGroup == null)
+        {
+            carrierGroup = new CarrierGroup();
+        }
+        return carrierGroup;
+    }
+
+    public void setCarrierGroup(CarrierGroup carrierGroup) {
+        this.carrierGroup = carrierGroup;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -174,6 +193,7 @@ public class CarrierAccount extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("carrierGroup", getCarrierGroup())
             .toString();
     }
 }

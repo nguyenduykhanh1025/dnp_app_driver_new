@@ -61,7 +61,7 @@ public interface ISysDictTypeService
     public int deleteDictTypeByIds(String ids);
 
     /**
-     * 清空缓存数据
+     * Clear缓存数据
      */
     public void clearCache();
 

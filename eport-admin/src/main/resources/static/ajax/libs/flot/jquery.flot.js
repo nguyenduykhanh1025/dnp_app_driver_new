@@ -2547,7 +2547,7 @@
         var hours = d.getUTCHours();
         var isAM = hours < 12;
         if (monthNames == null)
-            monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+            monthNames = ["1 tháng", "2 tháng", "3 tháng", "4 tháng", "5 tháng", "6 tháng", "7 tháng", "8 tháng", "9 tháng", "10 tháng", "11 tháng", "12 tháng"];
 
         if (fmt.search(/%p|%P/) != -1) {
             if (hours > 12) {

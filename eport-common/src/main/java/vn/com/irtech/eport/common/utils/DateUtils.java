@@ -86,7 +86,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     }
 
     /**
-     * 日期路径 即年/月/日 如2018/08/08
+     * 日期路径 即 năm/ tháng/日 如2018/08/08
      */
     public static final String datePath()
     {
@@ -95,7 +95,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils
     }
 
     /**
-     * 日期路径 即年/月/日 如20180808
+     * 日期路径 即 năm/ tháng/日 如20180808
      */
     public static final String dateTime()
     {

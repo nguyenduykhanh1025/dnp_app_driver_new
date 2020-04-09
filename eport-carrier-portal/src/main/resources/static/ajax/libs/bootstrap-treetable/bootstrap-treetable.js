@@ -151,7 +151,7 @@
         }
         // 初始化数据服务
         var initServer = function(parms) {
-            // 加载数据前先清空
+            // 加载数据前先Clear
             target.data_list = {};
             target.data_obj = {};
             var $tbody = target.find("tbody");
@@ -180,7 +180,7 @@
         // 加载完数据后渲染表格
         var renderTable = function(data) {
             var $tbody = target.find("tbody");
-            // 先清空
+            // 先Clear
             $tbody.html("");
             if (!data || data.length <= 0) {
                 var _empty = '<tr><td colspan="' + options.columns.length + '"><div style="display: block;text-align: center;">没有找到匹配的记录</div></td></tr>'

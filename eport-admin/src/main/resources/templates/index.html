@@ -17,405 +17,11 @@
     <link th:href="@{/ruoyi/css/ry-ui.css?v=4.2.0}" rel="stylesheet" />
   </head>
   <body
-    class="fixed-sidebar full-height-layout gray-bg"
-    style="overflow: hidden;"
+    class="fixed-sidebar full-height-layout gray-bg "
+    style="overflow: hidden; color: #ffffff;"
   >
     <div id="wrapper">
       <!--左侧导航开始-->
-      <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="nav-close">
-          <i class="fa fa-times-circle"></i>
-        </div>
-        <a th:href="@{/index}">
-          <li class="logo hidden-xs">
-            <span class="logo-lg">ePORT</span>
-          </li>
-        </a>
-        <div class="sidebar-collapse">
-          <ul class="nav" id="side-menu">
-            <!-- <li>
-            		<div class="user-panel">
-            			<a class="menuItem" title="Profile" th:href="@{/system/user/profile}"> 
-            				<div class="hide" th:text="Profile"></div>
-					        <div class="pull-left image">
-		                    	<img th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}" class="img-circle" alt="User Image">
-					        </div>
-				        </a>
-				        <div class="pull-left info">
-				          <p>[[${user.loginName}]]</p>
-				          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
-				          <a th:href="@{logout}" style="padding-left:5px;"><i class="fa fa-sign-out text-danger"></i> Logout</a>
-				        </div>
-				    </div>
-            	</li> -->
-            <li>
-              <a href="#"
-                ><i class="fa fa-home"></i> <span class="nav-label">Home</span>
-                <span class="fa arrow"></span
-              ></a>
-              <ul class="nav nav-second-level">
-                <li>
-                  <a class="menuItem" th:href="@{/system/main}">Trang chủ</a>
-                </li>
-                <li>
-                  <a class="menuItem" th:href="@{/edi/listView}"
-                    >Quản lý EquipmentDO</a
-                  >
-                </li>
-                <!-- <li><a class="menuItem" th:href="@{/edi/list}">Tra cứu EDI</a></li> -->
-                <li>
-                  <a class="menuItem" th:href="@{/edi/hanson}"
-                    >Add Hansontable</a
-                  >
-                </li>
-              </ul>
-            </li>
-            <li th:each="menu : ${menus}">
-              <a
-                th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
-                th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
-              >
-                <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
-                <span class="nav-label" th:text="${menu.menuName}"
-                  >Top Menu</span
-                >
-                <span
-                  th:class="${menu.url == '' || menu.url == '#'} ? |fa arrow|"
-                ></span>
-              </a>
-              <ul class="nav nav-second-level collapse">
-                <li th:each="cmenu : ${menu.children}">
-                  <a
-                    th:if="${#lists.isEmpty(cmenu.children)}"
-                    th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
-                    th:utext="${cmenu.menuName}"
-                    th:href="@{${cmenu.url}}"
-                    >2nd Menu</a
-                  >
-                  <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#"
-                    >[[${cmenu.menuName}]]<span class="fa arrow"></span
-                  ></a>
-                  <ul
-                    th:if="${not #lists.isEmpty(cmenu.children)}"
-                    class="nav nav-third-level"
-                  >
-                    <li th:each="emenu : ${cmenu.children}">
-                      <a
-                        th:if="${#lists.isEmpty(emenu.children)}"
-                        th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
-                        th:text="${emenu.menuName}"
-                        th:href="@{${emenu.url}}"
-                        >3rd Menu</a
-                      >
-                      <a th:if="${not #lists.isEmpty(emenu.children)}" href="#"
-                        >[[${emenu.menuName}]]<span class="fa arrow"></span
-                      ></a>
-                      <ul
-                        th:if="${not #lists.isEmpty(emenu.children)}"
-                        class="nav nav-four-level"
-                      >
-                        <li th:each="fmenu : ${emenu.children}">
-                          <a
-                            th:if="${#lists.isEmpty(fmenu.children)}"
-                            th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
-                            th:text="${fmenu.menuName}"
-                            th:href="@{${fmenu.url}}"
-                            >四级菜单</a
-                          >
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-            <li th:if="${demoEnabled}">
-              <a href="#"
-                ><i class="fa fa-desktop"></i><span class="nav-label">Demo</span
-                ><span class="fa arrow"></span
-              ></a>
-              <ul class="nav nav-second-level collapse">
-                <li>
-                  <a>Menu<span class="fa arrow"></span></a>
-                  <ul class="nav nav-third-level">
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/button}"
-                        >按钮</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/grid}">栅格</a>
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/select}"
-                        >下拉框</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/timeline}"
-                        >时间轴</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/basic}"
-                        >基本表单</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/cards}"
-                        >卡片列表</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/jasny}"
-                        >功能扩展</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/sortable}"
-                        >拖动排序</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/tabs_panels}"
-                        >选项卡 & 面板</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/validate}"
-                        >表单校验</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/wizard}"
-                        >表单向导</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/upload}"
-                        >文件上传</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/datetime}"
-                        >日期和时间</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/summernote}"
-                        >富文本编辑器</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/duallistbox}"
-                        >左右互选组件</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/form/autocomplete}"
-                        >搜索自动补全</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a>Form<span class="fa arrow"></span></a>
-                  <ul class="nav nav-third-level">
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/search}"
-                        >查询条件</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/footer}"
-                        >数据汇总</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/groupHeader}"
-                        >组合表头</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/export}"
-                        >表格导出</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/remember}"
-                        >翻页记住选择</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/pageGo}"
-                        >跳转至指定页</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/params}"
-                        >自定义查询参数</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/multi}"
-                        >初始多表格</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/button}"
-                        >点击按钮加载表格</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/fixedColumns}"
-                        >表格冻结列</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/event}"
-                        >自定义触发事件</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/detail}"
-                        >表格细节视图</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/child}"
-                        >表格父子视图</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/image}"
-                        >表格图片预览</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/curd}"
-                        >动态增删改查</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/reorder}"
-                        >表格拖拽操作</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/editable}"
-                        >表格行内编辑</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/table/other}"
-                        >表格其他操作</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a>Popup<span class="fa arrow"></span></a>
-                  <ul class="nav nav-third-level">
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/modal/dialog}"
-                        >模态窗口</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/modal/layer}"
-                        >弹层组件</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/modal/table}"
-                        >弹层表格</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a>Operator<span class="fa arrow"></span></a>
-                  <ul class="nav nav-third-level">
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/operate/table}"
-                        >表格</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/operate/other}"
-                        >其他</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a>Chart<span class="fa arrow"></span></a>
-                  <ul class="nav nav-third-level">
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/report/echarts}"
-                        >百度ECharts</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/report/peity}"
-                        >peity</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/report/sparkline}"
-                        >sparkline</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/report/metrics}"
-                        >图表组合</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a>Icon<span class="fa arrow"></span></a>
-                  <ul class="nav nav-third-level">
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/icon/fontawesome}"
-                        >Font Awesome</a
-                      >
-                    </li>
-                    <li>
-                      <a class="menuItem" th:href="@{/demo/icon/glyphicons}"
-                        >Glyphicons</a
-                      >
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a href="#"
-                    ><i class="fa fa-sitemap"></i>
-                    <span class="nav-label">Menu </span
-                    ><span class="fa arrow"></span
-                  ></a>
-                  <ul class="nav nav-second-level collapse">
-                    <li>
-                      <a href="#" id="damian"
-                        >三级菜单1<span class="fa arrow"></span
-                      ></a>
-                      <ul class="nav nav-third-level">
-                        <li>
-                          <a href="#">四级菜单1</a>
-                        </li>
-                        <li>
-                          <a href="#">四级菜单2</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li><a href="#">三级菜单2</a></li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </nav>
       <!--左侧导航结束-->
 
       <!--右侧部分开始-->
@@ -426,19 +32,9 @@
             role="navigation"
             style="margin-bottom: 0;"
           >
-            <div class="navbar-header">
-              <a
-                class="navbar-minimalize minimalize-styl-2"
-                style="color: #fff;"
-                href="#"
-                title="Collapse"
-              >
-                <i class="fa fa-bars"></i>
-              </a>
-            </div>
             <ul class="nav navbar-top-links navbar-right welcome-message">
               <li>
-                <a title="全屏显示" href="javascript:void(0)" id="fullScreen"
+                <a title="full-screen display" href="javascript:void(0)" id="fullScreen"
                   ><i class="fa fa-arrows-alt"></i> Full Screen</a
                 >
               </li>
@@ -448,10 +44,6 @@
                   class="dropdown-toggle"
                   data-hover="dropdown"
                 >
-                  <img
-                    th:src="(${user.avatar} == '') ? @{/img/profile.jpg} : @{${user.avatar}}"
-                    class="user-image"
-                  />
                   <span class="hidden-xs"
                     >[[${#strings.defaultString(user.userName, '-')}]]</span
                   >
@@ -477,6 +69,83 @@
                     <a th:href="@{logout}">
                       <i class="fa fa-sign-out"></i> Logout</a
                     >
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <ul class="nav navbar-top-links navbar-left" id="side-menu">
+              <li class="dropdown user-menu">
+                <a href="#"
+                  ><i class="fa fa-home"></i> <span class="nav-label">Home</span>
+                  <span class="fa arrow"></span
+                ></a>
+                <ul class="nav nav-second-level dropdown-menu">
+                  <li>
+                    <a class="menuItem" th:href="@{/system/main}">Trang chủ</a>
+                  </li>
+                  <li>
+                    <a class="menuItem" th:href="@{/edi/listView}"
+                      >Quản lý EquipmentDO</a
+                    >
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown user-menu" th:each="menu : ${menus}">
+                <a
+                  th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
+                  th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
+                >
+                  <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
+                  <span class="nav-label" th:text="${menu.menuName}"
+                    >Top Menu</span
+                  >
+                  <span
+                    th:class="${menu.url == '' || menu.url == '#'} ? |fa arrow|"
+                  ></span>
+                </a>
+                <ul class="nav nav-second-level dropdown-menu">
+                  <li th:each="cmenu : ${menu.children}">
+                    <a
+                      th:if="${#lists.isEmpty(cmenu.children)}"
+                      th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
+                      th:utext="${cmenu.menuName}"
+                      th:href="@{${cmenu.url}}"
+                      >2nd Menu</a
+                    >
+                    <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#"
+                      >[[${cmenu.menuName}]]<span class="fa arrow"></span
+                    ></a>
+                    <ul
+                      th:if="${not #lists.isEmpty(cmenu.children)}"
+                      class="nav nav-third-level"
+                    >
+                      <li th:each="emenu : ${cmenu.children}">
+                        <a
+                          th:if="${#lists.isEmpty(emenu.children)}"
+                          th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
+                          th:text="${emenu.menuName}"
+                          th:href="@{${emenu.url}}"
+                          >3rd Menu</a
+                        >
+                        <a th:if="${not #lists.isEmpty(emenu.children)}" href="#"
+                          >[[${emenu.menuName}]]<span class="fa arrow"></span
+                        ></a>
+                        <ul
+                          th:if="${not #lists.isEmpty(emenu.children)}"
+                          class="nav nav-four-level"
+                        >
+                          <li th:each="fmenu : ${emenu.children}">
+                            <a
+                              th:if="${#lists.isEmpty(fmenu.children)}"
+                              th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
+                              th:text="${fmenu.menuName}"
+                              th:href="@{${fmenu.url}}"
+                              >四级菜单</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </li>

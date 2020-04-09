@@ -3,12 +3,19 @@
 <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
     <link
-    th:href="@{/handsontable-6.2.2/dist/handsontable.full.min.css}"
-    rel="stylesheet"
-    media="screen"
+      th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}"
+      rel="stylesheet"
+      media="screen"
     />
-    <link th:href="@{/bootstrap-4.4.1/bootstrap.min.css}" rel="stylesheet" />
+    <link
+      th:href="@{/ajax/libs/handsontable/6.2.2/manualColumnMove/manualColumnMove.css}"
+      rel="stylesheet"
+      media="screen"
+    />
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+
 </head>
 <style>
   body {
@@ -21,7 +28,9 @@
   td {
     font: 12px sans-serif;
   }
-
+  #container.handsontable table{
+    width:100%;
+  }
   .handsontable th {
     background: #63aeff;
     color: #fff;
@@ -90,6 +99,23 @@
     display: flex;
     justify-content: flex-end;
   }
+  .container {
+    padding-top: 10px;
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .select-list li p, .select-list li label:not(.radio-box) {
+    float: left;
+    width: 100px; 
+    margin: 5px 5px 5px 0px;
+    text-align: right;
+  }
+  .btn-primary.disabled, .btn-primary.disabled:active, .btn-primary.disabled.active, .btn-primary[disabled] {
+    background-color :dimgrey;
+    border-color: dimgrey;
+}
 </style>
 <body class="gray-bg container">
      <div class="container-div">
@@ -99,48 +125,16 @@
                     <div class="select-list">
                         <ul>
                             <li>
-                                <label>Số lệnh：</label>
-                                <input type="text" id="order_Number" name="orderNumber"/>
+                                <input type="text" placeholder="Số bill :" id="bill_Of_Lading" name="billOfLading"/>
                             </li>
                             <li>
-                                <label>So bill：</label>
-                                <input type="text" id="bill_Of_Lading" name="billOfLading"/>
+                                <input type="text" placeholder="Số cont :" id="container_Number" name="containerNumber"/>
                             </li>
-                            <li>
-                                <label>Mã hãng tàu：</label>
-                                <input type="text" id="carrier_Code" name="carrierCode"/>
-                            </li>
-                            <li>
-                                <label>Số cont：</label>
-                                <input type="text" id="container_Number" name="containerNumber"/>
-                            </li>
-                            <!-- <li class="select-time">
-                                <label>Hạn lệnh：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="Start Time" name="params[beginExpiredDem]"/>
+                            <li class="select-time">
+                                <p>Hạn lệnh：</p>
+                                <input type="text" class="time-input" id="expiredDem_StartDay" placeholder="Start Time" name="expiredDemStartDay"/>
                                 <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endExpiredDem]"/>
-                            </li> -->
-                            <li>
-                                <label>Nơi hạ rỗng：</label>
-                                <input type="text" id="empty_Container_Depot" name="emptyContainerDepot"/>
-                            </li>
-                            <li>
-                                <label>Số ngày miễn lưu vỏ：</label>
-                                <input type="number" id="det_Free_Time" name="detFreeTime"/>
-                            </li>
-                            <!-- <li class="select-time">
-                                <label>Ngay Release：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="Start Time" name="params[beginReleaseDate]"/>
-                                <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endReleaseDate]"/>
-                            </li> -->
-                            <li>
-                                <label>Tàu：</label>
-                                <input type="text" id="vessel" name="vessel"/>
-                            </li>
-                            <li>
-                                <label>Chuyến：</label>
-                                <input type="text" id="voyNo" name="voyNo"/>
+                                <input type="text" class="time-input" id="expiredDem_EndDay" placeholder="End Time" name="expiredDemEndDay"/>
                             </li>
                             <!-- <li>
                                 <label>DO Status：</label>
@@ -154,27 +148,16 @@
                                     <option value="">All</option>
                                 </select>
                             </li> -->
-                            
+                            <li>
+                            <buttom class="btn btn-primary btn-rounded btn-sm" onclick="searchEven()"><i class="fa fa-search"></i>&nbsp;Search</buttom>
+                            </li>
                         </ul>
                     </div>
                 </form>
             </div>
-            <div class="btn-group-md" role="group" style="height: 50px;">
-                <a class="btn btn-success" onclick="$.operate.add()" style="margin-top: 10px">
-                    <i class="fa fa-plus"></i> Add
-                </a>
-                <!-- <a class="btn btn-primary single disabled" onclick="$.operate.edit()" style="margin-top: 10px">
-                    <i class="fa fa-edit"></i> Edit
-                </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"style="margin-top: 10px" >
-                    <i class="fa fa-remove"></i> Delete
-                </a> -->
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" style="margin-top: 10px">
-                    <i class="fa fa-download"></i> Export
-                </a>
-            </div>
-            <div class="container">
-                <div id="example" class="hot handsontable htColumnHeaders"></div>
+            <div class="container col-md-12" style="margin-top: 10px;">
+                <div id="example" class="hot handsontable htColumnHeaders htRowHeaders"></div>
+                <nav aria-label="Page navigation">
                 <div class="pagination-div">
                   <nav aria-label="...">
                     <ul class="pagination">
@@ -190,24 +173,25 @@
                     </ul>
                   </nav>
                 </div>
-                
-            </div>
+            
         </div>
     </div>
-    <!-- <th:block th:include="include :: footer" /> -->
+    
     <!-- Jquery -->
-    <script
-      th:src="@{/bootstrap-4.4.1/jquery-3.4.1.min.js}"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"
-    ></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
     <!-- Boostrap -->
-    <script th:src="@{/bootstrap-4.4.1/bootstrap.min.js}"></script>
-    <!-- Handsondtable -->
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+     <!-- Handsondtable -->
     <script
-      th:src="@{/handsontable-6.2.2/dist/handsontable.full.min.js}"
-    ></script>
- 
+     th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
+   ></script>
+   <script
+     th:src="@{/ajax/libs/handsontable/6.2.2/columnSorting/columnSorting.js}"
+   ></script>
+   <script
+     th:src="@{/ajax/libs/handsontable/6.2.2/manualColumnMove/manualColumnMove.js}"
+   ></script>
+     <th:block th:include="include :: footer" />
     <script>
         var hot;
         var currentPage = 0;
@@ -237,11 +221,11 @@
                     hot = new Handsontable(example, {
                         data: dataObj,
                         stretchH: 'all',
-                        width: '100%',
+                        height: 500,
+                        contextMenu: true,                   
                         colHeaders: [
                         "ID<br>id",
                         "Mã hãng tàu<br>Carrier",
-                        "Số lệnh<br> OrderNumber",
                         "Số vận đơn<br> Bill No",
                         "Số container<br>Container No",
                         "Tên khách hàng<br>Consignee",
@@ -250,22 +234,18 @@
                         "Số ngày miễn lưu vỏ<br> DET freetime",
                         "Tên tàu<br>Vessel",
                         "Chuyến<br>Voyage",
-                        "Trạng thái<br>DO status",
+                        "Xác nhận làm lệnh<br>DO Status",
+                        "Đã nộp DO gốc<br>DO Document Status",
+                        "Ngày nộp<br>DO date in",
                         "Ghi chú<br>Note"],
-                        filter: "true",
+                        filter: true,
                         licenseKey: "non-commercial-and-evaluation",
                         columns: [
                         {
                             data: 'id',
-                            hidden: true
                         },
                         {
                             data: 'carrierCode',
-                            type: 'text',
-                            readOnly: true
-                        },
-                        {
-                            data: 'orderNumber',
                             type: 'text',
                             readOnly: true
                         },
@@ -285,9 +265,10 @@
                             readOnly: true
                         },
                         {
-                            data: 'expired_dem',
+                            data: 'expiredDem',
                             type: 'date',
-                            dateFormat: 'MM/DD/YYYY',
+                            dateFormat: 'DD/MM/YYYY',
+                            readOnly: true
                             
                         },
                         {
@@ -298,6 +279,7 @@
                         {
                             data: 'detFreeTime',
                             type: 'numeric',
+                            readOnly: true
                             
                         },
                         {
@@ -312,7 +294,20 @@
                         },
                         {
                             data: 'status',
-                            type: 'numeric',
+                            type: 'checkbox',
+                            checkedTemplate: 'Y',
+                            uncheckedTemplate: 'N'
+                        },
+                        {
+                            data: 'documentStatus',
+                            type: 'checkbox',
+                            checkedTemplate: 'Y',
+                            uncheckedTemplate: 'N'
+                        },
+                        {
+                            data: 'update_time',
+                            type: 'date',
+                            dateFormat: 'MM/DD/YYYY'
                         },
                         {
                             data: 'remark',
@@ -320,6 +315,13 @@
                             readOnly: true
                         }
                         ],
+                        rowHeaders: true,
+                        autoColumnSize: true,
+                        columnSorting: {
+                          indicator: true
+                        },
+                        manualColumnMove: true,
+                        filters: true
                     });
                     });
                 });
@@ -353,7 +355,7 @@
             }
             if(currentPage == 0)
             {
-                $("#prevPage").attr("disabled", true);
+                $("#prevPage").attr("disabled", true)
             }
             // Prev Page
             function prevPage(){
@@ -406,34 +408,35 @@
             }
 
         
-            $("#order_Number").change(function (e){
-                searchEven();
-            });
-            $("#carrier_Code").change(function (e){
-                searchEven();
-            });
-            $("#bill_Of_Lading").change(function (e){
-                searchEven();
-            });
-            $("#container_Number").change(function (e){
-                searchEven();
-            });
-            $("#empty_Container_Depot").change(function (e){
-                searchEven();
-            });
-            $("#det_Free_Time").change(function (e){
-                searchEven();
-            });
-            $("#vessel").change(function (e){
-                searchEven();
-            });
-            $("#voyNo").change(function (e){
-                searchEven();
-            });
+            // $("#order_Number").change(function (e){
+            //     searchEven();
+            // });
+            // $("#carrier_Code").change(function (e){
+            //     searchEven();
+            // });
+            // $("#bill_Of_Lading").change(function (e){
+            //     searchEven();
+            // });
+            // $("#container_Number").change(function (e){
+            //     searchEven();
+            // });
+            // $("#empty_Container_Depot").change(function (e){
+            //     searchEven();
+            // });
+            // $("#det_Free_Time").change(function (e){
+            //     searchEven();
+            // });
+            // $("#vessel").change(function (e){
+            //     searchEven();
+            // });
+            // $("#voyNo").change(function (e){
+            //     searchEven();
+            // });
             function searchEven()
             {
                 $("#formId").append('<input type="hidden" id="pageSet" name="page" value="'+currentPage+'" /> ');
                     var form = $("#formId");
+                    console.log(form.serialize());
                     $.ajax({
                     url: prefix + "/list",
                     type: "POST",
@@ -480,7 +483,7 @@
             var jsonData = JSON.stringify(cleanedGridData);
             console.log(jsonData);
             $.ajax({
-                url: "/carrier/do/update",
+                url: "/edi/update",
                 method: "post",
                 data: {
                 equipmentDo: jsonData,

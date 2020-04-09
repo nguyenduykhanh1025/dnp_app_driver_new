@@ -18,7 +18,7 @@ public class Global
     /** 版本 */
     private static String version;
 
-    /** 版权年份 */
+    /** 版权 năm份 */
     private static String copyrightYear;
 
     /** 实例演示开关 */

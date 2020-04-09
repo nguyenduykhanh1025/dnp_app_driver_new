@@ -34,6 +34,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
+    <resultMap type="String" id="ContainerNumberListResult">
+        <result property="containerNumber"    column="container_number"    />
+    </resultMap>
+
     <sql id="selectEquipmentDoVo">
         select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time from equipment_do
     </sql>
@@ -46,7 +50,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
-            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
@@ -57,6 +60,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="expiredDemStartDay != null"> and expired_dem = #{expiredDemStartDay} OR expired_dem > #{expiredDemStartDay}</if>
+            <if test="expiredDemEndDay != null"> and expired_dem = #{expiredDemEndDay} OR expired_dem &lt; #{expiredDemEndDay}</if>
+            <if test="expiredDemStartDay != null and expiredDemEndDay != null"> and expired_dem BETWEEN #{expiredDemStartDay} AND #{expiredDemEndDay}</if>
         </where>
         ORDER BY id DESC  
         LIMIT 10
@@ -225,4 +231,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="getContainerNumberById" parameterType="Long" resultType="String">
+      select container_number from equipment_do where id = #{id}
+    </select>
+
+    <select id="getContainerNumberListByIds" parameterType="String" resultMap="ContainerNumberListResult">
+      select container_number from equipment_do where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+        #{id}
+      </foreach>
+    </select>
 </mapper>

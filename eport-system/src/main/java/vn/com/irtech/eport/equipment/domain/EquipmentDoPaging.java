@@ -17,7 +17,12 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
 public class EquipmentDoPaging extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
-    
+
+    /** (Han lenh) tim kiem ngay bat dau*/
+    private Date expiredDemStartDay;
+   /** (Han lenh) tim kiem ngay ket thuc*/
+    private Date expiredDemEndDay;
+    /** Phan Trang */
     private int page;
     /** ID */
     private Long id;
@@ -95,6 +100,26 @@ public class EquipmentDoPaging extends BaseEntity
     /** Nguon Tao: eport, edi, catos */
     private String createSource;
 
+    public void setExpiredDemStartDay(Date expiredDemStartDay)
+    {
+        this.expiredDemStartDay = expiredDemStartDay;
+    }
+
+
+    public void setExpiredDemEndDay(Date expiredDemEndDay)
+    {
+        this.expiredDemEndDay = expiredDemEndDay;
+    }
+
+    public Date getExpiredDemStartDay()
+    {
+        return expiredDemStartDay;
+    }
+
+    public Date getExpiredDemEndDay()
+    {
+        return expiredDemEndDay;
+    }
     public void setPage(int page) 
     {
         this.page = page;

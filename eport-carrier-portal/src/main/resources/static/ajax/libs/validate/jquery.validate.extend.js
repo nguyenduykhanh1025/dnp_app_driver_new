@@ -97,7 +97,7 @@ $(document).ready(function(){
 				required:"请输入性别"
 			},
 			birth:{
-				required:"请输入出生年月"
+				required:"请输入出生 năm月"
 			},
             mobile:{
 				required:"请输入手机号",

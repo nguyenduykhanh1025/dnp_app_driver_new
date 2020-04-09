@@ -34,7 +34,7 @@ public interface ISysLogininforService
     public int deleteLogininforByIds(String ids);
 
     /**
-     * 清空系统登录日志
+     * Clear系统登录日志
      */
     public void cleanLogininfor();
 }
