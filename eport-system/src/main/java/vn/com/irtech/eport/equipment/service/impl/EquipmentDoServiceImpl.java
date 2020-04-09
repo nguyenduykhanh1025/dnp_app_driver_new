@@ -115,8 +115,15 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
         return equipmentDoMapper.deleteEquipmentDoById(id);
     }
 
+    @Override
+    public String getContainerNumberById(Long id) {
+      return equipmentDoMapper.getContainerNumberById(id);
+    }
     
-
+    @Override
+    public List<String> getContainerNumberListByIds(String ids) {
+      return equipmentDoMapper.getContainerNumberListByIds(Convert.toStrArray(ids));
+    }
     
 
    

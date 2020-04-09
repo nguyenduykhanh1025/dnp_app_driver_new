@@ -77,4 +77,8 @@ public interface IEquipmentDoService
      * @return result
      */
     public int deleteEquipmentDoById(Long id);
+
+    public String getContainerNumberById(Long id);
+
+    public List<String> getContainerNumberListByIds(String ids);
 }
