@@ -2,6 +2,7 @@ package vn.com.irtech.eport.carrier.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSONObject;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.UserConstants;
@@ -38,6 +40,8 @@ public class CarrierGroupController extends BaseController
 {
     private String prefix = "carrier/group";
 
+    private String[] operateArray;
+
     @Autowired
     private ICarrierGroupService carrierGroupService;
 
@@ -57,6 +61,9 @@ public class CarrierGroupController extends BaseController
     public TableDataInfo list(CarrierGroup carrierGroup)
     {
         startPage();
+        carrierGroup.setGroupCode(carrierGroup.getGroupCode().toLowerCase());
+        carrierGroup.setGroupName(carrierGroup.getGroupName().toLowerCase());
+        carrierGroup.setOperateCode(carrierGroup.getOperateCode().toLowerCase());
         List<CarrierGroup> list = carrierGroupService.selectCarrierGroupList(carrierGroup);
         return getDataTable(list);
     }
@@ -95,9 +102,9 @@ public class CarrierGroupController extends BaseController
     {
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierGroup.getMainEmail())) {
             return error("Invalid Email!");
-        } else if (carrierGroupService.checkGroupCodeUnique(carrierGroup.getGroupCode()).equals("1")) {
+        } else if (carrierGroupService.checkGroupCodeUnique(carrierGroup.getGroupCode().toLowerCase()).equals("1")) {
             return error("Group code already exist");
-        } else if (carrierGroupService.checkMainEmailUnique(carrierGroup.getMainEmail()).equals("1")) {
+        } else if (carrierGroupService.checkMainEmailUnique(carrierGroup.getMainEmail().toLowerCase()).equals("1")) {
             return error("Email already exist");
         }
         carrierGroup.setCreateBy(ShiroUtils.getSysUser().getUserName());
@@ -172,5 +179,57 @@ public class CarrierGroupController extends BaseController
     public String getGroupCodeById(long id) {
         CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(id);
         return carrierGroup.getGroupCode();
+    }
+
+    /**
+     * Search operate code
+     */
+    @RequestMapping("/searchOperateCodeByKeyword")
+    @ResponseBody
+    public List<JSONObject> searchOperateCodeByKeyword(String keyword, long groupId,@RequestParam(value="operateArray[]") Optional<String[]> operates) {
+        CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(groupId);
+        String operateCodes[] = carrierGroup.getOperateCode().split(",");
+        List<JSONObject> result = new ArrayList<>();
+        int limit = 0;
+        operateArray = null; 
+        operates.ifPresent(value -> operateArray = value);
+        boolean check = true;
+        if (operateArray != null) {
+            for (String i : operateCodes) {
+                check = true;
+                for (String j : operateArray) {
+                    if (i.equals(j)) {
+                        check = false;
+                        break;
+                    }
+                }
+                if (check) {
+                    if (i.contains(keyword)) {
+                        JSONObject json = new JSONObject();
+                        json.put("id", i);
+                        json.put("text", i);
+                        result.add(json);
+                        limit++;
+                        if (limit == 5) {
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            for (String i : operateCodes) {
+                if (i.contains(keyword)) {
+                    JSONObject json = new JSONObject();
+                    json.put("id", i);
+                    json.put("text", i);
+                    result.add(json);
+                    limit++;
+                    if (limit == 5) {
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
     }
 }

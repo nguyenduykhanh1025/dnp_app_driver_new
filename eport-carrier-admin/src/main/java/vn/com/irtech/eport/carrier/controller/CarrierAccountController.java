@@ -66,6 +66,8 @@ public class CarrierAccountController extends BaseController
     public TableDataInfo list(CarrierAccount carrierAccount)
     {
         startPage();
+        carrierAccount.setCarrierCode(carrierAccount.getCarrierCode().toLowerCase());
+        carrierAccount.setEmail(carrierAccount.getEmail().toLowerCase());
         List<CarrierAccount> list = carrierAccountService.selectCarrierAccountList(carrierAccount);
         return getDataTable(list);
     }
@@ -104,7 +106,7 @@ public class CarrierAccountController extends BaseController
     {
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierAccount.getEmail())) {
             return error("Invalid Email!");
-        } else if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail()).equals("1")) {
+        } else if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail().toLowerCase()).equals("1")) {
             return error("Email already exist!");
         } else if (carrierAccount.getPassword().length() < 6) {
             return error("Password cannot less than 6 characters!");

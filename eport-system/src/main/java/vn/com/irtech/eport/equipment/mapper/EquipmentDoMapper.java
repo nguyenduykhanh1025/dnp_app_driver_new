@@ -74,6 +74,8 @@ public interface EquipmentDoMapper
 	
     public List<EquipmentDo> selectEquipmentDoListPagingCarrier(EquipmentDoPaging equipmentDo);
 	
+  public String getContainerNumberById(Long id);
 
+  public List<String> getContainerNumberListByIds(String[] ids);
 	
 }
