@@ -145,29 +145,49 @@ public class CarrierEquipmentDoController extends BaseController {
         EquipmentDo equipment = new EquipmentDo();
         equipment.setCarrierId(currentUser.getId());
         equipment.setCarrierCode(carrierGroupService.selectCarrierGroupById(ShiroUtils.getUserId()).getGroupName());
-        equipment.setBillOfLading(strList[0]);
-        equipment.setContainerNumber(strList[1]);
-        equipment.setConsignee(strList[2]);
-        equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[3], "dd/MM/yyyy"));
-        equipment.setEmptyContainerDepot(strList[4]);
+        if (strList[0] != null) {
+          equipment.setBillOfLading(strList[0]);
+        }
+        if (strList[1] != null) {
+          equipment.setContainerNumber(strList[1]);
+        }
+        if (strList[2] != null) {
+          equipment.setConsignee(strList[2]);
+        }
+        if (strList[3] != null) {
+          equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[3], "dd/MM/yyyy"));
+        }
+        if (strList[4] != null) {
+          equipment.setEmptyContainerDepot(strList[4]);
+        }
         if (strList[5] != null) {
           equipment.setDetFreeTime(Integer.parseInt(strList[5]));
         }
-        equipment.setVessel(strList[6]);
-        equipment.setVoyNo(strList[7]);
-        equipment.setRemark(strList[8]);
-        // set who created this record
+        if (strList[6] != null) {
+          equipment.setVessel(strList[6]);
+        }
+        if (strList[7] != null) {
+          equipment.setVoyNo(strList[7]);
+        } 
+        if (strList[8] != null) {
+          equipment.setRemark(strList[8]);
+        }
+        // set who and time created this record
         equipment.setCreateBy(currentUser.getFullName());
         equipment.setCreateTime(new Date());
-        equipmentDoService.insertEquipmentDo(equipment);
+        try {
+          equipmentDoService.insertEquipmentDo(equipment);
+        } catch (Exception e) {
+          return AjaxResult.error();
+        }
       }
     }
-    return toAjax(1);
+    return AjaxResult.success();
   }
 
 
   //update
-  @Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
+  @Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
   @PostMapping("/update")
   @ResponseBody
   public AjaxResult update(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
@@ -240,11 +260,6 @@ public class CarrierEquipmentDoController extends BaseController {
   @GetMapping("/getContainer")
   @ResponseBody
   public List<String> getContainerCode(@RequestParam(value = "containerId[]") String containerId) {
-    // for (String i : containerId) {
-    //   //EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(Long.parseLong(i));
-      
-    //   containerList.add(equipmentDoService.getContainerNumberById(Long.parseLong(i)));
-    // }
     return equipmentDoService.getContainerNumberListByIds(containerId);
   }
 
@@ -258,7 +273,7 @@ public class CarrierEquipmentDoController extends BaseController {
       edo.setExpiredDem(AppToolUtils.formatStringToDate(newDate, "yyyy-MM-dd"));
       equipmentDoService.updateEquipmentDo(edo);
     }
-    return toAjax(1);
+    return AjaxResult.success();
   }
 
 }
