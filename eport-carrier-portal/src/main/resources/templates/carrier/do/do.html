@@ -26,6 +26,10 @@
       max-height: 400px;
     }
 
+    .modal-dialog {
+      width: 700px;
+    }
+
     /* table {
         width: 350px; /* can be dynamic */
 
@@ -63,7 +67,7 @@
               <label>Danh sách container đang chọn:</label>
               <div id="container-details"></div>
             </div>
-            <br />
+            <hr />
             <div class="row">
               <div class="col-md-3">
                 <label
@@ -75,8 +79,13 @@
                   Hạn lệnh mới
                 </label>
               </div>
-              <div class="col-md-9 input-group date" id="datetimepicker2">
-                <input type="text" class="form-control time-input" id="datetimepicker" autocomplete="off"/>
+              <div class="col-md-4 input-group date" id="datetimepicker2">
+                <input
+                  type="text"
+                  class="form-control time-input"
+                  id="datetimepicker"
+                  autocomplete="off"
+                />
                 <span class="input-group-addon">
                   <span class="glyphicon glyphicon-calendar"></span>
                 </span>
@@ -95,7 +104,7 @@
     <div class="row">
       <div class="col-sm-12 select-table" style="margin-top: 0px;">
         <!-- Search form -->
-        <div class="col-sm-12">
+        <div class="col-sm-12" id="searchForm">
           <form id="formId">
             <div class="select-list">
               <ul>
@@ -178,6 +187,7 @@
               type="button"
               name="showSearch"
               title="Tìm kiếm"
+              onclick="collapse()"
             >
               <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -246,13 +256,13 @@
                 >
                   Ngày miễn<br />DET free
                 </th>
-                <th data-options="field:'vessel',halign:'center'" width="100">
+                <th data-options="field:'vessel',align:'center'" width="10%">
                   Tên tàu<br />Vessel
                 </th>
-                <th data-options="field:'voyNo',halign:'center'" width="100">
+                <th data-options="field:'voyNo',align:'center'" width="10%">
                   Chuyến tàu<br />Voyage No
                 </th>
-                <th data-options="field:'status',align:'center'" width="80">
+                <th data-options="field:'status',align:'center'" width="10%">
                   Trạng thái
                 </th>
               </tr>
@@ -357,21 +367,26 @@
             var text = "<table class='table'><thead><tr>";
             text += "<th width='50px'>STT<br><small>#</small></th>";
             text +=
-              "<th width='100px'>Số vận đơn<br><small>B/L No</small></th>";
+              "<th width='150px'>Số vận đơn<br><small>B/L No</small></th>";
             text +=
-              "<th width='120px'>Số cont<br><small>Container No</small></th>";
+              "<th width='200px'>Số cont<br><small>Container No</small></th>";
             text += "<th width='150px'>Tên tàu<br> <small>Vessel</small></th>";
             text +=
-              "<th>Hạn lệnh hiện tại<br><small> Current Expired Date</small></th>";
+              "<th width='150px'>Hạn lệnh hiện tại<br><small> Current Expired Date</small></th>";
             text += "</tr></thead><tbody >";
             var i = 0;
             result.forEach((element) => {
               i++;
+              var date = new Date(element.expiredDem);
+              const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
+              const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(date);
+              const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
+
               text += "<tr><td width='50px'>" + i + "</td>";
-              text += "<td width='100px'>" + element.billOfLading + "</td>";
-              text += "<td width='120px'>" + element.containerNumber + "</td>";
+              text += "<td width='150px'>" + element.billOfLading + "</td>";
+              text += "<td width='200px'>" + element.containerNumber + "</td>";
               text += "<td width='150px'>" + element.vessel + "</td>";
-              text += "<td>" + element.expiredDem + "</td></tr>";
+              text += "<td width='150px'>" + `${da}-${mo}-${ye}` + "</td></tr>";
             });
             text += "</tbody></table>";
             $("#container-details").html(text);
