@@ -992,6 +992,11 @@ var table = {
             add: function(id) {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id));
+			},
+			// carrier account add
+            addCarrierAccount: function(id) {
+            	table.set();
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), "500", "550");
             },
             // 添加信息，以tab页展现
             addTab: function (id) {
