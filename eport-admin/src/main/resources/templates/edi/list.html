@@ -1,19 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
 <head>
-    <th:block th:include="include :: header('List Exchange Delivery Order')" />
-    <link
-      th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}"
-      rel="stylesheet"
-      media="screen"
-    />
-    <link
-      th:href="@{/ajax/libs/handsontable/6.2.2/manualColumnMove/manualColumnMove.css}"
-      rel="stylesheet"
-      media="screen"
-    /> 
-    <link th:href="@{/css/jquery.toast.min.css}" rel="stylesheet" />
-    <link th:href="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.css}" rel="stylesheet" />
+  <th:block th:include="include :: header('List Exchange Delivery Order')" />
+  <link th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}" rel="stylesheet" media="screen" />
+  <link th:href="@{/ajax/libs/handsontable/6.2.2/manualColumnMove/manualColumnMove.css}" rel="stylesheet"
+    media="screen" />
+  <link th:href="@{/css/jquery.toast.min.css}" rel="stylesheet" />
+  <link th:href="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.css}" rel="stylesheet" />
 </head>
 <style>
   body {
@@ -26,12 +20,16 @@
   td {
     font: 12px sans-serif;
   }
-  #container.handsontable table{
-    width:100%;
+
+  #container.handsontable table {
+    width: 100%;
   }
-  .handsontable td, .handsontable th {
+
+  .handsontable td,
+  .handsontable th {
     vertical-align: inherit !important;
   }
+
   .handsontable th {
     background: F0F0F0;
     color: #222222;
@@ -45,6 +43,7 @@
     padding: 5px 2px !important;
     font-family: inherit;
   }
+
   .handsontable tbody th {
     height: 32px !important;
   }
@@ -97,10 +96,11 @@
     text-transform: none;
   }
 
-  .pagination-div{
+  .pagination-div {
     display: flex;
     justify-content: flex-end;
   }
+
   .container {
     padding-top: 10px;
     padding-right: 0;
@@ -108,69 +108,99 @@
     margin-right: auto;
     margin-left: auto;
   }
-  .select-list li p, .select-list li label:not(.radio-box) {
+
+  .select-list li p,
+  .select-list li label:not(.radio-box) {
     float: left;
-    width: 100px; 
+    width: 100px;
     margin: 5px 5px 5px 0px;
     text-align: right;
   }
-  .btn-primary.disabled, .btn-primary.disabled:active, .btn-primary.disabled.active, .btn-primary[disabled] {
-    background-color :dimgrey;
+
+  .btn-primary.disabled,
+  .btn-primary.disabled:active,
+  .btn-primary.disabled.active,
+  .btn-primary[disabled] {
+    background-color: dimgrey;
     border-color: dimgrey;
-}
+  }
+
+  .left-side {
+    width: 220px !important;
+  }
 </style>
+
 <body class="gray-bg container">
-     <div class="container-div">
-        <div class="row" style="height: auto;">
-            <div class="col-sm-12 search-collapse">
-                <form id="formId">
-                    <div class="select-list">
-                        <ul>
-                            <li>
-                                <input type="text" placeholder="Số bill : Bill No"  name="billOfLading"/>
-                            </li>
-                            <li>
-                                <input type="text" placeholder="Số cont : Cont Number" name="containerNumber"/>
-                            </li>
-                            <li>
-                              <input type="text" placeholder="Tên khách hàng : Consignee"  name="consignee"/>
-                            </li>
-                            <li>
-                              <input type="text" placeholder="Nơi hạ vỏ : EmptyDepot"  name="emptyContainerDepot"/>
-                            </li>
-                            <li>
-                              <input type="text" placeholder="Tên tàu : Vessel"  name="vessel"/>
-                            </li>
-                            <li>
-                              <input type="text" placeholder="Chuyến tàu : Voyage"  name="voyNo"/>
-                            </li>
-                            <li>
-                              <select name="status">
-                                  <option value="">Tất cả</option>
-                                  <option value="Y">Đã làm lệnh</option>
-                                  <option value="N">Chưa làm lệnh</option>
-                              </select>
-                            </li>
-                            <li>
-                              <select name="documentStatus">
-                                  <option value="">Tất cả</option>
-                                  <option value="Y">Đã có DO gốc</option>
-                                  <option value="N">Chưa có DO gốc</option>
-                              </select>
-                            </li>
-                            <li class="select-time">
-                                <p>Hạn lệnh：</p>
-                                <input type="text" class="time-input" id="expiredDem_StartDay" placeholder="Ngày bắt đầu" name="expiredDemStartDay"/>
-                                <span>-</span>
-                                <input type="text" class="time-input" id="expiredDem_EndDay" placeholder="Ngày kết thúc" name="expiredDemEndDay"/>
-                            </li>
-                            <li>
-                            <buttom class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</buttom>
-                            </li>
-                        </ul>
-                    </div>
-                </form>
+  <div class="container-div">
+    <div class="row" style="height: auto;">
+      <div class="col-sm-12 search-collapse">
+        <form id="formId">
+          <div class="select-list">
+            <ul>
+              <li>
+                <input type="text" placeholder="Số bill : Bill No" name="billOfLading" />
+              </li>
+              <li>
+                <input type="text" placeholder="Số cont : Cont Number" name="containerNumber" />
+              </li>
+              <li>
+                <input type="text" placeholder="Tên khách hàng : Consignee" name="consignee" />
+              </li>
+              <li>
+                <input type="text" placeholder="Nơi hạ vỏ : EmptyDepot" name="emptyContainerDepot" />
+              </li>
+              <li>
+                <input type="text" placeholder="Tên tàu : Vessel" name="vessel" />
+              </li>
+              <li>
+                <input type="text" placeholder="Chuyến tàu : Voyage" name="voyNo" />
+              </li>
+              <li>
+                <select name="status">
+                  <option value="">Tất cả</option>
+                  <option value="Y">Đã làm lệnh</option>
+                  <option value="N">Chưa làm lệnh</option>
+                </select>
+              </li>
+              <li>
+                <select name="documentStatus">
+                  <option value="">Tất cả</option>
+                  <option value="Y">Đã có DO gốc</option>
+                  <option value="N">Chưa có DO gốc</option>
+                </select>
+              </li>
+              <li class="select-time">
+                <p>Hạn lệnh：</p>
+                <input type="text" class="time-input" id="expiredDem_StartDay" placeholder="Ngày bắt đầu"
+                  name="expiredDemStartDay" />
+                <span>-</span>
+                <input type="text" class="time-input" id="expiredDem_EndDay" placeholder="Ngày kết thúc"
+                  name="expiredDemEndDay" />
+              </li>
+              <li>
+                <buttom class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i
+                    class="fa fa-search"></i>&nbsp;Tìm kiếm</buttom>
+              </li>
+            </ul>
+          </div>
+        </form>
+      </div>
+      <div class="container col-md-12" style="margin-top: 10px;">
+        <div id="example" class="hot handsontable htColumnHeaders htRowHeaders"></div>
+        <nav aria-label="Page navigation">
+          <div class="paginate" style="display: flex; justify-content: space-between; margin-top: 10px">
+            <div class="left-side">
+              <button id="prevPage" class="btn btn-xs btn-rounder" onclick='prevPage()'
+                style="color:#337ab7; background-color: transparent;"><i class="fa fa-chevron-left"></i></button>
+              <p style="display:inline">Page <input type="number" onchange="showPageOnPageInput()" id="input-page"
+                  style="width: 30px; text-align: center;"> of <span id="total-page"></span></p>
+              <button id="nextPage" class="btn btn-xs btn-rounder" onclick='nextPage()'
+                style="color:#337ab7; background-color: transparent;"><i class="fa fa-chevron-right"></i></button>
+              <button onclick="searchEvent()" class="btn btn-xs btn-rounder"
+                style="color:#337ab7; background-color: transparent;"><i class="fa fa-refresh"
+                  aria-hidden="true"></i></button>
             </div>
+<<<<<<< HEAD
             <div class="container col-md-12" style="margin-top: 10px;">
                 <div id="example" class="hot handsontable htColumnHeaders htRowHeaders"></div>
                 <nav aria-label="Page navigation">
@@ -208,20 +238,22 @@
                 </div>
             
         </div>
+=======
+            <div class="right-side">
+              Hiển thị 1 đén <span>15</span> tổng <span id="item-on-page"></span>
+            </div>
+          </div>
+      </div>
+>>>>>>> 67662f552c2c8d63fe6678ac4e8652b3b2930ff0
     </div>
     <th:block th:include="include :: footer" />
-     <script th:src="@{/js/jquery.toast.min.js}"></script>
-     <!-- Jquery toast -->
-    <script
-      th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
-    ></script>
-    <script
-      th:src="@{/ajax/libs/handsontable/6.2.2/moment/moment.js}"
-    ></script>
-    <script
-      th:src="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.js}"
-    ></script>
+    <script th:src="@{/js/jquery.toast.min.js}"></script>
+    <!-- Jquery toast -->
+    <script th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"></script>
+    <script th:src="@{/ajax/libs/handsontable/6.2.2/moment/moment.js}"></script>
+    <script th:src="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.js}"></script>
     <script>
+<<<<<<< HEAD
         var hot;
         var currentPage = 0;
         var prefix = "/edi";
@@ -450,10 +482,237 @@
                     }
                 });
                 $( "#pageSet" ).remove();
-            }
+=======
+      var hot;
+      var currentPage = 0;
+      var prefix = "/edi";
+      var dataObj;
+      var config;
+      document.addEventListener("DOMContentLoaded", function () {
+        $(document).ready(function () {
+          $.ajax({
+              url: prefix + "/getCountPages",
+              method: "POST",
+            }).done(function (result) {
+              document.getElementById("item-on-page").innerHTML = result
+              var pages = result / 15;
+              document.getElementById("total-page").innerHTML = Math.ceil(pages)
+              $('#input-page').val(currentPage + 1);
+            }),
+            $.ajax({
+              url: prefix + "/list",
+              method: "POST",
+              data: {
+                page: currentPage,
+              }
+            }).done(function (result) {
+              dataObj = result.rows;
+              var example = document.getElementById("example");
+              hot = new Handsontable(example, {
+                data: dataObj,
+                stretchH: 'all',
+                height: 500,
+                colHeaders: [
+                  "ID<br>id",
+                  "Mã hãng tàu<br>Carrier",
+                  "Số vận đơn<br> Bill No",
+                  "Số container<br>Container No",
+                  "Tên chủ hàng<br>Consignee",
+                  "Hạn lệnh<br> Valid to date",
+                  "Nơi hạ vỏ<br> Empty depot",
+                  "Ngày miễn lưu<br> DET Freetime",
+                  "Tên tàu<br>Vessel",
+                  "Chuyến<br>Voyage",
+                  "Xác nhận <br> làm lệnh",
+                  "Đã nộp <br> DO gốc",
+                  "Ngày nộp<br>DO date in",
+                  "Ghi chú<br>Note"
+                ],
+                filter: true,
+                licenseKey: "non-commercial-and-evaluation",
+                columns: [{
+                    data: 'id',
+                  },
+                  {
+                    data: 'carrierCode',
+                    type: 'text',
+                    readOnly: true
+                  },
+                  {
+                    data: 'billOfLading',
+                    type: 'text',
+                    readOnly: true
+                  },
+                  {
+                    data: 'containerNumber',
+                    type: 'text',
+                    readOnly: true
+                  },
+                  {
+                    data: 'consignee',
+                    type: 'text',
+                    readOnly: true
+                  },
+                  {
+                    data: 'expiredDem',
+                    type: 'date',
+                    dateFormat: 'DD/MM/YYYY',
+                    correctFormat: true,
+                    readOnly: true
 
-        //update form
-        function update() {
+                  },
+                  {
+                    data: 'emptyContainerDepot',
+                    type: 'text',
+                    readOnly: true
+                  },
+                  {
+                    data: 'detFreeTime',
+                    type: 'numeric',
+                    readOnly: true
+
+                  },
+                  {
+                    data: 'vessel',
+                    type: 'text',
+                    readOnly: true
+                  },
+                  {
+                    data: 'voyNo',
+                    type: 'text',
+                    readOnly: true
+                  },
+                  {
+                    data: 'status',
+                    type: 'checkbox',
+                    checkedTemplate: 'Y',
+                    uncheckedTemplate: 'N'
+                  },
+                  {
+                    data: 'documentStatus',
+                    type: 'checkbox',
+                    checkedTemplate: "Y",
+                    uncheckedTemplate: "N"
+                  },
+                  {
+                    data: 'documentReceiptDate',
+                    type: 'date',
+                    dateFormat: 'MM/DD/YYYY',
+                    correctFormat: true,
+                    readOnly: true
+                  },
+                  {
+                    data: 'remark',
+                    type: 'text',
+                    readOnly: true
+                  }
+                ],
+                rowHeaders: true,
+                autoColumnSize: true,
+                columnSorting: {
+                  indicator: true
+                },
+                colWidths: [0.1],
+                manualColumnMove: true,
+                filters: true
+              });
+            });
+        });
+      });
+      // Next Page
+      function nextPage() {
+        currentPage = currentPage + 1;
+        $("#formId").append('<input type="hidden" id="pageSet" name="page" value="' + currentPage + '" /> ');
+        var form = $("#formId");
+        $.ajax({
+          url: prefix + "/list",
+          method: "POST",
+          data: form.serialize(),
+        }).done(function (result) {
+          dataObj = result.rows;
+          hot.loadData(dataObj);
+          $('#input-page').val(currentPage + 1);
+          if (dataObj == '') {
+            $("#nextPage").attr("disabled", true);
+          }
+          hot.render();
+        })
+        if (currentPage > 0) {
+          $("#prevPage").attr("disabled", false);
+        }
+        $("#pageSet").remove();
+      }
+      if (currentPage == 0) {
+        $("#prevPage").attr("disabled", true)
+      }
+      // Prev Page
+      function prevPage() {
+        currentPage = currentPage - 1;
+        if (currentPage == 0) {
+          $("#prevPage").attr("disabled", true);
+        } else {
+          $("#prevPage").attr("disabled", false);
+        }
+        $("#formId").append('<input type="hidden" id="pageSet" name="page" value="' + currentPage + '" /> ');
+        var form = $("#formId");
+        $.ajax({
+          url: prefix + "/list",
+          method: "POST",
+          data: form.serialize(),
+        }).done(function (result) {
+          dataObj = result.rows;
+          hot.loadData(dataObj);
+          $('#input-page').val(currentPage + 1);
+          hot.render();
+        })
+        if (dataObj != '') {
+          $("#nextPage").attr("disabled", false);
+        }
+        $("#pageSet").remove();
+      }
+
+      //Search
+      function search() {
+        $("#formId").submit(function (e) {
+          $(this).append('<input type="hidden" id="pageSet" name="page" value="' + currentPage + '" /> ');
+          e.preventDefault();
+          var form = $("#formId");
+          $.ajax({
+            url: prefix + "/list",
+            type: "POST",
+            data: form.serialize(),
+            done: function (rs) {
+              dataObj = rs.rows;
+              hot.loadData(dataObj);
+              hot.render();
+>>>>>>> 67662f552c2c8d63fe6678ac4e8652b3b2930ff0
+            }
+          });
+        });
+        $("#pageSet").remove();
+      }
+
+      function searchEvent() {
+        $("#formId").append('<input type="hidden" id="pageSet" name="page" value="' + currentPage + '" /> ');
+        var form = $("#formId");
+        $.ajax({
+          url: prefix + "/list",
+          type: "POST",
+          data: form.serialize(),
+          success: function (rs) {
+            dataObj = rs.rows;
+            hot.loadData(dataObj);
+            hot.render();
+          }
+        });
+        $("#pageSet").remove();
+        currentPage = 0;
+        $('#input-page').val(currentPage + 1);
+        $("#prevPage").attr("disabled", true)
+      }
+
+      //update form
+      function update() {
         // Get the data in the cells
         var myTableData = hot.getData();
         // If the last row is empty, remove it before validation
@@ -480,31 +739,49 @@
             }
           }
         });
-        
-            var jsonData = JSON.stringify(cleanedGridData);
-              $.ajax({
-                  url: "/edi/update",
-                  method: "post",
-                  data: {
-                  equipmentDo: jsonData,
-                  },
-            }).done(function (result) {
-                $.toast({
-                  heading: "Thành công",
-                  text:
-                    "Lưu thông tin thành công ！",
-                  showHideTransition: "fade",
-                  icon: "success",
-                  position: "top-right"
-                });
-                searchEvent()
-            });
-        }
-        function save() {
-              $.modal.confirm("Bạn có chắc chắn là muốn lưu ?", function() {
-                  update();
-              })
-		  }
-      </script>
+
+        var jsonData = JSON.stringify(cleanedGridData);
+        $.ajax({
+          url: "/edi/update",
+          method: "post",
+          data: {
+            equipmentDo: jsonData,
+          },
+        }).done(function (result) {
+          $.toast({
+            heading: "Thành công",
+            text: "Lưu thông tin thành công ！",
+            showHideTransition: "fade",
+            icon: "success",
+            position: "top-right"
+          });
+          searchEvent()
+        });
+      }
+
+      function save() {
+        $.modal.confirm("Bạn có chắc chắn là muốn lưu ?", function () {
+          update();
+        })
+      }
+      //userGetPageNumber
+      function showPageOnPageInput() {
+        var varPageGo = $('#input-page').val();
+        currentPage = parseInt(varPageGo) - 1;
+        $("#formId").append('<input type="hidden" id="pageSet" name="page" value="' + varPageGo + '" /> ');
+        var form = $("#formId");
+        $.ajax({
+          url: prefix + "/list",
+          method: "POST",
+          data: form.serialize(),
+        }).done(function (result) {
+          dataObj = result.rows;
+          hot.loadData(dataObj);
+          hot.render();
+        })
+        $("#pageSet").remove();
+      }
+    </script>
 </body>
+
 </html>

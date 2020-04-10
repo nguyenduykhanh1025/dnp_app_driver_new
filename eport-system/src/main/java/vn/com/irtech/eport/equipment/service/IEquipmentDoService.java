@@ -88,4 +88,7 @@ public interface IEquipmentDoService
     //Check Do Status check 
     public String getStatus(Long id);
     public List<EquipmentDo> getContainerListByIds(String ids);
+
+    //getTotalPages
+    public Long getTotalPages();
 }
