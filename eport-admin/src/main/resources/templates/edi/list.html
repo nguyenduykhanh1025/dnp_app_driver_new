@@ -2,8 +2,6 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
-    
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
     <link
       th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}"
       rel="stylesheet"
@@ -13,9 +11,9 @@
       th:href="@{/ajax/libs/handsontable/6.2.2/manualColumnMove/manualColumnMove.css}"
       rel="stylesheet"
       media="screen"
-    />
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
-
+    /> 
+    <link th:href="@{/css/jquery.toast.min.css}" rel="stylesheet" />
+    <link th:href="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.css}" rel="stylesheet" />
 </head>
 <style>
   body {
@@ -32,17 +30,18 @@
     width:100%;
   }
   .handsontable th {
-    background: #63aeff;
-    color: #fff;
+    background: F0F0F0;
+    color: #222222;
+    width: auto;
+    /* height: 20px; */
     /* font-weight: 300; */
     text-align: center;
     vertical-align: middle;
-    font-size: 1rem;
+    font-size: 14;
     line-height: 2;
     padding: 5px 2px !important;
     font-family: inherit;
   }
-
   .handsontable tbody th {
     height: 32px !important;
   }
@@ -125,31 +124,31 @@
                     <div class="select-list">
                         <ul>
                             <li>
-                                <input type="text" placeholder="Số bill :" id="bill_Of_Lading" name="billOfLading"/>
+                                <input type="text" placeholder="Số bill : Bill No"  name="billOfLading"/>
                             </li>
                             <li>
-                                <input type="text" placeholder="Số cont :" id="container_Number" name="containerNumber"/>
+                                <input type="text" placeholder="Số cont : Cont Number" name="containerNumber"/>
+                            </li>
+                            <li>
+                              <input type="text" placeholder="Tên khách hàng : Consignee"  name="consignee"/>
+                            </li>
+                            <li>
+                              <input type="text" placeholder="Nơi hạ vỏ : EmptyDepot"  name="emptyContainerDepot"/>
+                            </li>
+                            <li>
+                              <input type="text" placeholder="Tên tàu : Vessel"  name="vessel"/>
+                            </li>
+                            <li>
+                              <input type="text" placeholder="Chuyến tàu : Voyage"  name="voyNo"/>
                             </li>
                             <li class="select-time">
                                 <p>Hạn lệnh：</p>
-                                <input type="text" class="time-input" id="expiredDem_StartDay" placeholder="Start Time" name="expiredDemStartDay"/>
+                                <input type="text" class="time-input" id="expiredDem_StartDay" placeholder="Ngày bắt đầu" name="expiredDemStartDay"/>
                                 <span>-</span>
-                                <input type="text" class="time-input" id="expiredDem_EndDay" placeholder="End Time" name="expiredDemEndDay"/>
-                            </li>
-                            <!-- <li>
-                                <label>DO Status：</label>
-                                <select name="status">
-                                    <option value="">All</option>
-                                </select>
+                                <input type="text" class="time-input" id="expiredDem_EndDay" placeholder="Ngày kết thúc" name="expiredDemEndDay"/>
                             </li>
                             <li>
-                                <label>Process Status：</label>
-                                <select name="processStatus">
-                                    <option value="">All</option>
-                                </select>
-                            </li> -->
-                            <li>
-                            <buttom class="btn btn-primary btn-rounded btn-sm" onclick="searchEven()"><i class="fa fa-search"></i>&nbsp;Search</buttom>
+                            <buttom class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</buttom>
                             </li>
                         </ul>
                     </div>
@@ -176,22 +175,18 @@
             
         </div>
     </div>
-    
-    <!-- Jquery -->
-    <script th:src="@{/js/jquery.min.js}"></script>
-    <!-- Boostrap -->
-    <script th:src="@{/js/bootstrap.min.js}"></script>
-     <!-- Handsondtable -->
+    <th:block th:include="include :: footer" />
+     <script th:src="@{/js/jquery.toast.min.js}"></script>
+     <!-- Jquery toast -->
     <script
-     th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
-   ></script>
-   <script
-     th:src="@{/ajax/libs/handsontable/6.2.2/columnSorting/columnSorting.js}"
-   ></script>
-   <script
-     th:src="@{/ajax/libs/handsontable/6.2.2/manualColumnMove/manualColumnMove.js}"
-   ></script>
-     <th:block th:include="include :: footer" />
+      th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
+    ></script>
+    <script
+      th:src="@{/ajax/libs/handsontable/6.2.2/moment/moment.js}"
+    ></script>
+    <script
+      th:src="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.js}"
+    ></script>
     <script>
         var hot;
         var currentPage = 0;
@@ -209,33 +204,23 @@
                 }).done(function(result) {
                     dataObj = result.rows;
                     var example = document.getElementById("example");
-                    //loadData
-                    // hooks = Handsontable.hooks.getRegistered();
-                    // hooks.forEach(function (hook) {
-                    // config[hook] = function () {
-                    //     if (hook == "afterChange") {
-                    //     log_events(hook, arguments);
-                    //     }
-                    // };
-                    // });
                     hot = new Handsontable(example, {
                         data: dataObj,
                         stretchH: 'all',
-                        height: 500,
-                        contextMenu: true,                   
+                        height: 500,         
                         colHeaders: [
                         "ID<br>id",
                         "Mã hãng tàu<br>Carrier",
                         "Số vận đơn<br> Bill No",
                         "Số container<br>Container No",
-                        "Tên khách hàng<br>Consignee",
+                        "Tên chủ hàng<br>Consignee",
                         "Hạn lệnh<br> Valid to date",
                         "Nơi hạ vỏ<br> Empty depot",
-                        "Số ngày miễn lưu vỏ<br> DET freetime",
+                        "Ngày miễn lưu<br> DET Freetime",
                         "Tên tàu<br>Vessel",
                         "Chuyến<br>Voyage",
-                        "Xác nhận làm lệnh<br>DO Status",
-                        "Đã nộp DO gốc<br>DO Document Status",
+                        "Xác nhận <br> làm lệnh",
+                        "Đã nộp <br> DO gốc",
                         "Ngày nộp<br>DO date in",
                         "Ghi chú<br>Note"],
                         filter: true,
@@ -268,6 +253,7 @@
                             data: 'expiredDem',
                             type: 'date',
                             dateFormat: 'DD/MM/YYYY',
+                            correctFormat: true,
                             readOnly: true
                             
                         },
@@ -284,12 +270,12 @@
                         },
                         {
                             data: 'vessel',
-                            type: 'numeric',
+                            type: 'text',
                             readOnly: true
                         },
                         {
-                            data: 'voy_no',
-                            type: 'numeric',
+                            data: 'voyNo',
+                            type: 'text',
                             readOnly: true
                         },
                         {
@@ -301,13 +287,15 @@
                         {
                             data: 'documentStatus',
                             type: 'checkbox',
-                            checkedTemplate: 'Y',
-                            uncheckedTemplate: 'N'
+                            checkedTemplate: "Y",
+                            uncheckedTemplate: "N"
                         },
                         {
-                            data: 'update_time',
+                            data: 'documentReceiptDate',
                             type: 'date',
-                            dateFormat: 'MM/DD/YYYY'
+                            dateFormat: 'MM/DD/YYYY',
+                            correctFormat: true,
+                            readOnly: true
                         },
                         {
                             data: 'remark',
@@ -320,6 +308,7 @@
                         columnSorting: {
                           indicator: true
                         },
+                        colWidths: [0.1],
                         manualColumnMove: true,
                         filters: true
                     });
@@ -406,33 +395,7 @@
                 console.log("sss");
                 $( "#pageSet" ).remove();
             }
-
-        
-            // $("#order_Number").change(function (e){
-            //     searchEven();
-            // });
-            // $("#carrier_Code").change(function (e){
-            //     searchEven();
-            // });
-            // $("#bill_Of_Lading").change(function (e){
-            //     searchEven();
-            // });
-            // $("#container_Number").change(function (e){
-            //     searchEven();
-            // });
-            // $("#empty_Container_Depot").change(function (e){
-            //     searchEven();
-            // });
-            // $("#det_Free_Time").change(function (e){
-            //     searchEven();
-            // });
-            // $("#vessel").change(function (e){
-            //     searchEven();
-            // });
-            // $("#voyNo").change(function (e){
-            //     searchEven();
-            // });
-            function searchEven()
+            function searchEvent()
             {
                 $("#formId").append('<input type="hidden" id="pageSet" name="page" value="'+currentPage+'" /> ');
                     var form = $("#formId");
@@ -481,16 +444,22 @@
         });
         
             var jsonData = JSON.stringify(cleanedGridData);
-            console.log(jsonData);
-            $.ajax({
-                url: "/edi/update",
-                method: "post",
-                data: {
-                equipmentDo: jsonData,
-                },
+              $.ajax({
+                  url: "/edi/update",
+                  method: "post",
+                  data: {
+                  equipmentDo: jsonData,
+                  },
             }).done(function (result) {
-                alert("Lưu thành công! ");
-                searchEven()
+                $.toast({
+                  heading: "Thành công",
+                  text:
+                    "Lưu thông tin thành công ！",
+                  showHideTransition: "fade",
+                  icon: "success",
+                  position: "top-right"
+                });
+                searchEvent()
             });
         }
 
