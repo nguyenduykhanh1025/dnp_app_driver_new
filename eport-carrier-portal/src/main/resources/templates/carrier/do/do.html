@@ -155,7 +155,7 @@
         <div class="col-sm-12 fixed-table-toolbar">
           <div class="bs-bars pull-left" style="margin-bottom: 5px;">
             <div class="btn-group-sm" id="toolbar" role="group">
-              <a class="btn btn-success" onclick="$.operate.add()">
+              <a class="btn btn-success" onclick="$.operate.addFullDo()">
                 <i class="fa fa-plus"></i> Thêm DO
               </a>
               <a
@@ -274,6 +274,7 @@
         var options = {
           url: prefix + "/list",
           createUrl: prefix + "/add",
+          modalName: "DO",
           // width: '1000'
         };
         $.table.init(options);

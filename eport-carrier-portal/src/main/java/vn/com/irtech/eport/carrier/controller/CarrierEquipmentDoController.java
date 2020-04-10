@@ -58,8 +58,6 @@ public class CarrierEquipmentDoController extends BaseController {
   }
 
   private JSONArray equipmentDoList;
-  private JSONArray containerIdList;
-
   /**
    * Get Exchange Delivery Order List
    */
