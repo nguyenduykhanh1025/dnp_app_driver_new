@@ -45,8 +45,8 @@ public class ShiroConfig
 {
     public static final String PREMISSION_STRING = "perms[\"{0}\"]";
 
-    @Value("${shiro.session.expireTime}")
-    private int expireTime;
+    // @Value("${shiro.session.expireTime}")
+    // private int expireTime;
 
     @Value("${shiro.session.validationInterval}")
     private int validationInterval;
@@ -148,7 +148,7 @@ public class ShiroConfig
         OnlineWebSessionManager manager = new OnlineWebSessionManager();
         manager.setCacheManager(getEhCacheManager());
         manager.setDeleteInvalidSessions(true);
-        manager.setGlobalSessionTimeout(expireTime * 60 * 1000);
+        //manager.setGlobalSessionTimeout(expireTime * 60 * 1000);
         manager.setSessionIdUrlRewritingEnabled(false);
         manager.setSessionValidationScheduler(SpringUtils.getBean(SpringSessionValidationScheduler.class));
         manager.setSessionValidationSchedulerEnabled(true);
