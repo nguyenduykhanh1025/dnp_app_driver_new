@@ -993,10 +993,15 @@ var table = {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id));
 			},
-			// carrier account add
+			// add carrier account
             addCarrierAccount: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), "500", "430");
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), "500", "450");
+			},
+			// add carrier group
+            addGroup: function(id) {
+            	table.set();
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), "500", "330");
             },
             // 添加信息，以tab页展现
             addTab: function (id) {
@@ -1039,9 +1044,24 @@ var table = {
             			return;
             		}
                     var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
-                    $.modal.open("Chỉnh sửa " + table.options.modalName, url, "500", "430");
+                    $.modal.open("Chỉnh sửa " + table.options.modalName, url, "500", "450");
             	} else {
-            	    $.modal.open("Chỉnh sửa " + table.options.modalName, $.operate.editUrl(id), "500", "430");
+            	    $.modal.open("Chỉnh sửa " + table.options.modalName, $.operate.editUrl(id), "500", "370");
+            	}
+			},
+			// edit carrier group
+            editGroup: function(id) {
+            	table.set();
+            	if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+            		var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                	if ($.common.isEmpty(row)) {
+            			$.modal.alertWarning("Hãy chọn dòng để xử lý");
+            			return;
+            		}
+                    var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
+                    $.modal.open("Chỉnh sửa " + table.options.modalName, url, "500", "450");
+            	} else {
+            	    $.modal.open("Chỉnh sửa " + table.options.modalName, $.operate.editUrl(id), "500", "330");
             	}
             },
             // 修改信息，以tab页展现
