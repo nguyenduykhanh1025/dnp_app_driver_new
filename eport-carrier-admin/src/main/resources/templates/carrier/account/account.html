@@ -33,7 +33,7 @@
                         </ul>
                     </div>                  
                 </form>
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="carrier:account:add">
+                <a class="btn btn-success" onclick="$.operate.addCarrierAccount()" shiro:hasPermission="carrier:account:add">
                     <i class="fa fa-plus"></i> Thêm
                 </a>
                 <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="carrier:account:edit">
@@ -65,6 +65,8 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 modalName: "tài khoản hãng tàu",
+                width: "400",
+                height: "400",
                 columns: [{
                     checkbox: true
                 },

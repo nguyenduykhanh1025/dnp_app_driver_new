@@ -107,6 +107,17 @@ public class CarrierGroupServiceImpl implements ICarrierGroupService
     }
 
     /**
+     * Search carrier group by name
+     * 
+     * @param keyword 
+     * @return result
+     */
+    @Override
+    public List<CarrierGroup> selectCarrierGroupListByName(CarrierGroup carrierGroup) {
+        return carrierGroupMapper.selectCarrierGroupListByName(carrierGroup);
+    }
+
+    /**
 	 * Check group code unique
 	 * 
 	 * @param groupCode

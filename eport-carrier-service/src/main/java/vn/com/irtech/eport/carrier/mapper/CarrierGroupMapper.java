@@ -68,6 +68,14 @@ public interface CarrierGroupMapper
     public List<CarrierGroup> selectCarrierGroupListByCode(CarrierGroup carrierGroup);
 
     /**
+     * Search carrier group by name
+     * 
+     * @param keyword 
+     * @return result
+     */
+    public List<CarrierGroup> selectCarrierGroupListByName(CarrierGroup carrierGroup);
+
+    /**
 	 * Check group code unique
 	 * 
 	 * @param groupCode
