@@ -192,59 +192,20 @@
             <div class="left-side">
               <button id="prevPage" class="btn btn-xs btn-rounder" onclick='prevPage()'
                 style="color:#337ab7; background-color: transparent;"><i class="fa fa-chevron-left"></i></button>
-              <p style="display:inline">Page <input type="number" onchange="showPageOnPageInput()" id="input-page"
-                  style="width: 30px; text-align: center;"> of <span id="total-page"></span></p>
+              <p style="display:inline">Trang <input type="number" onchange="showPageOnPageInput()" id="input-page"
+                  style="width: 30px; text-align: center;"> đến <span id="total-page"></span></p>
               <button id="nextPage" class="btn btn-xs btn-rounder" onclick='nextPage()'
                 style="color:#337ab7; background-color: transparent;"><i class="fa fa-chevron-right"></i></button>
               <button onclick="searchEvent()" class="btn btn-xs btn-rounder"
                 style="color:#337ab7; background-color: transparent;"><i class="fa fa-refresh"
                   aria-hidden="true"></i></button>
             </div>
-<<<<<<< HEAD
-            <div class="container col-md-12" style="margin-top: 10px;">
-                <div id="example" class="hot handsontable htColumnHeaders htRowHeaders"></div>
-                <nav aria-label="Page navigation">
-                <div class="table-footer">
-                  <!-- <div class="paginate" style="display: flex; justify-content: space-between; margin-top: 10px">
-                    <div class="left-side">
-                      <select class="form-control" style="padding: 0; display:inline; height: 22px; line-height: 1.5; width: 40px">
-                        <option>50</option>
-                        <option>100</option>
-                      </select>
-                      <button class="btn btn-xs btn-rounder" style="color:#337ab7; background-color: transparent;"><i class="fa fa-step-backward"></i></button>
-                      <button class="btn btn-xs btn-rounder" style="color:#337ab7; background-color: transparent;"><i class="fa fa-chevron-left"></i></button>
-                      <p style="display:inline">Page <input type="text" style="width: 30px; text-align: center;"> of <span id="total-page">2</span></p>
-                      <button class="btn btn-xs btn-rounder" style="color:#337ab7; background-color: transparent;"><i class="fa fa-chevron-right"></i></button>
-                      <button class="btn btn-xs btn-rounder" style="color:#337ab7; background-color: transparent;"><i class="fa fa-step-forward"></i></button>
-                      <button class="btn btn-xs btn-rounder" style="color:#337ab7; background-color: transparent;"><i class="fa fa-refresh" aria-hidden="true"></i></button>
-                    </div>
-                    <div class="right-side">
-                      Display 1 to <span id="item-on-page">50</span> of <span id="total-item">60</span> items
-                    </div>
-                  </div> -->
-                  <nav aria-label="...">
-                    <ul class="pagination">
-                        <li class="page-item">
-                            <button style="margin-right: 15px;" class="btn btn-primary"  onclick="save()">Lưu</button>
-                          </li>
-                      <li class="page-item">
-                        <button type="submit" style="margin-right: 5px;" class="btn btn-primary" id="prevPage" onclick="prevPage()">Previous</button>
-                      </li>
-                      <li>
-                        <button type="submit"  id="nextPage" class="btn btn-primary" onclick="nextPage()">Next</button>
-                      </li>
-                    </ul>
-                  </nav>
-                </div>
-            
-        </div>
-=======
             <div class="right-side">
-              Hiển thị 1 đén <span>15</span> tổng <span id="item-on-page"></span>
+              <button type="button" onclick="save()" class="btn btn-outline-primary">Lưu</button>
+              <span id="item-on-from"></span> đến <span id="item-on-to"></span> trên tổng <span id="item-on-page"></span>
             </div>
           </div>
       </div>
->>>>>>> 67662f552c2c8d63fe6678ac4e8652b3b2930ff0
     </div>
     <th:block th:include="include :: footer" />
     <script th:src="@{/js/jquery.toast.min.js}"></script>
@@ -253,236 +214,6 @@
     <script th:src="@{/ajax/libs/handsontable/6.2.2/moment/moment.js}"></script>
     <script th:src="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.js}"></script>
     <script>
-<<<<<<< HEAD
-        var hot;
-        var currentPage = 0;
-        var prefix = "/edi";
-        var dataObj;
-        var config;
-        document.addEventListener("DOMContentLoaded", function () {
-            $(document).ready(function() {
-                $.ajax({
-                    url: prefix + "/list",
-                    method: "POST",
-                    data: {
-                        page: currentPage,
-                    }
-                }).done(function(result) {
-                    dataObj = result.rows;
-                    var example = document.getElementById("example");
-                    hot = new Handsontable(example, {
-                        data: dataObj,
-                        stretchH: 'all',
-                        height: 500,         
-                        colHeaders: [
-                        "ID<br>id",
-                        "Mã hãng tàu<br>Carrier",
-                        "Số vận đơn<br> Bill No",
-                        "Số container<br>Container No",
-                        "Tên chủ hàng<br>Consignee",
-                        "Hạn lệnh<br> Valid to date",
-                        "Nơi hạ vỏ<br> Empty depot",
-                        "Ngày miễn lưu<br> DET Freetime",
-                        "Tên tàu<br>Vessel",
-                        "Chuyến<br>Voyage",
-                        "Xác nhận <br> làm lệnh",
-                        "Đã nộp <br> DO gốc",
-                        "Ngày nộp<br>DO date in",
-                        "Ghi chú<br>Note"],
-                        filter: true,
-                        licenseKey: "non-commercial-and-evaluation",
-                        columns: [
-                        {
-                            data: 'id',
-                        },
-                        {
-                            data: 'carrierCode',
-                            type: 'text',
-                            readOnly: true
-                        },
-                        {
-                            data: 'billOfLading',
-                            type: 'text',
-                            readOnly: true
-                        },
-                        {
-                            data: 'containerNumber',
-                            type: 'text',
-                            readOnly: true
-                        },
-                        {
-                            data: 'consignee',
-                            type: 'text',
-                            readOnly: true
-                        },
-                        {
-                            data: 'expiredDem',
-                            type: 'date',
-                            dateFormat: 'DD/MM/YYYY',
-                            correctFormat: true,
-                            readOnly: true,
-                        },
-                        {
-                            data: 'emptyContainerDepot',
-                            type: 'text',
-                            readOnly: true
-                        },
-                        {
-                            data: 'detFreeTime',
-                            type: 'numeric',
-                            readOnly: true
-                            
-                        },
-                        {
-                            data: 'vessel',
-                            type: 'text',
-                            readOnly: true
-                        },
-                        {
-                            data: 'voyNo',
-                            type: 'text',
-                            readOnly: true
-                        },
-                        {
-                            data: 'status',
-                            type: 'checkbox',
-                            checkedTemplate: 'Y',
-                            uncheckedTemplate: 'N'
-                        },
-                        {
-                            data: 'documentStatus',
-                            type: 'checkbox',
-                            checkedTemplate: "Y",
-                            uncheckedTemplate: "N"
-                        },
-                        {
-                            data: 'documentReceiptDate',
-                            type: 'date',
-                            dateFormat: 'MM/DD/YYYY',
-                            correctFormat: true,
-                            readOnly: true
-                        },
-                        {
-                            data: 'remark',
-                            type: 'text',
-                            readOnly: true
-                        }
-                        ],
-                        rowHeaders: true,
-                        autoColumnSize: true,
-                        columnSorting: {
-                          indicator: true
-                        },
-                        colWidths: [0.1],
-                        manualColumnMove: true,
-                        filters: true
-                  });
-                  hot.validateCells();
-                });
-              });
-            });
-            // Next Page
-            function nextPage(){
-                currentPage++;
-                $("#formId").append('<input type="hidden" id="pageSet" name="page" value="'+currentPage+'" /> ');
-                var form = $("#formId");
-                $.ajax({
-                    url: prefix + "/list",
-                    method: "POST",
-                    data : form.serialize(),
-                }).done(function(result) {
-                    dataObj = result.rows;
-                    console.log(currentPage);
-                    hot.loadData(dataObj);
-                    if(dataObj == '')
-                    {
-                        $("#nextPage").attr("disabled", true);
-                    }
-                    hot.render();
-                    hot.validateCells();
-                })
-                console.log(dataObj);
-                
-                if(currentPage > 0)
-                {
-                    $("#prevPage").attr("disabled", false);
-                }
-                $( "#pageSet" ).remove();
-            }
-            if(currentPage == 0)
-            {
-                $("#prevPage").attr("disabled", true)
-            }
-            // Prev Page
-            function prevPage(){
-                currentPage--;
-                console.log("page",currentPage)
-                if(currentPage == 0)
-                {
-                    $("#prevPage").attr("disabled", true);
-                }else {
-                    $("#prevPage").attr("disabled", false);
-                }
-                $("#formId").append('<input type="hidden" id="pageSet" name="page" value="'+currentPage+'" /> ');
-                var form = $("#formId");
-                $.ajax({
-                    url: prefix + "/list",
-                    method: "POST",
-                    data : form.serialize(),
-                }).done(function(result) {
-                    dataObj = result.rows;
-                    hot.loadData(dataObj);
-                    hot.render();
-                    hot.validateCells();
-                })
-                if(dataObj != '')
-                {
-                    $("#nextPage").attr("disabled", false);
-                }
-                $( "#pageSet" ).remove();
-            }
-
-            //Search
-            function search(){
-                $("#formId").submit(function(e) {
-                    $(this).append('<input type="hidden" id="pageSet" name="page" value="'+currentPage+'" /> ');
-                    e.preventDefault();
-                    var form = $("#formId");
-                    $.ajax({
-                        url: prefix + "/list",
-                        type: "POST",
-                        data: form.serialize(),
-                        done: function(rs)
-                        {
-                            dataObj = rs.rows;
-                            hot.loadData(dataObj);
-                            hot.render();
-                            hot.validateCells();
-                        }
-                        });
-                });
-                console.log("sss");
-                $( "#pageSet" ).remove();
-            }
-            function searchEvent()
-            {
-                $("#formId").append('<input type="hidden" id="pageSet" name="page" value="'+currentPage+'" /> ');
-                    var form = $("#formId");
-                    console.log(form.serialize());
-                    $.ajax({
-                    url: prefix + "/list",
-                    type: "POST",
-                    data: form.serialize(),
-                    success: function(rs)
-                    {
-                        dataObj = rs.rows;
-                        hot.loadData(dataObj);
-                        hot.render();
-                        hot.validateCells();
-                    }
-                });
-                $( "#pageSet" ).remove();
-=======
       var hot;
       var currentPage = 0;
       var prefix = "/edi";
@@ -498,6 +229,8 @@
               var pages = result / 15;
               document.getElementById("total-page").innerHTML = Math.ceil(pages)
               $('#input-page').val(currentPage + 1);
+              document.getElementById("item-on-from").innerHTML = currentPage + 1
+              document.getElementById("item-on-to").innerHTML = (currentPage + 1) * 15
             }),
             $.ajax({
               url: prefix + "/list",
@@ -616,6 +349,7 @@
                 manualColumnMove: true,
                 filters: true
               });
+              hot.validateCells();
             });
         });
       });
@@ -632,10 +366,14 @@
           dataObj = result.rows;
           hot.loadData(dataObj);
           $('#input-page').val(currentPage + 1);
+         
+          document.getElementById("item-on-from").innerHTML = (currentPage) * 15
+          document.getElementById("item-on-to").innerHTML = (currentPage) * 15 + 15
           if (dataObj == '') {
             $("#nextPage").attr("disabled", true);
           }
           hot.render();
+          hot.validateCells();
         })
         if (currentPage > 0) {
           $("#prevPage").attr("disabled", false);
@@ -664,6 +402,9 @@
           hot.loadData(dataObj);
           $('#input-page').val(currentPage + 1);
           hot.render();
+          hot.validateCells();
+          document.getElementById("item-on-from").innerHTML = (currentPage) * 15
+          document.getElementById("item-on-to").innerHTML = (currentPage) * 15 + 15
         })
         if (dataObj != '') {
           $("#nextPage").attr("disabled", false);
@@ -685,7 +426,7 @@
               dataObj = rs.rows;
               hot.loadData(dataObj);
               hot.render();
->>>>>>> 67662f552c2c8d63fe6678ac4e8652b3b2930ff0
+              hot.validateCells();
             }
           });
         });
@@ -703,6 +444,7 @@
             dataObj = rs.rows;
             hot.loadData(dataObj);
             hot.render();
+            hot.validateCells();
           }
         });
         $("#pageSet").remove();
@@ -778,6 +520,7 @@
           dataObj = result.rows;
           hot.loadData(dataObj);
           hot.render();
+          hot.validateCells();
         })
         $("#pageSet").remove();
       }
