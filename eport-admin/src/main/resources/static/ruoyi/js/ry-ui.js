@@ -1013,7 +1013,7 @@ var table = {
             	table.set();
             	var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
                 $.modal.openFull("Thêm " + table.options.modalName, url);
-            },
+			},
             // 添加访问地址
             addUrl: function(id) {
             	var url = $.common.isEmpty(id) ? table.options.createUrl.replace("{id}", "") : table.options.createUrl.replace("{id}", id);
