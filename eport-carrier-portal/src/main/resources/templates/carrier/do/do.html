@@ -30,6 +30,14 @@
       width: 700px;
     }
 
+    #searchForm {
+      height: 0;
+      overflow: hidden;
+      transition: height 0.5s ease-in-out;
+      -moz-transition: height 0.5s ease-in-out;
+      -webkit-transition: height 0.5s ease-in-out;
+      -o-transition: height 0.5s ease-in-out;
+    }
     /* table {
         width: 350px; /* can be dynamic */
 
@@ -290,6 +298,7 @@
         $.table.init(options);
       });
       //**********************************
+      $("#searchForm").css({height:40});
       load();
       function load() {
         var dg = $("#dg").datagrid({
@@ -336,6 +345,21 @@
           }
         }
       );
+
+      // collapse search form
+      function collapse() {
+        
+        if ($("#searchForm").height() == 1) {
+          $("#searchForm").css({
+            height:40,
+          });
+        }
+        else {
+          $("#searchForm").css({
+            height: 0,
+          });
+        }
+      }
 
       var selectedRow;
       var selectedContainer;
