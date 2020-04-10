@@ -268,8 +268,7 @@
                             type: 'date',
                             dateFormat: 'DD/MM/YYYY',
                             correctFormat: true,
-                            readOnly: true
-                            
+                            readOnly: true,
                         },
                         {
                             data: 'emptyContainerDepot',
@@ -326,6 +325,7 @@
                         manualColumnMove: true,
                         filters: true
                   });
+                  hot.validateCells();
                 });
               });
             });
@@ -347,6 +347,7 @@
                         $("#nextPage").attr("disabled", true);
                     }
                     hot.render();
+                    hot.validateCells();
                 })
                 console.log(dataObj);
                 
@@ -380,6 +381,7 @@
                     dataObj = result.rows;
                     hot.loadData(dataObj);
                     hot.render();
+                    hot.validateCells();
                 })
                 if(dataObj != '')
                 {
@@ -403,6 +405,7 @@
                             dataObj = rs.rows;
                             hot.loadData(dataObj);
                             hot.render();
+                            hot.validateCells();
                         }
                         });
                 });
@@ -423,6 +426,7 @@
                         dataObj = rs.rows;
                         hot.loadData(dataObj);
                         hot.render();
+                        hot.validateCells();
                     }
                 });
                 $( "#pageSet" ).remove();
