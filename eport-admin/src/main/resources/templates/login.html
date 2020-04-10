@@ -103,27 +103,27 @@
               type="text"
               name="username"
               class="form-control uname"
-              placeholder="Username"
+              placeholder="Tên đăng nhập"
             />
             <input
               type="password"
               name="password"
               class="form-control pword"
-              placeholder="Password"
+              placeholder="Mật khẩu"
             />
             <div
               class="checkbox-custom"
               th:classappend="${captchaEnabled==false} ? 'm-t'"
             >
               <input type="checkbox" id="rememberme" name="rememberme"/>
-              <label for="rememberme">Remember Me</label>
+              <label for="rememberme">Ghi nhớ mật khẩu</label>
             </div>
             <button
               class="btn btn-success btn-block"
               id="btnSubmit"
               data-loading="Login..."
             >
-              Login
+              Đăng nhập
             </button>
           </form>
         </div>
