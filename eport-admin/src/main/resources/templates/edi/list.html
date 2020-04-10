@@ -164,7 +164,7 @@
               </li>
               <li>
                 <select name="documentStatus">
-                  <option value="">Tất cả</option>
+                  <option value=""> Tất cả</option>
                   <option value="Y">Đã có DO gốc</option>
                   <option value="N">Chưa có DO gốc</option>
                 </select>
@@ -202,7 +202,8 @@
             </div>
             <div class="right-side">
               <button type="button" onclick="save()" class="btn btn-outline-primary">Lưu</button>
-              <span id="item-on-from"></span> đến <span id="item-on-to"></span> trên tổng <span id="item-on-page"></span>
+              <span id="item-on-from"></span> đến <span id="item-on-to"></span> trên tổng <span
+                id="item-on-page"></span>
             </div>
           </div>
       </div>
@@ -366,7 +367,7 @@
           dataObj = result.rows;
           hot.loadData(dataObj);
           $('#input-page').val(currentPage + 1);
-         
+
           document.getElementById("item-on-from").innerHTML = (currentPage) * 15
           document.getElementById("item-on-to").innerHTML = (currentPage) * 15 + 15
           if (dataObj == '') {
