@@ -125,7 +125,10 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
       return equipmentDoMapper.getContainerNumberListByIds(Convert.toStrArray(ids));
     }
     
-
+    @Override
+    public List<EquipmentDo> getContainerListByIds(String ids) {
+      return equipmentDoMapper.getContainerListByIds(Convert.toStrArray(ids));
+    }
    
 
    

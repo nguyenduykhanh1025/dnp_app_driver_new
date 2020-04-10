@@ -77,5 +77,7 @@ public interface EquipmentDoMapper
   public String getContainerNumberById(Long id);
 
   public List<String> getContainerNumberListByIds(String[] ids);
+
+  public List<EquipmentDo> getContainerListByIds(String[] ids);
 	
 }
