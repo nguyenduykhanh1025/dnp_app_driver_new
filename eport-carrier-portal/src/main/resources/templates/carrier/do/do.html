@@ -118,7 +118,7 @@
               <ul>
                 <li>
                   <input
-                    type="text"
+                    type="date"
                     name="fromDate"
                     id="fromDate"
                     placeholder="Từ ngày"
@@ -126,7 +126,7 @@
                 </li>
                 <li>
                   <input
-                    type="text"
+                    type="date"
                     name="toDate"
                     id="toDate"
                     placeholder="Đến ngày"
@@ -337,7 +337,7 @@
         "click",
         ".datagrid-row, .datagrid-header-check",
         function () {
-          var checked = $("input:checkbox:checked").length;
+          var checked = $("input:checkbox:checked").length - 1;
           if (!checked) {
             $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").addClass("disabled");
           } else {
@@ -438,6 +438,7 @@
               position: "top-right",
             });
             $("#container-details").html("");
+            $("#datetimepicker").val("");
             $(".modal").modal("toggle");
             load();
           },
@@ -462,6 +463,11 @@
                 pageSize: param.rows,
                 orderByColumn: param.sort,
                 isAsc: param.order,
+                fromDate : $("#fromDate").val()==null?"":$("#fromDate").val(),
+                toDate : $("#toDate").val()==null?"":$("#toDate").val(),
+                voyageNo : $("#voyageNo").val()==null?"":$("#voyageNo").val(),
+                contNo : $("#contNo").val()==null?"":$("#contNo").val(),
+                blNo : $("#blNo").val()==null?"":$("#blNo").val(),
               },
               dataType: "json",
               success: function (data) {
@@ -474,7 +480,24 @@
           },
         });
       }
-      
+      document.getElementById("voyageNo").addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            $("#searchBtn").click();
+        }
+      });
+      document.getElementById("contNo").addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            $("#searchBtn").click();
+        }
+      });
+      document.getElementById("blNo").addEventListener("keyup", function(event) {
+        event.preventDefault();
+        if (event.keyCode === 13) {
+            $("#searchBtn").click();
+        }
+      });
     </script>
   </body>
 </html>

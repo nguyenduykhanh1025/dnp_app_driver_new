@@ -94,6 +94,26 @@ public class EquipmentDo extends BaseEntity
     /** Nguon Tao: eport, edi, catos */
     private String createSource;
 
+    private Date toDate;
+
+    private Date fromDate;
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getToDate() {
+        return this.toDate;
+    }
+
+    public Date getFromDate() {
+        return this.fromDate;
+    }
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -323,6 +343,8 @@ public class EquipmentDo extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("toDate", getToDate())
+            .append("fromDate", getFromDate())
             .toString();
     }
 }

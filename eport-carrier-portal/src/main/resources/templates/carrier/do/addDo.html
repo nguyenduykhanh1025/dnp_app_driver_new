@@ -25,8 +25,8 @@
     }
 
     .handsontable th {
-      background: #63aeff;
-      color: #fff;
+      background: F0F0F0;
+      color: #222222;
       /* font-weight: 300; */
       text-align: center;
       vertical-align: middle;
@@ -101,7 +101,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            onclick="addAll()"
+            onclick="getAlert()"
             style="margin-right: 10px;"
           >
             Xác nhận
@@ -123,6 +123,8 @@
     <script
       th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
     ></script>
+    <!-- sweet alert -->
+    <script th:src="@{/js/sweetalert.min.js}"></script>
     <script>
       // ****************************
       var prefix = "/carrier/do";
@@ -130,7 +132,7 @@
       function submitHandler() {
         // add condition to validate before submit add do
         if (true) {
-          $.operate.save(prefix + "/add", $('#form-do-add').serialize());
+          $.operate.save(prefix + "/add", $("#form-do-add").serialize());
         }
       }
       // ****************************
@@ -172,6 +174,7 @@
         fillHandle: {
           autoInsertRow: true,
         },
+        className: "htMiddle",
         colHeaders: [
           "Số vận đơn <i class='red'>(*)</i><br>Bill No.",
           "Số container <i class='red'>(*)</i><br> Container No.",
@@ -270,8 +273,10 @@
         return reGoodDate.test(dt);
       }
 
-      function addAll() {
+      function getAlert() {
         // Get the data in the cells
+        //alert("warning");
+
         var myTableData = hot.getSourceData();
         // If the last row is empty, remove it before validation
         if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
@@ -300,11 +305,12 @@
         var count = 0;
         var main_key;
         $.each(cleanedGridData, function (key, object) {
+          console.log(object);
           if (
-            object[0] == null ||
-            object[1] == null ||
-            object[2] == null ||
-            object[3] == null ||
+            object[0] == null || object[0] == '' ||
+            object[1] == null || object[1] == '' ||
+            object[2] == null || object[2] == '' ||
+            object[3] == null || object[3] == '' ||
             !isGoodDate(object[3])
           ) {
             $.toast({
@@ -313,58 +319,74 @@
                 "Có lỗi xảy ra ！ Vui lòng kiểm tra lại dữ liệu trên trang tính.",
               showHideTransition: "fade",
               icon: "error",
-              position: "top-right"
+              position: "top-right",
             });
+            return;
           } else {
             count++;
           }
           main_key = key;
         });
         main_key++;
-
+        console.log(main_key, count);
         if (main_key == count) {
-          var jsonData = JSON.stringify(cleanedGridData);
-          $.ajax({
-            url: "/carrier/do/add",
-            method: "post",
-            data: {
-              equipmentDo: jsonData,
+          swal({
+            title: "Thực hiện khai báo DO?",
+            text: "Vui lòng kiểm tra kĩ dữ liệu",
+            buttons: {
+              cancel: true,
+              confirm: true,
             },
-            success: function (result) {
-              $.toast({
-                heading: "Thành công",
-                text:
-                  "Khai báo DO thành công ！",
-                showHideTransition: "fade",
-                icon: "success",
-                position: "top-right"
+          }).then((result) => {
+            if (result) {
+              var jsonData = JSON.stringify(cleanedGridData);
+              $.ajax({
+                url: "/carrier/do/add",
+                method: "post",
+                data: {
+                  equipmentDo: jsonData,
+                },
+                success: function (result) {
+                  $.toast({
+                    heading: "Thành công",
+                    text: "Khai báo DO thành công ！",
+                    showHideTransition: "fade",
+                    icon: "success",
+                    position: "top-right",
+                  });
+                  hot.loadData([]);
+                  hot.render();
+                  window.location.replace("/carrier/do");
+                },
+                error: function (result) {
+                  $.toast({
+                    heading: "Lỗi",
+                    text:
+                      "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin ！",
+                    showHideTransition: "fade",
+                    icon: "error",
+                    position: "top-right",
+                  });
+                },
               });
-              hot.loadData([]);
-              hot.render();
-              window.location.replace('/carrier/do');
-            },
-            error: function (result) {
-              $.toast({
-                  heading: "Lỗi",
-                  text:
-                    "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin ！",
-                  showHideTransition: "fade",
-                  icon: "error",
-                  position: "top-right"
-                });
-            },
+              swal("Khai báo DO thành công!", {
+                icon: "success",
+              });
+            } else {
+              swal("Đã hủy tiến trình");
+            }
           });
         }
       }
-        // Validate the cells and submit the form via ajax or whatever
-        // hot.validateCells(function (result, obj) {
-        //   if (result == true) {
-        //     var jsonData = JSON.stringify(myTableData);
-        //     console.log(jsonData);
-        //   } else {
-        //     //hotInstance.updateSettings({minSpareRows: 1});
-        //   }
-        // });
+      // Validate the cells and submit the form via ajax or whatever
+      // hot.validateCells(function (result, obj) {
+      //   if (result == true) {
+      //     var jsonData = JSON.stringify(myTableData);
+      //     console.log(jsonData);
+      //   } else {
+      //     //hotInstance.updateSettings({minSpareRows: 1});
+      //   }
+      // });
 
       function dismiss() {
         window.location.replace("/carrier/do");
