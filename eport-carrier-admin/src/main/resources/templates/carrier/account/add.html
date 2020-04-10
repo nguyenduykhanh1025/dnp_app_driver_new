@@ -1,49 +1,54 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <th:block th:include="include :: header('Add Carrier Account')" />
     <th:block th:include="include :: datetimepicker-css" />
     <th:block th:include="include :: select2-css" />
 </head>
+
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-account-add">
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Mã hãng tàu: </label>
-                <div class="col-sm-8">
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2  control-label is-required">Mã hãng tàu</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
                     <input type="hidden" name="groupId" id="groupId">
-                    <select class="groupCode" id="groupCode" style="width: 300px;" required></select>
+                    <select style="width: 100px !important;" class="groupName" id="groupName" required></select>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Mã vận chuyển: </label>
-                <div class="col-sm-8">
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mã vận chuyển</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
                     <input type="hidden" name="carrierCode" id="carrierCode">
-                    <select class="carrierCodes" id="carrierCodes" style="width: 300px;" required></select>
+                    <select class="carrierCodes" id="carrierCodes" required></select>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Email：</label>
-                <div class="col-sm-8">
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Email</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="email" class="form-control" type="text" required>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Mật khẩu: </label>
-                <div class="col-sm-8">
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mật khẩu</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="password" class="form-control" type="text" required>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Họ và tên: </label>
-                <div class="col-sm-8">
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Họ và tên</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="fullName" class="form-control" type="text" required>
                 </div>
             </div>
-            <div clas="form-group" style="padding-left: 190px;">
-				<input type="checkbox" class="form-check-input" id="isSendEmail" name="isSendEmail" checked>
-				<label class="control-label">Gửi email</label>
-			</div>
+            <div clas="form-group" style="padding-left: 150px;">
+                <input type="checkbox" class="form-check-input" id="isSendEmail" name="isSendEmail" checked>
+                <label class="control-label">Gửi email</label>
+            </div>
+        </form>
+    </div>
+
             <!-- <div class="form-group">    
                 <label class="col-sm-3 control-label">Status：</label>
                 <div class="col-sm-8">
@@ -75,8 +80,6 @@
                     </div>
                 </div>
             </div> -->
-        </form>
-    </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: select2-js" />
@@ -103,15 +106,15 @@
         // Init from begining
         $(document).ready(function () {
             // init group code select 2
-            $('.groupCode').select2({
+            $('.groupName').select2({
                 ajax: {
-                    url: '/carrier/group/searchGroupCodeByKeyword',
+                    url: '/carrier/group/searchGroupNameByKeyword',
                     method: 'get',
                     delay: 250,
                     data: function (params) {
                         return {
-                            keyword : params.term==null?"":params.term,
-                            groupId : $("#groupId").val()==null?"0":$("#groupId").val()
+                            keyword: params.term == null ? "" : params.term,
+                            groupId: $("#groupId").val() == null ? "0" : $("#groupId").val()
                         }
                     },
                     processResults: function (data, params) {
@@ -131,9 +134,9 @@
                     delay: 250,
                     data: function (params) {
                         return {
-                            keyword : params.term==null?"":params.term,
-                            groupId : $(".groupCode").val()==null?"0":$(".groupCode").val(),
-                            operateArray : operateArray
+                            keyword: params.term == null ? "" : params.term,
+                            groupId: $(".groupName").val() == null ? "0" : $(".groupName").val(),
+                            operateArray: operateArray
                         }
                     },
                     processResults: function (data, params) {
@@ -149,8 +152,8 @@
         });
 
         // when select option group code
-        $('.groupCode').change(function() {
-            $("#groupId").val($(".groupCode").val());
+        $('.groupName').change(function () {
+            $("#groupId").val($(".groupName").val());
             if (check) {
                 $('.carrierCodes').val(null).trigger('change');
                 check = false;
@@ -159,17 +162,18 @@
         });
 
         // when select option carrier code
-        $('.carrierCodes').change(function() {
+        $('.carrierCodes').change(function () {
             operateArray = $(".carrierCodes").val();
             var str = "";
             if (operateArray != null) {
-                for (var i=0; i<operateArray.length; i++) {
+                for (var i = 0; i < operateArray.length; i++) {
                     str += operateArray[i] + ",";
                 }
-                str = str.substring(0, str.length-1);
+                str = str.substring(0, str.length - 1);
                 $('#carrierCode').val(str);
             }
         });
     </script>
 </body>
+
 </html>

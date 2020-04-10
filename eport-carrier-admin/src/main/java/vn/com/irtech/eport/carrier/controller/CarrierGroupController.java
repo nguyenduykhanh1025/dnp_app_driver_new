@@ -153,34 +153,29 @@ public class CarrierGroupController extends BaseController
     /**
      * Search Carrier Group Name
      */
-    @RequestMapping("/searchGroupCodeByKeyword")
+    @RequestMapping("/searchGroupNameByKeyword")
     @ResponseBody
-    public List<JSONObject> searchGroupCodeByKeyword(String keyword, Long groupId) {
+    public List<JSONObject> searchGroupNameByKeyword(String keyword, Long groupId) {
         CarrierGroup carrierGroup = new CarrierGroup();
-        carrierGroup.setGroupCode(keyword.toLowerCase());
-        List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupListByCode(carrierGroup);
+        carrierGroup.setGroupName(keyword.toLowerCase());
+        List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupListByName(carrierGroup);
         List<JSONObject> result = new ArrayList<>();
-        int limit = 0; 
 		for (CarrierGroup i : carrierGroups) {
 			if (i.getId() != groupId) {
                 JSONObject json = new JSONObject();
                 json.put("id", i.getId());
-                json.put("text", i.getGroupCode());
+                json.put("text", i.getGroupName());
                 result.add(json);
-                limit++;
-                if (limit == 5) {
-                    break;
-                }
             }
 		}
         return result;
     }
 
-    @RequestMapping("/getGroupCodeById")
+    @RequestMapping("/getGroupNameById")
     @ResponseBody
-    public String getGroupCodeById(long id) {
+    public String getGroupNameById(long id) {
         CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(id);
-        return carrierGroup.getGroupCode();
+        return carrierGroup.getGroupName();
     }
 
     /**
@@ -193,7 +188,6 @@ public class CarrierGroupController extends BaseController
             CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(groupId);
             String operateCodes[] = carrierGroup.getOperateCode().split(",");
             List<JSONObject> result = new ArrayList<>();
-            int limit = 0;
             operateArray = null; 
             operates.ifPresent(value -> operateArray = value);
             boolean check = true;
@@ -212,10 +206,6 @@ public class CarrierGroupController extends BaseController
                             json.put("id", i);
                             json.put("text", i);
                             result.add(json);
-                            limit++;
-                            if (limit == 5) {
-                                break;
-                            }
                         }
                     }
                 }
@@ -226,10 +216,6 @@ public class CarrierGroupController extends BaseController
                         json.put("id", i);
                         json.put("text", i);
                         result.add(json);
-                        limit++;
-                        if (limit == 5) {
-                            break;
-                        }
                     }
                 }
             }

@@ -41,6 +41,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupCode != null  and groupCode != ''"> and lower(group_code) like concat('%', #{groupCode}, '%')</if>
         </where>
     </select>
+
+    <select id="selectCarrierGroupListByName" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
+        <include refid="selectCarrierGroupVo"/>
+        <where>  
+            <if test="groupName != null  and groupName != ''"> and lower(group_name) like concat('%', #{groupName}, '%')</if>
+        </where>
+    </select>
         
     <insert id="insertCarrierGroup" parameterType="CarrierGroup" useGeneratedKeys="true" keyProperty="id">
         insert into carrier_group
