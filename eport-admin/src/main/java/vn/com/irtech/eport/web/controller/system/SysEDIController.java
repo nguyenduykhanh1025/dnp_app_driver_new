@@ -68,7 +68,8 @@ public class SysEDIController extends BaseController
 	}
 	// Return panination
 	@PostMapping("/getCountPages")
-	public int getCountPages()
+	@ResponseBody
+	public Long getCountPages()
 	{
 		return equipmentDoService.getTotalPages();
 	}

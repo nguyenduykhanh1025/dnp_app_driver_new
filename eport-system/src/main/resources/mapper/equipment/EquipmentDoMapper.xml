@@ -263,7 +263,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         #{id}
       </foreach>
     </select>
-    <select id="getTotalPages" resultType="int">
+    <select id="getTotalPages" resultType="java.lang.Long">
         SELECT COUNT(*) FROM equipment_do
     </select>
 

@@ -90,5 +90,5 @@ public interface IEquipmentDoService
     public List<EquipmentDo> getContainerListByIds(String ids);
 
     //getTotalPages
-    public int getTotalPages();
+    public Long getTotalPages();
 }

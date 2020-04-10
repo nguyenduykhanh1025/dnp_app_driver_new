@@ -144,7 +144,7 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     }
 
     @Override
-    public int getTotalPages()
+    public Long getTotalPages()
     {
         return equipmentDoMapper.getTotalPages();
     }
