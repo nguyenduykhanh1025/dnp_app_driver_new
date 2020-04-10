@@ -85,5 +85,7 @@ public interface EquipmentDoMapper
   public String getStatus(Long id);
 
   public List<EquipmentDo> getContainerListByIds(String[] ids);
+
+  public Long getTotalPages();
 	
 }

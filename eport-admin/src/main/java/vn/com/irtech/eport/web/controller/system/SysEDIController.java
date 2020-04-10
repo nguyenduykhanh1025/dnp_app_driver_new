@@ -66,6 +66,13 @@ public class SysEDIController extends BaseController
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingAdmin(EquipmentDo);
 		return getDataTable(list);
 	}
+	// Return panination
+	@PostMapping("/getCountPages")
+	@ResponseBody
+	public Long getCountPages()
+	{
+		return equipmentDoService.getTotalPages();
+	}
 	//update
 	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
 	@PostMapping("/update")
@@ -119,7 +126,6 @@ public class SysEDIController extends BaseController
 	  }
 	  return toAjax(1);
 	}
-
 	//checkDocumentReceiptDate
 	private Boolean checkDocumentReceiptDate(Long id)
 	{

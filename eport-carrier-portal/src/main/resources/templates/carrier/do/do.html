@@ -338,7 +338,7 @@
         ".datagrid-row, .datagrid-header-check",
         function () {
           var checked = $("input:checkbox:checked").length - 1;
-          if (!checked) {
+          if (checked < 0) {
             $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").addClass("disabled");
           } else {
             $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").removeClass("disabled");

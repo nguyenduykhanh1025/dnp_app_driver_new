@@ -1048,7 +1048,7 @@ var table = {
             addFullDo: function(id) {
             	table.set();
 				var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
-                $.modal.openFullDo("Thêm " + table.options.modalName, url);
+                $.modal.openFullDo("", url);
             },
             // 添加访问地址
             addUrl: function(id) {

@@ -71,9 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="selectEquipmentDoListPagingCarrier" parameterType="equipmentDo" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
-        <where>
-            <if test="fromDate != null"> and expired_dem = #{fromDate} OR expired_dem > #{fromDate}</if>
-            <if test="toDate != null"> and expired_dem = #{toDate} OR expired_dem &lt; #{toDate}</if>  
+        <where> 
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
@@ -81,7 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
-            <if test="fromDate != null and toDate != null"> and expired_dem between #{fromDate} and #{toDate}</if>
+            <if test="expiredDem != null and expiredDem != ''"> and expired_dem = #{expiredDem}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
@@ -100,6 +98,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectEquipmentDoList" parameterType="EquipmentDo"  resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
         <where>
+            <if test="fromDate != null and toDate != null"> and expired_dem between #{fromDate} and #{toDate}</if>
+            <if test="fromDate != null"> and expired_dem = #{fromDate} OR expired_dem > #{fromDate}</if>
+            <if test="toDate != null"> and expired_dem = #{toDate} OR expired_dem &lt; #{toDate}</if> 
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>  
             <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
@@ -265,4 +266,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         #{id}
       </foreach>
     </select>
+    <select id="getTotalPages" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM equipment_do
+    </select>
+
 </mapper>
