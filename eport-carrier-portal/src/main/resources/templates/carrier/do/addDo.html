@@ -330,22 +330,30 @@
             data: {
               equipmentDo: jsonData,
             },
-          }).done(function (result) {
-            $.toast({
-              heading: "Thành công",
-              text:
-                "Khai báo DO thành công ！",
-              showHideTransition: "fade",
-              icon: "success",
-              position: "top-right"
-            });
+            success: function (result) {
+              $.toast({
+                heading: "Thành công",
+                text:
+                  "Khai báo DO thành công ！",
+                showHideTransition: "fade",
+                icon: "success",
+                position: "top-right"
+              });
             hot.loadData([]);
             hot.render();
-          });
-        }
+          },
+          error: function (result) {
+            $.toast({
+                heading: "Lỗi",
+                text:
+                  "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin ！",
+                showHideTransition: "fade",
+                icon: "error",
+                position: "top-right"
+              });
+          }
+        });
         return;
-
-        console.log(cleanedGridData);
         // Validate the cells and submit the form via ajax or whatever
         hot.validateCells(function (result, obj) {
           if (result == true) {
