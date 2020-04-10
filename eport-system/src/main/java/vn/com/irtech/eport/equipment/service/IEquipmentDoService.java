@@ -1,6 +1,6 @@
 package vn.com.irtech.eport.equipment.service;
 
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -82,5 +82,10 @@ public interface IEquipmentDoService
 
     public List<String> getContainerNumberListByIds(String ids);
 
+    //Check DocumentReceiptDate has value 
+    public Date getDocumentReceiptDate(Long id);
+
+    //Check Do Status check 
+    public String getStatus(Long id);
     public List<EquipmentDo> getContainerListByIds(String ids);
 }

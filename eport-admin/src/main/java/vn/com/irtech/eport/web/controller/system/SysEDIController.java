@@ -2,8 +2,6 @@ package vn.com.irtech.eport.web.controller.system;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +32,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.json.JSONObject.JSONArray;
+import vn.com.irtech.eport.common.utils.AppToolUtils;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
@@ -62,7 +61,7 @@ public class SysEDIController extends BaseController
 	@ResponseBody
 	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
 		int page = EquipmentDo.getPage();
-		page = page * 10;
+		page = page * 15;
 		EquipmentDo.setPage(page);
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingAdmin(EquipmentDo);
 		return getDataTable(list);
@@ -77,51 +76,64 @@ public class SysEDIController extends BaseController
 	  if (equipmentDoList != null) {
 		String[] strList = new String[14];
 		for (int index = 0; index < equipmentDoList.size(); index++) {
-		  // Resolve " mark in array
-		  String st = equipmentDoList.get(index++).toString();
-		  System.out.println("strList   "+ st);
-		  strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
-		  if (index == 1) {
-			strList[0] = strList[0].substring(strList[0].indexOf("[")+1, strList[0].length());
-		  }
-		  for (int i = 1; i < 13; i++) {
-			strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
-		  }
-		  // String a = equipmentDoList.get(index).toString();
-		  // Resolve ]} mark in last element
-		  // int listSize = equipmentDoList.size();
-		  // if (index == listSize-1) {
-		  //   strList[11] = strList[11].substring(0, strList[11].indexOf("]"));
-		  //   strList[11] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
-		  // } else {
-		  //   strList[11] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
-		  // }
-		 
-		  // Insert new DO
-		  EquipmentDo equipment = new EquipmentDo();
-		// Update han lenh
-		//   Date expiredDem = AppToolUtils.formatStringToDate(strList[5], "dd-MM-yyyy");
-		//   equipment.setExpiredDem(expiredDem);
-		  equipment.setStatus(strList[10]);
-
-		  equipment.setDocumentStatus(strList[11]);
-		  Date documentReceiptDate = new Date();
-		  equipment.setDocumentReceiptDate(documentReceiptDate);
-		  equipment.setUpdateBy(currentUser.getLoginName());
-		  equipment.setId(Long.parseLong(strList[0]));
-		  equipmentDoService.updateEquipmentDo(equipment);
+		  	// Resolve " mark in array
+		  	String st = equipmentDoList.get(index++).toString();
+		  	System.out.println("strList   "+ st);
+		  	strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
+		  	if (index == 1) {
+				strList[0] = strList[0].substring(strList[0].indexOf("[")+1, strList[0].length());
+		  	}
+		  	for (int i = 1; i < 13; i++) {
+				strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
+		  	}
+		 	EquipmentDo equipment = new EquipmentDo();
+			Boolean checkStatus = false;
+			Boolean checkDo = false;
+			if(strList[11].equals("Y") && checkDocumentReceiptDate(Long.parseLong(strList[0])))
+			{
+				equipment.setDocumentStatus(strList[11]);
+				Date documentReceiptDate = new Date();
+				equipment.setDocumentReceiptDate(documentReceiptDate);
+				checkDo = true;
+			}else if(strList[11].equals("N") && !checkDocumentReceiptDate(Long.parseLong(strList[0]))){
+				equipment.setDocumentStatus(strList[11]);
+				checkDo = true;
+			};
+			if(!strList[10].equals(getStatus(Long.parseLong(strList[0]))))
+			{
+				equipment.setStatus(strList[10]);
+				if(!strList[11].equals("N"))
+				{
+					Date receiptDate = AppToolUtils.formatStringToDate(strList[12],"yyyy/MM/dd");
+					equipment.setDocumentReceiptDate(receiptDate);
+				}
+				checkStatus = true;
+			}
+			if(checkStatus || checkDo)
+			{
+				equipment.setUpdateBy(currentUser.getLoginName());
+				equipment.setId(Long.parseLong(strList[0]));
+				equipmentDoService.updateEquipmentDo(equipment);
+			}
 		}
 	  }
 	  return toAjax(1);
 	}
-	@PostMapping("/listDo")
-  	@ResponseBody
-	public Object listDo(EquipmentDo EquipmentDo) {
-		//page = page * 10;
-		List<EquipmentDo> List = equipmentDoService.selectEquipmentDoList(EquipmentDo);
-		return List;
-  	}
 
+	//checkDocumentReceiptDate
+	private Boolean checkDocumentReceiptDate(Long id)
+	{
+		Date rs = equipmentDoService.getDocumentReceiptDate(id);
+		if (rs == null ) {
+			return true;
+		}
+		return false;
+	}
+	
+	private String getStatus(Long id)
+	{
+		return equipmentDoService.getStatus(id);
+	}
 	// Return view
 	@GetMapping ("/listView")
 	public String getView()
@@ -207,6 +219,7 @@ public class SysEDIController extends BaseController
     }
 
 
+	// ReadEDI
     private List<JSONObject> ReadEDI(String[] text)
 	{
         SysEdi edi = new SysEdi();
