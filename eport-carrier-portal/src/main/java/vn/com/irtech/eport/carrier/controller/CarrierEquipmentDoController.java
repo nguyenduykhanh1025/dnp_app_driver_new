@@ -58,8 +58,6 @@ public class CarrierEquipmentDoController extends BaseController {
   }
 
   private JSONArray equipmentDoList;
-  private JSONArray containerIdList;
-
   /**
    * Get Exchange Delivery Order List
    */
@@ -259,8 +257,8 @@ public class CarrierEquipmentDoController extends BaseController {
 
   @GetMapping("/getContainer")
   @ResponseBody
-  public List<String> getContainerCode(@RequestParam(value = "containerId[]") String containerId) {
-    return equipmentDoService.getContainerNumberListByIds(containerId);
+  public List<EquipmentDo> getContainerCode(@RequestParam(value = "containerId[]") String containerId) {
+    return equipmentDoService.getContainerListByIds(containerId);
   }
 
   @PostMapping("/updateExpire")

@@ -1,9 +1,11 @@
 package vn.com.irtech.eport.equipment.mapper;
 
-import java.util.HashMap;
+import java.util.Date;
+
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+
 
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
@@ -77,5 +79,11 @@ public interface EquipmentDoMapper
   public String getContainerNumberById(Long id);
 
   public List<String> getContainerNumberListByIds(String[] ids);
+  
+  public Date getDocumentReceiptDate(long id);
+
+  public String getStatus(Long id);
+
+  public List<EquipmentDo> getContainerListByIds(String[] ids);
 	
 }

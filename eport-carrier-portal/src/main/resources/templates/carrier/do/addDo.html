@@ -91,7 +91,7 @@
   </style>
   <body>
     <!-- =================================== -->
-    <form id="form-do-add">
+    <form id="form-do-add" style="width: 100%; height: 100%;">
       <div class="container">
         <h2 style="text-align: center;">Khai báo Delivery Order</h2>
         <hr />
@@ -339,31 +339,37 @@
                 icon: "success",
                 position: "top-right"
               });
-            hot.loadData([]);
-            hot.render();
-          },
-          error: function (result) {
-            $.toast({
-                heading: "Lỗi",
-                text:
-                  "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin ！",
-                showHideTransition: "fade",
-                icon: "error",
-                position: "top-right"
-              });
-          }
-        });
-        return;
-        // Validate the cells and submit the form via ajax or whatever
-        hot.validateCells(function (result, obj) {
-          if (result == true) {
-            var jsonData = JSON.stringify(myTableData);
-            console.log(jsonData);
-          } else {
-            //hotInstance.updateSettings({minSpareRows: 1});
-          }
-        });
+              hot.loadData([]);
+              hot.render();
+              window.location.replace('/carrier/do');
+            },
+            error: function (result) {
+              $.toast({
+                  heading: "Lỗi",
+                  text:
+                    "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin ！",
+                  showHideTransition: "fade",
+                  icon: "error",
+                  position: "top-right"
+                });
+            },
+          });
+        }
       }
+        // Validate the cells and submit the form via ajax or whatever
+        // hot.validateCells(function (result, obj) {
+        //   if (result == true) {
+        //     var jsonData = JSON.stringify(myTableData);
+        //     console.log(jsonData);
+        //   } else {
+        //     //hotInstance.updateSettings({minSpareRows: 1});
+        //   }
+        // });
+
+        function dismiss() {
+          window.location.replace('/carrier/do');
+
+        }
     </script>
   </body>
 </html>

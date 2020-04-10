@@ -44,6 +44,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectEquipmentDoListPagingAdmin" parameterType="equipmentDo" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
         <where>  
+            <if test="expiredDemStartDay != null"> and expired_dem = #{expiredDemStartDay} OR expired_dem > #{expiredDemStartDay}</if>
+            <if test="expiredDemEndDay != null"> and expired_dem = #{expiredDemEndDay} OR expired_dem &lt; #{expiredDemEndDay}</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
@@ -56,16 +58,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="detFreeTime != null  and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
             <if test="documentReceiptDate != null "> and document_receipt_date = #{documentReceiptDate}</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
+            <if test="documentStatus != null  and documentStatus != ''"> and document_status = #{documentStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
-            <if test="expiredDemStartDay != null"> and expired_dem = #{expiredDemStartDay} OR expired_dem > #{expiredDemStartDay}</if>
-            <if test="expiredDemEndDay != null"> and expired_dem = #{expiredDemEndDay} OR expired_dem &lt; #{expiredDemEndDay}</if>
             <if test="expiredDemStartDay != null and expiredDemEndDay != null"> and expired_dem BETWEEN #{expiredDemStartDay} AND #{expiredDemEndDay}</if>
         </where>
         ORDER BY id DESC  
-        LIMIT 10
+        LIMIT 15
         OFFSET #{page};
     </select>
     <select id="selectEquipmentDoListPagingCarrier" parameterType="equipmentDo" resultMap="EquipmentDoResult">
@@ -208,7 +209,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''">status = #{status},</if>
             <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
             <if test="documentStatus != null  and documentStatus != ''">document_status = #{documentStatus},</if>
-            <if test="documentReceiptDate != null ">document_receipt_date = #{documentReceiptDate},</if>
+            <choose>
+            <when test="documentReceiptDate != null ">
+              document_receipt_date = #{documentReceiptDate},
+            </when>
+            <otherwise>
+                document_receipt_date = NULL,
+            </otherwise>
+            </choose>
             <if test="releaseStatus != null  and releaseStatus != ''">release_status = #{releaseStatus},</if>
             <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
@@ -237,6 +245,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getContainerNumberListByIds" parameterType="String" resultMap="ContainerNumberListResult">
       select container_number from equipment_do where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+        #{id}
+      </foreach>
+    </select>
+    <select id="getDocumentReceiptDate" parameterType="Long" resultType="Date">
+        select document_receipt_date from equipment_do where id = #{id}
+    </select>
+    
+    <select id="getStatus" parameterType="Long" resultType="String">
+        select status from equipment_do where id = #{id}
+    </select>
+    <select id="getContainerListByIds" parameterType="String" resultMap="EquipmentDoResult">
+      select bill_of_lading, container_number, vessel, expired_dem from equipment_do where id in
       <foreach item="id" collection="array" open="(" separator="," close=")">
         #{id}
       </foreach>

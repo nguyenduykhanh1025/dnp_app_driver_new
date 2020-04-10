@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
+import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.UserConstants;
@@ -65,7 +66,9 @@ public class CarrierAccountController extends BaseController
     public TableDataInfo list(CarrierAccount carrierAccount)
     {
         startPage();
-        carrierAccount.setCarrierCode(carrierAccount.getCarrierCode().toLowerCase());
+        CarrierGroup carrierGroup = carrierAccount.getCarrierGroup();
+        carrierGroup.setGroupName(carrierGroup.getGroupName().toLowerCase());
+        carrierAccount.setCarrierGroup(carrierGroup);
         carrierAccount.setEmail(carrierAccount.getEmail().toLowerCase());
         List<CarrierAccount> list = carrierAccountService.selectCarrierAccountList(carrierAccount);
         return getDataTable(list);

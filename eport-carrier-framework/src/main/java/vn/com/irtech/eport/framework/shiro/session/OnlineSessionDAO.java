@@ -30,10 +30,10 @@ public class OnlineSessionDAO extends EnterpriseCacheSessionDAO
         super();
     }
 
-    public OnlineSessionDAO(long expireTime)
-    {
-        super();
-    }
+    // public OnlineSessionDAO(long expireTime)
+    // {
+    //     super();
+    // }
 
     @Override
     protected Session doReadSession(Serializable sessionId)

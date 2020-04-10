@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.equipment.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -125,7 +126,20 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
       return equipmentDoMapper.getContainerNumberListByIds(Convert.toStrArray(ids));
     }
     
+    @Override
+    public  Date getDocumentReceiptDate(Long id)
+    {
+        return equipmentDoMapper.getDocumentReceiptDate(id);
+    }
 
+    @Override
+    public String getStatus(Long id)
+    {
+        return equipmentDoMapper.getStatus(id);
+    }
+    public List<EquipmentDo> getContainerListByIds(String ids) {
+      return equipmentDoMapper.getContainerListByIds(Convert.toStrArray(ids));
+    }
    
 
    
