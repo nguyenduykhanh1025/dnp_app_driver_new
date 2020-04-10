@@ -74,9 +74,24 @@ public class CarrierEquipmentDoController extends BaseController {
 
 	@RequestMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(EquipmentDo edo) {
+	public TableDataInfo list(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String contNo, String blNo) {
     startPage();
     edo.setCarrierId(ShiroUtils.getUserId());
+    if (voyageNo != null) {
+      edo.setVoyNo(voyageNo);
+    }
+    if (contNo != null) {
+      edo.setContainerNumber(contNo);
+    }
+    if (blNo != null) {
+      edo.setBillOfLading(blNo);
+    }
+    if (fromDate != null) {
+      edo.setFromDate(fromDate);
+    }
+    if (toDate != null) {
+      edo.setToDate(toDate);
+    }
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(edo);
 		return getDataTable(list);
 	}
