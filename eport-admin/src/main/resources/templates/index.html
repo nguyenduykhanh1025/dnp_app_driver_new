@@ -32,12 +32,7 @@
             role="navigation"
             style="margin-bottom: 0;"
           >
-            <ul class="nav navbar-top-links navbar-right welcome-message">
-              <li>
-                <a title="full-screen display" href="javascript:void(0)" id="fullScreen"
-                  ><i class="fa fa-arrows-alt"></i> Full Screen</a
-                >
-              </li>
+            <ul class="nav navbar-top-links navbar-right welcome-message" style="margin-top: 12px;">
               <li class="dropdown user-menu">
                 <a
                   href="javascript:void(0)"
@@ -74,21 +69,12 @@
               </li>
             </ul>
             <ul class="nav navbar-top-links navbar-left" id="side-menu">
-              <li>
-                <a href="#"
-                  ><i class="fa fa-home"></i> <span class="nav-label">Home</span>
-                  <!-- <span class="fa arrow"></span> -->
+              <li style="width: 200px; padding-top: 5px">
+                <img style="float: left; margin-top: 10px; margin-right: 5px" th:src="@{/img/CDN.png}" width="50px" height="50px"/>
+                <a href="#" style="margin-left: 10px;"
+                  > <h3>ePort DNP</h3>
                   </a>
-                <ul class="nav nav-second-level dropdown-menu">
-                  <li>
-                    <a class="menuItem" th:href="@{/system/main}">Trang chủ</a>
-                  </li>
-                  <li>
-                    <a class="menuItem" th:href="@{/edi/listView}"
-                      >Quản lý DO</a
-                    >
-                  </li>
-                </ul>
+                
               </li>
               <li th:each="menu : ${menus}">
                 <a
