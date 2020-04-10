@@ -91,7 +91,7 @@
   </style>
   <body>
     <!-- =================================== -->
-    <form id="form-do-add">
+    <form id="form-do-add" style="width: 100%; height: 100%;">
       <div class="container">
         <h2 style="text-align: center;">Khai báo Delivery Order</h2>
         <hr />
@@ -341,6 +341,7 @@
               });
               hot.loadData([]);
               hot.render();
+              window.location.replace('/carrier/do');
             },
             error: function (result) {
               $.toast({
@@ -364,6 +365,11 @@
         //     //hotInstance.updateSettings({minSpareRows: 1});
         //   }
         // });
+
+        function dismiss() {
+          window.location.replace('/carrier/do');
+
+        }
     </script>
   </body>
 </html>

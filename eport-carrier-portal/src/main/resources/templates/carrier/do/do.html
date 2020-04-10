@@ -30,6 +30,14 @@
       width: 700px;
     }
 
+    #searchForm {
+      height: 0;
+      overflow: hidden;
+      transition: height 0.5s ease-in-out;
+      -moz-transition: height 0.5s ease-in-out;
+      -webkit-transition: height 0.5s ease-in-out;
+      -o-transition: height 0.5s ease-in-out;
+    }
     /* table {
         width: 350px; /* can be dynamic */
 
@@ -164,7 +172,7 @@
         <div class="col-sm-12 fixed-table-toolbar">
           <div class="bs-bars pull-left" style="margin-bottom: 5px;">
             <div class="btn-group-sm" id="toolbar" role="group">
-              <a class="btn btn-success" onclick="$.operate.add()">
+              <a class="btn btn-success" onclick="$.operate.addFullDo()">
                 <i class="fa fa-plus"></i> Thêm DO
               </a>
               <a
@@ -284,11 +292,13 @@
         var options = {
           url: prefix + "/list",
           createUrl: prefix + "/add",
+          modalName: "DO",
           // width: '1000'
         };
         $.table.init(options);
       });
       //**********************************
+      $("#searchForm").css({height:40});
       load();
       function load() {
         var dg = $("#dg").datagrid({
@@ -335,6 +345,21 @@
           }
         }
       );
+
+      // collapse search form
+      function collapse() {
+        
+        if ($("#searchForm").height() == 1) {
+          $("#searchForm").css({
+            height:40,
+          });
+        }
+        else {
+          $("#searchForm").css({
+            height: 0,
+          });
+        }
+      }
 
       var selectedRow;
       var selectedContainer;
