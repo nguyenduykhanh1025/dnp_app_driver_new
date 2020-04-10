@@ -1024,15 +1024,15 @@ var table = {
             			return;
             		}
                     var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
-                    $.modal.open("Chỉnh Sửa " + table.options.modalName, url);
+                    $.modal.open("Chỉnh sửa " + table.options.modalName, url);
             	} else {
-            	    $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id));
+            	    $.modal.open("Chỉnh sửa " + table.options.modalName, $.operate.editUrl(id));
             	}
             },
             // 修改信息，以tab页展现
             editTab: function(id) {
             	table.set();
-            	$.modal.openTab("Chỉnh Sửa" + table.options.modalName, $.operate.editUrl(id));
+            	$.modal.openTab("Chỉnh sửa" + table.options.modalName, $.operate.editUrl(id));
             },
             // 修改信息 全屏
             editFull: function(id) {
@@ -1053,7 +1053,7 @@ var table = {
                 	    url = table.options.updateUrl.replace("{id}", row);
             		}
             	}
-            	$.modal.openFull("Chỉnh Sửa" + table.options.modalName, url);
+            	$.modal.openFull("Chỉnh sửa" + table.options.modalName, url);
             },
             // 修改访问地址
             editUrl: function(id) {
