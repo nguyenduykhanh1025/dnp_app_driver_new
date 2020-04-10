@@ -46,7 +46,7 @@ public class AsyncFactory
                 online.setLoginName(session.getLoginName());
                 online.setStartTimestamp(session.getStartTimestamp());
                 online.setLastAccessTime(session.getLastAccessTime());
-                online.setExpireTime(session.getTimeout());
+                //online.setExpireTime(session.getTimeout());
                 online.setIpaddr(session.getHost());
                 online.setLoginLocation(AddressUtils.getRealAddressByIP(session.getHost()));
                 online.setBrowser(session.getBrowser());
