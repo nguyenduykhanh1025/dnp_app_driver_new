@@ -103,7 +103,7 @@
                     delay: 250,
                     data: function (params) {
                         return {
-                        keyword : params.term,
+                            keyword : params.term==null?"":params.term,
                         }
                     },
                     processResults: function (data, params) {
@@ -113,7 +113,7 @@
                     }
                 },
                 placeholder: 'Nhập mã hãng tàu',
-                minimumInputLength: 1,
+                minimumInputLength: 0,
             });
             // Init carrier code select 2
             $('.carrierCodes').select2({
@@ -123,9 +123,9 @@
                     delay: 250,
                     data: function (params) {
                         return {
-                        keyword : params.term,
-                        groupId : $(".groupCode").val(),
-                        operateArray : operateArray
+                            keyword : params.term==null?"":params.term,
+                            groupId : $(".groupCode").val()==null?"0":$(".groupCode").val(),
+                            operateArray : operateArray
                         }
                     },
                     processResults: function (data, params) {
@@ -135,7 +135,7 @@
                     }
                 },
                 placeholder: 'Chọn mã vận chuyển',
-                minimumInputLength: 1,
+                minimumInputLength: 0,
                 multiple: true,
             });
         });

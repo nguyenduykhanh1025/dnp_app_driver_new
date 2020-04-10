@@ -187,23 +187,38 @@ public class CarrierGroupController extends BaseController
     @RequestMapping("/searchOperateCodeByKeyword")
     @ResponseBody
     public List<JSONObject> searchOperateCodeByKeyword(String keyword, long groupId,@RequestParam(value="operateArray[]") Optional<String[]> operates) {
-        CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(groupId);
-        String operateCodes[] = carrierGroup.getOperateCode().split(",");
-        List<JSONObject> result = new ArrayList<>();
-        int limit = 0;
-        operateArray = null; 
-        operates.ifPresent(value -> operateArray = value);
-        boolean check = true;
-        if (operateArray != null) {
-            for (String i : operateCodes) {
-                check = true;
-                for (String j : operateArray) {
-                    if (i.equals(j)) {
-                        check = false;
-                        break;
+        if (groupId != 0) {
+            CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(groupId);
+            String operateCodes[] = carrierGroup.getOperateCode().split(",");
+            List<JSONObject> result = new ArrayList<>();
+            int limit = 0;
+            operateArray = null; 
+            operates.ifPresent(value -> operateArray = value);
+            boolean check = true;
+            if (operateArray != null) {
+                for (String i : operateCodes) {
+                    check = true;
+                    for (String j : operateArray) {
+                        if (i.equals(j)) {
+                            check = false;
+                            break;
+                        }
+                    }
+                    if (check) {
+                        if (i.contains(keyword)) {
+                            JSONObject json = new JSONObject();
+                            json.put("id", i);
+                            json.put("text", i);
+                            result.add(json);
+                            limit++;
+                            if (limit == 5) {
+                                break;
+                            }
+                        }
                     }
                 }
-                if (check) {
+            } else {
+                for (String i : operateCodes) {
                     if (i.contains(keyword)) {
                         JSONObject json = new JSONObject();
                         json.put("id", i);
@@ -216,20 +231,8 @@ public class CarrierGroupController extends BaseController
                     }
                 }
             }
-        } else {
-            for (String i : operateCodes) {
-                if (i.contains(keyword)) {
-                    JSONObject json = new JSONObject();
-                    json.put("id", i);
-                    json.put("text", i);
-                    result.add(json);
-                    limit++;
-                    if (limit == 5) {
-                        break;
-                    }
-                }
-            }
+            return result;
         }
-        return result;
+        return null;
     }
 }
