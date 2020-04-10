@@ -186,6 +186,7 @@
                       <li>
                         <button type="submit"  id="nextPage" class="btn btn-primary" onclick="nextPage()">Next</button>
                       </li>
+                      
                     </ul>
                   </nav>
                 </div>
@@ -212,6 +213,12 @@
         var config;
         document.addEventListener("DOMContentLoaded", function () {
             $(document).ready(function() {
+                $.ajax({
+                  url: prefix + "/getCountPages",
+                  method: "POST",
+                }).done (function(result) {
+                    console.log(result);
+                }),
                 $.ajax({
                     url: prefix + "/list",
                     method: "POST",
