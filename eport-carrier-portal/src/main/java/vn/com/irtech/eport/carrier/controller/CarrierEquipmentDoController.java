@@ -2,7 +2,10 @@ package vn.com.irtech.eport.carrier.controller;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +34,7 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
+import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 
 /**
@@ -51,6 +55,9 @@ public class CarrierEquipmentDoController extends BaseController {
 
   @Autowired
   private ICarrierGroupService carrierGroupService;
+  
+  @Autowired
+  private MailService mailService;
 
   @GetMapping()
   public String EquipmentDo() {
@@ -287,7 +294,71 @@ public class CarrierEquipmentDoController extends BaseController {
       edo.setExpiredDem(AppToolUtils.formatStringToDate(newDate, "yyyy-MM-dd"));
       equipmentDoService.updateEquipmentDo(edo);
     }
+    currentUser = ShiroUtils.getSysUser();
+    List<EquipmentDo> equipmentDos = equipmentDoService.getContainerListByIds(containerId);
+    Collections.sort(equipmentDos, new BillNoComparator());
+    EquipmentDo eTemp = equipmentDos.get(0);
+    String conStr = ""+eTemp.getContainerNumber()+";";
+    for (int e=1; e<equipmentDos.size(); e++) {
+      if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
+        eTemp = equipmentDos.get(e);
+        conStr += eTemp.getBillOfLading()+";";
+      } else {
+        Map<String, Object> variables = new HashMap<>();
+		variables.put("updateTime", eTemp.getUpdateTime());
+        variables.put("carrierCode", eTemp.getCarrierCode());
+        variables.put("billOfLading", eTemp.getBillOfLading());
+        variables.put("containerNumber", conStr.substring(0, conStr.length()-1));
+        variables.put("consignee", eTemp.getConsignee());
+        variables.put("expiredDem", eTemp.getExpiredDem());
+        variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+        variables.put("detFreeTime", eTemp.getDetFreeTime());
+        variables.put("vessel", eTemp.getVessel());
+        variables.put("voyNo", eTemp.getVoyNo());
+        variables.put("remark", eTemp.getRemark());
+        eTemp = equipmentDos.get(e);
+        conStr = "" + eTemp.getContainerNumber()+";";
+        // send email
+        new Thread() {
+            public void run() {
+                try {
+                    mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables, "dnpEmail");  
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+            }
+        }.start();
+      }
+      Map<String, Object> variables = new HashMap<>();
+      variables.put("updateTime", eTemp.getUpdateTime());
+      variables.put("carrierCode", eTemp.getCarrierCode());
+      variables.put("billOfLading", eTemp.getBillOfLading());
+      variables.put("containerNumber", conStr.substring(0, conStr.length()-1));
+      variables.put("consignee", eTemp.getConsignee());
+      variables.put("expiredDem", eTemp.getExpiredDem());
+      variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+      variables.put("detFreeTime", eTemp.getDetFreeTime());
+      variables.put("vessel", eTemp.getVessel());
+      variables.put("voyNo", eTemp.getVoyNo());
+      variables.put("remark", eTemp.getRemark());
+      // send email
+      new Thread() {
+          public void run() {
+              try {
+                  mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables, "dnpEmail");  
+                  } catch (Exception e) {
+                      e.printStackTrace();
+                  }
+          }
+      }.start();
+    }
     return AjaxResult.success();
   }
-
+  class BillNoComparator implements Comparator<EquipmentDo> {
+    public int compare(EquipmentDo equipmentDo1, EquipmentDo equipmentDo2) {
+        //In the following line you set the criterion, 
+        //which is the name of Contact in my example scenario
+        return equipmentDo1.getBillOfLading().compareTo(equipmentDo2.getBillOfLading());
+    }
+  }
 }
