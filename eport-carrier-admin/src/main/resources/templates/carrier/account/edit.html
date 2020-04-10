@@ -104,6 +104,7 @@
                     data: function (params) {
                         return {
                             keyword : params.term==null?"":params.term,
+                            groupId : $("#groupId").val()==null?"0":$("#groupId").val()
                         }
                     },
                     processResults: function (data, params) {

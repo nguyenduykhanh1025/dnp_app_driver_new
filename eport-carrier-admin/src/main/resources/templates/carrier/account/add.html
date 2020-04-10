@@ -83,6 +83,7 @@
     <script type="text/javascript">
         var prefix = ctx + "carrier/account"
         var operateArray = [];
+        var check = false;
         $("#form-account-add").validate({
             focusCleanup: true
         });
@@ -110,6 +111,7 @@
                     data: function (params) {
                         return {
                             keyword : params.term==null?"":params.term,
+                            groupId : $("#groupId").val()==null?"0":$("#groupId").val()
                         }
                     },
                     processResults: function (data, params) {
@@ -149,17 +151,24 @@
         // when select option group code
         $('.groupCode').change(function() {
             $("#groupId").val($(".groupCode").val());
+            if (check) {
+                $('.carrierCodes').val(null).trigger('change');
+                check = false;
+            }
+            check = true;
         });
 
         // when select option carrier code
         $('.carrierCodes').change(function() {
             operateArray = $(".carrierCodes").val();
             var str = "";
-            for (var i=0; i<operateArray.length; i++) {
-                str += operateArray[i] + ",";
+            if (operateArray != null) {
+                for (var i=0; i<operateArray.length; i++) {
+                    str += operateArray[i] + ",";
+                }
+                str = str.substring(0, str.length-1);
+                $('#carrierCode').val(str);
             }
-            str = str.substring(0, str.length-1);
-            $('#carrierCode').val(str);
         });
     </script>
 </body>

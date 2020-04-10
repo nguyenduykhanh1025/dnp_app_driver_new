@@ -155,20 +155,22 @@ public class CarrierGroupController extends BaseController
      */
     @RequestMapping("/searchGroupCodeByKeyword")
     @ResponseBody
-    public List<JSONObject> searchGroupCodeByKeyword(String keyword) {
+    public List<JSONObject> searchGroupCodeByKeyword(String keyword, Long groupId) {
         CarrierGroup carrierGroup = new CarrierGroup();
         carrierGroup.setGroupCode(keyword.toLowerCase());
         List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupListByCode(carrierGroup);
         List<JSONObject> result = new ArrayList<>();
         int limit = 0; 
 		for (CarrierGroup i : carrierGroups) {
-			JSONObject json = new JSONObject();
-			json.put("id", i.getId());
-			json.put("text", i.getGroupCode());
-            result.add(json);
-            limit++;
-            if (limit == 5) {
-                break;
+			if (i.getId() != groupId) {
+                JSONObject json = new JSONObject();
+                json.put("id", i.getId());
+                json.put("text", i.getGroupCode());
+                result.add(json);
+                limit++;
+                if (limit == 5) {
+                    break;
+                }
             }
 		}
         return result;
