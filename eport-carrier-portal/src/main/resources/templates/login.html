@@ -20,41 +20,95 @@
         if(window.top!==window.self){alert('Not logged in or login timed out. please login again');window.top.location=window.location};
     </script>
 </head>
+<style type="text/css">
+  label.error {
+    position: inherit;
+  }
+  .signinpanel {
+    margin: 0 auto;
+    width: auto;
+  }
+
+  @media only screen and (max-width: 770px) {
+    #cdn-text {
+      font-size: 250% !important;
+    }
+
+    #signupForm {
+      width: 80% !important; 
+    }
+  }
+</style>
+<script>
+  if (window.top !== window.self) {
+    alert("Not logged in or login timed out. please login again");
+    window.top.location = window.location;
+  }
+</script>
+</head>
+
 <body class="signin">
-    <div class="signinpanel">
-        <div class="row">
-	        <div class="col-sm-3" style="position: absolute;transform: translate(240px,-138px);">
-	        	<div class="signin-info">
-	            	<div class="logopanel m-b">
-	                	<h1><img  alt="[ Logo ]" src="../static/img/CDN.png" th:src="@{/img/CDN.png}" style="width: 265px;height: 196px;"></h1>
-	                	<h4 style="font-size:32px;font-family:Arial, sans-serif;"><strong>CẢNG ĐÀ NẴNG</strong></h4>
-	                </div>
-	                <div class="m-b"></div>
-	<!--                     <ul class="m-b">
-	                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> SpringBoot</li>
-	                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Mybatis</li>
-	                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Shiro</li>
-	                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Thymeleaf</li>
-	                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Bootstrap</li>
-	                    </ul> -->
-	                <strong th:if="${@config.getKey('sys.account.registerUser')}">Forgot your password ? <a th:href="@{/register}">Register&raquo;</a></strong>
-	            </div>
-	        </div>
-	        <div class="col-sm-3"  style="position: absolute;transform: translate(194px,140px);">
-	            <form id="signupForm" autocomplete="off"></h4>
-	            	<p class="m-t-md" style="font-size:x-large;margin: auto;text-align: center;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
-	                    <b>LOGIN</b>
-	                </p>
-	                <input type="text"     name="username" class="form-control uname"     placeholder="Username"/>
-	                <input type="password" name="password" class="form-control pword"     placeholder="Password" />
-	                <br>
-	                <div class="checkbox-custom" th:classappend="${captchaEnabled==false} ? 'm-t'">
-	        			<input type="checkbox" id="rememberme" name="rememberme"> <label for="rememberme">Remember Me</label>
-	    			</div>
-	                <button class="btn btn-success btn-block" id="btnSubmit" data-loading="Login...">Login</button>
-	            </form>
-	         </div>
+<div class="signinpanel">
+  <div class="container">
+    <div class="logo-top" style="text-align: center">
+      <h1>
+        <img
+          alt="cdn"
+          src="../static/img/CDN.png"
+          th:src="@{/img/CDN.png}"
+          style="width: 30%; height: 30%;"
+        />
+      </h1>
+      <h4 id="cdn-text" style="font-size: 600%; font-family: Arial, sans-serif;">
+        <strong>CẢNG ĐÀ NẴNG</strong>
+      </h4>
+    </div>
+    <div class="login-form">
+      <form id="signupForm" autocomplete="off" style="width: 50%; margin: 0 auto; margin-top: 20px;">
+        <p
+          class="m-t-md"
+          style="
+            font-size: x-large;
+            margin: auto;
+            text-align: center;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial,
+              sans-serif;
+          "
+        >
+          <b>LOGIN</b>
+        </p>
+        <input
+          type="text"
+          name="username"
+          class="form-control uname"
+          placeholder="Username"
+          value="admin"
+        />
+        <input
+          type="password"
+          name="password"
+          class="form-control pword"
+          placeholder="Password"
+          value="admin123"
+        />
+        <br>
+        <div
+          class="checkbox-custom"
+          th:classappend="${captchaEnabled==false} ? 'm-t'"
+        >
+          <input type="checkbox" id="rememberme" name="rememberme"/>
+          <label for="rememberme">Remember Me</label>
         </div>
+        <button
+          class="btn btn-success btn-block"
+          id="btnSubmit"
+          data-loading="Login..."
+        >
+          Login
+        </button>
+      </form>
+    </div>
+  </div>
 <!--         <div class="signup-footer">
             <div class="pull-left">Copyright &copy; 2020 by IRTech. All Rights Reserved <br></div>
         </div> -->
