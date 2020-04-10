@@ -337,7 +337,7 @@
         "click",
         ".datagrid-row, .datagrid-header-check",
         function () {
-          var checked = $("input:checkbox:checked").length;
+          var checked = $("input:checkbox:checked").length - 1;
           if (!checked) {
             $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").addClass("disabled");
           } else {
@@ -438,6 +438,7 @@
               position: "top-right",
             });
             $("#container-details").html("");
+            $("#datetimepicker").val("");
             $(".modal").modal("toggle");
             load();
           },
