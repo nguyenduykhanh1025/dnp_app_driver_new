@@ -171,7 +171,24 @@
             <div class="container col-md-12" style="margin-top: 10px;">
                 <div id="example" class="hot handsontable htColumnHeaders htRowHeaders"></div>
                 <nav aria-label="Page navigation">
-                <div class="pagination-div">
+                <div class="table-footer">
+                  <!-- <div class="paginate" style="display: flex; justify-content: space-between; margin-top: 10px">
+                    <div class="left-side">
+                      <select class="form-control" style="padding: 0; display:inline; height: 22px; line-height: 1.5; width: 40px">
+                        <option>50</option>
+                        <option>100</option>
+                      </select>
+                      <button class="btn btn-xs btn-rounder" style="color:#337ab7; background-color: transparent;"><i class="fa fa-step-backward"></i></button>
+                      <button class="btn btn-xs btn-rounder" style="color:#337ab7; background-color: transparent;"><i class="fa fa-chevron-left"></i></button>
+                      <p style="display:inline">Page <input type="text" style="width: 30px; text-align: center;"> of <span id="total-page">2</span></p>
+                      <button class="btn btn-xs btn-rounder" style="color:#337ab7; background-color: transparent;"><i class="fa fa-chevron-right"></i></button>
+                      <button class="btn btn-xs btn-rounder" style="color:#337ab7; background-color: transparent;"><i class="fa fa-step-forward"></i></button>
+                      <button class="btn btn-xs btn-rounder" style="color:#337ab7; background-color: transparent;"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                    </div>
+                    <div class="right-side">
+                      Display 1 to <span id="item-on-page">50</span> of <span id="total-item">60</span> items
+                    </div>
+                  </div> -->
                   <nav aria-label="...">
                     <ul class="pagination">
                         <li class="page-item">
@@ -268,8 +285,7 @@
                             type: 'date',
                             dateFormat: 'DD/MM/YYYY',
                             correctFormat: true,
-                            readOnly: true
-                            
+                            readOnly: true,
                         },
                         {
                             data: 'emptyContainerDepot',
@@ -326,6 +342,7 @@
                         manualColumnMove: true,
                         filters: true
                   });
+                  hot.validateCells();
                 });
               });
             });
@@ -347,6 +364,7 @@
                         $("#nextPage").attr("disabled", true);
                     }
                     hot.render();
+                    hot.validateCells();
                 })
                 console.log(dataObj);
                 
@@ -380,6 +398,7 @@
                     dataObj = result.rows;
                     hot.loadData(dataObj);
                     hot.render();
+                    hot.validateCells();
                 })
                 if(dataObj != '')
                 {
@@ -403,6 +422,7 @@
                             dataObj = rs.rows;
                             hot.loadData(dataObj);
                             hot.render();
+                            hot.validateCells();
                         }
                         });
                 });
@@ -423,6 +443,7 @@
                         dataObj = rs.rows;
                         hot.loadData(dataObj);
                         hot.render();
+                        hot.validateCells();
                     }
                 });
                 $( "#pageSet" ).remove();

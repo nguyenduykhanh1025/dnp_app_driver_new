@@ -143,7 +143,7 @@ public class CarrierEquipmentDoController extends BaseController {
         }
         EquipmentDo equipment = new EquipmentDo();
         equipment.setCarrierId(currentUser.getId());
-        equipment.setCarrierCode(carrierGroupService.selectCarrierGroupById(ShiroUtils.getUserId()).getGroupName());
+        equipment.setCarrierCode(currentUser.getCarrierCode());
         if (strList[0] != null) {
           equipment.setBillOfLading(strList[0]);
         }
