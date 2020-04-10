@@ -21,16 +21,16 @@
 
     th,
     td {
-      font: 12px sans-serif;
+      font: 20px sans-serif;
     }
 
     .handsontable th {
-      background: #63aeff;
-      color: #fff;
+      background: F0F0F0;
+      color: #222222;
       /* font-weight: 300; */
       text-align: center;
       vertical-align: middle;
-      font-size: 1rem;
+      font-size: 2rem;
       line-height: 2;
       padding: 5px 2px !important;
       font-family: inherit;
@@ -91,25 +91,28 @@
   </style>
   <body>
     <!-- =================================== -->
-    <div class="container">
-      <h2 style="text-align: center;">Khai báo Delivery Order</h2>
-      <hr />
-      <div id="example" class="hot handsontable htColumnHeaders"></div>
-      <hr />
-      <div class="footer-add">
-        <button
-          type="button"
-          class="btn btn-primary"
-          onclick="addAll()"
-          style="margin-right: 10px;"
-        >
-          Xác nhận
-        </button>
-        <button type="button" class="btn btn-dark" onclick="dismiss()">
-          Hủy bỏ
-        </button>
+    <form id="form-do-add" style="width: 100%; height: 100%;">
+      <div class="container">
+        <h2 style="text-align: center;">Khai báo Delivery Order</h2>
+        <hr />
+        <div id="example" class="hot handsontable htColumnHeaders"></div>
+        <hr />
+        <div class="footer-add">
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="getAlert()"
+            style="margin-right: 10px;"
+          >
+            Xác nhận
+          </button>
+          <button type="button" class="btn btn-dark" onclick="dismiss()">
+            Hủy bỏ
+          </button>
+        </div>
       </div>
-    </div>
+    </form>
+    <th:block th:include="include :: footer" />
     <!-- Jquery -->
     <script th:src="@{/js/jquery.min.js}"></script>
     <!-- Boostrap -->
@@ -120,7 +123,20 @@
     <script
       th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
     ></script>
+    <!-- sweet alert -->
+    <script th:src="@{/js/sweetalert.min.js}"></script>
     <script>
+      // ****************************
+      var prefix = "/carrier/do";
+
+      function submitHandler() {
+        // add condition to validate before submit add do
+        if (true) {
+          $.operate.save(prefix + "/add", $("#form-do-add").serialize());
+        }
+      }
+      // ****************************
+
       var example = document.getElementById("example"),
         hot,
         $hooksList,
@@ -158,6 +174,7 @@
         fillHandle: {
           autoInsertRow: true,
         },
+        className: "htMiddle",
         colHeaders: [
           "Số vận đơn <i class='red'>(*)</i><br>Bill No.",
           "Số container <i class='red'>(*)</i><br> Container No.",
@@ -256,8 +273,10 @@
         return reGoodDate.test(dt);
       }
 
-      function addAll() {
+      function getAlert() {
         // Get the data in the cells
+        //alert("warning");
+
         var myTableData = hot.getSourceData();
         // If the last row is empty, remove it before validation
         if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
@@ -286,11 +305,12 @@
         var count = 0;
         var main_key;
         $.each(cleanedGridData, function (key, object) {
+          console.log(object);
           if (
-            object[0] == null ||
-            object[1] == null ||
-            object[2] == null ||
-            object[3] == null ||
+            object[0] == null || object[0] == '' ||
+            object[1] == null || object[1] == '' ||
+            object[2] == null || object[2] == '' ||
+            object[3] == null || object[3] == '' ||
             !isGoodDate(object[3])
           ) {
             $.toast({
@@ -299,48 +319,77 @@
                 "Có lỗi xảy ra ！ Vui lòng kiểm tra lại dữ liệu trên trang tính.",
               showHideTransition: "fade",
               icon: "error",
-              position: "top-right"
+              position: "top-right",
             });
+            return;
           } else {
             count++;
           }
           main_key = key;
         });
         main_key++;
-
+        console.log(main_key, count);
         if (main_key == count) {
-          var jsonData = JSON.stringify(cleanedGridData);
-          $.ajax({
-            url: "/carrier/do/add",
-            method: "post",
-            data: {
-              equipmentDo: jsonData,
+          swal({
+            title: "Thực hiện khai báo DO?",
+            text: "Vui lòng kiểm tra kĩ dữ liệu",
+            buttons: {
+              cancel: true,
+              confirm: true,
             },
-          }).done(function (result) {
-            $.toast({
-              heading: "Thành công",
-              text:
-                "Khai báo DO thành công ！",
-              showHideTransition: "fade",
-              icon: "success",
-              position: "top-right"
-            });
-            hot.loadData([]);
-            hot.render();
+          }).then((result) => {
+            if (result) {
+              var jsonData = JSON.stringify(cleanedGridData);
+              $.ajax({
+                url: "/carrier/do/add",
+                method: "post",
+                data: {
+                  equipmentDo: jsonData,
+                },
+                success: function (result) {
+                  $.toast({
+                    heading: "Thành công",
+                    text: "Khai báo DO thành công ！",
+                    showHideTransition: "fade",
+                    icon: "success",
+                    position: "top-right",
+                  });
+                  hot.loadData([]);
+                  hot.render();
+                  window.location.replace("/carrier/do");
+                },
+                error: function (result) {
+                  $.toast({
+                    heading: "Lỗi",
+                    text:
+                      "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin ！",
+                    showHideTransition: "fade",
+                    icon: "error",
+                    position: "top-right",
+                  });
+                },
+              });
+              swal("Khai báo DO thành công!", {
+                icon: "success",
+              });
+            } else {
+              swal("Đã hủy tiến trình");
+            }
           });
         }
-        return;
+      }
+      // Validate the cells and submit the form via ajax or whatever
+      // hot.validateCells(function (result, obj) {
+      //   if (result == true) {
+      //     var jsonData = JSON.stringify(myTableData);
+      //     console.log(jsonData);
+      //   } else {
+      //     //hotInstance.updateSettings({minSpareRows: 1});
+      //   }
+      // });
 
-        console.log(cleanedGridData);
-        // Validate the cells and submit the form via ajax or whatever
-        hot.validateCells(function (result, obj) {
-          if (result == true) {
-            var jsonData = JSON.stringify(myTableData);
-            console.log(jsonData);
-          } else {
-            //hotInstance.updateSettings({minSpareRows: 1});
-          }
-        });
+      function dismiss() {
+        window.location.replace("/carrier/do");
       }
     </script>
   </body>

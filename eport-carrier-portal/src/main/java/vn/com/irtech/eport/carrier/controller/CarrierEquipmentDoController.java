@@ -2,7 +2,10 @@ package vn.com.irtech.eport.carrier.controller;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +34,7 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
+import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 
 /**
@@ -51,6 +55,9 @@ public class CarrierEquipmentDoController extends BaseController {
 
   @Autowired
   private ICarrierGroupService carrierGroupService;
+  
+  @Autowired
+  private MailService mailService;
 
   @GetMapping()
   public String EquipmentDo() {
@@ -58,8 +65,6 @@ public class CarrierEquipmentDoController extends BaseController {
   }
 
   private JSONArray equipmentDoList;
-  private JSONArray containerIdList;
-
   /**
    * Get Exchange Delivery Order List
    */
@@ -76,8 +81,24 @@ public class CarrierEquipmentDoController extends BaseController {
 
 	@RequestMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(EquipmentDo edo) {
-		startPage();
+	public TableDataInfo list(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String contNo, String blNo) {
+    startPage();
+    edo.setCarrierId(ShiroUtils.getUserId());
+    if (voyageNo != null) {
+      edo.setVoyNo(voyageNo);
+    }
+    if (contNo != null) {
+      edo.setContainerNumber(contNo);
+    }
+    if (blNo != null) {
+      edo.setBillOfLading(blNo);
+    }
+    if (fromDate != null) {
+      edo.setFromDate(fromDate);
+    }
+    if (toDate != null) {
+      edo.setToDate(toDate);
+    }
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(edo);
 		return getDataTable(list);
 	}
@@ -144,30 +165,50 @@ public class CarrierEquipmentDoController extends BaseController {
         }
         EquipmentDo equipment = new EquipmentDo();
         equipment.setCarrierId(currentUser.getId());
-        equipment.setCarrierCode(carrierGroupService.selectCarrierGroupById(ShiroUtils.getUserId()).getGroupName());
-        equipment.setBillOfLading(strList[0]);
-        equipment.setContainerNumber(strList[1]);
-        equipment.setConsignee(strList[2]);
-        equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[3], "dd/MM/yyyy"));
-        equipment.setEmptyContainerDepot(strList[4]);
+        equipment.setCarrierCode(currentUser.getCarrierCode());
+        if (strList[0] != null) {
+          equipment.setBillOfLading(strList[0]);
+        }
+        if (strList[1] != null) {
+          equipment.setContainerNumber(strList[1]);
+        }
+        if (strList[2] != null) {
+          equipment.setConsignee(strList[2]);
+        }
+        if (strList[3] != null) {
+          equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[3], "dd/MM/yyyy"));
+        }
+        if (strList[4] != null) {
+          equipment.setEmptyContainerDepot(strList[4]);
+        }
         if (strList[5] != null) {
           equipment.setDetFreeTime(Integer.parseInt(strList[5]));
         }
-        equipment.setVessel(strList[6]);
-        equipment.setVoyNo(strList[7]);
-        equipment.setRemark(strList[8]);
-        // set who created this record
+        if (strList[6] != null) {
+          equipment.setVessel(strList[6]);
+        }
+        if (strList[7] != null) {
+          equipment.setVoyNo(strList[7]);
+        } 
+        if (strList[8] != null) {
+          equipment.setRemark(strList[8]);
+        }
+        // set who and time created this record
         equipment.setCreateBy(currentUser.getFullName());
         equipment.setCreateTime(new Date());
-        equipmentDoService.insertEquipmentDo(equipment);
+        try {
+          equipmentDoService.insertEquipmentDo(equipment);
+        } catch (Exception e) {
+          return AjaxResult.error();
+        }
       }
     }
-    return toAjax(1);
+    return AjaxResult.success();
   }
 
 
   //update
-  @Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
+  @Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
   @PostMapping("/update")
   @ResponseBody
   public AjaxResult update(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
@@ -239,13 +280,8 @@ public class CarrierEquipmentDoController extends BaseController {
 
   @GetMapping("/getContainer")
   @ResponseBody
-  public List<String> getContainerCode(@RequestParam(value = "containerId[]") String containerId) {
-    // for (String i : containerId) {
-    //   //EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(Long.parseLong(i));
-      
-    //   containerList.add(equipmentDoService.getContainerNumberById(Long.parseLong(i)));
-    // }
-    return equipmentDoService.getContainerNumberListByIds(containerId);
+  public List<EquipmentDo> getContainerCode(@RequestParam(value = "containerId[]") String containerId) {
+    return equipmentDoService.getContainerListByIds(containerId);
   }
 
   @PostMapping("/updateExpire")
@@ -258,7 +294,71 @@ public class CarrierEquipmentDoController extends BaseController {
       edo.setExpiredDem(AppToolUtils.formatStringToDate(newDate, "yyyy-MM-dd"));
       equipmentDoService.updateEquipmentDo(edo);
     }
-    return toAjax(1);
+    currentUser = ShiroUtils.getSysUser();
+    List<EquipmentDo> equipmentDos = equipmentDoService.getContainerListByIds(containerId);
+    Collections.sort(equipmentDos, new BillNoComparator());
+    EquipmentDo eTemp = equipmentDos.get(0);
+    String conStr = ""+eTemp.getContainerNumber()+";";
+    for (int e=1; e<equipmentDos.size(); e++) {
+      if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
+        eTemp = equipmentDos.get(e);
+        conStr += eTemp.getBillOfLading()+";";
+      } else {
+        Map<String, Object> variables = new HashMap<>();
+		    variables.put("updateTime", eTemp.getUpdateTime());
+        variables.put("carrierCode", eTemp.getCarrierCode());
+        variables.put("billOfLading", eTemp.getBillOfLading());
+        variables.put("containerNumber", conStr.substring(0, conStr.length()-1));
+        variables.put("consignee", eTemp.getConsignee());
+        variables.put("expiredDem", eTemp.getExpiredDem());
+        variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+        variables.put("detFreeTime", eTemp.getDetFreeTime());
+        variables.put("vessel", eTemp.getVessel());
+        variables.put("voyNo", eTemp.getVoyNo());
+        variables.put("remark", eTemp.getRemark());
+        eTemp = equipmentDos.get(e);
+        conStr = "" + eTemp.getContainerNumber()+";";
+        // send email
+        new Thread() {
+            public void run() {
+                try {
+                    mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables, "dnpEmail");  
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+            }
+        }.start();
+      }
+    }
+    Map<String, Object> variables = new HashMap<>();
+    variables.put("updateTime", eTemp.getUpdateTime());
+    variables.put("carrierCode", eTemp.getCarrierCode());
+    variables.put("billOfLading", eTemp.getBillOfLading());
+    variables.put("containerNumber", conStr.substring(0, conStr.length()-1));
+    variables.put("consignee", eTemp.getConsignee());
+    variables.put("expiredDem", eTemp.getExpiredDem());
+    variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+    variables.put("detFreeTime", eTemp.getDetFreeTime());
+    variables.put("vessel", eTemp.getVessel());
+    variables.put("voyNo", eTemp.getVoyNo());
+    variables.put("remark", eTemp.getRemark());
+    // send email
+    new Thread() {
+        public void run() {
+            try {
+                mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables, "dnpEmail");  
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }
+    }.start();
+    return AjaxResult.success();
   }
-
+  class BillNoComparator implements Comparator<EquipmentDo> {
+    public int compare(EquipmentDo equipmentDo1, EquipmentDo equipmentDo2) {
+        //In the following line you set the criterion, 
+        //which is the name of Contact in my example scenario
+        return equipmentDo1.getBillOfLading().compareTo(equipmentDo2.getBillOfLading());
+    }
+  }
 }

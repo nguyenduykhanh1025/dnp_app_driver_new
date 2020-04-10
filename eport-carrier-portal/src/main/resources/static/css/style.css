@@ -572,6 +572,7 @@ body.canvas-menu.mini-navbar nav.navbar-static-side {
 }
 
 .top-navigation .navbar-right {
+    padding-top: 5px;
     padding-right: 10px;
 }
 

@@ -844,6 +844,46 @@ var table = {
             	    }
             	});
                 layer.full(index);
+			},
+			// open full
+            openFullDo: function (title, url, width, height) {
+            	//如果是移动端，就使用自适应大小弹窗
+            	if ($.common.isMobile()) {
+            	    width = 'auto';
+            	    height = 'auto';
+            	}
+            	if ($.common.isEmpty(title)) {
+                    title = false;
+                }
+                if ($.common.isEmpty(url)) {
+                    url = "/404.html";
+                }
+                if ($.common.isEmpty(width)) {
+                	width = 800;
+                }
+                if ($.common.isEmpty(height)) {
+                	height = ($(window).height() - 50);
+                }
+                var index = layer.open({
+            		type: 2,
+            		area: [width + 'px', height + 'px'],
+            		fix: false,
+            		//不固定
+            		maxmin: true,
+            		shade: 0.3,
+            		title: title,
+            		content: url,
+            		// 弹层外区域关闭
+            		shadeClose: true,
+            		yes: function(index, layero) {
+            	        var iframeWin = layero.find('iframe')[0];
+            	        iframeWin.contentWindow.submitHandler(index, layero);
+            	    },
+            	    cancel: function(index) {
+            	        return true;
+            	    }
+            	});
+                layer.full(index);
             },
             // 选卡页方式打开
             openTab: function (title, url) {
@@ -1003,6 +1043,12 @@ var table = {
             	table.set();
             	var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
                 $.modal.openFull("Thêm " + table.options.modalName, url);
+			},
+			// add full size do
+            addFullDo: function(id) {
+            	table.set();
+				var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
+                $.modal.openFullDo("", url);
             },
             // 添加访问地址
             addUrl: function(id) {

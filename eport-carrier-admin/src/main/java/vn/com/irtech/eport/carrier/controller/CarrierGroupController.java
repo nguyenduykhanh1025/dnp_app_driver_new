@@ -153,32 +153,29 @@ public class CarrierGroupController extends BaseController
     /**
      * Search Carrier Group Name
      */
-    @RequestMapping("/searchGroupCodeByKeyword")
+    @RequestMapping("/searchGroupNameByKeyword")
     @ResponseBody
-    public List<JSONObject> searchGroupCodeByKeyword(String keyword) {
+    public List<JSONObject> searchGroupNameByKeyword(String keyword, Long groupId) {
         CarrierGroup carrierGroup = new CarrierGroup();
-        carrierGroup.setGroupCode(keyword.toLowerCase());
-        List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupListByCode(carrierGroup);
+        carrierGroup.setGroupName(keyword.toLowerCase());
+        List<CarrierGroup> carrierGroups = carrierGroupService.selectCarrierGroupListByName(carrierGroup);
         List<JSONObject> result = new ArrayList<>();
-        int limit = 0; 
 		for (CarrierGroup i : carrierGroups) {
-			JSONObject json = new JSONObject();
-			json.put("id", i.getId());
-			json.put("text", i.getGroupCode());
-            result.add(json);
-            limit++;
-            if (limit == 5) {
-                break;
+			if (i.getId() != groupId) {
+                JSONObject json = new JSONObject();
+                json.put("id", i.getId());
+                json.put("text", i.getGroupName());
+                result.add(json);
             }
 		}
         return result;
     }
 
-    @RequestMapping("/getGroupCodeById")
+    @RequestMapping("/getGroupNameById")
     @ResponseBody
-    public String getGroupCodeById(long id) {
+    public String getGroupNameById(long id) {
         CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(id);
-        return carrierGroup.getGroupCode();
+        return carrierGroup.getGroupName();
     }
 
     /**
@@ -187,49 +184,43 @@ public class CarrierGroupController extends BaseController
     @RequestMapping("/searchOperateCodeByKeyword")
     @ResponseBody
     public List<JSONObject> searchOperateCodeByKeyword(String keyword, long groupId,@RequestParam(value="operateArray[]") Optional<String[]> operates) {
-        CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(groupId);
-        String operateCodes[] = carrierGroup.getOperateCode().split(",");
-        List<JSONObject> result = new ArrayList<>();
-        int limit = 0;
-        operateArray = null; 
-        operates.ifPresent(value -> operateArray = value);
-        boolean check = true;
-        if (operateArray != null) {
-            for (String i : operateCodes) {
-                check = true;
-                for (String j : operateArray) {
-                    if (i.equals(j)) {
-                        check = false;
-                        break;
+        if (groupId != 0) {
+            CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupById(groupId);
+            String operateCodes[] = carrierGroup.getOperateCode().split(",");
+            List<JSONObject> result = new ArrayList<>();
+            operateArray = null; 
+            operates.ifPresent(value -> operateArray = value);
+            boolean check = true;
+            if (operateArray != null) {
+                for (String i : operateCodes) {
+                    check = true;
+                    for (String j : operateArray) {
+                        if (i.equals(j)) {
+                            check = false;
+                            break;
+                        }
+                    }
+                    if (check) {
+                        if (i.contains(keyword)) {
+                            JSONObject json = new JSONObject();
+                            json.put("id", i);
+                            json.put("text", i);
+                            result.add(json);
+                        }
                     }
                 }
-                if (check) {
+            } else {
+                for (String i : operateCodes) {
                     if (i.contains(keyword)) {
                         JSONObject json = new JSONObject();
                         json.put("id", i);
                         json.put("text", i);
                         result.add(json);
-                        limit++;
-                        if (limit == 5) {
-                            break;
-                        }
                     }
                 }
             }
-        } else {
-            for (String i : operateCodes) {
-                if (i.contains(keyword)) {
-                    JSONObject json = new JSONObject();
-                    json.put("id", i);
-                    json.put("text", i);
-                    result.add(json);
-                    limit++;
-                    if (limit == 5) {
-                        break;
-                    }
-                }
-            }
+            return result;
         }
-        return result;
+        return null;
     }
 }

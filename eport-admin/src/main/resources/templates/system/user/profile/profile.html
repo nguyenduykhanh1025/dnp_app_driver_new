@@ -11,7 +11,7 @@
         <div class="col-sm-3 pr5">
             <div class="ibox float-e-margins">
                 <div class="ibox-title ibox-title-gray dashboard-header gray-bg">
-                    <h5>Personal information</h5>
+                    <h5>Thông tin cá nhân</h5>
                 </div>
                 <div class="ibox-content">
                     <div class="text-center">
@@ -21,23 +21,23 @@
                     </div>
                     <ul class="list-group list-group-striped">
                         <li class="list-group-item"><i class="fa fa-user"></i>
-                            <b class="font-noraml">Login name：</b>
+                            <b class="font-noraml">Tên đăng nhập</b>
                             <p class="pull-right">[[${user.loginName}]]</p>
                         </li>
                         <li class="list-group-item"><i class="fa fa-phone"></i>
-                            <b  class="font-noraml">Cellphone number：</b>
+                            <b  class="font-noraml">Số điện thoại</b>
                             <p class="pull-right">[[${user.phonenumber}]]</p>
                         </li>
-                        <li class="list-group-item" th:if="${user.dept?.deptName != null}"><i class="fa fa-group"></i>
-                            <b  class="font-noraml">Department：</b>
+                        <!-- <li class="list-group-item" th:if="${user.dept?.deptName != null}"><i class="fa fa-group"></i>
+                            <b  class="font-noraml">Bá»™ pháº­nï¼š</b>
                             <p class="pull-right" >[[${user.dept?.deptName}]] / [[${#strings.defaultString(postGroup,'No post')}]]</p>
-                        </li>
+                        </li> -->
                         <li class="list-group-item"><i class="fa fa-envelope-o"></i>
-                            <b  class="font-noraml">Email address：</b>
+                            <b  class="font-noraml">Email</b>
                             <p class="pull-right" >[[${user.email}]]</p>
                         </li>
                         <li class="list-group-item"><i class="fa fa-calendar"></i>
-                            <b  class="font-noraml">Creation time：</b>
+                            <b  class="font-noraml">Ngày tạo</b>
                             <p class="pull-right" >[[${#dates.format(user.createTime, 'yyyy-MM-dd')}]]</p>
                         </li>
                     </ul>
@@ -48,13 +48,13 @@
         <div class="col-sm-9 about">
             <div class="ibox float-e-margins">
                 <div class="ibox-title ibox-title-gray dashboard-header">
-                    <h5>Basic information</h5>
+                    <h5>Thông tin cơ bản</h5>
                 </div>
                 <div class="ibox-content">
                     <div class="nav-tabs-custom">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#user_info" data-toggle="tab" aria-expanded="true">Basic information</a></li>
-                            <li><a href="#modify_password" data-toggle="tab" aria-expanded="false">Change Password</a></li>
+                            <li class="active"><a href="#user_info" data-toggle="tab" aria-expanded="true">Thông tin cơ bản</a></li>
+                            <li><a href="#modify_password" data-toggle="tab" aria-expanded="false">Thay đổi mật khẩu</a></li>
                         </ul>
                         <div class="tab-content">
                             <!--User Info-->
@@ -63,70 +63,70 @@
                                     <!--Hide ID-->
                                     <input name="id" id="id" type="hidden">
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">User name：</label>
+                                        <label class="col-sm-2 control-label">Tên đại diện</label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" name="userName" th:field="*{userName}" placeholder="Please enter a username">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Cellphone number：</label>
+                                        <label class="col-sm-2 control-label">Số điện thoại</label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" name="phonenumber" maxlength="11" th:field="*{phonenumber}" placeholder="Please enter the phone number">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Mailbox：</label>
+                                        <label class="col-sm-2 control-label">Email</label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" name="email" th:field="*{email}" placeholder="Please input your email">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Gender：</label>
+                                        <label class="col-sm-2 control-label">Giới tính</label>
                                         <div class="col-sm-10">
                                             <div class="radio-box">
 												<input type="radio" id="radio1" th:field="*{sex}" name="sex" value="0">
-												<label for="radio1">Male</label>
+												<label for="radio1">Nam</label>
 											</div>
 											<div class="radio-box">
 												<input type="radio" id="radio2" th:field="*{sex}" name="sex" value="1">
-												<label for="radio2">Female</label>
+												<label for="radio2">Nữ</label>
 											</div>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
-                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitUserInfo()"><i class="fa fa-check"></i>Save</button>&nbsp;
-                                            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down </button>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitUserInfo()"><i class="fa fa-check"></i>Lưu</button>&nbsp;
+                                            <!-- <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down </button> -->
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             
-                            <!--修改密码-->
+                            <!--ä¿®æ”¹å¯†ç �-->
                             <div class="tab-pane" id="modify_password">
                                 <form class="form-horizontal" id="form-user-resetPwd">
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Old password:</label>
+                                        <label class="col-sm-2 control-label">Mật khẩu cũ</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control" name="oldPassword" placeholder="Please enter the old password">
+                                            <input type="password" class="form-control" name="oldPassword" placeholder="Vui lòng nhập mật khẩu cũ">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">New password：</label>
+                                        <label class="col-sm-2 control-label">Mật khẩu mới</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Please enter a new password">
+                                            <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Vui lòng nhập mật khẩu mới">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Confirm password：</label>
+                                        <label class="col-sm-2 control-label">Xác nhận lại mật khẩu</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control" name="confirmPassword" placeholder="Please confirm your password">
+                                            <input type="password" class="form-control" name="confirmPassword" placeholder="Vui lòng xác nhận lại mật khẩu">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
-                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitChangPassword()"><i class="fa fa-check"></i>Save</button>&nbsp;
-                                            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down</button>
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitChangPassword()"><i class="fa fa-check"></i>Lưu</button>&nbsp;
+                                            <!-- <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down</button> -->
                                         </div>
                                     </div>
                                 </form>
@@ -141,13 +141,13 @@
     
     <th:block th:include="include :: footer" />
     <script>
-	    /*用户管理-头像*/
+	    /*ç”¨æˆ·ç®¡ç�†-å¤´åƒ�*/
 	    function avatar() {
 	        var url = ctx + 'system/user/profile/avatar';
 	        $.modal.open("Modify avata", url);
 	    }
 	    
-	    /*用户信息-修改*/
+	    /*ç”¨æˆ·ä¿¡æ�¯-ä¿®æ”¹*/
 	    $("#form-user-edit").validate({
 			onkeyup: false,
 			rules:{
@@ -217,7 +217,7 @@
 	        }
 	    }
 	    
-	    /*用户管理-修改密码*/
+	    /*ç”¨æˆ·ç®¡ç�†-ä¿®æ”¹å¯†ç �*/
 	    $("#form-user-resetPwd").validate({
 	    	onkeyup: false,
 			rules:{

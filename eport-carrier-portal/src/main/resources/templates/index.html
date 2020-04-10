@@ -22,6 +22,11 @@
       <div id="page-wrapper" class="gray-bg dashbard-1">
         <div class="row border-bottom">
             <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <ul class="nav navbar-left welcome-message">
+                  <li >
+	                	<a title="ePort CND" class="menuItem" style="font-size: 2rem;">ePort CDN</a>
+	                </li>
+                </ul>
                 <ul class="nav navbar-top-links navbar-right welcome-message">
 	                <li>
 	                	<a title="Quản Lý DO" th:href="@{/carrier/do}" href="/carrier/do" class="menuItem"><i class="fa fa-ship"></i>&nbsp; Quản Lý DO</a>
@@ -33,16 +38,16 @@
 						<ul class="dropdown-menu">
 							<li class="mt5">
 								<a th:href="@{/carrier/profile}" class="menuItem">
-								<i class="fa fa-user"></i> Profile</a>
+								<i class="fa fa-user"></i> Hồ sơ</a>
 							</li>
 							<li>
 								<a onclick="resetPwd()">
-								<i class="fa fa-key"></i> Change Password</a>
+								<i class="fa fa-key"></i> Thay đổi mật khẩu</a>
 							</li>
 							<li class="divider"></li>
 							<li>
 								<a th:href="@{logout}">
-								<i class="fa fa-sign-out"></i> Logout</a>
+								<i class="fa fa-sign-out"></i> Đăng xuất</a>
 							</li>
 						</ul>
 					</li>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
+import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.UserConstants;
@@ -23,7 +24,6 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.common.utils.AddressUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
@@ -66,7 +66,9 @@ public class CarrierAccountController extends BaseController
     public TableDataInfo list(CarrierAccount carrierAccount)
     {
         startPage();
-        carrierAccount.setCarrierCode(carrierAccount.getCarrierCode().toLowerCase());
+        CarrierGroup carrierGroup = carrierAccount.getCarrierGroup();
+        carrierGroup.setGroupName(carrierGroup.getGroupName().toLowerCase());
+        carrierAccount.setCarrierGroup(carrierGroup);
         carrierAccount.setEmail(carrierAccount.getEmail().toLowerCase());
         List<CarrierAccount> list = carrierAccountService.selectCarrierAccountList(carrierAccount);
         return getDataTable(list);
@@ -102,14 +104,14 @@ public class CarrierAccountController extends BaseController
     @Log(title = "Carrier Account", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(CarrierAccount carrierAccount)
+    public AjaxResult addSave(CarrierAccount carrierAccount, String isSendEmail)
     {
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierAccount.getEmail())) {
-            return error("Invalid Email!");
+            return error("Email không hợp lệ!");
         } else if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail().toLowerCase()).equals("1")) {
-            return error("Email already exist!");
+            return error("Email đã tồn tại!");
         } else if (carrierAccount.getPassword().length() < 6) {
-            return error("Password cannot less than 6 characters!");
+            return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
         Map<String, Object> variables = new HashMap<>();
 		variables.put("username", carrierAccount.getFullName());
@@ -120,15 +122,17 @@ public class CarrierAccountController extends BaseController
         , carrierAccount.getPassword(), carrierAccount.getSalt()));
         carrierAccount.setCreateBy(ShiroUtils.getSysUser().getUserName());
         if (carrierAccountService.insertCarrierAccount(carrierAccount) == 1) {
-            new Thread() {
-                public void run() {
-                    try {
-                        mailService.prepareAndSend("Cấp tài khoản truy cập", carrierAccount.getEmail(), variables, "email");  
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                }
-            }.start();
+            if (isSendEmail != null) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            mailService.prepareAndSend("Cấp tài khoản truy cập", carrierAccount.getEmail(), variables, "email");  
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                    }
+                }.start();
+            }
             return success();
         }             
         return error();
@@ -155,7 +159,7 @@ public class CarrierAccountController extends BaseController
     public AjaxResult editSave(CarrierAccount carrierAccount)
     {
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierAccount.getEmail())) {
-            return error("Invalid Email!");
+            return error("Email không hợp lệ!");
         }
     	carrierAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierAccountService.updateCarrierAccount(carrierAccount));
@@ -197,26 +201,28 @@ public class CarrierAccountController extends BaseController
     @Log(title = "Reset password", businessType = BusinessType.UPDATE)
     @PostMapping("/resetPwd")
     @ResponseBody
-    public AjaxResult resetPwdSave(CarrierAccount carrierAccount)
+    public AjaxResult resetPwdSave(CarrierAccount carrierAccount, String isSendEmail)
     {
         Map<String, Object> variables = new HashMap<>();
 		variables.put("username", carrierAccount.getFullName());
         variables.put("password", carrierAccount.getPassword());
         variables.put("email", carrierAccount.getEmail());
-        //variables.put("link", AddressUtils.IP_URL);
+        carrierAccount.setStatus("");
         carrierAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
         carrierAccount.setSalt(ShiroUtils.randomSalt());
         carrierAccount.setPassword(passwordService.encryptPassword(carrierAccount.getEmail(), carrierAccount.getPassword(), carrierAccount.getSalt()));
         if (carrierAccountService.updateCarrierAccount(carrierAccount) == 1) {
-            new Thread() {
-                public void run() {
-                    try {
-                        mailService.prepareAndSend("Thiết lập lại mật khẩu", carrierAccount.getEmail(), variables, "resetPassword");  
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                }
-            }.start();
+            if (isSendEmail != null) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            mailService.prepareAndSend("Thiết lập lại mật khẩu", carrierAccount.getEmail(), variables, "resetPassword");  
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                    }
+                }.start();
+            } 
             return success();
         }             
         return error();

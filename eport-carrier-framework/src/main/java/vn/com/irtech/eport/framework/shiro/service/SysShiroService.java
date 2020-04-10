@@ -55,7 +55,7 @@ public class SysShiroService
             onlineSession.setLoginName(userOnline.getLoginName());
             onlineSession.setStartTimestamp(userOnline.getStartTimestamp());
             onlineSession.setLastAccessTime(userOnline.getLastAccessTime());
-            onlineSession.setTimeout(userOnline.getExpireTime());
+            //onlineSession.setTimeout(userOnline.getExpireTime());
         }
         return onlineSession;
     }

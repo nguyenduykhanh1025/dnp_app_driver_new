@@ -60,7 +60,7 @@ shiro:
     loginUrl: /login
     unauthorizedUrl: /unauth
     indexUrl: /index
-    captchaEnabled: true
+    captchaEnabled: false
     captchaType: math
   cookie:
     domain: 

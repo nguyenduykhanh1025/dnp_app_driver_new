@@ -32,12 +32,7 @@
             role="navigation"
             style="margin-bottom: 0;"
           >
-            <ul class="nav navbar-top-links navbar-right welcome-message">
-              <li>
-                <a title="full-screen display" href="javascript:void(0)" id="fullScreen"
-                  ><i class="fa fa-arrows-alt"></i> Full Screen</a
-                >
-              </li>
+            <ul class="nav navbar-top-links navbar-right welcome-message" style="margin-top: 12px;">
               <li class="dropdown user-menu">
                 <a
                   href="javascript:void(0)"
@@ -51,46 +46,37 @@
                 <ul class="dropdown-menu">
                   <li class="mt5">
                     <a th:href="@{/system/user/profile}" class="menuItem">
-                      <i class="fa fa-user"></i> Profile</a
+                      <i class="fa fa-user"></i> Hồ sơ</a
                     >
                   </li>
                   <li>
                     <a onclick="resetPwd()">
-                      <i class="fa fa-key"></i> Change Password</a
+                      <i class="fa fa-key"></i> Thay đổi mật khẩu</a
                     >
                   </li>
                   <li>
                     <a onclick="switchSkin()">
-                      <i class="fa fa-dashboard"></i> Theme</a
+                      <i class="fa fa-dashboard"></i> Nền</a
                     >
                   </li>
                   <li class="divider"></li>
                   <li>
                     <a th:href="@{logout}">
-                      <i class="fa fa-sign-out"></i> Logout</a
+                      <i class="fa fa-sign-out"></i> Đăng xuất</a
                     >
                   </li>
                 </ul>
               </li>
             </ul>
             <ul class="nav navbar-top-links navbar-left" id="side-menu">
-              <li class="dropdown user-menu">
-                <a href="#"
-                  ><i class="fa fa-home"></i> <span class="nav-label">Home</span>
-                  <span class="fa arrow"></span
-                ></a>
-                <ul class="nav nav-second-level dropdown-menu">
-                  <li>
-                    <a class="menuItem" th:href="@{/system/main}">Trang chủ</a>
-                  </li>
-                  <li>
-                    <a class="menuItem" th:href="@{/edi/listView}"
-                      >Quản lý EquipmentDO</a
-                    >
-                  </li>
-                </ul>
+              <li style="width: 200px; padding-top: 5px">
+                <img style="float: left; margin-top: 10px; margin-right: 5px" th:src="@{/img/CDN.png}" width="50px" height="50px"/>
+                <a href="#" style="margin-left: 10px;"
+                  > <h3>ePort DNP</h3>
+                  </a>
+                
               </li>
-              <li class="dropdown user-menu" th:each="menu : ${menus}">
+              <li th:each="menu : ${menus}">
                 <a
                   th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
                   th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
@@ -99,9 +85,9 @@
                   <span class="nav-label" th:text="${menu.menuName}"
                     >Top Menu</span
                   >
-                  <span
+                  <!-- <span
                     th:class="${menu.url == '' || menu.url == '#'} ? |fa arrow|"
-                  ></span>
+                  ></span> -->
                 </a>
                 <ul class="nav nav-second-level dropdown-menu">
                   <li th:each="cmenu : ${menu.children}">
@@ -113,8 +99,9 @@
                       >2nd Menu</a
                     >
                     <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#"
-                      >[[${cmenu.menuName}]]<span class="fa arrow"></span
-                    ></a>
+                      >[[${cmenu.menuName}]]
+                      <span class="fa arrow"></span>
+                  </a>
                     <ul
                       th:if="${not #lists.isEmpty(cmenu.children)}"
                       class="nav nav-third-level"
@@ -128,8 +115,9 @@
                           >3rd Menu</a
                         >
                         <a th:if="${not #lists.isEmpty(emenu.children)}" href="#"
-                          >[[${emenu.menuName}]]<span class="fa arrow"></span
-                        ></a>
+                          >[[${emenu.menuName}]]
+                          <!-- <span class="fa arrow"></span> -->
+                        </a>
                         <ul
                           th:if="${not #lists.isEmpty(emenu.children)}"
                           class="nav nav-four-level"
@@ -140,7 +128,7 @@
                               th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
                               th:text="${fmenu.menuName}"
                               th:href="@{${fmenu.url}}"
-                              >四级菜单</a
+                              >4th Menu</a
                             >
                           </li>
                         </ul>
@@ -243,7 +231,7 @@
           layer.open({
       		type : 2,
       		shadeClose : true,
-      		title : "Change Theme",
+      		title : "Thay đổi nền",
       		area : ["530px", "386px"],
       		content : [ctx + "system/switchSkin", 'no']
       	})

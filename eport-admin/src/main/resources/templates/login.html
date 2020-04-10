@@ -1,81 +1,173 @@
 <!DOCTYPE html>
-<html  lang="zh" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
     <title>ePort Login</title>
-    <meta name="description" content="ePort">
-    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
-    <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
-    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
-    <link href="../static/css/login.min.css" th:href="@{/css/login.min.css}" rel="stylesheet"/>
-    <link href="../static/ruoyi/css/ry-ui.css" th:href="@{/ruoyi/css/ry-ui.css?v=4.2.0}" rel="stylesheet"/>
+    <meta name="description" content="ePort" />
+    <link
+      href="../static/css/bootstrap.min.css"
+      th:href="@{/css/bootstrap.min.css}"
+      rel="stylesheet"
+    />
+    <link
+      href="../static/css/font-awesome.min.css"
+      th:href="@{/css/font-awesome.min.css}"
+      rel="stylesheet"
+    />
+    <link
+      href="../static/css/style.css"
+      th:href="@{/css/style.css}"
+      rel="stylesheet"
+    />
+    <link
+      href="../static/css/login.min.css"
+      th:href="@{/css/login.min.css}"
+      rel="stylesheet"
+    />
+    <link
+      href="../static/ruoyi/css/ry-ui.css"
+      th:href="@{/ruoyi/css/ry-ui.css?v=4.2.0}"
+      rel="stylesheet"
+    />
     <!-- 360 Browser Quick Mode -->
-    <meta name="renderer" content="webkit">
+    <meta name="renderer" content="webkit" />
     <!-- Avoid IE using compatibility mode-->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="shortcut icon" href="../static/favicon.ico" th:href="@{favicon.ico}"/>
-    <style type="text/css">label.error { position:inherit;  }</style>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link
+      rel="shortcut icon"
+      href="../static/favicon.ico"
+      th:href="@{favicon.ico}"
+    />
+    <style type="text/css">
+      label.error {
+        position: inherit;
+      }
+      .signinpanel {
+        margin: 0 auto;
+        width: auto;
+      }
+
+      @media only screen and (max-width: 770px) {
+        #cdn-text {
+          font-size: 250% !important;
+        }
+
+        #signupForm {
+          width: 80% !important; 
+        }
+      }
+    </style>
     <script>
-        if(window.top!==window.self){alert('Not logged in or login timed out. please login again');window.top.location=window.location};
+      if (window.top !== window.self) {
+        alert("Not logged in or login timed out. please login again");
+        window.top.location = window.location;
+      }
     </script>
-</head>
-<body class="signin">
+  </head>
+
+  <body class="signin">
     <div class="signinpanel">
-        <div class="row">
-            <div class="col-sm-7">
-                <div class="signin-info">
-                    <div class="logopanel m-b">
-                        <h1><img  alt="[ Logo ]" src="../static/img/new-logo.svg" th:src="@{/img/new-logo.svg}"></h1>
-                    </div>
-                    <div class="m-b"></div>
-                    <h4>Welcome <strong>to ePort</strong></h4>
-<!--                     <ul class="m-b">
-                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> SpringBoot</li>
-                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Mybatis</li>
-                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Shiro</li>
-                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Thymeleaf</li>
-                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Bootstrap</li>
-                    </ul> -->
-                    <strong th:if="${@config.getKey('sys.account.registerUser')}">Forgot your password ? <a th:href="@{/register}">Register&raquo;</a></strong>
-                </div>
-            </div>
-            <div class="col-sm-5">
-                <form id="signupForm" autocomplete="off" >Login</h4>
-                    <p class="m-t-md">Please login</p>
-                    <input type="text"     name="username" class="form-control uname"     placeholder="Username" value="admin"    />
-                    <input type="password" name="password" class="form-control pword"     placeholder="Password"   value="admin123" />
-					<div class="row m-t" th:if="${captchaEnabled==true}">
-						<div class="col-xs-6">
-						    <input type="text" name="validateCode" class="form-control code" placeholder="Captcha" maxlength="5" />
-						</div>
-						<div class="col-xs-6">
-							<a href="javascript:void(0);" title="Refresh Captcha">
-								<img th:src="@{captcha/captchaImage(type=${captchaType})}" class="imgcode" width="85%"/>
-							</a>
-						</div>
-					</div>
-                    <div class="checkbox-custom" th:classappend="${captchaEnabled==false} ? 'm-t'">
-				        <input type="checkbox" id="rememberme" name="rememberme"> <label for="rememberme">Remember Me</label>
-				    </div>
-                    <button class="btn btn-success btn-block" id="btnSubmit" data-loading="Login...">Login</button>
-                </form>
-            </div>
+      <div class="container">
+        <div class="logo-top" style="text-align: center">
+          <h1>
+            <img
+              alt="cdn"
+              src="../static/img/CDN.png"
+              th:src="@{/img/CDN.png}"
+              style="width: 30%; height: 30%;"
+            />
+          </h1>
+          <h4 id="cdn-text" style="font-size: 300%; font-family: Arial, sans-serif;">
+            <strong>CẢNG ĐÀ NẴNG</strong>
+          </h4>
         </div>
-<!--         <div class="signup-footer">
-            <div class="pull-left">Copyright &copy; 2020 All Rights Reserved <br></div>
+        <div class="login-form">
+          <form id="signupForm" autocomplete="off" style="width: 50%; margin: 0 auto; margin-top: 20px;">
+            <p
+              class="m-t-md"
+              style="
+                font-size: x-large;
+                margin: auto;
+                text-align: center;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial,
+                  sans-serif;
+              "
+            >
+              <b>ĐĂNG NHẬP</b>
+            </p>
+            <input
+              type="text"
+              name="username"
+              class="form-control uname"
+              placeholder="Tên đăng nhập"
+            />
+            <input
+              type="password"
+              name="password"
+              class="form-control pword"
+              placeholder="Mật khẩu"
+            />
+            <div
+              class="checkbox-custom"
+              th:classappend="${captchaEnabled==false} ? 'm-t'"
+            >
+              <input type="checkbox" id="rememberme" name="rememberme"/>
+              <label for="rememberme">Ghi nhớ mật khẩu</label>
+            </div>
+            <button
+              class="btn btn-success btn-block"
+              id="btnSubmit"
+              data-loading="Đang đăng nhập..."
+            >
+              Đăng nhập
+            </button>
+          </form>
+        </div>
+      </div>
+      <!-- <div class="row">
+                
+            <div class="col-sm-3" style="position: absolute;transform: translate(50%,140px);">
+                
+            </div>
         </div> -->
+      <!--         <div class="signup-footer">
+                <div class="pull-left">Copyright &copy; 2020 All Rights Reserved <br></div>
+            </div> -->
     </div>
-<script th:inline="javascript"> var ctx = [[@{/}]]; var captchaType = [[${captchaType}]]; </script>
-<!-- 全局js -->
-<script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
-<script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
-<!-- 验证插件 -->
-<script src="../static/ajax/libs/validate/jquery.validate.min.js" th:src="@{/ajax/libs/validate/jquery.validate.min.js}"></script>
-<script src="../static/ajax/libs/validate/messages_zh.min.js" th:src="@{/ajax/libs/validate/messages_zh.min.js}"></script>
-<script src="../static/ajax/libs/layer/layer.min.js" th:src="@{/ajax/libs/layer/layer.min.js}"></script>
-<script src="../static/ajax/libs/blockUI/jquery.blockUI.js" th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
-<script src="../static/ruoyi/js/ry-ui.js" th:src="@{/ruoyi/js/ry-ui.js?v=4.2.0}"></script>
-<script src="../static/ruoyi/login.js" th:src="@{/ruoyi/login.js}"></script>
-</body>
+    <script th:inline="javascript">
+      var ctx = [[@{/}]];
+    </script>
+    <!-- 全局js -->
+    <script
+      src="../static/js/jquery.min.js"
+      th:src="@{/js/jquery.min.js}"
+    ></script>
+    <script
+      src="../static/js/bootstrap.min.js"
+      th:src="@{/js/bootstrap.min.js}"
+    ></script>
+    <!-- 验证插件 -->
+    <script
+      src="../static/ajax/libs/validate/jquery.validate.min.js"
+      th:src="@{/ajax/libs/validate/jquery.validate.min.js}"
+    ></script>
+    <!-- <script src="../static/ajax/libs/validate/messages_zh.min.js" th:src="@{/ajax/libs/validate/messages_zh.min.js}"></script> -->
+    <script
+      src="../static/ajax/libs/layer/layer.min.js"
+      th:src="@{/ajax/libs/layer/layer.min.js}"
+    ></script>
+    <script
+      src="../static/ajax/libs/blockUI/jquery.blockUI.js"
+      th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"
+    ></script>
+    <script
+      src="../static/ruoyi/js/ry-ui.js"
+      th:src="@{/ruoyi/js/ry-ui.js?v=4.2.0}"
+    ></script>
+    <script src="../static/ruoyi/login.js" th:src="@{/ruoyi/login.js}"></script>
+  </body>
 </html>
