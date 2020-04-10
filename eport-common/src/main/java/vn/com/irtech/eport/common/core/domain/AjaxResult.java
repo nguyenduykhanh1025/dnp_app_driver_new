@@ -88,7 +88,7 @@ public class AjaxResult extends HashMap<String, Object>
      */
     public static AjaxResult success()
     {
-        return AjaxResult.success("Success");
+        return AjaxResult.success("Thành công");
     }
 
     /**
@@ -98,7 +98,7 @@ public class AjaxResult extends HashMap<String, Object>
      */
     public static AjaxResult success(Object data)
     {
-        return AjaxResult.success("Success", data);
+        return AjaxResult.success("Thành công", data);
     }
 
     /**
@@ -154,7 +154,7 @@ public class AjaxResult extends HashMap<String, Object>
      */
     public static AjaxResult error()
     {
-        return AjaxResult.error("Failed");
+        return AjaxResult.error("Thất bại");
     }
 
     /**
