@@ -75,7 +75,8 @@ public class CarrierEquipmentDoController extends BaseController {
 	@RequestMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(EquipmentDo edo) {
-		startPage();
+    startPage();
+    edo.setCarrierId(ShiroUtils.getUserId());
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(edo);
 		return getDataTable(list);
 	}
