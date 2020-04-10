@@ -141,6 +141,20 @@
                             <li>
                               <input type="text" placeholder="Chuyến tàu : Voyage"  name="voyNo"/>
                             </li>
+                            <li>
+                              <select name="status">
+                                  <option value="">Tất cả</option>
+                                  <option value="Y">Đã làm lệnh</option>
+                                  <option value="N">Chưa làm lệnh</option>
+                              </select>
+                            </li>
+                            <li>
+                              <select name="documentStatus">
+                                  <option value="">Tất cả</option>
+                                  <option value="Y">Đã có DO gốc</option>
+                                  <option value="N">Chưa có DO gốc</option>
+                              </select>
+                            </li>
                             <li class="select-time">
                                 <p>Hạn lệnh：</p>
                                 <input type="text" class="time-input" id="expiredDem_StartDay" placeholder="Ngày bắt đầu" name="expiredDemStartDay"/>
@@ -311,9 +325,9 @@
                         colWidths: [0.1],
                         manualColumnMove: true,
                         filters: true
-                    });
-                    });
+                  });
                 });
+              });
             });
             // Next Page
             function nextPage(){
