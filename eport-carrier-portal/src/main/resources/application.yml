@@ -68,7 +68,7 @@ shiro:
     httpOnly: true
     maxAge: 30
   session:
-    expireTime: 30
+    # expireTime: 30
     dbSyncPeriod: 1
     validationInterval: 10
     maxSession: -1

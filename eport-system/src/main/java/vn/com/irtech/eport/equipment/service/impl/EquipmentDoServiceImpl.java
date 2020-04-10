@@ -137,6 +137,10 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     {
         return equipmentDoMapper.getStatus(id);
     }
+    public List<EquipmentDo> getContainerListByIds(String ids) {
+      return equipmentDoMapper.getContainerListByIds(Convert.toStrArray(ids));
+    }
+   
 
    
 }

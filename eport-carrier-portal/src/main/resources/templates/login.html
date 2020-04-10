@@ -22,14 +22,13 @@
 </head>
 <body class="signin">
     <div class="signinpanel">
-        <div class="row">
-            <div class="col-sm-7">
-                <div class="signin-info">
-                    <div class="logopanel m-b">
-                        <h1><img  alt="[ Logo ]" src="../static/img/new-logo.svg" th:src="@{/img/new-logo.svg}"></h1>
-                    </div>
-                    <div class="m-b"></div>
-                    <h4>Welcome <strong>to ePort</strong></h4>
+        <div class="col-sm-7">
+        	<div class="signin-info"  style="position: absolute;left: -350px;top: -150px;">
+            	<div class="logopanel m-b">
+                	<h1><img  alt="[ Logo ]" src="../static/img/new-logo.svg" th:src="@{/img/new-logo.svg}"></h1>
+                </div>
+                <div class="m-b"></div>
+                <h4>Welcome <strong>to ePort</strong></h4>
 <!--                     <ul class="m-b">
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> SpringBoot</li>
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Mybatis</li>
@@ -37,12 +36,15 @@
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Thymeleaf</li>
                         <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Bootstrap</li>
                     </ul> -->
-                    <strong th:if="${@config.getKey('sys.account.registerUser')}">Forgot your password ? <a th:href="@{/register}">Register&raquo;</a></strong>
-                </div>
+                <strong th:if="${@config.getKey('sys.account.registerUser')}">Forgot your password ? <a th:href="@{/register}">Register&raquo;</a></strong>
             </div>
-            <div class="col-sm-5">
-                <form id="signupForm" autocomplete="off">Login</h4>
-                    <p class="m-t-md"></p>
+        </div>
+        <div class="row">
+            <div class="col-sm-3" style="position: absolute;transform: translate(50%,0px);">
+                <form id="signupForm" autocomplete="off"></h4>
+                	<p class="m-t-md" style="font-size:x-large;margin: auto;text-align: center;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
+                        <b>LOGIN</b>
+                    </p>
                     <input type="text"     name="username" class="form-control uname"     placeholder="Username"/>
                     <input type="password" name="password" class="form-control pword"     placeholder="Password" />
                     <br>

@@ -91,25 +91,28 @@
   </style>
   <body>
     <!-- =================================== -->
-    <div class="container">
-      <h2 style="text-align: center;">Khai báo Delivery Order</h2>
-      <hr />
-      <div id="example" class="hot handsontable htColumnHeaders"></div>
-      <hr />
-      <div class="footer-add">
-        <button
-          type="button"
-          class="btn btn-primary"
-          onclick="addAll()"
-          style="margin-right: 10px;"
-        >
-          Xác nhận
-        </button>
-        <button type="button" class="btn btn-dark" onclick="dismiss()">
-          Hủy bỏ
-        </button>
+    <form id="form-do-add">
+      <div class="container">
+        <h2 style="text-align: center;">Khai báo Delivery Order</h2>
+        <hr />
+        <div id="example" class="hot handsontable htColumnHeaders"></div>
+        <hr />
+        <div class="footer-add">
+          <button
+            type="button"
+            class="btn btn-primary"
+            onclick="addAll()"
+            style="margin-right: 10px;"
+          >
+            Xác nhận
+          </button>
+          <button type="button" class="btn btn-dark" onclick="dismiss()">
+            Hủy bỏ
+          </button>
+        </div>
       </div>
-    </div>
+    </form>
+    <th:block th:include="include :: footer" />
     <!-- Jquery -->
     <script th:src="@{/js/jquery.min.js}"></script>
     <!-- Boostrap -->
@@ -121,6 +124,17 @@
       th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
     ></script>
     <script>
+      // ****************************
+      var prefix = "/carrier/do";
+
+      function submitHandler() {
+        // add condition to validate before submit add do
+        if (true) {
+          $.operate.save(prefix + "/add", $('#form-do-add').serialize());
+        }
+      }
+      // ****************************
+
       var example = document.getElementById("example"),
         hot,
         $hooksList,
@@ -316,32 +330,40 @@
             data: {
               equipmentDo: jsonData,
             },
-          }).done(function (result) {
-            $.toast({
-              heading: "Thành công",
-              text:
-                "Khai báo DO thành công ！",
-              showHideTransition: "fade",
-              icon: "success",
-              position: "top-right"
-            });
-            hot.loadData([]);
-            hot.render();
+            success: function (result) {
+              $.toast({
+                heading: "Thành công",
+                text:
+                  "Khai báo DO thành công ！",
+                showHideTransition: "fade",
+                icon: "success",
+                position: "top-right"
+              });
+              hot.loadData([]);
+              hot.render();
+            },
+            error: function (result) {
+              $.toast({
+                  heading: "Lỗi",
+                  text:
+                    "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin ！",
+                  showHideTransition: "fade",
+                  icon: "error",
+                  position: "top-right"
+                });
+            },
           });
         }
-        return;
-
-        console.log(cleanedGridData);
-        // Validate the cells and submit the form via ajax or whatever
-        hot.validateCells(function (result, obj) {
-          if (result == true) {
-            var jsonData = JSON.stringify(myTableData);
-            console.log(jsonData);
-          } else {
-            //hotInstance.updateSettings({minSpareRows: 1});
-          }
-        });
       }
+        // Validate the cells and submit the form via ajax or whatever
+        // hot.validateCells(function (result, obj) {
+        //   if (result == true) {
+        //     var jsonData = JSON.stringify(myTableData);
+        //     console.log(jsonData);
+        //   } else {
+        //     //hotInstance.updateSettings({minSpareRows: 1});
+        //   }
+        // });
     </script>
   </body>
 </html>

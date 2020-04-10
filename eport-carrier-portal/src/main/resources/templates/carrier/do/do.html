@@ -7,10 +7,36 @@
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: datetimepicker-css" />
     <link th:href="@{/css/jquery.toast.min.css}" rel="stylesheet" />
   </head>
   <style>
-    .clickable { cursor: pointer; }
+    .clickable {
+      cursor: pointer;
+    }
+
+    #container-details table tbody,
+    #container-details table thead {
+      display: block;
+    }
+
+    #container-details table tbody {
+      overflow: auto;
+      height: auto;
+      max-height: 400px;
+    }
+
+    .modal-dialog {
+      width: 700px;
+    }
+
+    /* table {
+        width: 350px; /* can be dynamic */
+
+    /* th
+    {
+        width: 75px;
+    } */
   </style>
   <body class="gray-bg">
     <div
@@ -35,19 +61,35 @@
             <h3 class="modal-title w-100 font-weight-bold">
               Thay đổi hạn lệnh của container
             </h3>
-            
           </div>
           <div class="modal-body mx-3">
             <div class="md-form mb-5">
-              <p>Các container đang chọn: <b id="container-details"></b></p>
+              <label>Danh sách container đang chọn:</label>
+              <div id="container-details"></div>
             </div>
-            <br>
-            <div class="md-form mb-4 form-group">
-              <label data-error="wrong" data-success="right" for="form2">
-                Nhập ngày mới <i class="fa fa-calendar prefix grey-text"></i>
-              </label>
-              
-              <input type="text" id="form2" class="time-input form-control validate clickable" />
+            <hr />
+            <div class="row">
+              <div class="col-md-3">
+                <label
+                  data-error="wrong"
+                  data-success="right"
+                  for="form2"
+                  style="line-height: 34px; height: 34px;"
+                >
+                  Hạn lệnh mới
+                </label>
+              </div>
+              <div class="col-md-4 input-group date" id="datetimepicker2">
+                <input
+                  type="text"
+                  class="form-control time-input"
+                  id="datetimepicker"
+                  autocomplete="off"
+                />
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
             </div>
           </div>
           <div class="modal-footer d-flex justify-content-center">
@@ -62,7 +104,7 @@
     <div class="row">
       <div class="col-sm-12 select-table" style="margin-top: 0px;">
         <!-- Search form -->
-        <div class="col-sm-12">
+        <div class="col-sm-12" id="searchForm">
           <form id="formId">
             <div class="select-list">
               <ul>
@@ -109,7 +151,7 @@
                 <li>
                   <a
                     class="btn btn-primary btn-rounded btn-sm"
-                    onclick="$.table.search()"
+                    onclick="$.operate.search()"
                     id="searchBtn"
                     ><i class="glyphicon glyphicon-search"></i> Tìm Kiếm</a
                   >
@@ -145,6 +187,7 @@
               type="button"
               name="showSearch"
               title="Tìm kiếm"
+              onclick="collapse()"
             >
               <i class="glyphicon glyphicon-search"></i>
             </button>
@@ -213,13 +256,13 @@
                 >
                   Ngày miễn<br />DET free
                 </th>
-                <th data-options="field:'vessel',halign:'center'" width="100">
+                <th data-options="field:'vessel',align:'center'" width="10%">
                   Tên tàu<br />Vessel
                 </th>
-                <th data-options="field:'voyNo',halign:'center'" width="100">
+                <th data-options="field:'voyNo',align:'center'" width="10%">
                   Chuyến tàu<br />Voyage No
                 </th>
-                <th data-options="field:'status',align:'center'" width="80">
+                <th data-options="field:'status',align:'center'" width="10%">
                   Trạng thái
                 </th>
               </tr>
@@ -230,11 +273,24 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
     <!-- Jquery toast -->
     <script th:src="@{/js/jquery.toast.min.js}"></script>
     <script type="text/javascript">
-    load();
-    function load() {
+      // open add layer iframe
+      //**********************************
+      var prefix = ctx + "carrier/do";
+      $(function () {
+        var options = {
+          url: prefix + "/list",
+          createUrl: prefix + "/add",
+          // width: '1000'
+        };
+        $.table.init(options);
+      });
+      //**********************************
+      load();
+      function load() {
         var dg = $("#dg").datagrid({
           url: ctx + "carrier/do/list",
           singleSelection: true,
@@ -264,8 +320,7 @@
             });
           },
         });
-    }
-      
+      }
 
       //Handle click checkbox event
       $(document).on(
@@ -280,8 +335,19 @@
           }
         }
       );
+
       var selectedRow;
       var selectedContainer;
+      $(".datagrid-header-check input").click(function () {
+        setTimeout(function () {
+          var checked = $("input:checkbox:checked").length;
+          if (!checked) {
+            $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").addClass("disabled");
+          } else {
+            $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").removeClass("disabled");
+          }
+        }, 200);
+      });
 
       //Get selected row of table
       function getSelectedRow() {
@@ -295,42 +361,62 @@
           url: "/carrier/do/getContainer",
           method: "get",
           data: {
-            containerId: selectedRow
+            containerId: selectedRow,
           },
-          success: function(result){
-            var text = "[";
-            result.forEach(element => {
-              text += element + ", ";
+          success: function (result) {
+            var text = "<table class='table'><thead><tr>";
+            text += "<th width='50px'>STT<br><small>#</small></th>";
+            text +=
+              "<th width='150px'>Số vận đơn<br><small>B/L No</small></th>";
+            text +=
+              "<th width='200px'>Số cont<br><small>Container No</small></th>";
+            text += "<th width='150px'>Tên tàu<br> <small>Vessel</small></th>";
+            text +=
+              "<th width='150px'>Hạn lệnh hiện tại<br><small> Current Expired Date</small></th>";
+            text += "</tr></thead><tbody >";
+            var i = 0;
+            result.forEach((element) => {
+              i++;
+              var date = new Date(element.expiredDem);
+              const ye = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
+              const mo = new Intl.DateTimeFormat('en', { month: 'numeric' }).format(date);
+              const da = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
+
+              text += "<tr><td width='50px'>" + i + "</td>";
+              text += "<td width='150px'>" + element.billOfLading + "</td>";
+              text += "<td width='200px'>" + element.containerNumber + "</td>";
+              text += "<td width='150px'>" + element.vessel + "</td>";
+              text += "<td width='150px'>" + `${da}-${mo}-${ye}` + "</td></tr>";
             });
-            $("#container-details").html(text.substring(0, text.length - 2) + "]");
-          }
-        })
+            text += "</tbody></table>";
+            $("#container-details").html(text);
+          },
+        });
       }
 
       //Resolve update action
       function submit() {
-        var date = $("#form2").val();
+        var date = $("#datetimepicker").val();
         $.ajax({
           url: "/carrier/do/updateExpire",
-          method: 'post',
+          method: "post",
           data: {
             containerId: selectedRow,
             newDate: date,
           },
-          success: function(result){
+          success: function (result) {
             $.toast({
               heading: "Thành công",
-              text:
-                "Khai báo DO thành công ！",
+              text: "Cập nhật hạn lệnh mới thành công ！",
               showHideTransition: "fade",
               icon: "success",
-              position: "top-right"
+              position: "top-right",
             });
             $("#container-details").html("");
-            $('.modal').modal('toggle');
+            $(".modal").modal("toggle");
             load();
-          }
-        })
+          },
+        });
       }
     </script>
     <script>

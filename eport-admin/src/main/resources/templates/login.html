@@ -22,30 +22,31 @@
 </head>
 <body class="signin">
     <div class="signinpanel">
-        <div class="row">
-            <div class="col-sm-7">
-                <div class="signin-info">
-                    <div class="logopanel m-b">
-                        <h1><img  alt="[ Logo ]" src="../static/img/new-logo.svg" th:src="@{/img/new-logo.svg}"></h1>
-                    </div>
-                    <div class="m-b"></div>
-                    <h4>Welcome <strong>to ePort</strong></h4>
-<!--                     <ul class="m-b">
-                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> SpringBoot</li>
-                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Mybatis</li>
-                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Shiro</li>
-                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Thymeleaf</li>
-                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Bootstrap</li>
-                    </ul> -->
-                    <strong th:if="${@config.getKey('sys.account.registerUser')}">Forgot your password ? <a th:href="@{/register}">Register&raquo;</a></strong>
+        <div class="col-sm-7">
+            <div class="signin-info" style="position: absolute;left: -350px;top: -150px;">
+                <div class="logopanel m-b">
+                    <h1><img  alt="[ Logo ]" src="../static/img/new-logo.svg" th:src="@{/img/new-logo.svg}"></h1>
                 </div>
+                <div class="m-b"></div>
+                <h4>Welcome <strong>to ePort</strong></h4>
+<!--                     <ul class="m-b">
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> SpringBoot</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Mybatis</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Shiro</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Thymeleaf</li>
+                    <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> Bootstrap</li>
+                </ul> -->
+                <strong th:if="${@config.getKey('sys.account.registerUser')}">Forgot your password ? <a th:href="@{/register}">Register&raquo;</a></strong>
             </div>
-            <div class="col-sm-5">
-                <form id="signupForm" autocomplete="off" >Login</h4>
-                    <p class="m-t-md">Please login</p>
+        </div>
+        <div class="row">
+            <div class="col-sm-3" style="position: absolute;transform: translate(50%,0px);">
+                <form id="signupForm" autocomplete="off"></h4>
+                    <p class="m-t-md" style="font-size:x-large;margin: auto;text-align: center;font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
+                        <b>LOGIN</b></p>
                     <input type="text"     name="username" class="form-control uname"     placeholder="Username" value="admin"    />
                     <input type="password" name="password" class="form-control pword"     placeholder="Password"   value="admin123" />
-					<div class="row m-t" th:if="${captchaEnabled==true}">
+					<!-- <div class="row m-t" th:if="${captchaEnabled==true}">
 						<div class="col-xs-6">
 						    <input type="text" name="validateCode" class="form-control code" placeholder="Captcha" maxlength="5" />
 						</div>
@@ -54,7 +55,7 @@
 								<img th:src="@{captcha/captchaImage(type=${captchaType})}" class="imgcode" width="85%"/>
 							</a>
 						</div>
-					</div>
+					</div> -->
                     <div class="checkbox-custom" th:classappend="${captchaEnabled==false} ? 'm-t'">
 				        <input type="checkbox" id="rememberme" name="rememberme"> <label for="rememberme">Remember Me</label>
 				    </div>

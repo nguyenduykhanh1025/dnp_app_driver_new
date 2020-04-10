@@ -254,5 +254,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="getStatus" parameterType="Long" resultType="String">
         select status from equipment_do where id = #{id}
+
+    <select id="getContainerListByIds" parameterType="String" resultMap="EquipmentDoResult">
+      select bill_of_lading, container_number, vessel, expired_dem from equipment_do where id in
+      <foreach item="id" collection="array" open="(" separator="," close=")">
+        #{id}
+      </foreach>
     </select>
 </mapper>

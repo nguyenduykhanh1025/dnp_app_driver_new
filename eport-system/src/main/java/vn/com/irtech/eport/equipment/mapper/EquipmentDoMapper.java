@@ -83,4 +83,7 @@ public interface EquipmentDoMapper
   public Date getDocumentReceiptDate(long id);
 
   public String getStatus(Long id);
+
+  public List<EquipmentDo> getContainerListByIds(String[] ids);
+	
 }
