@@ -305,7 +305,7 @@ public class CarrierEquipmentDoController extends BaseController {
         conStr += eTemp.getBillOfLading()+";";
       } else {
         Map<String, Object> variables = new HashMap<>();
-		variables.put("updateTime", eTemp.getUpdateTime());
+		    variables.put("updateTime", eTemp.getUpdateTime());
         variables.put("carrierCode", eTemp.getCarrierCode());
         variables.put("billOfLading", eTemp.getBillOfLading());
         variables.put("containerNumber", conStr.substring(0, conStr.length()-1));
@@ -329,29 +329,29 @@ public class CarrierEquipmentDoController extends BaseController {
             }
         }.start();
       }
-      Map<String, Object> variables = new HashMap<>();
-      variables.put("updateTime", eTemp.getUpdateTime());
-      variables.put("carrierCode", eTemp.getCarrierCode());
-      variables.put("billOfLading", eTemp.getBillOfLading());
-      variables.put("containerNumber", conStr.substring(0, conStr.length()-1));
-      variables.put("consignee", eTemp.getConsignee());
-      variables.put("expiredDem", eTemp.getExpiredDem());
-      variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
-      variables.put("detFreeTime", eTemp.getDetFreeTime());
-      variables.put("vessel", eTemp.getVessel());
-      variables.put("voyNo", eTemp.getVoyNo());
-      variables.put("remark", eTemp.getRemark());
-      // send email
-      new Thread() {
-          public void run() {
-              try {
-                  mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables, "dnpEmail");  
-                  } catch (Exception e) {
-                      e.printStackTrace();
-                  }
-          }
-      }.start();
     }
+    Map<String, Object> variables = new HashMap<>();
+    variables.put("updateTime", eTemp.getUpdateTime());
+    variables.put("carrierCode", eTemp.getCarrierCode());
+    variables.put("billOfLading", eTemp.getBillOfLading());
+    variables.put("containerNumber", conStr.substring(0, conStr.length()-1));
+    variables.put("consignee", eTemp.getConsignee());
+    variables.put("expiredDem", eTemp.getExpiredDem());
+    variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+    variables.put("detFreeTime", eTemp.getDetFreeTime());
+    variables.put("vessel", eTemp.getVessel());
+    variables.put("voyNo", eTemp.getVoyNo());
+    variables.put("remark", eTemp.getRemark());
+    // send email
+    new Thread() {
+        public void run() {
+            try {
+                mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables, "dnpEmail");  
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }
+    }.start();
     return AjaxResult.success();
   }
   class BillNoComparator implements Comparator<EquipmentDo> {
