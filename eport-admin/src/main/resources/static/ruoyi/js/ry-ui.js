@@ -1058,7 +1058,7 @@ var table = {
             			$.modal.alertWarning("Hãy chọn dòng để xử lý");
             			return;
             		}
-                    var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
+					var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
                     $.modal.open("Chỉnh sửa " + table.options.modalName, url, "500", "450");
             	} else {
             	    $.modal.open("Chỉnh sửa " + table.options.modalName, $.operate.editUrl(id), "500", "330");

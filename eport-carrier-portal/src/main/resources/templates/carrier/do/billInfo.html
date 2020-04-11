@@ -203,8 +203,7 @@
               class="btn btn-default btn-outline"
               type="button"
               name="refresh"
-              title="Làm mới dữ liệu"
-              onclick="load()"
+              title="Refresh"
             >
               <i class="glyphicon glyphicon-refresh icon-refresh"></i>
             </button>
@@ -446,7 +445,6 @@
           },
         });
       }
-      
       function searchDo() {
         var dg = $("#dg").datagrid({
           url: ctx + "carrier/do/list",
