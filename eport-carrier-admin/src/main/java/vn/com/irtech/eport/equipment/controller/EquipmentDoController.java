@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.equipment.controller;
 
+import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -33,6 +34,7 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
+import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 
 /**
@@ -56,6 +58,13 @@ public class EquipmentDoController extends BaseController
 		return  prefix + "/do";
     }
     
+    @GetMapping("/getViewDo/{billOfLading}")
+    @ResponseBody
+    public String getContView(@PathVariable("billOfLading") String billOfLading,ModelMap mmap)
+    {
+        mmap.put("billOfLading", billOfLading);
+        return prefix + "/listContainer";
+    }
 	/**
      * GET Delivery Order
      */
@@ -68,6 +77,23 @@ public class EquipmentDoController extends BaseController
         List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(equipmentDo);
         return getDataTable(list);
     }
+
+    @PostMapping("/listCont")
+	@ResponseBody
+	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
+		int page = EquipmentDo.getPage();
+		page = page * 15;
+		EquipmentDo.setPage(page);
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingAdmin(EquipmentDo);
+		return getDataTable(list);
+	}
+	// Return panination
+	@PostMapping("/getCountPages")
+	@ResponseBody
+	public Long getCountPages()
+	{
+		return equipmentDoService.getTotalPages();
+	}
     /**
      * Update Exchange Delivery Order
      */

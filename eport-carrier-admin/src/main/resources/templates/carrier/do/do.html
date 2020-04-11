@@ -10,111 +10,39 @@
                 <form id="formId">
                     <div class="select-list">
                         <ul>
-                            <!-- <li>
-                                <label>ID Nhan Vien Hang Tau：</label>
-                                <input type="text" name="carrierId"/>
-                            </li>
                             <li>
-                                <label>Ma Hang Tau：</label>
-                                <input type="text" name="carrierCode"/>
-                            </li>
-                            <li>
-                                <label>So Lenh (Optional)：</label>
-                                <input type="text" name="orderNumber"/>
-                            </li>
-                            <li>
-                                <label>So B/L：</label>
-                                <input type="text" name="billOfLading"/>
-                            </li>
-                            <li>
-                                <label>Don Vi Khai Thac (Optional)：</label>
-                                <input type="text" name="businessUnit"/>
-                            </li>
-                            <li>
-                                <label>Chu Hang：</label>
-                                <input type="text" name="consignee"/>
-                            </li>
-                            <li>
-                                <label>So Cont：</label>
-                                <input type="text" name="containerNumber"/>
-                            </li>
-                            <li class="select-time">
-                                <label>Han Lenh：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="Start Time" name="params[beginExpiredDem]"/>
-                                <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endExpiredDem]"/>
-                            </li>
-                            <li>
-                                <label>Noi Ha Rong：</label>
-                                <input type="text" name="emptyContainerDepot"/>
-                            </li>
-                            <li>
-                                <label>So Ngay Mien Luu Vo Cont：</label>
-                                <input type="text" name="detFreeTime"/>
-                            </li>
-                            <li>
-                                <label>Ma Bao Mat (optional)：</label>
-                                <input type="text" name="secureCode"/>
-                            </li>
-                            <li class="select-time">
-                                <label>Ngay Release：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="Start Time" name="params[beginReleaseDate]"/>
-                                <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endReleaseDate]"/>
-                            </li>
-                            <li>
-                                <label>Tau：</label>
-                                <input type="text" name="vessel"/>
-                            </li>
-                            <li>
-                                <label>Chuyen：</label>
-                                <input type="text" name="voyNo"/>
-                            </li>
-                            <li>
-                                <label>DO Type：</label>
-                                <select name="doType" th:with="type=${@dict.getType('')}">
-                                    <option value="">All</option>
-                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                                </select>
-                            </li>
-                            <li>
-                                <label>DO Status：</label>
+                                <input type="text" placeholder="Số bill : Bill No" name="billOfLading" />
+                              </li>
+                              <li>
+                                <input type="text" placeholder="Tên khách hàng : Consignee" name="consignee" />
+                              </li>
+                              <li>
+                                <input type="text" placeholder="Nơi hạ vỏ : EmptyDepot" name="emptyContainerDepot" />
+                              </li>
+                              <li>
+                                <input type="text" placeholder="Tên tàu : Vessel" name="vessel" />
+                              </li>
+                              <li>
+                                <input type="text" placeholder="Chuyến tàu : Voyage" name="voyNo" />
+                              </li>
+                              <li>
                                 <select name="status">
-                                    <option value="">All</option>
+                                  <option value="">Trạng thái DO</option>
+                                  <option value="Y">Đã làm lệnh</option>
+                                  <option value="N">Chưa làm lệnh</option>
                                 </select>
-                            </li>
-                            <li>
-                                <label>Process Status：</label>
-                                <select name="processStatus">
-                                    <option value="">All</option>
-                                </select>
-                            </li>
-                            <li>
-                                <label>Document Status：</label>
+                              </li>
+                              <li>
                                 <select name="documentStatus">
-                                    <option value="">All</option>
+                                  <option value="">Nhận DO gốc</option>
+                                  <option value="Y">Đã có DO gốc</option>
+                                  <option value="N">Chưa có DO gốc</option>
                                 </select>
-                            </li>
-                            <li class="select-time">
-                                <label>Document Receipt Date：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="Start Time" name="params[beginDocumentReceiptDate]"/>
-                                <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endDocumentReceiptDate]"/>
-                            </li>
-                            <li>
-                                <label>Release Status：</label>
-                                <select name="releaseStatus">
-                                    <option value="">All</option>
-                                </select>
-                            </li>
-                            <li>
-                                <label>Nguon Tao: web, edi, catos：</label>
-                                <input type="text" name="createSource"/>
-                            </li>
+                              </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i> Search</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i> Reset</a>
-                            </li> -->
+                            </li>
                         </ul>
                     </div>
                 </form>
@@ -149,6 +77,7 @@
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
+                showContsUrl : prefix + "/getConts",
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
@@ -230,7 +159,7 @@
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>Xem cont</a> ');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="loadCont(\'' + row.billOfLading + '\')"><i class="fa fa-edit"></i>Xem cont</a> ');
                         return actions.join('');
                     }
                 }]
@@ -277,6 +206,10 @@
 				// $.operate.post(prefix + "/changeStatus", { "id": userId, "status": 0 });
 		    })
 		}
+
+        function loadCont(billOfLading) {
+            $.modal.open("Danh sách container",  prefix + '/getViewDo/' + billOfLading + '');
+        }
     </script>
 </body>
 </html>
