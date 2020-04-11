@@ -99,7 +99,10 @@ public class CarrierEquipmentDoController extends BaseController {
     if (toDate != null) {
       edo.setToDate(toDate);
     }
-		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(edo);
+    List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
+    for (EquipmentDo e : list) {
+      e.setContainerNumber(equipmentDoService.countContainerNumber(e.getBillOfLading()));
+    }
 		return getDataTable(list);
 	}
 
