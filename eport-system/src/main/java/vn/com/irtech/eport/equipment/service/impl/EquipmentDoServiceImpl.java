@@ -149,6 +149,9 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
         return equipmentDoMapper.getTotalPages();
     }
    
-
+    @Override
+    public List<EquipmentDo> selectEquipmentDoListExclusiveBill(EquipmentDo equipmentDo) {
+        return equipmentDoMapper.selectEquipmentDoListExclusiveBill(equipmentDo);
+    }
    
 }

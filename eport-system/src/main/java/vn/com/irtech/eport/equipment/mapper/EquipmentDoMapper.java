@@ -87,5 +87,7 @@ public interface EquipmentDoMapper
   public List<EquipmentDo> getContainerListByIds(String[] ids);
 
   public Long getTotalPages();
+
+  public List<EquipmentDo> selectEquipmentDoListExclusiveBill(EquipmentDo equipmentDo);
 	
 }

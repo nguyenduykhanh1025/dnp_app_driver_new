@@ -91,4 +91,6 @@ public interface IEquipmentDoService
 
     //getTotalPages
     public Long getTotalPages();
+
+    public List<EquipmentDo> selectEquipmentDoListExclusiveBill(EquipmentDo equipmentDo);
 }
