@@ -46,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="expiredDemStartDay != null"> and expired_dem = #{expiredDemStartDay} OR expired_dem > #{expiredDemStartDay}</if>
             <if test="expiredDemEndDay != null"> and expired_dem = #{expiredDemEndDay} OR expired_dem &lt; #{expiredDemEndDay}</if>
-            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>
+            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code like concat('%', #{carrierCode}, '%')</if>
             <if test="consignee != null  and consignee != ''"> and consignee like concat('%', #{consignee}, '%')</if>
