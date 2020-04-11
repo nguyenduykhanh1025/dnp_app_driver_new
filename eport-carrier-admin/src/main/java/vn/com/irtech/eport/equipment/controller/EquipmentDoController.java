@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +37,7 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 
 /**
  * Exchange Delivery OrderController
@@ -44,7 +46,7 @@ import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
  * @date 2020-04-04
  */
 @Controller
-@RequestMapping("/equipment/do")
+@RequestMapping("/carrier/admin/do")
 public class EquipmentDoController extends BaseController
 {
     private String prefix = "carrier/do";
@@ -58,25 +60,44 @@ public class EquipmentDoController extends BaseController
 		return  prefix + "/do";
     }
     
-    @GetMapping("/getViewDo/{billOfLading}")
-    @ResponseBody
-    public String getContView(@PathVariable("billOfLading") String billOfLading,ModelMap mmap)
+    // @GetMapping("/getViewDo/{billOfLading}")
+    // public String getContView(@PathVariable("billOfLading") String billOfLading,Model model)
+    // {
+    //     model.addAttribute("name","Fire dragon");
+    //     return prefix + "/listContainer";
+    // }
+    @GetMapping("/getViewDo")
+    public String getContView()
     {
-        mmap.put("billOfLading", billOfLading);
         return prefix + "/listContainer";
     }
 	/**
      * GET Delivery Order
      */
-	@RequiresPermissions("system:do:list")
-    @PostMapping("/list")
-    @ResponseBody
-    public TableDataInfo list(EquipmentDo equipmentDo)
-    {
-        startPage();
-        List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(equipmentDo);
-        return getDataTable(list);
+	
+    @RequestMapping("/list")
+	@ResponseBody
+	public TableDataInfo list(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String contNo, String blNo) {
+    startPage();
+    edo.setCarrierId(ShiroUtils.getUserId());
+    if (voyageNo != null) {
+      edo.setVoyNo(voyageNo);
     }
+    if (contNo != null) {
+      edo.setContainerNumber(contNo);
+    }
+    if (blNo != null) {
+      edo.setBillOfLading(blNo);
+    }
+    if (fromDate != null) {
+      edo.setFromDate(fromDate);
+    }
+    if (toDate != null) {
+      edo.setToDate(toDate);
+    }
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(edo);
+		return getDataTable(list);
+	}
 
     @PostMapping("/listCont")
 	@ResponseBody
