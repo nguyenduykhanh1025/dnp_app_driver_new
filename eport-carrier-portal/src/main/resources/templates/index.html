@@ -28,6 +28,11 @@
         padding-right: 10px;
         padding-bottom: 0;
       }
+      
+      .no-hover:hover {
+        background-color: #3c8dbc !important;
+        cursor: default;
+      }
     </style>
   </head>
   <body
@@ -44,9 +49,9 @@
             style="margin-bottom: 0;"
           >
             <ul class="nav navbar-left welcome-message" style="display: flex">
-              <li>
-                <a title="ePort CND" class="menuItem" id="main-logo">
-                  <div style="display: flex; justify-content: space-between; border-right: 0.5px solid grey; padding-right: 10px">
+              <li class="no-hover">
+                <a title="ePort CND" class="menuItem no-hover" id="main-logo">
+                  <div style="display: flex; justify-content: space-between; padding-right: 50px">
                     <img th:src="@{/img/CDN.png}" width="40px" height="40px" id="logo-img"/>
                     <div class="text" style="display: flex; flex-direction: column; text-align: center;">
                       <span>Da Nang Port</span>
