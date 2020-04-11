@@ -21,16 +21,16 @@
 
     th,
     td {
-      font: 20px sans-serif;
+      font: 14px sans-serif;
     }
 
     .handsontable th {
       background: F0F0F0;
       color: #222222;
-      /* font-weight: 300; */
+      /* font-weight: bold; */
       text-align: center;
       vertical-align: middle;
-      font-size: 2rem;
+      font-size: 1.5rem;
       line-height: 2;
       padding: 5px 2px !important;
       font-family: inherit;
@@ -331,11 +331,12 @@
         console.log(main_key, count);
         if (main_key == count) {
           swal({
-            title: "Thực hiện khai báo DO?",
+            title: "Bạn có chắc chắn cập nhật DO này lên web portal của Cảng Đà Nẵng không?",
             text: "Vui lòng kiểm tra kĩ dữ liệu",
+            type: "warning",
             buttons: {
-              cancel: true,
-              confirm: true,
+              cancel: "Hủy bỏ",
+              confirm: "Đồng ý",
             },
           }).then((result) => {
             if (result) {
