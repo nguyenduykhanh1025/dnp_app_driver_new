@@ -322,7 +322,6 @@
               },
               dataType: "json",
               success: function (data) {
-                console.log(data);
                 success(data);
               },
               error: function () {
@@ -504,7 +503,7 @@
       }
 
       function openForm(billOfLading) {
-        $.modal.open("Thông tin Bill", "/carrier/do/billInfo/{"+billOfLading+"}");
+        $.modal.openTab("Thông tin Bill", "/carrier/do/billInfo/{"+billOfLading+"}");
       }
     </script>
   </body>
