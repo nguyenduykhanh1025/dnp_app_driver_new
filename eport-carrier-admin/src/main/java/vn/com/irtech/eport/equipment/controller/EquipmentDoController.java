@@ -66,6 +66,9 @@ public class EquipmentDoController extends BaseController
     {
         startPage();
         List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(equipmentDo);
+        for (EquipmentDo e : list) {
+            e.setContainerNumber(equipmentDoService.countContainerNumber(e.getBillOfLading()));
+        }
         return getDataTable(list);
     }
     /**
