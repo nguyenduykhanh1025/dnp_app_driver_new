@@ -297,5 +297,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getTotalPages" resultType="java.lang.Long">
         SELECT COUNT(*) FROM equipment_do
     </select>
+    <select id="countContainerNumber" parameterType="String" resultType="String">
+		select count(*) from equipment_do where bill_of_lading=#{billOfLading}
+	</select>
 
 </mapper>

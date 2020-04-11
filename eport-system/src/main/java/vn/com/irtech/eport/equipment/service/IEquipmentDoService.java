@@ -93,4 +93,6 @@ public interface IEquipmentDoService
     public Long getTotalPages();
 
     public List<EquipmentDo> selectEquipmentDoListExclusiveBill(EquipmentDo equipmentDo);
+
+    public String countContainerNumber(String billOfLading);
 }

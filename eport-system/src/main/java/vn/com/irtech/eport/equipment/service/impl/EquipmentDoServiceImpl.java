@@ -154,4 +154,8 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
         return equipmentDoMapper.selectEquipmentDoListExclusiveBill(equipmentDo);
     }
    
+    @Override
+    public String countContainerNumber(String billOfLading) {
+        return equipmentDoMapper.countContainerNumber(billOfLading);
+    }
 }
