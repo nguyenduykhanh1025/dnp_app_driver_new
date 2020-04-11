@@ -237,7 +237,7 @@
                   sortable="true"
                   width="110"
                 >
-                  Số cont<br />Container No
+                  Số cont<br />Container Number
                 </th>
                 <th
                   data-options="field:'consignee',halign:'center'"
@@ -322,6 +322,7 @@
               },
               dataType: "json",
               success: function (data) {
+                console.log(data);
                 success(data);
               },
               error: function () {
@@ -498,6 +499,9 @@
             $("#searchBtn").click();
         }
       });
+      function reload() {
+        window.location.reload();
+      }
     </script>
   </body>
 </html>
