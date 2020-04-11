@@ -15,6 +15,21 @@
     <link th:href="@{/css/style.css}" rel="stylesheet" />
     <link th:href="@{/css/skins.css}" rel="stylesheet" />
     <link th:href="@{/ruoyi/css/ry-ui.css?v=4.2.0}" rel="stylesheet" />
+    <style type="text/css">
+      .text span{
+        font-size: 16px;
+      }
+
+      #logo-img {
+        margin-right: 10px;
+      }
+
+      #main-logo {
+        padding-top: 10px;
+        padding-right: 10px;
+        padding-bottom: 0;
+      }
+    </style>
   </head>
   <body
     class="fixed-sidebar full-height-layout gray-bg "
@@ -32,7 +47,7 @@
             role="navigation"
             style="margin-bottom: 0;"
           >
-            <ul class="nav navbar-top-links navbar-right welcome-message" style="margin-top: 12px;">
+            <ul class="nav navbar-top-links navbar-right welcome-message">
               <li class="dropdown user-menu">
                 <a
                   href="javascript:void(0)"
@@ -68,13 +83,17 @@
                 </ul>
               </li>
             </ul>
-            <ul class="nav navbar-top-links navbar-left" id="side-menu">
-              <li style="width: 300px; padding-top: 5px">
-                <img style="float: left; margin-top: 20px; margin-right: 5px" th:src="@{/img/CDN.png}" width="30px" height="30px"/>
-                <a href="#" style="margin-left: 10px;"
-                  > <h3>Danang Port - DO Web portal</h3>
-                  </a>
-                
+            <ul class="nav navbar-top-links navbar-left welcome-message" id="side-menu" style="display: flex">
+              <li>
+                <a title="ePort CND" class="menuItem" id="main-logo">
+                  <div style="display: flex; justify-content: space-between; border-right: 0.5px solid grey; padding-right: 10px">
+                    <img th:src="@{/img/CDN.png}" width="40px" height="40px" id="logo-img"/>
+                    <div class="text" style="display: flex; flex-direction: column; text-align: center;">
+                      <span>Da Nang Port</span>
+                      <span style="font-size: 10px;">DO Web Portal</span>
+                    </div>
+                  </div>
+                </a>
               </li>
               <li th:each="menu : ${menus}">
                 <a
