@@ -21,23 +21,23 @@
                     </div>
                     <ul class="list-group list-group-striped">
                         <li class="list-group-item"><i class="fa fa-user"></i>
-                            <b class="font-noraml">Tên đăng nhập：</b>
+                            <b class="font-noraml">Tên đăng nhập</b>
                             <p class="pull-right">[[${user.loginName}]]</p>
                         </li>
                         <li class="list-group-item"><i class="fa fa-phone"></i>
-                            <b  class="font-noraml">Số điện thoại：</b>
+                            <b  class="font-noraml">Số điện thoại</b>
                             <p class="pull-right">[[${user.phonenumber}]]</p>
                         </li>
                         <!-- <li class="list-group-item" th:if="${user.dept?.deptName != null}"><i class="fa fa-group"></i>
-                            <b  class="font-noraml">Bộ phận：</b>
+                            <b  class="font-noraml">Bá»™ pháº­nï¼š</b>
                             <p class="pull-right" >[[${user.dept?.deptName}]] / [[${#strings.defaultString(postGroup,'No post')}]]</p>
                         </li> -->
                         <li class="list-group-item"><i class="fa fa-envelope-o"></i>
-                            <b  class="font-noraml">Email：</b>
+                            <b  class="font-noraml">Email</b>
                             <p class="pull-right" >[[${user.email}]]</p>
                         </li>
                         <li class="list-group-item"><i class="fa fa-calendar"></i>
-                            <b  class="font-noraml">Ngày tạo：</b>
+                            <b  class="font-noraml">Ngày tạo</b>
                             <p class="pull-right" >[[${#dates.format(user.createTime, 'yyyy-MM-dd')}]]</p>
                         </li>
                     </ul>
@@ -102,25 +102,25 @@
                                 </form>
                             </div>
                             
-                            <!--修改密码-->
+                            <!--ä¿®æ”¹å¯†ç �-->
                             <div class="tab-pane" id="modify_password">
                                 <form class="form-horizontal" id="form-user-resetPwd">
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Mật khẩu cũ</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control" name="oldPassword" placeholder="Please enter the old password">
+                                            <input type="password" class="form-control" name="oldPassword" placeholder="Vui lòng nhập mật khẩu cũ">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Mật khẩu mới</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Please enter a new password">
+                                            <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Vui lòng nhập mật khẩu mới">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label">Xác nhận lại mật khẩu</label>
                                         <div class="col-sm-10">
-                                            <input type="password" class="form-control" name="confirmPassword" placeholder="Please confirm your password">
+                                            <input type="password" class="form-control" name="confirmPassword" placeholder="Vui lòng xác nhận lại mật khẩu">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -141,13 +141,13 @@
     
     <th:block th:include="include :: footer" />
     <script>
-	    /*用户管理-头像*/
+	    /*ç”¨æˆ·ç®¡ç�†-å¤´åƒ�*/
 	    function avatar() {
 	        var url = ctx + 'system/user/profile/avatar';
 	        $.modal.open("Modify avata", url);
 	    }
 	    
-	    /*用户信息-修改*/
+	    /*ç”¨æˆ·ä¿¡æ�¯-ä¿®æ”¹*/
 	    $("#form-user-edit").validate({
 			onkeyup: false,
 			rules:{
@@ -217,7 +217,7 @@
 	        }
 	    }
 	    
-	    /*用户管理-修改密码*/
+	    /*ç”¨æˆ·ç®¡ç�†-ä¿®æ”¹å¯†ç �*/
 	    $("#form-user-resetPwd").validate({
 	    	onkeyup: false,
 			rules:{
