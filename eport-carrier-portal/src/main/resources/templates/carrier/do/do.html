@@ -203,7 +203,8 @@
               class="btn btn-default btn-outline"
               type="button"
               name="refresh"
-              title="Refresh"
+              title="Làm mới dữ liệu"
+              onclick="load()"
             >
               <i class="glyphicon glyphicon-refresh icon-refresh"></i>
             </button>
@@ -237,7 +238,7 @@
                   sortable="true"
                   width="110"
                 >
-                  Số cont<br />Container No
+                  Số cont<br />Container Number
                 </th>
                 <th
                   data-options="field:'consignee',halign:'center'"
@@ -444,6 +445,7 @@
           },
         });
       }
+      
       function searchDo() {
         var dg = $("#dg").datagrid({
           url: ctx + "carrier/do/list",
@@ -498,6 +500,13 @@
             $("#searchBtn").click();
         }
       });
+      function reload() {
+        window.location.reload();
+      }
+
+      function openForm(billOfLading) {
+        $.modal.openTab("Thông tin Bill", "/carrier/do/billInfo/{"+billOfLading+"}");
+      }
     </script>
   </body>
 </html>

@@ -21,16 +21,16 @@
 
     th,
     td {
-      font: 20px sans-serif;
+      font: 14px sans-serif;
     }
 
     .handsontable th {
       background: F0F0F0;
       color: #222222;
-      /* font-weight: 300; */
+      /* font-weight: bold; */
       text-align: center;
       vertical-align: middle;
-      font-size: 2rem;
+      font-size: 1.5rem;
       line-height: 2;
       padding: 5px 2px !important;
       font-family: inherit;
@@ -95,8 +95,6 @@
       <div class="container">
         <h2 style="text-align: center;">Khai báo Delivery Order</h2>
         <hr />
-        <div id="example" class="hot handsontable htColumnHeaders"></div>
-        <hr />
         <div class="footer-add">
           <button
             type="button"
@@ -106,10 +104,14 @@
           >
             Xác nhận
           </button>
-          <button type="button" class="btn btn-dark" onclick="dismiss()">
+          <button type="button" class="btn btn-dark" onclick="closeItemDo()">
             Hủy bỏ
           </button>
         </div>
+        <hr>
+        <div id="example" class="hot handsontable htColumnHeaders"></div>
+        <hr />
+        
       </div>
     </form>
     <th:block th:include="include :: footer" />
@@ -305,7 +307,6 @@
         var count = 0;
         var main_key;
         $.each(cleanedGridData, function (key, object) {
-          console.log(object);
           if (
             object[0] == null || object[0] == '' ||
             object[1] == null || object[1] == '' ||
@@ -331,11 +332,12 @@
         console.log(main_key, count);
         if (main_key == count) {
           swal({
-            title: "Thực hiện khai báo DO?",
+            title: "Bạn có chắc chắn cập nhật DO này lên web portal của Cảng Đà Nẵng không?",
             text: "Vui lòng kiểm tra kĩ dữ liệu",
+            type: "warning",
             buttons: {
-              cancel: true,
-              confirm: true,
+              cancel: "Hủy bỏ",
+              confirm: "Đồng ý",
             },
           }).then((result) => {
             if (result) {
@@ -356,7 +358,8 @@
                   });
                   hot.loadData([]);
                   hot.render();
-                  window.location.replace("/carrier/do");
+                  parent.reload();
+                  closeItemDo();
                 },
                 error: function (result) {
                   $.toast({
@@ -388,8 +391,25 @@
       //   }
       // });
 
-      function dismiss() {
-        window.location.replace("/carrier/do");
+      function closeItemDo() {
+        var topWindow = $(window.parent.document);
+        // if($.common.isNotEmpty(dataId)){
+        //   window.parent.$.modal.closeLoading();
+        //   // 根据dataId关闭指定选项卡
+        //   $('.menuTab[data-id="' + dataId + '"]', topWindow).remove();
+        //   // 移除相应tab对应的内容区
+        //   $('.mainContent .RuoYi_iframe[data-id="' + dataId + '"]', topWindow).remove();
+        //   return;
+        // }
+        var panelUrl = window.frameElement.getAttribute('data-panel');
+        $('.page-tabs-content .active i', topWindow).click();
+        $('.menuTab[data-id="' + panelUrl + '"]', topWindow).addClass('active').siblings('.menuTab').removeClass('active');
+          $('.mainContent .RuoYi_iframe', topWindow).each(function() {
+                  if ($(this).data('id') == panelUrl) {
+                      $(this).show().siblings('.RuoYi_iframe').hide();
+                      return false;
+                  }
+          });
       }
     </script>
   </body>

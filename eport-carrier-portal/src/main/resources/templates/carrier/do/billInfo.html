@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+>
+  <head>
+    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <link th:href="@{/css/jquery.toast.min.css}" rel="stylesheet" />
+  </head>
+  
+  <body class="gray-bg">
+    <div id="showDemo"></div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <!-- Jquery toast -->
+    <script th:src="@{/js/jquery.toast.min.js}"></script>
+    <script type="text/javascript" th:inline="javascript">
+      var doList = /*[[${equipmentDos}]]*/;
+      console.log(doList);
+      var str = "";
+      for (var i=0; i<doList.length; i++) {
+        str += "<span>"+doList[i].vessel+"    "+doList[i].carrierCode+"    "+doList[i].consignee+"    "+doList[i].expiredDem+"    "+doList[i].containerNumber+"    </p><br>"
+      } 
+      document.getElementById("showDemo").innerHTML = str;   
+    </script>
+  </body>
+</html>

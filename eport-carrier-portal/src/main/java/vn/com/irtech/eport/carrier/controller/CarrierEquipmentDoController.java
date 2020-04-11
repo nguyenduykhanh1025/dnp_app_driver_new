@@ -52,9 +52,6 @@ public class CarrierEquipmentDoController extends BaseController {
   private IEquipmentDoService equipmentDoService;
 
   private CarrierAccount currentUser;
-
-  @Autowired
-  private ICarrierGroupService carrierGroupService;
   
   @Autowired
   private MailService mailService;
@@ -99,9 +96,25 @@ public class CarrierEquipmentDoController extends BaseController {
     if (toDate != null) {
       edo.setToDate(toDate);
     }
-		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(edo);
+    List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
+    for (EquipmentDo e : list) {
+      e.setContainerNumber(equipmentDoService.countContainerNumber(e.getBillOfLading()));
+      e.setBillOfLading("<a onclick='openForm("+e.getBillOfLading()+")'>"+e.getBillOfLading()+"</a>");
+    }
 		return getDataTable(list);
 	}
+
+  /**
+   * Update Exchange Delivery Order
+   */
+  @GetMapping("/billInfo/{billOfLading}")
+  public String billInfo(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
+    EquipmentDo equipmentDo = new EquipmentDo();
+    equipmentDo.setBillOfLading(billOfLading.substring(1, billOfLading.length()-1));
+    List<EquipmentDo> equipmentDos = equipmentDoService.selectEquipmentDoList(equipmentDo);
+    mmap.addAttribute("equipmentDos", equipmentDos);
+    return prefix + "/billInfo";
+  }
 
   /**
    * Export Exchange Delivery Order List

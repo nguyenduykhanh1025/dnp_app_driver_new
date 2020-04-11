@@ -74,31 +74,18 @@ public class EquipmentDoController extends BaseController
 	/**
      * GET Delivery Order
      */
-	
-    @RequestMapping("/list")
-	@ResponseBody
-	public TableDataInfo list(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String contNo, String blNo) {
-    startPage();
-    edo.setCarrierId(ShiroUtils.getUserId());
-    if (voyageNo != null) {
-      edo.setVoyNo(voyageNo);
+	@RequiresPermissions("system:do:list")
+    @PostMapping("/list")
+    @ResponseBody
+    public TableDataInfo list(EquipmentDo equipmentDo)
+    {
+        startPage();
+        List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(equipmentDo);
+        for (EquipmentDo e : list) {
+            e.setContainerNumber(equipmentDoService.countContainerNumber(e.getBillOfLading()));
+        }
+        return getDataTable(list);
     }
-    if (contNo != null) {
-      edo.setContainerNumber(contNo);
-    }
-    if (blNo != null) {
-      edo.setBillOfLading(blNo);
-    }
-    if (fromDate != null) {
-      edo.setFromDate(fromDate);
-    }
-    if (toDate != null) {
-      edo.setToDate(toDate);
-    }
-		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
-		return getDataTable(list);
-	}
-
     @PostMapping("/listCont")
 	@ResponseBody
 	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {

@@ -14,44 +14,89 @@
     <link th:href="@{/css/style.css}" rel="stylesheet" />
     <link th:href="@{/css/skins.css}" rel="stylesheet" />
     <link th:href="@{/eport/css/eport.css?v=4.2.0}" rel="stylesheet" />
+    <style type="text/css">
+      .text span{
+        font-size: 16px;
+      }
+
+      #logo-img {
+        margin-right: 10px;
+      }
+
+      #main-logo {
+        padding-top: 10px;
+        padding-right: 10px;
+        padding-bottom: 0;
+      }
+    </style>
   </head>
-  <body class="top-navigation full-height-layout white-bg" style="overflow: hidden;"
+  <body
+    class="top-navigation full-height-layout white-bg"
+    style="overflow: hidden;"
   >
     <div id="wrapper">
       <!--Right content-->
       <div id="page-wrapper" class="gray-bg dashbard-1">
         <div class="row border-bottom">
-            <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-                <ul class="nav navbar-left welcome-message">
-                  <li >
-	                	<a title="ePort CND" class="menuItem" style="font-size: 2rem;">ePort CDN</a>
-	                </li>
+          <nav
+            class="navbar navbar-static-top"
+            role="navigation"
+            style="margin-bottom: 0;"
+          >
+            <ul class="nav navbar-left welcome-message" style="display: flex">
+              <li>
+                <a title="ePort CND" class="menuItem" id="main-logo">
+                  <div style="display: flex; justify-content: space-between; border-right: 0.5px solid grey; padding-right: 10px">
+                    <img th:src="@{/img/CDN.png}" width="40px" height="40px" id="logo-img"/>
+                    <div class="text" style="display: flex; flex-direction: column; text-align: center;">
+                      <span>Da Nang Port</span>
+                      <span style="font-size: 10px;">DO Web Portal</span>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a
+                  title="Quản Lý DO"
+                  th:href="@{/carrier/do}"
+                  href="/carrier/do"
+                  class="menuItem"
+                  style="margin-top: 5px"
+                  ><i class="fa fa-ship"></i>&nbsp; Quản Lý DO</a
+                >
+              </li>
+            </ul>
+            <ul class="nav navbar-top-links navbar-right welcome-message">
+              <li class="dropdown user-menu">
+                <a
+                  href="javascript:void(0)"
+                  class="dropdown-toggle"
+                  data-hover="dropdown"
+                >
+                  <span class="hidden-xs"
+                    >[[${#strings.defaultString(user.email, '-')}]]</span
+                  >
+                </a>
+                <ul class="dropdown-menu">
+                  <li class="mt5">
+                    <a th:href="@{/carrier/profile}" class="menuItem">
+                      <i class="fa fa-user"></i> Hồ sơ</a
+                    >
+                  </li>
+                  <li>
+                    <a onclick="resetPwd()">
+                      <i class="fa fa-key"></i> Thay đổi mật khẩu</a
+                    >
+                  </li>
+                  <li class="divider"></li>
+                  <li>
+                    <a th:href="@{logout}">
+                      <i class="fa fa-sign-out"></i> Đăng xuất</a
+                    >
+                  </li>
                 </ul>
-                <ul class="nav navbar-top-links navbar-right welcome-message">
-	                <li>
-	                	<a title="Quản Lý DO" th:href="@{/carrier/do}" href="/carrier/do" class="menuItem"><i class="fa fa-ship"></i>&nbsp; Quản Lý DO</a>
-	                </li>
-                    <li class="dropdown user-menu">
-						<a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
-							<span class="hidden-xs">[[${#strings.defaultString(user.email, '-')}]]</span>
-						</a>
-						<ul class="dropdown-menu">
-							<li class="mt5">
-								<a th:href="@{/carrier/profile}" class="menuItem">
-								<i class="fa fa-user"></i> Hồ sơ</a>
-							</li>
-							<li>
-								<a onclick="resetPwd()">
-								<i class="fa fa-key"></i> Thay đổi mật khẩu</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a th:href="@{logout}">
-								<i class="fa fa-sign-out"></i> Đăng xuất</a>
-							</li>
-						</ul>
-					</li>
-                </ul>
+              </li>
+            </ul>
           </nav>
         </div>
         <div class="row content-tabs">
@@ -73,7 +118,7 @@
           </a>
         </div>
 
-        <a id="ax_close_max" class="ax_close_max" href="#" title="Close" >
+        <a id="ax_close_max" class="ax_close_max" href="#" title="Close">
           <i class="fa fa-times-circle-o"></i>
         </a>
 

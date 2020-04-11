@@ -15,6 +15,21 @@
     <link th:href="@{/css/style.css}" rel="stylesheet" />
     <link th:href="@{/css/skins.css}" rel="stylesheet" />
     <link th:href="@{/ruoyi/css/ry-ui.css?v=4.2.0}" rel="stylesheet" />
+    <style type="text/css">
+      .text span{
+        font-size: 16px;
+      }
+
+      #logo-img {
+        margin-right: 10px;
+      }
+
+      #main-logo {
+        padding-top: 10px;
+        padding-right: 10px;
+        padding-bottom: 0;
+      }
+    </style>
   </head>
   <body
     class="fixed-sidebar full-height-layout gray-bg "
@@ -32,7 +47,7 @@
             role="navigation"
             style="margin-bottom: 0;"
           >
-            <ul class="nav navbar-top-links navbar-right welcome-message" style="margin-top: 12px;">
+            <ul class="nav navbar-top-links navbar-right welcome-message">
               <li class="dropdown user-menu">
                 <a
                   href="javascript:void(0)"
@@ -68,72 +83,76 @@
                 </ul>
               </li>
             </ul>
-            <ul class="nav navbar-top-links navbar-left" id="side-menu">
-              <li style="width: 200px; padding-top: 5px">
-                <img style="float: left; margin-top: 10px; margin-right: 5px" th:src="@{/img/CDN.png}" width="50px" height="50px"/>
-                <a href="#" style="margin-left: 10px;"
-                  > <h3>ePort DNP</h3>
-                  </a>
-                
-              </li>
-              <li th:each="menu : ${menus}">
-                <a
-                  th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
-                  th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
-                >
-                  <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
-                  <span class="nav-label" th:text="${menu.menuName}"
-                    >Top Menu</span
-                  >
-                  <!-- <span
-                    th:class="${menu.url == '' || menu.url == '#'} ? |fa arrow|"
-                  ></span> -->
+            <ul class="nav navbar-top-links navbar-left welcome-message" id="side-menu" style="display: flex">
+              <li>
+                <a title="ePort CND" class="menuItem" id="main-logo">
+                  <div style="display: flex; justify-content: space-between; border-right: 0.5px solid grey; padding-right: 10px">
+                    <img th:src="@{/img/CDN.png}" width="40px" height="40px" id="logo-img"/>
+                    <div class="text" style="display: flex; flex-direction: column; text-align: center;">
+                      <span>Da Nang Port</span>
+                      <span style="font-size: 10px;">DO Web Portal</span>
+                    </div>
+                  </div>
                 </a>
-                <ul class="nav nav-second-level dropdown-menu">
-                  <li th:each="cmenu : ${menu.children}">
-                    <a
-                      th:if="${#lists.isEmpty(cmenu.children)}"
-                      th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
-                      th:utext="${cmenu.menuName}"
-                      th:href="@{${cmenu.url}}"
-                      >2nd Menu</a
+              </li>
+              <li class="dropdown user-menu">
+                <a
+                  href="javascript:void(0)"
+                  class="dropdown-toggle"
+                  data-hover="dropdown"
+                >
+                  <span class="hidden-xs"
+                    ><i class="fa fa-bars" style="margin-right: 5px;"></i>System Tools</span
+                  >
+                </a>
+                <ul class="dropdown-menu">
+                  <li class="mt5">
+                    <a th:href="@{/equipment/do}" class="menuItem">
+                      <i></i> Delivery Order</a
                     >
-                    <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#"
-                      >[[${cmenu.menuName}]]
-                      <span class="fa arrow"></span>
-                  </a>
-                    <ul
-                      th:if="${not #lists.isEmpty(cmenu.children)}"
-                      class="nav nav-third-level"
+                  </li>
+                  <li>
+                    <a th:href="@{/carrier/account}" class="menuItem">
+                      <i></i> Carrier Account</a
                     >
-                      <li th:each="emenu : ${cmenu.children}">
-                        <a
-                          th:if="${#lists.isEmpty(emenu.children)}"
-                          th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
-                          th:text="${emenu.menuName}"
-                          th:href="@{${emenu.url}}"
-                          >3rd Menu</a
-                        >
-                        <a th:if="${not #lists.isEmpty(emenu.children)}" href="#"
-                          >[[${emenu.menuName}]]
-                          <!-- <span class="fa arrow"></span> -->
-                        </a>
-                        <ul
-                          th:if="${not #lists.isEmpty(emenu.children)}"
-                          class="nav nav-four-level"
-                        >
-                          <li th:each="fmenu : ${emenu.children}">
-                            <a
-                              th:if="${#lists.isEmpty(fmenu.children)}"
-                              th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
-                              th:text="${fmenu.menuName}"
-                              th:href="@{${fmenu.url}}"
-                              >4th Menu</a
-                            >
-                          </li>
-                        </ul>
-                      </li>
-                    </ul>
+                  </li>
+                  <li>
+                    <a th:href="@{/carrier/group}" class="menuItem">
+                      <i></i>Carrier Group</a
+                    >
+                  </li>
+                </ul>
+              </li>
+              <li class="dropdown user-menu">
+                <a
+                  href="javascript:void(0)"
+                  class="dropdown-toggle"
+                  data-hover="dropdown"
+                >
+                  <span class="hidden-xs"
+                    ><i class="fa fa-gear" style="margin-right: 5px;"></i>System Management</span
+                  >
+                </a>
+                <ul class="dropdown-menu">
+                  <li class="mt5">
+                    <a th:href="@{/system/user}" class="menuItem">
+                      <i></i> User Management</a
+                    >
+                  </li>
+                  <li>
+                    <a th:href="@{/system/role}" class="menuItem">
+                      <i></i> Role Management</a
+                    >
+                  </li>
+                  <li>
+                    <a th:href="@{/monitor/operlog}" class="menuItem">
+                      <i></i>Opearator Log</a
+                    >
+                  </li>
+                  <li>
+                    <a th:href="@{/monitor/logininfor}" class="menuItem">
+                      <i></i>Login Log</a
+                    >
                   </li>
                 </ul>
               </li>
