@@ -60,12 +60,12 @@ public class EquipmentDoController extends BaseController
 		return  prefix + "/do";
     }
     
-    // @GetMapping("/getViewDo/{billOfLading}")
-    // public String getContView(@PathVariable("billOfLading") String billOfLading,Model model)
-    // {
-    //     model.addAttribute("name","Fire dragon");
-    //     return prefix + "/listContainer";
-    // }
+    @GetMapping("/getViewDo/{billOfLading}")
+    public String getContView(@PathVariable("billOfLading") String billOfLading,Model model)
+    {
+        model.addAttribute("name","Fire dragon");
+        return prefix + "/listContainer";
+    }
     @GetMapping("/getViewDo")
     public String getContView()
     {
@@ -95,7 +95,7 @@ public class EquipmentDoController extends BaseController
     if (toDate != null) {
       edo.setToDate(toDate);
     }
-		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(edo);
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
 		return getDataTable(list);
 	}
 
