@@ -66,7 +66,7 @@ public class EquipmentDoController extends BaseController
     public TableDataInfo list(EquipmentDo equipmentDo)
     {
         startPage();
-        List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
+        List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(equipmentDo);
         return getDataTable(list);
     }
 

@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
@@ -46,6 +48,22 @@ public class CarrierProfileController extends BaseController{
         CarrierAccount user = ShiroUtils.getSysUser();
         mmap.put("user", carrierAccountService.selectCarrierAccountById(user.getId()));
         return prefix + "/resetPwd";
+    }
+    @Log(title = "Profile", businessType = BusinessType.UPDATE)
+    @PostMapping("/update")
+    @ResponseBody
+    public AjaxResult update(CarrierAccount user)
+    {
+        CarrierAccount currentUser = ShiroUtils.getSysUser();
+        currentUser.setFullName(user.getFullName());
+        currentUser.setGroupId(user.getGroupId());
+        currentUser.setRemark(user.getRemark());
+        if (carrierAccountService.updateCarrierAccount(currentUser) > 0)
+        {
+            ShiroUtils.setSysUser(carrierAccountService.selectCarrierAccountById(currentUser.getId()));
+            return success();
+        }
+        return error();
     }
     
     @GetMapping("/checkPassword")

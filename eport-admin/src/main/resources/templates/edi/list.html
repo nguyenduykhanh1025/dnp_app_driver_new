@@ -201,7 +201,7 @@
                   aria-hidden="true"></i></button>
             </div>
             <div class="right-side">
-              <button type="button" onclick="save()" class="btn btn-outline-primary">Lưu</button>
+              <button type="button" onclick="save()" class="btn btn-primary">Lưu</button>
               <span id="item-on-from"></span> đến <span id="item-on-to"></span> trên tổng <span
                 id="item-on-page"></span>
             </div>
@@ -245,6 +245,9 @@
               hot = new Handsontable(example, {
                 data: dataObj,
                 stretchH: 'all',
+                width: 'auto',
+                manualColumnResize: true,
+  				manualRowResize: true,
                 height: 500,
                 colHeaders: [
                   "ID<br>id",
@@ -346,7 +349,7 @@
                 columnSorting: {
                   indicator: true
                 },
-                colWidths: [0.1],
+                colWidths: [0.1,70 , 70, 70, 160, 100, 160],
                 manualColumnMove: true,
                 filters: true
               });
