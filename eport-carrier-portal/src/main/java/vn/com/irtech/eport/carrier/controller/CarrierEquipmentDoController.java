@@ -108,9 +108,11 @@ public class CarrierEquipmentDoController extends BaseController {
    * Update Exchange Delivery Order
    */
   @GetMapping("/billInfo/{billOfLading}")
-  public String billInfo(@PathVariable("billOfLading") String billOfLading) {
-    //EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(id);
-    //mmap.put("equipmentDo", equipmentDo);
+  public String billInfo(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
+    EquipmentDo equipmentDo = new EquipmentDo();
+    equipmentDo.setBillOfLading(billOfLading.substring(1, billOfLading.length()-1));
+    List<EquipmentDo> equipmentDos = equipmentDoService.selectEquipmentDoList(equipmentDo);
+    mmap.addAttribute("equipmentDos", equipmentDos);
     return prefix + "/billInfo";
   }
 
