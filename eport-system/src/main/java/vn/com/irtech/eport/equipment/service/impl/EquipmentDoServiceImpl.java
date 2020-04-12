@@ -43,6 +43,7 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     public List<EquipmentDo> selectEquipmentDoListPagingAdmin(EquipmentDoPaging EquipmentDo) {
         return equipmentDoMapper.selectEquipmentDoListPagingAdmin(EquipmentDo);
     }
+    
     @Override
     public List<EquipmentDo> selectEquipmentDoListPagingCarrier(EquipmentDoPaging EquipmentDo) {
         return equipmentDoMapper.selectEquipmentDoListPagingCarrier(EquipmentDo);
@@ -144,9 +145,9 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     }
 
     @Override
-    public Long getTotalPages()
+    public Long getTotalPagesCont(String billOfLading)
     {
-        return equipmentDoMapper.getTotalPages();
+        return equipmentDoMapper.getTotalPagesCont(billOfLading);
     }
    
     @Override
@@ -158,7 +159,12 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     public String countContainerNumber(String billOfLading) {
         return equipmentDoMapper.countContainerNumber(billOfLading);
     }
-
+    
+     //Chang Do status
+    @Override
+    public int updateBillOfLading(EquipmentDo equipmentDo) {
+        return equipmentDoMapper.updateBillOfLading(equipmentDo);
+    }
     @Override
     public List<EquipmentDo> selectEquipmentDoDetails(EquipmentDo equipmentDo){
       return equipmentDoMapper.selectEquipmentDoDetails(equipmentDo);

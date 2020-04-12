@@ -14,6 +14,7 @@
 	<link th:href="@{/css/animate.css}" rel="stylesheet"/>
 	<link th:href="@{/css/style.css?v=20200318}" rel="stylesheet"/>
 	<link th:href="@{/ruoyi/css/ry-ui.css}" rel="stylesheet"/>
+	<!-- <link th:href="@{/eport/css/eport.css}" rel="stylesheet"/> -->
 </head>
 
 <!-- Common JS -->
@@ -43,7 +44,26 @@
 	<script th:src="@{/ajax/libs/layui/layui.js}"></script>
 	<script th:src="@{/ruoyi/js/common.js?v=4.2.0}"></script>
 	<script th:src="@{/ruoyi/js/ry-ui.js?v=4.2.0}"></script>
+	<script th:src="@{/eport/js/common.js}"></script>
+	<!-- <script th:src="@{/eport/js/eport.js}"></script> -->
 	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+</div>
+
+<!-- easyui -->
+<div th:fragment="easyui-css">
+    <link th:href="@{/ajax/libs/easyui/themes/default/easyui.css}" rel="stylesheet"/>
+    <link th:href="@{/ajax/libs/easyui/themes/icon.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="easyui-js">
+    <script th:src="@{/ajax/libs/easyui/jquery.easyui.min.js}"></script>
+    <script th:src="@{/ajax/libs/easyui/datagrid-filter.js}"></script>
+</div>
+<!-- datetimepicker -->
+<div th:fragment="datetimepicker-css">
+    <link th:href="@{/ajax/libs/datapicker/bootstrap-datetimepicker.min.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="datetimepicker-js">
+    <script th:src="@{/ajax/libs/datapicker/bootstrap-datetimepicker.min.js}"></script>
 </div>
 
 <!-- ztree -->
