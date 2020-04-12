@@ -99,7 +99,7 @@ public class CarrierEquipmentDoController extends BaseController {
     List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
     for (EquipmentDo e : list) {
       e.setContainerNumber(equipmentDoService.countContainerNumber(e.getBillOfLading()));
-      e.setBillOfLading("<a onclick='openForm("+e.getBillOfLading()+")'>"+e.getBillOfLading()+"</a>");
+      e.setBillOfLading("<a onclick='openForm('"+e.getBillOfLading()+"')'>"+e.getBillOfLading()+"</a>");
     }
 		return getDataTable(list);
 	}

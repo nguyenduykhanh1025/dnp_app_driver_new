@@ -67,12 +67,12 @@ public class SysEDIController extends BaseController
 		return getDataTable(list);
 	}
 	// Return panination
-	@PostMapping("/getCountPages")
-	@ResponseBody
-	public Long getCountPages()
-	{
-		return equipmentDoService.getTotalPages();
-	}
+	// @PostMapping("/getCountPages")
+	// @ResponseBody
+	// public Long getCountPages()
+	// {
+	// 	return equipmentDoService.getTotalPages();
+	// }
 	//update
 	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
 	@PostMapping("/update")

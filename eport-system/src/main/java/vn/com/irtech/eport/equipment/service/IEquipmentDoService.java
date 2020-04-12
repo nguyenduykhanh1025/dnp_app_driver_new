@@ -90,9 +90,12 @@ public interface IEquipmentDoService
     public List<EquipmentDo> getContainerListByIds(String ids);
 
     //getTotalPages
-    public Long getTotalPages();
+    public Long getTotalPagesCont(String billOfLading);
 
     public List<EquipmentDo> selectEquipmentDoListExclusiveBill(EquipmentDo equipmentDo);
 
     public String countContainerNumber(String billOfLading);
+
+     //Chang Do status
+    public int updateBillOfLading(EquipmentDo equipmentDo);
 }

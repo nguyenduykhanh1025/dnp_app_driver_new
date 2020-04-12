@@ -259,6 +259,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where id = #{id}
     </update>
+    
+    <update id="updateBillOfLading" parameterType="EquipmentDo">
+        update equipment_do
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
+            <if test="documentStatus != null  and documentStatus != ''">document_status = #{documentStatus},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <choose>
+            <when test="documentReceiptDate != null ">
+              document_receipt_date = #{documentReceiptDate},
+            </when>
+            <otherwise>
+                document_receipt_date = NULL,
+            </otherwise>
+            </choose>
+        </trim>
+        where bill_of_lading = #{billOfLading}
+    </update>
 
     <delete id="deleteEquipmentDoById" parameterType="Long">
         delete from equipment_do where id = #{id}
@@ -294,9 +314,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         #{id}
       </foreach>
     </select>
-    <select id="getTotalPages" resultType="java.lang.Long">
-        SELECT COUNT(*) FROM equipment_do
-    </select>
+     <select id="getTotalPagesCont" parameterType="String" resultType="Long">
+		select count(*) from equipment_do where bill_of_lading=#{billOfLading}
+	</select>
     <select id="countContainerNumber" parameterType="String" resultType="String">
 		select count(*) from equipment_do where bill_of_lading=#{billOfLading}
 	</select>
