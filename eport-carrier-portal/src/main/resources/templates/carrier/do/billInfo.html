@@ -1,19 +1,11 @@
 <!DOCTYPE html>
 <html
-  lang="en"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
   <head>
-    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <th:block th:include="include :: header('Xem Thông Tin DO')" />
+    <th:block th:include="include :: handsontable-css" />
     <th:block th:include="include :: easyui-css" />
     <th:block th:include="include :: datetimepicker-css" />
-    <link th:href="@{/css/jquery.toast.min.css}" rel="stylesheet" />
-    <link
-      th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}"
-      rel="stylesheet"
-      media="screen"
-    />
     <style type="text/css">
       .header-box {
         display: flex;
@@ -50,29 +42,32 @@
     </style>
   </head>
 
-  <body class="gray-bg">
-    <div class="fake-cont">
-      <div class="header-box">
-        <h2>Thông tin DO <span id="billNo"></span></h2>
-      </div>
-      <div class="info">
-        <div class="left-info">
-          <p>Mã hãng tàu: <span id="carrier"></span></p>
+  <body class="white-bg full-height-layout">
+    <div class="row">
+    <div class="col-sm-12" style="margin-top: 0px; padding-bottom:5px">
+      <div class="col-sm-12 fixed-table-toolbar">
+          <div class="bs-bars pull-left">
+            <p>Mã hãng tàu: <span id="carrier"></span></p>
           <p>Số vận đơn: <span id="billNumber"></span></p>
           <p>
             Hạn lệnh: <span id="expiredDem"></span>
-            <a
-              class="btn btn-xs btn-primary single"
-              id="itCloseToTheDeadlineeeeeeeeeeeeeeee"
-              onclick="$.operate.addChangeExpired()"
-            >
+            <a class="btn btn-xs btn-primary single"
+              id="updateExpiredDem"
+              onclick="$.operate.addChangeExpired()">
               <i class="fa fa-edit"></i> Đổi Hạn Lệnh
             </a>
           </p>
           <p>Trạng thái làm lệnh: <span id="dostatus"></span></p>
           <p>Trạng thái nộp DO: <span id="DOInStatus"></span></p>
           <p id="DateInDO_dad"></p>
-        </div>
+          </div>
+          <div class="bs-bars pull-right">
+            
+          </div>
+      </div>
+      </div>
+      <div class="header-box">
+        <h2>Thông tin DO <span id="billNo"></span></h2>
       </div>
       <br />
       <div class="footer-add">

@@ -717,11 +717,11 @@ var table = {
                 layer.closeAll();
             },
             // 确认窗体
-            confirm: function (content, callBack) {
+            confirm: function (content, callBack, opts) {
             	layer.confirm(content, {
         	        icon: 3,
-        	        title: "Thông Báo",
-        	        btn: ['OK', 'Hủy']
+        	        title: opts.title == null ? "Xác Nhận" : opts.title,
+        	        btn: opts.btn == null ? ['Đồng Ý', 'Hủy Bỏ']:opts.btn
         	    }, function (index) {
         	    	layer.close(index);
         	        callBack(true);
@@ -811,49 +811,7 @@ var table = {
                 return true;
             }
         });
-},
-			// 弹出层指定宽度
-            openDo: function (title, url, width, height, callback) {
-            	//如果是移动端，就使用自适应大小弹窗
-            	if ($.common.isMobile()) {
-            	    width = 'auto';
-            	    height = 'auto';
-            	}
-            	if ($.common.isEmpty(title)) {
-                    title = false;
-                }
-                if ($.common.isEmpty(url)) {
-                    url = "/404.html";
-                }
-                if ($.common.isEmpty(width)) {
-                	width = 800;
-                }
-                if ($.common.isEmpty(height)) {
-                	height = ($(window).height() - 50);
-                }
-                if ($.common.isEmpty(callback)) {
-                    callback = function(index, layero) {
-                        var iframeWin = layero.find('iframe')[0];
-                        iframeWin.contentWindow.submitHandler(index, layero);
-                    }
-                }
-            	layer.open({
-            		type: 2,
-            		area: [width + 'px', height + 'px'],
-            		fix: false,
-            		//不固定
-            		maxmin: true,
-            		shade: 0.3,
-            		title: title,
-            		content: url,
-            	    // 弹层外区域关闭
-            		shadeClose: true,
-            		yes: callback,
-            	    cancel: function(index) {
-            	        return true;
-            	    }
-            	});
-            },
+      },
             // 弹出层指定参数选项
             openOptions: function (options) {
             	var _url = $.common.isEmpty(options.url) ? "/404.html" : options.url; 
@@ -1123,17 +1081,6 @@ var table = {
             	var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
                 $.modal.openFull("Thêm " + table.options.modalName, url);
 			},
-			// add full size do
-            addFullDo: function(id) {
-            	table.set();
-				var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
-                $.modal.openDo("Thêm " + table.options.modalName, url, 1200);
-            },
-            addChangeExpired: function(id) {
-            	table.set();
-			        	var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
-                $.modal.openDo("Thay đổi hạn lệnh", url, 600, 400);
-            },
             // 添加访问地址
             addUrl: function(id) {
             	var url = $.common.isEmpty(id) ? table.options.createUrl.replace("{id}", "") : table.options.createUrl.replace("{id}", id);
