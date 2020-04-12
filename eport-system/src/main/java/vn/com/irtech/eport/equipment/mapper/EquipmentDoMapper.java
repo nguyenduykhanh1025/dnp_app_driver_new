@@ -93,4 +93,7 @@ public interface EquipmentDoMapper
   public String countContainerNumber(String billOfLading);
   //Chang Do status
   public int updateBillOfLading(EquipmentDo equipmentDo);
+
+  public List<EquipmentDo> selectEquipmentDoDetails(EquipmentDo equipmentDo);
+	
 }

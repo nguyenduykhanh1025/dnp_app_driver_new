@@ -165,4 +165,8 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     public int updateBillOfLading(EquipmentDo equipmentDo) {
         return equipmentDoMapper.updateBillOfLading(equipmentDo);
     }
+    @Override
+    public List<EquipmentDo> selectEquipmentDoDetails(EquipmentDo equipmentDo){
+      return equipmentDoMapper.selectEquipmentDoDetails(equipmentDo);
+    }
 }
