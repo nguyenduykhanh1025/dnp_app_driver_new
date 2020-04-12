@@ -141,10 +141,10 @@
             <th data-options="field:'voyNo',align:'center'" width="10%">
               Chuyến tàu<br />Voyage No
             </th>
-            <th data-options="field:'status',align:'center'" width="10%">
+            <th data-options="field:'status',align:'center',formatter: formatStatus" width="10%">
               Trạng thái Do
             </th>
-            <th data-options="field:'documentStatus',align:'center'" width="10%">
+            <th data-options="field:'documentStatus',align:'center',formatter: formatDocumentStatus" width="10%">
               Đã nhận Do gốc
             </th>
             <th data-options="field:'document_status',align:'center'" width="10%">
@@ -369,7 +369,18 @@
         },
       });
     }
-
+    function formatStatus(value) {
+        if (value != 0) {
+          return "<span class='label label-success'>Đã làm lệnh</span>"
+        }
+        return "<span class='label label-warning'>Chưa làm lệnh</span>"
+      }
+      function formatDocumentStatus(value) {
+        if (value != 0) {
+          return "<span class='label label-success'>Đã nhận DO gốc</span>"
+        }
+        return "<span class='label label-warning'>Chưa nhận DO gốc</span>"
+      }
     function openForm(getBillOfLading) {
       console.log(getBillOfLading);
       $.modal.openFull("Danh sách cont của bill " + getBillOfLading, prefix + "/getViewCont/{" + getBillOfLading + "}");

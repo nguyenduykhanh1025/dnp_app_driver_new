@@ -168,8 +168,7 @@ public class EquipmentDoController extends BaseController
         equipmentDo.setUpdateBy(currentUser.getLoginName());
         equipmentDo.setDocumentReceiptDate(documentReceiptDate);
         equipmentDo.setBillOfLading(billOfLading);
-        return error();
-        //return toAjax(equipmentDoService.updateBillOfLading(equipmentDo));
+        return toAjax(equipmentDoService.updateBillOfLading(equipmentDo));
     }
     /**
      * Delete Exchange Delivery Order
