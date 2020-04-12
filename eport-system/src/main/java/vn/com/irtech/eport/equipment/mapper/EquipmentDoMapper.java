@@ -91,5 +91,7 @@ public interface EquipmentDoMapper
   public List<EquipmentDo> selectEquipmentDoListExclusiveBill(EquipmentDo equipmentDo);
   
   public String countContainerNumber(String billOfLading);
+
+  public List<EquipmentDo> selectEquipmentDoDetails(EquipmentDo equipmentDo);
 	
 }

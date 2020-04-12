@@ -158,4 +158,9 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     public String countContainerNumber(String billOfLading) {
         return equipmentDoMapper.countContainerNumber(billOfLading);
     }
+
+    @Override
+    public List<EquipmentDo> selectEquipmentDoDetails(EquipmentDo equipmentDo){
+      return equipmentDoMapper.selectEquipmentDoDetails(equipmentDo);
+    }
 }
