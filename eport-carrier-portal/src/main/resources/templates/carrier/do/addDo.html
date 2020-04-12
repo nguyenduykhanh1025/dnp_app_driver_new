@@ -88,27 +88,42 @@
       color: red !important;
       text-transform: none;
     }
+
+    .header-box {
+      display: flex;
+      justify-content: space-between;
+      vertical-align: middle;
+      margin: 5px 0 15px 0;
+    }
+
+    .footer-add {
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      vertical-align:bottom;
+    }
+
   </style>
   <body>
     <!-- =================================== -->
     <form id="form-do-add" style="width: 100%; height: 100%;">
       <div class="container">
-        <h2 style="text-align: center;">Khai báo Delivery Order</h2>
-        <hr />
-        <div class="footer-add">
-          <button
-            type="button"
-            class="btn btn-primary"
-            onclick="getAlert()"
-            style="margin-right: 10px;"
-          >
-            Xác nhận
-          </button>
-          <button type="button" class="btn btn-dark" onclick="closeItemDo()">
-            Hủy bỏ
-          </button>
+        <div class="header-box">
+          <h2 style="text-align: center;">Khai báo Delivery Order</h2>
+          <div class="footer-add">
+            <button
+              type="button"
+              class="btn btn-primary btn-sm"
+              onclick="getAlert()"
+              style="margin-right: 10px; height: 40px;"
+            >
+              Xác nhận
+            </button>
+            <button type="button" class="btn btn-dark" onclick="closeItemDo()" style="height: 40px;">
+              Hủy bỏ
+            </button>
+          </div>
         </div>
-        <hr>
         <div id="example" class="hot handsontable htColumnHeaders"></div>
         <hr />
         

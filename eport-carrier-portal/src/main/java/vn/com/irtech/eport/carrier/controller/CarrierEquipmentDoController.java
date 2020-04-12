@@ -99,7 +99,7 @@ public class CarrierEquipmentDoController extends BaseController {
     List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
     for (EquipmentDo e : list) {
       e.setContainerNumber(equipmentDoService.countContainerNumber(e.getBillOfLading()));
-      e.setBillOfLading("<a onclick='openForm("+e.getBillOfLading()+")'>"+e.getBillOfLading()+"</a>");
+      e.setBillOfLading("<a onclick='openForm(\""+e.getBillOfLading()+"\")'>"+e.getBillOfLading()+"</a>");
     }
 		return getDataTable(list);
 	}
@@ -111,7 +111,7 @@ public class CarrierEquipmentDoController extends BaseController {
   public String billInfo(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
     EquipmentDo equipmentDo = new EquipmentDo();
     equipmentDo.setBillOfLading(billOfLading.substring(1, billOfLading.length()-1));
-    List<EquipmentDo> equipmentDos = equipmentDoService.selectEquipmentDoList(equipmentDo);
+    List<EquipmentDo> equipmentDos = equipmentDoService.selectEquipmentDoDetails(equipmentDo);
     mmap.addAttribute("equipmentDos", equipmentDos);
     return prefix + "/billInfo";
   }

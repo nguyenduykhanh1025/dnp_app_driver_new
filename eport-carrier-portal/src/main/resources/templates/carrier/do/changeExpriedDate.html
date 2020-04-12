@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>change ExpriedDate</title>
+  <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body>
+  <div class="row">
+    <div class="col-md-3">
+      <label
+        data-error="wrong"
+        data-success="right"
+        for="form2"
+        style="line-height: 34px; height: 34px;"
+      >
+        Hạn lệnh mới
+      </label>
+    </div>
+    <div class="col-md-4 input-group date" id="datetimepicker2">
+      <input
+        type="text"
+        class="form-control time-input"
+        id="datetimepicker"
+        autocomplete="off"
+      />
+      <span class="input-group-addon">
+        <span class="glyphicon glyphicon-calendar"></span>
+      </span>
+    </div>
+  </div>
+</body>
+<th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
+</html>
