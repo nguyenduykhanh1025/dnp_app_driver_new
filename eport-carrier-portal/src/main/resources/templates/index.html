@@ -15,8 +15,8 @@
     <link th:href="@{/css/skins.css}" rel="stylesheet" />
     <link th:href="@{/eport/css/eport.css?v=4.2.0}" rel="stylesheet" />
     <style type="text/css">
-      .text span{
-        font-size: 16px;
+      .brand-title{
+        font-size: 17px;
       }
 
       #logo-img {
@@ -24,7 +24,7 @@
       }
 
       #main-logo {
-        padding-top: 10px;
+        padding-top: 2px;
         padding-right: 10px;
         padding-bottom: 0;
       }
@@ -52,10 +52,10 @@
               <li class="no-hover">
                 <a title="ePort CND" class="menuItem no-hover" id="main-logo">
                   <div style="display: flex; justify-content: space-between; padding-right: 50px">
-                    <img th:src="@{/img/CDN.png}" width="40px" height="40px" id="logo-img"/>
-                    <div class="text" style="display: flex; flex-direction: column; text-align: center;">
-                      <span>Da Nang Port</span>
-                      <span style="font-size: 10px;">DO Web Portal</span>
+                    <img th:src="@{/img/logo.png}" width="45px" id="logo-img"/>
+                    <div class="text" style="display: flex; flex-direction: column;">
+                      <span class="brand-title">Da Nang Port</span>
+                      <span style="font-size: 13px;">DO Web Portal</span>
                     </div>
                   </div>
                 </a>
@@ -66,7 +66,6 @@
                   th:href="@{/carrier/do}"
                   href="/carrier/do"
                   class="menuItem"
-                  style="margin-top: 5px"
                   ><i class="fa fa-ship"></i>&nbsp; Quản Lý DO</a
                 >
               </li>

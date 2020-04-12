@@ -2,6 +2,9 @@ package vn.com.irtech.eport.equipment.domain;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -22,41 +25,48 @@ public class EquipmentDo extends BaseEntity
     private Long id;
 
     /** ID Nhan Vien Hang Tau */
-    @Excel(name = "ID Hang Tau")
     private Long carrierId;
 
     /** Ma Hang Tau */
-    @Excel(name = "Ma Hang Tau")
+    @Excel(name = "Hãng Tàu")
     private String carrierCode;
 
     /** So Lenh (Optional) */
     private String orderNumber;
 
     /** So B/L */
-    @Excel(name = "So B/L")
+    @Excel(name = "Số B/L")
+    @NotBlank(message = "Mã vận đơn là bắt buộc")
+    @Size(min = 0, max = 20, message = "Mã vận đơn tối đa 20 ký tự")
     private String billOfLading;
 
     /** Don Vi Khai Thac (Optional) */
     private String businessUnit;
 
     /** Chu Hang */
-    @Excel(name = "Chu Hang")
+    @Excel(name = "Tên Khách Hàng")
+    @NotBlank(message = "Tên khách hàng là bắt buộc")
+    @Size(min = 0, max = 255, message = "Tên khách hàng tối đa 255 ký tự")
     private String consignee;
 
     /** So Cont */
-    @Excel(name = "So Cont")
+    @Excel(name = "Số Container")
+    @NotBlank(message = "Số container là bắt buộc")
+    @Size(min = 0, max = 11, message = "Số container tối đa 11 ký tự")
     private String containerNumber;
 
     /** Han Lenh */
-    @Excel(name = "Han Lenh", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "Hạn Lệnh", width = 30, dateFormat = "dd/MM/yyyy")
+    @NotBlank(message = "Hạn lệnh là bắt buộc")
     private Date expiredDem;
 
     /** Noi Ha Rong */
-    @Excel(name = "Noi Ha Rong")
+    @Excel(name = "Nơi Hạ Rỗng")
+    @Size(min = 0, max = 255, message = "Nơi hạ rỗng tối đa 255 ký tự")
     private String emptyContainerDepot;
 
     /** So Ngay Mien Luu Vo Cont */
-    @Excel(name = "So Ngay Mien Luu")
+    @Excel(name = "Số Ngày Miễn Lưu")
     private Integer detFreeTime;
 
     /** Ma Bao Mat (optional) */
@@ -66,11 +76,11 @@ public class EquipmentDo extends BaseEntity
     private Date releaseDate;
 
     /** Tau */
-    @Excel(name = "Tau")
+    @Excel(name = "Tàu")
     private String vessel;
 
     /** Chuyen */
-    @Excel(name = "Chuyen")
+    @Excel(name = "Chuyến")
     private String voyNo;
 
     /** DO Type */

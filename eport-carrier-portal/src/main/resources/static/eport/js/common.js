@@ -343,8 +343,8 @@ function domresize()
 	webW = document.documentElement.offsetWidth;
 	widthInfo = $("body").outerWidth() -27;
 	//var mtopH = $(".box-body").outerHeight();
-	var mtopH = $("#wrapper").outerHeight();
-	heightInfo = webH - mtopH - 100;
+	//var mtopH = $("#wrapper").outerHeight();
+	heightInfo = webH - 55;
 
 	//Paging information changed to 15
 	if(heightInfo > 550)
@@ -359,11 +359,10 @@ function domresize()
 	}
 }
 function dgResize() {
-	var searchTabHeight = $('#wrapper').height();
 	if($('#dg').length) {
         $('#dg').datagrid('resize', {
 //            width: $(window).width() - 6,
-            height: $(window).height() - searchTabHeight -100
+            height: $(window).height() -55
         });
 	}
 }

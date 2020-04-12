@@ -3,6 +3,7 @@ package vn.com.irtech.eport.equipment.mapper;
 import java.util.Date;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -97,5 +98,7 @@ public interface EquipmentDoMapper
   public List<EquipmentDo> selectEquipmentDoDetails(EquipmentDo equipmentDo);
 
   public int updateEquipmentDoExpiredDem(EquipmentDo equipmentDo);
+
+  public Map<String, String> getReportByCarrierGroup(String[] codes);
 	
 }

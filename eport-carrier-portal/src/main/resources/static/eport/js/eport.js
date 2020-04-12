@@ -1,8 +1,3 @@
-/**
- * 通用js方法封装处理
- * Copyright (c) 2019 ruoyi
- */
-
 // 当前table相关信息
 var table = {
     config: {},
@@ -1662,22 +1657,27 @@ var table = {
             },
         }
     });
+	// Capture shortcut
+	$(window).keydown(function(event) {
+	// Ctrl+Q: 81
+	    if(event.ctrlKey && event.keyCode == 81) { 
+	      closeItem();
+	      event.preventDefault(); 
+	    }
+	});
 })(jQuery);
 
-/** 表格类型 */
 table_type = {
     bootstrapTable: 0,
     bootstrapTreeTable: 1
 };
 
-/** 消息状态码 */
 web_status = {
     SUCCESS: 0,
     FAIL: 500,
     WARNING: 301
 };
 
-/** 弹窗状态码 */
 modal_status = {
     SUCCESS: "success",
     FAIL: "error",
