@@ -107,7 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
-            <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat('%', #{containerNumber}, '%')</if>
+            <if test="containerNumber != null  and containerNumber != ''"> and lower(container_number) like concat('%', #{containerNumber}, '%')</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
@@ -287,6 +287,46 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
+    <update id="updateEquipmentDoExpiredDem" parameterType="EquipmentDo">
+        update equipment_do
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="carrierId != null ">carrier_id = #{carrierId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code = #{carrierCode},</if>
+            <if test="orderNumber != null  and orderNumber != ''">order_number = #{orderNumber},</if>
+            <if test="billOfLading != null  and billOfLading != ''">bill_of_lading = #{billOfLading},</if>
+            <if test="businessUnit != null  and businessUnit != ''">business_unit = #{businessUnit},</if>
+            <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
+            <if test="containerNumber != null  and containerNumber != ''">container_number = #{containerNumber},</if>
+            <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">empty_container_depot = #{emptyContainerDepot},</if>
+            <if test="detFreeTime != null ">det_free_time = #{detFreeTime},</if>
+            <if test="secureCode != null  and secureCode != ''">secure_code = #{secureCode},</if>
+            <if test="releaseDate != null ">release_date = #{releaseDate},</if>
+            <if test="vessel != null  and vessel != ''">vessel = #{vessel},</if>
+            <if test="voyNo != null  and voyNo != ''">voy_no = #{voyNo},</if>
+            <if test="doType != null  and doType != ''">do_type = #{doType},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
+            <if test="documentStatus != null  and documentStatus != ''">document_status = #{documentStatus},</if>
+            <choose>
+            <when test="documentReceiptDate != null ">
+              document_receipt_date = #{documentReceiptDate},
+            </when>
+            <otherwise>
+                document_receipt_date = NULL,
+            </otherwise>
+            </choose>
+            <if test="releaseStatus != null  and releaseStatus != ''">release_status = #{releaseStatus},</if>
+            <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where bill_of_lading = #{billOfLading}
+    </update>
+    
     <delete id="deleteEquipmentDoById" parameterType="Long">
         delete from equipment_do where id = #{id}
     </delete>

@@ -97,4 +97,6 @@ public interface IEquipmentDoService
     public String countContainerNumber(String billOfLading);
 
     public List<EquipmentDo> selectEquipmentDoDetails(EquipmentDo equipmentDo);
+
+    public int updateEquipmentDoExpiredDem(EquipmentDo equipmentDo);
 }
