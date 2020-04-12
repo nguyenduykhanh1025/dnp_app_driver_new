@@ -115,13 +115,46 @@ public class CarrierEquipmentDoController extends BaseController {
     return prefix + "/billInfo";
   }
 
+  @GetMapping("/searchCon")
+  @ResponseBody
+  public List<EquipmentDo> searchCon(String billOfLading, String contNo) {
+    EquipmentDo equipmentDo = new EquipmentDo();
+    equipmentDo.setBillOfLading(billOfLading);
+    equipmentDo.setContainerNumber(contNo.toLowerCase());
+    return equipmentDoService.selectEquipmentDoDetails(equipmentDo);
+  }
+
   /**
    * Update Exchange Delivery Order
    */
-  @GetMapping("/changeExpiredDate/{billOfLading}")
-  public String changeExpiredDate(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
+  @GetMapping("/changeExpiredDate/{billOfLading}/{status}")
+  public String changeExpiredDate(@PathVariable("billOfLading") String billOfLading, @PathVariable("status") String status,ModelMap mmap) {
     mmap.addAttribute("billOfLading", billOfLading.substring(1, billOfLading.length()-1));
+    mmap.addAttribute("status", status.substring(1, status.length()-1));
     return prefix + "/changeExpriedDate";
+  }
+
+  //update
+  @Log(title = "Update Expired Date", businessType = BusinessType.UPDATE)
+  @PostMapping("/updateExpiredDate")
+  @ResponseBody
+  public AjaxResult updateExpiredDate(String billOfLading, Date expiredDem, boolean status) {
+    Date now = new Date();
+    expiredDem.setHours(23);
+    expiredDem.setMinutes(59);
+    expiredDem.setSeconds(59);
+    if (expiredDem.getTime() >= now.getTime()) {
+      if (!status) {
+        EquipmentDo equipmentDo = new EquipmentDo();
+        equipmentDo.setBillOfLading(billOfLading);
+        equipmentDo.setExpiredDem(expiredDem);
+        return toAjax(equipmentDoService.updateEquipmentDoExpiredDem(equipmentDo));
+      } else 
+      return error("Cập nhật thất bại vì hóa đơn đã làm lệnh");
+    } else {
+      return error("Ngày gia hạn lệnh không được trong quá khứ");
+    }
+     
   }
 
   /**

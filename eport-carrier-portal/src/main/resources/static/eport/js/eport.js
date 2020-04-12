@@ -1134,6 +1134,11 @@ var table = {
 				var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
                 $.modal.openDo("Thêm " + table.options.modalName, url, 1200);
             },
+            addChangeExpired: function(id) {
+            	table.set();
+			        	var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
+                $.modal.openDo("Thay đổi hạn lệnh", url, 600, 400);
+            },
             // 添加访问地址
             addUrl: function(id) {
             	var url = $.common.isEmpty(id) ? table.options.createUrl.replace("{id}", "") : table.options.createUrl.replace("{id}", id);
