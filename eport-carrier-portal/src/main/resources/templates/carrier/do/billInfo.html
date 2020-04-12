@@ -19,7 +19,7 @@
         display: flex;
         justify-content: space-between;
         vertical-align: middle;
-        margin: 5px 0 15px 0;
+        margin: 0;
       }
 
       .footer-add {
@@ -30,7 +30,7 @@
       }
 
       .fake-cont {
-        padding: 0 30px;
+        padding: 0 20px;
         width: 100%;
       }
 
@@ -42,6 +42,10 @@
         display: flex;
         justify-content: space-between;
         width: 100%;
+        padding: 10px;
+        border: 1px solid grey;
+        border-radius: 10px;
+        box-shadow: grey 3px 2px 3px;
       }
     </style>
   </head>
@@ -49,9 +53,8 @@
   <body class="gray-bg">
     <div class="fake-cont">
       <div class="header-box">
-        <h2>Thông tin DO <b id="billNo"></b></h2>
+        <h2>Thông tin DO <span id="billNo"></span></h2>
       </div>
-      <hr />
       <div class="info">
         <div class="left-info">
           <p>Mã hãng tàu: <span id="carrier"></span></p>
@@ -61,6 +64,7 @@
             <a
               class="btn btn-xs btn-primary single"
               id="itCloseToTheDeadlineeeeeeeeeeeeeeee"
+              onclick="openChangeExpired()"
             >
               <i class="fa fa-edit"></i> Đổi Hạn Lệnh
             </a>
@@ -70,10 +74,15 @@
           <p id="DateInDO_dad"></p>
         </div>
       </div>
-      <hr />
+      <br />
       <div class="footer-add">
-        <div>
-          <input class="form-control" type="text" id="searchForm" placeholder="Tìm kiếm..."> 
+        <div style="display:flex; justify-content: space-around">
+          <input class="form-control" type="text" id="searchForm" placeholder="Số container" style="width:'80px'; margin-right: 10px;"> 
+          <input class="form-control" type="text" id="searchForm" placeholder="Tên chủ hàng" style="width:'80px';margin-right: 10px;"> 
+          <input class="form-control" type="text" id="searchForm" placeholder="Nơi hạ vỏ" style="width:'80px';margin-right: 10px;"> 
+          <input class="form-control" type="text" id="searchForm" placeholder="Tên tàu" style="width:'80px';margin-right: 10px;"> 
+          <input class="form-control" type="text" id="searchForm" placeholder="Chuyến" style="width:'80px';margin-right: 10px;"> 
+          <button class="btn btn-success">Tìm kiếm</button>
         </div>
         <div>
           <button
@@ -109,7 +118,6 @@
     ></script>
     <script type="text/javascript" th:inline="javascript">
       var doList = /*[[${equipmentDos}]]*/;
-      console.log(doList);
       $("#billNo").html("No: " + doList[0].billOfLading);
       $("#billNumber").html(doList[0].billOfLading);
       $("#carrier").html(doList[0].carrierCode);
@@ -241,7 +249,6 @@
           }
         });
         var jsonData = JSON.stringify(cleanedGridData);
-        console.log(jsonData);
         $.ajax({
           url: "/carrier/do/add",
           method: "post",
@@ -255,6 +262,10 @@
             //handle ajax error
           },
         });
+      }
+
+      function openChangeExpired() {
+        $.modal.openChangeExpired("Thay đổi hạn lệnh", "/carrier/do/changeExpiredDate/{"+doList[0].billOfLading+"}", "700", "300");
       }
     </script>
   </body>
