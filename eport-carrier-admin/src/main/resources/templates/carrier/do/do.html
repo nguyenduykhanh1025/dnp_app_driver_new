@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+  <th:block th:include="include :: header('List Exchange Delivery Order')" />
+  <th:block th:include="include :: easyui-css" />
+  <th:block th:include="include :: datetimepicker-css" />
+</head>
+<style>
+  .clickable {
+    cursor: pointer;
+  }
+
+  #container-details table tbody,
+  #container-details table thead {
+    display: block;
+  }
+
+  #container-details table tbody {
+    overflow: auto;
+    height: auto;
+    max-height: 400px;
+  }
+
+  .modal-dialog {
+    width: 700px;
+  }
+
+  #searchForm {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.5s ease-in-out;
+    -moz-transition: height 0.5s ease-in-out;
+    -webkit-transition: height 0.5s ease-in-out;
+    -o-transition: height 0.5s ease-in-out;
+  }
+
+  /* table {
+        width: 350px; /* can be dynamic */
+
+  /* th
+    {
+        width: 75px;
+    } */
+</style>
+
+<body class="gray-bg">
+  <div class="row">
+    <div class="col-sm-12 select-table" style="margin-top: 0px;">
+      <!-- Search form -->
+      <!-- Search form -->
+      <div class="col-sm-12" id="searchForm">
+        <form id="formId">
+          <div class="select-list">
+            <ul>
+              <li>
+                <input type="text" name="BlNo" id="blNo" placeholder="Vận đơn/BL No" />
+              </li>
+              <li>
+                <input type="text" name="vessel" id="vessel" placeholder="Tên tàu" />
+              </li>
+              <li>
+                <input type="text" name="voyageNo" id="voyageNo" placeholder="Tên chuyến" />
+              </li>
+              <li>
+                <input type="text" name="consignee" id="consignee" placeholder="Tên khách hàng" />
+              </li>
+              <li>
+                <select name="status" id="status">
+                  <option value="">Trạng thái DO</option>
+                  <option value="1">Đã làm lệnh</option>
+                  <option value="0">Chưa làm lệnh</option>
+                </select>
+              </li>
+              <li>
+                <select name="documentStatus" id="documentStatus">
+                  <option value=""> Trạng thái nhận DO gốc</option>
+                  <option value="1">Đã có DO gốc</option>
+                  <option value="0">Chưa có DO gốc</option>
+                </select>
+              </li>
+              <li>
+                <input type="date" name="fromDate" id="fromDate" placeholder="Từ ngày" />
+              </li>
+              <li>
+                <input type="date" name="toDate" id="toDate" placeholder="Đến ngày" />
+              </li>
+
+              <li>
+                <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchBtn"><i
+                    class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
+              </li>
+            </ul>
+          </div>
+        </form>
+      </div>
+      <!-- Table toolbar -->
+      <div class="col-sm-12 fixed-table-toolbar">
+      </div>
+      <div class="columns columns-right btn-group pull-right" style="margin-bottom: 5px;">
+        <button class="btn btn-default btn-outline" type="button" name="showSearch" title="Tìm kiếm"
+          onclick="collapse()">
+          <i class="glyphicon glyphicon-search"></i>
+        </button>
+        <button class="btn btn-default btn-outline" type="button" name="refresh" title="Làm mới dữ liệu"
+          onclick="load()">
+          <i class="glyphicon glyphicon-refresh icon-refresh"></i>
+        </button>
+      </div>
+    </div>
+    <!-- /table toolbar -->
+    <div class="col-sm-12 table-container">
+      <table id="dg" style="width: 100%; height: 500px;" pageList="[20,50,100,150,200]">
+        <thead>
+          <tr>
+            <!-- <th data-options="field:'id',checkbox:true"></th> -->
+            <th data-options="field:'carrierCode',halign:'center',resizable:true" width="80">
+              Hãng tàu <br />Carrier
+            </th>
+            <th data-options="field:'billOfLading',halign:'center'," sortable="true" width="110">
+              Số vận đơn<br />B/L No
+            </th>
+            <th data-options="field:'containerNumber',halign:'center'," sortable="true" width="110">
+              Số lượng <br> container
+            </th>
+            <th data-options="field:'consignee',halign:'center'" width="250">
+              Khách hàng<br />Consignee
+            </th>
+            <th data-options="field:'expiredDem',halign:'center',align:'right'" sortable="true" width="110">
+              Hạn lệnh<br />Expired Date
+            </th>
+            <th data-options="field:'emptyContainerDepot',halign:'center'" width="200">
+              Nơi hạ rỗng<br />Empty Depot
+            </th>
+            <th data-options="field:'detFreeTime',halign:'center',align:'right'" width="80">
+              Ngày miễn<br />DET free
+            </th>
+            <th data-options="field:'vessel',align:'center'" width="10%">
+              Tên tàu<br />Vessel
+            </th>
+            <th data-options="field:'voyNo',align:'center'" width="10%">
+              Chuyến tàu<br />Voyage No
+            </th>
+            <th data-options="field:'status',align:'center',formatter: formatStatus" width="10%">
+              Trạng thái Do
+            </th>
+            <th data-options="field:'documentStatus',align:'center',formatter: formatDocumentStatus" width="10%">
+              Đã nhận Do gốc
+            </th>
+            <th data-options="field:'document_status',align:'center'" width="10%">
+              Ghi chú
+            </th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+  </div>
+  </div>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: datetimepicker-js" />
+  <!-- Jquery toast -->
+  <!-- <script th:src="@{/js/jquery.toast.min.js}"></script> -->
+  <script type="text/javascript">
+    // open add layer iframe
+    //**********************************
+    var prefix = "/carrier/admin/do";
+    $(function () {
+      var options = {
+        url: prefix + "/list",
+        createUrl: prefix + "/add",
+        modalName: "DO",
+        // width: '1000'
+      };
+      $.table.init(options);
+    });
+    //**********************************
+    $("#searchForm").css({
+      height: 80
+    });
+    load();
+
+    function load() {
+      var dg = $("#dg").datagrid({
+        url: prefix + "/list",
+        singleSelection: true,
+        clientPaging: false,
+        pagination: true,
+        rownumbers: true,
+        pageSize: 50,
+        loader: function (param, success, error) {
+          var opts = $(this).datagrid("options");
+          if (!opts.url) return false;
+          $.ajax({
+            type: opts.method,
+            url: opts.url,
+            data: {
+              pageNum: param.page,
+              pageSize: param.rows,
+              orderByColumn: param.sort,
+              isAsc: param.order,
+            },
+            dataType: "json",
+            success: function (data) {
+              success(data);
+            },
+            error: function () {
+              error.apply(this, arguments);
+            },
+          });
+        },
+      });
+    }
+
+    //Handle click checkbox event
+    $(document).on(
+      "click",
+      ".datagrid-row, .datagrid-header-check",
+      function () {
+        var checked = $("input:checkbox:checked").length - 1;
+        if (checked < 0) {
+          $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").addClass("disabled");
+        } else {
+          $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").removeClass("disabled");
+        }
+      }
+    );
+
+    // collapse search form
+    function collapse() {
+
+      if ($("#searchForm").height() == 1) {
+        $("#searchForm").css({
+          height: 80,
+        });
+      } else {
+        $("#searchForm").css({
+          height: 0,
+        });
+      }
+    }
+
+    var selectedRow;
+    var selectedContainer;
+    $(".datagrid-header-check input").click(function () {
+      setTimeout(function () {
+        var checked = $("input:checkbox:checked").length;
+        if (!checked) {
+          $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").addClass("disabled");
+        } else {
+          $("#itCloseToTheDeadlineeeeeeeeeeeeeeee").removeClass("disabled");
+        }
+      }, 200);
+    });
+
+    //Get selected row of table
+    function getSelectedRow() {
+      selectedRow = $(".datagrid-cell-check input[name='id']:checked")
+        .map(function () {
+          return this.value;
+        })
+        .get();
+      //var jsson = JSON.stringify(selectedRow);
+      $.ajax({
+        url: "/carrier/do/getContainer",
+        method: "get",
+        data: {
+          containerId: selectedRow,
+        },
+        success: function (result) {
+          var text = "<table class='table'><thead><tr>";
+          text += "<th width='50px'>STT<br><small>#</small></th>";
+          text +=
+            "<th width='150px'>Số vận đơn<br><small>B/L No</small></th>";
+          text +=
+            "<th width='200px'>Số cont<br><small>Container No</small></th>";
+          text += "<th width='150px'>Tên tàu<br> <small>Vessel</small></th>";
+          text +=
+            "<th width='150px'>Hạn lệnh hiện tại<br><small> Current Expired Date</small></th>";
+          text += "</tr></thead><tbody >";
+          var i = 0;
+          result.forEach((element) => {
+            i++;
+            var date = new Date(element.expiredDem);
+            const ye = new Intl.DateTimeFormat('en', {
+              year: 'numeric'
+            }).format(date);
+            const mo = new Intl.DateTimeFormat('en', {
+              month: 'numeric'
+            }).format(date);
+            const da = new Intl.DateTimeFormat('en', {
+              day: '2-digit'
+            }).format(date);
+
+            text += "<tr><td width='50px'>" + i + "</td>";
+            text += "<td width='150px'>" + element.billOfLading + "</td>";
+            text += "<td width='200px'>" + element.containerNumber + "</td>";
+            text += "<td width='150px'>" + element.vessel + "</td>";
+            text += "<td width='150px'>" + `${da}-${mo}-${ye}` + "</td></tr>";
+          });
+          text += "</tbody></table>";
+          $("#container-details").html(text);
+        },
+      });
+    }
+
+    //Resolve update action
+    function submit() {
+      var date = $("#datetimepicker").val();
+      $.ajax({
+        url: "/carrier/do/updateExpire",
+        method: "post",
+        data: {
+          containerId: selectedRow,
+          newDate: date,
+        },
+        success: function (result) {
+          $.toast({
+            heading: "Thành công",
+            text: "Cập nhật hạn lệnh mới thành công ！",
+            showHideTransition: "fade",
+            icon: "success",
+            position: "top-right",
+          });
+          $("#container-details").html("");
+          $("#datetimepicker").val("");
+          $(".modal").modal("toggle");
+          load();
+        },
+      });
+    }
+
+    function searchDo() {
+      var dg = $("#dg").datagrid({
+        url: prefix + "/list",
+        singleSelection: true,
+        clientPaging: false,
+        pagination: true,
+        rownumbers: true,
+        pageSize: 50,
+        loader: function (param, success, error) {
+          var opts = $(this).datagrid("options");
+          if (!opts.url) return false;
+          $.ajax({
+            type: opts.method,
+            url: opts.url,
+            data: {
+              pageNum: param.page,
+              pageSize: param.rows,
+              orderByColumn: param.sort,
+              isAsc: param.order,
+              fromDate: $("#fromDate").val() == null ? "" : $("#fromDate").val(),
+              toDate: $("#toDate").val() == null ? "" : $("#toDate").val(),
+              voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
+              vessel: $("#vessel").val() == null ? "" : $("#vessel").val(),
+              contNo: $("#consignee").val() == null ? "" : $("#consignee").val(),
+              blNo: $("#blNo").val() == null ? "" : $("#blNo").val(),
+              status: $("#status").val() == null ? "" : $("#status").val(),
+              documentStatus: $("#documentStatus").val() == null ? "" : $("#documentStatus").val(),
+            },
+            dataType: "json",
+            success: function (data) {
+              success(data);
+            },
+            error: function () {
+              error.apply(this, arguments);
+            },
+          });
+        },
+      });
+    }
+    function formatStatus(value) {
+        if (value != 0) {
+          return "<span class='label label-success'>Đã làm lệnh</span>"
+        }
+        return "<span class='label label-warning'>Chưa làm lệnh</span>"
+      }
+      function formatDocumentStatus(value) {
+        if (value != 0) {
+          return "<span class='label label-success'>Đã nhận DO gốc</span>"
+        }
+        return "<span class='label label-warning'>Chưa nhận DO gốc</span>"
+      }
+    function openForm(getBillOfLading) {
+      console.log(getBillOfLading);
+      $.modal.openFull("Danh sách cont của bill " + getBillOfLading, prefix + "/getViewCont/{" + getBillOfLading + "}");
+    }
+  </script>
+</body>
+
+</html>

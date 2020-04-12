@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -52,9 +51,6 @@ public class CarrierEquipmentDoController extends BaseController {
   private IEquipmentDoService equipmentDoService;
 
   private CarrierAccount currentUser;
-
-  @Autowired
-  private ICarrierGroupService carrierGroupService;
   
   @Autowired
   private MailService mailService;
@@ -99,9 +95,34 @@ public class CarrierEquipmentDoController extends BaseController {
     if (toDate != null) {
       edo.setToDate(toDate);
     }
-		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(edo);
+    List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
+    for (EquipmentDo e : list) {
+      e.setContainerNumber(equipmentDoService.countContainerNumber(e.getBillOfLading()));
+      e.setBillOfLading("<a onclick='openForm(\""+e.getBillOfLading()+"\")'>"+e.getBillOfLading()+"</a>");
+    }
 		return getDataTable(list);
 	}
+
+  /**
+   * Update Exchange Delivery Order
+   */
+  @GetMapping("/billInfo/{billOfLading}")
+  public String billInfo(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
+    EquipmentDo equipmentDo = new EquipmentDo();
+    equipmentDo.setBillOfLading(billOfLading.substring(1, billOfLading.length()-1));
+    List<EquipmentDo> equipmentDos = equipmentDoService.selectEquipmentDoDetails(equipmentDo);
+    mmap.addAttribute("equipmentDos", equipmentDos);
+    return prefix + "/billInfo";
+  }
+
+  /**
+   * Update Exchange Delivery Order
+   */
+  @GetMapping("/changeExpiredDate/{billOfLading}")
+  public String changeExpiredDate(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
+    mmap.addAttribute("billOfLading", billOfLading.substring(1, billOfLading.length()-1));
+    return prefix + "/changeExpriedDate";
+  }
 
   /**
    * Export Exchange Delivery Order List

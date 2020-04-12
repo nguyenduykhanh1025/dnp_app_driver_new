@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+>
+  <head>
+    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <link th:href="@{/css/jquery.toast.min.css}" rel="stylesheet" />
+    <link
+      th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}"
+      rel="stylesheet"
+      media="screen"
+    />
+    <style type="text/css">
+      .header-box {
+        display: flex;
+        justify-content: space-between;
+        vertical-align: middle;
+        margin: 0;
+      }
+
+      .footer-add {
+        display: flex;
+        justify-content: space-between;
+        vertical-align: middle;
+        padding-bottom: 10px;
+      }
+
+      .fake-cont {
+        padding: 0 20px;
+        width: 100%;
+      }
+
+      .info {
+        display: flex;
+      }
+
+      .left-info {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid grey;
+        border-radius: 10px;
+        box-shadow: grey 3px 2px 3px;
+      }
+    </style>
+  </head>
+
+  <body class="gray-bg">
+    <div class="fake-cont">
+      <div class="header-box">
+        <h2>Thông tin DO <span id="billNo"></span></h2>
+      </div>
+      <div class="info">
+        <div class="left-info">
+          <p>Mã hãng tàu: <span id="carrier"></span></p>
+          <p>Số vận đơn: <span id="billNumber"></span></p>
+          <p>
+            Hạn lệnh: <span id="expiredDem"></span>
+            <a
+              class="btn btn-xs btn-primary single"
+              id="itCloseToTheDeadlineeeeeeeeeeeeeeee"
+              onclick="openChangeExpired()"
+            >
+              <i class="fa fa-edit"></i> Đổi Hạn Lệnh
+            </a>
+          </p>
+          <p>Trạng thái làm lệnh: <span id="dostatus"></span></p>
+          <p>Trạng thái nộp DO: <span id="DOInStatus"></span></p>
+          <p id="DateInDO_dad"></p>
+        </div>
+      </div>
+      <br />
+      <div class="footer-add">
+        <div style="display:flex; justify-content: space-around">
+          <input class="form-control" type="text" id="searchForm" placeholder="Số container" style="width:'80px'; margin-right: 10px;"> 
+          <input class="form-control" type="text" id="searchForm" placeholder="Tên chủ hàng" style="width:'80px';margin-right: 10px;"> 
+          <input class="form-control" type="text" id="searchForm" placeholder="Nơi hạ vỏ" style="width:'80px';margin-right: 10px;"> 
+          <input class="form-control" type="text" id="searchForm" placeholder="Tên tàu" style="width:'80px';margin-right: 10px;"> 
+          <input class="form-control" type="text" id="searchForm" placeholder="Chuyến" style="width:'80px';margin-right: 10px;"> 
+          <button class="btn btn-success">Tìm kiếm</button>
+        </div>
+        <div>
+          <button
+          type="button"
+          class="btn btn-primary btn-xs"
+          onclick="update()"
+          style="margin-right: 10px; height: 40px;"
+        >
+          Cập nhật thay đổi
+        </button>
+        <button
+          type="button"
+          class="btn btn-dark"
+          onclick="closeItemDo()"
+          style="height: 40px;"
+        >
+          Hủy bỏ thay đổi
+        </button>
+        </div>
+       
+      </div>
+      <div id="showDemo"></div>
+    </div>
+
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <!-- Jquery toast -->
+    <script th:src="@{/js/jquery.toast.min.js}"></script>
+    <!-- Handsondtable -->
+    <script
+      th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
+    ></script>
+    <script type="text/javascript" th:inline="javascript">
+      var doList = /*[[${equipmentDos}]]*/;
+      $("#billNo").html("No: " + doList[0].billOfLading);
+      $("#billNumber").html(doList[0].billOfLading);
+      $("#carrier").html(doList[0].carrierCode);
+      var date = new Date(doList[0].expiredDem);
+      var status = doList[0].status == 0 ? "<span class='label label-warning'>Chưa làm lệnh</span>" : "<span class='label label-success'>Đã làm lệnh</span>";
+      var doInStatus = doList[0].documentStatus == 0 ? "<span class='label label-warning'>Chưa nộp DO</span>" : "<span class='label label-success'>Đã nộp DO</span>";
+      if (doList[0].documentReceiptDate) {
+        $("#DateInDO_dad").html = "Ngày nộp DO: <span class='DateInDO'>"+doList[0].documentReceiptDate+"</span>";
+      }
+      $("#dostatus").html(status);
+      $("#DOInStatus").html(doInStatus);
+      $("#expiredDem").html(date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear());
+      var example = document.getElementById('showDemo');
+      var hot = new Handsontable(example, {
+        data: doList,
+        stretchH: 'all',
+        width: 'auto',
+        manualColumnResize: true,
+        manualRowResize: true,
+        minSpareRows: 1,
+        fillHandle: {
+          autoInsertRow: true,
+        },
+        height: 500,
+        colHeaders: [
+          "ID<br>id",
+          // "Mã hãng tàu<br>Carrier",
+          // "Số vận đơn<br> Bill No",
+          "Số container<br>Container No",
+          "Tên chủ hàng<br>Consignee",
+          // "Hạn lệnh<br> Valid to date",
+          "Nơi hạ vỏ<br> Empty depot",
+          "Ngày miễn lưu<br> DET Freetime",
+          "Tên tàu<br>Vessel",
+          "Chuyến<br>Voyage",
+          // "Xác nhận <br> làm lệnh",
+          // "Đã nộp <br> DO gốc",
+          // "Ngày nộp<br>DO date in",
+          "Ghi chú<br>Note"
+        ],
+        filter: true,
+        licenseKey: "non-commercial-and-evaluation",
+        columns: [{
+            data: 'id',
+          },
+          {
+            data: 'containerNumber',
+            type: 'text',
+          },
+          {
+            data: 'consignee',
+            type: 'text',
+          },
+          {
+            data: 'emptyContainerDepot',
+            type: 'text',
+          },
+          {
+            data: 'detFreeTime',
+            type: 'numeric',
+
+          },
+          {
+            data: 'vessel',
+            type: 'text',
+          },
+          {
+            data: 'voyNo',
+            type: 'text',
+          },
+          // {
+          //   data: 'status',
+          //   type: 'checkbox',
+          //   checkedTemplate: 'Y',
+          //   uncheckedTemplate: 'N'
+          // },
+          // {
+          //   data: 'documentStatus',
+          //   type: 'checkbox',
+          //   checkedTemplate: "Y",
+          //   uncheckedTemplate: "N"
+          // },
+          // {
+          //   data: 'documentReceiptDate',
+          //   type: 'date',
+          //   dateFormat: 'MM/DD/YYYY',
+          //   correctFormat: true,
+          // },
+          {
+            data: 'remark',
+            type: 'text',
+          }
+        ],
+        rowHeaders: true,
+        autoColumnSize: true,
+        columnSorting: {
+          indicator: true
+        },
+        colWidths: [0.1,70 , 70, 70, 160, 100, 160],
+        manualColumnMove: true,
+        filters: true
+      });
+      hot.validateCells();
+
+      function update() {
+        var myTableData = hot.getSourceData();
+        // If the last row is empty, remove it before validation
+        if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
+          // hot.updateSettings({minSpareRows: 0});
+
+          // Remove the last row if it's empty
+          hot.alter(
+            "remove_row",
+            parseInt(myTableData.length - 1),
+            (keepEmptyRows = false)
+          );
+        }
+        var cleanedGridData = [];
+        $.each(myTableData, function (rowKey, object) {
+          if (!hot.isEmptyRow(rowKey)) {
+            cleanedGridData.push(object);
+          }
+        });
+        $.each(cleanedGridData, function (key, object) {
+          for (var i = 0; i <= 8; i++) {
+            if (object[i] == null) {
+              object[i] = null;
+            }
+          }
+        });
+        var jsonData = JSON.stringify(cleanedGridData);
+        $.ajax({
+          url: "/carrier/do/add",
+          method: "post",
+          data: {
+          equipmentDo: jsonData,
+          },
+          success: function (result) {
+            //handle ajax success
+          },
+          error: function (result) {
+            //handle ajax error
+          },
+        });
+      }
+
+      function openChangeExpired() {
+        $.modal.openChangeExpired("Thay đổi hạn lệnh", "/carrier/do/changeExpiredDate/{"+doList[0].billOfLading+"}", "700", "300");
+      }
+    </script>
+  </body>
+</html>
