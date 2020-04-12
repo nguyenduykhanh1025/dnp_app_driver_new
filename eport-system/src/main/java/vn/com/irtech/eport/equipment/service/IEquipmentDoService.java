@@ -99,4 +99,6 @@ public interface IEquipmentDoService
      //Chang Do status
     public int updateBillOfLading(EquipmentDo equipmentDo);
     public List<EquipmentDo> selectEquipmentDoDetails(EquipmentDo equipmentDo);
+
+    public int updateEquipmentDoExpiredDem(EquipmentDo equipmentDo);
 }

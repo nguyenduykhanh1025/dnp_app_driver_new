@@ -1,87 +1,122 @@
 <!DOCTYPE html>
-<html lang="en"
+<html
+  lang="en"
   xmlns:th="http://www.thymeleaf.org"
-  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>change ExpriedDate</title>
-  <th:block th:include="include :: header('Exchange Delivery Order')" />
+  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>change ExpriedDate</title>
+    <th:block th:include="include :: header('Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
     <th:block th:include="include :: datetimepicker-css" />
-</head>
-<body>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-1">
-        <label
-          data-error="wrong"
-          data-success="right"
-          for="form2"
-          style="line-height: 34px; height: 34px;"
-        >
-          Hạn lệnh mới
-        </label>
+    <style>
+      .bigboy {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bigboy">
+      <div>
+        <h2>Cập nhật hạn lệnh mới cho DO</h2>
       </div>
-      <div class="col-md-4 input-group date" id="datetimepicker2">
-        <input
-          type="text"
-          class="form-control time-input"
-          id="datetimepicker"
-          autocomplete="off"
-        />
-        <span class="input-group-addon">
-          <span class="glyphicon glyphicon-calendar"></span>
-        </span>
+      <div class="row">
+        <div class="col-md-1 col-xs-3">
+          <label
+            data-error="wrong"
+            data-success="right"
+            for="form2"
+            style="line-height: 34px; height: 34px;"
+          >
+            Hạn lệnh mới
+          </label>
+        </div>
+        <div class="col-md-4 col-xs-6 input-group date" id="datetimepicker2">
+          <input
+            type="text"
+            class="form-control time-input"
+            id="datetimepicker"
+            autocomplete="off"
+          />
+          <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+        </div>
       </div>
       <div>
-        <button
-        type="button"
-        class="btn btn-primary btn-xs"
-        onclick="update()"
-        style="margin-right: 10px; height: 40px;"
-      >
-        Gia hạn
-      </button>
-      <button
-        type="button"
-        class="btn btn-dark"
-        onclick="closeItemDo()"
-        style="height: 40px;"
-      >
-        Hủy bỏ
-      </button>
+          <button
+            type="button"
+            class="btn btn-primary btn-xs"
+            onclick="update()"
+            style="margin-right: 10px; height: 40px;"
+          >
+            Gia hạn
+          </button>
+          <button
+            type="button"
+            class="btn btn-dark"
+            onclick="closeItemDo()"
+            style="height: 40px;"
+          >
+            Hủy bỏ
+          </button>
       </div>
-  </div>
-  
-  </div>
-</body>
-<th:block th:include="include :: footer" />
-    <th:block th:include="include :: easyui-js" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <script type="text/javascript" th:inline="javascript">
+    </div>
+  </body>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: datetimepicker-js" />
+  <script type="text/javascript" th:inline="javascript">
+    var msg;
     var billOfLading = /*[[${billOfLading}]]*/;
-    console.log(billOfLading);
-
+    var status = /*[[${status}]]*/;
     function update() {
       $.ajax({
-
+        url: "/carrier/do/updateExpiredDate",
+        method: "post",
+        data: {
+          billOfLading : billOfLading,
+          expiredDem : $("#datetimepicker").val(),
+          status : status
+        }
       }).done(function(result){
-
-      });        
+        if (result.code == 0) {
+          msg = result.msg;
+          console.log(msg);
+          refreshBillInfo(new Date($("#datetimepicker").val()));
+        } else {
+          msg = result.msg;
+          closeError();
+        }
+      });
     }
 
     function closeItemDo() {
-      var topWindow = $(window.parent.document);
-      var panelUrl = window.frameElement.getAttribute('data-panel');
-      $('.page-tabs-content .active i', topWindow).click();
-      $('.menuTab[data-id="' + panelUrl + '"]', topWindow).addClass('active').siblings('.menuTab').removeClass('active');
-        $('.mainContent .RuoYi_iframe', topWindow).each(function() {
-          if ($(this).data('id') == panelUrl) {
-              $(this).show().siblings('.RuoYi_iframe').hide();
-              return false;
-          }
-        });
-      }
-    </script>
+      $.modal.close();
+      // var topWindow = $(window.parent.document);
+      // var panelUrl = window.frameElement.getAttribute('data-panel');
+      // $('.page-tabs-content .active i', topWindow).click();
+      // $('.menuTab[data-id="' + panelUrl + '"]', topWindow).addClass('active').siblings('.menuTab').removeClass('active');
+      //   $('.mainContent .RuoYi_iframe', topWindow).each(function() {
+      //     if ($(this).data('id') == panelUrl) {
+      //         $(this).show().siblings('.RuoYi_iframe').hide();
+      //         return false;
+      //     }
+      //   });
+    }
+    function refreshBillInfo(date) {
+      closeItemDo();
+      console.log(msg);
+      parent.closeItemDo(date, msg);
+    }
+
+    function closeError() {
+      closeItemDo();
+      parent.closeError(msg);
+    }
+  </script>
 </html>

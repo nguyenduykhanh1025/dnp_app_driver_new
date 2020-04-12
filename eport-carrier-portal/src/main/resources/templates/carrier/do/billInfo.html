@@ -64,7 +64,7 @@
             <a
               class="btn btn-xs btn-primary single"
               id="itCloseToTheDeadlineeeeeeeeeeeeeeee"
-              onclick="openChangeExpired()"
+              onclick="$.operate.addChangeExpired()"
             >
               <i class="fa fa-edit"></i> Đổi Hạn Lệnh
             </a>
@@ -78,11 +78,7 @@
       <div class="footer-add">
         <div style="display:flex; justify-content: space-around">
           <input class="form-control" type="text" id="searchForm" placeholder="Số container" style="width:'80px'; margin-right: 10px;"> 
-          <input class="form-control" type="text" id="searchForm" placeholder="Tên chủ hàng" style="width:'80px';margin-right: 10px;"> 
-          <input class="form-control" type="text" id="searchForm" placeholder="Nơi hạ vỏ" style="width:'80px';margin-right: 10px;"> 
-          <input class="form-control" type="text" id="searchForm" placeholder="Tên tàu" style="width:'80px';margin-right: 10px;"> 
-          <input class="form-control" type="text" id="searchForm" placeholder="Chuyến" style="width:'80px';margin-right: 10px;"> 
-          <button class="btn btn-success">Tìm kiếm</button>
+          <button class="btn btn-success" onclick="search()" id="searchBtn">Tìm kiếm</button>
         </div>
         <div>
           <button
@@ -263,10 +259,43 @@
           },
         });
       }
+      $(function () {
+        var options = {
+          createUrl: "/carrier/do/changeExpiredDate/{"+doList[0].billOfLading+"}/{"+doList[0].status+"}",
+        };
+        $.table.init(options);
+      });
 
-      function openChangeExpired() {
-        $.modal.openChangeExpired("Thay đổi hạn lệnh", "/carrier/do/changeExpiredDate/{"+doList[0].billOfLading+"}", "700", "300");
+      function search() {
+        $.ajax({
+          url : "/carrier/do/searchCon",
+          method : "get",
+          data : {
+            billOfLading : doList[0].billOfLading,
+            contNo : $("#searchForm").val()
+          }
+        }).done(function(result){
+          hot.loadData(result);
+          hot.render();
+        });       
       }
+      document
+        .getElementById("searchForm")
+        .addEventListener("keyup", function (event) {
+          event.preventDefault();
+          if (event.keyCode === 13) {
+            $("#searchBtn").click();
+          }
+        });
+
+        function closeItemDo(date, msg) {
+          $("#expiredDem").html(date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear());
+          $.modal.alertSuccess(msg);
+        }
+
+        function closeError(msg) {
+          $.modal.alertError(msg);
+        }
     </script>
   </body>
 </html>
