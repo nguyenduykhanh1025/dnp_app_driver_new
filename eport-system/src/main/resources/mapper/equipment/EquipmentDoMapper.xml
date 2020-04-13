@@ -414,6 +414,65 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         LIMIT 1
     </select>
     
+    <insert id="insertEquipmentDoList" parameterType="EquipmentDo" useGeneratedKeys="true" keyProperty="id">
+        insert into equipment_do
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="carrierId != null ">carrier_id,</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
+            <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
+            <if test="billOfLading != null  and billOfLading != ''">bill_of_lading,</if>
+            <if test="businessUnit != null  and businessUnit != ''">business_unit,</if>
+            <if test="consignee != null  and consignee != ''">consignee,</if>
+            <if test="containerNumber != null  and containerNumber != ''">container_number,</if>
+            <if test="expiredDem != null ">expired_dem,</if>
+            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">empty_container_depot,</if>
+            <if test="detFreeTime != null ">det_free_time,</if>
+            <if test="secureCode != null  and secureCode != ''">secure_code,</if>
+            <if test="releaseDate != null ">release_date,</if>
+            <if test="vessel != null  and vessel != ''">vessel,</if>
+            <if test="voyNo != null  and voyNo != ''">voy_no,</if>
+            <if test="doType != null  and doType != ''">do_type,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="processStatus != null  and processStatus != ''">process_status,</if>
+            <if test="documentStatus != null  and documentStatus != ''">document_status,</if>
+            <if test="documentReceiptDate != null ">document_receipt_date,</if>
+            <if test="releaseStatus != null  and releaseStatus != ''">release_status,</if>
+            <if test="createSource != null  and createSource != ''">create_source,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="carrierId != null ">#{carrierId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
+            <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
+            <if test="billOfLading != null  and billOfLading != ''">#{billOfLading},</if>
+            <if test="businessUnit != null  and businessUnit != ''">#{businessUnit},</if>
+            <if test="consignee != null  and consignee != ''">#{consignee},</if>
+            <if test="containerNumber != null  and containerNumber != ''">#{containerNumber},</if>
+            <if test="expiredDem != null ">#{expiredDem},</if>
+            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">#{emptyContainerDepot},</if>
+            <if test="detFreeTime != null ">#{detFreeTime},</if>
+            <if test="secureCode != null  and secureCode != ''">#{secureCode},</if>
+            <if test="releaseDate != null ">#{releaseDate},</if>
+            <if test="vessel != null  and vessel != ''">#{vessel},</if>
+            <if test="voyNo != null  and voyNo != ''">#{voyNo},</if>
+            <if test="doType != null  and doType != ''">#{doType},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="processStatus != null  and processStatus != ''">#{processStatus},</if>
+            <if test="documentStatus != null  and documentStatus != ''">#{documentStatus},</if>
+            <if test="documentReceiptDate != null ">#{documentReceiptDate},</if>
+            <if test="releaseStatus != null  and releaseStatus != ''">#{releaseStatus},</if>
+            <if test="createSource != null  and createSource != ''">#{createSource},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
 
     <select id="countDOStatus" parameterType="String" resultType="int">
             select count(*) from equipment_do where bill_of_lading=#{billOfLading} AND status = 1
