@@ -181,5 +181,6 @@ public class EquipmentDoController extends BaseController
     {
         return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
     }
+
 	
 }   
