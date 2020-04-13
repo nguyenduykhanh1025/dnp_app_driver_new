@@ -99,8 +99,16 @@ public interface EquipmentDoMapper {
 
 	public int updateEquipmentDoExpiredDem(EquipmentDo equipmentDo);
 
-	public Map<String, String> getReportByCarrierGroup(String[] codes);
 
+	public EquipmentDo getBillOfLadingInfoSubmitDO(String billOfLading);
+
+  public Map<String, String> getReportByCarrierGroup(String[] codes);
+
+  public int countDOStatusYes(String billOfLading);
+
+  public int countDocmentStatusYes(String billOfLading);
+  
+  
   public EquipmentDo selectBillOfLadingInfo(String blNo);
   
   public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo);

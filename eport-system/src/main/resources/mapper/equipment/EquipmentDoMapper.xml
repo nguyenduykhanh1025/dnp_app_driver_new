@@ -153,20 +153,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, count(container_number) as container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time 
         from equipment_do
         <where>
-            <if test="fromDate != null and toDate != null"> and expired_dem between #{fromDate} and #{toDate}</if>
-            <if test="fromDate != null"> and expired_dem = #{fromDate} OR expired_dem > #{fromDate}</if>
-            <if test="toDate != null"> and expired_dem = #{toDate} OR expired_dem &lt; #{toDate}</if> 
+            
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>  
             <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat('%', #{containerNumber}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="documentStatus != null  and documentStatus != ''"> and document_status = #{documentStatus}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="vessel != null  and vessel != ''"> and vessel like concat('%', #{vessel}, '%')</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no like concat('%', #{voyNo}, '%')</if>
+            <if test="fromDate != null and toDate != null"> and expired_dem between #{fromDate} and #{toDate}</if>
+            <if test="fromDate != null"> and expired_dem = #{fromDate} OR expired_dem > #{fromDate}</if>
+            <if test="toDate != null"> and expired_dem = #{toDate} OR expired_dem &lt; #{toDate}</if> 
         </where>
         group by bill_of_lading
         ORDER BY id DESC 
@@ -411,6 +413,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where bill_of_lading = #{blNo}
         LIMIT 1
     </select>
+    <select id="getBillOfLadingInfoSubmitDO" parameterType="String" resultMap="EquipmentDoResult">
+        <include refid="selectEquipmentDoVo"/>
+        where bill_of_lading = #{billOfLading}
+        LIMIT 1
+    </select>
     
     <insert id="insertEquipmentDoList" parameterType="HashMap" useGeneratedKeys="true" keyProperty="id">
         insert into equipment_do 
@@ -516,6 +523,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
 
+    <select id="countDOStatusYes" parameterType="String" resultType="int">
+            select count(*) from equipment_do where bill_of_lading=#{billOfLading} AND status = 1
+    </select>
+    <select id="countDocmentStatusYes" parameterType="String" resultType="int">
+            select count(*) from equipment_do where bill_of_lading=#{billOfLading} AND document_status = 1
+    </select>
     <select id="selectEquipmentDoVoByBillNo" parameterType="String" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
         where bill_of_lading = #{blNo}

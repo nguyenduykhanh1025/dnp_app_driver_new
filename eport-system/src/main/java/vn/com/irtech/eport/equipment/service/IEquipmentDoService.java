@@ -111,13 +111,21 @@ public interface IEquipmentDoService
      * 
      * @param operator codes
      */
-	public Map<String, String> getReportByCarrierGroup(String[] codes);
+    public Map<String, String> getReportByCarrierGroup(String[] codes);
+    
+    //countDOStatus
+    public int countDOStatusYes(String billOfLading);
 
-	/**
+    //countDocmentStatus
+    public int countDocmentStatusYes(String billOfLading);
+
+    /**
 	 * Get Bill of lading info
 	 * @param blNo
 	 * @return
 	 */
+	public EquipmentDo getBillOfLadingInfoSubmitDO(String billOfLading);
+
     public EquipmentDo getBillOfLadingInfo(String blNo);
     
 
