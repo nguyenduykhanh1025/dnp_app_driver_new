@@ -284,7 +284,11 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				e.setUpdateTime(new Date());
 			}
 			for(EquipmentDo edo : equipmentDos) {
-				equipmentDoService.updateEquipmentDo(edo);
+				if (edo.getId() != null) {
+					equipmentDoService.updateEquipmentDo(edo);
+				} else {
+					equipmentDoService.insertEquipmentDo(edo);
+				}				
 			}
 			// SEND EMAIL WHEN ADD SUCCESSFULLY
 			new Thread() {
@@ -477,7 +481,12 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
   @GetMapping("/getInfoBl")
   @ResponseBody
   public List<EquipmentDo> getInfoBl(String blNo) {
-    List<EquipmentDo> doList = equipmentDoService.selectEquipmentDoVoByBillNo(blNo);
-    return doList;
+	List<EquipmentDo> doList = equipmentDoService.selectEquipmentDoVoByBillNo(blNo);
+	if (doList.size() !=0) {
+		if (doList.get(0).getCarrierId() == getUserId()) {
+			return doList;
+		}
+	}
+    return null;
   }
 }
