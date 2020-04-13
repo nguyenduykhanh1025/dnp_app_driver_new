@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.equipment.mapper;
 
 import java.util.Date;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -100,6 +100,7 @@ public interface EquipmentDoMapper {
 	public int updateEquipmentDoExpiredDem(EquipmentDo equipmentDo);
 
 
+<<<<<<< HEAD
 	public EquipmentDo getBillOfLadingInfoSubmitDO(String billOfLading);
 
   public Map<String, String> getReportByCarrierGroup(String[] codes);
@@ -109,4 +110,11 @@ public interface EquipmentDoMapper {
   public int countDocmentStatusYes(String billOfLading);
   
   
+=======
+  public EquipmentDo selectBillOfLadingInfo(String blNo);
+  
+  public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo);
+
+	public int insertEquipmentDoList(HashMap<String, Object> doList);
+>>>>>>> 0feb1cffba9ec7367e7db3d937e0d97166d916bc
 }

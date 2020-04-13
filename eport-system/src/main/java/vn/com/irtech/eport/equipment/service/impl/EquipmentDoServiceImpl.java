@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.equipment.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -192,8 +193,26 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
         return equipmentDoMapper.countDocmentStatusYes(billOfLading);
     }
 
+<<<<<<< HEAD
     @Override
     public EquipmentDo getBillOfLadingInfoSubmitDO(String billOfLading) {
         return equipmentDoMapper.getBillOfLadingInfoSubmitDO(billOfLading);
     };
+=======
+	@Override
+	public EquipmentDo getBillOfLadingInfo(String blNo) {
+		return equipmentDoMapper.selectBillOfLadingInfo(blNo);
+    }
+    
+    @Override
+    public int insertEquipmentDoList(HashMap<String, Object> doList) {
+        return equipmentDoMapper.insertEquipmentDoList(doList);
+    }
+  
+  
+    @Override
+    public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo) {
+        return equipmentDoMapper.selectEquipmentDoVoByBillNo(blNo);
+    }
+>>>>>>> 0feb1cffba9ec7367e7db3d937e0d97166d916bc
 }
