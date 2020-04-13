@@ -16,16 +16,16 @@
                     <input class="form-check-input" type="checkbox" value="" id="status">
                 </div>
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 <label class="col-sm-3 col-xs-4 col-md-2 control-label">Ghi chú</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input type="text" id="doNote">
                 </div>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label class="col-sm-3 col-xs-4 col-md-2 control-label">Trạng thái nhận DO</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
-                    <input class="form-check-input" type="checkbox"  id="documentStatus">
+                    <input class="form-check-input" type="checkbox" id="documentStatus">
                 </div>
             </div>
             <!-- <div class="form-group">
@@ -34,21 +34,17 @@
                     <input type="date" id="doDayIn"  name="doDayIn"  required>
                 </div>
             </div> -->
-            <button
-            type="button"
-            class="btn btn-primary btn-sm"
-            onclick="updateDo()"
-            >
-            Lưu
-          </button>
+            <button id="buttonSave" type="button" class="btn btn-primary btn-sm" onclick="updateDo()">
+                Lưu
+            </button>
         </form>
-       
+
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: select2-js" />
     <script type="text/javascript" th:inline="javascript">
-        var equipmentDo = /*[[${equipmentDos}]]*/;
+        var equipmentDo = /*[[${equipmentDos}]]*/ ;
         var billOfLading = equipmentDo.billOfLading;
         var status = equipmentDo.status;
         var documentStatus = equipmentDo.documentStatus;
@@ -58,48 +54,52 @@
     <script type="text/javascript">
         var prefix = "/carrier/admin/do";
         document.addEventListener('DOMContentLoaded', (event) => {
-            
-            if(status ==  1)
-            {
+
+            if (status == 1) {
                 $("#status").prop("disabled", true)
                 $("#status").prop("checked", true)
-                $("#doNote").prop("disabled",true)
+                $("#doNote").prop("disabled", true)
             }
-           
-            if(documentStatus ==  1)
-            {
+
+            if (documentStatus == 1) {
                 $("#documentStatus").prop("disabled", true)
                 $("#documentStatus").prop("checked", true)
             }
 
-           
-        }); 
+            if (status == 1 && documentStatus == 1) {
+                $("#buttonSave").prop("disabled", true);
+            }
+
+
+        });
+
         function updateDo() {
-            if ($('#status').is(":checked"))
-            {
+            if ($('#status').is(":checked")) {
                 $("#status").val(1)
             }
-            if ($('#documentStatus').is(":checked"))
-            {
+            if ($('#documentStatus').is(":checked")) {
                 $("#documentStatus").val(1)
             }
             var status = $("#status").val();
             var doNote = $("#doNote").val();
             var documentStatus = $("#documentStatus").val();
-                $.ajax({
-                    url: prefix + "/updateDoStatus",
-                    method: "post",
-                    data: {
+            $.ajax({
+                url: prefix + "/updateDoStatus",
+                method: "post",
+                data: {
                     billOfLading: billOfLading,
                     status: status,
                     doNote: doNote,
-                    documentStatus: documentStatus 
+                    documentStatus: documentStatus
                 },
-                }).done(function (result) {
-                    
-                });
+            }).done(function (result) {
+                $.modal.msgSuccess("Cập nhật thành công !");
+                setTimeout(function(){
+                    $.modal.reload()
+                }, 1000);
+                
+            });
         }
-        
     </script>
 </body>
 

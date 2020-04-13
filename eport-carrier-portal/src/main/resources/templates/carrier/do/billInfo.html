@@ -9,70 +9,48 @@
         color: red !important;
         text-transform: none;
       }
+    .handsontable th {
+      font-size: 1.1em;
+    }
     </style>
   </head>
 
   <body class="white-bg full-height-layout">
     <div class="row">
       <div class="col-sm-12" >
-        <div class="col-sm-12 fixed-table-toolbar" style="height: 50px">
-          <div class="bs-bars" style="display: flex; justify-content: space-between;">
-            <div>
-              <button
-                type="button"
-                class="btn btn-primary btn-sm"
-                onclick="updateDO()"
-                style="margin-right: 10px;"
-              >
-                <i class="fa fa-check-circle"></i>&nbsp;Lưu DO
-              </button>
-              <button
-                type="button"
-                class="btn btn-dark"
-                onclick="closeItem()"
-              >
-                <i class="fa fa-times"></i>&nbsp; Hủy bỏ 
-              </button>
+          <div class="col-sm-12 fixed-table-toolbar">
+            <div class="bs-bars pull-left" style="margin-top:5px; display: flex;">
+              <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
+                  <a class="btn btn-primary" onclick="updateDO()"><i class="fa fa-check-circle"></i> &nbsp;Lưu DO</a>
+                  <a class="btn btn-default" onclick="closeItem()"><i class="fa fa-times"></i> &nbsp;Hủy Bỏ</a>
+              </div>
             </div>
-            <p>Mã hãng tàu: <span id="carrier"></span></p>
-            <p>Số vận đơn: <span id="billNumber"></span></p>
-            <p>Trạng thái làm lệnh: <span id="dostatus"></span></p>
-            <div style="display: flex">
-              <input class="form-control" type="text" id="searchForm" placeholder="Số container" autocomplete="off" style="width:'80px'; margin-right: 10px;"> 
-              <button type="button" class="btn btn-success btn-sm" onclick="search()" id="searchBtn" style="height: 32px;"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</button>
+            <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:5px">
+             <div class="select-list">
+              <ul>
+                <li style="font-size:1.1em">Hãng tàu:&nbsp;<span class="control-item" id="carrier"></span></li>
+                <li style="font-size:1.1em">Số vận đơn: <span id="billNumber"></span></li>
+                <li style="font-size:1.1em">Trạng thái: <span id="dostatus"></span></li>
+                <li>
+                  <div style="display: flex">
+                    <input class="form-control" type="text" id="searchForm" placeholder="Số container" autocomplete="off" style="width:'80px'; margin-right: 10px;"> 
+                    <button type="button" class="btn btn-success btn-sm" onclick="search()" id="searchBtn" style="height: 32px;"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</button>
+                  </div>
+                </li>
+              </ul>
+             </div>
             </div>
           </div>
-        </div>
+          <div class="col-sm-12 table-container">
+	          <div class="bs-bars">
+	            <div id="showDemo"></div>
+	          </div>
+	        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-sm-3" style="margin-top: 0px; padding-bottom:5px">
-        <div class="col-sm-12 fixed-table-toolbar">
-         
-        </div>
-      </div>
-    </div>
-        
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="col-sm-12 fixed-table-toolbar">
-          <div class="bs-bars">
-            <div id="showDemo"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <th:block th:include="include :: footer" />
-    <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: datetimepicker-js" />
-    <!-- Jquery toast -->
-    <script th:src="@{/js/jquery.toast.min.js}"></script>
-    <!-- Handsondtable -->
-    <script
-      th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
-    ></script>
-    
+    <th:block th:include="include :: handsontable-js" />
     <script type="text/javascript" th:inline="javascript">
       var firstDo = /*[[${bl}]]*/;
     </script>

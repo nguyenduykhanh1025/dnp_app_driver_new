@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -41,12 +42,14 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 @Controller
 @RequestMapping("/carrier/do")
 public class CarrierEquipmentDoController extends CarrierBaseController {
-  private String prefix = "carrier/do";
+	
+    private final String prefix = "carrier/do";
+    
+    private static final Pattern VALID_CONTAINER_NO_REGEX = Pattern.compile("^[A-Za-z]{4}[0-9]{7}$", Pattern.CASE_INSENSITIVE);
+
   
 	@Autowired
 	private IEquipmentDoService equipmentDoService;
-	@Autowired
-	private ICarrierGroupService groupService;
 	@Autowired
 	private MailService mailService;
 
@@ -54,19 +57,6 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	public String EquipmentDo() {
 		return prefix + "/do";
 	}
-
-//	/**
-//	 * Get Exchange Delivery Order List
-//	 */
-//	@PostMapping("/list2")
-//	@ResponseBody
-//	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
-//		int page = EquipmentDo.getPage();
-//		page = page * 10;
-//		EquipmentDo.setPage(page);
-//		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingCarrier(EquipmentDo);
-//		return getDataTable(list);
-//	}
 
 	@RequestMapping("/list")
 	@ResponseBody
@@ -182,18 +172,23 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		if (equipmentDos != null) {
 			for (EquipmentDo e : equipmentDos) {
 				e.setCarrierId(getUserId());
-				// TODO get date from client
-				
-				// TODO validate check
-
+				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getBillOfLading())
+						|| StringUtils.isBlank(e.getContainerNumber()) || StringUtils.isBlank(e.getConsignee())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
+				}
 				// Check if carrier group code is valid
 				if(!getGroupCodes().contains(e.getCarrierCode())) {
-					return AjaxResult.error("Mã hãng tàu không đúng");
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã hãng tàu '"+e.getCarrierCode()+"' không đúng.");
 				}
 				if(equipmentDoService.getBillOfLadingInfo(e.getBillOfLading()) != null) {
 					// exist B/L
-					return AjaxResult.error("Mã vận đơn (B/L No.) " + e.getBillOfLading() +" đã tồn tại. Hãy kiểm tra dữ liệu");
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã vận đơn (B/L No.) " + e.getBillOfLading() +" đã tồn tại.");
 				}
+				if(!isContainerNumber(e.getContainerNumber())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã container không đúng tiêu chuẩn.");
+				}
+				// trong 1 bill ton tai 2 container
+				
 				// Check expiredDem is future
 				Date expiredDem = e.getExpiredDem();
 				expiredDem.setHours(23);
@@ -201,7 +196,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				expiredDem.setSeconds(59);
 				e.setExpiredDem(expiredDem);
 				if(expiredDem.before(new Date())) {
-					return AjaxResult.error("Hạn lệnh không được phép trong quá khứ");
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
 				}
 				// DEM Free date la so
 				
@@ -279,10 +274,26 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@ResponseBody
 	public AjaxResult update(@RequestBody List<EquipmentDo> equipmentDos) {
 		if (equipmentDos != null) {
-			String containerNumber = ""; 
+			String containerNumber = "";
+			String billOfLading = equipmentDos.get(0).getBillOfLading();
+			String carrierCode = equipmentDos.get(0).getCarrierCode();
 			for (EquipmentDo e : equipmentDos) {
+				if (e.getStatus() == null) {
+					e.setStatus("0");	
+				}
 				if (e.getStatus().equals("1")) {
 					return AjaxResult.error("Bill này đã được làm lệnh, cập nhật thất bại");
+				}
+				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getContainerNumber()) 
+					|| StringUtils.isBlank(e.getConsignee())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
+				}
+				// Check if carrier group code is valid
+				if(!getGroupCodes().contains(e.getCarrierCode())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã hãng tàu '"+e.getCarrierCode()+"' không đúng.");
+				}
+				if(!isContainerNumber(e.getContainerNumber())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã container không đúng tiêu chuẩn.");
 				}
 				// Check expiredDem is future
 				Date expiredDem = e.getExpiredDem();
@@ -291,7 +302,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				expiredDem.setSeconds(59);
 				e.setExpiredDem(expiredDem);
 				if(expiredDem.before(new Date())) {
-					return AjaxResult.error("Hạn lệnh không được phép trong quá khứ");
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
 				}
 
 				// Container number is unique
@@ -306,6 +317,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				if (edo.getId() != null) {
 					equipmentDoService.updateEquipmentDo(edo);
 				} else {
+					edo.setCarrierId(getUserId());
+					edo.setBillOfLading(billOfLading);
+					edo.setCarrierCode(carrierCode);
 					equipmentDoService.insertEquipmentDo(edo);
 				}				
 			}
@@ -367,7 +381,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			// END SEND EMAIL
 			return AjaxResult.success("Đã cập nhật thành công " + equipmentDos.size() + " DO lên Web Portal.");
     	}
-    	return AjaxResult.success();
+    	return AjaxResult.error("Không có dữ liệu để cập nhật DO, hãy kiểm tra lại");
 	}
 
 	/**
@@ -507,5 +521,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		}
 	}
     return null;
+  }
+  
+  private boolean isContainerNumber(String input) {
+	  return VALID_CONTAINER_NO_REGEX.matcher(input).find();
   }
 }

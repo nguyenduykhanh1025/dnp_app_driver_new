@@ -10,128 +10,10 @@
   <link th:href="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.css}" rel="stylesheet" />
 </head>
 <style>
-  body {
-    padding: 0;
-    margin: 0;
-    background: #ffffff;
-  }
 
-  th,
-  td {
-    font: 12px sans-serif;
-  }
-
-  #container.handsontable table {
-    width: 100%;
-  }
-
-  .handsontable td,
-  .handsontable th {
-    vertical-align: inherit !important;
-  }
-
-  .handsontable th {
-    background: F0F0F0;
-    color: #222222;
-    width: auto;
-    /* height: 20px; */
-    /* font-weight: 300; */
-    text-align: center;
-    vertical-align: middle;
-    font-size: 14;
-    line-height: 2;
-    padding: 5px 2px !important;
-    font-family: inherit;
-  }
-
-  .handsontable tbody th {
-    height: 32px !important;
-  }
-
-  .handsontable thead th.ht__highlight {
-    background: #63aeff;
-  }
-
-  .handsontable td.above-fifty {
-    color: #33691e;
-    background: #dcedc8;
-  }
-
-  /* .handsontable td.not-date {
-    background: #fefefe;
-  } */
-
-  .handsontable td.current {
-    background-color: #dcedc8;
-    color: #000;
-  }
-
-  .handsontable .htDimmed {
-    background-color: #fff !important;
-    color: #000 !important;
-  }
-
-  /* Validate fail */
-  .handsontable td.htInvalid {
-    color: #fff;
-  }
-
-  .hot-container {
-    overflow: hidden;
-  }
-
-  .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .footer-add {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .red {
-    color: red !important;
-    text-transform: none;
-  }
-
-  .pagination-div {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .container {
-    padding-top: 10px;
-    padding-right: 0;
-    padding-left: 0;
-    margin-right: auto;
-    margin-left: auto;
-  }
-
-  .select-list li p,
-  .select-list li label:not(.radio-box) {
-    float: left;
-    width: 100px;
-    margin: 5px 5px 5px 0px;
-    text-align: right;
-  }
-
-  .btn-primary.disabled,
-  .btn-primary.disabled:active,
-  .btn-primary.disabled.active,
-  .btn-primary[disabled] {
-    background-color: dimgrey;
-    border-color: dimgrey;
-  }
-
-  .left-side {
-    width: 220px !important;
-  }
 </style>
 
 <body class="white-bg full-height-layout">
-  <div class="container-div">
     <div class="row" style="height: auto;">
       <div class="col-sm-12 search-collapse">
         <form id="formId">
@@ -163,13 +45,21 @@
                 <input type="text" class="time-input" id="expiredDem_EndDay" placeholder="Ngày kết thúc"
                   name="expiredDemEndDay" />
               </li> -->
-              <li>
+	          <div class="bs-bars pull-left" style="margin-top:5px; display: flex;">
+	            <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
+	              <a class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i class="fa fa-search"></i> &nbsp;Tìm kiếm</a>
+	            </div>
+	            <div class="btn-group-sm">
+	              <a class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()"><i class="fa fa-check-circle"></i> Xác Nhận Làm lệnh</a>
+	            </div>
+	          </div>
+<!--               <li>
                 <buttom class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i
                     class="fa fa-search"></i>&nbsp;Tìm kiếm</buttom>
               </li>
               <li>
                 <buttom class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()">Làm lệnh</buttom>
-              </li>
+              </li> -->
             </ul>
           </div>
         </form>
@@ -194,6 +84,7 @@
                 id="item-on-page"></span>
             </div>
           </div>
+          </nav>
       </div>
     </div>
     <th:block th:include="include :: footer" />
@@ -204,11 +95,7 @@
     <script th:src="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.js}"></script>
     <script type="text/javascript" th:inline="javascript">
       var billOfLading = /*[[${getBillOfLading}]]*/ ;
-      billOfLading = billOfLading.substr(1, billOfLading.length - 2);
       $('#billOfLading').val(billOfLading);
-      console.log(billOfLading);
-    </script>
-    <script>
       var hot;
       var currentPage = 0;
       var prefix = "/carrier/admin/do";
@@ -242,12 +129,14 @@
                 data: dataObj,
                 stretchH: 'all',
                 width: 'auto',
+                minSpareRows: 1,
+                rowHeights: 30,
+                className: "htMiddle",
                 manualColumnResize: true,
-                manualRowResize: true,
-                height: 500,
+                height: document.documentElement.clientHeight - 130,
                 colHeaders: [
-                  "Mã hãng tàu<br>Carrier",
-                  "Số vận đơn<br> Bill No",
+                  "Hãng tàu<br>Carrier",
+                  "Số vận đơn<br> B/L No",
                   "Số container<br>Container No",
                   "Tên chủ hàng<br>Consignee",
                   "Hạn lệnh<br> Valid to date",
@@ -259,8 +148,6 @@
                   "Ghi chú<br>Note",
                   "ID<br>id"
                 ],
-                filter: true,
-                licenseKey: "non-commercial-and-evaluation",
                 columns: [
                   {
                     data: 'carrierCode',
@@ -332,7 +219,7 @@
                 columnSorting: {
                   indicator: true
                 },
-                colWidths: [ 60, 60, 70, 160, 60, 160,100,70,70,100,100,0.1],
+                colWidths: [ 60, 60, 70, 160, 70, 160,100,70,70,100,100,0.1],
                 manualColumnMove: true,
                 filters: true
               });
