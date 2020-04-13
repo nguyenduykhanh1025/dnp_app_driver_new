@@ -38,6 +38,8 @@ public interface IEquipmentDoService
 
     public List<EquipmentDo> selectEquipmentDoList(EquipmentDo EquipmentDo);
 
+    public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo);
+
    
     /**
      * GetlistDO
