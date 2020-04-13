@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="renderer" content="webkit" />
-    <title>ePort System</title>
+    <title>DaNang Port - DO Web Portal</title>
     <!-- Avoid IE using compatibility mode -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link th:href="@{favicon.ico}" rel="stylesheet" />
@@ -41,10 +41,6 @@
     style="overflow: hidden; color: #ffffff;"
   >
     <div id="wrapper">
-      <!--左侧导航开始-->
-      <!--左侧导航结束-->
-
-      <!--右侧部分开始-->
       <div id="page-wrapper" class="gray-bg dashbard-1">
         <div class="row border-bottom">
           <nav
@@ -72,11 +68,6 @@
                   <li>
                     <a onclick="resetPwd()">
                       <i class="fa fa-key"></i> Thay đổi mật khẩu</a
-                    >
-                  </li>
-                  <li>
-                    <a onclick="switchSkin()">
-                      <i class="fa fa-dashboard"></i> Nền</a
                     >
                   </li>
                   <li class="divider"></li>
@@ -272,15 +263,11 @@
           <div class="pull-right">Copyright IRTech © [[${copyrightYear}]]</div>
         </div>
       </div>
-      <!--右侧部分结束-->
     </div>
-    <!-- 全局js -->
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
-    <script
-      th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"
-    ></script>
+    <script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
     <script th:src="@{/js/jquery.contextMenu.min.js}"></script>
     <script th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
     <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
@@ -290,14 +277,9 @@
     <script th:src="@{/ajax/libs/fullscreen/jquery.fullscreen.js}"></script>
     <script th:inline="javascript">
       var ctx = [[@{/}]];
-      // 皮肤缓存
       var skin = storage.get("skin");
-      // history（表示去掉地址的#）否则地址以"#"形式展示
       var mode = "history";
-      // 历史访问路径缓存
       var historyPath = storage.get("historyPath");
-
-      // 本地主题优先，未设置取系统配置
       if($.common.isNotEmpty(skin)){
       	$("body").addClass(skin.split('|')[0]);
       	$("body").addClass(skin.split('|')[1]);
@@ -305,13 +287,10 @@
       	$("body").addClass([[${sideTheme}]]);
       	$("body").addClass([[${skinName}]]);
       }
-
-      /* 用户管理-重置密码 */
       function resetPwd() {
           var url = ctx + 'system/user/profile/resetPwd';
           $.modal.open("Reset Password", url, '770', '380');
       }
-      /* 切换主题 */
       function switchSkin() {
           layer.open({
       		type : 2,
@@ -321,8 +300,6 @@
       		content : [ctx + "system/switchSkin", 'no']
       	})
       }
-
-      /** 刷新时访问路径页签 */
       function applyPath(url) {
       	$('a[href$="' + decodeURI(url) + '"]').click();
           $('a[href$="' + url + '"]').parent("li").addClass("selected").parents("li :not(.user-panel)").addClass("active").end().parents("ul").addClass("in");
