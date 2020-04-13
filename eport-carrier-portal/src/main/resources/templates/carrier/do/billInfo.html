@@ -45,33 +45,30 @@
     <div class="col-sm-12" style="margin-top: 0px; padding-bottom:5px">
       <div class="col-sm-12 fixed-table-toolbar">
           <div class="bs-bars pull-left">
-            <p>MÃ£ hÃ£ng tÃ u: <span id="carrier"></span></p>
-          <p>Sá»‘ váº­n Ä‘Æ¡n: <span id="billNumber"></span></p>
+            <p>Mã hãng tàu: <span id="carrier"></span></p>
+          <p>Số vận đơn: <span id="billNumber"></span></p>
           <p>
-            Háº¡n lá»‡nh: <span id="expiredDem"></span>
+            Hạn lệnh: <span id="expiredDem"></span>
             <a class="btn btn-xs btn-primary single"
               id="updateExpiredDem"
               onclick="$.operate.addChangeExpired()">
-              <i class="fa fa-edit"></i> Ä�á»•i Háº¡n Lá»‡nh
+              <i class="fa fa-edit"></i> Thay đổi hạn lệnh
             </a>
           </p>
-          <p>Tráº¡ng thÃ¡i lÃ m lá»‡nh: <span id="dostatus"></span></p>
-          <p>Tráº¡ng thÃ¡i ná»™p DO: <span id="DOInStatus"></span></p>
-          <p id="DateInDO_dad"></p>
-          </div>
+          <p>Trạng thái làm lệnh: <span id="dostatus"></span></p>
           <div class="bs-bars pull-right">
             
           </div>
       </div>
       </div>
       <div class="header-box">
-        <h2>ThÃ´ng tin DO <span id="billNo"></span></h2>
+        <h2>Thông tin DO <span id="billNo"></span></h2>
       </div>
       <br />
       <div class="footer-add">
         <div style="display:flex; justify-content: space-around">
           <input class="form-control" type="text" id="searchForm" placeholder="Sá»‘ container" style="width:'80px'; margin-right: 10px;"> 
-          <button class="btn btn-success" onclick="search()" id="searchBtn">TÃ¬m kiáº¿m</button>
+          <button class="btn btn-success" onclick="search()" id="searchBtn">Tìm kiếm</button>
         </div>
         <div>
           <button
@@ -80,7 +77,7 @@
           onclick="update()"
           style="margin-right: 10px; height: 40px;"
         >
-          Cáº­p nháº­t thay Ä‘á»•i
+          Cập nhật thay đổi
         </button>
         <button
           type="button"
@@ -88,7 +85,7 @@
           onclick="closeItemDo()"
           style="height: 40px;"
         >
-          Há»§y bá»� thay Ä‘á»•i
+          Hủy bỏ thay đổi
         </button>
         </div>
        
@@ -106,20 +103,25 @@
       th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"
     ></script>
     <script type="text/javascript" th:inline="javascript">
-      var doList = /*[[${equipmentDos}]]*/;
-      $("#billNo").html("No: " + doList[0].billOfLading);
-      $("#billNumber").html(doList[0].billOfLading);
-      $("#carrier").html(doList[0].carrierCode);
-      var date = new Date(doList[0].expiredDem);
-      var status = doList[0].status == 0 ? "<span class='label label-warning'>ChÆ°a lÃ m lá»‡nh</span>" : "<span class='label label-success'>Ä�Ã£ lÃ m lá»‡nh</span>";
-      var doInStatus = doList[0].documentStatus == 0 ? "<span class='label label-warning'>ChÆ°a ná»™p DO</span>" : "<span class='label label-success'>Ä�Ã£ ná»™p DO</span>";
-      if (doList[0].documentReceiptDate) {
-        $("#DateInDO_dad").html = "NgÃ y ná»™p DO: <span class='DateInDO'>"+doList[0].documentReceiptDate+"</span>";
-      }
+      var firstDo = /*[[${bl}]]*/;
+      var doList;
+      $("#billNo").html("No: " + firstDo.billOfLading);
+      $("#billNumber").html(firstDo.billOfLading);
+      $("#carrier").html(firstDo.carrierCode);
+      var date = new Date(firstDo.expiredDem);
+      var status = firstDo.status == 0 ? "<span class='label label-warning'>Chưa làm lệnh</span>" : "<span class='label label-success'>Đã làm lệnh</span>";
       $("#dostatus").html(status);
-      $("#DOInStatus").html(doInStatus);
       $("#expiredDem").html(date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear());
-      var example = document.getElementById('showDemo');
+      console.log(firstDo.billOfLading);
+      $.ajax({
+        url: "/carrier/do/getInfoBl",
+        method: 'get',
+        data: {
+          blNo: firstDo.billOfLading,
+        },
+        success: function(result) {
+          doList = result;
+          var example = document.getElementById('showDemo');
       var hot = new Handsontable(example, {
         data: doList,
         stretchH: 'all',
@@ -133,19 +135,19 @@
         height: 500,
         colHeaders: [
           "ID<br>id",
-          // "MÃ£ hÃ£ng tÃ u<br>Carrier",
-          // "Sá»‘ váº­n Ä‘Æ¡n<br> Bill No",
-          "Sá»‘ container<br>Container No",
-          "TÃªn chá»§ hÃ ng<br>Consignee",
-          // "Háº¡n lá»‡nh<br> Valid to date",
-          "NÆ¡i háº¡ vá»�<br> Empty depot",
-          "NgÃ y miá»…n lÆ°u<br> DET Freetime",
-          "TÃªn tÃ u<br>Vessel",
-          "Chuyáº¿n<br>Voyage",
+          // "Mã hãng tàu<br>Carrier",
+          // "Số vận đơn<br> Bill No",
+          "Số Container<br>Container No.",
+          "Tên khách hàng<br>Consignee",
+          // "Hạn lệnh<br> Valid to date",
+          "Nơi hạ vỏ<br> Empty depot",
+          "Ngày miễn lưu<br> DET Freetime",
+          "Tên tàu<br>Vessel",
+          "Chuyến<br>Voyage",
           // "XÃ¡c nháº­n <br> lÃ m lá»‡nh",
           // "Ä�Ã£ ná»™p <br> DO gá»‘c",
           // "NgÃ y ná»™p<br>DO date in",
-          "Ghi chÃº<br>Note"
+          "Ghi chú<br>Note"
         ],
         filter: true,
         licenseKey: "non-commercial-and-evaluation",
@@ -210,6 +212,10 @@
         filters: true
       });
       hot.validateCells();
+        }
+      })
+      console.log(doList);
+      
 
       function update() {
         var myTableData = hot.getSourceData();
@@ -252,19 +258,19 @@
           },
         });
       }
-      $(function () {
-        var options = {
-          createUrl: "/carrier/do/changeExpiredDate/{"+doList[0].billOfLading+"}/{"+doList[0].status+"}",
-        };
-        $.table.init(options);
-      });
+      // $(function () {
+      //   var options = {
+      //     createUrl: "/carrier/do/changeExpiredDate/{"+firstDo.billOfLading+"}/{"+firstDo.status+"}",
+      //   };
+      //   $.table.init(options);
+      // });
 
       function search() {
         $.ajax({
           url : "/carrier/do/searchCon",
           method : "get",
           data : {
-            billOfLading : doList[0].billOfLading,
+            billOfLading : firstDo.billOfLading,
             contNo : $("#searchForm").val()
           }
         }).done(function(result){

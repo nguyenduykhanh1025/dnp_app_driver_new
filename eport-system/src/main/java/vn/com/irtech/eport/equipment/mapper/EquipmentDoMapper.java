@@ -101,6 +101,8 @@ public interface EquipmentDoMapper {
 
 	public Map<String, String> getReportByCarrierGroup(String[] codes);
 
-	public EquipmentDo selectBillOfLadingInfo(String blNo);
+  public EquipmentDo selectBillOfLadingInfo(String blNo);
+  
+  public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo);
 
 }
