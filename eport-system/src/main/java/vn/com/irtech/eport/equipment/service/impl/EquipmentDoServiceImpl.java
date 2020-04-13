@@ -181,4 +181,10 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
 	public Map<String, String> getReportByCarrierGroup(String[] codes) {
 		return equipmentDoMapper.getReportByCarrierGroup(codes);
 	}
+
+
+	@Override
+	public EquipmentDo getBillOfLadingInfo(String blNo) {
+		return equipmentDoMapper.selectBillOfLadingInfo(blNo);
+	}
 }
