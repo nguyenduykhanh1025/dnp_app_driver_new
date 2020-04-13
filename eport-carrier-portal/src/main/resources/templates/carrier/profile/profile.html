@@ -23,17 +23,13 @@
                             <p class="pull-right">[[${user.email}]]</p>
                         </li>
                         <li class="list-group-item"><i class="fa fa-user"></i>
-                            <b  class="font-noraml">Tên đại diện</b>
+                            <b  class="font-noraml">Họ Và Tên</b>
                             <p class="pull-right">[[${user.fullName}]]</p>
                         </li>
                         <li class="list-group-item"><i class="fa fa- fa-calendar"></i>
                             <b  class="font-noraml">Ngày tạo</b>
                             <p class="pull-right" >[[${user.CreateTime}]]</p>
                         </li>
-<!--                         <li class="list-group-item"><i class="fa fa-calendar"></i>
-                            <b  class="font-noraml">RemarkÃ¯Â¼Å¡</b>
-                            <p class="pull-right" >[[${user.Remark}]]</p>
-                        </li> -->
                     </ul>
                 </div>
             </div>
@@ -69,46 +65,22 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">ID Hãng tàu</label>
+                                        <label class="col-sm-2 control-label">Hãng tàu</label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" name="groupId" th:field="*{groupId}" placeholder="Vui lòng nhập ID hãng tàu">
-<!--                                             <li>
-												<select name="groupId" th:with="type=${@dict.getType('sys_normal_disable')}">
-													<option value="" text="Select choose"></option>
-													<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.Id}"></option>
-												</select>
-											</li> -->
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Bình luận</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" name="remark" th:field="*{remark}" placeholder="Vui lòng nhập bình luận">
-                                        </div>
+                                        <label class="col-sm-2 control-label">Ghi chú</label>
                                     </div>
-<!--                                     <div class="form-group">
-                                        <label class="col-sm-2 control-label">Gender</label>
-                                        <div class="col-sm-10">
-                                            <div class="radio-box">
-												<input type="radio" id="radio1" th:field="*{sex}" name="sex" value="0">
-												<label for="radio1">Male</label>
-											</div>
-											<div class="radio-box">
-												<input type="radio" id="radio2" th:field="*{sex}" name="sex" value="1">
-												<label for="radio2">Female</label>
-											</div>
-                                        </div>
-                                    </div> -->
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
-                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitUserInfo()"><i class="fa fa-check"></i>Lưu</button>&nbsp;
-<!--                                             <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down </button> -->
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitUserInfo()"><i class="fa fa-check"></i>  &nbsp;Lưu</button>&nbsp;
                                         </div>
                                     </div>
                                 </form>
                             </div>
                             
-                            <!--Ã¤Â¿Â®Ã¦â€�Â¹Ã¥Â¯â€ Ã§Â ï¿½-->
                             <div class="tab-pane" id="modify_password">
                                 <form class="form-horizontal" id="form-user-resetPwd">
                                     <div class="form-group">
@@ -131,8 +103,7 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
-                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitChangPassword()"><i class="fa fa-check"></i>Lưu</button>&nbsp;
-<!--                                             <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down</button> -->
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitChangPassword()"><i class="fa fa-check"></i> &nbsp;Lưu</button>&nbsp;
                                         </div>
                                     </div>
                                 </form>
@@ -147,64 +118,14 @@
     
     <th:block th:include="include :: footer" />
     <script>
-	    /*Ã§â€�Â¨Ã¦Ë†Â·Ã§Â®Â¡Ã§ï¿½â€ -Ã¥Â¤Â´Ã¥Æ’ï¿½*/
-/* 	    function avatar() {
-	        var url = ctx + 'system/user/profile/avatar';
-	        $.modal.open("Modify avata", url);
-	    } */
-	    
-	    /*Ã§â€�Â¨Ã¦Ë†Â·Ã¤Â¿Â¡Ã¦ï¿½Â¯-Ã¤Â¿Â®Ã¦â€�Â¹*/
 	    $("#form-user-edit").validate({
 			onkeyup: false,
 			rules:{
 				email:{
 					required:true,
 				},
-/* 				email:{
-					required:true,
-		            email:true,
-		            remote: {
-		                url: ctx + "system/user/checkEmailUnique",
-		                type: "post",
-		                dataType: "json",
-		                data: {
-		                	"Id": function() {
-		                        return $("#Id").val();
-		                    },
-		        			"email": function() {
-		                        return $.common.trim($("#email").val());
-		                    }
-		                },
-		                dataFilter: function (data, type) {
-		                	return $.validate.unique(data);
-		                }
-		            }
-				}, */
-/* 				phonenumber:{
-					required:true,
-					isPhone:true,
-		            remote: {
-		                url: ctx + "system/user/checkPhoneUnique",
-		                type: "post",
-		                dataType: "json",
-		                data: {
-		                	"Id": function() {
-		                		return $("#Id").val();
-		                    },
-		        			"phonenumber": function() {
-		                        return $.common.trim($("#phonenumber").val());
-		                    }
-		                },
-		                dataFilter: function (data, type) {
-		                	return $.validate.unique(data);
-		                }
-		            }
-				}, */
 			},
 			messages: {
-/* 				"userName": {
-	                required: "Please enter a username",
-	            }, */
 				"email": {
 					required: "please input your email",
 		            remote: "Email already exists"
@@ -223,7 +144,6 @@
 	        }
 	    }
 	    
-	    /*Ã§â€�Â¨Ã¦Ë†Â·Ã§Â®Â¡Ã§ï¿½â€ -Ã¤Â¿Â®Ã¦â€�Â¹Ã¥Â¯â€ Ã§Â ï¿½*/
 	    $("#form-user-resetPwd").validate({
 	    	onkeyup: false,
 			rules:{
@@ -251,20 +171,19 @@
 	            }
 			},
 			messages: {
-	            oldPassword: {
-	                required: "Please enter the original password",
-	                remote: "The original password is wrong"
+				oldPassword: {
+	                required: "Hãy nhập mật khẩu hiện tại",
+	                remote: "Mật khẩu không đúng"
 	            },
 	            newPassword: {
-	                required: "Please enter a new password",
-	                minlength: "Password must be at least 6 characters",
-	                maxlength: "Password cannot be longer than 20 characters"
+	                required: "Hãy nhập mật khẩu mới",
+	                minlength: "Mật khẩu ít nhất có 6 ký tự",
+	                maxlength: "Mật khẩu không dài quá 20 ký tự"
 	            },
 	            confirmPassword: {
-	                required: "Please enter new password again",
-	                equalTo: "Passwords entered twice are inconsistent"
+	                required: "Hãy nhập xác nhận mật khẩu",
+	                equalTo: "Xác nhận mật khẩu không trùng với mật khẩu mới"
 	            }
-
 	        },
 	        focusCleanup: true
 		});

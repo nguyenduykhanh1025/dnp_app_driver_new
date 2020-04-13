@@ -4,7 +4,7 @@
  */
 $(function() {
 	
-	//  layer扩展皮肤
+	//  layer extended skin
 	if (window.layer !== undefined) {
 		layer.config({
 		    extend: 'moon/style.css',
@@ -12,12 +12,12 @@ $(function() {
 		});
 	}
 	
-	// 回到顶部绑定
+	// Back to top binding
 	if ($.fn.toTop !== undefined) {
 		$('#scroll-up').toTop();
 	}
 	
-	// select2复选框事件绑定
+	// select2 checkbox event binding
 	if ($.fn.select2 !== undefined) {
         $.fn.select2.defaults.set( "theme", "bootstrap" );
 		$("select.form-control:not(.noselect2)").each(function () {
@@ -27,7 +27,7 @@ $(function() {
 		})
 	}
 	
-	// iCheck单选框及复选框事件绑定
+	// iCheck radio button and checkbox event binding
 	if ($.fn.iCheck !== undefined) {
 		$(".check-box:not(.noicheck),.radio-box:not(.noicheck)").each(function() {
             $(this).iCheck({
@@ -37,7 +37,7 @@ $(function() {
         })
 	}
 	 
-	// laydate 时间控件绑定
+	// laydate time control binding
 	if ($(".select-time").length > 0) {
 		layui.use('laydate', function() {
 		    var laydate = layui.laydate;
@@ -65,7 +65,7 @@ $(function() {
 		        theme: 'molv',
 		        trigger: 'click',
 		        done: function(value, date) {
-		            // 开始时间小于结束时间
+		            // Start time is less than end time
 		            if (value !== '') {
 		                startDate.config.max.year = date.year;
 		                startDate.config.max.month = date.month - 1;
@@ -79,19 +79,19 @@ $(function() {
 		    });
 		});
 	}
-	// laydate time-input 时间控件绑定
+	// laydate time-input time control binding
 	if ($(".time-input").length > 0) {
 		layui.use('laydate', function () {
 			var com = layui.laydate;
 			$(".time-input").each(function (index, item) {
 				var time = $(item);
-				// 控制控件外观
+				// Control appearance
 				var type = time.attr("data-type") || 'date';
-				// 控制回显格式
-				var format = time.attr("data-format") || 'yyyy-MM-dd';
-				// 控制日期控件按钮
+				// Control echo format
+				var format = time.attr("data-format") || 'dd/MM/yyyy';
+				// Control date control buttons
 				var buttons = time.attr("data-btn") || 'clear|now|confirm', newBtnArr = [];
-				// 日期控件选择完成后回调处理
+				// Callback processing after the date control is selected
 				var callback = time.attr("data-callback") || {};
 				if (buttons) {
 					if (buttons.indexOf("|") > 0) {
@@ -126,7 +126,7 @@ $(function() {
 			});
 		});
 	}
-	// tree 关键字搜索绑定
+	// tree Keyword search binding
 	if ($("#keyword").length > 0) {
 		$("#keyword").bind("focus", function focusKey(e) {
 		    if ($("#keyword").hasClass("empty")) {
@@ -139,7 +139,7 @@ $(function() {
 		    $.tree.searchNode(e);
 		}).bind("input propertychange", $.tree.searchNode);
 	}
-	// tree表格树 展开/折叠
+	// treeTable tree Expand / collapse
 	var expandFlag;
 	$("#expandAllBtn").click(function() {
 		var dataExpand = $.common.isEmpty(table.options.expandAll) ? true : table.options.expandAll;
@@ -151,7 +151,7 @@ $(function() {
 	    }
 	    expandFlag = expandFlag ? false: true;
 	})
-	// 按下ESC按钮关闭弹层
+	// Press the ESC button to close the popup
 	$('body', document).on('keyup', function(e) {
 	    if (e.which === 27) {
 	        $.modal.closeAll();
@@ -202,7 +202,7 @@ $(function() {
     };
 })(jQuery);
 
-/** 刷新选项卡 */
+/** Refresh tab */
 var refreshItem = function(){
     var topWindow = $(window.parent.document);
 	var currentId = $('.page-tabs-content', topWindow).find('.active').attr('data-id');
@@ -211,7 +211,7 @@ var refreshItem = function(){
     target.attr('src', url).ready();
 }
 
-/** 关闭选项卡 */
+/** Close tab */
 var closeItem = function(dataId){
 	var topWindow = $(window.parent.document);
 	if($.common.isNotEmpty(dataId)){
@@ -296,7 +296,7 @@ var log = {
     }
 };
 
-//本地缓存处理
+//Local cache processing
 var storage = {
     set: function(key, value) {
         window.localStorage.setItem(key, value);
@@ -312,17 +312,60 @@ var storage = {
     }
 };
 
-/** 设置全局ajax处理 */
+/** Set global ajax processing */
 $.ajaxSetup({
     complete: function(XMLHttpRequest, textStatus) {
         if (textStatus == 'timeout') {
-        	$.modal.alertWarning("Hết thời gian chờ Server, hãy thử lại!");
+        	$.modal.alertWarning("Hết thời gian chờ, hãy thử lại!");
         	$.modal.enable();
             $.modal.closeLoading();
         } else if (textStatus == "parsererror" || textStatus == "error") {
-        	$.modal.alertWarning("Lỗi Server, hãy liên hệ với admin.");
+        	$.modal.alertWarning("Lỗi server, hãy liên hệ với admin.");
         	$.modal.enable();
             $.modal.closeLoading();
         }
     }
+});
+/**Automatic adjustment of page height*/
+$(function() {
+	domresize();
+});
+var heightInfo;
+var widthInfo;
+var initPageSize;
+var initPageNum;
+var webH;
+var webW;
+//Change table width and height
+function domresize()
+{
+	webH = document.documentElement.clientHeight;
+	webW = document.documentElement.offsetWidth;
+	widthInfo = $("body").outerWidth() -27;
+	//var mtopH = $(".box-body").outerHeight();
+	//var mtopH = $("#wrapper").outerHeight();
+	heightInfo = webH - 55;
+
+	//Paging information changed to 15
+	if(heightInfo > 550)
+	{
+		initPageSize = 15;
+		initPageNum = [15,30,50,100];
+	}
+	else
+	{
+		initPageSize = 10;
+		initPageNum = [10,20,30,50];
+	}
+}
+function dgResize() {
+	if($('#dg').length) {
+        $('#dg').datagrid('resize', {
+//            width: $(window).width() - 6,
+            height: $(window).height() -55
+        });
+	}
+}
+$(window).resize(function () {
+    dgResize();
 });

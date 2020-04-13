@@ -1,7 +1,6 @@
 package vn.com.irtech.eport.carrier.controller;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -9,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import com.alibaba.fastjson.JSONArray;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONArray;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -45,27 +44,22 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 @Controller
 @RequestMapping("/carrier/do")
 public class CarrierEquipmentDoController extends BaseController {
-  private String prefix = "carrier/do";
+	private String prefix = "carrier/do";
 
-  @Autowired
-  private IEquipmentDoService equipmentDoService;
+	@Autowired
+	private IEquipmentDoService equipmentDoService;
+	@Autowired
+	private MailService mailService;
 
-  private CarrierAccount currentUser;
-  
-  @Autowired
-  private MailService mailService;
+	@GetMapping()
+	public String EquipmentDo() {
+		return prefix + "/do";
+	}
 
-  @GetMapping()
-  public String EquipmentDo() {
-    return prefix + "/do";
-  }
-
-  private JSONArray equipmentDoList;
-  /**
-   * Get Exchange Delivery Order List
-   */
-
-  @PostMapping("/list2")
+	/**
+	 * Get Exchange Delivery Order List
+	 */
+	@PostMapping("/list2")
 	@ResponseBody
 	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
 		int page = EquipmentDo.getPage();
@@ -77,309 +71,351 @@ public class CarrierEquipmentDoController extends BaseController {
 
 	@RequestMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String contNo, String blNo) {
-    startPage();
-    edo.setCarrierId(ShiroUtils.getUserId());
-    if (voyageNo != null) {
-      edo.setVoyNo(voyageNo);
-    }
-    if (contNo != null) {
-      edo.setContainerNumber(contNo);
-    }
-    if (blNo != null) {
-      edo.setBillOfLading(blNo);
-    }
-    if (fromDate != null) {
-      edo.setFromDate(fromDate);
-    }
-    if (toDate != null) {
-      edo.setToDate(toDate);
-    }
-    List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
-    for (EquipmentDo e : list) {
-      e.setContainerNumber(equipmentDoService.countContainerNumber(e.getBillOfLading()));
-      e.setBillOfLading("<a onclick='openForm(\""+e.getBillOfLading()+"\")'>"+e.getBillOfLading()+"</a>");
-    }
+	public TableDataInfo list(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String contNo,
+			String blNo) {
+		startPage();
+		edo.setCarrierId(ShiroUtils.getUserId());
+		if (voyageNo != null) {
+			edo.setVoyNo(voyageNo);
+		}
+		if (contNo != null) {
+			edo.setContainerNumber(contNo);
+		}
+		if (blNo != null) {
+			edo.setBillOfLading(blNo);
+		}
+		if (fromDate != null) {
+			edo.setFromDate(fromDate);
+		}
+		if (toDate != null) {
+			edo.setToDate(toDate);
+		}
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
 		return getDataTable(list);
 	}
 
-  /**
-   * Update Exchange Delivery Order
-   */
-  @GetMapping("/billInfo/{billOfLading}")
-  public String billInfo(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
-    EquipmentDo equipmentDo = new EquipmentDo();
-    equipmentDo.setBillOfLading(billOfLading.substring(1, billOfLading.length()-1));
-    List<EquipmentDo> equipmentDos = equipmentDoService.selectEquipmentDoDetails(equipmentDo);
-    mmap.addAttribute("equipmentDos", equipmentDos);
-    return prefix + "/billInfo";
-  }
+	/**
+	 * Update Exchange Delivery Order
+	 */
+	@GetMapping("/viewbl/{blNo}")
+	public String billInfo(@PathVariable("blNo") String billOfLading, ModelMap mmap) {
+		EquipmentDo equipmentDo = new EquipmentDo();
+		equipmentDo.setBillOfLading(billOfLading.substring(1, billOfLading.length() - 1));
+		List<EquipmentDo> equipmentDos = equipmentDoService.selectEquipmentDoDetails(equipmentDo);
+		mmap.addAttribute("equipmentDos", equipmentDos);
+		return prefix + "/billInfo";
+	}
 
-  /**
-   * Update Exchange Delivery Order
-   */
-  @GetMapping("/changeExpiredDate/{billOfLading}")
-  public String changeExpiredDate(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
-    mmap.addAttribute("billOfLading", billOfLading.substring(1, billOfLading.length()-1));
-    return prefix + "/changeExpriedDate";
-  }
+	@GetMapping("/searchCon")
+	@ResponseBody
+	public List<EquipmentDo> searchCon(String billOfLading, String contNo) {
+		EquipmentDo equipmentDo = new EquipmentDo();
+		equipmentDo.setBillOfLading(billOfLading);
+		equipmentDo.setContainerNumber(contNo.toLowerCase());
+		return equipmentDoService.selectEquipmentDoDetails(equipmentDo);
+	}
 
-  /**
-   * Export Exchange Delivery Order List
-   */
+	/**
+	 * Update Exchange Delivery Order
+	 */
+	@GetMapping("/changeExpiredDate/{billOfLading}/{status}")
+	public String changeExpiredDate(@PathVariable("billOfLading") String billOfLading,
+			@PathVariable("status") String status, ModelMap mmap) {
+		mmap.addAttribute("billOfLading", billOfLading.substring(1, billOfLading.length() - 1));
+		mmap.addAttribute("status", status.substring(1, status.length() - 1));
+		return prefix + "/changeExpriedDate";
+	}
 
-  @Log(title = "Exchange Delivery Order", businessType = BusinessType.EXPORT)
-  @PostMapping("/export")
-  @ResponseBody
-  public AjaxResult export(EquipmentDo equipmentDo) {
-    List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
-    ExcelUtil<EquipmentDo> util = new ExcelUtil<EquipmentDo>(EquipmentDo.class);
-    return util.exportExcel(list, "do");
-  }
+	// update
+	@Log(title = "Update Expired Date", businessType = BusinessType.UPDATE)
+	@PostMapping("/updateExpiredDate")
+	@ResponseBody
+	public AjaxResult updateExpiredDate(String billOfLading, Date expiredDem, boolean status) {
+		Date now = new Date();
+		expiredDem.setHours(23);
+		expiredDem.setMinutes(59);
+		expiredDem.setSeconds(59);
+		if (expiredDem.getTime() >= now.getTime()) {
+			if (!status) {
+				EquipmentDo equipmentDo = new EquipmentDo();
+				equipmentDo.setBillOfLading(billOfLading);
+				equipmentDo.setExpiredDem(expiredDem);
+				return toAjax(equipmentDoService.updateEquipmentDoExpiredDem(equipmentDo));
+			} else
+				return error("Cập nhật thất bại vì hóa đơn đã làm lệnh");
+		} else {
+			return error("Ngày gia hạn lệnh không được trong quá khứ");
+		}
 
-  /**
-   * Add Exchange Delivery Order
-   */
-  @GetMapping("/add")
-  public String add() {
-    return prefix + "/addDo";
-  }
+	}
 
-  /**
-   * Add or Update Exchange Delivery Order
-   * 
-   * @throws ParseException
-   */
+	/**
+	 * Export Exchange Delivery Order List
+	 */
 
-  @Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
-  @PostMapping("/add")
-  @ResponseBody
-  public AjaxResult addSave(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
-    equipmentDo.ifPresent(value -> equipmentDoList = value);
-    currentUser = ShiroUtils.getSysUser();
-    if (equipmentDoList != null) {
-      String[] strList = new String[9];
-      for (int index = 0; index < equipmentDoList.size(); index++) {
-        // Resolve " mark in array
-        String st = equipmentDoList.get(index++).toString();
-        strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
-        if (index == 1) {
-          strList[0] = strList[0].substring(strList[0].indexOf("[")+2, strList[0].length());
-        }
-        for (int i = 1; i < 8; i++) {
-          strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
-        }
-        String a = equipmentDoList.get(index).toString();
-        // Resolve ]} mark in last element
-        int listSize = equipmentDoList.size();
-        if (index == listSize-1) {
-          strList[8] = a.substring(0, a.indexOf("]"));
-          strList[8] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
-        } else {
-          strList[8] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
-        }
-        // Resolve null string
-        for (int i = 0; i <= 8; i++) {
-          if (strList[i].trim().equals("null")) {
-            strList[i] = null;
-          }
-        }
-        EquipmentDo equipment = new EquipmentDo();
-        equipment.setCarrierId(currentUser.getId());
-        equipment.setCarrierCode(currentUser.getCarrierCode());
-        if (strList[0] != null) {
-          equipment.setBillOfLading(strList[0]);
-        }
-        if (strList[1] != null) {
-          equipment.setContainerNumber(strList[1]);
-        }
-        if (strList[2] != null) {
-          equipment.setConsignee(strList[2]);
-        }
-        if (strList[3] != null) {
-          equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[3], "dd/MM/yyyy"));
-        }
-        if (strList[4] != null) {
-          equipment.setEmptyContainerDepot(strList[4]);
-        }
-        if (strList[5] != null) {
-          equipment.setDetFreeTime(Integer.parseInt(strList[5]));
-        }
-        if (strList[6] != null) {
-          equipment.setVessel(strList[6]);
-        }
-        if (strList[7] != null) {
-          equipment.setVoyNo(strList[7]);
-        } 
-        if (strList[8] != null) {
-          equipment.setRemark(strList[8]);
-        }
-        // set who and time created this record
-        equipment.setCreateBy(currentUser.getFullName());
-        equipment.setCreateTime(new Date());
-        try {
-          equipmentDoService.insertEquipmentDo(equipment);
-        } catch (Exception e) {
-          return AjaxResult.error();
-        }
-      }
-    }
-    return AjaxResult.success();
-  }
+	@Log(title = "Exchange Delivery Order", businessType = BusinessType.EXPORT)
+	@PostMapping("/export")
+	@ResponseBody
+	public AjaxResult export(EquipmentDo equipmentDo) {
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoList(equipmentDo);
+		ExcelUtil<EquipmentDo> util = new ExcelUtil<EquipmentDo>(EquipmentDo.class);
+		return util.exportExcel(list, "do");
+	}
 
+	/**
+	 * Add Exchange Delivery Order
+	 */
+	@GetMapping("/add")
+	public String add() {
+		return prefix + "/addDo";
+	}
 
-  //update
-  @Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
-  @PostMapping("/update")
-  @ResponseBody
-  public AjaxResult update(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
-    equipmentDo.ifPresent(value -> equipmentDoList = value);
-    currentUser = ShiroUtils.getSysUser();
-    if (equipmentDoList != null) {
-      String[] strList = new String[13];
-      for (int index = 0; index < equipmentDoList.size(); index++) {
-        // Resolve " mark in array
-        String st = equipmentDoList.get(index++).toString();
-        System.out.println("strList   "+ st);
-        strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
-        if (index == 1) {
-          strList[0] = strList[0].substring(strList[0].indexOf("[")+2, strList[0].length());
-        }
-        for (int i = 1; i < 12; i++) {
-          strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
-        }
-        // String a = equipmentDoList.get(index).toString();
-        // Resolve ]} mark in last element
-        // int listSize = equipmentDoList.size();
-        // if (index == listSize-1) {
-        //   strList[11] = strList[11].substring(0, strList[11].indexOf("]"));
-        //   strList[11] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
-        // } else {
-        //   strList[11] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
-        // }
-       
-        // Insert new DO
-        EquipmentDo equipment = new EquipmentDo();
-        equipment.setStatus(strList[11]);
-        equipment.setId(Long.parseLong(strList[0]));
-        equipmentDoService.updateEquipmentDo(equipment);
-      }
-    }
-    return toAjax(1);
-  }
-  /**
-   * Update Exchange Delivery Order
-   */
-  @GetMapping("/edit/{id}")
-  public String edit(@PathVariable("id") Long id, ModelMap mmap) {
-    EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(id);
-    mmap.put("equipmentDo", equipmentDo);
-    return prefix + "/edit";
-  }
+	/**
+	 * Add or Update Exchange Delivery Order
+	 * 
+	 * @throws ParseException
+	 */
 
-  /**
-   * Update Save Exchange Delivery Order
-   */
+	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
+	@PostMapping("/add")
+	@ResponseBody
+	public AjaxResult addSave(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
+		JSONArray equipmentDoList = null;
+		if (equipmentDo.isPresent()) {
+			equipmentDoList = equipmentDo.get();
+		}
+//	equipmentDo.ifPresent(value -> equipmentDoList = value);
+		CarrierAccount currentUser = ShiroUtils.getSysUser();
+		if (equipmentDoList != null) {
+			String[] strList = new String[9];
+			for (int index = 0; index < equipmentDoList.size(); index++) {
+				// Resolve " mark in array
+				String st = equipmentDoList.get(index++).toString();
+				strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
+				if (index == 1) {
+					strList[0] = strList[0].substring(strList[0].indexOf("[") + 2, strList[0].length());
+				}
+				for (int i = 1; i < 8; i++) {
+					strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
+				}
+				String a = equipmentDoList.get(index).toString();
+				// Resolve ]} mark in last element
+				int listSize = equipmentDoList.size();
+				if (index == listSize - 1) {
+					strList[8] = a.substring(0, a.indexOf("]"));
+					strList[8] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
+				} else {
+					strList[8] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
+				}
+				// Resolve null string
+				for (int i = 0; i <= 8; i++) {
+					if (strList[i].trim().equals("null")) {
+						strList[i] = null;
+					}
+				}
+				EquipmentDo equipment = new EquipmentDo();
+				equipment.setCarrierId(currentUser.getId());
+				equipment.setCarrierCode(currentUser.getCarrierCode());
+				if (strList[0] != null) {
+					equipment.setBillOfLading(strList[0]);
+				}
+				if (strList[1] != null) {
+					equipment.setContainerNumber(strList[1]);
+				}
+				if (strList[2] != null) {
+					equipment.setConsignee(strList[2]);
+				}
+				if (strList[3] != null) {
+					equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[3], "dd/MM/yyyy"));
+				}
+				if (strList[4] != null) {
+					equipment.setEmptyContainerDepot(strList[4]);
+				}
+				if (strList[5] != null) {
+					equipment.setDetFreeTime(Integer.parseInt(strList[5]));
+				}
+				if (strList[6] != null) {
+					equipment.setVessel(strList[6]);
+				}
+				if (strList[7] != null) {
+					equipment.setVoyNo(strList[7]);
+				}
+				if (strList[8] != null) {
+					equipment.setRemark(strList[8]);
+				}
+				// set who and time created this record
+				equipment.setCreateBy(currentUser.getFullName());
+				equipment.setCreateTime(new Date());
+				try {
+					equipmentDoService.insertEquipmentDo(equipment);
+				} catch (Exception e) {
+					return AjaxResult.error();
+				}
+			}
+		}
+		return AjaxResult.success();
+	}
 
-  @Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
-  @PostMapping("/edit")
-  @ResponseBody
-  public AjaxResult editSave(EquipmentDo equipmentDo) {
-    return toAjax(equipmentDoService.updateEquipmentDo(equipmentDo));
-  }
+	// update
+	@Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
+	@PostMapping("/update")
+	@ResponseBody
+	public AjaxResult update(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
+		JSONArray equipmentDoList = null;
+		if (equipmentDo.isPresent()) {
+			equipmentDoList = equipmentDo.get();
+		}
+//		equipmentDo.ifPresent(value -> equipmentDoList = value);
+//		CarrierAccount currentUser = ShiroUtils.getSysUser();
+		if (equipmentDoList != null) {
+			String[] strList = new String[13];
+			for (int index = 0; index < equipmentDoList.size(); index++) {
+				// Resolve " mark in array
+				String st = equipmentDoList.get(index++).toString();
+				System.out.println("strList   " + st);
+				strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
+				if (index == 1) {
+					strList[0] = strList[0].substring(strList[0].indexOf("[") + 2, strList[0].length());
+				}
+				for (int i = 1; i < 12; i++) {
+					strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
+				}
+				// String a = equipmentDoList.get(index).toString();
+				// Resolve ]} mark in last element
+				// int listSize = equipmentDoList.size();
+				// if (index == listSize-1) {
+				// strList[11] = strList[11].substring(0, strList[11].indexOf("]"));
+				// strList[11] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
+				// } else {
+				// strList[11] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
+				// }
 
-  /**
-   * Delete Exchange Delivery Order
-   */
+				// Insert new DO
+				EquipmentDo equipment = new EquipmentDo();
+				equipment.setStatus(strList[11]);
+				equipment.setId(Long.parseLong(strList[0]));
+				equipmentDoService.updateEquipmentDo(equipment);
+			}
+		}
+		return toAjax(1);
+	}
 
-  @Log(title = "Exchange Delivery Order", businessType = BusinessType.DELETE)
-  @PostMapping("/remove")
-  @ResponseBody
-  public AjaxResult remove(String ids) {
-    return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
-  }
+	/**
+	 * Update Exchange Delivery Order
+	 */
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable("id") Long id, ModelMap mmap) {
+		EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(id);
+		mmap.put("equipmentDo", equipmentDo);
+		return prefix + "/edit";
+	}
 
-  @GetMapping("/getContainer")
-  @ResponseBody
-  public List<EquipmentDo> getContainerCode(@RequestParam(value = "containerId[]") String containerId) {
-    return equipmentDoService.getContainerListByIds(containerId);
-  }
+	/**
+	 * Update Save Exchange Delivery Order
+	 */
 
-  @PostMapping("/updateExpire")
-  @ResponseBody
-  public AjaxResult updateExprireDem(@RequestParam(value = "containerId[]") String containerId, @RequestParam(value = "newDate") String newDate) {
-    String[] doList = containerId.split(",");
-    for (String i : doList) {
-      EquipmentDo edo = new EquipmentDo();
-      edo.setId(Long.parseLong(i));
-      edo.setExpiredDem(AppToolUtils.formatStringToDate(newDate, "yyyy-MM-dd"));
-      equipmentDoService.updateEquipmentDo(edo);
-    }
-    currentUser = ShiroUtils.getSysUser();
-    List<EquipmentDo> equipmentDos = equipmentDoService.getContainerListByIds(containerId);
-    Collections.sort(equipmentDos, new BillNoComparator());
-    EquipmentDo eTemp = equipmentDos.get(0);
-    String conStr = ""+eTemp.getContainerNumber()+";";
-    for (int e=1; e<equipmentDos.size(); e++) {
-      if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
-        eTemp = equipmentDos.get(e);
-        conStr += eTemp.getBillOfLading()+";";
-      } else {
-        Map<String, Object> variables = new HashMap<>();
-		    variables.put("updateTime", eTemp.getUpdateTime());
-        variables.put("carrierCode", eTemp.getCarrierCode());
-        variables.put("billOfLading", eTemp.getBillOfLading());
-        variables.put("containerNumber", conStr.substring(0, conStr.length()-1));
-        variables.put("consignee", eTemp.getConsignee());
-        variables.put("expiredDem", eTemp.getExpiredDem());
-        variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
-        variables.put("detFreeTime", eTemp.getDetFreeTime());
-        variables.put("vessel", eTemp.getVessel());
-        variables.put("voyNo", eTemp.getVoyNo());
-        variables.put("remark", eTemp.getRemark());
-        eTemp = equipmentDos.get(e);
-        conStr = "" + eTemp.getContainerNumber()+";";
-        // send email
-        new Thread() {
-            public void run() {
-                try {
-                    mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables, "dnpEmail");  
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-            }
-        }.start();
-      }
-    }
-    Map<String, Object> variables = new HashMap<>();
-    variables.put("updateTime", eTemp.getUpdateTime());
-    variables.put("carrierCode", eTemp.getCarrierCode());
-    variables.put("billOfLading", eTemp.getBillOfLading());
-    variables.put("containerNumber", conStr.substring(0, conStr.length()-1));
-    variables.put("consignee", eTemp.getConsignee());
-    variables.put("expiredDem", eTemp.getExpiredDem());
-    variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
-    variables.put("detFreeTime", eTemp.getDetFreeTime());
-    variables.put("vessel", eTemp.getVessel());
-    variables.put("voyNo", eTemp.getVoyNo());
-    variables.put("remark", eTemp.getRemark());
-    // send email
-    new Thread() {
-        public void run() {
-            try {
-                mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables, "dnpEmail");  
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-        }
-    }.start();
-    return AjaxResult.success();
-  }
-  class BillNoComparator implements Comparator<EquipmentDo> {
-    public int compare(EquipmentDo equipmentDo1, EquipmentDo equipmentDo2) {
-        //In the following line you set the criterion, 
-        //which is the name of Contact in my example scenario
-        return equipmentDo1.getBillOfLading().compareTo(equipmentDo2.getBillOfLading());
-    }
-  }
+	@Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
+	@PostMapping("/edit")
+	@ResponseBody
+	public AjaxResult editSave(EquipmentDo equipmentDo) {
+		return toAjax(equipmentDoService.updateEquipmentDo(equipmentDo));
+	}
+
+	/**
+	 * Delete Exchange Delivery Order
+	 */
+
+	@Log(title = "Exchange Delivery Order", businessType = BusinessType.DELETE)
+	@PostMapping("/remove")
+	@ResponseBody
+	public AjaxResult remove(String ids) {
+		return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
+	}
+
+	@GetMapping("/getContainer")
+	@ResponseBody
+	public List<EquipmentDo> getContainerCode(@RequestParam(value = "containerId[]") String containerId) {
+		return equipmentDoService.getContainerListByIds(containerId);
+	}
+
+	@PostMapping("/updateExpire")
+	@ResponseBody
+	public AjaxResult updateExprireDem(@RequestParam(value = "containerId[]") String containerId,
+			@RequestParam(value = "newDate") String newDate) {
+		String[] doList = containerId.split(",");
+		for (String i : doList) {
+			EquipmentDo edo = new EquipmentDo();
+			edo.setId(Long.parseLong(i));
+			edo.setExpiredDem(AppToolUtils.formatStringToDate(newDate, "yyyy-MM-dd"));
+			equipmentDoService.updateEquipmentDo(edo);
+		}
+		CarrierAccount currentUser = ShiroUtils.getSysUser();
+		List<EquipmentDo> equipmentDos = equipmentDoService.getContainerListByIds(containerId);
+		Collections.sort(equipmentDos, new BillNoComparator());
+		EquipmentDo eTemp = equipmentDos.get(0);
+		String conStr = "" + eTemp.getContainerNumber() + ";";
+		for (int e = 1; e < equipmentDos.size(); e++) {
+			if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
+				eTemp = equipmentDos.get(e);
+				conStr += eTemp.getBillOfLading() + ";";
+			} else {
+				Map<String, Object> variables = new HashMap<>();
+				variables.put("updateTime", eTemp.getUpdateTime());
+				variables.put("carrierCode", eTemp.getCarrierCode());
+				variables.put("billOfLading", eTemp.getBillOfLading());
+				variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
+				variables.put("consignee", eTemp.getConsignee());
+				variables.put("expiredDem", eTemp.getExpiredDem());
+				variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+				variables.put("detFreeTime", eTemp.getDetFreeTime());
+				variables.put("vessel", eTemp.getVessel());
+				variables.put("voyNo", eTemp.getVoyNo());
+				variables.put("remark", eTemp.getRemark());
+				eTemp = equipmentDos.get(e);
+				conStr = "" + eTemp.getContainerNumber() + ";";
+				// send email
+				new Thread() {
+					public void run() {
+						try {
+							mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables,
+									"dnpEmail");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}.start();
+			}
+		}
+		Map<String, Object> variables = new HashMap<>();
+		variables.put("updateTime", eTemp.getUpdateTime());
+		variables.put("carrierCode", eTemp.getCarrierCode());
+		variables.put("billOfLading", eTemp.getBillOfLading());
+		variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
+		variables.put("consignee", eTemp.getConsignee());
+		variables.put("expiredDem", eTemp.getExpiredDem());
+		variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+		variables.put("detFreeTime", eTemp.getDetFreeTime());
+		variables.put("vessel", eTemp.getVessel());
+		variables.put("voyNo", eTemp.getVoyNo());
+		variables.put("remark", eTemp.getRemark());
+		// send email
+		new Thread() {
+			public void run() {
+				try {
+					mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables, "dnpEmail");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}.start();
+		return AjaxResult.success();
+	}
+
+	class BillNoComparator implements Comparator<EquipmentDo> {
+		public int compare(EquipmentDo equipmentDo1, EquipmentDo equipmentDo2) {
+			// In the following line you set the criterion,
+			// which is the name of Contact in my example scenario
+			return equipmentDo1.getBillOfLading().compareTo(equipmentDo2.getBillOfLading());
+		}
+	}
 }

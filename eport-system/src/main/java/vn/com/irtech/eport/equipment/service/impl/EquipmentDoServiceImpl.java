@@ -2,6 +2,7 @@ package vn.com.irtech.eport.equipment.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,4 +170,15 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     public List<EquipmentDo> selectEquipmentDoDetails(EquipmentDo equipmentDo){
       return equipmentDoMapper.selectEquipmentDoDetails(equipmentDo);
     }
+
+    @Override
+    public int updateEquipmentDoExpiredDem(EquipmentDo equipmentDo){
+      return equipmentDoMapper.updateEquipmentDoExpiredDem(equipmentDo);
+    }
+
+
+	@Override
+	public Map<String, String> getReportByCarrierGroup(String[] codes) {
+		return equipmentDoMapper.getReportByCarrierGroup(codes);
+	}
 }

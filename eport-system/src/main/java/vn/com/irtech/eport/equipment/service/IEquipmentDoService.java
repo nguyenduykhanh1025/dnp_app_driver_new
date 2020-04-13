@@ -2,6 +2,7 @@ package vn.com.irtech.eport.equipment.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -99,4 +100,13 @@ public interface IEquipmentDoService
      //Chang Do status
     public int updateBillOfLading(EquipmentDo equipmentDo);
     public List<EquipmentDo> selectEquipmentDoDetails(EquipmentDo equipmentDo);
+
+    public int updateEquipmentDoExpiredDem(EquipmentDo equipmentDo);
+
+    /**
+     * Report for carrier group
+     * 
+     * @param operator codes
+     */
+	public Map<String, String> getReportByCarrierGroup(String[] codes);
 }

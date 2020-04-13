@@ -34,57 +34,57 @@ import vn.com.irtech.eport.system.domain.SysUser;
  */
 @Controller
 @RequestMapping("/carrier/admin/do")
-public class EquipmentDoController extends BaseController
-{
-    private String prefix = "carrier/do";
-	
+public class EquipmentDoController extends BaseController {
+	private String prefix = "carrier/do";
+
 	@Autowired
- 	private IEquipmentDoService equipmentDoService;
+	private IEquipmentDoService equipmentDoService;
 
-    private SysUser currentUser;
-    
-  	@GetMapping("/getViewDo")
-	public String getDoView()
-	{
-		return  prefix + "/do";
-    }
-    
+	private SysUser currentUser;
+
+	@GetMapping("/getViewDo")
+	public String getDoView() {
+		return prefix + "/do";
+	}
+
 	/**
-     * GET Delivery Order
-     */
+	 * GET Delivery Order
+	 */
 	@RequiresPermissions("system:do:list")
-    @PostMapping("/list")
-    @ResponseBody
-    public TableDataInfo listBuild(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo,String vessel, String consignee, String blNo,String status,String documentStatus) {
-        startPage();
-        edo.setVoyNo(voyageNo);
-        edo.setVessel(vessel);
-        edo.setConsignee(consignee);
-        edo.setBillOfLading(blNo);
-        edo.setFromDate(fromDate);
-        edo.setToDate(toDate);
-        edo.setDocumentStatus(documentStatus);
-        edo.setStatus(status);
-        List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
-        for (EquipmentDo e : list) {
-          e.setContainerNumber(equipmentDoService.countContainerNumber(e.getBillOfLading()));
-          e.setBillOfLading("<a onclick='openForm(\""+e.getBillOfLading()+"\")'>"+e.getBillOfLading()+"</a>");
-        }
-            return getDataTable(list);
-        }
-  
+	@PostMapping("/list")
+	@ResponseBody
+	public TableDataInfo listBuild(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String vessel,
+			String consignee, String blNo, String status, String documentStatus) {
+		startPage();
+		edo.setVoyNo(voyageNo);
+		edo.setVessel(vessel);
+		edo.setConsignee(consignee);
+		edo.setBillOfLading(blNo);
+		edo.setFromDate(fromDate);
+		edo.setToDate(toDate);
+		edo.setDocumentStatus(documentStatus);
+		edo.setStatus(status);
+		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
+//		for (EquipmentDo e : list) {
+//			e.setContainerNumber(equipmentDoService.countContainerNumber(e.getBillOfLading()));
+//			e.setBillOfLading("<a onclick='openForm(\"" + e.getBillOfLading() + "\")'>" + e.getBillOfLading() + "</a>");
+//		}
+		return getDataTable(list);
+	}
 
-  @GetMapping("/getViewCont/{getBillOfLading}")
-  public String getViewCont(@PathVariable("getBillOfLading") String getBillOfLading, Model model)
-  {
-    // EquipmentDo equipmentDo = new EquipmentDo();
-    // equipmentDo.setBillOfLading(billOfLading.substring(1, billOfLading.length()-1));
-    // List<EquipmentDo> equipmentDos = equipmentDoService.selectEquipmentDoList(equipmentDo);
-    // mmap.addAttribute("equipmentDos", equipmentDos);
-    model.addAttribute("getBillOfLading",getBillOfLading);
-    return prefix + "/listContainer";
-  }
-  @PostMapping("/listCont")
+	@GetMapping("/getViewCont/{getBillOfLading}")
+	public String getViewCont(@PathVariable("getBillOfLading") String getBillOfLading, Model model) {
+		// EquipmentDo equipmentDo = new EquipmentDo();
+		// equipmentDo.setBillOfLading(billOfLading.substring(1,
+		// billOfLading.length()-1));
+		// List<EquipmentDo> equipmentDos =
+		// equipmentDoService.selectEquipmentDoList(equipmentDo);
+		// mmap.addAttribute("equipmentDos", equipmentDos);
+		model.addAttribute("getBillOfLading", getBillOfLading);
+		return prefix + "/listContainer";
+	}
+
+	@PostMapping("/listCont")
 	@ResponseBody
 	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
 		int page = EquipmentDo.getPage();
@@ -93,94 +93,87 @@ public class EquipmentDoController extends BaseController
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingAdmin(EquipmentDo);
 		return getDataTable(list);
 	}
+
 	// Return panination
 	@PostMapping("/getCountPages")
 	@ResponseBody
-	public Long getCountPages(String billOfLading)
-	{
+	public Long getCountPages(String billOfLading) {
 
 		return equipmentDoService.getTotalPagesCont(billOfLading);
 	}
-    /**
-     * Update Exchange Delivery Order
-     */
-    @RequiresPermissions("equipment:do:add")
-    @Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
-    @PostMapping("/add")
-    @ResponseBody
-    public AjaxResult addSave(EquipmentDo equipmentDo)
-    {
-        return toAjax(equipmentDoService.insertEquipmentDo(equipmentDo));
-    }
 
-    /**
-     * Update Exchange Delivery Order
-     */
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable("id") Long id, ModelMap mmap)
-    {
-        EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(id);
-        mmap.put("equipmentDo", equipmentDo);
-        return prefix + "/edit";
-    }
+	/**
+	 * Update Exchange Delivery Order
+	 */
+	@RequiresPermissions("equipment:do:add")
+	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
+	@PostMapping("/add")
+	@ResponseBody
+	public AjaxResult addSave(EquipmentDo equipmentDo) {
+		return toAjax(equipmentDoService.insertEquipmentDo(equipmentDo));
+	}
 
-    /**
-     * Update Save Exchange Delivery Order
-     */
-    
-    @RequiresPermissions("equipment:do:edit")
-    @Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
-    @PostMapping("/edit")
-    @ResponseBody
-    public AjaxResult editSave(EquipmentDo EquipmentDo)
-    {
-        return toAjax(equipmentDoService.updateEquipmentDo(EquipmentDo));
-    }
+	/**
+	 * Update Exchange Delivery Order
+	 */
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable("id") Long id, ModelMap mmap) {
+		EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(id);
+		mmap.put("equipmentDo", equipmentDo);
+		return prefix + "/edit";
+	}
 
+	/**
+	 * Update Save Exchange Delivery Order
+	 */
 
-    @RequiresPermissions("equipment:do:edit")
-    @Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
-    @PostMapping("/changeStatus")
-    @ResponseBody
-    public AjaxResult doChangeStatus(String billOfLading)
-    {   
-        Date documentReceiptDate = new Date();
-        currentUser = ShiroUtils.getSysUser();
-        EquipmentDo equipmentDo = new EquipmentDo();
-        equipmentDo.setStatus("1");
-        equipmentDo.setUpdateBy(currentUser.getLoginName());
-        equipmentDo.setUpdateTime(documentReceiptDate);
-        equipmentDo.setBillOfLading(billOfLading);
-        return toAjax(equipmentDoService.updateBillOfLading(equipmentDo));
-    }
+	@RequiresPermissions("equipment:do:edit")
+	@Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
+	@PostMapping("/edit")
+	@ResponseBody
+	public AjaxResult editSave(EquipmentDo EquipmentDo) {
+		return toAjax(equipmentDoService.updateEquipmentDo(EquipmentDo));
+	}
 
+	@RequiresPermissions("equipment:do:edit")
+	@Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
+	@PostMapping("/changeStatus")
+	@ResponseBody
+	public AjaxResult doChangeStatus(String billOfLading) {
+		Date documentReceiptDate = new Date();
+		currentUser = ShiroUtils.getSysUser();
+		EquipmentDo equipmentDo = new EquipmentDo();
+		equipmentDo.setStatus("1");
+		equipmentDo.setUpdateBy(currentUser.getLoginName());
+		equipmentDo.setUpdateTime(documentReceiptDate);
+		equipmentDo.setBillOfLading(billOfLading);
+		return toAjax(equipmentDoService.updateBillOfLading(equipmentDo));
+	}
 
-    @RequiresPermissions("equipment:do:edit")
-    @Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
-    @PostMapping("/changeDocumnetStatus")
-    @ResponseBody
-    public AjaxResult changeDocumnetStatus(String billOfLading)
-    {   
-        Date documentReceiptDate = new Date();
-        currentUser = ShiroUtils.getSysUser();
-        EquipmentDo equipmentDo = new EquipmentDo();
-        equipmentDo.setDocumentStatus("1");
-        equipmentDo.setUpdateBy(currentUser.getLoginName());
-        equipmentDo.setDocumentReceiptDate(documentReceiptDate);
-        equipmentDo.setBillOfLading(billOfLading);
-        return toAjax(equipmentDoService.updateBillOfLading(equipmentDo));
-    }
-    /**
-     * Delete Exchange Delivery Order
-     */
-    @RequiresPermissions("equipment:do:remove")
-    @Log(title = "Exchange Delivery Order", businessType = BusinessType.DELETE)
-    @PostMapping( "/remove")
-    @ResponseBody
-    public AjaxResult remove(String ids)
-    {
-        return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
-    }
+	@RequiresPermissions("equipment:do:edit")
+	@Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
+	@PostMapping("/changeDocumnetStatus")
+	@ResponseBody
+	public AjaxResult changeDocumnetStatus(String billOfLading) {
+		Date documentReceiptDate = new Date();
+		currentUser = ShiroUtils.getSysUser();
+		EquipmentDo equipmentDo = new EquipmentDo();
+		equipmentDo.setDocumentStatus("1");
+		equipmentDo.setUpdateBy(currentUser.getLoginName());
+		equipmentDo.setDocumentReceiptDate(documentReceiptDate);
+		equipmentDo.setBillOfLading(billOfLading);
+		return toAjax(equipmentDoService.updateBillOfLading(equipmentDo));
+	}
 
-	
-}   
+	/**
+	 * Delete Exchange Delivery Order
+	 */
+	@RequiresPermissions("equipment:do:remove")
+	@Log(title = "Exchange Delivery Order", businessType = BusinessType.DELETE)
+	@PostMapping("/remove")
+	@ResponseBody
+	public AjaxResult remove(String ids) {
+		return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
+	}
+
+}
