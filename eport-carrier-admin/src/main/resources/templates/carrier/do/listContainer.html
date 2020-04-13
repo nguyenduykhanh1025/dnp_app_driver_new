@@ -163,13 +163,21 @@
                 <input type="text" class="time-input" id="expiredDem_EndDay" placeholder="Ngày kết thúc"
                   name="expiredDemEndDay" />
               </li> -->
-              <li>
+	          <div class="bs-bars pull-left" style="margin-top:5px; display: flex;">
+	            <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
+	              <a class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i class="fa fa-check-circle"></i> &nbsp;Tìm kiếm</a>
+	            </div>
+	            <div class="btn-group-sm" id="toolbar" role="group">
+	              <a class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()"><i class="fa fa-times"></i> Làm lệnh</a>
+	            </div>
+	          </div>
+<!--               <li>
                 <buttom class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i
                     class="fa fa-search"></i>&nbsp;Tìm kiếm</buttom>
               </li>
               <li>
                 <buttom class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()">Làm lệnh</buttom>
-              </li>
+              </li> -->
             </ul>
           </div>
         </form>
