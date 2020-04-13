@@ -201,7 +201,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				expiredDem.setSeconds(59);
 				e.setExpiredDem(expiredDem);
 				if(expiredDem.before(new Date())) {
-					return AjaxResult.error("Hạn lệnh của không được phép trong quá khứ");
+					return AjaxResult.error("Hạn lệnh không được phép trong quá khứ");
 				}
 				// DEM Free date la so
 				
@@ -279,7 +279,26 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@ResponseBody
 	public AjaxResult update(@RequestBody List<EquipmentDo> equipmentDos) {
 		if (equipmentDos != null) {
+			String containerNumber = ""; 
 			for (EquipmentDo e : equipmentDos) {
+				if (e.getStatus().equals("1")) {
+					return AjaxResult.error("Bill này đã được làm lệnh, cập nhật thất bại");
+				}
+				// Check expiredDem is future
+				Date expiredDem = e.getExpiredDem();
+				expiredDem.setHours(23);
+				expiredDem.setMinutes(59);
+				expiredDem.setSeconds(59);
+				e.setExpiredDem(expiredDem);
+				if(expiredDem.before(new Date())) {
+					return AjaxResult.error("Hạn lệnh không được phép trong quá khứ");
+				}
+
+				// Container number is unique
+				if (e.getContainerNumber().equals(containerNumber)) {
+					return AjaxResult.error("Số container không được trùng nhau");
+				}
+				containerNumber = e.getContainerNumber();
 				e.setUpdateBy(ShiroUtils.getSysUser().getFullName());
 				e.setUpdateTime(new Date());
 			}
