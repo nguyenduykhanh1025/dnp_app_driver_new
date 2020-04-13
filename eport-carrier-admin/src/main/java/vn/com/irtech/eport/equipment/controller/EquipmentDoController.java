@@ -200,7 +200,7 @@ public class EquipmentDoController extends BaseController {
             equipmentDo.setUpdateBy(currentUser.getLoginName());
             equipmentDo.setDocumentReceiptDate(documentReceiptDate);
             equipmentDo.setBillOfLading(billOfLading);
-            equipmentDoService.updateEquipmentDo(equipmentDo);
+            equipmentDoService.updateBillOfLading(equipmentDo);
         }
         if(status.equals("1") && equipmentDoService.countDOStatusYes(billOfLading) == 0)
         {
@@ -211,7 +211,7 @@ public class EquipmentDoController extends BaseController {
             equipmentDo.setUpdateBy(currentUser.getLoginName());
             equipmentDo.setUpdateTime(documentReceiptDate);
             equipmentDo.setBillOfLading(billOfLading);
-            equipmentDoService.updateEquipmentDo(equipmentDo);
+            equipmentDoService.updateBillOfLading(equipmentDo);
         }
         return success();
     }
