@@ -176,7 +176,14 @@ public class EquipmentDoController extends BaseController {
 		return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
     }
     
-    
+    @GetMapping("/checkStatus/{billOfLading}")
+    public String checkStatus(@PathVariable("billOfLading") String billOfLading, ModelMap mmap)
+    {
+        EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
+		mmap.addAttribute("bl", equipmentDos);
+        return prefix + "/checkStatus";
+    }
+
     
 
 }   

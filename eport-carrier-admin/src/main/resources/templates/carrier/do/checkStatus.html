@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="include :: header('Add Carrier Account')" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <th:block th:include="include :: select2-css" />
+</head>
+
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-account-add">
+           
+            <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">DateTime</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input type="text" class="time-input" name="fullName" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="status" id="status">
+                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Làm lệnh cho bill này：</label>
+                <div id="statusI" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle()"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="documentStatus" id="documentStatus">
+                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Đã nhận DO gốc của bill này :</label>
+                <div id="documentStatusI" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle2()"></i>
+                </div>
+            </div>
+            <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            onclick="update()"
+            >
+            Lưu
+          </button>
+        </form>
+       
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: select2-js" />
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', (event) => {
+                
+            }); 
+        function clickToggle() {
+            if ($("#status").val() == 0) {
+                document.getElementById("statusI").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggle()"></span>';
+                $("#status").val(1);
+            } else {
+                document.getElementById("statusI").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle()"></span>';
+                $("#status").val(0);
+            }
+        }
+        function clickToggle2() {
+            if ($("#documentStatus").val() == 0) {
+                document.getElementById("documentStatusI").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggle2()"></span>';
+                $("#documentStatus").val(1);
+            } else {
+                document.getElementById("documentStatusI").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle2()"></span>';
+                $("#documentStatus").val(0);
+            }
+        }
+        
+    </script>
+</body>
+
+</html>

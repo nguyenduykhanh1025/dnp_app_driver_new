@@ -180,7 +180,6 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
 	@Override
 	public Map<String, String> getReportByCarrierGroup(String[] codes) {
 		return equipmentDoMapper.getReportByCarrierGroup(codes);
-<<<<<<< HEAD
     }
     
     @Override
@@ -192,13 +191,4 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     public int countDocmentStatus(String billOfLading){
         return equipmentDoMapper.countDocmentStatus(billOfLading);
     };
-=======
-	}
-
-
-	@Override
-	public EquipmentDo getBillOfLadingInfo(String blNo) {
-		return equipmentDoMapper.selectBillOfLadingInfo(blNo);
-	}
->>>>>>> 4e7d993c15725ac02028a1f4b0d5b68380a34fe5
 }
