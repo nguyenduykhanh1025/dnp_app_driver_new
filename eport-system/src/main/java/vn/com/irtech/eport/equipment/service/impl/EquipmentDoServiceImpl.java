@@ -186,5 +186,10 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
 	@Override
 	public EquipmentDo getBillOfLadingInfo(String blNo) {
 		return equipmentDoMapper.selectBillOfLadingInfo(blNo);
-	}
+  }
+  
+  @Override
+  public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo) {
+    return equipmentDoMapper.selectEquipmentDoVoByBillNo(blNo);
+  }
 }

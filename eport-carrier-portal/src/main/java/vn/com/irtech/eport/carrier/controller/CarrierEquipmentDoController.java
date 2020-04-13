@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.alibaba.fastjson.JSONArray;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -19,9 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.alibaba.fastjson.JSONArray;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -48,8 +47,6 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 public class CarrierEquipmentDoController extends BaseController {
   private String prefix = "carrier/do";
   
-  private String str="";
-
 	@Autowired
 	private IEquipmentDoService equipmentDoService;
 	@Autowired
@@ -357,5 +354,12 @@ public class CarrierEquipmentDoController extends BaseController {
     CarrierAccount carrierAccount = ShiroUtils.getSysUser();
     String[] operateCodes = carrierAccount.getCarrierCode().split(",");
     return operateCodes;
+  }
+
+  @GetMapping("/getInfoBl")
+  @ResponseBody
+  public List<EquipmentDo> getInfoBl(String blNo) {
+    List<EquipmentDo> doList = equipmentDoService.selectEquipmentDoVoByBillNo(blNo);
+    return doList;
   }
 }
