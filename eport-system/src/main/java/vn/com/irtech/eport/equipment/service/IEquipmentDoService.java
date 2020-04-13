@@ -111,8 +111,16 @@ public interface IEquipmentDoService
     public Map<String, String> getReportByCarrierGroup(String[] codes);
     
     //countDOStatus
-    public int countDOStatus(String billOfLading);
+    public int countDOStatusYes(String billOfLading);
 
     //countDocmentStatus
-    public int countDocmentStatus(String billOfLading);
+    public int countDocmentStatusYes(String billOfLading);
+
+    /**
+	 * Get Bill of lading info
+	 * @param blNo
+	 * @return
+	 */
+	public EquipmentDo getBillOfLadingInfoSubmitDO(String billOfLading);
+
 }

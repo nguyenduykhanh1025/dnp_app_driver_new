@@ -10,31 +10,34 @@
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-account-add">
-           
             <div class="form-group">
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">DateTime</label>
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Trạng thái làm lệnh</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
-                    <input type="text" class="time-input" name="fullName" required>
+                    <input class="form-check-input" type="checkbox" value="" id="status">
                 </div>
             </div>
             <div class="form-group">
-                <input type="hidden" name="status" id="status">
-                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Làm lệnh cho bill này：</label>
-                <div id="statusI" class="col-sm-9 col-xs-8 col-md-10">
-                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle()"></i>
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Ghi chú</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input type="text" id="doNote">
                 </div>
             </div>
             <div class="form-group">
-                <input type="hidden" name="documentStatus" id="documentStatus">
-                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Đã nhận DO gốc của bill này :</label>
-                <div id="documentStatusI" class="col-sm-9 col-xs-8 col-md-10">
-                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle2()"></i>
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Trạng thái nhận DO</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input class="form-check-input" type="checkbox"  id="documentStatus">
                 </div>
             </div>
+            <!-- <div class="form-group">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Ngày nhận DO</label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input type="date" id="doDayIn"  name="doDayIn"  required>
+                </div>
+            </div> -->
             <button
             type="button"
             class="btn btn-primary btn-sm"
-            onclick="update()"
+            onclick="updateDo()"
             >
             Lưu
           </button>
@@ -44,27 +47,58 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: select2-js" />
+    <script type="text/javascript" th:inline="javascript">
+        var equipmentDo = /*[[${equipmentDos}]]*/;
+        var billOfLading = equipmentDo.billOfLading;
+        var status = equipmentDo.status;
+        var documentStatus = equipmentDo.documentStatus;
+        console.log(documentReceiptDate);
+        console.log(status);
+        console.log(documentStatus);
+    </script>
     <script type="text/javascript">
+        var prefix = "/carrier/admin/do";
         document.addEventListener('DOMContentLoaded', (event) => {
-                
-            }); 
-        function clickToggle() {
-            if ($("#status").val() == 0) {
-                document.getElementById("statusI").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggle()"></span>';
-                $("#status").val(1);
-            } else {
-                document.getElementById("statusI").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle()"></span>';
-                $("#status").val(0);
+            
+            if(status ==  1)
+            {
+                $("#status").prop("disabled", true)
+                $("#status").prop("checked", true)
+                $("#doNote").prop("disabled",true)
             }
-        }
-        function clickToggle2() {
-            if ($("#documentStatus").val() == 0) {
-                document.getElementById("documentStatusI").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggle2()"></span>';
-                $("#documentStatus").val(1);
-            } else {
-                document.getElementById("documentStatusI").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggle2()"></span>';
-                $("#documentStatus").val(0);
+           
+            if(documentStatus ==  1)
+            {
+                $("#documentStatus").prop("disabled", true)
+                $("#documentStatus").prop("checked", true)
             }
+
+           
+        }); 
+        function updateDo() {
+            if ($('#status').is(":checked"))
+            {
+                $("#status").val(1)
+            }
+            if ($('#documentStatus').is(":checked"))
+            {
+                $("#documentStatus").val(1)
+            }
+            var status = $("#status").val();
+            var doNote = $("#doNote").val();
+            var documentStatus = $("#documentStatus").val();
+                $.ajax({
+                    url: prefix + "/updateDoStatus",
+                    method: "post",
+                    data: {
+                    billOfLading: billOfLading,
+                    status: status,
+                    doNote: doNote,
+                    documentStatus: documentStatus 
+                },
+                }).done(function (result) {
+                    console.log(result);
+                });
         }
         
     </script>
