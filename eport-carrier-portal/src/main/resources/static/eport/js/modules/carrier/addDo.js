@@ -167,12 +167,12 @@
         var doList = [];
         $.each(cleanedGridData, function (index, item) {
           var doObj = new Object();
-          var date2 = "20/04/2020";
+          var date = new Date(item['expiredDem'].replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"));
           doObj.carrierCode = item['carrierCode'];
           doObj.billOfLading = item['blNo'];
           doObj.containerNumber = item['containerNo'];
           doObj.consignee = item['consignee'];
-          doObj.expiredDem = new Date(item['expiredDem']);
+          doObj.expiredDem = date.getTime();
           doObj.detFreeTime = item['detFreetime'];
           doObj.emptyContainerDepot = item['emptyDepot'];
           doObj.voyNo = item['voyage'];
