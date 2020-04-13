@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
   <head>
-    <th:block th:include="include :: header('Xem Thông Tin DO')" />
+    <th:block th:include="include :: header('Xem ThÃ´ng Tin DO')" />
     <th:block th:include="include :: handsontable-css" />
-    <th:block th:include="include :: easyui-css" />
     <th:block th:include="include :: datetimepicker-css" />
     <style type="text/css">
       .header-box {
@@ -47,18 +45,18 @@
     <div class="col-sm-12" style="margin-top: 0px; padding-bottom:5px">
       <div class="col-sm-12 fixed-table-toolbar">
           <div class="bs-bars pull-left">
-            <p>Mã hãng tàu: <span id="carrier"></span></p>
-          <p>Số vận đơn: <span id="billNumber"></span></p>
+            <p>MÃ£ hÃ£ng tÃ u: <span id="carrier"></span></p>
+          <p>Sá»‘ váº­n Ä‘Æ¡n: <span id="billNumber"></span></p>
           <p>
-            Hạn lệnh: <span id="expiredDem"></span>
+            Háº¡n lá»‡nh: <span id="expiredDem"></span>
             <a class="btn btn-xs btn-primary single"
               id="updateExpiredDem"
               onclick="$.operate.addChangeExpired()">
-              <i class="fa fa-edit"></i> Đổi Hạn Lệnh
+              <i class="fa fa-edit"></i> Ä�á»•i Háº¡n Lá»‡nh
             </a>
           </p>
-          <p>Trạng thái làm lệnh: <span id="dostatus"></span></p>
-          <p>Trạng thái nộp DO: <span id="DOInStatus"></span></p>
+          <p>Tráº¡ng thÃ¡i lÃ m lá»‡nh: <span id="dostatus"></span></p>
+          <p>Tráº¡ng thÃ¡i ná»™p DO: <span id="DOInStatus"></span></p>
           <p id="DateInDO_dad"></p>
           </div>
           <div class="bs-bars pull-right">
@@ -67,13 +65,13 @@
       </div>
       </div>
       <div class="header-box">
-        <h2>Thông tin DO <span id="billNo"></span></h2>
+        <h2>ThÃ´ng tin DO <span id="billNo"></span></h2>
       </div>
       <br />
       <div class="footer-add">
         <div style="display:flex; justify-content: space-around">
-          <input class="form-control" type="text" id="searchForm" placeholder="Số container" style="width:'80px'; margin-right: 10px;"> 
-          <button class="btn btn-success" onclick="search()" id="searchBtn">Tìm kiếm</button>
+          <input class="form-control" type="text" id="searchForm" placeholder="Sá»‘ container" style="width:'80px'; margin-right: 10px;"> 
+          <button class="btn btn-success" onclick="search()" id="searchBtn">TÃ¬m kiáº¿m</button>
         </div>
         <div>
           <button
@@ -82,7 +80,7 @@
           onclick="update()"
           style="margin-right: 10px; height: 40px;"
         >
-          Cập nhật thay đổi
+          Cáº­p nháº­t thay Ä‘á»•i
         </button>
         <button
           type="button"
@@ -90,7 +88,7 @@
           onclick="closeItemDo()"
           style="height: 40px;"
         >
-          Hủy bỏ thay đổi
+          Há»§y bá»� thay Ä‘á»•i
         </button>
         </div>
        
@@ -113,10 +111,10 @@
       $("#billNumber").html(doList[0].billOfLading);
       $("#carrier").html(doList[0].carrierCode);
       var date = new Date(doList[0].expiredDem);
-      var status = doList[0].status == 0 ? "<span class='label label-warning'>Chưa làm lệnh</span>" : "<span class='label label-success'>Đã làm lệnh</span>";
-      var doInStatus = doList[0].documentStatus == 0 ? "<span class='label label-warning'>Chưa nộp DO</span>" : "<span class='label label-success'>Đã nộp DO</span>";
+      var status = doList[0].status == 0 ? "<span class='label label-warning'>ChÆ°a lÃ m lá»‡nh</span>" : "<span class='label label-success'>Ä�Ã£ lÃ m lá»‡nh</span>";
+      var doInStatus = doList[0].documentStatus == 0 ? "<span class='label label-warning'>ChÆ°a ná»™p DO</span>" : "<span class='label label-success'>Ä�Ã£ ná»™p DO</span>";
       if (doList[0].documentReceiptDate) {
-        $("#DateInDO_dad").html = "Ngày nộp DO: <span class='DateInDO'>"+doList[0].documentReceiptDate+"</span>";
+        $("#DateInDO_dad").html = "NgÃ y ná»™p DO: <span class='DateInDO'>"+doList[0].documentReceiptDate+"</span>";
       }
       $("#dostatus").html(status);
       $("#DOInStatus").html(doInStatus);
@@ -135,19 +133,19 @@
         height: 500,
         colHeaders: [
           "ID<br>id",
-          // "Mã hãng tàu<br>Carrier",
-          // "Số vận đơn<br> Bill No",
-          "Số container<br>Container No",
-          "Tên chủ hàng<br>Consignee",
-          // "Hạn lệnh<br> Valid to date",
-          "Nơi hạ vỏ<br> Empty depot",
-          "Ngày miễn lưu<br> DET Freetime",
-          "Tên tàu<br>Vessel",
-          "Chuyến<br>Voyage",
-          // "Xác nhận <br> làm lệnh",
-          // "Đã nộp <br> DO gốc",
-          // "Ngày nộp<br>DO date in",
-          "Ghi chú<br>Note"
+          // "MÃ£ hÃ£ng tÃ u<br>Carrier",
+          // "Sá»‘ váº­n Ä‘Æ¡n<br> Bill No",
+          "Sá»‘ container<br>Container No",
+          "TÃªn chá»§ hÃ ng<br>Consignee",
+          // "Háº¡n lá»‡nh<br> Valid to date",
+          "NÆ¡i háº¡ vá»�<br> Empty depot",
+          "NgÃ y miá»…n lÆ°u<br> DET Freetime",
+          "TÃªn tÃ u<br>Vessel",
+          "Chuyáº¿n<br>Voyage",
+          // "XÃ¡c nháº­n <br> lÃ m lá»‡nh",
+          // "Ä�Ã£ ná»™p <br> DO gá»‘c",
+          // "NgÃ y ná»™p<br>DO date in",
+          "Ghi chÃº<br>Note"
         ],
         filter: true,
         licenseKey: "non-commercial-and-evaluation",

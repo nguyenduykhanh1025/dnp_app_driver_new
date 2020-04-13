@@ -33,8 +33,8 @@
                 $this.find("li.active").has("ul").children("ul").collapse("show");
                 $this.find("li").not(".active").has("ul").children("ul").collapse("hide");
             } else {
-                $this.find("li.active").has("ul").children("ul").addClass("collapse in");
-                $this.find("li").not(".active").has("ul").children("ul").addClass("collapse");
+//                $this.find("li.active").has("ul").children("ul").addClass("collapse in");
+//                $this.find("li").not(".active").has("ul").children("ul").addClass("collapse");
             }
 
             //add the "doubleTapToGo" class to active items if needed
