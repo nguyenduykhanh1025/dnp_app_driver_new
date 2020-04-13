@@ -118,14 +118,18 @@
                     <a
                       th:if="${#lists.isEmpty(cmenu.children)}"
                       th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
-                      th:utext="${cmenu.menuName}"
                       th:href="@{${cmenu.url}}"
-                      >2nd Menu</a
-                    >
+                      >
+                      <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
+	                  <span class="nav-label" th:text="${cmenu.menuName}"
+	                    >2nd Menu</span>
+                    </a>
                     <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#"
-                      >[[${cmenu.menuName}]]
-                      <span class="fa arrow"></span>
-                  </a>
+                      >
+                      <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
+                      <span class = "nav-label">[[${cmenu.menuName}]]</span>
+                      <span class="fa arrow" style="float: unset;"></span>
+                    </a>
                     <ul
                       th:if="${not #lists.isEmpty(cmenu.children)}"
                       class="nav nav-third-level"
@@ -134,10 +138,12 @@
                         <a
                           th:if="${#lists.isEmpty(emenu.children)}"
                           th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
-                          th:text="${emenu.menuName}"
                           th:href="@{${emenu.url}}"
-                          >3rd Menu</a
-                        >
+                          >
+                          <i class="fa fa-bar-chart-o" style="margin-left: 4px;margin-right: 8px;" th:class="${emenu.icon}"></i>
+	                      <span class="nav-label" th:text="${emenu.menuName}"
+	                      >3rd Menu</span>
+                        </a>
                         <a th:if="${not #lists.isEmpty(emenu.children)}" href="#"
                           >[[${emenu.menuName}]]
                           <!-- <span class="fa arrow"></span> -->
@@ -161,67 +167,6 @@
                   </li>
                 </ul>
               </li>
-<!--               <li class="dropdown user-menu">
-                <a
-                  href="javascript:void(0)"
-                  class="dropdown-toggle"
-                  data-hover="dropdown"
-                >
-                  <span class="hidden-xs"
-                    ><i class="fa fa-bars" style="margin-right: 5px;"></i>System Tools</span
-                  >
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="mt5">
-                    <a th:href="@{/carrier/admin/do/getViewDo}" class="menuItem">
-                      <i></i> Delivery Order</a
-                    >
-                  </li>
-                  <li>
-                    <a th:href="@{/carrier/account}" class="menuItem">
-                      <i></i> Carrier Account</a
-                    >
-                  </li>
-                  <li>
-                    <a th:href="@{/carrier/group}" class="menuItem">
-                      <i></i>Carrier Group</a
-                    >
-                  </li>
-                </ul>
-              </li> -->
-              <!-- <li class="dropdown user-menu">
-                <a
-                  href="javascript:void(0)"
-                  class="dropdown-toggle"
-                  data-hover="dropdown"
-                >
-                  <span class="hidden-xs"
-                    ><i class="fa fa-gear" style="margin-right: 5px;"></i>System Management</span
-                  >
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="mt5">
-                    <a th:href="@{/system/user}" class="menuItem">
-                      <i></i> User Management</a
-                    >
-                  </li>
-                  <li>
-                    <a th:href="@{/system/role}" class="menuItem">
-                      <i></i> Role Management</a
-                    >
-                  </li>
-                  <li>
-                    <a th:href="@{/monitor/operlog}" class="menuItem">
-                      <i></i>Opearator Log</a
-                    >
-                  </li>
-                  <li>
-                    <a th:href="@{/monitor/logininfor}" class="menuItem">
-                      <i></i>Login Log</a
-                    >
-                  </li>
-                </ul>
-              </li> -->
             </ul>
           </nav>
         </div>
