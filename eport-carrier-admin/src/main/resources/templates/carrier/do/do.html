@@ -103,13 +103,13 @@
         <thead>
           <tr>
             <!-- <th data-options="field:'id',checkbox:true"></th> -->
-            <th data-options="field:'carrierCode',halign:'center',resizable:true" width="80">
+            <th data-options="field:'carrierCode',halign:'center',resizable:true" width="120">
               Hãng tàu <br />Carrier
             </th>
             <th data-options="field:'billOfLading',halign:'center',formatter: formatBL" sortable="true" width="110">
               Số vận đơn<br />B/L No
             </th>
-            <th data-options="field:'containerNumber',halign:'center'," sortable="true" width="110">
+            <th data-options="field:'containerNumber',halign:'center'," sortable="true" width="90">
               Số lượng <br> container
             </th>
             <th data-options="field:'consignee',halign:'center'" width="250">
@@ -137,6 +137,10 @@
             </th>
             <th data-options="field:'status',align:'center',formatter: formatStatus" width="10%">
               Trạng thái Do
+            </th>
+            <th data-options="field:'documentReceiptDate',halign:'center',align:'left',formatter: formatDate"
+            sortable="true" width="110">
+            Ngày nhận DO gốc
             </th>
             <th data-options="field:'document_status',align:'center'" width="10%">
               Ghi chú làm lệnh
@@ -389,6 +393,10 @@
     }
 
     function formatDate(value) {
+      if(value == null)
+      {
+        return;
+      }
       var date = new Date(value);
       var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
       var month = date.getMonth() + 1;

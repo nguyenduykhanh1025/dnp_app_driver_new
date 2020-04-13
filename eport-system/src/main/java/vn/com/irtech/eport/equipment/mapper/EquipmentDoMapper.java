@@ -108,6 +108,4 @@ public interface EquipmentDoMapper {
 	public EquipmentDo selectBillOfLadingInfo(String blNo);
 
 	public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo);
-
-	public int insertEquipmentDoList(HashMap<String, Object> doList);
 }
