@@ -486,6 +486,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="countDocmentStatusYes" parameterType="String" resultType="int">
             select count(*) from equipment_do where bill_of_lading=#{billOfLading} AND document_status = 1
+    </select>
     <select id="selectEquipmentDoVoByBillNo" parameterType="String" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
         where bill_of_lading = #{blNo}

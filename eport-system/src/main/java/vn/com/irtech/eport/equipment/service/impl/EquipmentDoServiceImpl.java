@@ -193,12 +193,10 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
         return equipmentDoMapper.countDocmentStatusYes(billOfLading);
     }
 
-<<<<<<< HEAD
     @Override
     public EquipmentDo getBillOfLadingInfoSubmitDO(String billOfLading) {
         return equipmentDoMapper.getBillOfLadingInfoSubmitDO(billOfLading);
     };
-=======
 	@Override
 	public EquipmentDo getBillOfLadingInfo(String blNo) {
 		return equipmentDoMapper.selectBillOfLadingInfo(blNo);
@@ -214,5 +212,4 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo) {
         return equipmentDoMapper.selectEquipmentDoVoByBillNo(blNo);
     }
->>>>>>> 0feb1cffba9ec7367e7db3d937e0d97166d916bc
 }
