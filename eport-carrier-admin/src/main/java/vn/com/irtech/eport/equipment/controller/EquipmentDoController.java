@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.annotation.Log;
@@ -135,34 +134,36 @@ public class EquipmentDoController extends BaseController {
 		return toAjax(equipmentDoService.updateEquipmentDo(EquipmentDo));
 	}
 
-	@RequiresPermissions("equipment:do:edit")
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
-	@PostMapping("/changeStatus")
-	@ResponseBody
-	public AjaxResult doChangeStatus(String billOfLading) {
+	// @RequiresPermissions("equipment:do:edit")
+	// @Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
+	// @PostMapping("/changeStatus")
+	// @ResponseBody
+	private Boolean doChangeStatus(String billOfLading) {
 		Date documentReceiptDate = new Date();
 		currentUser = ShiroUtils.getSysUser();
 		EquipmentDo equipmentDo = new EquipmentDo();
 		equipmentDo.setStatus("1");
 		equipmentDo.setUpdateBy(currentUser.getLoginName());
 		equipmentDo.setUpdateTime(documentReceiptDate);
-		equipmentDo.setBillOfLading(billOfLading);
-		return toAjax(equipmentDoService.updateBillOfLading(equipmentDo));
+        equipmentDo.setBillOfLading(billOfLading);
+        equipmentDoService.updateEquipmentDo(equipmentDo);
+		return true;
 	}
 
-	@RequiresPermissions("equipment:do:edit")
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
-	@PostMapping("/changeDocumnetStatus")
-	@ResponseBody
-	public AjaxResult changeDocumnetStatus(String billOfLading) {
+	// @RequiresPermissions("equipment:do:edit")
+	// @Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
+	// @PostMapping("/changeDocumnetStatus")
+	// @ResponseBody
+	public Boolean changeDocumnetStatus(String billOfLading) {
 		Date documentReceiptDate = new Date();
 		currentUser = ShiroUtils.getSysUser();
 		EquipmentDo equipmentDo = new EquipmentDo();
 		equipmentDo.setDocumentStatus("1");
 		equipmentDo.setUpdateBy(currentUser.getLoginName());
 		equipmentDo.setDocumentReceiptDate(documentReceiptDate);
-		equipmentDo.setBillOfLading(billOfLading);
-		return toAjax(equipmentDoService.updateBillOfLading(equipmentDo));
+        equipmentDo.setBillOfLading(billOfLading);
+        equipmentDoService.updateEquipmentDo(equipmentDo);
+		return true;
 	}
 
 	/**
@@ -174,6 +175,48 @@ public class EquipmentDoController extends BaseController {
 	@ResponseBody
 	public AjaxResult remove(String ids) {
 		return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
-	}
+    }
+    
+    @GetMapping("/checkStatus/{billOfLading}")
+    public String checkStatus(@PathVariable("billOfLading") String billOfLading, ModelMap mmap)
+    {
+        billOfLading = billOfLading.replace("{", "");
+        billOfLading = billOfLading.replace("}", "");
+        EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
+		mmap.addAttribute("equipmentDos", equipmentDos);
+        return prefix + "/checkStatus";
+    }
 
-}
+    @PostMapping("/updateDoStatus")
+    @ResponseBody
+    public AjaxResult updateDoStatus(String billOfLading,String status,String documentStatus,String note,ModelMap mmap)
+    {
+        if(documentStatus.equals("1") && equipmentDoService.countDocmentStatusYes(billOfLading) == 0)
+        {
+            Date documentReceiptDate = new Date();
+            currentUser = ShiroUtils.getSysUser();
+            EquipmentDo equipmentDo = new EquipmentDo();
+            equipmentDo.setDocumentStatus("1");
+            equipmentDo.setUpdateBy(currentUser.getLoginName());
+            equipmentDo.setDocumentReceiptDate(documentReceiptDate);
+            equipmentDo.setBillOfLading(billOfLading);
+            equipmentDoService.updateBillOfLading(equipmentDo);
+        }
+        if(status.equals("1") && equipmentDoService.countDOStatusYes(billOfLading) == 0)
+        {
+            Date documentReceiptDate = new Date();
+            currentUser = ShiroUtils.getSysUser();
+            EquipmentDo equipmentDo = new EquipmentDo();
+            equipmentDo.setStatus("1");
+            equipmentDo.setUpdateBy(currentUser.getLoginName());
+            equipmentDo.setUpdateTime(documentReceiptDate);
+            equipmentDo.setBillOfLading(billOfLading);
+            equipmentDoService.updateBillOfLading(equipmentDo);
+        }
+        return success();
+    }
+
+
+    
+
+}   

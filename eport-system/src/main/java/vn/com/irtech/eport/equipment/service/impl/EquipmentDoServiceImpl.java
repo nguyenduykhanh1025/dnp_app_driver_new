@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.equipment.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -180,11 +181,26 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
 	@Override
 	public Map<String, String> getReportByCarrierGroup(String[] codes) {
 		return equipmentDoMapper.getReportByCarrierGroup(codes);
-	}
+    }
+    
+    @Override
+    public int countDOStatusYes(String billOfLading){
+        return equipmentDoMapper.countDOStatusYes(billOfLading);
+    };
 
+    @Override
+    public int countDocmentStatusYes(String billOfLading){
+        return equipmentDoMapper.countDocmentStatusYes(billOfLading);
+    }
 
 	@Override
 	public EquipmentDo getBillOfLadingInfo(String blNo) {
 		return equipmentDoMapper.selectBillOfLadingInfo(blNo);
-	}
+    }
+
+    @Override
+    public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo) {
+        return equipmentDoMapper.selectEquipmentDoVoByBillNo(blNo);
+    }
+
 }

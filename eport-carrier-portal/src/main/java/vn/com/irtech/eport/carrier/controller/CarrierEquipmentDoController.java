@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,22 +14,20 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONArray;
-
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.AppToolUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
-import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
@@ -38,16 +35,18 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 /**
  * Exchange Delivery OrderController
  * 
- * @author ruoyi
+ * @author admin
  * @date 2020-04-06
  */
 @Controller
 @RequestMapping("/carrier/do")
-public class CarrierEquipmentDoController extends BaseController {
-	private String prefix = "carrier/do";
-
+public class CarrierEquipmentDoController extends CarrierBaseController {
+  private String prefix = "carrier/do";
+  
 	@Autowired
 	private IEquipmentDoService equipmentDoService;
+	@Autowired
+	private ICarrierGroupService groupService;
 	@Autowired
 	private MailService mailService;
 
@@ -56,18 +55,18 @@ public class CarrierEquipmentDoController extends BaseController {
 		return prefix + "/do";
 	}
 
-	/**
-	 * Get Exchange Delivery Order List
-	 */
-	@PostMapping("/list2")
-	@ResponseBody
-	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
-		int page = EquipmentDo.getPage();
-		page = page * 10;
-		EquipmentDo.setPage(page);
-		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingCarrier(EquipmentDo);
-		return getDataTable(list);
-	}
+//	/**
+//	 * Get Exchange Delivery Order List
+//	 */
+//	@PostMapping("/list2")
+//	@ResponseBody
+//	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
+//		int page = EquipmentDo.getPage();
+//		page = page * 10;
+//		EquipmentDo.setPage(page);
+//		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingCarrier(EquipmentDo);
+//		return getDataTable(list);
+//	}
 
 	@RequestMapping("/list")
 	@ResponseBody
@@ -113,39 +112,39 @@ public class CarrierEquipmentDoController extends BaseController {
 		return equipmentDoService.selectEquipmentDoDetails(equipmentDo);
 	}
 
-	/**
-	 * Update Exchange Delivery Order
-	 */
-	@GetMapping("/changeExpiredDate/{billOfLading}/{status}")
-	public String changeExpiredDate(@PathVariable("billOfLading") String billOfLading,
-			@PathVariable("status") String status, ModelMap mmap) {
-		mmap.addAttribute("billOfLading", billOfLading.substring(1, billOfLading.length() - 1));
-		mmap.addAttribute("status", status.substring(1, status.length() - 1));
-		return prefix + "/changeExpriedDate";
-	}
-
-	// update
-	@Log(title = "Update Expired Date", businessType = BusinessType.UPDATE)
-	@PostMapping("/updateExpiredDate")
-	@ResponseBody
-	public AjaxResult updateExpiredDate(String billOfLading, Date expiredDem, boolean status) {
-		Date now = new Date();
-		expiredDem.setHours(23);
-		expiredDem.setMinutes(59);
-		expiredDem.setSeconds(59);
-		if (expiredDem.getTime() >= now.getTime()) {
-			if (!status) {
-				EquipmentDo equipmentDo = new EquipmentDo();
-				equipmentDo.setBillOfLading(billOfLading);
-				equipmentDo.setExpiredDem(expiredDem);
-				return toAjax(equipmentDoService.updateEquipmentDoExpiredDem(equipmentDo));
-			} else
-				return error("Cập nhật thất bại vì hóa đơn đã làm lệnh");
-		} else {
-			return error("Ngày gia hạn lệnh không được trong quá khứ");
-		}
-
-	}
+//	/**
+//	 * Update Exchange Delivery Order
+//	 */
+//	@GetMapping("/changeExpiredDate/{billOfLading}/{status}")
+//	public String changeExpiredDate(@PathVariable("billOfLading") String billOfLading,
+//			@PathVariable("status") String status, ModelMap mmap) {
+//		mmap.addAttribute("billOfLading", billOfLading.substring(1, billOfLading.length() - 1));
+//		mmap.addAttribute("status", status.substring(1, status.length() - 1));
+//		return prefix + "/changeExpriedDate";
+//	}
+//
+//	// update
+//	@Log(title = "Update Expired Date", businessType = BusinessType.UPDATE)
+//	@PostMapping("/updateExpiredDate")
+//	@ResponseBody
+//	public AjaxResult updateExpiredDate(String billOfLading, Date expiredDem, boolean status) {
+//		Date now = new Date();
+//		expiredDem.setHours(23);
+//		expiredDem.setMinutes(59);
+//		expiredDem.setSeconds(59);
+//		if (expiredDem.getTime() >= now.getTime()) {
+//			if (!status) {
+//				EquipmentDo equipmentDo = new EquipmentDo();
+//				equipmentDo.setBillOfLading(billOfLading);
+//				equipmentDo.setExpiredDem(expiredDem);
+//				return toAjax(equipmentDoService.updateEquipmentDoExpiredDem(equipmentDo));
+//			} else
+//				return error("Cập nhật thất bại vì hóa đơn đã làm lệnh");
+//		} else {
+//			return error("Ngày gia hạn lệnh không được trong quá khứ");
+//		}
+//
+//	}
 
 	/**
 	 * Export Exchange Delivery Order List
@@ -177,125 +176,175 @@ public class CarrierEquipmentDoController extends BaseController {
 	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
-		JSONArray equipmentDoList = null;
-		if (equipmentDo.isPresent()) {
-			equipmentDoList = equipmentDo.get();
-		}
-//	equipmentDo.ifPresent(value -> equipmentDoList = value);
-		CarrierAccount currentUser = ShiroUtils.getSysUser();
-		if (equipmentDoList != null) {
-			String[] strList = new String[9];
-			for (int index = 0; index < equipmentDoList.size(); index++) {
-				// Resolve " mark in array
-				String st = equipmentDoList.get(index++).toString();
-				strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
-				if (index == 1) {
-					strList[0] = strList[0].substring(strList[0].indexOf("[") + 2, strList[0].length());
+	public AjaxResult addSave(@RequestBody List<EquipmentDo> equipmentDos) {
+		//String message = userService.importUser(userList, updateSupport, operName);
+        //return AjaxResult.success(message);
+		if (equipmentDos != null) {
+			for (EquipmentDo e : equipmentDos) {
+				e.setCarrierId(getUserId());
+				// TODO get date from client
+				
+				// TODO validate check
+
+				// Check if carrier group code is valid
+				if(!getGroupCodes().contains(e.getCarrierCode())) {
+					return AjaxResult.error("Mã hãng tàu không đúng");
 				}
-				for (int i = 1; i < 8; i++) {
-					strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
+				if(equipmentDoService.getBillOfLadingInfo(e.getBillOfLading()) != null) {
+					// exist B/L
+					return AjaxResult.error("Mã vận đơn (B/L No.) " + e.getBillOfLading() +" đã tồn tại. Hãy kiểm tra dữ liệu");
 				}
-				String a = equipmentDoList.get(index).toString();
-				// Resolve ]} mark in last element
-				int listSize = equipmentDoList.size();
-				if (index == listSize - 1) {
-					strList[8] = a.substring(0, a.indexOf("]"));
-					strList[8] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
-				} else {
-					strList[8] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
+				// Check expiredDem is future
+				Date expiredDem = e.getExpiredDem();
+				expiredDem.setHours(23);
+				expiredDem.setMinutes(59);
+				expiredDem.setSeconds(59);
+				e.setExpiredDem(expiredDem);
+				if(expiredDem.before(new Date())) {
+					return AjaxResult.error("Hạn lệnh của không được phép trong quá khứ");
 				}
-				// Resolve null string
-				for (int i = 0; i <= 8; i++) {
-					if (strList[i].trim().equals("null")) {
-						strList[i] = null;
+				// DEM Free date la so
+				
+			}
+			// Do the insert to DB
+			for(EquipmentDo edo : equipmentDos) {
+				equipmentDoService.insertEquipmentDo(edo);
+			}
+			// return toAjax(equipmentDoService.insertEquipmentDoList(doList));
+
+			// SEND EMAIL WHEN ADD SUCCESSFULLY
+			new Thread() {
+				public void run() {
+					Collections.sort(equipmentDos, new BillNoComparator());
+					EquipmentDo eTemp = equipmentDos.get(0);
+					String conStr = "" + eTemp.getContainerNumber() + ";";
+					for (int e = 1; e < equipmentDos.size(); e++) {
+						if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
+							eTemp = equipmentDos.get(e);
+							conStr += eTemp.getBillOfLading() + ";";
+						} else {
+							Map<String, Object> variables = new HashMap<>();
+							variables.put("updateTime", eTemp.getUpdateTime());
+							variables.put("carrierCode", eTemp.getCarrierCode());
+							variables.put("billOfLading", eTemp.getBillOfLading());
+							variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
+							variables.put("consignee", eTemp.getConsignee());
+							variables.put("expiredDem", eTemp.getExpiredDem());
+							variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+							variables.put("detFreeTime", eTemp.getDetFreeTime());
+							variables.put("vessel", eTemp.getVessel());
+							variables.put("voyNo", eTemp.getVoyNo());
+							variables.put("remark", eTemp.getRemark());
+							eTemp = equipmentDos.get(e);
+							conStr = "" + eTemp.getContainerNumber() + ";";
+							// send email
+							try {
+								mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": thêm thành công", getUser().getEmail(), variables,
+										"dnpEmail");
+							} catch (Exception exception) {
+								exception.printStackTrace();
+							}
+						}
+					}
+					Map<String, Object> variables = new HashMap<>();
+					variables.put("updateTime", eTemp.getUpdateTime());
+					variables.put("carrierCode", eTemp.getCarrierCode());
+					variables.put("billOfLading", eTemp.getBillOfLading());
+					variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
+					variables.put("consignee", eTemp.getConsignee());
+					variables.put("expiredDem", eTemp.getExpiredDem());
+					variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+					variables.put("detFreeTime", eTemp.getDetFreeTime());
+					variables.put("vessel", eTemp.getVessel());
+					variables.put("voyNo", eTemp.getVoyNo());
+					variables.put("remark", eTemp.getRemark());
+					// send email
+					try {
+						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", getUser().getEmail(), variables,
+								"dnpEmail");
+					} catch (Exception exception) {
+						exception.printStackTrace();
 					}
 				}
-				EquipmentDo equipment = new EquipmentDo();
-				equipment.setCarrierId(currentUser.getId());
-				equipment.setCarrierCode(currentUser.getCarrierCode());
-				if (strList[0] != null) {
-					equipment.setBillOfLading(strList[0]);
-				}
-				if (strList[1] != null) {
-					equipment.setContainerNumber(strList[1]);
-				}
-				if (strList[2] != null) {
-					equipment.setConsignee(strList[2]);
-				}
-				if (strList[3] != null) {
-					equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[3], "dd/MM/yyyy"));
-				}
-				if (strList[4] != null) {
-					equipment.setEmptyContainerDepot(strList[4]);
-				}
-				if (strList[5] != null) {
-					equipment.setDetFreeTime(Integer.parseInt(strList[5]));
-				}
-				if (strList[6] != null) {
-					equipment.setVessel(strList[6]);
-				}
-				if (strList[7] != null) {
-					equipment.setVoyNo(strList[7]);
-				}
-				if (strList[8] != null) {
-					equipment.setRemark(strList[8]);
-				}
-				// set who and time created this record
-				equipment.setCreateBy(currentUser.getFullName());
-				equipment.setCreateTime(new Date());
-				try {
-					equipmentDoService.insertEquipmentDo(equipment);
-				} catch (Exception e) {
-					return AjaxResult.error();
-				}
-			}
-		}
-		return AjaxResult.success();
+			}.start();
+			// END SEND EMAIL
+			return AjaxResult.success("Đã lưu thành công " + equipmentDos.size() + " DO lên Web Portal.");
+    	}
+    	return AjaxResult.error("Không có dữ liệu để tạo DO, hãy kiểm tra lại");
 	}
 
 	// update
 	@Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
 	@PostMapping("/update")
 	@ResponseBody
-	public AjaxResult update(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
-		JSONArray equipmentDoList = null;
-		if (equipmentDo.isPresent()) {
-			equipmentDoList = equipmentDo.get();
-		}
-//		equipmentDo.ifPresent(value -> equipmentDoList = value);
-//		CarrierAccount currentUser = ShiroUtils.getSysUser();
-		if (equipmentDoList != null) {
-			String[] strList = new String[13];
-			for (int index = 0; index < equipmentDoList.size(); index++) {
-				// Resolve " mark in array
-				String st = equipmentDoList.get(index++).toString();
-				System.out.println("strList   " + st);
-				strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
-				if (index == 1) {
-					strList[0] = strList[0].substring(strList[0].indexOf("[") + 2, strList[0].length());
-				}
-				for (int i = 1; i < 12; i++) {
-					strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
-				}
-				// String a = equipmentDoList.get(index).toString();
-				// Resolve ]} mark in last element
-				// int listSize = equipmentDoList.size();
-				// if (index == listSize-1) {
-				// strList[11] = strList[11].substring(0, strList[11].indexOf("]"));
-				// strList[11] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
-				// } else {
-				// strList[11] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
-				// }
-
-				// Insert new DO
-				EquipmentDo equipment = new EquipmentDo();
-				equipment.setStatus(strList[11]);
-				equipment.setId(Long.parseLong(strList[0]));
-				equipmentDoService.updateEquipmentDo(equipment);
+	public AjaxResult update(@RequestBody List<EquipmentDo> equipmentDos) {
+		if (equipmentDos != null) {
+			for (EquipmentDo e : equipmentDos) {
+				e.setUpdateBy(ShiroUtils.getSysUser().getFullName());
+				e.setUpdateTime(new Date());
 			}
-		}
-		return toAjax(1);
+			for(EquipmentDo edo : equipmentDos) {
+				equipmentDoService.updateEquipmentDo(edo);
+			}
+			// SEND EMAIL WHEN ADD SUCCESSFULLY
+			new Thread() {
+				public void run() {
+					Collections.sort(equipmentDos, new BillNoComparator());
+					EquipmentDo eTemp = equipmentDos.get(0);
+					String conStr = "" + eTemp.getContainerNumber() + ";";
+					for (int e = 1; e < equipmentDos.size(); e++) {
+						if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
+							eTemp = equipmentDos.get(e);
+							conStr += eTemp.getBillOfLading() + ";";
+						} else {
+							Map<String, Object> variables = new HashMap<>();
+							variables.put("updateTime", eTemp.getUpdateTime());
+							variables.put("carrierCode", eTemp.getCarrierCode());
+							variables.put("billOfLading", eTemp.getBillOfLading());
+							variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
+							variables.put("consignee", eTemp.getConsignee());
+							variables.put("expiredDem", eTemp.getExpiredDem());
+							variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+							variables.put("detFreeTime", eTemp.getDetFreeTime());
+							variables.put("vessel", eTemp.getVessel());
+							variables.put("voyNo", eTemp.getVoyNo());
+							variables.put("remark", eTemp.getRemark());
+							eTemp = equipmentDos.get(e);
+							conStr = "" + eTemp.getContainerNumber() + ";";
+							// send email
+							try {
+								mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", getUser().getEmail(), variables,
+										"dnpEmail");
+							} catch (Exception exception) {
+								exception.printStackTrace();
+							}
+						}
+					}
+					Map<String, Object> variables = new HashMap<>();
+					variables.put("updateTime", eTemp.getUpdateTime());
+					variables.put("carrierCode", eTemp.getCarrierCode());
+					variables.put("billOfLading", eTemp.getBillOfLading());
+					variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
+					variables.put("consignee", eTemp.getConsignee());
+					variables.put("expiredDem", eTemp.getExpiredDem());
+					variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+					variables.put("detFreeTime", eTemp.getDetFreeTime());
+					variables.put("vessel", eTemp.getVessel());
+					variables.put("voyNo", eTemp.getVoyNo());
+					variables.put("remark", eTemp.getRemark());
+					// send email
+					try {
+						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", getUser().getEmail(), variables,
+								"dnpEmail");
+					} catch (Exception exception) {
+						exception.printStackTrace();
+					}
+				}
+			}.start();
+			// END SEND EMAIL
+			return AjaxResult.success("Đã cập nhật thành công " + equipmentDos.size() + " DO lên Web Portal.");
+    	}
+    	return AjaxResult.success();
 	}
 
 	/**
@@ -415,5 +464,20 @@ public class CarrierEquipmentDoController extends BaseController {
 			// which is the name of Contact in my example scenario
 			return equipmentDo1.getBillOfLading().compareTo(equipmentDo2.getBillOfLading());
 		}
-	}
+  }
+  
+  @GetMapping("/getOperateCode")
+  @ResponseBody
+  public String[] getOperateCode() {
+    CarrierAccount carrierAccount = ShiroUtils.getSysUser();
+    String[] operateCodes = carrierAccount.getCarrierCode().split(",");
+    return operateCodes;
+  }
+
+  @GetMapping("/getInfoBl")
+  @ResponseBody
+  public List<EquipmentDo> getInfoBl(String blNo) {
+    List<EquipmentDo> doList = equipmentDoService.selectEquipmentDoVoByBillNo(blNo);
+    return doList;
+  }
 }

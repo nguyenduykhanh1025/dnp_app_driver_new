@@ -1,3 +1,4 @@
+      var tab=[];
       var prefix = "/carrier/do";
       function submitHandler() {
         // add condition to validate before submit add do
@@ -5,7 +6,7 @@
           $.operate.save(prefix + "/add", $("#form-do-add").serialize());
         }
       }
-
+      carrierCode();
       var dogrid = document.getElementById("dogrid"),
         hot,
         $hooksList,
@@ -56,6 +57,7 @@
         },
         className: "htMiddle",
         colHeaders: [
+          "Mã khách hàng <br> Carrier code",
           "Số vận đơn <i class='red'>(*)</i><br>B/L No.",
           "Số container <i class='red'>(*)</i><br> Container No.",
           "Tên khách hàng <i class='red'>(*)</i><br> Consignee",
@@ -66,19 +68,25 @@
           "Chuyến <br> Voyage",
           "Ghi chú",
         ],
-        colWidths:[10, 10, 20, 10, 15, 10, 5, 5, 15],
+        colWidths:[7, 10, 8, 20, 10, 15, 10, 5, 5, 10],
         filter: "true",
         columns: [
+          {
+            data: 'carrierCode',
+            type: 'autocomplete',
+            source: tab,
+            strict: true
+          },
           {
             data: 'blNo',
             validator: emptyValidator,
           },
           {
-        	data:'containerNo',
+        	  data:'containerNo',
             validator: emptyValidator,
           },
           {
-        	data:'consignee',
+        	  data:'consignee',
             validator: emptyValidator,
           },
           {
@@ -105,58 +113,34 @@
         ],
       };
 
+      function carrierCode () {
+        $.ajax({
+          url: prefix + "/getOperateCode",
+          method: "get"
+        }).done(function(result){
+          for (var i=0; i<result.length; i++) {
+            tab.push(result[i]);
+          }
+        });
+      }
       // Load table
       document.addEventListener("DOMContentLoaded", function () {
-        hooks = Handsontable.hooks.getRegistered();
 
-        hooks.forEach(function (hook) {
-          config[hook] = function () {
-            if (hook == "afterChange") {
-              log_events(hook, arguments);
-            }
-          };
-        });
+        setTimeout(function() {
+          hot = new Handsontable(dogrid, config);
+          hot.updateSettings({
+            cells: function (row, col) {
+              var cellProp = {};
+              if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
+              } else if (col === 5) {
+                cellProp.className = " not-date";
+              }
+              return cellProp;
+            },
+          });
+        }, 200);
 
-        hot = new Handsontable(dogrid, config);
-        hot.updateSettings({
-          cells: function (row, col) {
-            var cellProp = {};
-            if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
-              // cellProp.className = " above-fifty";
-            } else if (col === 5) {
-              cellProp.className = " not-date";
-            }
-            return cellProp;
-          },
-        });
-
-        function log_events(event, data) {
-          var str;
-          for (var d = 0; d < data.length; d++) {
-            try {
-              str = JSON.stringify(data[d]);
-            } catch (e) {
-              str = data[d].toString(); // JSON.stringify breaks on circular
-										// reference to a HTML node
-            }
-
-            if (str === void 0) {
-              continue;
-            }
-
-            if (str != null) {
-              var row = str.substring(2, str.indexOf(","));
-              // $.ajax({
-              // url: "/carrier/do/getCarrierCode",
-              // method: "get",
-              // }).done(function (result) {
-              // hot.setDataAtCell(row, 0, result);
-              // });
-            }
-
-            break;
-          }
-        }
+      
       });
 
       function isGoodDate(dt) {
@@ -164,12 +148,9 @@
         return reGoodDate.test(dt);
       }
 
-      function getAlert() {
+      function saveDO() {
         var myTableData = hot.getSourceData();
-        // If the last row is empty, remove it before validation
         if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
-          // hot.updateSettings({minSpareRows: 0});
-          // Remove the last row if it's empty
           hot.alter("remove_row",parseInt(myTableData.length - 1),(keepEmptyRows = false));
         }
         var cleanedGridData = [];
@@ -178,42 +159,83 @@
             cleanedGridData.push(object);
           }
         });
-//        $.each(cleanedGridData, function (key, object) {
-//          for (var i = 0; i <= 8; i++) {
-//            if (object[i] == null) {
-//              object[i] = null;
-//            }
-//          }
-//        });
-//        var count = 0;
+       
+        //Create List DO Object 
         var errorFlg = false;
+        var doList = [];
         $.each(cleanedGridData, function (index, item) {
-          if (
-            item.blNo == null || item.blNo == '' ||
-            item.containerNo == null || item.containerNo == '' ||
-            item.consignee == null || item.consignee == '' ||
-            item.expiredDem == null || item.expiredDem == '' ||
-            !isGoodDate(item.expiredDem)) {
-        	  $.modal.alertError("Có lỗi xảy ra tại dòng "+(index + 1)+".<br/>Vui lòng kiểm tra lại dữ liệu");
-        	  errorFlg = true;
-        	  return;
-            }
-//          else {
-//              count++;
-//            }
-//          main_key = index;
+          var doObj = new Object();
+          if (!isGoodDate(item['expiredDem']) || item['expiredDem'] == null ){
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh đang để trống hoặc chưa đúng format.");
+            errorFlg = true;
+            return;
+          }
+          var date = new Date(item['expiredDem'].replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"));
+          doObj.carrierCode = item['carrierCode'];
+          doObj.billOfLading = item['blNo'];
+          doObj.containerNumber = item['containerNo'];
+          doObj.consignee = item['consignee'];
+          doObj.expiredDem = date.getTime();
+          doObj.detFreeTime = item['detFreetime'];
+          doObj.emptyContainerDepot = item['emptyDepot'];
+          doObj.voyNo = item['voyage'];
+          doObj.vessel = item['vessel'];
+          doObj.remark = item['remark'];
+          doList.push(doObj);
         });
-//        main_key++;
-//        console.log(main_key, count);
+        
+        
+        $.each(doList, function (index, item) {
+          if (item['expiredDem'] < new Date()) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh không được nhỏ hơn ngày hiện tại.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['carrierCode'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Mã khách hàng không được trống.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['billOfLading'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số vận đơn không được trống.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['containerNumber'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số container không được trống.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['consignee'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Tên khách hàng không được trống.");
+            errorFlg = true;
+            return;
+          }
+          var regexNuber = /^[0-9]*$/;
+          console.log(item[regexNuber.test(item['detFreeTime'])]);
+          if (!regexNuber.test(item['detFreeTime'])) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
+            errorFlg = true;
+            return;
+          }
+        })
+        if (errorFlg) {
+          return;
+        }
+       
         if (!errorFlg) {
         	$.modal.confirm("Bạn có chắc chắn cập nhật DO này lên Web Portal của Cảng Đà Nẵng không?", function() {
-        		var jsonData = JSON.stringify(cleanedGridData);
                 $.ajax({
                   url: "/carrier/do/add",
                   method: "post",
-                  data: {
-                    equipmentDo: cleanedGridData,
-                  },
+                  contentType : "application/json",
+                  accept: 'text/plain',
+                  data: JSON.stringify(doList),
+                  dataType: 'text',
                   success: function (result) {
                     $.modal.alert("Khai báo DO thành công!");
                     closeItem();
@@ -226,12 +248,4 @@
         	{title:"Xác Nhận Gửi DO",btn:["Đồng Ý","Hủy Bỏ"]});
         }
       }
-      // Validate the cells and submit the form via ajax or whatever
-      // hot.validateCells(function (result, obj) {
-      // if (result == true) {
-      // var jsonData = JSON.stringify(myTableData);
-      // console.log(jsonData);
-      // } else {
-      // //hotInstance.updateSettings({minSpareRows: 1});
-      // }
-      // });
+     

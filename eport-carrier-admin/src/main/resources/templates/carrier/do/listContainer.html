@@ -130,7 +130,7 @@
   }
 </style>
 
-<body class="gray-bg container">
+<body class="white-bg full-height-layout">
   <div class="container-div">
     <div class="row" style="height: auto;">
       <div class="col-sm-12 search-collapse">
@@ -167,14 +167,13 @@
                 <buttom class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i
                     class="fa fa-search"></i>&nbsp;Tìm kiếm</buttom>
               </li>
+              <li>
+                <buttom class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()">Làm lệnh</buttom>
+              </li>
             </ul>
           </div>
         </form>
       </div>
-      <button type="button" onclick="changeStatus()" class="btn btn-primary" style="margin-top: 15px;">Làm lệnh cho toàn
-        bộ Container</button>
-      <button type="button" onclick="changeDocumnetStatus()" class="btn btn-primary" style="margin-top: 15px;">Xác nhận
-        đã lấy DO gốc</button>
       <div class="container col-md-12">
         <div id="example" class="hot handsontable htColumnHeaders htRowHeaders"></div>
         <nav aria-label="Page navigation">
@@ -247,7 +246,6 @@
                 manualRowResize: true,
                 height: 500,
                 colHeaders: [
-                  "ID<br>id",
                   "Mã hãng tàu<br>Carrier",
                   "Số vận đơn<br> Bill No",
                   "Số container<br>Container No",
@@ -258,13 +256,12 @@
                   "Tên tàu<br>Vessel",
                   "Chuyến<br>Voyage",
                   "Ngày nộp<br>DO date in",
-                  "Ghi chú<br>Note"
+                  "Ghi chú<br>Note",
+                  "ID<br>id"
                 ],
                 filter: true,
                 licenseKey: "non-commercial-and-evaluation",
-                columns: [{
-                    data: 'id',
-                  },
+                columns: [
                   {
                     data: 'carrierCode',
                     type: 'text',
@@ -325,6 +322,9 @@
                     data: 'remark',
                     type: 'text',
                     readOnly: true
+                  },
+                  {
+                    data: 'id',
                   }
                 ],
                 rowHeaders: true,
@@ -332,7 +332,7 @@
                 columnSorting: {
                   indicator: true
                 },
-                colWidths: [0.1, 70, 70, 70, 160, 100, 160],
+                colWidths: [ 60, 60, 70, 160, 60, 160,100,70,70,100,100,0.1],
                 manualColumnMove: true,
                 filters: true
               });
@@ -439,24 +439,6 @@
         $('#input-page').val(currentPage + 1);
         $("#prevPage").attr("disabled", true)
       }
-      var jsonData = JSON.stringify(cleanedGridData);
-      $.ajax({
-        url: "/edi/update",
-        method: "post",
-        data: {
-          equipmentDo: jsonData,
-        },
-      }).done(function (result) {
-        $.toast({
-          heading: "Thành công",
-          text: "Lưu thông tin thành công ！",
-          showHideTransition: "fade",
-          icon: "success",
-          position: "top-right"
-        });
-        searchEvent()
-      });
-
       function changeStatus() {
         $.modal.confirm("Bạn có chắc chắn muốn làm lệnh <br> cho tất cả container ?", function () {
           doChangeStatus();
@@ -534,6 +516,12 @@
           hot.validateCells();
         })
         $("#pageSet").remove();
+      }
+      //SubmitDO
+      function submitDO()
+      {
+          $.modal.openDo("Xác nhận làm lệnh", prefix + "/checkStatus/{" + billOfLading + "}","500", "400");
+
       }
     </script>
 </body>

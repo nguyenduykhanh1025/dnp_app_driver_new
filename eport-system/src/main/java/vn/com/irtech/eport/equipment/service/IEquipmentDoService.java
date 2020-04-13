@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.equipment.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,8 @@ public interface IEquipmentDoService
     public List<EquipmentDo> selectEquipmentDoListPagingCarrier(EquipmentDoPaging EquipmentDo);
 
     public List<EquipmentDo> selectEquipmentDoList(EquipmentDo EquipmentDo);
+
+    public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo);
 
    
     /**
@@ -108,9 +111,15 @@ public interface IEquipmentDoService
      * 
      * @param operator codes
      */
-	public Map<String, String> getReportByCarrierGroup(String[] codes);
+    public Map<String, String> getReportByCarrierGroup(String[] codes);
+    
+    //countDOStatus
+    public int countDOStatusYes(String billOfLading);
 
-	/**
+    //countDocmentStatus
+    public int countDocmentStatusYes(String billOfLading);
+
+    /**
 	 * Get Bill of lading info
 	 * @param blNo
 	 * @return
