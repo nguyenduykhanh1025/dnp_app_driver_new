@@ -11,17 +11,17 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								[[#{menu.name}]]<input type="text" name="menuName"/>
+								Tên danh mục:<input type="text" name="menuName"/>
 							</li>
 							<li>
-								[[#{menu.status}]]<select name="visible" th:with="type=${@dict.getType('sys_show_hide')}">
+								Trạng thái danh mục<select name="visible" th:with="type=${@dict.getType('sys_show_hide')}">
 									<option value="" th:text="#{menu.all}"></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.treeTable.search()"><i class="fa fa-search" th:text="#{menu.search}"></i>&nbsp;</a>
-								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh" th:text="#{menu.reset}"></i>&nbsp;</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.treeTable.search()"><i class="fa fa-search">Tìm kiếm</i>&nbsp;</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh">Làm mới</i>&nbsp;</a>
 							</li>
 						</ul>
 					</div>
@@ -30,13 +30,13 @@
                 
             <div class="btn-group-sm" id="toolbar" role="group">
 		        <a class="btn btn-success" onclick="$.operate.add(0)" shiro:hasPermission="system:menu:add">
-                    <i class="fa fa-plus" th:text="#{menu.add}"></i>
+                    <i class="fa fa-plus">Thêm</i>
                 </a>
                 <a class="btn btn-primary" onclick="$.operate.edit()" shiro:hasPermission="system:menu:edit">
-		            <i class="fa fa-edit" th:text="#{menu.edit}"></i>
+		            <i class="fa fa-edit">Sửa</i>
 		        </a>
                 <a class="btn btn-info" id="expandAllBtn">
-                    <i class="fa fa-exchange" th:text="#{menu.expandCollapse}"></i>
+                    <i class="fa fa-exchange">Mở rộng/Thu gọn</i>
                 </a>
 	        </div>
        		 <div class="col-sm-12 select-table table-striped">
@@ -70,7 +70,7 @@
                     radio: true
                  },
                  {
-		            title: 'Menu name',
+		            title: 'Tên danh mục',
 		            field: 'menuName',
 		            width: '20%',
 		            formatter: function(value, row, index) {
@@ -83,13 +83,13 @@
 		        },
 		        {
 		            field: 'orderNum',
-		            title: 'Sort',
+		            title: 'Sắp xếp',
 		            width: '10%',
 		            align: "left"
 		        },
 		        {
 		            field: 'url',
-		            title: 'Request address',
+		            title: 'Đường dẫn',
 		            width: '15%',
 		            align: "left",
 		            formatter: function(value, row, index) {
@@ -97,7 +97,7 @@
                     }
 		        },
 		        {
-		            title: 'Types of',
+		            title: 'Loại',
 		            field: 'menuType',
 		            width: '10%',
 		            align: "left",
@@ -115,7 +115,7 @@
 		        },
 		        {
 		            field: 'visible',
-		            title: 'Visible',
+		            title: 'Tầm nhìn',
 		            width: '10%',
 		            align: "left",
 		            formatter: function(value, row, index) {
@@ -127,7 +127,7 @@
 		        },
 		        {
 		            field: 'perms',
-		            title: 'Permission ID',
+		            title: 'ID cho phép',
 		            width: '15%',
 		            align: "left",
 		            formatter: function(value, row, index) {
@@ -135,14 +135,14 @@
                     }
 		        },
 		        {
-		            title: 'Operating',
+		            title: 'Hàng động',
 		            width: '20%',
 		            align: "left",
 		            formatter: function(value, row, index) {
 		                var actions = [];
-		                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.menuId + '\')"><i class="fa fa-edit"></i>Edit</a> ');
-		                actions.push('<a class="btn btn-info btn-xs ' + addFlag + '" href="javascript:void(0)" onclick="$.operate.add(\'' + row.menuId + '\')"><i class="fa fa-plus"></i>Add</a> ');
-		                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.menuId + '\')"><i class="fa fa-trash"></i>Delete</a>');
+		                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.menuId + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
+		                actions.push('<a class="btn btn-info btn-xs ' + addFlag + '" href="javascript:void(0)" onclick="$.operate.add(\'' + row.menuId + '\')"><i class="fa fa-plus"></i>Thêm</a> ');
+		                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.menuId + '\')"><i class="fa fa-trash"></i>Xóa</a>');
 		                return actions.join('');
 		            }
 		        }]

@@ -57,7 +57,7 @@
         },
         className: "htMiddle",
         colHeaders: [
-          "Mã khách hàng <br> Carrier code",
+          "Mã khách hàng <i class='red'>(*)</i><br> Carrier code",
           "Số vận đơn <i class='red'>(*)</i><br>B/L No.",
           "Số container <i class='red'>(*)</i><br> Container No.",
           "Tên khách hàng <i class='red'>(*)</i><br> Consignee",
@@ -171,6 +171,14 @@
             return;
           }
           var date = new Date(item['expiredDem'].replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"));
+          date.setHours(0,0,1,1);
+          var dateValidate = new Date();
+          dateValidate.setHours(0,0,0,0);
+          if (date.getTime() < dateValidate.getTime()) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh không được nhỏ hơn ngày hiện tại.");
+            errorFlg = true;
+            return;
+          }
           doObj.carrierCode = item['carrierCode'];
           doObj.billOfLading = item['blNo'];
           doObj.containerNumber = item['containerNo'];
@@ -186,11 +194,6 @@
         
         
         $.each(doList, function (index, item) {
-          if (item['expiredDem'] < new Date()) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh không được nhỏ hơn ngày hiện tại.");
-            errorFlg = true;
-            return;
-          }
 
           if (item['carrierCode'] == null) {
             $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Mã khách hàng không được trống.");
@@ -216,19 +219,19 @@
             return;
           }
           var regexNuber = /^[0-9]*$/;
-          console.log(item[regexNuber.test(item['detFreeTime'])]);
-          if (!regexNuber.test(item['detFreeTime'])) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
-            errorFlg = true;
-            return;
+          console.log(item['detFreeTime']);
+          if (item['detFreeTime'] != null) {
+            if (!regexNuber.test(item['detFreeTime'])) {
+              $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
+              errorFlg = true;
+              return;
+            }
           }
         })
         if (errorFlg) {
           return;
         }
        
-        errorFlg = false;
-    
         if (!errorFlg) {
         	$.modal.confirm("Bạn có chắc chắn cập nhật DO này lên Web Portal của Cảng Đà Nẵng không?", function() {
                 $.ajax({
@@ -239,8 +242,9 @@
                   data: JSON.stringify(doList),
                   dataType: 'text',
                   success: function (result) {
-                    $.modal.alert("Khai báo DO thành công!");
-                    closeItem();
+                    $.modal.confirm("Khai báo DO thành công!", function() {
+                      closeItem();
+                    },{title:"Thông báo",btn:["Đồng Ý"]});
                   },
                   error: function (result) {
                     $.modal.alert("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");

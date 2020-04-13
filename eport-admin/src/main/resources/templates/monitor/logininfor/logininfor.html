@@ -11,26 +11,26 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								[[#{login.address}]]<input type="text" name="ipaddr"/>
+								Địa chỉ đăng nhập:<input type="text" name="ipaddr"/>
 							</li>
 							<li>
-								[[#{login.name}]]<input type="text" name="loginName"/>
+								Tên đăng nhập:<input type="text" name="loginName"/>
 							</li>
 							<li>
-								[[#{login.status}]]<select name="status" th:with="type=${@dict.getType('sys_common_status')}">
+								Trạng thái đăng nhập:<select name="status" th:with="type=${@dict.getType('sys_common_status')}">
 									<option value="" th:text="#{login.all}"></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li class="select-time">
-								<label th:text="#{login.time}"></label>
-								<input type="text" class="time-input" id="startTime" th:placeholder="#{login.start}" name="params[beginTime]"/>
+								<label>Ngày đăng nhập</label>
+								<input type="text" class="time-input" id="startTime" placeholder="Từ" name="params[beginTime]"/>
 								<span>-</span>
-								<input type="text" class="time-input" id="endTime" th:placeholder="#{login.end}" name="params[endTime]"/>
+								<input type="text" class="time-input" id="endTime" placeholder="Đến" name="params[endTime]"/>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search" th:text="#{login.search}"></i>&nbsp;Search</a>
-								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh" th:text="#{login.reset}"></i>&nbsp;Reset</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Làm mới</a>
 							</li>
 						</ul>
 					</div>
@@ -39,16 +39,16 @@
 			
 			<div class="btn-group-sm" id="toolbar" role="group">
 				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="monitor:logininfor:remove">
-		            <i class="fa fa-remove" th:text="#{login.delete}"></i>
+		            <i class="fa fa-remove">Xóa</i>
 		        </a>
 		        <a class="btn btn-danger" onclick="$.operate.clean()" shiro:hasPermission="monitor:logininfor:remove">
-	                <i class="fa fa-trash" th:text="#{login.clear}"></i>
+	                <i class="fa fa-trash">Xóa tất cả</i>
 	            </a>
 				<a class="btn btn-primary single disabled" onclick="unlock()" shiro:hasPermission="monitor:logininfor:unlock">
-					<i class="fa fa-unlock" th:text="#{login.unlock}"></i>
+					<i class="fa fa-unlock">Mở khóa</i>
 				</a>
 	            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="monitor:logininfor:export">
-		            <i class="fa fa-download" th:text="#{login.export}"></i>
+		            <i class="fa fa-download">Xuất</i>
 		        </a>
 	        </div>
         
@@ -85,28 +85,28 @@
 		        },
 		        {
 		            field: 'loginName',
-		            title: /*[[#{login.table.name}]]*/,
+		            title: "Tên đăng nhập",
 		            sortable: true
 		        },
 		        {
 		            field: 'ipaddr',
-		            title: /*[[#{login.table.address}]]*/
+		            title: "Địa chỉ đăng nhập"
 		        },
 		        {
 		            field: 'loginLocation',
-		            title: /*[[#{login.table.registrationLocation}]]*/
+		            title: "Nơi thực hiện"
 		        },
 		        {
 		            field: 'browser',
-		            title: /*[[#{login.table.browser}]]*/
+		            title: "Trình duyệt"
 		        },
 		        {
 		            field: 'os',
-		            title: /*[[#{login.table.operatingSystem}]]*/
+		            title: "Hệ thống chạy"
 		        },
 		        {
 		            field: 'status',
-		            title: /*[[#{login.table.status}]]*/,
+		            title: "Trạng thái đăng nhập",
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	return $.table.selectDictLabel(datas, value);
@@ -114,11 +114,11 @@
 		        },
 		        {
 		            field: 'msg',
-		            title: /*[[#{login.table.information}]]*/
+		            title: "Thông tin"
 		        },
 		        {
 		            field: 'loginTime',
-		            title: /*[[#{login.table.loginTime}]]*/,
+		            title: "Thời gian đăng nhập",
 		            sortable: true
 		        }]
 		    };

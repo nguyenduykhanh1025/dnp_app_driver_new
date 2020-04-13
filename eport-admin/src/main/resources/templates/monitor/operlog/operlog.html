@@ -12,31 +12,31 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								[[#{log.operator.systemModule}]]<input type="text" name="title"/>
+								Mô đun hệ thống:<input type="text" name="title"/>
 							</li>
 							<li>
-								[[#{log.operator.operator }]]<input type="text" name="operName"/>
+								Người thực hiện:<input type="text" name="operName"/>
 							</li>
 							<li class="select-selectpicker">
-								<label th:text="#{log.operator.operationType }"></label><select id="businessTypes" th:with="type=${@dict.getType('sys_oper_type')}" class="selectpicker" data-none-selected-text="Please choose" multiple>
+								<label>Hành động:</label><select id="businessTypes" th:with="type=${@dict.getType('sys_oper_type')}" class="selectpicker" data-none-selected-text="Please choose" multiple>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li>
-								<label th:text="#{log.operator.operationStatus}"></label><select name="status" th:with="type=${@dict.getType('sys_common_status')}">
+								<label>Trạng thái hành động:</label><select name="status" th:with="type=${@dict.getType('sys_common_status')}">
 									<option value="" th:text="#{log.operator.all}"></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li class="select-time">
-								<label th:text="#{log.operator.operatingTime}"></label>
-								<input type="text" class="time-input" id="startTime" th:placeholder="#{log.operator.startTime}" name="params[beginTime]"/>
+								<label>Ngày thực hiện:</label>
+								<input type="text" class="time-input" id="startTime" placeholder="Từ" name="params[beginTime]"/>
 								<span>-</span>
-								<input type="text" class="time-input" id="endTime" th:placeholder="#{log.operator.endTime}" name="params[endTime]"/>
+								<input type="text" class="time-input" id="endTime" placeholder="Đến" name="params[endTime]"/>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="searchPre()"><i class="fa fa-search" th:text="#{log.operator.search}"></i>&nbsp;</a>
-								<a class="btn btn-warning btn-rounded btn-sm" onclick="resetPre()"><i class="fa fa-refresh" th:text="#{log.operator.reset}"></i>&nbsp;</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="searchPre()"><i class="fa fa-search">Tìm kiếm</i>&nbsp;</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="resetPre()"><i class="fa fa-refresh">Làm mới</i>&nbsp;</a>
 							</li>
 						</ul>
 					</div>
@@ -45,13 +45,13 @@
 			
 			<div class="btn-group-sm" id="toolbar" role="group">
 				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="monitor:operlog:remove">
-		            <i class="fa fa-remove" th:text="#{log.operator.delete}"></i>
+		            <i class="fa fa-remove">Xóa</i>
 		        </a>
 		        <a class="btn btn-danger" onclick="$.operate.clean()" shiro:hasPermission="monitor:operlog:remove">
-	                <i class="fa fa-trash" th:text="#{log.operator.clear}"></i >
+	                <i class="fa fa-trash">Xóa tất cả</i >
 	            </a>
 	            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="monitor:operlog:export">
-		            <i class="fa fa-download" th:text="#{log.operator.export}"></i> 
+		            <i class="fa fa-download">Xuất</i> 
 		        </a>
 	        </div>
 	        
@@ -91,11 +91,11 @@
 		        },
 		        {
 		            field: 'title',
-		            title: /*[[#{log.operator.table.systemModule}]]*/
+		            title: "Mô đun hệ thống"
 		        },
 		        {
 		            field: 'businessType',
-		            title: /*[[#{log.operator.table.operationType}]]*/,
+		            title: "Hành động",
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	return $.table.selectDictLabel(datas, value);
@@ -103,24 +103,24 @@
 		        },
 		        {
 		            field: 'operName',
-		            title: /*[[#{log.operator.table.operator}]]*/,
+		            title: "Người thực hiện",
 		            sortable: true
 		        },
 		        {
 		            field: 'deptName',
-		            title: /*[[#{log.operator.table.departmentName}]]*/
+		            title: "Bộ phận"
 		        },
 		        {
 		            field: 'operIp',
-		            title: /*[[#{log.operator.table.host}]]*/
+		            title: "Địa chỉ IP"
 		        },
 		        {
 		            field: 'operLocation',
-		            title: /*[[#{log.operator.table.operatingPlace }]]*/
+		            title: "Nơi thực hiện"
 		        },
 		        {
 		            field: 'status',
-		            title: /*[[#{log.operator.table.operationStatus }]]*/,
+		            title: "Trạng thái thực hiện",
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		                if (value == 0) {
@@ -132,11 +132,11 @@
 		        },
 		        {
 		            field: 'operTime',
-		            title: /*[[#{log.operator.table.operatingTime}]]*/,
+		            title: "Ngày thực hiện",
 		            sortable: true
 		        },
 		        {
-		            title: /*[[#{log.operator.table.operating}]]*/,
+		            title: "Chi tiết",
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		                var actions = [];

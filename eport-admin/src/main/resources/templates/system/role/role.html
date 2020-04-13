@@ -11,26 +11,26 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								[[#{role.name}]]<input type="text" name="roleName"/>
+								Tên vai trò:<input type="text" name="roleName"/>
 							</li>
 							<li>
-								[[#{role.permissionCharacters}]]<input type="text" name="roleKey"/>
+								Ký tự cho phép:<input type="text" name="roleKey"/>
 							</li>
 							<li>
-								[[#{role.status}]]<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
+								Trạng thái<select name="status" th:with="type=${@dict.getType('sys_normal_disable')}">
 									<option value="" th:text="#{role.all}"></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li class="select-time">
-								<label th:text="#{role.created}"></label>
-								<input type="text" class="time-input" id="startTime" th:placeholder="#{role.startTime}" name="params[beginTime]"/>
+								<label>Khởi tạo</label>
+								<input type="text" class="time-input" id="startTime" placeholder="Từ" name="params[beginTime]"/>
 								<span>-</span>
-								<input type="text" class="time-input" id="endTime" th:placeholder="#{role.endTime}" name="params[endTime]"/>
+								<input type="text" class="time-input" id="endTime" placeholder="Đến" name="params[endTime]"/>
 							</li>
 							<li>
-								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search" th:text="#{role.search}"></i>&nbsp;</a>
-							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh" th:text="#{role.reset}"></i>&nbsp;</a>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search">Tìm kiếm</i>&nbsp;</a>
+							    <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh">Làm mới</i>&nbsp;</a>
 							</li>
 						</ul>
 					</div>
@@ -39,16 +39,16 @@
 		
 			<div class="btn-group-sm" id="toolbar" role="group">
 				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:role:add">
-	                <i class="fa fa-plus" th:text="#{role.add}"></i>
+	                <i class="fa fa-plus">Thêm</i>
 	            </a>
 	            <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:role:edit">
-		            <i class="fa fa-edit" th:text="#{role.edit}"></i>
+		            <i class="fa fa-edit">Sửa</i>
 		        </a>
 				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:role:remove">
-		            <i class="fa fa-remove" th:text="#{role.delete}"></i>
+		            <i class="fa fa-remove">Xóa</i>
 		        </a>
 		        <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:role:export">
-		            <i class="fa fa-download" th:text="#{role.export}"></i>
+		            <i class="fa fa-download">Xuất</i>
 		        </a>
 	        </div>
 	        
@@ -82,22 +82,22 @@
 		        },
 		        {
 		            field: 'roleName',
-		            title: /*[[#{role.roleName}]]*/,
+		            title: "Tên vai trò",
 		            sortable: true
 		        },
 		        {
 		            field: 'roleKey',
-		            title: /*[[#{role.table.permissionCharacters}]]*/,
+		            title: "Ký tự cho phép",
 		            sortable: true
 		        },
 		        {
 		            field: 'roleSort',
-		            title: /*[[#{role.table.displayOrder}]]*/,
+		            title: "Sắp xếp",
 		            sortable: true
 		        },
 		        {
 		        	visible: editFlag == 'hidden' ? false : true,
-		        	title: 'Role status',
+		        	title: 'Trạng thái vai trò',
 		        	align: /*[[#{role.table.roleStatus}]]*/,
 		        	formatter: function (value, row, index) {
 		        		return statusTools(row);
@@ -105,20 +105,20 @@
 		        },
 		        {
 		            field: 'createTime',
-		            title: /*[[#{role.table.creationTime}]]*/,
+		            title: "Ngày khởi tạo",
 		            sortable: true
 		        },
 		        {
-		            title: /*[[#{role.table.action}]]*/,
+		            title: "Hàng động",
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		                var actions = [];
-		                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.roleId + '\')"><i class="fa fa-edit"></i>Edit</a> ');
-		                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.roleId + '\')"><i class="fa fa-remove"></i>Delete</a> ');
+		                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.roleId + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
+		                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.roleId + '\')"><i class="fa fa-remove"></i>Xóa</a> ');
 		                var more = [];
-		                more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='authDataScope(" + row.roleId + ")'><i class='fa fa-check-square-o'></i>data permission</a> ");
-		                more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='authUser(" + row.roleId + ")'><i class='fa fa-user'></i>Assign users</a>");
-		                actions.push('<a class="btn btn-info btn-xs" role="button" data-toggle="popover" data-content="' + more.join('') + '"><i class="fa fa-chevron-circle-right"></i>More actions</a>');
+		                more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='authDataScope(" + row.roleId + ")'><i class='fa fa-check-square-o'></i>Cho phép dữ liệu</a> ");
+		                more.push("<a class='btn btn-default btn-xs " + editFlag + "' href='javascript:void(0)' onclick='authUser(" + row.roleId + ")'><i class='fa fa-user'></i>Chỉ định người dùng</a>");
+		                actions.push('<a class="btn btn-info btn-xs" role="button" data-toggle="popover" data-content="' + more.join('') + '"><i class="fa fa-chevron-circle-right"></i>Nhiều hơn</a>');
 		                return actions.join('');
 		            }
 		        }]
