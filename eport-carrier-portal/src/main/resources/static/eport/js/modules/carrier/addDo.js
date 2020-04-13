@@ -227,8 +227,6 @@
           return;
         }
        
-        errorFlg = false;
-    
         if (!errorFlg) {
         	$.modal.confirm("Bạn có chắc chắn cập nhật DO này lên Web Portal của Cảng Đà Nẵng không?", function() {
                 $.ajax({
