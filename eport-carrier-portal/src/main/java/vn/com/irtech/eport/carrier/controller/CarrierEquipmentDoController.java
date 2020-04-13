@@ -274,7 +274,42 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@ResponseBody
 	public AjaxResult update(@RequestBody List<EquipmentDo> equipmentDos) {
 		if (equipmentDos != null) {
+			String containerNumber = "";
+			String billOfLading = equipmentDos.get(0).getBillOfLading();
+			String carrierCode = equipmentDos.get(0).getCarrierCode();
 			for (EquipmentDo e : equipmentDos) {
+				if (e.getStatus() == null) {
+					e.setStatus("0");	
+				}
+				if (e.getStatus().equals("1")) {
+					return AjaxResult.error("Bill này đã được làm lệnh, cập nhật thất bại");
+				}
+				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getContainerNumber()) 
+					|| StringUtils.isBlank(e.getConsignee())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
+				}
+				// Check if carrier group code is valid
+				if(!getGroupCodes().contains(e.getCarrierCode())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã hãng tàu '"+e.getCarrierCode()+"' không đúng.");
+				}
+				if(!isContainerNumber(e.getContainerNumber())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã container không đúng tiêu chuẩn.");
+				}
+				// Check expiredDem is future
+				Date expiredDem = e.getExpiredDem();
+				expiredDem.setHours(23);
+				expiredDem.setMinutes(59);
+				expiredDem.setSeconds(59);
+				e.setExpiredDem(expiredDem);
+				if(expiredDem.before(new Date())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
+				}
+
+				// Container number is unique
+				if (e.getContainerNumber().equals(containerNumber)) {
+					return AjaxResult.error("Số container không được trùng nhau");
+				}
+				containerNumber = e.getContainerNumber();
 				e.setUpdateBy(ShiroUtils.getSysUser().getFullName());
 				e.setUpdateTime(new Date());
 			}
@@ -282,6 +317,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				if (edo.getId() != null) {
 					equipmentDoService.updateEquipmentDo(edo);
 				} else {
+					edo.setCarrierId(getUserId());
+					edo.setBillOfLading(billOfLading);
+					edo.setCarrierCode(carrierCode);
 					equipmentDoService.insertEquipmentDo(edo);
 				}				
 			}
@@ -343,7 +381,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			// END SEND EMAIL
 			return AjaxResult.success("Đã cập nhật thành công " + equipmentDos.size() + " DO lên Web Portal.");
     	}
-    	return AjaxResult.success();
+    	return AjaxResult.error("Không có dữ liệu để cập nhật DO, hãy kiểm tra lại");
 	}
 
 	/**
