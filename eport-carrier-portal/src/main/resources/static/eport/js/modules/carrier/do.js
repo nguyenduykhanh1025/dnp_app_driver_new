@@ -40,7 +40,6 @@ var prefix = ctx + "carrier/do";
         });
   });
   // **********************************
-  // $("#searchForm").css({ height: 40 });
 
   function formatDate(value) {
     var date = new Date(value);
@@ -124,46 +123,3 @@ var prefix = ctx + "carrier/do";
 	var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
 	$.modal.openDo("Thay đổi hạn lệnh", url, 600, 400);
   }
-  
-	// 弹出层指定宽度
-  function openDo(title, url, width, height, callback) {
-  	if ($.common.isMobile()) {
-  	    width = 'auto';
-  	    height = 'auto';
-  	}
-  	if ($.common.isEmpty(title)) {
-          title = false;
-      }
-      if ($.common.isEmpty(url)) {
-          url = "/404.html";
-      }
-      if ($.common.isEmpty(width)) {
-      	width = 800;
-      }
-      if ($.common.isEmpty(height)) {
-      	height = ($(window).height() - 50);
-      }
-      if ($.common.isEmpty(callback)) {
-          callback = function(index, layero) {
-              var iframeWin = layero.find('iframe')[0];
-              iframeWin.contentWindow.submitHandler(index, layero);
-          }
-      }
-  	layer.open({
-  		type: 2,
-  		area: [width + 'px', height + 'px'],
-  		fix: false,
-  		// 不固定
-  		maxmin: true,
-  		shade: 0.3,
-  		title: title,
-  		content: url,
-  	    // 弹层外区域关闭
-  		shadeClose: true,
-  		yes: callback,
-  	    cancel: function(index) {
-  	        return true;
-  	    }
-  	});
-  }
-

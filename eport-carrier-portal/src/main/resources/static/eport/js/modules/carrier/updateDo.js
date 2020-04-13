@@ -19,18 +19,19 @@
           hot = new Handsontable(example, {
             data: doList,
             stretchH: 'all',
-            width: 'auto',
+            width: '100%',
+            rowHeights: 30,
             manualColumnResize: true,
-            manualRowResize: true,
+            className: "htMiddle",
+//            manualRowResize: true,
             minSpareRows: 1,
             fillHandle: {
               autoInsertRow: true,
             },
-            height: 500,
+            height: document.documentElement.clientHeight - 70,
             colHeaders: [
-              "ID<br>id",
-              "Mã hãng tàu <i class='red'>(*)</i><br>Carrier",
-              "Số vận đơn <i class='red'>(*)</i><br> Bill No",
+              "Hãng tàu <i class='red'>(*)</i><br>OPR Code",
+              "Số vận đơn <i class='red'>(*)</i><br> B/L No",
               "Số Container <i class='red'>(*)</i><br>Container No.",
               "Tên khách hàng <i class='red'>(*)</i><br>Consignee",
               "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
@@ -38,17 +39,10 @@
               "Ngày miễn lưu<br> DET Freetime",
               "Tên tàu<br>Vessel",
               "Chuyến<br>Voyage",
-              // "XÃ¡c nháº­n <br> lÃ m lá»‡nh",
-              // "Ä�Ã£ ná»™p <br> DO gá»‘c",
-              // "NgÃ y ná»™p<br>DO date in",
-              "Ghi chú<br>Remark"
+              "Ghi chú",
+              "ID"
             ],
-            filter: true,
-            licenseKey: "non-commercial-and-evaluation",
-            columns: [{
-                data: 'id',
-                readOnly: true
-              },
+            columns: [
               {
                 data: 'carrierCode',
                 readOnly: true
@@ -91,21 +85,22 @@
               {
                 data: 'remark',
                 type: 'text',
+              },
+              {
+                  data: 'id',
+                  readOnly: true
               }
             ],
             rowHeaders: true,
-            autoColumnSize: true,
             columnSorting: {
               indicator: true
             },
-            colWidths: [0.1, 70, 70, 70, 160, 50, 140, 50, 70, 50, 150],
-            manualColumnMove: true,
-            filters: true
+            colWidths: [70, 70, 80, 160, 70, 140, 70, 80, 80, 150, 0.1],
+            manualColumnMove: true
           });
           hot.validateCells();
         }
       })
-      
       function isGoodDate(dt) {
         var reGoodDate = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/g;
         return reGoodDate.test(dt);

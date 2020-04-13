@@ -52,23 +52,20 @@
         rowHeights: 30,
         manualColumnMove: false,
         rowHeaders: true,
-        fillHandle: {
-          autoInsertRow: true,
-        },
         className: "htMiddle",
         colHeaders: [
-          "Mã khách hàng <i class='red'>(*)</i><br> Carrier code",
+          "Hãng tàu <i class='red'>(*)</i><br>OPR Code",
           "Số vận đơn <i class='red'>(*)</i><br>B/L No.",
           "Số container <i class='red'>(*)</i><br> Container No.",
           "Tên khách hàng <i class='red'>(*)</i><br> Consignee",
           "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
           "Nơi hạ vỏ <br> Empty depot",
-          "Số ngày miễn lưu vỏ <br> DET freetime",
+          "Ngày miễn lưu <br> DET free time",
           "Tên tàu <br> Vessel",
           "Chuyến <br> Voyage",
           "Ghi chú",
         ],
-        colWidths:[7, 10, 8, 20, 10, 15, 10, 5, 5, 10],
+        colWidths:[7, 8, 8, 20, 8, 15, 8, 8, 8, 15],
         filter: "true",
         columns: [
           {
@@ -125,7 +122,6 @@
       }
       // Load table
       document.addEventListener("DOMContentLoaded", function () {
-
         setTimeout(function() {
           hot = new Handsontable(dogrid, config);
           hot.updateSettings({
@@ -139,8 +135,6 @@
             },
           });
         }, 200);
-
-      
       });
 
       function isGoodDate(dt) {
@@ -194,33 +188,29 @@
         
         
         $.each(doList, function (index, item) {
-
           if (item['carrierCode'] == null) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Mã khách hàng không được trống.");
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hãng tàu (OPR Code) không được trống.");
             errorFlg = true;
             return;
           }
-
           if (item['billOfLading'] == null) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số vận đơn không được trống.");
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số vận đơn (B/L No) không được trống.");
             errorFlg = true;
             return;
           }
-
           if (item['containerNumber'] == null) {
             $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số container không được trống.");
             errorFlg = true;
             return;
           }
-
           if (item['consignee'] == null) {
             $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Tên khách hàng không được trống.");
             errorFlg = true;
             return;
           }
           var regexNuber = /^[0-9]*$/;
-          console.log(item['detFreeTime']);
-          if (item['detFreeTime'] != null) {
+          // console.log(item['detFreeTime']);
+          if (item['detFreeTime'] != null && item['detFreeTime'] != "") {
             if (!regexNuber.test(item['detFreeTime'])) {
               $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
               errorFlg = true;
@@ -228,6 +218,10 @@
             }
           }
         })
+        if(!errorFlg && doList.length==0) {
+        	$.modal.alert("Bạn chưa nhập thông tin.");
+            errorFlg = true;
+        }
         if (errorFlg) {
           return;
         }
