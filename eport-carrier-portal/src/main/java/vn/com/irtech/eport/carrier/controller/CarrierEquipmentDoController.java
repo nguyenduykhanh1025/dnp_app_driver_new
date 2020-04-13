@@ -15,11 +15,13 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -44,7 +46,9 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 @Controller
 @RequestMapping("/carrier/do")
 public class CarrierEquipmentDoController extends BaseController {
-	private String prefix = "carrier/do";
+  private String prefix = "carrier/do";
+  
+  private String str="";
 
 	@Autowired
 	private IEquipmentDoService equipmentDoService;
@@ -177,81 +181,11 @@ public class CarrierEquipmentDoController extends BaseController {
 	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
-		JSONArray equipmentDoList = null;
-		if (equipmentDo.isPresent()) {
-			equipmentDoList = equipmentDo.get();
-		}
-//	equipmentDo.ifPresent(value -> equipmentDoList = value);
-		CarrierAccount currentUser = ShiroUtils.getSysUser();
-		if (equipmentDoList != null) {
-			String[] strList = new String[9];
-			for (int index = 0; index < equipmentDoList.size(); index++) {
-				// Resolve " mark in array
-				String st = equipmentDoList.get(index++).toString();
-				strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
-				if (index == 1) {
-					strList[0] = strList[0].substring(strList[0].indexOf("[") + 2, strList[0].length());
-				}
-				for (int i = 1; i < 8; i++) {
-					strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
-				}
-				String a = equipmentDoList.get(index).toString();
-				// Resolve ]} mark in last element
-				int listSize = equipmentDoList.size();
-				if (index == listSize - 1) {
-					strList[8] = a.substring(0, a.indexOf("]"));
-					strList[8] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
-				} else {
-					strList[8] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
-				}
-				// Resolve null string
-				for (int i = 0; i <= 8; i++) {
-					if (strList[i].trim().equals("null")) {
-						strList[i] = null;
-					}
-				}
-				EquipmentDo equipment = new EquipmentDo();
-				equipment.setCarrierId(currentUser.getId());
-				equipment.setCarrierCode(currentUser.getCarrierCode());
-				if (strList[0] != null) {
-					equipment.setBillOfLading(strList[0]);
-				}
-				if (strList[1] != null) {
-					equipment.setContainerNumber(strList[1]);
-				}
-				if (strList[2] != null) {
-					equipment.setConsignee(strList[2]);
-				}
-				if (strList[3] != null) {
-					equipment.setExpiredDem(AppToolUtils.formatStringToDate(strList[3], "dd/MM/yyyy"));
-				}
-				if (strList[4] != null) {
-					equipment.setEmptyContainerDepot(strList[4]);
-				}
-				if (strList[5] != null) {
-					equipment.setDetFreeTime(Integer.parseInt(strList[5]));
-				}
-				if (strList[6] != null) {
-					equipment.setVessel(strList[6]);
-				}
-				if (strList[7] != null) {
-					equipment.setVoyNo(strList[7]);
-				}
-				if (strList[8] != null) {
-					equipment.setRemark(strList[8]);
-				}
-				// set who and time created this record
-				equipment.setCreateBy(currentUser.getFullName());
-				equipment.setCreateTime(new Date());
-				try {
-					equipmentDoService.insertEquipmentDo(equipment);
-				} catch (Exception e) {
-					return AjaxResult.error();
-				}
-			}
-		}
-		return AjaxResult.success();
+	public AjaxResult addSave(@RequestBody List<EquipmentDo> equipmentDo) {
+    if (equipmentDo != null) {
+      
+    }
+    return AjaxResult.success();
 	}
 
 	// update
