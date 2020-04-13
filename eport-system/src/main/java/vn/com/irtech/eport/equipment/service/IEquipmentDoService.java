@@ -122,4 +122,6 @@ public interface IEquipmentDoService
     
 
     public int insertEquipmentDoList(HashMap<String, Object> doList);
+
+    public int updateEquipmentDoList(HashMap<String, Object> doList);
 }

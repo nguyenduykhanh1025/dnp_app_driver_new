@@ -194,44 +194,16 @@ public class CarrierEquipmentDoController extends BaseController {
 	@Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
 	@PostMapping("/update")
 	@ResponseBody
-	public AjaxResult update(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
-		JSONArray equipmentDoList = null;
-		if (equipmentDo.isPresent()) {
-			equipmentDoList = equipmentDo.get();
-		}
-//		equipmentDo.ifPresent(value -> equipmentDoList = value);
-//		CarrierAccount currentUser = ShiroUtils.getSysUser();
-		if (equipmentDoList != null) {
-			String[] strList = new String[13];
-			for (int index = 0; index < equipmentDoList.size(); index++) {
-				// Resolve " mark in array
-				String st = equipmentDoList.get(index++).toString();
-				System.out.println("strList   " + st);
-				strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
-				if (index == 1) {
-					strList[0] = strList[0].substring(strList[0].indexOf("[") + 2, strList[0].length());
-				}
-				for (int i = 1; i < 12; i++) {
-					strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
-				}
-				// String a = equipmentDoList.get(index).toString();
-				// Resolve ]} mark in last element
-				// int listSize = equipmentDoList.size();
-				// if (index == listSize-1) {
-				// strList[11] = strList[11].substring(0, strList[11].indexOf("]"));
-				// strList[11] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
-				// } else {
-				// strList[11] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
-				// }
-
-				// Insert new DO
-				EquipmentDo equipment = new EquipmentDo();
-				equipment.setStatus(strList[11]);
-				equipment.setId(Long.parseLong(strList[0]));
-				equipmentDoService.updateEquipmentDo(equipment);
+	public AjaxResult update(List<EquipmentDo> equipmentDos) {
+		if (equipmentDos != null) {
+			for (EquipmentDo e : equipmentDos) {
+				e.setUpdateBy(ShiroUtils.getSysUser().getFullName());
 			}
-		}
-		return toAjax(1);
+			HashMap<String, Object> doList = new HashMap<>();
+			doList.put("doList", equipmentDos);
+			return toAjax(equipmentDoService.updateEquipmentDoList(doList));
+    	}
+    	return AjaxResult.success();
 	}
 
 	/**

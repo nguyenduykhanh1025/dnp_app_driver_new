@@ -106,4 +106,6 @@ public interface EquipmentDoMapper {
   public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo);
 
 	public int insertEquipmentDoList(HashMap<String, Object> doList);
+
+	public int updateEquipmentDoList(HashMap<String, Object> doList);
 }

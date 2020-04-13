@@ -199,4 +199,9 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo) {
         return equipmentDoMapper.selectEquipmentDoVoByBillNo(blNo);
     }
+
+    @Override
+    public int updateEquipmentDoList(HashMap<String, Object> doList) {
+        return equipmentDoMapper.updateEquipmentDoList(doList);
+    }
 }
