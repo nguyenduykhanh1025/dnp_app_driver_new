@@ -153,7 +153,7 @@
             },
           });
         },
-        {title:"Xác Nhận Gửi DO",btn:["Đồng Ý","Hủy Bỏ"]});
+        {title:"Xác nhận cập nhật DO",btn:["Đồng Ý","Hủy Bỏ"]});
       }
 
       function search() {

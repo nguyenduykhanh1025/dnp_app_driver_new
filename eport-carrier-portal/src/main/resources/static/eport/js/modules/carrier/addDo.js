@@ -68,7 +68,7 @@
           "Chuyến <br> Voyage",
           "Ghi chú",
         ],
-        colWidths:[10, 10, 20, 10, 15, 10, 5, 5, 15],
+        colWidths:[7, 10, 8, 20, 10, 15, 10, 5, 5, 10],
         filter: "true",
         columns: [
           {
@@ -159,9 +159,17 @@
             cleanedGridData.push(object);
           }
         });
+       
+        //Create List DO Object 
+        var errorFlg = false;
         var doList = [];
         $.each(cleanedGridData, function (index, item) {
           var doObj = new Object();
+          if (!isGoodDate(item['expiredDem']) || item['expiredDem'] == null ){
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh đang để trống hoặc chưa đúng format.");
+            errorFlg = true;
+            return;
+          }
           var date = new Date(item['expiredDem'].replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"));
           doObj.carrierCode = item['carrierCode'];
           doObj.billOfLading = item['blNo'];
@@ -175,6 +183,49 @@
           doObj.remark = item['remark'];
           doList.push(doObj);
         });
+        
+        
+        $.each(doList, function (index, item) {
+          if (item['expiredDem'] < new Date()) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh không được nhỏ hơn ngày hiện tại.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['carrierCode'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Mã khách hàng không được trống.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['billOfLading'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số vận đơn không được trống.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['containerNumber'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số container không được trống.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['consignee'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Tên khách hàng không được trống.");
+            errorFlg = true;
+            return;
+          }
+          var regexNuber = /^[0-9]*$/;
+          console.log(item[regexNuber.test(item['detFreeTime'])]);
+          if (!regexNuber.test(item['detFreeTime'])) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
+            errorFlg = true;
+            return;
+          }
+        })
+        if (errorFlg) {
+          return;
+        }
        
         errorFlg = false;
     
