@@ -174,6 +174,9 @@ public class EquipmentDoController extends BaseController {
 	@ResponseBody
 	public AjaxResult remove(String ids) {
 		return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
-	}
+    }
+    
+    
+    
 
-}
+}   

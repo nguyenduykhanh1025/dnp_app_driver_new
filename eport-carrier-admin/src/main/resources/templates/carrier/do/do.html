@@ -126,7 +126,7 @@
             <th data-options="field:'consignee',halign:'center'" width="250">
               Khách hàng<br />Consignee
             </th>
-            <th data-options="field:'expiredDem',halign:'center',align:'left',formatter: formatDate" sortable="true" width="110">
+            <th data-options="field:'expiredDem',halign:'center',align:'left',formatter: compareExpireDay" sortable="true" width="110">
               Hạn lệnh<br />Expired Date
             </th>
             <th data-options="field:'emptyContainerDepot',halign:'center'" width="200">
@@ -389,7 +389,7 @@
 	  return "<a onclick='viewBL(\""+value+"\")'>" + value + "</a>";
     }
     function viewBL(value) {
-      openDo("Danh sách cont của bill " + value, prefix + "/getViewCont/{" + value + "}");
+      $.modal.openTab("Danh sách cont của bill " + value, prefix + "/getViewCont/{" + value + "}");
     }
     function openDo(title, url, width, height, callback) {
   	if ($.common.isMobile()) {
@@ -437,6 +437,22 @@
 	  var month = date.getMonth() + 1;
   	var monthText = month < 10 ? "0" + month : month;
 	  return day +"/" +  monthText +"/" + date.getFullYear();
+  }
+
+  function compareExpireDay(value)
+  {
+      var currentDay = new Date();
+      currentDay = formatDate(currentDay);
+      console.log("currentDay",currentDay)
+      var expiredDay = formatDate(value);
+      console.log("ExpireDay",expiredDay)
+      var same = currentDay < expiredDay;
+      console.log(same);
+      if(same == true)
+      {
+          
+      }
+      return expiredDay;
   }
   </script>
 </body>

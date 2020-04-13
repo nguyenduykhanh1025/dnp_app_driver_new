@@ -408,4 +408,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		        AND process_status = 1) AS completedBl
 	</select>
 
+    <select id="countDOStatus" parameterType="String" resultType="int">
+            select count(*) from equipment_do where bill_of_lading=#{billOfLading} AND status = 1
+    </select>
+    <select id="countDocmentStatus" parameterType="String" resultType="int">
+            select count(*) from equipment_do where bill_of_lading=#{billOfLading} AND document_status = 1
+    </select>
 </mapper>

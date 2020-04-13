@@ -130,7 +130,7 @@
   }
 </style>
 
-<body class="gray-bg container">
+<body class="white-bg full-height-layout">
   <div class="container-div">
     <div class="row" style="height: auto;">
       <div class="col-sm-12 search-collapse">
@@ -247,7 +247,7 @@
                 manualRowResize: true,
                 height: 500,
                 colHeaders: [
-                  "ID<br>id",
+                  
                   "Mã hãng tàu<br>Carrier",
                   "Số vận đơn<br> Bill No",
                   "Số container<br>Container No",
@@ -258,13 +258,12 @@
                   "Tên tàu<br>Vessel",
                   "Chuyến<br>Voyage",
                   "Ngày nộp<br>DO date in",
-                  "Ghi chú<br>Note"
+                  "Ghi chú<br>Note",
+                  "ID<br>id"
                 ],
                 filter: true,
                 licenseKey: "non-commercial-and-evaluation",
-                columns: [{
-                    data: 'id',
-                  },
+                columns: [
                   {
                     data: 'carrierCode',
                     type: 'text',
@@ -325,6 +324,9 @@
                     data: 'remark',
                     type: 'text',
                     readOnly: true
+                  },
+                  {
+                    data: 'id',
                   }
                 ],
                 rowHeaders: true,
@@ -332,7 +334,7 @@
                 columnSorting: {
                   indicator: true
                 },
-                colWidths: [0.1, 70, 70, 70, 160, 100, 160],
+                colWidths: [ 70, 70, 70, 160, 100, 160],
                 manualColumnMove: true,
                 filters: true
               });

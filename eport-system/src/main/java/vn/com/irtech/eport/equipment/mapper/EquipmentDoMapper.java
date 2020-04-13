@@ -100,5 +100,9 @@ public interface EquipmentDoMapper
   public int updateEquipmentDoExpiredDem(EquipmentDo equipmentDo);
 
   public Map<String, String> getReportByCarrierGroup(String[] codes);
+
+  public int countDOStatus(String billOfLading);
+
+  public int countDocmentStatus(String billOfLading);
 	
 }
