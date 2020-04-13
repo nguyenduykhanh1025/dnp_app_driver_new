@@ -117,7 +117,6 @@
       var status = firstDo.status == 0 ? "<span class='label label-warning'>Chưa làm lệnh</span>" : "<span class='label label-success'>Đã làm lệnh</span>";
       $("#dostatus").html(status);
       $("#expiredDem").html(date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear());
-      console.log(firstDo.billOfLading);
       $.ajax({
         url: "/carrier/do/getInfoBl",
         method: 'get',
@@ -126,112 +125,92 @@
         },
         success: function(result) {
           doList = result;
-          console.log(doList);
           var example = document.getElementById('showDemo');
-      var hot = new Handsontable(example, {
-        data: doList,
-        stretchH: 'all',
-        width: 'auto',
-        manualColumnResize: true,
-        manualRowResize: true,
-        minSpareRows: 1,
-        fillHandle: {
-          autoInsertRow: true,
-        },
-        height: 500,
-        colHeaders: [
-          "ID<br>id",
-          "Mã hãng tàu<br>Carrier",
-          "Số vận đơn<br> Bill No",
-          "Số Container<br>Container No.",
-          "Tên khách hàng<br>Consignee",
-          "Hạn lệnh<br> Valid to date",
-          "Nơi hạ vỏ<br> Empty depot",
-          "Ngày miễn lưu<br> DET Freetime",
-          "Tên tàu<br>Vessel",
-          "Chuyến<br>Voyage",
-          // "XÃ¡c nháº­n <br> lÃ m lá»‡nh",
-          // "Ä�Ã£ ná»™p <br> DO gá»‘c",
-          // "NgÃ y ná»™p<br>DO date in",
-          "Ghi chú<br>Remark"
-        ],
-        filter: true,
-        licenseKey: "non-commercial-and-evaluation",
-        columns: [{
-            data: 'id',
-          },
-          {
-            data: 'carrierCode'
-          },
-          {
-            data: 'billOfLading'
-          },
-          {
-            data: 'containerNumber',
-            type: 'text',
-          },
-          {
-            data: 'consignee',
-            type: 'text',
-          },
-          {
-            data: 'expiredDem',
-            dateFormat: "DD/MM/YYYY",
-            correctFormat: true,
-          },
-          {
-            data: 'emptyContainerDepot',
-            type: 'text',
-          },
-          {
-            data: 'detFreeTime',
-            type: 'numeric',
+          var hot = new Handsontable(example, {
+            data: doList,
+            stretchH: 'all',
+            width: 'auto',
+            manualColumnResize: true,
+            manualRowResize: true,
+            minSpareRows: 1,
+            fillHandle: {
+              autoInsertRow: true,
+            },
+            height: 500,
+            colHeaders: [
+              "ID<br>id",
+              "Mã hãng tàu<br>Carrier",
+              "Số vận đơn<br> Bill No",
+              "Số Container<br>Container No.",
+              "Tên khách hàng<br>Consignee",
+              "Hạn lệnh<br> Valid to date",
+              "Nơi hạ vỏ<br> Empty depot",
+              "Ngày miễn lưu<br> DET Freetime",
+              "Tên tàu<br>Vessel",
+              "Chuyến<br>Voyage",
+              // "XÃ¡c nháº­n <br> lÃ m lá»‡nh",
+              // "Ä�Ã£ ná»™p <br> DO gá»‘c",
+              // "NgÃ y ná»™p<br>DO date in",
+              "Ghi chú<br>Remark"
+            ],
+            filter: true,
+            licenseKey: "non-commercial-and-evaluation",
+            columns: [{
+                data: 'id',
+              },
+              {
+                data: 'carrierCode'
+              },
+              {
+                data: 'billOfLading'
+              },
+              {
+                data: 'containerNumber',
+                type: 'text',
+              },
+              {
+                data: 'consignee',
+                type: 'text',
+              },
+              {
+                data: 'expiredDem',
+                dateFormat: "DD/MM/YYYY",
+                correctFormat: true,
+              },
+              {
+                data: 'emptyContainerDepot',
+                type: 'text',
+              },
+              {
+                data: 'detFreeTime',
+                type: 'numeric',
 
-          },
-          {
-            data: 'vessel',
-            type: 'text',
-          },
-          {
-            data: 'voyNo',
-            type: 'text',
-          },
-          // {
-          //   data: 'status',
-          //   type: 'checkbox',
-          //   checkedTemplate: 'Y',
-          //   uncheckedTemplate: 'N'
-          // },
-          // {
-          //   data: 'documentStatus',
-          //   type: 'checkbox',
-          //   checkedTemplate: "Y",
-          //   uncheckedTemplate: "N"
-          // },
-          // {
-          //   data: 'documentReceiptDate',
-          //   type: 'date',
-          //   dateFormat: 'MM/DD/YYYY',
-          //   correctFormat: true,
-          // },
-          {
-            data: 'remark',
-            type: 'text',
-          }
-        ],
-        rowHeaders: true,
-        autoColumnSize: true,
-        columnSorting: {
-          indicator: true
-        },
-        colWidths: [0.1,70 , 70, 70, 160, 100, 160],
-        manualColumnMove: true,
-        filters: true
-      });
-      hot.validateCells();
-        }
-      })
-      console.log(doList);
+              },
+              {
+                data: 'vessel',
+                type: 'text',
+              },
+              {
+                data: 'voyNo',
+                type: 'text',
+              },
+              {
+                data: 'remark',
+                type: 'text',
+              }
+            ],
+            rowHeaders: true,
+            autoColumnSize: true,
+            columnSorting: {
+              indicator: true
+            },
+            colWidths: [0.1,70 , 70, 70, 160, 100, 160],
+            manualColumnMove: true,
+            filters: true
+          });
+          hot.validateCells();
+            }
+          })
       
 
       function update() {
