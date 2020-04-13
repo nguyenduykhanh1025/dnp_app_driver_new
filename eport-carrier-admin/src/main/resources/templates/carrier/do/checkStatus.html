@@ -52,7 +52,6 @@
         var billOfLading = equipmentDo.billOfLading;
         var status = equipmentDo.status;
         var documentStatus = equipmentDo.documentStatus;
-        console.log(documentReceiptDate);
         console.log(status);
         console.log(documentStatus);
     </script>
@@ -97,10 +96,7 @@
                     documentStatus: documentStatus 
                 },
                 }).done(function (result) {
-                    if(status.code == 0)
-                    {
-                        $.operate.saveSuccess();
-                    }
+                    
                 });
         }
         
