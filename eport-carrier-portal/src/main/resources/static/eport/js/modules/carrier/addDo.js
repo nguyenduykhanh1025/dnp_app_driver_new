@@ -172,7 +172,7 @@
           doObj.billOfLading = item['blNo'];
           doObj.containerNumber = item['containerNo'];
           doObj.consignee = item['consignee'];
-          doObj.expiredDem = new Date(item['expiredDem'].replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"));
+          doObj.expiredDem = new Date(item['expiredDem']);
           doObj.detFreeTime = item['detFreetime'];
           doObj.emptyContainerDepot = item['emptyDepot'];
           doObj.voyNo = item['voyage'];

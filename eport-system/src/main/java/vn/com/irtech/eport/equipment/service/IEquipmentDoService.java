@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.equipment.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,5 +118,8 @@ public interface IEquipmentDoService
 	 * @param blNo
 	 * @return
 	 */
-	public EquipmentDo getBillOfLadingInfo(String blNo);
+    public EquipmentDo getBillOfLadingInfo(String blNo);
+    
+
+    public int insertEquipmentDoList(HashMap<String, Object> doList);
 }
