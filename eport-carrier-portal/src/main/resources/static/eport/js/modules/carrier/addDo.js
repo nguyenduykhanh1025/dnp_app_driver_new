@@ -149,7 +149,7 @@
         return reGoodDate.test(dt);
       }
 
-      function getAlert() {
+      function saveDO() {
         var myTableData = hot.getSourceData();
         // If the last row is empty, remove it before validation
         if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
@@ -163,7 +163,6 @@
             cleanedGridData.push(object);
           }
         });
-        console.log(cleanedGridData);
         var doList = [];
         $.each(cleanedGridData, function (index, item) {
           var doObj = new Object();
