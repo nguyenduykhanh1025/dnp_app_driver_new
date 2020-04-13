@@ -47,12 +47,15 @@
             licenseKey: "non-commercial-and-evaluation",
             columns: [{
                 data: 'id',
+                readOnly: true
               },
               {
-                data: 'carrierCode'
+                data: 'carrierCode',
+                readOnly: true
               },
               {
-                data: 'billOfLading'
+                data: 'billOfLading',
+                readOnly: true
               },
               {
                 data: 'containerNumber',
@@ -64,7 +67,8 @@
               },
               {
                 data: 'expiredDem',
-                dateFormat: "DD/MM/YYYY",
+                type: 'date',
+                dateFormat: 'DD/MM/YYYY',
                 correctFormat: true,
               },
               {
@@ -94,14 +98,18 @@
             columnSorting: {
               indicator: true
             },
-            colWidths: [0.1,70 , 70, 70, 160, 100, 160],
+            colWidths: [0.1, 70, 70, 70, 160, 50, 140, 50, 70, 50, 150],
             manualColumnMove: true,
             filters: true
           });
           hot.validateCells();
-            }
-          })
+        }
+      })
       
+      function isGoodDate(dt) {
+        var reGoodDate = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/g;
+        return reGoodDate.test(dt);
+      }
 
       function updateDO() {
         var myTableData = hot.getSourceData();
@@ -120,6 +128,11 @@
         var doList = [];
         $.each(cleanedGridData, function (index, item) {
           var doObj = new Object();
+          if (!isGoodDate(item['expiredDem']) || item['expiredDem'] == null ){
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh đang để trống hoặc chưa đúng format.");
+            errorFlg = true;
+            return;
+          }
           var date = new Date(item['expiredDem'].replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"));
           doObj.id = item['id'];
           doObj.carrierCode = item['carrierCode'];
@@ -135,6 +148,47 @@
           
           doList.push(doObj);
         });
+        $.each(doList, function (index, item) {
+          if (item['expiredDem'] < new Date()) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh không được nhỏ hơn ngày hiện tại.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['carrierCode'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Mã khách hàng không được trống.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['billOfLading'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số vận đơn không được trống.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['containerNumber'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số container không được trống.");
+            errorFlg = true;
+            return;
+          }
+
+          if (item['consignee'] == null) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Tên khách hàng không được trống.");
+            errorFlg = true;
+            return;
+          }
+          var regexNuber = /^[0-9]*$/;
+          console.log(item[regexNuber.test(item['detFreeTime'])]);
+          if (!regexNuber.test(item['detFreeTime'])) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
+            errorFlg = true;
+            return;
+          }
+        })
+        if (errorFlg) {
+          return;
+        }
 
         $.modal.confirm("Bạn có chắc chắn cập nhật DO không?", function() {
           $.ajax({
@@ -153,7 +207,7 @@
             },
           });
         },
-        {title:"Xác Nhận Gửi DO",btn:["Đồng Ý","Hủy Bỏ"]});
+        {title:"Xác nhận cập nhật DO",btn:["Đồng Ý","Hủy Bỏ"]});
       }
 
       function search() {
@@ -167,6 +221,7 @@
         }).done(function(result){
           hot.loadData(result);
           hot.render();
+          hot.validateCells();
         });       
       }
       document

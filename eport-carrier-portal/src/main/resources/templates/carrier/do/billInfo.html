@@ -5,39 +5,6 @@
     <th:block th:include="include :: handsontable-css" />
     <th:block th:include="include :: datetimepicker-css" />
     <style type="text/css">
-      .header-box {
-        display: flex;
-        justify-content: space-between;
-        vertical-align: middle;
-        margin: 0;
-      }
-
-      .footer-add {
-        display: flex;
-        justify-content: space-between;
-        vertical-align: middle;
-        padding-bottom: 10px;
-      }
-
-      .fake-cont {
-        padding: 0 20px;
-        width: 100%;
-      }
-
-      .info {
-        display: flex;
-      }
-
-      .left-info {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        padding: 10px;
-        border: 1px solid grey;
-        border-radius: 10px;
-        box-shadow: grey 3px 2px 3px;
-      }
-
       .red {
         color: red !important;
         text-transform: none;
@@ -57,19 +24,23 @@
                 onclick="updateDO()"
                 style="margin-right: 10px;"
               >
-              <i class="fa fa-check-circle"></i>&nbsp;Lưu DO
+                <i class="fa fa-check-circle"></i>&nbsp;Lưu DO
               </button>
               <button
                 type="button"
                 class="btn btn-dark"
                 onclick="closeItem()"
               >
-              <i class="fa fa-times"></i>&nbsp; Hủy bỏ 
+                <i class="fa fa-times"></i>&nbsp; Hủy bỏ 
               </button>
             </div>
-              <p>Mã hãng tàu: <span id="carrier"></span></p>
-              <p>Số vận đơn: <span id="billNumber"></span></p>
-              <p>Trạng thái làm lệnh: <span id="dostatus"></span></p>
+            <p>Mã hãng tàu: <span id="carrier"></span></p>
+            <p>Số vận đơn: <span id="billNumber"></span></p>
+            <p>Trạng thái làm lệnh: <span id="dostatus"></span></p>
+            <div style="display: flex">
+              <input class="form-control" type="text" id="searchForm" placeholder="Số container" autocomplete="off" style="width:'80px'; margin-right: 10px;"> 
+              <button type="button" class="btn btn-success btn-sm" onclick="search()" id="searchBtn" style="height: 32px;"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</button>
+            </div>
           </div>
         </div>
       </div>
@@ -77,10 +48,7 @@
     <div class="row">
       <div class="col-sm-3" style="margin-top: 0px; padding-bottom:5px">
         <div class="col-sm-12 fixed-table-toolbar">
-          <div class="bs-bars" style="display: flex; justify-content: space-around;">
-            <input class="form-control" type="text" id="searchForm" placeholder="Số container" autocomplete="off" style="width:'80px'; margin-right: 10px;"> 
-            <button class="btn btn-success" onclick="search()" id="searchBtn">Tìm kiếm</button>
-          </div>
+         
         </div>
       </div>
     </div>

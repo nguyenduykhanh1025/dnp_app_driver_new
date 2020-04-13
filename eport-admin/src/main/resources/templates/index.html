@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="renderer" content="webkit" />
-    <title>ePort System</title>
+    <title>DaNang Port - DO Web Portal</title>
     <!-- Avoid IE using compatibility mode -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link th:href="@{favicon.ico}" rel="stylesheet" />
@@ -41,10 +41,6 @@
     style="overflow: hidden; color: #ffffff;"
   >
     <div id="wrapper">
-      <!--左侧导航开始-->
-      <!--左侧导航结束-->
-
-      <!--右侧部分开始-->
       <div id="page-wrapper" class="gray-bg dashbard-1">
         <div class="row border-bottom">
           <nav
@@ -72,11 +68,6 @@
                   <li>
                     <a onclick="resetPwd()">
                       <i class="fa fa-key"></i> Thay đổi mật khẩu</a
-                    >
-                  </li>
-                  <li>
-                    <a onclick="switchSkin()">
-                      <i class="fa fa-dashboard"></i> Nền</a
                     >
                   </li>
                   <li class="divider"></li>
@@ -118,14 +109,18 @@
                     <a
                       th:if="${#lists.isEmpty(cmenu.children)}"
                       th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
-                      th:utext="${cmenu.menuName}"
                       th:href="@{${cmenu.url}}"
-                      >2nd Menu</a
-                    >
+                      >
+                      <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
+	                  <span class="nav-label" th:text="${cmenu.menuName}"
+	                    >2nd Menu</span>
+                    </a>
                     <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#"
-                      >[[${cmenu.menuName}]]
-                      <span class="fa arrow"></span>
-                  </a>
+                      >
+                      <i class="fa fa-bar-chart-o" th:class="${cmenu.icon}"></i>
+                      <span class = "nav-label">[[${cmenu.menuName}]]</span>
+                      <span class="fa arrow" style="float: unset;"></span>
+                    </a>
                     <ul
                       th:if="${not #lists.isEmpty(cmenu.children)}"
                       class="nav nav-third-level"
@@ -134,10 +129,12 @@
                         <a
                           th:if="${#lists.isEmpty(emenu.children)}"
                           th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
-                          th:text="${emenu.menuName}"
                           th:href="@{${emenu.url}}"
-                          >3rd Menu</a
-                        >
+                          >
+                          <i class="fa fa-bar-chart-o" style="margin-left: 4px;margin-right: 8px;" th:class="${emenu.icon}"></i>
+	                      <span class="nav-label" th:text="${emenu.menuName}"
+	                      >3rd Menu</span>
+                        </a>
                         <a th:if="${not #lists.isEmpty(emenu.children)}" href="#"
                           >[[${emenu.menuName}]]
                           <!-- <span class="fa arrow"></span> -->
@@ -161,67 +158,6 @@
                   </li>
                 </ul>
               </li>
-<!--               <li class="dropdown user-menu">
-                <a
-                  href="javascript:void(0)"
-                  class="dropdown-toggle"
-                  data-hover="dropdown"
-                >
-                  <span class="hidden-xs"
-                    ><i class="fa fa-bars" style="margin-right: 5px;"></i>System Tools</span
-                  >
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="mt5">
-                    <a th:href="@{/carrier/admin/do/getViewDo}" class="menuItem">
-                      <i></i> Delivery Order</a
-                    >
-                  </li>
-                  <li>
-                    <a th:href="@{/carrier/account}" class="menuItem">
-                      <i></i> Carrier Account</a
-                    >
-                  </li>
-                  <li>
-                    <a th:href="@{/carrier/group}" class="menuItem">
-                      <i></i>Carrier Group</a
-                    >
-                  </li>
-                </ul>
-              </li> -->
-              <!-- <li class="dropdown user-menu">
-                <a
-                  href="javascript:void(0)"
-                  class="dropdown-toggle"
-                  data-hover="dropdown"
-                >
-                  <span class="hidden-xs"
-                    ><i class="fa fa-gear" style="margin-right: 5px;"></i>System Management</span
-                  >
-                </a>
-                <ul class="dropdown-menu">
-                  <li class="mt5">
-                    <a th:href="@{/system/user}" class="menuItem">
-                      <i></i> User Management</a
-                    >
-                  </li>
-                  <li>
-                    <a th:href="@{/system/role}" class="menuItem">
-                      <i></i> Role Management</a
-                    >
-                  </li>
-                  <li>
-                    <a th:href="@{/monitor/operlog}" class="menuItem">
-                      <i></i>Opearator Log</a
-                    >
-                  </li>
-                  <li>
-                    <a th:href="@{/monitor/logininfor}" class="menuItem">
-                      <i></i>Login Log</a
-                    >
-                  </li>
-                </ul>
-              </li> -->
             </ul>
           </nav>
         </div>
@@ -272,15 +208,11 @@
           <div class="pull-right">Copyright IRTech © [[${copyrightYear}]]</div>
         </div>
       </div>
-      <!--右侧部分结束-->
     </div>
-    <!-- 全局js -->
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
-    <script
-      th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"
-    ></script>
+    <script th:src="@{/js/plugins/slimscroll/jquery.slimscroll.min.js}"></script>
     <script th:src="@{/js/jquery.contextMenu.min.js}"></script>
     <script th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
     <script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
@@ -290,14 +222,9 @@
     <script th:src="@{/ajax/libs/fullscreen/jquery.fullscreen.js}"></script>
     <script th:inline="javascript">
       var ctx = [[@{/}]];
-      // 皮肤缓存
       var skin = storage.get("skin");
-      // history（表示去掉地址的#）否则地址以"#"形式展示
       var mode = "history";
-      // 历史访问路径缓存
       var historyPath = storage.get("historyPath");
-
-      // 本地主题优先，未设置取系统配置
       if($.common.isNotEmpty(skin)){
       	$("body").addClass(skin.split('|')[0]);
       	$("body").addClass(skin.split('|')[1]);
@@ -305,13 +232,10 @@
       	$("body").addClass([[${sideTheme}]]);
       	$("body").addClass([[${skinName}]]);
       }
-
-      /* 用户管理-重置密码 */
       function resetPwd() {
           var url = ctx + 'system/user/profile/resetPwd';
           $.modal.open("Reset Password", url, '770', '380');
       }
-      /* 切换主题 */
       function switchSkin() {
           layer.open({
       		type : 2,
@@ -321,8 +245,6 @@
       		content : [ctx + "system/switchSkin", 'no']
       	})
       }
-
-      /** 刷新时访问路径页签 */
       function applyPath(url) {
       	$('a[href$="' + decodeURI(url) + '"]').click();
           $('a[href$="' + url + '"]').parent("li").addClass("selected").parents("li :not(.user-panel)").addClass("active").end().parents("ul").addClass("in");

@@ -1,10 +1,5 @@
-/**
- * 通用方法封装处理
- * Copyright (c) 2019 ruoyi 
- */
 $(function() {
 	
-	//  layer扩展皮肤
 	if (window.layer !== undefined) {
 		layer.config({
 		    extend: 'moon/style.css',
@@ -12,12 +7,10 @@ $(function() {
 		});
 	}
 	
-	// 回到顶部绑定
 	if ($.fn.toTop !== undefined) {
 		$('#scroll-up').toTop();
 	}
 	
-	// select2复选框事件绑定
 	if ($.fn.select2 !== undefined) {
         $.fn.select2.defaults.set( "theme", "bootstrap" );
 		$("select.form-control:not(.noselect2)").each(function () {
@@ -27,7 +20,6 @@ $(function() {
 		})
 	}
 	
-	// iCheck单选框及复选框事件绑定
 	if ($.fn.iCheck !== undefined) {
 		$(".check-box:not(.noicheck),.radio-box:not(.noicheck)").each(function() {
             $(this).iCheck({
@@ -37,7 +29,6 @@ $(function() {
         })
 	}
 	 
-	// laydate 时间控件绑定
 	if ($(".select-time").length > 0) {
 		layui.use('laydate', function() {
 		    var laydate = layui.laydate;
@@ -47,7 +38,6 @@ $(function() {
 		        theme: 'molv',
 		        trigger: 'click',
 		        done: function(value, date) {
-		            // 结束时间大于开始时间
 		            if (value !== '') {
 		                endDate.config.min.year = date.year;
 		                endDate.config.min.month = date.month - 1;
@@ -65,7 +55,6 @@ $(function() {
 		        theme: 'molv',
 		        trigger: 'click',
 		        done: function(value, date) {
-		            // 开始时间小于结束时间
 		            if (value !== '') {
 		                startDate.config.max.year = date.year;
 		                startDate.config.max.month = date.month - 1;
@@ -79,19 +68,14 @@ $(function() {
 		    });
 		});
 	}
-	// laydate time-input 时间控件绑定
 	if ($(".time-input").length > 0) {
 		layui.use('laydate', function () {
 			var com = layui.laydate;
 			$(".time-input").each(function (index, item) {
 				var time = $(item);
-				// 控制控件外观
 				var type = time.attr("data-type") || 'date';
-				// 控制回显格式
 				var format = time.attr("data-format") || 'yyyy-MM-dd';
-				// 控制日期控件按钮
 				var buttons = time.attr("data-btn") || 'clear|now|confirm', newBtnArr = [];
-				// 日期控件选择完成后回调处理
 				var callback = time.attr("data-callback") || {};
 				if (buttons) {
 					if (buttons.indexOf("|") > 0) {
@@ -126,7 +110,6 @@ $(function() {
 			});
 		});
 	}
-	// tree 关键字搜索绑定
 	if ($("#keyword").length > 0) {
 		$("#keyword").bind("focus", function focusKey(e) {
 		    if ($("#keyword").hasClass("empty")) {
@@ -139,7 +122,6 @@ $(function() {
 		    $.tree.searchNode(e);
 		}).bind("input propertychange", $.tree.searchNode);
 	}
-	// tree表格树 展开/折叠
 	var expandFlag;
 	$("#expandAllBtn").click(function() {
 		var dataExpand = $.common.isEmpty(table.options.expandAll) ? true : table.options.expandAll;
@@ -151,7 +133,6 @@ $(function() {
 	    }
 	    expandFlag = expandFlag ? false: true;
 	})
-	// 按下ESC按钮关闭弹层
 	$('body', document).on('keyup', function(e) {
 	    if (e.which === 27) {
 	        $.modal.closeAll();
@@ -202,7 +183,6 @@ $(function() {
     };
 })(jQuery);
 
-/** 刷新选项卡 */
 var refreshItem = function(){
     var topWindow = $(window.parent.document);
 	var currentId = $('.page-tabs-content', topWindow).find('.active').attr('data-id');
@@ -211,14 +191,11 @@ var refreshItem = function(){
     target.attr('src', url).ready();
 }
 
-/** 关闭选项卡 */
 var closeItem = function(dataId){
 	var topWindow = $(window.parent.document);
 	if($.common.isNotEmpty(dataId)){
 		window.parent.$.modal.closeLoading();
-		// 根据dataId关闭指定选项卡
 		$('.menuTab[data-id="' + dataId + '"]', topWindow).remove();
-		// 移除相应tab对应的内容区
 		$('.mainContent .eport_iframe[data-id="' + dataId + '"]', topWindow).remove();
 		return;
 	}
@@ -235,20 +212,17 @@ var closeItem = function(dataId){
 	}
 }
 
-/** 创建选项卡 */
 function createMenuItem(dataUrl, menuName) {
 	var panelUrl = window.frameElement.getAttribute('data-id');
     dataIndex = $.common.random(1,100),
     flag = true;
     if (dataUrl == undefined || $.trim(dataUrl).length == 0) return false;
     var topWindow = $(window.parent.document);
-    // 选项卡菜单已存在
     $('.menuTab', topWindow).each(function() {
         if ($(this).data('id') == dataUrl) {
             if (!$(this).hasClass('active')) {
                 $(this).addClass('active').siblings('.menuTab').removeClass('active');
                 $('.page-tabs-content').animate({ marginLeft: ""}, "fast");
-                // 显示tab对应的内容区
                 $('.mainContent .eport_iframe', topWindow).each(function() {
                     if ($(this).data('id') == dataUrl) {
                         $(this).show().siblings('.eport_iframe').hide();
@@ -260,12 +234,10 @@ function createMenuItem(dataUrl, menuName) {
             return false;
         }
     });
-    // 选项卡菜单不存在
     if (flag) {
         var str = '<a href="javascript:;" class="active menuTab" data-id="' + dataUrl + '" data-panel="' + panelUrl + '">' + menuName + ' <i class="fa fa-times-circle"></i></a>';
         $('.menuTab', topWindow).removeClass('active');
 
-        // 添加选项卡对应的iframe
         var str1 = '<iframe class="eport_iframe" name="iframe' + dataIndex + '" width="100%" height="100%" src="' + dataUrl + '" frameborder="0" data-id="' + dataUrl + '" data-panel="' + panelUrl + '" seamless></iframe>';
         $('.mainContent', topWindow).find('iframe.eport_iframe').hide().parents('.mainContent').append(str1);
         
@@ -274,13 +246,11 @@ function createMenuItem(dataUrl, menuName) {
         	window.parent.$.modal.closeLoading();
         });
 
-        // 添加选项卡
         $('.menuTabs .page-tabs-content', topWindow).append(str);
     }
     return false;
 }
 
-//日志打印封装处理
 var log = {
     log: function(msg) {
         console.log(msg);
@@ -296,7 +266,6 @@ var log = {
     }
 };
 
-//本地缓存处理
 var storage = {
     set: function(key, value) {
         window.localStorage.setItem(key, value);
@@ -312,11 +281,10 @@ var storage = {
     }
 };
 
-/** 设置全局ajax处理 */
 $.ajaxSetup({
     complete: function(XMLHttpRequest, textStatus) {
         if (textStatus == 'timeout') {
-        	$.modal.alertWarning("Hết thời gian chờ Server, hãy thử lại!");
+        	$.modal.alertWarning("Hết thời gian chờ server, hãy thử lại!");
         	$.modal.enable();
             $.modal.closeLoading();
         } else if (textStatus == "parsererror" || textStatus == "error") {
