@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import com.alibaba.fastjson.JSONArray;
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -186,8 +188,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			for (EquipmentDo e : equipmentDos) {
 				e.setCarrierId(getUserId());
 				// TODO get date from client
-				e.setExpiredDem(new Date());
+				
 				// TODO validate check
+
 				// Check if carrier group code is valid
 				if(!getGroupCodes().contains(e.getCarrierCode())) {
 					return AjaxResult.error("Mã hãng tàu không đúng");
@@ -197,6 +200,14 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					return AjaxResult.error("Mã vận đơn (B/L No.) " + e.getBillOfLading() +" đã tồn tại. Hãy kiểm tra dữ liệu");
 				}
 				// Check expiredDem is future
+				Date expiredDem = e.getExpiredDem();
+				expiredDem.setHours(23);
+				expiredDem.setMinutes(59);
+				expiredDem.setSeconds(59);
+				e.setExpiredDem(expiredDem);
+				if(expiredDem.before(new Date())) {
+					return AjaxResult.error("Hạn lệnh của không được phép trong quá khứ");
+				}
 				// DEM Free date la so
 				
 			}
@@ -214,44 +225,19 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
 	@PostMapping("/update")
 	@ResponseBody
-	public AjaxResult update(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
-		JSONArray equipmentDoList = null;
-		if (equipmentDo.isPresent()) {
-			equipmentDoList = equipmentDo.get();
-		}
-//		equipmentDo.ifPresent(value -> equipmentDoList = value);
-//		CarrierAccount currentUser = ShiroUtils.getSysUser();
-		if (equipmentDoList != null) {
-			String[] strList = new String[13];
-			for (int index = 0; index < equipmentDoList.size(); index++) {
-				// Resolve " mark in array
-				String st = equipmentDoList.get(index++).toString();
-				System.out.println("strList   " + st);
-				strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
-				if (index == 1) {
-					strList[0] = strList[0].substring(strList[0].indexOf("[") + 2, strList[0].length());
-				}
-				for (int i = 1; i < 12; i++) {
-					strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
-				}
-				// String a = equipmentDoList.get(index).toString();
-				// Resolve ]} mark in last element
-				// int listSize = equipmentDoList.size();
-				// if (index == listSize-1) {
-				// strList[11] = strList[11].substring(0, strList[11].indexOf("]"));
-				// strList[11] = a.substring(0, a.length() - 2).replace('"', ' ').trim();
-				// } else {
-				// strList[11] = a.substring(0, a.length() - 1).replace('"', ' ').trim();
-				// }
-
-				// Insert new DO
-				EquipmentDo equipment = new EquipmentDo();
-				equipment.setStatus(strList[11]);
-				equipment.setId(Long.parseLong(strList[0]));
-				equipmentDoService.updateEquipmentDo(equipment);
+	public AjaxResult update(@RequestBody List<EquipmentDo> equipmentDos) {
+		if (equipmentDos != null) {
+			for (EquipmentDo e : equipmentDos) {
+				e.setUpdateBy(ShiroUtils.getSysUser().getFullName());
+				e.setUpdateTime(new Date());
 			}
-		}
-		return toAjax(1);
+			for(EquipmentDo edo : equipmentDos) {
+				equipmentDoService.updateEquipmentDo(edo);
+			}
+			
+			return AjaxResult.success("Đã cập nhật thành công " + equipmentDos.size() + " DO lên Web Portal.");
+    	}
+    	return AjaxResult.success();
 	}
 
 	/**

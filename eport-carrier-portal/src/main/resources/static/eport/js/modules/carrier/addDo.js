@@ -132,7 +132,6 @@
             cells: function (row, col) {
               var cellProp = {};
               if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
-                // cellProp.className = " above-fifty";
               } else if (col === 5) {
                 cellProp.className = " not-date";
               }
@@ -151,10 +150,7 @@
 
       function saveDO() {
         var myTableData = hot.getSourceData();
-        // If the last row is empty, remove it before validation
         if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
-          // hot.updateSettings({minSpareRows: 0});
-          // Remove the last row if it's empty
           hot.alter("remove_row",parseInt(myTableData.length - 1),(keepEmptyRows = false));
         }
         var cleanedGridData = [];
@@ -177,11 +173,11 @@
           doObj.voyNo = item['voyage'];
           doObj.vessel = item['vessel'];
           doObj.remark = item['remark'];
-          
           doList.push(doObj);
         });
-        errorFlg = false;
        
+        errorFlg = false;
+    
         if (!errorFlg) {
         	$.modal.confirm("Bạn có chắc chắn cập nhật DO này lên Web Portal của Cảng Đà Nẵng không?", function() {
                 $.ajax({
@@ -203,12 +199,4 @@
         	{title:"Xác Nhận Gửi DO",btn:["Đồng Ý","Hủy Bỏ"]});
         }
       }
-      // Validate the cells and submit the form via ajax or whatever
-      // hot.validateCells(function (result, obj) {
-      // if (result == true) {
-      // var jsonData = JSON.stringify(myTableData);
-      // console.log(jsonData);
-      // } else {
-      // //hotInstance.updateSettings({minSpareRows: 1});
-      // }
-      // });
+     
