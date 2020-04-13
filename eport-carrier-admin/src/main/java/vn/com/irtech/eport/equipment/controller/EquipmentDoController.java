@@ -135,11 +135,11 @@ public class EquipmentDoController extends BaseController {
 		return toAjax(equipmentDoService.updateEquipmentDo(EquipmentDo));
 	}
 
-	@RequiresPermissions("equipment:do:edit")
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
-	@PostMapping("/changeStatus")
-	@ResponseBody
-	public AjaxResult doChangeStatus(String billOfLading) {
+	// @RequiresPermissions("equipment:do:edit")
+	// @Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
+	// @PostMapping("/changeStatus")
+	// @ResponseBody
+	private Boolean doChangeStatus(String billOfLading) {
 		Date documentReceiptDate = new Date();
 		currentUser = ShiroUtils.getSysUser();
 		EquipmentDo equipmentDo = new EquipmentDo();
@@ -147,14 +147,14 @@ public class EquipmentDoController extends BaseController {
 		equipmentDo.setUpdateBy(currentUser.getLoginName());
 		equipmentDo.setUpdateTime(documentReceiptDate);
 		equipmentDo.setBillOfLading(billOfLading);
-		return toAjax(equipmentDoService.updateBillOfLading(equipmentDo));
+		return true;
 	}
 
-	@RequiresPermissions("equipment:do:edit")
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
-	@PostMapping("/changeDocumnetStatus")
-	@ResponseBody
-	public AjaxResult changeDocumnetStatus(String billOfLading) {
+	// @RequiresPermissions("equipment:do:edit")
+	// @Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
+	// @PostMapping("/changeDocumnetStatus")
+	// @ResponseBody
+	public Boolean changeDocumnetStatus(String billOfLading) {
 		Date documentReceiptDate = new Date();
 		currentUser = ShiroUtils.getSysUser();
 		EquipmentDo equipmentDo = new EquipmentDo();
@@ -162,7 +162,7 @@ public class EquipmentDoController extends BaseController {
 		equipmentDo.setUpdateBy(currentUser.getLoginName());
 		equipmentDo.setDocumentReceiptDate(documentReceiptDate);
 		equipmentDo.setBillOfLading(billOfLading);
-		return toAjax(equipmentDoService.updateBillOfLading(equipmentDo));
+		return true;
 	}
 
 	/**
@@ -174,6 +174,33 @@ public class EquipmentDoController extends BaseController {
 	@ResponseBody
 	public AjaxResult remove(String ids) {
 		return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
-	}
+    }
+    
+    @GetMapping("/checkStatus/{billOfLading}")
+    public String checkStatus(@PathVariable("billOfLading") String billOfLading, ModelMap mmap)
+    {
+        billOfLading = billOfLading.replace("{", "");
+        billOfLading = billOfLading.replace("}", "");
+        EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfoSubmitDO(billOfLading);
+		mmap.addAttribute("equipmentDos", equipmentDos);
+        return prefix + "/checkStatus";
+    }
 
-}
+    @PostMapping("/updateDoStatus")
+    public AjaxResult updateDoStatus(String billOfLading,String status,String documentStatus,String note)
+    {
+        if(status == "1" && equipmentDoService.countDOStatusYes(billOfLading) > 0)
+        {
+            doChangeStatus(billOfLading);
+        }
+        if(status == "1" && equipmentDoService.countDocmentStatusYes(billOfLading) > 0)
+        {
+            changeDocumnetStatus(billOfLading);
+        }
+        return success();
+    }
+
+
+    
+
+}   
