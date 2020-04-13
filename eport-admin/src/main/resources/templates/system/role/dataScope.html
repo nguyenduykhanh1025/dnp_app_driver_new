@@ -9,32 +9,32 @@
 		<form class="form-horizontal m" id="form-role-edit" th:object="${role}">
 			<input id="roleId" name="roleId" type="hidden" th:field="*{roleId}"/>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Role Name:</label>
+				<label class="col-sm-3 control-label">Tên vai trò:</label>
 				<div class="col-sm-8">
 					<input class="form-control" type="text" name="roleName" id="roleName" th:field="*{roleName}" readonly="true"/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Permission characters:</label>
+				<label class="col-sm-3 control-label">Ký tự cho phép:</label>
 				<div class="col-sm-8">
 					<input class="form-control" type="text" name="roleKey" id="roleKey" th:field="*{roleKey}" readonly="true">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">Data range:</label>
+				<label class="col-sm-3 control-label">Phạm vi dữ liệu:</label>
 				<div class="col-sm-8">
 					<select id="dataScope" name="dataScope" class="form-control m-b">
-						<option value="1" th:field="*{dataScope}">Full data permissions</option>
-						<option value="2" th:field="*{dataScope}">Custom data permissions</option>
-						<option value="3" th:field="*{dataScope}">Data authority in this department</option>
-						<option value="4" th:field="*{dataScope}">Data authority for this department and below</option>
-						<option value="5" th:field="*{dataScope}">Only my data permissions</option>
+						<option value="1" th:field="*{dataScope}">Cho phép toàn bộ dữ liệu</option>
+						<option value="2" th:field="*{dataScope}">Cho phép dữ liệu tùy chỉnh</option>
+						<option value="3" th:field="*{dataScope}">Thẩm quyền dữ liệu trong bộ phận này</option>
+						<option value="4" th:field="*{dataScope}">Thẩm quyền dữ liệu cho bộ phận này và phía dưới</option>
+						<option value="5" th:field="*{dataScope}">Cho phép chỉ dữ liệu của bạn</option>
 					</select>
-					<span class="help-block m-b-none"><i class="fa fa-info-circle"></i> In special cases, set to "custom data permissions”</span>
+					<span class="help-block m-b-none"><i class="fa fa-info-circle"></i> Trong trường hợp đặc biệt, hãy đặt thành "quyền dữ liệu tùy chỉnh</span>
 				</div>
 			</div>
 			<div class="form-group" id="authDataScope" th:style="'display:' + @{(*{dataScope=='2'} ? 'block' : 'none')} + ''">
-				<label class="col-sm-3 control-label">Data permission</label>
+				<label class="col-sm-3 control-label">Cho phép dữ liệu</label>
 				<div class="col-sm-8">
 					<div id="deptTrees" class="ztree"></div>
 				</div>
@@ -81,7 +81,7 @@
 				},
 				async : false,
 				error : function(request) {
-					$.modal.alertError("系统错误");
+					$.modal.alertError("Lỗi hệ thống");
 				},
 				success : function(data) {
 					$.operate.successCallback(data);

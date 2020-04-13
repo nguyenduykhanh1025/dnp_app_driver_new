@@ -7,8 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,12 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSONArray;
-
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -216,6 +211,63 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				equipmentDoService.insertEquipmentDo(edo);
 			}
 			// return toAjax(equipmentDoService.insertEquipmentDoList(doList));
+
+			// SEND EMAIL WHEN ADD SUCCESSFULLY
+			new Thread() {
+				public void run() {
+					Collections.sort(equipmentDos, new BillNoComparator());
+					EquipmentDo eTemp = equipmentDos.get(0);
+					String conStr = "" + eTemp.getContainerNumber() + ";";
+					for (int e = 1; e < equipmentDos.size(); e++) {
+						if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
+							eTemp = equipmentDos.get(e);
+							conStr += eTemp.getBillOfLading() + ";";
+						} else {
+							Map<String, Object> variables = new HashMap<>();
+							variables.put("updateTime", eTemp.getUpdateTime());
+							variables.put("carrierCode", eTemp.getCarrierCode());
+							variables.put("billOfLading", eTemp.getBillOfLading());
+							variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
+							variables.put("consignee", eTemp.getConsignee());
+							variables.put("expiredDem", eTemp.getExpiredDem());
+							variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+							variables.put("detFreeTime", eTemp.getDetFreeTime());
+							variables.put("vessel", eTemp.getVessel());
+							variables.put("voyNo", eTemp.getVoyNo());
+							variables.put("remark", eTemp.getRemark());
+							eTemp = equipmentDos.get(e);
+							conStr = "" + eTemp.getContainerNumber() + ";";
+							// send email
+							try {
+								mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": thêm thành công", getUser().getEmail(), variables,
+										"dnpEmail");
+							} catch (Exception exception) {
+								exception.printStackTrace();
+							}
+						}
+					}
+					Map<String, Object> variables = new HashMap<>();
+					variables.put("updateTime", eTemp.getUpdateTime());
+					variables.put("carrierCode", eTemp.getCarrierCode());
+					variables.put("billOfLading", eTemp.getBillOfLading());
+					variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
+					variables.put("consignee", eTemp.getConsignee());
+					variables.put("expiredDem", eTemp.getExpiredDem());
+					variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+					variables.put("detFreeTime", eTemp.getDetFreeTime());
+					variables.put("vessel", eTemp.getVessel());
+					variables.put("voyNo", eTemp.getVoyNo());
+					variables.put("remark", eTemp.getRemark());
+					// send email
+					try {
+						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", getUser().getEmail(), variables,
+								"dnpEmail");
+					} catch (Exception exception) {
+						exception.printStackTrace();
+					}
+				}
+			}.start();
+			// END SEND EMAIL
 			return AjaxResult.success("Đã lưu thành công " + equipmentDos.size() + " DO lên Web Portal.");
     	}
     	return AjaxResult.error("Không có dữ liệu để tạo DO, hãy kiểm tra lại");
@@ -232,9 +284,68 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				e.setUpdateTime(new Date());
 			}
 			for(EquipmentDo edo : equipmentDos) {
-				equipmentDoService.updateEquipmentDo(edo);
+				if (edo.getId() != null) {
+					equipmentDoService.updateEquipmentDo(edo);
+				} else {
+					equipmentDoService.insertEquipmentDo(edo);
+				}				
 			}
-			
+			// SEND EMAIL WHEN ADD SUCCESSFULLY
+			new Thread() {
+				public void run() {
+					Collections.sort(equipmentDos, new BillNoComparator());
+					EquipmentDo eTemp = equipmentDos.get(0);
+					String conStr = "" + eTemp.getContainerNumber() + ";";
+					for (int e = 1; e < equipmentDos.size(); e++) {
+						if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
+							eTemp = equipmentDos.get(e);
+							conStr += eTemp.getBillOfLading() + ";";
+						} else {
+							Map<String, Object> variables = new HashMap<>();
+							variables.put("updateTime", eTemp.getUpdateTime());
+							variables.put("carrierCode", eTemp.getCarrierCode());
+							variables.put("billOfLading", eTemp.getBillOfLading());
+							variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
+							variables.put("consignee", eTemp.getConsignee());
+							variables.put("expiredDem", eTemp.getExpiredDem());
+							variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+							variables.put("detFreeTime", eTemp.getDetFreeTime());
+							variables.put("vessel", eTemp.getVessel());
+							variables.put("voyNo", eTemp.getVoyNo());
+							variables.put("remark", eTemp.getRemark());
+							eTemp = equipmentDos.get(e);
+							conStr = "" + eTemp.getContainerNumber() + ";";
+							// send email
+							try {
+								mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", getUser().getEmail(), variables,
+										"dnpEmail");
+							} catch (Exception exception) {
+								exception.printStackTrace();
+							}
+						}
+					}
+					Map<String, Object> variables = new HashMap<>();
+					variables.put("updateTime", eTemp.getUpdateTime());
+					variables.put("carrierCode", eTemp.getCarrierCode());
+					variables.put("billOfLading", eTemp.getBillOfLading());
+					variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
+					variables.put("consignee", eTemp.getConsignee());
+					variables.put("expiredDem", eTemp.getExpiredDem());
+					variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
+					variables.put("detFreeTime", eTemp.getDetFreeTime());
+					variables.put("vessel", eTemp.getVessel());
+					variables.put("voyNo", eTemp.getVoyNo());
+					variables.put("remark", eTemp.getRemark());
+					// send email
+					try {
+						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", getUser().getEmail(), variables,
+								"dnpEmail");
+					} catch (Exception exception) {
+						exception.printStackTrace();
+					}
+				}
+			}.start();
+			// END SEND EMAIL
 			return AjaxResult.success("Đã cập nhật thành công " + equipmentDos.size() + " DO lên Web Portal.");
     	}
     	return AjaxResult.success();
@@ -370,7 +481,12 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
   @GetMapping("/getInfoBl")
   @ResponseBody
   public List<EquipmentDo> getInfoBl(String blNo) {
-    List<EquipmentDo> doList = equipmentDoService.selectEquipmentDoVoByBillNo(blNo);
-    return doList;
+	List<EquipmentDo> doList = equipmentDoService.selectEquipmentDoVoByBillNo(blNo);
+	if (doList.size() !=0) {
+		if (doList.get(0).getCarrierId() == getUserId()) {
+			return doList;
+		}
+	}
+    return null;
   }
 }
