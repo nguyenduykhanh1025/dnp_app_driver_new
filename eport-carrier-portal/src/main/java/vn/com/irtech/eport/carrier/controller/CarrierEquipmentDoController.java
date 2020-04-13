@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.alibaba.fastjson.JSONArray;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -22,17 +20,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONArray;
+
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.AppToolUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
-import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
@@ -103,7 +101,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	 */
 	@GetMapping("/viewbl/{blNo}")
 	public String billInfo(@PathVariable("blNo") String billOfLading, ModelMap mmap) {
-		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfoSubmitDO(billOfLading);
+		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
 		mmap.addAttribute("bl", equipmentDos);
 		return prefix + "/billInfo";
 	}

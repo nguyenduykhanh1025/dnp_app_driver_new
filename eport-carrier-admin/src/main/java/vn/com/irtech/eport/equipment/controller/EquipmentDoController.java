@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.annotation.Log;
@@ -183,7 +182,7 @@ public class EquipmentDoController extends BaseController {
     {
         billOfLading = billOfLading.replace("{", "");
         billOfLading = billOfLading.replace("}", "");
-        EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfoSubmitDO(billOfLading);
+        EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
 		mmap.addAttribute("equipmentDos", equipmentDos);
         return prefix + "/checkStatus";
     }
