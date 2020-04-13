@@ -37,6 +37,11 @@
         border-radius: 10px;
         box-shadow: grey 3px 2px 3px;
       }
+
+      .red {
+        color: red !important;
+        text-transform: none;
+      }
     </style>
   </head>
 
@@ -121,6 +126,7 @@
         },
         success: function(result) {
           doList = result;
+          console.log(doList);
           var example = document.getElementById('showDemo');
       var hot = new Handsontable(example, {
         data: doList,
@@ -135,11 +141,11 @@
         height: 500,
         colHeaders: [
           "ID<br>id",
-          // "Mã hãng tàu<br>Carrier",
-          // "Số vận đơn<br> Bill No",
+          "Mã hãng tàu<br>Carrier",
+          "Số vận đơn<br> Bill No",
           "Số Container<br>Container No.",
           "Tên khách hàng<br>Consignee",
-          // "Hạn lệnh<br> Valid to date",
+          "Hạn lệnh<br> Valid to date",
           "Nơi hạ vỏ<br> Empty depot",
           "Ngày miễn lưu<br> DET Freetime",
           "Tên tàu<br>Vessel",
@@ -147,12 +153,18 @@
           // "XÃ¡c nháº­n <br> lÃ m lá»‡nh",
           // "Ä�Ã£ ná»™p <br> DO gá»‘c",
           // "NgÃ y ná»™p<br>DO date in",
-          "Ghi chú<br>Note"
+          "Ghi chú<br>Remark"
         ],
         filter: true,
         licenseKey: "non-commercial-and-evaluation",
         columns: [{
             data: 'id',
+          },
+          {
+            data: 'carrierCode'
+          },
+          {
+            data: 'billOfLading'
           },
           {
             data: 'containerNumber',
@@ -161,6 +173,11 @@
           {
             data: 'consignee',
             type: 'text',
+          },
+          {
+            data: 'expiredDem',
+            dateFormat: "DD/MM/YYYY",
+            correctFormat: true,
           },
           {
             data: 'emptyContainerDepot',
