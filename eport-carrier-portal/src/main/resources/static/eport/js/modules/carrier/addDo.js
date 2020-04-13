@@ -132,7 +132,6 @@
             cells: function (row, col) {
               var cellProp = {};
               if (col === 5 && isGoodDate(hot.getDataAtCell(row, col))) {
-                // cellProp.className = " above-fifty";
               } else if (col === 5) {
                 cellProp.className = " not-date";
               }
@@ -151,10 +150,7 @@
 
       function getAlert() {
         var myTableData = hot.getSourceData();
-        // If the last row is empty, remove it before validation
         if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
-          // hot.updateSettings({minSpareRows: 0});
-          // Remove the last row if it's empty
           hot.alter("remove_row",parseInt(myTableData.length - 1),(keepEmptyRows = false));
         }
         var cleanedGridData = [];
@@ -178,45 +174,11 @@
           doObj.voyNo = item['voyage'];
           doObj.vessel = item['vessel'];
           doObj.remark = item['remark'];
-          // var doObj = {
-          //   carrierCode:item['carrierCode'], 
-          //   blNo: item['blNo'],
-          //   containerNo: item['containerNo'],
-          //   consignee: item['consignee'],
-          //   expiredDem: item['expiredDem'],
-          //   detFreetime: item['detFreetime'],
-          //   emptyDepot: item['emptyDepot'],
-          //   voyage: item['voyage'],
-          //   vessel: item['vessel'],
-          //   remark: item['remark'],
-          // };
           doList.push(doObj);
         });
-        console.log(doList);
-        // var jsonDoList = JSON.stringify(doList);
-        // console.log(jsonDoList);
-        // $.each(cleanedGridData)
-        //validate
-        ///===============================
-        // var errorFlg = false;
-        // $.each(cleanedGridData, function (index, item) {
-        //   if (
-        //     item.blNo == null || item.blNo == '' ||
-        //     item.containerNo == null || item.containerNo == '' ||
-        //     item.consignee == null || item.consignee == '' ||
-        //     item.expiredDem == null || item.expiredDem == '' ||
-        //     !isGoodDate(item.expiredDem)) {
-        // 	  $.modal.alertError("Có lỗi xảy ra tại dòng "+(index + 1)+".<br/>Vui lòng kiểm tra lại dữ liệu");
-        	  errorFlg = false;
-        // 	  return;
-        //     }
-//          else {
-//              count++;
-//            }
-//          main_key = index;
-        // });
-//        main_key++;
-//        console.log(main_key, count);
+       
+        errorFlg = false;
+    
         if (!errorFlg) {
         	$.modal.confirm("Bạn có chắc chắn cập nhật DO này lên Web Portal của Cảng Đà Nẵng không?", function() {
                 $.ajax({
@@ -238,12 +200,4 @@
         	{title:"Xác Nhận Gửi DO",btn:["Đồng Ý","Hủy Bỏ"]});
         }
       }
-      // Validate the cells and submit the form via ajax or whatever
-      // hot.validateCells(function (result, obj) {
-      // if (result == true) {
-      // var jsonData = JSON.stringify(myTableData);
-      // console.log(jsonData);
-      // } else {
-      // //hotInstance.updateSettings({minSpareRows: 1});
-      // }
-      // });
+     
