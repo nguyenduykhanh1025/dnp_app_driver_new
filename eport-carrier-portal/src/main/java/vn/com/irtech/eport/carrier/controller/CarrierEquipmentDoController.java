@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -39,16 +40,18 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 /**
  * Exchange Delivery OrderController
  * 
- * @author ruoyi
+ * @author admin
  * @date 2020-04-06
  */
 @Controller
 @RequestMapping("/carrier/do")
-public class CarrierEquipmentDoController extends BaseController {
+public class CarrierEquipmentDoController extends CarrierBaseController {
   private String prefix = "carrier/do";
   
 	@Autowired
 	private IEquipmentDoService equipmentDoService;
+	@Autowired
+	private ICarrierGroupService groupService;
 	@Autowired
 	private MailService mailService;
 
@@ -57,18 +60,18 @@ public class CarrierEquipmentDoController extends BaseController {
 		return prefix + "/do";
 	}
 
-	/**
-	 * Get Exchange Delivery Order List
-	 */
-	@PostMapping("/list2")
-	@ResponseBody
-	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
-		int page = EquipmentDo.getPage();
-		page = page * 10;
-		EquipmentDo.setPage(page);
-		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingCarrier(EquipmentDo);
-		return getDataTable(list);
-	}
+//	/**
+//	 * Get Exchange Delivery Order List
+//	 */
+//	@PostMapping("/list2")
+//	@ResponseBody
+//	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
+//		int page = EquipmentDo.getPage();
+//		page = page * 10;
+//		EquipmentDo.setPage(page);
+//		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingCarrier(EquipmentDo);
+//		return getDataTable(list);
+//	}
 
 	@RequestMapping("/list")
 	@ResponseBody
@@ -114,39 +117,39 @@ public class CarrierEquipmentDoController extends BaseController {
 		return equipmentDoService.selectEquipmentDoDetails(equipmentDo);
 	}
 
-	/**
-	 * Update Exchange Delivery Order
-	 */
-	@GetMapping("/changeExpiredDate/{billOfLading}/{status}")
-	public String changeExpiredDate(@PathVariable("billOfLading") String billOfLading,
-			@PathVariable("status") String status, ModelMap mmap) {
-		mmap.addAttribute("billOfLading", billOfLading.substring(1, billOfLading.length() - 1));
-		mmap.addAttribute("status", status.substring(1, status.length() - 1));
-		return prefix + "/changeExpriedDate";
-	}
-
-	// update
-	@Log(title = "Update Expired Date", businessType = BusinessType.UPDATE)
-	@PostMapping("/updateExpiredDate")
-	@ResponseBody
-	public AjaxResult updateExpiredDate(String billOfLading, Date expiredDem, boolean status) {
-		Date now = new Date();
-		expiredDem.setHours(23);
-		expiredDem.setMinutes(59);
-		expiredDem.setSeconds(59);
-		if (expiredDem.getTime() >= now.getTime()) {
-			if (!status) {
-				EquipmentDo equipmentDo = new EquipmentDo();
-				equipmentDo.setBillOfLading(billOfLading);
-				equipmentDo.setExpiredDem(expiredDem);
-				return toAjax(equipmentDoService.updateEquipmentDoExpiredDem(equipmentDo));
-			} else
-				return error("Cập nhật thất bại vì hóa đơn đã làm lệnh");
-		} else {
-			return error("Ngày gia hạn lệnh không được trong quá khứ");
-		}
-
-	}
+//	/**
+//	 * Update Exchange Delivery Order
+//	 */
+//	@GetMapping("/changeExpiredDate/{billOfLading}/{status}")
+//	public String changeExpiredDate(@PathVariable("billOfLading") String billOfLading,
+//			@PathVariable("status") String status, ModelMap mmap) {
+//		mmap.addAttribute("billOfLading", billOfLading.substring(1, billOfLading.length() - 1));
+//		mmap.addAttribute("status", status.substring(1, status.length() - 1));
+//		return prefix + "/changeExpriedDate";
+//	}
+//
+//	// update
+//	@Log(title = "Update Expired Date", businessType = BusinessType.UPDATE)
+//	@PostMapping("/updateExpiredDate")
+//	@ResponseBody
+//	public AjaxResult updateExpiredDate(String billOfLading, Date expiredDem, boolean status) {
+//		Date now = new Date();
+//		expiredDem.setHours(23);
+//		expiredDem.setMinutes(59);
+//		expiredDem.setSeconds(59);
+//		if (expiredDem.getTime() >= now.getTime()) {
+//			if (!status) {
+//				EquipmentDo equipmentDo = new EquipmentDo();
+//				equipmentDo.setBillOfLading(billOfLading);
+//				equipmentDo.setExpiredDem(expiredDem);
+//				return toAjax(equipmentDoService.updateEquipmentDoExpiredDem(equipmentDo));
+//			} else
+//				return error("Cập nhật thất bại vì hóa đơn đã làm lệnh");
+//		} else {
+//			return error("Ngày gia hạn lệnh không được trong quá khứ");
+//		}
+//
+//	}
 
 	/**
 	 * Export Exchange Delivery Order List
@@ -179,16 +182,34 @@ public class CarrierEquipmentDoController extends BaseController {
 	@PostMapping("/add")
 	@ResponseBody
 	public AjaxResult addSave(@RequestBody List<EquipmentDo> equipmentDos) {
+		//String message = userService.importUser(userList, updateSupport, operName);
+        //return AjaxResult.success(message);
 		if (equipmentDos != null) {
 			for (EquipmentDo e : equipmentDos) {
-				e.setCarrierId(ShiroUtils.getUserId());
-				e.setCreateBy(ShiroUtils.getSysUser().getFullName());
+				e.setCarrierId(getUserId());
+				// TODO get date from client
+				e.setExpiredDem(new Date());
+				// TODO validate check
+				// Check if carrier group code is valid
+				if(!getGroupCodes().contains(e.getCarrierCode())) {
+					return AjaxResult.error("Mã hãng tàu không đúng");
+				}
+				if(equipmentDoService.getBillOfLadingInfo(e.getBillOfLading()) != null) {
+					// exist B/L
+					return AjaxResult.error("Mã vận đơn (B/L No.) " + e.getBillOfLading() +" đã tồn tại. Hãy kiểm tra dữ liệu");
+				}
+				// Check expiredDem is future
+				// DEM Free date la so
+				
 			}
-			HashMap<String, Object> doList = new HashMap<>();
-			doList.put("doList", equipmentDos);
-			return toAjax(equipmentDoService.insertEquipmentDoList(doList));
+			// Do the insert to DB
+			for(EquipmentDo edo : equipmentDos) {
+				equipmentDoService.insertEquipmentDo(edo);
+			}
+			// return toAjax(equipmentDoService.insertEquipmentDoList(doList));
+			return AjaxResult.success("Đã lưu thành công " + equipmentDos.size() + " DO lên Web Portal.");
     	}
-    	return AjaxResult.success();
+    	return AjaxResult.error("Không có dữ liệu để tạo DO, hãy kiểm tra lại");
 	}
 
 	// update
