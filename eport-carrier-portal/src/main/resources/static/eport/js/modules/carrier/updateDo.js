@@ -123,13 +123,13 @@
           var date = new Date(item['expiredDem'].replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"));
           doObj.id = item['id'];
           doObj.carrierCode = item['carrierCode'];
-          doObj.billOfLading = item['blNo'];
-          doObj.containerNumber = item['containerNo'];
+          doObj.billOfLading = item['billOfLading'];
+          doObj.containerNumber = item['containerNumber'];
           doObj.consignee = item['consignee'];
           doObj.expiredDem = date.getTime();
-          doObj.detFreeTime = item['detFreetime'];
-          doObj.emptyContainerDepot = item['emptyDepot'];
-          doObj.voyNo = item['voyage'];
+          doObj.detFreeTime = item['detFreeTime'];
+          doObj.emptyContainerDepot = item['emptyContainerDepot'];
+          doObj.voyNo = item['voyNo'];
           doObj.vessel = item['vessel'];
           doObj.remark = item['remark'];
           
@@ -138,7 +138,7 @@
 
         $.modal.confirm("Bạn có chắc chắn cập nhật DO không?", function() {
           $.ajax({
-            url: "/carrier/do/add",
+            url: "/carrier/do/update",
             method: "post",
             contentType : "application/json",
             accept: 'text/plain',
