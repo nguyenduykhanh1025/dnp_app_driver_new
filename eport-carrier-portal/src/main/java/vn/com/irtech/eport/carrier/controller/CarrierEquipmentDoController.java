@@ -182,7 +182,6 @@ public class CarrierEquipmentDoController extends BaseController {
 		if (equipmentDos != null) {
 			for (EquipmentDo e : equipmentDos) {
 				e.setCarrierId(ShiroUtils.getUserId());
-				e.setExpiredDem(new Date());
 			}
 			HashMap<String, Object> doList = new HashMap<>();
 			doList.put("doList", equipmentDos);
