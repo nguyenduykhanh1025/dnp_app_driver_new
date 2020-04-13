@@ -99,13 +99,11 @@ public class CarrierEquipmentDoController extends BaseController {
 	 */
 	@GetMapping("/viewbl/{blNo}")
 	public String billInfo(@PathVariable("blNo") String billOfLading, ModelMap mmap) {
-		EquipmentDo equipmentDo = new EquipmentDo();
-		equipmentDo.setBillOfLading(billOfLading.substring(1, billOfLading.length() - 1));
-		List<EquipmentDo> equipmentDos = equipmentDoService.selectEquipmentDoDetails(equipmentDo);
-		mmap.addAttribute("equipmentDos", equipmentDos);
+		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
+		mmap.addAttribute("bl", equipmentDos);
 		return prefix + "/billInfo";
 	}
-
+	
 	@GetMapping("/searchCon")
 	@ResponseBody
 	public List<EquipmentDo> searchCon(String billOfLading, String contNo) {

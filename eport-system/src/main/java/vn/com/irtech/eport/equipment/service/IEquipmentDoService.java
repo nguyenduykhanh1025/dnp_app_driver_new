@@ -109,4 +109,11 @@ public interface IEquipmentDoService
      * @param operator codes
      */
 	public Map<String, String> getReportByCarrierGroup(String[] codes);
+
+	/**
+	 * Get Bill of lading info
+	 * @param blNo
+	 * @return
+	 */
+	public EquipmentDo getBillOfLadingInfo(String blNo);
 }
