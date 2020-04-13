@@ -124,10 +124,5 @@ public interface IEquipmentDoService
 	 * @param blNo
 	 * @return
 	 */
-	public EquipmentDo getBillOfLadingInfoSubmitDO(String billOfLading);
-
-    public EquipmentDo getBillOfLadingInfo(String blNo);
-    
-
-    public int insertEquipmentDoList(HashMap<String, Object> doList);
+	public EquipmentDo getBillOfLadingInfo(String blNo);
 }
