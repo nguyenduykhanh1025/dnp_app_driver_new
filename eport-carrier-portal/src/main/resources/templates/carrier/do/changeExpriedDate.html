@@ -13,19 +13,21 @@
     <th:block th:include="include :: datetimepicker-css" />
     <style>
       .bigboy {
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-around;
+        text-align: center;
       }
     </style>
   </head>
   <body>
     <div class="bigboy">
-      <div>
+      <div style="margin-bottom: 20px">
         <h2>Cập nhật hạn lệnh mới cho DO</h2>
       </div>
-      <div class="row">
-        <div class="col-md-1 col-xs-3">
+      <div class="row" style="margin-bottom: 80px">
+        <div class="col-md-1 col-xs-4">
           <label
             data-error="wrong"
             data-success="right"
@@ -35,7 +37,8 @@
             Hạn lệnh mới
           </label>
         </div>
-        <div class="col-md-4 col-xs-6 input-group date" id="datetimepicker2">
+
+        <div class="col-md-4 col-xs-7 input-group date" id="datetimepicker2">
           <input
             type="text"
             class="form-control time-input"
