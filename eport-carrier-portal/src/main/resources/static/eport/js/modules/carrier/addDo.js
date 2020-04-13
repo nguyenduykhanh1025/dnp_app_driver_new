@@ -44,7 +44,7 @@
 
       config = {
         stretchH: "all",
-        height: document.documentElement.clientHeight - 60,
+        height: document.documentElement.clientHeight - 70,
         minRows: 100,
         width: "100%",
         minSpareRows: 1,
