@@ -481,7 +481,12 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
   @GetMapping("/getInfoBl")
   @ResponseBody
   public List<EquipmentDo> getInfoBl(String blNo) {
-    List<EquipmentDo> doList = equipmentDoService.selectEquipmentDoVoByBillNo(blNo);
-    return doList;
+	List<EquipmentDo> doList = equipmentDoService.selectEquipmentDoVoByBillNo(blNo);
+	if (doList.size() !=0) {
+		if (doList.get(0).getCarrierId() == getUserId()) {
+			return doList;
+		}
+	}
+    return null;
   }
 }
