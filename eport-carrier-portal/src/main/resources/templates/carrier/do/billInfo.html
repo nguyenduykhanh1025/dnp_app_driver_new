@@ -47,55 +47,52 @@
 
   <body class="white-bg full-height-layout">
     <div class="row">
-    <div class="col-sm-12" style="margin-top: 0px; padding-bottom:5px">
-      <div class="col-sm-12 fixed-table-toolbar">
-          <div class="bs-bars pull-left">
-            <p>Mã hãng tàu: <span id="carrier"></span></p>
-          <p>Số vận đơn: <span id="billNumber"></span></p>
-          <p>
-            Hạn lệnh: <span id="expiredDem"></span>
-            <a class="btn btn-xs btn-primary single"
-              id="updateExpiredDem"
-              onclick="$.operate.addChangeExpired()">
-              <i class="fa fa-edit"></i> Thay đổi hạn lệnh
-            </a>
-          </p>
-          <p>Trạng thái làm lệnh: <span id="dostatus"></span></p>
-          <div class="bs-bars pull-right">
-            
+      <div class="col-sm-12" >
+        <div class="col-sm-12 fixed-table-toolbar" style="height: 50px">
+          <div class="bs-bars" style="display: flex; justify-content: space-between;">
+            <div>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                onclick="update()"
+                style="margin-right: 10px;"
+              >
+              <i class="fa fa-check-circle"></i>&nbsp;Lưu DO
+              </button>
+              <button
+                type="button"
+                class="btn btn-dark"
+                onclick="closeItem()"
+              >
+              <i class="fa fa-times"></i>&nbsp; Hủy bỏ 
+              </button>
+            </div>
+              <p>Mã hãng tàu: <span id="carrier"></span></p>
+              <p>Số vận đơn: <span id="billNumber"></span></p>
+              <p>Trạng thái làm lệnh: <span id="dostatus"></span></p>
           </div>
-      </div>
-      </div>
-      <div class="header-box">
-        <h2>Thông tin DO <span id="billNo"></span></h2>
-      </div>
-      <br />
-      <div class="footer-add">
-        <div style="display:flex; justify-content: space-around">
-          <input class="form-control" type="text" id="searchForm" placeholder="Sá»‘ container" style="width:'80px'; margin-right: 10px;"> 
-          <button class="btn btn-success" onclick="search()" id="searchBtn">Tìm kiếm</button>
         </div>
-        <div>
-          <button
-          type="button"
-          class="btn btn-primary btn-xs"
-          onclick="update()"
-          style="margin-right: 10px; height: 40px;"
-        >
-          Cập nhật thay đổi
-        </button>
-        <button
-          type="button"
-          class="btn btn-dark"
-          onclick="closeItemDo()"
-          style="height: 40px;"
-        >
-          Hủy bỏ thay đổi
-        </button>
-        </div>
-       
       </div>
-      <div id="showDemo"></div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3" style="margin-top: 0px; padding-bottom:5px">
+        <div class="col-sm-12 fixed-table-toolbar">
+          <div class="bs-bars" style="display: flex; justify-content: space-around;">
+            <input class="form-control" type="text" id="searchForm" placeholder="Số container" autocomplete="off" style="width:'80px'; margin-right: 10px;"> 
+            <button class="btn btn-success" onclick="search()" id="searchBtn">Tìm kiếm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+        
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="col-sm-12 fixed-table-toolbar">
+          <div class="bs-bars">
+            <div id="showDemo"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <th:block th:include="include :: footer" />
@@ -110,6 +107,7 @@
     <script type="text/javascript" th:inline="javascript">
       var firstDo = /*[[${bl}]]*/;
       var doList;
+      var hot;
       $("#billNo").html("No: " + firstDo.billOfLading);
       $("#billNumber").html(firstDo.billOfLading);
       $("#carrier").html(firstDo.carrierCode);
@@ -126,7 +124,7 @@
         success: function(result) {
           doList = result;
           var example = document.getElementById('showDemo');
-          var hot = new Handsontable(example, {
+          hot = new Handsontable(example, {
             data: doList,
             stretchH: 'all',
             width: 'auto',
@@ -239,6 +237,7 @@
             }
           }
         });
+
         var jsonData = JSON.stringify(cleanedGridData);
         $.ajax({
           url: "/carrier/do/add",
@@ -254,12 +253,6 @@
           },
         });
       }
-      // $(function () {
-      //   var options = {
-      //     createUrl: "/carrier/do/changeExpiredDate/{"+firstDo.billOfLading+"}/{"+firstDo.status+"}",
-      //   };
-      //   $.table.init(options);
-      // });
 
       function search() {
         $.ajax({
@@ -282,11 +275,6 @@
             $("#searchBtn").click();
           }
         });
-
-        function closeItemDo(date, msg) {
-          $("#expiredDem").html(date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear());
-          $.modal.alertSuccess(msg);
-        }
 
         function closeError(msg) {
           $.modal.alertError(msg);
