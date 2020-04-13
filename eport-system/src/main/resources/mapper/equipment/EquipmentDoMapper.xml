@@ -519,7 +519,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="do.updateBy != null  and do.updateBy != ''">update_by = #{do.updateBy},</if>
                 <if test="do.updateTime != null ">update_time = #{do.updateTime},</if>
             </trim>
-            where id = #{id}
+            where id = #{do.id}
         </foreach>
     </update>
 

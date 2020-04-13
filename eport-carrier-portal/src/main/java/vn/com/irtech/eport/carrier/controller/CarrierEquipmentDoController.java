@@ -182,6 +182,7 @@ public class CarrierEquipmentDoController extends BaseController {
 		if (equipmentDos != null) {
 			for (EquipmentDo e : equipmentDos) {
 				e.setCarrierId(ShiroUtils.getUserId());
+				e.setCreateBy(ShiroUtils.getSysUser().getFullName());
 			}
 			HashMap<String, Object> doList = new HashMap<>();
 			doList.put("doList", equipmentDos);
@@ -194,10 +195,11 @@ public class CarrierEquipmentDoController extends BaseController {
 	@Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
 	@PostMapping("/update")
 	@ResponseBody
-	public AjaxResult update(List<EquipmentDo> equipmentDos) {
+	public AjaxResult update(@RequestBody List<EquipmentDo> equipmentDos) {
 		if (equipmentDos != null) {
 			for (EquipmentDo e : equipmentDos) {
 				e.setUpdateBy(ShiroUtils.getSysUser().getFullName());
+				e.setUpdateTime(new Date());
 			}
 			HashMap<String, Object> doList = new HashMap<>();
 			doList.put("doList", equipmentDos);
