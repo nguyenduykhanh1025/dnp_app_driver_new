@@ -406,7 +406,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		        AND process_status = 1) AS completedBl
 	</select>
 	
-	  <select id="selectBillOfLadingInfo" parameterType="String" resultMap="EquipmentDoResult">
+	<select id="selectBillOfLadingInfo" parameterType="String" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
         where bill_of_lading = #{blNo}
         LIMIT 1
