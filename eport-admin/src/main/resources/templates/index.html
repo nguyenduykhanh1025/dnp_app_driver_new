@@ -100,7 +100,68 @@
                   </div>
                 </a>
               </li>
-              <li class="dropdown user-menu">
+              <li th:each="menu : ${menus}">
+                <a
+                  th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
+                  th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
+                >
+                  <i class="fa fa-bar-chart-o" th:class="${menu.icon}"></i>
+                  <span class="nav-label" th:text="${menu.menuName}"
+                    >Top Menu</span
+                  >
+                  <!-- <span
+                    th:class="${menu.url == '' || menu.url == '#'} ? |fa arrow|"
+                  ></span> -->
+                </a>
+                <ul class="nav nav-second-level dropdown-menu">
+                  <li th:each="cmenu : ${menu.children}">
+                    <a
+                      th:if="${#lists.isEmpty(cmenu.children)}"
+                      th:class="${cmenu.target == ''} ? |menuItem| : ${cmenu.target}"
+                      th:utext="${cmenu.menuName}"
+                      th:href="@{${cmenu.url}}"
+                      >2nd Menu</a
+                    >
+                    <a th:if="${not #lists.isEmpty(cmenu.children)}" href="#"
+                      >[[${cmenu.menuName}]]
+                      <span class="fa arrow"></span>
+                  </a>
+                    <ul
+                      th:if="${not #lists.isEmpty(cmenu.children)}"
+                      class="nav nav-third-level"
+                    >
+                      <li th:each="emenu : ${cmenu.children}">
+                        <a
+                          th:if="${#lists.isEmpty(emenu.children)}"
+                          th:class="${emenu.target == ''} ? |menuItem| : ${emenu.target}"
+                          th:text="${emenu.menuName}"
+                          th:href="@{${emenu.url}}"
+                          >3rd Menu</a
+                        >
+                        <a th:if="${not #lists.isEmpty(emenu.children)}" href="#"
+                          >[[${emenu.menuName}]]
+                          <!-- <span class="fa arrow"></span> -->
+                        </a>
+                        <ul
+                          th:if="${not #lists.isEmpty(emenu.children)}"
+                          class="nav nav-four-level"
+                        >
+                          <li th:each="fmenu : ${emenu.children}">
+                            <a
+                              th:if="${#lists.isEmpty(fmenu.children)}"
+                              th:class="${fmenu.target == ''} ? |menuItem| : ${fmenu.target}"
+                              th:text="${fmenu.menuName}"
+                              th:href="@{${fmenu.url}}"
+                              >4th Menu</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+<!--               <li class="dropdown user-menu">
                 <a
                   href="javascript:void(0)"
                   class="dropdown-toggle"
@@ -127,7 +188,7 @@
                     >
                   </li>
                 </ul>
-              </li>
+              </li> -->
               <!-- <li class="dropdown user-menu">
                 <a
                   href="javascript:void(0)"

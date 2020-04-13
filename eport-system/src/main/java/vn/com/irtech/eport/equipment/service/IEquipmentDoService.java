@@ -108,6 +108,7 @@ public interface IEquipmentDoService
      * 
      * @param operator codes
      */
+<<<<<<< HEAD
     public Map<String, String> getReportByCarrierGroup(String[] codes);
     
     //countDOStatus
@@ -115,4 +116,14 @@ public interface IEquipmentDoService
 
     //countDocmentStatus
     public int countDocmentStatus(String billOfLading);
+=======
+	public Map<String, String> getReportByCarrierGroup(String[] codes);
+
+	/**
+	 * Get Bill of lading info
+	 * @param blNo
+	 * @return
+	 */
+	public EquipmentDo getBillOfLadingInfo(String blNo);
+>>>>>>> 4e7d993c15725ac02028a1f4b0d5b68380a34fe5
 }

@@ -111,7 +111,7 @@ var prefix = ctx + "carrier/do";
   });
   
   function viewBL(value) {
-    $.modal.openTab("BL#"+value,"/carrier/do/viewbl/{" + value + "}");
+    $.modal.openTab("BL#"+value,"/carrier/do/viewbl/"+value);
   }
   
 	// add full size do
