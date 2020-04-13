@@ -417,5 +417,13 @@ public class CarrierEquipmentDoController extends BaseController {
 			// which is the name of Contact in my example scenario
 			return equipmentDo1.getBillOfLading().compareTo(equipmentDo2.getBillOfLading());
 		}
-	}
+  }
+  
+  @GetMapping("/getOperateCode")
+  @ResponseBody
+  public String[] getOperateCode() {
+    CarrierAccount carrierAccount = ShiroUtils.getSysUser();
+    String[] operateCodes = carrierAccount.getCarrierCode().split(",");
+    return operateCodes;
+  }
 }

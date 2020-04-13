@@ -115,7 +115,7 @@
       var date = new Date(doList[0].expiredDem);
       var status = doList[0].status == 0 ? "<span class='label label-warning'>Chưa làm lệnh</span>" : "<span class='label label-success'>Đã làm lệnh</span>";
       var doInStatus = doList[0].documentStatus == 0 ? "<span class='label label-warning'>Chưa nộp DO</span>" : "<span class='label label-success'>Đã nộp DO</span>";
-      if (doList[0].documentReceiptDate) {
+      if (doList[0].documentReceiptDate != null) {
         $("#DateInDO_dad").html = "Ngày nộp DO: <span class='DateInDO'>"+doList[0].documentReceiptDate+"</span>";
       }
       $("#dostatus").html(status);

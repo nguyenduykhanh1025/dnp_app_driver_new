@@ -56,6 +56,7 @@
         },
         className: "htMiddle",
         colHeaders: [
+          "Mã khách hàng <br> Carrier code",
           "Số vận đơn <i class='red'>(*)</i><br>B/L No.",
           "Số container <i class='red'>(*)</i><br> Container No.",
           "Tên khách hàng <i class='red'>(*)</i><br> Consignee",
@@ -69,6 +70,11 @@
         colWidths:[10, 10, 20, 10, 15, 10, 5, 5, 15],
         filter: "true",
         columns: [
+          {
+            type: 'autocomplete',
+            source: carrierCode(),
+            strict: true
+          },
           {
             data: 'blNo',
             validator: emptyValidator,
@@ -105,6 +111,20 @@
         ],
       };
 
+      function carrierCode () {
+        var tab;
+        $.ajax({
+          url: prefix + "/getOperateCode",
+          method: "get",
+          success: function(result) {
+            
+            result.forEach(element => {
+              tab.push(element);
+            });
+            return tab;
+          }
+        })
+      }
       // Load table
       document.addEventListener("DOMContentLoaded", function () {
         hooks = Handsontable.hooks.getRegistered();
