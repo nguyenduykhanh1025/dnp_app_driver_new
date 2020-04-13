@@ -103,7 +103,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	 */
 	@GetMapping("/viewbl/{blNo}")
 	public String billInfo(@PathVariable("blNo") String billOfLading, ModelMap mmap) {
-		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
+		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfoSubmitDO(billOfLading);
 		mmap.addAttribute("bl", equipmentDos);
 		return prefix + "/billInfo";
 	}

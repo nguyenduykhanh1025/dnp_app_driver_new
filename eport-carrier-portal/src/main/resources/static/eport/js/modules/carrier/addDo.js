@@ -149,7 +149,7 @@
         return reGoodDate.test(dt);
       }
 
-      function getAlert() {
+      function saveDO() {
         var myTableData = hot.getSourceData();
         // If the last row is empty, remove it before validation
         if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
@@ -163,7 +163,6 @@
             cleanedGridData.push(object);
           }
         });
-        console.log(cleanedGridData);
         var doList = [];
         $.each(cleanedGridData, function (index, item) {
           var doObj = new Object();
@@ -178,45 +177,11 @@
           doObj.voyNo = item['voyage'];
           doObj.vessel = item['vessel'];
           doObj.remark = item['remark'];
-          // var doObj = {
-          //   carrierCode:item['carrierCode'], 
-          //   blNo: item['blNo'],
-          //   containerNo: item['containerNo'],
-          //   consignee: item['consignee'],
-          //   expiredDem: item['expiredDem'],
-          //   detFreetime: item['detFreetime'],
-          //   emptyDepot: item['emptyDepot'],
-          //   voyage: item['voyage'],
-          //   vessel: item['vessel'],
-          //   remark: item['remark'],
-          // };
+          
           doList.push(doObj);
         });
-        console.log(doList);
-        // var jsonDoList = JSON.stringify(doList);
-        // console.log(jsonDoList);
-        // $.each(cleanedGridData)
-        //validate
-        ///===============================
-        // var errorFlg = false;
-        // $.each(cleanedGridData, function (index, item) {
-        //   if (
-        //     item.blNo == null || item.blNo == '' ||
-        //     item.containerNo == null || item.containerNo == '' ||
-        //     item.consignee == null || item.consignee == '' ||
-        //     item.expiredDem == null || item.expiredDem == '' ||
-        //     !isGoodDate(item.expiredDem)) {
-        // 	  $.modal.alertError("Có lỗi xảy ra tại dòng "+(index + 1)+".<br/>Vui lòng kiểm tra lại dữ liệu");
-        	  errorFlg = false;
-        // 	  return;
-        //     }
-//          else {
-//              count++;
-//            }
-//          main_key = index;
-        // });
-//        main_key++;
-//        console.log(main_key, count);
+        errorFlg = false;
+       
         if (!errorFlg) {
         	$.modal.confirm("Bạn có chắc chắn cập nhật DO này lên Web Portal của Cảng Đà Nẵng không?", function() {
                 $.ajax({
