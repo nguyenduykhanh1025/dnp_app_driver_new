@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ import com.alibaba.fastjson.JSONArray;
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -198,6 +200,14 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					return AjaxResult.error("Mã vận đơn (B/L No.) " + e.getBillOfLading() +" đã tồn tại. Hãy kiểm tra dữ liệu");
 				}
 				// Check expiredDem is future
+				Date expiredDem = e.getExpiredDem();
+				expiredDem.setHours(23);
+				expiredDem.setMinutes(59);
+				expiredDem.setSeconds(59);
+				e.setExpiredDem(expiredDem);
+				if(expiredDem.before(new Date())) {
+					return AjaxResult.error("Hạn lệnh của không được phép trong quá khứ");
+				}
 				// DEM Free date la so
 				
 			}
