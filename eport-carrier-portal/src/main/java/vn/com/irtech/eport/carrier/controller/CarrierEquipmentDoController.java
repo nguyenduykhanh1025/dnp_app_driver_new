@@ -46,27 +46,12 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@Autowired
 	private IEquipmentDoService equipmentDoService;
 	@Autowired
-	private ICarrierGroupService groupService;
-	@Autowired
 	private MailService mailService;
 
 	@GetMapping()
 	public String EquipmentDo() {
 		return prefix + "/do";
 	}
-
-//	/**
-//	 * Get Exchange Delivery Order List
-//	 */
-//	@PostMapping("/list2")
-//	@ResponseBody
-//	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
-//		int page = EquipmentDo.getPage();
-//		page = page * 10;
-//		EquipmentDo.setPage(page);
-//		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingCarrier(EquipmentDo);
-//		return getDataTable(list);
-//	}
 
 	@RequestMapping("/list")
 	@ResponseBody
@@ -182,17 +167,13 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		if (equipmentDos != null) {
 			for (EquipmentDo e : equipmentDos) {
 				e.setCarrierId(getUserId());
-				// TODO get date from client
-				
-				// TODO validate check
-
 				// Check if carrier group code is valid
 				if(!getGroupCodes().contains(e.getCarrierCode())) {
-					return AjaxResult.error("Mã hãng tàu không đúng");
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã hãng tàu '"+e.getCarrierCode()+"' không đúng");
 				}
 				if(equipmentDoService.getBillOfLadingInfo(e.getBillOfLading()) != null) {
 					// exist B/L
-					return AjaxResult.error("Mã vận đơn (B/L No.) " + e.getBillOfLading() +" đã tồn tại. Hãy kiểm tra dữ liệu");
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã vận đơn (B/L No.) " + e.getBillOfLading() +" đã tồn tại.");
 				}
 				// Check expiredDem is future
 				Date expiredDem = e.getExpiredDem();
@@ -201,7 +182,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				expiredDem.setSeconds(59);
 				e.setExpiredDem(expiredDem);
 				if(expiredDem.before(new Date())) {
-					return AjaxResult.error("Hạn lệnh của không được phép trong quá khứ");
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
 				}
 				// DEM Free date la so
 				

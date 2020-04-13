@@ -160,7 +160,7 @@
         $.each(cleanedGridData, function (index, item) {
           var doObj = new Object();
           if (!isGoodDate(item['expiredDem']) || item['expiredDem'] == null ){
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh đang để trống hoặc chưa đúng format.");
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh đang để trống hoặc chưa đúng format.");
             errorFlg = true;
             return;
           }
@@ -169,7 +169,7 @@
           var dateValidate = new Date();
           dateValidate.setHours(0,0,0,0);
           if (date.getTime() < dateValidate.getTime()) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh không được nhỏ hơn ngày hiện tại.");
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh không được nhỏ hơn ngày hiện tại.");
             errorFlg = true;
             return;
           }
@@ -186,35 +186,35 @@
           doList.push(doObj);
         });
         
-        
+        console.log(doList);
         $.each(doList, function (index, item) {
-          if (item['carrierCode'] == null) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hãng tàu (OPR Code) không được trống.");
+          if (item['carrierCode'] == null || item['carrierCode'] == "") {
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hãng tàu (OPR Code) không được trống.");
             errorFlg = true;
-            return;
+            return false;
           }
-          if (item['billOfLading'] == null) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số vận đơn (B/L No) không được trống.");
+          if (item['billOfLading'] == null || item['billOfLading'] == "") {
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số vận đơn (B/L No) không được trống.");
             errorFlg = true;
-            return;
+            return false;
           }
-          if (item['containerNumber'] == null) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số container không được trống.");
+          if (item['containerNumber'] == null || item['containerNumber'] == "") {
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số container không được trống.");
             errorFlg = true;
-            return;
+            return false;
           }
-          if (item['consignee'] == null) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Tên khách hàng không được trống.");
+          if (item['consignee'] == null || item['consignee'] == "") {
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Tên khách hàng không được trống.");
             errorFlg = true;
-            return;
+            return false;
           }
           var regexNuber = /^[0-9]*$/;
           // console.log(item['detFreeTime']);
           if (item['detFreeTime'] != null && item['detFreeTime'] != "") {
             if (!regexNuber.test(item['detFreeTime'])) {
-              $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
+              $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
               errorFlg = true;
-              return;
+              return false;
             }
           }
         })
@@ -235,13 +235,16 @@
                   accept: 'text/plain',
                   data: JSON.stringify(doList),
                   dataType: 'text',
-                  success: function (result) {
-                    $.modal.confirm("Khai báo DO thành công!", function() {
-                      closeItem();
-                    },{title:"Thông báo",btn:["Đồng Ý"]});
+                  success: function (data) {
+                	var result = JSON.parse(data);
+                	if(result.code == 0) {
+                        $.modal.alert("Khai báo DO thành công!", function() { closeItem();},{title:"Thông báo",btn:["Đồng Ý"]});
+                	} else {
+                		$.modal.alertError(result.msg);
+                	}
                   },
                   error: function (result) {
-                    $.modal.alert("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+                    $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
                   },
                 });
         	},

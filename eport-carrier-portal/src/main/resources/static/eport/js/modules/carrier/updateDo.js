@@ -125,7 +125,7 @@
         $.each(cleanedGridData, function (index, item) {
           var doObj = new Object();
           if (!isGoodDate(item['expiredDem']) || item['expiredDem'] == null ){
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh đang để trống hoặc chưa đúng format.");
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh đang để trống hoặc chưa đúng format.");
             errorFlg = true;
             return;
           }
@@ -154,43 +154,42 @@
         });
         $.each(doList, function (index, item) {
           if (item['carrierCode'] == null) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Mã khách hàng không được trống.");
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Mã khách hàng không được trống.");
             errorFlg = true;
-            return;
+            return false;
           }
-
           if (item['billOfLading'] == null) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số vận đơn không được trống.");
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số vận đơn không được trống.");
             errorFlg = true;
-            return;
+            return false;
           }
 
           if (item['containerNumber'] == null) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số container không được trống.");
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số container không được trống.");
             errorFlg = true;
-            return;
+            return false;
           }
 
           if (item['consignee'] == null) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Tên khách hàng không được trống.");
+            $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Tên khách hàng không được trống.");
             errorFlg = true;
-            return;
+            return false;
           }
           var regexNuber = /^[0-9]*$/;
           console.log(item['detFreeTime']);
           if (item['detFreeTime'] != null) {
             if (!regexNuber.test(item['detFreeTime'])) {
-              $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
+              $.modal.alertError("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
               errorFlg = true;
-              return;
+              return false;
             }
           }
-        })
-        if (errorFlg) {
+        });
+        if(errorFlg) {
           return;
         }
 
-        $.modal.confirm("Bạn có chắc chắn cập nhật DO không?", function() {
+        $.modal.confirm("Bạn có chắc chắn muốn cập nhật DO không?", function() {
           $.ajax({
             url: "/carrier/do/update",
             method: "post",
@@ -198,13 +197,16 @@
             accept: 'text/plain',
             data: JSON.stringify(doList),
             dataType: 'text',
-            success: function (result) {
-              $.modal.confirm("Cập nhật DO thành công!", function() {
-                closeItem();
-              },{title:"Thông báo",btn:["Đồng Ý"]});
+            success: function (data) {
+            	var result = JSON.parse(data);
+            	if(result.code == 0) {
+                    $.modal.confirm("Cập nhật DO thành công!", function() { closeItem();},{title:"Thông báo",btn:["Đồng Ý"]});
+              	} else {
+              		$.modal.alertError(result.msg);
+              	}
             },
             error: function (result) {
-              $.modal.alert("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+              $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
             },
           });
         },
