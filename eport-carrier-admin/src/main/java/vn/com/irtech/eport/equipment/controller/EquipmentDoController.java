@@ -189,20 +189,10 @@ public class EquipmentDoController extends BaseController {
     }
 
     @PostMapping("/updateDoStatus")
-    public String updateDoStatus(String billOfLading,String status,String documentStatus,String note,ModelMap mmap)
+    @ResponseBody
+    public AjaxResult updateDoStatus(String billOfLading,String status,String documentStatus,String note,ModelMap mmap)
     {
         if(documentStatus.equals("1") && equipmentDoService.countDocmentStatusYes(billOfLading) == 0)
-        {
-            Date documentReceiptDate = new Date();
-            currentUser = ShiroUtils.getSysUser();
-            EquipmentDo equipmentDo = new EquipmentDo();
-            equipmentDo.setStatus("1");
-            equipmentDo.setUpdateBy(currentUser.getLoginName());
-            equipmentDo.setUpdateTime(documentReceiptDate);
-            equipmentDo.setBillOfLading(billOfLading);
-            equipmentDoService.updateBillOfLading(equipmentDo);
-        }
-        if(status.equals("1") && equipmentDoService.countDOStatusYes(billOfLading) == 0)
         {
             Date documentReceiptDate = new Date();
             currentUser = ShiroUtils.getSysUser();
@@ -211,11 +201,20 @@ public class EquipmentDoController extends BaseController {
             equipmentDo.setUpdateBy(currentUser.getLoginName());
             equipmentDo.setDocumentReceiptDate(documentReceiptDate);
             equipmentDo.setBillOfLading(billOfLading);
-            equipmentDoService.updateBillOfLading(equipmentDo);
+            equipmentDoService.updateEquipmentDo(equipmentDo);
         }
-        EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfoSubmitDO(billOfLading);
-		mmap.addAttribute("equipmentDos", equipmentDos);
-        return prefix + "/checkStatus";
+        if(status.equals("1") && equipmentDoService.countDOStatusYes(billOfLading) == 0)
+        {
+            Date documentReceiptDate = new Date();
+            currentUser = ShiroUtils.getSysUser();
+            EquipmentDo equipmentDo = new EquipmentDo();
+            equipmentDo.setStatus("1");
+            equipmentDo.setUpdateBy(currentUser.getLoginName());
+            equipmentDo.setUpdateTime(documentReceiptDate);
+            equipmentDo.setBillOfLading(billOfLading);
+            equipmentDoService.updateEquipmentDo(equipmentDo);
+        }
+        return success();
     }
 
 

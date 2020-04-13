@@ -97,7 +97,10 @@
                     documentStatus: documentStatus 
                 },
                 }).done(function (result) {
-                    console.log(result);
+                    if(status.code == 0)
+                    {
+                        $.operate.saveSuccess();
+                    }
                 });
         }
         
