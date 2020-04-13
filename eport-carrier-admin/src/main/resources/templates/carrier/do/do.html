@@ -117,7 +117,7 @@
             <th data-options="field:'carrierCode',halign:'center',resizable:true" width="80">
               Hãng tàu <br />Carrier
             </th>
-            <th data-options="field:'billOfLading',halign:'center'," sortable="true" width="110">
+            <th data-options="field:'billOfLading',halign:'center',formatter: formatBL" sortable="true" width="110">
               Số vận đơn<br />B/L No
             </th>
             <th data-options="field:'containerNumber',halign:'center'," sortable="true" width="110">
@@ -126,7 +126,7 @@
             <th data-options="field:'consignee',halign:'center'" width="250">
               Khách hàng<br />Consignee
             </th>
-            <th data-options="field:'expiredDem',halign:'center',align:'right'" sortable="true" width="110">
+            <th data-options="field:'expiredDem',halign:'center',align:'left',formatter: formatDate" sortable="true" width="110">
               Hạn lệnh<br />Expired Date
             </th>
             <th data-options="field:'emptyContainerDepot',halign:'center'" width="200">
@@ -385,6 +385,59 @@
       console.log(getBillOfLading);
       $.modal.openFull("Danh sách cont của bill " + getBillOfLading, prefix + "/getViewCont/{" + getBillOfLading + "}");
     }
+    function formatBL(value) {
+	  return "<a onclick='viewBL(\""+value+"\")'>" + value + "</a>";
+    }
+    function viewBL(value) {
+      openDo("Danh sách cont của bill " + value, prefix + "/getViewCont/{" + value + "}");
+    }
+    function openDo(title, url, width, height, callback) {
+  	if ($.common.isMobile()) {
+  	    width = 'auto';
+  	    height = 'auto';
+  	}
+  	if ($.common.isEmpty(title)) {
+          title = false;
+      }
+      if ($.common.isEmpty(url)) {
+          url = "/404.html";
+      }
+      if ($.common.isEmpty(width)) {
+      	width = 800;
+      }
+      if ($.common.isEmpty(height)) {
+      	height = ($(window).height() - 50);
+      }
+      if ($.common.isEmpty(callback)) {
+          callback = function(index, layero) {
+              var iframeWin = layero.find('iframe')[0];
+              iframeWin.contentWindow.submitHandler(index, layero);
+          }
+      }
+  	layer.open({
+  		type: 2,
+  		area: [width + 'px', height + 'px'],
+  		fix: false,
+  		// 不固定
+  		maxmin: true,
+  		shade: 0.3,
+  		title: title,
+  		content: url,
+  	    // 弹层外区域关闭
+  		shadeClose: true,
+  		yes: callback,
+  	    cancel: function(index) {
+  	        return true;
+  	    }
+  	});
+  }
+  function formatDate(value) {
+    var date = new Date(value);
+    var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+	  var month = date.getMonth() + 1;
+  	var monthText = month < 10 ? "0" + month : month;
+	  return day +"/" +  monthText +"/" + date.getFullYear();
+  }
   </script>
 </body>
 
