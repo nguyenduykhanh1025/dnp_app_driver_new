@@ -29,11 +29,11 @@
             height: 500,
             colHeaders: [
               "ID<br>id",
-              "Mã hãng tàu<br>Carrier",
-              "Số vận đơn<br> Bill No",
-              "Số Container<br>Container No.",
-              "Tên khách hàng<br>Consignee",
-              "Hạn lệnh<br> Valid to date",
+              "Mã hãng tàu <i class='red'>(*)</i><br>Carrier",
+              "Số vận đơn <i class='red'>(*)</i><br> Bill No",
+              "Số Container <i class='red'>(*)</i><br>Container No.",
+              "Tên khách hàng <i class='red'>(*)</i><br>Consignee",
+              "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
               "Nơi hạ vỏ<br> Empty depot",
               "Ngày miễn lưu<br> DET Freetime",
               "Tên tàu<br>Vessel",
@@ -126,6 +126,7 @@
           }
         });
         var doList = [];
+        var errorFlg = false;
         $.each(cleanedGridData, function (index, item) {
           var doObj = new Object();
           if (!isGoodDate(item['expiredDem']) || item['expiredDem'] == null ){
@@ -134,9 +135,17 @@
             return;
           }
           var date = new Date(item['expiredDem'].replace( /(\d{2})\/(\d{2})\/(\d{4})/, "$2/$1/$3"));
+          date.setHours(0,0,1,1);
+          var dateValidate = new Date();
+          dateValidate.setHours(0,0,0,0);
+          if (date.getTime() < dateValidate.getTime()) {
+            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh không được nhỏ hơn ngày hiện tại.");
+            errorFlg = true;
+            return;
+          }
           doObj.id = item['id'];
-          doObj.carrierCode = item['carrierCode'];
-          doObj.billOfLading = item['billOfLading'];
+          doObj.carrierCode = firstDo.carrierCode;
+          doObj.billOfLading = firstDo.billOfLading;
           doObj.containerNumber = item['containerNumber'];
           doObj.consignee = item['consignee'];
           doObj.expiredDem = date.getTime();
@@ -149,12 +158,6 @@
           doList.push(doObj);
         });
         $.each(doList, function (index, item) {
-          if (item['expiredDem'] < new Date()) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Hạn lệnh không được nhỏ hơn ngày hiện tại.");
-            errorFlg = true;
-            return;
-          }
-
           if (item['carrierCode'] == null) {
             $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Mã khách hàng không được trống.");
             errorFlg = true;
@@ -179,11 +182,13 @@
             return;
           }
           var regexNuber = /^[0-9]*$/;
-          console.log(item[regexNuber.test(item['detFreeTime'])]);
-          if (!regexNuber.test(item['detFreeTime'])) {
-            $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
-            errorFlg = true;
-            return;
+          console.log(item['detFreeTime']);
+          if (item['detFreeTime'] != null) {
+            if (!regexNuber.test(item['detFreeTime'])) {
+              $.modal.alert("Có lỗi tại hàng ["+(index+ 1) +"].<br>Lỗi: Số ngày miễn lưu vỏ phải là số.");
+              errorFlg = true;
+              return;
+            }
           }
         })
         if (errorFlg) {
@@ -199,8 +204,9 @@
             data: JSON.stringify(doList),
             dataType: 'text',
             success: function (result) {
-              $.modal.alert("Cập nhật DO thành công!");
-              closeItem();
+              $.modal.confirm("Cập nhật DO thành công!", function() {
+                closeItem();
+              },{title:"Thông báo",btn:["Đồng Ý"]});
             },
             error: function (result) {
               $.modal.alert("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
