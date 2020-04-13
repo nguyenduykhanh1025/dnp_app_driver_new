@@ -181,11 +181,17 @@ public class CarrierEquipmentDoController extends BaseController {
 	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
-	public AjaxResult addSave(@RequestBody List<EquipmentDo> equipmentDo) {
-    if (equipmentDo != null) {
-      
-    }
-    return AjaxResult.success();
+	public AjaxResult addSave(@RequestBody List<EquipmentDo> equipmentDos) {
+		if (equipmentDos != null) {
+			for (EquipmentDo e : equipmentDos) {
+				e.setCarrierId(ShiroUtils.getUserId());
+				e.setExpiredDem(new Date());
+			}
+			HashMap<String, Object> doList = new HashMap<>();
+			doList.put("doList", equipmentDos);
+			return toAjax(equipmentDoService.insertEquipmentDoList(doList));
+    	}
+    	return AjaxResult.success();
 	}
 
 	// update

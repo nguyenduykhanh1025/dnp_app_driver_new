@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.equipment.mapper;
 
 import java.util.Date;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -103,4 +103,5 @@ public interface EquipmentDoMapper {
 
 	public EquipmentDo selectBillOfLadingInfo(String blNo);
 
+	public int insertEquipmentDoList(HashMap<String, Object> doList);
 }

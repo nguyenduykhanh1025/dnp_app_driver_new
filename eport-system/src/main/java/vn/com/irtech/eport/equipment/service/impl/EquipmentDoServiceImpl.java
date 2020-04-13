@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.equipment.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -186,5 +187,10 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
 	@Override
 	public EquipmentDo getBillOfLadingInfo(String blNo) {
 		return equipmentDoMapper.selectBillOfLadingInfo(blNo);
-	}
+    }
+    
+    @Override
+    public int insertEquipmentDoList(HashMap<String, Object> doList) {
+        return equipmentDoMapper.insertEquipmentDoList(doList);
+    }
 }
