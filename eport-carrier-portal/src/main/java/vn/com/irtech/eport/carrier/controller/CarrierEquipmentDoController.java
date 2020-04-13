@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -41,7 +42,11 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 @Controller
 @RequestMapping("/carrier/do")
 public class CarrierEquipmentDoController extends CarrierBaseController {
-  private String prefix = "carrier/do";
+	
+    private final String prefix = "carrier/do";
+    
+    private static final Pattern VALID_CONTAINER_NO_REGEX = Pattern.compile("^[A-Za-z]{4}[0-9]{7}$", Pattern.CASE_INSENSITIVE);
+
   
 	@Autowired
 	private IEquipmentDoService equipmentDoService;
@@ -167,14 +172,23 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		if (equipmentDos != null) {
 			for (EquipmentDo e : equipmentDos) {
 				e.setCarrierId(getUserId());
+				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getBillOfLading())
+						|| StringUtils.isBlank(e.getContainerNumber()) || StringUtils.isBlank(e.getConsignee())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
+				}
 				// Check if carrier group code is valid
 				if(!getGroupCodes().contains(e.getCarrierCode())) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã hãng tàu '"+e.getCarrierCode()+"' không đúng");
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã hãng tàu '"+e.getCarrierCode()+"' không đúng.");
 				}
 				if(equipmentDoService.getBillOfLadingInfo(e.getBillOfLading()) != null) {
 					// exist B/L
 					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã vận đơn (B/L No.) " + e.getBillOfLading() +" đã tồn tại.");
 				}
+				if(!isContainerNumber(e.getContainerNumber())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã container không đúng tiêu chuẩn.");
+				}
+				// trong 1 bill ton tai 2 container
+				
 				// Check expiredDem is future
 				Date expiredDem = e.getExpiredDem();
 				expiredDem.setHours(23);
@@ -469,5 +483,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		}
 	}
     return null;
+  }
+  
+  private boolean isContainerNumber(String input) {
+	  return VALID_CONTAINER_NO_REGEX.matcher(input).find();
   }
 }
