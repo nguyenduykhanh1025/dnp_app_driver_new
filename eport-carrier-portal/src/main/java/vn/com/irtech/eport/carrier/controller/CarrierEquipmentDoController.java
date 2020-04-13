@@ -284,7 +284,11 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				e.setUpdateTime(new Date());
 			}
 			for(EquipmentDo edo : equipmentDos) {
-				equipmentDoService.updateEquipmentDo(edo);
+				if (edo.getId() != null) {
+					equipmentDoService.updateEquipmentDo(edo);
+				} else {
+					equipmentDoService.insertEquipmentDo(edo);
+				}				
 			}
 			// SEND EMAIL WHEN ADD SUCCESSFULLY
 			new Thread() {
