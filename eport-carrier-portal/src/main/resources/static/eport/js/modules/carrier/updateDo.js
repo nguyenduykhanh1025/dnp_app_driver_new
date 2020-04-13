@@ -221,6 +221,7 @@
         }).done(function(result){
           hot.loadData(result);
           hot.render();
+          hot.validateCells();
         });       
       }
       document
