@@ -169,7 +169,7 @@ public class EquipmentDoController extends BaseController {
 			equipmentDoService.updateBillOfLading(equipmentDo);
 			checkUpdate = true;
 		}
-		if(checkUpdate = false)
+		if(checkUpdate == false)
 		{
 			return error();
 		}

@@ -11,26 +11,29 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-account-add">
             <div class="form-group">
-                <label class="col-sm-3 col-xs-3 col-md-3 control-label">Trạng thái nhận DO </label>
+                <label class="col-sm-4 col-xs-4 col-md-4 control-label">Đã nhận DO gốc </label>
                 <div class="col-sm-3 col-xs-3 col-md-3">
                     <input class="form-check-input" type="checkbox" id="documentStatus">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 col-xs-3 col-md-3 control-label">Trạng thái làm lệnh </label>
+                <label class="col-sm-4 col-xs-4 col-md-4 control-label">Đã làm lệnh </label>
                 <div class="col-sm-3 col-xs-3 col-md-3">
                     <input class="form-check-input" type="checkbox" value="" id="status">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 col-xs-3 col-md-3 control-label">Ghi chú làm lệnh </label>
+                <label class="col-sm-4 col-xs-4 col-md-4 control-label">Ghi chú làm lệnh </label>
                 <div class="col-sm-3 col-xs-3 col-md-3">
-                    <input class="form-check-input" type="text" value="" id="processRemark">
+                    <textarea  class="form-check-input" id="processRemark"> </textarea>
                 </div>
             </div>
-            <div class="form-group" style="display: flex; justify-content: space-around">
+            <div class="form-group" style="display: flex; justify-content: space-between">
                 <button id="buttonSave" type="button" class="btn btn-primary btn-md" onclick="updateDo()">
                     Lưu
+                </button>
+                <button  type="button" class="btn btn-secondary btn-md" onclick="$.modal.close();">
+                    Hủy
                 </button>
             </div>
         </form>
@@ -94,12 +97,12 @@
                {
                     $.modal.msgSuccess("Cập nhật thành công !");
                     setTimeout(function(){
-                        parent.reload()
+                        $.modal.reload()
                     }, 1000);
                } else {
-                    $.modal.msgError("Cập nhật không thành công !, liên hệ Admin để biết thêm chi tiết");
+                    $.modal.msgError("Cập nhật không thành công !, liên hệ Admin <br> để biết thêm chi tiết");
                         setTimeout(function(){
-                        
+                        $.modal.reload()
                     }, 1000);
                }
             });
