@@ -123,3 +123,4 @@ var prefix = ctx + "carrier/do";
 	var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
 	$.modal.openDo("Thay đổi hạn lệnh", url, 600, 400);
   }
+
