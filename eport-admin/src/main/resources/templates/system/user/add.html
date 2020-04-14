@@ -8,22 +8,22 @@
     <div class="main-content">
         <form id="form-user-add" class="form-horizontal">
             <input name="deptId" type="hidden" id="treeId"/>
-            <h4 class="form-header h4" th:text="#{user.information}"></h4>
+            <h4 class="form-header h4">Thông tin</h4>
             <div class="row">
             	<div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required" th:text="#{user.name2}"></label>
+                        <label class="col-sm-4 control-label is-required" >Tên đại diện</label>
                         <div class="col-sm-8">
-                            <input name="userName" th:placeholder="#{user.placeholder.username}" class="form-control" type="text" maxlength="30" required>
+                            <input name="userName" placeholder="Vui lòng nhập tên đại diện" class="form-control" type="text" maxlength="30" required>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required" th:text="#{user.department}"></label>
+                        <label class="col-sm-4 control-label">Bộ phận</label>
                         <div class="col-sm-8">
                             <div class="input-group">
-                            	<input name="deptName" onclick="selectDeptTree()" id="treeName" type="text" th:placeholder="#{user.placeholder.department}" class="form-control" required>
+                            	<input name="deptName" onclick="selectDeptTree()" id="treeName" type="text" placeholder="Vui lòng chọn bộ phận" class="form-control">
                                 <span class="input-group-addon"><i class="fa fa-search"></i></span>
                             </div>
                         </div>
@@ -33,35 +33,17 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required" th:text="#{user.phone}"></label>
+                        <label class="col-sm-4 control-label is-required">Số điện thoại</label>
                         <div class="col-sm-8">
-                            <input id="phonenumber" name="phonenumber" th:placeholder="#{user.placeholder.phone}" class="form-control" type="text" maxlength="11" required>
+                            <input id="phonenumber" name="phonenumber" placeholder="Vui lòng nhập số điện thoại" class="form-control" type="text" maxlength="11" required>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required" th:text="#{user.email2}"></label>
+                        <label class="col-sm-4 control-label is-required">Email</label>
                         <div class="col-sm-8">
-                            <input id="email" name="email" class="form-control email" type="text" maxlength="20" th:placeholder="#{user.placeholder.email}" required>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label is-required" th:text="#{user.loginName}"></label>
-                        <div class="col-sm-8">
-                            <input id="loginName" name="loginName" th:placeholder="#{user.placeholder.loginName}" class="form-control" type="text" maxlength="30" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label is-required" th:text="#{user.pass}"></label>
-                        <div class="col-sm-8">
-                            <input name="password" th:placeholder="#{user.placeholder.password}" class="form-control" type="password" th:value="${@config.getKey('sys.user.initPassword')}" required>
+                            <input id="email" name="email" class="form-control email" type="text" maxlength="20" placeholder="Vui lòng nhập email" required>
                         </div>
                     </div>
                 </div>
@@ -69,7 +51,25 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" th:text="#{user.gender}"></label>
+                        <label class="col-sm-4 control-label is-required">Tên đăng nhập</label>
+                        <div class="col-sm-8">
+                            <input id="loginName" name="loginName" placeholder="Vui lòng nhập tên đăng nhập" class="form-control" type="text" maxlength="30" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">Mật khẩu</label>
+                        <div class="col-sm-8">
+                            <input name="password" placeholder="Vui lòng nhập mật khẩu" class="form-control" type="password" th:value="${@config.getKey('sys.user.initPassword')}" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Giới tính</label>
                         <div class="col-sm-8">
                             <select name="sex" class="form-control m-b" th:with="type=${@dict.getType('sys_user_sex')}">
 				                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label" th:text="#{user.status}"></label>
+                        <label class="col-sm-4 control-label">Trạng thái</label>
                         <div class="col-sm-8">
                             <label class="toggle-switch switch-solid">
 	                            <input type="checkbox" id="status" checked>
@@ -92,7 +92,7 @@
             <div class="row">
             	<div class="col-sm-12">
                     <div class="form-group">
-                        <label class="col-xs-2 control-label" th:text="#{user.post}"></label>
+                        <label class="col-xs-2 control-label">Vị trí</label>
                         <div class="col-xs-4">
                             <select id="post" class="form-control select2-multiple" multiple>
 								<option th:each="post:${posts}" th:value="${post.postId}" th:text="${post.postName}" th:disabled="${post.status == '1'}"></option>
@@ -104,7 +104,7 @@
             <div class="row">
             	<div class="col-sm-12">
                     <div class="form-group">
-                        <label class="col-xs-2 control-label" th:text="#{user.character}"></label>
+                        <label class="col-xs-2 control-label">Loại tài khoản</label>
                         <div class="col-xs-10">
                             <label th:each="role:${roles}" class="check-box">
 								<input name="role" type="checkbox" th:value="${role.roleId}" th:text="${role.roleName}" th:disabled="${role.status == '1'}">
@@ -113,11 +113,11 @@
                     </div>
                 </div>
             </div>
-            <h4 class="form-header h4" th:text="#{user.otherInformation}" ></h4>
+            <h4 class="form-header h4">Thông tin khác</h4>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <label class="col-xs-2 control-label" th:text="#{user.remarks}"></label>
+                        <label class="col-xs-2 control-label">Ghi chú</label>
                         <div class="col-xs-10">
                             <textarea name="remark" maxlength="500" class="form-control" rows="3"></textarea>
                         </div>
@@ -129,8 +129,8 @@
       
     <div class="row">
         <div class="col-sm-offset-5 col-sm-10">
-            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check" th:text="#{user.save}"></i></button>&nbsp;
-            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all" th:text="#{user.shutDown}"></i></button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check">Lưu</i></button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all">Trở lại</i></button>
         </div>
     </div>
 	<th:block th:include="include :: footer" />
@@ -248,7 +248,7 @@
 
 		$(function() {
             $('#post').select2({
-                placeholder: "Please select a post",
+                placeholder: "Vui lòng chọn vị trí",
                 allowClear: true
             });
         })
