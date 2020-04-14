@@ -83,6 +83,9 @@ public class EquipmentDo extends BaseEntity
     @Excel(name = "Chuyến")
     private String voyNo;
 
+    /** Process Remark */
+    private String processRemark;
+
     /** DO Type */
     private String doType;
 
@@ -112,6 +115,14 @@ public class EquipmentDo extends BaseEntity
         this.toDate = toDate;
     }
 
+    public void setprocessRemark(String processRemark) {
+        this.processRemark = processRemark;
+    }
+
+    public String getprocessRemark()
+    {
+        return this.processRemark;
+    }
     public void setFromDate(Date fromDate) {
         this.fromDate = fromDate;
     }
@@ -142,6 +153,7 @@ public class EquipmentDo extends BaseEntity
     {
         return carrierId;
     }
+
     public void setCarrierCode(String carrierCode) 
     {
         this.carrierCode = carrierCode;

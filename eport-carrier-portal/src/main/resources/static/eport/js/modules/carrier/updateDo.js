@@ -116,6 +116,7 @@ $.ajax({
     if (firstDo.status == 1) {
       $("#saveDoBtn").hide();
       $("#cancelDoBtn").hide();
+      $("#tips").hide();
       hot.updateSettings({
         cells: (row, col) => {
           cellProperties.readOnly = true;
