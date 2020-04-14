@@ -39,27 +39,10 @@
       </div>
       <div class="container col-md-12" style="padding-left: 10px;padding: 10px;">
         <div id="listContTable" class="hot handsontable htColumnHeaders htRowHeaders"></div>
-        <nav aria-label="Page navigation">
-          <div class="paginate" style="display: flex; justify-content: space-between; margin-top: 10px">
-            <div class="left-side">
-              <button id="prevPage" class="btn btn-xs btn-rounder" onclick='prevPage()'
-                style="color:#337ab7; background-color: transparent;"><i class="fa fa-chevron-left"></i></button>
-              <p style="display:inline">Trang <input type="number" onchange="showPageOnPageInput()" id="input-page"
-                  style="width: 30px; text-align: center;"> đến <span id="total-page"></span></p>
-              <button id="nextPage" class="btn btn-xs btn-rounder" onclick='nextPage()'
-                style="color:#337ab7; background-color: transparent;"><i class="fa fa-chevron-right"></i></button>
-              <button onclick="searchEvent()" class="btn btn-xs btn-rounder"
-                style="color:#337ab7; background-color: transparent;"><i class="fa fa-refresh"
-                  aria-hidden="true"></i></button>
-            </div>
-            <div class="right-side">
-              <span id="item-on-from"></span> đến <span id="item-on-to"></span> trên tổng <span
-                id="item-on-page"></span>
-            </div>
-          </div>
-          </nav>
+       
       </div>
     </div>
+
     <th:block th:include="include :: footer" />
     <script th:src="@{/js/jquery.toast.min.js}"></script>
     <!-- Jquery toast -->
@@ -69,6 +52,10 @@
     <script type="text/javascript" th:inline="javascript">
       var billOfLading = /*[[${getBillOfLading}]]*/ ;
       $('#billOfLading').val(billOfLading);
+
+    </script>
+    <script type="text/javascript" >
+      
       var hot;
       var currentPage = 0;
       var prefix = "/carrier/admin/do";
@@ -77,20 +64,6 @@
       document.addEventListener("DOMContentLoaded", function () {
         var form = $("#formId");
         $(document).ready(function () {
-          $.ajax({
-              url: prefix + "/getCountPages",
-              method: "POST",
-              data: {
-                billOfLading: billOfLading
-              },
-            }).done(function (result) {
-              document.getElementById("item-on-page").innerHTML = result
-              var pages = result / 15;
-              document.getElementById("total-page").innerHTML = Math.ceil(pages)
-              $('#input-page').val(currentPage + 1);
-              document.getElementById("item-on-from").innerHTML = currentPage + 1
-              document.getElementById("item-on-to").innerHTML = (currentPage + 1) * 15
-            }),
             $.ajax({
               url: prefix + "/listCont",
               method: "POST",
@@ -201,68 +174,8 @@
         });
       });
       // Next Page
-      function nextPage() {
-        currentPage = currentPage + 1;
-        $("#formId").append('<input type="hidden" id="pageSet" name="page" value="' + currentPage + '" /> ');
-        var form = $("#formId");
-        $.ajax({
-          url: prefix + "/listCont",
-          method: "POST",
-          data: form.serialize(),
-        }).done(function (result) {
-          dataObj = result.rows;
-          hot.loadData(dataObj);
-          $('#input-page').val(currentPage + 1);
-
-          document.getElementById("item-on-from").innerHTML = (currentPage) * 15
-          document.getElementById("item-on-to").innerHTML = (currentPage) * 15 + 15
-          if (dataObj == '') {
-            $("#nextPage").attr("disabled", true);
-          }
-          hot.render();
-          hot.validateCells();
-        })
-        if (currentPage > 0) {
-          $("#prevPage").attr("disabled", false);
-        }
-        $("#pageSet").remove();
-      }
-      if (currentPage == 0) {
-        $("#prevPage").attr("disabled", true)
-      }
-      // Prev Page
-      function prevPage() {
-        currentPage = currentPage - 1;
-        if (currentPage == 0) {
-          $("#prevPage").attr("disabled", true);
-        } else {
-          $("#prevPage").attr("disabled", false);
-        }
-        $("#formId").append('<input type="hidden" id="pageSet" name="page" value="' + currentPage + '" /> ');
-        var form = $("#formId");
-        $.ajax({
-          url: prefix + "/listCont",
-          method: "POST",
-          data: form.serialize(),
-        }).done(function (result) {
-          dataObj = result.rows;
-          hot.loadData(dataObj);
-          $('#input-page').val(currentPage + 1);
-          hot.render();
-          hot.validateCells();
-          document.getElementById("item-on-from").innerHTML = (currentPage) * 15
-          document.getElementById("item-on-to").innerHTML = (currentPage) * 15 + 15
-        })
-        if (dataObj != '') {
-          $("#nextPage").attr("disabled", false);
-        }
-        $("#pageSet").remove();
-      }
-
-      //Search
       function search() {
         $("#formId").submit(function (e) {
-          $(this).append('<input type="hidden" id="pageSet" name="page" value="' + currentPage + '" /> ');
           e.preventDefault();
           var form = $("#formId");
           $.ajax({
@@ -277,11 +190,9 @@
             }
           });
         });
-        $("#pageSet").remove();
       }
 
       function searchEvent() {
-        $("#formId").append('<input type="hidden" id="pageSet" name="page" value="' + currentPage + '" /> ');
         var form = $("#formId");
         $.ajax({
           url: prefix + "/listCont",
@@ -294,10 +205,7 @@
             hot.validateCells();
           }
         });
-        $("#pageSet").remove();
         currentPage = 0;
-        $('#input-page').val(currentPage + 1);
-        $("#prevPage").attr("disabled", true)
       }
       function changeStatus() {
         $.modal.confirm("Bạn có chắc chắn muốn làm lệnh <br> cho tất cả container ?", function () {
@@ -359,28 +267,10 @@
           searchEvent()
         });
       }
-      //userGetPageNumber
-      function showPageOnPageInput() {
-        var varPageGo = $('#input-page').val();
-        currentPage = parseInt(varPageGo) - 1;
-        $("#formId").append('<input type="hidden" id="pageSet" name="page" value="' + varPageGo + '" /> ');
-        var form = $("#formId");
-        $.ajax({
-          url: prefix + "/listCont",
-          method: "POST",
-          data: form.serialize(),
-        }).done(function (result) {
-          dataObj = result.rows;
-          hot.loadData(dataObj);
-          hot.render();
-          hot.validateCells();
-        })
-        $("#pageSet").remove();
-      }
       //SubmitDO
       function submitDO()
       {
-          $.modal.openDo("Xác nhận làm lệnh", prefix + "/checkStatus/" + billOfLading + "","430", "330");
+          $.modal.openDo("Xác nhận làm lệnh", prefix + "/checkStatus/" + billOfLading + "","400", "280");
       }
 
       function reload() {
