@@ -278,7 +278,7 @@ function updateDO() {
   
   $.modal.confirm("Bạn có chắc chắn muốn cập nhật DO không?", function() {
     $.ajax({
-      url: "/carrier/do/update",
+      url: "/carrier/do/update/" + firstDo.billOfLading,
       method: "post",
       contentType : "application/json",
       accept: 'text/plain',
