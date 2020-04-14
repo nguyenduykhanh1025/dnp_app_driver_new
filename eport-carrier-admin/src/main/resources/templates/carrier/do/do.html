@@ -237,8 +237,10 @@
       var month = date.getMonth() + 1;
       var monthText = month < 10 ? "0" + month : month;
       var hour = date.getHours();
-      var Minute = date.getMinutes();
-      return day + "/" + monthText + "/" + date.getFullYear() + "<br>" + hour + "h:" + Minute + "p";
+      hour = hour < 10 ? "0" + hour : hour;
+      var minute = date.getMinutes();
+      minute = minute < 10 ? "0" + minute : minute;
+      return day + "/" + monthText + "/" + date.getFullYear() + "<br>" + hour + ":" + minute;
     }
 
     function compareExpireDay(value) {
