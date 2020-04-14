@@ -21,8 +21,9 @@
           <div class="col-sm-12 fixed-table-toolbar">
             <div class="bs-bars pull-left" style="margin-top:5px; display: flex;">
               <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
-                  <a class="btn btn-primary" onclick="updateDO()"><i class="fa fa-check-circle"></i> &nbsp;Lưu DO</a>
-                  <a class="btn btn-default" onclick="closeItem()"><i class="fa fa-times"></i> &nbsp;Hủy Bỏ</a>
+                  <a class="btn btn-primary" onclick="updateDO()" id="saveDoBtn"><i class="fa fa-check-circle"></i> &nbsp;Lưu DO</a>
+                  <a class="btn btn-default" onclick="closeItem()" id="cancelDoBtn"><i class="fa fa-times"></i> &nbsp;Hủy Bỏ</a>
+                  <small id="tips">(*) Mã hãng tàu và Số vận đơn sẽ tự động cập nhật khi lưu</small>
               </div>
             </div>
             <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:5px">

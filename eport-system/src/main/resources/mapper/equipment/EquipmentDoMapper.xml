@@ -32,6 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="processRemark"    column="process_remark"    />
     </resultMap>
 
     <resultMap type="String" id="ContainerNumberListResult">
@@ -39,7 +40,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectEquipmentDoVo">
-        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time from equipment_do
+        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time, process_remark from equipment_do
     </sql>
     <select id="selectEquipmentDoListPagingAdmin" parameterType="equipmentDo" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
@@ -150,14 +151,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY id DESC  
     </select>
     <select id="selectEquipmentDoListExclusiveBill" parameterType="EquipmentDo"  resultMap="EquipmentDoResult">
-        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, count(container_number) as container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time 
+        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, count(container_number) as container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time ,process_remark
         from equipment_do
         <where>
             
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>  
             <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
-            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code like concat('%', #{carrierCode}, '%')</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+             <if test="consignee != null  and consignee != ''"> and consignee like concat('%', #{consignee}, '%')</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat('%', #{containerNumber}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="documentStatus != null  and documentStatus != ''"> and document_status = #{documentStatus}</if>
@@ -290,15 +292,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
             <if test="documentStatus != null  and documentStatus != ''">document_status = #{documentStatus},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="processRemark != null  and processRemark != ''">process_remark = #{processRemark},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>
-            <choose>
-            <when test="documentReceiptDate != null ">
-              document_receipt_date = #{documentReceiptDate},
-            </when>
-            <otherwise>
-                document_receipt_date = NULL,
-            </otherwise>
-            </choose>
+            <if test="documentReceiptDate != null ">document_receipt_date = #{documentReceiptDate},</if>
         </trim>
         where bill_of_lading = #{billOfLading}
     </update>
@@ -423,5 +419,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectEquipmentDoVoByBillNo" parameterType="String" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
         where bill_of_lading = #{blNo}
+    </select>
+
+    <select id="getConsignee" parameterType="Long" resultType="String">
+      select DISTINCT consignee from equipment_do where carrier_id = #{id}
+    </select>
+
+    <select id="getVessel" parameterType="Long" resultType="String">
+      select DISTINCT vessel from equipment_do where carrier_id = #{id}
+    </select>
+
+    <select id="getEmptyContainerDepot" parameterType="Long" resultType="String">
+      select DISTINCT empty_container_depot from equipment_do where carrier_id = #{id}
     </select>
 </mapper>
