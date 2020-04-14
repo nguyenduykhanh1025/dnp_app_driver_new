@@ -156,7 +156,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>  
             <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
-            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code like concat('%', #{carrierCode}, '%')</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat('%', #{containerNumber}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
@@ -291,14 +291,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="documentStatus != null  and documentStatus != ''">document_status = #{documentStatus},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>
-            <choose>
-            <when test="documentReceiptDate != null ">
-              document_receipt_date = #{documentReceiptDate},
-            </when>
-            <otherwise>
-                document_receipt_date = NULL,
-            </otherwise>
-            </choose>
+            <if test="documentReceiptDate != null ">document_receipt_date = #{documentReceiptDate},</if>
         </trim>
         where bill_of_lading = #{billOfLading}
     </update>

@@ -30,6 +30,9 @@
                 <input type="text" name="BlNo" id="blNo" placeholder="Vận đơn/BL No" />
               </li>
               <li>
+                <input type="text" name="carrierCode" id="carrierCode" placeholder="Hãng tàu" />
+              </li>
+              <li>
                 <input type="text" name="voyageNo" id="voyageNo" placeholder="Tên chuyến" />
               </li>
               <li>
@@ -40,6 +43,13 @@
                   <option value="">Trạng thái DO</option>
                   <option value="1">Đã làm lệnh</option>
                   <option value="0">Chưa làm lệnh</option>
+                </select>
+              </li>
+              <li>
+                <select name="documentStatus" id="documentStatus">
+                  <option value="">Nhận DO gốc</option>
+                  <option value="1">Đã nhận DO gốc</option>
+                  <option value="0">Chưa nhận DO gốc</option>
                 </select>
               </li>
               <li>
@@ -85,16 +95,16 @@
             <th data-options="field:'voyNo',align:'center'" width="10%">
               Chuyến tàu<br />Voyage No
             </th>
-            <th data-options="field:'createTime',halign:'center',align:'left',formatter: formatDate"
-            sortable="true" width="110">
-            Ngày gửi DO<br />DO send time
-            </th>
             <th data-options="field:'status',align:'center',formatter: formatStatus" width="10%">
               Trạng thái Do
             </th>
-            <th data-options="field:'documentReceiptDate',halign:'center',align:'left',formatter: formatDate"
+            <th data-options="field:'documentReceiptDate',halign:'center',align:'left',formatter: formatDateDoIn"
             sortable="true" width="110">
             Ngày nhận DO gốc
+            </th>
+            <th data-options="field:'createTime',halign:'center',align:'left',formatter: formatDate"
+            sortable="true" width="110">
+            Ngày gửi DO<br />DO send time
             </th>
             <th data-options="field:'document_status',align:'center'" width="10%">
               Ghi chú làm lệnh
@@ -168,7 +178,8 @@
               toDate: $("#toDate").val() == null ? "" : $("#toDate").val(),
               voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
               vessel: $("#vessel").val() == null ? "" : $("#vessel").val(),
-              contNo: $("#consignee").val() == null ? "" : $("#consignee").val(),
+              consignee: $("#consignee").val() == null ? "" : $("#consignee").val(),
+              carrierCode: $("#carrierCode").val() == null ? "" : $("#carrierCode").val(),
               blNo: $("#blNo").val() == null ? "" : $("#blNo").val(),
               status: $("#status").val() == null ? "" : $("#status").val(),
               documentStatus: $("#documentStatus").val() == null ? "" : $("#documentStatus").val(),
@@ -216,6 +227,18 @@
       var month = date.getMonth() + 1;
       var monthText = month < 10 ? "0" + month : month;
       return day + "/" + monthText + "/" + date.getFullYear();
+    }
+    function formatDateDoIn(value) {
+      if(value == null) {
+        return;
+      }
+      var date = new Date(value);
+      var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+      var month = date.getMonth() + 1;
+      var monthText = month < 10 ? "0" + month : month;
+      var hour = date.getHours();
+      var Minute = date.getMinutes();
+      return day + "/" + monthText + "/" + date.getFullYear() + "<br>" + hour + "h:" + Minute + "p";
     }
 
     function compareExpireDay(value) {

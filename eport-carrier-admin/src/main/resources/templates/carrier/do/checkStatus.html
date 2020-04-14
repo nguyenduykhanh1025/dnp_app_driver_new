@@ -48,8 +48,6 @@
         var billOfLading = equipmentDo.billOfLading;
         var status = equipmentDo.status;
         var documentStatus = equipmentDo.documentStatus;
-        console.log(status);
-        console.log(documentStatus);
     </script>
     <script type="text/javascript">
         var prefix = "/carrier/admin/do";
@@ -93,11 +91,18 @@
                     documentStatus: documentStatus
                 },
             }).done(function (result) {
-                $.modal.msgSuccess("Cập nhật thành công !");
-                setTimeout(function(){
-                    $.modal.reload()
-                }, 1000);
-                
+               if(result.code == 0)
+               {
+                    $.modal.msgSuccess("Cập nhật thành công !");
+                    setTimeout(function(){
+                        $.modal.reload()
+                    }, 1000);
+               } else {
+                    $.modal.msgError("Cập nhật không thành công !, liên hệ Admin để biết thêm chi tiết");
+                        setTimeout(function(){
+                        $.modal.reload()
+                    }, 1000);
+               }
             });
         }
     </script>
