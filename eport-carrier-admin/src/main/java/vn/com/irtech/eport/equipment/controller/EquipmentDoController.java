@@ -145,7 +145,7 @@ public class EquipmentDoController extends BaseController {
 
 	@PostMapping("/updateDoStatus")
 	@ResponseBody
-	public AjaxResult updateDoStatus(String billOfLading, String status, String documentStatus, String note) {
+	public AjaxResult updateDoStatus(String billOfLading, String status,String processRemark, String documentStatus, String note) {
 		EquipmentDo equipmentDo = new EquipmentDo();
 		boolean checkUpdate = false;
 		if (documentStatus.equals("1") && equipmentDoService.countDocmentStatusYes(billOfLading) == 0) {
@@ -165,6 +165,7 @@ public class EquipmentDoController extends BaseController {
 			equipmentDo.setUpdateBy(currentUser.getLoginName());
 			equipmentDo.setUpdateTime(documentReceiptDate);
 			equipmentDo.setBillOfLading(billOfLading);
+			equipmentDo.setprocessRemark(processRemark);
 			equipmentDoService.updateBillOfLading(equipmentDo);
 			checkUpdate = true;
 		}
