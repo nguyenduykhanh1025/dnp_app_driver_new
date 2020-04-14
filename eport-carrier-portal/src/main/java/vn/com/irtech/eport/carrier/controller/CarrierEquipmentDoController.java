@@ -173,6 +173,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			String consignee = equipmentDos.get(0).getConsignee();
 			for (EquipmentDo e : equipmentDos) {
 				e.setCarrierId(getUserId());
+				e.setCreateBy(getUser().getFullName());
+				e.setUpdateTime(new Date());
+				e.setUpdateBy(getUser().getFullName());
 				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getBillOfLading())
 						|| StringUtils.isBlank(e.getContainerNumber()) || StringUtils.isBlank(e.getConsignee())) {
 					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
@@ -225,15 +228,15 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					for (int e = 1; e < equipmentDos.size(); e++) {
 						if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
 							eTemp = equipmentDos.get(e);
-							conStr += eTemp.getBillOfLading() + ";";
+							conStr += eTemp.getContainerNumber() + ";";
 						} else {
 							Map<String, Object> variables = new HashMap<>();
-							variables.put("updateTime", eTemp.getUpdateTime());
+							variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 							variables.put("carrierCode", eTemp.getCarrierCode());
 							variables.put("billOfLading", eTemp.getBillOfLading());
 							variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 							variables.put("consignee", eTemp.getConsignee());
-							variables.put("expiredDem", eTemp.getExpiredDem());
+							variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 							variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 							variables.put("detFreeTime", eTemp.getDetFreeTime());
 							variables.put("vessel", eTemp.getVessel());
@@ -251,12 +254,12 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 						}
 					}
 					Map<String, Object> variables = new HashMap<>();
-					variables.put("updateTime", eTemp.getUpdateTime());
+					variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 					variables.put("carrierCode", eTemp.getCarrierCode());
 					variables.put("billOfLading", eTemp.getBillOfLading());
 					variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 					variables.put("consignee", eTemp.getConsignee());
-					variables.put("expiredDem", eTemp.getExpiredDem());
+					variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 					variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 					variables.put("detFreeTime", eTemp.getDetFreeTime());
 					variables.put("vessel", eTemp.getVessel());
@@ -264,7 +267,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					variables.put("remark", eTemp.getRemark());
 					// send email
 					try {
-						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", "", getUser().getEmail(), variables,
+						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": thêm thành công", "", getUser().getEmail(), variables,
 								"dnpEmail");
 					} catch (Exception exception) {
 						exception.printStackTrace();
@@ -354,15 +357,15 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					for (int e = 1; e < equipmentDos.size(); e++) {
 						if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
 							eTemp = equipmentDos.get(e);
-							conStr += eTemp.getBillOfLading() + ";";
+							conStr += eTemp.getContainerNumber() + ";";
 						} else {
 							Map<String, Object> variables = new HashMap<>();
-							variables.put("updateTime", eTemp.getUpdateTime());
+							variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 							variables.put("carrierCode", eTemp.getCarrierCode());
 							variables.put("billOfLading", eTemp.getBillOfLading());
 							variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 							variables.put("consignee", eTemp.getConsignee());
-							variables.put("expiredDem", eTemp.getExpiredDem());
+							variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 							variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 							variables.put("detFreeTime", eTemp.getDetFreeTime());
 							variables.put("vessel", eTemp.getVessel());
@@ -380,12 +383,12 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 						}
 					}
 					Map<String, Object> variables = new HashMap<>();
-					variables.put("updateTime", eTemp.getUpdateTime());
+					variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 					variables.put("carrierCode", eTemp.getCarrierCode());
 					variables.put("billOfLading", eTemp.getBillOfLading());
 					variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 					variables.put("consignee", eTemp.getConsignee());
-					variables.put("expiredDem", eTemp.getExpiredDem());
+					variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 					variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 					variables.put("detFreeTime", eTemp.getDetFreeTime());
 					variables.put("vessel", eTemp.getVessel());
@@ -453,6 +456,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			EquipmentDo edo = new EquipmentDo();
 			edo.setId(Long.parseLong(i));
 			edo.setExpiredDem(AppToolUtils.formatStringToDate(newDate, "yyyy-MM-dd"));
+			edo.setUpdateTime(new Date());
 			equipmentDoService.updateEquipmentDo(edo);
 		}
 		List<EquipmentDo> equipmentDos = equipmentDoService.getContainerListByIds(containerId);
@@ -462,15 +466,15 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		for (int e = 1; e < equipmentDos.size(); e++) {
 			if (eTemp.getBillOfLading().equals(equipmentDos.get(e).getBillOfLading())) {
 				eTemp = equipmentDos.get(e);
-				conStr += eTemp.getBillOfLading() + ";";
+				conStr += eTemp.getContainerNumber() + ";";
 			} else {
 				Map<String, Object> variables = new HashMap<>();
-				variables.put("updateTime", eTemp.getUpdateTime());
+				variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 				variables.put("carrierCode", eTemp.getCarrierCode());
 				variables.put("billOfLading", eTemp.getBillOfLading());
 				variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 				variables.put("consignee", eTemp.getConsignee());
-				variables.put("expiredDem", eTemp.getExpiredDem());
+				variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 				variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 				variables.put("detFreeTime", eTemp.getDetFreeTime());
 				variables.put("vessel", eTemp.getVessel());
@@ -492,12 +496,12 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			}
 		}
 		Map<String, Object> variables = new HashMap<>();
-		variables.put("updateTime", eTemp.getUpdateTime());
+		variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 		variables.put("carrierCode", eTemp.getCarrierCode());
 		variables.put("billOfLading", eTemp.getBillOfLading());
 		variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 		variables.put("consignee", eTemp.getConsignee());
-		variables.put("expiredDem", eTemp.getExpiredDem());
+		variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 		variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 		variables.put("detFreeTime", eTemp.getDetFreeTime());
 		variables.put("vessel", eTemp.getVessel());
