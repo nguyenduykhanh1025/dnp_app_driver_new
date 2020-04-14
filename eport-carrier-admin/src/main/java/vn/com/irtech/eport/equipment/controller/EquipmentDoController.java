@@ -53,12 +53,13 @@ public class EquipmentDoController extends BaseController {
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo listBuild(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String vessel,
-			String consignee, String blNo, String status, String documentStatus) {
+			String consignee, String blNo, String carrierCode, String status, String documentStatus) {
 		startPage();
 		edo.setVoyNo(voyageNo);
 		edo.setVessel(vessel);
 		edo.setConsignee(consignee);
 		edo.setBillOfLading(blNo);
+		edo.setCarrierCode(carrierCode);
 		edo.setFromDate(fromDate);
 		edo.setToDate(toDate);
 		edo.setDocumentStatus(documentStatus);
@@ -136,35 +137,40 @@ public class EquipmentDoController extends BaseController {
 //    }
 
 	@GetMapping("/checkStatus/{billOfLading}")
-	public String checkStatus(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
-		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
+	public String checkStatus(@PathVariable("billOfLading") String blNo, ModelMap mmap) {
+		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(blNo);
 		mmap.addAttribute("equipmentDos", equipmentDos);
 		return prefix + "/checkStatus";
 	}
 
 	@PostMapping("/updateDoStatus")
 	@ResponseBody
-	public AjaxResult updateDoStatus(String billOfLading, String status, String documentStatus, String note,
-			ModelMap mmap) {
+	public AjaxResult updateDoStatus(String billOfLading, String status, String documentStatus, String note) {
+		EquipmentDo equipmentDo = new EquipmentDo();
+		boolean checkUpdate = false;
 		if (documentStatus.equals("1") && equipmentDoService.countDocmentStatusYes(billOfLading) == 0) {
 			Date documentReceiptDate = new Date();
 			currentUser = ShiroUtils.getSysUser();
-			EquipmentDo equipmentDo = new EquipmentDo();
 			equipmentDo.setDocumentStatus("1");
 			equipmentDo.setUpdateBy(currentUser.getLoginName());
 			equipmentDo.setDocumentReceiptDate(documentReceiptDate);
 			equipmentDo.setBillOfLading(billOfLading);
 			equipmentDoService.updateBillOfLading(equipmentDo);
+			checkUpdate = true;
 		}
 		if (status.equals("1") && equipmentDoService.countDOStatusYes(billOfLading) == 0) {
 			Date documentReceiptDate = new Date();
 			currentUser = ShiroUtils.getSysUser();
-			EquipmentDo equipmentDo = new EquipmentDo();
 			equipmentDo.setStatus("1");
 			equipmentDo.setUpdateBy(currentUser.getLoginName());
 			equipmentDo.setUpdateTime(documentReceiptDate);
 			equipmentDo.setBillOfLading(billOfLading);
 			equipmentDoService.updateBillOfLading(equipmentDo);
+			checkUpdate = true;
+		}
+		if(checkUpdate = false)
+		{
+			return error();
 		}
 		return success();
 	}
