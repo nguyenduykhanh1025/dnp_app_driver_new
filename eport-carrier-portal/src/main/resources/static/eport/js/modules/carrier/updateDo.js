@@ -1,5 +1,9 @@
 var doList;
 var hot;
+var consigneeList = [];
+var emptyDepotList = [];
+var vesselList = [];
+getOptionsColumn();
 $("#billNo").html("No: " + firstDo.billOfLading);
 $("#billNumber").html(firstDo.billOfLading);
 $("#carrier").html(firstDo.carrierCode);
@@ -62,7 +66,9 @@ $.ajax({
         },
         {
           data: "consignee",
-          type: "text",
+          type: "autocomplete",
+          source: consigneeList,
+          strict: false
         },
         {
           data: "expiredDem",
@@ -72,7 +78,9 @@ $.ajax({
         },
         {
           data: "emptyContainerDepot",
-          type: "text",
+          type: "autocomplete",
+          source: emptyDepotList,
+          strict: false
         },
         {
           data: "detFreeTime",
@@ -80,7 +88,9 @@ $.ajax({
         },
         {
           data: "vessel",
-          type: "text",
+          type: "autocomplete",
+          source: vesselList,
+          strict: false
         },
         {
           data: "voyNo",
@@ -116,6 +126,32 @@ $.ajax({
     
   },
 });
+
+function getOptionsColumn() {
+  $.ajax({
+    url: "/carrier/do/getListOptions",
+    method: "get",
+  }).done(function (result) {
+    var list1 = result.consigneeList;
+    var list2 = result.emptyDepotList;
+    var list3 = result.vesselList;
+    for (var i = 0; i < list1.length; i++) {
+      if (list1[i] != null) {
+        consigneeList.push(list1[i]);
+      }
+    }
+    for (var i = 0; i< list2.length; i++) {
+      if (list1[i] != null) {
+        emptyDepotList.push(list2[i]);
+      }
+    }
+    for (var i = 0; i< list3.length; i++) {
+      if (list1[i] != null) {
+        vesselList.push(list3[i]);
+      }
+    }
+  });
+}
 
 function isGoodDate(dt) {
   var reGoodDate = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|(([1][26]|[2468][048]|[3579][26])00))))$/g;
