@@ -200,7 +200,8 @@
             success: function (data) {
             	var result = JSON.parse(data);
             	if(result.code == 0) {
-                    $.modal.confirm("Cập nhật DO thành công!", function() { closeItem();},{title:"Thông báo",btn:["Đồng Ý"]});
+                    $.modal.confirm("Cập nhật DO thành công!", function() { },{title:"Thông báo",btn:["Đồng Ý"]});
+                    reload();
               	} else {
               		$.modal.alertError(result.msg);
               	}
@@ -238,4 +239,21 @@
 
         function closeError(msg) {
           $.modal.alertError(msg);
+        }
+
+        function reload() {
+          var parent = window.parent;
+          if (parent.table.options.type == table_type.bootstrapTable) {
+              $.modal.close();
+              parent.$.modal.msgSuccess(result.msg);
+              parent.$.table.refresh();
+          } else if (parent.table.options.type == table_type.bootstrapTreeTable) {
+              $.modal.close();
+              parent.$.modal.msgSuccess(result.msg);
+              parent.$.treeTable.refresh();
+          } else {
+              $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liêu...", modal_status.SUCCESS);
+          }
+          $.modal.closeLoading();
+          $.modal.enable();
         }
