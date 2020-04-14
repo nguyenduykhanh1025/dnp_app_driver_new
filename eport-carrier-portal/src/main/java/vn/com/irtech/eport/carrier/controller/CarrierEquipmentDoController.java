@@ -170,6 +170,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		//String message = userService.importUser(userList, updateSupport, operName);
         //return AjaxResult.success(message);
 		if (equipmentDos != null) {
+			String consignee = equipmentDos.get(0).getConsignee();
 			for (EquipmentDo e : equipmentDos) {
 				e.setCarrierId(getUserId());
 				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getBillOfLading())
@@ -199,6 +200,14 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
 				}
 				// DEM Free date la so
+				if (e.getDetFreeTime() != null && e.getDetFreeTime() >= 10000 ) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
+				}
+				// Consignee is the same
+				if (!e.getConsignee().equals(consignee)) {
+					return AjaxResult.error("Tên khách hàng không được khác nhau");
+				}
+				consignee = e.getConsignee();
 				
 			}
 			// Do the insert to DB
@@ -234,7 +243,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 							conStr = "" + eTemp.getContainerNumber() + ";";
 							// send email
 							try {
-								mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": thêm thành công", getUser().getEmail(), variables,
+								mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": thêm thành công", getUser().getEmail(), "", variables,
 										"dnpEmail");
 							} catch (Exception exception) {
 								exception.printStackTrace();
@@ -255,7 +264,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					variables.put("remark", eTemp.getRemark());
 					// send email
 					try {
-						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", getUser().getEmail(), variables,
+						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", "", getUser().getEmail(), variables,
 								"dnpEmail");
 					} catch (Exception exception) {
 						exception.printStackTrace();
@@ -275,6 +284,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	public AjaxResult update(@RequestBody List<EquipmentDo> equipmentDos) {
 		if (equipmentDos != null) {
 			String containerNumber = "";
+			String consignee = equipmentDos.get(0).getConsignee();
 			String billOfLading = equipmentDos.get(0).getBillOfLading();
 			String carrierCode = equipmentDos.get(0).getCarrierCode();
 			for (EquipmentDo e : equipmentDos) {
@@ -304,12 +314,21 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				if(expiredDem.before(new Date())) {
 					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
 				}
-
+				// DEM Free date la so
+				if (e.getDetFreeTime() != null && e.getDetFreeTime() >= 10000 ) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
+				}
 				// Container number is unique
 				if (e.getContainerNumber().equals(containerNumber)) {
 					return AjaxResult.error("Số container không được trùng nhau");
 				}
 				containerNumber = e.getContainerNumber();
+				// Consignee is the same
+				if (!e.getConsignee().equals(consignee)) {
+					return AjaxResult.error("Tên khách hàng không được khác nhau");
+				}
+				consignee = e.getConsignee();
+
 				e.setUpdateBy(ShiroUtils.getSysUser().getFullName());
 				e.setUpdateTime(new Date());
 			}
@@ -350,7 +369,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 							conStr = "" + eTemp.getContainerNumber() + ";";
 							// send email
 							try {
-								mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", getUser().getEmail(), variables,
+								mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", "", getUser().getEmail(), variables,
 										"dnpEmail");
 							} catch (Exception exception) {
 								exception.printStackTrace();
@@ -371,7 +390,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					variables.put("remark", eTemp.getRemark());
 					// send email
 					try {
-						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", getUser().getEmail(), variables,
+						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", "", getUser().getEmail(), variables,
 								"dnpEmail");
 					} catch (Exception exception) {
 						exception.printStackTrace();
@@ -433,7 +452,6 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			edo.setExpiredDem(AppToolUtils.formatStringToDate(newDate, "yyyy-MM-dd"));
 			equipmentDoService.updateEquipmentDo(edo);
 		}
-		CarrierAccount currentUser = ShiroUtils.getSysUser();
 		List<EquipmentDo> equipmentDos = equipmentDoService.getContainerListByIds(containerId);
 		Collections.sort(equipmentDos, new BillNoComparator());
 		EquipmentDo eTemp = equipmentDos.get(0);
@@ -461,8 +479,8 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				new Thread() {
 					public void run() {
 						try {
-							mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables,
-									"dnpEmail");
+							mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", "", getUser().getEmail(), variables,
+							"dnpEmail");
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -486,7 +504,8 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		new Thread() {
 			public void run() {
 				try {
-					mailService.prepareAndSend("Thông tin cập nhật DO", currentUser.getEmail(), variables, "dnpEmail");
+					mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", "", getUser().getEmail(), variables,
+					"dnpEmail");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

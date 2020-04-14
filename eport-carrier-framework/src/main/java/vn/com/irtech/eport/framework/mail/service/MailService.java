@@ -23,7 +23,7 @@ public class MailService {
 	@Autowired
 	TemplateEngine templateEngine;
  
-    public void prepareAndSend(String subject, String recipient, Map<String, Object> variables, String template) throws MessagingException {
+    public void prepareAndSend(String subject, String recipient, String ccEmail, Map<String, Object> variables, String template) throws MessagingException {
         // Prepare the evaluation context
         Context ctx = new Context();
         ctx.setVariables(variables);
@@ -43,6 +43,9 @@ public class MailService {
         helper.setSubject(subject);
         helper.setTo(InternetAddress.parse(recipient)); //send multiple recipients
         helper.setText(htmlContent, true);
+        if (ccEmail.length() != 0) {
+          helper.setCc(InternetAddress.parse(ccEmail));
+        }    
         // Send email
         mailSender.send(mimeMessage);
     }
