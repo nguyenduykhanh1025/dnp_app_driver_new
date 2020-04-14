@@ -77,9 +77,6 @@ public class EquipmentDoController extends BaseController {
 	@PostMapping("/listCont")
 	@ResponseBody
 	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
-		// int page = EquipmentDo.getPage();
-		// page = page * 15;
-		// EquipmentDo.setPage(page);
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingAdmin(EquipmentDo);
 		return getDataTable(list);
 	}

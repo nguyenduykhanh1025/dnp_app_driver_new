@@ -11,7 +11,7 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-account-add">
             <div class="form-group">
-                <label class="col-sm-3 col-xs-3 col-md-3 control-label">Trạng thái nhận DO </label>
+                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Trạng thái nhận DO </label>
                 <div id="documentStatus" class="col-sm-3 col-xs-3 col-md-3">
                     <i class='fa fa-toggle-off text-info fa-2x' onclick='clickDocumentStatus()'></i>
                 </div>
@@ -20,7 +20,7 @@
                 </div> -->
             </div>
             <div class="form-group">
-                <label class="col-sm-3 col-xs-3 col-md-3 control-label">Trạng thái làm lệnh </label>
+                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Trạng thái làm lệnh </label>
                 <div id="status" class="col-sm-3 col-xs-3 col-md-3">
                     <i class='fa fa-toggle-off text-info fa-2x' onclick='clickStatus()'></i>
                 </div>
@@ -34,16 +34,16 @@
                     <textarea  class="form-check-input" id="processRemark"> </textarea>
                 </div>
             </div>
-            <div class="form-group" style="display: flex; justify-content: space-between">
-                <button id="buttonSave" type="button" class="btn btn-primary btn-md" onclick="updateDo()">
-                    Lưu
-                </button>
-                <button  type="button" class="btn btn-secondary btn-md" onclick="$.modal.close();">
-                    Hủy
-                </button>
-            </div>
+            
         </form>
-
+        <div class="col-sm-12 col-xs-12 col-md-12 form-group" style="display: flex; justify-content: space-between">
+            <button id="buttonSave" type="button" class="btn btn-primary btn-md" onclick="updateDo()">
+                Lưu
+            </button>
+            <button  type="button" class="btn btn-secondary btn-md" onclick="$.modal.close();">
+                Hủy
+            </button>
+        </div>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
@@ -61,40 +61,24 @@
         document.addEventListener('DOMContentLoaded', (event) => {
 
             if (status == 1) {
-                //$("#status").prop("disabled", true)
-                //$("#status").prop("checked", true)
                 $("#status").html("<i class='fa fa-toggle-on text-info fa-2x' onclick='clickStatus()'></i>");
                 disableStatus = true;
                 $("#doNote").prop("disabled", true)
                 $("#processRemark").prop("disabled", true)
-                
             }
 
             if (documentStatus == 1) {
-                //$("#documentStatus").prop("disabled", true)
-                //$("#documentStatus").prop("checked", true)
                 $("#documentStatus").html("<i class='fa fa-toggle-on text-info fa-2x' onclick='clickDocumentStatus()'></i>");
                 disableDocStatus = true;
             }
-
             if (status == 1 && documentStatus == 1) {
                 $("#buttonSave").prop("disabled", true);
             }
-
-
         });
 
         function updateDo() {
-            // if ($('#status').is(":checked")) {
-            //     $("#status").val(1)
-            // }
-            // if ($('#documentStatus').is(":checked")) {
-            //     $("#documentStatus").val(1)
-            // }
-            //var status = $("#status").val();
             var doNote = $("#doNote").val();
             var processRemark = $("#processRemark").val();
-            //var documentStatus = $("#documentStatus").val();
             $.ajax({
                 url: prefix + "/updateDoStatus",
                 method: "post",
@@ -135,7 +119,7 @@
 
         function clickDocumentStatus() {
             if (!disableDocStatus) {
-                if (status == 1) {
+                if (documentStatus == 1) {
                     documentStatus = 0;
                     $("#documentStatus").html("<i class='fa fa-toggle-off text-info fa-2x' onclick='clickDocumentStatus()'></i>");
                 } else {
