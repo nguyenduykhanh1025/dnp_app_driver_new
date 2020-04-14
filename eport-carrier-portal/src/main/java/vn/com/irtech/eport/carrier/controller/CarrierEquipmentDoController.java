@@ -511,6 +511,19 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
     return operateCodes;
   }
 
+  @GetMapping("/getListOptions")
+  @ResponseBody
+  public Map<String, List<String>> getListOptionsGrid() {
+    //Get distinct of consignee, distinct of empty container depot, distinct vessel 
+    //Only of current login user
+    //Return data Map<consigneeList: ListConsignee, emptyDepotList: ListEmptyDepot, vesselList: ListVessel>
+    Map<String, List<String>> optionsList = new HashMap<>();
+    optionsList.put("consigneeList", equipmentDoService.getConsignee(getUserId()));
+    optionsList.put("emptyDepotList", equipmentDoService.getEmptyContainerDepot(getUserId()));
+    optionsList.put("vesselList", equipmentDoService.getVessel(getUserId()));
+    return optionsList;
+  }
+
   @GetMapping("/getInfoBl")
   @ResponseBody
   public List<EquipmentDo> getInfoBl(String blNo) {

@@ -107,5 +107,11 @@ public interface EquipmentDoMapper {
 
 	public EquipmentDo selectBillOfLadingInfo(String blNo);
 
-	public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo);
+  public List<EquipmentDo> selectEquipmentDoVoByBillNo(String blNo);
+  
+  public List<String> getConsignee(Long id);
+
+  public List<String> getVessel(Long id);
+
+  public List<String> getEmptyContainerDepot(Long id);
 }
