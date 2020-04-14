@@ -9,8 +9,8 @@ $(document).ready(function(){
 	jQuery.validator.addMethod("isPhone",function(value,element){
 		var length = value.length;
 		var phone=/^0[3|4|5|6|7|8|9][0-9]\d{8}$/;
-		return this.optional(element)||(length == 11 && phone.test(value));
-	},"Hãy nhập số điện thoại 10 hoặc 11 số");
+		return this.optional(element)||(length>9 &&phone.test(value));
+	},"Hãy nhập số điện thoại 11 số");
 	//电话号码验证
 	jQuery.validator.addMethod("isTel",function(value,element){
 		var tel = /^(0\d{2,3}-)?\d{7,8}$/g;//区号3,4位,号码7,8位
