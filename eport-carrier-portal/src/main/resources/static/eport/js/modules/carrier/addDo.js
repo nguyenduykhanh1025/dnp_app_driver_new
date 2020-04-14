@@ -293,43 +293,54 @@ function saveDO() {
     $.modal.alert("Bạn chưa nhập thông tin.");
     errorFlg = true;
   }
+  if(!errorFlg && doList.length==0) {
+    $.modal.alert("Bạn chưa nhập thông tin.");
+      errorFlg = true;
+  }
   if (errorFlg) {
     return;
   }
-
+ 
   if (!errorFlg) {
-    $.modal.confirm(
-      "Bạn có chắc chắn cập nhật DO này lên Web Portal của Cảng Đà Nẵng không?",
-      function () {
-        $.ajax({
-          url: "/carrier/do/add",
-          method: "post",
-          contentType: "application/json",
-          accept: "text/plain",
-          data: JSON.stringify(doList),
-          dataType: "text",
-          success: function (data) {
+    $.modal.confirm("Bạn có chắc chắn cập nhật DO này lên Web Portal của Cảng Đà Nẵng không?", function() {
+          $.ajax({
+            url: "/carrier/do/add",
+            method: "post",
+            contentType : "application/json",
+            accept: 'text/plain',
+            data: JSON.stringify(doList),
+            dataType: 'text',
+            success: function (data) {
             var result = JSON.parse(data);
-            if (result.code == 0) {
-              $.modal.alert(
-                "Khai báo DO thành công!",
-                function () {
-                  closeItem();
-                },
-                { title: "Thông báo", btn: ["Đồng Ý"] }
-              );
+            if(result.code == 0) {
+              $.modal.alert("Khai báo DO thành công!", function() { },{title:"Thông báo",btn:["Đồng Ý"]});
+              reload();
             } else {
               $.modal.alertError(result.msg);
             }
-          },
-          error: function (result) {
-            $.modal.alertError(
-              "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin."
-            );
-          },
-        });
-      },
-      { title: "Xác Nhận Gửi DO", btn: ["Đồng Ý", "Hủy Bỏ"] }
-    );
+            },
+            error: function (result) {
+              $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+            },
+          });
+    },
+    {title:"Xác Nhận Gửi DO",btn:["Đồng Ý","Hủy Bỏ"]});
   }
+}
+
+function reload() {
+  var parent = window.parent;
+  if (parent.table.options.type == table_type.bootstrapTable) {
+      $.modal.close();
+      parent.$.modal.msgSuccess(result.msg);
+      parent.$.table.refresh();
+  } else if (parent.table.options.type == table_type.bootstrapTreeTable) {
+      $.modal.close();
+      parent.$.modal.msgSuccess(result.msg);
+      parent.$.treeTable.refresh();
+  } else {
+      $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liêu...", modal_status.SUCCESS);
+  }
+  $.modal.closeLoading();
+  $.modal.enable();
 }

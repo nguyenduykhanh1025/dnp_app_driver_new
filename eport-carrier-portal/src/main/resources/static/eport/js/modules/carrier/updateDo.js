@@ -239,39 +239,30 @@ function updateDO() {
     return;
   }
 
-  $.modal.confirm(
-    "Bạn có chắc chắn muốn cập nhật DO không?",
-    function () {
-      $.ajax({
-        url: "/carrier/do/update",
-        method: "post",
-        contentType: "application/json",
-        accept: "text/plain",
-        data: JSON.stringify(doList),
-        dataType: "text",
-        success: function (data) {
-          var result = JSON.parse(data);
-          if (result.code == 0) {
-            $.modal.confirm(
-              "Cập nhật DO thành công!",
-              function () {
-                closeItem();
-              },
-              { title: "Thông báo", btn: ["Đồng Ý"] }
-            );
+  
+  $.modal.confirm("Bạn có chắc chắn muốn cập nhật DO không?", function() {
+    $.ajax({
+      url: "/carrier/do/update",
+      method: "post",
+      contentType : "application/json",
+      accept: 'text/plain',
+      data: JSON.stringify(doList),
+      dataType: 'text',
+      success: function (data) {
+        var result = JSON.parse(data);
+        if(result.code == 0) {
+              $.modal.confirm("Cập nhật DO thành công!", function() { },{title:"Thông báo",btn:["Đồng Ý"]});
+              reload();
           } else {
             $.modal.alertError(result.msg);
           }
-        },
-        error: function (result) {
-          $.modal.alertError(
-            "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin."
-          );
-        },
-      });
-    },
-    { title: "Xác nhận cập nhật DO", btn: ["Đồng Ý", "Hủy Bỏ"] }
-  );
+      },
+      error: function (result) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+      },
+    });
+  },
+  {title:"Xác nhận cập nhật DO",btn:["Đồng Ý","Hủy Bỏ"]});
 }
 
 function search() {
@@ -297,6 +288,23 @@ document
     }
   });
 
-function closeError(msg) {
-  $.modal.alertError(msg);
-}
+        function closeError(msg) {
+          $.modal.alertError(msg);
+        }
+
+        function reload() {
+          var parent = window.parent;
+          if (parent.table.options.type == table_type.bootstrapTable) {
+              $.modal.close();
+              parent.$.modal.msgSuccess(result.msg);
+              parent.$.table.refresh();
+          } else if (parent.table.options.type == table_type.bootstrapTreeTable) {
+              $.modal.close();
+              parent.$.modal.msgSuccess(result.msg);
+              parent.$.treeTable.refresh();
+          } else {
+              $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liêu...", modal_status.SUCCESS);
+          }
+          $.modal.closeLoading();
+          $.modal.enable();
+        }

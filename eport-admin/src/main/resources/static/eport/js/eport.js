@@ -966,6 +966,10 @@ var table = {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id));
             },
+			addCarrierAccount: function(id) {
+            	table.set();
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 500, 450);
+            },
             addTab: function (id) {
             	table.set();
                 $.modal.openTab("Thêm " + table.options.modalName, $.operate.addUrl(id));
@@ -997,6 +1001,20 @@ var table = {
                     $.modal.open("Chỉnh Sửa " + table.options.modalName, url);
             	} else {
             	    $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id));
+            	}
+            },
+			editCarrierAccount: function(id) {
+            	table.set();
+            	if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+            		var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                	if ($.common.isEmpty(row)) {
+            			$.modal.alertWarning("Hãy chọn dong để xử lý");
+            			return;
+            		}
+                    var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
+                    $.modal.open("Chỉnh Sửa " + table.options.modalName, url, 500, 450);
+            	} else {
+            	    $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 500, 400);
             	}
             },
             editTab: function(id) {

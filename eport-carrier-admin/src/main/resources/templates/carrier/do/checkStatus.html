@@ -11,32 +11,22 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-account-add">
             <div class="form-group">
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Trạng thái làm lệnh</label>
-                <div class="col-sm-9 col-xs-8 col-md-10">
+                <label class="col-sm-9 col-xs-9 col-md-9 control-label">Trạng thái làm lệnh</label>
+                <div class="col-sm-3 col-xs-3 col-md-3">
                     <input class="form-check-input" type="checkbox" value="" id="status">
                 </div>
             </div>
-            <!-- <div class="form-group">
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Ghi chú</label>
-                <div class="col-sm-9 col-xs-8 col-md-10">
-                    <input type="text" id="doNote">
-                </div>
-            </div> -->
             <div class="form-group">
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Trạng thái nhận DO</label>
-                <div class="col-sm-9 col-xs-8 col-md-10">
+                <label class="col-sm-9 col-xs-9 col-md-9 control-label">Trạng thái nhận DO</label>
+                <div class="col-sm-3 col-xs-3 col-md-3">
                     <input class="form-check-input" type="checkbox" id="documentStatus">
                 </div>
             </div>
-            <!-- <div class="form-group">
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Ngày nhận DO</label>
-                <div class="col-sm-9 col-xs-8 col-md-10">
-                    <input type="date" id="doDayIn"  name="doDayIn"  required>
-                </div>
-            </div> -->
-            <button id="buttonSave" type="button" class="btn btn-primary btn-sm" onclick="updateDo()">
-                Lưu
-            </button>
+            <div class="form-group" style="display: flex; justify-content: space-around">
+                <button id="buttonSave" type="button" class="btn btn-primary btn-md" onclick="updateDo()">
+                    Lưu
+                </button>
+            </div>
         </form>
 
     </div>
@@ -48,8 +38,6 @@
         var billOfLading = equipmentDo.billOfLading;
         var status = equipmentDo.status;
         var documentStatus = equipmentDo.documentStatus;
-        console.log(status);
-        console.log(documentStatus);
     </script>
     <script type="text/javascript">
         var prefix = "/carrier/admin/do";
@@ -93,11 +81,18 @@
                     documentStatus: documentStatus
                 },
             }).done(function (result) {
-                $.modal.msgSuccess("Cập nhật thành công !");
-                setTimeout(function(){
-                    $.modal.reload()
-                }, 1000);
-                
+               if(result.code == 0)
+               {
+                    $.modal.msgSuccess("Cập nhật thành công !");
+                    setTimeout(function(){
+                        $.modal.reload()
+                    }, 1000);
+               } else {
+                    $.modal.msgError("Cập nhật không thành công !, liên hệ Admin để biết thêm chi tiết");
+                        setTimeout(function(){
+                        $.modal.reload()
+                    }, 1000);
+               }
             });
         }
     </script>
