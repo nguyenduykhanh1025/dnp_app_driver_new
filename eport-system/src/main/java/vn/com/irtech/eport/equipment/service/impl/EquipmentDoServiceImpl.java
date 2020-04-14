@@ -203,4 +203,18 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
         return equipmentDoMapper.selectEquipmentDoVoByBillNo(blNo);
     }
 
+    @Override
+    public List<String> getConsignee(Long id) {
+      return equipmentDoMapper.getConsignee(id);
+    }
+
+    @Override
+    public List<String> getVessel(Long id) {
+      return equipmentDoMapper.getVessel(id);
+    }
+
+    @Override
+    public List<String> getEmptyContainerDepot(Long id) {
+      return equipmentDoMapper.getEmptyContainerDepot(id);
+    }
 }

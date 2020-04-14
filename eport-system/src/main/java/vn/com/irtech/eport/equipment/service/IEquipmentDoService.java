@@ -124,5 +124,11 @@ public interface IEquipmentDoService
 	 * @param blNo
 	 * @return
 	 */
-	public EquipmentDo getBillOfLadingInfo(String blNo);
+  public EquipmentDo getBillOfLadingInfo(String blNo);
+  
+  public List<String> getConsignee(Long id);
+
+  public List<String> getVessel(Long id);
+
+  public List<String> getEmptyContainerDepot(Long id);
 }
