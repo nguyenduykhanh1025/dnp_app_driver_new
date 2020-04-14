@@ -419,4 +419,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectEquipmentDoVo"/>
         where bill_of_lading = #{blNo}
     </select>
+
+    <select id="getConsignee" parameterType="Long" resultType="String">
+      select DISTINCT consignee from equipment_do where carrier_id = #{id}
+    </select>
+
+    <select id="getVessel" parameterType="Long" resultType="String">
+      select DISTINCT vessel from equipment_do where carrier_id = #{id}
+    </select>
+
+    <select id="getEmptyContainerDepot" parameterType="Long" resultType="String">
+      select DISTINCT empty_container_depot from equipment_do where carrier_id = #{id}
+    </select>
 </mapper>
