@@ -97,7 +97,7 @@
                {
                     $.modal.msgSuccess("Cập nhật thành công !");
                     setTimeout(function(){
-                        reload()
+                        $.modal.reload()
                     }, 1000);
                } else {
                     $.modal.msgError("Cập nhật không thành công !, liên hệ Admin <br> để biết thêm chi tiết");
@@ -106,25 +106,6 @@
                     }, 1000);
                }
             });
-            function reload() {
-                // $.modal.close();
-                var parent = window.parent;
-                console.log("step",1);
-                if (parent.table.options.type == table_type.bootstrapTable) {
-                    $.modal.close();
-                    parent.$.modal.msgSuccess(result.msg);
-                    parent.$.table.refresh();
-                } else if (parent.table.options.type == table_type.bootstrapTreeTable) {
-                    $.modal.close();
-                    parent.$.modal.msgSuccess(result.msg);
-                    parent.$.treeTable.refresh();
-                } else {
-                    $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liêu...", modal_status.SUCCESS);
-                }
-                $.modal.closeLoading();
-                $.modal.enable();
-            }
-            
         }
     </script>
 </body>
