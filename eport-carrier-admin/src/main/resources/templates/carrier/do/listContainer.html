@@ -25,26 +25,6 @@
               <li>
                 <input type="text" placeholder="Số cont : Cont Number" name="containerNumber" />
               </li>
-              <!-- <li>
-                <input type="text" placeholder="Tên khách hàng : Consignee" name="consignee" />
-              </li>
-              <li>
-                <input type="text" placeholder="Nơi hạ vỏ : EmptyDepot" name="emptyContainerDepot" />
-              </li>
-              <li>
-                <input type="text" placeholder="Tên tàu : Vessel" name="vessel" />
-              </li>
-              <li>
-                <input type="text" placeholder="Chuyến tàu : Voyage" name="voyNo" />
-              </li>
-              <li class="select-time">
-                <p>Hạn lệnh：</p>
-                <input type="text" class="time-input" id="expiredDem_StartDay" placeholder="Ngày bắt đầu"
-                  name="expiredDemStartDay" />
-                <span>-</span>
-                <input type="text" class="time-input" id="expiredDem_EndDay" placeholder="Ngày kết thúc"
-                  name="expiredDemEndDay" />
-              </li> -->
 	          <div class="bs-bars pull-left" style="margin-top:5px; display: flex;">
 	            <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
 	              <a class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i class="fa fa-search"></i> &nbsp;Tìm kiếm</a>
@@ -53,19 +33,12 @@
 	              <a class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()"><i class="fa fa-check-circle"></i> Xác Nhận Làm lệnh</a>
 	            </div>
 	          </div>
-<!--               <li>
-                <buttom class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i
-                    class="fa fa-search"></i>&nbsp;Tìm kiếm</buttom>
-              </li>
-              <li>
-                <buttom class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()">Làm lệnh</buttom>
-              </li> -->
             </ul>
           </div>
         </form>
       </div>
-      <div class="container col-md-12">
-        <div id="example" class="hot handsontable htColumnHeaders htRowHeaders"></div>
+      <div class="container col-md-12" style="padding-left: 10px;padding: 10px;">
+        <div id="listContTable" class="hot handsontable htColumnHeaders htRowHeaders"></div>
         <nav aria-label="Page navigation">
           <div class="paginate" style="display: flex; justify-content: space-between; margin-top: 10px">
             <div class="left-side">
@@ -124,7 +97,7 @@
               data: form.serialize(),
             }).done(function (result) {
               dataObj = result.rows;
-              var example = document.getElementById("example");
+              var example = document.getElementById("listContTable");
               hot = new Handsontable(example, {
                 data: dataObj,
                 stretchH: 'all',
