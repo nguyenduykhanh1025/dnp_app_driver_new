@@ -279,9 +279,12 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 
 	// update
 	@Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
-	@PostMapping("/update")
+	@PostMapping("/update/{billOfLading}")
 	@ResponseBody
-	public AjaxResult update(@RequestBody List<EquipmentDo> equipmentDos) {
+	public AjaxResult update(@RequestBody List<EquipmentDo> equipmentDos, @PathVariable("billOfLading") String bill) {
+		if (getUserId() != equipmentDoService.getBillOfLadingInfo(bill).getCarrierId()) {
+			return AjaxResult.error("Bạn không có quyền cập nhật DO này");
+		}
 		if (equipmentDos != null) {
 			String containerNumber = "";
 			String consignee = equipmentDos.get(0).getConsignee();
