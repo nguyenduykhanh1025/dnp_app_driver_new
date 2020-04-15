@@ -345,3 +345,7 @@ document
           $.modal.closeLoading();
           $.modal.enable();
         }
+
+        function changeExpiredDate() {
+          $.modal.openChangeExpired("Thay đổi hạn lệnh", "/carrier/do/changeExpiredDate/"+firstDo.billOfLading, 500, 380);
+        }

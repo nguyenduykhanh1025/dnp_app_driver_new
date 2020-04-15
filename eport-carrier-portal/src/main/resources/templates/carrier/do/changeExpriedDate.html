@@ -83,8 +83,7 @@
         method: "post",
         data: {
           billOfLading : billOfLading,
-          expiredDem : $("#datetimepicker").val(),
-          status : status
+          expiredDem : $("#datetimepicker").val()
         }
       }).done(function(result){
         if (result.code == 0) {
