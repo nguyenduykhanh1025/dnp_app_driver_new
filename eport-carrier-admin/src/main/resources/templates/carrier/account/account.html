@@ -28,7 +28,7 @@
                             </li>
                             <li style="margin-top: 0;">
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</a>
-                                <!-- <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a> -->
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i></a>
                             </li>
                         </ul>
                     </div>                  
@@ -135,7 +135,7 @@
         /* Carrier-Reset Password */
 		function resetPwd(id) {
 		    var url = prefix + '/resetPwd/' + id;
-		    $.modal.open("Đặt lại mật khẩu", url, '800', '300');
+		    $.modal.open("Đặt lại mật khẩu", url, '500', '350');
 		}
 
         /*Carrier account status display */

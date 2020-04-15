@@ -160,9 +160,6 @@ public class CarrierAccountController extends BaseController
     @ResponseBody
     public AjaxResult editSave(CarrierAccount carrierAccount)
     {
-        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierAccount.getEmail())) {
-            return error("Email không hợp lệ!");
-        }
     	carrierAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierAccountService.updateCarrierAccount(carrierAccount));
     }

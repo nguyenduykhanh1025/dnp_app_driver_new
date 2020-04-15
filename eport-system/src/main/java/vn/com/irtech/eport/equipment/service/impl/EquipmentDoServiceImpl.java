@@ -1,7 +1,6 @@
 package vn.com.irtech.eport.equipment.service.impl;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -182,7 +181,12 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
 	public Map<String, String> getReportByCarrierGroup(String[] codes) {
 		return equipmentDoMapper.getReportByCarrierGroup(codes);
     }
-    
+
+	@Override
+	public Map<String, String> getReportForAdmin() {
+		return equipmentDoMapper.getReportForAdmin();
+	}
+	
     @Override
     public int countDOStatusYes(String billOfLading){
         return equipmentDoMapper.countDOStatusYes(billOfLading);
@@ -217,4 +221,6 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     public List<String> getEmptyContainerDepot(Long id) {
       return equipmentDoMapper.getEmptyContainerDepot(id);
     }
+
+
 }
