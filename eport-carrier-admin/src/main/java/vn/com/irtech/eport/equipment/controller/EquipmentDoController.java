@@ -77,9 +77,10 @@ public class EquipmentDoController extends BaseController {
 	}
 
 	@RequiresPermissions("equipment:do:list")
-	@PostMapping("/listCont")
+	@PostMapping("/listCont/{blNo}")
 	@ResponseBody
-	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
+	public TableDataInfo list(@PathVariable("blNo") String blNo, EquipmentDoPaging EquipmentDo) {
+		EquipmentDo.setBillOfLading(blNo);
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingAdmin(EquipmentDo);
 		return getDataTable(list);
 	}
