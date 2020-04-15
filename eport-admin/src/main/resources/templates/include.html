@@ -47,6 +47,14 @@
 	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
 </div>
 
+<!-- handonstable -->
+<div th:fragment="handsontable-css">
+    <link th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="handsontable-js">
+    <script th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"></script>
+</div>
+
 <!-- easyui -->
 <div th:fragment="easyui-css">
     <link th:href="@{/ajax/libs/easyui/themes/default/easyui.css}" rel="stylesheet"/>

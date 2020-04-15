@@ -1,55 +1,60 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-    <th:block th:include="include :: header('Add Carrier Account')" />
-    <th:block th:include="include :: datetimepicker-css" />
-    <th:block th:include="include :: select2-css" />
+    <th:block th:include="include :: header('Xác nhận làm lệnh')" />
 </head>
-
 <body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-account-add">
+    <div class="wrapper wrapper-content ibox-content">
+        <form class="form-horizontal" id="form-confirm-status">
+          <div class="row">
             <div class="form-group">
-                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Đã nhận DO gốc </label>
-                <div id="documentStatus" class="col-sm-3 col-xs-3 col-md-3">
-                    <i class='fa fa-toggle-off text-info fa-2x' onclick='clickDocumentStatus()'></i>
+              <div class="col-xs-12">
+                <label class="col-xs-4 control-label">Đã nhận DO gốc </label>
+                 <div class="col-xs-8">
+                     <label class="check-box">
+                        <input name="documentStatus" type="checkbox" th:value="1" th:checked="${equipmentDos.documentStatus == '1'}" th:disabled="${equipmentDos.documentStatus == '1'}">
+                     </label>
+                 </div>
                 </div>
-                <!-- <div class="col-sm-3 col-xs-3 col-md-3">
-                    <input class="form-check-input" type="checkbox" id="documentStatus">
-                </div> -->
             </div>
+          </div>
+          <div class="row">
             <div class="form-group">
-                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Đã làm lệnh </label>
-                <div id="status" class="col-sm-3 col-xs-3 col-md-3">
-                    <i class='fa fa-toggle-off text-info fa-2x' onclick='clickStatus()'></i>
-                </div>
-                <!-- <div class="col-sm-3 col-xs-3 col-md-3">
-                    <input class="form-check-input" type="checkbox" value="" id="status">
-                </div> -->
+              <div class="col-xs-12">
+                <label class="col-xs-4 control-label">Đã làm lệnh </label>
+                <div class="col-xs-8">
+                     <label class="check-box">
+                        <input name="status" type="checkbox" th:value="1" th:checked="${equipmentDos.status == '1'}" th:disabled="${equipmentDos.status == '1'}">
+                     </label>
+                 </div>
             </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-xs-12">
+                <label class="control-label">Ghi chú làm lệnh </label>
+              </div>
+          </div>
+          <div class="row">
             <div class="form-group">
-                <label class="col-sm-12 col-xs-12 col-md-12 control-label">Ghi chú làm lệnh </label>
-                
+              <div class="col-xs-12" style="padding: 0px 30px;">
+                <textarea name="processRemark" maxlength="255" class="form-control" rows="3">[[${equipmentDos.processRemark}]]</textarea>
+              </div>
             </div>
-            <div class="form-group">
-            <div class="col-sm-12 col-xs-12 col-md-12">
-                <textarea  class="form-check-input" cols="37" id="processRemark"> </textarea>
-            </div>
-            </div>
+          </div>
         </form>
-        <div class="col-sm-12 col-xs-12 col-md-12 form-group" style="display: flex; justify-content: space-between">
-            <button id="buttonSave" type="button" class="btn btn-primary btn-md" onclick="updateDo()">
-                Lưu
+        <div class="row pull-right">
+        <div class="col-xs-12 form-group">
+            <button id="buttonSave" type="button" class="btn btn-primary btn-sx" onclick="updateDo()" style="margin-right:10px;">
+                Xác Nhận
             </button>
-            <button  type="button" class="btn btn-secondary btn-md" onclick="$.modal.close();">
-                Hủy
+            <button  type="button" class="btn btn-secondary btn-sx" onclick="$.modal.close();">
+                Bỏ Qua
             </button>
+        </div>
         </div>
     </div>
     <th:block th:include="include :: footer" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: select2-js" />
     <script type="text/javascript" th:inline="javascript">
         var equipmentDo = /*[[${equipmentDos}]]*/ ;
         var billOfLading = equipmentDo.billOfLading;
@@ -57,79 +62,24 @@
         var documentStatus = equipmentDo.documentStatus;
         var disableStatus = false;
         var disableDocStatus = false;
-    </script>
-    <script type="text/javascript">
         var prefix = "/carrier/admin/do";
-        document.addEventListener('DOMContentLoaded', (event) => {
-
-            if (status == 1) {
-                $("#status").html("<i class='fa fa-toggle-on text-info fa-2x' onclick='clickStatus()'></i>");
-                disableStatus = true;
-                $("#processRemark").prop("disabled", true)
-            }
-
-            if (documentStatus == 1) {
-                $("#documentStatus").html("<i class='fa fa-toggle-on text-info fa-2x' onclick='clickDocumentStatus()'></i>");
-                disableDocStatus = true;
-            }
-            if (status == 1 && documentStatus == 1) {
-                $("#buttonSave").prop("disabled", true);
-            }
-
-            $("#processRemark").prop("disabled", true)
-            
-        });
 
         function updateDo() {
-            var processRemark = $("#processRemark").val();
+            var data = $("#form-confirm-status").serializeArray();
             $.ajax({
-                url: prefix + "/updateDoStatus",
+                url: prefix + "/updateDoStatus/"+billOfLading,
                 method: "post",
-                data: {
-                    billOfLading: billOfLading,
-                    status: status,
-                    processRemark : processRemark,
-                    documentStatus: documentStatus
-                },
+                data: data,
             }).done(function (result) {
-               if(result.code == 0)
-               {
-                    $.modal.msgSuccess("Cập nhật thành công !");
-                    setTimeout(function(){
-                        $.modal.reload()
-                    }, 1500);
-               } else {
-                    $.modal.msgError("Cập nhật không thành công !, bạn ko thực hiện thao tác cập nhật nào!");
-               }
+            	$.operate.successCallback(result);
             });
         }
 
-        function clickStatus() {
-            if (!disableStatus) {
-                if (status == 1) {
-                    status = 0;
-                    $("#status").html("<i class='fa fa-toggle-off text-info fa-2x' onclick='clickStatus()'></i>");
-                    $("#processRemark").prop("disabled", true)
-                } else {
-                    status = 1;
-                    $("#status").html("<i class='fa fa-toggle-on text-info fa-2x' onclick='clickStatus()'></i>");
-                    $("#processRemark").prop("disabled", false)
-                }
+        $(function() {
+            if (status == 1 && documentStatus == 1) {
+                $("#buttonSave").prop("disabled", true);
             }
-        }
-
-        function clickDocumentStatus() {
-            if (!disableDocStatus) {
-                if (documentStatus == 1) {
-                    documentStatus = 0;
-                    $("#documentStatus").html("<i class='fa fa-toggle-off text-info fa-2x' onclick='clickDocumentStatus()'></i>");
-                } else {
-                    documentStatus = 1;
-                    $("#documentStatus").html("<i class='fa fa-toggle-on text-info fa-2x' onclick='clickDocumentStatus()'></i>");
-                }
-            }
-        }
+        });
     </script>
 </body>
-
 </html>
