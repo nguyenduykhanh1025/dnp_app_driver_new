@@ -56,10 +56,16 @@ public class EquipmentDoController extends BaseController {
 			String consignee, String blNo, String carrierCode, String status, String documentStatus) {
 		startPage();
 		edo.setVoyNo(voyageNo);
-		edo.setVessel(vessel);
-		edo.setConsignee(consignee);
+		if (vessel != null) {
+			edo.setVessel(vessel.toLowerCase());
+		}
+		if (consignee != null) {
+			edo.setConsignee(consignee.toLowerCase());
+		}
 		edo.setBillOfLading(blNo);
-		edo.setCarrierCode(carrierCode);
+		if (carrierCode != null) {
+			edo.setCarrierCode(carrierCode.toLowerCase());
+		}
 		edo.setFromDate(fromDate);
 		edo.setToDate(toDate);
 		edo.setDocumentStatus(documentStatus);

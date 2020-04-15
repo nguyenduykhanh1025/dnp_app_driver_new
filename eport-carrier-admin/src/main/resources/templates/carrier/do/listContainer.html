@@ -14,10 +14,13 @@
 </style>
 
 <body class="white-bg full-height-layout">
-    <div class="row" style="height: auto;">
-      <div class="col-sm-12 search-collapse">
+    <div class="row" style="height: auto;margin-right: 15px;margin-left: 15px;">
+      
         <form id="formId">
-          <div class="select-list">
+          <div class="select-list" style="display: flex;justify-content: space-between;">
+            <div class="btn-group-sm" style="margin-top: 5px;">
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()"><i class="fa fa-check-circle"></i> Xác Nhận Làm Lệnh</a>
+            </div>
             <ul>
               <li>
                 <input type="text" id="billOfLading" hidden="true" name="billOfLading" />
@@ -25,22 +28,15 @@
               <li>
                 <input type="text" placeholder="Số cont : Cont Number" name="containerNumber" />
               </li>
-	          <div class="bs-bars pull-left" style="margin-top:5px; display: flex;">
-	            <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
-	              <a class="btn btn-primary btn-rounded btn-sm" onclick="searchEvent()"><i class="fa fa-search"></i> &nbsp;Tìm kiếm</a>
-	            </div>
-	            <div class="btn-group-sm">
-	              <a class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()"><i class="fa fa-check-circle"></i> Xác Nhận Làm lệnh</a>
+	          <div class="bs-bars pull-left" style="margin-top: 5px;">
+	            <div class="btn-group-sm" id="toolbar" role="group">
+	              <a class="btn btn-success btn-sm" onclick="searchEvent()"><i class="fa fa-search"></i> &nbsp;Tìm kiếm</a>
 	            </div>
 	          </div>
             </ul>
           </div>
         </form>
-      </div>
-      <div class="container col-md-12" style="padding-left: 10px;padding: 10px;">
         <div id="listContTable" class="hot handsontable htColumnHeaders htRowHeaders"></div>
-       
-      </div>
     </div>
 
     <th:block th:include="include :: footer" />
@@ -90,8 +86,8 @@
                   "Ngày miễn lưu<br> DET Freetime",
                   "Tên tàu<br>Vessel",
                   "Chuyến<br>Voyage",
-                  "Ngày nộp<br>DO date in",
-                  "Ghi chú<br>Note",
+                  "Ngày nộp<br>DO gốc",
+                  "Ghi chú <br>của hãng tàu",
                   "ID<br>id"
                 ],
                 columns: [
@@ -269,7 +265,7 @@
       //SubmitDO
       function submitDO()
       {
-          $.modal.openDo("Xác nhận làm lệnh", prefix + "/checkStatus/" + billOfLading + "","400", "280");
+          $.modal.openDo("Xác nhận làm lệnh", prefix + "/checkStatus/" + billOfLading + "","350", "320");
       }
 
       function reload() {

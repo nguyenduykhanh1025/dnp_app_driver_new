@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="documentStatus != null  and documentStatus != ''"> and document_status = #{documentStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
-            <if test="vessel != null  and vessel != ''"> and vessel like concat('%', #{vessel}, '%')</if>
+            <if test="vessel != null  and vessel != ''"> and lower(vessel) like concat('%', #{vessel}, '%')</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no like concat('%', #{voyNo}, '%')</if>
             <if test="expiredDemStartDay != null and expiredDemEndDay != null"> and expired_dem BETWEEN #{expiredDemStartDay} AND #{expiredDemEndDay}</if>
         </where>
@@ -155,16 +155,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>  
             <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
-            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code like concat('%', #{carrierCode}, '%')</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and lower(carrier_code) like concat('%', #{carrierCode}, '%')</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
-             <if test="consignee != null  and consignee != ''"> and consignee like concat('%', #{consignee}, '%')</if>
+             <if test="consignee != null  and consignee != ''"> and lower(consignee) like concat('%', #{consignee}, '%')</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat('%', #{containerNumber}, '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="documentStatus != null  and documentStatus != ''"> and document_status = #{documentStatus}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
-            <if test="vessel != null  and vessel != ''"> and vessel like concat('%', #{vessel}, '%')</if>
+            <if test="vessel != null  and vessel != ''"> and lower(vessel) like concat('%', #{vessel}, '%')</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no like concat('%', #{voyNo}, '%')</if>
             <if test="fromDate != null and toDate != null"> and expired_dem between #{fromDate} and #{toDate}</if>
             <if test="fromDate != null"> and expired_dem = #{fromDate} OR expired_dem > #{fromDate}</if>
