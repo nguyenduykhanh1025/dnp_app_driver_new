@@ -131,10 +131,10 @@ public class CarrierGroupController extends BaseController
     @ResponseBody
     public AjaxResult editSave(CarrierGroup carrierGroup)
     {
-        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierGroup.getMainEmail())) {
-            return error("Invalid Email!");
-        }
-    	carrierGroup.setCreateBy(ShiroUtils.getSysUser().getUserName());
+        // if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierGroup.getMainEmail())) {
+        //     return error("Invalid Email!");
+        // }
+    	carrierGroup.setUpdateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierGroupService.updateCarrierGroup(carrierGroup));
     }
 
