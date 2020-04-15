@@ -18,14 +18,14 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mã vận chuyển</label>
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mã vận hành</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input type="hidden" name="carrierCode" id="carrierCode">
                     <select class="carrierCodes" id="carrierCodes" required></select>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Email</label>
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Tên đăng nhập(Email)</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="email" class="form-control" type="text" required>
                 </div>
@@ -51,7 +51,7 @@
             </div>
             <div clas="form-group" style="padding-left: 150px;">
                 <input type="checkbox" class="form-check-input" id="isSendEmail" name="isSendEmail" checked>
-                <label class="control-label">Gửi email</label>
+                <label class="control-label">Gửi email thông báo mở tài khoản</label>
             </div>
         </form>
     </div>
@@ -155,7 +155,7 @@
                         }
                     }
                 },
-                placeholder: 'Chọn mã vận chuyển',
+                placeholder: 'Chọn Mã vận hành',
                 minimumInputLength: 0,
                 multiple: true,
             });

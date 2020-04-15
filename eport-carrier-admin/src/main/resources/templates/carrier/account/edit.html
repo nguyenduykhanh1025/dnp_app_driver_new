@@ -17,14 +17,14 @@
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mã vận chuyển</label>
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mã vận hành</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input type="hidden" name="carrierCode" th:field="*{carrierCode}" id="carrierCode">
                     <select class="carrierCodes" id="carrierCodes" style="width: 300px;"></select>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Email</label>
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Tên đăng nhập(Email)</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="email" th:field="*{email}" class="form-control" type="text" disabled>
                 </div>
@@ -140,7 +140,7 @@
                         }
                     }
                 },
-                placeholder: 'Chọn mã vận chuyển',
+                placeholder: 'Chọn Mã vận hành',
                 minimumInputLength: 0,
                 multiple: true,
             });

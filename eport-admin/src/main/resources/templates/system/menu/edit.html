@@ -71,7 +71,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label" th:text="#{menu.add.status}"></label>
+				<label class="col-sm-3 control-label" th:text="#{menu.status}"></label>
 				<div class="col-sm-8">
 					<div class="radio-box" th:each="dict : ${@dict.getType('sys_show_hide')}">
 						<input type="radio" th:id="${dict.dictCode}" name="visible" th:value="${dict.dictValue}" th:field="*{visible}">

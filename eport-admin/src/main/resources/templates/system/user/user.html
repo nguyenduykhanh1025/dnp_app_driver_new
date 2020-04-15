@@ -7,7 +7,7 @@
 
 </head>
 <body class="gray-bg">
-<!-- 	<div class="ui-layout-west">
+	<div class="ui-layout-west">
 		<div class="box box-main">
 			<div class="box-header">
 				<div class="box-title">
@@ -24,7 +24,7 @@
 				<div id="tree" class="ztree"></div>
 			</div>
 		</div>
-	</div> -->
+	</div>
 	
 	<div class="ui-layout-center">
 		<div class="container-div">
@@ -137,6 +137,10 @@
 		            title: "Tên người dùng"
 		        },
 		        {
+		            field: 'dept.deptName',
+		            title: "Bộ phận"
+		        },
+		        {
 		            field: 'email',
 		            title: /*[[#{user.email}]]*/,
 		            visible: false
@@ -218,7 +222,7 @@
 		/* User Management-Reset Password */
 		function resetPwd(userId) {
 		    var url = prefix + '/resetPwd/' + userId;
-		    $.modal.open("reset Password", url, '800', '300');
+		    $.modal.open("Thiết lập mật khẩu", url, '500', '300');
 		}
 		
 		/* User Management-Assigning Roles */
