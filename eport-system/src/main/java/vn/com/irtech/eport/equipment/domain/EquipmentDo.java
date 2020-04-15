@@ -111,6 +111,16 @@ public class EquipmentDo extends BaseEntity
 
     private Date fromDate;
 
+    private Date newExpiredDem;
+
+    public void setNewExpiredDem(Date newExpiredDem) {
+      this.newExpiredDem = newExpiredDem;
+    }
+
+    public Date getNewExpiredDem() {
+      return this.newExpiredDem;
+    }
+
     public void setToDate(Date toDate) {
         this.toDate = toDate;
     }
@@ -367,6 +377,7 @@ public class EquipmentDo extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("toDate", getToDate())
             .append("fromDate", getFromDate())
+            .append("newExpiredDem", getNewExpiredDem())
             .toString();
     }
 }

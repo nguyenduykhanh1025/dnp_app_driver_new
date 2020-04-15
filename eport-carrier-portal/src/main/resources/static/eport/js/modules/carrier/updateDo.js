@@ -8,10 +8,9 @@ $("#billNo").html("No: " + firstDo.billOfLading);
 $("#billNumber").html(firstDo.billOfLading);
 $("#carrier").html(firstDo.carrierCode);
 var date = new Date(firstDo.expiredDem);
-var status =
-  firstDo.status == 0
-    ? "<span class='label label-warning'>Chưa làm lệnh</span>"
-    : "<span class='label label-success'>Đã làm lệnh</span>";
+var status = firstDo.status == 0 ? "<span class='label label-warning'>Chưa làm lệnh</span>" : "<span class='label label-success'>Đã làm lệnh</span>";
+var updateBtn = firstDo.status == 0 ? "" : "<a class='btn btn-primary' onclick='changeExpiredDate()' id='updateExpriredBtn'><i class='fa fa-edit-circle'></i> &nbsp;Đổi hạn lệnh</a>"
+$("#updateExpriredBtn").html(updateBtn);
 $("#dostatus").html(status);
 $("#expiredDem").html(
   date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
@@ -44,6 +43,7 @@ $.ajax({
         "Số Container <i class='red'>(*)</i><br>Container No.",
         "Tên khách hàng <i class='red'>(*)</i><br>Consignee",
         "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
+        "Hạn lệnh mới",
         "Nơi hạ vỏ<br> Empty depot",
         "Ngày miễn lưu<br> DET Freetime",
         "Tên tàu<br>Vessel",
@@ -77,6 +77,13 @@ $.ajax({
           correctFormat: true,
         },
         {
+          data: "newExpiredDem",
+          type: "date",
+          dateFormat: "DD/MM/YYYY",
+          correctFormat: true,
+          readOnly: true
+        },
+        {
           data: "emptyContainerDepot",
           type: "autocomplete",
           source: emptyDepotList,
@@ -84,6 +91,9 @@ $.ajax({
         },
         {
           data: "detFreeTime",
+          type: "date",
+          dateFormat: "DD/MM/YYYY",
+          correctFormat: true,
           type: "numeric",
         },
         {
@@ -109,7 +119,7 @@ $.ajax({
       columnSorting: {
         indicator: true,
       },
-      colWidths: [70, 70, 80, 160, 70, 140, 70, 80, 80, 150, 0.1],
+      colWidths: [70, 70, 80, 160, 70, 70, 140, 70, 80, 80, 150, 0.1],
       manualColumnMove: true,
     });
     hot.validateCells();
@@ -329,6 +339,11 @@ document
           $.modal.alertError(msg);
         }
 
+        function closeSuccess(msg) {
+          $.modal.msgSuccess(msg);
+          $.modal.reload();
+        }
+
         function reload() {
           var parent = window.parent;
           if (parent.table.options.type == table_type.bootstrapTable) {
@@ -344,4 +359,8 @@ document
           }
           $.modal.closeLoading();
           $.modal.enable();
+        }
+
+        function changeExpiredDate() {
+          $.modal.openChangeExpired("Thay đổi hạn lệnh", "/carrier/do/changeExpiredDate/"+firstDo.billOfLading, 500, 380);
         }

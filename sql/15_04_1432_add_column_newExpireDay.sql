@@ -1,0 +1,1 @@
+alter table equipment_do add `new_expired_dem` date null
