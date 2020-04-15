@@ -11,7 +11,7 @@
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
         <form class="form-horizontal m" id="form-account-add">
             <div class="form-group">
-                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Trạng thái nhận DO </label>
+                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Đã nhận DO gốc </label>
                 <div id="documentStatus" class="col-sm-3 col-xs-3 col-md-3">
                     <i class='fa fa-toggle-off text-info fa-2x' onclick='clickDocumentStatus()'></i>
                 </div>
@@ -20,7 +20,7 @@
                 </div> -->
             </div>
             <div class="form-group">
-                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Trạng thái làm lệnh </label>
+                <label class="col-sm-6 col-xs-6 col-md-6 control-label">Đã làm lệnh </label>
                 <div id="status" class="col-sm-3 col-xs-3 col-md-3">
                     <i class='fa fa-toggle-off text-info fa-2x' onclick='clickStatus()'></i>
                 </div>
@@ -29,12 +29,14 @@
                 </div> -->
             </div>
             <div class="form-group">
-                <label class="col-sm-4 col-xs-4 col-md-4 control-label">Ghi chú làm lệnh </label>
-                <div class="col-sm-3 col-xs-3 col-md-3">
-                    <textarea  class="form-check-input" id="processRemark"> </textarea>
-                </div>
+                <label class="col-sm-12 col-xs-12 col-md-12 control-label">Ghi chú làm lệnh </label>
+                
             </div>
-            
+            <div class="form-group">
+            <div class="col-sm-12 col-xs-12 col-md-12">
+                <textarea  class="form-check-input" id="processRemark"> </textarea>
+            </div>
+            </div>
         </form>
         <div class="col-sm-12 col-xs-12 col-md-12 form-group" style="display: flex; justify-content: space-between">
             <button id="buttonSave" type="button" class="btn btn-primary btn-md" onclick="updateDo()">

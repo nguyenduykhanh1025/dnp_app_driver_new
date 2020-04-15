@@ -33,7 +33,7 @@
                 <input type="text" name="carrierCode" id="carrierCode" placeholder="Hãng tàu" />
               </li>
               <li>
-                <input type="text" name="voyageNo" id="voyageNo" placeholder="Tên chuyến" />
+                <input type="text" name="vessel" id="vessel" placeholder="Tên Tàu" />
               </li>
               <li>
                 <input type="text" name="consignee" id="consignee" placeholder="Tên khách hàng" />
@@ -77,17 +77,21 @@
               Số lượng <br> container
             </th>
             <th data-options="field:'consignee',halign:'center'" width="250">
-              Khách hàng<br />Consignee
+              Tên khách hàng<br />Consignee
             </th>
             <th data-options="field:'expiredDem',halign:'center',align:'left',formatter: compareExpireDay"
               sortable="true" width="110">
               Hạn lệnh<br />Expired Date
             </th>
+            <th data-options="field:'newExpiredDem',halign:'center',align:'left',formatter: compareExpireDay"
+              sortable="true" width="110">
+              Hạn lệnh<br />gia hạn
+            </th>
             <th data-options="field:'emptyContainerDepot',halign:'center'" width="200">
               Nơi hạ rỗng<br />Empty Depot
             </th>
             <th data-options="field:'detFreeTime',halign:'center',align:'right'" width="80">
-              Ngày miễn<br />DET free
+              Ngày miễn Lưu<br />DET Free Time
             </th>
             <th data-options="field:'vessel',align:'center'" width="10%">
               Tên tàu<br />Vessel
@@ -96,15 +100,15 @@
               Chuyến tàu<br />Voyage No
             </th>
             <th data-options="field:'status',align:'center',formatter: formatStatus" width="10%">
-              Trạng thái Do
+              Trạng thái
             </th>
             <th data-options="field:'documentReceiptDate',halign:'center',align:'left',formatter: formatDateDoIn"
             sortable="true" width="110">
-            Ngày nhận DO gốc
+            Ngày nhận<br /> DO gốc
             </th>
             <th data-options="field:'createTime',halign:'center',align:'left',formatter: formatDate"
             sortable="true" width="110">
-            Ngày gửi DO<br />DO send time
+            Ngày gửi DO
             </th>
             <th data-options="field:'processRemark',align:'center'" width="10%">
               Ghi chú làm lệnh
@@ -145,6 +149,7 @@
             },
             dataType: "json",
             success: function (data) {
+              console.log(data);
               success(data);
             },
             error: function () {
@@ -244,6 +249,9 @@
     }
 
     function compareExpireDay(value) {
+      if(value == null) {
+        return;
+      }
       var currentDay = new Date();
       currentDay = formatDate(currentDay);
       var expiredDay = formatDate(value);

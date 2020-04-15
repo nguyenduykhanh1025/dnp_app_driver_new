@@ -60,12 +60,12 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 
 	@RequestMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String contNo,
+	public TableDataInfo list(EquipmentDo edo, Date fromDate, Date toDate, String vessel, String contNo,
 			String blNo) {
 		startPage();
 		edo.setCarrierId(ShiroUtils.getUserId());
-		if (voyageNo != null) {
-			edo.setVoyNo(voyageNo);
+		if (vessel != null) {
+			edo.setVessel(vessel.toLowerCase());
 		}
 		if (contNo != null) {
 			edo.setContainerNumber(contNo);

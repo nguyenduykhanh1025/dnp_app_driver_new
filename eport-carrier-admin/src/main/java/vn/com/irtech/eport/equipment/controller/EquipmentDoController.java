@@ -56,10 +56,16 @@ public class EquipmentDoController extends BaseController {
 			String consignee, String blNo, String carrierCode, String status, String documentStatus) {
 		startPage();
 		edo.setVoyNo(voyageNo);
-		edo.setVessel(vessel);
-		edo.setConsignee(consignee);
+		if (vessel != null) {
+			edo.setVessel(vessel.toLowerCase());
+		}
+		if (consignee != null) {
+			edo.setConsignee(consignee.toLowerCase());
+		}
 		edo.setBillOfLading(blNo);
-		edo.setCarrierCode(carrierCode);
+		if (carrierCode != null) {
+			edo.setCarrierCode(carrierCode.toLowerCase());
+		}
 		edo.setFromDate(fromDate);
 		edo.setToDate(toDate);
 		edo.setDocumentStatus(documentStatus);
@@ -74,6 +80,7 @@ public class EquipmentDoController extends BaseController {
 		return prefix + "/listContainer";
 	}
 
+	@RequiresPermissions("equipment:do:list")
 	@PostMapping("/listCont")
 	@ResponseBody
 	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
@@ -82,6 +89,7 @@ public class EquipmentDoController extends BaseController {
 	}
 
 	// Return panination
+	@RequiresPermissions("equipment:do:list")
 	@PostMapping("/getCountPages")
 	@ResponseBody
 	public Long getCountPages(String billOfLading) {
@@ -89,50 +97,9 @@ public class EquipmentDoController extends BaseController {
 		return equipmentDoService.getTotalPagesCont(billOfLading);
 	}
 
-	/**
-	 * Update Exchange Delivery Order
-	 */
-	@RequiresPermissions("equipment:do:add")
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
-	@PostMapping("/add")
-	@ResponseBody
-	public AjaxResult addSave(EquipmentDo equipmentDo) {
-		return toAjax(equipmentDoService.insertEquipmentDo(equipmentDo));
-	}
 
-	/**
-	 * Update Exchange Delivery Order
-	 */
-	@GetMapping("/edit/{id}")
-	public String edit(@PathVariable("id") Long id, ModelMap mmap) {
-		EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(id);
-		mmap.put("equipmentDo", equipmentDo);
-		return prefix + "/edit";
-	}
 
-	/**
-	 * Update Save Exchange Delivery Order
-	 */
-
-	@RequiresPermissions("equipment:do:edit")
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
-	@PostMapping("/edit")
-	@ResponseBody
-	public AjaxResult editSave(EquipmentDo EquipmentDo) {
-		return toAjax(equipmentDoService.updateEquipmentDo(EquipmentDo));
-	}
-
-//	/**
-//	 * Delete Exchange Delivery Order
-//	 */
-//	@RequiresPermissions("equipment:do:remove")
-//	@Log(title = "Exchange Delivery Order", businessType = BusinessType.DELETE)
-//	@PostMapping("/remove")
-//	@ResponseBody
-//	public AjaxResult remove(String ids) {
-//		return toAjax(equipmentDoService.deleteEquipmentDoByIds(ids));
-//    }
-
+	@RequiresPermissions("equipment:do:list")
 	@GetMapping("/checkStatus/{billOfLading}")
 	public String checkStatus(@PathVariable("billOfLading") String blNo, ModelMap mmap) {
 		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(blNo);
@@ -140,6 +107,8 @@ public class EquipmentDoController extends BaseController {
 		return prefix + "/checkStatus";
 	}
 
+
+	@RequiresPermissions("equipment:do:list")
 	@PostMapping("/updateDoStatus")
 	@ResponseBody
 	public AjaxResult updateDoStatus(String billOfLading, String status,String processRemark, String documentStatus, String note) {

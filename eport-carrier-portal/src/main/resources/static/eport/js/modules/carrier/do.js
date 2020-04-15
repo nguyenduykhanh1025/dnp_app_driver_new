@@ -81,7 +81,7 @@ var prefix = ctx + "carrier/do";
         isAsc: param.order,
         fromDate: $("#fromDate").val() == null ? "" : $("#fromDate").val(),
         toDate: $("#toDate").val() == null ? "" : $("#toDate").val(),
-        voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
+        vessel: $("#vessel").val() == null ? "" : $("#vessel").val(),
         blNo: $("#blNo").val() == null ? "" : $("#blNo").val(),
       },
       dataType: "json",
