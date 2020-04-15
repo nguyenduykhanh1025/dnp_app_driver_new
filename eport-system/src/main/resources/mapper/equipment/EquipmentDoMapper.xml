@@ -167,8 +167,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vessel != null  and vessel != ''"> and lower(vessel) like concat('%', #{vessel}, '%')</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no like concat('%', #{voyNo}, '%')</if>
             <if test="fromDate != null and toDate != null"> and expired_dem between #{fromDate} and #{toDate}</if>
-            <if test="fromDate != null"> and create_time = #{fromDate} OR expired_dem > #{fromDate}</if>
-            <if test="toDate != null"> and create_time = #{toDate} OR expired_dem &lt; #{toDate}</if> 
+            <if test="fromDate != null"> and create_time = #{fromDate} OR create_time > #{fromDate}</if>
+            <if test="toDate != null"> and create_time = #{toDate} OR create_time &lt; #{toDate}</if> 
         </where>
         group by bill_of_lading
         ORDER BY id DESC 
