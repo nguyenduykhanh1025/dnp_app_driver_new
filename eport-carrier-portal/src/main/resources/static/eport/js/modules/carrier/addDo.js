@@ -196,7 +196,6 @@ function saveDO() {
       cleanedGridData.push(object);
     }
   });
-  console.log(cleanedGridData);
   //Create List DO Object
   var errorFlg = false;
   var doList = [];
