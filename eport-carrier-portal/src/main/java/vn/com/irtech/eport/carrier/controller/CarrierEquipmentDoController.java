@@ -171,6 +171,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
         //return AjaxResult.success(message);
 		if (equipmentDos != null) {
 			String consignee = equipmentDos.get(0).getConsignee();
+			String containerNumber = "";
 			for (EquipmentDo e : equipmentDos) {
 				e.setCarrierId(getUserId());
 				e.setCreateBy(getUser().getFullName());
@@ -211,6 +212,11 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					return AjaxResult.error("Tên khách hàng không được khác nhau");
 				}
 				consignee = e.getConsignee();
+				// Container number is unique
+				if (e.getContainerNumber().equals(containerNumber)) {
+					return AjaxResult.error("Số container "+containerNumber+" bị trùng");
+				}
+				containerNumber = e.getContainerNumber();
 				
 			}
 			// Do the insert to DB
@@ -326,7 +332,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				}
 				// Container number is unique
 				if (e.getContainerNumber().equals(containerNumber)) {
-					return AjaxResult.error("Số container không được trùng nhau");
+					return AjaxResult.error("Số container "+containerNumber+" bị trùng");
 				}
 				containerNumber = e.getContainerNumber();
 				// Consignee is the same
