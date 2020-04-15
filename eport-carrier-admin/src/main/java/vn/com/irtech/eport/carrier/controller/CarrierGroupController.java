@@ -100,12 +100,14 @@ public class CarrierGroupController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CarrierGroup carrierGroup)
     {
-        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierGroup.getMainEmail())) {
-            return error("Invalid Email!");
-        } else if (carrierGroupService.checkGroupCodeUnique(carrierGroup.getGroupCode().toLowerCase()).equals("1")) {
-            return error("Group code already exist");
-        } else if (carrierGroupService.checkMainEmailUnique(carrierGroup.getMainEmail().toLowerCase()).equals("1")) {
-            return error("Email already exist");
+        if (carrierGroupService.checkGroupCodeUnique(carrierGroup.getGroupCode().toLowerCase()).equals("1")) {
+            return error("Mã hãng tàu đã tồn tại");
+        }
+        if (carrierGroup.getMainEmail() != null && carrierGroupService.checkMainEmailUnique(carrierGroup.getMainEmail().toLowerCase()).equals("1")) {
+            return error("Email đã tồn tại");
+        }
+        if (carrierGroup.getGroupCode().length() > 3) {
+          return error("Mã hãng tàu không được quá 3 ký tự");
         }
         carrierGroup.setCreateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierGroupService.insertCarrierGroup(carrierGroup));
