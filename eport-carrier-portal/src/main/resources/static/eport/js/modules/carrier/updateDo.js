@@ -22,6 +22,7 @@ $.ajax({
     blNo: firstDo.billOfLading,
   },
   success: function (result) {
+    console.log(result);
     doList = result;
     var example = document.getElementById("showDemo");
     hot = new Handsontable(example, {
@@ -43,6 +44,7 @@ $.ajax({
         "Số Container <i class='red'>(*)</i><br>Container No.",
         "Tên khách hàng <i class='red'>(*)</i><br>Consignee",
         "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
+        "Hạn lệnh mới",
         "Nơi hạ vỏ<br> Empty depot",
         "Ngày miễn lưu<br> DET Freetime",
         "Tên tàu<br>Vessel",
@@ -76,6 +78,13 @@ $.ajax({
           correctFormat: true,
         },
         {
+          data: "newExpiredDem",
+          type: "date",
+          dateFormat: "DD/MM/YYYY",
+          correctFormat: true,
+          readOnly: true
+        },
+        {
           data: "emptyContainerDepot",
           type: "autocomplete",
           source: emptyDepotList,
@@ -83,14 +92,10 @@ $.ajax({
         },
         {
           data: "detFreeTime",
-          type: "numeric",
-        },
-        {
-          data: "newDateFreeTime",
           type: "date",
           dateFormat: "DD/MM/YYYY",
           correctFormat: true,
-          readOnly: true
+          type: "numeric",
         },
         {
           data: "vessel",
@@ -115,7 +120,7 @@ $.ajax({
       columnSorting: {
         indicator: true,
       },
-      colWidths: [70, 70, 80, 160, 70, 140, 70, 80, 80, 150, 0.1],
+      colWidths: [70, 70, 80, 160, 70, 70, 140, 70, 80, 80, 150, 0.1],
       manualColumnMove: true,
     });
     hot.validateCells();
