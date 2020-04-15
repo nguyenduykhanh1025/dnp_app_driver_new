@@ -149,6 +149,7 @@
             },
             dataType: "json",
             success: function (data) {
+              console.log(data);
               success(data);
             },
             error: function () {
@@ -248,6 +249,9 @@
     }
 
     function compareExpireDay(value) {
+      if(value == null) {
+        return;
+      }
       var currentDay = new Date();
       currentDay = formatDate(currentDay);
       var expiredDay = formatDate(value);

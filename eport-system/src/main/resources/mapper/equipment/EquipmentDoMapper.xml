@@ -41,7 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectEquipmentDoVo">
-        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time, process_remark from equipment_do
+        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time, process_remark,new_expired_dem from equipment_do
     </sql>
     <select id="selectEquipmentDoListPagingAdmin" parameterType="equipmentDo" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
@@ -150,7 +150,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY id DESC  
     </select>
     <select id="selectEquipmentDoListExclusiveBill" parameterType="EquipmentDo"  resultMap="EquipmentDoResult">
-        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, count(container_number) as container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time ,process_remark
+        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, count(container_number) as container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time ,process_remark,new_expired_dem
         from equipment_do
         <where>
             
