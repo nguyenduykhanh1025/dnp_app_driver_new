@@ -108,9 +108,11 @@ public class CarrierAccountController extends BaseController
     {
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierAccount.getEmail())) {
             return error("Email không hợp lệ!");
-        } else if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail().toLowerCase()).equals("1")) {
+        }
+        if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail().toLowerCase()).equals("1")) {
             return error("Email đã tồn tại!");
-        } else if (carrierAccount.getPassword().length() < 6) {
+        }
+        if (carrierAccount.getPassword().length() < 6) {
             return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
         Map<String, Object> variables = new HashMap<>();
