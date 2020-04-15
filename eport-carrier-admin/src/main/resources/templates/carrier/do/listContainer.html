@@ -227,7 +227,6 @@
             billOfLading: billOfLading,
           },
         }).done(function (result) {
-          console.log(result);
           $.toast({
             heading: "Thành công",
             text: "Lưu thông tin thành công ！",
@@ -275,7 +274,6 @@
 
       function reload() {
                 var parent = window.parent;
-                console.log("step",1);
                 if (parent.table.options.type == table_type.bootstrapTable) {
                     $.modal.close();
                     parent.$.modal.msgSuccess(result.msg);
