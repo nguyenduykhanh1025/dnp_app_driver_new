@@ -75,8 +75,9 @@ public class EquipmentDoController extends BaseController {
 	}
 
 	@GetMapping("/getViewCont/{getBillOfLading}")
-	public String getViewCont(@PathVariable("getBillOfLading") String getBillOfLading, Model model) {
-		model.addAttribute("getBillOfLading", getBillOfLading);
+	public String getViewCont(@PathVariable("getBillOfLading") String billOfLading, ModelMap mmap) {
+		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
+		mmap.addAttribute("billOfLading", equipmentDos);
 		return prefix + "/listContainer";
 	}
 
