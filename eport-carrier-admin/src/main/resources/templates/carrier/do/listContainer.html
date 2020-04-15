@@ -14,215 +14,244 @@
 </style>
 
 <body class="white-bg full-height-layout">
-    <div class="row" style="height: auto;margin-right: 15px;margin-left: 15px;">
-      
-        <form id="formId">
-          <div class="select-list" style="display: flex;justify-content: space-between;">
-            <div class="btn-group-sm" style="margin-top: 5px;">
-              <a class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()"><i class="fa fa-check-circle"></i> Xác Nhận Làm Lệnh</a>
+  <div class="row" style="height: auto;margin-right: 15px;margin-left: 15px;">
+
+    <form id="formId">
+      <div class="select-list" style="display: flex;justify-content: space-between;">
+        <div class="btn-group-sm" style="margin-top: 5px;">
+          <a class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()"><i class="fa fa-check-circle"></i> Xác Nhận
+            Làm Lệnh</a>
+          <a class="btn btn-primary btn-rounded btn-sm" onclick="backTolistDO()"></i> Quay lại danh sách DO</a>
+        </div>
+        <ul>
+          <li>
+            <input type="text" id="billOfLading" hidden="true" name="billOfLading" />
+          </li>
+          <li>
+            <input type="text" id="containerNumber" placeholder="Số Container" name="containerNumber" />
+          </li>
+          <div class="bs-bars pull-left" style="margin-top: 5px;">
+            <div class="btn-group-sm" id="toolbar" role="group">
+              <a class="btn btn-success btn-sm" id="searchBtn" onclick="searchEvent()"><i class="fa fa-search"></i>
+                &nbsp;Tìm kiếm</a>
             </div>
-            <ul>
-              <li>
-                <input type="text" id="billOfLading" hidden="true" name="billOfLading" />
-              </li>
-              <li>
-                <input type="text" placeholder="Số cont : Cont Number" name="containerNumber" />
-              </li>
-	          <div class="bs-bars pull-left" style="margin-top: 5px;">
-	            <div class="btn-group-sm" id="toolbar" role="group">
-	              <a class="btn btn-success btn-sm" onclick="searchEvent()"><i class="fa fa-search"></i> &nbsp;Tìm kiếm</a>
-	            </div>
-	          </div>
-            </ul>
           </div>
-        </form>
-        <div id="listContTable" class="hot handsontable htColumnHeaders htRowHeaders"></div>
-    </div>
+        </ul>
+      </div>
+    </form>
+    <div id="listContTable" class="hot handsontable htColumnHeaders htRowHeaders"></div>
+  </div>
 
-    <th:block th:include="include :: footer" />
-    <script th:src="@{/js/jquery.toast.min.js}"></script>
-    <!-- Jquery toast -->
-    <script th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"></script>
-    <script th:src="@{/ajax/libs/handsontable/6.2.2/moment/moment.js}"></script>
-    <script th:src="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.js}"></script>
-    <script type="text/javascript" th:inline="javascript">
-      var billOfLading = /*[[${getBillOfLading}]]*/ ;
-      $('#billOfLading').val(billOfLading);
+  <th:block th:include="include :: footer" />
+  <script th:src="@{/js/jquery.toast.min.js}"></script>
+  <!-- Jquery toast -->
+  <script th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"></script>
+  <script th:src="@{/ajax/libs/handsontable/6.2.2/moment/moment.js}"></script>
+  <script th:src="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.js}"></script>
+  <script type="text/javascript" th:inline="javascript">
+    var billOfLading = /*[[${getBillOfLading}]]*/ ;
+    $('#billOfLading').val(billOfLading);
+  </script>
+  <script type="text/javascript">
+    var hot;
+    var currentPage = 0;
+    var prefix = "/carrier/admin/do";
+    var dataObj;
+    var config;
+    document.addEventListener("DOMContentLoaded", function () {
+      var form = $("#formId");
+      $(document).ready(function () {
+        $.ajax({
+          url: prefix + "/listCont",
+          method: "POST",
+          data: form.serialize(),
+        }).done(function (result) {
+          dataObj = result.rows;
+          var example = document.getElementById("listContTable");
+          hot = new Handsontable(example, {
+            data: dataObj,
+            stretchH: 'all',
+            width: 'auto',
+            minSpareRows: 1,
+            rowHeights: 30,
+            className: "htMiddle",
+            manualColumnResize: true,
+            height: document.documentElement.clientHeight - 130,
+            colHeaders: [
+              "Hãng tàu<br>Carrier",
+              "Số vận đơn<br> B/L No",
+              "Số container<br>Container No",
+              "Tên chủ hàng<br>Consignee",
+              "Hạn lệnh<br> Valid to date",
+              "Nơi hạ vỏ<br> Empty depot",
+              "Ngày miễn lưu<br> DET Freetime",
+              "Tên tàu<br>Vessel",
+              "Chuyến<br>Voyage",
+              "Ngày nộp<br>DO gốc",
+              "Ghi chú <br>của hãng tàu",
+              "ID<br>id"
+            ],
+            columns: [{
+                data: 'carrierCode',
+                type: 'text',
+                readOnly: true
+              },
+              {
+                data: 'billOfLading',
+                type: 'text',
+                readOnly: true
+              },
+              {
+                data: 'containerNumber',
+                type: 'text',
+                readOnly: true
+              },
+              {
+                data: 'consignee',
+                type: 'text',
+                readOnly: true
+              },
+              {
+                data: 'expiredDem',
+                type: 'date',
+                dateFormat: 'DD/MM/YYYY',
+                correctFormat: true,
+                readOnly: true
 
-    </script>
-    <script type="text/javascript" >
-      
-      var hot;
-      var currentPage = 0;
-      var prefix = "/carrier/admin/do";
-      var dataObj;
-      var config;
-      document.addEventListener("DOMContentLoaded", function () {
-        var form = $("#formId");
-        $(document).ready(function () {
-            $.ajax({
-              url: prefix + "/listCont",
-              method: "POST",
-              data: form.serialize(),
-            }).done(function (result) {
-              dataObj = result.rows;
-              var example = document.getElementById("listContTable");
-              hot = new Handsontable(example, {
-                data: dataObj,
-                stretchH: 'all',
-                width: 'auto',
-                minSpareRows: 1,
-                rowHeights: 30,
-                className: "htMiddle",
-                manualColumnResize: true,
-                height: document.documentElement.clientHeight - 130,
-                colHeaders: [
-                  "Hãng tàu<br>Carrier",
-                  "Số vận đơn<br> B/L No",
-                  "Số container<br>Container No",
-                  "Tên chủ hàng<br>Consignee",
-                  "Hạn lệnh<br> Valid to date",
-                  "Nơi hạ vỏ<br> Empty depot",
-                  "Ngày miễn lưu<br> DET Freetime",
-                  "Tên tàu<br>Vessel",
-                  "Chuyến<br>Voyage",
-                  "Ngày nộp<br>DO gốc",
-                  "Ghi chú <br>của hãng tàu",
-                  "ID<br>id"
-                ],
-                columns: [
-                  {
-                    data: 'carrierCode',
-                    type: 'text',
-                    readOnly: true
-                  },
-                  {
-                    data: 'billOfLading',
-                    type: 'text',
-                    readOnly: true
-                  },
-                  {
-                    data: 'containerNumber',
-                    type: 'text',
-                    readOnly: true
-                  },
-                  {
-                    data: 'consignee',
-                    type: 'text',
-                    readOnly: true
-                  },
-                  {
-                    data: 'expiredDem',
-                    type: 'date',
-                    dateFormat: 'DD/MM/YYYY',
-                    correctFormat: true,
-                    readOnly: true
+              },
+              {
+                data: 'emptyContainerDepot',
+                type: 'text',
+                readOnly: true
+              },
+              {
+                data: 'detFreeTime',
+                type: 'numeric',
+                readOnly: true
 
-                  },
-                  {
-                    data: 'emptyContainerDepot',
-                    type: 'text',
-                    readOnly: true
-                  },
-                  {
-                    data: 'detFreeTime',
-                    type: 'numeric',
-                    readOnly: true
-
-                  },
-                  {
-                    data: 'vessel',
-                    type: 'text',
-                    readOnly: true
-                  },
-                  {
-                    data: 'voyNo',
-                    type: 'text',
-                    readOnly: true
-                  },
-                  {
-                    data: 'documentReceiptDate',
-                    type: 'date',
-                    dateFormat: 'MM/DD/YYYY',
-                    correctFormat: true,
-                    readOnly: true
-                  },
-                  {
-                    data: 'remark',
-                    type: 'text',
-                    readOnly: true
-                  },
-                  {
-                    data: 'id',
-                  }
-                ],
-                rowHeaders: true,
-                autoColumnSize: true,
-                columnSorting: {
-                  indicator: true
-                },
-                colWidths: [ 60, 60, 70, 160, 70, 160,100,70,70,100,100,0.1],
-                manualColumnMove: true,
-                filters: true
-              });
-              hot.validateCells();
-            });
+              },
+              {
+                data: 'vessel',
+                type: 'text',
+                readOnly: true
+              },
+              {
+                data: 'voyNo',
+                type: 'text',
+                readOnly: true
+              },
+              {
+                data: 'documentReceiptDate',
+                type: 'date',
+                dateFormat: 'MM/DD/YYYY',
+                correctFormat: true,
+                readOnly: true
+              },
+              {
+                data: 'remark',
+                type: 'text',
+                readOnly: true
+              },
+              {
+                data: 'id',
+              }
+            ],
+            rowHeaders: true,
+            autoColumnSize: true,
+            columnSorting: {
+              indicator: true
+            },
+            colWidths: [60, 60, 80, 160, 70, 160, 100, 70, 70, 100, 100, 0.1],
+            manualColumnMove: true,
+            filters: true
+          });
+          hot.validateCells();
         });
       });
-      // Next Page
-      function search() {
-        $("#formId").submit(function (e) {
-          e.preventDefault();
-          var form = $("#formId");
-          $.ajax({
-            url: prefix + "/listCont",
-            type: "POST",
-            data: form.serialize(),
-            done: function (rs) {
-              dataObj = rs.rows;
-              hot.loadData(dataObj);
-              hot.render();
-              hot.validateCells();
-            }
-          });
-        });
-      }
-
-      function searchEvent() {
+    });
+    // Next Page
+    function search() {
+      $("#formId").submit(function (e) {
+        e.preventDefault();
         var form = $("#formId");
         $.ajax({
           url: prefix + "/listCont",
           type: "POST",
           data: form.serialize(),
-          success: function (rs) {
+          done: function (rs) {
             dataObj = rs.rows;
             hot.loadData(dataObj);
             hot.render();
             hot.validateCells();
           }
         });
-        currentPage = 0;
-      }
-      function changeStatus() {
-        $.modal.confirm("Bạn có chắc chắn muốn làm lệnh <br> cho tất cả container ?", function () {
-          doChangeStatus();
-        })
-      }
+      });
+    }
 
-      function changeDocumnetStatus() {
-        $.modal.confirm("Bạn có chắc chắn muốn xác nhận <br> đã nhận DO gốc ?", function () {
-          doChangeDocumnetStatus();
-        })
-      }
+    function searchEvent() {
+      var form = $("#formId");
+      $.ajax({
+        url: prefix + "/listCont",
+        type: "POST",
+        data: form.serialize(),
+        success: function (rs) {
+          dataObj = rs.rows;
+          hot.loadData(dataObj);
+          hot.render();
+          hot.validateCells();
+        }
+      });
+      currentPage = 0;
+    }
 
-      function doChangeStatus() {
-        $.ajax({
-          url: prefix + "/changeStatus",
-          method: "post",
-          data: {
-            billOfLading: billOfLading,
-          },
-        }).done(function (result) {
+    function changeStatus() {
+      $.modal.confirm("Bạn có chắc chắn muốn làm lệnh <br> cho tất cả container ?", function () {
+        doChangeStatus();
+      })
+    }
+
+    function changeDocumnetStatus() {
+      $.modal.confirm("Bạn có chắc chắn muốn xác nhận <br> đã nhận DO gốc ?", function () {
+        doChangeDocumnetStatus();
+      })
+    }
+
+    function doChangeStatus() {
+      $.ajax({
+        url: prefix + "/changeStatus",
+        method: "post",
+        data: {
+          billOfLading: billOfLading,
+        },
+      }).done(function (result) {
+        $.toast({
+          heading: "Thành công",
+          text: "Lưu thông tin thành công ！",
+          showHideTransition: "fade",
+          icon: "success",
+          position: "top-right"
+        });
+        searchEvent()
+      });
+    }
+
+    function doChangeDocumnetStatus() {
+      $.ajax({
+        url: prefix + "/changeDocumnetStatus",
+        method: "post",
+        data: {
+          billOfLading: billOfLading,
+        },
+      }).done(function (result) {
+        if (result.code == 500) {
+          $.toast({
+            heading: "Thất bại",
+            text: "Lưu thông tin thành công ！",
+            showHideTransition: "fade",
+            icon: "success",
+            position: "top-right"
+          });
+        } else {
           $.toast({
             heading: "Thành công",
             text: "Lưu thông tin thành công ！",
@@ -230,61 +259,42 @@
             icon: "success",
             position: "top-right"
           });
-          searchEvent()
-        });
-      }
+        }
+        searchEvent()
+      });
+    }
+    //SubmitDO
+    function submitDO() {
+      $.modal.openDo("Xác nhận làm lệnh", prefix + "/checkStatus/" + billOfLading + "", "350", "320");
+    }
 
-      function doChangeDocumnetStatus() {
-        $.ajax({
-          url: prefix + "/changeDocumnetStatus",
-          method: "post",
-          data: {
-            billOfLading: billOfLading,
-          },
-        }).done(function (result) {
-          if (result.code == 500) {
-            $.toast({
-              heading: "Thất bại",
-              text: "Lưu thông tin thành công ！",
-              showHideTransition: "fade",
-              icon: "success",
-              position: "top-right"
-            });
-          } else {
-            $.toast({
-              heading: "Thành công",
-              text: "Lưu thông tin thành công ！",
-              showHideTransition: "fade",
-              icon: "success",
-              position: "top-right"
-            });
-          }
-          searchEvent()
-        });
+    function reload() {
+      var parent = window.parent;
+      if (parent.table.options.type == table_type.bootstrapTable) {
+        $.modal.close();
+        parent.$.modal.msgSuccess(result.msg);
+        parent.$.table.refresh();
+      } else if (parent.table.options.type == table_type.bootstrapTreeTable) {
+        $.modal.close();
+        parent.$.modal.msgSuccess(result.msg);
+        parent.$.treeTable.refresh();
+      } else {
+        $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liêu...", modal_status.SUCCESS);
       }
-      //SubmitDO
-      function submitDO()
-      {
-          $.modal.openDo("Xác nhận làm lệnh", prefix + "/checkStatus/" + billOfLading + "","350", "320");
+      $.modal.closeLoading();
+      $.modal.enable();
+    }
+    document.getElementById("containerNumber").addEventListener("keyup", function (event) {
+      event.preventDefault();
+      if (event.keyCode === 13) {
+        $("#searchBtn").click();
       }
+    });
 
-      function reload() {
-                var parent = window.parent;
-                if (parent.table.options.type == table_type.bootstrapTable) {
-                    $.modal.close();
-                    parent.$.modal.msgSuccess(result.msg);
-                    parent.$.table.refresh();
-                } else if (parent.table.options.type == table_type.bootstrapTreeTable) {
-                    $.modal.close();
-                    parent.$.modal.msgSuccess(result.msg);
-                    parent.$.treeTable.refresh();
-                } else {
-                    $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liêu...", modal_status.SUCCESS);
-                }
-                $.modal.closeLoading();
-                $.modal.enable();
-                }
-    </script>
+    function backTolistDO() {
+       $.modal.closeTab();
+    }
+  </script>
 </body>
 
 </html>

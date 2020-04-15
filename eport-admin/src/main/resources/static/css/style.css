@@ -3255,7 +3255,7 @@ body.body-small .footer.fixed {
 
 .content-tabs .roll-nav, .page-tabs-list {
     position: absolute;
-    width: 30px;
+    width: 38px;
     height: 38px;
     text-align: center;
     color: #999;
@@ -3314,7 +3314,7 @@ nav.page-tabs .page-tabs-content {
 }
 
 .roll-right.tabRight {
-    right: 60px;
+    right: 38px;
 }
 
 .roll-right.btn-group {
@@ -3330,7 +3330,7 @@ nav.page-tabs .page-tabs-content {
 .roll-right.tabReload {
     background: #fff;
     height: 38px;
-    width: 60px;
+    width: 38px;
     outline: none;
 }
 
