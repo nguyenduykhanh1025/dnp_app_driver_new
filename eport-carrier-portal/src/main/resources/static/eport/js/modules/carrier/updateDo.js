@@ -131,7 +131,6 @@ function loadTable() {
       hot.validateCells()
       if (firstDo.status == 1) {
         $("#saveDoBtn").hide();
-        $("#cancelDoBtn").hide();
         $("#tips").hide();
         hot.updateSettings({
           cells: (row, col, prop) => {

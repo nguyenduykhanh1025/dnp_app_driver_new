@@ -23,10 +23,10 @@
             <div class="select-list">
               <ul>
                 <li>
-                  <input type="date" name="fromDate" id="fromDate" placeholder="Từ ngày"/>
+                  <input  class="time-input" name="fromDate" id="fromDate" placeholder="Từ ngày" />
                 </li>
                 <li>
-                  <input type="date" name="toDate" id="toDate" placeholder="Đến ngày"/>
+                  <input   class="time-input" name="toDate" id="toDate" placeholder="Đến ngày" />
                 </li>
                 <li>
                   <input type="text" name="vessel" id="vessel" placeholder="Tên tàu"/>
@@ -80,6 +80,9 @@
                 </th>
                 <th data-options="field:'status',align:'center',formatter: formatStatus" sortable="true" width="100">
                   Trạng thái
+                </th>
+                <th data-options="field:'documentStatus',align:'center',formatter: formatDocumentStatus" sortable="true" width="115">
+                  DNP xác nhận
                 </th>
                 <th data-options="field:'createTime',align:'center',formatter: formatDate" sortable="true" width="100">
                   Ngày gửi

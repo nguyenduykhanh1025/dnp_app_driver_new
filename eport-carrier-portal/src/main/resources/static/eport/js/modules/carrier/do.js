@@ -55,7 +55,12 @@ var prefix = ctx + "carrier/do";
 	}
 	return "<span class='label label-default'>Chưa làm lệnh</span>"
   }
-  
+  function formatDocumentStatus(value) {
+    if (value != 0) {
+      return "<span class='label label-success'>Đã nhận DO gốc</span>"
+	}
+	return "<span class='label label-default'>Chưa nhận DO gốc</span>"
+  }
   function formatBL(value) {
 	  return "<a onclick='viewBL(\""+value+"\")'>" + value + "</a>";
   }
@@ -96,7 +101,7 @@ var prefix = ctx + "carrier/do";
     });
   }
   
-  document.getElementById("voyageNo").addEventListener("keyup", function (event) {
+  document.getElementById("vessel").addEventListener("keyup", function (event) {
 	event.preventDefault();
 	if (event.keyCode === 13) {
     $("#searchBtn").click();
