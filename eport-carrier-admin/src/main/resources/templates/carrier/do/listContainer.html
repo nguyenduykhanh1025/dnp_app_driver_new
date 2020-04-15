@@ -21,16 +21,22 @@
         <div class="btn-group-sm" style="margin-top: 5px;">
           <a class="btn btn-primary btn-rounded btn-sm" onclick="submitDO()"><i class="fa fa-check-circle"></i> Xác Nhận
             Làm Lệnh</a>
-          <a class="btn btn-primary btn-rounded btn-sm" onclick="backTolistDO()"></i> Quay lại danh sách DO</a>
+          <a class="btn btn-default" style="width: 100px;" onclick="closeItem()" id="cancelDoBtn"><i
+              class="fa fa-times"></i> &nbsp;Quay lại</a>
         </div>
         <ul>
           <li>
             <input type="text" id="billOfLading" hidden="true" name="billOfLading" />
           </li>
+
+          <li style="font-size:1.1em">Hãng tàu:&nbsp;<span class="control-item" id="carrier"></span></li>
+          <li style="font-size:1.1em">Số vận đơn: <span id="billNumber"></span></li>
+          <li style="font-size:1.1em">Trạng thái: <span id="dostatus"></span></li>
           <li>
             <input type="text" id="containerNumber" placeholder="Số Container" name="containerNumber" />
           </li>
           <div class="bs-bars pull-left" style="margin-top: 5px;">
+
             <div class="btn-group-sm" id="toolbar" role="group">
               <a class="btn btn-success btn-sm" id="searchBtn" onclick="searchEvent()"><i class="fa fa-search"></i>
                 &nbsp;Tìm kiếm</a>
@@ -49,8 +55,23 @@
   <script th:src="@{/ajax/libs/handsontable/6.2.2/moment/moment.js}"></script>
   <script th:src="@{/ajax/libs/handsontable/6.2.2/pikaday/pikaday.js}"></script>
   <script type="text/javascript" th:inline="javascript">
-    var billOfLading = /*[[${getBillOfLading}]]*/ ;
-    $('#billOfLading').val(billOfLading);
+    var firstDo = /*[[${billOfLading}]]*/ ;
+    $('#billOfLading').val(firstDo.billOfLading);
+    $("#billNo").html("No: " + firstDo.billOfLading)
+    $("#billNumber").html(firstDo.billOfLading)
+    $("#carrier").html(firstDo.carrierCode)
+    var date = new Date(firstDo.expiredDem)
+    var status = firstDo.status == 0 ? "<span class='label label-warning'>Chưa làm lệnh</span>" :
+      "<span class='label label-success'>Đã làm lệnh</span>"
+    if (firstDo.status == 1) {
+      $("#updateExpriredBtn").show();
+    } else {
+      $("#updateExpriredBtn").hide();
+    }
+    $("#dostatus").html(status)
+    $("#expiredDem").html(
+      date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
+    )
   </script>
   <script type="text/javascript">
     var hot;
@@ -292,7 +313,7 @@
     });
 
     function backTolistDO() {
-       $.modal.closeTab();
+      $.modal.closeTab();
     }
   </script>
 </body>
