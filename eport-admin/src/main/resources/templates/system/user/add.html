@@ -20,30 +20,9 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label">Bộ phận</label>
-                        <div class="col-sm-8">
-                            <div class="input-group">
-                            	<input name="deptName" onclick="selectDeptTree()" id="treeName" type="text" placeholder="Vui lòng chọn bộ phận" class="form-control">
-                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
                         <label class="col-sm-4 control-label is-required">Số điện thoại</label>
                         <div class="col-sm-8">
                             <input id="phonenumber" name="phonenumber" placeholder="Vui lòng nhập số điện thoại" class="form-control" type="text" maxlength="11" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">Email</label>
-                        <div class="col-sm-8">
-                            <input id="email" name="email" class="form-control email" type="text" maxlength="20" placeholder="Vui lòng nhập email" required>
                         </div>
                     </div>
                 </div>
@@ -59,14 +38,22 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
+                        <label class="col-sm-4 control-label is-required">Email</label>
+                        <div class="col-sm-8">
+                            <input id="email" name="email" class="form-control email" type="text" maxlength="20" placeholder="Vui lòng nhập email" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
                         <label class="col-sm-4 control-label is-required">Mật khẩu</label>
                         <div class="col-sm-8">
                             <input name="password" placeholder="Vui lòng nhập mật khẩu" class="form-control" type="password" th:value="${@config.getKey('sys.user.initPassword')}" required>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Giới tính</label>
@@ -77,6 +64,8 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Trạng thái</label>
@@ -85,18 +74,6 @@
 	                            <input type="checkbox" id="status" checked>
 	                            <span></span>
 	                        </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-            	<div class="col-sm-12">
-                    <div class="form-group">
-                        <label class="col-xs-2 control-label">Vị trí</label>
-                        <div class="col-xs-4">
-                            <select id="post" class="form-control select2-multiple" multiple>
-								<option th:each="post:${posts}" th:value="${post.postId}" th:text="${post.postName}" th:disabled="${post.status == '1'}"></option>
-							</select>
                         </div>
                     </div>
                 </div>
@@ -179,7 +156,6 @@
                     }
         		},
         		phonenumber:{
-        			isPhone:true,
                     remote: {
                         url: prefix + "/checkPhoneUnique",
                         type: "post",

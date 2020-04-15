@@ -7,11 +7,11 @@
     <div class="main-content">
         <form id="form-user-add" class="form-horizontal">
             <input type="hidden" id="userId" name="userId" th:value="${user.userId}">
-            <h4 class="form-header h4">Basic Information</h4>
+            <h4 class="form-header h4">Thông tin cơ bản</h4>
             <div class="row">
             	<div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">User name：</label>
+                        <label class="col-sm-4 control-label is-required">Tên đại diện：</label>
                         <div class="col-sm-8">
                             <input name="userName" class="form-control" type="text" disabled th:value="${user.userName}">
                         </div>
@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">Login account:</label>
+                        <label class="col-sm-4 control-label is-required">Tên đăng nhập:</label>
                         <div class="col-sm-8">
                             <input name="loginName" class="form-control" type="text" disabled th:value="${user.loginName}">
                         </div>
@@ -27,7 +27,7 @@
                 </div> 
             </div>
            
-            <h4 class="form-header h4">Assigning Roles</h4>
+            <h4 class="form-header h4">Chỉ định vai trò</h4>
             <div class="row">
                 <div class="col-sm-12">
                     <div class="col-sm-12 select-table table-striped">
@@ -40,8 +40,8 @@
       
     <div class="row">
         <div class="col-sm-offset-5 col-sm-10">
-            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>Save</button>&nbsp;
-            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Shut down </button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>Lưu</button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>Trở lại </button>
         </div>
     </div>
 	<th:block th:include="include :: footer" />
@@ -75,17 +75,17 @@
 		        },
 		        {
 		            field: 'roleName',
-		            title: 'Role Name',
+		            title: 'Tên vai trò',
 		            sortable: true
 		        },
 		        {
 		            field: 'roleKey',
-		            title: 'Permission character',
+		            title: 'Ký tự cho phép',
 		            sortable: true
 		        },
 		        {
 		            field: 'createTime',
-		            title: 'Creation time',
+		            title: 'Ngày tạo',
 		            sortable: true
 		        }]
 		    };

@@ -49,7 +49,7 @@ public class EquipmentDoController extends BaseController {
 	/**
 	 * GET Delivery Order
 	 */
-	@RequiresPermissions("system:do:list")
+	@RequiresPermissions("equipment:do:list")
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo listBuild(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String vessel,

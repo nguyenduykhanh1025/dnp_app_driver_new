@@ -43,10 +43,10 @@ spring:
     #Email Setting
     mail:
         protocol: smtp
-        host: smtp.gmail.com
-        port: 587
-        username: accSendNotice
-        password: 123abc!@#
+        host: mail.danangport.com
+        port: 465
+        username: do@danangport.com
+        password: Cangdanang1901
         properties:
             mail:
                 store:

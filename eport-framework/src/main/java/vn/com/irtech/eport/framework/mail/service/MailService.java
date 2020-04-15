@@ -33,7 +33,7 @@ public class MailService {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
 				StandardCharsets.UTF_8.name());
         try {
-			helper.setFrom("admin_erp@danangport.com","Cảng Đà Nẵng");
+			helper.setFrom("do@danangport.com","Cảng Đà Nẵng");
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (MessagingException e) {
