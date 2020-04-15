@@ -8,10 +8,9 @@ $("#billNo").html("No: " + firstDo.billOfLading);
 $("#billNumber").html(firstDo.billOfLading);
 $("#carrier").html(firstDo.carrierCode);
 var date = new Date(firstDo.expiredDem);
-var status =
-  firstDo.status == 0
-    ? "<span class='label label-warning'>Chưa làm lệnh</span>"
-    : "<span class='label label-success'>Đã làm lệnh</span>";
+var status = firstDo.status == 0 ? "<span class='label label-warning'>Chưa làm lệnh</span>" : "<span class='label label-success'>Đã làm lệnh</span>";
+var updateBtn = firstDo.status == 0 ? "" : "<a class='btn btn-primary' onclick='changeExpiredDate()' id='updateExpriredBtn'><i class='fa fa-edit-circle'></i> &nbsp;Đổi hạn lệnh</a>"
+$("#updateExpriredBtn").html(updateBtn);
 $("#dostatus").html(status);
 $("#expiredDem").html(
   date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
@@ -85,6 +84,13 @@ $.ajax({
         {
           data: "detFreeTime",
           type: "numeric",
+        },
+        {
+          data: "newDateFreeTime",
+          type: "date",
+          dateFormat: "DD/MM/YYYY",
+          correctFormat: true,
+          readOnly: true
         },
         {
           data: "vessel",
