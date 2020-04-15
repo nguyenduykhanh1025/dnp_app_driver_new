@@ -48,12 +48,25 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-4 control-label is-required">Số điện thoại</label>
+                        <label class="col-sm-4 control-label">Bộ phận</label>
                         <div class="col-sm-8">
-                            <input id="phonenumber" name="phonenumber" placeholder="Vui lòng nhập số điện thoại" class="form-control" type="text" maxlength="11" required>
+                            <div class="input-group">
+                            	<input name="deptName" onclick="selectDeptTree()" id="treeName" type="text" placeholder="Vui lòng chọn bộ phận" class="form-control">
+                                <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Số điện thoại</label>
+                        <div class="col-sm-8">
+                            <input id="phonenumber" name="phonenumber" placeholder="Vui lòng nhập số điện thoại" class="form-control" type="text" maxlength="11">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Giới tính</label>
@@ -64,8 +77,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="col-sm-4 control-label">Trạng thái</label>
