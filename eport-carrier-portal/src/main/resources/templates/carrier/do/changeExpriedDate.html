@@ -88,7 +88,6 @@
       }).done(function(result){
         if (result.code == 0) {
           msg = result.msg;
-          console.log(msg);
           refreshBillInfo(new Date($("#datetimepicker").val()));
         } else {
           msg = result.msg;
@@ -112,8 +111,7 @@
     }
     function refreshBillInfo(date) {
       closeItemDo();
-      console.log(msg);
-      parent.closeItemDo(date, msg);
+      parent.closeSuccess(msg);
     }
 
     function closeError() {

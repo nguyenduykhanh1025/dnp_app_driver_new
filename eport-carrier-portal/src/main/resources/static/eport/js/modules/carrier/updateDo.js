@@ -22,7 +22,6 @@ $.ajax({
     blNo: firstDo.billOfLading,
   },
   success: function (result) {
-    console.log(result);
     doList = result;
     var example = document.getElementById("showDemo");
     hot = new Handsontable(example, {
@@ -338,6 +337,11 @@ document
 
         function closeError(msg) {
           $.modal.alertError(msg);
+        }
+
+        function closeSuccess(msg) {
+          $.modal.msgSuccess(msg);
+          $.modal.reload();
         }
 
         function reload() {
