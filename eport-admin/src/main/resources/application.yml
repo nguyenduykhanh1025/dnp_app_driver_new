@@ -7,14 +7,18 @@ eport:
   addressEnabled: true
 
 server:
-  port: 8080
+  port: 7071
   servlet:
     context-path: /
   tomcat:
     uri-encoding: UTF-8
     max-threads: 800
     min-spare-threads: 30
- 
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+
 logging:
   level:
     vn.com.irtech.eport: debug
