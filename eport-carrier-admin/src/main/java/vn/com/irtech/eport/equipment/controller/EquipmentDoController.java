@@ -1,5 +1,8 @@
 package vn.com.irtech.eport.equipment.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.utils.AppToolUtils;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
@@ -50,6 +54,15 @@ public class EquipmentDoController extends BaseController {
 	public TableDataInfo listBuild(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String vessel,
 			String consignee, String blNo, String carrierCode, String status, String documentStatus) {
 		startPage();
+		
+		if(fromDate != null)
+		{
+			edo.setFromDate(fromDate);
+		}
+		if(toDate != null)
+		{
+			edo.setToDate(toDate);
+		}
 		edo.setVoyNo(voyageNo);
 		if (vessel != null) {
 			edo.setVessel(vessel.toLowerCase());
@@ -61,8 +74,6 @@ public class EquipmentDoController extends BaseController {
 		if (carrierCode != null) {
 			edo.setCarrierCode(carrierCode.toLowerCase());
 		}
-		edo.setFromDate(fromDate);
-		edo.setToDate(toDate);
 		edo.setDocumentStatus(documentStatus);
 		edo.setStatus(status);
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
