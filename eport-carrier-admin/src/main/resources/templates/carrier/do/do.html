@@ -21,10 +21,10 @@
           <div class="select-list">
             <ul>
               <li>
-                <input  class="time-input" name="fromDate" id="fromDate" placeholder="Từ ngày" />
+                <input class="time-input" name="fromDate" id="fromDate" placeholder="Từ ngày" />
               </li>
               <li>
-                <input   class="time-input" name="toDate" id="toDate" placeholder="Đến ngày" />
+                <input class="time-input" name="toDate" id="toDate" placeholder="Đến ngày" />
               </li>
               <li>
                 <input type="text" name="BlNo" id="blNo" placeholder="Vận đơn/BL No" />
@@ -53,71 +53,73 @@
                 </select>
               </li>
               <li>
-	            <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
-	              <a class="btn btn-primary" onclick="searchDo()" id="searchBtn"><i class="glyphicon glyphicon-search"></i> &nbsp;Tìm Kiếm</a>
-	            </div>
+                <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
+                  <a class="btn btn-primary" onclick="searchDo()" id="searchBtn"><i
+                      class="glyphicon glyphicon-search"></i> &nbsp;Tìm Kiếm</a>
+                </div>
               </li>
             </ul>
           </div>
         </form>
       </div>
-    <!-- /table toolbar -->
-    <div class="col-sm-12 table-container">
-      <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
-        <thead>
-          <tr>
-            <!-- <th data-options="field:'id',checkbox:true"></th> -->
-            <th data-options="field:'carrierCode',halign:'center',resizable:true" width="120">
-              Hãng tàu <br />Carrier
-            </th>
-            <th data-options="field:'billOfLading',halign:'center',formatter: formatBL" sortable="true" width="110">
-              Số vận đơn<br />B/L No
-            </th>
-            <th data-options="field:'containerNumber',align:'center'," sortable="true" width="90">
-              Số lượng <br> container
-            </th>
-            <th data-options="field:'consignee',halign:'center'" width="250">
-              Tên khách hàng<br />Consignee
-            </th>
-            <th data-options="field:'expiredDem',halign:'center',align:'center',formatter: compareExpireDay"
-              sortable="true" width="100">
-              Hạn lệnh<br />Expired Date
-            </th>
-            <th data-options="field:'newExpiredDem',halign:'center',align:'center',formatter: compareExpireDay"
-              sortable="true" width="100">
-              Hạn lệnh<br />gia hạn
-            </th>
-            <th data-options="field:'emptyContainerDepot',halign:'center'" width="200">
-              Nơi hạ rỗng<br />Empty Depot
-            </th>
-            <th data-options="field:'detFreeTime',halign:'center',align:'center'" width="100">
-              Ngày miễn lưu<br />DET Free Time
-            </th>
-            <th data-options="field:'vessel',align:'center'" width="10%">
-              Tên tàu<br />Vessel
-            </th>
-            <th data-options="field:'voyNo',align:'center'" width="10%">
-              Chuyến tàu<br />Voyage No
-            </th>
-            <th data-options="field:'status',align:'center',formatter: formatStatus" width="10%">
-              Trạng thái
-            </th>
-            <th data-options="field:'documentReceiptDate',halign:'center',align:'center',formatter: formatDateDoIn"
-            sortable="true" width="100">
-            Ngày nhận<br /> DO gốc
-            </th>
-            <th data-options="field:'createTime',halign:'center',align:'center',formatter: formatDate"
-            sortable="true" width="100">
-            Ngày gửi DO
-            </th>
-            <th data-options="field:'processRemark',align:'center'" width="10%">
-              Ghi chú làm lệnh
-            </th>
-          </tr>
-        </thead>
-      </table>
+      <!-- /table toolbar -->
+      <div class="col-sm-12 table-container">
+        <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+          <thead>
+            <tr>
+              <!-- <th data-options="field:'id',checkbox:true"></th> -->
+              <th data-options="field:'carrierCode',halign:'center',resizable:true" width="120">
+                Hãng tàu <br />Carrier
+              </th>
+              <th data-options="field:'billOfLading',halign:'center',formatter: formatBL" sortable="true" width="110">
+                Số vận đơn<br />B/L No
+              </th>
+              <th data-options="field:'containerNumber',align:'center'," sortable="true" width="90">
+                Số lượng <br> container
+              </th>
+              <th data-options="field:'consignee',halign:'center'" width="250">
+                Tên khách hàng<br />Consignee
+              </th>
+              <th data-options="field:'expiredDem',halign:'center',align:'center',formatter: compareExpireDay"
+                sortable="true" width="100">
+                Hạn lệnh<br />Expired Date
+              </th>
+              <th data-options="field:'newExpiredDem',halign:'center',align:'center',formatter: compareExpireDay"
+                sortable="true" width="100">
+                Hạn lệnh<br />gia hạn
+              </th>
+              <th data-options="field:'emptyContainerDepot',halign:'center'" width="200">
+                Nơi hạ rỗng<br />Empty Depot
+              </th>
+              <th data-options="field:'detFreeTime',halign:'center',align:'center'" width="100">
+                Ngày miễn lưu<br />DET Free Time
+              </th>
+              <th data-options="field:'vessel',align:'center'" width="10%">
+                Tên tàu<br />Vessel
+              </th>
+              <th data-options="field:'voyNo',align:'center'" width="10%">
+                Chuyến tàu<br />Voyage No
+              </th>
+              <th data-options="field:'status',align:'center',formatter: formatStatus" width="10%">
+                Trạng thái
+              </th>
+              <th data-options="field:'documentReceiptDate',halign:'center',align:'center',formatter: formatDateDoIn"
+                sortable="true" width="100">
+                Ngày nhận<br /> DO gốc
+              </th>
+              <th data-options="field:'createTime',halign:'center',align:'center',formatter: formatDate" sortable="true"
+                width="100">
+                Ngày gửi DO
+              </th>
+              <th data-options="field:'processRemark',align:'center'" width="10%">
+                Ghi chú làm lệnh
+              </th>
+            </tr>
+          </thead>
+        </table>
+      </div>
     </div>
-  </div></div>
+  </div>
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />
   <th:block th:include="include :: datetimepicker-js" />
@@ -126,8 +128,8 @@
     $(function () {
       $("#dg").datagrid({
         url: prefix + "/list",
-        singleSelect:true,
-        height:document.documentElement.clientHeight - 70,
+        singleSelect: true,
+        height: document.documentElement.clientHeight - 70,
         clientPaging: false,
         pagination: true,
         rownumbers: true,
@@ -161,6 +163,10 @@
     });
 
     function searchDo() {
+      var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
+      fromDate = formatDateForSearch(fromDate);
+      var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
+      toDate = formatDateForSearch(toDate);
       var dg = $("#dg").datagrid({
         url: prefix + "/list",
         singleSelection: true,
@@ -179,8 +185,8 @@
               pageSize: param.rows,
               orderByColumn: param.sort,
               isAsc: param.order,
-              fromDate: $("#fromDate").val() == null ? "" : $("#fromDate").val(),
-              toDate: $("#toDate").val() == null ? "" : $("#toDate").val(),
+              fromDate: fromDate,
+              toDate: toDate,
               voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
               vessel: $("#vessel").val() == null ? "" : $("#vessel").val(),
               consignee: $("#consignee").val() == null ? "" : $("#consignee").val(),
@@ -224,17 +230,30 @@
     }
 
     function formatDate(value) {
-      if(value == null) {
+      if (value == null) {
         return;
       }
-      var date = new Date(value);
+      var date = new Date(value)
       var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
       var month = date.getMonth() + 1;
       var monthText = month < 10 ? "0" + month : month;
       return day + "/" + monthText + "/" + date.getFullYear();
     }
+
+    function formatDateForSearch(value) {
+      if (value == null) {
+        return;
+      }
+      var newdate = value.split("/").reverse();
+      var date = new Date(newdate)
+      var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+      var month = date.getMonth() + 1;
+      var monthText = month < 10 ? "0" + month : month;
+      return date.getFullYear() + "-" + monthText + "-" + day;
+    }
+
     function formatDateDoIn(value) {
-      if(value == null) {
+      if (value == null) {
         return;
       }
       var date = new Date(value);
@@ -249,7 +268,7 @@
     }
 
     function compareExpireDay(value) {
-      if(value == null) {
+      if (value == null) {
         return;
       }
       var currentDay = new Date();
@@ -261,6 +280,14 @@
       }
       return '<span style="color:blue;">' + expiredDay + '</span>';
     }
+    laydate.render({
+      elem: '#fromDate',
+      format: 'dd/MM/yyyy'
+    });
+    laydate.render({
+      elem: '#toDate',
+      format: 'dd/MM/yyyy'
+    });
   </script>
 </body>
 
