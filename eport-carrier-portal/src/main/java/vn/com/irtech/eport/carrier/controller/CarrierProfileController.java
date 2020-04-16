@@ -11,17 +11,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.system.domain.SysUser;
 
 @Controller
 @RequestMapping("/carrier/profile")
-public class CarrierProfileController extends BaseController{
+public class CarrierProfileController extends CarrierBaseController{
 	private String prefix = "carrier/profile";
     @Autowired
     private ICarrierAccountService carrierAccountService;

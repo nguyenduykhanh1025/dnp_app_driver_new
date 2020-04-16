@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.ServletUtils;
@@ -33,7 +32,7 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
  * @author irtech
  */
 @Controller
-public class CarrierLoginController extends BaseController {
+public class CarrierLoginController extends CarrierBaseController {
 
 	private String prefix = "carrier";
 	
