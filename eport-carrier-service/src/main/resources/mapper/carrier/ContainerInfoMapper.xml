@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.carrier.mapper.ContainerInfoMapper">
+    
+    <resultMap type="ContainerInfo" id="ContainerInfoResult">
+        <result property="cntrId"    column="cntr_id"    />
+        <result property="cntrNo"    column="cntr_no"    />
+        <result property="sztp2"    column="sztp2"    />
+        <result property="fe"    column="fe"    />
+        <result property="ptnrCode"    column="ptnr_code"    />
+        <result property="block"    column="block"    />
+        <result property="bay"    column="bay"    />
+        <result property="roww"    column="roww"    />
+        <result property="tier"    column="tier"    />
+        <result property="wgt"    column="wgt"    />
+        <result property="vslNm"    column="vsl_nm"    />
+        <result property="consignee"    column="consignee"    />
+        <result property="bookingNo"    column="booking_no"    />
+        <result property="blNo"    column="bl_no"    />
+        <result property="sealNo1"    column="seal_no1"    />
+        <result property="dispatchMode"    column="dispatch_mode"    />
+        <result property="dispatchMode2"    column="dispatch_mode2"    />
+        <result property="inDate"    column="in_date"    />
+        <result property="outDate"    column="out_date"    />
+        <result property="vgm"    column="vgm"    />
+        <result property="cntrState"    column="cntr_state"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectContainerInfoVo">
+        select cntr_id, cntr_no, sztp2, fe, ptnr_code, block, bay, roww, tier, wgt, vsl_nm, consignee, booking_no, bl_no, seal_no1, dispatch_mode, dispatch_mode2, in_date, out_date, vgm, cntr_state, remark from container_info
+    </sql>
+
+    <select id="selectContainerInfoList" parameterType="ContainerInfo" resultMap="ContainerInfoResult">
+        <include refid="selectContainerInfoVo"/>
+        <where>  
+            <if test="ptnrCode != null  and ptnrCode != ''"> and ptnr_code like concat('%', #{ptnrCode}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectContainerInfoById" parameterType="Long" resultMap="ContainerInfoResult">
+        <include refid="selectContainerInfoVo"/>
+        where cntr_id = #{cntrId}
+    </select>
+        
+    <insert id="insertContainerInfo" parameterType="ContainerInfo" useGeneratedKeys="true" keyProperty="cntrId">
+        insert into container_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cntrNo != null  and cntrNo != ''">cntr_no,</if>
+            <if test="sztp2 != null  and sztp2 != ''">sztp2,</if>
+            <if test="fe != null  and fe != ''">fe,</if>
+            <if test="ptnrCode != null  and ptnrCode != ''">ptnr_code,</if>
+            <if test="block != null  and block != ''">block,</if>
+            <if test="bay != null  and bay != ''">bay,</if>
+            <if test="roww != null  and roww != ''">roww,</if>
+            <if test="tier != null  and tier != ''">tier,</if>
+            <if test="wgt != null ">wgt,</if>
+            <if test="vslNm != null  and vslNm != ''">vsl_nm,</if>
+            <if test="consignee != null  and consignee != ''">consignee,</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no,</if>
+            <if test="blNo != null  and blNo != ''">bl_no,</if>
+            <if test="sealNo1 != null  and sealNo1 != ''">seal_no1,</if>
+            <if test="dispatchMode != null  and dispatchMode != ''">dispatch_mode,</if>
+            <if test="dispatchMode2 != null  and dispatchMode2 != ''">dispatch_mode2,</if>
+            <if test="inDate != null ">in_date,</if>
+            <if test="outDate != null ">out_date,</if>
+            <if test="vgm != null  and vgm != ''">vgm,</if>
+            <if test="cntrState != null  and cntrState != ''">cntr_state,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cntrNo != null  and cntrNo != ''">#{cntrNo},</if>
+            <if test="sztp2 != null  and sztp2 != ''">#{sztp2},</if>
+            <if test="fe != null  and fe != ''">#{fe},</if>
+            <if test="ptnrCode != null  and ptnrCode != ''">#{ptnrCode},</if>
+            <if test="block != null  and block != ''">#{block},</if>
+            <if test="bay != null  and bay != ''">#{bay},</if>
+            <if test="roww != null  and roww != ''">#{roww},</if>
+            <if test="tier != null  and tier != ''">#{tier},</if>
+            <if test="wgt != null ">#{wgt},</if>
+            <if test="vslNm != null  and vslNm != ''">#{vslNm},</if>
+            <if test="consignee != null  and consignee != ''">#{consignee},</if>
+            <if test="bookingNo != null  and bookingNo != ''">#{bookingNo},</if>
+            <if test="blNo != null  and blNo != ''">#{blNo},</if>
+            <if test="sealNo1 != null  and sealNo1 != ''">#{sealNo1},</if>
+            <if test="dispatchMode != null  and dispatchMode != ''">#{dispatchMode},</if>
+            <if test="dispatchMode2 != null  and dispatchMode2 != ''">#{dispatchMode2},</if>
+            <if test="inDate != null ">#{inDate},</if>
+            <if test="outDate != null ">#{outDate},</if>
+            <if test="vgm != null  and vgm != ''">#{vgm},</if>
+            <if test="cntrState != null  and cntrState != ''">#{cntrState},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateContainerInfo" parameterType="ContainerInfo">
+        update container_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cntrNo != null  and cntrNo != ''">cntr_no = #{cntrNo},</if>
+            <if test="sztp2 != null  and sztp2 != ''">sztp2 = #{sztp2},</if>
+            <if test="fe != null  and fe != ''">fe = #{fe},</if>
+            <if test="ptnrCode != null  and ptnrCode != ''">ptnr_code = #{ptnrCode},</if>
+            <if test="block != null  and block != ''">block = #{block},</if>
+            <if test="bay != null  and bay != ''">bay = #{bay},</if>
+            <if test="roww != null  and roww != ''">roww = #{roww},</if>
+            <if test="tier != null  and tier != ''">tier = #{tier},</if>
+            <if test="wgt != null ">wgt = #{wgt},</if>
+            <if test="vslNm != null  and vslNm != ''">vsl_nm = #{vslNm},</if>
+            <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no = #{bookingNo},</if>
+            <if test="blNo != null  and blNo != ''">bl_no = #{blNo},</if>
+            <if test="sealNo1 != null  and sealNo1 != ''">seal_no1 = #{sealNo1},</if>
+            <if test="dispatchMode != null  and dispatchMode != ''">dispatch_mode = #{dispatchMode},</if>
+            <if test="dispatchMode2 != null  and dispatchMode2 != ''">dispatch_mode2 = #{dispatchMode2},</if>
+            <if test="inDate != null ">in_date = #{inDate},</if>
+            <if test="outDate != null ">out_date = #{outDate},</if>
+            <if test="vgm != null  and vgm != ''">vgm = #{vgm},</if>
+            <if test="cntrState != null  and cntrState != ''">cntr_state = #{cntrState},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where cntr_id = #{cntrId}
+    </update>
+
+    <delete id="deleteContainerInfoById" parameterType="Long">
+        delete from container_info where cntr_id = #{cntrId}
+    </delete>
+
+    <delete id="deleteContainerInfoByIds" parameterType="String">
+        delete from container_info where cntr_id in 
+        <foreach item="cntrId" collection="array" open="(" separator="," close=")">
+            #{cntrId}
+        </foreach>
+    </delete>
+    
+</mapper>

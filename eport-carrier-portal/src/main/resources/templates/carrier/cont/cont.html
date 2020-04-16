@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('List Container Infomation')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>Operator：</label>
+                                <input type="text" name="ptnrCode"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="carrier:cont:export">
+                    <i class="fa fa-download"></i> Export
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('carrier:cont:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('carrier:cont:remove')}]];
+        var prefix = ctx + "carrier/cont";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "Container Infomation",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'cntrId', 
+                    title: 'ID',
+                    visible: false
+                },
+                {
+                    field: 'cntrNo', 
+                    title: 'Container Number'
+                },
+                {
+                    field: 'sztp2', 
+                    title: 'Size/type'
+                },
+                {
+                    field: 'fe', 
+                    title: 'F/E'
+                },
+                {
+                    field: 'ptnrCode', 
+                    title: 'Operator'
+                },
+                {
+                    field: 'block', 
+                    title: 'yard location - Block'
+                },
+                {
+                    field: 'bay', 
+                    title: 'yard location - Bay'
+                },
+                {
+                    field: 'roww', 
+                    title: 'yard location - Row'
+                },
+                {
+                    field: 'tier', 
+                    title: 'yard location - Tier'
+                },
+                {
+                    field: 'wgt', 
+                    title: 'Weight'
+                },
+                {
+                    field: 'vslNm', 
+                    title: 'Vessel name'
+                },
+                {
+                    field: 'consignee', 
+                    title: 'Shipper/consignee'
+                },
+                {
+                    field: 'bookingNo', 
+                    title: 'Booking Number'
+                },
+                {
+                    field: 'blNo', 
+                    title: 'BL number'
+                },
+                {
+                    field: 'sealNo1', 
+                    title: 'Seal Number'
+                },
+                {
+                    field: 'dispatchMode', 
+                    title: 'Gate mode for terminal in'
+                },
+                {
+                    field: 'dispatchMode2', 
+                    title: 'Gate mode for terminal out'
+                },
+                {
+                    field: 'inDate', 
+                    title: 'Gate In Date'
+                },
+                {
+                    field: 'outDate', 
+                    title: 'Gate Out Date'
+                },
+                {
+                    field: 'vgm', 
+                    title: 'VGM'
+                },
+                {
+                    field: 'cntrState', 
+                    title: 'Container State  (S: Stacking, D:Delivered)'
+                },
+                {
+                    field: 'remark', 
+                    title: 'Remark'
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>
