@@ -63,3 +63,17 @@ spring:
                         fallback: true
                         class: javax.net.ssl.SSLSocketFactory
 
+# Static resources reloading during development
+    resources:
+        static-locations: file:D:/eport/admin/static/
+        cache:
+            cachecontrol:
+                cache-public: true
+                max-age: 31536000 #1 year
+                must-revalidate: true
+#                cache-private: true
+#                no-transform: true
+# Templates reloading during development
+    thymeleaf:
+        prefix: file:D:/eport/admin/templates/
+        cache: false
