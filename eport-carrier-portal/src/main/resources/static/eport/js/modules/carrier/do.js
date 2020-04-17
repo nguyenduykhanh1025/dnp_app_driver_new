@@ -143,7 +143,6 @@ function formatDateForSearch(value) {
   if (value == null) {
     return;
   }
-  console.log(value);
   var newdate = value.split("/").reverse();
   var date = new Date(newdate)
   var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
