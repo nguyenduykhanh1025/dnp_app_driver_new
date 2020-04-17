@@ -35,9 +35,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectContainerInfoList" parameterType="ContainerInfo" resultMap="ContainerInfoResult">
         <include refid="selectContainerInfoVo"/>
-        <where>  
+        <where> 
             <if test="ptnrCode != null  and ptnrCode != ''"> and ptnr_code like concat('%', #{ptnrCode}, '%')</if>
+            <if test="getInFromDate != null ">AND in_date &gt;= #{getInFromDate}</if>
+			<if test="getInToDate != null ">AND in_date &lt;= #{getInToDate}</if>
+            <if test="getInFromDate != null and getInToDate != null"> and in_date between #{getInFromDate} and #{getInToDate}</if>
+            <if test="getOutFromDate != null ">AND out_date &gt;= #{getOutFromDate}</if>
+			<if test="getOutToDate != null ">AND out_date &lt;= #{getOutToDate}</if>
+            <if test="getOutFromDate != null and getOutToDate != null"> and out_date between #{getOutFromDate} and #{getOutToDate}</if>
         </where>
+        
     </select>
     
     <select id="selectContainerInfoById" parameterType="Long" resultMap="ContainerInfoResult">

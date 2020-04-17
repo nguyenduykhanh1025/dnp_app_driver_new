@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.carrier.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 
 /**
  * Container InfomationController
@@ -43,9 +45,25 @@ public class ContainerInfoController extends CarrierBaseController
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ContainerInfo containerInfo)
+    public TableDataInfo list(ContainerInfo containerInfo,String ptnrCode,Date getInToDate,Date getInFromDate,Date getOutToDate,Date getOutFromDate)
     {
         startPage();
+        // SEARCH CONT GET-IN
+        if (getInFromDate != null) {
+			containerInfo.setGetInFromDate(getInFromDate);
+        }
+        if (getInToDate != null) {
+			containerInfo.setGetInToDate(getInToDate);
+		}
+        
+        // SEARCH CONT GET-OUT
+        if (getOutFromDate != null) {
+			containerInfo.setGetOutFromDate(getOutFromDate);
+		}
+        if (getOutToDate != null) {
+			containerInfo.setGetOutToDate(getOutToDate);
+		}
+        containerInfo.setPtnrCode(ptnrCode);
         List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
         return getDataTable(list);
     }
@@ -56,8 +74,24 @@ public class ContainerInfoController extends CarrierBaseController
     @Log(title = "Container Infomation", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ContainerInfo containerInfo)
+    public AjaxResult export(ContainerInfo containerInfo,String ptnrCode,Date getInToDate,Date getInFromDate,Date getOutToDate,Date getOutFromDate)
     {
+        containerInfo.setPtnrCode(ptnrCode);
+        // SEARCH CONT GET-IN
+        if (getInFromDate != null) {
+			containerInfo.setGetInFromDate(getInFromDate);
+        }
+        if (getInToDate != null) {
+			containerInfo.setGetInToDate(getInToDate);
+		}
+        
+        // SEARCH CONT GET-OUT
+        if (getOutFromDate != null) {
+			containerInfo.setGetOutFromDate(getOutFromDate);
+		}
+        if (getOutToDate != null) {
+			containerInfo.setGetOutToDate(getOutToDate);
+		}
         List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
         ExcelUtil<ContainerInfo> util = new ExcelUtil<ContainerInfo>(ContainerInfo.class);
         return util.exportExcel(list, "cont");
