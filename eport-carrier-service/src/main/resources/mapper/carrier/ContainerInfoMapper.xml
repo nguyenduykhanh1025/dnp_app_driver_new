@@ -37,12 +37,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectContainerInfoVo"/>
         <where> 
             <if test="ptnrCode != null  and ptnrCode != ''"> and ptnr_code like concat('%', #{ptnrCode}, '%')</if>
-            <if test="getInFromDate != null ">AND in_date &gt;= #{getInFromDate}</if>
-			<if test="getInToDate != null ">AND in_date &lt;= #{getInToDate}</if>
-            <if test="getInFromDate != null and getInToDate != null"> and in_date between #{getInFromDate} and #{getInToDate}</if>
-            <if test="getOutFromDate != null ">AND out_date &gt;= #{getOutFromDate}</if>
-			<if test="getOutToDate != null ">AND out_date &lt;= #{getOutToDate}</if>
-            <if test="getOutFromDate != null and getOutToDate != null"> and out_date between #{getOutFromDate} and #{getOutToDate}</if>
+            <if test="toDate != null ">AND in_date AND out_date &gt;= #{toDate}</if>
+			<if test="fromDate != null ">AND in_date AND out_date  &lt;= #{fromDate}</if>
+            <if test="toDate != null and fromDate != null"> AND in_date AND out_date between #{toDate} and #{fromDate}</if>
         </where>
         
     </select>

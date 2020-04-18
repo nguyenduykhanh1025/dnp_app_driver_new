@@ -10,7 +10,7 @@
         <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
           <!-- Table toolbar -->
           <div class="col-sm-12 fixed-table-toolbar">
-            <div class="bs-bars pull-left" style="margin-bottom: 5px;margin-top:0px">
+            <div class="bs-bars pull-left" style="margin-bottom: 5px;margin-top:0px;display: flex;">
               <div class="btn-group-sm" id="toolbar" role="group">
                 <a class="btn btn-success" onclick="exportExcel()">
                   <i class="fa fa-download"></i> Xuất excel
@@ -21,28 +21,13 @@
   
               <div class="select-list">
                 <ul>
-                    <li>
-                        <span>GET-IN</span>
-                    </li>
+                    
                   <li>
-                    <input class="time-input" id="getInFromDate" name="getInFromDate" placeholder="Từ ngày" />
+                    <input class="time-input" id="toDate" name="toDate" placeholder="Từ ngày" />
                   </li>
                   <li>
-                    <input class="time-input" id="getInToDate" name="getInToDate" placeholder="Đến ngày" />
+                    <input class="time-input" id="fromDate" name="fromDate" placeholder="Đến ngày" />
                   </li>
-                  <li>
-                    <span>GET-OUT</span>
-                        </li>
-                    <li>
-                        <input class="time-input" id="getOutFromDate" name="getOutFromDate" placeholder="Từ ngày" />
-                    </li>
-                    <li>
-                        <input class="time-input" id="getOutToDate" name="getOutToDate" placeholder="Đến ngày" />
-                    </li>
-                    <li>
-                        <input type="text" name="ptnrCode" id="ptnrCode" placeholder="Loại ORP" />
-                    </li>
-                  <li>
                     <a class="btn btn-primary btn-rounded btn-sm" onclick="searchContainer()" id="searchBtn"><i
                         class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
                   </li>
@@ -54,11 +39,6 @@
               </div>
             </div>
           </div>
-            <!-- <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="carrier:cont:export">
-                    <i class="fa fa-download"></i> Export
-                </a>
-            </div> -->
             <div class="col-sm-12 table-container">
                 <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
                   <thead>
@@ -76,17 +56,8 @@
                       <th data-options="field:'ptnrCode',align:'right',align:'center'" width="100">
                         Operator
                       </th>
-                      <th data-options="field:'block',align:'right',align:'center'" width="50">
-                        Block
-                      </th>
-                      <th data-options="field:'bay',align:'right',align:'center'" width="50">
-                        Bay
-                      </th>
-                      <th data-options="field:'row',align:'right',align:'center'" width="50">
-                        Row
-                      </th>
-                      <th data-options="field:'tier',align:'right',align:'center'" width="50">
-                        Tier
+                      <th data-options="field:'block',align:'right',align:'center',formatter:yardPosition" width="90">
+                        Yard Position
                       </th>
                       <th data-options="field:'wgt',align:'right',align:'center'" width="90">
                         Weight
@@ -176,15 +147,11 @@
 
             function searchContainer() {
                 //convert time GET - IN
-                var getInFromDate = $("#getInFromDate").val() == null ? "" : $("#getInFromDate").val()
-                getInFromDate = formatDateForSearch(getInFromDate);
-                var getInToDate = $("#getInToDate").val() == null ? "" : $("#getInToDate").val()
-                getInToDate = formatDateForSearch(getInToDate);
-                //convert time GET - OUT
-                var getOutFromDate = $("#getOutFromDate").val() == null ? "" : $("#getOutFromDate").val()
-                getOutFromDate = formatDateForSearch(getOutFromDate);
-                var getOutToDate = $("#getOutToDate").val() == null ? "" : $("#getOutToDate").val()
-                getOutToDate = formatDateForSearch(getOutToDate);
+                var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
+                toDate = formatDateForSearch(toDate);
+                var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
+                fromDate = formatDateForSearch(fromDate);
+                console.log(fromDate);
                 var dg = $("#dg").datagrid({
                 url: prefix + "/list",
                 singleSelection: true,
@@ -203,10 +170,9 @@
                     pageSize: param.rows,
                     orderByColumn: param.sort,
                     isAsc: param.order,
-                      getInFromDate: getInFromDate,
-                      getInToDate: getInToDate,
-                      getOutFromDate: getOutFromDate,
-                      getOutToDate: getOutToDate,
+                      // fe : fe,
+                      toDate: toDate,
+                      fromDate: fromDate,
                       ptnrCode: $("#ptnrCode").val() == null ? "" : $("#ptnrCode").val(),
                     },
                     dataType: "json",
@@ -219,6 +185,24 @@
                 });
                 },
             });
+            }
+            function yardPosition(value) {
+              var bay =$('#dg').datagrid('getRows')[0].bay;
+              var row =$('#dg').datagrid('getRows')[0].roww;
+              var tier =$('#dg').datagrid('getRows')[0].tier;
+              if  (typeof value === 'undefined') {
+                  value = '';
+              }
+              if  (typeof bay === 'undefined') {
+                  bay = '';
+              }
+              if  (typeof row === 'undefined') {
+                  row = '';
+              }
+              if  (typeof tier === 'undefined') {
+                  tier = '';
+              }
+              return value + "-" + bay + "-" + row + "-" + tier;
             }
             function formatDateForSearch(value) {
                 if (value == null) {
@@ -242,33 +226,28 @@
                 return day + "/" + monthText + "/" + date.getFullYear();
             }
             function exportExcel() {
-                    var getInFromDate = $("#getInFromDate").val() == null ? "" : $("#getInFromDate").val()
-                    getInFromDate = formatDateForSearch(getInFromDate);
-                    var getInToDate = $("#getInToDate").val() == null ? "" : $("#getInToDate").val()
-                    getInToDate = formatDateForSearch(getInToDate);
-                    var getOutFromDate = $("#getOutFromDate").val() == null ? "" : $("#getOutFromDate").val()
-                    getOutFromDate = formatDateForSearch(getOutFromDate);
-                    var getOutToDate = $("#getOutToDate").val() == null ? "" : $("#getOutToDate").val()
-                    getOutToDate = formatDateForSearch(getOutToDate);
+                var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
+                toDate = formatDateForSearch(toDate);
+                var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
+                fromDate = formatDateForSearch(fromDate);
                     $.ajax({
                     type: "POST",
                     url: prefix + "/export",
                     data: {
-                            getInFromDate: getInFromDate,
-                            getInToDate: getInToDate,
-                            getOutFromDate: getOutFromDate,
-                            getOutToDate: getOutToDate,
+                            toDate: toDate,
+                            fromDate: fromDate,
                             ptnrCode: $("#ptnrCode").val() == null ? "" : $("#ptnrCode").val(),
                         },
                         success: function (result) {
-                            if (result.code == web_status.SUCCESS) {
-                                window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
-                            } else if (result.code == web_status.WARNING) {
-                                $.modal.alertWarning(result.msg)
-                            } else {
-                                $.modal.alertError(result.msg);
-                            }
-                            $.modal.closeLoading();
+                                $.modal.loading("Đang xử lý, vui lòng chờ...");
+                                if (result.code == web_status.SUCCESS) {
+                                    window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
+                                } else if (result.code == web_status.WARNING) {
+                                    $.modal.alertWarning(result.msg)
+                                } else {
+                                    $.modal.alertError(result.msg);
+                                }
+                                $.modal.closeLoading();
                         },
                     })
             }

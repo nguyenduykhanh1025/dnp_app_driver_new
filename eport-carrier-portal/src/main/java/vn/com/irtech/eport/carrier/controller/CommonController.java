@@ -44,7 +44,7 @@ public class CommonController
         {
             if (!FileUtils.isValidFilename(fileName))
             {
-                throw new Exception(StringUtils.format("文件名称({})非法，不允许下载。 ", fileName));
+                throw new Exception(StringUtils.format("Tên file ko hợp lệ !  ", fileName));
             }
             String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
             String filePath = Global.getDownloadPath() + fileName;
@@ -61,7 +61,7 @@ public class CommonController
         }
         catch (Exception e)
         {
-            log.error("下载文件失败", e);
+            log.error("Có lỗi xuất hiện, tải xuống thất bại !", e);
         }
     }
 

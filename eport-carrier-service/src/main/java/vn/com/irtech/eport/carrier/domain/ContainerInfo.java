@@ -99,49 +99,26 @@ public class ContainerInfo extends BaseEntity
     @Excel(name = "Container State  (S: Stacking, D:Delivered)")
     private String cntrState;
 
-    /** SEARCH GET-IN */
-    private Date getInToDate;
+    /** SEARCH */
+    private Date toDate;
 
-    private Date getInFromDate;
+    private Date fromDate;
 
-    public void setGetInToDate(Date getInToDate) {
-        this.getInToDate = getInToDate;
-    }
-    
-    public Date getGetInToDate() {
-        return this.getInToDate;
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
     }
 
-    public void setGetInFromDate(Date getInFromDate) {
-        this.getInFromDate = getInFromDate;
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
     }
 
-    public Date getGetInFromDate() {
-        return this.getInFromDate;
+    public Date getToDate() {
+        return this.toDate;
     }
-    /** END SEARCH GET-IN */
 
-    /** SEARCH GET-OUT */
-     private Date getOutToDate;
-
-     private Date getOutFromDate;
- 
-     public void setGetOutToDate(Date getOutToDate) {
-         this.getOutToDate = getOutToDate;
-     }
-     
-     public Date getGetOutToDate() {
-         return this.getOutToDate;
-     }
- 
-     public void setGetOutFromDate(Date getOutFromDate) {
-         this.getOutFromDate = getOutFromDate;
-     }
- 
-     public Date getGetOutFromDate() {
-         return this.getOutFromDate;
-     }
-     /** END SEARCH GET-OUT */
+    public Date getFromDate() {
+        return this.fromDate;
+    }
 
     public void setCntrId(Long cntrId) 
     {
