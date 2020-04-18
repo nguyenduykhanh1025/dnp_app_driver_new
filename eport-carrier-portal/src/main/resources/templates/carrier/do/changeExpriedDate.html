@@ -98,25 +98,19 @@
 
     function closeItemDo() {
       $.modal.close();
-      // var topWindow = $(window.parent.document);
-      // var panelUrl = window.frameElement.getAttribute('data-panel');
-      // $('.page-tabs-content .active i', topWindow).click();
-      // $('.menuTab[data-id="' + panelUrl + '"]', topWindow).addClass('active').siblings('.menuTab').removeClass('active');
-      //   $('.mainContent .RuoYi_iframe', topWindow).each(function() {
-      //     if ($(this).data('id') == panelUrl) {
-      //         $(this).show().siblings('.RuoYi_iframe').hide();
-      //         return false;
-      //     }
-      //   });
+      
     }
+
     function refreshBillInfo(date) {
-      closeItemDo();
       parent.closeSuccess(msg);
+      $.modal.close();
+      //
     }
 
     function closeError() {
-      closeItemDo();
       parent.closeError(msg);
+      $.modal.close();
+      //
     }
   </script>
 </html>

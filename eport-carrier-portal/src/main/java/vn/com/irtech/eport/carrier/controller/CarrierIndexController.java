@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.config.Global;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.system.service.ISysConfigService;
@@ -22,7 +21,7 @@ import vn.com.irtech.eport.system.service.ISysConfigService;
  * @author admin
  */
 @Controller
-public class CarrierIndexController extends BaseController
+public class CarrierIndexController extends CarrierBaseController
 {
 
     @Autowired

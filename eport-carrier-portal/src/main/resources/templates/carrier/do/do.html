@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-  <head>
-    <th:block th:include="include :: header('List Exchange Delivery Order')" />
-    <th:block th:include="include :: easyui-css" />
-    <th:block th:include="include :: datetimepicker-css" />
-  </head>
-  <body class="gray-bg">
-   <div id="wrapper">
+
+<head>
+  <th:block th:include="include :: header('List Exchange Delivery Order')" />
+  <th:block th:include="include :: easyui-css" />
+  <th:block th:include="include :: datetimepicker-css" />
+</head>
+
+<body class="gray-bg">
+  <div id="wrapper">
     <div class="row">
       <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
         <!-- Table toolbar -->
@@ -19,27 +21,28 @@
             </div>
           </div>
           <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:0px">
-            
+
             <div class="select-list">
               <ul>
                 <li>
-                  <input type="date" name="fromDate" id="fromDate" placeholder="Từ ngày"/>
+                  <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
                 </li>
                 <li>
-                  <input type="date" name="toDate" id="toDate" placeholder="Đến ngày"/>
+                  <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
                 </li>
                 <li>
-                  <input type="text" name="vessel" id="vessel" placeholder="Tên tàu"/>
+                  <input type="text" name="vessel" id="vessel" placeholder="Tên tàu" />
                 </li>
                 <li>
-                  <input type="text" name="BlNo" id="blNo" placeholder="Vận đơn/BL No"
-                  />
+                  <input type="text" name="BlNo" id="blNo" placeholder="Vận đơn/BL No" />
                 </li>
                 <li>
-                  <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchBtn" ><i class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
+                  <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchBtn"><i
+                      class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
                 </li>
                 <li>
-                  <a class="btn btn-info btn-rounded btn-sm" onclick="reset()" id="resethBtn" ><i class="glyphicon glyphicon-refresh"></i> </a>
+                  <a class="btn btn-info btn-rounded btn-sm" onclick="reset()" id="resethBtn"><i
+                      class="glyphicon glyphicon-refresh"></i> </a>
                 </li>
               </ul>
             </div>
@@ -63,7 +66,8 @@
                 <th data-options="field:'consignee',halign:'center'" width="250">
                   Tên khách hàng<br />Consignee
                 </th>
-                <th data-options="field:'expiredDem',halign:'center',align:'center', formatter: formatDate" sortable="true" width="110">
+                <th data-options="field:'expiredDem',halign:'center',align:'center', formatter: formatDate"
+                  sortable="true" width="110">
                   Hạn lệnh<br />Expired Date
                 </th>
                 <th data-options="field:'emptyContainerDepot',halign:'center'" width="150">
@@ -81,6 +85,10 @@
                 <th data-options="field:'status',align:'center',formatter: formatStatus" sortable="true" width="100">
                   Trạng thái
                 </th>
+                <th data-options="field:'documentStatus',align:'center',formatter: formatDocumentStatus" sortable="true"
+                  width="115">
+                  DNP xác nhận
+                </th>
                 <th data-options="field:'createTime',align:'center',formatter: formatDate" sortable="true" width="100">
                   Ngày gửi
                 </th>
@@ -93,10 +101,11 @@
         </div>
       </div>
     </div>
-    </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: easyui-js" />
-    <th:block th:include="include :: datetimepicker-js" />
-	<script th:src="@{/eport/js/modules/carrier/do.js}"></script>
-  </body>
+  </div>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: datetimepicker-js" />
+  <script th:src="@{/eport/js/modules/carrier/do.js}"></script>
+</body>
+
 </html>

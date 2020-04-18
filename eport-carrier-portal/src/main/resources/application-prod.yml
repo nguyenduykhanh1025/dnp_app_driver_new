@@ -43,10 +43,10 @@ spring:
     #Email Setting
     mail:
         protocol: smtp
-        host: smtp.gmail.com
-        port: 587
-        username: accSendNotice
-        password: 123abc!@#
+        host: mail.danangport.com
+        port: 465
+        username: do@danangport.com
+        password: Cangdanang1901
         properties:
             mail:
                 store:
@@ -62,3 +62,18 @@ spring:
                         port: 465
                         fallback: true
                         class: javax.net.ssl.SSLSocketFactory
+
+# Static resources reloading during development
+    resources:
+        static-locations: file:D:/eport/static/
+        cache:
+            cachecontrol:
+                cache-public: true
+                max-age: 31536000 #1 year
+                must-revalidate: true
+#                cache-private: true
+#                no-transform: true
+# Templates reloading during development
+    thymeleaf:
+        prefix: file:D:/eport/templates/
+        cache: false

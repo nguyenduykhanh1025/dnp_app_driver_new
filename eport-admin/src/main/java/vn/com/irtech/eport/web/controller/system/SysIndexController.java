@@ -1,12 +1,16 @@
 package vn.com.irtech.eport.web.controller.system;
 
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.controller.BaseController;
+import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.system.domain.SysMenu;
 import vn.com.irtech.eport.system.domain.SysUser;
@@ -26,6 +30,9 @@ public class SysIndexController extends BaseController
 
     @Autowired
     private ISysConfigService configService;
+    
+    @Autowired
+    private IEquipmentDoService doService;
 
     // 系统首页
     @GetMapping("/index")
@@ -55,6 +62,10 @@ public class SysIndexController extends BaseController
     @GetMapping("/system/main")
     public String main(ModelMap mmap)
     {
+    	SysUser user = ShiroUtils.getSysUser();
+		Map<String, String> report = doService.getReportForAdmin();
+	    mmap.put("report", report);
+	    mmap.put("user", user);
         mmap.put("version", Global.getVersion());
         return "main";
     }

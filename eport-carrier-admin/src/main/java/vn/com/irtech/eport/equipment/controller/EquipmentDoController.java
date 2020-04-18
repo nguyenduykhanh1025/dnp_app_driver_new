@@ -1,12 +1,15 @@
 package vn.com.irtech.eport.equipment.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,16 +17,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.utils.AppToolUtils;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.system.domain.SysUser;
 
 /**
  * Exchange Delivery OrderController
@@ -39,8 +40,6 @@ public class EquipmentDoController extends BaseController {
 	@Autowired
 	private IEquipmentDoService equipmentDoService;
 
-	private SysUser currentUser;
-
 	@GetMapping("/getViewDo")
 	public String getDoView() {
 		return prefix + "/do";
@@ -55,6 +54,15 @@ public class EquipmentDoController extends BaseController {
 	public TableDataInfo listBuild(EquipmentDo edo, Date fromDate, Date toDate, String voyageNo, String vessel,
 			String consignee, String blNo, String carrierCode, String status, String documentStatus) {
 		startPage();
+		
+		if(fromDate != null)
+		{
+			edo.setFromDate(fromDate);
+		}
+		if(toDate != null)
+		{
+			edo.setToDate(toDate);
+		}
 		edo.setVoyNo(voyageNo);
 		if (vessel != null) {
 			edo.setVessel(vessel.toLowerCase());
@@ -66,8 +74,6 @@ public class EquipmentDoController extends BaseController {
 		if (carrierCode != null) {
 			edo.setCarrierCode(carrierCode.toLowerCase());
 		}
-		edo.setFromDate(fromDate);
-		edo.setToDate(toDate);
 		edo.setDocumentStatus(documentStatus);
 		edo.setStatus(status);
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListExclusiveBill(edo);
@@ -75,29 +81,27 @@ public class EquipmentDoController extends BaseController {
 	}
 
 	@GetMapping("/getViewCont/{getBillOfLading}")
-	public String getViewCont(@PathVariable("getBillOfLading") String getBillOfLading, Model model) {
-		model.addAttribute("getBillOfLading", getBillOfLading);
+	public String getViewCont(@PathVariable("getBillOfLading") String billOfLading, ModelMap mmap) {
+		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
+		mmap.addAttribute("billOfLading", equipmentDos);
 		return prefix + "/listContainer";
 	}
 
 	@RequiresPermissions("equipment:do:list")
-	@PostMapping("/listCont")
+	@PostMapping("/listCont/{blNo}")
 	@ResponseBody
-	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
+	public TableDataInfo list(@PathVariable("blNo") String blNo, EquipmentDoPaging EquipmentDo) {
+		EquipmentDo.setBillOfLading(blNo);
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingAdmin(EquipmentDo);
 		return getDataTable(list);
 	}
 
-	// Return panination
 	@RequiresPermissions("equipment:do:list")
 	@PostMapping("/getCountPages")
 	@ResponseBody
 	public Long getCountPages(String billOfLading) {
-
 		return equipmentDoService.getTotalPagesCont(billOfLading);
 	}
-
-
 
 	@RequiresPermissions("equipment:do:list")
 	@GetMapping("/checkStatus/{billOfLading}")
@@ -107,39 +111,35 @@ public class EquipmentDoController extends BaseController {
 		return prefix + "/checkStatus";
 	}
 
-
-	@RequiresPermissions("equipment:do:list")
-	@PostMapping("/updateDoStatus")
+	@RequiresPermissions("equipment:do:edit")
+	@PostMapping("/updateDoStatus/{blNo}")
 	@ResponseBody
-	public AjaxResult updateDoStatus(String billOfLading, String status,String processRemark, String documentStatus, String note) {
-		EquipmentDo equipmentDo = new EquipmentDo();
-		boolean checkUpdate = false;
-		if (documentStatus.equals("1") && equipmentDoService.countDocmentStatusYes(billOfLading) == 0) {
-			Date documentReceiptDate = new Date();
-			currentUser = ShiroUtils.getSysUser();
-			equipmentDo.setDocumentStatus("1");
-			equipmentDo.setUpdateBy(currentUser.getLoginName());
-			equipmentDo.setDocumentReceiptDate(documentReceiptDate);
-			equipmentDo.setBillOfLading(billOfLading);
-			equipmentDoService.updateBillOfLading(equipmentDo);
-			checkUpdate = true;
+	public AjaxResult updateDoStatus(@PathVariable("blNo") String blNo,EquipmentDo edo) {
+		// check B/L for authentication
+		EquipmentDo blItem = equipmentDoService.getBillOfLadingInfo(blNo);
+		if(blItem == null) {
+			return error("Số vận đơn (B/L No) không tồn tại");
 		}
-		if (status.equals("1") && equipmentDoService.countDOStatusYes(billOfLading) == 0) {
-			Date documentReceiptDate = new Date();
-			currentUser = ShiroUtils.getSysUser();
-			equipmentDo.setStatus("1");
-			equipmentDo.setUpdateBy(currentUser.getLoginName());
-			equipmentDo.setUpdateTime(documentReceiptDate);
-			equipmentDo.setBillOfLading(billOfLading);
-			equipmentDo.setprocessRemark(processRemark);
-			equipmentDoService.updateBillOfLading(equipmentDo);
-			checkUpdate = true;
+		if(StringUtils.isAllBlank(edo.getStatus(), edo.getDocumentStatus(), edo.getProcessRemark())) {
+			return error("Không phát sinh thay đổi");
 		}
-		if(checkUpdate == false)
-		{
-			return error();
+		if(edo.getStatus() != null && "1".equals(edo.getStatus())) {
+			blItem.setStatus(edo.getStatus());
+			blItem.setProcessStatus(edo.getStatus());
 		}
-		return success();
+		if(edo.getDocumentStatus() != null && "1".equals(edo.getDocumentStatus())) {
+			blItem.setDocumentStatus(edo.getDocumentStatus());
+			blItem.setDocumentReceiptDate(new Date());
+		}
+		blItem.setprocessRemark(edo.getProcessRemark());
+
+		blItem.setUpdateBy(ShiroUtils.getSysUser().getLoginName());
+		
+		if(equipmentDoService.updateBillOfLading(blItem) > 0) {
+			return success("Xác nhận thành công");
+		}
+		
+		return error("Có lỗi xảy ra khi cập nhật dữ liệu, hãy thử lại.");
 	}
 
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
   <head>
-    <th:block th:include="include :: header('Xem ThÃ´ng Tin DO')" />
+    <th:block th:include="include :: header('Xem Thông Tin DO')" />
     <th:block th:include="include :: handsontable-css" />
     <th:block th:include="include :: datetimepicker-css" />
     <style type="text/css">
@@ -22,9 +22,9 @@
             <div class="bs-bars pull-left" style="margin-top:5px; display: flex;">
               <div class="btn-group-sm" id="toolbar" role="group" style="margin-right: 10px;">
                   <a class="btn btn-primary" onclick="updateDO()" id="saveDoBtn"><i class="fa fa-check-circle"></i> &nbsp;Lưu DO</a>
+                  <a class='btn btn-warning' onclick='changeExpiredDate()' id='updateExpriredBtn' style="display:none"><i class='fa fa-calendar'></i> &nbsp;Đổi hạn lệnh</a>
                   <a class="btn btn-default" onclick="closeItem()" id="cancelDoBtn"><i class="fa fa-times"></i> &nbsp;Hủy Bỏ</a>
-                  <small id="tips">(*) Mã hãng tàu và Số vận đơn sẽ tự động cập nhật khi lưu</small>
-                  <a id="updateExpriredBtn"></a>
+                  <small id="tips" style="display:none">(*) Mã hãng tàu và Số vận đơn sẽ tự động cập nhật khi lưu</small>
               </div>
             </div>
             <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:5px">

@@ -129,10 +129,11 @@ public class EquipmentDo extends BaseEntity
         this.processRemark = processRemark;
     }
 
-    public String getprocessRemark()
+    public String getProcessRemark()
     {
         return this.processRemark;
     }
+    
     public void setFromDate(Date fromDate) {
         this.fromDate = fromDate;
     }

@@ -15,6 +15,8 @@
 	<link th:href="@{/css/style.css?v=20200318}" rel="stylesheet"/>
 	<!-- <link th:href="@{/ruoyi/css/ry-ui.css}" rel="stylesheet"/> -->
 	<link th:href="@{/eport/css/eport.css}" rel="stylesheet"/>
+	<!-- Laydate -->
+	<link th:href="@{/ajax/libs/layui/css/modules/laydate/default/laydate.css}" rel="stylesheet"/>
 </head>
 
 <!-- Common JS -->
@@ -34,6 +36,7 @@
 	<script th:src="@{/ajax/libs/validate/jquery.validate.extend.js}"></script>
 	<!-- jquery-validate -->
 	<script th:src="@{/ajax/libs/bootstrap-treetable/bootstrap-treetable.js}"></script>
+	<script th:src="@{/ajax/libs/layui/lay/modules/laydate.js}"></script>
 	<!-- jquery-export -->
 	<script th:src="@{/ajax/libs/bootstrap-table/extensions/export/bootstrap-table-export.js}"></script>
 	<script th:src="@{/ajax/libs/bootstrap-table/extensions/export/tableExport.js}"></script>
@@ -45,6 +48,14 @@
 	<script th:src="@{/eport/js/common.js}"></script>
 	<script th:src="@{/eport/js/eport.js}"></script>
 	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+</div>
+
+<!-- handonstable -->
+<div th:fragment="handsontable-css">
+    <link th:href="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="handsontable-js">
+    <script th:src="@{/ajax/libs/handsontable/6.2.2/handsontable.full.min.js}"></script>
 </div>
 
 <!-- easyui -->
