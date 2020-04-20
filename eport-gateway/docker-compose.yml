@@ -1,0 +1,8 @@
+version: '2'
+services:
+  eport-api:
+    image: eport/api
+    ports:
+      - "8081:8081"
+    environment:
+      - spring.profiles.active=dev
