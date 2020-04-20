@@ -568,9 +568,6 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	  return VALID_CONTAINER_NO_REGEX.matcher(input).find();
   }
 
-  @GetMapping("/tutorial")
-  public String tutorial() {
-	return prefix + "/tutorial";
-  }
+
   
 }

@@ -31,12 +31,8 @@ public class CommonController
     @Autowired
     private ServerConfig serverConfig;
 
-    /**
-     * 通用下载请求
-     * 
-     * @param fileName 文件名称
-     * @param delete 是否删除
-     */
+
+     
     @GetMapping("common/download")
     public void fileDownload(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
     {
@@ -65,18 +61,16 @@ public class CommonController
         }
     }
 
-    /**
-     * 通用上传请求
-     */
+    
     @PostMapping("/common/upload")
     @ResponseBody
     public AjaxResult uploadFile(MultipartFile file) throws Exception
     {
         try
         {
-            // 上传文件路径
+           
             String filePath = Global.getUploadPath();
-            // 上传并返回新文件名称
+           
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = serverConfig.getUrl() + fileName;
             AjaxResult ajax = AjaxResult.success();
@@ -90,18 +84,16 @@ public class CommonController
         }
     }
 
-    /**
-     * 本地资源通用下载
-     */
+    
     @GetMapping("/common/download/resource")
     public void resourceDownload(String resource, HttpServletRequest request, HttpServletResponse response)
             throws Exception
     {
-        // 本地资源路径
+       
         String localPath = Global.getProfile();
-        // 数据库资源地址
+     
         String downloadPath = localPath + StringUtils.substringAfter(resource, Constants.RESOURCE_PREFIX);
-        // 下载名称
+      
         String downloadName = StringUtils.substringAfterLast(downloadPath, "/");
         response.setCharacterEncoding("utf-8");
         response.setContentType("multipart/form-data");
@@ -109,4 +101,5 @@ public class CommonController
                 "attachment;fileName=" + FileUtils.setFileDownloadHeader(request, downloadName));
         FileUtils.writeBytes(downloadPath, response.getOutputStream());
     }
+   
 }
