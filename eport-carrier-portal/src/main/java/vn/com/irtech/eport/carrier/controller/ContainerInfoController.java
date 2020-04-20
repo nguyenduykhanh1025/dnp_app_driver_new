@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,25 +41,38 @@ public class ContainerInfoController extends CarrierBaseController
         return prefix + "/cont";
     }
 
+    @GetMapping("/contFull")
+    public String contfull(Model map)
+    {
+        map.addAttribute("contFE","F");
+        return prefix + "/cont";
+    }
+
+    @GetMapping("/contEmpty")
+    public String contEmpty(Model map)
+    {
+        map.addAttribute("contFE","E");
+        return prefix + "/cont";
+    }
     /**
      * Get Container Infomation List
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ContainerInfo containerInfo,String ptnrCode,Date toDate,Date  fromDate,String fe)
+    public TableDataInfo list(ContainerInfo containerInfo,String ptnrCode,Date toDate,Date  fromDate,String contFE)
     {
         startPage();
         // SEARCH CONT 
-        // if (fe.equals("F"))
-        // {
-        //     containerInfo.setFe("F");
-        //     containerInfo.setCntrState("D");
-        // }
-        // if (fe.equals("E"))
-        // {
-        //     containerInfo.setFe("E");
-        //     containerInfo.setCntrState("D");
-        // }
+        if (contFE.equals("F"))
+        {
+            containerInfo.setFe("F");
+            containerInfo.setCntrState("D");
+        }
+        if (contFE.equals("E"))
+        {
+            containerInfo.setFe("E");
+            containerInfo.setCntrState("D");
+        }
 
         if (toDate != null) {
 			containerInfo.setToDate(toDate);
@@ -78,9 +92,19 @@ public class ContainerInfoController extends CarrierBaseController
     @Log(title = "Container Infomation", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ContainerInfo containerInfo,String ptnrCode,Date toDate,Date  fromDate)
+    public AjaxResult export(ContainerInfo containerInfo,String ptnrCode,Date toDate,Date  fromDate,String contFE)
     {
-        containerInfo.setPtnrCode(ptnrCode);
+        //Cont FE
+        if (contFE.equals("F"))
+        {
+            containerInfo.setFe("F");
+            containerInfo.setCntrState("D");
+        }
+        if (contFE.equals("E"))
+        {
+            containerInfo.setFe("E");
+            containerInfo.setCntrState("D");
+        }
         // SEARCH CONT 
         if (fromDate != null) {
             containerInfo.setFromDate(fromDate);

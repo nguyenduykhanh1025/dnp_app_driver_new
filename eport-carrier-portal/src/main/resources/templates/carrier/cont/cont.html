@@ -105,6 +105,9 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <script type="text/javascript" th:inline="javascript">
+        var contFE = /*[[${contFE}]]*/ ;
+    </script>
     <script th:inline="javascript">
         var prefix = ctx + "carrier/cont";
         $(function () {
@@ -127,10 +130,11 @@
                     type: opts.method,
                     url: opts.url,
                     data: {
-                    pageNum: param.page,
-                    pageSize: param.rows,
-                    orderByColumn: param.sort,
-                    isAsc: param.order,
+                      pageNum: param.page,
+                      pageSize: param.rows,
+                      orderByColumn: param.sort,
+                      isAsc: param.order,
+                      contFE : contFE
                     },
                     dataType: "json",
                     success: function (data) {
@@ -170,10 +174,9 @@
                     pageSize: param.rows,
                     orderByColumn: param.sort,
                     isAsc: param.order,
-                      // fe : fe,
                       toDate: toDate,
                       fromDate: fromDate,
-                      ptnrCode: $("#ptnrCode").val() == null ? "" : $("#ptnrCode").val(),
+                      contFE : contFE
                     },
                     dataType: "json",
                     success: function (data) {
@@ -236,7 +239,7 @@
                     data: {
                             toDate: toDate,
                             fromDate: fromDate,
-                            ptnrCode: $("#ptnrCode").val() == null ? "" : $("#ptnrCode").val(),
+                            contFE : contFE
                         },
                         success: function (result) {
                                 $.modal.loading("Đang xử lý, vui lòng chờ...");

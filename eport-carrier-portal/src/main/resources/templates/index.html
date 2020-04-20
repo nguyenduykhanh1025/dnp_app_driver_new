@@ -61,12 +61,12 @@
             </li>
             <ul class="nav navbar-top-links navbar-left welcome-message">
               <li class="dropdown user-menu">
-                <a title="Tra cứu Container" th:href="@{/carrier/cont}" href="/carrier/cont" class="menuItem"><i
+                <a title="Tra cứu Container"  class="menuItem"><i
                   class="fa fa-search"></i>&nbsp; Tra cứu Container</a>
                   <ul class="dropdown-menu">
                     <li><a title="Container GET-IN/OUT" class="menuItem " th:href="@{/carrier/cont}">Container GET-IN/OUT</a></li>
-                    <li><a class="menuItem " th:href="@{/carrier/cont}">Container có hàng</a></li>
-                    <li><a class="menuItem " th:href="@{/carrier/cont}">Container rỗng</a></li>
+                    <li><a class="menuItem " th:href="@{/carrier/cont/contFull}">DS Container lưu có hàng</a></li>
+                    <li><a class="menuItem " th:href="@{/carrier/cont/contEmpty}">DS Container lưu rỗng</a></li>
                   </ul>
                 </li>
               </ul>
