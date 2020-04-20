@@ -18,7 +18,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
-import vn.com.irtech.eport.framework.util.ShiroUtils;
+
 
 /**
  * Container InfomationController
@@ -59,10 +59,11 @@ public class ContainerInfoController extends CarrierBaseController
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ContainerInfo containerInfo,String ptnrCode,Date toDate,Date  fromDate,String contFE)
+    public TableDataInfo list(ContainerInfo containerInfo,Date toDate,Date  fromDate,String contFE,String carrierCode)
     {
         startPage();
         // SEARCH CONT 
+        containerInfo.setPtnrCode(carrierCode);
         if (contFE.equals("F"))
         {
             containerInfo.setFe("F");
@@ -81,7 +82,6 @@ public class ContainerInfoController extends CarrierBaseController
 			containerInfo.setFromDate(fromDate);
 		}
         
-        containerInfo.setPtnrCode(ptnrCode);
         List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
         return getDataTable(list);
     }
@@ -92,9 +92,10 @@ public class ContainerInfoController extends CarrierBaseController
     @Log(title = "Container Infomation", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ContainerInfo containerInfo,String ptnrCode,Date toDate,Date  fromDate,String contFE)
+    public AjaxResult export(ContainerInfo containerInfo,Date toDate,Date  fromDate,String contFE,String carrierCode)
     {
         //Cont FE
+        containerInfo.setPtnrCode(carrierCode);
         if (contFE.equals("F"))
         {
             containerInfo.setFe("F");
@@ -113,6 +114,8 @@ public class ContainerInfoController extends CarrierBaseController
             containerInfo.setToDate(toDate);
         }
         List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
+        
+        
         ExcelUtil<ContainerInfo> util = new ExcelUtil<ContainerInfo>(ContainerInfo.class);
         return util.exportExcel(list, "cont");
     }

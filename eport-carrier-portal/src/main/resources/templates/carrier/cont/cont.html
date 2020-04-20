@@ -21,20 +21,26 @@
   
               <div class="select-list">
                 <ul>
-                    
                   <li>
-                    <input class="time-input" id="toDate" name="toDate" placeholder="Từ ngày" />
+                    <div class="form-group">
+                      <select class="form-control" id="carrierCode">
+                        <option value="">Mã vận hành</option>
+                      </select>
+                    </div>
+                  </li> 
+                  <li>
+                    <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
                   </li>
                   <li>
-                    <input class="time-input" id="fromDate" name="fromDate" placeholder="Đến ngày" />
+                    <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
                   </li>
                     <a class="btn btn-primary btn-rounded btn-sm" onclick="searchContainer()" id="searchBtn"><i
                         class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
                   </li>
-                  <li>
+                  <!-- <li>
                     <a class="btn btn-info btn-rounded btn-sm" onclick="reset()" id="resethBtn"><i
                         class="glyphicon glyphicon-refresh"></i> </a>
-                  </li>
+                  </li> -->
                 </ul>
               </div>
             </div>
@@ -43,6 +49,7 @@
                 <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
                   <thead>
                     <tr>
+                     
                       <!-- <th data-options="field:'id',checkbox:true"></th> -->
                       <th data-options="field:'cntrNo',align:'center',resizable:true" width="120">
                         Số<br />Container
@@ -59,9 +66,6 @@
                       <th data-options="field:'block',align:'right',align:'center',formatter:yardPosition" width="90">
                         Yard Position
                       </th>
-                      <th data-options="field:'wgt',align:'right',align:'center'" width="90">
-                        Weight
-                      </th>
                       <th data-options="field:'consignee',halign:'center'" width="250">
                         Consignee
                       </th>
@@ -76,10 +80,7 @@
                         Seal Number
                       </th>
                       <th data-options="field:'dispatchMode',align:'center'" width="100">
-                        Gate mode for <br/> terminal in
-                      </th>
-                      <th data-options="field:'dispatchMode2',align:'center'" width="100">
-                        Gate mode for <br/> terminal out
+                        Gate mode
                       </th>
                       <th data-options="field:'inDate',align:'center', formatter: formatDate" width="100">
                         Gate In Date
@@ -87,10 +88,14 @@
                       <th data-options="field:'outDate',align:'center', formatter: formatDate" width="100">
                         Gate Out Date
                       </th>
+                      <th data-options="field:'days',align:'center',formatter:getDayContEmpty" hidden="true">Days</th>
+                      <th data-options="field:'wgt',align:'right',align:'center'" width="90">
+                        Weight
+                      </th>
                       <th data-options="field:'vgm',align:'center'" sortable="true" width="60">
                         VGM
                       </th>
-                      <th data-options="field:'cntrState',align:'center'" sortable="true"
+                      <th data-options="field:'cntrState',align:'center',formatter: containerStateDescription" sortable="true"
                         width="115">
                         Container State <br/>(S,D)
                       </th>
@@ -111,7 +116,21 @@
     <script th:inline="javascript">
         var prefix = ctx + "carrier/cont";
         $(function () {
-            $("#dg").datagrid({
+              $.ajax({
+                  type: "GET",
+                  url: "/lisCarrierCode",
+                    success(data){
+                        var carrierCode = data.split(",");
+                        carrierCode.forEach(element => {
+                            $('#carrierCode').append(`<option value="${element}"> 
+                                                        ${element} 
+                                                      </option>`);
+                        });
+                        
+                  }
+              })
+              
+              $("#dg").datagrid({
                 url: prefix + "/list",
                 height: heightInfo,
                 singleSelect: true,
@@ -126,6 +145,11 @@
                 loader: function (param, success, error) {
                 var opts = $(this).datagrid("options");
                 if (!opts.url) return false;
+                if(contFE == "E") 
+                {
+                  $('#dg').datagrid('hideColumn', 'blNo') ;
+                  $('#dg').datagrid('showColumn', 'days')
+                }
                 $.ajax({
                     type: opts.method,
                     url: opts.url,
@@ -134,7 +158,8 @@
                       pageSize: param.rows,
                       orderByColumn: param.sort,
                       isAsc: param.order,
-                      contFE : contFE
+                      contFE : contFE,
+                      carrierCode : $("#carrierCode").children("option:selected").val(),
                     },
                     dataType: "json",
                     success: function (data) {
@@ -155,7 +180,6 @@
                 toDate = formatDateForSearch(toDate);
                 var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
                 fromDate = formatDateForSearch(fromDate);
-                console.log(fromDate);
                 var dg = $("#dg").datagrid({
                 url: prefix + "/list",
                 singleSelection: true,
@@ -176,7 +200,8 @@
                     isAsc: param.order,
                       toDate: toDate,
                       fromDate: fromDate,
-                      contFE : contFE
+                      contFE : contFE,
+                      carrierCode : $("#carrierCode").children("option:selected").val(),
                     },
                     dataType: "json",
                     success: function (data) {
@@ -226,7 +251,11 @@
                 var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
                 var month = date.getMonth() + 1;
                 var monthText = month < 10 ? "0" + month : month;
-                return day + "/" + monthText + "/" + date.getFullYear();
+                var hour = date.getHours();
+                hour = hour < 10 ? "0" + hour : hour;
+                var minute = date.getMinutes();
+                minute = minute < 10 ? "0" + minute : minute;
+                return day + "/" + monthText + "/" + date.getFullYear() + "<br>" + hour + ":" + minute;
             }
             function exportExcel() {
                 var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
@@ -253,6 +282,18 @@
                                 $.modal.closeLoading();
                         },
                     })
+            }
+            function containerStateDescription(value)
+            {
+              return value === "D" ? "Delivered" : "Stacking"
+            }
+            function getDayContEmpty()
+            {
+                var inDate = new Date($('#dg').datagrid('getRows')[0].inDate);
+                var now = new Date();
+                var offset = now.getTime() - inDate.getTime();
+                var totalDays = Math.round(offset / 1000 / 60 / 60 / 24);
+                return totalDays;
             }
     </script>
 </body>

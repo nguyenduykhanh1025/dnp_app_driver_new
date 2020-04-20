@@ -72,7 +72,11 @@
               </ul>
             </ul>
             
-          <ul class="nav navbar-top-links navbar-right welcome-message">
+          <ul class="nav navbar-top-links navbar-right welcome-message">\
+            <li>
+              <a title="Quản Lý DO" th:href="@{/carrier/do/tutorial}" class="menuItem"><i
+                  class="fa fa-ship"></i>&nbsp;Hướng dẫn sử dụng portal</a>
+            </li>
             <li class="dropdown user-menu">
               <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
                 <span class="hidden-xs">[[${#strings.defaultString(user.email, '-')}]]</span

@@ -73,5 +73,7 @@ public interface CarrierAccountMapper
 	 * @param email
 	 * @return
 	 */
-	public int checkEmailUnique(String email);
+    public int checkEmailUnique(String email);
+    
+    
 }

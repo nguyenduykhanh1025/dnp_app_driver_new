@@ -18,7 +18,7 @@ public class ContainerInfo extends BaseEntity
 
     /** ID */
     private Long cntrId;
-
+   
     /** Container Number */
     @Excel(name = "Container Number")
     private String cntrNo;
@@ -98,6 +98,33 @@ public class ContainerInfo extends BaseEntity
     /** Container State  (S: Stacking, D:Delivered) */
     @Excel(name = "Container State  (S: Stacking, D:Delivered)")
     private String cntrState;
+
+    /** remark */
+    @Excel(name = "remark")
+    private String remark;
+    
+    @Excel(name = "Yard Position")
+    private String yardPosition;
+
+    public String yardPosition()
+    {
+        return this.yardPosition;
+    }
+
+    public void yardPosition(String yardPosition)
+    {
+        this.yardPosition = yardPosition;
+    }
+
+    public String getRemark()
+    {
+        return this.remark;
+    }
+
+    public void setRemark(String remark)
+    {
+        this.remark = remark;
+    }
 
     /** SEARCH */
     private Date toDate;

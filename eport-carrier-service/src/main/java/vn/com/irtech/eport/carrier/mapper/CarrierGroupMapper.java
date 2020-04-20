@@ -90,4 +90,6 @@ public interface CarrierGroupMapper
 	 * @return
 	 */
     public int checkMainEmailUnique(String mainEmail);
+
+    public String getCarrierCodeById(long groupId);
 }
