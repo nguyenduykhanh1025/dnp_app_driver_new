@@ -58,4 +58,6 @@ public interface IContainerInfoService
      * @return result
      */
     public int deleteContainerInfoById(Long cntrId);
+
+    
 }

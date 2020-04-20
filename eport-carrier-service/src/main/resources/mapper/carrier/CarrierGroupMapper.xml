@@ -107,4 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(1) from carrier_group where lower(main_email)=#{mainEmail}
 	</select>
     
+    <select id="getCarrierCodeById" parameterType="Long" resultType="String">
+        select operate_code from carrier_group where group_code = #{groupId}
+    </select>
 </mapper>

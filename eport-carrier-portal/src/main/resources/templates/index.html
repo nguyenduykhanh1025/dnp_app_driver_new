@@ -61,18 +61,22 @@
             </li>
             <ul class="nav navbar-top-links navbar-left welcome-message">
               <li class="dropdown user-menu">
-                <a title="Tra cứu Container" th:href="@{/carrier/cont}" href="/carrier/cont" class="menuItem"><i
+                <a title="Tra cứu Container"  class="menuItem"><i
                   class="fa fa-search"></i>&nbsp; Tra cứu Container</a>
                   <ul class="dropdown-menu">
-                    <li><a title="Container GET-IN/OUT" class="menuItem " th:href="@{/carrier/cont}">Container GET-IN/OUT</a></li>
-                    <li><a class="menuItem " th:href="@{/carrier/cont}">Container có hàng</a></li>
-                    <li><a class="menuItem " th:href="@{/carrier/cont}">Container rỗng</a></li>
+                    <li><a title="Container GET-IN/OUT" class="menuItem " th:href="@{/carrier/cont}">Container GATE-IN/OUT</a></li>
+                    <li><a class="menuItem " th:href="@{/carrier/cont/contFull}">DS Container lưu có hàng</a></li>
+                    <li><a class="menuItem " th:href="@{/carrier/cont/contEmpty}">DS Container lưu rỗng</a></li>
                   </ul>
                 </li>
               </ul>
             </ul>
             
-          <ul class="nav navbar-top-links navbar-right welcome-message">
+          <ul class="nav navbar-top-links navbar-right welcome-message">\
+            <li>
+              <a title="Hướng dẫn sử dụng portal" th:href="@{/tutorial}" class="menuItem"><i
+                  class="fa fa-ship"></i>&nbsp;Hướng dẫn sử dụng portal</a>
+            </li>
             <li class="dropdown user-menu">
               <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
                 <span class="hidden-xs">[[${#strings.defaultString(user.email, '-')}]]</span

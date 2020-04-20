@@ -58,4 +58,6 @@ public interface ContainerInfoMapper
      * @return result
      */
     public int deleteContainerInfoByIds(String[] cntrIds);
+
+    
 }

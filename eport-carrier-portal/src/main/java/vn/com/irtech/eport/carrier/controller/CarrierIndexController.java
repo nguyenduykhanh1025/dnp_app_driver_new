@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
@@ -57,6 +58,15 @@ public class CarrierIndexController extends CarrierBaseController
         mmap.put("user", user);
         mmap.put("version", Global.getVersion());
         return "main";
+    }
+
+    @GetMapping("/lisCarrierCode")
+    @ResponseBody
+    public String lisCarrierCode()
+    {
+        Long groupId = ShiroUtils.getSysUser().getGroupId();
+        String operateCode = groupService.getCarrierCodeById(groupId);
+        return operateCode;
     }
 
 }

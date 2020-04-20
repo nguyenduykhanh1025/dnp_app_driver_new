@@ -18,7 +18,7 @@ public class ContainerInfo extends BaseEntity
 
     /** ID */
     private Long cntrId;
-
+   
     /** Container Number */
     @Excel(name = "Container Number")
     private String cntrNo;
@@ -99,49 +99,53 @@ public class ContainerInfo extends BaseEntity
     @Excel(name = "Container State  (S: Stacking, D:Delivered)")
     private String cntrState;
 
-    /** SEARCH GET-IN */
-    private Date getInToDate;
-
-    private Date getInFromDate;
-
-    public void setGetInToDate(Date getInToDate) {
-        this.getInToDate = getInToDate;
-    }
+    /** remark */
+    @Excel(name = "remark")
+    private String remark;
     
-    public Date getGetInToDate() {
-        return this.getInToDate;
+    @Excel(name = "Yard Position")
+    private String yardPosition;
+
+    public String yardPosition()
+    {
+        return this.yardPosition;
     }
 
-    public void setGetInFromDate(Date getInFromDate) {
-        this.getInFromDate = getInFromDate;
+    public void yardPosition(String yardPosition)
+    {
+        this.yardPosition = yardPosition;
     }
 
-    public Date getGetInFromDate() {
-        return this.getInFromDate;
+    public String getRemark()
+    {
+        return this.remark;
     }
-    /** END SEARCH GET-IN */
 
-    /** SEARCH GET-OUT */
-     private Date getOutToDate;
+    public void setRemark(String remark)
+    {
+        this.remark = remark;
+    }
 
-     private Date getOutFromDate;
- 
-     public void setGetOutToDate(Date getOutToDate) {
-         this.getOutToDate = getOutToDate;
-     }
-     
-     public Date getGetOutToDate() {
-         return this.getOutToDate;
-     }
- 
-     public void setGetOutFromDate(Date getOutFromDate) {
-         this.getOutFromDate = getOutFromDate;
-     }
- 
-     public Date getGetOutFromDate() {
-         return this.getOutFromDate;
-     }
-     /** END SEARCH GET-OUT */
+    /** SEARCH */
+    private Date toDate;
+
+    private Date fromDate;
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getToDate() {
+        return this.toDate;
+    }
+
+    public Date getFromDate() {
+        return this.fromDate;
+    }
 
     public void setCntrId(Long cntrId) 
     {
