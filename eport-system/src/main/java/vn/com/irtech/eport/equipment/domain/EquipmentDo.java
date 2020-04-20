@@ -133,6 +133,7 @@ public class EquipmentDo extends BaseEntity
     {
         return this.processRemark;
     }
+    
     public void setFromDate(Date fromDate) {
         this.fromDate = fromDate;
     }

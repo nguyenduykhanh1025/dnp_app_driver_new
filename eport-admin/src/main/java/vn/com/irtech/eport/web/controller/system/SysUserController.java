@@ -124,9 +124,10 @@ public class SysUserController extends BaseController
         {
             return error("Add user '" + user.getLoginName() + "' failed, username already exist");
         }
-        else if (UserConstants.USER_PHONE_NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
-        {
-            return error("Add user '" + user.getLoginName() + "' failed, phone number already exist");
+        else if (!user.getPhonenumber().equals("")) {
+            if (UserConstants.USER_PHONE_NOT_UNIQUE.equals(userService.checkPhoneUnique(user))) {
+                return error("Add user '" + user.getLoginName() + "' failed, phone number already exist");
+            }
         }
         else if (UserConstants.USER_EMAIL_NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
         {
@@ -261,7 +262,7 @@ public class SysUserController extends BaseController
     @ResponseBody
     public String checkPhoneUnique(SysUser user)
     {
-        return userService.checkPhoneUnique(user);
+    	return userService.checkPhoneUnique(user);
     }
 
     /**
