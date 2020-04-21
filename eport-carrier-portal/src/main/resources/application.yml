@@ -5,6 +5,7 @@ eport:
   demoEnabled: true
   profile: D:/eport/upload
   addressEnabled: true
+  apiUrl: http://localhost:8081/api
 
 server:
   port: 7070

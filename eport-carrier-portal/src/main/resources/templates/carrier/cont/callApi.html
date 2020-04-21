@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('List Container Infomation')" />
+    <th:block th:include="include :: easyui-css" />
+</head>
+<body class="gray-bg">
+
+    <p id="testAPI"> data</p>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: easyui-js" />
+</body>
+<script>
+    $(function() {
+       // using XMLHttpRequest
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "http://www.example.org/ajax.php", true);
+            xhr.onload = function () {
+                console.log(xhr.responseText);
+            };
+            xhr.send();
+    });
+</script>

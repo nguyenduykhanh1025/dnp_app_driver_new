@@ -2,10 +2,10 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/eport?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-      username: root
-      password: 
+      driver-class-name: oracle.jdbc.OracleDriver
+      url: jdbc:oracle:thin:@117.3.52.70:41521/CATOS_TEST
+      username: DNP_UAT
+      password: SUCCESS
       initial-size: 10
       max-active: 100
       min-idle: 10
@@ -14,14 +14,14 @@ spring:
       max-pool-prepared-statement-per-connection-size: 20
       time-between-eviction-runs-millis: 60000
       min-evictable-idle-time-millis: 300000
-      #Oracle需要打开注释
-      #validation-query: SELECT 1 FROM DUAL
+      #Oracle validate query
+      validation-query: SELECT 1 FROM DUAL
       test-while-idle: true
       test-on-borrow: false
       test-on-return: false
       stat-view-servlet:
-        enabled: true
-        url-pattern: /druid/*
+        enabled: false
+        #url-pattern: /druid/*
         #login-username: admin
         #login-password: admin
       filter:
@@ -36,11 +36,11 @@ spring:
 ##Dynamic Datasource
 dynamic:
   datasource:
-      slave0:
-         driver-class-name: com.mysql.cj.jdbc.Driver
-         url: jdbc:mysql://localhost:3306/eport_api?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-         username: root
-         password: 
+    slave0:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/eport_api?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      username: root
+      password: 
 #    slave1:
 #      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 #      url: jdbc:sqlserver://localhost:1433;DatabaseName=eport_security
@@ -51,9 +51,9 @@ dynamic:
 #      url: jdbc:postgresql://localhost:5432/eport_security
 #      username: eport
 #      password: 123456
-     #slave3:
-      #driver-class-name: oracle.jdbc.driver.OracleDriver
-      #url: jdbc:oracle:thin:@117.3.52.70:1521/CATOS_TEST
-      #service-name: CATOS_TEST
-      #username: DNP_UAT
-      #password: SUCCESS
+#     slave3:
+#      driver-class-name: oracle.jdbc.driver.OracleDriver
+#      url: jdbc:oracle:thin:@117.3.52.70:41521/CATOS_TEST
+#      service-name: CATOS_TEST
+#      username: DNP_UAT
+#      password: SUCCESS
