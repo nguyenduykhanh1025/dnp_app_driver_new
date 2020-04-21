@@ -1,8 +1,12 @@
 package vn.com.irtech.eport.carrier.controller;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,10 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.carrier.domain.ContainerInfo;
 import vn.com.irtech.eport.carrier.service.IContainerInfoService;
+import vn.com.irtech.eport.carrier.utils.R;
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -82,17 +89,28 @@ public class ContainerInfoController extends CarrierBaseController
 			containerInfo.setFromDate(fromDate);
 		}
         
-        List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
-        return getDataTable(list);
+        //List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
+
+        // Call API
+        final String uri = Global.getApiUrl() + "/container/list";
+     
+        RestTemplate restTemplate = new RestTemplate();
+        R r = restTemplate.postForObject( uri, containerInfo, R.class);
+        int total = (int) r.get("total");
+        TableDataInfo dataList = getDataTable((List) r.get("data"));
+        dataList.setTotal(total);
+        return dataList;
     }
 
     /**
      * Export Container Infomation List
+     * @throws InvocationTargetException 
+     * @throws IllegalAccessException 
      */
     @Log(title = "Container Infomation", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ContainerInfo containerInfo,Date toDate,Date  fromDate,String contFE,String carrierCode)
+    public AjaxResult export(ContainerInfo containerInfo,Date toDate,Date  fromDate,String contFE,String carrierCode) throws IllegalAccessException, InvocationTargetException
     {
         //Cont FE
         containerInfo.setPtnrCode(carrierCode);
@@ -113,9 +131,26 @@ public class ContainerInfoController extends CarrierBaseController
         if (toDate != null) {
             containerInfo.setToDate(toDate);
         }
-        List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
-        
-        
+        // List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
+        // Call API
+     // Call API
+        final String uri = Global.getApiUrl() + "/container/export";
+     
+        RestTemplate restTemplate = new RestTemplate();
+        R r = restTemplate.postForObject( uri, containerInfo, R.class);
+//        int total = (int) r.get("total");
+//        TableDataInfo dataList = getDataTable((List) r.get("data"));
+//        dataList.setTotal(total);
+
+        List<Map<String, Object>> listJson = (List) r.get("data");
+        List<ContainerInfo> list = new ArrayList<ContainerInfo>();
+        ContainerInfo ctnr = null;
+        // convert to list entity before export
+        for(Map<String, Object> item : listJson) {
+        	ctnr = new ContainerInfo();
+        	BeanUtils.copyProperties(ctnr, item);
+        	list.add(ctnr);
+        }
         ExcelUtil<ContainerInfo> util = new ExcelUtil<ContainerInfo>(ContainerInfo.class);
         return util.exportExcel(list, "cont");
     }

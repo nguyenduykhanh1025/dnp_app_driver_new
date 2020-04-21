@@ -12,22 +12,18 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "eport")
 public class Global
 {
-    /** 项目名称 */
     private static String name;
 
-    /** 版本 */
     private static String version;
 
-    /** 版权 năm份 */
     private static String copyrightYear;
 
-    /** 实例演示开关 */
     private static boolean demoEnabled;
 
-    /** 上传路径 */
     private static String profile;
 
-    /** 获取地址开关 */
+    private static String apiUrl;
+
     private static boolean addressEnabled;
 
     public static String getName()
@@ -80,7 +76,11 @@ public class Global
         Global.profile = profile;
     }
 
-    public static boolean isAddressEnabled()
+    public void setApiUrl(String apiUrl) {
+		Global.apiUrl = apiUrl;
+	}
+
+	public static boolean isAddressEnabled()
     {
         return addressEnabled;
     }
@@ -113,4 +113,8 @@ public class Global
     {
         return getProfile() + "/upload";
     }
+
+	public static String getApiUrl() {
+		return Global.apiUrl;
+	}
 }

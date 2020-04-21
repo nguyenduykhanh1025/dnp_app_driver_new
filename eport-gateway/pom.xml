@@ -16,7 +16,7 @@
 	</parent>
 
     <modules>
-        <module>eport-common</module>
+        <module>eport-common-api</module>
         <module>eport-api</module>
     </modules>
 

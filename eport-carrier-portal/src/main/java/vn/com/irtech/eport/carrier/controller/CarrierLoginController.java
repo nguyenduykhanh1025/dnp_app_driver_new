@@ -98,8 +98,6 @@ public class CarrierLoginController extends CarrierBaseController {
 		return error();
 	}
 	@GetMapping("/tutorial")
-	@RequiresRoles("") //test
-	@RequiresPermissions("") //test
     public String tutorial() {
       return "tutorial";
     }

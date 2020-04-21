@@ -1,24 +1,28 @@
 package vn.com.irtech.api.service.impl;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
 import vn.com.irtech.api.common.exception.RRException;
 import vn.com.irtech.api.common.validator.Assert;
+import vn.com.irtech.api.commons.dynamic.datasource.annotation.DataSource;
 import vn.com.irtech.api.dao.UserDao;
 import vn.com.irtech.api.entity.TokenEntity;
 import vn.com.irtech.api.entity.UserEntity;
 import vn.com.irtech.api.form.LoginForm;
 import vn.com.irtech.api.service.TokenService;
 import vn.com.irtech.api.service.UserService;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service("userService")
+@DataSource("slave0")
 public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
 	@Autowired
 	private TokenService tokenService;

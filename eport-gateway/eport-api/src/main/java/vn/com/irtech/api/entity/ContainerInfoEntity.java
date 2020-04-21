@@ -1,10 +1,9 @@
-package vn.com.irtech.eport.carrier.domain;
+package vn.com.irtech.api.entity;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import vn.com.irtech.eport.common.annotation.Excel;
-import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Container Infomation Object container_info
@@ -12,7 +11,7 @@ import java.util.Date;
  * @author Admin
  * @date 2020-04-16
  */
-public class ContainerInfo extends BaseEntity
+public class ContainerInfoEntity extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -20,24 +19,17 @@ public class ContainerInfo extends BaseEntity
     private Long cntrId;
    
     /** Container Number */
-    @Excel(name = "Container Number")
     private String cntrNo;
 
     /** Size/type */
-    @Excel(name = "Size/Type")
     private String sztp2;
 
     /** F/E */
-    @Excel(name = "F/E")
     private String fe;
 
     /** Operator */
-    @Excel(name = "OPR")
     private String ptnrCode;
 
-    @Excel(name = "Yard Position")
-    private String yardPosition;
-    
     /** yard location - Block */
     private String block;
 
@@ -51,65 +43,47 @@ public class ContainerInfo extends BaseEntity
     private String tier;
 
     /** Weight */
-    @Excel(name = "Weight")
     private Long wgt;
 
     /** Vessel name */
-    @Excel(name = "Vessel name")
     private String vslNm;
 
     /** Shipper/consignee */
-    @Excel(name = "Shipper/consignee")
     private String consignee;
 
     /** Booking Number */
-    @Excel(name = "Booking Number")
     private String bookingNo;
 
     /** BL number */
-    @Excel(name = "BL number")
     private String blNo;
 
     /** Seal Number */
-    @Excel(name = "Seal Number")
     private String sealNo1;
 
     /** Gate mode for terminal in */
-    @Excel(name = "Gate mode for terminal in")
     private String dispatchMode;
 
     /** Gate mode for terminal out */
-    @Excel(name = "Gate mode for terminal out")
     private String dispatchMode2;
 
     /** Gate In Date */
-    @Excel(name = "Gate In Date")
-    private String inDate;
+    private Date inDate;
 
     /** Gate Out Date */
-    @Excel(name = "Gate Out Date")
-    private String outDate;
+    private Date outDate;
 
     /** VGM */
-    @Excel(name = "VGM")
     private String vgm;
 
     /** Container State  (S: Stacking, D:Delivered) */
-    @Excel(name = "Container State", readConverterExp = "S=Stacking,D=Delivered")
     private String cntrState;
 
     /** remark */
-    @Excel(name = "remark")
     private String remark;
     
-
     public String getYardPosition()
     {
-        return yardPosition;
-    }
-    
-    public void setYardPosition(String yardPosition) {
-    	this.yardPosition = yardPosition;
+        return String.format("%s-%s-%s-%s", block, bay, roww, tier);
     }
 
     public String getRemark()
@@ -296,21 +270,21 @@ public class ContainerInfo extends BaseEntity
     {
         return dispatchMode2;
     }
-    public void setInDate(String inDate) 
+    public void setInDate(Date inDate) 
     {
         this.inDate = inDate;
     }
 
-    public String getInDate() 
+    public Date getInDate() 
     {
         return inDate;
     }
-    public void setOutDate(String outDate) 
+    public void setOutDate(Date outDate) 
     {
         this.outDate = outDate;
     }
 
-    public String getOutDate() 
+    public Date getOutDate() 
     {
         return outDate;
     }
