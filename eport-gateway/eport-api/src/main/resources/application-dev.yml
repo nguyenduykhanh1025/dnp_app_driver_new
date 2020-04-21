@@ -3,9 +3,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/eport_security?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      url: jdbc:mysql://localhost:3306/eport?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
       username: root
-      password: zenda123
+      password: 
       initial-size: 10
       max-active: 100
       min-idle: 10
@@ -36,11 +36,11 @@ spring:
 ##Dynamic Datasource
 dynamic:
   datasource:
-    slave0:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/eport_api?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-      username: root
-      password: zenda123
+      slave0:
+         driver-class-name: com.mysql.cj.jdbc.Driver
+         url: jdbc:mysql://localhost:3306/eport_api?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+         username: root
+         password: 
 #    slave1:
 #      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 #      url: jdbc:sqlserver://localhost:1433;DatabaseName=eport_security
@@ -51,8 +51,9 @@ dynamic:
 #      url: jdbc:postgresql://localhost:5432/eport_security
 #      username: eport
 #      password: 123456
-#    slave3:
-#      driver-class-name: oracle.jdbc.driver.OracleDriver
-#      url: jdbc:oracle:thin:@127.0.0.1:1521/orcl
-#      username: eport
-#      password: 123456
+     #slave3:
+      #driver-class-name: oracle.jdbc.driver.OracleDriver
+      #url: jdbc:oracle:thin:@117.3.52.70:1521/CATOS_TEST
+      #service-name: CATOS_TEST
+      #username: DNP_UAT
+      #password: SUCCESS
