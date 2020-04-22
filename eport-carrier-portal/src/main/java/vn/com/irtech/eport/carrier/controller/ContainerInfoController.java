@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.carrier.domain.ContainerInfo;
-import vn.com.irtech.eport.carrier.service.IContainerInfoService;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.utils.R;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.Global;
@@ -25,6 +25,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 
 
 /**
@@ -40,7 +41,7 @@ public class ContainerInfoController extends CarrierBaseController
     private String prefix = "carrier/cont";
 
     @Autowired
-    private IContainerInfoService containerInfoService;
+    private ICarrierGroupService groupService;
 
     @GetMapping()
     public String cont()
@@ -113,7 +114,8 @@ public class ContainerInfoController extends CarrierBaseController
     public AjaxResult export(ContainerInfo containerInfo,Date toDate,Date  fromDate,String contFE,String carrierCode) throws IllegalAccessException, InvocationTargetException
     {
         //Cont FE
-        containerInfo.setPtnrCode(carrierCode);
+        
+        // containerInfo.setPtnrCode(carrierCode);
         if (contFE.equals("F"))
         {
             containerInfo.setFe("F");
@@ -153,6 +155,15 @@ public class ContainerInfoController extends CarrierBaseController
         }
         ExcelUtil<ContainerInfo> util = new ExcelUtil<ContainerInfo>(ContainerInfo.class);
         return util.exportExcel(list, "cont");
+    }
+    
+    @GetMapping("/listCarrierCode")
+    @ResponseBody
+    public String lisCarrierCode()
+    {
+        Long groupId = ShiroUtils.getSysUser().getGroupId();
+        String operateCode = groupService.getCarrierCodeById(groupId);
+        return operateCode;
     }
 
 }
