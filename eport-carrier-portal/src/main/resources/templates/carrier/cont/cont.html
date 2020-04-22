@@ -24,6 +24,7 @@
                   <li>
                     <div class="form-group">
                       <select class="form-control" id="carrierCode">
+                        <option value="">Tất cả</option>
                       </select>
                     </div>
                   </li> 
@@ -120,8 +121,8 @@
                   type: "GET",
                   url: prefix + "/listCarrierCode",
                     success(data){
-                        var carrierCode = data.split(",");
-                        carrierCode.forEach(element => {
+                        //var carrierCode = data.split(",");
+                        data.forEach(element => {
                             $('#carrierCode').append(`<option value="${element}"> 
                                                         ${element} 
                                                       </option>`);

@@ -75,32 +75,37 @@ public class ContainerInfoController extends CarrierBaseController
         startPage();
         // SEARCH CONT 
         Map<String, Object> pageInfo = new HashMap<>();
+        if(carrierCode.equals(""))
+        {
+            pageInfo.put("prntCodes", super.getGroupCodes());
+        }
         pageInfo.put("pageNum",(pageNum-1)*pageSize);
         pageInfo.put("pageSize", pageSize);
         containerInfo.setParams(pageInfo);
+        containerInfo.setPtnrCode(carrierCode);
 
         //check carrierCode = null or other value then set carrierCode[0] by user
-        String[] allCarrierCode = lisCarrierCode().split(",");
-        if(carrierCode == null)
-        {
-            containerInfo.setPtnrCode(allCarrierCode[0]);
-        }else {
-            for (String carrierStr : allCarrierCode) {
-                if(!carrierCode.equals(carrierStr)){
-                    containerInfo.setPtnrCode(allCarrierCode[0]);
-                }
-            }
-            containerInfo.setPtnrCode(carrierCode);
-        }
+        
+        // if(carrierCode == null)
+        // {
+        //     containerInfo.setPtnrCode(allCarrierCode[0]);
+        // }else {
+        //     for (String carrierStr : allCarrierCode) {
+        //         if(!carrierCode.equals(carrierStr)){
+        //             containerInfo.setPtnrCode(allCarrierCode[0]);
+        //         }
+        //     }
+        //     containerInfo.setPtnrCode(carrierCode);
+        // }
         if (contFE.equals("F"))
         {
             containerInfo.setFe("F");
-            containerInfo.setCntrState("D");
+            containerInfo.setCntrState("Y");
         }
         if (contFE.equals("E"))
         {
             containerInfo.setFe("E");
-            containerInfo.setCntrState("D");
+            containerInfo.setCntrState("Y");
         }
 
         if (toDate != null) {
@@ -135,27 +140,22 @@ public class ContainerInfoController extends CarrierBaseController
     {
         //Cont FE
         
-        String[] allCarrierCode = lisCarrierCode().split(",");
-        if(carrierCode == null)
+        Map<String, Object> pageInfo = new HashMap<>();
+        if(carrierCode.equals(""))
         {
-            containerInfo.setPtnrCode(allCarrierCode[0]);
-        }else {
-            for (String carrierStr : allCarrierCode) {
-                if(!carrierCode.equals(carrierStr)){
-                    containerInfo.setPtnrCode(allCarrierCode[0]);
-                }
-            }
-            containerInfo.setPtnrCode(carrierCode);
+            pageInfo.put("prntCodes", super.getGroupCodes());
         }
+        containerInfo.setParams(pageInfo);
+        containerInfo.setPtnrCode(carrierCode);
         if (contFE.equals("F"))
         {
             containerInfo.setFe("F");
-            containerInfo.setCntrState("D");
+            containerInfo.setCntrState("Y");
         }
         if (contFE.equals("E"))
         {
             containerInfo.setFe("E");
-            containerInfo.setCntrState("D");
+            containerInfo.setCntrState("Y");
         }
         // SEARCH CONT 
         if (fromDate != null) {
@@ -190,11 +190,10 @@ public class ContainerInfoController extends CarrierBaseController
     
     @GetMapping("/listCarrierCode")
     @ResponseBody
-    public String lisCarrierCode()
+    public List<String> lisCarrierCode()
     {
-        Long groupId = ShiroUtils.getSysUser().getGroupId();
-        String operateCode = groupService.getCarrierCodeById(groupId);
-        return operateCode;
+        return super.getGroupCodes();
     }
 
+   
 }

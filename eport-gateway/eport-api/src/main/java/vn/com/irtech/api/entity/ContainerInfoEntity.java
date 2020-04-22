@@ -67,10 +67,10 @@ public class ContainerInfoEntity extends BaseEntity
     private String dispatchMode2;
 
     /** Gate In Date */
-    private Date inDate;
+    private String inDate;
 
     /** Gate Out Date */
-    private Date outDate;
+    private String outDate;
 
     /** VGM */
     private String vgm;
@@ -270,21 +270,21 @@ public class ContainerInfoEntity extends BaseEntity
     {
         return dispatchMode2;
     }
-    public void setInDate(Date inDate) 
+    public void setInDate(String inDate) 
     {
         this.inDate = inDate;
     }
 
-    public Date getInDate() 
+    public String getInDate() 
     {
         return inDate;
     }
-    public void setOutDate(Date outDate) 
+    public void setOutDate(String outDate) 
     {
         this.outDate = outDate;
     }
 
-    public Date getOutDate() 
+    public String getOutDate() 
     {
         return outDate;
     }
