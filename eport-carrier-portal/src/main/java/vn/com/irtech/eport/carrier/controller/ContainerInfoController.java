@@ -83,29 +83,15 @@ public class ContainerInfoController extends CarrierBaseController
         String[] allCarrierCode = lisCarrierCode().split(",");
         if(carrierCode == null)
         {
-            carrierCode = allCarrierCode[0];
-            containerInfo.setPtnrCode(carrierCode);
+            containerInfo.setPtnrCode(allCarrierCode[0]);
         }else {
+            for (String carrierStr : allCarrierCode) {
+                if(!carrierCode.equals(carrierStr)){
+                    containerInfo.setPtnrCode(allCarrierCode[0]);
+                }
+            }
             containerInfo.setPtnrCode(carrierCode);
         }
-        // boolean checkCarrierCode = false;
-        // if(carrierCode == null) {
-        //     carrierCode = allCarrierCode[0];
-        // }else {
-        //     for (String carrierStr : allCarrierCode) {
-        //         if(carrierCode.equals(carrierStr))
-        //         {
-        //             carrierCode = carrierStr;
-        //             checkCarrierCode = true;
-        //         }
-        //     }
-        // }
-        // if(checkCarrierCode == true)
-        // {
-        //     containerInfo.setPtnrCode(carrierCode);
-        // }else {
-        //     containerInfo.setPtnrCode(allCarrierCode[0]);
-        // }
         if (contFE.equals("F"))
         {
             containerInfo.setFe("F");
