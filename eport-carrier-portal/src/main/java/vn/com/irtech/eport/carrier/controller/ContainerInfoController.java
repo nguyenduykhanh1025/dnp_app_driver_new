@@ -3,6 +3,7 @@ package vn.com.irtech.eport.carrier.controller;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,9 @@ import vn.com.irtech.eport.carrier.utils.R;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.PageDomain;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.core.page.TableSupport;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
@@ -67,11 +70,28 @@ public class ContainerInfoController extends CarrierBaseController
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ContainerInfo containerInfo,Date toDate,Date  fromDate,String contFE,String carrierCode)
+    public TableDataInfo list(ContainerInfo containerInfo,Date toDate,Date  fromDate,String contFE,String carrierCode,int pageNum,int pageSize)
     {
         startPage();
         // SEARCH CONT 
-        containerInfo.setPtnrCode(carrierCode);
+        Map<String, Object> pageInfo = new HashMap<>();
+        pageInfo.put("pageNum",(pageNum-1)*pageSize);
+        pageInfo.put("pageSize", pageSize);
+        containerInfo.setParams(pageInfo);
+
+        //check carrierCode = null or other value then set carrierCode[0] by user
+        String[] allCarrierCode = lisCarrierCode().split(",");
+        if(carrierCode == null)
+        {
+            containerInfo.setPtnrCode(allCarrierCode[0]);
+        }else {
+            for (String carrierStr : allCarrierCode) {
+                if(!carrierCode.equals(carrierStr)){
+                    containerInfo.setPtnrCode(allCarrierCode[0]);
+                }
+            }
+            containerInfo.setPtnrCode(carrierCode);
+        }
         if (contFE.equals("F"))
         {
             containerInfo.setFe("F");
@@ -115,7 +135,18 @@ public class ContainerInfoController extends CarrierBaseController
     {
         //Cont FE
         
-        // containerInfo.setPtnrCode(carrierCode);
+        String[] allCarrierCode = lisCarrierCode().split(",");
+        if(carrierCode == null)
+        {
+            containerInfo.setPtnrCode(allCarrierCode[0]);
+        }else {
+            for (String carrierStr : allCarrierCode) {
+                if(!carrierCode.equals(carrierStr)){
+                    containerInfo.setPtnrCode(allCarrierCode[0]);
+                }
+            }
+            containerInfo.setPtnrCode(carrierCode);
+        }
         if (contFE.equals("F"))
         {
             containerInfo.setFe("F");
