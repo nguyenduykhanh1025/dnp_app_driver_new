@@ -27,7 +27,9 @@ public class ApiContainerInfoController {
 		// TODO: Filter by PNTR_CODE
 		// TODO: Search by fromDate, toDate
 		// TODO: List for export
-		List<ContainerInfoEntity> data = containerInfo.selectContainerInfoList(null);
+		ContainerInfoEntity query = new ContainerInfoEntity();
+		query.setFe("E");
+		List<ContainerInfoEntity> data = containerInfo.selectContainerInfoList(query);
 		// Get total count for this query
 		int total = 200;
 		return R.ok().put("data", data).put("total", total);
@@ -40,8 +42,9 @@ public class ApiContainerInfoController {
 		// TODO: Filter by PNTR_CODE
 		// TODO: Search by fromDate, toDate
 		// TODO: List for export
-		System.out.println(new Gson().toJson(query));
+		System.out.println("PARA QUERY"+new Gson().toJson(query));
 		List<ContainerInfoEntity> data = containerInfo.selectContainerInfoList(query);
+		
 		// TODO: Get total count for this query
 		int total = 200;
 		return R.ok().put("data", data).put("total", total);

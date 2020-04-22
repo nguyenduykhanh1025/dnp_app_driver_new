@@ -462,14 +462,22 @@
           START WITH R_NUM = 1
           CONNECT BY PRIOR R_NUM = R_NUM - 1 AND PRIOR CNTR_UID = CNTR_UID
             GROUP BY CNTR_UID) H
-   WHERE     M.VSL_CD = B.VSL_CD
+   		<where>     
+   		 M.VSL_CD = B.VSL_CD
          AND M.CALL_YEAR = B.CALL_YEAR
          AND M.CALL_SEQ = B.CALL_SEQ
          AND M.CNTR_UID = H.CNTR_UID(+)
-         AND M.PTNR_CODE = 'SIT'
+         <if test="fe != null  and fe != ''"> and M.FE = #{fe}</if>
+         <if test="cntrState != null  and cntrState != ''"> and M.CNTR_STATE = #{cntrState}</if>
+         <if test="ptnrCode != null  and ptnrCode != ''">       
+         and M.PTNR_CODE IN
+         <foreach item="id" collection="ptnrCode" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+         </if>
          ORDER BY M.CNTR_NO ASC
          OFFSET 0 ROWS FETCH NEXT 50 ROWS ONLY
-        
+        </where>
     </select>
 
 </mapper>

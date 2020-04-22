@@ -60,13 +60,4 @@ public class CarrierIndexController extends CarrierBaseController
         return "main";
     }
 
-    @GetMapping("/lisCarrierCode")
-    @ResponseBody
-    public String lisCarrierCode()
-    {
-        Long groupId = ShiroUtils.getSysUser().getGroupId();
-        String operateCode = groupService.getCarrierCodeById(groupId);
-        return operateCode;
-    }
-
 }

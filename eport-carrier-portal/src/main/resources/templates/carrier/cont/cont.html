@@ -115,11 +115,13 @@
     </script>
     <script th:inline="javascript">
         var prefix = ctx + "carrier/cont";
+        var allCarrierCode
         $(function () {
               $.ajax({
                   type: "GET",
-                  url: "/lisCarrierCode",
+                  url: prefix + "/listCarrierCode",
                     success(data){
+                        var allCarrierCode = data;
                         var carrierCode = data.split(",");
                         carrierCode.forEach(element => {
                             $('#carrierCode').append(`<option value="${element}"> 
@@ -129,7 +131,7 @@
                         
                   }
               })
-              
+             
               $("#dg").datagrid({
                 url: prefix + "/list",
                 height: heightInfo,
