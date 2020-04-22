@@ -13,4 +13,7 @@ public interface ContainerInfoDao extends BaseMapper<ContainerInfoEntity> {
 	
 	List<ContainerInfoEntity> selectContainerInfoList(ContainerInfoEntity containerInfo);
 
+	int countContainerInfoList(ContainerInfoEntity containerInfo);
+
 }
+

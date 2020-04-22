@@ -1,6 +1,8 @@
 package vn.com.irtech.api.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,39 +24,30 @@ public class ApiContainerInfoController {
 
 	@RequestMapping("/container/list1")
 	public R listContainer1() {
-		// Filter theo OPR CODE, Paging, Search theo fromDate, toDay, OPR_CODE
-		// TODO: Paging
-		// TODO: Filter by PNTR_CODE
-		// TODO: Search by fromDate, toDate
-		// TODO: List for export
+		
+		
 		ContainerInfoEntity query = new ContainerInfoEntity();
-		query.setFe("E");
 		List<ContainerInfoEntity> data = containerInfo.selectContainerInfoList(query);
-		// Get total count for this query
-		int total = 200;
-		return R.ok().put("data", data).put("total", total);
+		
+		return R.ok().put("data", data);
 	}
 	
 	@PostMapping("/container/list")
 	public R listContainer(@RequestBody ContainerInfoEntity query) {
-		// Filter theo OPR CODE, Paging, Search theo fromDate, toDay, OPR_CODE
-		// TODO: Paging
-		// TODO: Filter by PNTR_CODE
-		// TODO: Search by fromDate, toDate
-		// TODO: List for export
+		
 		System.out.println("PARA QUERY"+new Gson().toJson(query));
 		List<ContainerInfoEntity> data = containerInfo.selectContainerInfoList(query);
-		
-		// TODO: Get total count for this query
-		int total = 200;
+		int total = containerInfo.countContainerInfoList(query);
 		return R.ok().put("data", data).put("total", total);
 	}
 	
 	@PostMapping("/container/export")
 	public R listForExport(@RequestBody ContainerInfoEntity query) {
-		// TODO: Filter by PNTR_CODE
-		// TODO: Search by fromDate, toDate
-		// TODO List all record by search condition for export
+		Map<String, Object> pageInfo = new HashMap<>();
+        int total = containerInfo.countContainerInfoList(query);
+        pageInfo.put("pageNum",0);
+        pageInfo.put("pageSize", total);
+        query.setParams(pageInfo);
 		List<ContainerInfoEntity> data = containerInfo.selectContainerInfoList(query);
 		return R.ok().put("data", data);
 	}
