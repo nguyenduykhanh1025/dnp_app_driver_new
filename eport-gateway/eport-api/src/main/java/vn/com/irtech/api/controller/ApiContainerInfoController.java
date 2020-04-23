@@ -21,20 +21,9 @@ import vn.com.irtech.api.entity.ContainerInfoEntity;
 public class ApiContainerInfoController {
 	@Autowired
 	private ContainerInfoDao containerInfo;
-
-	@RequestMapping("/container/list1")
-	public R listContainer1() {
-		
-		
-		ContainerInfoEntity query = new ContainerInfoEntity();
-		List<ContainerInfoEntity> data = containerInfo.selectContainerInfoList(query);
-		
-		return R.ok().put("data", data);
-	}
 	
 	@PostMapping("/container/list")
 	public R listContainer(@RequestBody ContainerInfoEntity query) {
-		
 		System.out.println("PARA QUERY"+new Gson().toJson(query));
 		List<ContainerInfoEntity> data = containerInfo.selectContainerInfoList(query);
 		int total = containerInfo.countContainerInfoList(query);

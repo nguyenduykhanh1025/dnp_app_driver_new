@@ -18,11 +18,6 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.FileUtils;
 
-/**
- * 通用请求处理
- * 
- * @author admin
- */
 @Controller
 public class CommonController
 {
@@ -31,12 +26,6 @@ public class CommonController
     @Autowired
     private ServerConfig serverConfig;
 
-    /**
-     * 通用下载请求
-     * 
-     * @param fileName 文件名称
-     * @param delete 是否删除
-     */
     @GetMapping("common/download")
     public void fileDownload(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
     {
@@ -65,9 +54,6 @@ public class CommonController
         }
     }
 
-    /**
-     * 通用上传请求
-     */
     @PostMapping("/common/upload")
     @ResponseBody
     public AjaxResult uploadFile(MultipartFile file) throws Exception
@@ -90,9 +76,6 @@ public class CommonController
         }
     }
 
-    /**
-     * 本地资源通用下载
-     */
     @GetMapping("/common/download/resource")
     public void resourceDownload(String resource, HttpServletRequest request, HttpServletResponse response)
             throws Exception
