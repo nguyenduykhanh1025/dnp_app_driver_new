@@ -31,16 +31,10 @@ public class ContainerInfoEntity extends BaseEntity
     private String ptnrCode;
 
     /** yard location - Block */
-    private String block;
+    private String yardPosition;
 
-    /** yard location - Bay */
-    private String bay;
-
-    /** yard location - Row */
-    private String roww;
-
-    /** yard location - Tier */
-    private String tier;
+   /** AREA */
+    private String area;
 
     /** Weight */
     private Long wgt;
@@ -59,9 +53,11 @@ public class ContainerInfoEntity extends BaseEntity
 
     /** Seal Number */
     private String sealNo1;
+    /** Seal Number */
+    private String sealNo2;
 
     /** Gate mode for terminal in */
-    private String dispatchMode;
+    private String gateMode;
 
     /** Gate mode for terminal out */
     private String dispatchMode2;
@@ -80,10 +76,18 @@ public class ContainerInfoEntity extends BaseEntity
 
     /** remark */
     private String remark;
+
+    /** Days */
+    private int days;
     
-    public String getYardPosition()
+    public int getDays()
     {
-        return String.format("%s-%s-%s-%s", block, bay, roww, tier);
+        return this.days;
+    }
+    
+    public void setDays(int days)
+    {
+        this.days = days;
     }
 
     public String getRemark()
@@ -97,23 +101,23 @@ public class ContainerInfoEntity extends BaseEntity
     }
 
     /** SEARCH */
-    private Date toDate;
+    private String toDate;
 
-    private Date fromDate;
+    private String fromDate;
 
-    public void setToDate(Date toDate) {
+    public void setToDate(String toDate) {
         this.toDate = toDate;
     }
 
-    public void setFromDate(Date fromDate) {
+    public void setFromDate(String fromDate) {
         this.fromDate = fromDate;
     }
 
-    public Date getToDate() {
+    public String getToDate() {
         return this.toDate;
     }
 
-    public Date getFromDate() {
+    public String getFromDate() {
         return this.fromDate;
     }
 
@@ -162,41 +166,24 @@ public class ContainerInfoEntity extends BaseEntity
     {
         return ptnrCode;
     }
-    public void setBlock(String block) 
+    public void setYardPosition(String yardPosition) 
     {
-        this.block = block;
+        this.yardPosition = yardPosition;
     }
 
-    public String getBlock() 
+    public String getYardPosition() 
     {
-        return block;
+        return yardPosition;
     }
-    public void setBay(String bay) 
+    
+    public void setArea(String area) 
     {
-        this.bay = bay;
-    }
-
-    public String getBay() 
-    {
-        return bay;
-    }
-    public void setRoww(String roww) 
-    {
-        this.roww = roww;
+        this.area = area;
     }
 
-    public String getRoww() 
+    public String getArea() 
     {
-        return roww;
-    }
-    public void setTier(String tier) 
-    {
-        this.tier = tier;
-    }
-
-    public String getTier() 
-    {
-        return tier;
+        return area;
     }
     public void setWgt(Long wgt) 
     {
@@ -252,14 +239,23 @@ public class ContainerInfoEntity extends BaseEntity
     {
         return sealNo1;
     }
-    public void setDispatchMode(String dispatchMode) 
+    public void setSealNo2(String sealNo2) 
     {
-        this.dispatchMode = dispatchMode;
+        this.sealNo2 = sealNo2;
     }
 
-    public String getDispatchMode() 
+    public String getSealNo2() 
     {
-        return dispatchMode;
+        return sealNo2;
+    }
+    public void setGateMode(String gateMode) 
+    {
+        this.gateMode = gateMode;
+    }
+
+    public String getGateMode() 
+    {
+        return gateMode;
     }
     public void setDispatchMode2(String dispatchMode2) 
     {
@@ -315,17 +311,14 @@ public class ContainerInfoEntity extends BaseEntity
             .append("sztp2", getSztp2())
             .append("fe", getFe())
             .append("ptnrCode", getPtnrCode())
-            .append("block", getBlock())
-            .append("bay", getBay())
-            .append("roww", getRoww())
-            .append("tier", getTier())
+            .append("yardPosition", getYardPosition())
             .append("wgt", getWgt())
             .append("vslNm", getVslNm())
             .append("consignee", getConsignee())
             .append("bookingNo", getBookingNo())
             .append("blNo", getBlNo())
             .append("sealNo1", getSealNo1())
-            .append("dispatchMode", getDispatchMode())
+            .append("gateMode", getGateMode())
             .append("dispatchMode2", getDispatchMode2())
             .append("inDate", getInDate())
             .append("outDate", getOutDate())
