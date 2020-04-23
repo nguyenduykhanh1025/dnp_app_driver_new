@@ -27,16 +27,11 @@ public class CarrierProfileController extends CarrierBaseController{
     @Autowired
     private SysPasswordService passwordService;
     
-    /**
-     * 个人信息
-     */
     @GetMapping()
     public String profile(ModelMap mmap)
     {
         CarrierAccount user = ShiroUtils.getSysUser();
         mmap.put("user", user);
-//        mmap.put("roleGroup", carrierAccountService.selectUserRoleGroup(user.getId()));
-//        mmap.put("postGroup", carrierAccountService.selectUserPostGroup(user.getId()));
         return prefix + "/profile";
     }
 
