@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.carrier.controller;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.xml.SourceHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,12 +25,9 @@ import vn.com.irtech.eport.carrier.utils.R;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
-import vn.com.irtech.eport.common.core.page.PageDomain;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.core.page.TableSupport;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
-import vn.com.irtech.eport.framework.util.ShiroUtils;
 
 
 /**
@@ -39,82 +38,79 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
  */
 @Controller
 @RequestMapping("/carrier/cont")
-public class ContainerInfoController extends CarrierBaseController
-{
+public class ContainerInfoController extends CarrierBaseController {
     private String prefix = "carrier/cont";
 
-    @Autowired
-    private ICarrierGroupService groupService;
 
     @GetMapping()
-    public String cont()
-    {
+    public String cont() {
         return prefix + "/cont";
     }
 
     @GetMapping("/contFull")
-    public String contfull(Model map)
-    {
-        map.addAttribute("contFE","F");
+    public String contfull(Model map) {
+        map.addAttribute("contFE", "F");
         return prefix + "/cont";
     }
 
     @GetMapping("/contEmpty")
-    public String contEmpty(Model map)
-    {
-        map.addAttribute("contFE","E");
+    public String contEmpty(Model map) {
+        map.addAttribute("contFE", "E");
         return prefix + "/cont";
     }
+
     /**
      * Get Container Infomation List
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(ContainerInfo containerInfo,Date toDate,Date  fromDate,String contFE,String carrierCode,int pageNum,int pageSize)
-    {
+    public TableDataInfo list(ContainerInfo containerInfo, String toDate, String fromDate, String contFE,
+            String carrierCode, int pageNum, int pageSize, String cntrNo) {
         startPage();
-        // SEARCH CONT 
+        // SEARCH CONT
         Map<String, Object> pageInfo = new HashMap<>();
-        if(carrierCode.equals(""))
-        {
+        if (carrierCode.equals("")) {
             pageInfo.put("prntCodes", super.getGroupCodes());
         }
-        pageInfo.put("pageNum",(pageNum-1)*pageSize);
+        pageInfo.put("pageNum", (pageNum - 1) * pageSize);
         pageInfo.put("pageSize", pageSize);
         containerInfo.setParams(pageInfo);
         containerInfo.setPtnrCode(carrierCode);
+        containerInfo.setCntrState("D");
+        containerInfo.setCntrNo(cntrNo);
+        // check carrierCode = null or other value then set carrierCode[0] by user
 
-        //check carrierCode = null or other value then set carrierCode[0] by user
-        
         // if(carrierCode == null)
         // {
-        //     containerInfo.setPtnrCode(allCarrierCode[0]);
+        // containerInfo.setPtnrCode(allCarrierCode[0]);
         // }else {
-        //     for (String carrierStr : allCarrierCode) {
-        //         if(!carrierCode.equals(carrierStr)){
-        //             containerInfo.setPtnrCode(allCarrierCode[0]);
-        //         }
-        //     }
-        //     containerInfo.setPtnrCode(carrierCode);
+        // for (String carrierStr : allCarrierCode) {
+        // if(!carrierCode.equals(carrierStr)){
+        // containerInfo.setPtnrCode(allCarrierCode[0]);
         // }
-        if (contFE.equals("F"))
-        {
+        // }
+        // containerInfo.setPtnrCode(carrierCode);
+        // }
+        if (contFE.equals("F")) {
             containerInfo.setFe("F");
             containerInfo.setCntrState("Y");
         }
-        if (contFE.equals("E"))
-        {
+        if (contFE.equals("E")) {
             containerInfo.setFe("E");
             containerInfo.setCntrState("Y");
         }
-
-        if (toDate != null) {
-			containerInfo.setToDate(toDate);
-        }
         if (fromDate != null) {
-			containerInfo.setFromDate(fromDate);
-		}
-        
+            containerInfo.setFromDate(fromDate);
+        } else {
+            fromDate = "";
+            containerInfo.setFromDate(fromDate);
+        }
+        if (toDate != null) {
+            containerInfo.setToDate(toDate);
+        }else {
+            toDate = "";
+            containerInfo.setToDate(toDate);
+        }
         //List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
 
         // Call API
@@ -136,7 +132,7 @@ public class ContainerInfoController extends CarrierBaseController
     @Log(title = "Container Infomation", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ContainerInfo containerInfo,Date toDate,Date  fromDate,String contFE,String carrierCode) throws IllegalAccessException, InvocationTargetException
+    public AjaxResult export(ContainerInfo containerInfo,String toDate,String  fromDate,String contFE,String carrierCode, String cntrNo) throws IllegalAccessException, InvocationTargetException
     {
         //Cont FE
         
@@ -147,6 +143,8 @@ public class ContainerInfoController extends CarrierBaseController
         }
         containerInfo.setParams(pageInfo);
         containerInfo.setPtnrCode(carrierCode);
+        containerInfo.setCntrState("D");
+        containerInfo.setCntrNo(cntrNo);
         if (contFE.equals("F"))
         {
             containerInfo.setFe("F");
@@ -160,8 +158,14 @@ public class ContainerInfoController extends CarrierBaseController
         // SEARCH CONT 
         if (fromDate != null) {
             containerInfo.setFromDate(fromDate);
+        }else {
+            fromDate = "";
+            containerInfo.setFromDate(fromDate);
         }
         if (toDate != null) {
+            containerInfo.setToDate(toDate);
+        }else {
+            toDate = "";
             containerInfo.setToDate(toDate);
         }
         // List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);

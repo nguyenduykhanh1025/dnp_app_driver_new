@@ -76,7 +76,7 @@ public class ContainerInfo extends BaseEntity
 
     /** Gate mode for terminal in */
     @Excel(name = "Gate mode for terminal in")
-    private String dispatchMode;
+    private String gateMode;
 
     /** Gate mode for terminal out */
     @Excel(name = "Gate mode for terminal out")
@@ -102,6 +102,19 @@ public class ContainerInfo extends BaseEntity
     @Excel(name = "remark")
     private String remark;
     
+    /** Days */
+    @Excel(name = "days")
+    private int days;
+    
+    public int getDays()
+    {
+        return this.days;
+    }
+    
+    public void setDays(int days)
+    {
+        this.days = days;
+    }
 
     public String getYardPosition()
     {
@@ -123,23 +136,23 @@ public class ContainerInfo extends BaseEntity
     }
 
     /** SEARCH */
-    private Date toDate;
+    private String toDate;
 
-    private Date fromDate;
+    private String fromDate;
 
-    public void setToDate(Date toDate) {
+    public void setToDate(String toDate) {
         this.toDate = toDate;
     }
 
-    public void setFromDate(Date fromDate) {
+    public void setFromDate(String fromDate) {
         this.fromDate = fromDate;
     }
 
-    public Date getToDate() {
+    public String getToDate() {
         return this.toDate;
     }
 
-    public Date getFromDate() {
+    public String getFromDate() {
         return this.fromDate;
     }
 
@@ -278,14 +291,14 @@ public class ContainerInfo extends BaseEntity
     {
         return sealNo1;
     }
-    public void setDispatchMode(String dispatchMode) 
+    public void setGateMode(String gateMode) 
     {
-        this.dispatchMode = dispatchMode;
+        this.gateMode = gateMode;
     }
 
-    public String getDispatchMode() 
+    public String getGateMode() 
     {
-        return dispatchMode;
+        return gateMode;
     }
     public void setDispatchMode2(String dispatchMode2) 
     {
@@ -351,7 +364,7 @@ public class ContainerInfo extends BaseEntity
             .append("bookingNo", getBookingNo())
             .append("blNo", getBlNo())
             .append("sealNo1", getSealNo1())
-            .append("dispatchMode", getDispatchMode())
+            .append("gateMode", getGateMode())
             .append("dispatchMode2", getDispatchMode2())
             .append("inDate", getInDate())
             .append("outDate", getOutDate())

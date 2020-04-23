@@ -1,301 +1,320 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
 <head>
-    <th:block th:include="include :: header('List Container Infomation')" />
-    <th:block th:include="include :: easyui-css" />
+  <th:block th:include="include :: header('Danh sách DO')" />
+  <th:block th:include="include :: easyui-css" />
+  <th:block th:include="include :: datetimepicker-css" />
 </head>
+
 <body class="gray-bg">
-    <div id="wrapper">
-      <div class="row">
-        <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
-          <!-- Table toolbar -->
-          <div class="col-sm-12 fixed-table-toolbar">
-            <div class="bs-bars pull-left" style="margin-bottom: 5px;margin-top:0px;display: flex;">
-              <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="exportExcel()">
-                  <i class="fa fa-download"></i> Xuất excel
-                </a>
-              </div>
-            </div>
-            <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:0px">
-  
-              <div class="select-list">
-                <ul>
-                  <li>
-                    <div class="form-group">
-                      <select class="form-control" id="carrierCode">
-                        <option value="">Tất cả</option>
-                      </select>
-                    </div>
-                  </li> 
-                  <li>
-                    <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
-                  </li>
-                  <li>
-                    <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
-                  </li>
-                    <a class="btn btn-primary btn-rounded btn-sm" onclick="searchContainer()" id="searchBtn"><i
-                        class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
-                  </li>
-                  <!-- <li>
-                    <a class="btn btn-info btn-rounded btn-sm" onclick="reset()" id="resethBtn"><i
-                        class="glyphicon glyphicon-refresh"></i> </a>
-                  </li> -->
-                </ul>
-              </div>
+  <div id="wrapper">
+    <div class="row">
+      <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
+        <!-- Table toolbar -->
+        <div class="col-sm-12 fixed-table-toolbar" style="height: 44px;">
+          <div class="bs-bars pull-left" style="margin-bottom: 5px;margin-top:0px">
+            <div class="btn-group-sm" id="toolbar" role="group">
+              <a class="btn btn-success" onclick="exportExcel()">
+                <i class="fa fa-download"></i> Xuất excel
+              </a>
             </div>
           </div>
-            <div class="col-sm-12 table-container">
-                <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
-                  <thead>
-                    <tr>
-                     
-                      <!-- <th data-options="field:'id',checkbox:true"></th> -->
-                      <th data-options="field:'cntrNo',align:'center',resizable:true" width="120">
-                        Số<br />Container
-                      </th>
-                      <th data-options="field:'sztp2',align:'center'" sortable="true" width="110">
-                        Size/type
-                      </th>
-                      <th data-options="field:'fe',align:'right',align:'center'" width="50">
-                        F/E
-                      </th>
-                      <th data-options="field:'ptnrCode',align:'right',align:'center'" width="100">
-                        Operator
-                      </th>
-                      <th data-options="field:'block',align:'right',align:'center',formatter:yardPosition" width="90">
-                        Yard Position
-                      </th>
-                      <th data-options="field:'consignee',halign:'center'" width="250">
-                        Consignee
-                      </th>
-                      <th data-options="field:'bookingNo',halign:'center',align:'center'"
-                        sortable="true" width="120">
-                        Booking Number
-                      </th>
-                      <th data-options="field:'blNo',halign:'center'" width="120">
-                        BL number
-                      </th>
-                      <th data-options="field:'sealNo1',halign:'center',align:'right'" width="120">
-                        Seal Number
-                      </th>
-                      <th data-options="field:'dispatchMode',align:'center'" width="100">
-                        Gate mode
-                      </th>
-                      <th data-options="field:'inDate',align:'center', formatter: formatDate" width="100">
-                        Gate In Date
-                      </th>
-                      <th data-options="field:'outDate',align:'center', formatter: formatDate" width="100">
-                        Gate Out Date
-                      </th>
-                      <th data-options="field:'days',align:'center',formatter:getDayContEmpty" hidden="true">Days</th>
-                      <th data-options="field:'wgt',align:'right',align:'center'" width="90">
-                        Weight
-                      </th>
-                      <th data-options="field:'vgm',align:'center'" sortable="true" width="60">
-                        VGM
-                      </th>
-                      <th data-options="field:'cntrState',align:'center',formatter: containerStateDescription" sortable="true"
-                        width="115">
-                        Container State <br/>(S,D)
-                      </th>
-                      <th data-options="field:'remark'" width="150">
-                        Remark
-                      </th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
+          <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:0px">
+
+            <div class="select-list">
+              <ul>
+                <li>
+                  <div class="form-group">
+                    <select class="form-control" id="carrierCode">
+                      <option value="">Tất cả</option>
+                    </select>
+                  </div>
+                </li>
+                <li>
+                  <input type="text" name="cntrNo" id="cntrNo" placeholder="Container No" />
+                </li>
+                <li>
+                  <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
+                </li>
+                <li>
+                  <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
+                </li>
+                <a class="btn btn-primary btn-rounded btn-sm" onclick="searchContainer()" id="searchBtn"><i
+                    class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
+        <div class="col-sm-12 table-container">
+          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+
+                <!-- <th data-options="field:'id',checkbox:true"></th> -->
+                <th data-options="field:'cntrNo',align:'center'" sortable="true" width="120">
+                  Container No
+                </th>
+                <th data-options="field:'sztp2',align:'center'" sortable="true" width="110">
+                  Sztp
+                </th>
+                <th data-options="field:'fe',align:'right',align:'center'" width="50">
+                  F/E
+                </th>
+                <th data-options="field:'ptnrCode',align:'right',align:'center'" sortable="true" width="100">
+                  OPR
+                </th>
+                <th data-options="field:'yardPosition',align:'right',align:'center'" width="90">
+                  Yard Position
+                </th>
+                <th data-options="field:'consignee',halign:'center'" width="250">
+                  Consignee
+                </th>
+                <th data-options="field:'bookingNo',halign:'center',align:'center'" sortable="true" width="120">
+                  Booking No
+                </th>
+                <th data-options="field:'blNo',halign:'center'" width="120">
+                  Billing No
+                </th>
+                <th data-options="field:'sealNo1',halign:'center',align:'right'" width="110">
+                  Carrier Seal No
+                </th>
+                <th data-options="field:'sealNo2',halign:'center',align:'right'" width="110">
+                  Export Seal No
+                </th>
+                <th data-options="field:'gateMode',align:'center'" width="100">
+                  Gate mode
+                </th>
+                <th data-options="field:'inDate',align:'center', formatter: formatDate" width="100">
+                  Gate In Date
+                </th>
+                <th data-options="field:'outDate',align:'center', formatter: formatDate" width="100">
+                  Gate Out Date
+                </th>
+
+                <th data-options="field:'wgt',align:'right',align:'center'" width="90">
+                  Weight
+                </th>
+                <th data-options="field:'vgm',align:'center'" sortable="true" width="60">
+                  Vgm
+                </th>
+                <th data-options="field:'cntrState',align:'center'" sortable="true" width="90">
+                  Status
+                </th>
+                <th data-options="field:'days',align:'center'" hidden="true" sortable="true">Stack days</th>
+                <th data-options="field:'remark',formatter: cleanRemark" width="300">
+                  Remark
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
     <script type="text/javascript" th:inline="javascript">
-        var contFE = /*[[${contFE}]]*/ ;
+      var contFE = /*[[${contFE}]]*/ ;
     </script>
     <script th:inline="javascript">
-        var prefix = ctx + "carrier/cont";
-        var firtarrierCode;
-        $(function () {
-              $.ajax({
-                  type: "GET",
-                  url: prefix + "/listCarrierCode",
-                    success(data){
-                        //var carrierCode = data.split(",");
-                        data.forEach(element => {
-                            $('#carrierCode').append(`<option value="${element}"> 
+      var prefix = ctx + "carrier/cont";
+      var firtarrierCode;
+      $(function () {
+        $('#toDate').val(getCurrentDayForLoadPage());
+        $('#fromDate').val(getYesterdayForLoadGage());
+        $.ajax({
+          type: "GET",
+          url: prefix + "/listCarrierCode",
+          success(data) {
+            data.forEach(element => {
+              $('#carrierCode').append(`<option value="${element}"> 
                                                         ${element} 
                                                       </option>`);
-                        });
-                        
-                  }
-              })
-              $("#dg").datagrid({
-                url: prefix + "/list",
-                height: heightInfo,
-                singleSelect: true,
-                collapsible: true,
-                clientPaging: false,
-                pagination: true,
-                rownumbers: true,
-                pageSize: 50,
-                nowrap: false,
-                striped: true,
-                loadMsg: " Đang xử lý...",
-                loader: function (param, success, error) {
-                var opts = $(this).datagrid("options");
-                if (!opts.url) return false;
-                if(contFE == "E") 
-                {
-                  $('#dg').datagrid('hideColumn', 'blNo') ;
-                  $('#dg').datagrid('showColumn', 'days')
-                }
-                $.ajax({
-                    type: opts.method,
-                    url: opts.url,
-                    data: {
-                      pageNum: param.page,
-                      pageSize: param.rows,
-                      orderByColumn: param.sort,
-                      isAsc: param.order,
-                      contFE : contFE,
-                      carrierCode : $("#carrierCode").children("option:selected").val(),
-                    },
-                    dataType: "json",
-                    success: function (data) {
-                    success(data);
-                    },
-                    error: function () {
-                    error.apply(this, arguments);
-                    },
-                });
-                },
-            });
             });
 
+          }
+        })
+        $("#dg").datagrid({
+          url: prefix + "/list",
+          height: heightInfo,
+          singleSelect: true,
+          collapsible: true,
+          clientPaging: false,
+          pagination: true,
+          rownumbers: true,
+          pageSize: 50,
+          nowrap: false,
+          striped: true,
+          loadMsg: " Đang xử lý...",
+          loader: function (param, success, error) {
+            var opts = $(this).datagrid("options");
+            if (!opts.url) return false;
+            if (contFE == "E") {
+              $('#dg').datagrid('hideColumn', 'blNo');
+              $('#dg').datagrid('showColumn', 'days')
+            }
+            $.ajax({
+              type: opts.method,
+              url: opts.url,
+              data: {
+                pageNum: param.page,
+                pageSize: param.rows,
+                orderByColumn: param.sort,
+                isAsc: param.order,
+                contFE: contFE,
+                fromDate: getYesterdayForLoadGage(),
+                toDate: getCurrentDayForLoadPage(),
+                carrierCode: $("#carrierCode").children("option:selected").val(),
+              },
+              dataType: "json",
+              success: function (data) {
+                success(data);
 
-            function searchContainer() {
-                //convert time GET - IN
-                var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
-                toDate = formatDateForSearch(toDate);
-                var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
-                fromDate = formatDateForSearch(fromDate);
-                var dg = $("#dg").datagrid({
-                url: prefix + "/list",
-                singleSelection: true,
-                clientPaging: false,
-                pagination: true,
-                rownumbers: true,
-                pageSize: 50,
-                loader: function (param, success, error) {
-                var opts = $(this).datagrid("options");
-                if (!opts.url) return false;
-                $.ajax({
-                    type: opts.method,
-                    url: opts.url,
-                    data: {
-                    pageNum: param.page,
-                    pageSize: param.rows,
-                    orderByColumn: param.sort,
-                    isAsc: param.order,
-                      toDate: toDate,
-                      fromDate: fromDate,
-                      contFE : contFE,
-                      carrierCode : $("#carrierCode").children("option:selected").val(),
-                    },
-                    dataType: "json",
-                    success: function (data) {
-                    success(data);
-                    },
-                    error: function () {
-                    error.apply(this, arguments);
-                    },
-                });
-                },
+
+              },
+              error: function () {
+                error.apply(this, arguments);
+              },
             });
+          },
+        });
+
+      });
+
+
+      function searchContainer() {
+
+        var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
+        var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
+        var dg = $("#dg").datagrid({
+          url: prefix + "/list",
+          singleSelection: true,
+          clientPaging: false,
+          pagination: true,
+          rownumbers: true,
+          pageSize: 50,
+          loader: function (param, success, error) {
+            var opts = $(this).datagrid("options");
+            if (!opts.url) return false;
+            if (contFE == "E") {
+              $('#dg').datagrid('hideColumn', 'blNo');
+              $('#dg').datagrid('showColumn', 'days')
             }
-            function yardPosition(value) {
-              var bay =$('#dg').datagrid('getRows')[0].bay;
-              var row =$('#dg').datagrid('getRows')[0].roww;
-              var tier =$('#dg').datagrid('getRows')[0].tier;
-              if  (typeof value === 'undefined') {
-                  value = '';
-              }
-              if  (typeof bay === 'undefined') {
-                  bay = '';
-              }
-              if  (typeof row === 'undefined') {
-                  row = '';
-              }
-              if  (typeof tier === 'undefined') {
-                  tier = '';
-              }
-              return value + "-" + bay + "-" + row + "-" + tier;
+            $.ajax({
+              type: opts.method,
+              url: opts.url,
+              data: {
+                pageNum: param.page,
+                pageSize: param.rows,
+                orderByColumn: param.sort,
+                isAsc: param.order,
+                fromDate: fromDate,
+                toDate: toDate,
+                contFE: contFE,
+                cntrNo: $("#cntrNo").val() == null ? "" : $("#cntrNo").val(),
+                carrierCode: $("#carrierCode").children("option:selected").val(),
+              },
+              dataType: "json",
+              success: function (data) {
+                success(data);
+              },
+              error: function () {
+                error.apply(this, arguments);
+              },
+            });
+          },
+        });
+      }
+
+      function formatDateForSearch(value) {
+        if (value == null) {
+          return;
+        }
+        var date = new Date(value)
+
+        var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        var month = date.getMonth() + 1;
+        var monthText = month < 10 ? "0" + month : month;
+
+        return date.getFullYear() + "-" + monthText + "-" + day;
+      }
+
+      function formatDate(value) {
+        if (value == null) {
+          return;
+        }
+        var date = new Date(value);
+        var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        var month = date.getMonth() + 1;
+        var monthText = month < 10 ? "0" + month : month;
+        var hour = date.getHours();
+        hour = hour < 10 ? "0" + hour : hour;
+        var minute = date.getMinutes();
+        minute = minute < 10 ? "0" + minute : minute;
+        return day + "/" + monthText + "/" + date.getFullYear() + "<br>" + hour + ":" + minute;
+      }
+
+      function exportExcel() {
+        var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
+        toDate = formatDateForSearch(toDate);
+        var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
+        fromDate = formatDateForSearch(fromDate);
+        $.ajax({
+          type: "POST",
+          url: prefix + "/export",
+          data: {
+            toDate: toDate,
+            fromDate: fromDate,
+            contFE: contFE,
+            cntrNo: $("#cntrNo").val() == null ? "" : $("#cntrNo").val(),
+            carrierCode: $("#carrierCode").children("option:selected").val(),
+          },
+          success: function (result) {
+            $.modal.loading("Đang xử lý, vui lòng chờ...");
+            if (result.code == web_status.SUCCESS) {
+              window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" +
+              true;
+            } else if (result.code == web_status.WARNING) {
+              $.modal.alertWarning(result.msg)
+            } else {
+              $.modal.alertError(result.msg);
             }
-            function formatDateForSearch(value) {
-                if (value == null) {
-                    return;
-                }
-                var newdate = value.split("/").reverse();
-                var date = new Date(newdate)
-                var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-                var month = date.getMonth() + 1;
-                var monthText = month < 10 ? "0" + month : month;
-                return date.getFullYear() + "-" + monthText + "-" + day;
-            }
-            function formatDate(value) {
-                if (value == null) {
-                    return;
-                }
-                var date = new Date(value);
-                var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-                var month = date.getMonth() + 1;
-                var monthText = month < 10 ? "0" + month : month;
-                var hour = date.getHours();
-                hour = hour < 10 ? "0" + hour : hour;
-                var minute = date.getMinutes();
-                minute = minute < 10 ? "0" + minute : minute;
-                return day + "/" + monthText + "/" + date.getFullYear() + "<br>" + hour + ":" + minute;
-            }
-            function exportExcel() {
-                var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
-                toDate = formatDateForSearch(toDate);
-                var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
-                fromDate = formatDateForSearch(fromDate);
-                    $.ajax({
-                    type: "POST",
-                    url: prefix + "/export",
-                    data: {
-                            toDate: toDate,
-                            fromDate: fromDate,
-                            contFE : contFE,
-                            carrierCode : $("#carrierCode").children("option:selected").val(),
-                        },
-                        success: function (result) {
-                                $.modal.loading("Đang xử lý, vui lòng chờ...");
-                                if (result.code == web_status.SUCCESS) {
-                                    window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" + true;
-                                } else if (result.code == web_status.WARNING) {
-                                    $.modal.alertWarning(result.msg)
-                                } else {
-                                    $.modal.alertError(result.msg);
-                                }
-                                $.modal.closeLoading();
-                        },
-                    })
-            }
-            function containerStateDescription(value)
-            {
-              return value === "D" ? "Delivered" : "Stacking"
-            }
-            function getDayContEmpty()
-            {
-                var inDate = new Date($('#dg').datagrid('getRows')[0].inDate);
-                var now = new Date();
-                var offset = now.getTime() - inDate.getTime();
-                var totalDays = Math.round(offset / 1000 / 60 / 60 / 24);
-                return totalDays;
-            }
+            $.modal.closeLoading();
+          },
+        })
+      }
+
+      function cleanRemark(value) {
+        if (value == null) {
+          return;
+        }
+        return value.replace("[Remark]", "");
+      }
+
+      function getCurrentDayForLoadPage() {
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate() + ' ' + '07:00:00';
+        return date;
+      }
+
+      function getYesterdayForLoadGage() {
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + (today.getDate() - 1) + ' ' + '07:00:00';
+        return date;
+      }
+      laydate.render({
+        elem: '#fromDate',
+        // format: 'dd/MM/yyyy:HH-mm',
+        type: 'datetime'
+      });
+      laydate.render({
+        elem: '#toDate',
+        // format: 'dd-MM-yyyy:HH-mm',
+        type: 'datetime'
+      });
     </script>
 </body>
+
 </html>

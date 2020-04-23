@@ -33,6 +33,7 @@ public class ApiContainerInfoController {
 	@PostMapping("/container/export")
 	public R listForExport(@RequestBody ContainerInfoEntity query) {
 		Map<String, Object> pageInfo = new HashMap<>();
+		pageInfo = query.getParams();
         int total = containerInfo.countContainerInfoList(query);
         pageInfo.put("pageNum",0);
         pageInfo.put("pageSize", total);
