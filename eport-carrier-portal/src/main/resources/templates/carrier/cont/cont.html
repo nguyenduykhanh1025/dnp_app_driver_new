@@ -121,6 +121,9 @@
     <script th:inline="javascript">
       var prefix = ctx + "carrier/cont";
       var firtarrierCode;
+      if (contFE == "F") {
+
+      }
       $(function () {
         $('#toDate').val(getCurrentDayForLoadPage());
         $('#fromDate').val(getYesterdayForLoadGage());
@@ -279,11 +282,11 @@
           },
           success: function (result) {
             var nameFile;
-            var date = new Date();
-            var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-            var month = date.getMonth() + 1;
-            var monthText = month < 10 ? "0" + month : month;
-            var year = date.getFullYear();
+            // var date = new Date();
+            // var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+            // var month = date.getMonth() + 1;
+            // var monthText = month < 10 ? "0" + month : month;
+            //var year = date.getFullYear();
             nameFile = "Container_GateInGateOut_report"
             if(contFE == "E")
             {
@@ -293,7 +296,7 @@
             {
                 nameFile = "Container_full_report"
             }
-            nameFile = nameFile + "_" + day+monthText+year+"_";
+            // nameFile = nameFile + "_" + day+monthText+year+"_";
             $.modal.loading("Đang xử lý, vui lòng chờ...");
             if (result.code == web_status.SUCCESS) {
               window.location.href = ctx + "common/download/"+nameFile+"?fileName=" + encodeURI(result.msg) + "&delete=" +
