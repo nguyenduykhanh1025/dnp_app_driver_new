@@ -98,13 +98,15 @@ public class ContainerInfo extends BaseEntity
     @Excel(name = "Container State", readConverterExp = "S=Stacking,D=Delivered")
     private String cntrState;
 
+    /** Days */
+    @Excel(name = "days")
+    private int days;
+    
     /** remark */
     @Excel(name = "remark")
     private String remark;
     
-    /** Days */
-    @Excel(name = "days")
-    private int days;
+    
     
     public int getDays()
     {

@@ -170,8 +170,11 @@
               },
               dataType: "json",
               success: function (data) {
+                // if(!data.total){
+                // }
                 success(data);
-
+                
+                
 
               },
               error: function () {
@@ -261,6 +264,7 @@
         toDate = formatDateForSearch(toDate);
         var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
         fromDate = formatDateForSearch(fromDate);
+
         $.ajax({
           type: "POST",
           url: prefix + "/export",
@@ -272,9 +276,25 @@
             carrierCode: $("#carrierCode").children("option:selected").val(),
           },
           success: function (result) {
+            var nameFile;
+            var date = new Date();
+            var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+            var month = date.getMonth() + 1;
+            var monthText = month < 10 ? "0" + month : month;
+            var year = date.getFullYear();
+            nameFile = "Container_GateInGateOut_report"
+            if(contFE == "E")
+            {
+                nameFile = "Container_empty_report"
+            }
+            if(contFE == "F")
+            {
+                nameFile = "Container_full_report"
+            }
+            nameFile = nameFile + "_" + day+monthText+year+"_";
             $.modal.loading("Đang xử lý, vui lòng chờ...");
             if (result.code == web_status.SUCCESS) {
-              window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" +
+              window.location.href = ctx + "common/download/"+nameFile+"?fileName=" + encodeURI(result.msg) + "&delete=" +
               true;
             } else if (result.code == web_status.WARNING) {
               $.modal.alertWarning(result.msg)

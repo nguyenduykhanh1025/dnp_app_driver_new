@@ -127,9 +127,14 @@ public class ContainerInfoController extends CarrierBaseController {
         //Cont FE
         
         Map<String, Object> pageInfo = new HashMap<>();
-        if(carrierCode.equals(""))
-        {
+        if (carrierCode.equals("") || carrierCode == null) {
             pageInfo.put("prntCodes", super.getGroupCodes());
+        }else {
+            for (String carrierStr : super.getGroupCodes()) {
+                if(!carrierCode.equals(carrierStr)){
+                    pageInfo.put("prntCodes", super.getGroupCodes());
+                }
+            }
         }
         containerInfo.setParams(pageInfo);
         containerInfo.setPtnrCode(carrierCode);
@@ -158,17 +163,10 @@ public class ContainerInfoController extends CarrierBaseController {
             toDate = "";
             containerInfo.setToDate(toDate);
         }
-        // List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
-        // Call API
-     // Call API
         final String uri = Global.getApiUrl() + "/container/export";
      
         RestTemplate restTemplate = new RestTemplate();
         R r = restTemplate.postForObject( uri, containerInfo, R.class);
-//        int total = (int) r.get("total");
-//        TableDataInfo dataList = getDataTable((List) r.get("data"));
-//        dataList.setTotal(total);
-
         List<Map<String, Object>> listJson = (List) r.get("data");
         List<ContainerInfo> list = new ArrayList<ContainerInfo>();
         ContainerInfo ctnr = null;
