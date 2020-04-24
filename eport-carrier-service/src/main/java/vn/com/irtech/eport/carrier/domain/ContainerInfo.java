@@ -75,12 +75,9 @@ public class ContainerInfo extends BaseEntity
     private String sealNo1;
 
     /** Gate mode for terminal in */
-    @Excel(name = "Gate mode for terminal in")
+    @Excel(name = "Gate Mode")
     private String gateMode;
 
-    /** Gate mode for terminal out */
-    @Excel(name = "Gate mode for terminal out")
-    private String dispatchMode2;
 
     /** Gate In Date */
     @Excel(name = "Gate In Date")
@@ -302,15 +299,7 @@ public class ContainerInfo extends BaseEntity
     {
         return gateMode;
     }
-    public void setDispatchMode2(String dispatchMode2) 
-    {
-        this.dispatchMode2 = dispatchMode2;
-    }
 
-    public String getDispatchMode2() 
-    {
-        return dispatchMode2;
-    }
     public void setInDate(String inDate) 
     {
         this.inDate = inDate;
@@ -367,7 +356,6 @@ public class ContainerInfo extends BaseEntity
             .append("blNo", getBlNo())
             .append("sealNo1", getSealNo1())
             .append("gateMode", getGateMode())
-            .append("dispatchMode2", getDispatchMode2())
             .append("inDate", getInDate())
             .append("outDate", getOutDate())
             .append("vgm", getVgm())

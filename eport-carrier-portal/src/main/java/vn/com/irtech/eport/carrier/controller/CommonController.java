@@ -34,8 +34,8 @@ public class CommonController
 
 
      
-    @GetMapping("common/download")
-    public void fileDownload(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
+    @GetMapping("common/download/{nameFile}")
+    public void fileDownload(@PathVariable("nameFile") String nameFile,String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
     {
         //fileName = "DanhSachContainer_"+ fileName;
         try
@@ -44,7 +44,7 @@ public class CommonController
             {
                 throw new Exception(StringUtils.format("Tên file ko hợp lệ !  ", fileName));
             }
-            String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
+            String realFileName = nameFile + System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
             String filePath = Global.getDownloadPath() + fileName;
 
             response.setCharacterEncoding("utf-8");

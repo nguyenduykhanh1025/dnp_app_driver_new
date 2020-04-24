@@ -32,7 +32,7 @@
                   </div>
                 </li>
                 <li>
-                  <input type="text" name="cntrNo" id="cntrNo" placeholder="Container No" />
+                  <input class="form-control" type="text" name="cntrNo" id="cntrNo" placeholder="Container No" />
                 </li>
                 <li>
                   <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
@@ -48,7 +48,7 @@
           </div>
         </div>
         <div class="col-sm-12 table-container">
-          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+          <table id="dg" style="width: 100%;" pageList="[10,50,100,200,500,1000]">
             <thead>
               <tr>
 
@@ -84,20 +84,13 @@
                   Export Seal No
                 </th>
                 <th data-options="field:'gateMode',align:'center'" width="100">
-                  Gate mode
+                  Gate Mode
                 </th>
                 <th data-options="field:'inDate',align:'center', formatter: formatDate" width="100">
                   Gate In Date
                 </th>
                 <th data-options="field:'outDate',align:'center', formatter: formatDate" width="100">
                   Gate Out Date
-                </th>
-
-                <th data-options="field:'wgt',align:'right',align:'center'" width="90">
-                  Weight
-                </th>
-                <th data-options="field:'vgm',align:'center'" sortable="true" width="60">
-                  Vgm
                 </th>
                 <th data-options="field:'cntrState',align:'center'"  width="90">
                   Status
@@ -122,8 +115,14 @@
       var prefix = ctx + "carrier/cont";
       var firtarrierCode;
       if (contFE == "F") {
-
+        $('#toDate').remove();
+        $('#fromDate').remove();
       }
+      if (contFE == "E") {
+        $('#toDate').remove();
+        $('#fromDate').remove();
+      }
+      
       $(function () {
         $('#toDate').val(getCurrentDayForLoadPage());
         $('#fromDate').val(getYesterdayForLoadGage());
@@ -148,7 +147,6 @@
           pagination: true,
           rownumbers: true,
           pageSize: 50,
-          pageList: [10,50,100,200,500,1000],
           nowrap: false,
           striped: true,
           loadMsg: " Đang xử lý...",
@@ -192,7 +190,6 @@
 
 
       function searchContainer() {
-
         var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
         var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
         var dg = $("#dg").datagrid({
@@ -261,7 +258,9 @@
         hour = hour < 10 ? "0" + hour : hour;
         var minute = date.getMinutes();
         minute = minute < 10 ? "0" + minute : minute;
-        return day + "/" + monthText + "/" + date.getFullYear() + "<br>" + hour + ":" + minute;
+        var seconds = date.getSeconds();
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        return day + "/" + monthText + "/" + date.getFullYear() + " " + hour + ":" + minute + ":" + seconds;
       }
 
       function exportExcel() {
@@ -281,25 +280,26 @@
             carrierCode: $("#carrierCode").children("option:selected").val(),
           },
           success: function (result) {
-            // var nameFile;
-            // var date = new Date();
-            // var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-            // var month = date.getMonth() + 1;
-            // var monthText = month < 10 ? "0" + month : month;
-            //var year = date.getFullYear();
-            // nameFile = "Container_GateInGateOut_report"
-            // if(contFE == "E")
-            // {
-            //     nameFile = "Container_empty_report"
-            // }
-            // if(contFE == "F")
-            // {
-            //     nameFile = "Container_full_report"
-            // }
-            // nameFile = nameFile + "_" + day+monthText+year+"_";
+            var nameFile;
+            var date = new Date();
+            var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+            var month = date.getMonth() + 1;
+            var monthText = month < 10 ? "0" + month : month;
+            var year = date.getFullYear();
+            nameFile = "Container_GateInGateOut_report"
+            if(contFE == "E")
+            {
+                nameFile = "Container_empty_report"
+            }
+            if(contFE == "F")
+            {
+                nameFile = "Container_full_report"
+            }
+            nameFile = nameFile + "_" + day+monthText+year+"_";
             $.modal.loading("Đang xử lý, vui lòng chờ...");
             if (result.code == web_status.SUCCESS) {
-              window.location.href = ctx + "common/download?fileName=" + encodeURI(result.msg) + "&delete=" +
+                console.log(window.location.href );
+                window.location.href = ctx + "common/download/"+nameFile+"?fileName=" + encodeURI(result.msg) + "&delete=" +
               true;
             } else if (result.code == web_status.WARNING) {
               $.modal.alertWarning(result.msg)
