@@ -69,8 +69,14 @@ public class ContainerInfoController extends CarrierBaseController {
         startPage();
         // SEARCH CONT
         Map<String, Object> pageInfo = new HashMap<>();
-        if (carrierCode.equals("")) {
+        if (carrierCode.equals("") || carrierCode == null) {
             pageInfo.put("prntCodes", super.getGroupCodes());
+        }else {
+            for (String carrierStr : super.getGroupCodes()) {
+                if(!carrierCode.equals(carrierStr)){
+                    pageInfo.put("prntCodes", super.getGroupCodes());
+                }
+            }
         }
         pageInfo.put("pageNum", (pageNum - 1) * pageSize);
         pageInfo.put("pageSize", pageSize);
@@ -78,19 +84,7 @@ public class ContainerInfoController extends CarrierBaseController {
         containerInfo.setPtnrCode(carrierCode);
         containerInfo.setCntrState("D");
         containerInfo.setCntrNo(cntrNo);
-        // check carrierCode = null or other value then set carrierCode[0] by user
 
-        // if(carrierCode == null)
-        // {
-        // containerInfo.setPtnrCode(allCarrierCode[0]);
-        // }else {
-        // for (String carrierStr : allCarrierCode) {
-        // if(!carrierCode.equals(carrierStr)){
-        // containerInfo.setPtnrCode(allCarrierCode[0]);
-        // }
-        // }
-        // containerInfo.setPtnrCode(carrierCode);
-        // }
         if (contFE.equals("F")) {
             containerInfo.setFe("F");
             containerInfo.setCntrState("Y");
@@ -111,11 +105,7 @@ public class ContainerInfoController extends CarrierBaseController {
             toDate = "";
             containerInfo.setToDate(toDate);
         }
-        //List<ContainerInfo> list = containerInfoService.selectContainerInfoList(containerInfo);
-
-        // Call API
         final String uri = Global.getApiUrl() + "/container/list";
-     
         RestTemplate restTemplate = new RestTemplate();
         R r = restTemplate.postForObject( uri, containerInfo, R.class);
         int total = (int) r.get("total");
