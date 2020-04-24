@@ -429,7 +429,7 @@
         </if>
          <if test="cntrState != null  and cntrState != ''"> and M.CNTR_STATE = #{cntrState}</if>
          <if test="fe != null  and fe != ''"> and M.FE = #{fe}</if>
-           <if test="cntrNo != null  and cntrNo != ''"> and M.CNTR_NO like '%'||#{cntrNo}||'%'</if>
+           <if test="cntrNo != null  and cntrNo != ''"> and lower(M.CNTR_NO) like '%'||#{cntrNo}||'%'</if>
          <if test="ptnrCode != null  and ptnrCode != ''"> and M.PTNR_CODE = #{ptnrCode}</if>
          <if test="params.prntCodes != null">
           and M.PTNR_CODE IN
@@ -824,7 +824,7 @@
         </if>
         <if test="cntrState != null  and cntrState != ''"> and M.CNTR_STATE = #{cntrState}</if>
          <if test="fe != null  and fe != ''"> and M.FE = #{fe}</if>
-         <if test="cntrNo != null  and cntrNo != ''"> and M.CNTR_NO like '%'||#{cntrNo}||'%'</if>
+         <if test="cntrNo != null  and cntrNo != ''"> and  lower(M.CNTR_NO) like '%'||#{cntrNo}||'%'</if>
          <if test="params.prntCodes != null">
           and M.PTNR_CODE IN
           <foreach item="id" collection="params.prntCodes" open="(" separator="," close=")">

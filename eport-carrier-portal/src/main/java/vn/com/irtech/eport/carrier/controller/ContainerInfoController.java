@@ -88,16 +88,12 @@ public class ContainerInfoController extends CarrierBaseController {
         containerInfo.setParams(pageInfo);
         containerInfo.setPtnrCode(carrierCode);
         containerInfo.setCntrState("D");
-        containerInfo.setCntrNo(cntrNo);
+        if(cntrNo!= null)
+        {
+            containerInfo.setCntrNo(cntrNo.toLowerCase());
+        }
+       
 
-        if (contFE.equals("F")) {
-            containerInfo.setFe("F");
-            containerInfo.setCntrState("Y");
-        }
-        if (contFE.equals("E")) {
-            containerInfo.setFe("E");
-            containerInfo.setCntrState("Y");
-        }
         if (fromDate != null) {
             containerInfo.setFromDate(fromDate);
         } else {
@@ -109,6 +105,19 @@ public class ContainerInfoController extends CarrierBaseController {
         }else {
             toDate = "";
             containerInfo.setToDate(toDate);
+        }
+        
+        if (contFE.equals("F")) {
+            containerInfo.setFe("F");
+            containerInfo.setCntrState("Y");
+            containerInfo.setToDate("");
+            containerInfo.setFromDate("");
+        }
+        if (contFE.equals("E")) {
+            containerInfo.setFe("E");
+            containerInfo.setCntrState("Y");
+            containerInfo.setToDate("");
+            containerInfo.setFromDate("");
         }
         final String uri = Global.getApiUrl() + "/container/list";
         RestTemplate restTemplate = new RestTemplate();
@@ -144,17 +153,11 @@ public class ContainerInfoController extends CarrierBaseController {
         containerInfo.setParams(pageInfo);
         containerInfo.setPtnrCode(carrierCode);
         containerInfo.setCntrState("D");
-        containerInfo.setCntrNo(cntrNo);
-        if (contFE.equals("F"))
+        if(cntrNo!= null)
         {
-            containerInfo.setFe("F");
-            containerInfo.setCntrState("Y");
+            containerInfo.setCntrNo(cntrNo.toLowerCase());
         }
-        if (contFE.equals("E"))
-        {
-            containerInfo.setFe("E");
-            containerInfo.setCntrState("Y");
-        }
+        
         // SEARCH CONT 
         if (fromDate != null) {
             containerInfo.setFromDate(fromDate);
@@ -168,6 +171,18 @@ public class ContainerInfoController extends CarrierBaseController {
             toDate = "";
             containerInfo.setToDate(toDate);
         }
+        if (contFE.equals("F")) {
+            containerInfo.setFe("F");
+            containerInfo.setCntrState("Y");
+            containerInfo.setToDate("");
+            containerInfo.setFromDate("");
+        }
+        if (contFE.equals("E")) {
+            containerInfo.setFe("E");
+            containerInfo.setCntrState("Y");
+            containerInfo.setToDate("");
+            containerInfo.setFromDate("");
+        }
         if(orderByColumn != null && isAsc != null)
         {
             pageInfo.put("orderByColumn",orderByColumn);
@@ -179,12 +194,15 @@ public class ContainerInfoController extends CarrierBaseController {
         R r = restTemplate.postForObject( uri, containerInfo, R.class);
         List<Map<String, Object>> listJson = (List) r.get("data");
         List<ContainerInfo> list = new ArrayList<ContainerInfo>();
+        
+       
         ContainerInfo ctnr = null;
         // convert to list entity before export
         for(Map<String, Object> item : listJson) {
         	ctnr = new ContainerInfo();
         	BeanUtils.copyProperties(ctnr, item);
-        	list.add(ctnr);
+            list.add(ctnr);
+            
         }
         ExcelUtil<ContainerInfo> util = new ExcelUtil<ContainerInfo>(ContainerInfo.class);
         return util.exportExcel(list, "cont");
