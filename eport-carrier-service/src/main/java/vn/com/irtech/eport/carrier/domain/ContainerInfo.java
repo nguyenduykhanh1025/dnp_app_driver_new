@@ -19,6 +19,18 @@ public class ContainerInfo extends BaseEntity
     /** ID */
     private Long cntrId;
    
+    /** Class Mode */
+    @Excel(name = "Class Mode")
+    private String classMode;
+
+    /** Trans Type In */
+    @Excel(name = "Trans Type In")
+    private String transTypeIn;
+
+    /** Trans Type Out */
+    @Excel(name = "Trans Type Out")
+    private String transTypeOut;
+
     /** Container Number */
     @Excel(name = "Container Number")
     private String cntrNo;
@@ -35,6 +47,20 @@ public class ContainerInfo extends BaseEntity
     @Excel(name = "OPR")
     private String ptnrCode;
 
+    /** Cargo Type */
+    @Excel(name = "Cargo Type")
+    private String cargoType;
+
+    
+    /** Vessel Name */
+    @Excel(name = "Vessel Name")
+    private String vesselName;
+
+     /** Vessel Code */
+    @Excel(name = "Vessel Code")
+    private String vesselCode;
+
+
     @Excel(name = "Yard Position")
     private String yardPosition;
     
@@ -49,17 +75,18 @@ public class ContainerInfo extends BaseEntity
 
     /** yard location - Tier */
     private String tier;
-
-    /** Weight */
-    @Excel(name = "Weight")
+  
     private Long wgt;
 
-    /** Vessel name */
-    @Excel(name = "Vessel name")
-    private String vslNm;
+    /** pol */
+    @Excel(name = "Pol")
+     private String pol;
+
+      /** Pod */
+    @Excel(name = "Pod")
+    private String pod;
 
     /** Shipper/consignee */
-    @Excel(name = "Shipper/consignee")
     private String consignee;
 
     /** Booking Number */
@@ -87,14 +114,15 @@ public class ContainerInfo extends BaseEntity
     @Excel(name = "Gate Out Date")
     private String outDate;
 
-    /** VGM */
-    @Excel(name = "VGM")
     private String vgm;
 
     /** Container State  (S: Stacking, D:Delivered) */
     @Excel(name = "Container State", readConverterExp = "S=Stacking,D=Delivered")
     private String cntrState;
 
+     /** Area */
+     @Excel(name = "Area")
+     private String area;
     /** Days */
     @Excel(name = "days")
     private int days;
@@ -102,8 +130,14 @@ public class ContainerInfo extends BaseEntity
     /** remark */
     @Excel(name = "remark")
     private String remark;
+
+    /** PayerIn */
+    @Excel(name = "PayerIn")
+    private String payerIn;
     
-    
+    /** PayerOut */
+    @Excel(name = "PayerOut")
+    private String payerOut;
     
     public int getDays()
     {
@@ -245,15 +279,7 @@ public class ContainerInfo extends BaseEntity
     {
         return wgt;
     }
-    public void setVslNm(String vslNm) 
-    {
-        this.vslNm = vslNm;
-    }
-
-    public String getVslNm() 
-    {
-        return vslNm;
-    }
+    
     public void setConsignee(String consignee) 
     {
         this.consignee = consignee;
@@ -337,6 +363,119 @@ public class ContainerInfo extends BaseEntity
         return cntrState;
     }
 
+ 
+    public void setClassMode(String classMode) 
+    {
+        this.classMode = classMode;
+    }
+
+    public String getClassMode() 
+    {
+        return classMode;
+    }
+
+    
+    public void setTransTypeIn(String transTypeIn) 
+    {
+        this.transTypeIn = transTypeIn;
+    }
+
+    public String getTransTypeIn() 
+    {
+        return transTypeIn;
+    }
+
+    
+    public void setTransTypeOut(String transTypeOut) 
+    {
+        this.transTypeOut = transTypeOut;
+    }
+
+    public String getTransTypeOut() 
+    {
+        return transTypeOut;
+    }
+
+    public void setCargoType(String cargoType) 
+    {
+        this.cargoType = cargoType;
+    }
+
+    public String getCargoType() 
+    {
+        return cargoType;
+    }
+
+    public void setVesselCode(String vesselCode) 
+    {
+        this.vesselCode = vesselCode;
+    }
+
+    public String getVesselCode() 
+    {
+        return vesselCode;
+    }
+
+    public void setVesselName(String vesselName) 
+    {
+        this.vesselName = vesselName;
+    }
+
+    public String getVesselName() 
+    {
+        return vesselName;
+    }
+
+    public void setPol(String pol) 
+    {
+        this.pol = pol;
+    }
+
+    public String getPol() 
+    {
+        return pol;
+    }
+
+    public void setPod(String pod) 
+    {
+        this.pod = pod;
+    }
+
+    public String getPod() 
+    {
+        return pod;
+    }
+    
+    public void setArea(String area) 
+    {
+        this.area = area;
+    }
+
+    public String getArea() 
+    {
+        return area;
+    }
+
+    public void setPayerIn(String payerIn) 
+    {
+        this.payerIn = payerIn;
+    }
+
+    public String getPayerIn() 
+    {
+        return payerIn;
+    }
+
+    public void setPayerOut(String payerOut) 
+    {
+        this.payerOut = payerOut;
+    }
+
+    public String getPayerOut() 
+    {
+        return payerOut;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -350,7 +489,6 @@ public class ContainerInfo extends BaseEntity
             .append("roww", getRoww())
             .append("tier", getTier())
             .append("wgt", getWgt())
-            .append("vslNm", getVslNm())
             .append("consignee", getConsignee())
             .append("bookingNo", getBookingNo())
             .append("blNo", getBlNo())
@@ -361,6 +499,17 @@ public class ContainerInfo extends BaseEntity
             .append("vgm", getVgm())
             .append("cntrState", getCntrState())
             .append("remark", getRemark())
+            .append("classMode", getClassMode())
+            .append("transTypeIn", getTransTypeIn())
+            .append("transTypeOut", getTransTypeOut())
+            .append("cargoType", getCargoType())
+            .append("vesselCode", getVesselCode())
+            .append("vesselName", getVesselName())
+            .append("area", getArea())
+            .append("pol", getPol())
+            .append("pod", getPod())
+            .append("payerIn", getPayerIn())
+            .append("payerOut", getPayerOut())
             .toString();
     }
 }

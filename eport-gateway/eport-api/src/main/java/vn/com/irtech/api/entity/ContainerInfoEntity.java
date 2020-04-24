@@ -303,6 +303,133 @@ public class ContainerInfoEntity extends BaseEntity
         return cntrState;
     }
 
+    /** Class Mode */
+    private String classMode;
+    public void setClassMode(String classMode) 
+    {
+        this.classMode = classMode;
+    }
+
+    public String getClassMode() 
+    {
+        return classMode;
+    }
+
+    /** Trans Type In */
+    private String transTypeIn;
+    public void setTransTypeIn(String transTypeIn) 
+    {
+        this.transTypeIn = transTypeIn;
+    }
+
+    public String getTransTypeIn() 
+    {
+        return transTypeIn;
+    }
+
+    /** Trans Type Out */
+    private String transTypeOut;
+    public void setTransTypeOut(String transTypeOut) 
+    {
+        this.transTypeOut = transTypeOut;
+    }
+
+    public String getTransTypeOut() 
+    {
+        return transTypeOut;
+    }
+
+
+    /** Cargo Type */
+    private String cargoType;
+    public void setCargoType(String cargoType) 
+    {
+        this.cargoType = cargoType;
+    }
+
+    public String getCargoType() 
+    {
+        return cargoType;
+    }
+
+    
+    /** Vessel Code */
+    private String vesselCode;
+    public void setVesselCode(String vesselCode) 
+    {
+        this.vesselCode = vesselCode;
+    }
+
+    public String getVesselCode() 
+    {
+        return vesselCode;
+    }
+
+    
+    /** pol */
+    private String pol;
+    public void setPol(String pol) 
+    {
+        this.pol = pol;
+    }
+
+    public String getPol() 
+    {
+        return pol;
+    }
+
+   
+    /** Pod */
+    private String pod;
+    public void setPod(String pod) 
+    {
+        this.pod = pod;
+    }
+
+    public String getPod() 
+    {
+        return pod;
+    }
+    
+    /** PayerIn */
+    private String payerIn;
+    public void setPayerIn(String payerIn) 
+    {
+        this.payerIn = payerIn;
+    }
+
+    public String getPayerIn() 
+    {
+        return payerIn;
+    }
+
+    
+    /** PayerOut */
+    private String payerOut;
+    public void setPayerOut(String payerOut) 
+    {
+        this.payerOut = payerOut;
+    }
+
+    public String getPayerOut() 
+    {
+        return payerOut;
+    }
+
+     /** Vessel Name */
+     
+     private String vesselName;
+     public void setVesselName(String vesselName) 
+     {
+         this.vesselName = vesselName;
+     }
+ 
+     public String getVesselName() 
+     {
+         return vesselName;
+     }
+
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -325,6 +452,17 @@ public class ContainerInfoEntity extends BaseEntity
             .append("vgm", getVgm())
             .append("cntrState", getCntrState())
             .append("remark", getRemark())
+            .append("classMode", getClassMode())
+            .append("transTypeIn", getTransTypeIn())
+            .append("transTypeOut", getTransTypeOut())
+            .append("cargoType", getCargoType())
+            .append("vesselCode", getVesselCode())
+            .append("vesselName", getVesselName())
+            .append("area", getArea())
+            .append("pol", getPol())
+            .append("pod", getPol())
+            .append("payerIn", getPayerIn())
+            .append("payerOut", getPayerOut())
             .toString();
     }
 }
