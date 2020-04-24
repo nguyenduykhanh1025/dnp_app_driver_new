@@ -314,6 +314,12 @@
         // format: 'dd-MM-yyyy:HH-mm',
         type: 'datetime'
       });
+      document.getElementById("cntrNo").addEventListener("keyup", function (event) {
+      event.preventDefault();
+      if (event.keyCode === 13) {
+        $("#searchBtn").click();
+      }
+    });
     </script>
 </body>
 
