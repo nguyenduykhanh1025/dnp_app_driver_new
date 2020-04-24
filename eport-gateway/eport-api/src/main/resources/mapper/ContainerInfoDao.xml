@@ -15,31 +15,32 @@
              WHEN M.IX_CD = 'D' THEN 'Import Feeder'
              WHEN M.IX_CD = 'L' THEN 'Yard Leasing'
              ELSE M.IX_CD
-         END AS CLASS_MODE,  
+         END AS classMode,  
          
          CASE
              WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
 			 WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
 			 WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
              ELSE M.TRANS_TYPE
-         END AS TRANS_TYPE_IN,
+         END AS transTypeIn,
 		 CASE
              WHEN M.TRANS_TYPE2 = 'T' THEN 'Truck'
 			 WHEN M.TRANS_TYPE2 = 'V' THEN 'Vessel'
              ELSE M.TRANS_TYPE2
-         END AS TRANS_TYPE_OUT,
+         END AS transTypeOut,
          M.WGT AS wgt,   
          M.VGM AS vgm, 
          M.CNTR_NO,
          M.SZTP AS SZTP2,
          M.FE,
          M.PTNR_CODE AS ptnrCode,
-         M.CARGO_TYPE,
-         (SELECT VSL_NM FROM TB_VSL WHERE VSL_CD = M.VSL_CD) AS VESSEL_NAME,
+         M.CARGO_TYPE AS cargoType,
+         (SELECT VSL_NM FROM TB_VSL WHERE VSL_CD = M.VSL_CD) AS vesselName,
+         M.VSL_CD AS vesselCode,
          M.BOOKING_NO,
          M.BL_NO AS blNo,
-         M.POL,
-         M.POD,
+         M.POL AS pol,
+         M.POD AS pod,
          M.SEAL_NO1 AS sealNo1,
          M.SEAL_NO3 AS sealNo3,
          M.IN_DATE,
@@ -52,11 +53,11 @@
          END AS cntrState,
         
          M.BLOCK||'-'||M.BAY||'-'||M.ROWW||'-'||M.TIER AS yardPosition,
-         M.AREA,
+         M.AREA AS area,
          M.STACK_DAYS_D24 AS days,
          M.REMARK,
-         M.TRUCKER AS PAYER_IN,
-         M.TRUCKER2 AS PAYER_OUT
+         M.TRUCKER AS payerIn,
+         M.TRUCKER2 AS payerOut
          
     FROM (SELECT 'TB_INVENTORY'
                      TABLE_NAME,
