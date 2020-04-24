@@ -438,7 +438,15 @@
          </foreach>
           </if>
          </where>
-         ORDER BY M.CNTR_NO ASC
+
+        <if test="params.orderByColumn == 'cntrNo'  and params.isAsc == 'asc'"> ORDER BY M.CNTR_NO ASC </if>
+        <if test="params.orderByColumn == 'cntrNo'  and params.isAsc == 'desc'"> ORDER BY M.CNTR_NO DESC </if>
+        <if test="params.orderByColumn == 'days'  and params.isAsc == 'asc'"> ORDER BY M.STACK_DAYS_D24 ASC </if>
+        <if test="params.orderByColumn == 'days'  and params.isAsc == 'desc'"> ORDER BY M.STACK_DAYS_D24 DESC </if>
+        <if test="params.orderByColumn == 'ptnrCode'  and params.isAsc == 'asc'"> ORDER BY M.PTNR_CODE ASC </if>
+        <if test="params.orderByColumn == 'ptnrCode'  and params.isAsc == 'desc'"> ORDER BY M.PTNR_CODE DESC </if>
+         
+
          OFFSET #{params.pageNum} ROWS FETCH NEXT #{params.pageSize} ROWS ONLY
     </select>
     <select  id="countContainerInfoList" parameterType="ContainerInfoEntity" resultType="int">
@@ -825,10 +833,14 @@
           </if>
          <if test="ptnrCode != null  and ptnrCode != ''"> and M.PTNR_CODE = #{ptnrCode}</if>
          </where>
-         ORDER BY M.CNTR_NO ASC
-         
-        
+        <if test="params.orderByColumn == 'cntrNo'  and params.isAsc == 'asc'"> ORDER BY M.CNTR_NO ASC </if>
+        <if test="params.orderByColumn == 'cntrNo'  and params.isAsc == 'desc'"> ORDER BY M.CNTR_NO DESC </if>
+        <if test="params.orderByColumn == 'days'  and params.isAsc == 'asc'"> ORDER BY M.STACK_DAYS_D24 ASC </if>
+        <if test="params.orderByColumn == 'days'  and params.isAsc == 'desc'"> ORDER BY M.STACK_DAYS_D24 DESC </if>
+        <if test="params.orderByColumn == 'ptnrCode'  and params.isAsc == 'asc'"> ORDER BY M.PTNR_CODE ASC </if>
+        <if test="params.orderByColumn == 'ptnrCode'  and params.isAsc == 'desc'"> ORDER BY M.PTNR_CODE DESC </if>
 
+         
     </select>
 
 </mapper>

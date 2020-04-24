@@ -56,7 +56,7 @@
                 <th data-options="field:'cntrNo',align:'center'" sortable="true" width="120">
                   Container No
                 </th>
-                <th data-options="field:'sztp2',align:'center'" sortable="true" width="110">
+                <th data-options="field:'sztp2',align:'center'"  width="110">
                   Sztp
                 </th>
                 <th data-options="field:'fe',align:'right',align:'center'" width="50">
@@ -71,7 +71,7 @@
                 <th data-options="field:'consignee',halign:'center'" width="250">
                   Consignee
                 </th>
-                <th data-options="field:'bookingNo',halign:'center',align:'center'" sortable="true" width="120">
+                <th data-options="field:'bookingNo',halign:'center',align:'center'"  width="120">
                   Booking No
                 </th>
                 <th data-options="field:'blNo',halign:'center'" width="120">
@@ -99,10 +99,10 @@
                 <th data-options="field:'vgm',align:'center'" sortable="true" width="60">
                   Vgm
                 </th>
-                <th data-options="field:'cntrState',align:'center'" sortable="true" width="90">
+                <th data-options="field:'cntrState',align:'center'"  width="90">
                   Status
                 </th>
-                <th data-options="field:'days',align:'center'" hidden="true" sortable="true">Stack days</th>
+                <th data-options="field:'days',align:'center'" hidden="true" sortable="true" >Stack days</th>
                 <th data-options="field:'remark',formatter: cleanRemark" width="300">
                   Remark
                 </th>
@@ -145,6 +145,7 @@
           pagination: true,
           rownumbers: true,
           pageSize: 50,
+          pageList: [10,50,100,200,500,1000],
           nowrap: false,
           striped: true,
           loadMsg: " Đang xử lý...",
@@ -198,6 +199,7 @@
           pagination: true,
           rownumbers: true,
           pageSize: 50,
+          pageList: [10,50,100,200,500,1000],
           loader: function (param, success, error) {
             var opts = $(this).datagrid("options");
             if (!opts.url) return false;
@@ -326,12 +328,12 @@
       }
       laydate.render({
         elem: '#fromDate',
-        // format: 'dd/MM/yyyy:HH-mm',
+        //format: 'dd-MM-yyyy HH:mm:ss',
         type: 'datetime'
       });
       laydate.render({
         elem: '#toDate',
-        // format: 'dd-MM-yyyy:HH-mm',
+        //format: 'dd-MM-yyyy:HH-mm',
         type: 'datetime'
       });
       document.getElementById("cntrNo").addEventListener("keyup", function (event) {
