@@ -65,7 +65,7 @@ public class ContainerInfoController extends CarrierBaseController {
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(ContainerInfo containerInfo, String toDate, String fromDate, String contFE,
-            String carrierCode, int pageNum, int pageSize, String cntrNo) {
+            String carrierCode, int pageNum, int pageSize,String orderByColumn,String isAsc, String cntrNo) {
         startPage();
         // SEARCH CONT
         Map<String, Object> pageInfo = new HashMap<>();
@@ -77,6 +77,11 @@ public class ContainerInfoController extends CarrierBaseController {
                     pageInfo.put("prntCodes", super.getGroupCodes());
                 }
             }
+        }
+        if(orderByColumn != null && isAsc != null)
+        {
+            pageInfo.put("orderByColumn",orderByColumn);
+            pageInfo.put("isAsc",isAsc);
         }
         pageInfo.put("pageNum", (pageNum - 1) * pageSize);
         pageInfo.put("pageSize", pageSize);
@@ -122,7 +127,7 @@ public class ContainerInfoController extends CarrierBaseController {
     @Log(title = "Container Infomation", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ContainerInfo containerInfo,String toDate,String  fromDate,String contFE,String carrierCode, String cntrNo) throws IllegalAccessException, InvocationTargetException
+    public AjaxResult export(ContainerInfo containerInfo,String toDate,String  fromDate,String contFE,String carrierCode,String orderByColumn,String isAsc, String cntrNo) throws IllegalAccessException, InvocationTargetException
     {
         //Cont FE
         
@@ -162,6 +167,11 @@ public class ContainerInfoController extends CarrierBaseController {
         }else {
             toDate = "";
             containerInfo.setToDate(toDate);
+        }
+        if(orderByColumn != null && isAsc != null)
+        {
+            pageInfo.put("orderByColumn",orderByColumn);
+            pageInfo.put("isAsc",isAsc);
         }
         final String uri = Global.getApiUrl() + "/container/export";
      
