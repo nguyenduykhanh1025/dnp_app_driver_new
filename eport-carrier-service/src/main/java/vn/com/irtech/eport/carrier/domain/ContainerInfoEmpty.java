@@ -8,9 +8,12 @@ import vn.com.irtech.eport.common.annotation.Excel;
  * @author Admin
  * @date 2020-04-16
  */
-public class ContainerInfo extends ContainerInfoBase {
+public class ContainerInfoEmpty extends ContainerInfoBase {
 	private static final long serialVersionUID = 1L;
-	
+
+	/** Days */
+	@Excel(name = "Stacking Days")
+	private int days;
 	/** remark */
 	@Excel(name = "Remark")
 	private String remark;
@@ -22,4 +25,13 @@ public class ContainerInfo extends ContainerInfoBase {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+
+	public int getDays() {
+		return days;
+	}
+
+	public void setDays(int days) {
+		this.days = days;
+	}
+
 }

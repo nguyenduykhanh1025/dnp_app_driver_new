@@ -98,11 +98,11 @@
                 </th>
 
                 <th data-options="field:'pol',align:'right',align:'center'" width="80">
-                  Pol
+                  POL
                 </th>
 
                 <th data-options="field:'pod',align:'right',align:'center'" width="80">
-                  Pod
+                  POD
                 </th>
 
                 <th data-options="field:'sealNo1',halign:'center',align:'right'" width="110">
@@ -371,12 +371,13 @@
       }
       laydate.render({
         elem: '#fromDate',
-        //format: 'dd-MM-yyyy HH:mm:ss',
-        type: 'datetime'
+        theme: 'grid',
+        type: 'datetime',
       });
+         
       laydate.render({
         elem: '#toDate',
-        //format: 'dd-MM-yyyy:HH-mm',
+        theme: 'grid',
         type: 'datetime'
       });
       document.getElementById("cntrNo").addEventListener("keyup", function (event) {

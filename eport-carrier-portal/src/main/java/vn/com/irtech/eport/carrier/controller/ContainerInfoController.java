@@ -1,16 +1,12 @@
 package vn.com.irtech.eport.carrier.controller;
 
 import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.xml.SourceHttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.carrier.domain.ContainerInfo;
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.carrier.domain.ContainerInfoEmpty;
 import vn.com.irtech.eport.carrier.utils.R;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.Global;
@@ -31,7 +27,7 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 
 
 /**
- * Container InfomationController
+ * Container Information Controller
  * 
  * @author Admin
  * @date 2020-04-16
@@ -39,6 +35,8 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 @Controller
 @RequestMapping("/carrier/cont")
 public class ContainerInfoController extends CarrierBaseController {
+	
+	private static final String EXPORT_SHEET_NAME = "Container";
     private String prefix = "carrier/cont";
 
 
@@ -60,7 +58,7 @@ public class ContainerInfoController extends CarrierBaseController {
     }
 
     /**
-     * Get Container Infomation List
+     * Get Container Information List
      */
     @PostMapping("/list")
     @ResponseBody
@@ -129,14 +127,14 @@ public class ContainerInfoController extends CarrierBaseController {
     }
 
     /**
-     * Export Container Infomation List
+     * Export Container Information List
      * @throws InvocationTargetException 
      * @throws IllegalAccessException 
      */
     @Log(title = "Container Infomation", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(ContainerInfo containerInfo,String toDate,String  fromDate,String contFE,String carrierCode,String orderByColumn,String isAsc, String cntrNo) throws IllegalAccessException, InvocationTargetException
+    public AjaxResult export(ContainerInfo containerInfo,String toDate,String  fromDate,String contFE,String carrierCode,String orderByColumn,String isAsc, String cntrNo) throws Exception
     {
         //Cont FE
         
@@ -193,20 +191,29 @@ public class ContainerInfoController extends CarrierBaseController {
         RestTemplate restTemplate = new RestTemplate();
         R r = restTemplate.postForObject( uri, containerInfo, R.class);
         List<Map<String, Object>> listJson = (List) r.get("data");
-        List<ContainerInfo> list = new ArrayList<ContainerInfo>();
-        
-       
-        ContainerInfo ctnr = null;
-        // convert to list entity before export
-        for(Map<String, Object> item : listJson) {
-        	ctnr = new ContainerInfo();
-        	BeanUtils.copyProperties(ctnr, item);
-            list.add(ctnr);
-            
+        // Create list to export
+        List list = new ArrayList();
+        if (contFE.equals("E")) {
+		    ContainerInfoEmpty ctnr = null;
+		    // convert to list entity before export
+		    for(Map<String, Object> item : listJson) {
+		    	ctnr = new ContainerInfoEmpty();
+		    	BeanUtils.copyProperties(ctnr, item);
+		        list.add(ctnr);
+		    }
+        	ExcelUtil<ContainerInfoEmpty> util = new ExcelUtil<ContainerInfoEmpty>(ContainerInfoEmpty.class);
+            return util.exportExcel(list, EXPORT_SHEET_NAME);
         }
-    
+        // if not Empty
+        ContainerInfo ctnr = null;
+	    // convert to list entity before export
+	    for(Map<String, Object> item : listJson) {
+	    	ctnr = new ContainerInfo();
+	    	BeanUtils.copyProperties(ctnr, item);
+	        list.add(ctnr);
+	    }
         ExcelUtil<ContainerInfo> util = new ExcelUtil<ContainerInfo>(ContainerInfo.class);
-        return util.exportExcel(list, "cont");
+        return util.exportExcel(list, EXPORT_SHEET_NAME);
     }
     
     @GetMapping("/listCarrierCode")
