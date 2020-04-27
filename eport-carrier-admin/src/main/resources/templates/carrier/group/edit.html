@@ -31,11 +31,27 @@
                     <input name="mainEmail" th:field="*{mainEmail}" class="form-control" type="text">
                 </div>
             </div>
+            <div class="form-group">
+                <input type="hidden" name="doFlag" th:field="*{doFlag}" id="doFlag">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Quyền quản lý DO</label>
+                <div id="doToggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleDoFlag()"></i>
+                </div>
+            </div>
         </form>
     </div>
     <th:block th:include="include :: footer" />
     <script type="text/javascript">
         var prefix = ctx + "carrier/group";
+
+        setTimeout(() => {
+            if ($("#doFlag").val() == 0) {
+                document.getElementById("doToggle").innerHTML = '<i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleDoFlag()"></i>';
+            } else {
+                document.getElementById("doToggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleDoFlag()"></i>';
+            }          
+        }, 200);
+
         $("#form-account-edit").validate({
             focusCleanup: true
         });
@@ -43,6 +59,16 @@
         function submitHandler() {
             if ($.validate.form()) {
                 $.operate.save(prefix + "/edit", $('#form-account-edit').serialize());
+            }
+        }
+
+        function clickToggleDoFlag() {
+            if ($("#doFlag").val() == 0) {
+                document.getElementById("doToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleDoFlag()"></span>';
+                $("#doFlag").val(1);
+            } else {
+                document.getElementById("doToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleDoFlag()"></span>';
+                $("#doFlag").val(0);
             }
         }
     </script>

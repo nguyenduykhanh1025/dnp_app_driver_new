@@ -14,10 +14,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="doFlag"    column="do_flag"    />
+        <result property="edoFlag"    column="edo_flag"    />
     </resultMap>
 
     <sql id="selectCarrierGroupVo">
-        select id, group_code, group_name, operate_code, main_email, create_by, create_time, update_by, update_time from carrier_group
+        select id, group_code, group_name, operate_code, main_email, create_by, create_time, update_by, update_time, do_flag, edo_flag from carrier_group
     </sql>
 
     <select id="selectCarrierGroupList" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
@@ -60,6 +62,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null ">create_time,</if>
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
             <if test="updateTime != null ">update_time,</if>
+            <if test="doFlag != null  and doFlag != ''">do_flag,</if>
+            <if test="edoFlag != null  and edoFlag != ''">edo_flag,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="groupCode != null  and groupCode != ''">#{groupCode},</if>
@@ -70,6 +74,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null ">#{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
             <if test="updateTime != null ">#{updateTime},</if>
+            <if test="doFlag != null  and doFlag != ''">#{doFlag},</if>
+            <if test="edoFlag != null  and edoFlag != ''">#{edoFlag},</if>
          </trim>
     </insert>
 
@@ -84,6 +90,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="doFlag != null  and doFlag != ''">do_flag = #{doFlag},</if>
+            <if test="edoFlag != null  and edoFlag != ''">edo_flag = #{edoFlag},</if>
         </trim>
         where id = #{id}
     </update>
@@ -109,5 +117,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="getCarrierCodeById" parameterType="Long" resultType="String">
         select operate_code from carrier_group where group_code = #{groupId}
+    </select>
+    
+    <select id="getCarrierGroupPermission" parameterType="Long" resultMap="CarrierGroupResult">
+        select id, do_flag, edo_flag from carrier_group
+        where id = #{id}
     </select>
 </mapper>
