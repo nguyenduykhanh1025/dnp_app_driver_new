@@ -180,7 +180,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		//String message = userService.importUser(userList, updateSupport, operName);
 		//return AjaxResult.success(message);
 		if (!hasDoPermission()) {
-			return success("Tài khoản này không có quyền thêm DO");
+			return error("Tài khoản này không có quyền thêm DO");
 		}
 		if (equipmentDos != null) {
 			String consignee = equipmentDos.get(0).getConsignee();
