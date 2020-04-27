@@ -169,8 +169,9 @@
       $( document ).ready(function() {   
         if ([[${doPermission}]]) {
           $("#doTab").show();
-        }   
+        } else {
           $("#doTab").hide();
+        }  
       });
 
       if($.common.isNotEmpty(skin)){
