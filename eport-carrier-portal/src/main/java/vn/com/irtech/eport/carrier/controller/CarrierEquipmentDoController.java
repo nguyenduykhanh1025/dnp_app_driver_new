@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -50,11 +51,15 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
   
 	@Autowired
 	private IEquipmentDoService equipmentDoService;
+
 	@Autowired
 	private MailService mailService;
 
 	@GetMapping()
 	public String EquipmentDo() {
+		if (!hasDoPermission()) {
+			return "error/404";
+		}
 		return prefix + "/do";
 	}
 
@@ -88,6 +93,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	 */
 	@GetMapping("/viewbl/{blNo}")
 	public String billInfo(@PathVariable("blNo") String billOfLading, ModelMap mmap) {
+		if (!hasDoPermission()) {
+			return "error/404";
+		}
 		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
 		mmap.addAttribute("bl", equipmentDos);
 		return prefix + "/billInfo";
@@ -107,6 +115,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 //	 */
 	@GetMapping("/changeExpiredDate/{billOfLading}")
 	public String changeExpiredDate(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
+		if (!hasDoPermission()) {
+			return "error/404";
+		}
 		mmap.addAttribute("billOfLading", billOfLading);
 		return prefix + "/changeExpriedDate";
 	}
@@ -150,6 +161,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	 */
 	@GetMapping("/add")
 	public String add() {
+		if (!hasDoPermission()) {
+			return "error/404";
+		}
 		return prefix + "/addDo";
 	}
 
@@ -164,7 +178,10 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@ResponseBody
 	public AjaxResult addSave(@RequestBody List<EquipmentDo> equipmentDos) {
 		//String message = userService.importUser(userList, updateSupport, operName);
-        //return AjaxResult.success(message);
+		//return AjaxResult.success(message);
+		if (!hasDoPermission()) {
+			return error("Tài khoản này không có quyền thêm DO");
+		}
 		if (equipmentDos != null) {
 			String consignee = equipmentDos.get(0).getConsignee();
 			String containerNumber = "";
@@ -416,6 +433,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	 */
 	@GetMapping("/edit/{id}")
 	public String edit(@PathVariable("id") Long id, ModelMap mmap) {
+		if (!hasDoPermission()) {
+			return "error/404";
+		}
 		EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(id);
 		mmap.put("equipmentDo", equipmentDo);
 		return prefix + "/edit";
@@ -568,6 +588,4 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	  return VALID_CONTAINER_NO_REGEX.matcher(input).find();
   }
 
-
-  
 }

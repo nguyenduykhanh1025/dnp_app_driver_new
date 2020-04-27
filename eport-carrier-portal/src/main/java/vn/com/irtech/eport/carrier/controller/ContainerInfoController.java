@@ -107,13 +107,13 @@ public class ContainerInfoController extends CarrierBaseController {
         
         if (contFE.equals("F")) {
             containerInfo.setFe("F");
-            containerInfo.setCntrState("Y");
+            containerInfo.setCntrState("");
             containerInfo.setToDate("");
             containerInfo.setFromDate("");
         }
         if (contFE.equals("E")) {
             containerInfo.setFe("E");
-            containerInfo.setCntrState("Y");
+            containerInfo.setCntrState("");
             containerInfo.setToDate("");
             containerInfo.setFromDate("");
         }
@@ -171,13 +171,13 @@ public class ContainerInfoController extends CarrierBaseController {
         }
         if (contFE.equals("F")) {
             containerInfo.setFe("F");
-            containerInfo.setCntrState("Y");
+            containerInfo.setCntrState("");
             containerInfo.setToDate("");
             containerInfo.setFromDate("");
         }
         if (contFE.equals("E")) {
             containerInfo.setFe("E");
-            containerInfo.setCntrState("Y");
+            containerInfo.setCntrState("");
             containerInfo.setToDate("");
             containerInfo.setFromDate("");
         }

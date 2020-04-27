@@ -24,22 +24,62 @@ public class ApiContainerInfoController {
 	
 	@PostMapping("/container/list")
 	public R listContainer(@RequestBody ContainerInfoEntity query) {
-		System.out.println("PARA QUERY"+new Gson().toJson(query));
-		List<ContainerInfoEntity> data = containerInfo.selectContainerInfoList(query);
-		int total = containerInfo.countContainerInfoList(query);
-		return R.ok().put("data", data).put("total", total);
+		if(query.getFe() == null)
+		{
+			List<ContainerInfoEntity> data = containerInfo.selectContainerInfoListInOut(query);
+			
+			int total = containerInfo.countContainerInfoInOut(query);
+			return R.ok().put("data", data).put("total", total);
+		}
+		if(query.getFe().equals("F"))
+		{
+			List<ContainerInfoEntity> data = containerInfo.selectContainerInfoListFull(query);
+			int total = containerInfo.countContainerInfoFull(query);
+			return R.ok().put("data", data).put("total", total);
+		}
+		if (query.getFe().equals("E"))
+		{
+			List<ContainerInfoEntity> data = containerInfo.selectContainerInfoListEmpty(query);
+			int total = containerInfo.countContainerInfoEmpty(query);
+			return R.ok().put("data", data).put("total", total);
+		}
+		return null;
+	
 	}
 	
 	@PostMapping("/container/export")
 	public R listForExport(@RequestBody ContainerInfoEntity query) {
 		Map<String, Object> pageInfo = new HashMap<>();
 		pageInfo = query.getParams();
-        int total = containerInfo.countContainerInfoList(query);
-        pageInfo.put("pageNum",0);
-        pageInfo.put("pageSize", total);
-        query.setParams(pageInfo);
-		List<ContainerInfoEntity> data = containerInfo.selectContainerInfoList(query);
-		return R.ok().put("data", data);
+        
+		if(query.getFe() == null)
+		{
+			int total = containerInfo.countContainerInfoInOut(query);
+			pageInfo.put("pageNum",0);
+			pageInfo.put("pageSize", total);
+			query.setParams(pageInfo);
+			List<ContainerInfoEntity> data = containerInfo.selectContainerInfoListInOut(query);
+			return R.ok().put("data", data).put("total", total);
+		}
+		if(query.getFe().equals("F"))
+		{
+			int total = containerInfo.countContainerInfoFull(query);
+			pageInfo.put("pageNum",0);
+			pageInfo.put("pageSize", total);
+			query.setParams(pageInfo);
+			List<ContainerInfoEntity> data = containerInfo.selectContainerInfoListFull(query);
+			return R.ok().put("data", data).put("total", total);
+		}
+		if (query.getFe().equals("E"))
+		{
+			int total = containerInfo.countContainerInfoEmpty(query);
+			pageInfo.put("pageNum",0);
+			pageInfo.put("pageSize", total);
+			query.setParams(pageInfo);
+			List<ContainerInfoEntity> data = containerInfo.selectContainerInfoListEmpty(query);
+			return R.ok().put("data", data).put("total", total);
+		}
+		return null;
 	}
 
 }
