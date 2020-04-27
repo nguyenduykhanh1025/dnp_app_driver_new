@@ -34,6 +34,12 @@ public class CarrierGroup extends BaseEntity
     @Excel(name = "Main Email")
     private String mainEmail;
 
+    /** Do Permission */
+    private String doFlag;
+
+    /** Edo Permisison */
+    private String edoFlag;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -80,6 +86,22 @@ public class CarrierGroup extends BaseEntity
         return mainEmail;
     }
 
+    public void setDoFlag(String doFlag) {
+        this.doFlag = doFlag;
+    }
+
+    public String getDoFlag() {
+        return doFlag;
+    }
+
+    public void setEdoFlag(String edoFlag) {
+        this.edoFlag = edoFlag;
+    }
+
+    public String getEdoFlag() {
+        return edoFlag;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -92,6 +114,8 @@ public class CarrierGroup extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("doFlag", getDoFlag())
+            .append("edoFlag", getEdoFlag())
             .toString();
     }
 }

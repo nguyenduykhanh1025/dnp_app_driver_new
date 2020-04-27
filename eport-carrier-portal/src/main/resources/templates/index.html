@@ -55,7 +55,7 @@
                 </div>
               </a>
             </li>
-            <li>
+            <li id="doTab">
               <a title="Quản Lý DO" th:href="@{/carrier/do}" href="/carrier/do" class="menuItem"><i
                   class="fa fa-ship"></i>&nbsp; Quản Lý DO</a>
             </li>
@@ -164,6 +164,14 @@
       var skin = storage.get("skin");
       var mode = "history";
       var historyPath = storage.get("historyPath");
+
+      // Hide or show do tab
+      $( document ).ready(function() {   
+        if ([[${doPermission}]]) {
+          $("#doTab").show();
+        }   
+          $("#doTab").hide();
+      });
 
       if($.common.isNotEmpty(skin)){
       	$("body").addClass(skin.split('|')[0]);
