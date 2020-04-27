@@ -23,14 +23,6 @@ public class ContainerInfoBase extends BaseEntity
     @Excel(name = "Class Mode")
     private String classMode;
 
-//    /** Trans Type In */
-//    @Excel(name = "Trans Type In")
-//    private String transTypeIn;
-
-//    /** Trans Type Out */
-//    @Excel(name = "Trans Type Out")
-//    private String transTypeOut;
-
     /** Container Number */
     @Excel(name = "Container Number")
     private String cntrNo;
@@ -78,13 +70,7 @@ public class ContainerInfoBase extends BaseEntity
   
     private Long wgt;
 
-    /** pol */
-    @Excel(name = "POL")
-     private String pol;
-
-      /** Pod */
-    @Excel(name = "POD")
-    private String pod;
+   
 
     /** Shipper/consignee */
     private String consignee;
@@ -97,19 +83,35 @@ public class ContainerInfoBase extends BaseEntity
     @Excel(name = "BL Number")
     private String blNo;
 
+     /** pol */
+     @Excel(name = "POL")
+     private String pol;
+
+      /** Pod */
+    @Excel(name = "POD")
+    private String pod;
     /** Seal Number */
-    @Excel(name = "Seal Number")
+    @Excel(name = "Carrier Seal No")
     private String sealNo1;
 
+    @Excel(name = "Export Seal No")
+    private String sealNo3;
     /** Gate mode for terminal in */
     @Excel(name = "Gate Mode")
     private String gateMode;
 
-
+    /** Trans Type In */
+    @Excel(name = "Trans Type In")
+    private String transTypeIn;
+   
     /** Gate In Date */
     @Excel(name = "Gate In Date")
     private String inDate;
 
+    /** Trans Type Out */
+    @Excel(name = "Trans Type Out")
+    private String transTypeOut;
+   
     /** Gate Out Date */
     @Excel(name = "Gate Out Date")
     private String outDate;
@@ -120,11 +122,31 @@ public class ContainerInfoBase extends BaseEntity
     @Excel(name = "Container State")
     private String cntrState;
 
+
+     
+    public void setTransTypeIn(String transTypeIn) 
+    {
+        this.transTypeIn = transTypeIn;
+    }
+  
+    public String getTransTypeIn() 
+    {
+        return transTypeIn;
+    }
     public String getYardPosition()
     {
         return yardPosition;
     }
     
+    public void setTransTypeOut(String transTypeOut) 
+    {
+        this.transTypeOut = transTypeOut;
+    }
+
+    public String getTransTypeOut() 
+    {
+        return transTypeOut;
+    }
     public void setYardPosition(String yardPosition) {
     	this.yardPosition = yardPosition;
     }
@@ -282,6 +304,15 @@ public class ContainerInfoBase extends BaseEntity
         this.gateMode = gateMode;
     }
 
+    public void setSealNo3(String sealNo3) 
+    {
+        this.sealNo3 = sealNo3;
+    }
+
+    public String getSealNo3() 
+    {
+        return sealNo3;
+    }
     public String getGateMode() 
     {
         return gateMode;

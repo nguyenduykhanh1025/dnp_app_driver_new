@@ -5,6 +5,9 @@
   <th:block th:include="include :: header('Danh sách DO')" />
   <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: datetimepicker-css" />
+  <style type="text/css">
+        /* TODO */
+  </style>
 </head>
 
 <body class="gray-bg">
@@ -53,7 +56,9 @@
               <tr>
 
                 <!-- <th data-options="field:'id',checkbox:true"></th> -->
-                
+                <th data-options="field:'classMode',align:'right',align:'center'" width="120">
+                  CLASS MODE
+                </th>
                 <th data-options="field:'cntrNo',align:'left'" sortable="true" width="125">
                   CONTAINER NO
                 </th>
@@ -63,9 +68,7 @@
                 <th data-options="field:'fe',align:'right',align:'center'" width="50">
                   F/E
                 </th>
-                <th data-options="field:'classMode',align:'right',align:'center'" width="120">
-                  CLASS MODE
-                </th>
+                
                 <th data-options="field:'ptnrCode',align:'right',align:'center'" sortable="true" width="100">
                   OPR
                 </th>
@@ -97,13 +100,16 @@
                   EXPORT <br> SEAL NO
                 </th>
                 <th data-options="field:'gateMode',align:'center'" width="100">
-                  GATE MODE
+                  TRANS TYPE <br> IN
                 </th>
                 <th data-options="field:'inDate',align:'center', formatter: formatDate" width="100">
-                  GATE IN DAY
+                  GATE IN <br> DAY
+                </th>
+                <th data-options="field:'gateMode',align:'center'" width="100">
+                  TRANS TYPE <br> OUT
                 </th>
                 <th data-options="field:'outDate',align:'center', formatter: formatDate" width="110">
-                  GATE OUT DAY
+                  GATE OUT <br> DAY
                 </th>
                 <th data-options="field:'cntrState',align:'center'"  width="90">
                   STATUS
