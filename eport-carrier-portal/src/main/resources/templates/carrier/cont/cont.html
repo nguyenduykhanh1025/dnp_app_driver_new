@@ -6,7 +6,10 @@
   <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: datetimepicker-css" />
   <style type="text/css">
-        /* TODO */
+        .datagrid-header-row > td {
+           color: #1C84C6;
+           font-weight:bold;
+        }
   </style>
 </head>
 
@@ -52,7 +55,7 @@
         </div>
         <div class="col-sm-12 table-container">
           <table id="dg" style="width: 100%;" pageList="[10,50,100,200,500,1000]">
-            <thead>
+            <thead >
               <tr>
 
                 <!-- <th data-options="field:'id',checkbox:true"></th> -->
@@ -99,13 +102,13 @@
                 <th data-options="field:'sealNo2',align:'left'" width="110">
                   EXPORT <br> SEAL NO
                 </th>
-                <th data-options="field:'gateMode',align:'center'" width="100">
+                <th data-options="field:'transTypeIn',align:'center'" width="100">
                   TRANS TYPE <br> IN
                 </th>
                 <th data-options="field:'inDate',align:'center', formatter: formatDate" width="100">
                   GATE IN <br> DAY
                 </th>
-                <th data-options="field:'gateMode',align:'center'" width="100">
+                <th data-options="field:'transTypeOut',align:'center'" width="100">
                   TRANS TYPE <br> OUT
                 </th>
                 <th data-options="field:'outDate',align:'center', formatter: formatDate" width="110">
@@ -382,38 +385,9 @@
       }
     });
 
-    // event search when input change
-    $.event.special.inputchange = {
-      setup: function () {
-        var self = this,
-          val;
-        $.data(
-          this,
-          "timer",
-          window.setInterval(function () {
-            val = self.value;
-            if ($.data(self, "cache") != val) {
-              $.data(self, "cache", val);
-              $(self).trigger("inputchange");
-            }
-          }, 20)
-        );
-      },
-      teardown: function () {
-        window.clearInterval($.data(this, "timer"));
-      },
-      add: function () {
-        $.data(this, "cache", this.value);
-      },
-    };
+    
 
-    $("#fromDate").on("inputchange", function () {
-      searchContainer();
-    });
-
-    $("#toDate").on("inputchange", function () {
-      searchContainer();
-    });
+    
     </script>
 </body>
 
