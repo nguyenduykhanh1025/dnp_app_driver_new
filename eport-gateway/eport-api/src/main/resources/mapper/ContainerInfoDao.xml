@@ -5,58 +5,59 @@
 
     <select id="selectContainerInfoList" parameterType="ContainerInfoEntity" resultType="vn.com.irtech.api.entity.ContainerInfoEntity">
          SELECT 
+         M.DISPATCH_MODE||M.DISPATCH_MODE2 AS gateMode,
+
          CASE
              WHEN M.IX_CD = 'X' THEN 'Export'
              WHEN M.IX_CD = 'I' THEN 'Import'
              WHEN M.IX_CD = 'V' THEN 'Storage'
+             WHEN M.IX_CD = 'R' THEN 'Export Feeder'
+             WHEN M.IX_CD = 'D' THEN 'Import Feeder'
+             WHEN M.IX_CD = 'L' THEN 'Yard Leasing'
              ELSE M.IX_CD
-         END AS CLASS_MODE,  
+         END AS classMode,  
          
          CASE
              WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
-			 WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
-			 WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
-			 WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
-			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
+             WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
+             WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
              ELSE M.TRANS_TYPE
-         END AS TRANS_TYPE_IN,
-		 CASE
+         END AS transTypeIn,
+         CASE
              WHEN M.TRANS_TYPE2 = 'T' THEN 'Truck'
-			 WHEN M.TRANS_TYPE2 = 'V' THEN 'Vessel'
-			 WHEN M.TRANS_TYPE2 = 'C' THEN 'CFS'
-			 WHEN M.TRANS_TYPE2 = 'P' THEN 'Bundle'
-			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
+             WHEN M.TRANS_TYPE2 = 'V' THEN 'Vessel'
              ELSE M.TRANS_TYPE2
-         END AS TRANS_TYPE_OUT,
-           
-         M.CNTR_NO ,
+         END AS transTypeOut,
+         M.WGT AS wgt,   
+         M.VGM AS vgm, 
+         M.CNTR_NO,
          M.SZTP AS SZTP2,
          M.FE,
          M.PTNR_CODE AS ptnrCode,
-         M.CARGO_TYPE,
-         (SELECT VSL_NM FROM TB_VSL WHERE VSL_CD = M.VSL_CD) AS VESSEL_NAME,
-         M.VSL_CD AS VESSEL_CODE,
+         M.CARGO_TYPE AS cargoType,
+         (SELECT VSL_NM FROM TB_VSL WHERE VSL_CD = M.VSL_CD) AS vesselName,
+         M.VSL_CD AS vesselCode,
          M.BOOKING_NO,
-         M.BL_NO,
-         M.POL,
-         M.POD,
+         M.BL_NO AS blNo,
+         M.POL AS pol,
+         M.POD AS pod,
          M.SEAL_NO1 AS sealNo1,
          M.SEAL_NO3 AS sealNo3,
          M.IN_DATE,
          M.OUT_DATE,
-         
+         M.CONSIGNEE,
          CASE
             WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
             WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
             ELSE M.CNTR_STATE
-         END AS STATUS,
+         END AS cntrState,
         
          M.BLOCK||'-'||M.BAY||'-'||M.ROWW||'-'||M.TIER || '' || M.AREA AS YARD_POSITION,
-         
-         M.STACK_DAYS_D24 AS STACK_DAYS,
+         M.STACK_DAYS_D24 AS days,
          M.REMARK,
          M.TRUCKER AS payerIn,
          M.TRUCKER2 AS payerOut
+         
     FROM (SELECT 'TB_INVENTORY'
                      TABLE_NAME,
                  M.VSL_CD,
@@ -223,6 +224,174 @@
                  M.CNTR_RMK1,
                  M.DOOR_DIR
             FROM TB_INVENTORY M, TB_OVERSIZE O
+           WHERE M.CNTR_ID = O.CNTR_ID(+)
+          UNION ALL
+          SELECT 'TB_MASTER'
+                     TABLE_NAME,
+                 M.VSL_CD,
+                 M.CALL_YEAR,
+                 M.CALL_SEQ,
+                 M.SO_NO,
+                 M.CNTR_NO,
+                 FE,
+                 IX_CD,
+                 PTNR_CODE,
+                 SHIFT_ACC,
+                 SZTP,
+                 SZTP2,
+                 POR,
+                 POD,
+                 FDEST,
+                 DELV,
+                 WGT,
+                 CARGO_TYPE,
+                 SET_TEMP,
+                 AIRVENT,
+                 IMDG,
+                 UNNO,
+                 DMG_COND,
+                 SF_GET_WEIGHT_GROUP (M.OUT_LANE,
+                                      M.VSL_CD,
+                                      M.SZTP2,
+                                      M.WGT)
+                     WGT_GRP,
+                 SUBSTR (M.SZTP2, 1, 1)
+                     AS CNTR_LEN,
+                 SUBSTR (M.SZTP2, 2, 1)
+                     AS CNTR_HW,
+                 SUBSTR (M.SZTP2, 3, 2)
+                     AS CNTR_TYPE,
+                 SEAL_NO1,
+                 SEAL_NO2,
+                 BOOKING_NO,
+                 BL_NO,
+                 O.OV_HEIGHT,
+                 O.OV_FORE,
+                 O.OV_AFT,
+                 O.OV_PORT,
+                 O.OV_STBD,
+                 NULL
+                     OS_HEIGHT,
+                 NULL
+                     OS_PORT,
+                 NULL
+                     OS_STBD,
+                 TRUCKER,
+                 TRANS_TYPE,
+                 M.TRANS_TYPE2,
+                 PREV_VSL,
+                 PREV_YEAR,
+                 PREV_SEQ,
+                 REMARK,
+                 M.IN_TMNL_DATE,
+                 M.IN_DATE,
+                 M.OUT_DATE,
+                 M.DISPATCH_MODE,
+                 M.DISPATCH_MODE2,
+                 M.JOB_ODR_NO,
+                 M.JOB_ODR_NO2,
+                 USER_VOY,
+                 NVL (EMTY_CHK, 'N')
+                     AS EMTY_CHK,
+                 AREA,
+                 STORAGE_CODE,
+                 COD,
+                 POL,
+                 FPOD,
+                 CNTR_STATE,
+                 EDI_TEMP,
+                 PREV_USER_VOY,
+                 SHIFT_TIME,
+                 SHIFT_TYPE,
+                 SHIFT_RSN,
+                 CONSIGNEE,
+                 SEAL_NO3,
+                 CHOLD_CHK,
+                 NVL (THOLD_CHK, 'N')
+                     AS THOLD_CHK,
+                 IN_LANE,
+                 OUT_LANE,
+                 SOC_CHK,
+                 NVL (DG_CHK, 'N')
+                     AS DG_CHK,
+                 RETURN_RSN,
+                 NVL (DOMESTIC_CHK, 'N')
+                     AS DOMESTIC_CHK,
+                 LBAY,
+                 LROW,
+                 LTIER,
+                 DBAY,
+                 DROW,
+                 DTIER,
+                 BLOCK,
+                 BAY,
+                 ROWW,
+                 TIER,
+                 OWNER,
+                 GWAY,
+                 HANDLE_INSTR,
+                 YHANDLE_INSTR,
+                 YSPECIAL_TYPE,
+                 ABS_CONST,
+                 TRN_VOY,
+                 TRN_VOY2,
+                 TRUCKER2,
+                 TRUCK_NO,
+                 TRUCK_NO2,
+                 UNPLUG_INSTR,
+                 CNTR_COND,
+                 DEFECTIVE_CODE,
+                 CLEAN_CODE,
+                 POWER_CODE,
+                 NVL (M.REHANDLE_CODE, 'U')
+                     AS REHANDLE_CODE,
+                 REHANDLE_RSN,
+                 REHANDLE_STAFF,
+                 LCL_FCL,
+                 DHD,
+                 LHD,
+                 DHATCH_IDX,
+                 LHATCH_IDX,
+                 NULL
+                     DMG_CHK,
+                 STUFF_CHK,
+                 NVL (M.OVERLAND_CHK, 'N')
+                     AS OVERLAND_CHK,
+                 NVL (M.RELEASE_CHK, 'N')
+                     AS RELEASE_CHK,
+                 NULL
+                     INSPECT_CHK,
+                 FORWARDER,
+                 COMMODITY,
+                 DEQU_NO,
+                 LEQU_NO,
+                 PREINFO_CHK,
+                 LBAY_SEQ,
+                 BAY_IDX,
+                 ROW_IDX,
+                 M.CNTR_ID,
+                 M.CNTR_UID,
+                 TO_NUMBER (
+                       TRUNC (NVL (M.OUT_DATE, SYSDATE))
+                     - TRUNC (NVL (M.IN_TMNL_DATE, M.IN_DATE))
+                     + 1)
+                     AS STACK_DAYS,
+                 CEIL (
+                       NVL (M.OUT_DATE, SYSDATE)
+                     - NVL (M.IN_TMNL_DATE, M.IN_DATE))
+                     AS STACK_DAYS_D24,
+                 M.DBAY || M.DROW || M.DTIER
+                     AS SHIP_LOCD,
+                 M.LBAY || M.LROW || M.LTIER
+                     AS SHIP_LOCL,
+                 M.VGM,
+                 M.VGM_CHK,
+                 M.CUSTOM_APP_TYPE,
+                 M.COMMODITY_DESC,
+                 M.CONSIGNEE_NM,
+                 M.CNTR_RMK1,
+                 M.DOOR_DIR
+            FROM TB_MASTER M, TB_OVERSIZE O
            WHERE M.CNTR_ID = O.CNTR_ID(+)) M,
          TB_BERTHPLAN B,
          (    SELECT CNTR_UID,
@@ -282,7 +451,7 @@
     </select>
     <select  id="countContainerInfoList" parameterType="ContainerInfoEntity" resultType="int">
                      SELECT  COUNT(*)
-                  FROM (SELECT 'TB_INVENTORY'
+                 FROM (SELECT 'TB_INVENTORY'
                      TABLE_NAME,
                  M.VSL_CD,
                  M.CALL_YEAR,
@@ -448,6 +617,174 @@
                  M.CNTR_RMK1,
                  M.DOOR_DIR
             FROM TB_INVENTORY M, TB_OVERSIZE O
+           WHERE M.CNTR_ID = O.CNTR_ID(+)
+          UNION ALL
+          SELECT 'TB_MASTER'
+                     TABLE_NAME,
+                 M.VSL_CD,
+                 M.CALL_YEAR,
+                 M.CALL_SEQ,
+                 M.SO_NO,
+                 M.CNTR_NO,
+                 FE,
+                 IX_CD,
+                 PTNR_CODE,
+                 SHIFT_ACC,
+                 SZTP,
+                 SZTP2,
+                 POR,
+                 POD,
+                 FDEST,
+                 DELV,
+                 WGT,
+                 CARGO_TYPE,
+                 SET_TEMP,
+                 AIRVENT,
+                 IMDG,
+                 UNNO,
+                 DMG_COND,
+                 SF_GET_WEIGHT_GROUP (M.OUT_LANE,
+                                      M.VSL_CD,
+                                      M.SZTP2,
+                                      M.WGT)
+                     WGT_GRP,
+                 SUBSTR (M.SZTP2, 1, 1)
+                     AS CNTR_LEN,
+                 SUBSTR (M.SZTP2, 2, 1)
+                     AS CNTR_HW,
+                 SUBSTR (M.SZTP2, 3, 2)
+                     AS CNTR_TYPE,
+                 SEAL_NO1,
+                 SEAL_NO2,
+                 BOOKING_NO,
+                 BL_NO,
+                 O.OV_HEIGHT,
+                 O.OV_FORE,
+                 O.OV_AFT,
+                 O.OV_PORT,
+                 O.OV_STBD,
+                 NULL
+                     OS_HEIGHT,
+                 NULL
+                     OS_PORT,
+                 NULL
+                     OS_STBD,
+                 TRUCKER,
+                 TRANS_TYPE,
+                 M.TRANS_TYPE2,
+                 PREV_VSL,
+                 PREV_YEAR,
+                 PREV_SEQ,
+                 REMARK,
+                 M.IN_TMNL_DATE,
+                 M.IN_DATE,
+                 M.OUT_DATE,
+                 M.DISPATCH_MODE,
+                 M.DISPATCH_MODE2,
+                 M.JOB_ODR_NO,
+                 M.JOB_ODR_NO2,
+                 USER_VOY,
+                 NVL (EMTY_CHK, 'N')
+                     AS EMTY_CHK,
+                 AREA,
+                 STORAGE_CODE,
+                 COD,
+                 POL,
+                 FPOD,
+                 CNTR_STATE,
+                 EDI_TEMP,
+                 PREV_USER_VOY,
+                 SHIFT_TIME,
+                 SHIFT_TYPE,
+                 SHIFT_RSN,
+                 CONSIGNEE,
+                 SEAL_NO3,
+                 CHOLD_CHK,
+                 NVL (THOLD_CHK, 'N')
+                     AS THOLD_CHK,
+                 IN_LANE,
+                 OUT_LANE,
+                 SOC_CHK,
+                 NVL (DG_CHK, 'N')
+                     AS DG_CHK,
+                 RETURN_RSN,
+                 NVL (DOMESTIC_CHK, 'N')
+                     AS DOMESTIC_CHK,
+                 LBAY,
+                 LROW,
+                 LTIER,
+                 DBAY,
+                 DROW,
+                 DTIER,
+                 BLOCK,
+                 BAY,
+                 ROWW,
+                 TIER,
+                 OWNER,
+                 GWAY,
+                 HANDLE_INSTR,
+                 YHANDLE_INSTR,
+                 YSPECIAL_TYPE,
+                 ABS_CONST,
+                 TRN_VOY,
+                 TRN_VOY2,
+                 TRUCKER2,
+                 TRUCK_NO,
+                 TRUCK_NO2,
+                 UNPLUG_INSTR,
+                 CNTR_COND,
+                 DEFECTIVE_CODE,
+                 CLEAN_CODE,
+                 POWER_CODE,
+                 NVL (M.REHANDLE_CODE, 'U')
+                     AS REHANDLE_CODE,
+                 REHANDLE_RSN,
+                 REHANDLE_STAFF,
+                 LCL_FCL,
+                 DHD,
+                 LHD,
+                 DHATCH_IDX,
+                 LHATCH_IDX,
+                 NULL
+                     DMG_CHK,
+                 STUFF_CHK,
+                 NVL (M.OVERLAND_CHK, 'N')
+                     AS OVERLAND_CHK,
+                 NVL (M.RELEASE_CHK, 'N')
+                     AS RELEASE_CHK,
+                 NULL
+                     INSPECT_CHK,
+                 FORWARDER,
+                 COMMODITY,
+                 DEQU_NO,
+                 LEQU_NO,
+                 PREINFO_CHK,
+                 LBAY_SEQ,
+                 BAY_IDX,
+                 ROW_IDX,
+                 M.CNTR_ID,
+                 M.CNTR_UID,
+                 TO_NUMBER (
+                       TRUNC (NVL (M.OUT_DATE, SYSDATE))
+                     - TRUNC (NVL (M.IN_TMNL_DATE, M.IN_DATE))
+                     + 1)
+                     AS STACK_DAYS,
+                 CEIL (
+                       NVL (M.OUT_DATE, SYSDATE)
+                     - NVL (M.IN_TMNL_DATE, M.IN_DATE))
+                     AS STACK_DAYS_D24,
+                 M.DBAY || M.DROW || M.DTIER
+                     AS SHIP_LOCD,
+                 M.LBAY || M.LROW || M.LTIER
+                     AS SHIP_LOCL,
+                 M.VGM,
+                 M.VGM_CHK,
+                 M.CUSTOM_APP_TYPE,
+                 M.COMMODITY_DESC,
+                 M.CONSIGNEE_NM,
+                 M.CNTR_RMK1,
+                 M.DOOR_DIR
+            FROM TB_MASTER M, TB_OVERSIZE O
            WHERE M.CNTR_ID = O.CNTR_ID(+)) M,
          TB_BERTHPLAN B,
          (    SELECT CNTR_UID,

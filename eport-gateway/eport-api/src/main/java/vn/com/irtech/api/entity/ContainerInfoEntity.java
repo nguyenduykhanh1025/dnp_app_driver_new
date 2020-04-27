@@ -54,7 +54,7 @@ public class ContainerInfoEntity extends BaseEntity
     /** Seal Number */
     private String sealNo1;
     /** Seal Number */
-    private String sealNo2;
+    private String sealNo3;
 
     /** Gate mode for terminal in */
     private String gateMode;
@@ -239,14 +239,16 @@ public class ContainerInfoEntity extends BaseEntity
     {
         return sealNo1;
     }
-    public void setSealNo2(String sealNo2) 
+
+    
+    public void setSealNo3(String sealNo3) 
     {
-        this.sealNo2 = sealNo2;
+        this.sealNo3 = sealNo3;
     }
 
-    public String getSealNo2() 
+    public String getSealNo3() 
     {
-        return sealNo2;
+        return sealNo3;
     }
     public void setGateMode(String gateMode) 
     {
