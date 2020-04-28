@@ -11,8 +11,11 @@ import vn.com.irtech.eport.common.annotation.Excel;
 public class ContainerInfo extends ContainerInfoBase {
 	private static final long serialVersionUID = 1L;
 	
+	@Excel(name = "STACK DAYS")
+	private int days;
+
 	/** remark */
-	@Excel(name = "Remark")
+	@Excel(name = "REMARK")
 	private String remark;
 
 	public String getRemark() {
@@ -21,5 +24,13 @@ public class ContainerInfo extends ContainerInfoBase {
 
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	public int getDays() {
+		return days;
+	}
+
+	public void setDays(int days) {
+		this.days = days;
 	}
 }

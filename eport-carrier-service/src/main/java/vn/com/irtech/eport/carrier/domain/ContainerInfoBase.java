@@ -20,15 +20,15 @@ public class ContainerInfoBase extends BaseEntity
     private Long cntrId;
    
     /** Class Mode */
-    @Excel(name = "Class Mode")
+    @Excel(name = "CLASS MODE")
     private String classMode;
 
     /** Container Number */
-    @Excel(name = "Container Number")
+    @Excel(name = "CONTAINER NO")
     private String cntrNo;
 
     /** Size/type */
-    @Excel(name = "Sztp")
+    @Excel(name = "SZTP")
     private String sztp2;
 
     /** F/E */
@@ -40,21 +40,20 @@ public class ContainerInfoBase extends BaseEntity
     private String ptnrCode;
 
     /** Cargo Type */
-    @Excel(name = "Cargo Type")
+    @Excel(name = "CARGO TYPE")
     private String cargoType;
 
     
     /** Vessel Name */
-    @Excel(name = "Vessel Name")
+    @Excel(name = "VESSEL NAME")
     private String vesselName;
 
      /** Vessel Code */
-    @Excel(name = "Vessel Code")
+    @Excel(name = "VESSEL CODE")
     private String vesselCode;
 
 
-    @Excel(name = "Yard Position")
-    private String yardPosition;
+    
     
     /** yard location - Block */
     private String block;
@@ -76,11 +75,11 @@ public class ContainerInfoBase extends BaseEntity
     private String consignee;
 
     /** Booking Number */
-    @Excel(name = "Booking Number")
+    @Excel(name = "BOOKING NO")
     private String bookingNo;
 
     /** BL number */
-    @Excel(name = "BL Number")
+    @Excel(name = "BL NO")
     private String blNo;
 
      /** pol */
@@ -91,36 +90,40 @@ public class ContainerInfoBase extends BaseEntity
     @Excel(name = "POD")
     private String pod;
     /** Seal Number */
-    @Excel(name = "Carrier Seal No")
+    @Excel(name = "CARRIER SEAL")
     private String sealNo1;
 
-    @Excel(name = "Export Seal No")
+    @Excel(name = "EXPORT SEAL")
     private String sealNo3;
     /** Gate mode for terminal in */
-    @Excel(name = "Gate Mode")
     private String gateMode;
 
     /** Trans Type In */
-    @Excel(name = "Trans Type In")
+    @Excel(name = "TRANS TYPE IN")
     private String transTypeIn;
    
     /** Gate In Date */
-    @Excel(name = "Gate In Date")
+    @Excel(name = "IN DAY")
     private String inDate;
 
     /** Trans Type Out */
-    @Excel(name = "Trans Type Out")
+    @Excel(name = "TRANS TYPE OUT")
     private String transTypeOut;
    
     /** Gate Out Date */
-    @Excel(name = "Gate Out Date")
+    @Excel(name = "OUT DATE")
     private String outDate;
 
-    private String vgm;
+     /** Container State  (S: Stacking, D:Delivered) */
+     @Excel(name = "STATUS")
+     private String cntrState;
 
-    /** Container State  (S: Stacking, D:Delivered) */
-    @Excel(name = "Container State")
-    private String cntrState;
+    private String vgm;
+    @Excel(name = "YARD POSITION")
+    private String yardPosition;
+
+
+   
 
 
      
