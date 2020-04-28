@@ -12,10 +12,10 @@ public class ContainerInfoEmpty extends ContainerInfoBase {
 	private static final long serialVersionUID = 1L;
 
 	/** Days */
-	@Excel(name = "Stacking Days")
+	@Excel(name = "STACK DAY")
 	private int days;
 	/** remark */
-	@Excel(name = "Remark")
+	@Excel(name = "REMARK")
 	private String remark;
 
 	public String getRemark() {

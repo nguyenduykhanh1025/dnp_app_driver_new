@@ -36,8 +36,7 @@
         <if test="params.orderByColumn == 'days'  and params.isAsc == 'desc'"> ORDER BY M.STACK_DAYS_D24 DESC </if>
         <if test="params.orderByColumn == 'ptnrCode'  and params.isAsc == 'asc'"> ORDER BY M.PTNR_CODE ASC </if>
         <if test="params.orderByColumn == 'ptnrCode'  and params.isAsc == 'desc'"> ORDER BY M.PTNR_CODE DESC </if>
-         
-
+        <if test="params.orderByColumn == 'inDays'  and params.isAsc == 'desc'"> ORDER BY M.IN_DATE DESC </if>
          OFFSET #{params.pageNum} ROWS FETCH NEXT #{params.pageSize} ROWS ONLY
     </sql>
     <sql id="whereClauseCount">
@@ -77,31 +76,14 @@
         <if test="params.orderByColumn == 'ptnrCode'  and params.isAsc == 'desc'"> ORDER BY M.PTNR_CODE DESC </if>
     </sql> 
     <select id="selectContainerInfoListInOut" parameterType="ContainerInfoEntity" resultType="vn.com.irtech.api.entity.ContainerInfoEntity">
-        SELECT CASE
+            SELECT CASE
              WHEN M.IX_CD = 'X' THEN 'Export'
              WHEN M.IX_CD = 'I' THEN 'Import'
              WHEN M.IX_CD = 'V' THEN 'Storage'
              ELSE M.IX_CD
          END
              AS CLASS_MODE,
-         CASE
-             WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
-             WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
-             WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
-             WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
-             WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
-             ELSE M.TRANS_TYPE
-         END
-             AS TRANS_TYPE_IN,
-         CASE
-             WHEN M.TRANS_TYPE2 = 'T' THEN 'Truck'
-             WHEN M.TRANS_TYPE2 = 'V' THEN 'Vessel'
-             WHEN M.TRANS_TYPE2 = 'C' THEN 'CFS'
-             WHEN M.TRANS_TYPE2 = 'P' THEN 'Bundle'
-             WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
-             ELSE M.TRANS_TYPE2
-         END
-             AS TRANS_TYPE_OUT,
+         
          M.CNTR_NO,
          M.SZTP AS SZTP2,
          M.FE,
@@ -114,26 +96,48 @@
          M.VSL_CD
              AS VESSEL_CODE,
          M.BOOKING_NO,
-            M.BL_NO AS blNo,
-         M.POL AS pol,
+         M.BL_NO AS blNo,
+        M.POL AS pol,
          M.POD AS pod,
          M.SEAL_NO1 AS sealNo1,
          M.SEAL_NO3 AS sealNo3,
+
+         CASE
+             WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
+			 WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
+			 WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
+			 WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
+			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
+             ELSE M.TRANS_TYPE
+         END AS TRANS_TYPE_IN,           
          M.IN_DATE,
+         CASE
+             WHEN M.TRANS_TYPE2 = 'T' THEN 'Truck'
+			 WHEN M.TRANS_TYPE2= 'V' THEN 'Vessel'
+			 WHEN M.TRANS_TYPE2 = 'C' THEN 'CFS'
+			 WHEN M.TRANS_TYPE2 = 'P' THEN 'Bundle'
+			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
+             ELSE M.TRANS_TYPE2
+         END AS TRANS_TYPE_OUT,
          M.OUT_DATE,
          CASE
-             WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
-             WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
-             ELSE M.CNTR_STATE
-         END
-             AS cntrState,
-         M.BLOCK || '-' || M.BAY || '-' || M.ROWW || '-' || M.TIER
-             AS YARD_POSITION,
-         M.AREA,
-        M.STACK_DAYS_D24 AS days,
-         M.REMARK,
-         M.TRUCKER AS payerIn,
-         M.TRUCKER2 AS payerOut
+            WHEN M.CNTR_STATE = 'R' THEN 'Before Reconcile'
+			WHEN M.CNTR_STATE = 'B' THEN 'After Reconcile'
+			WHEN M.CNTR_STATE = 'M' THEN 'Manifested'
+			WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
+			WHEN M.CNTR_STATE = 'G' THEN 'In Progress Outgoing'
+			WHEN M.CNTR_STATE = 'O' THEN 'In Progress Incoming'
+			WHEN M.CNTR_STATE = 'P' THEN 'Assigned by Trucker'
+			WHEN M.CNTR_STATE = 'Z' THEN 'Under Shifting'
+			WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
+			WHEN M.CNTR_STATE = 'E' THEN 'Empty Gate Out'
+            ELSE M.CNTR_STATE
+         END AS cntrState,
+		 
+         M.BLOCK || '-' || M.BAY || '-' || M.ROWW || '-' || M.TIER || '' || M.AREA AS YARD_POSITION,
+         M.STACK_DAYS_D24
+             AS days,
+         M.REMARK
     FROM (SELECT 'TB_INVENTORY'
                      TABLE_NAME,
                  M.VSL_CD,
@@ -494,30 +498,13 @@
    		
     </select>
     <select id="selectContainerInfoListFull" parameterType="ContainerInfoEntity" resultType="vn.com.irtech.api.entity.ContainerInfoEntity">
-    SELECT 
+   SELECT 
          CASE
              WHEN M.IX_CD = 'X' THEN 'Export'
              WHEN M.IX_CD = 'I' THEN 'Import'
              WHEN M.IX_CD = 'V' THEN 'Storage'
              ELSE M.IX_CD
          END AS CLASS_MODE,  
-         
-         CASE
-             WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
-			 WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
-			 WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
-			 WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
-			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
-             ELSE M.TRANS_TYPE
-         END AS TRANS_TYPE_IN,
-		 CASE
-             WHEN M.TRANS_TYPE2 = 'T' THEN 'Truck'
-			 WHEN M.TRANS_TYPE2 = 'V' THEN 'Vessel'
-			 WHEN M.TRANS_TYPE2 = 'C' THEN 'CFS'
-			 WHEN M.TRANS_TYPE2 = 'P' THEN 'Bundle'
-			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
-             ELSE M.TRANS_TYPE2
-         END AS TRANS_TYPE_OUT,
            
          M.CNTR_NO,
          M.SZTP AS SZTP2,
@@ -527,26 +514,47 @@
          (SELECT VSL_NM FROM TB_VSL WHERE VSL_CD = M.VSL_CD) AS VESSEL_NAME,
          M.VSL_CD AS VESSEL_CODE,
          M.BOOKING_NO,
-            M.BL_NO AS blNo,
+         M.BL_NO AS blNo,
          M.POL AS pol,
          M.POD AS pod,
          M.SEAL_NO1 AS sealNo1,
          M.SEAL_NO3 AS sealNo3,
+         CASE
+             WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
+			 WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
+			 WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
+			 WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
+			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
+             ELSE M.TRANS_TYPE
+         END AS TRANS_TYPE_IN,           
          M.IN_DATE,
+         CASE
+             WHEN M.TRANS_TYPE2 = 'T' THEN 'Truck'
+			 WHEN M.TRANS_TYPE2= 'V' THEN 'Vessel'
+			 WHEN M.TRANS_TYPE2 = 'C' THEN 'CFS'
+			 WHEN M.TRANS_TYPE2 = 'P' THEN 'Bundle'
+			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
+             ELSE M.TRANS_TYPE2
+         END AS TRANS_TYPE_OUT,
          M.OUT_DATE,
          
          CASE
-            WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
-            WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
+            WHEN M.CNTR_STATE = 'R' THEN 'Before Reconcile'
+			WHEN M.CNTR_STATE = 'B' THEN 'After Reconcile'
+			WHEN M.CNTR_STATE = 'M' THEN 'Manifested'
+			WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
+			WHEN M.CNTR_STATE = 'G' THEN 'In Progress Outgoing'
+			WHEN M.CNTR_STATE = 'O' THEN 'In Progress Incoming'
+			WHEN M.CNTR_STATE = 'P' THEN 'Assigned by Trucker'
+			WHEN M.CNTR_STATE = 'Z' THEN 'Under Shifting'
+			WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
+			WHEN M.CNTR_STATE = 'E' THEN 'Empty Gate Out'
             ELSE M.CNTR_STATE
          END AS cntrState,
         
-         M.BLOCK||'-'||M.BAY||'-'||M.ROWW||'-'||M.TIER AS YARD_POSITION,
-         M.AREA,
+         M.BLOCK || '-' || M.BAY || '-' || M.ROWW || '-' || M.TIER || '' || M.AREA AS YARD_POSITION,
          M.STACK_DAYS_D24 AS days,
-         M.REMARK,
-         M.TRUCKER AS payerIn,
-         M.TRUCKER2 AS payerOut
+         M.REMARK
     FROM (SELECT 'TB_INVENTORY'
                      TABLE_NAME,
                  M.VSL_CD,
@@ -736,35 +744,18 @@
             <include refid="whereClause"/>
     </select>
     <select id="selectContainerInfoListEmpty" parameterType="ContainerInfoEntity" resultType="vn.com.irtech.api.entity.ContainerInfoEntity">
-        SELECT 
+                SELECT 
          CASE
              WHEN M.IX_CD = 'X' THEN 'Export'
              WHEN M.IX_CD = 'I' THEN 'Import'
              WHEN M.IX_CD = 'V' THEN 'Storage'
              ELSE M.IX_CD
          END AS CLASS_MODE,  
-         
-         CASE
-             WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
-			 WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
-			 WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
-			 WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
-			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
-             ELSE M.TRANS_TYPE
-         END AS TRANS_TYPE_IN,
-		 CASE
-             WHEN M.TRANS_TYPE2 = 'T' THEN 'Truck'
-			 WHEN M.TRANS_TYPE2= 'V' THEN 'Vessel'
-			 WHEN M.TRANS_TYPE2 = 'C' THEN 'CFS'
-			 WHEN M.TRANS_TYPE2 = 'P' THEN 'Bundle'
-			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
-             ELSE M.TRANS_TYPE2
-         END AS TRANS_TYPE_OUT,
-           
+                    
          M.CNTR_NO,
          M.SZTP AS SZTP2,
          M.FE,
-            M.PTNR_CODE AS ptnrCode,
+        M.PTNR_CODE AS ptnrCode,
          M.CARGO_TYPE AS cargoType,
          (SELECT VSL_NM FROM TB_VSL WHERE VSL_CD = M.VSL_CD) AS VESSEL_NAME,
          M.VSL_CD AS VESSEL_CODE,
@@ -773,22 +764,43 @@
          M.POL AS pol,
          M.POD AS pod,
          M.SEAL_NO1 AS sealNo1,
-         M.SEAL_NO3 AS sealNo3,          
+         M.SEAL_NO3 AS sealNo3,
+         CASE
+             WHEN M.TRANS_TYPE = 'T' THEN 'Truck'
+			 WHEN M.TRANS_TYPE = 'V' THEN 'Vessel'
+			 WHEN M.TRANS_TYPE = 'C' THEN 'CFS'
+			 WHEN M.TRANS_TYPE = 'P' THEN 'Bundle'
+			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
+             ELSE M.TRANS_TYPE
+         END AS TRANS_TYPE_IN,           
          M.IN_DATE,
+         CASE
+             WHEN M.TRANS_TYPE2 = 'T' THEN 'Truck'
+			 WHEN M.TRANS_TYPE2= 'V' THEN 'Vessel'
+			 WHEN M.TRANS_TYPE2 = 'C' THEN 'CFS'
+			 WHEN M.TRANS_TYPE2 = 'P' THEN 'Bundle'
+			 WHEN M.TRANS_TYPE2 = 'M' THEN 'Mode change'
+             ELSE M.TRANS_TYPE2
+         END AS TRANS_TYPE_OUT,
          M.OUT_DATE,
          
          CASE
-            WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
-            WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
+            WHEN M.CNTR_STATE = 'R' THEN 'Before Reconcile'
+			WHEN M.CNTR_STATE = 'B' THEN 'After Reconcile'
+			WHEN M.CNTR_STATE = 'M' THEN 'Manifested'
+			WHEN M.CNTR_STATE = 'Y' THEN 'Stacking'
+			WHEN M.CNTR_STATE = 'G' THEN 'In Progress Outgoing'
+			WHEN M.CNTR_STATE = 'O' THEN 'In Progress Incoming'
+			WHEN M.CNTR_STATE = 'P' THEN 'Assigned by Trucker'
+			WHEN M.CNTR_STATE = 'Z' THEN 'Under Shifting'
+			WHEN M.CNTR_STATE = 'D' THEN 'Delivered'
+			WHEN M.CNTR_STATE = 'E' THEN 'Empty Gate Out'
             ELSE M.CNTR_STATE
          END AS cntrState,
         
-         M.BLOCK||'-'||M.BAY||'-'||M.ROWW||'-'||M.TIER AS YARD_POSITION,
-         M.AREA,
+            M.BLOCK || '-' || M.BAY || '-' || M.ROWW || '-' || M.TIER || '' || M.AREA AS YARD_POSITION,
          M.STACK_DAYS_D24 AS days,
-         M.REMARK,
-         M.TRUCKER AS payerIn,
-         M.TRUCKER2 AS payerOut
+         M.REMARK
     FROM (SELECT 'TB_INVENTORY'
                      TABLE_NAME,
                  M.VSL_CD,
@@ -980,8 +992,8 @@
     </select>
 
     <select  id="countContainerInfoInOut" parameterType="ContainerInfoEntity" resultType="int">
-                     SELECT  COUNT(*)
-         FROM (SELECT 'TB_INVENTORY'
+    SELECT  COUNT(*)
+    FROM (SELECT 'TB_INVENTORY'
                      TABLE_NAME,
                  M.VSL_CD,
                  M.CALL_YEAR,
@@ -1339,7 +1351,7 @@
     </select>
      <select  id="countContainerInfoFull" parameterType="ContainerInfoEntity" resultType="int">
                      SELECT  COUNT(*)
-            FROM (SELECT 'TB_INVENTORY'
+          FROM (SELECT 'TB_INVENTORY'
                      TABLE_NAME,
                  M.VSL_CD,
                  M.CALL_YEAR,
@@ -1529,7 +1541,7 @@
     </select>
      <select  id="countContainerInfoEmpty" parameterType="ContainerInfoEntity" resultType="int">
                      SELECT  COUNT(*)
-                FROM (SELECT 'TB_INVENTORY'
+                  FROM (SELECT 'TB_INVENTORY'
                      TABLE_NAME,
                  M.VSL_CD,
                  M.CALL_YEAR,

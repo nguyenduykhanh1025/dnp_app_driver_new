@@ -76,11 +76,7 @@ public class ContainerInfoController extends CarrierBaseController {
                 }
             }
         }
-        if(orderByColumn != null && isAsc != null)
-        {
-            pageInfo.put("orderByColumn",orderByColumn);
-            pageInfo.put("isAsc",isAsc);
-        }
+       
         pageInfo.put("pageNum", (pageNum - 1) * pageSize);
         pageInfo.put("pageSize", pageSize);
         containerInfo.setParams(pageInfo);
@@ -110,12 +106,24 @@ public class ContainerInfoController extends CarrierBaseController {
             containerInfo.setCntrState("");
             containerInfo.setToDate("");
             containerInfo.setFromDate("");
+            pageInfo.put("orderByColumn","inDays");
+            pageInfo.put("isAsc","desc");
         }
         if (contFE.equals("E")) {
             containerInfo.setFe("E");
             containerInfo.setCntrState("");
             containerInfo.setToDate("");
             containerInfo.setFromDate("");
+            pageInfo.put("orderByColumn","inDays");
+            pageInfo.put("isAsc","desc");
+        }
+        if(orderByColumn != null && isAsc != null)
+        {
+            pageInfo.put("orderByColumn",orderByColumn);
+            pageInfo.put("isAsc",isAsc);
+        }else if(contFE == null){
+            pageInfo.put("orderByColumn","days");
+            pageInfo.put("isAsc","asc");
         }
         final String uri = Global.getApiUrl() + "/container/list";
         RestTemplate restTemplate = new RestTemplate();
@@ -151,6 +159,7 @@ public class ContainerInfoController extends CarrierBaseController {
         containerInfo.setParams(pageInfo);
         containerInfo.setPtnrCode(carrierCode);
         containerInfo.setCntrState("D");
+       
         if(cntrNo!= null)
         {
             containerInfo.setCntrNo(cntrNo.toLowerCase());
@@ -174,17 +183,24 @@ public class ContainerInfoController extends CarrierBaseController {
             containerInfo.setCntrState("");
             containerInfo.setToDate("");
             containerInfo.setFromDate("");
+            pageInfo.put("orderByColumn","inDays");
+            pageInfo.put("isAsc","desc");
         }
         if (contFE.equals("E")) {
             containerInfo.setFe("E");
             containerInfo.setCntrState("");
             containerInfo.setToDate("");
             containerInfo.setFromDate("");
+            pageInfo.put("orderByColumn","inDays");
+            pageInfo.put("isAsc","desc");
         }
         if(orderByColumn != null && isAsc != null)
         {
             pageInfo.put("orderByColumn",orderByColumn);
             pageInfo.put("isAsc",isAsc);
+        }else if(contFE == null){
+            pageInfo.put("orderByColumn","days");
+            pageInfo.put("isAsc","asc");
         }
         final String uri = Global.getApiUrl() + "/container/export";
      
