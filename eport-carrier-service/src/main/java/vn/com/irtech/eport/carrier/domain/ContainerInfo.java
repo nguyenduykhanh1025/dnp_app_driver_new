@@ -23,6 +23,10 @@ public class ContainerInfo extends ContainerInfoBase {
 	}
 
 	public void setRemark(String remark) {
+		if(remark != null)
+		{	
+			remark = remark.replace("[Remark]", "");
+		}
 		this.remark = remark;
 	}
 

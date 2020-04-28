@@ -151,6 +151,10 @@ public class ContainerInfoBase extends BaseEntity
         return transTypeOut;
     }
     public void setYardPosition(String yardPosition) {
+        if(yardPosition != null)
+        {
+            yardPosition = yardPosition.replace("---", "");
+        }
     	this.yardPosition = yardPosition;
     }
 
