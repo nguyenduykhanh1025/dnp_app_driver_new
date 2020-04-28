@@ -178,10 +178,6 @@
           loader: function (param, success, error) {
             var opts = $(this).datagrid("options");
             if (!opts.url) return false;
-            if (contFE == "E") {
-              $('#dg').datagrid('hideColumn', 'blNo');
-              $('#dg').datagrid('showColumn', 'days')
-            }
             $.ajax({
               type: opts.method,
               url: opts.url,
@@ -228,10 +224,6 @@
           loader: function (param, success, error) {
             var opts = $(this).datagrid("options");
             if (!opts.url) return false;
-            if (contFE == "E") {
-              $('#dg').datagrid('hideColumn', 'blNo');
-              $('#dg').datagrid('showColumn', 'days')
-            }
             $.ajax({
               type: opts.method,
               url: opts.url,
