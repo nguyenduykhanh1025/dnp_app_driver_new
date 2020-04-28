@@ -6,10 +6,10 @@
   <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: datetimepicker-css" />
   <style type="text/css">
-        .datagrid-header-row > td {
-           color: #1C84C6;
-           font-weight:bold;
-        }
+    .datagrid-header-row>td {
+      color: #1C84C6;
+      font-weight: bold;
+    }
   </style>
 </head>
 
@@ -55,7 +55,7 @@
         </div>
         <div class="col-sm-12 table-container">
           <table id="dg" style="width: 100%;" pageList="[10,50,100,200,500,1000]">
-            <thead >
+            <thead>
               <tr>
 
                 <!-- <th data-options="field:'id',checkbox:true"></th> -->
@@ -65,13 +65,13 @@
                 <th data-options="field:'cntrNo',align:'left'" sortable="true" width="125">
                   CONTAINER NO
                 </th>
-                <th data-options="field:'sztp2',align:'center'"  width="110">
+                <th data-options="field:'sztp2',align:'center'" width="110">
                   SZTP
                 </th>
                 <th data-options="field:'fe',align:'right',align:'center'" width="50">
                   F/E
                 </th>
-                
+
                 <th data-options="field:'ptnrCode',align:'right',align:'center'" sortable="true" width="100">
                   OPR
                 </th>
@@ -84,7 +84,7 @@
                 <th data-options="field:'vesselCode',align:'right',align:'center'" width="110">
                   VESSEL CODE
                 </th>
-                <th data-options="field:'bookingNo',halign:'center',align:'center'"  width="120">
+                <th data-options="field:'bookingNo',halign:'center',align:'center'" width="120">
                   BOOKING NO
                 </th>
                 <th data-options="field:'blNo',halign:'center'" width="120">
@@ -97,32 +97,33 @@
                   POD
                 </th>
                 <th data-options="field:'sealNo1',align:'left'" width="110">
-                  CARRIER<br> SEAL 
+                  CARRIER<br> SEAL
                 </th>
                 <th data-options="field:'sealNo2',align:'left'" width="110">
-                  EXPORT <br> SEAL 
+                  EXPORT <br> SEAL
                 </th>
                 <th data-options="field:'transTypeIn',align:'center'" width="100">
                   TRANS TYPE <br> IN
                 </th>
                 <th data-options="field:'inDate',align:'center', formatter: formatDate" width="100">
-                 IN DAY
+                  IN DAY
                 </th>
                 <th data-options="field:'transTypeOut',align:'center'" width="100">
                   TRANS TYPE <br> OUT
                 </th>
                 <th data-options="field:'outDate',align:'center', formatter: formatDate" width="110">
-                  OUT  DAY
+                  OUT DAY
                 </th>
-                <th data-options="field:'cntrState',align:'center'"  width="90">
+                <th data-options="field:'cntrState',align:'center'" width="90">
                   STATUS
                 </th>
-                <th data-options="field:'yardPosition',align:'right',align:'center',formatter : formatYardPosition" width="120">
+                <th data-options="field:'yardPosition',align:'right',align:'center',formatter : formatYardPosition"
+                  width="120">
                   YARD POSITION
                 </th>
-                <th data-options="field:'days',align:'center'" sortable="true" >STACK DAYS</th>
+                <th data-options="field:'days',align:'center'" sortable="true">STACK DAYS</th>
                 <th data-options="field:'remark',formatter: cleanRemark" width="300">
-                 REMARK
+                  REMARK
                 </th>
               </tr>
             </thead>
@@ -147,7 +148,7 @@
         $('#toDate').remove();
         $('#fromDate').remove();
       }
-      
+
       $(function () {
         $('#toDate').val(getCurrentDayForLoadPage());
         $('#fromDate').val(getYesterdayForLoadGage());
@@ -193,12 +194,7 @@
               },
               dataType: "json",
               success: function (data) {
-                // if(!data.total){
-                // }
                 success(data);
-                
-                
-
               },
               error: function () {
                 error.apply(this, arguments);
@@ -206,10 +202,8 @@
             });
           },
         });
-
       });
-
-
+      
       function searchContainer() {
         var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
         var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
@@ -220,7 +214,7 @@
           pagination: true,
           rownumbers: true,
           pageSize: 50,
-          pageList: [10,50,100,200,500,1000],
+          pageList: [10, 50, 100, 200, 500, 1000],
           loader: function (param, success, error) {
             var opts = $(this).datagrid("options");
             if (!opts.url) return false;
@@ -304,25 +298,24 @@
             var monthText = month < 10 ? "0" + month : month;
             var year = date.getFullYear();
             nameFile = "Container_GateInGateOut_report"
-            if(contFE == "E")
-            {
-                nameFile = "Container_empty_report"
+            if (contFE == "E") {
+              nameFile = "Container_empty_report"
             }
-            if(contFE == "F")
-            {
-                nameFile = "Container_full_report"
+            if (contFE == "F") {
+              nameFile = "Container_full_report"
             }
-            nameFile = nameFile + "_" + day+monthText+year+"_";
-            
-                if (result.code == web_status.SUCCESS) {
-                    console.log(window.location.href );
-                    window.location.href = ctx + "common/download/"+nameFile+"?fileName=" + encodeURI(result.msg) + "&delete=" +
-                  true;
-                } else if (result.code == web_status.WARNING) {
-                  $.modal.alertWarning(result.msg)
-                } else {
-                  $.modal.alertError(result.msg);
-                }
+            nameFile = nameFile + "_" + day + monthText + year + "_";
+
+            if (result.code == web_status.SUCCESS) {
+              console.log(window.location.href);
+              window.location.href = ctx + "common/download/" + nameFile + "?fileName=" + encodeURI(result.msg) +
+                "&delete=" +
+                true;
+            } else if (result.code == web_status.WARNING) {
+              $.modal.alertWarning(result.msg)
+            } else {
+              $.modal.alertError(result.msg);
+            }
             $.modal.closeLoading();
           },
         })
@@ -347,7 +340,7 @@
         return date;
       }
 
-      function formatYardPosition(value) {  
+      function formatYardPosition(value) {
         if (value == null) {
           return;
         }
@@ -358,22 +351,18 @@
         theme: 'grid',
         type: 'datetime',
       });
-         
+
       laydate.render({
         elem: '#toDate',
         theme: 'grid',
         type: 'datetime'
       });
       document.getElementById("cntrNo").addEventListener("keyup", function (event) {
-      event.preventDefault();
-      if (event.keyCode === 13) {
-        $("#searchBtn").click();
-      }
-    });
-
-    
-
-    
+        event.preventDefault();
+        if (event.keyCode === 13) {
+          $("#searchBtn").click();
+        }
+      });
     </script>
 </body>
 
