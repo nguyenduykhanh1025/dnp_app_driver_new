@@ -121,7 +121,7 @@ public class ContainerInfoController extends CarrierBaseController {
         {
             pageInfo.put("orderByColumn",orderByColumn);
             pageInfo.put("isAsc",isAsc);
-        }else if(contFE == null){
+        }else if(contFE.equals("")){
             pageInfo.put("orderByColumn","days");
             pageInfo.put("isAsc","asc");
         }
@@ -198,7 +198,7 @@ public class ContainerInfoController extends CarrierBaseController {
         {
             pageInfo.put("orderByColumn",orderByColumn);
             pageInfo.put("isAsc",isAsc);
-        }else if(contFE == null){
+        }else if(contFE.equals("")){
             pageInfo.put("orderByColumn","days");
             pageInfo.put("isAsc","asc");
         }
