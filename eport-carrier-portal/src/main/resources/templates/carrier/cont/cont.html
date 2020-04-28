@@ -285,7 +285,7 @@
         toDate = formatDateForSearch(toDate);
         var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
         fromDate = formatDateForSearch(fromDate);
-
+        $.modal.loading("Đang xử lý, vui lòng chờ...");
         $.ajax({
           type: "POST",
           url: prefix + "/export",
@@ -313,17 +313,17 @@
                 nameFile = "Container_full_report"
             }
             nameFile = nameFile + "_" + day+monthText+year+"_";
-            $.modal.loading("Đang xử lý, vui lòng chờ...");
-            if (result.code == web_status.SUCCESS) {
-                console.log(window.location.href );
-                window.location.href = ctx + "common/download/"+nameFile+"?fileName=" + encodeURI(result.msg) + "&delete=" +
-              true;
-            } else if (result.code == web_status.WARNING) {
-              $.modal.alertWarning(result.msg)
-            } else {
-              $.modal.alertError(result.msg);
-            }
-            $.modal.closeLoading(),200;
+            
+                if (result.code == web_status.SUCCESS) {
+                    console.log(window.location.href );
+                    window.location.href = ctx + "common/download/"+nameFile+"?fileName=" + encodeURI(result.msg) + "&delete=" +
+                  true;
+                } else if (result.code == web_status.WARNING) {
+                  $.modal.alertWarning(result.msg)
+                } else {
+                  $.modal.alertError(result.msg);
+                }
+            $.modal.closeLoading();
           },
         })
       }
