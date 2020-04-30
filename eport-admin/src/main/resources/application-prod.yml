@@ -76,4 +76,4 @@ spring:
 # Templates reloading during development
     thymeleaf:
         prefix: file:D:/eport/admin/templates/
-        cache: false
+        cache: true

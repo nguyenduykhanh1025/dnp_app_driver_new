@@ -59,7 +59,7 @@
               <tr>
 
                 <!-- <th data-options="field:'id',checkbox:true"></th> -->
-                <th data-options="field:'classMode',align:'right',align:'center'" width="120">
+                <th data-options="field:'classMode',align:'center'" width="120">
                   CLASS MODE
                 </th>
                 <th data-options="field:'cntrNo',align:'left'" sortable="true" width="125">
@@ -68,32 +68,32 @@
                 <th data-options="field:'sztp2',align:'center'" width="110">
                   SZTP
                 </th>
-                <th data-options="field:'fe',align:'right',align:'center'" width="50">
+                <th data-options="field:'fe',align:'center'" width="50">
                   F/E
                 </th>
 
-                <th data-options="field:'ptnrCode',align:'right',align:'center'" sortable="true" width="100">
+                <th data-options="field:'ptnrCode',align:'center'" sortable="true" width="100">
                   OPR
                 </th>
-                <th data-options="field:'cargoType',align:'right',align:'center'" width="90">
+                <th data-options="field:'cargoType',align:'center'" width="90">
                   CARGO <br> TYPE
                 </th>
-                <th data-options="field:'vesselName',align:'right',align:'center'" width="110">
+                <th data-options="field:'vesselName',align:'center'" width="200">
                   VESSEL NAME
                 </th>
-                <th data-options="field:'vesselCode',align:'right',align:'center'" width="110">
+                <th data-options="field:'vesselCode',align:'center'" width="110">
                   VESSEL CODE
                 </th>
-                <th data-options="field:'bookingNo',halign:'center',align:'center'" width="120">
+                <th data-options="field:'bookingNo',align:'center'" width="120">
                   BOOKING NO
                 </th>
-                <th data-options="field:'blNo',halign:'center'" width="120">
+                <th data-options="field:'blNo'" width="120">
                   BL NO
                 </th>
-                <th data-options="field:'pol',align:'right',align:'center'" width="80">
+                <th data-options="field:'pol',align:'center'" width="80">
                   POL
                 </th>
-                <th data-options="field:'pod',align:'right',align:'center'" width="80">
+                <th data-options="field:'pod',align:'center'" width="80">
                   POD
                 </th>
                 <th data-options="field:'sealNo1',align:'left'" width="110">
@@ -106,22 +106,22 @@
                   TRANS TYPE <br> IN
                 </th>
                 <th data-options="field:'inDate',align:'center', formatter: formatDate" width="100">
-                  IN DAY
+                  IN DATE
                 </th>
                 <th data-options="field:'transTypeOut',align:'center'" width="100">
                   TRANS TYPE <br> OUT
                 </th>
                 <th data-options="field:'outDate',align:'center', formatter: formatDate" width="110">
-                  OUT DAY
+                  OUT DATE
                 </th>
                 <th data-options="field:'cntrState',align:'center'" width="90">
                   STATUS
                 </th>
-                <th data-options="field:'yardPosition',align:'right',align:'center',formatter : formatYardPosition"
+                <th data-options="field:'yardPosition',align:'center',formatter : formatYardPosition"
                   width="120">
                   YARD POSITION
                 </th>
-                <th data-options="field:'days',align:'center'" sortable="true">STACK DAYS</th>
+                <th data-options="field:'days',align:'center'" sortable="true" width="90">STACK <br> DAYS</th>
                 <th data-options="field:'remark',formatter: cleanRemark" width="300">
                   REMARK
                 </th>
@@ -192,8 +192,8 @@
                 toDate: getCurrentDayForLoadPage(),
                 carrierCode: $("#carrierCode").children("option:selected").val(),
               },
-              dataType: "json",
-              success: function (data) {
+               dataType: "json",
+                success: function (data) {
                 success(data);
               },
               error: function () {

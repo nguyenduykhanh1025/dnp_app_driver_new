@@ -45,8 +45,6 @@
          AND M.CALL_YEAR = B.CALL_YEAR
          AND M.CALL_SEQ = B.CALL_SEQ
          AND M.CNTR_UID = H.CNTR_UID(+)
-        
-        
        
        <if test="fromDate != '' and toDate == ''">
             AND ((M.IN_DATE >= TO_DATE (#{fromDate},'YYYY-MM-DD HH24:MI:SS')) OR (M.OUT_DATE >= TO_DATE (#{fromDate},'YYYY-MM-DD HH24:MI:SS')))
