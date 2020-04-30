@@ -103,7 +103,7 @@ public class ContainerInfoBase extends BaseEntity
     private String transTypeIn;
    
     /** Gate In Date */
-    @Excel(name = "IN DAY")
+    @Excel(name = "IN DATE")
     private String inDate;
 
     /** Trans Type Out */

@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.gson.Gson;
-
 import vn.com.irtech.api.common.utils.R;
 import vn.com.irtech.api.dao.ContainerInfoDao;
 import vn.com.irtech.api.entity.ContainerInfoEntity;
