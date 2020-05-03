@@ -90,8 +90,5 @@ public interface ICarrierGroupService
 	 * @return
 	 */
     public String checkMainEmailUnique(String mainEmail);
-    
-    public String getCarrierCodeById(Long groupId);
 
-    public CarrierGroup getCarrierGroupPermission(Long id);
 }
