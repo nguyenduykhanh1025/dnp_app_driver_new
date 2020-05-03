@@ -65,7 +65,7 @@ spring:
 
 # Static resources reloading during development
     resources:
-        static-locations: file:D:/eport/static/
+        static-locations: file:E:/IRTech/DO_Portal/html/portal/static/
         cache:
             cachecontrol:
                 cache-public: true
@@ -75,5 +75,9 @@ spring:
 #                no-transform: true
 # Templates reloading during development
     thymeleaf:
-        prefix: file:D:/eport/templates/
-        cache: true
+        prefix: file:E:/IRTech/DO_Portal/html/portal/templates/
+        cache: false
+eport:
+    profile: E:/IRTech/DO_Portal/html/portal/upload
+    apiUrl: http://113.160.225.15:38080/api
+    
