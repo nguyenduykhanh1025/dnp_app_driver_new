@@ -25,7 +25,6 @@ public class ApiContainerInfoController {
 		if(query.getFe() == null)
 		{
 			List<ContainerInfoEntity> data = containerInfo.selectContainerInfoListInOut(query);
-			
 			int total = containerInfo.countContainerInfoInOut(query);
 			return R.ok().put("data", data).put("total", total);
 		}

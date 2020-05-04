@@ -165,6 +165,7 @@
           }
         })
         $("#dg").datagrid({
+          
           url: prefix + "/list",
           height: heightInfo,
           singleSelect: true,
@@ -179,6 +180,7 @@
           loader: function (param, success, error) {
             var opts = $(this).datagrid("options");
             if (!opts.url) return false;
+           
             $.ajax({
               type: opts.method,
               url: opts.url,
@@ -276,9 +278,7 @@
 
       function exportExcel() {
         var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
-        toDate = formatDateForSearch(toDate);
         var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
-        fromDate = formatDateForSearch(fromDate);
         $.modal.loading("Đang xử lý, vui lòng chờ...");
         $.ajax({
           type: "POST",
@@ -307,7 +307,6 @@
             nameFile = nameFile + "_" + day + monthText + year + "_";
 
             if (result.code == web_status.SUCCESS) {
-              console.log(window.location.href);
               window.location.href = ctx + "common/download/" + nameFile + "?fileName=" + encodeURI(result.msg) +
                 "&delete=" +
                 true;
