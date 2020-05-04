@@ -114,13 +114,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="checkMainEmailUnique" parameterType="String" resultType="int">
 		select count(1) from carrier_group where lower(main_email)=#{mainEmail}
 	</select>
-    
-    <select id="getCarrierCodeById" parameterType="Long" resultType="String">
-        select operate_code from carrier_group where group_code = #{groupId}
-    </select>
-    
-    <select id="getCarrierGroupPermission" parameterType="Long" resultMap="CarrierGroupResult">
-        select id, do_flag, edo_flag from carrier_group
-        where id = #{id}
-    </select>
+
 </mapper>

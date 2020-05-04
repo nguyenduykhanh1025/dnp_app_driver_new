@@ -146,15 +146,4 @@ public class CarrierGroupServiceImpl implements ICarrierGroupService
         }
         return "0";
     }
-
-    @Override   
-    public String getCarrierCodeById(Long groupId)
-    {
-        return carrierGroupMapper.getCarrierCodeById(groupId);
-    }
-
-    @Override
-    public CarrierGroup getCarrierGroupPermission(Long id) {
-        return carrierGroupMapper.getCarrierGroupPermission(id);
-    }
 }
