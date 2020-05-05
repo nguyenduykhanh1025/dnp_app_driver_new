@@ -81,7 +81,6 @@ public class ContainerInfoController extends CarrierBaseController {
         pageInfo.put("pageSize", pageSize);
         containerInfo.setParams(pageInfo);
         containerInfo.setPtnrCode(carrierCode);
-        containerInfo.setCntrState("D");
         if(cntrNo!= null)
         {
             containerInfo.setCntrNo(cntrNo.toLowerCase());
@@ -158,7 +157,6 @@ public class ContainerInfoController extends CarrierBaseController {
         }
         containerInfo.setParams(pageInfo);
         containerInfo.setPtnrCode(carrierCode);
-        containerInfo.setCntrState("D");
        
         if(cntrNo!= null)
         {
