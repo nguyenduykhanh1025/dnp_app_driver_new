@@ -277,7 +277,8 @@
         var seconds = date.getSeconds();
         seconds = seconds < 10 ? "0" + seconds : seconds;
         if(date >= InDate || date <= OutDate) {
-            return '<span style="color:red;">('+day + "/" + monthText + "/" + date.getFullYear() + " " + hour + ":" + minute + ":" + seconds+')</span>';
+            return '<span style="color:gray;">'+day + "/" + monthText + "/" + date.getFullYear() + " " + hour + ":" + minute + ":" + seconds+'</span>';
+            $('#dg').datagrid('transTypeIn')
         }
         return day + "/" + monthText + "/" + date.getFullYear() + " " + hour + ":" + minute + ":" + seconds;
       }
