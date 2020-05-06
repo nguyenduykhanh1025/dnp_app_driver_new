@@ -276,9 +276,8 @@
         minute = minute < 10 ? "0" + minute : minute;
         var seconds = date.getSeconds();
         seconds = seconds < 10 ? "0" + seconds : seconds;
-        if(date >= InDate || date <= OutDate) {
-            return '<span style="color:gray;">'+day + "/" + monthText + "/" + date.getFullYear() + " " + hour + ":" + minute + ":" + seconds+'</span>';
-            $('#dg').datagrid('transTypeIn')
+        if(date > InDate || date < OutDate) {
+            return '<span style="color:darkgray;">'+day + "/" + monthText + "/" + date.getFullYear() + " " + hour + ":" + minute + ":" + seconds+'</span>';
         }
         return day + "/" + monthText + "/" + date.getFullYear() + " " + hour + ":" + minute + ":" + seconds;
       }
@@ -352,6 +351,7 @@
         }
         return value.replace("---", "");
       }
+     
       laydate.render({
         elem: '#fromDate',
         theme: 'grid',
