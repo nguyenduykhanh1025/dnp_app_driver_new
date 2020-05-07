@@ -41,7 +41,7 @@ public abstract class CarrierBaseController extends BaseController {
 	public boolean hasDoPermission() {
 		CarrierGroup userGroup = getUserGroup();
 		if(userGroup != null) {
-			return "0".equals(userGroup.getDoFlag());
+			return "1".equals(userGroup.getDoFlag());
 		}
 		return false;
 	}

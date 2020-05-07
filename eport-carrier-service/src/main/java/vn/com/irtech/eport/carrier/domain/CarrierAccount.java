@@ -163,10 +163,6 @@ public class CarrierAccount extends BaseEntity
     }
 
     public CarrierGroup getCarrierGroup() {
-        if (carrierGroup == null)
-        {
-            carrierGroup = new CarrierGroup();
-        }
         return carrierGroup;
     }
 
