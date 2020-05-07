@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:remove="all">Thông Tin Tài Khoản</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="0" width="100%" align="left">
+   <tbody>
+   <tr>
+    <td>
+     <table cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tbody><tr>
+       <td style="width:45px">
+        <br>
+       </td>
+       <td>
+        <div>
+         <div style="font-weight:bold;font-family:Tahoma;font-size:10pt">Kính gửi <span th:text="${username}"></span><span>,</span></div><br/>
+         <div style="padding-bottom:5px;font-family:Tahoma;font-size:10pt">
+            Cảng Đà Nẵng trân trọng thông báo<br>
+            Thông tin tài khoản đăng nhập:
+         </div>
+         <br>
+         <div style="padding-bottom:5px">
+          <table>
+            <tr>
+              <td style="font-weight:bold;font-family:Tahoma;font-size:10pt;padding-right: 10pt">Tên đăng nhập:</td>
+              <td><span style="font-family:Tahoma;font-size:10pt" th:text="${email}">Username</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;font-family:Tahoma;font-size:10pt;padding-right: 10pt">Mật khẩu:</td>
+              <td><span style="font-family:Tahoma;font-size:10pt" th:text="${password}">Password</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight:bold;font-family:Tahoma;font-size:10pt;padding-right: 10pt">Địa chỉ truy cập:</td>
+              <td><a style="font-family:Tahoma;font-size:10pt" href="" target="_blank"></a></td>
+            </tr>
+          </table>
+         </div>
+         <br>
+         <div style="color:#646567;font-family:Tahoma;font-size:10pt">Trân trọng cảm ơn,</div>
+         <div style="color:#646567;font-weight:bold;font-family:Tahoma;font-size:10pt">Cảng Đà Nẵng</div>
+         <div>
+          <hr style="color:#015198;border:0;height:2px;background-color:#015198">
+         </div>
+        </div>
+       </td>
+       <td style="width:45px">
+        <br>
+       </td>
+      </tr>
+     </tbody></table>
+    </td>
+   </tr>
+  </tbody></table>
+</body>

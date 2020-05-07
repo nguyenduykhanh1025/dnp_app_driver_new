@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('Tutorial')" />
+</head>
+    <body class="gray-bg">
+        <iframe id="document_frame" frameborder="0" th:src="@{/uploads/DNP_WebPortalGuideline.pdf}" width='100%' height='100%' allowfullscreen webkitallowfullscreen></iframe>
+    </body>
+<script th:src="@{/ajax/libs/viewerjs/pdf.worker.js}"></script> 

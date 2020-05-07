@@ -49,3 +49,4 @@ upload
 !*/build/*.java
 !*/build/*.html
 !*/build/*.xml
+/eport-admin/.vscode

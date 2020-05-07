@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.LogisticGroupMapper">
+    
+    <resultMap type="LogisticGroup" id="LogisticGroupResult">
+        <result property="id"    column="id"    />
+        <result property="groupName"    column="group_name"    />
+        <result property="mainEmail"    column="main_email"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectLogisticGroupVo">
+        select id, group_name, main_email, create_by, create_time, update_by, update_time from logistic_group
+    </sql>
+
+    <select id="selectLogisticGroupList" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
+        <include refid="selectLogisticGroupVo"/>
+        <where>  
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="mainEmail != null  and mainEmail != ''"> and main_email = #{mainEmail}</if>
+        </where>
+    </select>
+    
+    <select id="selectLogisticGroupById" parameterType="Long" resultMap="LogisticGroupResult">
+        <include refid="selectLogisticGroupVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertLogisticGroup" parameterType="LogisticGroup" useGeneratedKeys="true" keyProperty="id">
+        insert into logistic_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="groupName != null  and groupName != ''">group_name,</if>
+            <if test="mainEmail != null  and mainEmail != ''">main_email,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="groupName != null  and groupName != ''">#{groupName},</if>
+            <if test="mainEmail != null  and mainEmail != ''">#{mainEmail},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLogisticGroup" parameterType="LogisticGroup">
+        update logistic_group
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupName != null  and groupName != ''">group_name = #{groupName},</if>
+            <if test="mainEmail != null  and mainEmail != ''">main_email = #{mainEmail},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLogisticGroupById" parameterType="Long">
+        delete from logistic_group where id = #{id}
+    </delete>
+
+    <delete id="deleteLogisticGroupByIds" parameterType="String">
+        delete from logistic_group where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

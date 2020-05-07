@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper">
+    
+    <resultMap type="ShipmentDetail" id="ShipmentDetailResult">
+        <result property="id"    column="id"    />
+        <result property="shipmentId"    column="shipment_id"    />
+        <result property="registerNo"    column="register_no"    />
+        <result property="containerNo"    column="container_no"    />
+        <result property="containerStatus"    column="container_status"    />
+        <result property="sztp"    column="sztp"    />
+        <result property="fe"    column="fe"    />
+        <result property="bookingNo"    column="booking_no"    />
+        <result property="blNo"    column="bl_no"    />
+        <result property="sealNo"    column="seal_no"    />
+        <result property="consignee"    column="consignee"    />
+        <result property="expiredDem"    column="expired_dem"    />
+        <result property="wgt"    column="wgt"    />
+        <result property="vslNm"    column="vsl_nm"    />
+        <result property="voyNo"    column="voy_no"    />
+        <result property="opeCode"    column="ope_code"    />
+        <result property="loadingPort"    column="loading_port"    />
+        <result property="dischargePort"    column="discharge_port"    />
+        <result property="transportType"    column="transport_type"    />
+        <result property="vgmChk"    column="vgm_chk"    />
+        <result property="vgm"    column="vgm"    />
+        <result property="vgmPersonInfo"    column="vgm_person_info"    />
+        <result property="customDeclareNo"    column="custom_declare_no"    />
+        <result property="customStatus"    column="custom_status"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="processStatus"    column="process_status"    />
+        <result property="userVerifyStatus"    column="user_verify_status"    />
+        <result property="status"    column="status"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectShipmentDetailVo">
+        select id, shipment_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_nm, voy_no, ope_code, loading_port, discharge_port, transport_type, vgm_chk, vgm, vgm_person_info, custom_declare_no, custom_status, payment_status, process_status, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
+    </sql>
+
+    <select id="selectShipmentDetailList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
+        <include refid="selectShipmentDetailVo"/>
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="registerNo != null  and registerNo != ''"> and register_no = #{registerNo}</if>
+            <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
+            <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
+            <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
+            <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
+            <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
+            <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
+            <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
+            <if test="customDeclareNo != null  and customDeclareNo != ''"> and custom_declare_no = #{customDeclareNo}</if>
+            <if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
+            <if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
+            <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
+            <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectShipmentDetailById" parameterType="Long" resultMap="ShipmentDetailResult">
+        <include refid="selectShipmentDetailVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertShipmentDetail" parameterType="ShipmentDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into shipment_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shipmentId != null ">shipment_id,</if>
+            <if test="registerNo != null  and registerNo != ''">register_no,</if>
+            <if test="containerNo != null  and containerNo != ''">container_no,</if>
+            <if test="containerStatus != null  and containerStatus != ''">container_status,</if>
+            <if test="sztp != null  and sztp != ''">sztp,</if>
+            <if test="fe != null  and fe != ''">fe,</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no,</if>
+            <if test="blNo != null  and blNo != ''">bl_no,</if>
+            <if test="sealNo != null  and sealNo != ''">seal_no,</if>
+            <if test="consignee != null  and consignee != ''">consignee,</if>
+            <if test="expiredDem != null ">expired_dem,</if>
+            <if test="wgt != null ">wgt,</if>
+            <if test="vslNm != null  and vslNm != ''">vsl_nm,</if>
+            <if test="voyNo != null  and voyNo != ''">voy_no,</if>
+            <if test="opeCode != null  and opeCode != ''">ope_code,</if>
+            <if test="loadingPort != null  and loadingPort != ''">loading_port,</if>
+            <if test="dischargePort != null  and dischargePort != ''">discharge_port,</if>
+            <if test="transportType != null  and transportType != ''">transport_type,</if>
+            <if test="vgmChk != null ">vgm_chk,</if>
+            <if test="vgm != null  and vgm != ''">vgm,</if>
+            <if test="vgmPersonInfo != null  and vgmPersonInfo != ''">vgm_person_info,</if>
+            <if test="customDeclareNo != null  and customDeclareNo != ''">custom_declare_no,</if>
+            <if test="customStatus != null  and customStatus != ''">custom_status,</if>
+            <if test="paymentStatus != null  and paymentStatus != ''">payment_status,</if>
+            <if test="processStatus != null  and processStatus != ''">process_status,</if>
+            <if test="userVerifyStatus != null  and userVerifyStatus != ''">user_verify_status,</if>
+            <if test="status != null ">status,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="shipmentId != null ">#{shipmentId},</if>
+            <if test="registerNo != null  and registerNo != ''">#{registerNo},</if>
+            <if test="containerNo != null  and containerNo != ''">#{containerNo},</if>
+            <if test="containerStatus != null  and containerStatus != ''">#{containerStatus},</if>
+            <if test="sztp != null  and sztp != ''">#{sztp},</if>
+            <if test="fe != null  and fe != ''">#{fe},</if>
+            <if test="bookingNo != null  and bookingNo != ''">#{bookingNo},</if>
+            <if test="blNo != null  and blNo != ''">#{blNo},</if>
+            <if test="sealNo != null  and sealNo != ''">#{sealNo},</if>
+            <if test="consignee != null  and consignee != ''">#{consignee},</if>
+            <if test="expiredDem != null ">#{expiredDem},</if>
+            <if test="wgt != null ">#{wgt},</if>
+            <if test="vslNm != null  and vslNm != ''">#{vslNm},</if>
+            <if test="voyNo != null  and voyNo != ''">#{voyNo},</if>
+            <if test="opeCode != null  and opeCode != ''">#{opeCode},</if>
+            <if test="loadingPort != null  and loadingPort != ''">#{loadingPort},</if>
+            <if test="dischargePort != null  and dischargePort != ''">#{dischargePort},</if>
+            <if test="transportType != null  and transportType != ''">#{transportType},</if>
+            <if test="vgmChk != null ">#{vgmChk},</if>
+            <if test="vgm != null  and vgm != ''">#{vgm},</if>
+            <if test="vgmPersonInfo != null  and vgmPersonInfo != ''">#{vgmPersonInfo},</if>
+            <if test="customDeclareNo != null  and customDeclareNo != ''">#{customDeclareNo},</if>
+            <if test="customStatus != null  and customStatus != ''">#{customStatus},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''">#{paymentStatus},</if>
+            <if test="processStatus != null  and processStatus != ''">#{processStatus},</if>
+            <if test="userVerifyStatus != null  and userVerifyStatus != ''">#{userVerifyStatus},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShipmentDetail" parameterType="ShipmentDetail">
+        update shipment_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
+            <if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>
+            <if test="containerNo != null  and containerNo != ''">container_no = #{containerNo},</if>
+            <if test="containerStatus != null  and containerStatus != ''">container_status = #{containerStatus},</if>
+            <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
+            <if test="fe != null  and fe != ''">fe = #{fe},</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no = #{bookingNo},</if>
+            <if test="blNo != null  and blNo != ''">bl_no = #{blNo},</if>
+            <if test="sealNo != null  and sealNo != ''">seal_no = #{sealNo},</if>
+            <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
+            <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+            <if test="wgt != null ">wgt = #{wgt},</if>
+            <if test="vslNm != null  and vslNm != ''">vsl_nm = #{vslNm},</if>
+            <if test="voyNo != null  and voyNo != ''">voy_no = #{voyNo},</if>
+            <if test="opeCode != null  and opeCode != ''">ope_code = #{opeCode},</if>
+            <if test="loadingPort != null  and loadingPort != ''">loading_port = #{loadingPort},</if>
+            <if test="dischargePort != null  and dischargePort != ''">discharge_port = #{dischargePort},</if>
+            <if test="transportType != null  and transportType != ''">transport_type = #{transportType},</if>
+            <if test="vgmChk != null ">vgm_chk = #{vgmChk},</if>
+            <if test="vgm != null  and vgm != ''">vgm = #{vgm},</if>
+            <if test="vgmPersonInfo != null  and vgmPersonInfo != ''">vgm_person_info = #{vgmPersonInfo},</if>
+            <if test="customDeclareNo != null  and customDeclareNo != ''">custom_declare_no = #{customDeclareNo},</if>
+            <if test="customStatus != null  and customStatus != ''">custom_status = #{customStatus},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''">payment_status = #{paymentStatus},</if>
+            <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
+            <if test="userVerifyStatus != null  and userVerifyStatus != ''">user_verify_status = #{userVerifyStatus},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShipmentDetailById" parameterType="Long">
+        delete from shipment_detail where id = #{id}
+    </delete>
+
+    <delete id="deleteShipmentDetailByIds" parameterType="String">
+        delete from shipment_detail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
