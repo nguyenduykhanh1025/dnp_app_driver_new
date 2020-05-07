@@ -42,6 +42,7 @@
     <th:block th:include="include :: footer" />
     <script type="text/javascript">
         var prefix = ctx + "carrier/group"
+        $("#doFlag").val(1);
         $("#form-account-add").validate({
             focusCleanup: true
         });
@@ -53,12 +54,12 @@
         }
 
         function clickToggleDoFlag() {
-            if ($("#doFlag").val() == 0) {
+            if ($("#doFlag").val() == 1) {
                 document.getElementById("doToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleDoFlag()"></span>';
-                $("#doFlag").val(1);
+                $("#doFlag").val(0);
             } else {
                 document.getElementById("doToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleDoFlag()"></span>';
-                $("#doFlag").val(0);
+                $("#doFlag").val(1);
             }
         }
     </script>
