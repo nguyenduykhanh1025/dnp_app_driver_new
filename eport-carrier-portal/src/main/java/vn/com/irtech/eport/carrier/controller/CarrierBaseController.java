@@ -34,7 +34,9 @@ public abstract class CarrierBaseController extends BaseController {
 	
 	public CarrierGroup getUserGroup() {
 		CarrierAccount user = getUser();
-		user.setCarrierGroup(groupService.selectCarrierGroupById(user.getGroupId()));
+		if(user.getCarrierGroup() == null) {
+			user.setCarrierGroup(groupService.selectCarrierGroupById(user.getGroupId()));
+		}
 		return user.getCarrierGroup();
 	}
 
