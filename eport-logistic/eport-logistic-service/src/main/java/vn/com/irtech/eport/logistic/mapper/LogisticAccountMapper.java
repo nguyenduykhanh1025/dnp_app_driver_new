@@ -58,4 +58,11 @@ public interface LogisticAccountMapper
      * @return result
      */
     public int deleteLogisticAccountByIds(String[] ids);
+
+    /**
+     * Select Logistic account by email
+     * @param email
+     * @return
+     */
+	public LogisticAccount selectByEmail(String email);
 }

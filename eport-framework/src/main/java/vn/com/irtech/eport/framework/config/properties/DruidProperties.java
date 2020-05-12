@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import com.alibaba.druid.pool.DruidDataSource;
 
 /**
- * druid 配置属性
+ * druid configuration properties
  * 
  * @author admin
  */
@@ -47,30 +47,30 @@ public class DruidProperties
 
     public DruidDataSource dataSource(DruidDataSource datasource)
     {
-        /** 配置初始化大小、最小、最大 */
+    	/** Configure initialization size, minimum and maximum */
         datasource.setInitialSize(initialSize);
         datasource.setMaxActive(maxActive);
         datasource.setMinIdle(minIdle);
 
-        /** 配置获取连接等待超时的时间 */
+        /** Configure the time to wait for a connection to time out */
         datasource.setMaxWait(maxWait);
 
-        /** 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 */
+        /** How often to configure the interval before performing a test to detect idle connections that need to be closed, in milliseconds */
         datasource.setTimeBetweenEvictionRunsMillis(timeBetweenEvictionRunsMillis);
 
-        /** 配置一个连接在池中最小、最大生存的时间，单位是毫秒 */
+        /** Configure the minimum and maximum survival time of a connection in the pool, in milliseconds */
         datasource.setMinEvictableIdleTimeMillis(minEvictableIdleTimeMillis);
         datasource.setMaxEvictableIdleTimeMillis(maxEvictableIdleTimeMillis);
 
         /**
-         * 用来检测连接是否有效的sql，要求是一个查询语句，常用select 'x'。如果validationQuery为null，testOnBorrow、testOnReturn、testWhileIdle都不会起作用。
+         * The sql used to detect whether the connection is valid, the requirement is a query statement, commonly used to select 'x'. If the validationQuery is null, testOnBorrow, testOnReturn, testWhileIdle will not work.
          */
         datasource.setValidationQuery(validationQuery);
-        /** 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。 */
+        /** The recommended configuration is true, which does not affect performance and guarantees security. Check when applying for a connection. If the idle time is greater than timeBetweenEvictionRunsMillis, execute a validationQuery to check whether the connection is valid. */
         datasource.setTestWhileIdle(testWhileIdle);
-        /** 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。 */
+        /** When applying for a connection, perform a validationQuery to check whether the connection is valid. Doing this configuration will reduce performance。 */
         datasource.setTestOnBorrow(testOnBorrow);
-        /** 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。 */
+        /** When returning the connection, perform a validationQuery to check whether the connection is valid. Doing this configuration will reduce performance. */
         datasource.setTestOnReturn(testOnReturn);
         return datasource;
     }

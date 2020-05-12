@@ -52,7 +52,7 @@
         </dependency>
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-framework</artifactId>
+            <artifactId>eport-admin-framework</artifactId>
         </dependency>
         
         <dependency>

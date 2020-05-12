@@ -8,7 +8,7 @@ import vn.com.irtech.eport.system.service.ISysDictDataService;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
 
 /**
- * RuoYi首创 html调用 thymeleaf 实现字典读取
+ * Html calling thymeleaf for dictionary reading
  * 
  * @author admin
  */
@@ -22,10 +22,10 @@ public class DictService
     private ISysDictDataService dictDataService;
 
     /**
-     * 根据字典类型查询字典数据信息
+     * Query dictionary data information according to dictionary type
      * 
-     * @param dictType 字典类型
-     * @return 参数键值
+     * @param dictType Dictionary type
+     * @return Parameter key
      */
     public List<SysDictData> getType(String dictType)
     {
@@ -33,11 +33,11 @@ public class DictService
     }
 
     /**
-     * 根据字典类型和字典键值查询字典数据信息
+     * Query dictionary data information according to dictionary type and dictionary key value
      * 
-     * @param dictType 字典类型
-     * @param dictValue 字典键值
-     * @return 字典标签
+     * @param dictType Dictionary type
+     * @param dictValue Dictionary key
+     * @return Dictionary tag
      */
     public String getLabel(String dictType, String dictValue)
     {

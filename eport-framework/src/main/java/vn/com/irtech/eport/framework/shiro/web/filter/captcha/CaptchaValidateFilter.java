@@ -10,19 +10,19 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 
 /**
- * 验证码过滤器
+ * Captcha filter
  * 
  * @author admin
  */
 public class CaptchaValidateFilter extends AccessControlFilter
 {
     /**
-     * 是否开启验证码
+     * Whether to open the verification code
      */
     private boolean captchaEnabled = true;
 
     /**
-     * 验证码类型
+     * Verification code type
      */
     private String captchaType = "math";
 
@@ -49,7 +49,7 @@ public class CaptchaValidateFilter extends AccessControlFilter
             throws Exception
     {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        // 验证码禁用 或不是表单提交 允许访问
+        // Verification code disabled or not form submission allowed access
         if (captchaEnabled == false || !"post".equals(httpServletRequest.getMethod().toLowerCase()))
         {
             return true;

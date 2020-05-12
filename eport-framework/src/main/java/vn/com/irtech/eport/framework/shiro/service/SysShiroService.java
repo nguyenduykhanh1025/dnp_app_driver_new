@@ -10,7 +10,7 @@ import vn.com.irtech.eport.system.domain.SysUserOnline;
 import vn.com.irtech.eport.system.service.ISysUserOnlineService;
 
 /**
- * 会话db操作处理
+ * Session db operation processing
  * 
  * @author admin
  */
@@ -21,9 +21,9 @@ public class SysShiroService
     private ISysUserOnlineService onlineService;
 
     /**
-     * 删除会话
+     * Delete conversation
      *
-     * @param onlineSession 会话信息
+     * @param onlineSession Session information
      */
     public void deleteSession(OnlineSession onlineSession)
     {
@@ -31,7 +31,7 @@ public class SysShiroService
     }
 
     /**
-     * 获取会话信息
+     * Get session information
      *
      * @param sessionId
      * @return

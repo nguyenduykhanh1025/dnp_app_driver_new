@@ -20,7 +20,7 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.system.domain.SysUser;
 
 /**
- * 退出过滤器
+ * Exit filter
  * 
  * @author admin
  */
@@ -29,7 +29,7 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
     private static final Logger log = LoggerFactory.getLogger(LogoutFilter.class);
 
     /**
-     * 退出后重定向的地址
+     * Redirected address after exit
      */
     private String loginUrl;
 
@@ -58,9 +58,9 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
                 if (StringUtils.isNotNull(user))
                 {
                     String loginName = user.getLoginName();
-                    // 记录用户退出日志
+                    // Record user exit log
                     AsyncManager.me().execute(AsyncFactory.recordLogininfor(loginName, Constants.LOGOUT, MessageUtils.message("user.logout.success")));
-                    // 清理缓存
+                    // Clean cache
                     cache.remove(loginName);
                 }
                 // 退出登录

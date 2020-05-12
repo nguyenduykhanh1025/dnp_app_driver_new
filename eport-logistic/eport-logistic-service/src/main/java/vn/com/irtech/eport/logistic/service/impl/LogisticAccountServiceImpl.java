@@ -97,7 +97,6 @@ public class LogisticAccountServiceImpl implements ILogisticAccountService
 
 	@Override
 	public LogisticAccount selectByEmail(String email) {
-		//TODO Implement
-		throw new RuntimeException("Not implemented");
+		return logisticAccountMapper.selectByEmail(email);
 	}
 }

@@ -20,7 +20,6 @@ import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.FileUtils;
 
 /**
- * 通用请求处理
  * 
  * @author admin
  */

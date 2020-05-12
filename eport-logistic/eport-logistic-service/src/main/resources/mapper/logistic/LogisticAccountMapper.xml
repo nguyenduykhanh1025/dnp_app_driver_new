@@ -42,6 +42,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectLogisticAccountVo"/>
         where id = #{id}
     </select>
+    
+    <select id="selectByEmail" parameterType="String" resultMap="LogisticAccountResult">
+	    <include refid="selectLogisticAccountVo"/>
+		where email = #{email}
+	</select>
         
     <insert id="insertLogisticAccount" parameterType="LogisticAccount" useGeneratedKeys="true" keyProperty="id">
         insert into logistic_account

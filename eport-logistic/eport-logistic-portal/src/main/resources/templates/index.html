@@ -56,9 +56,20 @@
               </a>
             </li>
             <li id="doTab">
-              <a title="Quản Lý DO" th:href="@{/carrier/do}" href="/carrier/do" class="menuItem"><i
-                  class="fa fa-ship"></i>&nbsp; Quản Lý DO</a>
+              <a title="Quản Lý DO" th:href="@{/carrier/do}" href="/carrier/do" class="menuItem"><i class="fa fa-ship"></i>&nbsp; Quản Lý DO</a>
             </li>
+            <li class="dropdown user-menu">
+              <a title="Tra cứu Container" class="menuItem"><i class="fa fa-check"></i>&nbsp; Đăng Ký Làm Lệnh</a>
+              <ul class="dropdown-menu">
+                <li><a class="menuItem " th:href="@{/carrier/cont}">Nhận Cont Hàng Từ Cảng</a></li>
+                <li><a class="menuItem" th:href="@{/carrier/cont/contFull}">Nhận Cont Rỗng Từ Cảng</a></li>
+                <li><a class="menuItem " th:href="@{/carrier/cont/contEmpty}">Giao Cont Hàng Cho Cảng</a></li>
+                <li><a class="menuItem " th:href="@{/carrier/cont/contEmpty}">Giao Cont Rỗng Cho Cảng</a></li>
+              </ul>
+            </li>
+          </ul>
+
+          <ul class="nav navbar-top-links navbar-right welcome-message">
             <li class="dropdown user-menu">
               <a title="Tra cứu Container" class="menuItem"><i class="fa fa-search"></i>&nbsp; Tra cứu Container</a>
               <ul class="dropdown-menu">
@@ -68,9 +79,6 @@
                 <li><a class="menuItem " th:href="@{/carrier/cont/contEmpty}">DS Container lưu rỗng</a></li>
               </ul>
             </li>
-          </ul>
-
-          <ul class="nav navbar-top-links navbar-right welcome-message">\
             <li>
               <a title="Hướng dẫn sử dụng portal" th:href="@{/page/tutorial}" class="menuItem"><i
                   class="fa fa-question-circle"></i>&nbsp;Hướng dẫn</a>

@@ -15,7 +15,7 @@ import vn.com.irtech.eport.common.config.datasource.DynamicDataSourceContextHold
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 多数据源处理
+ * Multiple source processing
  * 
  * @author admin
  */

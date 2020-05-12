@@ -4,13 +4,14 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.mgt.RealmSecurityManager;
 import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
+import org.apache.shiro.subject.Subject;
+
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.bean.BeanUtils;
+import vn.com.irtech.eport.framework.domain.SysUser;
 import vn.com.irtech.eport.framework.shiro.realm.UserRealm;
-import vn.com.irtech.eport.system.domain.SysUser;
 
 /**
  * shiro 工具类
@@ -84,11 +85,11 @@ public class ShiroUtils
     }
 
     /**
-     * 生成随机盐
+     * Generate random salt
      */
     public static String randomSalt()
     {
-        // 一个Byte占两个字节，此处生成的3字节，字符串长度为6
+        // One Byte occupies two bytes, 3 bytes generated here, the string length is 6
         SecureRandomNumberGenerator secureRandom = new SecureRandomNumberGenerator();
         String hex = secureRandom.nextBytes(3).toHex();
         return hex;

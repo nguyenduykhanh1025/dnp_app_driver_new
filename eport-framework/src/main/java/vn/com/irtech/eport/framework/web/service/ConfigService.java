@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 /**
- * RuoYi首创 html调用 thymeleaf 实现参数管理
+ * html call thymeleaf to implement parameter management
  * 
  * @author admin
  */
@@ -16,10 +16,10 @@ public class ConfigService
     private ISysConfigService configService;
 
     /**
-     * 根据键名查询参数配置信息
+     * Query parameter configuration information based on key name
      * 
-     * @param configKey 参数键名
-     * @return 参数键值
+     * @param configKey Parameter key name
+     * @return Parameter key
      */
     public String getKey(String configKey)
     {

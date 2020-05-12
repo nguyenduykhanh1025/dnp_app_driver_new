@@ -3,24 +3,24 @@ package vn.com.irtech.eport.framework.web.domain.server;
 import vn.com.irtech.eport.common.utils.Arith;
 
 /**
- * 內存相关信息
+ * Memory related information
  * 
  * @author admin
  */
 public class Mem
 {
     /**
-     * 内存总量
+     * Total memory
      */
     private double total;
 
     /**
-     * 已用内存
+     * Used memory
      */
     private double used;
 
     /**
-     * 剩余内存
+     * Remaining memory
      */
     private double free;
 

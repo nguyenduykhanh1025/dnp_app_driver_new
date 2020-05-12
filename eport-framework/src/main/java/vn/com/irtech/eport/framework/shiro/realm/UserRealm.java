@@ -2,6 +2,7 @@ package vn.com.irtech.eport.framework.shiro.realm;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -19,15 +20,16 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import vn.com.irtech.eport.common.exception.user.CaptchaException;
 import vn.com.irtech.eport.common.exception.user.RoleBlockedException;
 import vn.com.irtech.eport.common.exception.user.UserBlockedException;
 import vn.com.irtech.eport.common.exception.user.UserNotExistsException;
 import vn.com.irtech.eport.common.exception.user.UserPasswordNotMatchException;
 import vn.com.irtech.eport.common.exception.user.UserPasswordRetryLimitExceedException;
-import vn.com.irtech.eport.framework.shiro.service.SysLoginService;
+import vn.com.irtech.eport.framework.domain.SysUser;
+import vn.com.irtech.eport.framework.shiro.service.ISysLoginService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.service.ISysMenuService;
 import vn.com.irtech.eport.system.service.ISysRoleService;
 
@@ -47,7 +49,7 @@ public class UserRealm extends AuthorizingRealm
     private ISysRoleService roleService;
 
     @Autowired
-    private SysLoginService loginService;
+    private ISysLoginService loginService;
 
     /**
      * 授权
