@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('List Shipment')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>null：</label>
+                                <input type="text" name="logisticAccountId"/>
+                            </li>
+                            <li>
+                                <label>null：</label>
+                                <input type="text" name="logisticGroupId"/>
+                            </li>
+                            <li>
+                                <label>Dich Vu：</label>
+                                <input type="text" name="serviceId"/>
+                            </li>
+                            <li>
+                                <label>MST：</label>
+                                <input type="text" name="taxCode"/>
+                            </li>
+                            <li>
+                                <label>So Luong Container：</label>
+                                <input type="text" name="containerAmount"/>
+                            </li>
+                            <li>
+                                <label>EDO Flag (1,0)：</label>
+                                <input type="text" name="edoFlg"/>
+                            </li>
+                            <li>
+                                <label>Ghi chu：</label>
+                                <input type="text" name="remak"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="logistic:shipment:add">
+                    <i class="fa fa-plus"></i> Add
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="logistic:shipment:edit">
+                    <i class="fa fa-edit"></i> Edit
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="logistic:shipment:remove">
+                    <i class="fa fa-remove"></i> Delete
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="logistic:shipment:export">
+                    <i class="fa fa-download"></i> Export
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('logistic:shipment:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('logistic:shipment:remove')}]];
+        var prefix = ctx + "logistic/shipment";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "Shipment",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'id', 
+                    title: 'null',
+                    visible: false
+                },
+                {
+                    field: 'logisticAccountId', 
+                    title: 'null'
+                },
+                {
+                    field: 'logisticGroupId', 
+                    title: 'null'
+                },
+                {
+                    field: 'serviceId', 
+                    title: 'Dich Vu'
+                },
+                {
+                    field: 'taxCode', 
+                    title: 'MST'
+                },
+                {
+                    field: 'containerAmount', 
+                    title: 'So Luong Container'
+                },
+                {
+                    field: 'edoFlg', 
+                    title: 'EDO Flag (1,0)'
+                },
+                {
+                    field: 'remak', 
+                    title: 'Ghi chu'
+                },
+                {
+                    title: 'Action',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>Edit</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Delete</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('Modify user password')" />
+</head>
+<body class="white-bg">
+	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+		<form class="form-horizontal m" id="form-user-resetPwd">
+			<input name="Id"  type="hidden"  th:value="${user.Id}" />
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Tên đăng nhập</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" readonly="true" name="email" th:value="${user.Email}"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Mật khẩu cũ</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="password" name="oldPassword" id="oldPassword">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Mật khẩu mới</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="password" name="newPassword" id="newPassword">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label">Xác nhận mật khẩu</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="password" name="confirm" id="confirm">
+					<span class="help-block m-b-none"><i class="fa fa-info-circle"></i> Vui lòng nhập lại mật khẩu mới để xác nhận</span>
+				</div>
+			</div>
+		</form>
+	</div>
+	<th:block th:include="include :: footer" />
+
+	<script>
+		$("#form-user-resetPwd").validate({
+			rules:{
+				oldPassword:{
+					required:true,
+					remote: {
+	                    url: ctx + "carrier/profile/checkPassword",
+	                    type: "get",
+	                    dataType: "json",
+	                    data: {
+	                        password: function() {
+	                            return $("input[name='oldPassword']").val();
+	                        }
+	                    }
+	                }
+				},
+				newPassword: {
+	                required: true,
+	                minlength: 5,
+	    			maxlength: 20
+	            },
+	            confirm: {
+	                required: true,
+	                equalTo: "#newPassword"
+	            }
+			},
+			messages: {
+	            oldPassword: {
+	                required: "Hãy nhập mật khẩu hiện tại",
+	                remote: "Mật khẩu không đúng"
+	            },
+	            newPassword: {
+	                required: "Hãy nhập mật khẩu mới",
+	                minlength: "Mật khẩu ít nhất có 6 ký tự",
+	                maxlength: "Mật khẩu không dài quá 20 ký tự"
+	            },
+	            confirm: {
+	                required: "Hãy nhập xác nhận mật khẩu",
+	                equalTo: "Xác nhận mật khẩu không trùng với mật khẩu mới"
+	            }
+
+	        },
+	        focusCleanup: true
+		});
+		
+		function submitHandler() {
+	        if ($.validate.form()) {
+	        	$.operate.save(ctx + "carrier/profile/resetPwd", $('#form-user-resetPwd').serialize());
+	        }
+	    }
+	</script>
+</body>
+
+</html>

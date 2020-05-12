@@ -1,0 +1,83 @@
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        druid:
+            master:
+                url: jdbc:mysql://localhost:3306/eport?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B7
+                username: root
+                password: 
+            slave:
+                enabled: false
+                url: 
+                username: 
+                password: 
+            initialSize: 5
+            minIdle: 10
+            maxActive: 20
+            maxWait: 60000
+            timeBetweenEvictionRunsMillis: 60000
+            minEvictableIdleTimeMillis: 300000
+            maxEvictableIdleTimeMillis: 900000
+            validationQuery: SELECT 1 FROM DUAL
+            testWhileIdle: true
+            testOnBorrow: false
+            testOnReturn: false
+            webStatFilter: 
+                enabled: true
+            statViewServlet:
+                enabled: true
+                allow:
+                url-pattern: /druid/*
+                login-username: 
+                login-password: 
+            filter:
+                stat:
+                    enabled: true
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: true
+                wall:
+                    config:
+                        multi-statement-allow: true
+    #Email Setting
+    mail:
+        protocol: smtp
+        host: mail.danangport.com
+        port: 465
+        username: do@danangport.com
+        password: Cangdanang1901
+        properties:
+            mail:
+                store:
+                    protocol: pop3
+                smtp:
+                    auth: true
+                    ssl:
+                        enable: true
+                    starttls:
+                        enable: true
+                        required: true
+                    socketFactory:
+                        port: 465
+                        fallback: true
+                        class: javax.net.ssl.SSLSocketFactory
+
+# Static resources reloading during development
+    resources:
+        static-locations: file:E:/IRTech/DO_Portal/html/portal/static/
+        cache:
+            cachecontrol:
+                cache-public: true
+                max-age: 31536000 #1 year
+                must-revalidate: true
+#                cache-private: true
+#                no-transform: true
+# Templates reloading during development
+    thymeleaf:
+        prefix: file:E:/IRTech/DO_Portal/html/portal/templates/
+        cache: false
+eport:
+    profile: E:/IRTech/DO_Portal/html/portal/upload
+    apiUrl: http://113.160.225.15:38080/api
+    

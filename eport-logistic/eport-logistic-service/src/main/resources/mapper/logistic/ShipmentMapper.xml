@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.ShipmentMapper">
+    
+    <resultMap type="Shipment" id="ShipmentResult">
+        <result property="id"    column="id"    />
+        <result property="logisticAccountId"    column="logistic_account_id"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
+        <result property="serviceId"    column="service_id"    />
+        <result property="taxCode"    column="tax_code"    />
+        <result property="containerAmount"    column="container_amount"    />
+        <result property="edoFlg"    column="edo_flg"    />
+        <result property="remak"    column="remak"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectShipmentVo">
+        select id, logistic_account_id, logistic_group_id, service_id, tax_code, container_amount, edo_flg, remak, create_by, create_time, update_by, update_time from shipment
+    </sql>
+
+    <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
+        <include refid="selectShipmentVo"/>
+        <where>  
+            <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="serviceId != null "> and service_id = #{serviceId}</if>
+            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
+            <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
+            <if test="remak != null  and remak != ''"> and remak = #{remak}</if>
+        </where>
+    </select>
+    
+    <select id="selectShipmentById" parameterType="Long" resultMap="ShipmentResult">
+        <include refid="selectShipmentVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertShipment" parameterType="Shipment" useGeneratedKeys="true" keyProperty="id">
+        insert into shipment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logisticAccountId != null ">logistic_account_id,</if>
+            <if test="logisticGroupId != null ">logistic_group_id,</if>
+            <if test="serviceId != null ">service_id,</if>
+            <if test="taxCode != null  and taxCode != ''">tax_code,</if>
+            <if test="containerAmount != null ">container_amount,</if>
+            <if test="edoFlg != null  and edoFlg != ''">edo_flg,</if>
+            <if test="remak != null  and remak != ''">remak,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="logisticAccountId != null ">#{logisticAccountId},</if>
+            <if test="logisticGroupId != null ">#{logisticGroupId},</if>
+            <if test="serviceId != null ">#{serviceId},</if>
+            <if test="taxCode != null  and taxCode != ''">#{taxCode},</if>
+            <if test="containerAmount != null ">#{containerAmount},</if>
+            <if test="edoFlg != null  and edoFlg != ''">#{edoFlg},</if>
+            <if test="remak != null  and remak != ''">#{remak},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShipment" parameterType="Shipment">
+        update shipment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="logisticAccountId != null ">logistic_account_id = #{logisticAccountId},</if>
+            <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
+            <if test="serviceId != null ">service_id = #{serviceId},</if>
+            <if test="taxCode != null  and taxCode != ''">tax_code = #{taxCode},</if>
+            <if test="containerAmount != null ">container_amount = #{containerAmount},</if>
+            <if test="edoFlg != null  and edoFlg != ''">edo_flg = #{edoFlg},</if>
+            <if test="remak != null  and remak != ''">remak = #{remak},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShipmentById" parameterType="Long">
+        delete from shipment where id = #{id}
+    </delete>
+
+    <delete id="deleteShipmentByIds" parameterType="String">
+        delete from shipment where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

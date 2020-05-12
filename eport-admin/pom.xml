@@ -57,7 +57,7 @@
         
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-carrier-admin</artifactId>
+            <artifactId>eport-admin-carrier</artifactId>
         </dependency>
 
 <!--         <dependency> -->

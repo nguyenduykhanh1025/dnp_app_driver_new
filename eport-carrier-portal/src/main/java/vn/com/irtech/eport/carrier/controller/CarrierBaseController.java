@@ -34,16 +34,14 @@ public abstract class CarrierBaseController extends BaseController {
 	
 	public CarrierGroup getUserGroup() {
 		CarrierAccount user = getUser();
-		if(user.getCarrierGroup() == null) {
-			user.setCarrierGroup(groupService.selectCarrierGroupById(user.getGroupId()));
-		}
+		user.setCarrierGroup(groupService.selectCarrierGroupById(user.getGroupId()));
 		return user.getCarrierGroup();
 	}
 
 	public boolean hasDoPermission() {
 		CarrierGroup userGroup = getUserGroup();
 		if(userGroup != null) {
-			return "0".equals(userGroup.getDoFlag());
+			return "1".equals(userGroup.getDoFlag());
 		}
 		return false;
 	}
