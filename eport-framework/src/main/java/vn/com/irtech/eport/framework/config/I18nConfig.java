@@ -10,7 +10,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
- * 资源文件配置加载
+ * Resource file configuration loading
  * 
  * @author admin
  */
@@ -21,7 +21,7 @@ public class I18nConfig implements WebMvcConfigurer
     public LocaleResolver localeResolver()
     {
         SessionLocaleResolver slr = new SessionLocaleResolver();
-        // 默认语言
+        // default language
         slr.setDefaultLocale(Locale.US);
         return slr;
     }
@@ -30,7 +30,7 @@ public class I18nConfig implements WebMvcConfigurer
     public LocaleChangeInterceptor localeChangeInterceptor()
     {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        // 参数名
+        // parameter name
         lci.setParamName("lang");
         return lci;
     }

@@ -23,7 +23,7 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.util.ClassUtils;
 
 /**
- * Mybatis支持*匹配扫描包
+ * Mybatis supports * match scan package
  * 
  * @author admin
  */
@@ -79,7 +79,7 @@ public class MyBatisConfig
             }
             else
             {
-                throw new RuntimeException("mybatis typeAliasesPackage 路径扫描错误,参数typeAliasesPackage:" + typeAliasesPackage + "未找到任何包");
+                throw new RuntimeException("mybatis typeAliasesPackage Path scan error, parameter typeAliasesPackage: "+ typeAliasesPackage +" No package found");
             }
         }
         catch (IOException e)

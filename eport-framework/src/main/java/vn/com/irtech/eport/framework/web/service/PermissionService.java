@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * RuoYi首创 js调用 thymeleaf 实现按钮权限可见性
+ * js calls thymeleaf to realize button permission visibility
  * 
  * @author admin
  */
@@ -20,7 +20,7 @@ public class PermissionService
 {
     private static final Logger log = LoggerFactory.getLogger(PermissionService.class);
 
-    /** 没有权限，hidden用于前端隐藏按钮 */
+    /** No permission, hidden is used to hide buttons on the front end */
     public static final String NOACCESS = "hidden";
 
     private static final String ROLE_DELIMETER = ",";
@@ -28,10 +28,10 @@ public class PermissionService
     private static final String PERMISSION_DELIMETER = ",";
 
     /**
-     * 验证用户是否具备某权限，无权限返回hidden用于前端隐藏（如需返回Boolean使用isPermitted）
+     * Verify whether the user has a certain permission, if no permission is returned, hidden is used for front-end hiding (if you need to return Boolean, use isPermitted)
      * 
-     * @param permission 权限字符串
-     * @return 用户是否具备某权限
+     * @param permission Permission string
+     * @return Does the user have certain permissions
      */
     public String hasPermi(String permission)
     {
@@ -39,10 +39,10 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否不具备某权限，与 hasPermi逻辑相反。无权限返回hidden用于前端隐藏（如需返回Boolean使用isLacksPermitted）
+     * Verify that the user does not have a certain permission, contrary to hasPermi logic. No permission to return hidden for front-end hiding (if you need to return Boolean use isLacksPermitted)
      *
-     * @param permission 权限字符串
-     * @return 用户是否不具备某权限
+     * @param permission Permission string
+     * @return Whether the user does not have a certain permission
      */
     public String lacksPermi(String permission)
     {
@@ -50,10 +50,10 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否具有以下任意一个权限，无权限返回hidden用于隐藏（如需返回Boolean使用hasAnyPermissions）
+     * Verify that the user has any of the following permissions. If no permission is returned, hidden is used for hiding (if you need to return Boolean, use hasAnyPermissions)
      *
-     * @param permissions 以 PERMISSION_NAMES_DELIMETER 为分隔符的权限列表
-     * @return 用户是否具有以下任意一个权限
+     * @param permissions list of permissions with PERMISSION_NAMES_DELIMETER as separator
+     * @return Does the user have any of the following permissions
      */
     public String hasAnyPermi(String permissions)
     {
@@ -61,10 +61,10 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否具备某角色，无权限返回hidden用于隐藏（如需返回Boolean使用isRole）
+     * Verify that the user has a certain role. If you do n’t have permission to return hidden to hide (if you need to return Boolean use isRole)
      * 
-     * @param role 角色字符串
-     * @return 用户是否具备某角色
+     * @param role Role string
+     * @return Whether the user has a role
      */
     public String hasRole(String role)
     {
@@ -72,10 +72,10 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否不具备某角色，与hasRole逻辑相反。无权限返回hidden用于隐藏（如需返回Boolean使用isLacksRole）
+     * Verify that the user does not have a role, contrary to hasRole logic. No permission to return hidden for hiding (if you need to return Boolean use isLacksRole)
      * 
-     * @param role 角色字符串
-     * @return 用户是否不具备某角色
+     * @param role Role string
+     * @return Whether the user does not have a role
      */
     public String lacksRole(String role)
     {
@@ -83,10 +83,10 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否具有以下任意一个角色，无权限返回hidden用于隐藏（如需返回Boolean使用isAnyRoles）
+     * Verify that the user has any of the following roles. If you have no permission, return hidden to hide (if you need to return Boolean, use isAnyRoles)
      *
-     * @param roles 以 ROLE_NAMES_DELIMETER 为分隔符的角色列表
-     * @return 用户是否具有以下任意一个角色
+     * @param roles List of roles separated by ROLE_NAMES_DELIMETER
+     * @return Does the user have any of the following roles
      */
     public String hasAnyRoles(String roles)
     {
@@ -94,9 +94,9 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否认证通过或已记住的用户。
+     * Verify if the user is authenticated or remembered.
      *
-     * @return 用户是否认证通过或已记住的用户
+     * @return Whether the user is authenticated or has been remembered
      */
     public boolean isUser()
     {
@@ -105,10 +105,10 @@ public class PermissionService
     }
 
     /**
-     * 判断用户是否拥有某个权限
+     * Determine if the user has a certain permission
      * 
-     * @param permission 权限字符串
-     * @return 用户是否具备某权限
+     * @param permission Permission string
+     * @return Does the user have certain permissions
      */
     public boolean isPermitted(String permission)
     {
@@ -116,10 +116,10 @@ public class PermissionService
     }
 
     /**
-     * 判断用户是否不具备某权限，与 isPermitted逻辑相反。
+     * Judging whether a user does not have a certain authority is the opposite of isPermitted logic.
      *
-     * @param permission 权限名称
-     * @return 用户是否不具备某权限
+     * @param permission Permission name
+     * @return Whether the user does not have a certain permission
      */
     public boolean isLacksPermitted(String permission)
     {
@@ -127,10 +127,10 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否具有以下任意一个权限。
+     * Verify that the user has any of the following permissions.
      *
-     * @param permissions 以 PERMISSION_NAMES_DELIMETER 为分隔符的权限列表
-     * @return 用户是否具有以下任意一个权限
+     * @param permissions Permission list separated by PERMISSION_NAMES_DELIMETER
+     * @return Does the user have any of the following permissions
      */
     public boolean hasAnyPermissions(String permissions)
     {
@@ -138,11 +138,11 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否具有以下任意一个权限。
+     * Verify that the user has any of the following permissions.
      *
-     * @param permissions 以 delimeter 为分隔符的权限列表
-     * @param delimeter 权限列表分隔符
-     * @return 用户是否具有以下任意一个权限
+     * @param permissions Permission list with delimeter as separator
+     * @param delimeter Permission list separator
+     * @return Does the user have any of the following permissions
      */
     public boolean hasAnyPermissions(String permissions, String delimeter)
     {
@@ -168,10 +168,10 @@ public class PermissionService
     }
 
     /**
-     * 判断用户是否拥有某个角色
+     * Determine whether the user has a role
      * 
-     * @param role 角色字符串
-     * @return 用户是否具备某角色
+     * @param role Role string
+     * @return Whether the user has a role
      */
     public boolean isRole(String role)
     {
@@ -179,10 +179,10 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否不具备某角色，与 isRole逻辑相反。
+     * Verify that the user does not have a role, contrary to the logic of isRole.
      *
-     * @param role 角色名称
-     * @return 用户是否不具备某角色
+     * @param role Role Name
+     * @return Whether the user does not have a role
      */
     public boolean isLacksRole(String role)
     {
@@ -190,10 +190,10 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否具有以下任意一个角色。
+     * Verify that the user has any of the following roles.
      *
-     * @param roles 以 ROLE_NAMES_DELIMETER 为分隔符的角色列表
-     * @return 用户是否具有以下任意一个角色
+     * @param roles List of roles separated by ROLE_NAMES_DELIMETER
+     * @return Does the user have any of the following roles
      */
     public boolean isAnyRoles(String roles)
     {
@@ -201,11 +201,11 @@ public class PermissionService
     }
 
     /**
-     * 验证用户是否具有以下任意一个角色。
+     * Verify that the user has any of the following roles.
      *
-     * @param roles 以 delimeter 为分隔符的角色列表
-     * @param delimeter 角色列表分隔符
-     * @return 用户是否具有以下任意一个角色
+     * @param roles List of characters separated by delimeter
+     * @param delimeter Role list separator
+     * @return Does the user have any of the following roles
      */
     public boolean isAnyRoles(String roles, String delimeter)
     {
@@ -230,10 +230,10 @@ public class PermissionService
     }
 
     /**
-     * 返回用户属性值
+     * Return user attribute value
      *
-     * @param property 属性名称
-     * @return 用户属性值
+     * @param property Attribute name
+     * @return User attribute value
      */
     public Object getPrincipalProperty(String property)
     {

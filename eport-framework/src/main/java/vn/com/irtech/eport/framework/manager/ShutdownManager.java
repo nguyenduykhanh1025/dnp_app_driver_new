@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PreDestroy;
 
 /**
- * 确保应用退出时能关闭后台线程
+ * Ensure that the background thread can be closed when the application exits
  *
- * @author cj
+ * @author admin
  */
 @Component
 public class ShutdownManager
@@ -34,7 +34,7 @@ public class ShutdownManager
     }
 
     /**
-     * 停止Seesion会话检查
+     * Stop Seesion session check
      */
     private void shutdownSpringSessionValidationScheduler()
     {
@@ -53,7 +53,7 @@ public class ShutdownManager
     }
 
     /**
-     * 停止异步执行任务
+     * Stop asynchronous task execution
      */
     private void shutdownAsyncManager()
     {

@@ -36,7 +36,7 @@ import vn.com.irtech.eport.framework.shiro.web.session.SpringSessionValidationSc
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 
 /**
- * 权限配置加载
+ * Permission configuration loading
  * 
  * @author admin
  */
@@ -45,56 +45,56 @@ public class ShiroConfig
 {
     public static final String PREMISSION_STRING = "perms[\"{0}\"]";
 
-    // Session超时时间，单位为毫秒（默认30分钟）
+    // Session timeout time, in milliseconds (default 30 minutes)
     @Value("${shiro.session.expireTime}")
     private int expireTime;
 
-    // 相隔多久检查一次session的有效性，单位毫秒，默认就是10分钟
+    // How often to check the validity of a session, in milliseconds, the default is 10 minutes
     @Value("${shiro.session.validationInterval}")
     private int validationInterval;
 
-    // 同一个用户最大会话数
+    // Maximum sessions of the same user
     @Value("${shiro.session.maxSession}")
     private int maxSession;
 
-    // 踢出之前登录的/之后登录的用户，默认踢出之前登录的用户
+    // Kick out previously logged in / post logged in users, kick out previously logged in users by default
     @Value("${shiro.session.kickoutAfter}")
     private boolean kickoutAfter;
 
-    // 验证码开关
+    // Verification code switch
     @Value("${shiro.user.captchaEnabled}")
     private boolean captchaEnabled;
 
-    // 验证码类型
+    // Verification code type
     @Value("${shiro.user.captchaType}")
     private String captchaType;
 
-    // 设置Cookie的域名
+    // Set Cookie Domain Name
     @Value("${shiro.cookie.domain}")
     private String domain;
 
-    // 设置cookie的有效访问路径
+    // Set effective access path for cookies
     @Value("${shiro.cookie.path}")
     private String path;
 
-    // 设置HttpOnly属性
+    // Set HttpOnly property
     @Value("${shiro.cookie.httpOnly}")
     private boolean httpOnly;
 
-    // 设置Cookie的过期时间，秒为单位
+    // Set the cookie expiration time, in seconds
     @Value("${shiro.cookie.maxAge}")
     private int maxAge;
 
-    // 登录地址
+    // Login address
     @Value("${shiro.user.loginUrl}")
     private String loginUrl;
 
-    // 权限认证失败地址
+    // Authorization failed address
     @Value("${shiro.user.unauthorizedUrl}")
     private String unauthorizedUrl;
 
     /**
-     * 缓存管理器 使用Ehcache实现
+     * Cache manager using Ehcache
      */
     @Bean
     public EhCacheManager getEhCacheManager()
@@ -114,7 +114,7 @@ public class ShiroConfig
     }
 
     /**
-     * 返回配置文件流 避免ehcache配置文件一直被占用，无法完全销毁项目重新部署
+     * Return to the configuration file flow to prevent the ehcache configuration file from being occupied all the time, and the project cannot be completely destroyed and redeployed
      */
     protected InputStream getCacheManagerConfigFileInputStream()
     {
@@ -139,7 +139,7 @@ public class ShiroConfig
     }
 
     /**
-     * 自定义Realm
+     * Custom Realm
      */
     @Bean
     public UserRealm userRealm(EhCacheManager cacheManager)
@@ -150,7 +150,7 @@ public class ShiroConfig
     }
 
     /**
-     * 自定义sessionDAO会话
+     * Custom sessionDAO session
      */
     @Bean
     public OnlineSessionDAO sessionDAO()
@@ -160,7 +160,7 @@ public class ShiroConfig
     }
 
     /**
-     * 自定义sessionFactory会话
+     * Custom sessionFactory session
      */
     @Bean
     public OnlineSessionFactory sessionFactory()
@@ -170,51 +170,51 @@ public class ShiroConfig
     }
 
     /**
-     * 会话管理器
+     * Session manager
      */
     @Bean
     public OnlineWebSessionManager sessionManager()
     {
         OnlineWebSessionManager manager = new OnlineWebSessionManager();
-        // 加入缓存管理器
+        // Join the cache manager
         manager.setCacheManager(getEhCacheManager());
-        // 删除过期的session
+        // Delete expired session
         manager.setDeleteInvalidSessions(true);
-        // 设置全局session超时时间
+        // Set global session timeout
         manager.setGlobalSessionTimeout(expireTime * 60 * 1000);
-        // 去掉 JSESSIONID
+        // Remove JSESSIONID
         manager.setSessionIdUrlRewritingEnabled(false);
-        // 定义要使用的无效的Session定时调度器
+        // Define the invalid session timing scheduler to use
         manager.setSessionValidationScheduler(SpringUtils.getBean(SpringSessionValidationScheduler.class));
-        // 是否定时检查session
+        // Whether to check the session regularly
         manager.setSessionValidationSchedulerEnabled(true);
-        // 自定义SessionDao
+        // Custom SessionDao
         manager.setSessionDAO(sessionDAO());
-        // 自定义sessionFactory
+        // Custom sessionFactory
         manager.setSessionFactory(sessionFactory());
         return manager;
     }
 
     /**
-     * 安全管理器
+     * Security manager
      */
     @Bean
     public SecurityManager securityManager(UserRealm userRealm)
     {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        // 设置realm.
+        // Set up realm.
         securityManager.setRealm(userRealm);
-        // 记住我
+        // remember me
         securityManager.setRememberMeManager(rememberMeManager());
-        // 注入缓存管理器;
+        // Inject into the cache manager;
         securityManager.setCacheManager(getEhCacheManager());
-        // session管理器
+        // session manager
         securityManager.setSessionManager(sessionManager());
         return securityManager;
     }
 
     /**
-     * 退出过滤器
+     * Exit filter
      */
     public LogoutFilter logoutFilter()
     {
@@ -225,21 +225,21 @@ public class ShiroConfig
     }
 
     /**
-     * Shiro过滤器配置
+     * Shiro Filter configuration
      */
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager)
     {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        // Shiro的核心安全接口,这个属性是必须的
+        // Shiro's core security interface, this attribute is required
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-        // 身份认证失败，则跳转到登录页面的配置
+        // If authentication fails, jump to the configuration of the login page
         shiroFilterFactoryBean.setLoginUrl(loginUrl);
-        // 权限认证失败，则跳转到指定页面
+        // Permission authentication fails, jump to the specified page
         shiroFilterFactoryBean.setUnauthorizedUrl(unauthorizedUrl);
-        // Shiro连接约束配置，即过滤链的定义
+        // Shiro connection constraint configuration, namely the definition of filter chain
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        // 对静态资源设置匿名访问
+        // Set anonymous access to static resources
         filterChainDefinitionMap.put("/favicon.ico**", "anon");
         filterChainDefinitionMap.put("/logo.png**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
@@ -250,13 +250,13 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/eport/**", "anon");
         filterChainDefinitionMap.put("/captcha/captchaImage**", "anon");
-        // 退出 logout地址，shiro去清除session
+        // Exit logout address, shiro to clear the session
         filterChainDefinitionMap.put("/logout", "logout");
-        // 不需要拦截的访问
+        // Access that does not need to be blocked
         filterChainDefinitionMap.put("/login", "anon,captchaValidate");
-        // 注册相关
+        // Registration related
         filterChainDefinitionMap.put("/register", "anon,captchaValidate");
-        // 系统权限列表
+        // System permissions list
         // filterChainDefinitionMap.putAll(SpringUtils.getBean(IMenuService.class).selectPermsAll());
 
         Map<String, Filter> filters = new LinkedHashMap<String, Filter>();
@@ -264,11 +264,11 @@ public class ShiroConfig
         filters.put("syncOnlineSession", syncOnlineSessionFilter());
         filters.put("captchaValidate", captchaValidateFilter());
         filters.put("kickout", kickoutSessionFilter());
-        // 注销成功，则跳转到指定页面
+        // If the logout is successful, jump to the specified page
         filters.put("logout", logoutFilter());
         shiroFilterFactoryBean.setFilters(filters);
 
-        // 所有请求需要认证
+        // All requests require authentication
         filterChainDefinitionMap.put("/**", "user,kickout,onlineSession,syncOnlineSession");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
@@ -276,7 +276,7 @@ public class ShiroConfig
     }
 
     /**
-     * 自定义在线用户处理过滤器
+     * Custom online user processing filters
      */
     @Bean
     public OnlineSessionFilter onlineSessionFilter()
@@ -287,7 +287,7 @@ public class ShiroConfig
     }
 
     /**
-     * 自定义在线用户同步过滤器
+     * Custom online user synchronization filter
      */
     @Bean
     public SyncOnlineSessionFilter syncOnlineSessionFilter()
@@ -297,7 +297,7 @@ public class ShiroConfig
     }
 
     /**
-     * 自定义验证码过滤器
+     * Custom verification code filter
      */
     @Bean
     public CaptchaValidateFilter captchaValidateFilter()
@@ -309,7 +309,7 @@ public class ShiroConfig
     }
 
     /**
-     * cookie 属性设置
+     * cookie Property setting
      */
     public SimpleCookie rememberMeCookie()
     {
@@ -322,7 +322,7 @@ public class ShiroConfig
     }
 
     /**
-     * 记住我
+     * remember me
      */
     public CookieRememberMeManager rememberMeManager()
     {
@@ -333,24 +333,24 @@ public class ShiroConfig
     }
 
     /**
-     * 同一个用户多设备登录限制
+     * Restrictions on multiple device logins for the same user
      */
     public KickoutSessionFilter kickoutSessionFilter()
     {
         KickoutSessionFilter kickoutSessionFilter = new KickoutSessionFilter();
         kickoutSessionFilter.setCacheManager(getEhCacheManager());
         kickoutSessionFilter.setSessionManager(sessionManager());
-        // 同一个用户最大的会话数，默认-1无限制；比如2的意思是同一个用户允许最多同时两个人登录
+        // The maximum number of sessions for the same user, the default is -1 unlimited; for example, 2 means that the same user is allowed to log in at most two people at the same time
         kickoutSessionFilter.setMaxSession(maxSession);
-        // 是否踢出后来登录的，默认是false；即后者登录的用户踢出前者登录的用户；踢出顺序
+        // Whether to log out later, the default is false; that is, the user who logs in the latter kicks out the user who logs in the former; the order of kicking out
         kickoutSessionFilter.setKickoutAfter(kickoutAfter);
-        // 被踢出后重定向到的地址；
+        // The address to redirect to after being kicked out;
         kickoutSessionFilter.setKickoutUrl("/login?kickout=1");
         return kickoutSessionFilter;
     }
 
     /**
-     * thymeleaf模板引擎和shiro框架的整合
+     * Integration of thymeleaf template engine and shiro framework
      */
     @Bean
     public ShiroDialect shiroDialect()
@@ -359,7 +359,7 @@ public class ShiroConfig
     }
 
     /**
-     * 开启Shiro注解通知器
+     * Open the Shiro annotation notifier
      */
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(

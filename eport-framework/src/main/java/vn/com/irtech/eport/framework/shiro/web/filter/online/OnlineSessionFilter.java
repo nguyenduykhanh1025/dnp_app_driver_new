@@ -17,14 +17,14 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.system.domain.SysUser;
 
 /**
- * 自定义访问控制
+ * Custom access control
  * 
  * @author admin
  */
 public class OnlineSessionFilter extends AccessControlFilter
 {
     /**
-     * 强制退出后重定向的地址
+     * Redirected address after forced exit
      */
     @Value("${shiro.user.loginUrl}")
     private String loginUrl;
@@ -33,7 +33,7 @@ public class OnlineSessionFilter extends AccessControlFilter
     private OnlineSessionDAO onlineSessionDAO;
 
     /**
-     * 表示是否允许访问；mappedValue就是[urls]配置中拦截器参数部分，如果允许访问返回true，否则false；
+     * Indicates whether access is allowed; mappedValue is the part of the interceptor parameter in the [urls] configuration. If access is allowed, return true, otherwise false;
      */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue)
@@ -49,7 +49,7 @@ public class OnlineSessionFilter extends AccessControlFilter
         {
             OnlineSession onlineSession = (OnlineSession) session;
             request.setAttribute(ShiroConstants.ONLINE_SESSION, onlineSession);
-            // 把user对象设置进去
+            // Set the user object in
             boolean isGuest = onlineSession.getUserId() == null || onlineSession.getUserId() == 0L;
             if (isGuest == true)
             {
@@ -73,7 +73,7 @@ public class OnlineSessionFilter extends AccessControlFilter
     }
 
     /**
-     * 表示当访问拒绝时是否已经处理了；如果返回true表示需要继续处理；如果返回false表示该拦截器实例已经处理了，将直接返回即可。
+     * Indicates whether it has been processed when access is denied; if it returns true, it needs to continue processing; if it returns false, it means that the interceptor instance has been processed, and it will be returned directly.
      */
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception
@@ -87,7 +87,7 @@ public class OnlineSessionFilter extends AccessControlFilter
         return false;
     }
 
-    // 跳转到登录页
+    // Jump to login page
     @Override
     protected void redirectToLogin(ServletRequest request, ServletResponse response) throws IOException
     {

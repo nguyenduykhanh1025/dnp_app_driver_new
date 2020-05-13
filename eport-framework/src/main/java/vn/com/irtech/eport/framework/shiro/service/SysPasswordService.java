@@ -1,21 +1,24 @@
 package vn.com.irtech.eport.framework.shiro.service;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
 import javax.annotation.PostConstruct;
+
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.constant.ShiroConstants;
 import vn.com.irtech.eport.common.exception.user.UserPasswordNotMatchException;
 import vn.com.irtech.eport.common.exception.user.UserPasswordRetryLimitExceedException;
 import vn.com.irtech.eport.common.utils.MessageUtils;
+import vn.com.irtech.eport.framework.domain.SysUser;
 import vn.com.irtech.eport.framework.manager.AsyncManager;
 import vn.com.irtech.eport.framework.manager.factory.AsyncFactory;
-import vn.com.irtech.eport.system.domain.SysUser;
 
 /**
  * 登录密码方法

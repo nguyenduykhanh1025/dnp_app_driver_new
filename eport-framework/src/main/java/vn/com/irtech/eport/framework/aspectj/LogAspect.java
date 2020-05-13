@@ -2,6 +2,7 @@ package vn.com.irtech.eport.framework.aspectj;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -12,19 +13,20 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessStatus;
 import vn.com.irtech.eport.common.json.JSON;
 import vn.com.irtech.eport.common.utils.ServletUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.framework.domain.SysOperLog;
+import vn.com.irtech.eport.framework.domain.SysUser;
 import vn.com.irtech.eport.framework.manager.AsyncManager;
 import vn.com.irtech.eport.framework.manager.factory.AsyncFactory;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.system.domain.SysOperLog;
-import vn.com.irtech.eport.system.domain.SysUser;
 
 /**
- * 操作日志记录处理
+ * Operation date record processing
  * 
  * @author admin
  */
@@ -34,16 +36,16 @@ public class LogAspect
 {
     private static final Logger log = LoggerFactory.getLogger(LogAspect.class);
 
-    // 配置织入点
+    // Placement point
     @Pointcut("@annotation(vn.com.irtech.eport.common.annotation.Log)")
     public void logPointCut()
     {
     }
 
     /**
-     * 处理完请求后执行
+     * After completing the processing request
      *
-     * @param joinPoint 切点
+     * @param joinPoint 
      */
     @AfterReturning(pointcut = "logPointCut()", returning = "jsonResult")
     public void doAfterReturning(JoinPoint joinPoint, Object jsonResult)
@@ -52,10 +54,10 @@ public class LogAspect
     }
 
     /**
-     * 拦截异常操作
+     * Normal operation
      * 
-     * @param joinPoint 切点
-     * @param e 异常
+     * @param joinPoint 
+     * @param e Exception
      */
     @AfterThrowing(value = "logPointCut()", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, Exception e)
@@ -67,23 +69,22 @@ public class LogAspect
     {
         try
         {
-            // 获得注解
+            // Annotation
             Log controllerLog = getAnnotationLog(joinPoint);
             if (controllerLog == null)
             {
                 return;
             }
 
-            // 获取当前的用户
             SysUser currentUser = ShiroUtils.getSysUser();
 
-            // *========数据库日志=========*//
+            // *========A few days=========*//
             SysOperLog operLog = new SysOperLog();
             operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
-            // 请求的地址
+
             String ip = ShiroUtils.getIp();
             operLog.setOperIp(ip);
-            // 返回参数
+
             operLog.setJsonResult(JSON.marshal(jsonResult));
 
             operLog.setOperUrl(ServletUtils.getRequest().getRequestURI());
@@ -102,20 +103,20 @@ public class LogAspect
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
                 operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
             }
-            // 设置方法名称
+            // Installation method name
             String className = joinPoint.getTarget().getClass().getName();
             String methodName = joinPoint.getSignature().getName();
             operLog.setMethod(className + "." + methodName + "()");
-            // 设置请求方式
+            // Installation request method
             operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
-            // 处理设置注解上的参数
+            // The number of participants
             getControllerMethodDescription(controllerLog, operLog);
-            // 保存数据库
+            // Number of preservation
             AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
         }
         catch (Exception exp)
         {
-            // 记录本地异常日志
+            // Recording book
             log.error("==Pre-notification exception==");
             log.error("Exception information: {}", exp.getMessage());
             exp.printStackTrace();
@@ -123,33 +124,33 @@ public class LogAspect
     }
 
     /**
-     * 获取注解中对方法的描述信息 用于Controller层注解
+     * Get the description information of the method in the annotation Used for Controller layer annotation
      * 
-     * @param log 日志
-     * @param operLog 操作日志
+     * @param log Log
+     * @param operLog Operation log
      * @throws Exception
      */
     public void getControllerMethodDescription(Log log, SysOperLog operLog) throws Exception
     {
-        // 设置action动作
+        // Set action
         operLog.setBusinessType(log.businessType().ordinal());
-        // 设置标题
+        // Set title
         operLog.setTitle(log.title());
-        // 设置操作人类别
+        // Set operator category
         operLog.setOperatorType(log.operatorType().ordinal());
-        // 是否需要保存request，参数和值
+        // Do you need to save the request, parameters and values
         if (log.isSaveRequestData())
         {
-            // 获取参数的信息，传入到数据库中。
+            // Obtain the parameter information and pass it into the database.
             setRequestValue(operLog);
         }
     }
 
     /**
-     * 获取请求的参数，放到log中
+     * Get the parameters of the request and put it in the log
      * 
-     * @param operLog 操作日志
-     * @throws Exception 异常
+     * @param operLog Operation log
+     * @throws Exception abnormal
      */
     private void setRequestValue(SysOperLog operLog) throws Exception
     {
@@ -159,7 +160,7 @@ public class LogAspect
     }
 
     /**
-     * 是否存在注解，如果存在就获取
+     * Whether there is an annotation, if it exists, get it
      */
     private Log getAnnotationLog(JoinPoint joinPoint) throws Exception
     {

@@ -9,8 +9,8 @@ import vn.com.irtech.eport.common.json.JSON;
 import vn.com.irtech.eport.framework.interceptor.RepeatSubmitInterceptor;
 
 /**
- * 判断请求url和数据是否和上一次相同， 
- * 如果和上次相同，则是重复提交表单。 有效时间为10秒内。
+ * Determine whether the request url and data are the same as the last time,
+ * If it is the same as last time, the form is submitted repeatedly. The effective time is within 10 seconds.
  * 
  * @author admin
  */
@@ -24,9 +24,9 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
     public final String SESSION_REPEAT_KEY = "repeatData";
 
     /**
-     * 间隔时间，单位:秒 默认10秒
+     *Interval time, unit: second Default 10 seconds
      * 
-     * 两次相同参数的请求，如果间隔时间大于该参数，系统不会认定为重复提交的数据
+     * Two requests with the same parameters, if the interval is greater than this parameter, the system will not consider the data submitted repeatedly
      */
     private int intervalTime = 10;
 
@@ -39,13 +39,13 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
     @Override
     public boolean isRepeatSubmit(HttpServletRequest request) throws Exception
     {
-        // 本次参数及系统时间
+        // This parameter and system time
         String nowParams = JSON.marshal(request.getParameterMap());
         Map<String, Object> nowDataMap = new HashMap<String, Object>();
         nowDataMap.put(REPEAT_PARAMS, nowParams);
         nowDataMap.put(REPEAT_TIME, System.currentTimeMillis());
 
-        // 请求地址（作为存放session的key值）
+        // Request address (as the key value for storing the session)
         String url = request.getRequestURI();
 
         HttpSession session = request.getSession();
@@ -69,7 +69,7 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
     }
 
     /**
-     * 判断参数是否相同
+     * Determine whether the parameters are the same
      */
     private boolean compareParams(Map<String, Object> nowMap, Map<String, Object> preMap)
     {
@@ -79,7 +79,7 @@ public class SameUrlDataInterceptor extends RepeatSubmitInterceptor
     }
 
     /**
-     * 判断两次间隔时间
+     * Judge the interval between two times
      */
     private boolean compareTime(Map<String, Object> nowMap, Map<String, Object> preMap)
     {

@@ -8,7 +8,7 @@ import com.google.code.kaptcha.util.Config;
 import static com.google.code.kaptcha.Constants.*;
 
 /**
- * 验证码配置
+ * Verification code configuration
  * 
  * @author admin
  */
@@ -20,23 +20,23 @@ public class CaptchaConfig
     {
         DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
         Properties properties = new Properties();
-        // 是否有边框 默认为true 我们可以自己设置yes，no
+        // Whether there is a border, the default is true, we can set yes, no
         properties.setProperty(KAPTCHA_BORDER, "yes");
-        // 验证码文本字符颜色 默认为Color.BLACK
+        // Verification code text character color The default is Color.BLACK
         properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_COLOR, "black");
-        // 验证码图片宽度 默认为200
+        // Captcha image width defaults to 200
         properties.setProperty(KAPTCHA_IMAGE_WIDTH, "160");
-        // 验证码图片高度 默认为50
+        // Verification code image height is 50 by default
         properties.setProperty(KAPTCHA_IMAGE_HEIGHT, "60");
-        // 验证码文本字符大小 默认为40
+        // Captcha text character size default is 40
         properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_SIZE, "38");
         // KAPTCHA_SESSION_KEY
         properties.setProperty(KAPTCHA_SESSION_CONFIG_KEY, "kaptchaCode");
-        // 验证码文本字符长度 默认为5
+        // Verification code text character length default is 5
         properties.setProperty(KAPTCHA_TEXTPRODUCER_CHAR_LENGTH, "4");
-        // 验证码文本字体样式 默认为new Font("Arial", 1, fontSize), new Font("Courier", 1, fontSize)
+        // Verification code text font style The default is new Font("Arial", 1, fontSize), new Font("Courier", 1, fontSize)
         properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_NAMES, "Arial,Courier");
-        // 图片样式 水纹com.google.code.kaptcha.impl.WaterRipple 鱼眼com.google.code.kaptcha.impl.FishEyeGimpy 阴影com.google.code.kaptcha.impl.ShadowGimpy
+        // Picture Style Watermark com.google.code.kaptcha.impl.WaterRipple Fisheye com.google.code.kaptcha.impl.FishEyeGimpy Shadow com.google.code.kaptcha.impl.ShadowGimpy
         properties.setProperty(KAPTCHA_OBSCURIFICATOR_IMPL, "com.google.code.kaptcha.impl.ShadowGimpy");
         Config config = new Config(properties);
         defaultKaptcha.setConfig(config);
@@ -48,33 +48,33 @@ public class CaptchaConfig
     {
         DefaultKaptcha defaultKaptcha = new DefaultKaptcha();
         Properties properties = new Properties();
-        // 是否有边框 默认为true 我们可以自己设置yes，no
+        // Whether there is a border, the default is true, we can set yes, no
         properties.setProperty(KAPTCHA_BORDER, "yes");
-        // 边框颜色 默认为Color.BLACK
+        // Border color Default is Color.BLACK
         properties.setProperty(KAPTCHA_BORDER_COLOR, "105,179,90");
-        // 验证码文本字符颜色 默认为Color.BLACK
+        // Verification code text character color The default is Color.BLACK
         properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_COLOR, "blue");
-        // 验证码图片宽度 默认为200
+        // Captcha image width defaults to 200
         properties.setProperty(KAPTCHA_IMAGE_WIDTH, "160");
-        // 验证码图片高度 默认为50
+        // Verification code image height is 50 by default
         properties.setProperty(KAPTCHA_IMAGE_HEIGHT, "60");
-        // 验证码文本字符大小 默认为40
+        // Captcha text character size default is 40
         properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_SIZE, "35");
         // KAPTCHA_SESSION_KEY
         properties.setProperty(KAPTCHA_SESSION_CONFIG_KEY, "kaptchaCodeMath");
-        // 验证码文本生成器
+        // Captcha text generator
         properties.setProperty(KAPTCHA_TEXTPRODUCER_IMPL, "vn.com.irtech.eport.framework.config.KaptchaTextCreator");
-        // 验证码文本字符间距 默认为2
+        // Verification code text character spacing The default is 2
         properties.setProperty(KAPTCHA_TEXTPRODUCER_CHAR_SPACE, "3");
-        // 验证码文本字符长度 默认为5
+        // Verification code text character length default is 5
         properties.setProperty(KAPTCHA_TEXTPRODUCER_CHAR_LENGTH, "6");
-        // 验证码文本字体样式 默认为new Font("Arial", 1, fontSize), new Font("Courier", 1, fontSize)
+        // Verification code text font style The default is new Font("Arial", 1, fontSize), new Font("Courier", 1, fontSize)
         properties.setProperty(KAPTCHA_TEXTPRODUCER_FONT_NAMES, "Arial,Courier");
-        // 验证码噪点颜色 默认为Color.BLACK
+        // Verification code noise color The default is Color.BLACK
         properties.setProperty(KAPTCHA_NOISE_COLOR, "white");
-        // 干扰实现类
+        // Interference implementation class
         properties.setProperty(KAPTCHA_NOISE_IMPL, "com.google.code.kaptcha.impl.NoNoise");
-        // 图片样式 水纹com.google.code.kaptcha.impl.WaterRipple 鱼眼com.google.code.kaptcha.impl.FishEyeGimpy 阴影com.google.code.kaptcha.impl.ShadowGimpy
+        // Picture Style Watermark com.google.code.kaptcha.impl.WaterRipple Fisheye com.google.code.kaptcha.impl.FishEyeGimpy Shadow com.google.code.kaptcha.impl.ShadowGimpy
         properties.setProperty(KAPTCHA_OBSCURIFICATOR_IMPL, "com.google.code.kaptcha.impl.ShadowGimpy");
         Config config = new Config(properties);
         defaultKaptcha.setConfig(config);

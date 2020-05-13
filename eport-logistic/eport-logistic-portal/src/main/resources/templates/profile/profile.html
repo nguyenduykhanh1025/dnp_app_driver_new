@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('User personal information')" />
+</head>
+
+<body class="gray-bg" style="font: 14px Helvetica Neue, Helvetica, PingFang SC, Microsoft Yahei, Tahoma, Arial, sans-serif !important;">
+    <input id="Id" name="Id" type="hidden" th:value="${user.Id}" />
+    <section class="section-content">
+    <div class="row">
+        <div class="col-sm-3 pr5">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title ibox-title-gray dashboard-header gray-bg">
+                    <h5>Thông tin cá nhân</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="text-center">
+                        <p><img class="img-circle img-lg" th:src="@{/img/userdefault.jpg}"></p>
+                    </div>
+                    <ul class="list-group list-group-striped">
+                        <li class="list-group-item"><i class="fa fa-envelope-o"></i>
+                            <b class="font-noraml">Tên đăng nhập</b>
+                            <p class="pull-right">[[${user.email}]]</p>
+                        </li>
+                        <li class="list-group-item"><i class="fa fa-user"></i>
+                            <b  class="font-noraml">Họ Và Tên</b>
+                            <p class="pull-right">[[${user.fullName}]]</p>
+                        </li>
+                        <li class="list-group-item"><i class="fa fa- fa-calendar"></i>
+                            <b  class="font-noraml">Ngày tạo</b>
+                            <p class="pull-right" >[[${user.CreateTime}]]</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-sm-9 about">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title ibox-title-gray dashboard-header">
+                    <h5>Thông tin cơ bản</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#user_info" data-toggle="tab" aria-expanded="true">Thông tin cơ bản</a></li>
+                            <li><a href="#modify_password" data-toggle="tab" aria-expanded="false">Thay đổi mật khẩu</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <!--User Info-->
+                            <div class="tab-pane active" id="user_info" th:object="${user}">
+                                <form class="form-horizontal" id="form-user-edit">
+                                    <!--Hide ID-->
+                                    <input name="id" id="id" type="hidden">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Email</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" disabled class="form-control" name="email" th:field="*{email}" placeholder="Please enter a email">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Tên đại diện</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="fullName" maxlength="30" th:field="*{fullName}" placeholder="Please enter the full name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Hãng tàu</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="groupId" th:field="*{groupId}" placeholder="Vui lòng nhập ID hãng tàu">
+                                        </div>
+                                    </div>
+<!-- 						            <div class="form-group">    
+						                <label class="col-sm-2 control-label">Hãng tàu</label>
+						                <div class="col-sm-10">
+						                    <input type="hidden" name="groupId" th:field="*{groupId}" id="groupId">
+						                    <input type="text" class="form-control" name="groupName"  disabled>
+						                </div>
+						            </div> -->
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Ghi chú</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="remark" maxlength="30" th:field="*{remark}" placeholder="Ghi chú">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitUserInfo()"><i class="fa fa-check"></i>  &nbsp;Lưu</button>&nbsp;
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
+                            <div class="tab-pane" id="modify_password">
+                                <form class="form-horizontal" id="form-user-resetPwd">
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Mật khẩu cũ</label>
+                                        <div class="col-sm-10">
+                                            <input type="password" class="form-control" name="oldPassword" placeholder="Vui lòng nhập mật khẩu cũ">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Mật khẩu mới</label>
+                                        <div class="col-sm-10">
+                                            <input type="password" class="form-control" name="newPassword" id="newPassword" placeholder="Vui lòng nhập mật khẩu mới">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-2 control-label">Xác nhận lại mật khẩu</label>
+                                        <div class="col-sm-10">
+                                            <input type="password" class="form-control" name="confirmPassword" placeholder="Vui lòng xác nhận lại mật khẩu">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="submitChangPassword()"><i class="fa fa-check"></i> &nbsp;Lưu</button>&nbsp;
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	</section>
+    <th:block th:include="include :: footer" />
+    <script>
+	    $("#form-user-edit").validate({
+			onkeyup: false,
+			rules:{
+				email:{
+					required:true,
+				},
+			},
+			messages: {
+				"email": {
+					required: "please input your email",
+		            remote: "Email already exists"
+		        },
+				"phonenumber":{
+					required: "Please enter the phone number",
+		        	remote: "Phone number already exists"
+				}
+		    },
+		    focusCleanup: true
+		});
+		
+		function submitUserInfo() {
+	        if ($.validate.form()) {
+	        	$.operate.saveModal(ctx + "carrier/profile/update", $('#form-user-edit').serialize());
+	        }
+	    }
+	    
+	    $("#form-user-resetPwd").validate({
+	    	onkeyup: false,
+			rules:{
+				oldPassword:{
+					required:true,
+					remote: {
+	                    url: ctx + "carrier/profile/checkPassword",
+	                    type: "get",
+	                    dataType: "json",
+	                    data: {
+	                        password: function() {
+	                            return $("input[name='oldPassword']").val();
+	                        }
+	                    }
+	                }
+				},
+				newPassword: {
+	                required: true,
+	                minlength: 6,
+	    			maxlength: 20
+	            },
+	            confirmPassword: {
+	                required: true,
+	                equalTo: "#newPassword"
+	            }
+			},
+			messages: {
+				oldPassword: {
+	                required: "Hãy nhập mật khẩu hiện tại",
+	                remote: "Mật khẩu không đúng"
+	            },
+	            newPassword: {
+	                required: "Hãy nhập mật khẩu mới",
+	                minlength: "Mật khẩu ít nhất có 6 ký tự",
+	                maxlength: "Mật khẩu không dài quá 20 ký tự"
+	            },
+	            confirmPassword: {
+	                required: "Hãy nhập xác nhận mật khẩu",
+	                equalTo: "Xác nhận mật khẩu không trùng với mật khẩu mới"
+	            }
+	        },
+	        focusCleanup: true
+		});
+		
+		function submitChangPassword () {
+	        if ($.validate.form("form-user-resetPwd")) {
+	        	$.operate.saveModal(ctx + "carrier/profile/resetPwd", $('#form-user-resetPwd').serialize());
+	        }
+	    }
+	</script>
+</body>
+</html>

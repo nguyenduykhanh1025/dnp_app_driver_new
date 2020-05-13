@@ -51,7 +51,7 @@ public class GlobalExceptionHandler
     public AjaxResult handleException(HttpRequestMethodNotSupportedException e)
     {
         log.error(e.getMessage(), e);
-        return AjaxResult.error("不支持' " + e.getMethod() + "'请求");
+        return AjaxResult.error("Does not support '"+ e.getMethod () +"' request");
     }
 
     /**

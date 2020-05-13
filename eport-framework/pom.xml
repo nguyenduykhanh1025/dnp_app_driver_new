@@ -77,11 +77,15 @@
 			<artifactId>UserAgentUtils</artifactId>
 		</dependency>
 
+<!--         <dependency> -->
+<!--             <groupId>vn.com.irtech.eport</groupId> -->
+<!--             <artifactId>eport-system</artifactId> -->
+<!--         </dependency> -->
+		
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-system</artifactId>
+            <artifactId>eport-common</artifactId>
         </dependency>
-		
 		<dependency>
 			<groupId>com.github.oshi</groupId>
 			<artifactId>oshi-core</artifactId>

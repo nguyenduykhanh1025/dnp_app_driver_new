@@ -7,7 +7,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
- * Entity基类
+ * Base Entity
  * 
  * @author admin
  */
@@ -15,27 +15,27 @@ public class BaseEntity implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    /** 搜索值 */
+    /** Search value */
     private String searchValue;
 
-    /** 创建者 */
+    /** Creator */
     private String createBy;
 
-    /** 创建时间 */
+    /** Create time */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
-    /** 更新者 */
+    /** updater */
     private String updateBy;
 
-    /** 更新时间 */
+    /** Update Time */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
-    /** 备注 */
+    /** Remarks */
     private String remark;
 
-    /** 请求参数 */
+    /** Request parameters */
     private Map<String, Object> params;
 
     public String getSearchValue()

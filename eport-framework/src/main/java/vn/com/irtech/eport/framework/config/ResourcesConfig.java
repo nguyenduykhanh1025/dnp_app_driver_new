@@ -12,7 +12,7 @@ import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.framework.interceptor.RepeatSubmitInterceptor;
 
 /**
- * 通用配置
+ * General configuration
  * 
  * @author admin
  */
@@ -20,7 +20,7 @@ import vn.com.irtech.eport.framework.interceptor.RepeatSubmitInterceptor;
 public class ResourcesConfig implements WebMvcConfigurer
 {
     /**
-     * 首页地址
+     * Home Address
      */
     @Value("${shiro.user.indexUrl}")
     private String indexUrl;
@@ -29,7 +29,7 @@ public class ResourcesConfig implements WebMvcConfigurer
     private RepeatSubmitInterceptor repeatSubmitInterceptor;
 
     /**
-     * 默认首页的设置，当输入域名是可以自动跳转到默认指定的网页
+     * The setting of the default homepage, when you enter the domain name, you can automatically jump to the webpage specified by default
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry)
@@ -40,16 +40,16 @@ public class ResourcesConfig implements WebMvcConfigurer
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry)
     {
-        /** 本地文件上传路径 */
+        /** Local file upload path */
         registry.addResourceHandler(Constants.RESOURCE_PREFIX + "/**").addResourceLocations("file:" + Global.getProfile() + "/");
 
-        /** swagger配置 */
+        /** swagger configuration */
         registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     /**
-     * 自定义拦截规则
+     * Define interception rules
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry)

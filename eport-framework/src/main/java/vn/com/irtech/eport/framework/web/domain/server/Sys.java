@@ -1,34 +1,34 @@
 package vn.com.irtech.eport.framework.web.domain.server;
 
 /**
- * 系统相关信息
+ * System related information
  * 
  * @author admin
  */
 public class Sys
 {
     /**
-     * 服务器名称
+     * server nickname
      */
     private String computerName;
 
     /**
-     * 服务器Ip
+     * Server IP
      */
     private String computerIp;
 
     /**
-     * 项目路径
+     * Project path
      */
     private String userDir;
 
     /**
-     * 操作系统
+     * operating system
      */
     private String osName;
 
     /**
-     * 系统架构
+     * system structure
      */
     private String osArch;
 

@@ -1,44 +1,44 @@
 package vn.com.irtech.eport.framework.web.domain.server;
 
 /**
- * 系统文件相关信息
+ * Information about system files
  * 
  * @author admin
  */
 public class SysFile
 {
     /**
-     * 盘符路径
+     * Drive path
      */
     private String dirName;
 
     /**
-     * 盘符类型
+     * Drive letter type
      */
     private String sysTypeName;
 
     /**
-     * 文件类型
+     * file type
      */
     private String typeName;
 
     /**
-     * 总大小
+     * Total size
      */
     private String total;
 
     /**
-     * 剩余大小
+     * Remaining size
      */
     private String free;
 
     /**
-     * 已经使用量
+     * Used amount
      */
     private String used;
 
     /**
-     * 资源的使用率
+     * Resource usage
      */
     private double usage;
 

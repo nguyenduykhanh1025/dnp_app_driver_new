@@ -5,34 +5,34 @@ import vn.com.irtech.eport.common.utils.Arith;
 import vn.com.irtech.eport.common.utils.DateUtils;
 
 /**
- * JVM相关信息
+ * JVM Related Information
  * 
  * @author admin
  */
 public class Jvm
 {
     /**
-     * 当前JVM占用的内存总数(M)
+     * Total memory occupied by the current JVM (M)
      */
     private double total;
 
     /**
-     * JVM最大可用内存总数(M)
+     * JVM maximum total available memory (M)
      */
     private double max;
 
     /**
-     * JVM空闲内存(M)
+     * JVM free memory (M)
      */
     private double free;
 
     /**
-     * JDK版本
+     * JDK version
      */
     private String version;
 
     /**
-     * JDK路径
+     * JDK path
      */
     private String home;
 
@@ -77,7 +77,7 @@ public class Jvm
     }
 
     /**
-     * 获取JDK名称
+     * Get JDK name
      */
     public String getName()
     {
@@ -105,7 +105,7 @@ public class Jvm
     }
 
     /**
-     * JDK启动时间
+     * JDK startup time
      */
     public String getStartTime()
     {
@@ -113,7 +113,7 @@ public class Jvm
     }
 
     /**
-     * JDK运行时间
+     * JDK running time
      */
     public String getRunTime()
     {

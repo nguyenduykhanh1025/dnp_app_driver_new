@@ -10,9 +10,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @author admin
  */
 @Configuration
-// 表示通过aop框架暴露该代理对象,AopContext能够访问
+// Indicates that the proxy object is exposed through the aop framework, and AopContext can access
 @EnableAspectJAutoProxy(exposeProxy = true)
-// 指定要扫描的Mapper类的包的路径
+// Specify the path of the Mapper class package to be scanned
 @MapperScan("vn.com.irtech.eport.**.mapper")
 public class ApplicationConfig
 {

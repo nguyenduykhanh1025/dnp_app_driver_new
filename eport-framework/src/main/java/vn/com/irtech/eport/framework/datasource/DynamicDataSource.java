@@ -6,7 +6,7 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import vn.com.irtech.eport.common.config.datasource.DynamicDataSourceContextHolder;
 
 /**
- * 动态数据源
+ * Dynamic data source
  * 
  * @author admin
  */
