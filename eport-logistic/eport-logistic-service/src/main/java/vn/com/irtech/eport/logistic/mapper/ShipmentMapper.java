@@ -58,4 +58,6 @@ public interface ShipmentMapper
      * @return result
      */
     public int deleteShipmentByIds(String[] ids);
+
+    public Shipment selectShipmentWithGroupById(Long id);
 }

@@ -58,4 +58,6 @@ public interface IShipmentService
      * @return result
      */
     public int deleteShipmentById(Long id);
+
+    public Shipment selectShipmentWithGroupById(Long  id);
 }
