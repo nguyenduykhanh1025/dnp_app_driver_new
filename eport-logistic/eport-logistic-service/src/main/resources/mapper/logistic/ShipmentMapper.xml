@@ -17,6 +17,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <association property="logisticGroup"    column="logistic_group_id" javaType="LogisticGroup" resultMap="logisticGroupResult" />
+    </resultMap>
+
+    <resultMap type="LogisticGroup" id="logisticGroupResult">
+        <result property="id"    column="id"    />
+        <result property="groupName"    column="group_name"    />
     </resultMap>
 
     <sql id="selectShipmentVo">
@@ -100,4 +106,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="selectShipmentWithGroupById" parameterType="Long" resultMap="ShipmentResult">
+        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_id, s.tax_code, s.container_amount, s.edo_flg, s.remak, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
+        from shipment s left join logistic_group g on s.logistic_group_id = g.id
+        where s.id = #{id}
+    </select>
 </mapper>

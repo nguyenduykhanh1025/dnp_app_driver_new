@@ -43,7 +43,7 @@
       <div class="form-group row">
         <label for="" class="col-md-2 col-sm-3 col-xs-4">Tên Công Ty</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <textarea name="" id="" class="form-control" rows="2" disabled></textarea>
+          <textarea name="groupName" id="groupName" class="form-control" rows="2" disabled></textarea>
         </div>
       </div>
       <div class="form-group row">
@@ -66,6 +66,7 @@
     $("#shipmentCode").val(shipment.id);
     $("#taxCode").val(shipment.taxCode);
     $("#containerAmount").val(shipment.containerAmount);
+    $("#groupName").val(shipment.logisticGroup.groupName);
     $("#remak").val(shipment.remak);
   }
   

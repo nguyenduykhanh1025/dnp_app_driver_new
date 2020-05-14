@@ -94,4 +94,9 @@ public class ShipmentServiceImpl implements IShipmentService
     {
         return shipmentMapper.deleteShipmentById(id);
     }
+
+    @Override
+    public Shipment selectShipmentWithGroupById(Long id) {
+        return shipmentMapper.selectShipmentWithGroupById(id);
+    }
 }

@@ -46,6 +46,8 @@ public class Shipment extends BaseEntity
     @Excel(name = "Ghi chu")
     private String remak;
 
+    private LogisticGroup logisticGroup;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -119,6 +121,17 @@ public class Shipment extends BaseEntity
         return remak;
     }
 
+    public void setLogisticGroup(LogisticGroup logisticGroup) {
+        this.logisticGroup = logisticGroup;
+    }
+
+    public LogisticGroup getLogisticGroup() {
+        if (logisticGroup == null) {
+            logisticGroup = new LogisticGroup();
+        }
+        return logisticGroup;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -134,6 +147,7 @@ public class Shipment extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("logisticGroup", getLogisticGroup())
             .toString();
     }
 }

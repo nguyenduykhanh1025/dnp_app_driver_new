@@ -50,7 +50,8 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	}
 
 	@GetMapping("/add")
-	public String add() {
+	public String add(ModelMap mmap) {
+		mmap.put("groupName", getGroup().getGroupName());
 		return prefix + "/add";
 	}
 
@@ -71,7 +72,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long id, ModelMap mmap) {
-		Shipment shipment = shipmentService.selectShipmentById(id);
+		Shipment shipment = shipmentService.selectShipmentWithGroupById(id);
 		mmap.put("shipment", shipment);
         return prefix + "/edit";
 	}
