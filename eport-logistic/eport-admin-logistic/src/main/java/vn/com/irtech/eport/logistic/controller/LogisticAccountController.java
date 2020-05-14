@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -34,6 +38,8 @@ public class LogisticAccountController extends BaseController
     @Autowired
     private ILogisticAccountService logisticAccountService;
 
+    @Autowired
+    private SysPasswordService passwordService;
     @RequiresPermissions("logistic:account:view")
     @GetMapping()
     public String account()
@@ -122,5 +128,35 @@ public class LogisticAccountController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(logisticAccountService.deleteLogisticAccountByIds(ids));
+    }
+    
+    @Log(title = "Reset password", businessType = BusinessType.UPDATE)
+    @PostMapping("/resetPwd")
+    @ResponseBody
+    public AjaxResult resetPwdSave(LogisticAccount logisticAccount, String isSendEmail)
+    {
+        Map<String, Object> variables = new HashMap<>();
+		variables.put("username", logisticAccount.getFullName());
+        variables.put("password", logisticAccount.getPassword());
+        variables.put("email", logisticAccount.getEmail());
+        logisticAccount.setStatus("");
+        logisticAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
+        logisticAccount.setSalt(ShiroUtils.randomSalt());
+        logisticAccount.setPassword(passwordService.encryptPassword(logisticAccount.getEmail(), logisticAccount.getPassword(), logisticAccount.getSalt()));
+        if (logisticAccountService.updateLogisticAccount(logisticAccount) == 1) {
+//            if (isSendEmail != null) {
+//                new Thread() {
+//                    public void run() {
+//                        try {
+//                            mailService.prepareAndSend("Thiết lập lại mật khẩu", carrierAccount.getEmail(), variables, "resetPassword");  
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                    }
+//                }.start();
+//            } 
+            return success();
+        }             
+        return error();
     }
 }
