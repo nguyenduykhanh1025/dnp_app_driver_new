@@ -16,6 +16,8 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 @Controller
@@ -26,6 +28,9 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@Autowired
 	private IShipmentService shipmentService;
+
+	@Autowired
+	private IShipmentDetailService shipmentDetailService;
 
 	@GetMapping()
 	public String receiveContFull() {
@@ -44,9 +49,8 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@RequestMapping("/listShipmentDetail")
 	@ResponseBody
-	public boolean listShipmentDetail(Shipment shipment) {
-
-		return true;
+	public List<ShipmentDetail> listShipmentDetail(ShipmentDetail shipmentDetail) {
+		return shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 	}
 
 	@GetMapping("/add")
