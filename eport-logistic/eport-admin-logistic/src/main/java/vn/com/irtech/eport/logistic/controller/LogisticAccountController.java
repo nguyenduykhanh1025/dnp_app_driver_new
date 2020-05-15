@@ -168,5 +168,42 @@ public class LogisticAccountController extends BaseController
     {
         return toAjax(logisticAccountService.deleteLogisticAccountByIds(ids));
     }
+    @Log(title = "Reset password", businessType = BusinessType.UPDATE)
+    @GetMapping("/resetPwd/{id}")
+    public String resetPwd(@PathVariable("id") Long id, ModelMap mmap)
+    {
+        mmap.put("logisticAccount", logisticAccountService.selectLogisticAccountById(id));
+        return prefix + "/resetPwd";
+    }
+    
+    @Log(title = "Reset password", businessType = BusinessType.UPDATE)
+    @PostMapping("/resetPwd")
+    @ResponseBody
+    public AjaxResult resetPwdSave(LogisticAccount logisticAccount, String isSendEmail)
+    {
+        Map<String, Object> variables = new HashMap<>();
+		variables.put("username", logisticAccount.getFullName());
+        variables.put("password", logisticAccount.getPassword());
+        variables.put("email", logisticAccount.getEmail());
+        logisticAccount.setStatus("");
+        logisticAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
+        logisticAccount.setSalt(ShiroUtils.randomSalt());
+        logisticAccount.setPassword(passwordService.encryptPassword(logisticAccount.getEmail(), logisticAccount.getPassword(), logisticAccount.getSalt()));
+        if (logisticAccountService.updateLogisticAccount(logisticAccount) == 1) {
+            if (isSendEmail != null) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            mailService.prepareAndSend("Thiết lập lại mật khẩu", logisticAccount.getEmail(), variables, "resetPassword");  
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                    }
+                }.start();
+            } 
+            return success();
+        }             
+        return error();
+    }
     
 }
