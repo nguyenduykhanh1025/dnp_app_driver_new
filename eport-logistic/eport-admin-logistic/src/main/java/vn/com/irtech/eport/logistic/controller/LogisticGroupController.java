@@ -148,4 +148,10 @@ public class LogisticGroupController extends BaseController
 		}
         return result;
     }
+    @RequestMapping("/getGroupNameById")
+    @ResponseBody
+    public String getGroupNameById(long id) {
+        LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(id);
+        return logisticGroup.getGroupName();
+    }
 }
