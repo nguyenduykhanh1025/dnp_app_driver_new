@@ -1069,6 +1069,11 @@ var table = {
             add: function(id) {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id));
+			},
+			// add shipment
+            addShipment: function(id) {
+            	table.set();
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 500);
             },
             // 添加信息，以tab页展现
             addTab: function (id) {
@@ -1100,6 +1105,15 @@ var table = {
             	} else {
             	    $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id));
             	}
+			},
+			// 修改信息
+            editShipment: function(id) {
+				table.set();
+				if (table.options.updateUrl != "0") {
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 500);
+				} else {
+					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
+				}
             },
             // 修改信息，以tab页展现
             editTab: function(id) {
