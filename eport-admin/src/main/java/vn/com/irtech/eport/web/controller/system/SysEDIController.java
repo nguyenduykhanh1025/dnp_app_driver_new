@@ -66,81 +66,7 @@ public class SysEDIController extends BaseController
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingAdmin(EquipmentDo);
 		return getDataTable(list);
 	}
-	// Return panination
-	// @PostMapping("/getCountPages")
-	// @ResponseBody
-	// public Long getCountPages()
-	// {
-	// 	return equipmentDoService.getTotalPages();
-	// }
-	//update
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
-	@PostMapping("/update")
-	@ResponseBody
-	public AjaxResult update(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
-	  equipmentDo.ifPresent(value -> equipmentDoList = value);
-	  currentUser = ShiroUtils.getSysUser();
-	  if (equipmentDoList != null) {
-		String[] strList = new String[14];
-		for (int index = 0; index < equipmentDoList.size(); index++) {
-		  	// Resolve " mark in array
-		  	String st = equipmentDoList.get(index++).toString();
-		  	System.out.println("strList   "+ st);
-		  	strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
-		  	if (index == 1) {
-				strList[0] = strList[0].substring(strList[0].indexOf("[")+1, strList[0].length());
-		  	}
-		  	for (int i = 1; i < 13; i++) {
-				strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
-		  	}
-		 	EquipmentDo equipment = new EquipmentDo();
-			Boolean checkStatus = false;
-			Boolean checkDo = false;
-			if(strList[11].equals("Y") && checkDocumentReceiptDate(Long.parseLong(strList[0])))
-			{
-				equipment.setDocumentStatus(strList[11]);
-				Date documentReceiptDate = new Date();
-				equipment.setDocumentReceiptDate(documentReceiptDate);
-				checkDo = true;
-			}else if(strList[11].equals("N") && !checkDocumentReceiptDate(Long.parseLong(strList[0]))){
-				equipment.setDocumentStatus(strList[11]);
-				checkDo = true;
-			};
-			if(!strList[10].equals(getStatus(Long.parseLong(strList[0]))))
-			{
-				equipment.setStatus(strList[10]);
-				if(!strList[11].equals("N"))
-				{
-					Date receiptDate = AppToolUtils.formatStringToDate(strList[12],"yyyy/MM/dd");
-					equipment.setDocumentReceiptDate(receiptDate);
-				}
-				checkStatus = true;
-			}
-			if(checkStatus || checkDo)
-			{
-				equipment.setUpdateBy(currentUser.getLoginName());
-				equipment.setId(Long.parseLong(strList[0]));
-				equipmentDoService.updateEquipmentDo(equipment);
-			}
-		}
-	  }
-	  return toAjax(1);
-	}
-	//checkDocumentReceiptDate
-	private Boolean checkDocumentReceiptDate(Long id)
-	{
-		Date rs = equipmentDoService.getDocumentReceiptDate(id);
-		if (rs == null ) {
-			return true;
-		}
-		return false;
-	}
 	
-	private String getStatus(Long id)
-	{
-		return equipmentDoService.getStatus(id);
-	}
-	// Return view
 	@GetMapping ("/listView")
 	public String getView()
 	{
@@ -326,7 +252,7 @@ public class SysEDIController extends BaseController
 					obj.put("haulage", haulage[4]);
 				}
 				// edi.setStatus(2);
-				sysEdiService.insertSysEdi(edi);  
+				//sysEdiService.insertSysEdi(edi);  
 				listObj.add(obj);
 				obj = new JSONObject();
 			}
