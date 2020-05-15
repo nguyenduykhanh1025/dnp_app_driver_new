@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
+
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 
 /**
@@ -58,4 +59,5 @@ public interface ILogisticGroupService
      * @return result
      */
     public int deleteLogisticGroupById(Long id);
+    public List<LogisticGroup> selectLogisticGroupListByName(LogisticGroup logisticGroup);
 }

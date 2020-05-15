@@ -30,6 +30,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectLogisticGroupVo"/>
         where id = #{id}
     </select>
+    <select id="selectLogisticGroupListByName" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
+        <include refid="selectLogisticGroupVo"/>
+        <where>  
+            <if test="groupName != null  and groupName != ''"> and lower(group_name) like concat('%', #{groupName}, '%')</if>
+        </where>
+    </select>
         
     <insert id="insertLogisticGroup" parameterType="LogisticGroup" useGeneratedKeys="true" keyProperty="id">
         insert into logistic_group

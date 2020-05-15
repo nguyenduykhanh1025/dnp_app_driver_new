@@ -99,4 +99,14 @@ public class LogisticAccountServiceImpl implements ILogisticAccountService
 	public LogisticAccount selectByEmail(String email) {
 		return logisticAccountMapper.selectByEmail(email);
 	}
+
+	@Override
+	public String checkEmailUnique(String email) {
+        int count = logisticAccountMapper.checkEmailUnique(email);
+        if (count > 0)
+        {
+            return "1";
+        }
+        return "0";
+	}
 }

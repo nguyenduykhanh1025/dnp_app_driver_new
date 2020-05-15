@@ -3,6 +3,7 @@ package vn.com.irtech.eport.logistic.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.framework.mail.service.MailService;
+import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 /**
@@ -36,10 +41,12 @@ public class LogisticAccountController extends BaseController
     private String prefix = "logistic/account";
 
     @Autowired
-    private ILogisticAccountService logisticAccountService;
-
+    private MailService mailService;
     @Autowired
     private SysPasswordService passwordService;
+    @Autowired
+    private ILogisticAccountService logisticAccountService;
+
     @RequiresPermissions("logistic:account:view")
     @GetMapping()
     public String account()
@@ -90,9 +97,41 @@ public class LogisticAccountController extends BaseController
     @Log(title = "Logistic account", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(LogisticAccount logisticAccount)
+    public AjaxResult addSave(LogisticAccount logisticAccount, String isSendEmail)
     {
-        return toAjax(logisticAccountService.insertLogisticAccount(logisticAccount));
+        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, logisticAccount.getEmail())) {
+            return error("Email không hợp lệ!");
+        }
+        if (logisticAccountService.checkEmailUnique(logisticAccount.getEmail().toLowerCase()).equals("1")) {
+            return error("Email đã tồn tại!");
+        }
+        if (logisticAccount.getPassword().length() < 6) {
+            return error("Mật khẩu không được ít hơn 6 ký tự!");
+        }
+        Map<String, Object> variables = new HashMap<>();
+		variables.put("username", logisticAccount.getFullName());
+        variables.put("password", logisticAccount.getPassword());
+        variables.put("email", logisticAccount.getEmail());
+        logisticAccount.setSalt(ShiroUtils.randomSalt());
+        logisticAccount.setPassword(passwordService.encryptPassword(logisticAccount.getEmail()
+        , logisticAccount.getPassword(), logisticAccount.getSalt()));
+        logisticAccount.setCreateBy(ShiroUtils.getSysUser().getUserName());
+        if (logisticAccountService.insertLogisticAccount(logisticAccount) == 1) {
+            if (isSendEmail != null) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            mailService.prepareAndSend("Cấp tài khoản truy cập", logisticAccount.getEmail(), variables, "email");  
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                    }
+                }.start();
+            }
+            return success();
+        }             
+        return error();
+        //return toAjax(logisticAccountService.insertLogisticAccount(logisticAccount));
     }
 
     /**
@@ -130,33 +169,4 @@ public class LogisticAccountController extends BaseController
         return toAjax(logisticAccountService.deleteLogisticAccountByIds(ids));
     }
     
-    @Log(title = "Reset password", businessType = BusinessType.UPDATE)
-    @PostMapping("/resetPwd")
-    @ResponseBody
-    public AjaxResult resetPwdSave(LogisticAccount logisticAccount, String isSendEmail)
-    {
-        Map<String, Object> variables = new HashMap<>();
-		variables.put("username", logisticAccount.getFullName());
-        variables.put("password", logisticAccount.getPassword());
-        variables.put("email", logisticAccount.getEmail());
-        logisticAccount.setStatus("");
-        logisticAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
-        logisticAccount.setSalt(ShiroUtils.randomSalt());
-        logisticAccount.setPassword(passwordService.encryptPassword(logisticAccount.getEmail(), logisticAccount.getPassword(), logisticAccount.getSalt()));
-        if (logisticAccountService.updateLogisticAccount(logisticAccount) == 1) {
-//            if (isSendEmail != null) {
-//                new Thread() {
-//                    public void run() {
-//                        try {
-//                            mailService.prepareAndSend("Thiết lập lại mật khẩu", carrierAccount.getEmail(), variables, "resetPassword");  
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                    }
-//                }.start();
-//            } 
-            return success();
-        }             
-        return error();
-    }
 }

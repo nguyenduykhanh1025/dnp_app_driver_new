@@ -115,5 +115,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    <select id="checkEmailUnique" parameterType="String" resultType="int">
+		select count(1) from logistic_account where lower(email)=#{email}
+	</select>
     
 </mapper>

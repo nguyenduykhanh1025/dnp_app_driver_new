@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
@@ -122,5 +126,26 @@ public class LogisticGroupController extends BaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(logisticGroupService.deleteLogisticGroupByIds(ids));
+    }
+    
+    /**
+     * Search Carrier Group Name
+     */
+    @RequestMapping("/searchGroupNameByKeyword")
+    @ResponseBody
+    public List<JSONObject> searchGroupNameByKeyword(String keyword, Long groupId) {
+        LogisticGroup logisticGroup = new LogisticGroup();
+        logisticGroup.setGroupName(keyword.toLowerCase());
+        List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupListByName(logisticGroup);
+        List<JSONObject> result = new ArrayList<>();
+		for (LogisticGroup i : logisticGroups) {
+			if (i.getId() != groupId) {
+                JSONObject json = new JSONObject();
+                json.put("id", i.getId());
+                json.put("text", i.getGroupName());
+                result.add(json);
+            }
+		}
+        return result;
     }
 }
