@@ -97,6 +97,7 @@ config = {
     "Container No",
     "Kích Thước",
     "F/E",
+    "Chủ hàng",
     "Seal No",
     "Hạn Lệnh",
     "Tàu",
@@ -130,10 +131,13 @@ config = {
       data: "containerNo",
     },
     {
-      data: "size",
+      data: "sztp",
     },
     {
       data: "fe",
+    },
+    {
+      data: "consignee"
     },
     {
       data: "sealNo",
@@ -146,11 +150,11 @@ config = {
       defaultDate: new Date(),
     },
     {
-      data: "vessel",
+      data: "vslNm",
       type: "autocomplete",
     },
     {
-      data: "voyage",
+      data: "voyNo",
     },
     {
       data: "loadingPort",
@@ -177,6 +181,9 @@ config = {
       data: "processStatus",
     },
     {
+      data: "",
+    },
+    {
       data: "remark",
     },
   ],
@@ -191,6 +198,20 @@ config = {
 };
 
 hot = new Handsontable(dogrid, config);
+
+function loadShipmentDetail(id) {
+  $.ajax({
+    url: prefix + "/listShipmentDetail",
+    method: "GET",
+    data: {
+      shipmentId: id
+    },
+    success: function(result) {
+      hot.loadData(result);
+      hot.render();
+    }
+  });
+}
 
 function formatDate(value) {
   var date = new Date(value);
@@ -229,6 +250,7 @@ function getSelected() {
     $("#loCode").text(row.id);
     $("#taxCode").text(row.taxCode);
     $("#quantity").text(row.containerAmount);
+    loadShipmentDetail();
   }
 }
 
