@@ -11,13 +11,13 @@
                     <div class="select-list">
                         <ul>
                             <li>
-                                <input type="text" name="groupName" placeholder="Tên nhóm"/>
+                                <input type="text" id="groupName" name="groupName" placeholder="Tên nhóm"/>
                             </li>
                             <li>
-                                <input type="text" name="mainEmail" placeholder="Email"/>
+                                <input type="text" id="mainEmail" name="mainEmail" placeholder="Email"/>
                             </li>
                             <li>
-                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</a>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;</a>
                             </li>
                         </ul>
@@ -86,6 +86,20 @@
                 }]
             };
             $.table.init(options);
+        });
+
+        document.getElementById("groupName").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
+        });
+
+        document.getElementById("mainEmail").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
         });
     </script>
 </body>

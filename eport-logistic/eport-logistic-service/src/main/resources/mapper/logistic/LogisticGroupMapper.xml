@@ -21,8 +21,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectLogisticGroupList" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
         <include refid="selectLogisticGroupVo"/>
         <where>  
-            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
-            <if test="mainEmail != null  and mainEmail != ''"> and main_email = #{mainEmail}</if>
+            <if test="groupName != null  and groupName != ''"> and lower(group_name) like concat('%', #{groupName}, '%')</if>
+            <if test="mainEmail != null  and mainEmail != ''"> and lower(main_email) like concat('%', #{mainEmail}, '%') </if>
         </where>
     </select>
     
