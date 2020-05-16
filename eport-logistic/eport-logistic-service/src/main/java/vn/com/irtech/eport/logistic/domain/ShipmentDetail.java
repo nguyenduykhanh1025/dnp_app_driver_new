@@ -27,6 +27,10 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Ma DK")
     private String registerNo;
 
+    /** Carrier code */
+    @Excel(name = "Hãng tàu")
+    private String carrierCode;
+
     /** Container Number */
     @Excel(name = "Container Number")
     private String containerNo;
@@ -91,6 +95,10 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Phuong Tien")
     private String transportType;
 
+    /** Empty depot */
+    @Excel(name = "Nơi hạ vỏ")
+    private String emptyDepot;
+
     /** VGM Check */
     @Excel(name = "VGM Check")
     private Long vgmChk;
@@ -118,6 +126,10 @@ public class ShipmentDetail extends BaseEntity
     /** Process Status(Y,N,E) */
     @Excel(name = "Process Status(Y,N,E)")
     private String processStatus;
+
+    /** DO Status(Y,N) */
+    @Excel(name = "DO Status(Y,N")
+    private String doStatus;
 
     /** Xac Thuc (Y,N) */
     @Excel(name = "Xac Thuc (Y,N)")
@@ -153,6 +165,14 @@ public class ShipmentDetail extends BaseEntity
     public String getRegisterNo() 
     {
         return registerNo;
+    }
+    public void setCarrierCode(String carrierCode) 
+    {
+        this.carrierCode = carrierCode;
+    }
+    public String getCarrierCode()
+    {
+        return carrierCode;
     }
     public void setContainerNo(String containerNo) 
     {
@@ -298,6 +318,14 @@ public class ShipmentDetail extends BaseEntity
     {
         return transportType;
     }
+    public void setEmptyDepot(String emptyDepot) 
+    {
+        this.emptyDepot = emptyDepot;
+    }
+    public String getEmptyDepot() 
+    {
+        return emptyDepot;
+    }
     public void setVgmChk(Long vgmChk) 
     {
         this.vgmChk = vgmChk;
@@ -361,6 +389,14 @@ public class ShipmentDetail extends BaseEntity
     {
         return processStatus;
     }
+    public void setDoStatus(String doStatus) 
+    {
+        this.doStatus = doStatus;
+    }
+    public String getDoStatus() 
+    {
+        return doStatus;
+    }
     public void setUserVerifyStatus(String userVerifyStatus) 
     {
         this.userVerifyStatus = userVerifyStatus;
@@ -386,6 +422,7 @@ public class ShipmentDetail extends BaseEntity
             .append("id", getId())
             .append("shipmentId", getShipmentId())
             .append("registerNo", getRegisterNo())
+            .append("carrierCode", getCarrierCode())
             .append("containerNo", getContainerNo())
             .append("containerStatus", getContainerStatus())
             .append("sztp", getSztp())
@@ -402,6 +439,7 @@ public class ShipmentDetail extends BaseEntity
             .append("loadingPort", getLoadingPort())
             .append("dischargePort", getDischargePort())
             .append("transportType", getTransportType())
+            .append("emptyDepot", getEmptyDepot())
             .append("vgmChk", getVgmChk())
             .append("vgm", getVgm())
             .append("vgmPersonInfo", getVgmPersonInfo())
@@ -409,6 +447,7 @@ public class ShipmentDetail extends BaseEntity
             .append("customStatus", getCustomStatus())
             .append("paymentStatus", getPaymentStatus())
             .append("processStatus", getProcessStatus())
+            .append("doStatus", getDoStatus())
             .append("userVerifyStatus", getUserVerifyStatus())
             .append("status", getStatus())
             .append("remark", getRemark())

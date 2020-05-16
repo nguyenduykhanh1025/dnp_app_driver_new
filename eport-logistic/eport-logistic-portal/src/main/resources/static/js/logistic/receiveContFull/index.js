@@ -2,7 +2,8 @@ var prefix = ctx + "logistic/receiveContFull";
 var fromDate = "";
 var toDate = "";
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected;
+var shipmentSelected = 0;
+var shipmentDetails;
 $(document).ready(function () {
   loadTable();
   $(".left-side").css("height", $(document).height());
@@ -40,15 +41,15 @@ function loadTable() {
           pageSize: param.rows,
           orderByColumn: param.sort,
           isAsc: param.order,
-          fromDate: fromDate,
-          toDate: toDate,
-          voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
-          blNo: $("#blNo").val() == null ? "" : $("#blNo").val(),
+          // fromDate: fromDate,
+          // toDate: toDate,
+          // voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
+          // blNo: $("#blNo").val() == null ? "" : $("#blNo").val(),
         },
         dataType: "json",
         success: function (data) {
           success(data);
-          $("#dg").datagrid("hideColumn", "id");
+          // $("#dg").datagrid("hideColumn", "id");
         },
         error: function () {
           error.apply(this, arguments);
@@ -190,9 +191,9 @@ config = {
   afterChange: function (changes, src) {
     //Get data change in cell to render another column
     if (src !== "loadData" && (changes[0][3] != "")) {
-      console.log(changes);
-      console.log("Row change: " + changes[0][0])
-      console.log("cell values: " + changes[0][3])
+      // console.log(changes);
+      // console.log("Row change: " + changes[0][0])
+      // console.log("cell values: " + changes[0][3])
     }
   },
 };
@@ -250,12 +251,13 @@ function getSelected() {
     $("#loCode").text(row.id);
     $("#taxCode").text(row.taxCode);
     $("#quantity").text(row.containerAmount);
-    loadShipmentDetail();
+    loadShipmentDetail(row.id);
   }
 }
 
-function getDataFromTable() {
+function getDataSelectedFromTable() {
   var myTableData = hot.getSourceData();
+  var errorFlg = false;
   if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
     hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
   }
@@ -265,31 +267,83 @@ function getDataFromTable() {
       cleanedGridData.push(object);
     }
   });
-  var selectedList = [];
+  shipmentDetails = [];
   $.each(cleanedGridData, function (index, object) {
-    var containerObj = new Object();
-    containerObj.carrierCode = object["carrierCode"];
-    containerObj.blNo = object["blNo"];
-    containerObj.containerNo = object["containerNo"];
-    containerObj.size = object["size"];
-    containerObj.fe = object["fe"];
-    containerObj.sealNo = object["sealNo"];
-    containerObj.expiredDem = object["expiredDem"];
-    containerObj.vessel = object["vessel"];
-    containerObj.voyage = object["voyage"];
-    containerObj.loadingPort = object["loadingPort"];
-    containerObj.dischargePort = object["dischargePort"];
-    containerObj.vgm = object["vgm"];
-    containerObj.transportType = object["transportType"];
-    containerObj.emptyDepot = object["emptyDepot"];
-    containerObj.customStatus = object["customStatus"];
-    containerObj.paymentStatus = object["paymentStatus"];
-    containerObj.processStatus = object["processStatus"];
-    containerObj.remark = object["remark"];
-    selectedList.push(containerObj);
+    var shipmentDetail = new Object();
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.shipmentId = shipmentSelected;
+    shipmentDetails.push(shipmentDetail);
   });
   // Get result in "selectedList" variable
-  if (selectedList.length == 0) {
+  if (shipmentDetails.length == 0) {
+    $.modal.alert("Bạn chưa chọn container.");
+    errorFlg = true;
+  }
+
+  if (errorFlg) {
+    return false;
+  }
+}
+
+function getDataFromTable() {
+  var myTableData = hot.getSourceData();
+  var errorFlg = false;
+  if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
+    hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
+  }
+  var cleanedGridData = [];
+  $.each(myTableData, function (rowKey, object) {
+    if (!hot.isEmptyRow(rowKey)) {
+      cleanedGridData.push(object);
+    }
+  });
+  shipmentDetails = [];
+  $.each(cleanedGridData, function (index, object) {
+    var shipmentDetail = new Object();
+    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.blNo = object["blNo"];
+    shipmentDetail.containerNo = object["containerNo"];
+    shipmentDetail.sztp = object["sztp"];
+    shipmentDetail.fe = object["fe"];
+    shipmentDetail.consignee = object["consignee"];
+    shipmentDetail.sealNo = object["sealNo"];
+    shipmentDetail.expiredDem = new Date().getTime();
+    shipmentDetail.vslNm = object["vslNm"];
+    shipmentDetail.voyNo = object["voyNo"];
+    shipmentDetail.loadingPort = object["loadingPort"];
+    shipmentDetail.dischargePort = object["dischargePort"];
+    shipmentDetail.vgm = object["vgm"];
+    shipmentDetail.transportType = object["transportType"];
+    shipmentDetail.emptyDepot = object["emptyDepot"];
+    shipmentDetail.customStatus = object["customStatus"];
+    shipmentDetail.paymentStatus = object["paymentStatus"];
+    shipmentDetail.processStatus = object["processStatus"];
+    shipmentDetail.doStatus = object["doStatus"];
+    shipmentDetail.remark = object["remark"];
+    shipmentDetail.shipmentId = shipmentSelected;
+    shipmentDetails.push(shipmentDetail);
+  });
+  // Get result in "selectedList" variable
+  if (shipmentDetails.length == 0) {
     $.modal.alert("Bạn chưa nhập thông tin.");
     errorFlg = true;
   }
@@ -298,3 +352,58 @@ function getDataFromTable() {
     return false;
   }
 }
+
+function registerProcess() {
+  if (shipmentSelected == 0) {
+    $.modal.msgError("Bạn cần chọn lô trước");
+    return;
+  } else {
+    getDataFromTable();
+    if (shipmentDetails.length > 0) {
+      $.ajax({
+        url: prefix + "/registerProcess",
+        method: "post",
+        contentType : "application/json",
+        accept: 'text/plain',
+        data: JSON.stringify(shipmentDetails),
+        dataType: 'text',
+        success: function (data) {
+          var result = JSON.parse(data);
+          if(result.code == 0) {
+            $.modal.msgSuccess(result.msg);
+          } else {
+            $.modal.msgError(result.msg);
+          }
+        },
+        error: function (result) {
+          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+        },
+      });
+    }
+  }
+}
+
+function checkCustomStatus() {
+
+}
+
+function authentic() {
+
+}
+
+function pay() {
+
+}
+
+function pickTruck() {
+
+}
+
+function pickContOnDemand() {
+
+}
+
+function exportBill() {
+
+}
+

@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="shipmentId"    column="shipment_id"    />
         <result property="registerNo"    column="register_no"    />
+        <result property="carrierCode"    column="carrier_code"    />
         <result property="containerNo"    column="container_no"    />
         <result property="containerStatus"    column="container_status"    />
         <result property="sztp"    column="sztp"    />
@@ -24,6 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="loadingPort"    column="loading_port"    />
         <result property="dischargePort"    column="discharge_port"    />
         <result property="transportType"    column="transport_type"    />
+        <result property="emptyDepot"    column="empty_depot"    />
         <result property="vgmChk"    column="vgm_chk"    />
         <result property="vgm"    column="vgm"    />
         <result property="vgmPersonInfo"    column="vgm_person_info"    />
@@ -31,6 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="customStatus"    column="custom_status"    />
         <result property="paymentStatus"    column="payment_status"    />
         <result property="processStatus"    column="process_status"    />
+        <result property="doStatus"    column="do_status"    />
         <result property="userVerifyStatus"    column="user_verify_status"    />
         <result property="status"    column="status"    />
         <result property="remark"    column="remark"    />
@@ -41,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
-        select id, shipment_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_nm, voy_no, ope_code, loading_port, discharge_port, transport_type, vgm_chk, vgm, vgm_person_info, custom_declare_no, custom_status, payment_status, process_status, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
+        select id, shipment_id, register_no, carrier_code, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_nm, voy_no, ope_code, loading_port, discharge_port, transport_type, empty_depot, vgm_chk, vgm, vgm_person_info, custom_declare_no, custom_status, payment_status, process_status, do_status, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
 
     <select id="selectShipmentDetailList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
@@ -49,6 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
             <if test="registerNo != null  and registerNo != ''"> and register_no = #{registerNo}</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
             <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
             <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
@@ -65,6 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
             <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
             <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
+            <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
@@ -72,6 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
             <if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
+            <if test="doStatus != null  and doStatus != ''"> and do_status = #{doStatus}</if>
             <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
             <if test="status != null "> and status = #{status}</if>
         </where>
@@ -87,6 +93,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="shipmentId != null ">shipment_id,</if>
             <if test="registerNo != null  and registerNo != ''">register_no,</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
             <if test="containerNo != null  and containerNo != ''">container_no,</if>
             <if test="containerStatus != null  and containerStatus != ''">container_status,</if>
             <if test="sztp != null  and sztp != ''">sztp,</if>
@@ -103,6 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="loadingPort != null  and loadingPort != ''">loading_port,</if>
             <if test="dischargePort != null  and dischargePort != ''">discharge_port,</if>
             <if test="transportType != null  and transportType != ''">transport_type,</if>
+            <if test="emptyDepot != null  and emptyDepot != ''">empty_depot,</if>
             <if test="vgmChk != null ">vgm_chk,</if>
             <if test="vgm != null  and vgm != ''">vgm,</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''">vgm_person_info,</if>
@@ -110,6 +118,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="customStatus != null  and customStatus != ''">custom_status,</if>
             <if test="paymentStatus != null  and paymentStatus != ''">payment_status,</if>
             <if test="processStatus != null  and processStatus != ''">process_status,</if>
+            <if test="doStatus != null  and doStatus != ''">do_status,</if>
             <if test="userVerifyStatus != null  and userVerifyStatus != ''">user_verify_status,</if>
             <if test="status != null ">status,</if>
             <if test="remark != null  and remark != ''">remark,</if>
@@ -121,6 +130,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="shipmentId != null ">#{shipmentId},</if>
             <if test="registerNo != null  and registerNo != ''">#{registerNo},</if>
+            <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
             <if test="containerNo != null  and containerNo != ''">#{containerNo},</if>
             <if test="containerStatus != null  and containerStatus != ''">#{containerStatus},</if>
             <if test="sztp != null  and sztp != ''">#{sztp},</if>
@@ -137,6 +147,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="loadingPort != null  and loadingPort != ''">#{loadingPort},</if>
             <if test="dischargePort != null  and dischargePort != ''">#{dischargePort},</if>
             <if test="transportType != null  and transportType != ''">#{transportType},</if>
+            <if test="emptyDepot != null  and emptyDepot != ''">#{emptyDepot},</if>
             <if test="vgmChk != null ">#{vgmChk},</if>
             <if test="vgm != null  and vgm != ''">#{vgm},</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''">#{vgmPersonInfo},</if>
@@ -144,6 +155,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="customStatus != null  and customStatus != ''">#{customStatus},</if>
             <if test="paymentStatus != null  and paymentStatus != ''">#{paymentStatus},</if>
             <if test="processStatus != null  and processStatus != ''">#{processStatus},</if>
+            <if test="doStatus != null  and doStatus != ''">#{doStatus},</if>
             <if test="userVerifyStatus != null  and userVerifyStatus != ''">#{userVerifyStatus},</if>
             <if test="status != null ">#{status},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
@@ -159,6 +171,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
             <if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code = #{carrierCode},</if>
             <if test="containerNo != null  and containerNo != ''">container_no = #{containerNo},</if>
             <if test="containerStatus != null  and containerStatus != ''">container_status = #{containerStatus},</if>
             <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
@@ -175,6 +188,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="loadingPort != null  and loadingPort != ''">loading_port = #{loadingPort},</if>
             <if test="dischargePort != null  and dischargePort != ''">discharge_port = #{dischargePort},</if>
             <if test="transportType != null  and transportType != ''">transport_type = #{transportType},</if>
+            <if test="emptyDepot != null  and emptyDepot != ''">empty_depot = #{emptyDepot},</if>
             <if test="vgmChk != null ">vgm_chk = #{vgmChk},</if>
             <if test="vgm != null  and vgm != ''">vgm = #{vgm},</if>
             <if test="vgmPersonInfo != null  and vgmPersonInfo != ''">vgm_person_info = #{vgmPersonInfo},</if>
@@ -182,6 +196,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="customStatus != null  and customStatus != ''">custom_status = #{customStatus},</if>
             <if test="paymentStatus != null  and paymentStatus != ''">payment_status = #{paymentStatus},</if>
             <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
+            <if test="doStatus != null  and doStatus != ''">do_status = #{doStatus},</if>
             <if test="userVerifyStatus != null  and userVerifyStatus != ''">user_verify_status = #{userVerifyStatus},</if>
             <if test="status != null ">status = #{status},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
