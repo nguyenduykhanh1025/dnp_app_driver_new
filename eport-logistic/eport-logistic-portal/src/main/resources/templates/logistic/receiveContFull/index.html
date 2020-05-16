@@ -26,7 +26,7 @@
           <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead>
               <tr>
-                <th data-options="field:'id'" width="1"></th>
+                <!-- <th data-options="field:'id'" width="1"></th> -->
                 <th data-options="field:'id',halign:'center',resizable:true" width="50">Mã lô</th>
                 <th data-options="field:'taxCode',halign:'center'" width="70">MST</th>
                 <th data-options="field:'containerAmount',align:'right',halign:'center'" width="70">Số Cont</th>
@@ -59,8 +59,8 @@
               </div>
             </div>
             <ul class="right-info">
-              <li><a class="label-primary">Khai báo</a></li>
-              <li><a class="active">Thông quan</a></li>
+              <li><a class="active">Khai báo</a></li>
+              <li><a class="label-primary disable">Thông quan</a></li>
               <li><a class="label-primary disable">Xác thực</a></li>
               <li><a class="label-primary disable">Thanh toán</a></li>
               <li><a class="label-primary disable">Hoàn thành</a></li>
@@ -69,15 +69,15 @@
         </div>
         <div class="title-top">
           <div class="left-button-bar">
-            <button class="btn btn-sm btn-primary">Đăng Ký Làm Lệnh</button>
-            <button class="btn btn-sm btn-primary">Khai Hải Quan</button>
-            <button class="btn btn-sm btn-primary">Xác Thực</button>
-            <button class="btn btn-sm btn-primary">Thanh Toán</button>
-            <button class="btn btn-sm btn-primary">Điều Xe</button>
-            <button class="btn btn-sm btn-warning">Bốc Cont Chỉ Định</button>
+            <button class="btn btn-sm btn-primary" onclick="registerProcess()">Đăng Ký Làm Lệnh</button>
+            <button class="btn btn-sm btn-primary" onclick="checkCustomStatus()" disabled>Khai Hải Quan</button>
+            <button class="btn btn-sm btn-primary" onclick="authentic()" disabled>Xác Thực</button>
+            <button class="btn btn-sm btn-primary" onclick="pay()" disabled>Thanh Toán</button>
+            <button class="btn btn-sm btn-primary" onclick="pickTruck()" disabled>Điều Xe</button>
+            <button class="btn btn-sm btn-warning" onclick="pickContOnDemand()" disabled>Bốc Cont Chỉ Định</button>
           </div>
           <div class="search-bar">
-            <button class="btn btn-sm btn-success">Xuất Hóa Đơn</button>
+            <button class="btn btn-sm btn-success" onclick="exportBill()" disabled>Xuất Hóa Đơn</button>
           </div>
         </div>
         <hr />

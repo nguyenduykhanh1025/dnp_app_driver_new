@@ -166,11 +166,11 @@
 				<version>${eport.version}</version>
 			</dependency>
 
-			<dependency>
+			<!-- <dependency>
 				<groupId>vn.com.irtech.eport</groupId>
 				<artifactId>eport-framework</artifactId>
 				<version>${eport.version}</version>
-			</dependency>
+			</dependency> -->
 			
 			<dependency>
 				<groupId>vn.com.irtech.eport</groupId>
@@ -239,7 +239,7 @@
 
 	<modules>
 		<module>eport-admin</module>
-		<module>eport-framework</module>
+		<module>eport-admin-framework</module>
 		<module>eport-system</module>
 		<module>eport-quartz</module>
 		<module>eport-generator</module>

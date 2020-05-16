@@ -9,6 +9,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -91,5 +92,25 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 			return success("Chỉnh sửa lô thành công");
 		}
 		return error("Chỉnh sửa lô thất bại");
+	}
+
+	@PostMapping("/registerProcess")
+	@ResponseBody
+	public AjaxResult registerProcess(@RequestBody List<ShipmentDetail> shipmentDetails) {
+		if (shipmentDetails != null) {
+			LogisticAccount user = getUser();
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetail.setCreateBy(user.getFullName());
+				shipmentDetail.setCreateTime(new Date());
+				shipmentDetail.setProcessStatus("Y");
+				// unknow
+				shipmentDetail.setRegisterNo("unknow");
+				//
+				if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
+					return error("Đăng ký làm lệnh thất bại từ container: " + shipmentDetail.getContainerNo());
+				}
+			}
+		}
+		return success("Đăng ký làm lệnh thành công");
 	}
 }
