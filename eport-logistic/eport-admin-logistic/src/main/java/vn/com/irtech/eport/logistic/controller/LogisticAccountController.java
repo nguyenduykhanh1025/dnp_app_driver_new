@@ -19,6 +19,7 @@ import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -63,6 +64,11 @@ public class LogisticAccountController extends BaseController
     public TableDataInfo list(LogisticAccount logisticAccount)
     {
         startPage();
+        LogisticGroup logisticGroup = logisticAccount.getLogisticGroup();
+        logisticGroup.setGroupName(logisticGroup.getGroupName().toLowerCase());
+        logisticAccount.setLogisticGroup(logisticGroup);
+        logisticAccount.setEmail(logisticAccount.getEmail().toLowerCase());
+        logisticAccount.setFullName(logisticAccount.getFullName().toLowerCase());
         List<LogisticAccount> list = logisticAccountService.selectLogisticAccountList(logisticAccount);
         return getDataTable(list);
     }

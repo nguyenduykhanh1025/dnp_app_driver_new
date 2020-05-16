@@ -12,27 +12,27 @@
                         <ul>
                             <li>
                                 <!-- <label>Master Account：</label> -->
-                                <input type="text" name="groupId"/ placeholder="Group">
+                                <input type="text" id="logisticGroup.groupName" name="logisticGroup.groupName" placeholder="Tên Nhóm">
                             </li>
                             <li>
                                 <!-- <label>Email：</label> -->
-                                <input type="text" name="email" placeholder="Email"/>
+                                <input type="text" id="email" name="email" placeholder="Email"/>
                             </li>
                             <li>
                                 <!-- <label>Ho Va Ten：</label> -->
-                                <input type="text" name="fullName" placeholder="Họ và tên"/>
+                                <input type="text" id= "fullname" name="fullName" placeholder="Họ và tên"/>
                             </li>
                             <li>
                                 <!-- <label>Status：</label> -->
-                                <select name="status">
+                                <select name="status" onchange="$('#searchBtn').click()">
                                     <option value="">Tất cả</option>
                                     <option value="0">Hoạt động</option>
                                     <option value="1">Không hoạt động</option>
                                 </select>
                             </li>
                             <li>
-                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
-                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;</a>
                             </li>
                         </ul>
                     </div>
@@ -40,17 +40,17 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="logistic:account:add">
-                    <i class="fa fa-plus"></i> Add
+                <a class="btn btn-success" onclick="$.operate.addLogisticAccount()" shiro:hasPermission="logistic:account:add">
+                    <i class="fa fa-plus"></i> Thêm
                 </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="logistic:account:edit">
-                    <i class="fa fa-edit"></i> Edit
+                <a class="btn btn-primary single disabled" onclick="$.operate.editLogisticAccount()" shiro:hasPermission="logistic:account:edit">
+                    <i class="fa fa-edit"></i> Sửa
                 </a>
                 <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="logistic:account:remove">
-                    <i class="fa fa-remove"></i> Delete
+                    <i class="fa fa-remove"></i> Xóa
                 </a>
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="logistic:account:export">
-                    <i class="fa fa-download"></i> Export
+                    <i class="fa fa-download"></i> Xuất
                 </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
@@ -81,50 +81,43 @@
                     visible: false
                 },
                 {
-                    field: 'groupId', 
-                    title: 'Master Account'
+                    field: 'logisticGroup.groupName', 
+                    title: 'Tên nhóm Logistic',//'Shipping Line Code',
+                    //width: '150px'
                 },
                 {
                     field: 'email', 
                     title: 'Email'
                 },
                 {
-                    field: 'password', 
-                    title: 'Password'
-                },
-                {
-                    field: 'salt', 
-                    title: 'Salt'
-                },
-                {
                     field: 'fullName', 
-                    title: 'Ho Va Ten'
+                    title: 'Họ và Tên'
                 },
                 {
-                    title: 'Status',
+                    title: 'Trạng thái',
     		        formatter: function (value, row, index) {
     		        	return statusTools(row);
     		        }
                 },
                 {
                     field: 'loginIp', 
-                    title: 'Login IP'
+                    title: 'IP Đăng nhập'
                 },
                 {
                     field: 'loginDate', 
-                    title: 'Login Date'
+                    title: 'Ngày Đăng nhập'
                 },
                 {
                     field: 'remark', 
-                    title: 'Remark'
+                    title: 'Ghi chú'
                 },
                 {
-                    title: 'Action',
+                    title: 'Hành động',
                     align: 'center',
                     formatter: function(value, row, index) {
                         var actions = [];
-                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>Edit</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Delete</a>');
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editLogisticAccount(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
                         actions.push("<a class='btn btn-default btn-xs' href='javascript:void(0)' onclick='resetPwd(" + row.id + ")'><i class='fa fa-key'></i>Đặt lại mật khẩu</a> ");
                         return actions.join('');
                     }
@@ -137,7 +130,7 @@
 		    var url = prefix + '/resetPwd/' + id;
 		    $.modal.open("Đặt lại mật khẩu", url, '500', '350');
 		}
-        /*Carrier account status display */
+        /*Logistic account status display */
 		function statusTools(row) {
 		    if (row.status == 1) {
     			return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
@@ -145,6 +138,24 @@
     			return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\')"></i> ';
     		}
 		}
+        document.getElementById("logisticGroup.groupName").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
+        });
+        document.getElementById("email").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
+        });
+        document.getElementById("fullname").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
+        });
     </script>
 </body>
 </html>
