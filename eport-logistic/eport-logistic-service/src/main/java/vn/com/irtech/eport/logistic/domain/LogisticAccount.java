@@ -2,7 +2,10 @@ package vn.com.irtech.eport.logistic.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import vn.com.irtech.eport.common.annotation.Excel;
+import vn.com.irtech.eport.common.annotation.Excels;
+import vn.com.irtech.eport.common.annotation.Excel.Type;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
@@ -53,8 +56,24 @@ public class LogisticAccount extends BaseEntity
     /** Login Date */
     @Excel(name = "Login Date", width = 30, dateFormat = "yyyy-MM-dd")
     private Date loginDate;
+    
+    @Excels({
+        @Excel(name = "Group Code", targetAttr = "logisticGroup", type = Type.EXPORT)
+    })
+    private LogisticGroup logisticGroup;
 
-    public void setId(Long id) 
+    public LogisticGroup getLogisticGroup() {
+    	if(logisticGroup == null) {
+    		logisticGroup = new LogisticGroup();
+    	}
+		return logisticGroup;
+	}
+
+	public void setLogisticGroup(LogisticGroup logisticGroup) {
+		this.logisticGroup = logisticGroup;
+	}
+
+	public void setId(Long id) 
     {
         this.id = id;
     }
