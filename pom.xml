@@ -239,7 +239,7 @@
 
 	<modules>
 		<module>eport-admin</module>
-		<!-- <module>eport-framework</module> -->
+		<module>eport-admin-framework</module>
 		<module>eport-system</module>
 		<module>eport-quartz</module>
 		<module>eport-generator</module>
