@@ -65,4 +65,5 @@ public interface ILogisticAccountService
      * @return
      */
 	public LogisticAccount selectByEmail(String email);
+	public String checkEmailUnique(String email);
 }
