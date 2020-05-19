@@ -12,7 +12,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="taxCode"    column="tax_code"    />
         <result property="containerAmount"    column="container_amount"    />
         <result property="edoFlg"    column="edo_flg"    />
-        <result property="remak"    column="remak"    />
+        <result property="referenceNo"    column="reference_no"    />
+        <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -26,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentVo">
-        select id, logistic_account_id, logistic_group_id, service_id, tax_code, container_amount, edo_flg, remak, create_by, create_time, update_by, update_time from shipment
+        select id, logistic_account_id, logistic_group_id, service_id, tax_code, container_amount, edo_flg, reference_no, remark, create_by, create_time, update_by, update_time from shipment
     </sql>
 
     <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
@@ -38,7 +39,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
             <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
-            <if test="remak != null  and remak != ''"> and remak = #{remak}</if>
+            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
+            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
         </where>
     </select>
     
@@ -56,7 +58,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null  and taxCode != ''">tax_code,</if>
             <if test="containerAmount != null ">container_amount,</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg,</if>
-            <if test="remak != null  and remak != ''">remak,</if>
+            <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
@@ -69,7 +72,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null  and taxCode != ''">#{taxCode},</if>
             <if test="containerAmount != null ">#{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">#{edoFlg},</if>
-            <if test="remak != null  and remak != ''">#{remak},</if>
+            <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
@@ -86,7 +90,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null  and taxCode != ''">tax_code = #{taxCode},</if>
             <if test="containerAmount != null ">container_amount = #{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg = #{edoFlg},</if>
-            <if test="remak != null  and remak != ''">remak = #{remak},</if>
+            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
@@ -107,7 +112,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
     
     <select id="selectShipmentWithGroupById" parameterType="Long" resultMap="ShipmentResult">
-        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_id, s.tax_code, s.container_amount, s.edo_flg, s.remak, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
+        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_id, s.tax_code, s.container_amount, s.edo_flg, s.reference_no, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
         from shipment s left join logistic_group g on s.logistic_group_id = g.id
         where s.id = #{id}
     </select>

@@ -42,6 +42,10 @@ public class Shipment extends BaseEntity
     @Excel(name = "EDO Flag (1,0)")
     private String edoFlg;
 
+    /** So tham chieu CATOS */
+    @Excel(name = "Reference No")
+    private String referenceNo;
+
     /** Ghi chu */
     @Excel(name = "Ghi chu")
     private String remak;
@@ -111,14 +115,13 @@ public class Shipment extends BaseEntity
     {
         return edoFlg;
     }
-    public void setRemak(String remak) 
-    {
-        this.remak = remak;
+
+    public void setReferenceNo(String referenceNo) {
+        this.referenceNo = referenceNo;
     }
 
-    public String getRemak() 
-    {
-        return remak;
+    public String getReferenceNo() {
+        return referenceNo;
     }
 
     public void setLogisticGroup(LogisticGroup logisticGroup) {
@@ -142,7 +145,8 @@ public class Shipment extends BaseEntity
             .append("taxCode", getTaxCode())
             .append("containerAmount", getContainerAmount())
             .append("edoFlg", getEdoFlg())
-            .append("remak", getRemak())
+            .append("referenceNo", getReferenceNo())
+            .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
