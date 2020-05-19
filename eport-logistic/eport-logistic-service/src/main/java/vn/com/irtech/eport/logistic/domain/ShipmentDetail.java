@@ -27,10 +27,6 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Ma DK")
     private String registerNo;
 
-    /** Carrier code */
-    @Excel(name = "Hãng tàu")
-    private String carrierCode;
-
     /** Container Number */
     @Excel(name = "Container Number")
     private String containerNo;
@@ -131,6 +127,9 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "DO Status(Y,N")
     private String doStatus;
 
+    /** Ngay nhan DO goc */
+    private Date doReceivedTime;
+
     /** Xac Thuc (Y,N) */
     @Excel(name = "Xac Thuc (Y,N)")
     private String userVerifyStatus;
@@ -139,280 +138,248 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Status")
     private Integer status;
 
-    public void setId(Long id) 
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() 
-    {
+    public Long getId() {
         return id;
     }
-    public void setShipmentId(Long shipmentId) 
-    {
+
+    public void setShipmentId(Long shipmentId) {
         this.shipmentId = shipmentId;
     }
 
-    public Long getShipmentId() 
-    {
+    public Long getShipmentId() {
         return shipmentId;
     }
-    public void setRegisterNo(String registerNo) 
-    {
+
+    public void setRegisterNo(String registerNo) {
         this.registerNo = registerNo;
     }
 
-    public String getRegisterNo() 
-    {
+    public String getRegisterNo() {
         return registerNo;
     }
-    public void setCarrierCode(String carrierCode) 
-    {
-        this.carrierCode = carrierCode;
-    }
-    public String getCarrierCode()
-    {
-        return carrierCode;
-    }
-    public void setContainerNo(String containerNo) 
-    {
+    public void setContainerNo(String containerNo) {
         this.containerNo = containerNo;
     }
 
-    public String getContainerNo() 
-    {
+    public String getContainerNo() {
         return containerNo;
     }
-    public void setContainerStatus(String containerStatus) 
-    {
+
+    public void setContainerStatus(String containerStatus) {
         this.containerStatus = containerStatus;
     }
 
-    public String getContainerStatus() 
-    {
+    public String getContainerStatus() {
         return containerStatus;
     }
-    public void setSztp(String sztp) 
-    {
+
+    public void setSztp(String sztp) {
         this.sztp = sztp;
     }
 
-    public String getSztp() 
-    {
+    public String getSztp() {
         return sztp;
     }
-    public void setFe(String fe) 
-    {
+
+    public void setFe(String fe) {
         this.fe = fe;
     }
 
-    public String getFe() 
-    {
+    public String getFe() {
         return fe;
     }
-    public void setBookingNo(String bookingNo) 
-    {
+
+    public void setBookingNo(String bookingNo) {
         this.bookingNo = bookingNo;
     }
 
-    public String getBookingNo() 
-    {
+    public String getBookingNo() {
         return bookingNo;
     }
-    public void setBlNo(String blNo) 
-    {
+
+    public void setBlNo(String blNo) {
         this.blNo = blNo;
     }
 
-    public String getBlNo() 
-    {
+    public String getBlNo() {
         return blNo;
     }
-    public void setSealNo(String sealNo) 
-    {
+
+    public void setSealNo(String sealNo) {
         this.sealNo = sealNo;
     }
 
-    public String getSealNo() 
-    {
+    public String getSealNo() {
         return sealNo;
     }
-    public void setConsignee(String consignee) 
-    {
+
+    public void setConsignee(String consignee) {
         this.consignee = consignee;
     }
 
-    public String getConsignee() 
-    {
+    public String getConsignee() {
         return consignee;
     }
-    public void setExpiredDem(Date expiredDem) 
-    {
+
+    public void setExpiredDem(Date expiredDem) {
         this.expiredDem = expiredDem;
     }
 
-    public Date getExpiredDem() 
-    {
+    public Date getExpiredDem() {
         return expiredDem;
     }
-    public void setWgt(Long wgt) 
-    {
+
+    public void setWgt(Long wgt) {
         this.wgt = wgt;
     }
 
-    public Long getWgt() 
-    {
+    public Long getWgt() {
         return wgt;
     }
-    public void setVslNm(String vslNm) 
-    {
+    public void setVslNm(String vslNm) {
         this.vslNm = vslNm;
     }
 
-    public String getVslNm() 
-    {
+    public String getVslNm() {
         return vslNm;
     }
-    public void setVoyNo(String voyNo) 
-    {
+
+    public void setVoyNo(String voyNo) {
         this.voyNo = voyNo;
     }
 
-    public String getVoyNo() 
-    {
+    public String getVoyNo() {
         return voyNo;
     }
-    public void setOpeCode(String opeCode) 
-    {
+
+    public void setOpeCode(String opeCode) {
         this.opeCode = opeCode;
     }
 
-    public String getOpeCode() 
-    {
+    public String getOpeCode() {
         return opeCode;
     }
-    public void setLoadingPort(String loadingPort) 
-    {
+    public void setLoadingPort(String loadingPort) {
         this.loadingPort = loadingPort;
     }
 
-    public String getLoadingPort() 
-    {
+    public String getLoadingPort() {
         return loadingPort;
     }
-    public void setDischargePort(String dischargePort) 
-    {
+
+    public void setDischargePort(String dischargePort) {
         this.dischargePort = dischargePort;
     }
 
-    public String getDischargePort() 
-    {
+    public String getDischargePort() {
         return dischargePort;
     }
-    public void setTransportType(String transportType) 
-    {
+
+    public void setTransportType(String transportType) {
         this.transportType = transportType;
     }
 
-    public String getTransportType() 
-    {
+    public String getTransportType() {
         return transportType;
     }
-    public void setEmptyDepot(String emptyDepot) 
-    {
+
+    public void setEmptyDepot(String emptyDepot) {
         this.emptyDepot = emptyDepot;
     }
-    public String getEmptyDepot() 
-    {
+
+    public String getEmptyDepot() {
         return emptyDepot;
     }
-    public void setVgmChk(Long vgmChk) 
-    {
+
+    public void setVgmChk(Long vgmChk) {
         this.vgmChk = vgmChk;
     }
 
-    public Long getVgmChk() 
-    {
+    public Long getVgmChk() {
         return vgmChk;
     }
-    public void setVgm(String vgm) 
-    {
+
+    public void setVgm(String vgm) {
         this.vgm = vgm;
     }
 
-    public String getVgm() 
-    {
+    public String getVgm() {
         return vgm;
     }
-    public void setVgmPersonInfo(String vgmPersonInfo) 
-    {
+
+    public void setVgmPersonInfo(String vgmPersonInfo) {
         this.vgmPersonInfo = vgmPersonInfo;
     }
 
-    public String getVgmPersonInfo() 
-    {
+    public String getVgmPersonInfo() {
         return vgmPersonInfo;
     }
-    public void setCustomDeclareNo(String customDeclareNo) 
-    {
+
+    public void setCustomDeclareNo(String customDeclareNo) {
         this.customDeclareNo = customDeclareNo;
     }
 
-    public String getCustomDeclareNo() 
-    {
+    public String getCustomDeclareNo() {
         return customDeclareNo;
     }
-    public void setCustomStatus(String customStatus) 
-    {
+
+    public void setCustomStatus(String customStatus) {
         this.customStatus = customStatus;
     }
 
-    public String getCustomStatus() 
-    {
+    public String getCustomStatus() {
         return customStatus;
     }
-    public void setPaymentStatus(String paymentStatus) 
-    {
+
+    public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
 
-    public String getPaymentStatus() 
-    {
+    public String getPaymentStatus() {
         return paymentStatus;
     }
-    public void setProcessStatus(String processStatus) 
-    {
+
+    public void setProcessStatus(String processStatus) {
         this.processStatus = processStatus;
     }
 
-    public String getProcessStatus() 
-    {
+    public String getProcessStatus() {
         return processStatus;
     }
-    public void setDoStatus(String doStatus) 
-    {
+
+    public void setDoStatus(String doStatus) {
         this.doStatus = doStatus;
     }
     public String getDoStatus() 
     {
         return doStatus;
     }
-    public void setUserVerifyStatus(String userVerifyStatus) 
-    {
+
+    public void setDoReceivedTime(Date doReceivedTime) {
+        this. doReceivedTime = doReceivedTime;
+    }
+
+    public Date getDoReceivedTime() {
+        return doReceivedTime;
+    }
+
+    public void setUserVerifyStatus(String userVerifyStatus) {
         this.userVerifyStatus = userVerifyStatus;
     }
 
-    public String getUserVerifyStatus() 
-    {
+    public String getUserVerifyStatus() {
         return userVerifyStatus;
     }
-    public void setStatus(Integer status) 
-    {
+
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    public Integer getStatus() 
-    {
+    public Integer getStatus() {
         return status;
     }
 
@@ -422,7 +389,6 @@ public class ShipmentDetail extends BaseEntity
             .append("id", getId())
             .append("shipmentId", getShipmentId())
             .append("registerNo", getRegisterNo())
-            .append("carrierCode", getCarrierCode())
             .append("containerNo", getContainerNo())
             .append("containerStatus", getContainerStatus())
             .append("sztp", getSztp())
@@ -448,6 +414,7 @@ public class ShipmentDetail extends BaseEntity
             .append("paymentStatus", getPaymentStatus())
             .append("processStatus", getProcessStatus())
             .append("doStatus", getDoStatus())
+            .append("doReceivedTime", getDoReceivedTime())
             .append("userVerifyStatus", getUserVerifyStatus())
             .append("status", getStatus())
             .append("remark", getRemark())

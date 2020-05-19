@@ -49,7 +49,7 @@
       <div class="form-group row">
         <label for="" class="col-md-2 col-sm-3 col-xs-4">Ghi Chú</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <textarea name="remak" id="remak" class="form-control" rows="5"></textarea>
+          <textarea name="remark" id="remark" class="form-control" rows="5"></textarea>
         </div>
       </div>
     </form>
@@ -67,7 +67,7 @@
     $("#taxCode").val(shipment.taxCode);
     $("#containerAmount").val(shipment.containerAmount);
     $("#groupName").val(shipment.logisticGroup.groupName);
-    $("#remak").val(shipment.remak);
+    $("#remark").val(shipment.remark);
   }
   
   $("#form-edit-shipment").validate({

@@ -1,3 +1,4 @@
+var isChange = true;
 var prefix = ctx + "logistic/receiveContFull";
 var fromDate = "";
 var toDate = "";
@@ -105,13 +106,13 @@ config = {
     "Chuyến",
     "Cảng Nguồn",
     "Cảng Đích",
-    "VGM",
     "Phương Tiện",
     "Nơi Hạ Vỏ",
     "T.T Hải Quan",
     "T.T Thanh Toán",
     "T.T Làm Lệnh",
     "T.T DO Gốc",
+    "T.T Nhận Cont",
     "Ghi Chú",
   ],
   // colWidths: [7, 8, 8, 20, 8, 15, 8, 8, 8, 15],
@@ -123,7 +124,8 @@ config = {
       className: "htCenter",
     },
     {
-      data: "carrierCode",
+      data: "opeCode",
+      editor: false
     },
     {
       data: "blNo",
@@ -133,15 +135,18 @@ config = {
     },
     {
       data: "sztp",
+      editor: false
     },
     {
       data: "fe",
+      editor: false
     },
     {
       data: "consignee"
     },
     {
       data: "sealNo",
+      editor: false
     },
     {
       data: "expiredDem",
@@ -149,40 +154,51 @@ config = {
       dateFormat: "DD/MM/YYYY",
       correctFormat: true,
       defaultDate: new Date(),
+      editor: false
     },
     {
       data: "vslNm",
       type: "autocomplete",
+      editor: false
     },
     {
       data: "voyNo",
+      editor: false
     },
     {
       data: "loadingPort",
+      editor: false
     },
     {
       data: "dischargePort",
-    },
-    {
-      data: "vgm",
+      editor: false
     },
     {
       data: "transportType",
     },
     {
       data: "emptyDepot",
+      editor: false
     },
     {
-      data: "customStatus",
+      data: "customStatus"=="N"?"Chưa thông quan":"Thông quan",
+      editor: false
     },
     {
       data: "paymentStatus",
+      editor: false
     },
     {
       data: "processStatus",
+      editor: false
     },
     {
-      data: "",
+      data: "doStatus",
+      editor: false
+    },
+    {
+      data: "status",
+      editor: false
     },
     {
       data: "remark",
@@ -190,10 +206,39 @@ config = {
   ],
   afterChange: function (changes, src) {
     //Get data change in cell to render another column
-    if (src !== "loadData" && (changes[0][3] != "")) {
-      // console.log(changes);
-      // console.log("Row change: " + changes[0][0])
-      // console.log("cell values: " + changes[0][3])
+    if (src !== "loadData") {
+      changes.forEach(function interate(row) {
+        var blNo;
+        var containerNo;
+        if (row[1] == "blNo" || row[1] == "containerNo") {
+          blNo = hot.getDataAtRow(row[0])[2];
+          containerNo = hot.getDataAtRow(row[0])[3];
+          isChange = true;
+        } else {
+          isChange = false;
+        }
+        if (blNo != null && containerNo != null && isChange) {
+          // Call data to auto-fill
+          hot.setDataAtCell(row[0], 1, "CMC"); //opeCode
+          hot.setDataAtCell(row[0], 4, "22G0"); //sztp
+          hot.setDataAtCell(row[0], 5, "F"); //fe
+          hot.setDataAtCell(row[0], 6, "VINCOSHIP"); //consignee
+          hot.setDataAtCell(row[0], 7, "G8331306"); //sealNo
+          hot.setDataAtCell(row[0], 8, "19/05/2020"); //expiredem
+          hot.setDataAtCell(row[0], 9, "Vessel"); //vslNm
+          hot.setDataAtCell(row[0], 10, "Voyage"); //voyNo
+          hot.setDataAtCell(row[0], 11, "LoadingPort"); //loadingPort
+          hot.setDataAtCell(row[0], 12, "dischargePort"); //dischargePort
+          hot.setDataAtCell(row[0], 13, "Truck"); //transportType
+          hot.setDataAtCell(row[0], 14, "emptyDepot"); //emptyDepot
+          hot.setDataAtCell(row[0], 15, "Chưa thông quan"); //customStatus
+          hot.setDataAtCell(row[0], 16, "Chưa thanh toán"); //paymentStatus
+          hot.setDataAtCell(row[0], 17, "Chưa làm lệnh"); //processStatus
+          hot.setDataAtCell(row[0], 18, "Chưa nhận DO gốc"); //doStatus
+          hot.setDataAtCell(row[0], 19, "Chưa nhận container"); //status
+          hot.setDataAtCell(row[0], 20, "Ghi chu"); //remark
+        }
+      });
     }
   },
 };
@@ -270,26 +315,26 @@ function getDataSelectedFromTable() {
   shipmentDetails = [];
   $.each(cleanedGridData, function (index, object) {
     var shipmentDetail = new Object();
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.carrierCode = object["carrierCode"];
+    shipmentDetail.opeCode = object["opeCode"];
+    shipmentDetail.blNo = object["blNo"];
+    shipmentDetail.containerNo = object["containerNo"];
+    shipmentDetail.sztp = object["sztp"];
+    shipmentDetail.fe = object["fe"];
+    shipmentDetail.consignee = object["consignee"];
+    shipmentDetail.sealNo = object["sealNo"];
+    //shipmentDetail.expiredDem = object["expiredDem"];
+    shipmentDetail.vslNm = object["vslNm"];
+    shipmentDetail.voyNo = object["voyNo"];
+    shipmentDetail.loadingPort = object["loadingPort"];
+    shipmentDetail.dischargePort = object["dischargePort"];
+    shipmentDetail.transportType = object["transportType"];
+    shipmentDetail.emptyDepot = object["emptyDepot"];
+    shipmentDetail.customStatus = object["customStatus"];
+    shipmentDetail.paymentStatus = object["paymentStatus"];
+    shipmentDetail.processStatus = object["processStatus"];
+    shipmentDetail.doStatus = object["doStatus"];
+    shipmentDetail.status = object["status"];
+    shipmentDetail.remark = object["remark"];
     shipmentDetail.shipmentId = shipmentSelected;
     shipmentDetails.push(shipmentDetail);
   });
