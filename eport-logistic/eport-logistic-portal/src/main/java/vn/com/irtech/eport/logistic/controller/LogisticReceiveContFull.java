@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -99,18 +100,26 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	public AjaxResult registerProcess(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
+			int index = 0;
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setCreateBy(user.getFullName());
-				shipmentDetail.setCreateTime(new Date());
-				shipmentDetail.setProcessStatus("Y");
-				// unknow
-				shipmentDetail.setRegisterNo("unknow");
-				//
-				if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
-					return error("Đăng ký làm lệnh thất bại từ container: " + shipmentDetail.getContainerNo());
+				index++;
+				if (shipmentDetail.getId() != null) {
+					shipmentDetail.setUpdateBy(user.getFullName());
+					shipmentDetail.setUpdateTime(new Date());
+					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+					}
+				} else {
+					shipmentDetail.setCreateBy(user.getFullName());
+					shipmentDetail.setCreateTime(new Date());
+					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setRegisterNo(shipmentDetail.getShipmentId().toString()+index);
+					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+					}
 				}
 			}
 		}
-		return success("Đăng ký làm lệnh thành công");
+		return success("Lưu khai báo thành công");
 	}
 }
