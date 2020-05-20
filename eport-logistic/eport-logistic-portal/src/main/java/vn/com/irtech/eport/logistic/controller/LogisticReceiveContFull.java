@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -95,9 +94,9 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return error("Chỉnh sửa lô thất bại");
 	}
 
-	@PostMapping("/registerProcess")
+	@PostMapping("/saveShipmentDetail")
 	@ResponseBody
-	public AjaxResult registerProcess(@RequestBody List<ShipmentDetail> shipmentDetails) {
+	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
 			int index = 0;
@@ -112,7 +111,6 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 				} else {
 					shipmentDetail.setCreateBy(user.getFullName());
 					shipmentDetail.setCreateTime(new Date());
-					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setRegisterNo(shipmentDetail.getShipmentId().toString()+index);
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
@@ -121,5 +119,34 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 			}
 		}
 		return success("Lưu khai báo thành công");
+	}
+
+	@PostMapping("/getContInfo")
+	@ResponseBody
+	public ShipmentDetail getContInfo(ShipmentDetail shipmentDetails) {
+		if (shipmentDetails.getBlNo() != null && shipmentDetails.getContainerNo() != null) {
+			shipmentDetails.setOpeCode("CMC");
+			shipmentDetails.setSztp("22G0");
+			shipmentDetails.setFe("F");
+			shipmentDetails.setConsignee("VINCOSHIP");
+			shipmentDetails.setSealNo("G8331306");
+			shipmentDetails.setExpiredDem(new Date());
+			shipmentDetails.setWgt(11l);
+			shipmentDetails.setVslNm("Vessel");
+			shipmentDetails.setVoyNo("Voyage");
+			shipmentDetails.setLoadingPort("LoadingPort");
+			shipmentDetails.setDischargePort("dischargePort");
+			shipmentDetails.setTransportType("Truck");
+			shipmentDetails.setEmptyDepot("emptyDepot");
+			shipmentDetails.setCustomStatus("N");
+			shipmentDetails.setPaymentStatus("N");
+			shipmentDetails.setProcessStatus("N");
+			shipmentDetails.setDoStatus("N");
+			shipmentDetails.setStatus(1);
+			shipmentDetails.setRemark("Ghi chu");
+			return shipmentDetails;
+		} else {
+			return null;
+		}
 	}
 }
