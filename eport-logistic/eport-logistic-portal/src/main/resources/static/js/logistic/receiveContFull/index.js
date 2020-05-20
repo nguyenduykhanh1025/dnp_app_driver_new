@@ -18,8 +18,8 @@ $(document).ready(function () {
 
 function loadTable() {
   $("#dg").datagrid({
-    url: ctx + "logistic/receiveContFull/listShipment",
-    height: heightInfo,
+    url: prefix + "/listShipment",
+    height: window.innerHeight - 70,
     singleSelect: true,
     collapsible: true,
     clientPaging: false,
@@ -84,7 +84,7 @@ function handleCollapse(status) {
 
 config = {
   stretchH: "all",
-  height: document.documentElement.clientHeight - 70,
+  height: document.documentElement.clientHeight - 100,
   minRows: 100,
   width: "100%",
   minSpareRows: 1,
@@ -94,14 +94,16 @@ config = {
   className: "htMiddle",
   colHeaders: [
     "<input type='checkbox' id='parent-checkbox'/>",
-    "Hãng Tàu",
+    "id",
     "B/L No",
     "Container No",
+    "Hãng Tàu",
     "Kích Thước",
     "F/E",
     "Chủ hàng",
     "Seal No",
     "Hạn Lệnh",
+    "Trọng tải",
     "Tàu",
     "Chuyến",
     "Cảng Nguồn",
@@ -115,7 +117,7 @@ config = {
     "T.T Nhận Cont",
     "Ghi Chú",
   ],
-  // colWidths: [7, 8, 8, 20, 8, 15, 8, 8, 8, 15],
+  colWidths: [50, 0.01, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 150, 150, 150, 150, 200],
   filter: "true",
   columns: [
     {
@@ -124,7 +126,7 @@ config = {
       className: "htCenter",
     },
     {
-      data: "opeCode",
+      data: "id",
       editor: false
     },
     {
@@ -132,6 +134,10 @@ config = {
     },
     {
       data: "containerNo",
+    },
+    {
+      data: "opeCode",
+      editor: false
     },
     {
       data: "sztp",
@@ -154,16 +160,17 @@ config = {
       dateFormat: "DD/MM/YYYY",
       correctFormat: true,
       defaultDate: new Date(),
+    },
+    {
+      data: "wgt",
       editor: false
     },
     {
       data: "vslNm",
-      type: "autocomplete",
       editor: false
     },
     {
       data: "voyNo",
-      editor: false
     },
     {
       data: "loadingPort",
@@ -181,7 +188,7 @@ config = {
       editor: false
     },
     {
-      data: "customStatus"=="N"?"Chưa thông quan":"Thông quan",
+      data: "customStatus",
       editor: false
     },
     {
@@ -219,28 +226,84 @@ config = {
         }
         if (blNo != null && containerNo != null && isChange) {
           // Call data to auto-fill
-          hot.setDataAtCell(row[0], 1, "CMC"); //opeCode
-          hot.setDataAtCell(row[0], 4, "22G0"); //sztp
-          hot.setDataAtCell(row[0], 5, "F"); //fe
-          hot.setDataAtCell(row[0], 6, "VINCOSHIP"); //consignee
-          hot.setDataAtCell(row[0], 7, "G8331306"); //sealNo
-          hot.setDataAtCell(row[0], 8, "19/05/2020"); //expiredem
-          hot.setDataAtCell(row[0], 9, "Vessel"); //vslNm
-          hot.setDataAtCell(row[0], 10, "Voyage"); //voyNo
-          hot.setDataAtCell(row[0], 11, "LoadingPort"); //loadingPort
-          hot.setDataAtCell(row[0], 12, "dischargePort"); //dischargePort
-          hot.setDataAtCell(row[0], 13, "Truck"); //transportType
-          hot.setDataAtCell(row[0], 14, "emptyDepot"); //emptyDepot
-          hot.setDataAtCell(row[0], 15, "Chưa thông quan"); //customStatus
-          hot.setDataAtCell(row[0], 16, "Chưa thanh toán"); //paymentStatus
-          hot.setDataAtCell(row[0], 17, "Chưa làm lệnh"); //processStatus
-          hot.setDataAtCell(row[0], 18, "Chưa nhận DO gốc"); //doStatus
-          hot.setDataAtCell(row[0], 19, "Chưa nhận container"); //status
-          hot.setDataAtCell(row[0], 20, "Ghi chu"); //remark
+          $.ajax({
+            url: prefix + "/getContInfo",
+            type: "post",
+            data: {
+              blNo: blNo, containerNo: containerNo
+            } 
+          }).done(function(shipmentDetail) {
+            if (shipmentDetail != null) {
+              var expiredDem = "";
+              var customStatus = "";
+              var paymentStatus = "";
+              var processStatus = "";
+              var doStatus = "";
+              var status = "";
+              if (shipmentDetail.expiredDem != null) {
+                expiredDem = shipmentDetail.expiredDem//shipmentDetail.expiredDem.getDate()+"/"+shipmentDetail.expiredDem.getMonth()+"/"+shipmentDetail.expiredDem.getYear();
+              }
+              switch (shipmentDetail.customStatus) {
+                case "N":
+                  customStatus = "Chưa thông quan";
+                  break;
+                default:
+                  break;
+              }
+              switch (shipmentDetail.paymentStatus) {
+                case "N":
+                  paymentStatus = "Chưa thanh toán";
+                  break;
+                default:
+                  break;
+              }
+              switch (shipmentDetail.processStatus) {
+                case "N":
+                  processStatus = "Chưa làm lệnh";
+                  break;
+                default:
+                  break;
+              }
+              switch (shipmentDetail.doStatus) {
+                case "N":
+                  doStatus = "Chưa nhận DO gốc";
+                  break;
+                default:
+                  break;
+              }
+              switch (shipmentDetail.status) {
+                case 1:
+                  status = "Chưa nhận công";
+                  break;
+                default:
+                  break;
+              }
+              hot.setDataAtCell(row[0], 4, shipmentDetail.opeCode); //opeCode
+              hot.setDataAtCell(row[0], 5, shipmentDetail.sztp); //sztp
+              hot.setDataAtCell(row[0], 6, shipmentDetail.fe); //fe
+              hot.setDataAtCell(row[0], 7, shipmentDetail.consignee); //consignee
+              hot.setDataAtCell(row[0], 8, shipmentDetail.sealNo); //sealNo
+              hot.setDataAtCell(row[0], 9, expiredDem); //expiredem
+              hot.setDataAtCell(row[0], 10, shipmentDetail.wgt); //wgt
+              hot.setDataAtCell(row[0], 11, shipmentDetail.vslNm); //vslNm
+              hot.setDataAtCell(row[0], 12, shipmentDetail.voyNo); //voyNo
+              hot.setDataAtCell(row[0], 13, shipmentDetail.loadingPort); //loadingPort
+              hot.setDataAtCell(row[0], 14, shipmentDetail.dischargePort); //dischargePort
+              hot.setDataAtCell(row[0], 15, shipmentDetail.transportType); //transportType
+              hot.setDataAtCell(row[0], 16, shipmentDetail.emptyDepot); //emptyDepot
+              hot.setDataAtCell(row[0], 17, customStatus); //customStatus
+              hot.setDataAtCell(row[0], 18, paymentStatus); //paymentStatus
+              hot.setDataAtCell(row[0], 19, processStatus); //processStatus
+              hot.setDataAtCell(row[0], 20, doStatus); //doStatus
+              hot.setDataAtCell(row[0], 21, status); //status
+              hot.setDataAtCell(row[0], 22, shipmentDetail.remark); //remark
+            }
+          });
         }
       });
     }
   },
+  
 };
 
 hot = new Handsontable(dogrid, config);
@@ -253,6 +316,46 @@ function loadShipmentDetail(id) {
       shipmentId: id
     },
     success: function(result) {
+      result.forEach(function iterate(shipmentDetail) {
+        if (shipmentDetail.expiredDem != null && shipmentDetail.expiredDem != '') {
+          shipmentDetail.expiredDem = shipmentDetail.expiredDem.substring(8, 10)+"/"+shipmentDetail.expiredDem.substring(5, 7)+"/"+shipmentDetail.expiredDem.substring(0, 4);
+        }
+        switch (shipmentDetail.customStatus) {
+          case "N":
+            shipmentDetail.customStatus = "Chưa thông quan";
+            break;
+          default:
+            break;
+        }
+        switch (shipmentDetail.paymentStatus) {
+          case "N":
+            shipmentDetail.paymentStatus = "Chưa thanh toán";
+            break;
+          default:
+            break;
+        }
+        switch (shipmentDetail.processStatus) {
+          case "N":
+            shipmentDetail.processStatus = "Chưa làm lệnh";
+            break;
+          default:
+            break;
+        }
+        switch (shipmentDetail.doStatus) {
+          case "N":
+            shipmentDetail.doStatus = "Chưa nhận DO gốc";
+            break;
+          default:
+            break;
+        }
+        switch (shipmentDetail.status) {
+          case 1:
+            shipmentDetail.status = "Chưa nhận công";
+            break;
+          default:
+            break;
+        }
+      });
       hot.loadData(result);
       hot.render();
     }
@@ -300,54 +403,56 @@ function getSelected() {
   }
 }
 
-function getDataSelectedFromTable() {
-  var myTableData = hot.getSourceData();
-  var errorFlg = false;
-  if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
-    hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
-  }
-  var cleanedGridData = [];
-  $.each(myTableData, function (rowKey, object) {
-    if (!hot.isEmptyRow(rowKey) && object["selected"]) {
-      cleanedGridData.push(object);
-    }
-  });
-  shipmentDetails = [];
-  $.each(cleanedGridData, function (index, object) {
-    var shipmentDetail = new Object();
-    shipmentDetail.opeCode = object["opeCode"];
-    shipmentDetail.blNo = object["blNo"];
-    shipmentDetail.containerNo = object["containerNo"];
-    shipmentDetail.sztp = object["sztp"];
-    shipmentDetail.fe = object["fe"];
-    shipmentDetail.consignee = object["consignee"];
-    shipmentDetail.sealNo = object["sealNo"];
-    //shipmentDetail.expiredDem = object["expiredDem"];
-    shipmentDetail.vslNm = object["vslNm"];
-    shipmentDetail.voyNo = object["voyNo"];
-    shipmentDetail.loadingPort = object["loadingPort"];
-    shipmentDetail.dischargePort = object["dischargePort"];
-    shipmentDetail.transportType = object["transportType"];
-    shipmentDetail.emptyDepot = object["emptyDepot"];
-    shipmentDetail.customStatus = object["customStatus"];
-    shipmentDetail.paymentStatus = object["paymentStatus"];
-    shipmentDetail.processStatus = object["processStatus"];
-    shipmentDetail.doStatus = object["doStatus"];
-    shipmentDetail.status = object["status"];
-    shipmentDetail.remark = object["remark"];
-    shipmentDetail.shipmentId = shipmentSelected;
-    shipmentDetails.push(shipmentDetail);
-  });
-  // Get result in "selectedList" variable
-  if (shipmentDetails.length == 0) {
-    $.modal.alert("Bạn chưa chọn container.");
-    errorFlg = true;
-  }
+// function getDataSelectedFromTable() {
+//   var myTableData = hot.getSourceData();
+//   var errorFlg = false;
+//   if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
+//     hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
+//   }
+//   var cleanedGridData = [];
+//   $.each(myTableData, function (rowKey, object) {
+//     if (!hot.isEmptyRow(rowKey) && object["selected"]) {
+//       cleanedGridData.push(object);
+//     }
+//   });
+//   shipmentDetails = [];
+//   $.each(cleanedGridData, function (index, object) {
+//     console.log(object["expiredDem"].substring(6, 10)+"/"+object["expiredDem"].substring(3, 5)+"/"+object["expiredDem"].substring(0,2));
+//     var shipmentDetail = new Object();
+//     shipmentDetail.opeCode = object["opeCode"];
+//     shipmentDetail.blNo = object["blNo"];
+//     shipmentDetail.containerNo = object["containerNo"];
+//     shipmentDetail.sztp = object["sztp"];
+//     shipmentDetail.fe = object["fe"];
+//     shipmentDetail.consignee = object["consignee"];
+//     shipmentDetail.sealNo = object["sealNo"];
+//     shipmentDetail.expiredDem = new Date().getTime();
+//     shipmentDetail.wgt = object["wgt"];
+//     shipmentDetail.vslNm = object["vslNm"];
+//     shipmentDetail.voyNo = object["voyNo"];
+//     shipmentDetail.loadingPort = object["loadingPort"];
+//     shipmentDetail.dischargePort = object["dischargePort"];
+//     shipmentDetail.transportType = object["transportType"];
+//     shipmentDetail.emptyDepot = object["emptyDepot"];
+//     shipmentDetail.customStatus = "N";
+//     shipmentDetail.paymentStatus = "N";
+//     shipmentDetail.processStatus = "N";
+//     shipmentDetail.doStatus = "N";
+//     shipmentDetail.status = 1
+//     shipmentDetail.remark = object["remark"];
+//     shipmentDetail.shipmentId = shipmentSelected;
+//     shipmentDetails.push(shipmentDetail);
+//   });
+//   // Get result in "selectedList" variable
+//   if (shipmentDetails.length == 0) {
+//     $.modal.alert("Bạn chưa chọn container.");
+//     errorFlg = true;
+//   }
 
-  if (errorFlg) {
-    return false;
-  }
-}
+//   if (errorFlg) {
+//     return false;
+//   }
+// }
 
 function getDataFromTable() {
   var myTableData = hot.getSourceData();
@@ -364,28 +469,38 @@ function getDataFromTable() {
   shipmentDetails = [];
   $.each(cleanedGridData, function (index, object) {
     var shipmentDetail = new Object();
-    shipmentDetail.carrierCode = object["carrierCode"];
-    shipmentDetail.blNo = object["blNo"];
-    shipmentDetail.containerNo = object["containerNo"];
-    shipmentDetail.sztp = object["sztp"];
-    shipmentDetail.fe = object["fe"];
-    shipmentDetail.consignee = object["consignee"];
-    shipmentDetail.sealNo = object["sealNo"];
-    shipmentDetail.expiredDem = new Date().getTime();
-    shipmentDetail.vslNm = object["vslNm"];
-    shipmentDetail.voyNo = object["voyNo"];
-    shipmentDetail.loadingPort = object["loadingPort"];
-    shipmentDetail.dischargePort = object["dischargePort"];
-    shipmentDetail.vgm = object["vgm"];
-    shipmentDetail.transportType = object["transportType"];
-    shipmentDetail.emptyDepot = object["emptyDepot"];
-    shipmentDetail.customStatus = object["customStatus"];
-    shipmentDetail.paymentStatus = object["paymentStatus"];
-    shipmentDetail.processStatus = object["processStatus"];
-    shipmentDetail.doStatus = object["doStatus"];
-    shipmentDetail.remark = object["remark"];
-    shipmentDetail.shipmentId = shipmentSelected;
-    shipmentDetails.push(shipmentDetail);
+    if (object["blNo"] == null || object["blNo"] == "") {
+      $.modal.alertError("Hàng " + (index+1) + ": Số bill không được trống!");
+      errorFlg = true;
+    } else if(object["containerNo"] == null || object["containerNo"] == "") {
+      $.modal.alertError("Hàng " + (index+1) + ": Số container không được trống!");
+      errorFlg = true;
+    } else {
+      shipmentDetail.blNo = object["blNo"];
+      shipmentDetail.containerNo = object["containerNo"];
+      shipmentDetail.opeCode = object["opeCode"];
+      shipmentDetail.sztp = object["sztp"];
+      shipmentDetail.fe = object["fe"];
+      shipmentDetail.consignee = object["consignee"];
+      shipmentDetail.sealNo = object["sealNo"];
+      shipmentDetail.expiredDem = new Date(object["expiredDem"].substring(6, 10)+"/"+object["expiredDem"].substring(3, 5)+"/"+object["expiredDem"].substring(0,2)).getTime();
+      shipmentDetail.wgt = object["wgt"];
+      shipmentDetail.vslNm = object["vslNm"];
+      shipmentDetail.voyNo = object["voyNo"];
+      shipmentDetail.loadingPort = object["loadingPort"];
+      shipmentDetail.dischargePort = object["dischargePort"];
+      shipmentDetail.transportType = object["transportType"];
+      shipmentDetail.emptyDepot = object["emptyDepot"];
+      shipmentDetail.customStatus = "N";
+      shipmentDetail.paymentStatus = "N";
+      shipmentDetail.processStatus = "N";
+      shipmentDetail.doStatus = "N";
+      shipmentDetail.status = 1
+      shipmentDetail.remark = object["remark"];
+      shipmentDetail.shipmentId = shipmentSelected;
+      shipmentDetail.id = object["id"];
+      shipmentDetails.push(shipmentDetail);
+    }
   });
   // Get result in "selectedList" variable
   if (shipmentDetails.length == 0) {
@@ -395,18 +510,19 @@ function getDataFromTable() {
 
   if (errorFlg) {
     return false;
+  } else {
+    return true;
   }
 }
 
-function registerProcess() {
+function saveShipmentDetail() {
   if (shipmentSelected == 0) {
     $.modal.msgError("Bạn cần chọn lô trước");
     return;
   } else {
-    getDataFromTable();
-    if (shipmentDetails.length > 0) {
+    if (getDataFromTable() && shipmentDetails.length > 0) {
       $.ajax({
-        url: prefix + "/registerProcess",
+        url: prefix + "/saveShipmentDetail",
         method: "post",
         contentType : "application/json",
         accept: 'text/plain',
