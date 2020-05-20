@@ -1075,6 +1075,10 @@ var table = {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 500);
             },
+			addTransportAccount: function(id) {
+            	table.set();
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 800, 460);
+            },
             // 添加信息，以tab页展现
             addTab: function (id) {
             	table.set();

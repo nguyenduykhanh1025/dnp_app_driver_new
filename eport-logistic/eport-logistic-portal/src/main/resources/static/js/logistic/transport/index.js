@@ -52,19 +52,19 @@ function loadTable() {
 function getSelected() {
 	  var row = $("#dg").datagrid("getSelected");
 	  if (row) {
-	    shipmentSelected = row.id;
+	    transportSelected = row.id;
 	    $(function() {
 	      var options = {
 	        createUrl: prefix + "/add",
-	        updateUrl: prefix + "/edit/" + shipmentSelected,
+	        updateUrl: prefix + "/edit/" + transportSelected,
 	        modalName: " Đội Xe"
 	      };
 	      $.table.init(options);
 	    });
-	    $("#loCode").text(row.id);
-	    $("#taxCode").text(row.taxCode);
-	    $("#quantity").text(row.containerAmount);
-	    loadShipmentDetail(row.id);
+//	    $("#loCode").text(row.id);
+//	    $("#taxCode").text(row.taxCode);
+//	    $("#quantity").text(row.containerAmount);
+//	    loadShipmentDetail(row.id);
 	  }
 	}
 function formatDate(value) {
@@ -77,27 +77,39 @@ function formatDate(value) {
 
 function formatStatus(value) {
   if (value != 0) {
-    return "<span class='label label-success'>Active</span>"
+    return "<span class='label label-success'>Disable</span>"
   }
-  return "<span class='label label-default'>Unactive</span>"
+  return "<span class='label label-default'>Nomal</span>"
 }
 function formatAction(value, row, index) {
     var actions = [];
     actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
-    actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
+    actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
     actions.push("<a class='btn btn-default btn-xs' href='javascript:void(0)' onclick='resetPwd(" + row.id + ")'><i class='fa fa-key'></i>Đặt lại mật khẩu</a> ");
     return actions.join('');
 }
-function formatDocumentStatus(value) {
-  if (value != 0) {
-    return "<span class='label label-success'>Đã nhận DO gốc</span>"
-  }
-  return "<span class='label label-default'>Chưa nhận DO gốc</span>"
+function remove(id){
+    $.ajax({
+        url: prefix + '/remove',
+        type: 'POST',
+        dataType: 'html',
+        data: {
+            id: id,
+        }
+    }).done(function(rs) {
+        
+    });
 }
+//function formatDocumentStatus(value) {
+//  if (value != 0) {
+//    return "<span class='label label-success'>Đã nhận DO gốc</span>"
+//  }
+//  return "<span class='label label-default'>Chưa nhận DO gốc</span>"
+//}
 
-function formatBL(value) {
-  return "<a onclick='viewBL(\"" + value + "\")'>" + value + "</a>";
-}
+//function formatBL(value) {
+//  return "<a onclick='viewBL(\"" + value + "\")'>" + value + "</a>";
+//}
 
 function searchDo() {
   var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
@@ -157,15 +169,22 @@ function viewBL(value) {
 }
 
 // add full size do
-function addDo(id) {
-  $.modal.openTab("Thêm DO", "/carrier/do/add");
+function addTransport(id) {
+    $(function() {
+	      var options = {
+	        createUrl: prefix + "/add",
+	        modalName: "Đội Xe"
+	      };
+	      $.table.init(options);
+	    });
+	$.operate.addTransportAccount();
 }
 
-function addChangeExpired(id) {
-  table.set();
-  var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
-  $.modal.openDo("Thay đổi hạn lệnh", url, 600, 400);
-}
+//function addChangeExpired(id) {
+//  table.set();
+//  var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
+//  $.modal.openDo("Thay đổi hạn lệnh", url, 600, 400);
+//}
 
 function formatDateForSearch(value) {
   if (value == null) {
