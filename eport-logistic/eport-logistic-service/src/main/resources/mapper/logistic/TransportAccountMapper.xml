@@ -34,14 +34,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select c.id, c.logistic_group_id, c.plate_number, c.mobile_number, c.full_name, c.password, c.salt, c.status, c.del_flag, c.valid_date, c.remark, c.create_by, c.create_time, c.update_by, c.update_time, g.group_name 
         from transport_account c left join logistic_group g on c.logistic_group_id = g.id
         <where>  
-            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
-            <if test="plateNumber != null  and plateNumber != ''"> and plate_number = #{plateNumber}</if>
-            <if test="mobileNumber != null  and mobileNumber != ''"> and mobile_number = #{mobileNumber}</if>
-            <if test="fullName != null  and fullName != ''"> and full_name like concat('%', #{fullName}, '%')</if>
-            <if test="password != null  and password != ''"> and password = #{password}</if>
-            <if test="salt != null  and salt != ''"> and salt = #{salt}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="validDate != null "> and valid_date = #{validDate}</if>
+            <if test="logisticGroupId != null "> and c.logistic_group_id = #{logisticGroupId}</if>
+            <if test="plateNumber != null  and plateNumber != ''"> and c.plate_number = #{plateNumber}</if>
+            <if test="mobileNumber != null  and mobileNumber != ''"> and c.mobile_number = #{mobileNumber}</if>
+            <if test="fullName != null  and fullName != ''"> and c.full_name like concat('%', #{fullName}, '%')</if>
+            <if test="status != null  and status != ''"> and c.status = #{status}</if>
+            <if test="delFlag != null"> and c.del_flag = #{delFlag}</if>
         </where>
     </select>
     
@@ -108,7 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
     <delete id="deleteTransportAccountById" parameterType="Long">
-        delete from transport_account where id = #{id}
+        update transport_account set del_flag = 1 where id = #{id}
     </delete>
 
     <delete id="deleteTransportAccountByIds" parameterType="String">
