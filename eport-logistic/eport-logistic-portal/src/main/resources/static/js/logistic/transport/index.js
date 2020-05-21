@@ -1,8 +1,14 @@
 var prefix = ctx + "logistic/transport";
-var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
-fromDate = formatDateForSearch(fromDate);
-var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
-toDate = formatDateForSearch(toDate);
+//var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
+//fromDate = formatDateForSearch(fromDate);
+//var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
+//toDate = formatDateForSearch(toDate);
+$('#validDate').datetimepicker({
+    format: "yyyy-mm-dd",
+    minView: "month",
+    language: 'en',
+    autoclose: true
+});
 $(function () {
 loadTable();
 });
@@ -26,12 +32,17 @@ function loadTable() {
 	      if (!opts.url) return false;
 	      $.ajax({
 	        type: opts.method,
-          url: opts.url,
+	        url: opts.url,
 	        data: {
 	          pageNum: param.page,
 	          pageSize: param.rows,
 	          orderByColumn: param.sort,
-	          isAsc: param.order,
+			  isAsc: param.order,
+			  groupName: $('#groupName').val() == null ? "" : $('#groupName').val(),
+			  fullName: $('#fullName').val() == null ? "" : $('#fullName').val(),
+			  plateNumber: $('#plateNumber').val() == null ? "" : $('#plateNumber').val(),
+			  mobileNumber: $('#mobileNumber').val() == null ? "" : $('#mobileNumber').val(),
+			  validDate: $('#validDate').val() == null ? "" : $('#validDate').val(),
 	          // fromDate: fromDate,
 	          // toDate: toDate,
 	          // voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
@@ -82,23 +93,34 @@ function formatStatus(value) {
   return "<span class='label label-default'>Nomal</span>"
 }
 function formatAction(value, row, index) {
-    var actions = [];
-    actions.push('<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
-    actions.push('<a class="btn btn-danger btn-xs " href="javascript:void(0)" onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
-    actions.push("<a class='btn btn-default btn-xs' href='javascript:void(0)' onclick='resetPwd(" + row.id + ")'><i class='fa fa-key'></i>Đặt lại mật khẩu</a> ");
+	var actions = [];
+    actions.push('<a class="btn btn-success btn-xs" onclick="editt(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
+    actions.push('<a class="btn btn-danger btn-xs " onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
+    actions.push("<a class='btn btn-default btn-xs' onclick='resetPwd(" + row.id + ")'><i class='fa fa-key'></i>Đặt lại mật khẩu</a> ");
     return actions.join('');
 }
 function remove(id){
-    $.ajax({
-        url: prefix + '/remove',
-        type: 'POST',
-        dataType: 'html',
-        data: {
-            id: id,
-        }
-    }).done(function(rs) {
-        
-    });
+	$.modal.confirmTransport("Xác nhận thực hiện xóa thông tin  ?", function() {
+	    $.ajax({
+	        url: prefix + '/remove',
+	        type: 'POST',
+	        data: {
+	            id: id,
+	        }
+	    }).done(function(rs) {
+	        if(rs.code  == 0){
+	        	$.modal.msgSuccess(rs.msg);
+	        	loadTable();
+	        }
+	        else{
+	        	$.modal.msgError(rs.msg)
+	        }
+	    });
+	});
+}
+
+function editt(id) {
+	 $.modal.open("Chỉnh Sửa ", prefix+"/edit/"+id);
 }
 //function formatDocumentStatus(value) {
 //  if (value != 0) {
@@ -111,62 +133,62 @@ function remove(id){
 //  return "<a onclick='viewBL(\"" + value + "\")'>" + value + "</a>";
 //}
 
-function searchDo() {
-  var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
-  fromDate = formatDateForSearch(fromDate);
-  var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
-  toDate = formatDateForSearch(toDate);
-  var dg = $("#dg").datagrid({
-    url: ctx + "carrier/do/list",
-    singleSelection: true,
-    clientPaging: false,
-    pagination: true,
-    rownumbers: true,
-    pageSize: 50,
-    loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
-      if (!opts.url) return false;
-      $.ajax({
-        type: opts.method,
-        url: opts.url,
-        data: {
-          pageNum: param.page,
-          pageSize: param.rows,
-          orderByColumn: param.sort,
-          isAsc: param.order,
-          fromDate: fromDate,
-          toDate: toDate,
-          vessel: $("#vessel").val() == null ? "" : $("#vessel").val(),
-          blNo: $("#blNo").val() == null ? "" : $("#blNo").val(),
-        },
-        dataType: "json",
-        success: function (data) {
-          success(data);
-        },
-        error: function () {
-          error.apply(this, arguments);
-        },
-      });
-    },
-  });
-}
+//function searchDo() {
+//  var fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val()
+//  fromDate = formatDateForSearch(fromDate);
+//  var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
+//  toDate = formatDateForSearch(toDate);
+//  var dg = $("#dg").datagrid({
+//    url: ctx + "carrier/do/list",
+//    singleSelection: true,
+//    clientPaging: false,
+//    pagination: true,
+//    rownumbers: true,
+//    pageSize: 50,
+//    loader: function (param, success, error) {
+//      var opts = $(this).datagrid("options");
+//      if (!opts.url) return false;
+//      $.ajax({
+//        type: opts.method,
+//        url: opts.url,
+//        data: {
+//          pageNum: param.page,
+//          pageSize: param.rows,
+//          orderByColumn: param.sort,
+//          isAsc: param.order,
+//          fromDate: fromDate,
+//          toDate: toDate,
+//          vessel: $("#vessel").val() == null ? "" : $("#vessel").val(),
+//          blNo: $("#blNo").val() == null ? "" : $("#blNo").val(),
+//        },
+//        dataType: "json",
+//        success: function (data) {
+//          success(data);
+//        },
+//        error: function () {
+//          error.apply(this, arguments);
+//        },
+//      });
+//    },
+//  });
+//}
 
-document.getElementById("vessel").addEventListener("keyup", function (event) {
-  event.preventDefault();
-  if (event.keyCode === 13) {
-    $("#searchBtn").click();
-  }
-});
-document.getElementById("blNo").addEventListener("keyup", function (event) {
-  event.preventDefault();
-  if (event.keyCode === 13) {
-    $("#searchBtn").click();
-  }
-});
+//document.getElementById("vessel").addEventListener("keyup", function (event) {
+//  event.preventDefault();
+//  if (event.keyCode === 13) {
+//    $("#searchBtn").click();
+//  }
+//});
+//document.getElementById("blNo").addEventListener("keyup", function (event) {
+//  event.preventDefault();
+//  if (event.keyCode === 13) {
+//    $("#searchBtn").click();
+//  }
+//});
 
-function viewBL(value) {
-  $.modal.openTab("BL#" + value, "/carrier/do/viewbl/" + value);
-}
+//function viewBL(value) {
+//  $.modal.openTab("BL#" + value, "/carrier/do/viewbl/" + value);
+//}
 
 // add full size do
 function addTransport(id) {
@@ -186,16 +208,19 @@ function addTransport(id) {
 //  $.modal.openDo("Thay đổi hạn lệnh", url, 600, 400);
 //}
 
-function formatDateForSearch(value) {
-  if (value == null) {
-    return;
-  }
-  var newdate = value.split("/").reverse();
-  var date = new Date(newdate)
-  var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-  var month = date.getMonth() + 1;
-  var monthText = month < 10 ? "0" + month : month;
-  return date.getFullYear() + "-" + monthText + "-" + day;
+//function formatDateForSearch(value) {
+//  if (value == null) {
+//    return;
+//  }
+//  var newdate = value.split("/").reverse();
+//  var date = new Date(newdate)
+//  var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+//  var month = date.getMonth() + 1;
+//  var monthText = month < 10 ? "0" + month : month;
+//  return date.getFullYear() + "-" + monthText + "-" + day;
+//}
+function formatGroup(value){
+	return value.groupName
 }
 function resetPwd(id) {
   var url = prefix + '/resetPwd/' + id;
