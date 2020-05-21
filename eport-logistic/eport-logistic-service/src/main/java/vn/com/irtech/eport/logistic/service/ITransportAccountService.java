@@ -58,4 +58,5 @@ public interface ITransportAccountService
      * @return result
      */
     public int deleteTransportAccountById(Long id);
+	public int checkPhoneUnique(String phoneNumber);
 }
