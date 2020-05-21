@@ -727,6 +727,16 @@ var table = {
         	        callBack(true);
         	    });
             },
+            confirmTransport: function (content, callBack) {
+            	layer.confirm(content, {
+        	        icon: 3,
+        	        title: "Xác Nhận",
+        	        btn: ['Đồng Ý', 'Hủy Bỏ']
+        	    }, function (index) {
+        	    	layer.close(index);
+        	        callBack(true);
+        	    });
+            },
             // 弹出层指定宽度
             open: function (title, url, width, height, callback) {
             	//如果是移动端，就使用自适应大小弹窗
@@ -1040,6 +1050,14 @@ var table = {
 	            	    var data = { "ids": id };
 	            	    $.operate.submit(url, "post", "json", data);
 	                }
+            	});
+            	
+            },
+            removeTransportAccount: function(id) {
+            	table.set();
+            	$.modal.confirm("Xác nhận thực hiện xóa thông tin " + table.options.modalName + "?", function() {
+                    var url = table.options.removeUrl.replace("{id}", id);
+                    $.operate.get(url);
             	});
             	
             },

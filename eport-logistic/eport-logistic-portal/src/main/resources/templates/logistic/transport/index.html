@@ -52,10 +52,10 @@
           <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead>
               <tr>
-                <th data-options="field:'id',align:'right',halign:'center'" width="5%">
+                <th data-options="field:'id',align:'right',halign:'center'" width ="5%">
                   ID
                 </th>
-                <th data-options="field:'logisticGroupId',halign:'center',resizable:true" width="10%">
+                <th data-options="field:'logisticGroup',halign:'center',resizable:true,formatter: formatGroup" width="10%">
                   Nhóm logistic
                 </th>
                 <th data-options="field:'fullName',halign:'center',resizable:true" width="10%">
@@ -76,7 +76,7 @@
                 <th data-options="field:'status',align:'center',formatter: formatStatus" sortable="true" width="5%">
                   Trạng thái
                 </th>
-                <th data-options="field:'Action' ,align:'center',formatter: formatAction" width="15%">
+                <th data-options="field:'value' ,align:'center',formatter: formatAction" width ="15%" >
                   Action
                 </th> 
               </tr>
