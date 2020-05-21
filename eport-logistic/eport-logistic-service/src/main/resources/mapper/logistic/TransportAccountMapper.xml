@@ -115,5 +115,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    <select id="checkPhoneUnique" parameterType="String" resultType="int">
+		select count(1) from transport_account where lower(mobile_number)=#{mobile_number}
+	</select>
     
 </mapper>

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
 public class TransportAccountController extends BaseController
 {
     private String prefix = "logistic/transport";
+	public static final String PHONE_PATTERN = "^[0-9]{10,11}$";
 
     @Autowired
     private ITransportAccountService transportAccountService;
@@ -105,6 +107,12 @@ public class TransportAccountController extends BaseController
         if (transportAccount.getPassword().length() < 6) {
             return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
+        if(transportAccountService.checkPhoneUnique(transportAccount.getMobileNumber()) > 0) {
+        	return error("PhoneNumber này đã tồn tại!");
+        }
+        if(!Pattern.matches(PHONE_PATTERN, transportAccount.getMobileNumber())){
+        	return error("PhoneNumber này phải từ 10 đến 11 số!");
+        }
         transportAccount.setSalt(ShiroUtils.randomSalt());
         transportAccount.setPassword(passwordService.encryptPassword(transportAccount.getMobileNumber()
         , transportAccount.getPassword(), transportAccount.getSalt()));
@@ -131,6 +139,12 @@ public class TransportAccountController extends BaseController
     @ResponseBody
     public AjaxResult editSave(TransportAccount transportAccount)
     {
+        if(transportAccountService.checkPhoneUnique(transportAccount.getMobileNumber()) > 1) {
+        	return error("PhoneNumber này đã tồn tại!");
+        }
+        if(!Pattern.matches(PHONE_PATTERN, transportAccount.getMobileNumber())){
+        	return error("PhoneNumber này phải từ 10 đến 11 số!");
+        }
         return toAjax(transportAccountService.updateTransportAccount(transportAccount));
     }
 

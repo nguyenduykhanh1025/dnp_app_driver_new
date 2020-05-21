@@ -18,7 +18,17 @@ import vn.com.irtech.eport.common.core.text.Convert;
 @Service
 public class TransportAccountServiceImpl implements ITransportAccountService 
 {
-    @Autowired
+    @Override
+	public int checkPhoneUnique(String phoneNumber) {
+        int count = transportAccountMapper.checkPhoneUnique(phoneNumber);
+        if (count > 0)
+        {
+            return count;
+        }
+        return 0;
+	}
+
+	@Autowired
     private TransportAccountMapper transportAccountMapper;
 
     /**

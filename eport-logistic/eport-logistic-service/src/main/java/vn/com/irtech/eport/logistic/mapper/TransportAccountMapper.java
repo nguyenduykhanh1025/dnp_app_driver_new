@@ -58,4 +58,5 @@ public interface TransportAccountMapper
      * @return result
      */
     public int deleteTransportAccountByIds(String[] ids);
+	public int checkPhoneUnique(String phoneNumber);
 }
