@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -112,13 +113,19 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 					shipmentDetail.setCreateBy(user.getFullName());
 					shipmentDetail.setCreateTime(new Date());
 					shipmentDetail.setRegisterNo(shipmentDetail.getShipmentId().toString()+index);
+					shipmentDetail.setStatus(1);
+					shipmentDetail.setCustomStatus("N");
+					shipmentDetail.setPaymentStatus("N");
+					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setDoStatus("N");
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 				}
 			}
+			return success("Lưu khai báo thành công");
 		}
-		return success("Lưu khai báo thành công");
+		return error("Lưu khai báo thất bại");
 	}
 
 	@PostMapping("/getContInfo")
@@ -148,5 +155,39 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		} else {
 			return null;
 		}
+	}
+
+	@GetMapping("checkCustomStatus/{id}")
+	public String checkCustomStatus(@PathVariable("id") Long id, ModelMap mmap) {
+		mmap.put("shipmentId", id);
+		return prefix + "/checkCustomStatus";
+	}
+
+	@PostMapping("/checkCustomStatus")
+	@ResponseBody
+	public AjaxResult checkCustomStatus(@RequestParam(value="declareNoList[]") String[] declareNoList, Long shipmentId) {
+		if (declareNoList != null) {
+			for (String i : declareNoList) {
+				System.out.println(i);
+			}
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(shipmentId);
+			shipmentDetail.setCustomStatus("R");
+			shipmentDetail.setStatus(2);
+			updateShipmentDetailStatus(shipmentDetail);
+			return success("Nhập tờ khai thành công, hệ thống đang kiểm tra...");
+		}
+		return error("Khai báo thất bại");
+	}
+
+	@PostMapping("/updateShipmentDetailStatus")
+	@ResponseBody
+	public AjaxResult updateShipmentDetailStatus(ShipmentDetail shipmentDetail) {
+		if (shipmentDetail.getShipmentId() != null) {
+			if (shipmentDetailService.updateShipmentDetailStatus(shipmentDetail) == 1) {
+				return success("Cập nhật trạng thái thông quan thành công");
+			}
+		}
+		return error("Cập nhật trạng thái thông quan thất bại");
 	}
 }

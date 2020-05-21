@@ -94,4 +94,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     {
         return shipmentDetailMapper.deleteShipmentDetailById(id);
     }
+
+    @Override
+    public int updateShipmentDetailStatus(ShipmentDetail shipmentDetail) {
+        return shipmentDetailMapper.updateShipmentDetailStatus(shipmentDetail);
+    }
 }

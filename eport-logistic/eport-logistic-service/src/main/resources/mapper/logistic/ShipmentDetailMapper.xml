@@ -218,5 +218,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <update id="updateShipmentDetailStatus" parameterType="ShipmentDetail">
+        update shipment_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="customStatus != null  and customStatus != ''">custom_status = #{customStatus},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''">payment_status = #{paymentStatus},</if>
+            <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
+            <if test="doStatus != null  and doStatus != ''">do_status = #{doStatus},</if>
+            <if test="doReceivedTime != null  and doReceivedTime != ''">do_received_time = #{doReceivedTime},</if>
+            <if test="userVerifyStatus != null  and userVerifyStatus != ''">user_verify_status = #{userVerifyStatus},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where shipment_id = #{shipmentId}
+    </update>
     
 </mapper>

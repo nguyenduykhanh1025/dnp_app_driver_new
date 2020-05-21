@@ -58,4 +58,6 @@ public interface ShipmentDetailMapper
      * @return result
      */
     public int deleteShipmentDetailByIds(String[] ids);
+
+    public int updateShipmentDetailStatus(ShipmentDetail shipmentDetail);
 }
