@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <th:block th:include="include :: header('Quản lý đội xe')" />
+    <th:block th:include="include :: datetimepicker-css" />
     <th:block th:include="include :: easyui-css" />
   </head>
   <body>
@@ -24,19 +25,23 @@
             <div class="select-list">
               <ul>
                 <li>
-                  <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
+                	<input type="text" id="groupName" placeholder="Tên Nhóm" autocomplete=off>
                 </li>
                 <li>
-                  <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
+                	<input type="text" id= "fullName" placeholder="Tên tài xế" autocomplete=off />
                 </li>
                 <li>
-                  <input type="text" name="vessel" id="vessel" placeholder="Tên tàu" />
+                	<input type="text" id= "plateNumber" placeholder="Biển số xe" autocomplete=off/>
                 </li>
                 <li>
-                  <input type="text" name="BlNo" id="blNo" placeholder="Vận đơn/BL No" />
+                	<input type="text" id= "mobileNumber" placeholder="Số điện thoại" autocomplete=off/>
                 </li>
                 <li>
-                  <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchBtn"><i
+                  <input type="text" id="validDate" placeholder="Ngày hiệu lực" />
+                </li>
+                <li>
+                <li>
+                  <a class="btn btn-primary btn-rounded btn-sm" onclick="loadTable()" id="searchBtn"><i
                       class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
                 </li>
                 <li>
@@ -88,6 +93,7 @@
   </div>
     </div>
     <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: easyui-js" />
     <script th:src="@{/js/logistic/transport/index.js}"></script>
   </body>

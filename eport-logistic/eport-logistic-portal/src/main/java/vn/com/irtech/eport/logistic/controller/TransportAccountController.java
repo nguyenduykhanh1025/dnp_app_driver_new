@@ -65,10 +65,15 @@ public class TransportAccountController extends BaseController
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(TransportAccount transportAccount)
+    public TableDataInfo list(TransportAccount transportAccount, String groupName)
     {
         startPage();
         transportAccount.setDelFlag(false);
+        LogisticGroup logisticGroup = new LogisticGroup();
+        logisticGroup.setGroupName(groupName.toLowerCase());
+        transportAccount.setLogisticGroup(logisticGroup);
+        transportAccount.setFullName(transportAccount.getFullName().toLowerCase());
+        transportAccount.setPlateNumber(transportAccount.getPlateNumber().toLowerCase());
         List<TransportAccount> list = transportAccountService.selectTransportAccountList(transportAccount);
         return getDataTable(list);
     }

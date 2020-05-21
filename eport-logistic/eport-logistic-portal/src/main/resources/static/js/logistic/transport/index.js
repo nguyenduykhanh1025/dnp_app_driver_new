@@ -3,6 +3,12 @@ var prefix = ctx + "logistic/transport";
 //fromDate = formatDateForSearch(fromDate);
 //var toDate = $("#toDate").val() == null ? "" : $("#toDate").val()
 //toDate = formatDateForSearch(toDate);
+$('#validDate').datetimepicker({
+    format: "yyyy-mm-dd",
+    minView: "month",
+    language: 'en',
+    autoclose: true
+});
 $(function () {
 loadTable();
 });
@@ -31,7 +37,12 @@ function loadTable() {
 	          pageNum: param.page,
 	          pageSize: param.rows,
 	          orderByColumn: param.sort,
-	          isAsc: param.order,
+			  isAsc: param.order,
+			  groupName: $('#groupName').val() == null ? "" : $('#groupName').val(),
+			  fullName: $('#fullName').val() == null ? "" : $('#fullName').val(),
+			  plateNumber: $('#plateNumber').val() == null ? "" : $('#plateNumber').val(),
+			  mobileNumber: $('#mobileNumber').val() == null ? "" : $('#mobileNumber').val(),
+			  validDate: $('#validDate').val() == null ? "" : $('#validDate').val(),
 	          // fromDate: fromDate,
 	          // toDate: toDate,
 	          // voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
