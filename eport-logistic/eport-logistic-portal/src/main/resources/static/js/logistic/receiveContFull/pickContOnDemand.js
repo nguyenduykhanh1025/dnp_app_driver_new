@@ -1,11 +1,30 @@
 var prefix = ctx + "logistic/receiveContFull";
 var moveContAmount = 0;
+var preorderPickupContIds = [];
 
 $("#unitCosts").html(unitCosts);
 
 function confirm() {
-    parent.finishForm(data);
-    $.modal.close();
+    $.ajax({
+        url: prefix + "/setMovingContPrice",
+        method: "post",
+        data: {
+            preordidserPickupContIds: preorderPickupContIds,
+            billNo: billNo,
+            shipmentId: shipmentId
+        },
+        success: function (data) {
+            if (data.code != 0) {
+                $.modal.msgError(data.msg);
+            } else {
+                parent.finishForm(data);
+                $.modal.close();
+            }
+        },
+        error: function (result) {
+            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+        }
+    });
 }
 
 function closeForm() {
@@ -39,11 +58,13 @@ function pickCont(id, row, col) {
         $("#row" + id).remove();
     }
     var moveContAmountTemp = 0;
+    preorderPickupContIds = [];
     moveContAmount = 0;
     for (var j=0; j<7; j++) {
         for (var i=4; i>=0; i--) {
             if (containerList[i][j] != null) {
                 if (containerList[i][j].preorderPickup == "Y") {
+                    preorderPickupContIds.push(containerList[i][j].id);
                     moveContAmount += moveContAmountTemp;
                     moveContAmountTemp = 0;
                 } else {

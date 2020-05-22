@@ -332,6 +332,9 @@ function loadShipmentDetail(id) {
           case 3:
             setLayoutPickCont();
             break;
+          case 4:
+            setLayoutPaymentStatus();
+            break;
           default:
             setLayoutRegisterStatus();
             break;
@@ -361,6 +364,9 @@ function loadShipmentDetail(id) {
         switch (shipmentDetail.processStatus) {
           case "N":
             shipmentDetail.processStatus = "Chưa làm lệnh";
+            break;
+          case "Y":
+            shipmentDetail.processStatus = "Đã làm lệnh";
             break;
           default:
             break;
@@ -593,7 +599,7 @@ function verifyOtp(shipmentDetailIds) {
 }
 
 function pay() {
-  $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm", 700, 500);
+  $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentSelected, 700, 500);
 }
 
 function pickTruck() {
@@ -602,7 +608,7 @@ function pickTruck() {
 
 function pickContOnDemand() {
   getDataFromTable(false);
-  $.modal.openCustomForm("Bốc container chỉ định", prefix + "/pickContOnDemand/" + billNo, 810, 535);
+  $.modal.openCustomForm("Bốc container chỉ định", prefix + "/pickContOnDemand/" + billNo + "/" + shipmentSelected, 810, 535);
 }
 
 function exportBill() {
@@ -656,7 +662,18 @@ function setLayoutVerifyUser() {
 }
 
 function setLayoutPaymentStatus() {
-
+  $("#registerStatus").removeClass("active disable").addClass("label-primary");
+  $("#customStatus").removeClass("active disable").addClass("label-primary");
+  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+  $("#paymentStatus").removeClass("label-primary disable").addClass("active");
+  $("#finishStatus").removeClass("label-primary active").addClass("disable");
+  $("#saveShipmentDetailBtn").prop("disabled", true);
+  $("#customBtn").prop("disabled", true);
+  $("#verifyBtn").prop("disabled", true);
+  $("#pickContOnDemandBtn").prop("disabled", true);
+  $("#pickTruckBtn").prop("disabled", true);
+  $("#payBtn").prop("disabled", false);
+  $("#exportBillBtn").prop("disabled", true);
 }
 
 function setLayoutPickTruck() {

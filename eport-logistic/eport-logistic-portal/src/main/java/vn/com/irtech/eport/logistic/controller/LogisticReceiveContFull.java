@@ -119,6 +119,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setDoStatus("N");
+					shipmentDetail.setPreorderPickup("N");
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
@@ -185,6 +186,8 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	@PostMapping("/updateShipmentDetailStatus")
 	@ResponseBody
 	public AjaxResult updateShipmentDetailStatus(ShipmentDetail shipmentDetail) {
+		shipmentDetail.setUpdateBy(getUser().getFullName());
+		shipmentDetail.setUpdateTime(new Date());
 		if (shipmentDetailService.updateShipmentDetailStatus(shipmentDetail) == 1) {
 			return success("Cập nhật trạng thái thành công");
 		}
@@ -221,8 +224,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 					shipmentDetail.setId(Long.parseLong(id));
 					shipmentDetail.setUserVerifyStatus("Y");
 					shipmentDetail.setStatus(3);
-					shipmentDetail.setUpdateBy(getUser().getFullName());
-					shipmentDetail.setUpdateTime(new Date());
+					shipmentDetail.setProcessStatus("Y");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 				}
 				return success("Xác thực OTP thành công");
@@ -233,9 +235,10 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return error("Mã OTP không chính xác!");
 	}
 
-	@GetMapping("pickContOnDemand/{billNo}")
-	public String pickContOnDemand(@PathVariable("billNo") String billNo, ModelMap mmap) {
+	@GetMapping("pickContOnDemand/{billNo}/{shipmentId}")
+	public String pickContOnDemand(@PathVariable("billNo") String billNo, @PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentId);
 		shipmentDetail.setBlNo(billNo);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		int shipmentDetailSize = shipmentDetails.size();
@@ -245,18 +248,95 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 			for (int col=0; col<7; col++) {
 				for (int row=0; row<5; row++) {
 					if (index <= (shipmentDetailSize-1)) {
-						shipmentDetailMatrix[row][col] = shipmentDetails.get(index++);
+						shipmentDetails.get(index).setRow(col);
+						shipmentDetails.get(index).setTier(row);
+						shipmentDetailMatrix[row][col] = shipmentDetails.get(index);
+						index++;
 					}
 				}
 			}
 		}
 		mmap.put("containerList", shipmentDetailMatrix);
 		mmap.put("unitCosts", 20000);
+		mmap.put("billNo", billNo);
+		mmap.put("shipmentId", shipmentId);
 		return prefix + "/pickContOnDemand";
 	}
 
-	@GetMapping("paymentForm")
-	public String paymentForm() {
+	@PostMapping("/setMovingContPrice")
+	@ResponseBody
+	public AjaxResult setMovingContPrice(@RequestParam(value="preordidserPickupContIds[]") int[] preordidserPickupContIds, String billNo, long shipmentId) {
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setBlNo(billNo);
+		shipmentDetail.setShipmentId(shipmentId);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		int shipmentDetailSize = shipmentDetails.size();
+		ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][7];
+		int index = 0;
+		if (shipmentDetailSize > 0) {
+			for (int col=0; col<7; col++) {
+				for (int row=0; row<5; row++) {
+					if (index <= (shipmentDetailSize-1)) {
+						shipmentDetails.get(index).setRow(col);
+						shipmentDetails.get(index).setTier(row);
+						shipmentDetails.get(index).setStatus(4);
+						for(int id : preordidserPickupContIds) {
+							if (id == shipmentDetails.get(index).getId()) {
+								shipmentDetails.get(index).setPreorderPickup("Y");
+								break;
+							}
+						}
+						shipmentDetailMatrix[row][col] = shipmentDetails.get(index);
+						index++;
+					}
+				}
+			}
+		}
+		int moveContAmount = 0;
+		int moveContAmountTemp = 0;
+		for (int j=0; j<7; j++) {
+			for (int i=4; i>=0; i--) {
+				if (shipmentDetailMatrix[i][j] != null) {
+					if (shipmentDetailMatrix[i][j].getPreorderPickup().equals("Y")) {
+						moveContAmount += moveContAmountTemp;
+						moveContAmountTemp = 0;
+					} else {
+						moveContAmountTemp++;
+					}
+				}
+			}
+		}
+		int moveContPrice = moveContAmount * 20000;
+		for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+			for(int id : preordidserPickupContIds) {
+				if (id == shipmentDetail2.getId()) {
+					shipmentDetail2.setMoveContPrice(Integer.toString(moveContPrice));
+					break;
+				}
+			}
+			shipmentDetail2.setStatus(4);
+			if (shipmentDetailService.updateShipmentDetail(shipmentDetail2) != 1) {
+				return error("Có lỗi xảy ra trong quá trình bốc container chỉ định!");
+			}
+		}
+		return success("Bốc container chỉ định thành công");
+	}
+
+	@GetMapping("paymentForm/{shipmentId}")
+	public String paymentForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setStatus(4);
+		shipmentDetail.setPreorderPickup("Y");
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		if (shipmentDetails.size() > 0) {
+			mmap.put("moveContAmount", shipmentDetails.size());
+			mmap.put("moveContPrice", shipmentDetails.get(0).getMoveContPrice());
+		} else {
+			mmap.put("moveContAmount", 0);
+			mmap.put("moveContPrice", 0);
+		}
+		mmap.put("totalCosts", 100000000l);
 		return prefix + "/paymentForm";
 	}
 }
