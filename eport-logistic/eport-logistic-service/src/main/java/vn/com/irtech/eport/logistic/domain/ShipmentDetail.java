@@ -138,9 +138,19 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Boc Chi Dinh (Y,N)")
     private String preorderPickup;
 
+    /** Phi Dich Chuyen Cont */
+    @Excel(name = "Phi Dich Chuyen Cont")
+    private String moveContPrice;
+
     /** Status */
     @Excel(name = "Status")
     private Integer status;
+
+    private String bay;
+
+    private int row;
+
+    private int tier;
 
     public void setId(Long id) {
         this.id = id;
@@ -387,12 +397,44 @@ public class ShipmentDetail extends BaseEntity
         return preorderPickup;
     }
 
+    public void setMoveContPrice(String moveContPrice) {
+        this.moveContPrice = moveContPrice;
+    }
+
+    public String getMoveContPrice() {
+        return moveContPrice;
+    }
+
     public void setStatus(Integer status) {
         this.status = status;
     }
 
     public Integer getStatus() {
         return status;
+    }
+
+    public void setBay(String bay) {
+        this.bay = bay;
+    }
+
+    public String getBay() {
+        return bay;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setTier(int tier) {
+        this.tier = tier;
+    }
+
+    public int getTier() {
+        return tier;
     }
 
     @Override
@@ -429,12 +471,16 @@ public class ShipmentDetail extends BaseEntity
             .append("doReceivedTime", getDoReceivedTime())
             .append("userVerifyStatus", getUserVerifyStatus())
             .append("preorderPickup", getPreorderPickup())
+            .append("moveContPrice", getMoveContPrice())
             .append("status", getStatus())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("bay", getBay())
+            .append("row", getRow())
+            .append("tier", getTier())
             .toString();
     }
 }
