@@ -27,29 +27,30 @@ for (var col=0; col<7; col++) {
 $(".contListPosition").html(str);
 
 function pickCont(id, row, col) {
+    
+    if (containerList[row][col].preorderPickup == "N") {
+        containerList[row][col].preorderPickup = "Y";
+        $('#cell'+ id).css("background-color", "#bfe5bf");
+        var tableRow = '<tr id="row'+ id +'"><td width="60px">' + containerList[row][col].id + '</td><td width="250px">' + containerList[row][col].containerNo + '</td><td width="250px"></td><td width="200px"><button onclick="pickTruck()">Điều xe</button></td></tr>';
+        $("#pickedContList").append(tableRow);
+    } else {
+        containerList[row][col].preorderPickup = "N";
+        $('#cell'+ id).css("background-color", "#ffffff");
+        $("#row" + id).remove();
+    }
     var moveContAmountTemp = 0;
+    moveContAmount = 0;
     for (var j=0; j<7; j++) {
         for (var i=4; i>=0; i--) {
             if (containerList[i][j] != null) {
-                if (i == row && j == col) {
-                    break;
+                if (containerList[i][j].preorderPickup == "Y") {
+                    moveContAmount += moveContAmountTemp;
+                    moveContAmountTemp = 0;
                 } else {
                     moveContAmountTemp++;
                 }
             }
         }
-    }
-    if (containerList[row][col].preorderPickup == "N") {
-        containerList[row][col].preorderPickup = "Y";
-        $('#cell'+ id).css("background-color", "#bfe5bf");
-        var tableRow = '<tr id="row'+ id +'"><td width="50px">' + containerList[row][col].id + '</td><td width="150px">' + containerList[row][col].containerNo + '</td><td width="150px"></td><td width="100px"><button onclick="pickTruck()">Điều xe</button></td></tr>';
-        $("#pickedContList").append(tableRow);
-        moveContAmount += moveContAmountTemp;
-    } else {
-        containerList[row][col].preorderPickup = "N";
-        $('#cell'+ id).css("background-color", "#ffffff");
-        $("#row" + id).remove();
-        moveContAmount -= moveContAmountTemp;
     }
     $("#pickedContAmount").html(moveContAmount);
     $("#totalCosts").html(moveContAmount*unitCosts);
