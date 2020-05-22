@@ -599,7 +599,7 @@ function verifyOtp(shipmentDetailIds) {
 }
 
 function pay() {
-  $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentSelected, 700, 500);
+  $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentSelected, 700, 300);
 }
 
 function pickTruck() {

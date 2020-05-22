@@ -9,7 +9,7 @@ function confirm() {
         url: prefix + "/setMovingContPrice",
         method: "post",
         data: {
-            preordidserPickupContIds: preorderPickupContIds,
+            preorderPickupContIds: preorderPickupContIds,
             billNo: billNo,
             shipmentId: shipmentId
         },

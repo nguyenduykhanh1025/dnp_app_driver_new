@@ -8,3 +8,6 @@ function confirm() {
 function closeForm() {
     $.modal.close();
 }
+
+$("#moveContAmount").html(moveContAmount);
+$("#moveContPrice").html(moveContPrice);
