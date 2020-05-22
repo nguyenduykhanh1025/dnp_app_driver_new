@@ -301,6 +301,30 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		}
 		mmap.put("totalCosts", 100000000l);
 		mmap.put("unitCosts", 20000);
+		mmap.put("shipmentId", shipmentId);
 		return prefix + "/paymentForm";
+	}
+
+	@PostMapping("/payment")
+	@ResponseBody
+	public AjaxResult payment(long shipmentId) {
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setStatus(5);
+		shipmentDetail.setPaymentStatus("Y");
+		updateShipmentDetailStatus(shipmentDetail);
+		return success("Thanh toán thành công");
+	}
+
+	@GetMapping("pickTruckForm/{shipmentId}")
+	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
+		mmap.put("shipmentId", shipmentId);
+		return prefix + "/pickTruckForm";
+	}
+
+	@PostMapping("/pickTruck")
+	@ResponseBody
+	public AjaxResult pickTruck(long shipmentId, String driverIds) {
+		return success("Điều xe thành công");
 	}
 }

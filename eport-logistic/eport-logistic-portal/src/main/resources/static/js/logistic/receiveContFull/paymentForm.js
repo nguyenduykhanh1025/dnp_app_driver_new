@@ -1,8 +1,24 @@
 var prefix = ctx + "logistic/receiveContFull";
 
 function confirm() {
-    parent.finishForm(data);
-    $.modal.close();
+    $.ajax({
+        url: prefix + "/payment",
+        method: "post",
+        data: {
+            shipmentId: shipmentId
+        },
+        success: function (data) {
+            if (data.code != 0) {
+                $.modal.msgError(data.msg);
+            } else {
+                parent.finishForm(data);
+                $.modal.close();
+            }
+        },
+        error: function (result) {
+            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+        }
+    });
 }
 
 function closeForm() {
@@ -10,4 +26,6 @@ function closeForm() {
 }
 
 $("#moveContAmount").html(moveContAmount);
-$("#moveContPrice").html(moveContPrice);
+$("#unitCosts").html(unitCosts);
+$("#moveContPrice").html(moveContAmount * unitCosts);
+$("#total").html(moveContAmount * unitCosts);

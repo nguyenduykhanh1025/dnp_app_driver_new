@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <th:block th:include="include :: header('Boc Cont Chi Dinh')" />
+  <th:block th:include="include :: header('Thanh toan')" />
 </head>
 <style type="text/css">
   .container {
@@ -52,13 +52,13 @@
             <label class="col-md-1 col-sm-1 col-xs-3">Thành tiền</label>
           </div>
           <div>
-            <label id="moveContAmount" class="col-md-1 col-sm-1 col-xs-4"></label>
-            <label id="unitCosts" class="col-md-1 col-sm-1 col-xs-3"><span>đồng</span></label>
-            <label id="moveContPrice" class="col-md-1 col-sm-1 col-xs-3"><span>đồng</span></label>
+            <span id="moveContAmount" class="col-md-1 col-sm-1 col-xs-4"></span>
+            <span class="col-md-1 col-sm-1 col-xs-3"><span id="unitCosts"></span><span> đồng</span></span>
+            <span class="col-md-1 col-sm-1 col-xs-3"><span id="moveContPrice"></span><span> đồng</span></span>
           </div>
         </div>
         <div class="total">
-          <b>Tổng cộng:</b>
+          <b>Tổng cộng: <span id="total"></span><span> đồng.</span></b>
         </div>
     </div>
     <div class="layui-layer-btn footer">
@@ -71,6 +71,8 @@
 <script type="text/javascript" th:inline="javascript">
   var moveContAmount = /*[[${moveContAmount}]]*/;
   var totalCosts = /*[[${totalCosts}]]*/;
+  var unitCosts = /*[[${unitCosts}]]*/;
+  var shipmentId = /*[[${shipmentId}]]*/;
 </script>
 <script th:src="@{/js/logistic/receiveContFull/paymentForm.js}"></script>
 </html>
