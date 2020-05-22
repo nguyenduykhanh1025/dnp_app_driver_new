@@ -455,7 +455,7 @@ function getDataSelectedFromTable() {
   }
 }
 
-function getDataFromTable() {
+function getDataFromTable(isValidate) {
   var myTableData = hot.getSourceData();
   var errorFlg = false;
   if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
@@ -474,18 +474,18 @@ function getDataFromTable() {
   contList = [];
   $.each(cleanedGridData, function (index, object) {
     var shipmentDetail = new Object();
-    if (object["blNo"] == null || object["blNo"] == "") {
+    if ((object["blNo"] == null || object["blNo"] == "") && isValidate) {
       $.modal.alertError("Hàng " + (index + 1) + ": Số bill không được trống!");
       errorFlg = true;
-    } else if (object["containerNo"] == null || object["containerNo"] == "") {
+    } else if ((object["containerNo"] == null || object["containerNo"] == "") && isValidate) {
       $.modal.alertError("Hàng " + (index + 1) + ": Số container không được trống!");
       errorFlg = true;
     } else {
-      if (billNo != object["blNo"]) {
+      if (billNo != object["blNo"] && isValidate) {
         errorFlg = true;
         $.modal.alertError("Hàng " + (index + 1) + ": Số bill không được khác nhau!");
       }
-      if (!/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"])) {
+      if (!/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && isValidate) {
         $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
         errorFlg = true;
       }
@@ -513,23 +513,25 @@ function getDataFromTable() {
       var now = new Date();
       now.setHours(0, 0, 0);
       expiredDem.setHours(23, 59, 59);
-      if (expiredDem.getTime() < now.getTime()) {
+      if (expiredDem.getTime() < now.getTime() && isValidate) {
         errorFlg = true;
         $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được trong quá khứ!")
       }
     }
   });
 
-  contList.sort();
-  var contTemp = "";
-  $.each(contList, function (index, cont) {
-    if (cont == contTemp) {
-      $.modal.alertError("Số container không được giống nhau!");
-      errorFlg = true;
-      return false;
-    }
-    contTemp = cont;
-  });
+  if (isValidate) {
+    contList.sort();
+    var contTemp = "";
+    $.each(contList, function (index, cont) {
+      if (cont == contTemp) {
+        $.modal.alertError("Số container không được giống nhau!");
+        errorFlg = true;
+        return false;
+      }
+      contTemp = cont;
+    });
+  }
 
   // Get result in "selectedList" variable
   if (shipmentDetails.length == 0) {
@@ -549,7 +551,7 @@ function saveShipmentDetail() {
     $.modal.msgError("Bạn cần chọn lô trước");
     return;
   } else {
-    if (getDataFromTable() && shipmentDetails.length > 0) {
+    if (getDataFromTable(true) && shipmentDetails.length > 0) {
       $.ajax({
         url: prefix + "/saveShipmentDetail",
         method: "post",
@@ -599,7 +601,7 @@ function pickTruck() {
 }
 
 function pickContOnDemand() {
-  getDataFromTable();
+  getDataFromTable(false);
   $.modal.openCustomForm("Bốc container chỉ định", prefix + "/pickContOnDemand/" + billNo, 810, 535);
 }
 
