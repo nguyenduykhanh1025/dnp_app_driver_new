@@ -134,6 +134,10 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Xac Thuc (Y,N)")
     private String userVerifyStatus;
 
+    /** Boc Chi Dinh (Y,N) */
+    @Excel(name = "Boc Chi Dinh (Y,N)")
+    private String preorderPickup;
+
     /** Status */
     @Excel(name = "Status")
     private Integer status;
@@ -375,6 +379,14 @@ public class ShipmentDetail extends BaseEntity
         return userVerifyStatus;
     }
 
+    public void setPreorderPickup(String preorderPickup) {
+        this.preorderPickup = preorderPickup;
+    }
+
+    public String getPreorderPickup() {
+        return preorderPickup;
+    }
+
     public void setStatus(Integer status) {
         this.status = status;
     }
@@ -416,6 +428,7 @@ public class ShipmentDetail extends BaseEntity
             .append("doStatus", getDoStatus())
             .append("doReceivedTime", getDoReceivedTime())
             .append("userVerifyStatus", getUserVerifyStatus())
+            .append("preorderPickup", getPreorderPickup())
             .append("status", getStatus())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())

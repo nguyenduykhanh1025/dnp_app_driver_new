@@ -23,7 +23,7 @@ function checkCustomStatus() {
                     shipmentId: shipmentId
                 },
                 success: function (data) {
-                    parent.finishDeclareNo(data);
+                    parent.finishForm(data);
                     $.modal.close();
                 },
                 error: function (result) {

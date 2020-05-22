@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <th:block th:include="include :: header('Boc Cont Chi Dinh')" />
+</head>
+<style type="text/css">
+  .container {
+    position: relative;
+    padding: 0;
+    width: 100%;
+  }
+
+  .footer {
+    background-color: #f0f4f7;
+    height: 55px;
+    padding: 10px 30px 12px 15px !important;
+  }
+
+  .content {
+      height: 403px;
+      padding: 12px 15px 12px 15px;
+  }
+
+</style>
+
+<body>
+  <div class="container">
+    <div class="content">
+        
+    </div>
+    <div class="layui-layer-btn footer">
+      <a class="layui-layer-btn0" onclick="confirm()">Thanh toán</a>
+      <a class="layui-layer-btn1" onclick="closeForm()">Hủy bỏ</a>
+    </div>
+  </div>
+</body>
+<th:block th:include="include :: footer" />
+<script type="text/javascript" th:inline="javascript">
+  //var shipmentId = /*[[${shipmentId}]]*/;
+</script>
+<script th:src="@{/js/logistic/receiveContFull/paymentForm.js}"></script>
+</html>
