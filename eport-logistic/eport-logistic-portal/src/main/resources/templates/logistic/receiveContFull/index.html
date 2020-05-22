@@ -59,25 +59,25 @@
               </div>
             </div>
             <ul class="right-info">
-              <li><a class="active">Khai báo</a></li>
-              <li><a class="label-primary disable">Thông quan</a></li>
-              <li><a class="label-primary disable">Xác thực</a></li>
-              <li><a class="label-primary disable">Thanh toán</a></li>
-              <li><a class="label-primary disable">Hoàn thành</a></li>
+              <li><a id="registerStatus" class="label-primary">Khai báo</a></li>
+              <li><a id="customStatus" class="label-primary">Thông quan</a></li>
+              <li><a id="verifyStatus" class="label-primary">Xác thực</a></li>
+              <li><a id="paymentStatus" class="label-primary">Thanh toán</a></li>
+              <li><a id="finishStatus" class="label-primary">Hoàn thành</a></li>
             </ul>
           </div>
         </div>
         <div class="title-top">
           <div class="left-button-bar">
-            <button class="btn btn-sm btn-primary" onclick="saveShipmentDetail()">Lưu khai báo</button>
-            <button class="btn btn-sm btn-primary" onclick="checkCustomStatus()" disabled>Khai Hải Quan</button>
-            <button class="btn btn-sm btn-primary" onclick="authentic()" disabled>Xác Thực</button>
-            <button class="btn btn-sm btn-primary" onclick="pay()" disabled>Thanh Toán</button>
-            <button class="btn btn-sm btn-primary" onclick="pickTruck()" disabled>Điều Xe</button>
-            <button class="btn btn-sm btn-warning" onclick="pickContOnDemand()" disabled>Bốc Cont Chỉ Định</button>
+            <button id="saveShipmentDetailBtn" class="btn btn-sm btn-primary" onclick="saveShipmentDetail()" disabled>Lưu khai báo</button>
+            <button id="customBtn" class="btn btn-sm btn-primary" onclick="checkCustomStatus()" disabled>Khai Hải Quan</button>
+            <button id="verifyBtn" class="btn btn-sm btn-primary" onclick="verify()" disabled>Xác Thực</button>
+            <button id="pickContOnDemandBtn" class="btn btn-sm btn-primary" onclick="pickContOnDemand()" disabled>Bốc Cont Chỉ Định</button>
+            <button id="payBtn" class="btn btn-sm btn-primary" onclick="pay()" disabled>Thanh Toán</button>
+            <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruck()" disabled>Điều Xe</button>
           </div>
           <div class="search-bar">
-            <button class="btn btn-sm btn-success" onclick="exportBill()" disabled>Xuất Hóa Đơn</button>
+            <button id="exportBillBtn" class="btn btn-sm btn-success" onclick="exportBill()" disabled>Xuất Hóa Đơn</button>
           </div>
         </div>
         <hr />
