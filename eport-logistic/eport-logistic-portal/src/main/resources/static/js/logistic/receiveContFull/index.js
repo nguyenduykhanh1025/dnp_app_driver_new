@@ -335,6 +335,9 @@ function loadShipmentDetail(id) {
           case 4:
             setLayoutPaymentStatus();
             break;
+          case 5:
+            setLayoutPickTruck();
+            break;
           default:
             setLayoutRegisterStatus();
             break;
@@ -677,7 +680,18 @@ function setLayoutPaymentStatus() {
 }
 
 function setLayoutPickTruck() {
-
+  $("#registerStatus").removeClass("active disable").addClass("label-primary");
+  $("#customStatus").removeClass("active disable").addClass("label-primary");
+  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+  $("#paymentStatus").removeClass("active disable").addClass("label-primary");
+  $("#finishStatus").removeClass("label-primary disable").addClass("active");
+  $("#saveShipmentDetailBtn").prop("disabled", true);
+  $("#customBtn").prop("disabled", true);
+  $("#verifyBtn").prop("disabled", true);
+  $("#pickContOnDemandBtn").prop("disabled", true);
+  $("#pickTruckBtn").prop("disabled", false);
+  $("#payBtn").prop("disabled", true);
+  $("#exportBillBtn").prop("disabled", false);
 }
 
 function setLayoutPickCont() {
