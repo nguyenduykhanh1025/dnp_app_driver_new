@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:include="include :: header('Boc Cont Chi Dinh')" />
+</head>
+<style type="text/css">
+    .container {
+        position: relative;
+        padding: 0;
+        width: 100%;
+    }
+
+    .footer {
+        background-color: #f0f4f7;
+        height: 55px;
+        padding: 10px 30px 12px 15px !important;
+    }
+
+    .content {
+        height: 303px;
+        padding: 12px 15px 12px 15px;
+        text-align: center;
+    }
+
+    .headerBar {
+        display: flex;
+        justify-content: center;
+    }
+
+    .interDeliveryTeam {
+        display: flex;
+        margin-top: 10px;
+        height: 250px;
+    }
+
+    .exterDeliveryTeam {
+        margin-top: 10px;
+        height: 250px;
+        display: none;
+    }
+
+    table tbody,
+    table thead {
+        display: block;
+    }
+
+    table tbody {
+        overflow: auto;
+        height: 200px;
+    }
+
+    table {
+        margin-bottom: 0 !important;
+    }
+
+    .thHover :hover {
+        background-color: #5f7ccc;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <div class="headerBar">
+                <button id="interBtn" style="width: 250px; color: black; background-color: #72c072; font-weight: bold"
+                    onclick="interDeliveryTab()">Đội xe</button>
+                <button id="exterBtn" style="width: 250px;; color: black; font-weight: bold"
+                    onclick="exterDeliveryTab()">Thuê ngoài</button>
+            </div>
+            <div class="interDeliveryTeam">
+                <table id="truckList" class="table" border="1" align="left" style="margin-right: 10px;">
+                    <thead>
+                        <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+                            <th width="108px">Biển số</th>
+                            <th width="108px">Số điện thoại</th>
+                            <th width="100px">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transportList"></tbody>
+                </table>
+                <table id="pickedTruckList" class="table" border="1" align="left" style="margin-left: 10px;">
+                    <thead>
+                        <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+                            <th width="100px">Hành động</th>
+                            <th width="108px">Biển số</th>
+                            <th width="108px">Số điện thoại</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pickedTransportList"></tbody>
+                </table>
+            </div>
+            <div class="exterDeliveryTeam">
+                
+            </div>
+        </div>
+        <div class="layui-layer-btn footer">
+            <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+            <a class="layui-layer-btn1" onclick="closeForm()">Hủy bỏ</a>
+        </div>
+    </div>
+</body>
+<th:block th:include="include :: footer" />
+<script type="text/javascript" th:inline="javascript">
+    var shipmentId = /*[[${shipmentId}]]*/;
+</script>
+<script th:src="@{/js/logistic/receiveContFull/pickTruckForm.js}"></script>
+
+</html>

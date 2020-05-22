@@ -606,7 +606,7 @@ function pay() {
 }
 
 function pickTruck() {
-
+  $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected, 700, 400);
 }
 
 function pickContOnDemand() {

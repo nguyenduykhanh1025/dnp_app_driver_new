@@ -315,4 +315,16 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		updateShipmentDetailStatus(shipmentDetail);
 		return success("Thanh toán thành công");
 	}
+
+	@GetMapping("pickTruckForm/{shipmentId}")
+	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
+		mmap.put("shipmentId", shipmentId);
+		return prefix + "/pickTruckForm";
+	}
+
+	@PostMapping("/pickTruck")
+	@ResponseBody
+	public AjaxResult pickTruck(long shipmentId, String driverIds) {
+		return success("Điều xe thành công");
+	}
 }

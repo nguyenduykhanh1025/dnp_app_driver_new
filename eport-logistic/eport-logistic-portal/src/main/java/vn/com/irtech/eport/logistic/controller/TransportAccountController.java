@@ -40,7 +40,7 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
  */
 @Controller
 @RequestMapping("/logistic/transport")
-public class TransportAccountController extends BaseController
+public class TransportAccountController extends LogisticBaseController
 {
     private String prefix = "logistic/transport";
 	public static final String PHONE_PATTERN = "^[0-9]{10,11}$";
@@ -207,5 +207,14 @@ public class TransportAccountController extends BaseController
     public String getGroupNameById(long id) {
         LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(id);
         return logisticGroup.getGroupName();
+    }
+
+    @GetMapping("/listTransportAccount")
+    @ResponseBody
+    public List<TransportAccount> listTransportAccount(TransportAccount transportAccount)
+    {
+        transportAccount.setLogisticGroupId(getUser().getGroupId());
+        transportAccount.setDelFlag(false);
+        return transportAccountService.selectTransportAccountList(transportAccount);
     }
 }
