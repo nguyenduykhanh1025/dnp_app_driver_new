@@ -31,7 +31,7 @@
     }
 
     .interDeliveryTeam {
-        display: flex;
+        
         margin-top: 10px;
         height: 250px;
     }
@@ -71,26 +71,32 @@
                     onclick="exterDeliveryTab()">Thuê ngoài</button>
             </div>
             <div class="interDeliveryTeam">
-                <table id="truckList" class="table" border="1" align="left" style="margin-right: 10px;">
-                    <thead>
-                        <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
-                            <th width="108px">Biển số</th>
-                            <th width="108px">Số điện thoại</th>
-                            <th width="100px">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transportList"></tbody>
-                </table>
-                <table id="pickedTruckList" class="table" border="1" align="left" style="margin-left: 10px;">
-                    <thead>
-                        <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
-                            <th width="100px">Hành động</th>
-                            <th width="108px">Biển số</th>
-                            <th width="108px">Số điện thoại</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pickedTransportList"></tbody>
-                </table>
+                <div style="display: flex; justify-content: center;">
+                    <b style="margin-right: 120px;">Danh sách xe</b>
+                    <b style="margin-left: 120px;">Xe điều</b>
+                </div>
+                <div style="display: flex;">
+                    <table id="truckList" class="table" border="1" align="left" style="margin-right: 10px;">
+                        <thead>
+                            <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+                                <th width="108px">Biển số</th>
+                                <th width="108px">Số điện thoại</th>
+                                <th width="100px">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transportList"></tbody>
+                    </table>
+                    <table id="pickedTruckList" class="table" border="1" align="left" style="margin-left: 10px;">
+                        <thead>
+                            <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+                                <th width="100px">Hành động</th>
+                                <th width="108px">Biển số</th>
+                                <th width="108px">Số điện thoại</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pickedTransportList"></tbody>
+                    </table>
+                </div>
             </div>
             <div class="exterDeliveryTeam">
                 
@@ -105,6 +111,7 @@
 <th:block th:include="include :: footer" />
 <script type="text/javascript" th:inline="javascript">
     var shipmentId = /*[[${shipmentId}]]*/;
+    var pickCont = /*[[${pickCont}]]*/;
 </script>
 <script th:src="@{/js/logistic/receiveContFull/pickTruckForm.js}"></script>
 
