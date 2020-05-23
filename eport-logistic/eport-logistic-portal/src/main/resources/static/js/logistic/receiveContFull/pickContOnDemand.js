@@ -1,6 +1,7 @@
 var prefix = ctx + "logistic/receiveContFull";
 var moveContAmount = 0;
 var preorderPickupContIds = [];
+var currentPickedCont;
 
 $("#unitCosts").html(unitCosts);
 
@@ -50,7 +51,7 @@ function pickCont(id, row, col) {
     if (containerList[row][col].preorderPickup == "N") {
         containerList[row][col].preorderPickup = "Y";
         $('#cell'+ id).css("background-color", "#bfe5bf");
-        var tableRow = '<tr id="row'+ id +'"><td width="60px">' + containerList[row][col].id + '</td><td width="250px">' + containerList[row][col].containerNo + '</td><td width="250px"></td><td width="200px"><button onclick="pickTruck()">Điều xe</button></td></tr>';
+        var tableRow = '<tr id="row'+ id +'"><td width="60px">' + containerList[row][col].id + '</td><td width="250px">' + containerList[row][col].containerNo + '</td><td id="tdTransport'+ id +'" width="250px"></td><td width="200px"><button onclick="pickTruck('+ id +')">Điều xe</button></td></tr>';
         $("#pickedContList").append(tableRow);
     } else {
         containerList[row][col].preorderPickup = "N";
@@ -75,4 +76,13 @@ function pickCont(id, row, col) {
     }
     $("#pickedContAmount").html(moveContAmount);
     $("#totalCosts").html(moveContAmount*unitCosts);
+}
+
+function pickTruck(id) {
+    currentPickedCont = id;
+    $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentId + "/" + true, 700, 400);
+}
+
+function finishPickTruck(data) {
+    $("#tdTransport" + currentPickedCont).html(data);
 }

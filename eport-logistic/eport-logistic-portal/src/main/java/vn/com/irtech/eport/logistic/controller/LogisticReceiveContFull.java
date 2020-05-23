@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -316,15 +317,21 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return success("Thanh toán thành công");
 	}
 
-	@GetMapping("pickTruckForm/{shipmentId}")
-	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
+	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}")
+	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, @PathVariable("pickCont") boolean pickCont, ModelMap mmap) {
 		mmap.put("shipmentId", shipmentId);
+		mmap.put("pickCont", pickCont);
 		return prefix + "/pickTruckForm";
 	}
 
 	@PostMapping("/pickTruck")
 	@ResponseBody
-	public AjaxResult pickTruck(long shipmentId, String driverIds) {
+	public AjaxResult pickTruck(long shipmentId, @RequestParam(value="driverIds[]") int[] driverIds) {
+		String ids = "";
+		for (int i : driverIds) {
+			ids += i+",";
+		}
+		ids = ids.substring(0, ids.length()-1);
 		return success("Điều xe thành công");
 	}
 }
