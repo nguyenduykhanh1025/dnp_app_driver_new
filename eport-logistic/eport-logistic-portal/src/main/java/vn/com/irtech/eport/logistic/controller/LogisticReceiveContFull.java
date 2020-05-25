@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -46,7 +45,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	public TableDataInfo listShipment(Shipment shipment) {
 		startPage();
 		LogisticAccount user = getUser();
-		shipment.setLogisticAccountId(user.getId());
+		shipment.setLogisticGroupId(user.getGroupId());
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}

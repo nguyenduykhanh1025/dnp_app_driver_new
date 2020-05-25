@@ -7,7 +7,13 @@ var shipmentSelected = 0;
 var shipmentDetails;
 var billNo;
 var contList = [];
+var checked = false;
+var allChecked = true;
+var isIterate = false;
 $(document).ready(function () {
+  // $(".colHeader > input[type=checkbox]").click(function() {
+  //   console.log("inini")
+  // })
   loadTable();
   $(".left-side").css("height", $(document).height());
   $("#btn-collapse").click(function () {
@@ -94,36 +100,62 @@ config = {
   manualColumnMove: false,
   rowHeaders: true,
   className: "htMiddle",
-  colHeaders: [
-    "<input type='checkbox' id='parent-checkbox'/>",
-    "id",
-    "B/L No",
-    "Container No",
-    "Hãng Tàu",
-    "Kích Thước",
-    "F/E",
-    "Chủ hàng",
-    "Seal No",
-    "Hạn Lệnh",
-    "Trọng tải",
-    "Tàu",
-    "Chuyến",
-    "Cảng Nguồn",
-    "Cảng Đích",
-    "Phương Tiện",
-    "Nơi Hạ Vỏ",
-    "T.T Hải Quan",
-    "T.T Thanh Toán",
-    "T.T Làm Lệnh",
-    "T.T DO Gốc",
-    "T.T Nhận Cont",
-    "Ghi Chú",
-  ],
-  colWidths: [50, 0.01, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 150, 150, 150, 150, 200],
+  colHeaders: function (col) {
+    switch (col) {
+      case 0:
+        var txt = "<input type='checkbox' class='checker' ";
+        txt += "onclick='checkAll()' ";
+        txt += ">";
+        return txt;
+      case 1:
+        return "id";
+      case 2:
+        return "Container No";
+      case 3:
+        return "T.T Hải Quan";
+      case 4:
+        return "T.T Thanh Toán";
+      case 5:
+        return "T.T Làm Lệnh";
+      case 6:
+        return "T.T DO Gốc";
+      case 7:
+        return "T.T Nhận Cont";
+      case 8:
+        return "Hãng Tàu";
+      case 9:
+        return "Kích Thước";
+      case 10:
+        return "F/E";
+      case 11:
+        return "Chủ hàng";
+      case 12:
+        return "Seal No";
+      case 13:
+        return "Hạn Lệnh";
+      case 14:
+        return "Trọng tải";
+      case 15:
+        return "Tàu";
+      case 16:
+        return "Chuyến";
+      case 17:
+        return "Cảng Nguồn";
+      case 18:
+        return "Cảng Đích";
+      case 19:
+        return "Phương Tiện";
+      case 20:
+        return "Nơi Hạ Vỏ";
+      case 21:
+        return "Ghi Chú";
+    }
+  },
+  colWidths: [50, 0.01, 100, 150, 150, 150, 150, 150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200],
   filter: "true",
   columns: [
     {
-      data: "selected",
+      data: "active",
       type: "checkbox",
       className: "htCenter",
     },
@@ -132,10 +164,27 @@ config = {
       editor: false
     },
     {
-      data: "blNo",
+      data: "containerNo",
     },
     {
-      data: "containerNo",
+      data: "customStatus",
+      editor: false
+    },
+    {
+      data: "paymentStatus",
+      editor: false
+    },
+    {
+      data: "processStatus",
+      editor: false
+    },
+    {
+      data: "doStatus",
+      editor: false
+    },
+    {
+      data: "status",
+      editor: false
     },
     {
       data: "opeCode",
@@ -190,26 +239,6 @@ config = {
       editor: false
     },
     {
-      data: "customStatus",
-      editor: false
-    },
-    {
-      data: "paymentStatus",
-      editor: false
-    },
-    {
-      data: "processStatus",
-      editor: false
-    },
-    {
-      data: "doStatus",
-      editor: false
-    },
-    {
-      data: "status",
-      editor: false
-    },
-    {
       data: "remark",
     },
   ],
@@ -217,22 +246,30 @@ config = {
     //Get data change in cell to render another column
     if (src !== "loadData") {
       changes.forEach(function interate(row) {
-        var blNo;
         var containerNo;
-        if (row[1] == "blNo" || row[1] == "containerNo") {
-          blNo = hot.getDataAtRow(row[0])[2];
-          containerNo = hot.getDataAtRow(row[0])[3];
+        if (row[1] == "active" && !isIterate) {
+          getDataSelectedFromTable(false);
+          if (allChecked) {
+            $(".checker").prop("checked", true);
+            checked = true;
+          } else {
+            $(".checker").prop("checked", false);
+            checked = false;
+          }
+        }
+        if (row[1] == "containerNo") {
+          containerNo = hot.getDataAtRow(row[0])[2];
           isChange = true;
         } else {
           isChange = false;
         }
-        if (blNo != null && containerNo != null && isChange) {
+        if (containerNo != null && isChange) {
           // Call data to auto-fill
           $.ajax({
             url: prefix + "/getContInfo",
             type: "post",
             data: {
-              blNo: blNo, containerNo: containerNo
+              containerNo: containerNo
             }
           }).done(function (shipmentDetail) {
             if (shipmentDetail != null) {
@@ -306,8 +343,26 @@ config = {
       });
     }
   },
-
 };
+
+function checkAll() {
+  getDataFromTable(false);
+  isIterate = true;
+  if (checked) {
+    for (var i=0; i<shipmentDetails.length; i++) {
+      hot.setDataAtCell(i, 0, false); //opeCode
+    }
+    $(".checker").prop("checked", false);
+    checked = false;
+  } else {
+    for (var i=0; i<shipmentDetails.length; i++) {
+      hot.setDataAtCell(i, 0, true); //opeCode
+    }
+    $(".checker").prop("checked", true);
+    checked = true;
+  }
+  isIterate = false;
+}
 
 hot = new Handsontable(dogrid, config);
 
@@ -434,31 +489,36 @@ function getSelected() {
   }
 }
 
-function getDataSelectedFromTable() {
+function getDataSelectedFromTable(isValidate) {
   var myTableData = hot.getSourceData();
   var errorFlg = false;
   if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
     hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
   }
   var cleanedGridData = [];
+  allChecked = true;
   $.each(myTableData, function (rowKey, object) {
-    if (!hot.isEmptyRow(rowKey) && object["selected"]) {
-      cleanedGridData.push(object);
-    }
+    if (!hot.isEmptyRow(rowKey)) {
+      if (object["active"]) {
+        cleanedGridData.push(object);
+      } else {
+        allChecked = false;
+      }
+    } 
   });
   shipmentDetails = "";
   $.each(cleanedGridData, function (index, object) {
     var shipmentDetail = new Object();
     shipmentDetails += object["id"]+",";
   });
+
   // Get result in "selectedList" variable
-  if (shipmentDetails.length == 0) {
+  if (shipmentDetails.length == 0 && isValidate) {
     $.modal.alert("Bạn chưa chọn container.");
     errorFlg = true;
   } else {
     shipmentDetails = shipmentDetails.substring(0, shipmentDetails.length-1);
   }
-
   if (errorFlg) {
     return false;
   }
@@ -591,7 +651,7 @@ function checkCustomStatus() {
 }
 
 function verify() {
-  getDataSelectedFromTable();
+  getDataSelectedFromTable(true);
   if (shipmentDetails.length > 0) {
     $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetails, 600, 500);
   } 
