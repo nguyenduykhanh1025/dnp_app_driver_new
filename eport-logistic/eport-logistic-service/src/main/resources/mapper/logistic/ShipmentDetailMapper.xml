@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="ShipmentDetail" id="ShipmentDetailResult">
         <result property="id"    column="id"    />
         <result property="shipmentId"    column="shipment_id"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="registerNo"    column="register_no"    />
         <result property="containerNo"    column="container_no"    />
         <result property="containerStatus"    column="container_status"    />
@@ -45,13 +46,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
-        select id, shipment_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_nm, voy_no, ope_code, loading_port, discharge_port, transport_type, empty_depot, vgm_chk, vgm, vgm_person_info, custom_declare_no, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, preorder_pickup, status, remark, create_by, create_time, update_by, update_time from shipment_detail
+        select id, shipment_id, logistic_group_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_nm, voy_no, ope_code, loading_port, discharge_port, transport_type, empty_depot, vgm_chk, vgm, vgm_person_info, custom_declare_no, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, preorder_pickup, status, remark, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
 
     <select id="selectShipmentDetailList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
         <include refid="selectShipmentDetailVo"/>
         <where>  
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="registerNo != null  and registerNo != ''"> and register_no = #{registerNo}</if>
             <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
             <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
@@ -94,6 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into shipment_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="shipmentId != null ">shipment_id,</if>
+            <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="registerNo != null  and registerNo != ''">register_no,</if>
             <if test="containerNo != null  and containerNo != ''">container_no,</if>
             <if test="containerStatus != null  and containerStatus != ''">container_status,</if>
@@ -132,6 +135,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="shipmentId != null ">#{shipmentId},</if>
+            <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="registerNo != null  and registerNo != ''">#{registerNo},</if>
             <if test="containerNo != null  and containerNo != ''">#{containerNo},</if>
             <if test="containerStatus != null  and containerStatus != ''">#{containerStatus},</if>
@@ -174,6 +178,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update shipment_detail
         <trim prefix="SET" suffixOverrides=",">
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
+            <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="registerNo != null  and registerNo != ''">register_no = #{registerNo},</if>
             <if test="containerNo != null  and containerNo != ''">container_no = #{containerNo},</if>
             <if test="containerStatus != null  and containerStatus != ''">container_status = #{containerStatus},</if>

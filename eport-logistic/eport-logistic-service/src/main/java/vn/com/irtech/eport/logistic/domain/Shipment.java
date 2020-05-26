@@ -30,6 +30,10 @@ public class Shipment extends BaseEntity
     @Excel(name = "Dich Vu")
     private Integer serviceId;
 
+    /** Bill No */
+    @Excel(name = "B/L No")
+    private String blNo;
+
     /** MST */
     @Excel(name = "MST")
     private String taxCode;
@@ -88,6 +92,15 @@ public class Shipment extends BaseEntity
     {
         return serviceId;
     }
+
+    public void setBlNo(String blNo) {
+        this.blNo = blNo;
+    }
+
+    public String getBlNo() {
+        return blNo;
+    }
+
     public void setTaxCode(String taxCode) 
     {
         this.taxCode = taxCode;
@@ -142,6 +155,7 @@ public class Shipment extends BaseEntity
             .append("logisticAccountId", getLogisticAccountId())
             .append("logisticGroupId", getLogisticGroupId())
             .append("serviceId", getServiceId())
+            .append("blNo", getBlNo())
             .append("taxCode", getTaxCode())
             .append("containerAmount", getContainerAmount())
             .append("edoFlg", getEdoFlg())

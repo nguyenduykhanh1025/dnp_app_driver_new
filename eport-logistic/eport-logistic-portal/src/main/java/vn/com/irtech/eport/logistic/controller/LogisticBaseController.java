@@ -30,4 +30,12 @@ public abstract class LogisticBaseController extends BaseController {
 		LogisticGroup group = logisticGroupService.selectLogisticGroupById(user.getGroupId());
 		return group;
 	}
+
+	public boolean verifyPermission(Long groupId) {
+		LogisticAccount user = getUser();
+		if (user.getGroupId().equals(groupId)) {
+			return true;
+		}
+		return false;
+	}
 }

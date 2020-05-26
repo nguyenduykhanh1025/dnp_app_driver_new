@@ -23,7 +23,7 @@
 
   .left-side {
     display: inline-block;
-    width: 290px;
+    width: 410px;
   }
 
   .right-side {
@@ -65,9 +65,10 @@
           <table id="contTable">
             <thead>
               <tr>
-                <th data-options="field:'id',halign:'center'" width=50>ID</th>
+                <th data-options="field:'id',halign:'center'" width=50>Stt</th>
                 <th data-options="field:'blNo',halign:'center'" width="105">B/L No</th>
                 <th data-options="field:'containerNo',halign:'center'" width="105">Container No</th>
+                <th data-options="field:'customStatus',halign:'center',formatter: formatStatus" width="120">T.T thông quan</th>
               </tr>
             </thead>
           </table>
@@ -91,6 +92,7 @@
 <th:block th:include="include :: easyui-js" />
 <script type="text/javascript" th:inline="javascript">
   var shipmentId = /*[[${shipmentId}]]*/;
+  var contList = /*[[${contList}]]*/;
 </script>
 <script th:src="@{/js/logistic/receiveContFull/checkCustomStatus.js}"></script>
 </html>
