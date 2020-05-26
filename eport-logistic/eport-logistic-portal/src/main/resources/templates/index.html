@@ -59,7 +59,7 @@
               <a title="Quản Lý DO" th:href="@{/carrier/do}" href="/carrier/do" class="menuItem"><i class="fa fa-ship"></i>&nbsp; Quản Lý DO</a>
             </li>
             <li class="dropdown user-menu">
-              <a title="Tra cứu Container" class="menuItem"><i class="fa fa-check"></i>&nbsp; Đăng Ký Làm Lệnh</a>
+              <a title="Tra cứu Container" class="menuItem"><i class="fa fa-calendar-check-o"></i>&nbsp; Đăng Ký Làm Lệnh</a>
               <ul class="dropdown-menu">
                 <li><a class="menuItem " th:href="@{/logistic/receiveContFull}">Nhận Cont Hàng Từ Cảng</a></li>
                 <li><a class="menuItem" th:href="@{/logistic/receiveContEmpty}">Nhận Cont Rỗng Từ Cảng</a></li>
@@ -67,11 +67,11 @@
                 <li><a class="menuItem " th:href="@{/logistic/sendContEmpty}">Giao Cont Rỗng Cho Cảng</a></li>
               </ul>
             </li>
-                        <li class="dropdown user-menu">
-              <a title="Tra cứu Container" class="menuItem"><i class="fa fa-check"></i>&nbsp; Quản lý Đội Xe</a>
-              <ul class="dropdown-menu">
+            <li class="dropdown user-menu">
+              <a title="Tra cứu Container" th:href="@{/logistic/transport}" class="menuItem"><i class="fa fa-truck"></i>&nbsp; Quản lý Đội Xe</a>
+<!--               <ul class="dropdown-menu">
                 <li><a class="menuItem " th:href="@{/logistic/transport}">Đội xe</a></li>
-              </ul>
+              </ul> -->
             </li>
           </ul>
 
