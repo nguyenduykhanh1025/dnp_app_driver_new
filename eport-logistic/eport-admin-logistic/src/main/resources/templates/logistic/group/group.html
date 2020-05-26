@@ -11,10 +11,10 @@
                     <div class="select-list">
                         <ul>
                             <li>
-                                <input type="text" id="groupName" name="groupName" placeholder="Tên nhóm"/>
+                                <input type="text" id="groupName" name="groupName" placeholder="Tên doanh nghiệp"/>
                             </li>
                             <li>
-                                <input type="text" id="mainEmail" name="mainEmail" placeholder="Email"/>
+                                <input type="text" id="email" name="email" placeholder="Email"/>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</a>
@@ -68,10 +68,30 @@
                 },
                 {
                     field: 'groupName', 
-                    title: 'Tên nhóm Logistic'
+                    title: 'Tên doanh nghiệp'
                 },
                 {
-                    field: 'mainEmail', 
+                    field: 'mst', 
+                    title: 'Mã số thuế doanh nghiệp'
+                },
+                {
+                    field: 'phone', 
+                    title: 'Điện thoại cố định'
+                },
+                {
+                    field: 'fax', 
+                    title: 'Fax'
+                },
+                {
+                    field: 'authorizedRepresentative', 
+                    title: 'Đại diện có thẩm quyền'
+                },
+                {
+                    field: 'identifyCardNo', 
+                    title: 'Số chứng minh thư'
+                },
+                {
+                    field: 'email', 
                     title: 'Email'
                 },
                 {
@@ -95,7 +115,7 @@
             }
         });
 
-        document.getElementById("mainEmail").addEventListener("keyup", function(event) {
+        document.getElementById("email").addEventListener("keyup", function(event) {
             event.preventDefault();
             if (event.keyCode === 13) {
                 $("#searchBtn").click();

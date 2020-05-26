@@ -55,7 +55,7 @@ public class LogisticGroupController extends BaseController
     {
         startPage();
         logisticGroup.setGroupName(logisticGroup.getGroupName().toLowerCase());
-        logisticGroup.setMainEmail(logisticGroup.getMainEmail().toLowerCase());
+        logisticGroup.setEmail(logisticGroup.getEmail().toLowerCase());
         List<LogisticGroup> list = logisticGroupService.selectLogisticGroupList(logisticGroup);
         return getDataTable(list);
     }
