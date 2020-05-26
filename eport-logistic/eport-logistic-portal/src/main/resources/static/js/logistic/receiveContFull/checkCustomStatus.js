@@ -1,5 +1,6 @@
 var prefix = ctx + "logistic/receiveContFull";
 var number = 0;
+var shipmentDetailIds;
 function checkCustomStatus() {
     if (number == 0) {
         $.modal.alertError("Bạn chưa nhập số lượng tờ khai!");
@@ -20,11 +21,16 @@ function checkCustomStatus() {
                 method: "post",
                 data: {
                     declareNoList: declareNoList,
-                    shipmentId: shipmentId
+                    shipmentDetailIds: shipmentDetailIds.substring(0, shipmentDetailIds.length-1)
                 },
                 success: function (data) {
-                    parent.finishForm(data);
-                    $.modal.close();
+                    $("#contTable").datagrid({
+                        loadMsg: " Đang xử lý...",
+                        loader: function (param, success, error) {
+                            var opts = $(this).datagrid("options");
+                            success(data);
+                        },
+                    });
                 },
                 error: function (result) {
                     $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
@@ -41,29 +47,15 @@ function closeForm() {
 }
 
 $("#contTable").datagrid({
-    url: prefix + "/listShipmentDetail",
-    //height: window.innerHeight - 70,
-    nowrap: false,
-    striped: true,
     loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
-        var opts = $(this).datagrid("options");
-        if (!opts.url) return false;
-        $.ajax({
-            type: opts.method,
-            url: opts.url,
-            data: {
-                shipmentId: shipmentId
-            },
-            dataType: "json",
-            success: function (data) {
-                success(data);
-                // $("#dg").datagrid("hideColumn", "id");
-            },
-            error: function () {
-            error.apply(this, arguments);
-            },
+        shipmentDetailIds = "";
+        var index = 0;
+        contList.forEach(function(cont) {
+            shipmentDetailIds += cont.id + ",";
+            cont.id = ++index;
         });
+        success(contList);
     },
 });
 
@@ -79,3 +71,12 @@ $("#declareNoAmount").keypress(function (event) {
         $("#declareNoForm").html(declareNoForm);
     }
 });
+
+function formatStatus(value) {
+	switch (value) {
+        case "Y":
+            return "Đã thông quan";
+        case "N":
+            return "Chưa thông quan";
+    }
+}
