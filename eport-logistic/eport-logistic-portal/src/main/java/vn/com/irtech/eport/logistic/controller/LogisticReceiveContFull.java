@@ -3,6 +3,7 @@ package vn.com.irtech.eport.logistic.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -142,7 +143,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 			int index = 0;
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				index++;
-				if (shipmentDetail.getId() != null && verifyPermission(shipmentDetail.getLogisticGroupId())) {
+				if (shipmentDetail.getId() != null && shipmentDetail.getStatus() == 1) {
 					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
 						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
 					} else {
@@ -152,7 +153,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 							return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 						}
 					}
-				} else {
+				} else if (shipmentDetail.getId() == null) {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
 					shipmentDetail.setCreateTime(new Date());
@@ -220,19 +221,24 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@PostMapping("/checkCustomStatus")
 	@ResponseBody
-	public AjaxResult checkCustomStatus(@RequestParam(value="declareNoList[]") String[] declareNoList, String shipmentDetailIds) {
+	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value="declareNoList[]") String[] declareNoList, String shipmentDetailIds) {
 		if (declareNoList != null) {
-			// for (String i : declareNoList) {
-			// 	System.out.println(i);
-			// }
-			// ShipmentDetail shipmentDetail = new ShipmentDetail();
-			// shipmentDetail.setShipmentId(shipmentId);
-			// shipmentDetail.setCustomStatus("R");
-			// shipmentDetail.setStatus(2);
-			// updateShipmentDetailStatus(shipmentDetail);
-			return success("Nhập tờ khai thành công, hệ thống đang kiểm tra...");
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() > 0) {
+				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+					Random random = new Random();
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						if (random.nextBoolean()) {
+							shipmentDetail.setStatus(2);
+							shipmentDetail.setCustomStatus("R");
+							shipmentDetailService.updateShipmentDetail(shipmentDetail);
+						}
+					}
+					return shipmentDetails;
+				}
+			}
 		}
-		return error("Khai báo thất bại");
+		return null;
 	}
 
 	@PostMapping("/updateShipmentDetailStatus")
