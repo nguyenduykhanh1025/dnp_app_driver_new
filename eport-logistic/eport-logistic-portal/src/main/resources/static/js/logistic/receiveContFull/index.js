@@ -185,7 +185,7 @@ config = {
     },
     {
       data: "status",
-      editor: false
+      editor: false,
     },
     {
       data: "opeCode",
@@ -264,7 +264,7 @@ config = {
         } else {
           isChange = false;
         }
-        if (containerNo != null && isChange && shipmentSelected.edoFlg == "0") {
+        if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
           // Call data to auto-fill
           $.ajax({
             url: prefix + "/getContInfo",
@@ -401,9 +401,16 @@ function loadShipmentDetail(id) {
       //   }
       // }
       var saved = true;
+      var customStatus = true;
       result.forEach(function iterate(shipmentDetail) {
         if (shipmentDetail.id == null) {
           saved = false;
+          setLayoutRegisterStatus();
+        } else {
+          setLayoutCustomStatus();
+          if (shipmentDetail.status < 2) {
+            customStatus = false;
+          }
         }
         if (shipmentDetail.expiredDem != null && shipmentDetail.expiredDem != '') {
           shipmentDetail.expiredDem = shipmentDetail.expiredDem.substring(8, 10) + "/" + shipmentDetail.expiredDem.substring(5, 7) + "/" + shipmentDetail.expiredDem.substring(0, 4);
@@ -457,6 +464,9 @@ function loadShipmentDetail(id) {
       hot.render();
       if (!saved) {
         $.modal.alert("Thông tin container đã được hệ thống tự<br>động điền, quý khách vui lòng kiểm tra lại<br>thông tin và lưu khai báo.");
+      }
+      if (customStatus) {
+        setLayoutVerifyUser();
       }
     }
   });
@@ -629,6 +639,7 @@ function saveShipmentDetail() {
     return;
   } else {
     if (getDataFromTable(true) && shipmentDetails.length > 0) {
+      $.modal.loading("Đang xử lý...");
       $.ajax({
         url: prefix + "/saveShipmentDetail",
         method: "post",
@@ -644,9 +655,11 @@ function saveShipmentDetail() {
           } else {
             $.modal.msgError(result.msg);
           }
+          $.modal.closeLoading();
         },
         error: function (result) {
           $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+          $.modal.closeLoading();
         },
       });
     }
@@ -686,6 +699,10 @@ function exportBill() {
 
 }
 
+function reloadShipmentDetail() {
+  loadShipmentDetail(shipmentSelected.id);
+}
+
 // Handling UI
 function setLayoutRegisterStatus() {
   $("#registerStatus").removeClass("label-primary disable").addClass("active");
@@ -723,10 +740,10 @@ function setLayoutVerifyUser() {
   $("#verifyStatus").removeClass("label-primary disable").addClass("active");
   $("#paymentStatus").removeClass("label-primary active").addClass("disable");
   $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  $("#saveShipmentDetailBtn").prop("disabled", true);
+  $("#saveShipmentDetailBtn").prop("disabled", false);
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", false);
-  $("#pickContOnDemandBtn").prop("disabled", true);
+  $("#pickContOnDemandBtn").prop("disabled", false);
   $("#pickTruckBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
