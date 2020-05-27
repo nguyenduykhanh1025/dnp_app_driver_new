@@ -87,7 +87,7 @@ public class LogisticLoginController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult resetPwdSave(LogisticAccount user) {
 		user.setSalt(ShiroUtils.randomSalt());
-		user.setPassword(passwordService.encryptPassword(user.getEmail(), user.getPassword(), user.getSalt()));
+		user.setPassword(passwordService.encryptPassword(user.getUserName(), user.getPassword(), user.getSalt()));
 //		if (logisticService.resetUserPwd(user) > 0) {
 //			if (ShiroUtils.getUserId() == user.getId()) {
 //				ShiroUtils.setSysUser(logisticService.selectLogisticAccountById(user.getId()));

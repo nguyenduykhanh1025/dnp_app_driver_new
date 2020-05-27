@@ -26,6 +26,10 @@ public class LogisticAccount extends BaseEntity
     @Excel(name = "Master Account")
     private Long groupId;
 
+    /** Username */
+    @Excel(name = "Username")
+    private String userName;
+
     /** Email */
     @Excel(name = "Email")
     private String email;
@@ -91,6 +95,17 @@ public class LogisticAccount extends BaseEntity
     {
         return groupId;
     }
+    
+    public void setUserName(String userName) 
+    {
+        this.userName = userName;
+    }
+
+    public String getUserName() 
+    {
+        return userName;
+    }
+    
     public void setEmail(String email) 
     {
         this.email = email;
@@ -169,6 +184,7 @@ public class LogisticAccount extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("groupId", getGroupId())
+            .append("userName", getUserName())
             .append("email", getEmail())
             .append("password", getPassword())
             .append("salt", getSalt())

@@ -65,5 +65,9 @@ public interface ILogisticAccountService
      * @return
      */
 	public LogisticAccount selectByEmail(String email);
+	public LogisticAccount selectByUserName(String username);
 	public String checkEmailUnique(String email);
+	public String checkUserNameUnique(String userName);
+	public int updateDelFlagLogisticAccountByIds(String ids);
+	public int updateDelFlagLogisticAccountByGroupIds(String groupIds);
 }

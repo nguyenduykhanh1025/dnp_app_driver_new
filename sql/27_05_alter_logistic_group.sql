@@ -1,0 +1,1 @@
+ALTER TABLE `logistic_group` ADD `del_flag` CHAR(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Delete Flag (0 nomal 1 deleted)' AFTER `fax`;

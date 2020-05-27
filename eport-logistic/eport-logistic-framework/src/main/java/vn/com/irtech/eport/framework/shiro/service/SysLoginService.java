@@ -57,7 +57,7 @@ public class SysLoginService
             throw new UserPasswordNotMatchException();
         }
 
-        LogisticAccount user = logisticAccountService.selectByEmail(username);
+        LogisticAccount user = logisticAccountService.selectByUserName(username);
 
         if (user == null)
         {

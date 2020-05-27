@@ -51,6 +51,7 @@ public interface ILogisticGroupService
      * @return result
      */
     public int deleteLogisticGroupByIds(String ids);
+    public int updateDelFlagLogisticGroupByIds(String ids);
 
     /**
      * Delete Logistic Group

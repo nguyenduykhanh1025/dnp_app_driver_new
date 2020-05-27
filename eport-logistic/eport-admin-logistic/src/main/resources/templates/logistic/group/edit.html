@@ -285,6 +285,12 @@
                 </div>
             </div> -->
         </form>
+     <div class="row">
+        <div class="col-sm-offset-5 col-sm-10">
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check">Lưu</i></button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all">Quay lại</i></button>
+        </div>
+    </div>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
@@ -296,7 +302,7 @@
 
         function submitHandler() {
             if ($.validate.form()) {
-                $.operate.save(prefix + "/edit", $('#form-group-edit').serialize());
+                $.operate.saveTab(prefix + "/edit", $('#form-group-edit').serialize());
             }
         }
 

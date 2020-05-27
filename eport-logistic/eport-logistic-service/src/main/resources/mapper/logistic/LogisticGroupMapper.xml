@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="phone"    column="phone"    />
         <result property="mobilePhone"    column="mobile_phone"    />
         <result property="fax"    column="fax"    />
+        <result property="delFlag"    column="del_flag"    />
         <result property="businessRegistrationCertificate"    column="business_registration_certificate"    />
         <result property="dateOfIssueRegistration"    column="date_of_issue_registration"    />
         <result property="placeOfIssueRegistration"    column="place_of_issue_registration"    />
@@ -32,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLogisticGroupVo">
-        select id, group_name, email_address, address, mst, phone, mobile_phone, fax, business_registration_certificate, date_of_issue_registration, place_of_issue_registration, authorized_representative, representative_position, following_authorization_form_no, sign_date, owned, identify_card_no, date_of_issue_identify, place_of_issue_identify, email, create_by, create_time, update_by, update_time from logistic_group
+        select id, group_name, email_address, address, mst, phone, mobile_phone, fax, del_flag, business_registration_certificate, date_of_issue_registration, place_of_issue_registration, authorized_representative, representative_position, following_authorization_form_no, sign_date, owned, identify_card_no, date_of_issue_identify, place_of_issue_identify, email, create_by, create_time, update_by, update_time from logistic_group
     </sql>
 
     <select id="selectLogisticGroupList" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
@@ -45,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
             <if test="mobilePhone != null  and mobilePhone != ''"> and mobile_phone = #{mobilePhone}</if>
             <if test="fax != null  and fax != ''"> and fax = #{fax}</if>
+            <if test="delFlag != null"> and del_flag = #{delFlag}</if>
             <if test="businessRegistrationCertificate != null  and businessRegistrationCertificate != ''"> and business_registration_certificate = #{businessRegistrationCertificate}</if>
             <if test="dateOfIssueRegistration != null "> and date_of_issue_registration = #{dateOfIssueRegistration}</if>
             <if test="placeOfIssueRegistration != null  and placeOfIssueRegistration != ''"> and place_of_issue_registration = #{placeOfIssueRegistration}</if>
@@ -80,6 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="phone != null  and phone != ''">phone,</if>
             <if test="mobilePhone != null  and mobilePhone != ''">mobile_phone,</if>
             <if test="fax != null  and fax != ''">fax,</if>
+            <if test="delFlag != null  and delFlag != ''">del_flag,</if>
             <if test="businessRegistrationCertificate != null  and businessRegistrationCertificate != ''">business_registration_certificate,</if>
             <if test="dateOfIssueRegistration != null ">date_of_issue_registration,</if>
             <if test="placeOfIssueRegistration != null  and placeOfIssueRegistration != ''">place_of_issue_registration,</if>
@@ -105,6 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="phone != null  and phone != ''">#{phone},</if>
             <if test="mobilePhone != null  and mobilePhone != ''">#{mobilePhone},</if>
             <if test="fax != null  and fax != ''">#{fax},</if>
+            <if test="delFlag != null  and delFlag != ''">#{delFlag},</if>
             <if test="businessRegistrationCertificate != null  and businessRegistrationCertificate != ''">#{businessRegistrationCertificate},</if>
             <if test="dateOfIssueRegistration != null ">#{dateOfIssueRegistration},</if>
             <if test="placeOfIssueRegistration != null  and placeOfIssueRegistration != ''">#{placeOfIssueRegistration},</if>
@@ -134,6 +138,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="phone != null  and phone != ''">phone = #{phone},</if>
             <if test="mobilePhone != null  and mobilePhone != ''">mobile_phone = #{mobilePhone},</if>
             <if test="fax != null  and fax != ''">fax = #{fax},</if>
+            <if test="delFlag != null  and delFlag != ''">del_flag = #{delFlag},</if>
             <if test="businessRegistrationCertificate != null  and businessRegistrationCertificate != ''">business_registration_certificate = #{businessRegistrationCertificate},</if>
             <if test="dateOfIssueRegistration != null ">date_of_issue_registration = #{dateOfIssueRegistration},</if>
             <if test="placeOfIssueRegistration != null  and placeOfIssueRegistration != ''">place_of_issue_registration = #{placeOfIssueRegistration},</if>
@@ -164,5 +169,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    <update id="updateDelFlagLogisticGroupByIds" parameterType="String">
+        update logistic_group set del_flag = 1 where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
     
 </mapper>
