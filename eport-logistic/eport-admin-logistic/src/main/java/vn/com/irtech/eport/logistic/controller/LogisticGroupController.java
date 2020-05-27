@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
@@ -97,6 +100,28 @@ public class LogisticGroupController extends BaseController
     @ResponseBody
     public AjaxResult addSave(LogisticGroup logisticGroup)
     {
+        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, logisticGroup.getEmail())) {
+            return error("Email không hợp lệ!");
+        }
+        if (!Pattern.matches(UserConstants.MST_PATTERN, logisticGroup.getMst())) {
+        	return error("MST không hợp lệ. Từ 10 -> 15 số");
+        }
+        if (!Pattern.matches(UserConstants.IDENTIFY_NO_PATTERN, logisticGroup.getIdentifyCardNo())){
+            return error("Chứng minh thư không hợp lệ. Từ 9->15 số");
+        }
+        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getPhone())){
+            return error("Điện thoại cố định phải là số");
+        }
+        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getFax())){
+            return error("Fax phải là số");
+        }
+        // handle String mobile regex exclude (.,-,+,' ')
+        String mobilePhone = logisticGroup.getMobilePhone();
+        String replace = mobilePhone.replaceAll("[\\s,\\.,\\-,\\+]", "");
+        logisticGroup.setMobilePhone(replace);
+        if (!Pattern.matches(UserConstants.MOBILE_PHONE_PATTERN, logisticGroup.getMobilePhone())) {
+        	return error("Điện thoại di động không hợp lệ");
+        }
         return toAjax(logisticGroupService.insertLogisticGroup(logisticGroup));
     }
 
@@ -120,6 +145,28 @@ public class LogisticGroupController extends BaseController
     @ResponseBody
     public AjaxResult editSave(LogisticGroup logisticGroup)
     {
+        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, logisticGroup.getEmail())) {
+            return error("Email không hợp lệ!");
+        }
+        if (!Pattern.matches(UserConstants.MST_PATTERN, logisticGroup.getMst())) {
+        	return error("MST không hợp lệ. Từ 10 -> 15 số");
+        }
+        if (!Pattern.matches(UserConstants.IDENTIFY_NO_PATTERN, logisticGroup.getIdentifyCardNo())){
+            return error("Chứng minh thư không hợp lệ. Từ 9->15 số");
+        }
+        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getPhone())){
+            return error("Điện thoại cố định phải là số");
+        }
+        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getFax())){
+            return error("Fax phải là số");
+        }
+        // handle String mobile regex exclude (.,-,+,' ')
+        String mobilePhone = logisticGroup.getMobilePhone();
+        String replace = mobilePhone.replaceAll("[\\s,\\.,\\-,\\+]", "");
+        logisticGroup.setMobilePhone(replace);
+        if (!Pattern.matches(UserConstants.MOBILE_PHONE_PATTERN, logisticGroup.getMobilePhone())) {
+        	return error("Điện thoại di động không hợp lệ");
+        }
         return toAjax(logisticGroupService.updateLogisticGroup(logisticGroup));
     }
 

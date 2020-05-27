@@ -116,6 +116,15 @@ public class LogisticAccountServiceImpl implements ILogisticAccountService
 	}
 
 	@Override
+	public String checkUserNameUnique(String userName) {
+		int count = logisticAccountMapper.checkUserNameUnique(userName);
+		if(count > 0) {
+			return "1";
+		}
+		return "0";
+	}
+
+	@Override
 	public int updateDelFlagLogisticAccountByIds(String ids) {
 		return logisticAccountMapper.updateDelFlagLogisticAccountByIds(Convert.toStrArray(ids));
 	}

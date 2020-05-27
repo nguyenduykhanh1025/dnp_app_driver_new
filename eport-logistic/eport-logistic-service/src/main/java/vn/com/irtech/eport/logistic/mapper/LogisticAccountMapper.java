@@ -69,4 +69,5 @@ public interface LogisticAccountMapper
 	public LogisticAccount selectByEmail(String email);
 	public LogisticAccount selectByUserName(String username);
 	public int checkEmailUnique(String email);
+	public int checkUserNameUnique(String userName);
 }

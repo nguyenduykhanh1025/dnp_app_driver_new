@@ -112,6 +112,9 @@ public class LogisticAccountController extends BaseController
 //        if (logisticAccountService.checkEmailUnique(logisticAccount.getEmail().toLowerCase()).equals("1")) {
 //            return error("Email đã tồn tại!");
 //        }
+        if(logisticAccountService.checkUserNameUnique(logisticAccount.getUserName()).equals("1")) {
+        	return error("User name đã tồn tại");
+        }
         if (logisticAccount.getPassword().length() < 6) {
             return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
