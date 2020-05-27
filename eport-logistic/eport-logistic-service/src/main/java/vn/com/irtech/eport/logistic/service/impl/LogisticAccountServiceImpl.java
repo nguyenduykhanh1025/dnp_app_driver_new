@@ -101,6 +101,11 @@ public class LogisticAccountServiceImpl implements ILogisticAccountService
 	}
 
 	@Override
+	public LogisticAccount selectByUserName(String username) {
+		return logisticAccountMapper.selectByUserName(username);
+	}
+
+	@Override
 	public String checkEmailUnique(String email) {
         int count = logisticAccountMapper.checkEmailUnique(email);
         if (count > 0)
@@ -108,5 +113,10 @@ public class LogisticAccountServiceImpl implements ILogisticAccountService
             return "1";
         }
         return "0";
+	}
+
+	@Override
+	public int updateDelFlagLogisticAccountByIds(String ids) {
+		return logisticAccountMapper.updateDelFlagLogisticAccountByIds(Convert.toStrArray(ids));
 	}
 }

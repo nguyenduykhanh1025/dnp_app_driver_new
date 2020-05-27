@@ -64,6 +64,7 @@ public class LogisticAccountController extends BaseController
     public TableDataInfo list(LogisticAccount logisticAccount)
     {
         startPage();
+        logisticAccount.setDelFlag("0");
         LogisticGroup logisticGroup = logisticAccount.getLogisticGroup();
         logisticGroup.setGroupName(logisticGroup.getGroupName().toLowerCase());
         logisticAccount.setLogisticGroup(logisticGroup);
@@ -108,18 +109,18 @@ public class LogisticAccountController extends BaseController
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, logisticAccount.getEmail())) {
             return error("Email không hợp lệ!");
         }
-        if (logisticAccountService.checkEmailUnique(logisticAccount.getEmail().toLowerCase()).equals("1")) {
-            return error("Email đã tồn tại!");
-        }
+//        if (logisticAccountService.checkEmailUnique(logisticAccount.getEmail().toLowerCase()).equals("1")) {
+//            return error("Email đã tồn tại!");
+//        }
         if (logisticAccount.getPassword().length() < 6) {
             return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
         Map<String, Object> variables = new HashMap<>();
-		variables.put("username", logisticAccount.getFullName());
+		variables.put("username", logisticAccount.getUserName());
         variables.put("password", logisticAccount.getPassword());
         variables.put("email", logisticAccount.getEmail());
         logisticAccount.setSalt(ShiroUtils.randomSalt());
-        logisticAccount.setPassword(passwordService.encryptPassword(logisticAccount.getEmail()
+        logisticAccount.setPassword(passwordService.encryptPassword(logisticAccount.getUserName()
         , logisticAccount.getPassword(), logisticAccount.getSalt()));
         logisticAccount.setCreateBy(ShiroUtils.getSysUser().getUserName());
         if (logisticAccountService.insertLogisticAccount(logisticAccount) == 1) {
@@ -172,7 +173,7 @@ public class LogisticAccountController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        return toAjax(logisticAccountService.deleteLogisticAccountByIds(ids));
+        return toAjax(logisticAccountService.updateDelFlagLogisticAccountByIds(ids));
     }
     @Log(title = "Reset password", businessType = BusinessType.UPDATE)
     @GetMapping("/resetPwd/{id}")
@@ -188,13 +189,13 @@ public class LogisticAccountController extends BaseController
     public AjaxResult resetPwdSave(LogisticAccount logisticAccount, String isSendEmail)
     {
         Map<String, Object> variables = new HashMap<>();
-		variables.put("username", logisticAccount.getFullName());
+		variables.put("username", logisticAccount.getUserName());
         variables.put("password", logisticAccount.getPassword());
         variables.put("email", logisticAccount.getEmail());
         logisticAccount.setStatus("");
         logisticAccount.setUpdateBy(ShiroUtils.getSysUser().getUserName());
         logisticAccount.setSalt(ShiroUtils.randomSalt());
-        logisticAccount.setPassword(passwordService.encryptPassword(logisticAccount.getEmail(), logisticAccount.getPassword(), logisticAccount.getSalt()));
+        logisticAccount.setPassword(passwordService.encryptPassword(logisticAccount.getUserName(), logisticAccount.getPassword(), logisticAccount.getSalt()));
         if (logisticAccountService.updateLogisticAccount(logisticAccount) == 1) {
             if (isSendEmail != null) {
                 new Thread() {

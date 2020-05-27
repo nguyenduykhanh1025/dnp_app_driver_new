@@ -42,7 +42,7 @@ public class SysPasswordService
 
     public void validate(LogisticAccount user, String password)
     {
-        String loginName = user.getEmail();
+        String loginName = user.getUserName();
 
         AtomicInteger retryCount = loginRecordCache.get(loginName);
 
@@ -71,7 +71,7 @@ public class SysPasswordService
 
     public boolean matches(LogisticAccount user, String newPassword)
     {
-        return user.getPassword().equals(encryptPassword(user.getEmail(), newPassword, user.getSalt()));
+        return user.getPassword().equals(encryptPassword(user.getUserName(), newPassword, user.getSalt()));
     }
 
     public void clearLoginRecordCache(String username)
