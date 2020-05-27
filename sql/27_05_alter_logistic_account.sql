@@ -12,7 +12,7 @@ CREATE TABLE `logistic_account` (
   `salt` varchar(20) COLLATE utf8_bin NOT NULL COMMENT 'Salt',
   `full_name` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Ho Va Ten',
   `status` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Status（0 Normal 1 Disabled）',
-  `del_flag` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Delete Flag (0 nomal 2 deleted)',
+  `del_flag` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Delete Flag (0 nomal 1 deleted)',
   `login_ip` varchar(50) COLLATE utf8_bin DEFAULT '' COMMENT 'Login IP',
   `login_date` datetime DEFAULT NULL COMMENT 'Login Date',
   `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark',

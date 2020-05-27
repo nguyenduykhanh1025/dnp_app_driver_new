@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -37,6 +38,9 @@ public class LogisticGroupController extends BaseController
 
     @Autowired
     private ILogisticGroupService logisticGroupService;
+    
+    @Autowired
+    private ILogisticAccountService logisticAccountService;
 
     @RequiresPermissions("logistic:group:view")
     @GetMapping()
@@ -54,6 +58,7 @@ public class LogisticGroupController extends BaseController
     public TableDataInfo list(LogisticGroup logisticGroup)
     {
         startPage();
+        logisticGroup.setDelFlag("0");
         logisticGroup.setGroupName(logisticGroup.getGroupName().toLowerCase());
         logisticGroup.setEmail(logisticGroup.getEmail().toLowerCase());
         List<LogisticGroup> list = logisticGroupService.selectLogisticGroupList(logisticGroup);
@@ -127,7 +132,19 @@ public class LogisticGroupController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        return toAjax(logisticGroupService.deleteLogisticGroupByIds(ids));
+    	try {
+        	if(logisticGroupService.updateDelFlagLogisticGroupByIds(ids) == 1) {
+        		logisticAccountService.updateDelFlagLogisticAccountByGroupIds(ids);
+        		return success();
+        	}
+        	else {
+        		return error();
+        	}
+    	}catch(Exception e) {
+    		e.getStackTrace();
+    		return error();
+    	}
+        //return toAjax(logisticGroupService.updateDelFlagLogisticGroupByIds(ids));
     }
     
     /**

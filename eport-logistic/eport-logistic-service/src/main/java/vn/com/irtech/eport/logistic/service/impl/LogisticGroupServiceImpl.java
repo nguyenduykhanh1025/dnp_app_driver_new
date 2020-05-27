@@ -88,7 +88,12 @@ public class LogisticGroupServiceImpl implements ILogisticGroupService
         return logisticGroupMapper.deleteLogisticGroupByIds(Convert.toStrArray(ids));
     }
 
-    /**
+    @Override
+	public int updateDelFlagLogisticGroupByIds(String ids) {
+		return logisticGroupMapper.updateDelFlagLogisticGroupByIds(Convert.toStrArray(ids));
+	}
+
+	/**
      * Delete Logistic Group
      * 
      * @param id Logistic GroupID

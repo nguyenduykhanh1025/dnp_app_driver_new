@@ -119,4 +119,9 @@ public class LogisticAccountServiceImpl implements ILogisticAccountService
 	public int updateDelFlagLogisticAccountByIds(String ids) {
 		return logisticAccountMapper.updateDelFlagLogisticAccountByIds(Convert.toStrArray(ids));
 	}
+
+	@Override
+	public int updateDelFlagLogisticAccountByGroupIds(String groupIds) {
+		return logisticAccountMapper.updateDelFlagLogisticAccountByGroupIds(Convert.toStrArray(groupIds));
+	}
 }

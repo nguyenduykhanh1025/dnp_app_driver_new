@@ -59,5 +59,6 @@ public interface LogisticGroupMapper
      * @return result
      */
     public int deleteLogisticGroupByIds(String[] ids);
+    public int updateDelFlagLogisticGroupByIds(String[] ids);
     public List<LogisticGroup> selectLogisticGroupListByName(LogisticGroup logisticGroup);
 }

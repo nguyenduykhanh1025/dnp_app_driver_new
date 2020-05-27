@@ -46,6 +46,9 @@ public class LogisticGroup extends BaseEntity
     /** Fax */
     @Excel(name = "Fax")
     private String fax;
+    
+    /** Delete Flag (0 nomal 1 deleted) */
+    private String delFlag;
 
     /** Giấy đăng ký kinh doanh */
     @Excel(name = "Giấy đăng ký kinh doanh")
@@ -167,6 +170,16 @@ public class LogisticGroup extends BaseEntity
     {
         return fax;
     }
+    
+    public void setDelFlag(String delFlag) 
+    {
+        this.delFlag = delFlag;
+    }
+
+    public String getDelFlag() 
+    {
+        return delFlag;
+    }
     public void setBusinessRegistrationCertificate(String businessRegistrationCertificate) 
     {
         this.businessRegistrationCertificate = businessRegistrationCertificate;
@@ -287,6 +300,7 @@ public class LogisticGroup extends BaseEntity
             .append("phone", getPhone())
             .append("mobilePhone", getMobilePhone())
             .append("fax", getFax())
+            .append("delFlag", getDelFlag())
             .append("businessRegistrationCertificate", getBusinessRegistrationCertificate())
             .append("dateOfIssueRegistration", getDateOfIssueRegistration())
             .append("placeOfIssueRegistration", getPlaceOfIssueRegistration())
