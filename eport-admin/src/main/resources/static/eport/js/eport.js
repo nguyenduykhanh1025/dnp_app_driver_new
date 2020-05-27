@@ -980,7 +980,7 @@ var table = {
             },
 			addLogisticGroup: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 500, 350);
+            	$.modal.openTab("Thêm " + table.options.modalName, $.operate.addUrl(id));
             },
             addTab: function (id) {
             	table.set();
@@ -1066,9 +1066,9 @@ var table = {
             			return;
             		}
                     var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
-                    $.modal.open("Chỉnh Sửa " + table.options.modalName, url, 800, 400);
+                    $.modal.open("Chỉnh Sửa " + table.options.modalName, url, 1200, 500);
             	} else {
-            	    $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 800, 400);
+            	    $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 1200, 500);
             	}
             },
             editTab: function(id) {
