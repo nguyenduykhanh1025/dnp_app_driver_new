@@ -23,7 +23,7 @@
 
   .left-side {
     display: inline-block;
-    width: 290px;
+    width: 410px;
   }
 
   .right-side {
@@ -54,6 +54,12 @@
     margin: 0 0 15px 0;
   }
 
+  .errorInput {
+    background-color: #fbe2e2;
+    border-color: #c66161;
+    color: #c00;
+  }
+
 </style>
 
 <body>
@@ -65,9 +71,10 @@
           <table id="contTable">
             <thead>
               <tr>
-                <th data-options="field:'id',halign:'center'" width=50>ID</th>
+                <th data-options="field:'id',halign:'center'" width=50>Stt</th>
                 <th data-options="field:'blNo',halign:'center'" width="105">B/L No</th>
                 <th data-options="field:'containerNo',halign:'center'" width="105">Container No</th>
+                <th data-options="field:'customStatus',halign:'center',formatter: formatStatus" width="120">T.T thông quan</th>
               </tr>
             </thead>
           </table>
@@ -82,7 +89,7 @@
       </div>
     </div>
     <div class="layui-layer-btn footer">
-      <a class="layui-layer-btn0" onclick="checkCustomStatus()">Kiểm tra</a>
+      <a id="checkBtn" class="layui-layer-btn0" onclick="checkCustomStatus()">Kiểm tra</a>
       <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
     </div>
   </div>
@@ -91,6 +98,7 @@
 <th:block th:include="include :: easyui-js" />
 <script type="text/javascript" th:inline="javascript">
   var shipmentId = /*[[${shipmentId}]]*/;
+  var contList = /*[[${contList}]]*/;
 </script>
 <script th:src="@{/js/logistic/receiveContFull/checkCustomStatus.js}"></script>
 </html>

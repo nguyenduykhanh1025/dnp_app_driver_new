@@ -23,6 +23,9 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Ma Lo")
     private Long shipmentId;
 
+    /** group id */
+    private Long logisticGroupId;
+
     /** Ma DK */
     @Excel(name = "Ma DK")
     private String registerNo;
@@ -162,6 +165,14 @@ public class ShipmentDetail extends BaseEntity
 
     public Long getShipmentId() {
         return shipmentId;
+    }
+
+    public void setLogisticGroupId(Long logisticGroupId) {
+        this.logisticGroupId = logisticGroupId;
+    }
+
+    public Long getLogisticGroupId() {
+        return logisticGroupId;
     }
 
     public void setRegisterNo(String registerNo) {
@@ -430,6 +441,7 @@ public class ShipmentDetail extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("shipmentId", getShipmentId())
+            .append("logisticGroupId", getLogisticGroupId())
             .append("registerNo", getRegisterNo())
             .append("containerNo", getContainerNo())
             .append("containerStatus", getContainerStatus())

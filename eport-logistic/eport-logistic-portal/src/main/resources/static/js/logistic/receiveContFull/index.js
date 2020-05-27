@@ -3,11 +3,17 @@ var prefix = ctx + "logistic/receiveContFull";
 var fromDate = "";
 var toDate = "";
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected = 0;
+var shipmentSelected;
 var shipmentDetails;
 var billNo;
 var contList = [];
+var checked = false;
+var allChecked = true;
+var isIterate = false;
 $(document).ready(function () {
+  // $(".colHeader > input[type=checkbox]").click(function() {
+  //   console.log("inini")
+  // })
   loadTable();
   $(".left-side").css("height", $(document).height());
   $("#btn-collapse").click(function () {
@@ -52,7 +58,8 @@ function loadTable() {
         dataType: "json",
         success: function (data) {
           success(data);
-          // $("#dg").datagrid("hideColumn", "id");
+          $("#dg").datagrid("hideColumn", "id");
+          $("#dg").datagrid("hideColumn", "edoFlg");
         },
         error: function () {
           error.apply(this, arguments);
@@ -74,11 +81,11 @@ function handleCollapse(status) {
     }, 500);
     return;
   }
-  $(".left-side").css("width", "20%");
+  $(".left-side").css("width", "33%");
   $(".left-side").children().show();
   $("#btn-collapse").show();
   $("#btn-uncollapse").hide();
-  $(".right-side").css("width", "80%");
+  $(".right-side").css("width", "67%");
   setTimeout(function () {
     hot.render();
   }, 500);
@@ -94,36 +101,62 @@ config = {
   manualColumnMove: false,
   rowHeaders: true,
   className: "htMiddle",
-  colHeaders: [
-    "<input type='checkbox' id='parent-checkbox'/>",
-    "id",
-    "B/L No",
-    "Container No",
-    "Hãng Tàu",
-    "Kích Thước",
-    "F/E",
-    "Chủ hàng",
-    "Seal No",
-    "Hạn Lệnh",
-    "Trọng tải",
-    "Tàu",
-    "Chuyến",
-    "Cảng Nguồn",
-    "Cảng Đích",
-    "Phương Tiện",
-    "Nơi Hạ Vỏ",
-    "T.T Hải Quan",
-    "T.T Thanh Toán",
-    "T.T Làm Lệnh",
-    "T.T DO Gốc",
-    "T.T Nhận Cont",
-    "Ghi Chú",
-  ],
-  colWidths: [50, 0.01, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 150, 150, 150, 150, 200],
+  colHeaders: function (col) {
+    switch (col) {
+      case 0:
+        var txt = "<input type='checkbox' class='checker' ";
+        txt += "onclick='checkAll()' ";
+        txt += ">";
+        return txt;
+      case 1:
+        return "id";
+      case 2:
+        return "Container No";
+      case 3:
+        return "T.T Hải Quan";
+      case 4:
+        return "T.T Thanh Toán";
+      case 5:
+        return "T.T Làm Lệnh";
+      case 6:
+        return "T.T DO Gốc";
+      case 7:
+        return "T.T Nhận Cont";
+      case 8:
+        return "Hãng Tàu";
+      case 9:
+        return "Kích Thước";
+      case 10:
+        return "F/E";
+      case 11:
+        return "Chủ hàng";
+      case 12:
+        return "Seal No";
+      case 13:
+        return "Hạn Lệnh";
+      case 14:
+        return "Trọng tải";
+      case 15:
+        return "Tàu";
+      case 16:
+        return "Chuyến";
+      case 17:
+        return "Cảng Nguồn";
+      case 18:
+        return "Cảng Đích";
+      case 19:
+        return "Phương Tiện";
+      case 20:
+        return "Nơi Hạ Vỏ";
+      case 21:
+        return "Ghi Chú";
+    }
+  },
+  colWidths: [50, 0.01, 100, 150, 150, 150, 150, 150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200],
   filter: "true",
   columns: [
     {
-      data: "selected",
+      data: "active",
       type: "checkbox",
       className: "htCenter",
     },
@@ -132,10 +165,27 @@ config = {
       editor: false
     },
     {
-      data: "blNo",
+      data: "containerNo",
     },
     {
-      data: "containerNo",
+      data: "customStatus",
+      editor: false
+    },
+    {
+      data: "paymentStatus",
+      editor: false
+    },
+    {
+      data: "processStatus",
+      editor: false
+    },
+    {
+      data: "doStatus",
+      editor: false
+    },
+    {
+      data: "status",
+      editor: false,
     },
     {
       data: "opeCode",
@@ -190,26 +240,6 @@ config = {
       editor: false
     },
     {
-      data: "customStatus",
-      editor: false
-    },
-    {
-      data: "paymentStatus",
-      editor: false
-    },
-    {
-      data: "processStatus",
-      editor: false
-    },
-    {
-      data: "doStatus",
-      editor: false
-    },
-    {
-      data: "status",
-      editor: false
-    },
-    {
       data: "remark",
     },
   ],
@@ -217,22 +247,31 @@ config = {
     //Get data change in cell to render another column
     if (src !== "loadData") {
       changes.forEach(function interate(row) {
-        var blNo;
         var containerNo;
-        if (row[1] == "blNo" || row[1] == "containerNo") {
-          blNo = hot.getDataAtRow(row[0])[2];
-          containerNo = hot.getDataAtRow(row[0])[3];
+        if (row[1] == "active" && !isIterate) {
+          getDataSelectedFromTable(false);
+          if (allChecked) {
+            $(".checker").prop("checked", true);
+            checked = true;
+          } else {
+            $(".checker").prop("checked", false);
+            checked = false;
+          }
+        }
+        if (row[1] == "containerNo") {
+          containerNo = hot.getDataAtRow(row[0])[2];
           isChange = true;
         } else {
           isChange = false;
         }
-        if (blNo != null && containerNo != null && isChange) {
+        if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
           // Call data to auto-fill
           $.ajax({
             url: prefix + "/getContInfo",
             type: "post",
             data: {
-              blNo: blNo, containerNo: containerNo
+              containerNo: containerNo,
+              blNo: shipmentSelected.blNo
             }
           }).done(function (shipmentDetail) {
             if (shipmentDetail != null) {
@@ -281,33 +320,51 @@ config = {
               } else {
                 status = "Đã nhận công";
               }
-              hot.setDataAtCell(row[0], 4, shipmentDetail.opeCode); //opeCode
-              hot.setDataAtCell(row[0], 5, shipmentDetail.sztp); //sztp
-              hot.setDataAtCell(row[0], 6, shipmentDetail.fe); //fe
-              hot.setDataAtCell(row[0], 7, shipmentDetail.consignee); //consignee
-              hot.setDataAtCell(row[0], 8, shipmentDetail.sealNo); //sealNo
-              hot.setDataAtCell(row[0], 9, expiredDem); //expiredem
-              hot.setDataAtCell(row[0], 10, shipmentDetail.wgt); //wgt
-              hot.setDataAtCell(row[0], 11, shipmentDetail.vslNm); //vslNm
-              hot.setDataAtCell(row[0], 12, shipmentDetail.voyNo); //voyNo
-              hot.setDataAtCell(row[0], 13, shipmentDetail.loadingPort); //loadingPort
-              hot.setDataAtCell(row[0], 14, shipmentDetail.dischargePort); //dischargePort
-              hot.setDataAtCell(row[0], 15, shipmentDetail.transportType); //transportType
-              hot.setDataAtCell(row[0], 16, shipmentDetail.emptyDepot); //emptyDepot
-              hot.setDataAtCell(row[0], 17, customStatus); //customStatus
-              hot.setDataAtCell(row[0], 18, paymentStatus); //paymentStatus
-              hot.setDataAtCell(row[0], 19, processStatus); //processStatus
-              hot.setDataAtCell(row[0], 20, doStatus); //doStatus
-              hot.setDataAtCell(row[0], 21, status); //status
-              hot.setDataAtCell(row[0], 22, shipmentDetail.remark); //remark
+              hot.setDataAtCell(row[0], 3, customStatus); //customStatus
+              hot.setDataAtCell(row[0], 4, paymentStatus); //paymentStatus
+              hot.setDataAtCell(row[0], 5, processStatus); //processStatus
+              hot.setDataAtCell(row[0], 6, doStatus); //doStatus
+              hot.setDataAtCell(row[0], 7, status); //status
+              hot.setDataAtCell(row[0], 8, shipmentDetail.opeCode); //opeCode
+              hot.setDataAtCell(row[0], 9, shipmentDetail.sztp); //sztp
+              hot.setDataAtCell(row[0], 10, shipmentDetail.fe); //fe
+              hot.setDataAtCell(row[0], 11, shipmentDetail.consignee); //consignee
+              hot.setDataAtCell(row[0], 12, shipmentDetail.sealNo); //sealNo
+              hot.setDataAtCell(row[0], 13, expiredDem); //expiredem
+              hot.setDataAtCell(row[0], 14, shipmentDetail.wgt); //wgt
+              hot.setDataAtCell(row[0], 15, shipmentDetail.vslNm); //vslNm
+              hot.setDataAtCell(row[0], 16, shipmentDetail.voyNo); //voyNo
+              hot.setDataAtCell(row[0], 17, shipmentDetail.loadingPort); //loadingPort
+              hot.setDataAtCell(row[0], 18, shipmentDetail.dischargePort); //dischargePort
+              hot.setDataAtCell(row[0], 19, shipmentDetail.transportType); //transportType
+              hot.setDataAtCell(row[0], 20, shipmentDetail.emptyDepot); //emptyDepot
+              hot.setDataAtCell(row[0], 21, shipmentDetail.remark); //remark
             }
           });
         }
       });
     }
   },
-
 };
+
+function checkAll() {
+  getDataFromTable(false);
+  isIterate = true;
+  if (checked) {
+    for (var i=0; i<shipmentDetails.length; i++) {
+      hot.setDataAtCell(i, 0, false); //opeCode
+    }
+    $(".checker").prop("checked", false);
+    checked = false;
+  } else {
+    for (var i=0; i<shipmentDetails.length; i++) {
+      hot.setDataAtCell(i, 0, true); //opeCode
+    }
+    $(".checker").prop("checked", true);
+    checked = true;
+  }
+  isIterate = false;
+}
 
 hot = new Handsontable(dogrid, config);
 
@@ -319,31 +376,42 @@ function loadShipmentDetail(id) {
       shipmentId: id
     },
     success: function (result) {
-      if (result.length == 0) {
-        setLayoutRegisterStatus();
-      } else {
-        switch (result[0].status) {
-          case 1:
-            setLayoutCustomStatus();
-            break;
-          case 2:
-            setLayoutVerifyUser();
-            break;
-          case 3:
-            setLayoutPickCont();
-            break;
-          case 4:
-            setLayoutPaymentStatus();
-            break;
-          case 5:
-            setLayoutPickTruck();
-            break;
-          default:
-            setLayoutRegisterStatus();
-            break;
-        }
-      }
+      // if (result.length == 0) {
+      //   setLayoutRegisterStatus();
+      // } else {
+      //   switch (result[0].status) {
+      //     case 1:
+      //       setLayoutCustomStatus();
+      //       break;
+      //     case 2:
+      //       setLayoutVerifyUser();
+      //       break;
+      //     case 3:
+      //       setLayoutPickCont();
+      //       break;
+      //     case 4:
+      //       setLayoutPaymentStatus();
+      //       break;
+      //     case 5:
+      //       setLayoutPickTruck();
+      //       break;
+      //     default:
+      //       setLayoutRegisterStatus();
+      //       break;
+      //   }
+      // }
+      var saved = true;
+      var customStatus = true;
       result.forEach(function iterate(shipmentDetail) {
+        if (shipmentDetail.id == null) {
+          saved = false;
+          setLayoutRegisterStatus();
+        } else {
+          setLayoutCustomStatus();
+          if (shipmentDetail.status < 2) {
+            customStatus = false;
+          }
+        }
         if (shipmentDetail.expiredDem != null && shipmentDetail.expiredDem != '') {
           shipmentDetail.expiredDem = shipmentDetail.expiredDem.substring(8, 10) + "/" + shipmentDetail.expiredDem.substring(5, 7) + "/" + shipmentDetail.expiredDem.substring(0, 4);
         }
@@ -360,6 +428,9 @@ function loadShipmentDetail(id) {
         switch (shipmentDetail.paymentStatus) {
           case "N":
             shipmentDetail.paymentStatus = "Chưa thanh toán";
+            break;
+          case "Y":
+            shipmentDetail.paymentStatus = "Đã thanh toán";
             break;
           default:
             break;
@@ -378,17 +449,25 @@ function loadShipmentDetail(id) {
           case "N":
             shipmentDetail.doStatus = "Chưa nhận DO gốc";
             break;
+          case "Y":
+            shipmentDetail.doStatus = "Đã nhận DO gốc";
           default:
             break;
         }
         if (shipmentDetail.status != 5) {
-          shipmentDetail.status = "Chưa nhận công";
+          shipmentDetail.status = "Chưa nhận container";
         } else {
-          shipmentDetail.status = "Đã nhận công";
+          shipmentDetail.status = "Đã nhận container";
         }
       });
       hot.loadData(result);
       hot.render();
+      if (!saved) {
+        $.modal.alert("Thông tin container đã được hệ thống tự<br>động điền, quý khách vui lòng kiểm tra lại<br>thông tin và lưu khai báo.");
+      }
+      if (customStatus) {
+        setLayoutVerifyUser();
+      }
     }
   });
 }
@@ -404,7 +483,7 @@ function formatDate(value) {
 // Handle add
 $(function () {
   var options = {
-    createUrl: prefix + "/add",
+    createUrl: prefix + "/addShipmentForm",
     updateUrl: "0",
     modalName: " Lô"
   };
@@ -418,11 +497,11 @@ function handleRefresh() {
 function getSelected() {
   var row = $("#dg").datagrid("getSelected");
   if (row) {
-    shipmentSelected = row.id;
+    shipmentSelected = row;
     $(function () {
       var options = {
-        createUrl: prefix + "/add",
-        updateUrl: prefix + "/edit/" + shipmentSelected,
+        createUrl: prefix + "/addShipmentForm",
+        updateUrl: prefix + "/editShipmentForm/" + shipmentSelected.id,
         modalName: " Lô"
       };
       $.table.init(options);
@@ -430,35 +509,46 @@ function getSelected() {
     $("#loCode").text(row.id);
     $("#taxCode").text(row.taxCode);
     $("#quantity").text(row.containerAmount);
+    if (row.edoFlg == "0") {
+      $("#dotype").text("DO giấy");
+    } else {
+      $("#dotype").text("EDO");
+    }
+    $("#blNo").text(row.blNo);
     loadShipmentDetail(row.id);
   }
 }
 
-function getDataSelectedFromTable() {
+function getDataSelectedFromTable(isValidate) {
   var myTableData = hot.getSourceData();
   var errorFlg = false;
   if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
     hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
   }
   var cleanedGridData = [];
+  allChecked = true;
   $.each(myTableData, function (rowKey, object) {
-    if (!hot.isEmptyRow(rowKey) && object["selected"]) {
-      cleanedGridData.push(object);
-    }
+    if (!hot.isEmptyRow(rowKey)) {
+      if (object["active"]) {
+        cleanedGridData.push(object);
+      } else {
+        allChecked = false;
+      }
+    } 
   });
   shipmentDetails = "";
   $.each(cleanedGridData, function (index, object) {
     var shipmentDetail = new Object();
     shipmentDetails += object["id"]+",";
   });
+
   // Get result in "selectedList" variable
-  if (shipmentDetails.length == 0) {
+  if (shipmentDetails.length == 0 && isValidate) {
     $.modal.alert("Bạn chưa chọn container.");
     errorFlg = true;
   } else {
     shipmentDetails = shipmentDetails.substring(0, shipmentDetails.length-1);
   }
-
   if (errorFlg) {
     return false;
   }
@@ -483,49 +573,37 @@ function getDataFromTable(isValidate) {
   contList = [];
   $.each(cleanedGridData, function (index, object) {
     var shipmentDetail = new Object();
-    if ((object["blNo"] == null || object["blNo"] == "") && isValidate) {
-      $.modal.alertError("Hàng " + (index + 1) + ": Số bill không được trống!");
+    if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && isValidate) {
+      $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
       errorFlg = true;
-    } else if ((object["containerNo"] == null || object["containerNo"] == "") && isValidate) {
-      $.modal.alertError("Hàng " + (index + 1) + ": Số container không được trống!");
+    }
+    var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
+    shipmentDetail.blNo = object["blNo"];
+    shipmentDetail.containerNo = object["containerNo"];
+    contList.push(object["containerNo"]);
+    shipmentDetail.opeCode = object["opeCode"];
+    shipmentDetail.sztp = object["sztp"];
+    shipmentDetail.fe = object["fe"];
+    shipmentDetail.consignee = object["consignee"];
+    shipmentDetail.sealNo = object["sealNo"];
+    shipmentDetail.expiredDem = expiredDem.getTime();
+    shipmentDetail.wgt = object["wgt"];
+    shipmentDetail.vslNm = object["vslNm"];
+    shipmentDetail.voyNo = object["voyNo"];
+    shipmentDetail.loadingPort = object["loadingPort"];
+    shipmentDetail.dischargePort = object["dischargePort"];
+    shipmentDetail.transportType = object["transportType"];
+    shipmentDetail.emptyDepot = object["emptyDepot"];
+    shipmentDetail.remark = object["remark"];
+    shipmentDetail.shipmentId = shipmentSelected.id;
+    shipmentDetail.id = object["id"];
+    shipmentDetails.push(shipmentDetail);
+    var now = new Date();
+    now.setHours(0, 0, 0);
+    expiredDem.setHours(23, 59, 59);
+    if (expiredDem.getTime() < now.getTime() && isValidate) {
       errorFlg = true;
-    } else {
-      if (billNo != object["blNo"] && isValidate) {
-        errorFlg = true;
-        $.modal.alertError("Hàng " + (index + 1) + ": Số bill không được khác nhau!");
-      }
-      if (!/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && isValidate) {
-        $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
-        errorFlg = true;
-      }
-      var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
-      shipmentDetail.blNo = object["blNo"];
-      shipmentDetail.containerNo = object["containerNo"];
-      contList.push(object["containerNo"]);
-      shipmentDetail.opeCode = object["opeCode"];
-      shipmentDetail.sztp = object["sztp"];
-      shipmentDetail.fe = object["fe"];
-      shipmentDetail.consignee = object["consignee"];
-      shipmentDetail.sealNo = object["sealNo"];
-      shipmentDetail.expiredDem = expiredDem.getTime();
-      shipmentDetail.wgt = object["wgt"];
-      shipmentDetail.vslNm = object["vslNm"];
-      shipmentDetail.voyNo = object["voyNo"];
-      shipmentDetail.loadingPort = object["loadingPort"];
-      shipmentDetail.dischargePort = object["dischargePort"];
-      shipmentDetail.transportType = object["transportType"];
-      shipmentDetail.emptyDepot = object["emptyDepot"];
-      shipmentDetail.remark = object["remark"];
-      shipmentDetail.shipmentId = shipmentSelected;
-      shipmentDetail.id = object["id"];
-      shipmentDetails.push(shipmentDetail);
-      var now = new Date();
-      now.setHours(0, 0, 0);
-      expiredDem.setHours(23, 59, 59);
-      if (expiredDem.getTime() < now.getTime() && isValidate) {
-        errorFlg = true;
-        $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được trong quá khứ!")
-      }
+      $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được trong quá khứ!")
     }
   });
 
@@ -533,7 +611,7 @@ function getDataFromTable(isValidate) {
     contList.sort();
     var contTemp = "";
     $.each(contList, function (index, cont) {
-      if (cont == contTemp) {
+      if (cont != "" && cont == contTemp) {
         $.modal.alertError("Số container không được giống nhau!");
         errorFlg = true;
         return false;
@@ -556,11 +634,12 @@ function getDataFromTable(isValidate) {
 }
 
 function saveShipmentDetail() {
-  if (shipmentSelected == 0) {
+  if (shipmentSelected == null) {
     $.modal.msgError("Bạn cần chọn lô trước");
     return;
   } else {
     if (getDataFromTable(true) && shipmentDetails.length > 0) {
+      $.modal.loading("Đang xử lý...");
       $.ajax({
         url: prefix + "/saveShipmentDetail",
         method: "post",
@@ -572,13 +651,15 @@ function saveShipmentDetail() {
           var result = JSON.parse(data);
           if (result.code == 0) {
             $.modal.msgSuccess(result.msg);
-            setLayoutCustomStatus();
+            loadShipmentDetail(shipmentSelected.id);
           } else {
             $.modal.msgError(result.msg);
           }
+          $.modal.closeLoading();
         },
         error: function (result) {
           $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+          $.modal.closeLoading();
         },
       });
     }
@@ -587,11 +668,11 @@ function saveShipmentDetail() {
 
 // Handling logic
 function checkCustomStatus() {
-  $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatus/" + shipmentSelected, 600, 500);
+  $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatusForm/" + shipmentSelected.id, 720, 500);
 }
 
 function verify() {
-  getDataSelectedFromTable();
+  getDataSelectedFromTable(true);
   if (shipmentDetails.length > 0) {
     $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetails, 600, 500);
   } 
@@ -602,20 +683,24 @@ function verifyOtp(shipmentDetailIds) {
 }
 
 function pay() {
-  $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentSelected, 700, 300);
+  $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentSelected.id, 700, 300);
 }
 
 function pickTruck() {
-  $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected + "/" + false, 700, 400);
+  $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false, 700, 400);
 }
 
 function pickContOnDemand() {
   getDataFromTable(false);
-  $.modal.openCustomForm("Bốc container chỉ định", prefix + "/pickContOnDemand/" + billNo + "/" + shipmentSelected, 810, 535);
+  $.modal.openCustomForm("Bốc container chỉ định", prefix + "/pickContOnDemand/" + billNo + "/" + shipmentSelected.id, 810, 535);
 }
 
 function exportBill() {
 
+}
+
+function reloadShipmentDetail() {
+  loadShipmentDetail(shipmentSelected.id);
 }
 
 // Handling UI
@@ -655,10 +740,10 @@ function setLayoutVerifyUser() {
   $("#verifyStatus").removeClass("label-primary disable").addClass("active");
   $("#paymentStatus").removeClass("label-primary active").addClass("disable");
   $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  $("#saveShipmentDetailBtn").prop("disabled", true);
+  $("#saveShipmentDetailBtn").prop("disabled", false);
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", false);
-  $("#pickContOnDemandBtn").prop("disabled", true);
+  $("#pickContOnDemandBtn").prop("disabled", false);
   $("#pickTruckBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
