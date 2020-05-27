@@ -1066,9 +1066,9 @@ var table = {
             			return;
             		}
                     var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
-                    $.modal.open("Chỉnh Sửa " + table.options.modalName, url, 900, 500);
+                    $.modal.open("Chỉnh Sửa " + table.options.modalName, url, 1200, 500);
             	} else {
-            	    $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 900, 500);
+            	    $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 1200, 500);
             	}
             },
             editTab: function(id) {

@@ -38,121 +38,127 @@
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Địa chỉ thư điện tử：</label>
-                <div class="col-sm-8">
-                    <input name="emailAddress" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Địa chỉ liên hệ：</label>
                 <div class="col-sm-8">
                     <input name="address" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Mã số thuế doanh nghiệp：</label>
-                <div class="col-sm-8">
+                <label class="col-sm-3 control-label is-required">MST doanh nghiệp：</label>
+                <div class="col-sm-3">
                     <input name="mst" class="form-control" type="text" required>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Điện thoại cố định：</label>
-                <div class="col-sm-8">
-                    <input name="phone" class="form-control" type="text" required>
-                </div>
+            <div class="row">
+            	<div class="col-sm-12">
+		            <div class="form-group">    
+		                <label class="col-sm-3 control-label is-required">Điện thoại cố định：</label>
+		                <div class="col-sm-3">
+		                    <input name="phone" class="form-control" type="text" required>
+		                </div>
+		                <label class="col-sm-2 control-label is-required">Fax：</label>
+		                <div class="col-sm-3">
+		                    <input name="fax" class="form-control" type="text" required>
+		                </div>
+		            </div>
+            	</div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Điện thoại di động：</label>
+                <label class="col-sm-3 control-label is-required">Địa chỉ thư điện tử：</label>
                 <div class="col-sm-8">
-                    <input name="mobilePhone" class="form-control" type="text" required>
+                    <input name="emailAddress" class="form-control" type="text" required>
                 </div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Fax：</label>
-                <div class="col-sm-8">
-                    <input name="fax" class="form-control" type="text" required>
-                </div>
+            <div class="row">
+            	<div class="col-sm-12">
+		            <div class="form-group">    
+		                <label class="col-sm-3 control-label is-required">Giấy đăng ký kinh doanh：</label>
+		                <div class="col-sm-2">
+		                    <input name="businessRegistrationCertificate" class="form-control" type="text" required>
+		                </div>
+		                <label class="col-sm-1 control-label is-required">Ngày cấp：</label>
+		                <div class="col-sm-2">
+		                    <div class="input-group date">
+		                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		                        <input name="dateOfIssueRegistration" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+		                    </div>
+		                </div>
+		                <label class="col-sm-1 control-label is-required">Nơi cấp：</label>
+		                <div class="col-sm-2">
+		                    <input name="placeOfIssueRegistration" class="form-control" type="text" required>
+		                </div>
+		            </div>
+            	</div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Giấy đăng ký kinh doanh：</label>
-                <div class="col-sm-8">
-                    <input name="businessRegistrationCertificate" class="form-control" type="text" required>
-                </div>
+            <div class="row">
+            	<div class="col-sm-12">
+		            <div class="form-group">    
+		                <label class="col-sm-3 control-label is-required">Đại diện có thẩm quyền：</label>
+		                <div class="col-sm-3">
+		                    <input name="authorizedRepresentative" class="form-control" type="text" required>
+		                </div>
+		                <label class="col-sm-2 control-label is-required">Chức vụ：</label>
+		                <div class="col-sm-3">
+		                    <input name="representativePosition" class="form-control" type="text" required>
+		                </div>
+		            </div>
+            	</div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Ngày cấp giấy đăng ký：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="dateOfIssueRegistration" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
-                    </div>
-                </div>
+            <div class="row">
+            	<div class="col-sm-12">
+		            <div class="form-group">    
+		                <label class="col-sm-3 control-label is-required">Theo bản ủy quyền số：</label>
+		                <div class="col-sm-2">
+		                    <input name="followingAuthorizationFormNo" class="form-control" type="text" required>
+		                </div>
+		                <label class="col-sm-1 control-label is-required">Ngày ký：</label>
+		                <div class="col-sm-2">
+		                    <div class="input-group date">
+		                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		                        <input name="signDate" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+		                    </div>
+		                </div>
+		                <label class="col-sm-1 control-label is-required">của：</label>
+		                <div class="col-sm-2">
+		                    <input name="owned" class="form-control" type="text" required>
+		                </div>
+		            </div>
+            	</div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Nơi cấp giấy đăng ký：</label>
-                <div class="col-sm-8">
-                    <input name="placeOfIssueRegistration" class="form-control" type="text" required>
-                </div>
+            <div class="row">
+            	<div class="col-sm-12">
+		            <div class="form-group">    
+		                <label class="col-sm-3 control-label is-required">Số chứng minh thư：</label>
+		                <div class="col-sm-2">
+		                    <input name="identifyCardNo" class="form-control" type="text" required>
+		                </div>
+		                <label class="col-sm-1 control-label is-required">Ngày cấp：</label>
+		                <div class="col-sm-2">
+		                    <div class="input-group date">
+		                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+		                        <input name="dateOfIssueIdentify" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
+		                    </div>
+		                </div>
+		                <label class="col-sm-1 control-label is-required">Nơi cấp：</label>
+		                <div class="col-sm-2">
+		                    <input name="placeOfIssueIdentify" class="form-control" type="text" required>
+		                </div>
+		            </div>
+            	</div>
             </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Đại diện có thẩm quyền：</label>
-                <div class="col-sm-8">
-                    <input name="authorizedRepresentative" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Chức vụ：</label>
-                <div class="col-sm-8">
-                    <input name="representativePosition" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Theo bản ủy quyền số：</label>
-                <div class="col-sm-8">
-                    <input name="followingAuthorizationFormNo" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Ngày ký：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="signDate" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">của：</label>
-                <div class="col-sm-8">
-                    <input name="owned" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Số chứng minh thư：</label>
-                <div class="col-sm-8">
-                    <input name="identifyCardNo" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label">Ngày cấp chứng minh：</label>
-                <div class="col-sm-8">
-                    <div class="input-group date">
-                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="dateOfIssueIdentify" class="form-control" placeholder="yyyy-MM-dd" type="text" required>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">Nơi cấp chứng minh：</label>
-                <div class="col-sm-8">
-                    <input name="placeOfIssueIdentify" class="form-control" type="text" required>
-                </div>
-            </div>
-            <div class="form-group">    
-                <label class="col-sm-3 control-label is-required">email：</label>
-                <div class="col-sm-8">
-                    <input name="email" class="form-control" type="text" required>
-                </div>
+            <div class="row">
+            	<div class="col-sm-12">
+		            <div class="form-group">    
+		                <label class="col-sm-3 control-label is-required">Điện thoại di động：</label>
+		                <div class="col-sm-3">
+		                    <input name="mobilePhone" class="form-control" type="text" required>
+		                </div>
+		                <label class="col-sm-2 control-label is-required">Email：</label>
+		                <div class="col-sm-3">
+		                    <input name="email" class="form-control" type="text" required>
+		                </div>
+		            </div>
+            	</div>
             </div>
         </form>
     </div>
