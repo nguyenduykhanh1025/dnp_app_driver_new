@@ -70,6 +70,7 @@ public class LogisticAccountController extends BaseController
         logisticAccount.setLogisticGroup(logisticGroup);
         logisticAccount.setEmail(logisticAccount.getEmail().toLowerCase());
         logisticAccount.setFullName(logisticAccount.getFullName().toLowerCase());
+        logisticAccount.setUserName(logisticAccount.getUserName().toLowerCase());
         List<LogisticAccount> list = logisticAccountService.selectLogisticAccountList(logisticAccount);
         return getDataTable(list);
     }
