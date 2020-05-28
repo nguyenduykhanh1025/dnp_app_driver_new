@@ -16,15 +16,15 @@
                             </li>
                          	<li>
 <!--                                 <label>Username：</label> -->
-                                <input type="text" name="userName" placeholder="Tên đăng nhập"/>
+                                <input type="text" id="userName" name="userName" placeholder="Tên đăng nhập" autocomplete="off"/>
                             </li>
                             <li>
                                 <!-- <label>Email：</label> -->
-                                <input type="text" id="email" name="email" placeholder="Email"/>
+                                <input type="text" id="email" name="email" placeholder="Email" autocomplete="off"/>
                             </li>
                             <li>
                                 <!-- <label>Ho Va Ten：</label> -->
-                                <input type="text" id= "fullname" name="fullName" placeholder="Họ và tên"/>
+                                <input type="text" id= "fullname" name="fullName" placeholder="Họ và tên" autocomplete="off"/>
                             </li>
                             <li>
                                 <!-- <label>Status：</label> -->
@@ -147,6 +147,12 @@
     		}
 		}
         document.getElementById("logisticGroup.groupName").addEventListener("keyup", function(event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                $("#searchBtn").click();
+            }
+        });
+        document.getElementById("userName").addEventListener("keyup", function(event) {
             event.preventDefault();
             if (event.keyCode === 13) {
                 $("#searchBtn").click();
