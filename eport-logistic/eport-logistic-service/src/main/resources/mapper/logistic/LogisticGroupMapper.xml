@@ -7,7 +7,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="LogisticGroup" id="LogisticGroupResult">
         <result property="id"    column="id"    />
         <result property="groupName"    column="group_name"    />
-        <result property="mainEmail"    column="main_email"    />
+        <result property="emailAddress"    column="email_address"    />
+        <result property="address"    column="address"    />
+        <result property="mst"    column="mst"    />
+        <result property="phone"    column="phone"    />
+        <result property="mobilePhone"    column="mobile_phone"    />
+        <result property="fax"    column="fax"    />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="businessRegistrationCertificate"    column="business_registration_certificate"    />
+        <result property="dateOfIssueRegistration"    column="date_of_issue_registration"    />
+        <result property="placeOfIssueRegistration"    column="place_of_issue_registration"    />
+        <result property="authorizedRepresentative"    column="authorized_representative"    />
+        <result property="representativePosition"    column="representative_position"    />
+        <result property="followingAuthorizationFormNo"    column="following_authorization_form_no"    />
+        <result property="signDate"    column="sign_date"    />
+        <result property="owned"    column="owned"    />
+        <result property="identifyCardNo"    column="identify_card_no"    />
+        <result property="dateOfIssueIdentify"    column="date_of_issue_identify"    />
+        <result property="placeOfIssueIdentify"    column="place_of_issue_identify"    />
+        <result property="email"    column="email"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -15,20 +33,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLogisticGroupVo">
-        select id, group_name, main_email, create_by, create_time, update_by, update_time from logistic_group
+        select id, group_name, email_address, address, mst, phone, mobile_phone, fax, del_flag, business_registration_certificate, date_of_issue_registration, place_of_issue_registration, authorized_representative, representative_position, following_authorization_form_no, sign_date, owned, identify_card_no, date_of_issue_identify, place_of_issue_identify, email, create_by, create_time, update_by, update_time from logistic_group
     </sql>
 
     <select id="selectLogisticGroupList" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
         <include refid="selectLogisticGroupVo"/>
         <where>  
-            <if test="groupName != null  and groupName != ''"> and lower(group_name) like concat('%', #{groupName}, '%')</if>
-            <if test="mainEmail != null  and mainEmail != ''"> and lower(main_email) like concat('%', #{mainEmail}, '%') </if>
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="emailAddress != null  and emailAddress != ''"> and email_address = #{emailAddress}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="mst != null  and mst != ''"> and mst = #{mst}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="mobilePhone != null  and mobilePhone != ''"> and mobile_phone = #{mobilePhone}</if>
+            <if test="fax != null  and fax != ''"> and fax = #{fax}</if>
+            <if test="delFlag != null"> and del_flag = #{delFlag}</if>
+            <if test="businessRegistrationCertificate != null  and businessRegistrationCertificate != ''"> and business_registration_certificate = #{businessRegistrationCertificate}</if>
+            <if test="dateOfIssueRegistration != null "> and date_of_issue_registration = #{dateOfIssueRegistration}</if>
+            <if test="placeOfIssueRegistration != null  and placeOfIssueRegistration != ''"> and place_of_issue_registration = #{placeOfIssueRegistration}</if>
+            <if test="authorizedRepresentative != null  and authorizedRepresentative != ''"> and authorized_representative = #{authorizedRepresentative}</if>
+            <if test="representativePosition != null  and representativePosition != ''"> and representative_position = #{representativePosition}</if>
+            <if test="followingAuthorizationFormNo != null  and followingAuthorizationFormNo != ''"> and following_authorization_form_no = #{followingAuthorizationFormNo}</if>
+            <if test="signDate != null "> and sign_date = #{signDate}</if>
+            <if test="owned != null  and owned != ''"> and owned = #{owned}</if>
+            <if test="identifyCardNo != null  and identifyCardNo != ''"> and identify_card_no = #{identifyCardNo}</if>
+            <if test="dateOfIssueIdentify != null "> and date_of_issue_identify = #{dateOfIssueIdentify}</if>
+            <if test="placeOfIssueIdentify != null  and placeOfIssueIdentify != ''"> and place_of_issue_identify = #{placeOfIssueIdentify}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
         </where>
-    </select>
-    
-    <select id="selectLogisticGroupById" parameterType="Long" resultMap="LogisticGroupResult">
-        <include refid="selectLogisticGroupVo"/>
-        where id = #{id}
     </select>
     <select id="selectLogisticGroupListByName" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
         <include refid="selectLogisticGroupVo"/>
@@ -36,12 +67,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupName != null  and groupName != ''"> and lower(group_name) like concat('%', #{groupName}, '%')</if>
         </where>
     </select>
+    <select id="selectLogisticGroupById" parameterType="Long" resultMap="LogisticGroupResult">
+        <include refid="selectLogisticGroupVo"/>
+        where id = #{id}
+    </select>
         
     <insert id="insertLogisticGroup" parameterType="LogisticGroup" useGeneratedKeys="true" keyProperty="id">
         insert into logistic_group
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="groupName != null  and groupName != ''">group_name,</if>
-            <if test="mainEmail != null  and mainEmail != ''">main_email,</if>
+            <if test="emailAddress != null  and emailAddress != ''">email_address,</if>
+            <if test="address != null  and address != ''">address,</if>
+            <if test="mst != null  and mst != ''">mst,</if>
+            <if test="phone != null  and phone != ''">phone,</if>
+            <if test="mobilePhone != null  and mobilePhone != ''">mobile_phone,</if>
+            <if test="fax != null  and fax != ''">fax,</if>
+            <if test="delFlag != null  and delFlag != ''">del_flag,</if>
+            <if test="businessRegistrationCertificate != null  and businessRegistrationCertificate != ''">business_registration_certificate,</if>
+            <if test="dateOfIssueRegistration != null ">date_of_issue_registration,</if>
+            <if test="placeOfIssueRegistration != null  and placeOfIssueRegistration != ''">place_of_issue_registration,</if>
+            <if test="authorizedRepresentative != null  and authorizedRepresentative != ''">authorized_representative,</if>
+            <if test="representativePosition != null  and representativePosition != ''">representative_position,</if>
+            <if test="followingAuthorizationFormNo != null  and followingAuthorizationFormNo != ''">following_authorization_form_no,</if>
+            <if test="signDate != null ">sign_date,</if>
+            <if test="owned != null  and owned != ''">owned,</if>
+            <if test="identifyCardNo != null  and identifyCardNo != ''">identify_card_no,</if>
+            <if test="dateOfIssueIdentify != null ">date_of_issue_identify,</if>
+            <if test="placeOfIssueIdentify != null  and placeOfIssueIdentify != ''">place_of_issue_identify,</if>
+            <if test="email != null  and email != ''">email,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
@@ -49,7 +102,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="groupName != null  and groupName != ''">#{groupName},</if>
-            <if test="mainEmail != null  and mainEmail != ''">#{mainEmail},</if>
+            <if test="emailAddress != null  and emailAddress != ''">#{emailAddress},</if>
+            <if test="address != null  and address != ''">#{address},</if>
+            <if test="mst != null  and mst != ''">#{mst},</if>
+            <if test="phone != null  and phone != ''">#{phone},</if>
+            <if test="mobilePhone != null  and mobilePhone != ''">#{mobilePhone},</if>
+            <if test="fax != null  and fax != ''">#{fax},</if>
+            <if test="delFlag != null  and delFlag != ''">#{delFlag},</if>
+            <if test="businessRegistrationCertificate != null  and businessRegistrationCertificate != ''">#{businessRegistrationCertificate},</if>
+            <if test="dateOfIssueRegistration != null ">#{dateOfIssueRegistration},</if>
+            <if test="placeOfIssueRegistration != null  and placeOfIssueRegistration != ''">#{placeOfIssueRegistration},</if>
+            <if test="authorizedRepresentative != null  and authorizedRepresentative != ''">#{authorizedRepresentative},</if>
+            <if test="representativePosition != null  and representativePosition != ''">#{representativePosition},</if>
+            <if test="followingAuthorizationFormNo != null  and followingAuthorizationFormNo != ''">#{followingAuthorizationFormNo},</if>
+            <if test="signDate != null ">#{signDate},</if>
+            <if test="owned != null  and owned != ''">#{owned},</if>
+            <if test="identifyCardNo != null  and identifyCardNo != ''">#{identifyCardNo},</if>
+            <if test="dateOfIssueIdentify != null ">#{dateOfIssueIdentify},</if>
+            <if test="placeOfIssueIdentify != null  and placeOfIssueIdentify != ''">#{placeOfIssueIdentify},</if>
+            <if test="email != null  and email != ''">#{email},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
@@ -61,7 +132,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update logistic_group
         <trim prefix="SET" suffixOverrides=",">
             <if test="groupName != null  and groupName != ''">group_name = #{groupName},</if>
-            <if test="mainEmail != null  and mainEmail != ''">main_email = #{mainEmail},</if>
+            <if test="emailAddress != null  and emailAddress != ''">email_address = #{emailAddress},</if>
+            <if test="address != null  and address != ''">address = #{address},</if>
+            <if test="mst != null  and mst != ''">mst = #{mst},</if>
+            <if test="phone != null  and phone != ''">phone = #{phone},</if>
+            <if test="mobilePhone != null  and mobilePhone != ''">mobile_phone = #{mobilePhone},</if>
+            <if test="fax != null  and fax != ''">fax = #{fax},</if>
+            <if test="delFlag != null  and delFlag != ''">del_flag = #{delFlag},</if>
+            <if test="businessRegistrationCertificate != null  and businessRegistrationCertificate != ''">business_registration_certificate = #{businessRegistrationCertificate},</if>
+            <if test="dateOfIssueRegistration != null ">date_of_issue_registration = #{dateOfIssueRegistration},</if>
+            <if test="placeOfIssueRegistration != null  and placeOfIssueRegistration != ''">place_of_issue_registration = #{placeOfIssueRegistration},</if>
+            <if test="authorizedRepresentative != null  and authorizedRepresentative != ''">authorized_representative = #{authorizedRepresentative},</if>
+            <if test="representativePosition != null  and representativePosition != ''">representative_position = #{representativePosition},</if>
+            <if test="followingAuthorizationFormNo != null  and followingAuthorizationFormNo != ''">following_authorization_form_no = #{followingAuthorizationFormNo},</if>
+            <if test="signDate != null ">sign_date = #{signDate},</if>
+            <if test="owned != null  and owned != ''">owned = #{owned},</if>
+            <if test="identifyCardNo != null  and identifyCardNo != ''">identify_card_no = #{identifyCardNo},</if>
+            <if test="dateOfIssueIdentify != null ">date_of_issue_identify = #{dateOfIssueIdentify},</if>
+            <if test="placeOfIssueIdentify != null  and placeOfIssueIdentify != ''">place_of_issue_identify = #{placeOfIssueIdentify},</if>
+            <if test="email != null  and email != ''">email = #{email},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
@@ -80,5 +169,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    <update id="updateDelFlagLogisticGroupByIds" parameterType="String">
+        update logistic_group set del_flag = 1 where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
     
 </mapper>
