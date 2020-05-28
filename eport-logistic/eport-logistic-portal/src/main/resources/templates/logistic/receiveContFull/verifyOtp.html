@@ -49,9 +49,10 @@
             <div class="col-md-1 col-sm-1 col-xs-5">
                 <input id="otpInput" type="text" style="width: 100px;" />
             </div>
-            <button class="createOtpBtn">Tạo OTP</button>
+            <button class="createOtpBtn" onclick="getOtp()">Tạo OTP</button>
         </div>
-        <p>OTP có hiệu lực trong 5 phút.</p>
+        <p id="indicateTime" style="display: none;">OTP có hiệu lực trong <span id="timer"></span>.</p>
+        <p id="indicateAction">Nhấn tạo OTP để nhận mã OTP.</p>
         <i><span style="color: red;">*</span>Lưu ý: Không nên chia sẻ mã này cho bất kỳ ai.</i>
         <div class="btn">
             <button class="confirmBtn" onclick="confirm()">Xác thực</a>

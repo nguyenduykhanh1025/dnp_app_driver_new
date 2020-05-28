@@ -1,7 +1,7 @@
 var prefix = ctx + "logistic/receiveContFull";
-
+var shipmentDetailIds = "";
 function confirm() {
-    parent.verifyOtp(shipmentDetailIds);
+    parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1));
     $.modal.close();
 }
 
@@ -14,6 +14,7 @@ $("#contTable").datagrid({
     loader: function (param, success, error) {
         var index = 1;
         shipmentDetails.forEach(function(shipmentDetail) {
+            shipmentDetailIds += shipmentDetail.id + ",";
             shipmentDetail.id = index++;
         })
         success(shipmentDetails);

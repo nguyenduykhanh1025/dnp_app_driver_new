@@ -256,7 +256,10 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
-		mmap.put("shipmentDetailIds", shipmentDetailIds);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			mmap.put("shipmentDetails", shipmentDetails);
+		}
 		return prefix + "/checkContListBeforeVerify";
 	}
 
@@ -268,10 +271,8 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@GetMapping("verifyOtpForm/{shipmentDetailIds}")
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			mmap.put("shipmentDetails", shipmentDetails);
-		}
+		mmap.put("shipmentDetailIds", shipmentDetailIds);
+		mmap.put("numberPhone", getGroup().getMobilePhone());
 		return prefix + "/verifyOtp";
 	}
 
@@ -279,19 +280,15 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult verifyOtp(String shipmentDetailIds, String otp) {
 		if (otp.equals("1234")) {
-			try {
-				String[] ids = shipmentDetailIds.split(",");
-				for (String id : ids) {
-					ShipmentDetail shipmentDetail = new ShipmentDetail();
-					shipmentDetail.setId(Long.parseLong(id));
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() >0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				for (ShipmentDetail shipmentDetail : shipmentDetails) {
 					shipmentDetail.setUserVerifyStatus("Y");
 					shipmentDetail.setStatus(3);
 					shipmentDetail.setProcessStatus("Y");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 				}
 				return success("Xác thực OTP thành công");
-			} catch (Exception e) {
-				return error("cõ lỗi xảy ra trong hệ thống!");
 			}
 		}
 		return error("Mã OTP không chính xác!");
@@ -441,33 +438,25 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình bốc container chỉ định!");
 	}
 
-	@GetMapping("paymentForm/{shipmentId}")
-	public String paymentForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setStatus(4);
-		shipmentDetail.setPreorderPickup("Y");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		if (shipmentDetails.size() > 0) {
-			mmap.put("moveContAmount", shipmentDetails.size());
-		} else {
-			mmap.put("moveContAmount", 0);
-		}
-		mmap.put("totalCosts", 100000000l);
-		mmap.put("unitCosts", 20000);
-		mmap.put("shipmentId", shipmentId);
+	@GetMapping("paymentForm/{shipmentDetailIds}")
+	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		return prefix + "/paymentForm";
 	}
 
 	@PostMapping("/payment")
 	@ResponseBody
-	public AjaxResult payment(long shipmentId) {
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setStatus(5);
-		shipmentDetail.setPaymentStatus("Y");
-		updateShipmentDetailStatus(shipmentDetail);
-		return success("Thanh toán thành công");
+	public AjaxResult payment(String shipmentDetailIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetail.setStatus(4);
+				shipmentDetail.setPaymentStatus("Y");
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+			return success("Thanh toán thành công");
+		}
+		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
 	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}")
