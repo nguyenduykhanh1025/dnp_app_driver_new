@@ -4,11 +4,15 @@ var driverList;
 
 function confirm() {
     if (driverIds.length > 0) {
+        var ids = "";
+        driverIds.forEach(function(id) {
+            ids += id + ",";
+        });
         if (pickCont) {
             if (driverIds.length == 1) {
-                parent.finishPickTruck(driverList[driverIds[0]].plateNumber);
+                parent.finishPickTruck($("#plateNumber"+driverIds[0]).html(), ids.substring(0, ids.length-1));
             } else {
-                parent.finishPickTruck("Đội xe chỉ định trước");
+                parent.finishPickTruck("Đội xe chỉ định trước", ids.substring(0, ids.length-1));
             }
             $.modal.close();
         } else {
@@ -17,7 +21,7 @@ function confirm() {
                 method: "post",
                 data: {
                     shipmentId: shipmentId,
-                    driverIds: driverIds
+                    driverIds: ids.substring(0, ids.length-1)
                 },
                 success: function (data) {
                     if (data.code != 0) {
@@ -73,7 +77,7 @@ $.ajax({
 function transferInToOut(index, tr) {
     driverIds.push(driverList[index].id);
     $("#transport"+driverList[index].id).remove();
-    var tableRow = '<tr id="pickedTransport'+ driverList[index].id +'"><td width="100px"><button onclick="transferOutToIn('+ index +', this)">Chuyển</button></td><td width="108px">' + driverList[index].plateNumber + '</td><td width="108px">' + driverList[index].mobileNumber + '</td></tr>';
+    var tableRow = '<tr id="pickedTransport'+ driverList[index].id +'"><td width="100px"><button onclick="transferOutToIn('+ index +', this)">Chuyển</button></td><td id="plateNumber'+ driverList[index].id +'" width="108px">' + driverList[index].plateNumber + '</td><td width="108px">' + driverList[index].mobileNumber + '</td></tr>';
     $("#pickedTransportList").append(tableRow);
 }
 

@@ -141,6 +141,13 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Boc Chi Dinh (Y,N)")
     private String preorderPickup;
 
+    /** So Cont Dich Chuyen */
+    @Excel(name = "So Cont Dich Chuyen")
+    private Integer movingContAmount;
+
+    /** Chuoi ID Tai Xe */
+    private String transportIds;
+
     /** Status */
     @Excel(name = "Status")
     private Integer status;
@@ -404,6 +411,22 @@ public class ShipmentDetail extends BaseEntity
         return preorderPickup;
     }
 
+    public void setMovingContAmount(Integer movingContAmount) {
+        this.movingContAmount = movingContAmount;
+    }
+
+    public Integer getMovingContAmount() {
+        return movingContAmount;
+    }
+
+    public void setTransportIds(String transportIds) {
+        this.transportIds = transportIds;
+    }
+
+    public String getTransportIds() {
+        return transportIds;
+    }
+
     public void setStatus(Integer status) {
         this.status = status;
     }
@@ -471,6 +494,8 @@ public class ShipmentDetail extends BaseEntity
             .append("doReceivedTime", getDoReceivedTime())
             .append("userVerifyStatus", getUserVerifyStatus())
             .append("preorderPickup", getPreorderPickup())
+            .append("movingContAmount", getMovingContAmount())
+            .append("transportIds", getTransportIds())
             .append("status", getStatus())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())

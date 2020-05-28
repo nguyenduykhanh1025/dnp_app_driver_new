@@ -5,7 +5,10 @@ var toDate = "";
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected;
 var shipmentDetails;
+var shipmentDetailIds;
+var originStatus;
 var billNo;
+var simpleCustom;
 var contList = [];
 var checked = false;
 var allChecked = true;
@@ -257,6 +260,56 @@ config = {
             $(".checker").prop("checked", false);
             checked = false;
           }
+          if (shipmentDetails.length > 0) {
+            var status = 2;
+            var customStatus = false;
+            var paymentStatus = false;
+            for (var i=0; i<shipmentDetails.length; i++) {
+              if (shipmentDetails[i].customStatus == "Chưa thông quan") {
+                status = 1;
+                break;
+              }
+              if (shipmentDetails[i].paymentStatus == "Đã thanh toán") {
+                if (!customStatus) {
+                  status = 4;
+                  paymentStatus = true;
+                } else {
+                  status = 1;
+                }
+              }
+              if (shipmentDetails[i].processStatus == "Đã làm lệnh") {
+                if (!paymentStatus) {
+                  status = 3;
+                  customStatus = true;
+                } else {
+                  status = 1;
+                }
+              } 
+            }
+            switch (status) {
+              case 1:
+                setLayoutCustomStatus(simpleCustom);
+                break;
+              case 2:
+                setLayoutVerifyUser();
+                break;
+              case 3:
+                setLayoutPaymentStatus();
+                break;
+              case 4:
+                setLayoutPickTruck();
+                break;
+            }
+          } else {
+            switch (originStatus) {
+              case 1:
+                setLayoutRegisterStatus();
+                break;
+              case 2:
+                setLayoutCustomStatus(simpleCustom);
+                break;
+            }
+          }
         }
         if (row[1] == "containerNo") {
           containerNo = hot.getDataAtRow(row[0])[2];
@@ -376,41 +429,22 @@ function loadShipmentDetail(id) {
       shipmentId: id
     },
     success: function (result) {
-      // if (result.length == 0) {
-      //   setLayoutRegisterStatus();
-      // } else {
-      //   switch (result[0].status) {
-      //     case 1:
-      //       setLayoutCustomStatus();
-      //       break;
-      //     case 2:
-      //       setLayoutVerifyUser();
-      //       break;
-      //     case 3:
-      //       setLayoutPickCont();
-      //       break;
-      //     case 4:
-      //       setLayoutPaymentStatus();
-      //       break;
-      //     case 5:
-      //       setLayoutPickTruck();
-      //       break;
-      //     default:
-      //       setLayoutRegisterStatus();
-      //       break;
-      //   }
-      // }
       var saved = true;
       var customStatus = true;
+      simpleCustom = false;
       result.forEach(function iterate(shipmentDetail) {
         if (shipmentDetail.id == null) {
           saved = false;
           setLayoutRegisterStatus();
+          originStatus = 1;
         } else {
-          setLayoutCustomStatus();
           if (shipmentDetail.status < 2) {
             customStatus = false;
+          } else {
+            simpleCustom = true;
           }
+          setLayoutCustomStatus(simpleCustom);
+          originStatus = 2;
         }
         if (shipmentDetail.expiredDem != null && shipmentDetail.expiredDem != '') {
           shipmentDetail.expiredDem = shipmentDetail.expiredDem.substring(8, 10) + "/" + shipmentDetail.expiredDem.substring(5, 7) + "/" + shipmentDetail.expiredDem.substring(0, 4);
@@ -467,6 +501,7 @@ function loadShipmentDetail(id) {
       }
       if (customStatus) {
         setLayoutVerifyUser();
+        $("#customBtn").prop("disabled", true);
       }
     }
   });
@@ -536,10 +571,23 @@ function getDataSelectedFromTable(isValidate) {
       }
     } 
   });
-  shipmentDetails = "";
+  shipmentDetailIds = "";
+  shipmentDetails = [];
   $.each(cleanedGridData, function (index, object) {
     var shipmentDetail = new Object();
-    shipmentDetails += object["id"]+",";
+    if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && isValidate) {
+      $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
+      errorFlg = true;
+    }
+    shipmentDetail.blNo = object["blNo"];
+    shipmentDetail.containerNo = object["containerNo"];
+    shipmentDetail.customStatus = object["customStatus"];
+    shipmentDetail.processStatus = object["processStatus"];
+    shipmentDetail.paymentStatus = object["paymentStatus"];
+    shipmentDetail.shipmentId = shipmentSelected.id;
+    shipmentDetail.id = object["id"];
+    shipmentDetails.push(shipmentDetail);
+    shipmentDetailIds += object["id"]+",";
   });
 
   // Get result in "selectedList" variable
@@ -547,7 +595,7 @@ function getDataSelectedFromTable(isValidate) {
     $.modal.alert("Bạn chưa chọn container.");
     errorFlg = true;
   } else {
-    shipmentDetails = shipmentDetails.substring(0, shipmentDetails.length-1);
+    shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length-1);
   }
   if (errorFlg) {
     return false;
@@ -674,16 +722,16 @@ function checkCustomStatus() {
 function verify() {
   getDataSelectedFromTable(true);
   if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetails, 600, 500);
+    $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
   } 
 }
 
-function verifyOtp(shipmentDetailIds) {
-  $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDetailIds, 600, 350);
+function verifyOtp(shipmentDtIds) {
+  $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds, 600, 350);
 }
 
 function pay() {
-  $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentSelected.id, 700, 300);
+  $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds, 700, 300);
 }
 
 function pickTruck() {
@@ -692,7 +740,7 @@ function pickTruck() {
 
 function pickContOnDemand() {
   getDataFromTable(false);
-  $.modal.openCustomForm("Bốc container chỉ định", prefix + "/pickContOnDemand/" + billNo + "/" + shipmentSelected.id, 810, 535);
+  $.modal.openCustomForm("Bốc container chỉ định", prefix + "/pickContOnDemandForm/" + billNo, 710, 565);
 }
 
 function exportBill() {
@@ -719,7 +767,7 @@ function setLayoutRegisterStatus() {
   $("#exportBillBtn").prop("disabled", true);
 }
 
-function setLayoutCustomStatus() {
+function setLayoutCustomStatus(simpleCustoms) {
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
   $("#customStatus").removeClass("label-primary disable").addClass("active");
   $("#verifyStatus").removeClass("label-primary active").addClass("disable");
@@ -728,7 +776,11 @@ function setLayoutCustomStatus() {
   $("#saveShipmentDetailBtn").prop("disabled", false);
   $("#customBtn").prop("disabled", false);
   $("#verifyBtn").prop("disabled", true);
-  $("#pickContOnDemandBtn").prop("disabled", true);
+  if (simpleCustoms) {
+    $("#pickContOnDemandBtn").prop("disabled", false);
+  } else {
+    $("#pickContOnDemandBtn").prop("disabled", true);
+  }
   $("#pickTruckBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
@@ -740,10 +792,10 @@ function setLayoutVerifyUser() {
   $("#verifyStatus").removeClass("label-primary disable").addClass("active");
   $("#paymentStatus").removeClass("label-primary active").addClass("disable");
   $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  $("#saveShipmentDetailBtn").prop("disabled", false);
-  $("#customBtn").prop("disabled", true);
+  // $("#saveShipmentDetailBtn").prop("disabled", false);
+  // $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", false);
-  $("#pickContOnDemandBtn").prop("disabled", false);
+  // $("#pickContOnDemandBtn").prop("disabled", false);
   $("#pickTruckBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
@@ -755,10 +807,10 @@ function setLayoutPaymentStatus() {
   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
   $("#paymentStatus").removeClass("label-primary disable").addClass("active");
   $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  $("#saveShipmentDetailBtn").prop("disabled", true);
-  $("#customBtn").prop("disabled", true);
+  // $("#saveShipmentDetailBtn").prop("disabled", true);
+  // $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
-  $("#pickContOnDemandBtn").prop("disabled", true);
+  // $("#pickContOnDemandBtn").prop("disabled", true);
   $("#pickTruckBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", false);
   $("#exportBillBtn").prop("disabled", true);
@@ -770,10 +822,10 @@ function setLayoutPickTruck() {
   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
   $("#paymentStatus").removeClass("active disable").addClass("label-primary");
   $("#finishStatus").removeClass("label-primary disable").addClass("active");
-  $("#saveShipmentDetailBtn").prop("disabled", true);
-  $("#customBtn").prop("disabled", true);
+  // $("#saveShipmentDetailBtn").prop("disabled", true);
+  // $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
-  $("#pickContOnDemandBtn").prop("disabled", true);
+  // $("#pickContOnDemandBtn").prop("disabled", true);
   $("#pickTruckBtn").prop("disabled", false);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", false);
@@ -800,5 +852,6 @@ function finishForm(result) {
   } else {
     $.modal.msgError(result.msg);
   }
+  reloadShipmentDetail();
 }
 

@@ -42,7 +42,7 @@
                 <table id="contTable" style="width: 360px;">
                     <thead>
                         <tr>
-                            <th data-options="field:'id',halign:'center'" width=50>ID</th>
+                            <th data-options="field:'id',halign:'center'" width=50>Stt</th>
                             <th data-options="field:'blNo',halign:'center'" width="150">B/L No</th>
                             <th data-options="field:'containerNo',halign:'center'" width="150">Container No</th>
                         </tr>
@@ -59,7 +59,7 @@
 <th:block th:include="include :: footer" />
 <th:block th:include="include :: easyui-js" />
 <script type="text/javascript" th:inline="javascript">
-    var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
+    var shipmentDetails = /*[[${shipmentDetails}]]*/;
 </script>
 <script th:src="@{/js/logistic/receiveContFull/checkContListBeforeVerify.js}"></script>
 
