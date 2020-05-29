@@ -82,9 +82,9 @@ function formatStatus(value) {
 }
 function formatExternalRent(value){
 	  if (value != 0) {
-		    return "<span class='label label-success'>Thuê</span>"
+		    return "<span class='label label-success'>Có</span>"
 		  }
-		  return "<span class='label label-default'>Thường</span>"
+		  return "<span class='label label-default'>Không</span>"
 }
 function formatAction(value, row, index) {
 	var actions = [];
