@@ -70,9 +70,11 @@ public class TransportAccountController extends LogisticBaseController
     public TableDataInfo list(TransportAccount transportAccount, String groupName)
     {
         startPage();
+        LogisticAccount currentUser = ShiroUtils.getSysUser();
         transportAccount.setDelFlag(false);
         LogisticGroup logisticGroup = new LogisticGroup();
         logisticGroup.setGroupName(groupName.toLowerCase());
+        transportAccount.setLogisticGroupId(currentUser.getGroupId());
         transportAccount.setLogisticGroup(logisticGroup);
         transportAccount.setFullName(transportAccount.getFullName().toLowerCase());
         transportAccount.setPlateNumber(transportAccount.getPlateNumber().toLowerCase());

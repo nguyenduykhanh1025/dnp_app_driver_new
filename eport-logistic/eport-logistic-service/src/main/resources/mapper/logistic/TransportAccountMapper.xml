@@ -42,6 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="externalRentStatus != null  and externalRentStatus != ''"> and c.external_rent_status = #{externalRentStatus}</if>
             <if test="validDate != null ">and c.valid_date &lt;= #{validDate}</if>
             <if test="delFlag != null"> and c.del_flag = #{delFlag}</if>
+            <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
         </where>
     </select>
     
