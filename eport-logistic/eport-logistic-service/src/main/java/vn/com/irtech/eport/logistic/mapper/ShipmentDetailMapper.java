@@ -59,7 +59,5 @@ public interface ShipmentDetailMapper
      */
     public int deleteShipmentDetailByIds(String[] ids);
 
-    public int updateShipmentDetailStatus(ShipmentDetail shipmentDetail);
-
     public List<ShipmentDetail> selectShipmentDetailByIds(String[] ids);
 }

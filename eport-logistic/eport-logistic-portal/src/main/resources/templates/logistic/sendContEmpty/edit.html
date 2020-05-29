@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <th:block th:include="include :: header('Chỉnh sửa lô')" />
+</head>
+<style type="text/css">
+  .container {
+    padding-top: 10px;
+  }
+  .form-group > label {
+    text-align: right;
+  }
+
+  .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  }
+</style>
+<body>
+  <div class="container">
+    <form id="form-edit-shipment">
+      <div class="form-group row">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Mã Lô</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input name="id" id="id" type="text" class="form-control" style="display: none;"/>
+          <input name="shipmentCode" id="shipmentCode" type="text" class="form-control" disabled/>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Mã Số Thuế</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input name="taxCode" id="taxCode" type="text" class="form-control" required/>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Số Lượng Container</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input name="containerAmount" id="containerAmount" type="number" class="form-control" required/>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Tên Công Ty</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input name="groupName" id="groupName" class="form-control" rows="2" disabled />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Ghi Chú</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <textarea name="remark" id="remark" class="form-control" rows="3"></textarea>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+<th:block th:include="include :: footer" />
+<script type="text/javascript" th:inline="javascript">
+  var shipment = /*[[${shipment}]]*/ ;
+  var prefix = ctx + "logistic/sendContEmpty";
+
+  // Map data to form
+  if (shipment != null) {
+    $("#id").val(shipment.id);
+    $("#shipmentCode").val(shipment.id);
+    $("#taxCode").val(shipment.taxCode);
+    $("#containerAmount").val(shipment.containerAmount);
+    $("#groupName").val(shipment.logisticGroup.groupName);
+    $("#remark").val(shipment.remark);
+  }
+  
+  $("#form-edit-shipment").validate({
+      focusCleanup: true
+  });
+
+  function submitHandler() {
+      if ($.validate.form()) {
+          $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
+          parent.loadTable();
+      }
+  }
+</script>
+</html>
