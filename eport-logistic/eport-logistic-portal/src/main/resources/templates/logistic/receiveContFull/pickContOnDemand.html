@@ -20,21 +20,26 @@
   }
 
   .content {
-    height: 437px;
+    height: 467px;
     padding: 12px 15px 12px 15px;
     margin-left: 10px;
   }
 
   .contListPosition {
-    height: 120px;
+    height: 150px;
     /* width: 760px; */
+    overflow-y: scroll;
+    text-align: center;
+  }
+
+  .bayPosition {
     display: flex;
   }
 
   .contListPicked {
     margin-top: 12px;
     height: 185px;
-    width: 770px;
+    width: 670px;
   }
 
   .contBill {
@@ -52,6 +57,7 @@
     height: 20px;
     margin-bottom: 5px;
     font-weight: bold;
+    cursor: pointer;
   }
 
   .cellDivDisable {
@@ -86,10 +92,9 @@
         <table id="pickedContTable" class="table" border="1" align="left" > 
           <thead>
             <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
-              <th width="60px">ID</th>
-              <th width="250px">Container No</th>
-              <th width="250px">Xe vận chuyển</th>
-              <th width="200px">Hành động</th>
+              <th width="240px">Container No</th>
+              <th width="240px">Xe vận chuyển</th>
+              <th width="180px">Hành động</th>
             </tr>
           </thead>
           <tbody id="pickedContList"></tbody>
@@ -97,15 +102,28 @@
       </div>
       <div class="contBill">
         <b>Phí dịch chuyển</b>
-        <div>
-          <label style="margin-top: 4px;">Đơn giá: <span id="unitCosts">0</span><span> đồng.</span></label>
-        </div>
-        <div>
-          <label style="margin-top: 4px;">Số container dịch chuyển: <span id="pickedContAmount">0</span><span>.</span></label>
-        </div>
-        <div>
-          <label style="margin-top: 4px;">Thành tiền: <span id="totalCosts">0</span><span> đồng.</span></label>
-        </div>
+        <table id="pickedContTable" class="table" style="width: 660px;" border="1" align="left" > 
+          <thead>
+            <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+              <th width="240px">Đơn giá</th>
+              <th width="240px">Số container dịch chuyển</th>
+              <th width="180px">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody style="height: 36px;">
+            <tr>
+              <td style="width: 240px">
+                <span id="unitCosts">0</span><span> đồng.</span>
+              </td>
+              <td style="width: 240px">
+                <span id="pickedContAmount">0</span><span>.</span>
+              </td>
+              <td style="width: 180px">
+                <span id="totalCosts">0</span><span> đồng.</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
     <div class="layui-layer-btn footer">
@@ -116,10 +134,9 @@
 </body>
 <th:block th:include="include :: footer" />
 <script type="text/javascript" th:inline="javascript">
-  var containerList = /*[[${containerList}]]*/;
   var unitCosts = /*[[${unitCosts}]]*/;
-  var billNo = /*[[${billNo}]]*/;
-  var shipmentId= /*[[${shipmentId}]]*/;
+  var bayList = /*[[${bayList}]]*/;
+  var blNo = /*[[${blNo}]]*/;
 </script>
 <script th:src="@{/js/logistic/receiveContFull/pickContOnDemand.js}"></script>
 

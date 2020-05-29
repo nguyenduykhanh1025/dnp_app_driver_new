@@ -5,7 +5,7 @@ function confirm() {
         url: prefix + "/payment",
         method: "post",
         data: {
-            shipmentId: shipmentId
+            shipmentDetailIds: shipmentDetailIds
         },
         success: function (data) {
             if (data.code != 0) {
@@ -25,7 +25,7 @@ function closeForm() {
     $.modal.close();
 }
 
-$("#moveContAmount").html(moveContAmount);
-$("#unitCosts").html(unitCosts);
-$("#moveContPrice").html(moveContAmount * unitCosts);
-$("#total").html(moveContAmount * unitCosts);
+$("#moveContAmount").html(0);
+$("#unitCosts").html(0);
+$("#moveContPrice").html(0);
+$("#total").html(0);

@@ -1,6 +1,8 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -143,7 +145,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 			int index = 0;
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				index++;
-				if (shipmentDetail.getId() != null && shipmentDetail.getStatus() == 1) {
+				if (shipmentDetail.getId() != null) {
 					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
 						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
 					} else {
@@ -153,7 +155,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 							return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 						}
 					}
-				} else if (shipmentDetail.getId() == null) {
+				} else {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
 					shipmentDetail.setCreateTime(new Date());
@@ -254,7 +256,10 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
-		mmap.put("shipmentDetailIds", shipmentDetailIds);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			mmap.put("shipmentDetails", shipmentDetails);
+		}
 		return prefix + "/checkContListBeforeVerify";
 	}
 
@@ -267,7 +272,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	@GetMapping("verifyOtpForm/{shipmentDetailIds}")
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		mmap.put("numberPhone", "0912312312");
+		mmap.put("numberPhone", getGroup().getMobilePhone());
 		return prefix + "/verifyOtp";
 	}
 
@@ -275,103 +280,183 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult verifyOtp(String shipmentDetailIds, String otp) {
 		if (otp.equals("1234")) {
-			try {
-				String[] ids = shipmentDetailIds.split(",");
-				for (String id : ids) {
-					ShipmentDetail shipmentDetail = new ShipmentDetail();
-					shipmentDetail.setId(Long.parseLong(id));
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() >0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				for (ShipmentDetail shipmentDetail : shipmentDetails) {
 					shipmentDetail.setUserVerifyStatus("Y");
 					shipmentDetail.setStatus(3);
 					shipmentDetail.setProcessStatus("Y");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 				}
 				return success("Xác thực OTP thành công");
-			} catch (Exception e) {
-				return error("cõ lỗi xảy ra trong hệ thống!");
 			}
 		}
 		return error("Mã OTP không chính xác!");
 	}
 
-	@GetMapping("pickContOnDemand/{billNo}/{shipmentId}")
-	public String pickContOnDemand(@PathVariable("billNo") String billNo, @PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setBlNo(billNo);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		int shipmentDetailSize = shipmentDetails.size();
-		ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][7];
-		int index = 0;
-		if (shipmentDetailSize > 0) {
-			for (int col=0; col<7; col++) {
-				for (int row=0; row<5; row++) {
-					if (index <= (shipmentDetailSize-1)) {
-						shipmentDetails.get(index).setRow(col);
-						shipmentDetails.get(index).setTier(row);
-						shipmentDetailMatrix[row][col] = shipmentDetails.get(index);
-						index++;
+	@GetMapping("pickContOnDemandForm/{blNo}")
+	public String pickContOnDemand(@PathVariable("blNo") String blNo, ModelMap mmap) {
+		ShipmentDetail shipmentDt = new ShipmentDetail();
+		shipmentDt.setBlNo(blNo);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			// simulating the location of container in da nang port, mapping to matrix
+			List<ShipmentDetail[][]> bayList= new ArrayList<>();
+			String bay1 = "AB123";
+			int row1 = 1;
+			int tier1 = 1;
+			String bay2 = "AB124";
+			int row2 = 1;
+			int tier2 = 1;
+			boolean next = true;
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				if (next) {
+					if (tier1 == 6) {
+						tier1 = 1;
+						row1++;
 					}
+					shipmentDetail.setBay(bay1);
+					shipmentDetail.setRow(row1);
+					shipmentDetail.setTier(tier1++);
+					next = false;
+				} else {
+					if (tier2 == 6) {
+						tier2 = 1;
+						row2++;
+					}
+					shipmentDetail.setBay(bay2);
+					shipmentDetail.setRow(row2);
+					shipmentDetail.setTier(tier2++);
+					next = true;
 				}
 			}
+
+			// Mapping container to matrix by location row, tier, bay
+			Collections.sort(shipmentDetails, new BayComparator());
+			ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][6];
+			String currentBay = shipmentDetails.get(0).getBay();
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				if (currentBay.equals(shipmentDetail.getBay())) {
+					shipmentDetailMatrix[shipmentDetail.getTier()-1][shipmentDetail.getRow()-1] = shipmentDetail;
+				} else {
+					bayList.add(shipmentDetailMatrix);
+					currentBay = shipmentDetail.getBay();
+					shipmentDetailMatrix = new ShipmentDetail[5][6];
+					shipmentDetailMatrix[shipmentDetail.getTier()-1][shipmentDetail.getRow()-1] = shipmentDetail;
+				}
+			}
+			bayList.add(shipmentDetailMatrix);
+
+			mmap.put("bayList", bayList);
+			mmap.put("unitCosts", 20000);
 		}
-		mmap.put("containerList", shipmentDetailMatrix);
-		mmap.put("unitCosts", 20000);
-		mmap.put("billNo", billNo);
-		mmap.put("shipmentId", shipmentId);
 		return prefix + "/pickContOnDemand";
 	}
 
-	@PostMapping("/setMovingContPrice")
+	@PostMapping("/pickContOnDemand")
 	@ResponseBody
-	public AjaxResult setMovingContPrice(@RequestParam(value="preorderPickupContIds[]") int[] preorderPickupContIds, String billNo, long shipmentId) {
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setBlNo(billNo);
-		shipmentDetail.setShipmentId(shipmentId);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		if (shipmentDetails.size() > 0) {
-			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
-				for(int id : preorderPickupContIds) {
-					if (id == shipmentDetail2.getId()) {
-						shipmentDetail2.setPreorderPickup("Y");
-						break;
+	public AjaxResult pickContOnDemand(@RequestBody List<ShipmentDetail> preorderPickupConts) {
+		if (preorderPickupConts.size() > 0) {
+			ShipmentDetail shipmentDt = new ShipmentDetail();
+			shipmentDt.setBlNo(preorderPickupConts.get(0).getBlNo());
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				// simulating the location of container in da nang port
+				List<ShipmentDetail[][]> bayList= new ArrayList<>();
+				String bay1 = "AB123";
+				int row1 = 1;
+				int tier1 = 1;
+				String bay2 = "AB124";
+				int row2 = 1;
+				int tier2 = 1;
+				boolean next = true;
+				for (ShipmentDetail shipmentDetail : shipmentDetails) {
+					if (next) {
+						if (tier1 == 6) {
+							tier1 = 1;
+							row1++;
+						}
+						shipmentDetail.setBay(bay1);
+						shipmentDetail.setRow(row1);
+						shipmentDetail.setTier(tier1++);
+						next = false;
+					} else {
+						if (tier2 == 6) {
+							tier2 = 1;
+							row2++;
+						}
+						shipmentDetail.setBay(bay2);
+						shipmentDetail.setRow(row2);
+						shipmentDetail.setTier(tier2++);
+						next = true;
 					}
 				}
-				shipmentDetail2.setStatus(4);
-				if (shipmentDetailService.updateShipmentDetail(shipmentDetail2) != 1) {
-					return error("Có lỗi xảy ra trong quá trình bốc container chỉ định!");
+
+				// Mapping container to matrix by location row, tier, bay
+				Collections.sort(shipmentDetails, new BayComparator());
+				ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][6];
+				String currentBay = shipmentDetails.get(0).getBay();
+				for (ShipmentDetail shipmentDetail : shipmentDetails) {
+					if (currentBay.equals(shipmentDetail.getBay())) {
+						shipmentDetailMatrix[shipmentDetail.getTier()-1][shipmentDetail.getRow()-1] = shipmentDetail;
+					} else {
+						bayList.add(shipmentDetailMatrix);
+						currentBay = shipmentDetail.getBay();
+						shipmentDetailMatrix = new ShipmentDetail[5][6];
+						shipmentDetailMatrix[shipmentDetail.getTier()-1][shipmentDetail.getRow()-1] = shipmentDetail;
+					}
 				}
+				bayList.add(shipmentDetailMatrix);
+
+				int movingContAmount = 0;
+				for (int b=0; b<bayList.size(); b++) {
+					int movingContAmountTemp = 0;
+					for (int row=0; row<6; row++) {
+						for (int tier=4; tier>=0; tier--) {
+							if (bayList.get(b)[tier][row] != null) {
+								for (ShipmentDetail shipmentDetail : preorderPickupConts) {
+									if (bayList.get(b)[tier][row].getId() == shipmentDetail.getId()) {
+										movingContAmount += movingContAmountTemp;
+										movingContAmountTemp = 0;
+										break;
+									}
+								}
+								movingContAmountTemp++;
+							}
+						}
+					}
+				}
+
+				for (ShipmentDetail shipmentDetail : preorderPickupConts) {
+					shipmentDetail.setMovingContAmount(movingContAmount);
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+				}
+
+				return success("Bốc container chỉ định thành công.");
 			}
 		}
-		return success("Bốc container chỉ định thành công");
+		return error("Có lỗi xảy ra trong quá trình bốc container chỉ định!");
 	}
 
-	@GetMapping("paymentForm/{shipmentId}")
-	public String paymentForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setStatus(4);
-		shipmentDetail.setPreorderPickup("Y");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		if (shipmentDetails.size() > 0) {
-			mmap.put("moveContAmount", shipmentDetails.size());
-		} else {
-			mmap.put("moveContAmount", 0);
-		}
-		mmap.put("totalCosts", 100000000l);
-		mmap.put("unitCosts", 20000);
-		mmap.put("shipmentId", shipmentId);
+	@GetMapping("paymentForm/{shipmentDetailIds}")
+	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		return prefix + "/paymentForm";
 	}
 
 	@PostMapping("/payment")
 	@ResponseBody
-	public AjaxResult payment(long shipmentId) {
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setStatus(5);
-		shipmentDetail.setPaymentStatus("Y");
-		updateShipmentDetailStatus(shipmentDetail);
-		return success("Thanh toán thành công");
+	public AjaxResult payment(String shipmentDetailIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetail.setStatus(4);
+				shipmentDetail.setPaymentStatus("Y");
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+			return success("Thanh toán thành công");
+		}
+		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
 	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}")
@@ -391,4 +476,13 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		ids = ids.substring(0, ids.length()-1);
 		return success("Điều xe thành công");
 	}
+
+	class BayComparator implements Comparator<ShipmentDetail> {
+		public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
+			// In the following line you set the criterion,
+			// which is the name of Contact in my example scenario
+			return shipmentDetail1.getBay().compareTo(shipmentDetail2.getBay());
+		}
+	}
 }
+
