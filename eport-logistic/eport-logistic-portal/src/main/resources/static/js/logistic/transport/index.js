@@ -80,6 +80,12 @@ function formatStatus(value) {
   }
   return "<span class='label label-default'>Nomal</span>"
 }
+function formatExternalRent(value){
+	  if (value != 0) {
+		    return "<span class='label label-success'>Rent</span>"
+		  }
+		  return "<span class='label label-default'>Nomal</span>"
+}
 function formatAction(value, row, index) {
 	var actions = [];
     actions.push('<a class="btn btn-success btn-xs" onclick="editt(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
