@@ -2,6 +2,7 @@ var prefix = ctx + "logistic/receiveContFull";
 var driverList;
 var internalTransport = [];
 var externalTransport = [];
+var externalDriverList = [];
 var isCheckAllInternal = false;
 var isCheckAllExternal = false;
 var number = 0;
@@ -55,7 +56,100 @@ function pickTruckWithoutExternal() {
 }
 
 function pickTruckWithExternal() {
-    
+    if(validateInput()) {
+        $.ajax({
+            url: "/logistic/transport/saveExternalTransportAccount",
+            method: "post",
+            contentType: "application/json",
+            accept: 'text/plain',
+            data: JSON.stringify(externalDriverList),
+            dataType: 'text',
+            success: function (data) {
+                var result = JSON.parse(data);
+                if (result.length > 0) {
+                    var ids = "";
+                    result.forEach(function(driver) {
+                        ids += driver.id + ",";
+                    });
+                    if (externalTransport.length > 0) {
+                        externalTransport.forEach(function(driver) {
+                            ids += driver.id + ",";
+                        });
+                    }
+                    if (pickCont) {
+                        if (externalTransport.length == 0 && externalDriverList.length == 1) {
+                            parent.finishPickTruck($("#plateNumber"+externalTransport[0].id).html(), ids.substring(0, ids.length-1));
+                        } else {
+                            parent.finishPickTruck("Đội xe chỉ định trước", ids.substring(0, ids.length-1));
+                        }
+                        $.modal.close();
+                    } else {
+                        $.ajax({
+                            url: prefix + "/pickTruck",
+                            method: "post",
+                            data: {
+                                shipmentDetailIds: shipmentDetailIds,
+                                driverIds: ids.substring(0, ids.length-1)
+                            },
+                            success: function (data) {
+                                if (data.code != 0) {
+                                    $.modal.msgError(data.msg);
+                                } else {
+                                    parent.finishForm(data);
+                                    $.modal.close();
+                                }
+                            },
+                            error: function (result) {
+                                $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+                            }
+                        });
+                    }
+                } else {
+                    $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+                }
+                $.modal.closeLoading();
+            },
+            error: function (result) {
+                $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+                $.modal.closeLoading();
+            },
+        });
+    } 
+}
+
+function validateInput() {
+    var error = false;
+    externalDriverList = [];
+    for (var i=0; i<number; i++) {
+        if ($("#numberPlate" + i).val() == "" || $("#numberPhone" + i).val() == "" || $("#name" + i).val() == "" || $("#pass" + i).val() == "") {
+            $.modal.alertError("Quý khách chưa nhập đủ thông tin cho xe<br>thuê ngoài.");
+            error = true;
+            break;
+        }
+        if (!/[0-9]{10}/g.test($("#numberPhone" + i).val())) {
+            $.modal.alertError("Dòng "+ (i+1) +": Số điện thoại không hợp lệ.");
+            error = true;
+            break;
+        }
+        if ($("#pass" + i).val().length < 6) {
+            $.modal.alertError("Dòng "+ (i+1) +": Độ dài mật khẩu quá ngắn.");
+            error = true;
+            break;
+        }
+        var object = new Object();
+        object.plateNumber = $("#numberPlate" + i).val();
+        object.mobileNumber = $("#numberPhone" + i).val();
+        object.fullName = $("#name" + i).val();
+        object.password = $("#pass" + i).val();
+        var now = new Date();
+        object.validDate = now.setDate(now.getDate() + 7);
+        externalDriverList.push(object);
+    }
+    if (error) {
+        return false;
+    } else {
+        return true;
+    }
 }
 
 function closeForm() {
@@ -194,7 +288,7 @@ $("#inputExternalRentNumber").keypress(function (event) {
         number = parseInt($("#inputExternalRentNumber").val(), 10);
         var externalDriver = '';
         for (var i = 0; i < number; i++) {
-            externalDriver += '<tr><td width="150px" style="padding: 0;"><input id="numberPlate"' + i + 'type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="150px" style="padding: 0;"><input id="numberPhone"' + i + 'type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="165px" style="padding: 0;"><input id="name"' + i + 'type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="150px" style="padding: 0;"><input id="pass"' + i + 'type="text" style="width: 100%; box-sizing: border-box;"/></td></tr>'
+            externalDriver += '<tr><td width="40px" style="padding: 0;">'+i+'</td><td width="140px" style="padding: 0;"><input id="numberPlate' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="135px" style="padding: 0;"><input id="numberPhone' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="150px" style="padding: 0;"><input id="name' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="150px" style="padding: 0;"><input id="pass' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td></tr>'
         }
         $("#externalInputList").html(externalDriver);
     }

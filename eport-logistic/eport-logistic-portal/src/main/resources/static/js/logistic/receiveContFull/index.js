@@ -153,9 +153,11 @@ config = {
         return "Nơi Hạ Vỏ";
       case 21:
         return "Ghi Chú";
+      case 22:
+        return "T.T Bốc Container Chỉ Định";
     }
   },
-  colWidths: [50, 0.01, 100, 150, 150, 150, 150, 150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200],
+  colWidths: [50, 0.01, 100, 150, 150, 150, 150, 150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200, 0.01],
   filter: "true",
   columns: [
     {
@@ -244,6 +246,9 @@ config = {
     },
     {
       data: "remark",
+    },
+    {
+      data: "preorderPickup",
     },
   ],
   afterChange: function (changes, src) {
@@ -579,6 +584,9 @@ function getDataSelectedFromTable(isValidate) {
         cleanedGridData.push(object);
       } else {
         allChecked = false;
+        if (object["preorderPickup"] == "Y") {
+          cleanedGridData.push(object);
+        }
       }
     } 
   });
