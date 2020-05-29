@@ -39,26 +39,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectLogisticGroupList" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
         <include refid="selectLogisticGroupVo"/>
         <where>  
-            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
-            <if test="emailAddress != null  and emailAddress != ''"> and email_address = #{emailAddress}</if>
-            <if test="address != null  and address != ''"> and address = #{address}</if>
-            <if test="mst != null  and mst != ''"> and mst = #{mst}</if>
-            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
-            <if test="mobilePhone != null  and mobilePhone != ''"> and mobile_phone = #{mobilePhone}</if>
-            <if test="fax != null  and fax != ''"> and fax = #{fax}</if>
+            <if test="groupName != null  and groupName != ''"> and lower(group_name) like concat('%', #{groupName}, '%')</if>
+            <if test="mst != null  and mst != ''"> and mst like concat('%', #{mst} ,'%')</if>
             <if test="delFlag != null"> and del_flag = #{delFlag}</if>
-            <if test="businessRegistrationCertificate != null  and businessRegistrationCertificate != ''"> and business_registration_certificate = #{businessRegistrationCertificate}</if>
-            <if test="dateOfIssueRegistration != null "> and date_of_issue_registration = #{dateOfIssueRegistration}</if>
-            <if test="placeOfIssueRegistration != null  and placeOfIssueRegistration != ''"> and place_of_issue_registration = #{placeOfIssueRegistration}</if>
-            <if test="authorizedRepresentative != null  and authorizedRepresentative != ''"> and authorized_representative = #{authorizedRepresentative}</if>
-            <if test="representativePosition != null  and representativePosition != ''"> and representative_position = #{representativePosition}</if>
-            <if test="followingAuthorizationFormNo != null  and followingAuthorizationFormNo != ''"> and following_authorization_form_no = #{followingAuthorizationFormNo}</if>
-            <if test="signDate != null "> and sign_date = #{signDate}</if>
-            <if test="owned != null  and owned != ''"> and owned = #{owned}</if>
-            <if test="identifyCardNo != null  and identifyCardNo != ''"> and identify_card_no = #{identifyCardNo}</if>
-            <if test="dateOfIssueIdentify != null "> and date_of_issue_identify = #{dateOfIssueIdentify}</if>
-            <if test="placeOfIssueIdentify != null  and placeOfIssueIdentify != ''"> and place_of_issue_identify = #{placeOfIssueIdentify}</if>
-            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="email != null  and email != ''"> and lower(email) like concat('%', #{email},'%')</if>
         </where>
     </select>
     <select id="selectLogisticGroupListByName" parameterType="LogisticGroup" resultMap="LogisticGroupResult">

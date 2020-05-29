@@ -96,7 +96,7 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li class="mt5">
-                    <a th:href="@{/carrier/profile}" class="menuItem">
+                    <a th:href="@{/logistic/profile}" class="menuItem">
                       <i class="fa fa-user"></i> Hồ sơ</a
                     >
                   </li>
@@ -195,7 +195,7 @@
       }
 
       function resetPwd() {
-          var url = ctx + 'carrier/profile/resetPwd';
+          var url = ctx + 'logistic/profile/resetPwd';
           $.modal.open("Reset Password", url, '770', '380');
       }
 

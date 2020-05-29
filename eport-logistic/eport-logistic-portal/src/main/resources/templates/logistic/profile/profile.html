@@ -20,7 +20,7 @@
                     <ul class="list-group list-group-striped">
                         <li class="list-group-item"><i class="fa fa-envelope-o"></i>
                             <b class="font-noraml">Tên đăng nhập</b>
-                            <p class="pull-right">[[${user.email}]]</p>
+                            <p class="pull-right">[[${user.userName}]]</p>
                         </li>
                         <li class="list-group-item"><i class="fa fa-user"></i>
                             <b  class="font-noraml">Họ Và Tên</b>
@@ -149,7 +149,7 @@
 		
 		function submitUserInfo() {
 	        if ($.validate.form()) {
-	        	$.operate.saveModal(ctx + "carrier/profile/update", $('#form-user-edit').serialize());
+	        	$.operate.saveModal(ctx + "logistic/profile/update", $('#form-user-edit').serialize());
 	        }
 	    }
 	    
@@ -159,7 +159,7 @@
 				oldPassword:{
 					required:true,
 					remote: {
-	                    url: ctx + "carrier/profile/checkPassword",
+	                    url: ctx + "logistic/profile/checkPassword",
 	                    type: "get",
 	                    dataType: "json",
 	                    data: {
@@ -199,7 +199,7 @@
 		
 		function submitChangPassword () {
 	        if ($.validate.form("form-user-resetPwd")) {
-	        	$.operate.saveModal(ctx + "carrier/profile/resetPwd", $('#form-user-resetPwd').serialize());
+	        	$.operate.saveModal(ctx + "logistic/profile/resetPwd", $('#form-user-resetPwd').serialize());
 	        }
 	    }
 	</script>
