@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -216,5 +218,28 @@ public class TransportAccountController extends LogisticBaseController
         transportAccount.setLogisticGroupId(getUser().getGroupId());
         transportAccount.setDelFlag(false);
         return transportAccountService.selectTransportAccountList(transportAccount);
+    }
+
+    @PostMapping("/saveExternalTransportAccount")
+    @ResponseBody
+    public List<TransportAccount> saveExternalTransportAccount(@RequestBody List<TransportAccount> transportAccounts) {
+        if (transportAccounts.size() > 0) {
+            LogisticAccount user = getUser();
+            for (TransportAccount transportAccount : transportAccounts) {
+                transportAccount.setDelFlag(false);
+                transportAccount.setCreateBy(user.getFullName());
+                transportAccount.setStatus("1");
+                transportAccount.setExternalRentStatus("1");
+                transportAccount.setLogisticGroupId(user.getGroupId());
+                transportAccount.setSalt(ShiroUtils.randomSalt());
+                transportAccount.setPassword(passwordService.encryptPassword(transportAccount.getMobileNumber(), transportAccount.getPassword(), transportAccount.getSalt()));
+                transportAccountService.insertTransportAccount(transportAccount);
+            }
+            TransportAccount transportAccount = new TransportAccount();
+            transportAccount.setExternalRentStatus("1");
+            transportAccount.setLogisticGroupId(user.getGroupId());
+            return transportAccountService.selectTransportAccountList(transportAccount);
+        }
+        return null;
     }
 }

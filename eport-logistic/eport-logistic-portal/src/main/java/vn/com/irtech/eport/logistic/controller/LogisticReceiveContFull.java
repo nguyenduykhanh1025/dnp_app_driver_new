@@ -459,22 +459,28 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
-	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}")
-	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, @PathVariable("pickCont") boolean pickCont, ModelMap mmap) {
+	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}/{shipmentDetailIds}")
+	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, @PathVariable("pickCont") boolean pickCont,@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		mmap.put("shipmentId", shipmentId);
 		mmap.put("pickCont", pickCont);
+		if (!pickCont) {
+			mmap.put("shipmentDetailIds", shipmentDetailIds);
+		}
 		return prefix + "/pickTruckForm";
 	}
 
 	@PostMapping("/pickTruck")
 	@ResponseBody
-	public AjaxResult pickTruck(long shipmentId, @RequestParam(value="driverIds[]") int[] driverIds) {
-		String ids = "";
-		for (int i : driverIds) {
-			ids += i+",";
+	public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetail.setTransportIds(driverIds);
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+			return success("Điều xe thành công");
 		}
-		ids = ids.substring(0, ids.length()-1);
-		return success("Điều xe thành công");
+		return error("Xảy ra lỗi trong quá trình điều xe.");
 	}
 
 	class BayComparator implements Comparator<ShipmentDetail> {

@@ -59,6 +59,11 @@
     .thHover :hover {
         background-color: #5f7ccc;
     }
+
+    .th-custom{
+        text-align: center;
+    }
+
 </style>
 
 <body>
@@ -76,22 +81,26 @@
                     <b style="margin-left: 120px;">Xe điều</b>
                 </div>
                 <div style="display: flex;">
-                    <table id="truckList" class="table" border="1" align="left" style="margin-right: 10px;">
+                    <table id="truckList" class="table" border="1" style="margin-right: 10px;">
                         <thead>
                             <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
-                                <th width="108px">Biển số</th>
-                                <th width="108px">Số điện thoại</th>
-                                <th width="100px">Hành động</th>
+                                <th width="50px" class="th-custom"><input type="checkbox" id="headerInternalCheckbox" onclick="checkAllInternal()" /></th>
+                                <th width="108px" class="th-custom">Biển số</th>
+                                <th width="108px" class="th-custom">Số điện thoại</th>
                             </tr>
                         </thead>
                         <tbody id="transportList"></tbody>
                     </table>
-                    <table id="pickedTruckList" class="table" border="1" align="left" style="margin-left: 10px;">
+                    <div style="padding: 70px 0; text-align: center;">
+                        <button style="margin-bottom: 10px;" onclick="transferInToOut()">>>>>></button>
+                        <button style="margin-top: 10px;" onclick="transferOutToIn()"><<<<<</button>
+                    </div>
+                    <table id="pickedTruckList" class="table" border="1" style="margin-left: 10px;">
                         <thead>
                             <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
-                                <th width="100px">Hành động</th>
-                                <th width="108px">Biển số</th>
-                                <th width="108px">Số điện thoại</th>
+                                <th width="50px" class="th-custom"><input type="checkbox" id="headerExternalCheckbox" onclick="checkAllExternal()" /></th>
+                                <th width="108px" class="th-custom">Biển số</th>
+                                <th width="108px" class="th-custom">Số điện thoại</th>
                             </tr>
                         </thead>
                         <tbody id="pickedTransportList"></tbody>
@@ -99,7 +108,22 @@
                 </div>
             </div>
             <div class="exterDeliveryTeam">
-                
+                <div style="margin-top: 10px;">
+                    <b>Số lượng xe thuê ngoài: </b>
+                    <input type="number" id="inputExternalRentNumber"/>
+                </div>
+                <table id="externalInput" class="table" border="1" style="margin-left: 10px; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+                            <th width="40px" class="th-custom">Stt</th>
+                            <th width="140px" class="th-custom">Biển số</th>
+                            <th width="135px" class="th-custom">Số điện thoại</th>
+                            <th width="150px" class="th-custom">Tên tài xế</th>
+                            <th width="150px" class="th-custom">Mật khẩu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="externalInputList" style="height: 170px;"></tbody>
+                </table>
             </div>
         </div>
         <div class="layui-layer-btn footer">
@@ -112,7 +136,8 @@
 <script type="text/javascript" th:inline="javascript">
     var shipmentId = /*[[${shipmentId}]]*/;
     var pickCont = /*[[${pickCont}]]*/;
+    var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
 </script>
+<th:block th:include="include :: footer" />
 <script th:src="@{/js/logistic/receiveContFull/pickTruckForm.js}"></script>
-
 </html>

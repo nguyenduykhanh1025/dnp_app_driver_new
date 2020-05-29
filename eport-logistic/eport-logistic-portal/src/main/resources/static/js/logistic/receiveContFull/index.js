@@ -153,9 +153,11 @@ config = {
         return "Nơi Hạ Vỏ";
       case 21:
         return "Ghi Chú";
+      case 22:
+        return "T.T Bốc Container Chỉ Định";
     }
   },
-  colWidths: [50, 0.01, 100, 150, 150, 150, 150, 150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200],
+  colWidths: [50, 0.01, 100, 150, 150, 150, 150, 150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200, 0.01],
   filter: "true",
   columns: [
     {
@@ -245,10 +247,16 @@ config = {
     {
       data: "remark",
     },
+    {
+      data: "preorderPickup",
+    },
   ],
   afterChange: function (changes, src) {
     //Get data change in cell to render another column
     if (src !== "loadData") {
+      var verifyStatus = false;
+      var paymentStatus = false;
+      var notVerify = false;
       changes.forEach(function interate(row) {
         var containerNo;
         if (row[1] == "active" && !isIterate) {
@@ -262,29 +270,32 @@ config = {
           }
           if (shipmentDetails.length > 0) {
             var status = 2;
-            var customStatus = false;
-            var paymentStatus = false;
             for (var i=0; i<shipmentDetails.length; i++) {
               if (shipmentDetails[i].customStatus == "Chưa thông quan") {
                 status = 1;
                 break;
-              }
-              if (shipmentDetails[i].paymentStatus == "Đã thanh toán") {
-                if (!customStatus) {
+              } else if (shipmentDetails[i].paymentStatus == "Đã thanh toán") {
+                if (verifyStatus || notVerify) {
+                  status = 1;
+                } else {
                   status = 4;
                   paymentStatus = true;
-                } else {
-                  status = 1;
                 }
-              }
-              if (shipmentDetails[i].processStatus == "Đã làm lệnh") {
-                if (!paymentStatus) {
+              } else if (shipmentDetails[i].processStatus == "Đã làm lệnh") {
+                if (paymentStatus || notVerify) {
+                  status = 1;
+                } else {
                   status = 3;
-                  customStatus = true;
-                } else {
-                  status = 1;
+                  verifyStatus = true;
                 }
-              } 
+              } else {
+                if (verifyStatus || paymentStatus) {
+                  status = 1;
+                } else {
+                  status = 2;
+                }
+                notVerify = true;
+              }
             }
             switch (status) {
               case 1:
@@ -405,18 +416,23 @@ function checkAll() {
   isIterate = true;
   if (checked) {
     for (var i=0; i<shipmentDetails.length; i++) {
-      hot.setDataAtCell(i, 0, false); //opeCode
+      hot.setDataAtCell(i, 0, false);
+      if (i == shipmentDetails.length-2) {
+        isIterate = false;
+      }
     }
     $(".checker").prop("checked", false);
     checked = false;
   } else {
     for (var i=0; i<shipmentDetails.length; i++) {
-      hot.setDataAtCell(i, 0, true); //opeCode
+      hot.setDataAtCell(i, 0, true);
+      if (i == shipmentDetails.length-2) {
+        isIterate = false;
+      }
     }
     $(".checker").prop("checked", true);
     checked = true;
   }
-  isIterate = false;
 }
 
 hot = new Handsontable(dogrid, config);
@@ -498,8 +514,8 @@ function loadShipmentDetail(id) {
       hot.render();
       if (!saved) {
         $.modal.alert("Thông tin container đã được hệ thống tự<br>động điền, quý khách vui lòng kiểm tra lại<br>thông tin và lưu khai báo.");
-      }
-      if (customStatus) {
+        setLayoutRegisterStatus();
+      } else if (customStatus) {
         setLayoutVerifyUser();
         $("#customBtn").prop("disabled", true);
       }
@@ -568,6 +584,9 @@ function getDataSelectedFromTable(isValidate) {
         cleanedGridData.push(object);
       } else {
         allChecked = false;
+        if (object["preorderPickup"] == "Y") {
+          cleanedGridData.push(object);
+        }
       }
     } 
   });
@@ -735,7 +754,7 @@ function pay() {
 }
 
 function pickTruck() {
-  $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false, 700, 400);
+  $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + shipmentDetailIds, 655, 400);
 }
 
 function pickContOnDemand() {
@@ -831,20 +850,20 @@ function setLayoutPickTruck() {
   $("#exportBillBtn").prop("disabled", false);
 }
 
-function setLayoutPickCont() {
-  $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  $("#customStatus").removeClass("active disable").addClass("label-primary");
-  $("#verifyStatus").removeClass("active disable").addClass("label-primary");
-  $("#paymentStatus").removeClass("label-primary disable").addClass("active");
-  $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  $("#saveShipmentDetailBtn").prop("disabled", true);
-  $("#customBtn").prop("disabled", true);
-  $("#verifyBtn").prop("disabled", true);
-  $("#pickContOnDemandBtn").prop("disabled", false);
-  $("#pickTruckBtn").prop("disabled", true);
-  $("#payBtn").prop("disabled", true);
-  $("#exportBillBtn").prop("disabled", true);
-}
+// function setLayoutPickCont() {
+//   $("#registerStatus").removeClass("active disable").addClass("label-primary");
+//   $("#customStatus").removeClass("active disable").addClass("label-primary");
+//   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+//   $("#paymentStatus").removeClass("label-primary disable").addClass("active");
+//   $("#finishStatus").removeClass("label-primary active").addClass("disable");
+//   $("#saveShipmentDetailBtn").prop("disabled", true);
+//   $("#customBtn").prop("disabled", true);
+//   $("#verifyBtn").prop("disabled", true);
+//   $("#pickContOnDemandBtn").prop("disabled", false);
+//   $("#pickTruckBtn").prop("disabled", true);
+//   $("#payBtn").prop("disabled", true);
+//   $("#exportBillBtn").prop("disabled", true);
+// }
 
 function finishForm(result) {
   if (result.code == 0) {
