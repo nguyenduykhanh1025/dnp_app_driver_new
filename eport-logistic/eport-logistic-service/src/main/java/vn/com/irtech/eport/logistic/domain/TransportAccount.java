@@ -49,6 +49,10 @@ public class TransportAccount extends BaseEntity
 
     /** Delete Flag */
     private boolean delFlag;
+    
+    /** Thuê ngoài (0 nomal 1 rent) */
+    @Excel(name = "Thuê ngoài (0 nomal 1 rent)")
+    private String externalRentStatus;
 
     /** Hieu Luc Den */
     @Excel(name = "Hieu Luc Den", width = 30, dateFormat = "yyyy-MM-dd")
@@ -148,6 +152,15 @@ public class TransportAccount extends BaseEntity
     {
         return delFlag;
     }
+    public void setExternalRentStatus(String externalRentStatus) 
+    {
+        this.externalRentStatus = externalRentStatus;
+    }
+
+    public String getExternalRentStatus() 
+    {
+        return externalRentStatus;
+    }
     public void setValidDate(Date validDate) 
     {
         this.validDate = validDate;
@@ -170,6 +183,7 @@ public class TransportAccount extends BaseEntity
             .append("salt", getSalt())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())
+            .append("externalRentStatus", getExternalRentStatus())
             .append("validDate", getValidDate())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
