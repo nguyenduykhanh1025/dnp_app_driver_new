@@ -49,6 +49,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		startPage();
 		LogisticAccount user = getUser();
 		shipment.setLogisticGroupId(user.getGroupId());
+		shipment.setServiceId(1);
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}
@@ -243,17 +244,6 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return null;
 	}
 
-	@PostMapping("/updateShipmentDetailStatus")
-	@ResponseBody
-	public AjaxResult updateShipmentDetailStatus(ShipmentDetail shipmentDetail) {
-		shipmentDetail.setUpdateBy(getUser().getFullName());
-		shipmentDetail.setUpdateTime(new Date());
-		if (shipmentDetailService.updateShipmentDetailStatus(shipmentDetail) == 1) {
-			return success("Cập nhật trạng thái thành công");
-		}
-		return error("Cập nhật trạng thái thất bại");
-	}
-
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
@@ -263,11 +253,11 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return prefix + "/checkContListBeforeVerify";
 	}
 
-	@RequestMapping("/listShipmentDetailByIds")
-	@ResponseBody
-	public List<ShipmentDetail> listShipmentDetailByIds(String shipmentDetailIds) {
-		return 	shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-	}
+	// @RequestMapping("/listShipmentDetailByIds")
+	// @ResponseBody
+	// public List<ShipmentDetail> listShipmentDetailByIds(String shipmentDetailIds) {
+	// 	return 	shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+	// }
 
 	@GetMapping("verifyOtpForm/{shipmentDetailIds}")
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {

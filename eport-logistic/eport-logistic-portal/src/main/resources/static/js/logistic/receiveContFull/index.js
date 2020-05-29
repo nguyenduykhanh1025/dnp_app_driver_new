@@ -705,7 +705,7 @@ function saveShipmentDetail() {
     $.modal.msgError("Bạn cần chọn lô trước");
     return;
   } else {
-    if (getDataFromTable(true) && shipmentDetails.length > 0) {
+    if (getDataFromTable(true) && shipmentDetails.length > 0 && shipmentDetails < shipmentSelected.containerAmount) {
       $.modal.loading("Đang xử lý...");
       $.ajax({
         url: prefix + "/saveShipmentDetail",
@@ -729,6 +729,10 @@ function saveShipmentDetail() {
           $.modal.closeLoading();
         },
       });
+    } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
+      $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
+    } else {
+      $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
     }
   }
 }

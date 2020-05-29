@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:include="include :: header('Xac Nhan Lam Lenh')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+</head>
+<style type="text/css">
+    .container {
+        position: relative;
+        padding: 0 0 0 0;
+        width: 100%;
+    }
+
+    .footer {
+        background-color: #f0f4f7;
+        height: 55px;
+        padding: 10px 15px 12px 15px !important;
+    }
+
+    .content {
+        text-align: center;
+        height: 403px;
+        padding: 12px 15px 12px 15px;
+    }
+
+    .customTable {
+        height: 340px;
+        overflow-y: scroll;
+        display: inline-block;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <p>Quý khách có chắc chắn làm lệnh cho những container này?</p>
+            <div class="table-content customTable">
+                <table id="contTable" style="width: 360px;">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'id',halign:'center'" width=50>Stt</th>
+                            <th data-options="field:'containerNo',halign:'center'" width="300">Container No</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="layui-layer-btn footer">
+            <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+            <a class="layui-layer-btn1" onclick="closeForm()">Hủy</a>
+        </div>
+    </div>
+</body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: easyui-js" />
+<script type="text/javascript" th:inline="javascript">
+    var shipmentDetails = /*[[${shipmentDetails}]]*/;
+</script>
+<script th:src="@{/js/logistic/sendContEmpty/checkContListBeforeVerify.js}"></script>
+
+</html>
