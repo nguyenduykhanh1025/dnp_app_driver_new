@@ -76,15 +76,15 @@ function formatDate(value) {
 
 function formatStatus(value) {
   if (value != 0) {
-    return "<span class='label label-success'>Disable</span>"
+    return "<span class='label label-success'>Khóa</span>"
   }
-  return "<span class='label label-default'>Nomal</span>"
+  return "<span class='label label-default'>Hoạt động</span>"
 }
 function formatExternalRent(value){
 	  if (value != 0) {
-		    return "<span class='label label-success'>Rent</span>"
+		    return "<span class='label label-success'>Thuê</span>"
 		  }
-		  return "<span class='label label-default'>Nomal</span>"
+		  return "<span class='label label-default'>Thường</span>"
 }
 function formatAction(value, row, index) {
 	var actions = [];
