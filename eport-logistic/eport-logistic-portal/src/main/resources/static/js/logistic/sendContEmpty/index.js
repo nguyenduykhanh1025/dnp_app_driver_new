@@ -490,7 +490,7 @@ function saveShipmentDetail() {
         $.modal.msgError("Bạn cần chọn lô trước");
         return;
     } else {
-        if (getDataFromTable(true) && shipmentDetails.length > 0 && shipmentDetails < shipmentSelected.containerAmount) {
+        if (getDataFromTable(true) && shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
             $.modal.loading("Đang xử lý...");
             $.ajax({
                 url: prefix + "/saveShipmentDetail",
