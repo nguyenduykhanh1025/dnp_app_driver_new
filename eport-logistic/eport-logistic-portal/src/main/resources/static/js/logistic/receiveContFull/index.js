@@ -260,7 +260,7 @@ config = {
       changes.forEach(function interate(row) {
         var containerNo;
         if (row[1] == "active" && !isIterate) {
-          getDataSelectedFromTable(false);
+          getDataSelectedFromTable(false, false);
           if (allChecked) {
             $(".checker").prop("checked", true);
             checked = true;
@@ -570,7 +570,7 @@ function getSelected() {
   }
 }
 
-function getDataSelectedFromTable(isValidate) {
+function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   var myTableData = hot.getSourceData();
   var errorFlg = false;
   if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
@@ -584,7 +584,7 @@ function getDataSelectedFromTable(isValidate) {
         cleanedGridData.push(object);
       } else {
         allChecked = false;
-        if (object["preorderPickup"] == "Y") {
+        if (object["preorderPickup"] == "Y" && isNeedPickedCont) {
           cleanedGridData.push(object);
         }
       }
@@ -645,7 +645,7 @@ function getDataFromTable(isValidate) {
       errorFlg = true;
     }
     var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
-    shipmentDetail.blNo = object["blNo"];
+    shipmentDetail.blNo = shipmentSelected.blNo;
     shipmentDetail.containerNo = object["containerNo"];
     contList.push(object["containerNo"]);
     shipmentDetail.opeCode = object["opeCode"];
@@ -705,7 +705,7 @@ function saveShipmentDetail() {
     $.modal.msgError("Bạn cần chọn lô trước");
     return;
   } else {
-    if (getDataFromTable(true) && shipmentDetails.length > 0 && shipmentDetails < shipmentSelected.containerAmount) {
+    if (getDataFromTable(true) && shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
       $.modal.loading("Đang xử lý...");
       $.ajax({
         url: prefix + "/saveShipmentDetail",
@@ -743,7 +743,7 @@ function checkCustomStatus() {
 }
 
 function verify() {
-  getDataSelectedFromTable(true);
+  getDataSelectedFromTable(true, true);
   if (shipmentDetails.length > 0) {
     $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
   } 
