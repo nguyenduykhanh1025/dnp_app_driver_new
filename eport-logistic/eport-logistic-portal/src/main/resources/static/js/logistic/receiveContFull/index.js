@@ -531,6 +531,10 @@ function formatDate(value) {
   return day + "/" + monthText + "/" + date.getFullYear();
 }
 
+function formatRemark(value) {
+  return '<div class="easyui-tooltip" title="'+ ((value!=null&&value!="")?value:"không có ghi chú") +'" style="width: 80; text-align: center;"><span>'+ (value!=null?(value.substring(0, 5) + "..."):"...") +'</span></div>';
+}
+
 // Handle add
 $(function () {
   var options = {

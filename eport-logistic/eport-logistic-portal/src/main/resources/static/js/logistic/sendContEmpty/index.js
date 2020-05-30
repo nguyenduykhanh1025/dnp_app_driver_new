@@ -64,6 +64,10 @@ function loadTable() {
     });
 }
 
+function formatRemark(value) {
+    return '<div class="easyui-tooltip" title="'+ ((value!=null&&value!="")?value:"không có ghi chú") +'" style="width: 80; text-align: center;"><span>'+ (value!=null?(value.substring(0, 5) + "..."):"...") +'</span></div>';
+  }
+
 function handleCollapse(status) {
     if (status) {
         $(".left-side").css("width", "0.5%");
