@@ -5,6 +5,7 @@ var externalTransport = [];
 var externalDriverList = [];
 var isCheckAllInternal = false;
 var isCheckAllExternal = false;
+var recentPlateNumber = '';
 var number = 0;
 
 function confirm() {
@@ -17,16 +18,18 @@ function confirm() {
 
 function pickTruckWithoutExternal() {
     if (externalTransport.length > 0) {
+        console.log(externalTransport);
         var ids = "";
         externalTransport.forEach(function(driver) {
             ids += driver.id + ",";
         });
         if (pickCont) {
             if (externalTransport.length == 1) {
-                parent.finishPickTruck($("#plateNumber"+externalTransport[0].id).html(), ids.substring(0, ids.length-1));
+                parent.finishPickTruck(recentPlateNumber, ids.substring(0, ids.length-1));
             } else {
                 parent.finishPickTruck("Đội xe chỉ định trước", ids.substring(0, ids.length-1));
             }
+            console.log(ids);
             $.modal.close();
         } else {
             $.ajax({
@@ -202,6 +205,7 @@ function transferInToOut() {
     }
     $("#headerInternalCheckbox").prop("checked", false);
     isCheckAllInternal = false;
+    recentPlateNumber = externalTransport[0].plateNumber;
 }
 
 function transferOutToIn() {

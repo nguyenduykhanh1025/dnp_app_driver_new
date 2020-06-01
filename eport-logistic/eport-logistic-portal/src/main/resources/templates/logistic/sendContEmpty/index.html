@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Hạ bãi chờ xuất')" />
+    <th:block th:include="include :: handsontable-css" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="wrapper">
+      <div class="left-side">
+        <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
+        <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
+        <div class="title-top">
+          <span class="title">Danh sách lô</span>
+          <div class="action-bar">
+            <span><i class="fa fa-plus" title="Thêm mới" onclick="$.operate.addShipmentSendEmpty()"></i></span>
+            <span><i class="fa fa-edit" title="Chỉnh sửa" onclick="$.operate.editShipmentSendEmpty()"></i></span>
+            <span><i class="fa fa-refresh" title="Làm mới" onclick="handleRefresh();"></i></span>
+          </div>
+        </div>
+        <hr />
+        <div class="table-content">
+          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'id'" width="1"></th>
+                <th data-options="field:'taxCode',halign:'center'" width="100">MST</th>
+                <th data-options="field:'containerAmount',align:'right',halign:'center'" width="70">Số Cont</th>
+                <th data-options="field:'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="80">Ngày tạo</th>
+                <th data-options="field:'remark',align:'right',halign:'center', formatter: formatRemark" width="80">Ghi chú</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+      <div class="right-side">
+        <div class="step-progress">
+          <div id="step-area">
+            <div class="left-info">
+              <div>
+                <span class="label-title">Mã Lô: </span>
+                <span id="loCode"></span>
+              </div>
+              <div>
+                <span class="label-title">Mã Số Thuế: </span>
+                <span id="taxCode"></span>
+              </div>
+              <div>
+                <span class="label-title">Số Lượng: </span>
+                <span id="quantity"></span>
+              </div>
+            </div>
+            <ul class="right-info">
+              <li><a id="registerStatus" class="disable">Khai báo</a></li>
+              <li><a id="verifyStatus" class="disable">Xác thực</a></li>
+              <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
+              <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="title-top">
+          <div class="left-button-bar">
+            <button id="saveShipmentDetailBtn" class="btn btn-sm btn-primary" onclick="saveShipmentDetail()">Lưu khai báo</button>
+            <button id="verifyBtn" class="btn btn-sm btn-primary" onclick="verify()" disabled>Xác Thực</button>
+            <button id="payBtn" class="btn btn-sm btn-primary" onclick="pay()" disabled>Thanh Toán</button>
+          </div>
+          <div class="search-bar">
+            <button id="exportBillBtn" class="btn btn-sm btn-success" onclick="exportBill()" disabled>Xuất Hóa Đơn</button>
+          </div>
+        </div>
+        <hr />
+        <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+      </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: handsontable-js" />
+    <th:block th:include="include :: easyui-js" />
+    <script th:src="@{/js/logistic/sendContEmpty/index.js}"></script>
+  </body>
+</html>

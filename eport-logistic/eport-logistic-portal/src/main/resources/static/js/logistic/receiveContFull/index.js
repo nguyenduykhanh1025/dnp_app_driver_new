@@ -260,7 +260,7 @@ config = {
       changes.forEach(function interate(row) {
         var containerNo;
         if (row[1] == "active" && !isIterate) {
-          getDataSelectedFromTable(false);
+          getDataSelectedFromTable(false, false);
           if (allChecked) {
             $(".checker").prop("checked", true);
             checked = true;
@@ -531,6 +531,10 @@ function formatDate(value) {
   return day + "/" + monthText + "/" + date.getFullYear();
 }
 
+function formatRemark(value) {
+  return '<div class="easyui-tooltip" title="'+ ((value!=null&&value!="")?value:"không có ghi chú") +'" style="width: 80; text-align: center;"><span>'+ (value!=null?(value.substring(0, 5) + "..."):"...") +'</span></div>';
+}
+
 // Handle add
 $(function () {
   var options = {
@@ -570,7 +574,7 @@ function getSelected() {
   }
 }
 
-function getDataSelectedFromTable(isValidate) {
+function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   var myTableData = hot.getSourceData();
   var errorFlg = false;
   if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
@@ -584,7 +588,7 @@ function getDataSelectedFromTable(isValidate) {
         cleanedGridData.push(object);
       } else {
         allChecked = false;
-        if (object["preorderPickup"] == "Y") {
+        if (object["preorderPickup"] == "Y" && isNeedPickedCont) {
           cleanedGridData.push(object);
         }
       }
@@ -645,7 +649,7 @@ function getDataFromTable(isValidate) {
       errorFlg = true;
     }
     var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
-    shipmentDetail.blNo = object["blNo"];
+    shipmentDetail.blNo = shipmentSelected.blNo;
     shipmentDetail.containerNo = object["containerNo"];
     contList.push(object["containerNo"]);
     shipmentDetail.opeCode = object["opeCode"];
@@ -705,7 +709,7 @@ function saveShipmentDetail() {
     $.modal.msgError("Bạn cần chọn lô trước");
     return;
   } else {
-    if (getDataFromTable(true) && shipmentDetails.length > 0) {
+    if (getDataFromTable(true) && shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
       $.modal.loading("Đang xử lý...");
       $.ajax({
         url: prefix + "/saveShipmentDetail",
@@ -729,6 +733,10 @@ function saveShipmentDetail() {
           $.modal.closeLoading();
         },
       });
+    } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
+      $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
+    } else {
+      $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
     }
   }
 }
@@ -739,7 +747,7 @@ function checkCustomStatus() {
 }
 
 function verify() {
-  getDataSelectedFromTable(true);
+  getDataSelectedFromTable(true, true);
   if (shipmentDetails.length > 0) {
     $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
   } 
