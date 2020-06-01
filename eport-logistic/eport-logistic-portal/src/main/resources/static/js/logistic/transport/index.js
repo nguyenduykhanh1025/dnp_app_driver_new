@@ -76,9 +76,9 @@ function formatDate(value) {
 
 function formatStatus(value) {
   if (value != 0) {
-    return "<span class='label label-success'>Khóa</span>"
+    return "<span class='label label-default'>Khóa</span>"
   }
-  return "<span class='label label-default'>Hoạt động</span>"
+  return "<span class='label label-success'>Hoạt động</span>"
 }
 function formatExternalRent(value){
 	  if (value != 0) {
@@ -127,9 +127,9 @@ function addTransport(id) {
 	$.operate.addTransportAccount();
 }
 
-function formatGroup(value){
+/*function formatGroup(value){
 	return value.groupName
-}
+}*/
 function resetPwd(id) {
   var url = prefix + '/resetPwd/' + id;
   $.modal.open("Đặt lại mật khẩu", url, '500', '350');
