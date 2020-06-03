@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <th:block th:include="include :: header('Hạ bãi chờ xuất')" />
+    <th:block th:include="include :: header('Nhan Cont Rong')" />
     <th:block th:include="include :: handsontable-css" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
@@ -66,7 +66,6 @@
             <button id="saveShipmentDetailBtn" class="btn btn-sm btn-primary" onclick="saveShipmentDetail()">Lưu khai báo</button>
             <button id="verifyBtn" class="btn btn-sm btn-primary" onclick="verify()" disabled>Xác Thực</button>
             <button id="payBtn" class="btn btn-sm btn-primary" onclick="pay()" disabled>Thanh Toán</button>
-            <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruck()" disabled>Điều Xe</button>
           </div>
           <div class="search-bar">
             <button id="exportBillBtn" class="btn btn-sm btn-success" onclick="exportBill()" disabled>Xuất Hóa Đơn</button>
@@ -79,6 +78,6 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: handsontable-js" />
     <th:block th:include="include :: easyui-js" />
-    <script th:src="@{/js/logistic/sendContEmpty/index.js}"></script>
+    <script th:src="@{/js/logistic/receiveContEmpty/index.js}"></script>
   </body>
 </html>
