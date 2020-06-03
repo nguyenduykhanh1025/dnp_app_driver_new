@@ -1,10 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -27,7 +24,6 @@ import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.TransportAccount;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.ITransportAccountService;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
@@ -113,6 +109,7 @@ public class TransportAccountController extends LogisticBaseController
     @ResponseBody
     public AjaxResult addSave(TransportAccount transportAccount)
     {
+        transportAccount.setLogisticGroupId(TransportAccountController.this.getUser().getGroupId());
         if (transportAccount.getPassword().length() < 6) {
             return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
