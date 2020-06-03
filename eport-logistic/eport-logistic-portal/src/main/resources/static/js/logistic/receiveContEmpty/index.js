@@ -1,5 +1,7 @@
 var isChange = true;
-var prefix = ctx + "logistic/sendContEmpty";
+var prefix = ctx + "logistic/receiveContEmpty";
+var fromDate = "";
+var toDate = "";
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected;
 var shipmentDetails;
@@ -8,14 +10,10 @@ var contList = [];
 var checked = false;
 var allChecked = true;
 var isIterate = false;
-var isSaved = false;
-var opeCodeList = ["MCM", "NIC", "BMW"];
-var sizeList = ["22G0", "23G0"];
-var LoadingPortList = ["Cảng nguồn 1", "Cảng nguồn 2"];
-var DischargePortList = ["Cảng đích 1", "Cảng đích 2"];
-var selectedRow = null;
-
 $(document).ready(function () {
+    // $(".colHeader > input[type=checkbox]").click(function() {
+    //   console.log("inini")
+    // })
     loadTable();
     $(".left-side").css("height", $(document).height());
     $("#btn-collapse").click(function () {
@@ -92,54 +90,6 @@ function handleCollapse(status) {
     }, 500);
 }
 
-function disableRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null && value != '') {
-        $(td).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-        cellProperties.readOnly = 'true';
-    }
-    return td;
-}
-
-function processRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null && value != '') {
-        if (value == "Y") {
-            $(td).css("background-color", "rgb(92, 255, 92)").html("Đã làm lệnh").addClass("htMiddle");
-        } else {
-            $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa làm lệnh").addClass("htMiddle");
-        }
-    }
-    return td;
-}
-
-function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null && value != '') {
-        if (value == "Y") {
-            $(td).css("background-color", "rgb(92, 255, 92)").html("Đã Thanh toán").addClass("htMiddle");
-        } else {
-            $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa thanh toán").addClass("htMiddle");
-        }
-    }
-    return td;
-}
-
-function statusRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null && value != '') {
-        if (value != 4) {
-            $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa hạ container").addClass("htMiddle");
-        } else {
-            $(td).css("background-color", "rgb(92, 255, 92)").html("Đã hạ container").addClass("htMiddle");
-        }
-    }
-    return td;
-}
-
-function dateTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
-        $(td).html(value.substring(8, 10)+"/"+value.substring(5, 7)+"/"+value.substring(0,4)).addClass("htMiddle");
-    }
-    return td;
-}
-
 config = {
     stretchH: "all",
     height: document.documentElement.clientHeight - 100,
@@ -153,77 +103,70 @@ config = {
     colHeaders: function (col) {
         switch (col) {
             case 0:
-                return "id";
-            case 1:
                 var txt = "<input type='checkbox' class='checker' ";
                 txt += "onclick='checkAll()' ";
                 txt += ">";
                 return txt;
+            case 1:
+                return "id";
             case 2:
-                return "Số đăng ký";
+                return "Container No";
             case 3:
-                return '<span>Container No</span><span style="color: red;">(*)</span>';
+                return "T.T Thanh Toán";
             case 4:
                 return "T.T Làm Lệnh";
             case 5:
-                return "T.T Thanh Toán";
-            case 6:
                 return "T.T Hạ Cont";
+            case 6:
+                return "Kích Thước";
             case 7:
-                return '<span>Chủ khai thác</span><span style="color: red;">(*)</span>';
+                return "Chủ hàng";
             case 8:
-                return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+                return "Hạn Lệnh";
             case 9:
-                return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
-            case 10:
                 return "Cảng Nguồn";
-            case 11:
+            case 10:
                 return "Cảng Đích";
+            case 11:
+                return "Phương Tiện";
             case 12:
+                return "Nơi Hạ Vỏ";
+            case 13:
                 return "Ghi Chú";
         }
     },
-    colWidths: [0.01, 50, 100, 100, 150, 150, 150, 100, 100, 100, 100, 100, 200],
+    colWidths: [50, 0.01, 100, 150, 150, 150, 100, 100, 100, 100, 100, 100, 100, 200],
     filter: "true",
     columns: [
-        {
-            data: "id",
-            readOnly: true,
-        },
         {
             data: "active",
             type: "checkbox",
             className: "htCenter",
         },
         {
-            data: "registerNo",
-            readOnly: true,
-            renderer: disableRenderer
+            data: "id",
+            editor: false
         },
         {
             data: "containerNo",
-            renderer: disableRenderer
-        },
-        {
-            data: "processStatus",
-            readOnly: true,
-            renderer: processRenderer
         },
         {
             data: "paymentStatus",
-            readOnly: true,
-            renderer: paymentRenderer
+            editor: false
+        },
+        {
+            data: "processStatus",
+            editor: false
         },
         {
             data: "status",
-            readOnly: true,
-            renderer: statusRenderer
+            editor: false,
         },
         {
-            data: "opeCode",
-            type: "autocomplete",
-            source: opeCodeList,
-            strict: true
+            data: "sztp",
+        },
+        {
+            data: "consignee"
         },
         {
             data: "expiredDem",
@@ -231,25 +174,18 @@ config = {
             dateFormat: "DD/MM/YYYY",
             correctFormat: true,
             defaultDate: new Date(),
-            renderer: dateTimeRenderer
-        },
-        {
-            data: "sztp",
-            type: "autocomplete",
-            source: sizeList,
-            strict: true
         },
         {
             data: "loadingPort",
-            type: "autocomplete",
-            source: LoadingPortList,
-            strict: true
         },
         {
             data: "dischargePort",
-            type: "autocomplete",
-            source: DischargePortList,
-            strict: true
+        },
+        {
+            data: "transportType",
+        },
+        {
+            data: "emptyDepot",
         },
         {
             data: "remark",
@@ -274,14 +210,14 @@ config = {
                     if (shipmentDetails.length > 0) {
                         var status = 1;
                         for (var i = 0; i < shipmentDetails.length; i++) {
-                            if (shipmentDetails[i].paymentStatus == "Y") {
+                            if (shipmentDetails[i].paymentStatus == "Đã thanh toán") {
                                 if (verifyStatus || notVerify) {
                                     status = 1;
                                 } else {
                                     status = 4;
                                     paymentStatus = true;
                                 }
-                            } else if (shipmentDetails[i].processStatus == "Y") {
+                            } else if (shipmentDetails[i].processStatus == "Đã làm lệnh") {
                                 if (paymentStatus || notVerify) {
                                     status = 1;
                                 } else {
@@ -316,12 +252,6 @@ config = {
                     }
                 }
             });
-        }
-    },
-    afterSelectionEnd: function (r, c, r2, c2) {
-        selectedRow = null;
-        if (c == 0 && c2 == 12) {
-            selectedRow = r;
         }
     },
 };
@@ -360,12 +290,36 @@ function loadShipmentDetail(id) {
             shipmentId: id
         },
         success: function (result) {
-            isSaved = false;
-            if(result.length > 0 && result[0].id != null) {
-                isSaved = true;
-            }
-            hot.destroy();
-            hot = new Handsontable(dogrid, config);
+            result.forEach(function iterate(shipmentDetail) {
+                if (shipmentDetail.expiredDem != null && shipmentDetail.expiredDem != '') {
+                    shipmentDetail.expiredDem = shipmentDetail.expiredDem.substring(8, 10) + "/" + shipmentDetail.expiredDem.substring(5, 7) + "/" + shipmentDetail.expiredDem.substring(0, 4);
+                }
+                switch (shipmentDetail.paymentStatus) {
+                    case "N":
+                        shipmentDetail.paymentStatus = "Chưa thanh toán";
+                        break;
+                    case "Y":
+                        shipmentDetail.paymentStatus = "Đã thanh toán";
+                        break;
+                    default:
+                        break;
+                }
+                switch (shipmentDetail.processStatus) {
+                    case "N":
+                        shipmentDetail.processStatus = "Chưa làm lệnh";
+                        break;
+                    case "Y":
+                        shipmentDetail.processStatus = "Đã làm lệnh";
+                        break;
+                    default:
+                        break;
+                }
+                if (shipmentDetail.status != 4) {
+                    shipmentDetail.status = "Chưa hạ container";
+                } else {
+                    shipmentDetail.status = "Đã hạ container";
+                }
+            });
             hot.loadData(result);
             hot.render();
             setLayoutRegisterStatus();
@@ -482,30 +436,20 @@ function getDataFromTable(isValidate) {
     contList = [];
     $.each(cleanedGridData, function (index, object) {
         var shipmentDetail = new Object();
-        if((object["containerNo"] == null || object["containerNo"] == "") && isValidate) {
-            $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
-            errorFlg = true;
-        } else if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && isValidate) {
+        if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && isValidate) {
             $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
-            errorFlg = true;
-        } else if ((object["expiredDem"] == null || object["expiredDem"] == "") && isValidate) {
-            $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
-            errorFlg = true;
-        } else if ((object["opeCode"] == null || object["opeCode"] == "") && isValidate) {
-            $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ khai thác!");
-            errorFlg = true;
-        } else if ((object["sztp"] == null || object["sztp"] == "") && isValidate) {
-            $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
             errorFlg = true;
         }
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
         shipmentDetail.sztp = object["sztp"];
-        shipmentDetail.opeCode = object["opeCode"];
+        shipmentDetail.consignee = object["consignee"];
         shipmentDetail.expiredDem = expiredDem.getTime();
         shipmentDetail.loadingPort = object["loadingPort"];
         shipmentDetail.dischargePort = object["dischargePort"];
+        shipmentDetail.transportType = object["transportType"];
+        shipmentDetail.emptyDepot = object["emptyDepot"];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
@@ -576,6 +520,8 @@ function saveShipmentDetail() {
             });
         } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
             $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
+        } else {
+            $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
         }
     }
 }
@@ -584,7 +530,7 @@ function saveShipmentDetail() {
 function verify() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 400);
+        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
     }
 }
 
@@ -595,10 +541,6 @@ function verifyOtp(shipmentDtIds) {
 function pay() {
     $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds, 700, 300);
 }
-
-function pickTruck() {
-    $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id, 655, 400);
-  }
 
 function exportBill() {
 
@@ -617,11 +559,6 @@ function setLayoutRegisterStatus() {
     $("#saveShipmentDetailBtn").prop("disabled", false);
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", true);
-    if (isSaved) {
-        $("#pickTruckBtn").prop("disabled", false);
-    } else {
-        $("#pickTruckBtn").prop("disabled", true);
-    }
     $("#exportBillBtn").prop("disabled", true);
 }
 
@@ -666,14 +603,3 @@ function finishForm(result) {
     }
     reloadShipmentDetail();
 }
-
-document.addEventListener("keyup", function(e){
-    if (e.keyCode == 8) {
-        if (selectedRow != null) {
-            for (var i=2; i< 13; i++) {
-                hot.setDataAtCell(selectedRow, i, '');
-            }
-        }
-    }
-});
-

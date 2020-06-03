@@ -22,10 +22,10 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 @Controller
-@RequestMapping("/logistic/sendContEmpty")
-public class LogisticSendContEmpty extends LogisticBaseController {
-
-	private final String prefix = "logistic/sendContEmpty";
+@RequestMapping("/logistic/sendContFull")
+public class LogisticSendContFull extends LogisticBaseController {
+    
+    private final String prefix = "logistic/sendContFull";
 	
 	@Autowired
 	private IShipmentService shipmentService;
@@ -44,7 +44,7 @@ public class LogisticSendContEmpty extends LogisticBaseController {
 		startPage();
 		LogisticAccount user = getUser();
 		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setServiceId(2);
+		shipment.setServiceId(4);
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}
@@ -63,7 +63,7 @@ public class LogisticSendContEmpty extends LogisticBaseController {
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceId(2);
+		shipment.setServiceId(4);
 		shipment.setBlNo("null");
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
@@ -135,12 +135,7 @@ public class LogisticSendContEmpty extends LogisticBaseController {
 					shipmentDetail.setWgt(1l);
 					shipmentDetail.setVslNm("vslNm");
 					shipmentDetail.setVoyNo("voyNo");
-					if(shipmentDetail.getLoadingPort() == null) {
-						shipmentDetail.setLoadingPort(" ");
-					}
-					if(shipmentDetail.getDischargePort() == null) {
-						shipmentDetail.setDischargePort(" ");
-					}
+					shipmentDetail.setOpeCode("opeCode");
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
@@ -204,39 +199,5 @@ public class LogisticSendContEmpty extends LogisticBaseController {
 			return success("Thanh toán thành công");
 		}
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
-	}
-
-	@GetMapping("pickTruckForm/{shipmentId}")
-	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
-		mmap.put("shipmentId", shipmentId);
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
-		String transportId = "";
-		String shipmentIds = "";
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
-			if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
-				transportId = shipmentDetail2.getTransportIds();
-			}
-			shipmentIds += shipmentDetail2.getId() + ",";
-		}
-		mmap.put("transportIds", transportId);
-		mmap.put("shipmentDetailIds", shipmentIds);
-		return prefix + "/pickTruckForm";
-	}
-
-	@PostMapping("/pickTruck")
-	@ResponseBody
-	public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setTransportIds(driverIds);
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
-			}
-			return success("Điều xe thành công");
-		}
-		return error("Xảy ra lỗi trong quá trình điều xe.");
 	}
 }
