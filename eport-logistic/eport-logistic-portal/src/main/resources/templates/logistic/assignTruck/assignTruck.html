@@ -6,7 +6,68 @@
     <th:block th:include="include :: header('Điều Xe')" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
-    <link th:href="@{/css/logistic/assignTruck/style.css}" rel="stylesheet" />
+    <style>
+      .container {
+        position: relative;
+        padding: 0;
+        width: 100%;
+      }
+    
+      .right-side {
+        display: flex;
+        flex-flow: column;
+      }
+      .content {
+        padding: 12px 15px 12px 15px;
+        text-align: center;
+        flex: 1 1 auto;
+        flex-flow: column;
+        display: flex;
+      }
+    
+      .headerBar {
+        display: flex;
+        justify-content: center;
+      }
+    
+      .interDeliveryTeam {
+        flex: 1 1 auto;
+        margin-top: 10px;
+      }
+      .content-table {
+        display: flex;
+        flex: 1 1 auto;
+      }
+      .exterDeliveryTeam {
+        margin-top: 10px;
+        display: none;
+        flex: 1 1 auto;
+      }
+    
+      table tbody,
+      table thead {
+        display: block;
+      }
+    
+      table .tbody-custom {
+        overflow: auto;
+        height: 420px;
+      }
+    
+      table {
+        max-height: 100%;
+        height: 100%;
+        margin-bottom: 0 !important;
+      }
+    
+      .thHover :hover {
+        background-color: #5f7ccc;
+      }
+    
+      .th-custom {
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <div id="wrapper">
@@ -65,11 +126,11 @@
                     onclick="exterDeliveryTab()">Thuê ngoài</button>
             </div>
             <div class="interDeliveryTeam">
-                <div style="display: flex; justify-content: center;height: 5%;">
+                <div style="display: flex; justify-content: center;">
                     <b style="margin-right: 120px;">Danh sách xe</b>
                     <b style="margin-left: 120px;">Xe điều</b>
                 </div>
-                <div style="display: flex; height: 95%;">
+                <div class="content-table">
                     <table id="truckList" class="table" border="1" style="margin-right: 10px;">
                         <thead>
                             <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
