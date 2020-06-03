@@ -57,7 +57,10 @@ public class TransportAccountController extends LogisticBaseController
     {
         return prefix + "/index";
     }
-
+    @GetMapping("/direction")
+    public String directionOfTruck() {
+    	return prefix + "/assignTruck";
+    }
     /**
      * Get Driver login info List
      */
