@@ -2,12 +2,17 @@ package vn.com.irtech.eport.web.controller.system;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -53,10 +58,7 @@ public class SysEDIController extends BaseController
 	@Autowired
  	private IEquipmentDoService equipmentDoService;
 
-  	private SysUser currentUser;
-
-	private JSONArray equipmentDoList;
-	//  Return data list search
+	
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
@@ -87,7 +89,8 @@ public class SysEDIController extends BaseController
     public String hanson()
     {
         return "edi/add";
-    }
+	}
+	
 	@RequestMapping(value = "/file",method = { RequestMethod.POST })
 	public @ResponseBody Object upload(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
 		if (file.isEmpty()) {
@@ -118,8 +121,31 @@ public class SysEDIController extends BaseController
           folderUpload.mkdirs();
         }
         return folderUpload;
-      }
-
+	  }
+	@GetMapping("/getViewCheckFile")
+	public String viewcheckFile()
+	{
+		return "edi/checkFile";
+	}
+	  //loadfile
+	@GetMapping("/loadFileFromDisk")
+	@ResponseBody
+	public Object loadFileFromDisk() throws IOException {
+		final File folder = new File("D:/testReadFile");
+		final String destinationFolder = "D:/moveFileToThisFolder/";
+		List<JSONObject> obj = new ArrayList<>();
+		List<JSONObject> rs = new ArrayList<>();
+			for (final File fileEntry : folder.listFiles()) {
+			String path = fileEntry.getAbsolutePath();
+			String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
+			String[] text = content.split("'");
+			obj = this.ReadEDI(text);
+			rs.addAll(obj);
+			//Move file to distination folder
+			//fileEntry.renameTo(new File(destinationFolder + fileEntry.getName()));
+			}
+		return rs;
+	}  
 	
 	@PostMapping("/datalist")
     @RequiresPermissions("system:edi:list")
