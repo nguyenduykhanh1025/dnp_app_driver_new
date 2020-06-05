@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="LogisticAccount" id="LogisticAccountResult">
         <result property="id"    column="id"    />
         <result property="groupId"    column="group_id"    />
+        <result property="userName"    column="user_name"    />
         <result property="email"    column="email"    />
         <result property="password"    column="password"    />
         <result property="salt"    column="salt"    />
@@ -20,21 +21,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <association property="logisticGroup"    column="group_id" javaType="LogisticGroup" resultMap="logisticGroupResult" />
     </resultMap>
-
+    <resultMap type="LogisticGroup" id="logisticGroupResult">
+        <result property="id"    column="id"    />
+        <result property="groupName"    column="group_name"    />
+    </resultMap>
     <sql id="selectLogisticAccountVo">
-        select id, group_id, email, password, salt, full_name, status, del_flag, login_ip, login_date, remark, create_by, create_time, update_by, update_time from logistic_account
+        select id, group_id, user_name, email, password, salt, full_name, status, del_flag, login_ip, login_date, remark, create_by, create_time, update_by, update_time from logistic_account
     </sql>
 
     <select id="selectLogisticAccountList" parameterType="LogisticAccount" resultMap="LogisticAccountResult">
-        <include refid="selectLogisticAccountVo"/>
+        select c.id, c.group_id, c.user_name, c.email, c.password, c.salt, c.full_name, c.status, c.del_flag
+        , c.login_ip, c.login_date, c.remark, c.create_by, c.create_time, c.update_by, c.update_time, g.id, g.group_name  
+        from logistic_account c left join logistic_group g on c.group_id = g.id
         <where>  
-            <if test="groupId != null "> and group_id = #{groupId}</if>
-            <if test="email != null  and email != ''"> and email = #{email}</if>
-            <if test="fullName != null  and fullName != ''"> and full_name like concat('%', #{fullName}, '%')</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="loginIp != null  and loginIp != ''"> and login_ip = #{loginIp}</if>
-            <if test="loginDate != null "> and login_date = #{loginDate}</if>
+            <if test="logisticGroup.groupName != null  and logisticGroup.groupName != ''"><bind name="groupNamePattern" value="'%' + logisticGroup.groupName + '%'"/> and lower(g.group_name) like #{groupNamePattern}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="email != null  and email != ''"><bind name="emailPattern" value="'%' + email + '%'"/> and lower(c.email) like #{emailPattern}</if>
+            <if test="fullName != null  and fullName != ''"> and c.full_name like concat('%', #{fullName}, '%')</if>
+            <if test="status != null  and status != ''"> and c.status = #{status}</if>
+            <if test="delFlag != null"> and c.del_flag = #{delFlag}</if>
         </where>
     </select>
     
@@ -47,11 +54,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    <include refid="selectLogisticAccountVo"/>
 		where email = #{email}
 	</select>
+	<select id="selectByUserName" parameterType="String" resultMap="LogisticAccountResult">
+	    <include refid="selectLogisticAccountVo"/>
+		where user_name = #{userName} and del_flag = '0'
+	</select>
         
     <insert id="insertLogisticAccount" parameterType="LogisticAccount" useGeneratedKeys="true" keyProperty="id">
         insert into logistic_account
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="groupId != null ">group_id,</if>
+            <if test="userName != null  and userName != ''">user_name,</if>
             <if test="email != null  and email != ''">email,</if>
             <if test="password != null  and password != ''">password,</if>
             <if test="salt != null  and salt != ''">salt,</if>
@@ -68,6 +80,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="groupId != null ">#{groupId},</if>
+            <if test="userName != null  and userName != ''">#{userName},</if>
             <if test="email != null  and email != ''">#{email},</if>
             <if test="password != null  and password != ''">#{password},</if>
             <if test="salt != null  and salt != ''">#{salt},</if>
@@ -88,6 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update logistic_account
         <trim prefix="SET" suffixOverrides=",">
             <if test="groupId != null ">group_id = #{groupId},</if>
+            <if test="userName != null  and userName != ''">user_name = #{userName},</if>
             <if test="email != null  and email != ''">email = #{email},</if>
             <if test="password != null  and password != ''">password = #{password},</if>
             <if test="salt != null  and salt != ''">salt = #{salt},</if>
@@ -108,12 +122,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <delete id="deleteLogisticAccountById" parameterType="Long">
         delete from logistic_account where id = #{id}
     </delete>
-
     <delete id="deleteLogisticAccountByIds" parameterType="String">
         delete from logistic_account where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
-    
+    <update id="updateDelFlagLogisticAccountByIds" parameterType="String">
+        update logistic_account set del_flag = 1 where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="updateDelFlagLogisticAccountByGroupIds" parameterType="String">
+        update logistic_account set del_flag = 1 where group_id in 
+        <foreach item="groupId" collection="array" open="(" separator="," close=")">
+            #{groupId}
+        </foreach>
+    </update>
+    <select id="checkEmailUnique" parameterType="String" resultType="int">
+		select count(1) from logistic_account where lower(email)=#{email}
+	</select>
+	    <select id="checkUserNameUnique" parameterType="String" resultType="int">
+		select count(1) from logistic_account where user_name = #{userName}
+	</select>
 </mapper>

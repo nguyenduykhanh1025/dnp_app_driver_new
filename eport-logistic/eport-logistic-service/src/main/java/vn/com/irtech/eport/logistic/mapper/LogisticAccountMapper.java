@@ -58,6 +58,8 @@ public interface LogisticAccountMapper
      * @return result
      */
     public int deleteLogisticAccountByIds(String[] ids);
+    public int updateDelFlagLogisticAccountByIds(String[] ids);
+    public int updateDelFlagLogisticAccountByGroupIds(String[] groupIds);
 
     /**
      * Select Logistic account by email
@@ -65,4 +67,7 @@ public interface LogisticAccountMapper
      * @return
      */
 	public LogisticAccount selectByEmail(String email);
+	public LogisticAccount selectByUserName(String username);
+	public int checkEmailUnique(String email);
+	public int checkUserNameUnique(String userName);
 }

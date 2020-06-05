@@ -99,4 +99,38 @@ public class LogisticAccountServiceImpl implements ILogisticAccountService
 	public LogisticAccount selectByEmail(String email) {
 		return logisticAccountMapper.selectByEmail(email);
 	}
+
+	@Override
+	public LogisticAccount selectByUserName(String username) {
+		return logisticAccountMapper.selectByUserName(username);
+	}
+
+	@Override
+	public String checkEmailUnique(String email) {
+        int count = logisticAccountMapper.checkEmailUnique(email);
+        if (count > 0)
+        {
+            return "1";
+        }
+        return "0";
+	}
+
+	@Override
+	public String checkUserNameUnique(String userName) {
+		int count = logisticAccountMapper.checkUserNameUnique(userName);
+		if(count > 0) {
+			return "1";
+		}
+		return "0";
+	}
+
+	@Override
+	public int updateDelFlagLogisticAccountByIds(String ids) {
+		return logisticAccountMapper.updateDelFlagLogisticAccountByIds(Convert.toStrArray(ids));
+	}
+
+	@Override
+	public int updateDelFlagLogisticAccountByGroupIds(String groupIds) {
+		return logisticAccountMapper.updateDelFlagLogisticAccountByGroupIds(Convert.toStrArray(groupIds));
+	}
 }

@@ -2,7 +2,10 @@ package vn.com.irtech.eport.logistic.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import vn.com.irtech.eport.common.annotation.Excel;
+import vn.com.irtech.eport.common.annotation.Excels;
+import vn.com.irtech.eport.common.annotation.Excel.Type;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
@@ -22,6 +25,10 @@ public class LogisticAccount extends BaseEntity
     /** Master Account */
     @Excel(name = "Master Account")
     private Long groupId;
+
+    /** Username */
+    @Excel(name = "Username")
+    private String userName;
 
     /** Email */
     @Excel(name = "Email")
@@ -53,8 +60,24 @@ public class LogisticAccount extends BaseEntity
     /** Login Date */
     @Excel(name = "Login Date", width = 30, dateFormat = "yyyy-MM-dd")
     private Date loginDate;
+    
+    @Excels({
+        @Excel(name = "Group Code", targetAttr = "logisticGroup", type = Type.EXPORT)
+    })
+    private LogisticGroup logisticGroup;
 
-    public void setId(Long id) 
+    public LogisticGroup getLogisticGroup() {
+    	if(logisticGroup == null) {
+    		logisticGroup = new LogisticGroup();
+    	}
+		return logisticGroup;
+	}
+
+	public void setLogisticGroup(LogisticGroup logisticGroup) {
+		this.logisticGroup = logisticGroup;
+	}
+
+	public void setId(Long id) 
     {
         this.id = id;
     }
@@ -72,6 +95,17 @@ public class LogisticAccount extends BaseEntity
     {
         return groupId;
     }
+    
+    public void setUserName(String userName) 
+    {
+        this.userName = userName;
+    }
+
+    public String getUserName() 
+    {
+        return userName;
+    }
+    
     public void setEmail(String email) 
     {
         this.email = email;
@@ -150,6 +184,7 @@ public class LogisticAccount extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("groupId", getGroupId())
+            .append("userName", getUserName())
             .append("email", getEmail())
             .append("password", getPassword())
             .append("salt", getSalt())

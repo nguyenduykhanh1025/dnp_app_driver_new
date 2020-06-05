@@ -59,12 +59,19 @@
               <a title="Quản Lý DO" th:href="@{/carrier/do}" href="/carrier/do" class="menuItem"><i class="fa fa-ship"></i>&nbsp; Quản Lý DO</a>
             </li>
             <li class="dropdown user-menu">
-              <a title="Tra cứu Container" class="menuItem"><i class="fa fa-check"></i>&nbsp; Đăng Ký Làm Lệnh</a>
+              <a title="Tra cứu Container" class="menuItem"><i class="fa fa-calendar-check-o"></i>&nbsp; Đăng Ký Làm Lệnh</a>
               <ul class="dropdown-menu">
                 <li><a class="menuItem " th:href="@{/logistic/receiveContFull}">Nhận Cont Hàng Từ Cảng</a></li>
+                <li><a class="menuItem " th:href="@{/logistic/sendContEmpty}">Giao Cont Rỗng Cho Cảng</a></li>
                 <li><a class="menuItem" th:href="@{/logistic/receiveContEmpty}">Nhận Cont Rỗng Từ Cảng</a></li>
                 <li><a class="menuItem " th:href="@{/logistic/sendContFull}">Giao Cont Hàng Cho Cảng</a></li>
-                <li><a class="menuItem " th:href="@{/logistic/sendContEmpty}">Giao Cont Rỗng Cho Cảng</a></li>
+              </ul>
+            </li>
+            <li class="dropdown user-menu">
+              <a title="Tra cứu Container"  class="menuItem"><i class="fa fa-truck"></i>&nbsp; Quản lý Đội Xe</a>
+              <ul class="dropdown-menu">
+                <li><a class="menuItem " th:href="@{/logistic/transport}">Đội xe</a></li>
+                <li><a class="menuItem " th:href="@{/logistic/assignTruck}">Điều xe</a></li>
               </ul>
             </li>
           </ul>
@@ -85,12 +92,12 @@
             </li>
             <li class="dropdown user-menu">
               <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
-                <span class="hidden-xs">[[${#strings.defaultString(user.email, '-')}]]</span
+                <span class="hidden-xs">[[${#strings.defaultString(user.fullName, '-')}]]</span
                   >
                 </a>
                 <ul class="dropdown-menu">
                   <li class="mt5">
-                    <a th:href="@{/carrier/profile}" class="menuItem">
+                    <a th:href="@{/logistic/profile}" class="menuItem">
                       <i class="fa fa-user"></i> Hồ sơ</a
                     >
                   </li>
@@ -189,7 +196,7 @@
       }
 
       function resetPwd() {
-          var url = ctx + 'carrier/profile/resetPwd';
+          var url = ctx + 'logistic/profile/resetPwd';
           $.modal.open("Reset Password", url, '770', '380');
       }
 

@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
+
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 
 /**
@@ -58,4 +59,6 @@ public interface LogisticGroupMapper
      * @return result
      */
     public int deleteLogisticGroupByIds(String[] ids);
+    public int updateDelFlagLogisticGroupByIds(String[] ids);
+    public List<LogisticGroup> selectLogisticGroupListByName(LogisticGroup logisticGroup);
 }

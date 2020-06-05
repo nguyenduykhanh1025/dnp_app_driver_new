@@ -58,4 +58,6 @@ public interface IShipmentDetailService
      * @return result
      */
     public int deleteShipmentDetailById(Long id);
+
+    public List<ShipmentDetail> selectShipmentDetailByIds(String ids);
 }

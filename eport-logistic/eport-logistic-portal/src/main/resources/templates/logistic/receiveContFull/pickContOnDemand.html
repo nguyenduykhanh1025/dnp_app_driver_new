@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <th:block th:include="include :: header('Boc Cont Chi Dinh')" />
+</head>
+<style type="text/css">
+  .container {
+    position: relative;
+    padding: 0;
+    width: 100%;
+  }
+
+  .footer {
+    background-color: #f0f4f7;
+    height: 55px;
+    padding: 10px 30px 12px 15px !important;
+  }
+
+  .content {
+    height: 467px;
+    padding: 12px 15px 12px 15px;
+    margin-left: 10px;
+  }
+
+  .contListPosition {
+    height: 150px;
+    /* width: 760px; */
+    overflow-y: scroll;
+    text-align: center;
+  }
+
+  .bayPosition {
+    display: flex;
+  }
+
+  .contListPicked {
+    margin-top: 12px;
+    height: 185px;
+    width: 670px;
+  }
+
+  .contBill {
+    height: 103px;
+  }
+
+  .columnDiv {
+    margin-right: 10px;
+  }
+
+  .cellDiv {
+    text-align: center;
+    border: solid black 1px;
+    width: 100px;
+    height: 20px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .cellDivDisable {
+    border: solid black 1px;
+    width: 100px;
+    height: 20px;
+    margin-bottom: 5px;
+    background-color: grey;
+  }
+
+  table tbody, table thead {
+    display: block;
+  }
+
+  table tbody {
+    overflow: auto;
+    height: 120px;
+  }
+
+  table {
+    margin-bottom: 0 !important;
+  }
+
+</style>
+
+<body>
+  <div class="container">
+    <div class="content">
+      <div class="contListPosition"></div>
+      <div class="contListPicked">
+        <b>Danh sách container chỉ dịnh</b>
+        <table id="pickedContTable" class="table" border="1" align="left" > 
+          <thead>
+            <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+              <th width="240px">Container No</th>
+              <th width="240px">Xe vận chuyển</th>
+              <th width="180px">Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="pickedContList"></tbody>
+        </table>
+      </div>
+      <div class="contBill">
+        <b>Phí dịch chuyển</b>
+        <table id="pickedContTable" class="table" style="width: 660px;" border="1" align="left" > 
+          <thead>
+            <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+              <th width="240px">Đơn giá</th>
+              <th width="240px">Số container dịch chuyển</th>
+              <th width="180px">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody style="height: 36px;">
+            <tr>
+              <td style="width: 240px">
+                <span id="unitCosts">0</span><span> đồng.</span>
+              </td>
+              <td style="width: 240px">
+                <span id="pickedContAmount">0</span><span>.</span>
+              </td>
+              <td style="width: 180px">
+                <span id="totalCosts">0</span><span> đồng.</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="layui-layer-btn footer">
+      <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+      <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
+    </div>
+  </div>
+</body>
+<th:block th:include="include :: footer" />
+<script type="text/javascript" th:inline="javascript">
+  var unitCosts = /*[[${unitCosts}]]*/;
+  var bayList = /*[[${bayList}]]*/;
+  var blNo = /*[[${blNo}]]*/;
+</script>
+<script th:src="@{/js/logistic/receiveContFull/pickContOnDemand.js}"></script>
+
+</html>

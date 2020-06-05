@@ -42,7 +42,7 @@
 				oldPassword:{
 					required:true,
 					remote: {
-	                    url: ctx + "carrier/profile/checkPassword",
+	                    url: ctx + "logistic/profile/checkPassword",
 	                    type: "get",
 	                    dataType: "json",
 	                    data: {
@@ -83,7 +83,7 @@
 		
 		function submitHandler() {
 	        if ($.validate.form()) {
-	        	$.operate.save(ctx + "carrier/profile/resetPwd", $('#form-user-resetPwd').serialize());
+	        	$.operate.save(ctx + "logistic/profile/resetPwd", $('#form-user-resetPwd').serialize());
 	        }
 	    }
 	</script>

@@ -727,6 +727,16 @@ var table = {
         	        callBack(true);
         	    });
             },
+            confirmTransport: function (content, callBack) {
+            	layer.confirm(content, {
+        	        icon: 3,
+        	        title: "Xác Nhận",
+        	        btn: ['Đồng Ý', 'Hủy Bỏ']
+        	    }, function (index) {
+        	    	layer.close(index);
+        	        callBack(true);
+        	    });
+            },
             // 弹出层指定宽度
             open: function (title, url, width, height, callback) {
             	//如果是移动端，就使用自适应大小弹窗
@@ -769,7 +779,48 @@ var table = {
             	        return true;
             	    }
             	});
-      },
+	  },
+			// Khai bao hai quan
+			openCustomForm: function (title, url, width, height, callback) {
+				//如果是移动端，就使用自适应大小弹窗
+				if ($.common.isMobile()) {
+					width = 'auto';
+					height = 'auto';
+				}
+				if ($.common.isEmpty(title)) {
+					title = false;
+				}
+				if ($.common.isEmpty(url)) {
+					url = "/404.html";
+				}
+				if ($.common.isEmpty(width)) {
+					width = 800;
+				}
+				if ($.common.isEmpty(height)) {
+					height = ($(window).height() - 50);
+				}
+				if ($.common.isEmpty(callback)) {
+					callback = function(index, layero) {
+						var iframeWin = layero.find('iframe')[0];
+						iframeWin.contentWindow.submitHandler(index, layero);
+					}
+				}
+				layer.open({
+					type: 2,
+					area: [width + 'px', height + 'px'],
+					fix: false,
+					//不固定
+					maxmin: true,
+					shade: 0.3,
+					title: title,
+					content: url,
+					shadeClose: true,
+					yes: callback,
+					cancel: function(index) {
+						return true;
+					}
+				});
+		},
       // 弹出层指定宽度
       openChangeExpired: function (title, url, width, height, callback) {
         //如果是移动端，就使用自适应大小弹窗
@@ -1043,6 +1094,14 @@ var table = {
             	});
             	
             },
+            removeTransportAccount: function(id) {
+            	table.set();
+            	$.modal.confirm("Xác nhận thực hiện xóa thông tin " + table.options.modalName + "?", function() {
+                    var url = table.options.removeUrl.replace("{id}", id);
+                    $.operate.get(url);
+            	});
+            	
+            },
             // 批量删除信息
             removeAll: function() {
             	table.set();
@@ -1074,6 +1133,15 @@ var table = {
             addShipment: function(id) {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 500);
+			},
+			// add shipment
+            addShipmentSendEmpty: function(id) {
+            	table.set();
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
+            },
+			addTransportAccount: function(id) {
+            	table.set();
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 850, 460);
             },
             // 添加信息，以tab页展现
             addTab: function (id) {
@@ -1111,6 +1179,15 @@ var table = {
 				table.set();
 				if (table.options.updateUrl != "0") {
 					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 500);
+				} else {
+					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
+				}
+			},
+			// 修改信息
+            editShipmentSendEmpty: function(id) {
+				table.set();
+				if (table.options.updateUrl != "0") {
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 420);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}

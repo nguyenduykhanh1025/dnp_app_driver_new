@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.ShipmentTransportMapper">
+    
+    <resultMap type="ShipmentTransport" id="ShipmentTransportResult">
+        <result property="id"    column="id"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
+        <result property="shipmentId"    column="shipment_id"    />
+        <result property="containerNo"    column="container_no"    />
+        <result property="transportIds"    column="transport_ids"    />
+    </resultMap>
+
+    <sql id="selectShipmentTransportVo">
+        select id, logistic_group_id, shipment_id, container_no, transport_ids from shipment_transport
+    </sql>
+
+    <select id="selectShipmentTransportList" parameterType="ShipmentTransport" resultMap="ShipmentTransportResult">
+        <include refid="selectShipmentTransportVo"/>
+        <where>  
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
+            <if test="transportIds != null  and transportIds != ''"> and transport_ids = #{transportIds}</if>
+        </where>
+    </select>
+    
+    <select id="selectShipmentTransportById" parameterType="Long" resultMap="ShipmentTransportResult">
+        <include refid="selectShipmentTransportVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertShipmentTransport" parameterType="ShipmentTransport" useGeneratedKeys="true" keyProperty="id">
+        insert into shipment_transport
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logisticGroupId != null ">logistic_group_id,</if>
+            <if test="shipmentId != null ">shipment_id,</if>
+            <if test="containerNo != null  and containerNo != ''">container_no,</if>
+            <if test="transportIds != null  and transportIds != ''">transport_ids,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="logisticGroupId != null ">#{logisticGroupId},</if>
+            <if test="shipmentId != null ">#{shipmentId},</if>
+            <if test="containerNo != null  and containerNo != ''">#{containerNo},</if>
+            <if test="transportIds != null  and transportIds != ''">#{transportIds},</if>
+         </trim>
+    </insert>
+
+    <update id="updateShipmentTransport" parameterType="ShipmentTransport">
+        update shipment_transport
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
+            <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
+            <if test="containerNo != null  and containerNo != ''">container_no = #{containerNo},</if>
+            <if test="transportIds != null  and transportIds != ''">transport_ids = #{transportIds},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShipmentTransportById" parameterType="Long">
+        delete from shipment_transport where id = #{id}
+    </delete>
+
+    <delete id="deleteShipmentTransportByIds" parameterType="String">
+        delete from shipment_transport where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Điều Xe')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+    <link th:href="@{/css/logistic/assignTruck/style.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="wrapper">
+      <div class="left-side">
+        <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
+        <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
+        <div class="title-top">
+          <span class="title">Danh sách lô</span>
+        </div>
+        <hr />
+        <div class="table-content">
+          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'id'" width="100">Mã Lô</th>
+                <th data-options="field:'taxCode',halign:'center'" width="100">MST</th>
+                <th data-options="field:'containerAmount',align:'right',halign:'center'" width="70">Số Cont</th>
+                <th data-options="field:'serviceId',align:'right',halign:'center'" width="70">Dịch vụ</th>
+                <th data-options="field:'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="80">Ngày tạo</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+      <div class="right-side">
+        <div class="title-top">
+          <div class="left-info">
+            <div>
+              <span class="label-title">Mã Lô: </span>
+              <span id="loCode"></span>
+            </div>
+            <div>
+              <span class="label-title">Mã Số Thuế: </span>
+              <span id="taxCode"></span>
+            </div>
+            <div>
+              <span class="label-title">Số Lượng: </span>
+              <span id="quantity"></span>
+            </div>
+            <div>
+              <span class="label-title">Loại dịch vụ: </span>
+              <span id="serviceType"></span>
+            </div>
+          </div>
+          <div class="left-button-bar">
+            <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruck()" disabled>Điều Xe</button>
+          </div>
+        </div>
+        <hr />
+<!--         <div id="container-grid" class="hot handsontable htColumnHeaders"></div> -->
+        <div class="content">
+            <div class="headerBar">
+                <button id="interBtn" style="width: 250px; color: black; background-color: #72c072; font-weight: bold"
+                    onclick="interDeliveryTab()">Đội xe</button>
+                <button id="exterBtn" style="width: 250px;; color: black; font-weight: bold"
+                    onclick="exterDeliveryTab()">Thuê ngoài</button>
+            </div>
+            <div class="interDeliveryTeam">
+                <div style="display: flex; justify-content: center;height: 5%;">
+                    <b style="margin-right: 120px;">Danh sách xe</b>
+                    <b style="margin-left: 120px;">Xe điều</b>
+                </div>
+                <div style="display: flex; height: 95%;">
+                    <table id="truckList" class="table" border="1" style="margin-right: 10px;">
+                        <thead>
+                            <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+                                <th id="checkInField"  class="th-custom"><input type="checkbox" id="headerInternalCheckbox" onclick="checkAllInternal()" /></th>
+                                <th id="plateNumberInField"  class="th-custom">Biển số</th>
+                                <th id="mobileNumberInField"  class="th-custom">Số điện thoại</th>
+                                <th id="fullNameInField"  class="th-custom">Họ và Tên</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody-custom" id="transportList"></tbody>
+                    </table>
+                    <div style="padding: 70px 0; text-align: center;">
+                        <button style="margin-bottom: 10px;" onclick="transferInToOut()">>>>>></button>
+                        <button style="margin-top: 10px;" onclick="transferOutToIn()"><<<<<</button>
+                    </div>
+                    <table id="pickedTruckList" class="table" border="1" style="margin-left: 10px;">
+                        <thead>
+                            <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+                                <th id="checkOutField"  class="th-custom"><input type="checkbox" id="headerExternalCheckbox" onclick="checkAllExternal()" /></th>
+                                <th id="plateNumberOutField"  class="th-custom">Biển số</th>
+                                <th id="mobileNumberOutField"  class="th-custom">Số điện thoại</th>
+                                <th id="fullNameOutField"  class="th-custom">Họ và Tên</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbody-custom" id="pickedTransportList"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="exterDeliveryTeam">
+                <div style="margin-top: 10px;">
+                    <b>Số lượng xe thuê ngoài: </b>
+                    <input type="number" id="inputExternalRentNumber"/>
+                </div>
+                <table id="externalInput" class="table" border="1" style="margin-left: 10px; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+                            <th width="40px" class="th-custom">Stt</th>
+                            <th width="140px" class="th-custom">Biển số</th>
+                            <th width="135px" class="th-custom">Số điện thoại</th>
+                            <th width="150px" class="th-custom">Tên tài xế</th>
+                            <th width="150px" class="th-custom">Mật khẩu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="externalInputList" style="height: 170px;"></tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+<!--     <script th:src="@{/js/logistic/receiveContFull/index.js}"></script> -->
+<!--     <script th:src="@{/js/logistic/assignTruck/assignTruck.js}"></script> -->
+    <script th:src="@{/js/logistic/assignTruck/pickTruckForm.js}"></script>
+  </body>
+</html>

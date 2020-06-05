@@ -58,4 +58,6 @@ public interface ShipmentDetailMapper
      * @return result
      */
     public int deleteShipmentDetailByIds(String[] ids);
+
+    public List<ShipmentDetail> selectShipmentDetailByIds(String[] ids);
 }

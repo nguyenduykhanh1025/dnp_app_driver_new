@@ -30,6 +30,10 @@ public class Shipment extends BaseEntity
     @Excel(name = "Dich Vu")
     private Integer serviceId;
 
+    /** Bill No */
+    @Excel(name = "B/L No")
+    private String blNo;
+
     /** MST */
     @Excel(name = "MST")
     private String taxCode;
@@ -41,6 +45,10 @@ public class Shipment extends BaseEntity
     /** EDO Flag (1,0) */
     @Excel(name = "EDO Flag (1,0)")
     private String edoFlg;
+
+    /** So tham chieu CATOS */
+    @Excel(name = "Reference No")
+    private String referenceNo;
 
     /** Ghi chu */
     @Excel(name = "Ghi chu")
@@ -84,6 +92,15 @@ public class Shipment extends BaseEntity
     {
         return serviceId;
     }
+
+    public void setBlNo(String blNo) {
+        this.blNo = blNo;
+    }
+
+    public String getBlNo() {
+        return blNo;
+    }
+
     public void setTaxCode(String taxCode) 
     {
         this.taxCode = taxCode;
@@ -111,14 +128,13 @@ public class Shipment extends BaseEntity
     {
         return edoFlg;
     }
-    public void setRemak(String remak) 
-    {
-        this.remak = remak;
+
+    public void setReferenceNo(String referenceNo) {
+        this.referenceNo = referenceNo;
     }
 
-    public String getRemak() 
-    {
-        return remak;
+    public String getReferenceNo() {
+        return referenceNo;
     }
 
     public void setLogisticGroup(LogisticGroup logisticGroup) {
@@ -139,10 +155,12 @@ public class Shipment extends BaseEntity
             .append("logisticAccountId", getLogisticAccountId())
             .append("logisticGroupId", getLogisticGroupId())
             .append("serviceId", getServiceId())
+            .append("blNo", getBlNo())
             .append("taxCode", getTaxCode())
             .append("containerAmount", getContainerAmount())
             .append("edoFlg", getEdoFlg())
-            .append("remak", getRemak())
+            .append("referenceNo", getReferenceNo())
+            .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

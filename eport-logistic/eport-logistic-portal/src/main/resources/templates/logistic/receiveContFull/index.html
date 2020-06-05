@@ -27,11 +27,12 @@
             <thead>
               <tr>
                 <th data-options="field:'id'" width="1"></th>
-                <th data-options="field:'id',halign:'center',resizable:true" width="50">Mã lô</th>
-                <th data-options="field:'taxCode',halign:'center'" width="70">MST</th>
+                <th data-options="field:'edoFlg'" width="1"></th>
+                <th data-options="field:'blNo',halign:'center',resizable:true" width="100">B/L No</th>
+                <th data-options="field:'taxCode',halign:'center'" width="100">MST</th>
                 <th data-options="field:'containerAmount',align:'right',halign:'center'" width="70">Số Cont</th>
                 <th data-options="field:'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="80">Ngày tạo</th>
-                <th data-options="field:'remak',halign:'center'">Ghi chú</th>
+                <th data-options="field:'remark',align:'right',halign:'center', formatter: formatRemark" width="80">Ghi chú</th>
               </tr>
             </thead>
           </table>
@@ -54,30 +55,34 @@
                 <span id="quantity"></span>
               </div>
               <div>
-                <span class="label-title">Trạng Thái: </span>
-                <span id="status"></span>
+                <span class="label-title">Loại DO: </span>
+                <span id="dotype"></span>
+              </div>
+              <div>
+                <span class="label-title">B/L No: </span>
+                <span id="blNo"></span>
               </div>
             </div>
             <ul class="right-info">
-              <li><a class="label-primary">Khai báo</a></li>
-              <li><a class="active">Thông quan</a></li>
-              <li><a class="label-primary disable">Xác thực</a></li>
-              <li><a class="label-primary disable">Thanh toán</a></li>
-              <li><a class="label-primary disable">Hoàn thành</a></li>
+              <li><a id="registerStatus" class="disable">Khai báo</a></li>
+              <li><a id="customStatus" class="disable">Thông quan</a></li>
+              <li><a id="verifyStatus" class="disable">Xác thực</a></li>
+              <li><a id="paymentStatus" class="disable">Thanh toán</a></li>
+              <li><a id="finishStatus" class="disable">Hoàn thành</a></li>
             </ul>
           </div>
         </div>
         <div class="title-top">
           <div class="left-button-bar">
-            <button class="btn btn-sm btn-primary">Đăng Ký Làm Lệnh</button>
-            <button class="btn btn-sm btn-primary">Khai Hải Quan</button>
-            <button class="btn btn-sm btn-primary">Xác Thực</button>
-            <button class="btn btn-sm btn-primary">Thanh Toán</button>
-            <button class="btn btn-sm btn-primary">Điều Xe</button>
-            <button class="btn btn-sm btn-warning">Bốc Cont Chỉ Định</button>
+            <button id="saveShipmentDetailBtn" class="btn btn-sm btn-primary" onclick="saveShipmentDetail()">Lưu khai báo</button>
+            <button id="customBtn" class="btn btn-sm btn-primary" onclick="checkCustomStatus()" disabled>Khai Hải Quan</button>
+            <button id="pickContOnDemandBtn" class="btn btn-sm btn-primary" onclick="pickContOnDemand()" disabled>Bốc Cont Chỉ Định</button>
+            <button id="verifyBtn" class="btn btn-sm btn-primary" onclick="verify()" disabled>Xác Thực</button>
+            <button id="payBtn" class="btn btn-sm btn-primary" onclick="pay()" disabled>Thanh Toán</button>
+            <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruck()" disabled>Điều Xe</button>
           </div>
           <div class="search-bar">
-            <button class="btn btn-sm btn-success">Xuất Hóa Đơn</button>
+            <button id="exportBillBtn" class="btn btn-sm btn-success" onclick="exportBill()" disabled>Xuất Hóa Đơn</button>
           </div>
         </div>
         <hr />

@@ -21,7 +21,12 @@ public class LogisticGroupServiceImpl implements ILogisticGroupService
     @Autowired
     private LogisticGroupMapper logisticGroupMapper;
 
-    /**
+    @Override
+	public List<LogisticGroup> selectLogisticGroupListByName(LogisticGroup logisticGroup) {
+		return logisticGroupMapper.selectLogisticGroupListByName(logisticGroup);
+	}
+
+	/**
      * Get Logistic Group
      * 
      * @param id Logistic GroupID
@@ -83,7 +88,12 @@ public class LogisticGroupServiceImpl implements ILogisticGroupService
         return logisticGroupMapper.deleteLogisticGroupByIds(Convert.toStrArray(ids));
     }
 
-    /**
+    @Override
+	public int updateDelFlagLogisticGroupByIds(String ids) {
+		return logisticGroupMapper.updateDelFlagLogisticGroupByIds(Convert.toStrArray(ids));
+	}
+
+	/**
      * Delete Logistic Group
      * 
      * @param id Logistic GroupID

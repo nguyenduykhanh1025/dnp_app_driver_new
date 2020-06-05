@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,9 +13,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONObject;
+
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -33,6 +41,9 @@ public class LogisticGroupController extends BaseController
 
     @Autowired
     private ILogisticGroupService logisticGroupService;
+    
+    @Autowired
+    private ILogisticAccountService logisticAccountService;
 
     @RequiresPermissions("logistic:group:view")
     @GetMapping()
@@ -50,6 +61,9 @@ public class LogisticGroupController extends BaseController
     public TableDataInfo list(LogisticGroup logisticGroup)
     {
         startPage();
+        logisticGroup.setDelFlag("0");
+        logisticGroup.setGroupName(logisticGroup.getGroupName().toLowerCase());
+        logisticGroup.setEmail(logisticGroup.getEmail().toLowerCase());
         List<LogisticGroup> list = logisticGroupService.selectLogisticGroupList(logisticGroup);
         return getDataTable(list);
     }
@@ -86,6 +100,28 @@ public class LogisticGroupController extends BaseController
     @ResponseBody
     public AjaxResult addSave(LogisticGroup logisticGroup)
     {
+        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, logisticGroup.getEmail())) {
+            return error("Email không hợp lệ!");
+        }
+        if (!Pattern.matches(UserConstants.MST_PATTERN, logisticGroup.getMst())) {
+        	return error("MST không hợp lệ. Từ 10 -> 15 số");
+        }
+        if (!Pattern.matches(UserConstants.IDENTIFY_NO_PATTERN, logisticGroup.getIdentifyCardNo())){
+            return error("Chứng minh thư không hợp lệ. Từ 9->15 số");
+        }
+        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getPhone())){
+            return error("Điện thoại cố định phải là số");
+        }
+        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getFax())){
+            return error("Fax phải là số");
+        }
+        // handle String mobile regex exclude (.,-,+,' ')
+        String mobilePhone = logisticGroup.getMobilePhone();
+        String replace = mobilePhone.replaceAll("[\\s,\\.,\\-,\\+]", "");
+        logisticGroup.setMobilePhone(replace);
+        if (!Pattern.matches(UserConstants.MOBILE_PHONE_PATTERN, logisticGroup.getMobilePhone())) {
+        	return error("Điện thoại di động không hợp lệ");
+        }
         return toAjax(logisticGroupService.insertLogisticGroup(logisticGroup));
     }
 
@@ -109,6 +145,28 @@ public class LogisticGroupController extends BaseController
     @ResponseBody
     public AjaxResult editSave(LogisticGroup logisticGroup)
     {
+        if (!Pattern.matches(UserConstants.EMAIL_PATTERN, logisticGroup.getEmail())) {
+            return error("Email không hợp lệ!");
+        }
+        if (!Pattern.matches(UserConstants.MST_PATTERN, logisticGroup.getMst())) {
+        	return error("MST không hợp lệ. Từ 10 -> 15 số");
+        }
+        if (!Pattern.matches(UserConstants.IDENTIFY_NO_PATTERN, logisticGroup.getIdentifyCardNo())){
+            return error("Chứng minh thư không hợp lệ. Từ 9->15 số");
+        }
+        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getPhone())){
+            return error("Điện thoại cố định phải là số");
+        }
+        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getFax())){
+            return error("Fax phải là số");
+        }
+        // handle String mobile regex exclude (.,-,+,' ')
+        String mobilePhone = logisticGroup.getMobilePhone();
+        String replace = mobilePhone.replaceAll("[\\s,\\.,\\-,\\+]", "");
+        logisticGroup.setMobilePhone(replace);
+        if (!Pattern.matches(UserConstants.MOBILE_PHONE_PATTERN, logisticGroup.getMobilePhone())) {
+        	return error("Điện thoại di động không hợp lệ");
+        }
         return toAjax(logisticGroupService.updateLogisticGroup(logisticGroup));
     }
 
@@ -121,6 +179,45 @@ public class LogisticGroupController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        return toAjax(logisticGroupService.deleteLogisticGroupByIds(ids));
+    	try {
+        	if(logisticGroupService.updateDelFlagLogisticGroupByIds(ids) == 1) {
+        		logisticAccountService.updateDelFlagLogisticAccountByGroupIds(ids);
+        		return success();
+        	}
+        	else {
+        		return error();
+        	}
+    	}catch(Exception e) {
+    		e.getStackTrace();
+    		return error();
+    	}
+        //return toAjax(logisticGroupService.updateDelFlagLogisticGroupByIds(ids));
+    }
+    
+    /**
+     * Search Carrier Group Name
+     */
+    @RequestMapping("/searchGroupNameByKeyword")
+    @ResponseBody
+    public List<JSONObject> searchGroupNameByKeyword(String keyword, Long groupId) {
+        LogisticGroup logisticGroup = new LogisticGroup();
+        logisticGroup.setGroupName(keyword.toLowerCase());
+        List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupListByName(logisticGroup);
+        List<JSONObject> result = new ArrayList<>();
+		for (LogisticGroup i : logisticGroups) {
+			if (i.getId() != groupId) {
+                JSONObject json = new JSONObject();
+                json.put("id", i.getId());
+                json.put("text", i.getGroupName());
+                result.add(json);
+            }
+		}
+        return result;
+    }
+    @RequestMapping("/getGroupNameById")
+    @ResponseBody
+    public String getGroupNameById(long id) {
+        LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(id);
+        return logisticGroup.getGroupName();
     }
 }
