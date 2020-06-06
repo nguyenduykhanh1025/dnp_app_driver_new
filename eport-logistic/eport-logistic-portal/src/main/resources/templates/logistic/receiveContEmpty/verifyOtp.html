@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:include="include :: header('Xac Thuc OTP')" />
+</head>
+<style type="text/css">
+    .container {
+        text-align: center;
+        height: 303px;
+        padding: 12px 15px 12px 15px;
+        width: 100%;
+    }
+
+    .btn {
+        width: 300px;
+        margin-top: 20px;
+    }
+
+    .otpInputForm {
+        margin-top: 30px;
+        display: inline-block;
+    }
+
+    .createOtpBtn {
+        border-radius: 5%;
+        border-color: #1e9fff;
+        color: #1e9fff;
+    }
+
+    .confirmBtn {
+        margin-right: 20px;
+    }
+
+    .closeBtn {
+        margin-left: 20px;
+    }
+
+</style>
+
+<body>
+    <div class="container">
+        <p>Nhập mã OTP để thực hiện làm lệnh.</p>
+        <p id="p1"></p>
+        <div class="otpInputForm">
+            <label class="col-md-1 col-sm-1 col-xs-4" style="margin-top: 4px;">Nhập OTP</label>
+            <div class="col-md-1 col-sm-1 col-xs-5">
+                <input id="otpInput" type="text" style="width: 100px;" />
+            </div>
+            <button class="createOtpBtn" onclick="getOtp()">Tạo OTP</button>
+        </div>
+        <p id="indicateTime" style="display: none;">OTP có hiệu lực trong <span id="timer"></span>.</p>
+        <p id="indicateAction">Nhấn tạo OTP để nhận mã OTP.</p>
+        <i><span style="color: red;">*</span>Lưu ý: Không nên chia sẻ mã này cho bất kỳ ai.</i>
+        <div class="btn">
+            <button class="confirmBtn" onclick="confirm()">Xác thực</a>
+            <button class="closeBtn" onclick="closeForm()">Hủy</a>
+        </div>
+    </div>
+</body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: easyui-js" />
+<script type="text/javascript" th:inline="javascript">
+    var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
+    var numberPhone = /*[[${numberPhone}]]*/;
+</script>
+<script th:src="@{/js/logistic/receiveContEmpty/verifyOtp.js}"></script>
+
+</html>

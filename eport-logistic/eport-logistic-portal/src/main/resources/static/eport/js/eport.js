@@ -1178,6 +1178,11 @@ var table = {
             addShipmentSendEmpty: function(id) {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 520);
+			},
+			// add shipment
+            addShipmentReceiveEmpty: function(id) {
+            	table.set();
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
             },
 			addTransportAccount: function(id) {
             	table.set();
@@ -1223,11 +1228,20 @@ var table = {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
 			},
-			// 修改信息
+			// edit shipment
             editShipmentSendEmpty: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
 					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 520);
+				} else {
+					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
+				}
+			},
+			// edit shipment
+            editShipmentReceiveEmpty: function(id) {
+				table.set();
+				if (table.options.updateUrl != "0") {
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 420);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
