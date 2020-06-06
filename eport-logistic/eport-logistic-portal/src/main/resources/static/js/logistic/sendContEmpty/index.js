@@ -941,7 +941,7 @@ function getDataFromTable(isValidate) {
 
     // Get result in "selectedList" variable
     if (shipmentDetails.length == 0) {
-        $.modal.alert("Bạn chưa nhập thông tin.");
+        $.modal.alert("Quý khách chưa nhập thông tin.");
         errorFlg = true;
     }
 
