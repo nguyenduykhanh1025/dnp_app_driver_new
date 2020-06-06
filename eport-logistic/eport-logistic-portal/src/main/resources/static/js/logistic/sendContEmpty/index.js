@@ -80,6 +80,8 @@ function loadTable() {
                 success: function (data) {
                     success(data);
                     $("#dg").datagrid("hideColumn", "id");
+                    $("#dg").datagrid("hideColumn", "blNo");
+                    $("#dg").datagrid("hideColumn", "edoFlg");
                 },
                 error: function () {
                     error.apply(this, arguments);
@@ -134,11 +136,14 @@ function getSelected() {
         $("#taxCode").text(row.taxCode);
         $("#quantity").text(row.containerAmount);
         if (row.edoFlg == "0") {
-            $("#dotype").text("DO giấy");
+            $("#edoDiv").hide();
+            $("#blDiv").hide();
         } else {
-            $("#dotype").text("EDO");
+            $("#edoDiv").show();
+            $("#blDiv").show();
+            $("#edo").text("Đăng ký truyền EDO");
+            $("#blNo").text(row.blNo);
         }
-        $("#blNo").text(row.blNo);
         loadShipmentDetail(row.id);
     }
 }
@@ -148,6 +153,8 @@ function registerNoRenderer(instance, td, row, col, prop, value, cellProperties)
     if (value != null && value != '') {
         $(td).attr('id', 'registerNo' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
         cellProperties.readOnly = 'true';
+    } else {
+        $(td).html('');
     }
     return td;
 }
@@ -158,6 +165,8 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
+    } else {
+        $(td).html('');
     }
     return td;
 }
@@ -169,6 +178,8 @@ function processRenderer(instance, td, row, col, prop, value, cellProperties) {
             $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa làm lệnh").addClass("htMiddle");
         }
         $(td).attr('id', 'process' + row);
+    } else {
+        $(td).html('');
     }
     return td;
 }
@@ -180,6 +191,8 @@ function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
             $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa thanh toán").addClass("htMiddle");
         }
         $(td).attr('id', 'payment' + row);
+    } else {
+        $(td).html('');
     }
     return td;
 }
@@ -191,48 +204,65 @@ function statusRenderer(instance, td, row, col, prop, value, cellProperties) {
             $(td).css("background-color", "rgb(92, 255, 92)").html("Đã hạ container").addClass("htMiddle");
         }
         $(td).attr('id', 'status' + row);
+    } else {
+        $(td).html('');
     }
     return td;
 }
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
+    if (value != null && value != '') {
         $(td).attr('id', 'opeCode' + row).html(value).addClass("htMiddle");
+    } else {
+        $(td).html('');
     }
     return td;
 }
-function expiredemRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
-        $(td).attr('id', 'expiredem' + row).html(value.substring(8, 10)+"/"+value.substring(5, 7)+"/"+value.substring(0,4)).addClass("htMiddle");
+function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10)+"/"+value.substring(5, 7)+"/"+value.substring(0,4);
+        }
+        $(td).attr('id', 'expiredDem' + row).html(value).addClass("htMiddle");
+    } else {
+        $(td).html('');
     }
     return td;
 }
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
+    if (value != null && value != '') {
         $(td).attr('id', 'size' + row).html(value).addClass("htMiddle");
+    } else {
+        $(td).html('');
     }
     return td;
 }
 function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
+    if (value != null && value != '') {
         $(td).attr('id', 'loadingPort' + row).html(value).addClass("htMiddle");
+    } else {
+        $(td).html('');
     }
     return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
+    if (value != null && value != '') {
         $(td).attr('id', 'dischargePort' + row).html(value).addClass("htMiddle");
+    } else {
+        $(td).html('');
     }
     return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null) {
+    if (value != null && value != '') {
         $(td).attr('id', 'remark' + row).html(value).addClass("htMiddle");
+    } else {
+        $(td).html('');
     }
     return td;
 }
 
-// CONFIGURATE HANDSONTABLE
-config = {
+// CONFIGURATE HANDSONTABLE EDO
+edoConfig = {
     stretchH: "all",
     height: document.documentElement.clientHeight - 100,
     minRows: 100,
@@ -245,16 +275,16 @@ config = {
     colHeaders: function (col) {
         switch (col) {
             case 0:
-                return "id";
-            case 1:
                 var txt = "<input type='checkbox' class='checker' ";
                 txt += "onclick='checkAll()' ";
                 txt += ">";
                 return txt;
+            case 1:
+                return "Số Đăng Ký";
             case 2:
-                return "Số đăng ký";
-            case 3:
                 return '<span>Container No</span><span style="color: red;">(*)</span>';
+            case 3:
+                return '<span>Lệnh Cấp Hàng</span><span style="color: red;">(*)</span>';
             case 4:
                 return "T.T Làm Lệnh";
             case 5:
@@ -262,26 +292,26 @@ config = {
             case 6:
                 return "T.T Hạ Cont";
             case 7:
-                return '<span>Chủ khai thác</span><span style="color: red;">(*)</span>';
+                return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
             case 8:
-                return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+                return '<span>Số Ngày Miễn</span><span style="color: red;">(*)</span>';
             case 9:
-                return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+                return 'Ngày Cấp Hàng';
             case 10:
-                return "Cảng Nguồn";
+                return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
             case 11:
-                return "Cảng Đích";
+                return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
             case 12:
+                return "Cảng Nguồn";
+            case 13:
+                return "Cảng Đích";
+            case 14:
                 return "Ghi Chú";
         }
     },
-    colWidths: [0.01, 50, 100, 100, 150, 150, 150, 100, 100, 100, 100, 100, 200],
+    colWidths: [50, 100, 100, 120, 150, 150, 150, 100, 100, 100, 100, 100, 100, 100, 200],
     filter: "true",
     columns: [
-        {
-            data: "id",
-            readOnly: true,
-        },
         {
             data: "active",
             type: "checkbox",
@@ -295,6 +325,9 @@ config = {
         {
             data: "containerNo",
             renderer: containerNoRenderer
+        },
+        {
+            data: "orderSendContEmpty",
         },
         {
             data: "processStatus",
@@ -319,12 +352,24 @@ config = {
             renderer: opeCodeRenderer
         },
         {
+            data: "exemptDayNumber",
+            readOnly: true,
+        },
+        {
+            data: "provideProductDate",
+            type: "date",
+            dateFormat: "DD/MM/YYYY",
+            correctFormat: true,
+            defaultDate: new Date(),
+            renderer: expiredDemRenderer
+        },
+        {
             data: "expiredDem",
             type: "date",
             dateFormat: "DD/MM/YYYY",
             correctFormat: true,
             defaultDate: new Date(),
-            renderer: expiredemRenderer
+            renderer: expiredDemRenderer
         },
         {
             data: "sztp",
@@ -352,6 +397,69 @@ config = {
             renderer: remarkRenderer
         },
     ],
+    afterRenderer: function (TD, row, column, prop, value, cellProperties) {
+        if (row == 2) {
+            switch (column) {
+                case 1:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "registerNo")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 2:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "containerNo")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 4:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "process")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 5:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "payment")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 6:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "status")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 7:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "opeCode")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 10:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "expiredDem")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 11:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 12:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "loadingPort")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 13:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 14:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    },
     afterChange: function (changes, src) {
         //Get data change in cell to render another column
         if (src !== "loadData") {
@@ -427,6 +535,261 @@ config = {
         }
     },
 };
+
+// CONFIGURATE HANDSONTABLE NOT EDO
+config = {
+    stretchH: "all",
+    height: document.documentElement.clientHeight - 100,
+    minRows: 100,
+    width: "100%",
+    minSpareRows: 1,
+    rowHeights: 30,
+    manualColumnMove: false,
+    rowHeaders: true,
+    className: "htMiddle",
+    colHeaders: function (col) {
+        switch (col) {
+            case 0:
+                var txt = "<input type='checkbox' class='checker' ";
+                txt += "onclick='checkAll()' ";
+                txt += ">";
+                return txt;
+            case 1:
+                return "Số Đăng Ký";
+            case 2:
+                return '<span>Container No</span><span style="color: red;">(*)</span>';
+            case 3:
+                return "T.T Làm Lệnh";
+            case 4:
+                return "T.T Thanh Toán";
+            case 5:
+                return "T.T Hạ Cont";
+            case 6:
+                return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
+            case 7:
+                return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+            case 8:
+                return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+            case 9:
+                return "Cảng Nguồn";
+            case 10:
+                return "Cảng Đích";
+            case 11:
+                return "Ghi Chú";
+        }
+    },
+    colWidths: [50, 100, 100, 150, 150, 150, 100, 100, 100, 100, 100, 200],
+    filter: "true",
+    columns: [
+        {
+            data: "active",
+            type: "checkbox",
+            className: "htCenter",
+        },
+        {
+            data: "registerNo",
+            readOnly: true,
+            renderer: registerNoRenderer
+        },
+        {
+            data: "containerNo",
+            renderer: containerNoRenderer
+        },
+        {
+            data: "processStatus",
+            readOnly: true,
+            renderer: processRenderer
+        },
+        {
+            data: "paymentStatus",
+            readOnly: true,
+            renderer: paymentRenderer
+        },
+        {
+            data: "status",
+            readOnly: true,
+            renderer: statusRenderer
+        },
+        {
+            data: "opeCode",
+            type: "autocomplete",
+            source: opeCodeList,
+            strict: true,
+            renderer: opeCodeRenderer
+        },
+        {
+            data: "expiredDem",
+            type: "date",
+            dateFormat: "DD/MM/YYYY",
+            correctFormat: true,
+            defaultDate: new Date(),
+            renderer: expiredDemRenderer
+        },
+        {
+            data: "sztp",
+            type: "autocomplete",
+            source: sizeList,
+            strict: true,
+            renderer: sizeRenderer
+        },
+        {
+            data: "loadingPort",
+            type: "autocomplete",
+            source: LoadingPortList,
+            strict: true,
+            renderer: loadingPortRenderer
+        },
+        {
+            data: "dischargePort",
+            type: "autocomplete",
+            source: DischargePortList,
+            strict: true,
+            renderer: dischargePortRenderer
+        },
+        {
+            data: "remark",
+            renderer: remarkRenderer
+        },
+    ],
+    afterRenderer: function (TD, row, column, prop, value, cellProperties) {
+        if (row == 2) {
+            switch (column) {
+                case 1:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "registerNo")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 2:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "containerNo")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 3:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "process")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 4:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "payment")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 5:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "status")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 6:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "opeCode")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 7:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "expiredDem")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 8:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 9:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "loadingPort")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 10:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 11:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    },
+    afterChange: function (changes, src) {
+        //Get data change in cell to render another column
+        if (src !== "loadData") {
+            var verifyStatus = false;
+            var paymentStatus = false;
+            var notVerify = false;
+            changes.forEach(function interate(row) {
+                if (row[1] == "active" && !isIterate) {
+                    getDataSelectedFromTable(false);
+                    if (allChecked) {
+                        $(".checker").prop("checked", true);
+                        checked = true;
+                    } else {
+                        $(".checker").prop("checked", false);
+                        checked = false;
+                    }
+                    if (shipmentDetails.length > 0) {
+                        var status = 1;
+                        for (var i = 0; i < shipmentDetails.length; i++) {
+                            if (shipmentDetails[i].paymentStatus == "Y") {
+                                if (verifyStatus || notVerify) {
+                                    status = 1;
+                                } else {
+                                    status = 4;
+                                    paymentStatus = true;
+                                }
+                            } else if (shipmentDetails[i].processStatus == "Y") {
+                                if (paymentStatus || notVerify) {
+                                    status = 1;
+                                } else {
+                                    status = 3;
+                                    verifyStatus = true;
+                                }
+                            } else {
+                                if (verifyStatus || paymentStatus) {
+                                    status = 1;
+                                } else {
+                                    status = 2;
+                                }
+                                notVerify = true;
+                            }
+                        }
+                        switch (status) {
+                            case 1:
+                                setLayoutRegisterStatus();
+                                break;
+                            case 2:
+                                setLayoutVerifyUser();
+                                break;
+                            case 3:
+                                setLayoutPaymentStatus();
+                                break;
+                            case 4:
+                                setLayoutFinish();
+                                break;
+                        }
+                    } else {
+                        setLayoutRegisterStatus();
+                    }
+                }
+            });
+        }
+    },
+    afterSelectionEnd: function (r, c, r2, c2) {
+        selectedRow = null;
+        if (c == 0 && c2 == 12) {
+            selectedRow = r;
+        }
+    },
+    beforeKeyDown: function(e) {
+        if (e.keyCode == 8) {
+            e.stopImmediatePropagation();
+        }
+    },
+};
+
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
 
@@ -444,7 +807,11 @@ function loadShipmentDetail(id) {
                 isSaved = true;
             }
             hot.destroy();
-            hot = new Handsontable(dogrid, config);
+            if (shipmentSelected.edoFlg == "0") {
+                hot = new Handsontable(dogrid, config);
+            } else {
+                hot = new Handsontable(dogrid, edoConfig);
+            }
             hot.loadData(result);
             hot.render();
             setLayoutRegisterStatus();
@@ -574,7 +941,7 @@ function getDataFromTable(isValidate) {
 
     // Get result in "selectedList" variable
     if (shipmentDetails.length == 0) {
-        $.modal.alert("Bạn chưa nhập thông tin.");
+        $.modal.alert("Quý khách chưa nhập thông tin.");
         errorFlg = true;
     }
 
@@ -588,7 +955,7 @@ function getDataFromTable(isValidate) {
 // EVENT WHEN DELETE SELECTED SHIPMENT DETAIL WITH BACKSPACE BUTTON
 document.addEventListener("keyup", function(e){
     if (e.keyCode == 8) {
-        if (selectedRow != null && $("#process" + selectedRow).html() == "Chưa làm lệnh") {
+        if (selectedRow != null && $("#process" + selectedRow).html() != "Đã làm lệnh") {
             var myTableData = hot.getSourceData();
             myTableData[selectedRow].registerNo = '';
             myTableData[selectedRow].containerNo = '';
@@ -596,7 +963,7 @@ document.addEventListener("keyup", function(e){
             myTableData[selectedRow].payment = '';
             myTableData[selectedRow].status = '';
             myTableData[selectedRow].opeCode = '';
-            myTableData[selectedRow].expiredem = '';
+            myTableData[selectedRow].expiredDem = '';
             myTableData[selectedRow].size = '';
             myTableData[selectedRow].loadingPort = '';
             myTableData[selectedRow].dischargePort = '';
@@ -609,7 +976,7 @@ document.addEventListener("keyup", function(e){
             $("#payment"+selectedRow).html('');
             $("#status"+selectedRow).html('');
             $("#opeCode"+selectedRow).html('');
-            $("#expiredem"+selectedRow).html('');
+            $("#expiredDem"+selectedRow).html('');
             $("#size"+selectedRow).html('');
             $("#loadingPort"+selectedRow).html('');
             $("#dischargePort"+selectedRow).html('');
@@ -654,13 +1021,38 @@ function saveShipmentDetail() {
     }
 }
 
+// DELETE SHIPMENT DETAIL
+function deleteShipmentDetail() {
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+        url: prefix + "/deleteShipmentDetail",
+        method: "post",
+        data: {
+            shipmentDetailIds: shipmentDetailIds
+        },
+        success: function (result) {
+            if (result.code == 0) {
+                $.modal.msgSuccess(result.msg);
+                loadShipmentDetail(shipmentSelected.id);
+            } else {
+                $.modal.msgError(result.msg);
+            }
+            $.modal.closeLoading();
+        },
+        error: function (result) {
+            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+            $.modal.closeLoading();
+        },
+    });
+}
+
 // TRIGGER CHECK ALL SHIPMENT DETAIL
 function checkAll() {
     getDataFromTable(false);
     isIterate = true;
     if (checked) {
         for (var i = 0; i < shipmentDetails.length; i++) {
-            hot.setDataAtCell(i, 1, false);
+            hot.setDataAtCell(i, 0, false);
             if (i == shipmentDetails.length - 2) {
                 isIterate = false;
             }
@@ -669,7 +1061,7 @@ function checkAll() {
         checked = false;
     } else {
         for (var i = 0; i < shipmentDetails.length; i++) {
-            hot.setDataAtCell(i, 1, true);
+            hot.setDataAtCell(i, 0, true);
             if (i == shipmentDetails.length - 2) {
                 isIterate = false;
             }
@@ -696,14 +1088,12 @@ function pay() {
 }
 
 function pickTruck() {
-    $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id, 655, 400);
+    $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id);
   }
 
 function exportBill() {
 
 }
-
-
 
 // Handling UI STATUS
 function setLayoutRegisterStatus() {
@@ -721,17 +1111,16 @@ function setLayoutRegisterStatus() {
     }
     $("#exportBillBtn").prop("disabled", true);
 }
-
 function setLayoutVerifyUser() {
     $("#registerStatus").removeClass("active disable").addClass("label-primary");
     $("#verifyStatus").removeClass("label-primary disable").addClass("active");
     $("#paymentStatus").removeClass("label-primary active").addClass("disable");
     $("#finishStatus").removeClass("label-primary active").addClass("disable");
     $("#verifyBtn").prop("disabled", false);
+    $("#deleteBtn").prop("disabled", false);
     $("#payBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
 }
-
 function setLayoutPaymentStatus() {
     $("#registerStatus").removeClass("active disable").addClass("label-primary");
     $("#verifyStatus").removeClass("active disable").addClass("label-primary");
@@ -741,7 +1130,6 @@ function setLayoutPaymentStatus() {
     $("#payBtn").prop("disabled", false);
     $("#exportBillBtn").prop("disabled", true);
 }
-
 function setLayoutFinish() {
     $("#registerStatus").removeClass("active disable").addClass("label-primary");
     $("#verifyStatus").removeClass("active disable").addClass("label-primary");
