@@ -151,6 +151,16 @@ public class LogisticSendContEmpty extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
+	@PostMapping("/deleteShipmentDetail")
+	@ResponseBody
+	public AjaxResult deleteShipmentDetail(String shipmentDetailIds) {
+		if (shipmentDetailIds != null) {
+			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			return success("Lưu khai báo thành công");
+		}
+		return error("Lưu khai báo thất bại");
+	}
+
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);

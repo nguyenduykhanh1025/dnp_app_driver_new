@@ -972,6 +972,46 @@ var table = {
             	    }
             	});
                 layer.full(index);
+			},
+			// open pick truck form full
+            openFullPickTruck: function (title, url, width, height) {
+            	//如果是移动端，就使用自适应大小弹窗
+            	if ($.common.isMobile()) {
+            	    width = 'auto';
+            	    height = 'auto';
+            	}
+            	if ($.common.isEmpty(title)) {
+                    title = false;
+                }
+                if ($.common.isEmpty(url)) {
+                    url = "/404.html";
+                }
+                if ($.common.isEmpty(width)) {
+                	width = 800;
+                }
+                if ($.common.isEmpty(height)) {
+                	height = ($(window).height() - 50);
+                }
+                var index = layer.open({
+            		type: 2,
+            		area: [width + 'px', height + 'px'],
+            		fix: false,
+            		//不固定
+            		maxmin: true,
+            		shade: 0.3,
+            		title: title,
+            		content: url,
+            		// 弹层外区域关闭
+            		shadeClose: true,
+            		yes: function(index, layero) {
+            	        var iframeWin = layero.find('iframe')[0];
+            	        iframeWin.contentWindow.submitHandler(index, layero);
+            	    },
+            	    cancel: function(index) {
+            	        return true;
+            	    }
+            	});
+                layer.full(index);
             },
             // 选卡页方式打开
             openTab: function (title, url) {
@@ -1137,7 +1177,7 @@ var table = {
 			// add shipment
             addShipmentSendEmpty: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 520);
             },
 			addTransportAccount: function(id) {
             	table.set();
@@ -1187,7 +1227,7 @@ var table = {
             editShipmentSendEmpty: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 420);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 520);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
