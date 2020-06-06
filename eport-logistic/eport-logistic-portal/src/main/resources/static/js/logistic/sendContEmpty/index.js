@@ -280,11 +280,11 @@ edoConfig = {
                 txt += ">";
                 return txt;
             case 1:
-                return "Số đăng ký";
+                return "Số Đăng Ký";
             case 2:
                 return '<span>Container No</span><span style="color: red;">(*)</span>';
             case 3:
-                return '<span>Lệnh cấp hàng</span><span style="color: red;">(*)</span>';
+                return '<span>Lệnh Cấp Hàng</span><span style="color: red;">(*)</span>';
             case 4:
                 return "T.T Làm Lệnh";
             case 5:
@@ -292,11 +292,11 @@ edoConfig = {
             case 6:
                 return "T.T Hạ Cont";
             case 7:
-                return '<span>Chủ khai thác</span><span style="color: red;">(*)</span>';
+                return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
             case 8:
-                return '<span>Số ngày miễn</span><span style="color: red;">(*)</span>';
+                return '<span>Số Ngày Miễn</span><span style="color: red;">(*)</span>';
             case 9:
-                return 'Ngày cấp hàng';
+                return 'Ngày Cấp Hàng';
             case 10:
                 return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
             case 11:
@@ -555,7 +555,7 @@ config = {
                 txt += ">";
                 return txt;
             case 1:
-                return "Số đăng ký";
+                return "Số Đăng Ký";
             case 2:
                 return '<span>Container No</span><span style="color: red;">(*)</span>';
             case 3:
@@ -565,7 +565,7 @@ config = {
             case 5:
                 return "T.T Hạ Cont";
             case 6:
-                return '<span>Chủ khai thác</span><span style="color: red;">(*)</span>';
+                return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
             case 7:
                 return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
             case 8:

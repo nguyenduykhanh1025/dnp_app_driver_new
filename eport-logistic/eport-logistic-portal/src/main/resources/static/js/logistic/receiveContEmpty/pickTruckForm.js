@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/sendContEmpty";
+var prefix = ctx + "logistic/receiveContEmpty";
 var driverList;
 var internalTransport = [];
 var externalTransport = [];

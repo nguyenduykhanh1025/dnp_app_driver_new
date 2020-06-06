@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <th:block th:include="include :: header('Thanh toan')" />
+</head>
+<style type="text/css">
+  .container {
+    position: relative;
+    padding: 0;
+    width: 100%;
+  }
+
+  .footer {
+    background-color: #f0f4f7;
+    height: 55px;
+    padding: 10px 30px 12px 15px !important;
+  }
+
+  .content {
+      height: 203px;
+      padding: 12px 15px 12px 15px;
+  }
+
+  .unloadContCosts {
+    height: 80px;
+  }
+
+  .moveContCosts {
+    height: 80px;
+  }
+
+  .total {
+    height: 43px;
+  }
+
+</style>
+
+<body>
+  <div class="container">
+    <div class="content">
+        <div class="unloadContCosts">
+          <b>Phí hạ container</b>
+        </div>
+        <div class="moveContCosts">
+          <!-- <b>Phí dịch chuyển</b>
+          <div>
+            <label class="col-md-1 col-sm-1 col-xs-4">Số container dịch chuyển</label>
+            <label class="col-md-1 col-sm-1 col-xs-3">Đơn giá</label>
+            <label class="col-md-1 col-sm-1 col-xs-3">Thành tiền</label>
+          </div>
+          <div>
+            <span id="moveContAmount" class="col-md-1 col-sm-1 col-xs-4"></span>
+            <span class="col-md-1 col-sm-1 col-xs-3"><span id="unitCosts"></span><span> đồng</span></span>
+            <span class="col-md-1 col-sm-1 col-xs-3"><span id="moveContPrice"></span><span> đồng</span></span>
+          </div> -->
+        </div>
+        <div class="total">
+          <b>Tổng cộng: <span id="total"></span><span> đồng.</span></b>
+        </div>
+    </div>
+    <div class="layui-layer-btn footer">
+      <a class="layui-layer-btn0" onclick="confirm()">Thanh toán</a>
+      <a class="layui-layer-btn1" onclick="closeForm()">Hủy bỏ</a>
+    </div>
+  </div>
+</body>
+<th:block th:include="include :: footer" />
+<script type="text/javascript" th:inline="javascript">
+  var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
+</script>
+<script th:src="@{/js/logistic/receiveContEmpty/paymentForm.js}"></script>
+</html>
