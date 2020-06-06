@@ -8,19 +8,21 @@
 </head>
 <style type="text/css">
     .container {
-        position: relative;
         padding: 0;
         width: 100%;
+        display: flex;
+        flex-flow: column;
+        height: 100%;
     }
 
     .footer {
         background-color: #f0f4f7;
-        height: 55px;
+        flex: 0 1 55px;
         padding: 10px 30px 12px 15px !important;
     }
 
     .content {
-        height: 303px;
+        flex: 1 1 auto;
         padding: 12px 15px 12px 15px;
         text-align: center;
     }
