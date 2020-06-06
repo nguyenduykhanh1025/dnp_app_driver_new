@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
+import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -25,6 +29,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.logistic.utils.R;
 
 @Controller
 @RequestMapping("/logistic/receiveContFull")
@@ -62,33 +67,39 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) { 
 				shipmentDetails = new ArrayList<>();
-				for (int i=0; i<10; i++) {
-					ShipmentDetail shipmentDetail2 = new ShipmentDetail();
-					shipmentDetail2.setBlNo(shipment.getBlNo());
-					shipmentDetail2.setContainerNo("CONT123456"+i);
-					shipmentDetail2.setOpeCode("CMC");
-					shipmentDetail2.setSztp("22G0");
-					shipmentDetail2.setFe("F");
-					shipmentDetail2.setConsignee("VINCOSHIP");
-					shipmentDetail2.setSealNo("G8331306");
-					shipmentDetail2.setExpiredDem(new Date());
-					shipmentDetail2.setWgt(11l);
-					shipmentDetail2.setVslNm("Vessel");
-					shipmentDetail2.setVoyNo("Voyage");
-					shipmentDetail2.setLoadingPort("LoadingPort");
-					shipmentDetail2.setDischargePort("dischargePort");
-					shipmentDetail2.setTransportType("Truck");
-					shipmentDetail2.setEmptyDepot("emptyDepot");
-					shipmentDetail2.setCustomStatus("N");
-					shipmentDetail2.setPaymentStatus("N");
-					shipmentDetail2.setProcessStatus("N");
-					shipmentDetail2.setDoStatus("N");
-					shipmentDetail2.setUserVerifyStatus("N");
-					shipmentDetail2.setStatus(1);
-					shipmentDetails.add(shipmentDetail2);
-				}
+				// for (int i=0; i<10; i++) {
+				// 	ShipmentDetail shipmentDetail2 = new ShipmentDetail();
+				// 	shipmentDetail2.setBlNo(shipment.getBlNo());
+				// 	shipmentDetail2.setContainerNo("CONT123456"+i);
+				// 	shipmentDetail2.setOpeCode("CMC");
+				// 	shipmentDetail2.setSztp("22G0");
+				// 	shipmentDetail2.setFe("F");
+				// 	shipmentDetail2.setConsignee("VINCOSHIP");
+				// 	shipmentDetail2.setSealNo("G8331306");
+				// 	shipmentDetail2.setExpiredDem(new Date());
+				// 	shipmentDetail2.setWgt(11l);
+				// 	shipmentDetail2.setVslNm("Vessel");
+				// 	shipmentDetail2.setVoyNo("Voyage");
+				// 	shipmentDetail2.setLoadingPort("LoadingPort");
+				// 	shipmentDetail2.setDischargePort("dischargePort");
+				// 	shipmentDetail2.setTransportType("Truck");
+				// 	shipmentDetail2.setEmptyDepot("emptyDepot");
+				// 	shipmentDetail2.setCustomStatus("N");
+				// 	shipmentDetail2.setPaymentStatus("N");
+				// 	shipmentDetail2.setProcessStatus("N");
+				// 	shipmentDetail2.setDoStatus("N");
+				// 	shipmentDetail2.setUserVerifyStatus("N");
+				// 	shipmentDetail2.setStatus(1);
+				// 	shipmentDetails.add(shipmentDetail2);
+				// }
+				final String url = Global.getApiUrl() + "/shipmentDetail/list";
+				ShipmentDetail shipDetail = new ShipmentDetail();
+				shipDetail.setBlNo(shipment.getBlNo());
+				RestTemplate restTemplate = new RestTemplate();
+				R r = restTemplate.postForObject( url, shipDetail, R.class);
+				shipmentDetails = (List<ShipmentDetail>) r.get("data");
+				return shipmentDetails;
 			}
-			return shipmentDetails;
 		}
 		return null;
 	}
@@ -181,27 +192,34 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	@ResponseBody
 	public ShipmentDetail getContInfo(ShipmentDetail shipmentDetail) {
 		if (shipmentDetail.getBlNo() != null && shipmentDetail.getContainerNo() != null) {
-			shipmentDetail.setOpeCode("CMC");
-			shipmentDetail.setSztp("22G0");
-			shipmentDetail.setFe("F");
-			shipmentDetail.setConsignee("VINCOSHIP");
-			shipmentDetail.setSealNo("G8331306");
-			shipmentDetail.setExpiredDem(new Date());
-			shipmentDetail.setWgt(11l);
-			shipmentDetail.setVslNm("Vessel");
-			shipmentDetail.setVoyNo("Voyage");
-			shipmentDetail.setLoadingPort("LoadingPort");
-			shipmentDetail.setDischargePort("dischargePort");
-			shipmentDetail.setTransportType("Truck");
-			shipmentDetail.setEmptyDepot("emptyDepot");
-			shipmentDetail.setCustomStatus("N");
-			shipmentDetail.setPaymentStatus("N");
-			shipmentDetail.setProcessStatus("N");
-			shipmentDetail.setDoStatus("N");
-			shipmentDetail.setUserVerifyStatus("N");
-			shipmentDetail.setStatus(1);
-			shipmentDetail.setRemark("Ghi chu");
-			return shipmentDetail;
+			// shipmentDetail.setOpeCode("CMC");
+			// shipmentDetail.setSztp("22G0");
+			// shipmentDetail.setFe("F");
+			// shipmentDetail.setConsignee("VINCOSHIP");
+			// shipmentDetail.setSealNo("G8331306");
+			// shipmentDetail.setExpiredDem(new Date());
+			// shipmentDetail.setWgt(11l);
+			// shipmentDetail.setVslNm("Vessel");
+			// shipmentDetail.setVoyNo("Voyage");
+			// shipmentDetail.setLoadingPort("LoadingPort");
+			// shipmentDetail.setDischargePort("dischargePort");
+			// shipmentDetail.setTransportType("Truck");
+			// shipmentDetail.setEmptyDepot("emptyDepot");
+			// shipmentDetail.setCustomStatus("N");
+			// shipmentDetail.setPaymentStatus("N");
+			// shipmentDetail.setProcessStatus("N");
+			// shipmentDetail.setDoStatus("N");
+			// shipmentDetail.setUserVerifyStatus("N");
+			// shipmentDetail.setStatus(1);
+			// shipmentDetail.setRemark("Ghi chu");
+			String url = Global.getApiUrl() + "/shipmentDetail/containerInfor";
+			RestTemplate restTemplate = new RestTemplate();
+			R r = restTemplate.postForObject(url, shipmentDetail, R.class);
+			// List<ShipmentDetail> l = (List<ShipmentDetail>) r.get("data");
+			ObjectMapper mapper = new ObjectMapper();
+			ShipmentDetail aShipmentDetail = mapper.convertValue(r.get("data"), ShipmentDetail.class);
+			return aShipmentDetail;
+			
 		} else {
 			return null;
 		}
