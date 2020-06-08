@@ -98,8 +98,9 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 				RestTemplate restTemplate = new RestTemplate();
 				R r = restTemplate.postForObject( url, shipDetail, R.class);
 				shipmentDetails = (List<ShipmentDetail>) r.get("data");
-				return shipmentDetails;
+				//return shipmentDetails;
 			}
+			return shipmentDetails;
 		}
 		return null;
 	}
