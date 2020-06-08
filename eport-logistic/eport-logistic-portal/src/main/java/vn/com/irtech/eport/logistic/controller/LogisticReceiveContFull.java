@@ -468,13 +468,29 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
-	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}/{shipmentDetailIds}")
-	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, @PathVariable("pickCont") boolean pickCont,@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}/{shipmentDetailId}")
+	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, @PathVariable("pickCont") boolean pickCont,@PathVariable("shipmentDetailId") Integer shipmentDetailId, ModelMap mmap) {
 		mmap.put("shipmentId", shipmentId);
 		mmap.put("pickCont", pickCont);
+		mmap.put("shipmentDetailId", shipmentDetailId);
+		String transportId = "";
+		String shipmentIds = "";
 		if (!pickCont) {
-			mmap.put("shipmentDetailIds", shipmentDetailIds);
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(shipmentId);
+			shipmentDetail.setLogisticGroupId(getUser().getGroupId());
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+				if (shipmentDetail2.getPreorderPickup() == null || !shipmentDetail2.getPreorderPickup().equals("Y")) {
+					shipmentIds += shipmentDetail2.getId() + ",";
+					if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
+						transportId = shipmentDetail2.getTransportIds();
+					}
+				}
+			}
 		}
+		mmap.put("transportIds", transportId);
+		mmap.put("shipmentDetailIds", shipmentIds);
 		return prefix + "/pickTruckForm";
 	}
 
