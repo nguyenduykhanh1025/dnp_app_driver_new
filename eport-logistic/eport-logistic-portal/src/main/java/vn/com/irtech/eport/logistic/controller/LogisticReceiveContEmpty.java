@@ -115,7 +115,7 @@ public class LogisticReceiveContEmpty extends LogisticBaseController {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				index++;
 				if (shipmentDetail.getId() != null) {
-					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
+					if (shipmentDetail.getRegisterNo() == null || shipmentDetail.getRegisterNo().equals("")) {
 						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
 					} else {
 						shipmentDetail.setUpdateBy(user.getFullName());
@@ -127,20 +127,40 @@ public class LogisticReceiveContEmpty extends LogisticBaseController {
 				} else {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
+					shipmentDetail.setContainerNo("containerNo");
 					shipmentDetail.setCreateTime(new Date());
 					shipmentDetail.setRegisterNo(shipmentDetail.getShipmentId().toString()+index);
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setWgt(1l);
-					shipmentDetail.setVslNm("vslNm");
-					shipmentDetail.setVoyNo("voyNo");
-					shipmentDetail.setOpeCode("opeCode");
+					if (shipmentDetail.getVslNm() == null || shipmentDetail.getVslNm().equals("")) {
+						shipmentDetail.setVslNm(" ");
+					} 
+					if (shipmentDetail.getVoyNo() == null || shipmentDetail.getVoyNo().equals("")) {
+						shipmentDetail.setVoyNo(" ");
+					}
+					if (shipmentDetail.getLoadingPort() == null || shipmentDetail.getLoadingPort().equals("")) {
+						shipmentDetail.setLoadingPort(" ");
+					}
+					if (shipmentDetail.getDischargePort() == null || shipmentDetail.getDischargePort().equals("")) {
+						shipmentDetail.setDischargePort(" ");
+					}
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
-						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+						return error("Lưu khai báo thất bại!");
 					}
 				}
 			}
+			return success("Lưu khai báo thành công");
+		}
+		return error("Lưu khai báo thất bại");
+	}
+
+	@PostMapping("/deleteShipmentDetail")
+	@ResponseBody
+	public AjaxResult deleteShipmentDetail(String shipmentDetailIds) {
+		if (shipmentDetailIds != null) {
+			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
 			return success("Lưu khai báo thành công");
 		}
 		return error("Lưu khai báo thất bại");
@@ -199,5 +219,39 @@ public class LogisticReceiveContEmpty extends LogisticBaseController {
 			return success("Thanh toán thành công");
 		}
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
+	}
+
+	@GetMapping("pickTruckForm/{shipmentId}")
+	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
+		mmap.put("shipmentId", shipmentId);
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
+		String transportId = "";
+		String shipmentIds = "";
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+			if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
+				transportId = shipmentDetail2.getTransportIds();
+			}
+			shipmentIds += shipmentDetail2.getId() + ",";
+		}
+		mmap.put("transportIds", transportId);
+		mmap.put("shipmentDetailIds", shipmentIds);
+		return prefix + "/pickTruckForm";
+	}
+
+	@PostMapping("/pickTruck")
+	@ResponseBody
+	public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetail.setTransportIds(driverIds);
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+			return success("Điều xe thành công");
+		}
+		return error("Xảy ra lỗi trong quá trình điều xe.");
 	}
 }

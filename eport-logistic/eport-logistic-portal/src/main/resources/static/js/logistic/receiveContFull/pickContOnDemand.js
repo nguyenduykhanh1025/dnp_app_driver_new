@@ -101,7 +101,7 @@ function pickTruck(id, bay, row, tier) {
     currentPickedBay = bay;
     currentPickedRow = row;
     currentPickedTier = tier;
-    $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentId + "/" + true + "/0", 700, 400);
+    $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentId + "/" + true + "/" + id, 700, 400);
 }
 
 function finishPickTruck(plateNumber, driverIds) {

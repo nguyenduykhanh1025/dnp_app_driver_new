@@ -35,6 +35,21 @@
         </div>
       </div>
       <div class="form-group row">
+        <label style="margin-top: 4px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Đăng ký truyền EDO</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input style="margin-top: 6px;" type="radio" id="edoUnCheck" name="edoFlg" value="0" checked/>
+          <label style="margin-right: 30px;">Không</label>
+          <input style="margin-top: 6px;" type="radio" id="edoCheck" name="edoFlg" value="1"/>
+          <label>Có</label>
+        </div>
+      </div>
+      <div id="blNoDiv" style="display: none;" class="form-group row">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>B/L No</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input name="blNo" id="blNo" type="text" class="form-control" required/>
+        </div>
+      </div>
+      <div class="form-group row">
         <i class="col-md-2 col-sm-3 col-xs-4"></i>
         <i class="col-md-10 col-sm-9 col-xs-7">*Dùng để xuất hóa đơn</i>
       </div>
@@ -72,7 +87,22 @@
     $("#containerAmount").val(shipment.containerAmount);
     $("#groupName").val(shipment.logisticGroup.groupName);
     $("#remark").val(shipment.remark);
+    if (shipment.edoFlg == "0") {
+      $("#edoUnCheck").prop("checked", true);
+    } else {
+      $("#edoCheck").prop("checked", true);
+    }
+    $("#blNoDiv").show();
+    $("#blNo").val(shipment.blNo);
   }
+
+  $('input[name="edoFlg"]').change(function () {
+    if ($('#edoCheck').prop('checked')) {
+      $('#blNoDiv').show();
+    } else {
+      $('#blNoDiv').hide();
+    }
+  });
   
   $("#form-edit-shipment").validate({
       focusCleanup: true

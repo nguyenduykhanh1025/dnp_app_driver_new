@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/receiveContFull";
+var prefix = ctx + "logistic/sendContEmpty";
 var driverList;
 var internalTransport = [];
 var externalTransport = [];
@@ -181,9 +181,9 @@ $.ajax({
             }
         } else {
             for (var i=0; i<data.length; i++) {
-                internalTransport.push(data[i]);
-                var tableRow = '<tr id="transport'+ data[i].id +'"><td width="50px"><input type="checkbox" id="internalCheckbox' + data[i].id +'" onclick="internalCheck()"/></td><td width="108px">' + data[i].plateNumber + '</td><td width="108px">' + data[i].mobileNumber + '</td></tr>';
-                $("#transportList").append(tableRow);
+                externalTransport.push(data[i]);
+                var tableRow = '<tr id="pickedTransport'+ data[i].id +'"><td width="50px"><input type="checkbox" id="externalCheckbox' + data[i].id +'" onclick="externalCheck()"/></td><td width="108px">' + data[i].plateNumber + '</td><td width="108px">' + data[i].mobileNumber + '</td></tr>';
+                $("#pickedTruckList").append(tableRow);
             }
         }
     }

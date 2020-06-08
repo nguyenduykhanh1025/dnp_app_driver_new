@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <th:block th:include="include :: header('Giao Cont Hang')" />
+    <th:block th:include="include :: header('Nhan Cont Rong')" />
     <th:block th:include="include :: handsontable-css" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
@@ -16,8 +16,8 @@
         <div class="title-top">
           <span class="title">Danh sách lô</span>
           <div class="action-bar">
-            <span><i class="fa fa-plus" title="Thêm mới" onclick="$.operate.addShipmentSendEmpty()"></i></span>
-            <span><i class="fa fa-edit" title="Chỉnh sửa" onclick="$.operate.editShipmentSendEmpty()"></i></span>
+            <span><i class="fa fa-plus" title="Thêm mới" onclick="$.operate.addShipmentSendFull()"></i></span>
+            <span><i class="fa fa-edit" title="Chỉnh sửa" onclick="$.operate.editShipmentSendFull()"></i></span>
             <span><i class="fa fa-refresh" title="Làm mới" onclick="handleRefresh();"></i></span>
           </div>
         </div>
@@ -64,8 +64,10 @@
         <div class="title-top">
           <div class="left-button-bar">
             <button id="saveShipmentDetailBtn" class="btn btn-sm btn-primary" onclick="saveShipmentDetail()">Lưu khai báo</button>
+            <button id="deleteBtn" class="btn btn-sm btn-primary" onclick="deleteShipmentDetail()" disabled>Xóa</button>
             <button id="verifyBtn" class="btn btn-sm btn-primary" onclick="verify()" disabled>Xác Thực</button>
             <button id="payBtn" class="btn btn-sm btn-primary" onclick="pay()" disabled>Thanh Toán</button>
+            <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruck()" disabled>Điều Xe</button>
           </div>
           <div class="search-bar">
             <button id="exportBillBtn" class="btn btn-sm btn-success" onclick="exportBill()" disabled>Xuất Hóa Đơn</button>

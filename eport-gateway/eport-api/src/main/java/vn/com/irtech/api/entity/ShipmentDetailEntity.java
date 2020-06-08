@@ -1,18 +1,16 @@
-package vn.com.irtech.eport.logistic.domain;
+package vn.com.irtech.api.entity;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
-import vn.com.irtech.eport.common.annotation.Excel;
-import vn.com.irtech.eport.common.core.domain.BaseEntity;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import java.util.Date;
 
 /**
  * Shipment Details Object shipment_detail
  * 
  * @author admin
- * @date 2020-05-07
+ * @date 2020-06-05
  */
-public class ShipmentDetail extends BaseEntity
+public class ShipmentDetailEntity extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -20,443 +18,421 @@ public class ShipmentDetail extends BaseEntity
     private Long id;
 
     /** Ma Lo */
-    @Excel(name = "Ma Lo")
     private Long shipmentId;
 
-    /** group id */
+    /** null */
     private Long logisticGroupId;
 
     /** Ma DK */
-    @Excel(name = "Ma DK")
     private String registerNo;
 
     /** Container Number */
-    @Excel(name = "Container Number")
     private String containerNo;
 
     /** Container Status (S,D) */
-    @Excel(name = "Container Status (S,D)")
     private String containerStatus;
 
     /** Size Type */
-    @Excel(name = "Size Type")
     private String sztp;
 
     /** FE */
-    @Excel(name = "FE")
     private String fe;
 
     /** Booking Number */
-    @Excel(name = "Booking Number")
     private String bookingNo;
 
     /** BL number */
-    @Excel(name = "BL number")
     private String blNo;
 
     /** Seal Number */
-    @Excel(name = "Seal Number")
     private String sealNo;
 
     /** Shipper/consignee */
-    @Excel(name = "Shipper/consignee")
     private String consignee;
 
     /** Han Lenh */
-    @Excel(name = "Han Lenh", width = 30, dateFormat = "yyyy-MM-dd")
     private Date expiredDem;
 
     /** Weight */
-    @Excel(name = "Weight")
     private Long wgt;
 
     /** Vessel name */
-    @Excel(name = "Vessel name")
     private String vslNm;
 
     /** Voyage */
-    @Excel(name = "Voyage")
     private String voyNo;
 
     /** Operator Code */
-    @Excel(name = "Operator Code")
     private String opeCode;
 
     /** Cang Chuyen Tai */
-    @Excel(name = "Cang Chuyen Tai")
     private String loadingPort;
 
     /** Cang Dich */
-    @Excel(name = "Cang Dich")
     private String dischargePort;
 
     /** Phuong Tien */
-    @Excel(name = "Phuong Tien")
     private String transportType;
 
-    /** Empty depot */
-    @Excel(name = "Nơi hạ vỏ")
+    /** Noi Ha Vo */
     private String emptyDepot;
 
     /** VGM Check */
-    @Excel(name = "VGM Check")
-    private Boolean vgmChk;
+    private Long vgmChk;
 
     /** VGM */
-    @Excel(name = "VGM")
     private String vgm;
 
     /** VGM Person Info */
-    @Excel(name = "VGM Person Info")
     private String vgmPersonInfo;
 
     /** Custom Declare Number */
-    @Excel(name = "Custom Declare Number")
     private String customDeclareNo;
 
-    /** Custom Status (H,R) */
-    @Excel(name = "Custom Status (H,R)")
+    /** Custom Status (N,C,H,R) */
     private String customStatus;
 
     /** Payment Status (Y,N,W,E) */
-    @Excel(name = "Payment Status (Y,N,W,E)")
     private String paymentStatus;
 
     /** Process Status(Y,N,E) */
-    @Excel(name = "Process Status(Y,N,E)")
     private String processStatus;
 
-    /** DO Status(Y,N) */
-    @Excel(name = "DO Status(Y,N")
+    /** T.T DO Goc */
     private String doStatus;
 
-    /** Ngay nhan DO goc */
+    /** Ngay Nhan DO Goc */
     private Date doReceivedTime;
 
     /** Xac Thuc (Y,N) */
-    @Excel(name = "Xac Thuc (Y,N)")
     private String userVerifyStatus;
 
     /** Boc Chi Dinh (Y,N) */
-    @Excel(name = "Boc Chi Dinh (Y,N)")
     private String preorderPickup;
 
-    /** So Cont Dich Chuyen */
-    @Excel(name = "So Cont Dich Chuyen")
+    /** null */
     private Integer movingContAmount;
 
-    /** Chuoi ID Tai Xe */
+    /** null */
     private String transportIds;
 
     /** Status */
-    @Excel(name = "Status")
     private Integer status;
 
-    private String bay;
-
-    private int row;
-
-    private int tier;
-
-    public void setId(Long id) {
+    public void setId(Long id) 
+    {
         this.id = id;
     }
 
-    public Long getId() {
+    public Long getId() 
+    {
         return id;
     }
-
-    public void setShipmentId(Long shipmentId) {
+    public void setShipmentId(Long shipmentId) 
+    {
         this.shipmentId = shipmentId;
     }
 
-    public Long getShipmentId() {
+    public Long getShipmentId() 
+    {
         return shipmentId;
     }
-
-    public void setLogisticGroupId(Long logisticGroupId) {
+    public void setLogisticGroupId(Long logisticGroupId) 
+    {
         this.logisticGroupId = logisticGroupId;
     }
 
-    public Long getLogisticGroupId() {
+    public Long getLogisticGroupId() 
+    {
         return logisticGroupId;
     }
-
-    public void setRegisterNo(String registerNo) {
+    public void setRegisterNo(String registerNo) 
+    {
         this.registerNo = registerNo;
     }
 
-    public String getRegisterNo() {
+    public String getRegisterNo() 
+    {
         return registerNo;
     }
-    public void setContainerNo(String containerNo) {
+    public void setContainerNo(String containerNo) 
+    {
         this.containerNo = containerNo;
     }
 
-    public String getContainerNo() {
+    public String getContainerNo() 
+    {
         return containerNo;
     }
-
-    public void setContainerStatus(String containerStatus) {
+    public void setContainerStatus(String containerStatus) 
+    {
         this.containerStatus = containerStatus;
     }
 
-    public String getContainerStatus() {
+    public String getContainerStatus() 
+    {
         return containerStatus;
     }
-
-    public void setSztp(String sztp) {
+    public void setSztp(String sztp) 
+    {
         this.sztp = sztp;
     }
 
-    public String getSztp() {
+    public String getSztp() 
+    {
         return sztp;
     }
-
-    public void setFe(String fe) {
+    public void setFe(String fe) 
+    {
         this.fe = fe;
     }
 
-    public String getFe() {
+    public String getFe() 
+    {
         return fe;
     }
-
-    public void setBookingNo(String bookingNo) {
+    public void setBookingNo(String bookingNo) 
+    {
         this.bookingNo = bookingNo;
     }
 
-    public String getBookingNo() {
+    public String getBookingNo() 
+    {
         return bookingNo;
     }
-
-    public void setBlNo(String blNo) {
+    public void setBlNo(String blNo) 
+    {
         this.blNo = blNo;
     }
 
-    public String getBlNo() {
+    public String getBlNo() 
+    {
         return blNo;
     }
-
-    public void setSealNo(String sealNo) {
+    public void setSealNo(String sealNo) 
+    {
         this.sealNo = sealNo;
     }
 
-    public String getSealNo() {
+    public String getSealNo() 
+    {
         return sealNo;
     }
-
-    public void setConsignee(String consignee) {
+    public void setConsignee(String consignee) 
+    {
         this.consignee = consignee;
     }
 
-    public String getConsignee() {
+    public String getConsignee() 
+    {
         return consignee;
     }
-
-    public void setExpiredDem(Date expiredDem) {
+    public void setExpiredDem(Date expiredDem) 
+    {
         this.expiredDem = expiredDem;
     }
 
-    public Date getExpiredDem() {
+    public Date getExpiredDem() 
+    {
         return expiredDem;
     }
-
-    public void setWgt(Long wgt) {
+    public void setWgt(Long wgt) 
+    {
         this.wgt = wgt;
     }
 
-    public Long getWgt() {
+    public Long getWgt() 
+    {
         return wgt;
     }
-    public void setVslNm(String vslNm) {
+    public void setVslNm(String vslNm) 
+    {
         this.vslNm = vslNm;
     }
 
-    public String getVslNm() {
+    public String getVslNm() 
+    {
         return vslNm;
     }
-
-    public void setVoyNo(String voyNo) {
+    public void setVoyNo(String voyNo) 
+    {
         this.voyNo = voyNo;
     }
 
-    public String getVoyNo() {
+    public String getVoyNo() 
+    {
         return voyNo;
     }
-
-    public void setOpeCode(String opeCode) {
+    public void setOpeCode(String opeCode) 
+    {
         this.opeCode = opeCode;
     }
 
-    public String getOpeCode() {
+    public String getOpeCode() 
+    {
         return opeCode;
     }
-    public void setLoadingPort(String loadingPort) {
+    public void setLoadingPort(String loadingPort) 
+    {
         this.loadingPort = loadingPort;
     }
 
-    public String getLoadingPort() {
+    public String getLoadingPort() 
+    {
         return loadingPort;
     }
-
-    public void setDischargePort(String dischargePort) {
+    public void setDischargePort(String dischargePort) 
+    {
         this.dischargePort = dischargePort;
     }
 
-    public String getDischargePort() {
+    public String getDischargePort() 
+    {
         return dischargePort;
     }
-
-    public void setTransportType(String transportType) {
+    public void setTransportType(String transportType) 
+    {
         this.transportType = transportType;
     }
 
-    public String getTransportType() {
+    public String getTransportType() 
+    {
         return transportType;
     }
-
-    public void setEmptyDepot(String emptyDepot) {
+    public void setEmptyDepot(String emptyDepot) 
+    {
         this.emptyDepot = emptyDepot;
     }
 
-    public String getEmptyDepot() {
+    public String getEmptyDepot() 
+    {
         return emptyDepot;
     }
-
-    public void setVgmChk(Boolean vgmChk) {
+    public void setVgmChk(Long vgmChk) 
+    {
         this.vgmChk = vgmChk;
     }
 
-    public Boolean getVgmChk() {
+    public Long getVgmChk() 
+    {
         return vgmChk;
     }
-
-    public void setVgm(String vgm) {
+    public void setVgm(String vgm) 
+    {
         this.vgm = vgm;
     }
 
-    public String getVgm() {
+    public String getVgm() 
+    {
         return vgm;
     }
-
-    public void setVgmPersonInfo(String vgmPersonInfo) {
+    public void setVgmPersonInfo(String vgmPersonInfo) 
+    {
         this.vgmPersonInfo = vgmPersonInfo;
     }
 
-    public String getVgmPersonInfo() {
+    public String getVgmPersonInfo() 
+    {
         return vgmPersonInfo;
     }
-
-    public void setCustomDeclareNo(String customDeclareNo) {
+    public void setCustomDeclareNo(String customDeclareNo) 
+    {
         this.customDeclareNo = customDeclareNo;
     }
 
-    public String getCustomDeclareNo() {
+    public String getCustomDeclareNo() 
+    {
         return customDeclareNo;
     }
-
-    public void setCustomStatus(String customStatus) {
+    public void setCustomStatus(String customStatus) 
+    {
         this.customStatus = customStatus;
     }
 
-    public String getCustomStatus() {
+    public String getCustomStatus() 
+    {
         return customStatus;
     }
-
-    public void setPaymentStatus(String paymentStatus) {
+    public void setPaymentStatus(String paymentStatus) 
+    {
         this.paymentStatus = paymentStatus;
     }
 
-    public String getPaymentStatus() {
+    public String getPaymentStatus() 
+    {
         return paymentStatus;
     }
-
-    public void setProcessStatus(String processStatus) {
+    public void setProcessStatus(String processStatus) 
+    {
         this.processStatus = processStatus;
     }
 
-    public String getProcessStatus() {
+    public String getProcessStatus() 
+    {
         return processStatus;
     }
-
-    public void setDoStatus(String doStatus) {
+    public void setDoStatus(String doStatus) 
+    {
         this.doStatus = doStatus;
     }
+
     public String getDoStatus() 
     {
         return doStatus;
     }
-
-    public void setDoReceivedTime(Date doReceivedTime) {
-        this. doReceivedTime = doReceivedTime;
+    public void setDoReceivedTime(Date doReceivedTime) 
+    {
+        this.doReceivedTime = doReceivedTime;
     }
 
-    public Date getDoReceivedTime() {
+    public Date getDoReceivedTime() 
+    {
         return doReceivedTime;
     }
-
-    public void setUserVerifyStatus(String userVerifyStatus) {
+    public void setUserVerifyStatus(String userVerifyStatus) 
+    {
         this.userVerifyStatus = userVerifyStatus;
     }
 
-    public String getUserVerifyStatus() {
+    public String getUserVerifyStatus() 
+    {
         return userVerifyStatus;
     }
-
-    public void setPreorderPickup(String preorderPickup) {
+    public void setPreorderPickup(String preorderPickup) 
+    {
         this.preorderPickup = preorderPickup;
     }
 
-    public String getPreorderPickup() {
+    public String getPreorderPickup() 
+    {
         return preorderPickup;
     }
-
-    public void setMovingContAmount(Integer movingContAmount) {
+    public void setMovingContAmount(Integer movingContAmount) 
+    {
         this.movingContAmount = movingContAmount;
     }
 
-    public Integer getMovingContAmount() {
+    public Integer getMovingContAmount() 
+    {
         return movingContAmount;
     }
-
-    public void setTransportIds(String transportIds) {
+    public void setTransportIds(String transportIds) 
+    {
         this.transportIds = transportIds;
     }
 
-    public String getTransportIds() {
+    public String getTransportIds() 
+    {
         return transportIds;
     }
-
-    public void setStatus(Integer status) {
+    public void setStatus(Integer status) 
+    {
         this.status = status;
     }
 
-    public Integer getStatus() {
+    public Integer getStatus() 
+    {
         return status;
-    }
-
-    public void setBay(String bay) {
-        this.bay = bay;
-    }
-
-    public String getBay() {
-        return bay;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setTier(int tier) {
-        this.tier = tier;
-    }
-
-    public int getTier() {
-        return tier;
     }
 
     @Override
@@ -502,9 +478,6 @@ public class ShipmentDetail extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
-            .append("bay", getBay())
-            .append("row", getRow())
-            .append("tier", getTier())
             .toString();
     }
 }

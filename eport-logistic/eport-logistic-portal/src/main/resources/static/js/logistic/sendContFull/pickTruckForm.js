@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/receiveContFull";
+var prefix = ctx + "logistic/sendContFull";
 var driverList;
 var internalTransport = [];
 var externalTransport = [];
@@ -22,36 +22,25 @@ function pickTruckWithoutExternal() {
         externalTransport.forEach(function(driver) {
             ids += driver.id + ",";
         });
-        if (pickCont) {
-            if (externalTransport.length == 1) {
-                parent.finishPickTruck(recentPlateNumber, ids.substring(0, ids.length-1));
-            } else {
-                parent.finishPickTruck("Đội xe chỉ định trước", ids.substring(0, ids.length-1));
-            }
-            console.log(ids);
-            $.modal.close();
-        } else {
-            $.ajax({
-                url: prefix + "/pickTruck",
-                method: "post",
-                data: {
-                    shipmentDetailIds: shipmentDetailIds,
-                    driverIds: ids.substring(0, ids.length-1)
-                },
-                success: function (data) {
-                    if (data.code != 0) {
-                        $.modal.msgError(data.msg);
-                    } else {
-                        parent.finishForm(data);
-                        $.modal.close();
-                    }
-                },
-                error: function (result) {
-                    $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+        $.ajax({
+            url: prefix + "/pickTruck",
+            method: "post",
+            data: {
+                shipmentDetailIds: shipmentDetailIds,
+                driverIds: ids.substring(0, ids.length-1)
+            },
+            success: function (data) {
+                if (data.code != 0) {
+                    $.modal.msgError(data.msg);
+                } else {
+                    parent.finishForm(data);
+                    $.modal.close();
                 }
-            });
-            
-        }
+            },
+            error: function (result) {
+                $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+            }
+        });
     } else {
         $.modal.alertError("Quý khách chưa đăng ký xe lấy container.");
     }
@@ -78,34 +67,25 @@ function pickTruckWithExternal() {
                             ids += driver.id + ",";
                         });
                     }
-                    if (pickCont) {
-                        if (externalTransport.length == 0 && externalDriverList.length == 1) {
-                            parent.finishPickTruck($("#plateNumber"+externalTransport[0].id).html(), ids.substring(0, ids.length-1));
-                        } else {
-                            parent.finishPickTruck("Đội xe chỉ định trước", ids.substring(0, ids.length-1));
-                        }
-                        $.modal.close();
-                    } else {
-                        $.ajax({
-                            url: prefix + "/pickTruck",
-                            method: "post",
-                            data: {
-                                shipmentDetailIds: shipmentDetailIds,
-                                driverIds: ids.substring(0, ids.length-1)
-                            },
-                            success: function (data) {
-                                if (data.code != 0) {
-                                    $.modal.msgError(data.msg);
-                                } else {
-                                    parent.finishForm(data);
-                                    $.modal.close();
-                                }
-                            },
-                            error: function (result) {
-                                $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+                    $.ajax({
+                        url: prefix + "/pickTruck",
+                        method: "post",
+                        data: {
+                            shipmentDetailIds: shipmentDetailIds,
+                            driverIds: ids.substring(0, ids.length-1)
+                        },
+                        success: function (data) {
+                            if (data.code != 0) {
+                                $.modal.msgError(data.msg);
+                            } else {
+                                parent.finishForm(data);
+                                $.modal.close();
                             }
-                        });
-                    }
+                        },
+                        error: function (result) {
+                            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+                        }
+                    });
                 } else {
                     $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
                 }
