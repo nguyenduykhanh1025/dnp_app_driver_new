@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.OtpCodeMapper">
+    
+    <resultMap type="OtpCode" id="OtpCodeResult">
+        <result property="id"    column="id"    />
+        <result property="shipmentDetailids"    column="shipment_detailIds"    />
+        <result property="phoneNumber"    column="phone_number"    />
+        <result property="optCode"    column="opt_code"    />
+        <result property="msgStatus"    column="msg_status"    />
+        <result property="verifyStatus"    column="verify_status"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectOtpCodeVo">
+        select id, shipment_detailIds, phone_number, opt_code, msg_status, verify_status, create_time from otp_code
+    </sql>
+
+    <select id="selectOtpCodeList" parameterType="OtpCode" resultMap="OtpCodeResult">
+        <include refid="selectOtpCodeVo"/>
+        <where>  
+            <if test="shipmentDetailids != null  and shipmentDetailids != ''"> and shipment_detailIds = #{shipmentDetailids}</if>
+            <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
+            <if test="optCode != null "> and opt_code = #{optCode}</if>
+            <if test="msgStatus != null  and msgStatus != ''"> and msg_status = #{msgStatus}</if>
+            <if test="verifyStatus != null  and verifyStatus != ''"> and verify_status = #{verifyStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectOtpCodeById" parameterType="Long" resultMap="OtpCodeResult">
+        <include refid="selectOtpCodeVo"/>
+        where id = #{id} 
+    </select>
+    <select id="selectOtpCodeByshipmentDetailId" parameterType="String" resultMap="OtpCodeResult">
+        <include refid="selectOtpCodeVo"/>
+        where shipment_detailIds = #{shipmentDetailid} ORDER BY id DESC LIMIT 1
+    </select>
+        
+    <insert id="insertOtpCode" parameterType="OtpCode" useGeneratedKeys="true" keyProperty="id">
+        insert into otp_code
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shipmentDetailids != null  and shipmentDetailids != ''">shipment_detailIds,</if>
+            <if test="phoneNumber != null  and phoneNumber != ''">phone_number,</if>
+            <if test="optCode != null ">opt_code,</if>
+            <if test="msgStatus != null  and msgStatus != ''">msg_status,</if>
+            <if test="verifyStatus != null  and verifyStatus != ''">verify_status,</if>
+            <if test="createTime != null ">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="shipmentDetailids != null  and shipmentDetailids != ''">#{shipmentDetailids},</if>
+            <if test="phoneNumber != null  and phoneNumber != ''">#{phoneNumber},</if>
+            <if test="optCode != null ">#{optCode},</if>
+            <if test="msgStatus != null  and msgStatus != ''">#{msgStatus},</if>
+            <if test="verifyStatus != null  and verifyStatus != ''">#{verifyStatus},</if>
+            <if test="createTime != null ">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateOtpCode" parameterType="OtpCode">
+        update otp_code
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shipmentDetailids != null  and shipmentDetailids != ''">shipment_detailIds = #{shipmentDetailids},</if>
+            <if test="phoneNumber != null  and phoneNumber != ''">phone_number = #{phoneNumber},</if>
+            <if test="optCode != null ">opt_code = #{optCode},</if>
+            <if test="msgStatus != null  and msgStatus != ''">msg_status = #{msgStatus},</if>
+            <if test="verifyStatus != null  and verifyStatus != ''">verify_status = #{verifyStatus},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteOtpCodeById" parameterType="Long">
+        delete from otp_code where id = #{id}
+    </delete>
+
+    <delete id="deleteOtpCodeByIds" parameterType="String">
+        delete from otp_code where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
