@@ -34,11 +34,45 @@ function closeForm() {
 
 function getOtp() {
 
-    $.modal.msgSuccess("Tạo OTP thành công.");
-
+    // $.ajax({
+    //     url: prefix + "/sendOTP",
+    //     method: "GET",
+    // }).success(function(data) {
+    //     console.log(data);
+    // });
+    $.ajax({
+        url: prefix + "/sendOTP",
+        method: "post",
+        data: {
+            shipmentDetailIds: shipmentDetailIds
+        },
+        success: function (data) {
+            if (data.code != 0) {
+                $.modal.msgSuccess("Đã gửi OTP.");
+            } 
+        },
+        error: function (result) {
+            $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+        }
+    });
+    // fetch(prefix + "/sendOTP",{
+    //     method: 'POST',
+    //     data:{
+    //         shipmentDetailIds : shipmentDetailIds,
+    //     }
+    //  })
+    //     .then(response => response.json())
+    //     .then(function(data) {
+            
+    
+    //     })
+    //     .catch(function(err) {
+    //         $.modal.msgError("Lỗi.");
+    //     })
+    //     ;
+    
     if (interval != null) {
         clearInterval(interval);
-        
     } else {
         $("#indicateTime").show();
         $("#indicateAction").hide();
@@ -72,3 +106,5 @@ function getOtp() {
 }
 
 $("#p1").html("Mã OTP sẽ được gửi đến số điện thoại " + numberPhone + ".");
+
+getOtp();

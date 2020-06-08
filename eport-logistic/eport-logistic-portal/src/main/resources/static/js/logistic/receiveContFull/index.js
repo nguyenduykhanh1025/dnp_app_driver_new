@@ -124,7 +124,7 @@ config = {
       case 6:
         return "Seal No";
       case 7:
-        return "Hạn Lệnh";
+        return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
       case 8:
         return "Trọng tải";
       case 9:
@@ -144,7 +144,7 @@ config = {
       case 16:
         return "T.T Thanh Toán";
       case 17:
-        return "T.T Làm Lệnh";
+        return 'T.T Làm Lệnh';
       case 18:
         return "T.T DO Gốc";
       case 19:
@@ -289,6 +289,9 @@ config = {
             switch (status) {
               case 1:
                 setLayoutCustomStatus(simpleCustom);
+                if (!paymentStatus && !notVerify && !verifyStatus) {
+                  $("#deleteBtn").prop("disabled", false);
+                }
                 break;
               case 2:
                 setLayoutVerifyUser();
@@ -636,6 +639,9 @@ function getDataFromTable(isValidate) {
     if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && isValidate) {
       $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
       errorFlg = true;
+    } else if (object["expiredDem"] == null || object["expiredDem"] == "") {
+      $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
+      errorFlg = true;
     }
     var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
     shipmentDetail.blNo = shipmentSelected.blNo;
@@ -730,6 +736,31 @@ function saveShipmentDetail() {
   }
 }
 
+// DELETE SHIPMENT DETAIL
+function deleteShipmentDetail() {
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+        url: prefix + "/deleteShipmentDetail",
+        method: "post",
+        data: {
+            shipmentDetailIds: shipmentDetailIds
+        },
+        success: function (result) {
+            if (result.code == 0) {
+                $.modal.msgSuccess(result.msg);
+                loadShipmentDetail(shipmentSelected.id);
+            } else {
+                $.modal.msgError(result.msg);
+            }
+            $.modal.closeLoading();
+        },
+        error: function (result) {
+            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+            $.modal.closeLoading();
+        },
+    });
+}
+
 // Handling logic
 function checkCustomStatus() {
   $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatusForm/" + shipmentSelected.id, 720, 500);
@@ -779,6 +810,7 @@ function setLayoutRegisterStatus() {
   $("#verifyBtn").prop("disabled", true);
   $("#pickContOnDemandBtn").prop("disabled", true);
   $("#pickTruckBtn").prop("disabled", true);
+  $("#deleteBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
 }
@@ -798,6 +830,7 @@ function setLayoutCustomStatus(simpleCustoms) {
     $("#pickContOnDemandBtn").prop("disabled", true);
   }
   $("#pickTruckBtn").prop("disabled", false);
+  $("#deleteBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
 }
@@ -811,6 +844,7 @@ function setLayoutVerifyUser() {
   // $("#saveShipmentDetailBtn").prop("disabled", false);
   // $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", false);
+  $("#deleteBtn").prop("disabled", true);
   // $("#pickContOnDemandBtn").prop("disabled", false);
   // $("#pickTruckBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
@@ -825,6 +859,7 @@ function setLayoutPaymentStatus() {
   $("#finishStatus").removeClass("label-primary active").addClass("disable");
   // $("#saveShipmentDetailBtn").prop("disabled", true);
   // $("#customBtn").prop("disabled", true);
+  $("#deleteBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
   // $("#pickContOnDemandBtn").prop("disabled", true);
   // $("#pickTruckBtn").prop("disabled", true);
@@ -840,6 +875,7 @@ function setLayoutPickTruck() {
   $("#finishStatus").removeClass("label-primary disable").addClass("active");
   // $("#saveShipmentDetailBtn").prop("disabled", true);
   // $("#customBtn").prop("disabled", true);
+  $("#deleteBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
   // $("#pickContOnDemandBtn").prop("disabled", true);
   // $("#pickTruckBtn").prop("disabled", false);

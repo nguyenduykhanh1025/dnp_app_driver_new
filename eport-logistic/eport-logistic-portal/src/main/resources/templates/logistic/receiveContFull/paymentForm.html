@@ -25,15 +25,19 @@
   }
 
   .unloadContCosts {
-    height: 80px;
+    height: 30px;
   }
 
   .moveContCosts {
-    height: 80px;
+    height: 30px;
   }
 
   .total {
-    height: 43px;
+    height: 33px;
+  }
+
+  .paymentMethod {
+    height: 83px;
   }
 
 </style>
@@ -46,7 +50,7 @@
         </div>
         <div class="moveContCosts">
           <b>Phí dịch chuyển</b>
-          <div>
+          <!-- <div>
             <label class="col-md-1 col-sm-1 col-xs-4">Số container dịch chuyển</label>
             <label class="col-md-1 col-sm-1 col-xs-3">Đơn giá</label>
             <label class="col-md-1 col-sm-1 col-xs-3">Thành tiền</label>
@@ -55,10 +59,23 @@
             <span id="moveContAmount" class="col-md-1 col-sm-1 col-xs-4"></span>
             <span class="col-md-1 col-sm-1 col-xs-3"><span id="unitCosts"></span><span> đồng</span></span>
             <span class="col-md-1 col-sm-1 col-xs-3"><span id="moveContPrice"></span><span> đồng</span></span>
-          </div>
+          </div> -->
         </div>
         <div class="total">
           <b>Tổng cộng: <span id="total"></span><span> đồng.</span></b>
+        </div>
+        <div class="paymentMethod">
+          <div>
+            <b>Phương thức thanh toán</b>
+          </div>
+          <div>
+            <input style="margin-top: 6px;" type="radio" name="edoFlg" value="0" checked/>
+            <label>Trả trước thông qua cổng thanh toán</label>
+          </div>
+          <div>
+            <input style="margin-top: 6px;" type="radio" name="edoFlg" value="0" checked/>
+            <label>Trả sau (Credit)</label>
+          </div>
         </div>
     </div>
     <div class="layui-layer-btn footer">

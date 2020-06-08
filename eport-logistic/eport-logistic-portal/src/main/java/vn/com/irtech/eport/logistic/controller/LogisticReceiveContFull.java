@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -24,11 +25,24 @@ import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.utils.R;
+
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+
 
 @Controller
 @RequestMapping("/logistic/receiveContFull")
@@ -42,6 +56,9 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
 
+	@Autowired 
+	private IOtpCodeService otpCodeService;
+
 	@GetMapping()
 	public String receiveContFull() {
 		return prefix + "/index";
@@ -49,22 +66,22 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@RequestMapping("/listShipment")
 	@ResponseBody
-	public TableDataInfo listShipment(Shipment shipment) {
+	public TableDataInfo listShipment(final Shipment shipment) {
 		startPage();
-		LogisticAccount user = getUser();
+		final LogisticAccount user = getUser();
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setServiceId(1);
-		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+		final List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}
 
 	@RequestMapping("/listShipmentDetail")
 	@ResponseBody
-	public List<ShipmentDetail> listShipmentDetail(ShipmentDetail shipmentDetail) {
-		Shipment shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
+	public List<ShipmentDetail> listShipmentDetail(final ShipmentDetail shipmentDetail) {
+		final Shipment shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) { 
+			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) {
 				shipmentDetails = new ArrayList<>();
 				// for (int i=0; i<10; i++) {
 				// 	ShipmentDetail shipmentDetail2 = new ShipmentDetail();
@@ -105,15 +122,15 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	}
 
 	@GetMapping("/addShipmentForm")
-	public String add(ModelMap mmap) {
+	public String add(final ModelMap mmap) {
 		mmap.put("groupName", getGroup().getGroupName());
 		return prefix + "/add";
 	}
 
 	@PostMapping("/addShipment")
-    @ResponseBody
-    public AjaxResult addShipment(Shipment shipment) {
-		LogisticAccount user = getUser();
+	@ResponseBody
+	public AjaxResult addShipment(final Shipment shipment) {
+		final LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateTime(new Date());
@@ -126,19 +143,19 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	}
 
 	@GetMapping("/editShipmentForm/{id}")
-    public String edit(@PathVariable("id") Long id, ModelMap mmap) {
-		Shipment shipment = shipmentService.selectShipmentWithGroupById(id);
+	public String edit(@PathVariable("id") final Long id, final ModelMap mmap) {
+		final Shipment shipment = shipmentService.selectShipmentWithGroupById(id);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
 		}
-        return prefix + "/edit";
+		return prefix + "/edit";
 	}
-	
+
 	@PostMapping("/editShipment")
-    @ResponseBody
-    public AjaxResult editShipment(Shipment shipment) {
-		LogisticAccount user = getUser();
-		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
+	@ResponseBody
+	public AjaxResult editShipment(final Shipment shipment) {
+		final LogisticAccount user = getUser();
+		final Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
 			shipment.setUpdateTime(new Date());
 			shipment.setUpdateBy(user.getFullName());
@@ -151,11 +168,11 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@PostMapping("/saveShipmentDetail")
 	@ResponseBody
-	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
+	public AjaxResult saveShipmentDetail(@RequestBody final List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
-			LogisticAccount user = getUser();
+			final LogisticAccount user = getUser();
 			int index = 0;
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			for (final ShipmentDetail shipmentDetail : shipmentDetails) {
 				index++;
 				if (shipmentDetail.getId() != null) {
 					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
@@ -171,7 +188,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
 					shipmentDetail.setCreateTime(new Date());
-					shipmentDetail.setRegisterNo(shipmentDetail.getShipmentId().toString()+index);
+					shipmentDetail.setRegisterNo(shipmentDetail.getShipmentId().toString() + index);
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setCustomStatus("N");
 					shipmentDetail.setPaymentStatus("N");
@@ -188,9 +205,19 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
+	@PostMapping("/deleteShipmentDetail")
+	@ResponseBody
+	public AjaxResult deleteShipmentDetail(String shipmentDetailIds) {
+		if (shipmentDetailIds != null) {
+			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			return success("Lưu khai báo thành công");
+		}
+		return error("Lưu khai báo thất bại");
+	}
+
 	@PostMapping("/getContInfo")
 	@ResponseBody
-	public ShipmentDetail getContInfo(ShipmentDetail shipmentDetail) {
+	public ShipmentDetail getContInfo(final ShipmentDetail shipmentDetail) {
 		if (shipmentDetail.getBlNo() != null && shipmentDetail.getContainerNo() != null) {
 			// shipmentDetail.setOpeCode("CMC");
 			// shipmentDetail.setSztp("22G0");
@@ -226,12 +253,12 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	}
 
 	@GetMapping("checkCustomStatusForm/{shipmentId}")
-	public String checkCustomStatus(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
+	public String checkCustomStatus(@PathVariable("shipmentId") final Long shipmentId, final ModelMap mmap) {
 		mmap.put("shipmentId", shipmentId);
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		final ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		shipmentDetail.setStatus(1);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		if (shipmentDetails.size() > 0) {
 			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 				mmap.put("contList", shipmentDetails);
@@ -242,9 +269,11 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@PostMapping("/checkCustomStatus")
 	@ResponseBody
-	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value="declareNoList[]") String[] declareNoList, String shipmentDetailIds) {
+	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") final String[] declareNoList,
+			final String shipmentDetailIds) {
 		if (declareNoList != null) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+			final List<ShipmentDetail> shipmentDetails = shipmentDetailService
+					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0) {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
@@ -260,8 +289,9 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	}
 
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
-	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") final String shipmentDetailIds,
+			final ModelMap mmap) {
+		final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
@@ -270,51 +300,129 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	// @RequestMapping("/listShipmentDetailByIds")
 	// @ResponseBody
-	// public List<ShipmentDetail> listShipmentDetailByIds(String shipmentDetailIds) {
-	// 	return 	shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+	// public List<ShipmentDetail> listShipmentDetailByIds(String shipmentDetailIds)
+	// {
+	// return shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 	// }
 
 	@GetMapping("verifyOtpForm/{shipmentDetailIds}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") final String shipmentDetailIds,
+			final ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
 		return prefix + "/verifyOtp";
 	}
 
+	@PostMapping("sendOTP")
+	@ResponseBody
+	public AjaxResult sendOTP(String shipmentDetailIds) {
+		final LogisticGroup lGroup = getGroup();
+		final String shipmentDetailId = shipmentDetailIds;
+		final String phoneNumber = lGroup.getMobilePhone();
+
+		final OtpCode otpCode = new OtpCode();
+
+		final Random rd = new Random();
+		final long OTPCODE = rd.nextInt(999999);
+
+		otpCode.setShipmentDetailids(shipmentDetailId);
+		otpCode.setPhoneNumber(phoneNumber);
+		otpCode.setOptCode(OTPCODE);
+		otpCodeService.insertOtpCode(otpCode);
+
+		final String contentOtp = "Ma xac thuc lam lenh lay cont hang ra khoi cang la " + OTPCODE;
+		String response = "";
+		// try {
+
+		// 	response = postOtpMessage(contentOtp);
+		// 	System.out.println(response);
+		// } catch (final IOException ex) {
+		// 	// process the exception
+		// }
+
+		return AjaxResult.success(response.toString());
+	}
+
+	// Send SMS OTP
+	private int otpGenerator() {
+		final int opt = 000000;
+		// random code;
+		return opt;
+	}
+
+	public String postOtpMessage(final String contentOtp) throws IOException {
+
+		final StringBuffer content = new StringBuffer();
+		final URL url = new URL("http://113.185.0.35:8888/smsmarketing/api");
+		final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+		conn.setDoOutput(true);
+		final DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+		final String msg = "<RQST><name>send_sms_list</name><REQID>1572859194</REQID><LABELID>56703</LABELID><TEMPLATEID>222027</TEMPLATEID><ISTELCOSUB>0</ISTELCOSUB><CONTRACTTYPEID>1</CONTRACTTYPEID><SCHEDULETIME></SCHEDULETIME><MOBILELIST>84983960445</MOBILELIST><AGENTID>121</AGENTID><APIUSER>demo</APIUSER><APIPASS>demo</APIPASS><USERNAME>DN_CS</USERNAME><CONTRACTID>407</CONTRACTID><PARAMS><NUM>1</NUM><CONTENT>"
+				+ contentOtp + "</CONTENT></PARAMS></RQST>";
+		wr.writeBytes(msg);
+		wr.flush();
+		wr.close();
+		final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		String str;
+		while ((str = in.readLine()) != null) {
+			content.append(str);
+		}
+		in.close();
+		return content.toString();
+	}
+
 	@PostMapping("/verifyOtp")
 	@ResponseBody
-	public AjaxResult verifyOtp(String shipmentDetailIds, String otp) {
-		if (otp.equals("1234")) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-			if (shipmentDetails.size() >0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				for (ShipmentDetail shipmentDetail : shipmentDetails) {
+	public AjaxResult verifyOtp(final String shipmentDetailIds, final String otp) {
+		OtpCode otpCode = new OtpCode();
+		String[] shipmentDetailId = shipmentDetailIds.split(",");
+		final String phoneNumber = "84983960445";
+		try {
+			otpCode = otpCodeService.selectOtpCodeByshipmentDetailId(shipmentDetailId[0]);
+		} catch(Exception e) {
+
+		}
+		final Date now = new Date();
+		final Date otpCreateTime = otpCode.getCreateTime();
+		final long diff = now.getTime() - otpCreateTime.getTime();
+		// if (diff > 5) {
+		// 	return error("Mã OTP đã hết hạn!");
+		// }
+		if (otp.equals(otpCode.getOptCode().toString())) {
+			final List<ShipmentDetail> shipmentDetails = shipmentDetailService
+					.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				for (final ShipmentDetail shipmentDetail : shipmentDetails) {
 					shipmentDetail.setUserVerifyStatus("Y");
 					shipmentDetail.setStatus(3);
 					shipmentDetail.setProcessStatus("Y");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 				}
+
 				return success("Xác thực OTP thành công");
 			}
 		}
-		return error("Mã OTP không chính xác!");
+		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 	}
 
 	@GetMapping("pickContOnDemandForm/{blNo}")
-	public String pickContOnDemand(@PathVariable("blNo") String blNo, ModelMap mmap) {
-		ShipmentDetail shipmentDt = new ShipmentDetail();
+	public String pickContOnDemand(@PathVariable("blNo") final String blNo, final ModelMap mmap) {
+		final ShipmentDetail shipmentDt = new ShipmentDetail();
 		shipmentDt.setBlNo(blNo);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+		final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			// simulating the location of container in da nang port, mapping to matrix
-			List<ShipmentDetail[][]> bayList= new ArrayList<>();
-			String bay1 = "AB123";
+			final List<ShipmentDetail[][]> bayList = new ArrayList<>();
+			final String bay1 = "AB123";
 			int row1 = 1;
 			int tier1 = 1;
-			String bay2 = "AB124";
+			final String bay2 = "AB124";
 			int row2 = 1;
 			int tier2 = 1;
 			boolean next = true;
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			for (final ShipmentDetail shipmentDetail : shipmentDetails) {
 				if (next) {
 					if (tier1 == 6) {
 						tier1 = 1;
@@ -340,14 +448,14 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 			Collections.sort(shipmentDetails, new BayComparator());
 			ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][6];
 			String currentBay = shipmentDetails.get(0).getBay();
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			for (final ShipmentDetail shipmentDetail : shipmentDetails) {
 				if (currentBay.equals(shipmentDetail.getBay())) {
-					shipmentDetailMatrix[shipmentDetail.getTier()-1][shipmentDetail.getRow()-1] = shipmentDetail;
+					shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
 				} else {
 					bayList.add(shipmentDetailMatrix);
 					currentBay = shipmentDetail.getBay();
 					shipmentDetailMatrix = new ShipmentDetail[5][6];
-					shipmentDetailMatrix[shipmentDetail.getTier()-1][shipmentDetail.getRow()-1] = shipmentDetail;
+					shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
 				}
 			}
 			bayList.add(shipmentDetailMatrix);
@@ -360,22 +468,22 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@PostMapping("/pickContOnDemand")
 	@ResponseBody
-	public AjaxResult pickContOnDemand(@RequestBody List<ShipmentDetail> preorderPickupConts) {
+	public AjaxResult pickContOnDemand(@RequestBody final List<ShipmentDetail> preorderPickupConts) {
 		if (preorderPickupConts.size() > 0) {
-			ShipmentDetail shipmentDt = new ShipmentDetail();
+			final ShipmentDetail shipmentDt = new ShipmentDetail();
 			shipmentDt.setBlNo(preorderPickupConts.get(0).getBlNo());
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+			final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 				// simulating the location of container in da nang port
-				List<ShipmentDetail[][]> bayList= new ArrayList<>();
-				String bay1 = "AB123";
+				final List<ShipmentDetail[][]> bayList = new ArrayList<>();
+				final String bay1 = "AB123";
 				int row1 = 1;
 				int tier1 = 1;
-				String bay2 = "AB124";
+				final String bay2 = "AB124";
 				int row2 = 1;
 				int tier2 = 1;
 				boolean next = true;
-				for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				for (final ShipmentDetail shipmentDetail : shipmentDetails) {
 					if (next) {
 						if (tier1 == 6) {
 							tier1 = 1;
@@ -401,25 +509,27 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 				Collections.sort(shipmentDetails, new BayComparator());
 				ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][6];
 				String currentBay = shipmentDetails.get(0).getBay();
-				for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				for (final ShipmentDetail shipmentDetail : shipmentDetails) {
 					if (currentBay.equals(shipmentDetail.getBay())) {
-						shipmentDetailMatrix[shipmentDetail.getTier()-1][shipmentDetail.getRow()-1] = shipmentDetail;
+						shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow()
+								- 1] = shipmentDetail;
 					} else {
 						bayList.add(shipmentDetailMatrix);
 						currentBay = shipmentDetail.getBay();
 						shipmentDetailMatrix = new ShipmentDetail[5][6];
-						shipmentDetailMatrix[shipmentDetail.getTier()-1][shipmentDetail.getRow()-1] = shipmentDetail;
+						shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow()
+								- 1] = shipmentDetail;
 					}
 				}
 				bayList.add(shipmentDetailMatrix);
 
 				int movingContAmount = 0;
-				for (int b=0; b<bayList.size(); b++) {
+				for (int b = 0; b < bayList.size(); b++) {
 					int movingContAmountTemp = 0;
-					for (int row=0; row<6; row++) {
-						for (int tier=4; tier>=0; tier--) {
+					for (int row = 0; row < 6; row++) {
+						for (int tier = 4; tier >= 0; tier--) {
 							if (bayList.get(b)[tier][row] != null) {
-								for (ShipmentDetail shipmentDetail : preorderPickupConts) {
+								for (final ShipmentDetail shipmentDetail : preorderPickupConts) {
 									if (bayList.get(b)[tier][row].getId() == shipmentDetail.getId()) {
 										movingContAmount += movingContAmountTemp;
 										movingContAmountTemp = 0;
@@ -432,7 +542,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 					}
 				}
 
-				for (ShipmentDetail shipmentDetail : preorderPickupConts) {
+				for (final ShipmentDetail shipmentDetail : preorderPickupConts) {
 					shipmentDetail.setMovingContAmount(movingContAmount);
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 				}
@@ -444,17 +554,17 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	}
 
 	@GetMapping("paymentForm/{shipmentDetailIds}")
-	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+	public String paymentForm(@PathVariable("shipmentDetailIds") final String shipmentDetailIds, final ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		return prefix + "/paymentForm";
 	}
 
 	@PostMapping("/payment")
 	@ResponseBody
-	public AjaxResult payment(String shipmentDetailIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+	public AjaxResult payment(final String shipmentDetailIds) {
+		final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			for (final ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setStatus(4);
 				shipmentDetail.setPaymentStatus("Y");
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
@@ -492,10 +602,10 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@PostMapping("/pickTruck")
 	@ResponseBody
-	public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+	public AjaxResult pickTruck(final String shipmentDetailIds, final String driverIds) {
+		final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			for (final ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setTransportIds(driverIds);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
@@ -505,7 +615,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	}
 
 	class BayComparator implements Comparator<ShipmentDetail> {
-		public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
+		public int compare(final ShipmentDetail shipmentDetail1, final ShipmentDetail shipmentDetail2) {
 			// In the following line you set the criterion,
 			// which is the name of Contact in my example scenario
 			return shipmentDetail1.getBay().compareTo(shipmentDetail2.getBay());
