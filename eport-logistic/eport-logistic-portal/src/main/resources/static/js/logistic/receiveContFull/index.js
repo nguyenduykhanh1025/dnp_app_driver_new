@@ -315,13 +315,14 @@ config = {
           }
         }
         if (row[1] == "containerNo") {
-          containerNo = hot.getDataAtRow(row[0])[2];
+          containerNo = hot.getDataAtRow(row[0])[1];
           isChange = true;
         } else {
           isChange = false;
         }
         if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
           // Call data to auto-fill
+          console.log(123)
           $.ajax({
             url: prefix + "/getContInfo",
             type: "post",
