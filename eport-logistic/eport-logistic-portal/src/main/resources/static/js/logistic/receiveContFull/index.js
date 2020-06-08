@@ -107,63 +107,55 @@ config = {
   colHeaders: function (col) {
     switch (col) {
       case 0:
-        return "id";
-      case 1:
         var txt = "<input type='checkbox' class='checker' ";
         txt += "onclick='checkAll()' ";
         txt += ">";
         return txt;
-      case 2:
+      case 1:
         return '<span>Container No</span><span style="color: red;">(*)</span>';
-      case 3:
-        return "T.T Hải Quan";
-      case 4:
-        return "T.T Thanh Toán";
-      case 5:
-        return "T.T Làm Lệnh";
-      case 6:
-        return "T.T DO Gốc";
-      case 7:
-        return "T.T Nhận Cont";
-      case 8:
+      case 2:
         return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
-      case 9:
+      case 3:
         return "Kích Thước";
-      case 10:
+      case 4:
         return "F/E";
-      case 11:
+      case 5:
         return "Chủ hàng";
-      case 12:
+      case 6:
         return "Seal No";
-      case 13:
+      case 7:
         return "Hạn Lệnh";
-      case 14:
+      case 8:
         return "Trọng tải";
-      case 15:
+      case 9:
         return "Tàu";
-      case 16:
+      case 10:
         return "Chuyến";
-      case 17:
-        return "Cảng Nguồn";
-      case 18:
-        return "Cảng Đích";
-      case 19:
+      case 11:
+        return "Cảng Xếp Hàng";
+      case 12:
+        return "Cảng Dỡ Hàng";
+      case 13:
         return "Phương Tiện";
-      case 20:
+      case 14:
         return "Nơi Hạ Vỏ";
-      case 21:
+      case 15:
+        return "T.T Hải Quan";
+      case 16:
+        return "T.T Thanh Toán";
+      case 17:
+        return "T.T Làm Lệnh";
+      case 18:
+        return "T.T DO Gốc";
+      case 19:
+        return "T.T Nhận Cont";
+      case 20:
         return "Ghi Chú";
-      case 22:
-        return "T.T Bốc Container Chỉ Định";
     }
   },
-  colWidths: [0.01, 50, 100, 150, 150, 150, 150, 150, 120, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200],
+  colWidths: [50, 100, 120, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 150, 150, 150, 150, 200],
   filter: "true",
   columns: [
-    {
-      data: "id",
-      editor: false
-    },
     {
       data: "active",
       type: "checkbox",
@@ -171,26 +163,6 @@ config = {
     },
     {
       data: "containerNo",
-    },
-    {
-      data: "customStatus",
-      editor: false
-    },
-    {
-      data: "paymentStatus",
-      editor: false
-    },
-    {
-      data: "processStatus",
-      editor: false
-    },
-    {
-      data: "doStatus",
-      editor: false
-    },
-    {
-      data: "status",
-      editor: false,
     },
     {
       data: "opeCode",
@@ -243,6 +215,26 @@ config = {
     {
       data: "emptyDepot",
       editor: false
+    },
+    {
+      data: "customStatus",
+      editor: false
+    },
+    {
+      data: "paymentStatus",
+      editor: false
+    },
+    {
+      data: "processStatus",
+      editor: false
+    },
+    {
+      data: "doStatus",
+      editor: false
+    },
+    {
+      data: "status",
+      editor: false,
     },
     {
       data: "remark",
@@ -381,25 +373,25 @@ config = {
               } else {
                 status = "Đã nhận công";
               }
-              hot.setDataAtCell(row[0], 3, customStatus); //customStatus
-              hot.setDataAtCell(row[0], 4, paymentStatus); //paymentStatus
-              hot.setDataAtCell(row[0], 5, processStatus); //processStatus
-              hot.setDataAtCell(row[0], 6, doStatus); //doStatus
-              hot.setDataAtCell(row[0], 7, status); //status
-              hot.setDataAtCell(row[0], 8, shipmentDetail.opeCode); //opeCode
-              hot.setDataAtCell(row[0], 9, shipmentDetail.sztp); //sztp
-              hot.setDataAtCell(row[0], 10, shipmentDetail.fe); //fe
-              hot.setDataAtCell(row[0], 11, shipmentDetail.consignee); //consignee
-              hot.setDataAtCell(row[0], 12, shipmentDetail.sealNo); //sealNo
-              hot.setDataAtCell(row[0], 13, expiredDem); //expiredem
-              hot.setDataAtCell(row[0], 14, shipmentDetail.wgt); //wgt
-              hot.setDataAtCell(row[0], 15, shipmentDetail.vslNm); //vslNm
-              hot.setDataAtCell(row[0], 16, shipmentDetail.voyNo); //voyNo
-              hot.setDataAtCell(row[0], 17, shipmentDetail.loadingPort); //loadingPort
-              hot.setDataAtCell(row[0], 18, shipmentDetail.dischargePort); //dischargePort
-              hot.setDataAtCell(row[0], 19, shipmentDetail.transportType); //transportType
-              hot.setDataAtCell(row[0], 20, shipmentDetail.emptyDepot); //emptyDepot
-              hot.setDataAtCell(row[0], 21, shipmentDetail.remark); //remark
+              hot.setDataAtCell(row[0], 2, shipmentDetail.opeCode); //opeCode
+              hot.setDataAtCell(row[0], 3, shipmentDetail.sztp); //sztp
+              hot.setDataAtCell(row[0], 4, shipmentDetail.fe); //fe
+              hot.setDataAtCell(row[0], 5, shipmentDetail.consignee); //consignee
+              hot.setDataAtCell(row[0], 6, shipmentDetail.sealNo); //sealNo
+              hot.setDataAtCell(row[0], 7, expiredDem); //expiredem
+              hot.setDataAtCell(row[0], 8, shipmentDetail.wgt); //wgt
+              hot.setDataAtCell(row[0], 9, shipmentDetail.vslNm); //vslNm
+              hot.setDataAtCell(row[0], 10, shipmentDetail.voyNo); //voyNo
+              hot.setDataAtCell(row[0], 11, shipmentDetail.loadingPort); //loadingPort
+              hot.setDataAtCell(row[0], 12, shipmentDetail.dischargePort); //dischargePort
+              hot.setDataAtCell(row[0], 13, shipmentDetail.transportType); //transportType
+              hot.setDataAtCell(row[0], 14, shipmentDetail.emptyDepot); //emptyDepot
+              hot.setDataAtCell(row[0], 15, customStatus); //customStatus
+              hot.setDataAtCell(row[0], 16, paymentStatus); //paymentStatus
+              hot.setDataAtCell(row[0], 17, processStatus); //processStatus
+              hot.setDataAtCell(row[0], 18, doStatus); //doStatus
+              hot.setDataAtCell(row[0], 19, status); //status
+              hot.setDataAtCell(row[0], 20, shipmentDetail.remark); //remark
             }
           });
         }
@@ -413,7 +405,7 @@ function checkAll() {
   isIterate = true;
   if (checked) {
     for (var i=0; i<shipmentDetails.length; i++) {
-      hot.setDataAtCell(i, 1, false);
+      hot.setDataAtCell(i, 0, false);
       if (i == shipmentDetails.length-2) {
         isIterate = false;
       }
@@ -422,7 +414,7 @@ function checkAll() {
     checked = false;
   } else {
     for (var i=0; i<shipmentDetails.length; i++) {
-      hot.setDataAtCell(i, 1, true);
+      hot.setDataAtCell(i, 0, true);
       if (i == shipmentDetails.length-2) {
         isIterate = false;
       }
@@ -562,9 +554,9 @@ function getSelected() {
     $("#taxCode").text(row.taxCode);
     $("#quantity").text(row.containerAmount);
     if (row.edoFlg == "0") {
-      $("#dotype").text("DO giấy");
+      $("#dotype").text("DO");
     } else {
-      $("#dotype").text("EDO");
+      $("#dotype").text("eDO");
     }
     $("#blNo").text(row.blNo);
     loadShipmentDetail(row.id);

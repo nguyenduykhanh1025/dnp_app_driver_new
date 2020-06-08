@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -248,13 +247,10 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0) {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-					Random random = new Random();
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
-						if (random.nextBoolean()) {
-							shipmentDetail.setStatus(2);
-							shipmentDetail.setCustomStatus("R");
-							shipmentDetailService.updateShipmentDetail(shipmentDetail);
-						}
+						shipmentDetail.setStatus(2);
+						shipmentDetail.setCustomStatus("R");
+						shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					}
 					return shipmentDetails;
 				}
