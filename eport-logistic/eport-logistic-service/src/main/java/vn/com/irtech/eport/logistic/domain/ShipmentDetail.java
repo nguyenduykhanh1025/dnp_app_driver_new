@@ -100,7 +100,7 @@ public class ShipmentDetail extends BaseEntity
 
     /** VGM Check */
     @Excel(name = "VGM Check")
-    private Long vgmChk;
+    private Boolean vgmChk;
 
     /** VGM */
     @Excel(name = "VGM")
@@ -323,11 +323,11 @@ public class ShipmentDetail extends BaseEntity
         return emptyDepot;
     }
 
-    public void setVgmChk(Long vgmChk) {
+    public void setVgmChk(Boolean vgmChk) {
         this.vgmChk = vgmChk;
     }
 
-    public Long getVgmChk() {
+    public Boolean getVgmChk() {
         return vgmChk;
     }
 
