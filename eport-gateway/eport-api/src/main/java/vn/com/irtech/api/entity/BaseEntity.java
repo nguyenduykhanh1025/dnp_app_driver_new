@@ -19,7 +19,16 @@ public class BaseEntity implements Serializable
 
     private String createBy;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String remark;
+    public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     private String updateBy;

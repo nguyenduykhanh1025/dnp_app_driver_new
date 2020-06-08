@@ -9,10 +9,10 @@ var recentPlateNumber = '';
 var number = 0;
 // Variable width table field
 var width = $('#truckList').width();
-var height = screen.height;
-console.log(height);
-$('.tbody-custom').css('height',height - height*50/100);
-$('.interDeliveryTeam').css('height',height - height*50/100);
+//var height = $('.interDeliveryTeam').height();
+$('.tbody-custom').css({'height': $('.right-side').innerHeight});
+// console.log(height);
+//$('.tbody-custom').css('height',height);
 var checkField = width *10 / 100;
 var plateNumberField = width *25 / 100;
 var mobileNumberField = width *25/ 100;
