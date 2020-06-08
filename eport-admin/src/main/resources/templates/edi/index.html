@@ -29,7 +29,7 @@
       </div>
     </div>
   </div>
-  <li><a class="menuItem" th:href="@{/edi/viewdatatestlist}">Test data return</a></li>
+
   <div id="viewEdi"></div>
 
   <script>
@@ -59,7 +59,7 @@
         this.on("success", function (data) {
           if (data != "") {
             var rs = JSON.parse(data.xhr.response);
-            console.log(data.upload.uuid);
+            console.log(rs);
             if (dataObj == null) {
               dataObj = rs;
               dataObj.forEach(element => {

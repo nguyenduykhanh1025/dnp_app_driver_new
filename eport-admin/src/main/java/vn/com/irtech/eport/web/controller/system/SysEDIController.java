@@ -2,12 +2,17 @@ package vn.com.irtech.eport.web.controller.system;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -53,10 +58,7 @@ public class SysEDIController extends BaseController
 	@Autowired
  	private IEquipmentDoService equipmentDoService;
 
-  	private SysUser currentUser;
-
-	private JSONArray equipmentDoList;
-	//  Return data list search
+	
 	@PostMapping("/list")
 	@ResponseBody
 	public TableDataInfo list(EquipmentDoPaging EquipmentDo) {
@@ -66,81 +68,7 @@ public class SysEDIController extends BaseController
 		List<EquipmentDo> list = equipmentDoService.selectEquipmentDoListPagingAdmin(EquipmentDo);
 		return getDataTable(list);
 	}
-	// Return panination
-	// @PostMapping("/getCountPages")
-	// @ResponseBody
-	// public Long getCountPages()
-	// {
-	// 	return equipmentDoService.getTotalPages();
-	// }
-	//update
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
-	@PostMapping("/update")
-	@ResponseBody
-	public AjaxResult update(@RequestParam(value = "equipmentDo") Optional<JSONArray> equipmentDo) {
-	  equipmentDo.ifPresent(value -> equipmentDoList = value);
-	  currentUser = ShiroUtils.getSysUser();
-	  if (equipmentDoList != null) {
-		String[] strList = new String[14];
-		for (int index = 0; index < equipmentDoList.size(); index++) {
-		  	// Resolve " mark in array
-		  	String st = equipmentDoList.get(index++).toString();
-		  	System.out.println("strList   "+ st);
-		  	strList[0] = st.substring(st.indexOf("[") + 1, st.length()).replace('"', ' ').trim();
-		  	if (index == 1) {
-				strList[0] = strList[0].substring(strList[0].indexOf("[")+1, strList[0].length());
-		  	}
-		  	for (int i = 1; i < 13; i++) {
-				strList[i] = equipmentDoList.get(index++).toString().replace('"', ' ').trim();
-		  	}
-		 	EquipmentDo equipment = new EquipmentDo();
-			Boolean checkStatus = false;
-			Boolean checkDo = false;
-			if(strList[11].equals("Y") && checkDocumentReceiptDate(Long.parseLong(strList[0])))
-			{
-				equipment.setDocumentStatus(strList[11]);
-				Date documentReceiptDate = new Date();
-				equipment.setDocumentReceiptDate(documentReceiptDate);
-				checkDo = true;
-			}else if(strList[11].equals("N") && !checkDocumentReceiptDate(Long.parseLong(strList[0]))){
-				equipment.setDocumentStatus(strList[11]);
-				checkDo = true;
-			};
-			if(!strList[10].equals(getStatus(Long.parseLong(strList[0]))))
-			{
-				equipment.setStatus(strList[10]);
-				if(!strList[11].equals("N"))
-				{
-					Date receiptDate = AppToolUtils.formatStringToDate(strList[12],"yyyy/MM/dd");
-					equipment.setDocumentReceiptDate(receiptDate);
-				}
-				checkStatus = true;
-			}
-			if(checkStatus || checkDo)
-			{
-				equipment.setUpdateBy(currentUser.getLoginName());
-				equipment.setId(Long.parseLong(strList[0]));
-				equipmentDoService.updateEquipmentDo(equipment);
-			}
-		}
-	  }
-	  return toAjax(1);
-	}
-	//checkDocumentReceiptDate
-	private Boolean checkDocumentReceiptDate(Long id)
-	{
-		Date rs = equipmentDoService.getDocumentReceiptDate(id);
-		if (rs == null ) {
-			return true;
-		}
-		return false;
-	}
 	
-	private String getStatus(Long id)
-	{
-		return equipmentDoService.getStatus(id);
-	}
-	// Return view
 	@GetMapping ("/listView")
 	public String getView()
 	{
@@ -161,7 +89,8 @@ public class SysEDIController extends BaseController
     public String hanson()
     {
         return "edi/add";
-    }
+	}
+	
 	@RequestMapping(value = "/file",method = { RequestMethod.POST })
 	public @ResponseBody Object upload(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
 		if (file.isEmpty()) {
@@ -192,8 +121,31 @@ public class SysEDIController extends BaseController
           folderUpload.mkdirs();
         }
         return folderUpload;
-      }
-
+	  }
+	@GetMapping("/getViewCheckFile")
+	public String viewcheckFile()
+	{
+		return "edi/checkFile";
+	}
+	  //loadfile
+	@GetMapping("/loadFileFromDisk")
+	@ResponseBody
+	public Object loadFileFromDisk() throws IOException {
+		final File folder = new File("D:/testReadFile");
+		final String destinationFolder = "D:/moveFileToThisFolder/";
+		List<JSONObject> obj = new ArrayList<>();
+		List<JSONObject> rs = new ArrayList<>();
+			for (final File fileEntry : folder.listFiles()) {
+			String path = fileEntry.getAbsolutePath();
+			String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
+			String[] text = content.split("'");
+			obj = this.ReadEDI(text);
+			rs.addAll(obj);
+			//Move file to distination folder
+			//fileEntry.renameTo(new File(destinationFolder + fileEntry.getName()));
+			}
+		return rs;
+	}  
 	
 	@PostMapping("/datalist")
     @RequiresPermissions("system:edi:list")
@@ -326,7 +278,7 @@ public class SysEDIController extends BaseController
 					obj.put("haulage", haulage[4]);
 				}
 				// edi.setStatus(2);
-				sysEdiService.insertSysEdi(edi);  
+				//sysEdiService.insertSysEdi(edi);  
 				listObj.add(obj);
 				obj = new JSONObject();
 			}

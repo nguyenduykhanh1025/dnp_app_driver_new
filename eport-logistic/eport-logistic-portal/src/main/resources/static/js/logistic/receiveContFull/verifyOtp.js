@@ -34,11 +34,29 @@ function closeForm() {
 
 function getOtp() {
 
-    $.modal.msgSuccess("Tạo OTP thành công.");
-
+    // $.ajax({
+    //     url: prefix + "/sendOTP",
+    //     method: "GET",
+    // }).success(function(data) {
+    //     console.log(data);
+    // });
+    
+    fetch(prefix + "/sendOTP",{
+        method: 'POST',
+        shipmentDetailIds : shipmentDetailIds,
+     })
+        .then(response => response.json())
+        .then(function(data) {
+            $.modal.msgSuccess("Đã gửi OTP.");
+    
+        })
+        .catch(function(err) {
+            $.modal.msgError("Lỗi.");
+        })
+        ;
+    
     if (interval != null) {
         clearInterval(interval);
-        
     } else {
         $("#indicateTime").show();
         $("#indicateAction").hide();
