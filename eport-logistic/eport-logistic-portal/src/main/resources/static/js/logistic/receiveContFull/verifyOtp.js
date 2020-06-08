@@ -40,20 +40,36 @@ function getOtp() {
     // }).success(function(data) {
     //     console.log(data);
     // });
+    $.ajax({
+        url: prefix + "/sendOTP",
+        method: "post",
+        data: {
+            shipmentDetailIds: shipmentDetailIds
+        },
+        success: function (data) {
+            if (data.code != 0) {
+                $.modal.msgSuccess("Đã gửi OTP.");
+            } 
+        },
+        error: function (result) {
+            $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+        }
+    });
+    // fetch(prefix + "/sendOTP",{
+    //     method: 'POST',
+    //     data:{
+    //         shipmentDetailIds : shipmentDetailIds,
+    //     }
+    //  })
+    //     .then(response => response.json())
+    //     .then(function(data) {
+            
     
-    fetch(prefix + "/sendOTP",{
-        method: 'POST',
-        shipmentDetailIds : shipmentDetailIds,
-     })
-        .then(response => response.json())
-        .then(function(data) {
-            $.modal.msgSuccess("Đã gửi OTP.");
-    
-        })
-        .catch(function(err) {
-            $.modal.msgError("Lỗi.");
-        })
-        ;
+    //     })
+    //     .catch(function(err) {
+    //         $.modal.msgError("Lỗi.");
+    //     })
+    //     ;
     
     if (interval != null) {
         clearInterval(interval);
@@ -90,3 +106,5 @@ function getOtp() {
 }
 
 $("#p1").html("Mã OTP sẽ được gửi đến số điện thoại " + numberPhone + ".");
+
+getOtp();

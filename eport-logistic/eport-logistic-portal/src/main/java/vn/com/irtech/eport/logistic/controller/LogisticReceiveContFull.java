@@ -205,6 +205,16 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
+	@PostMapping("/deleteShipmentDetail")
+	@ResponseBody
+	public AjaxResult deleteShipmentDetail(String shipmentDetailIds) {
+		if (shipmentDetailIds != null) {
+			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			return success("Lưu khai báo thành công");
+		}
+		return error("Lưu khai báo thất bại");
+	}
+
 	@PostMapping("/getContInfo")
 	@ResponseBody
 	public ShipmentDetail getContInfo(final ShipmentDetail shipmentDetail) {
@@ -266,13 +276,10 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0) {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-					final Random random = new Random();
-					for (final ShipmentDetail shipmentDetail : shipmentDetails) {
-						if (random.nextBoolean()) {
-							shipmentDetail.setStatus(2);
-							shipmentDetail.setCustomStatus("R");
-							shipmentDetailService.updateShipmentDetail(shipmentDetail);
-						}
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						shipmentDetail.setStatus(2);
+						shipmentDetail.setCustomStatus("R");
+						shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					}
 					return shipmentDetails;
 				}
@@ -308,7 +315,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 	@PostMapping("sendOTP")
 	@ResponseBody
-	public AjaxResult sendOTP(final String shipmentDetailIds) {
+	public AjaxResult sendOTP(String shipmentDetailIds) {
 		final LogisticGroup lGroup = getGroup();
 		final String shipmentDetailId = shipmentDetailIds;
 		final String phoneNumber = lGroup.getMobilePhone();
@@ -325,13 +332,13 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 		final String contentOtp = "Ma xac thuc lam lenh lay cont hang ra khoi cang la " + OTPCODE;
 		String response = "";
-		try {
+		// try {
 
-			response = postOtpMessage(contentOtp);
-			System.out.println(response);
-		} catch (final IOException ex) {
-			// process the exception
-		}
+		// 	response = postOtpMessage(contentOtp);
+		// 	System.out.println(response);
+		// } catch (final IOException ex) {
+		// 	// process the exception
+		// }
 
 		return AjaxResult.success(response.toString());
 	}
@@ -370,15 +377,19 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult verifyOtp(final String shipmentDetailIds, final String otp) {
 		OtpCode otpCode = new OtpCode();
-		final String shipmentDetailId = "123456789";
+		String[] shipmentDetailId = shipmentDetailIds.split(",");
 		final String phoneNumber = "84983960445";
-		otpCode = otpCodeService.selectOtpCodeByshipmentDetailId(shipmentDetailId);
+		try {
+			otpCode = otpCodeService.selectOtpCodeByshipmentDetailId(shipmentDetailId[0]);
+		} catch(Exception e) {
+
+		}
 		final Date now = new Date();
 		final Date otpCreateTime = otpCode.getCreateTime();
 		final long diff = now.getTime() - otpCreateTime.getTime();
-		if (diff > 5) {
-			return error("Mã OTP đã hết hạn!");
-		}
+		// if (diff > 5) {
+		// 	return error("Mã OTP đã hết hạn!");
+		// }
 		if (otp.equals(otpCode.getOptCode().toString())) {
 			final List<ShipmentDetail> shipmentDetails = shipmentDetailService
 					.selectShipmentDetailByIds(shipmentDetailIds);
@@ -563,15 +574,8 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
-<<<<<<< HEAD
-	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}/{shipmentDetailIds}")
-	public String pickTruckForm(@PathVariable("shipmentId") final long shipmentId,
-			@PathVariable("pickCont") final boolean pickCont,
-			@PathVariable("shipmentDetailIds") final String shipmentDetailIds, final ModelMap mmap) {
-=======
 	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}/{shipmentDetailId}")
 	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, @PathVariable("pickCont") boolean pickCont,@PathVariable("shipmentDetailId") Integer shipmentDetailId, ModelMap mmap) {
->>>>>>> 7ac775752d029c5e045d7f0cb0e7eb7a572527ef
 		mmap.put("shipmentId", shipmentId);
 		mmap.put("pickCont", pickCont);
 		mmap.put("shipmentDetailId", shipmentDetailId);
