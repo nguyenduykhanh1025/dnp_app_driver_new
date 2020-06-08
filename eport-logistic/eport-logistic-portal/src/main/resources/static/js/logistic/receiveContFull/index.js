@@ -107,14 +107,14 @@ config = {
   colHeaders: function (col) {
     switch (col) {
       case 0:
+        return "id";
+      case 1:
         var txt = "<input type='checkbox' class='checker' ";
         txt += "onclick='checkAll()' ";
         txt += ">";
         return txt;
-      case 1:
-        return "id";
       case 2:
-        return "Container No";
+        return '<span>Container No</span><span style="color: red;">(*)</span>';
       case 3:
         return "T.T Hải Quan";
       case 4:
@@ -126,7 +126,7 @@ config = {
       case 7:
         return "T.T Nhận Cont";
       case 8:
-        return "Hãng Tàu";
+        return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
       case 9:
         return "Kích Thước";
       case 10:
@@ -157,17 +157,17 @@ config = {
         return "T.T Bốc Container Chỉ Định";
     }
   },
-  colWidths: [50, 0.01, 100, 150, 150, 150, 150, 150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200, 0.01],
+  colWidths: [0.01, 50, 100, 150, 150, 150, 150, 150, 120, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200],
   filter: "true",
   columns: [
+    {
+      data: "id",
+      editor: false
+    },
     {
       data: "active",
       type: "checkbox",
       className: "htCenter",
-    },
-    {
-      data: "id",
-      editor: false
     },
     {
       data: "containerNo",
@@ -246,9 +246,6 @@ config = {
     },
     {
       data: "remark",
-    },
-    {
-      data: "preorderPickup",
     },
   ],
   afterChange: function (changes, src) {
@@ -416,7 +413,7 @@ function checkAll() {
   isIterate = true;
   if (checked) {
     for (var i=0; i<shipmentDetails.length; i++) {
-      hot.setDataAtCell(i, 0, false);
+      hot.setDataAtCell(i, 1, false);
       if (i == shipmentDetails.length-2) {
         isIterate = false;
       }
@@ -425,7 +422,7 @@ function checkAll() {
     checked = false;
   } else {
     for (var i=0; i<shipmentDetails.length; i++) {
-      hot.setDataAtCell(i, 0, true);
+      hot.setDataAtCell(i, 1, true);
       if (i == shipmentDetails.length-2) {
         isIterate = false;
       }
@@ -762,7 +759,7 @@ function pay() {
 }
 
 function pickTruck() {
-  $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + shipmentDetailIds, 655, 400);
+  $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + "0");
 }
 
 function pickContOnDemand() {
@@ -808,7 +805,7 @@ function setLayoutCustomStatus(simpleCustoms) {
   } else {
     $("#pickContOnDemandBtn").prop("disabled", true);
   }
-  $("#pickTruckBtn").prop("disabled", true);
+  $("#pickTruckBtn").prop("disabled", false);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
 }
@@ -823,7 +820,7 @@ function setLayoutVerifyUser() {
   // $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", false);
   // $("#pickContOnDemandBtn").prop("disabled", false);
-  $("#pickTruckBtn").prop("disabled", true);
+  // $("#pickTruckBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
 }
@@ -838,7 +835,7 @@ function setLayoutPaymentStatus() {
   // $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
   // $("#pickContOnDemandBtn").prop("disabled", true);
-  $("#pickTruckBtn").prop("disabled", true);
+  // $("#pickTruckBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", false);
   $("#exportBillBtn").prop("disabled", true);
 }
@@ -853,7 +850,7 @@ function setLayoutPickTruck() {
   // $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
   // $("#pickContOnDemandBtn").prop("disabled", true);
-  $("#pickTruckBtn").prop("disabled", false);
+  // $("#pickTruckBtn").prop("disabled", false);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", false);
 }
