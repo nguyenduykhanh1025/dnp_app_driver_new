@@ -8,13 +8,55 @@ var isCheckAllExternal = false;
 var recentPlateNumber = '';
 var number = 0;
 // Variable width table field
-var width = $('#truckList').width();
-console.log(width)
-var checkField = width *10 / 100;
-var plateNumberField = width *25 / 100;
-var mobileNumberField = width *25/ 100;
-var fullNameField = width *40/ 100;
-Init();
+var width;
+var checkField;
+var plateNumberField;
+var mobileNumberField;
+var fullNameField;
+setTimeout(() => {
+    width = $('#truckList').width();
+    // console.log(width)
+    checkField = width *10 / 100;
+    plateNumberField = width *25 / 100;
+    mobileNumberField = width *25/ 100;
+    fullNameField = width *40/ 100;
+    $.ajax({
+        url: "/logistic/transport/listTransportAccount",
+        method: "get",
+    }).done(function(data) {
+        if (data != null) {
+            driverList = data;
+            var transportArr;
+            if (transportIds.length != 0) {
+                transportArr = transportIds.split(",");
+                for (var i=0; i<data.length; i++) {
+                    var check = true;
+                    for (var j=0; j<transportArr.length; j++) {
+                        if(data[i].id == transportArr[j]) {
+                            externalTransport.push(data[i]);
+                            check = false;
+                            var tableRow = '<tr id="pickedTransport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="externalCheckbox' + data[i].id +'" onclick="externalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
+                            $("#pickedTruckList").append(tableRow);
+                            break;
+                        }
+                    }
+                    if (check) {
+                        internalTransport.push(data[i]);
+                        var tableRow = '<tr id="transport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="internalCheckbox' + data[i].id +'" onclick="internalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
+                        $("#transportList").append(tableRow);
+                    }
+                }
+            } else {
+                for (var i=0; i<data.length; i++) {
+                    externalTransport.push(data[i]);
+                    var tableRow = '<tr id="pickedTransport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="externalCheckbox' + data[i].id +'" onclick="externalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
+                    $("#pickedTruckList").append(tableRow);
+                }
+            }
+        }
+    });
+    Init();
+}, 200);
 function confirm() {
     if (number == 0) {
         pickTruckWithoutExternal();
@@ -63,7 +105,6 @@ function pickTruckWithoutExternal() {
         $.modal.alertError("Quý khách chưa đăng ký xe lấy container.");
     }
 }
-
 function pickTruckWithExternal() {
     if(validateInput()) {
         $.ajax({
@@ -171,41 +212,7 @@ function exterDeliveryTab() {
     $("#interBtn").css({"background-color": "#c7c1c1"});
 }
 
-$.ajax({
-    url: "/logistic/transport/listTransportAccount",
-    method: "get",
-}).done(function(data) {
-    if (data != null) {
-        driverList = data;
-        var transportArr;
-        if (transportIds.length != 0) {
-            transportArr = transportIds.split(",");
-            for (var i=0; i<data.length; i++) {
-                var check = true;
-                for (var j=0; j<transportArr.length; j++) {
-                    if(data[i].id == transportArr[j]) {
-                        externalTransport.push(data[i]);
-                        check = false;
-                        var tableRow = '<tr id="pickedTransport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="externalCheckbox' + data[i].id +'" onclick="externalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
-                        $("#pickedTruckList").append(tableRow);
-                        break;
-                    }
-                }
-                if (check) {
-                    internalTransport.push(data[i]);
-                    var tableRow = '<tr id="transport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="internalCheckbox' + data[i].id +'" onclick="internalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
-                    $("#transportList").append(tableRow);
-                }
-            }
-        } else {
-            for (var i=0; i<data.length; i++) {
-                externalTransport.push(data[i]);
-                var tableRow = '<tr id="pickedTransport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="externalCheckbox' + data[i].id +'" onclick="externalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
-                $("#pickedTruckList").append(tableRow);
-            }
-        }
-    }
-});
+
 
 function transferInToOut() {
     var size = internalTransport.length;
