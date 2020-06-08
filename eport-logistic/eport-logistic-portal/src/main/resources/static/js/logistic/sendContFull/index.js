@@ -451,7 +451,7 @@ config = {
             renderer: wgtRenderer
         },
         {
-            data: "VGM",
+            data: "vgmChk",
             type: "checkbox",
             className: "htCenter",
         },
@@ -511,36 +511,61 @@ config = {
                     }
                     break;
                 case 7:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 8:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "expiredDem")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 9:
                     if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "vslNm")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
-                case 10:
+                case 8:
                     if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "voyNo")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
-                case 11:
+                case 9:
                     if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "loadingPort")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
-                case 12:
+                case 10:
                     if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
+                case 11:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "containerNo")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 12:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "sealNo")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
                 case 13:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 14:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 3 || $(TD).attr("id").substring(0, 3) != "wgt")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 16:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "vgmPersonInfo")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 17:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 3 || $(TD).attr("id").substring(0, 3) != "vgm")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 18:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "transportType")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 19:
                     if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
                         hot.setDataAtCell(row, column, '');
                     }
@@ -726,11 +751,8 @@ function getDataFromTable(isValidate) {
             } else if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"])) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
                 errorFlg = true;
-            } else if (object["expiredDem"] == null || object["expiredDem"] == "") {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
-                errorFlg = true;
             } else if (object["opeCode"] == null || object["opeCode"] == "") {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ khai thác!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn hãng tàu/chủ đại lý!");
                 errorFlg = true;
             } else if (object["sztp"] == null || object["sztp"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
@@ -738,13 +760,34 @@ function getDataFromTable(isValidate) {
             } else if (object["bookingNo"] == null || object["bookingNo"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số book!");
                 errorFlg = true;
+            } else if (object["vslNm"] == null || object["vslNm"] == "") {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập tàu!");
+                errorFlg = true;
+            } else if (object["voyNo"] == null || object["voyNo"] == "") {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập chuyến!");
+                errorFlg = true;
+            } else if (object["loadingPort"] == null || object["loadingPort"] == "") {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập cảng chuyển<br>tải!");
+                errorFlg = true;
+            } else if (object["wgt"] == null || object["wgt"] == "") {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập trọng lượng!");
+                errorFlg = true;
+            } else if (object["vgmChk"]) {
+                if (object["vgmPersonInfo"] == null || object["vgmPersonInfo"] == "") {
+                    $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập đơn vị kiểm định!");
+                    errorFlg = true;
+                } else if (object["vgm"] == null || object["vgm"] == "") {
+                    $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập Max Gross!");
+                    errorFlg = true;
+                }
+            } else if (object["transportType"] == null || object["transportType"] == "") {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập phương tiện!");
+                errorFlg = true;
             }
         }
-        var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
         shipmentDetail.sztp = object["sztp"];
         shipmentDetail.opeCode = object["opeCode"];
-        shipmentDetail.expiredDem = expiredDem.getTime();
         shipmentDetail.loadingPort = object["loadingPort"];
         shipmentDetail.dischargePort = object["dischargePort"];
         shipmentDetail.remark = object["remark"];
@@ -752,16 +795,15 @@ function getDataFromTable(isValidate) {
         shipmentDetail.vslNm = object["vslNm"];
         shipmentDetail.bookingNo = object["bookingNo"];
         shipmentDetail.registerNo = object["registerNo"];
+        shipmentDetail.sealNo = object["sealNo"];
+        shipmentDetail.wgt = object["wgt"];
+        shipmentDetail.vgmChk = object["vgmChk"];
+        shipmentDetail.vgmPersonInfo = object["vgmPersonInfo"];
+        shipmentDetail.vgm = object["vgm"];
+        shipmentDetail.transportType = object["transportType"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
-        var now = new Date();
-        now.setHours(0, 0, 0);
-        expiredDem.setHours(23, 59, 59);
-        if (expiredDem.getTime() < now.getTime() && isValidate && object["delFlag"] == null) {
-            errorFlg = true;
-            $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được trong quá khứ!")
-        }
     });
 
     if (isValidate) {
