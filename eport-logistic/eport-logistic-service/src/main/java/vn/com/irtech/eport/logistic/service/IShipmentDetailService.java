@@ -62,4 +62,6 @@ public interface IShipmentDetailService
     public List<ShipmentDetail> selectShipmentDetailByIds(String ids);
 
     public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
+
+    public List<String> selectBlList(String keyString);
 }

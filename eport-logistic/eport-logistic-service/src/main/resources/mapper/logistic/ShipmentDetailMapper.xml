@@ -252,4 +252,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where bl_no #{Blno} 
         
     </select>
+
+      <select id="selectBlList" parameterType="String" resultType="String">
+        select bl_no from shipment_detail
+        where bl_no LIKE '%'||#{keyString}||'%'
+    </select>
+        
 </mapper>

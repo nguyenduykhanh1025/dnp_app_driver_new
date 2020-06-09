@@ -105,4 +105,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     {
         return shipmentDetailMapper.selectShipmentDetailByBlno(Blno);
     }
+
+    @Override
+    public List<String> selectBlList(String keyString)
+    {
+        return shipmentDetailMapper.selectBlList(keyString);
+    }
 }
