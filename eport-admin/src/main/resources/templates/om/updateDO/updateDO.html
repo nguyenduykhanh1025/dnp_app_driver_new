@@ -1,10 +1,147 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-<head>
+  <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
-</head>
-<body class="gray-bg">
-    <h1>update DO</h1>
+    <link th:href="@{/css/om/updateDO.css}" rel="stylesheet" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+  </head>
+  <body class="gray-bg">
+    <div class="container-div">
+      <div class="p-background">
+        <div class="p-header">
+          <h2>Danh sách DO</h2>
+          <div class="row c-search container">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+              <select class="c-search-box">
+                <option></option>
+              </select>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+              
+            </div>
+            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+              <button class="btn btn-primary" title="Xác nhận">Đã nhận DO gốc</button>
+              <button class="btn btn-danger" title="Làm mới"><span class="fa fa-refresh"></span></button>
+            </div>
+          </div>
+        </div>
+        <div class="p-body">
+          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'carrierCode',halign:'center',resizable:true">Hãng tàu <br />Carrier</th>
+                <th data-options="field:'billOfLading',halign:'center'" sortable="true">Số vận đơn<br />B/L No</th>
+                <th data-options="field:'containerNumber',align:'center'," sortable="true">
+                  Số lượng <br />
+                  container
+                </th>
+                <th data-options="field:'consignee',halign:'center'">Tên khách hàng<br />Consignee</th>
+                <th data-options="field:'expiredDem',halign:'center',align:'center'" sortable="true">Hạn lệnh<br />Expired Date</th>
+                <th data-options="field:'newExpiredDem',halign:'center',align:'center'" sortable="true">Hạn lệnh<br />gia hạn</th>
+                <th data-options="field:'emptyContainerDepot',halign:'center'">Nơi hạ rỗng<br />Empty Depot</th>
+                <th data-options="field:'detFreeTime',halign:'center',align:'center'">Ngày miễn lưu<br />DET Free Time</th>
+                <th data-options="field:'vessel',align:'center'">Tên tàu<br />Vessel</th>
+                <th data-options="field:'voyNo',align:'center'">Chuyến tàu<br />Voyage No</th>
+                <th data-options="field:'status',align:'center'">
+                  Trạng thái
+                </th>
+                <th data-options="field:'documentReceiptDate',halign:'center',align:'center'" sortable="true">
+                  Ngày nhận<br />
+                  DO gốc
+                </th>
+                <th data-options="field:'createTime',halign:'center',align:'center'" sortable="true">
+                  Ngày gửi DO
+                </th>
+                <th data-options="field:'processRemark',align:'center'">
+                  Ghi chú làm lệnh
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
     <th:block th:include="include :: footer" />
-</body>
+    <th:block th:include="include :: easyui-js" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+  </body>
+  <script type="text/javascript">
+    var prefix = "/carrier/admin/do";
+    $(".c-search-box").select2({
+      placeholder: "Nhập BL No",
+      allowClear: true,
+      ajax: {
+        url: "/updateDO/getOptionSearch",
+        dataType: "json",
+        method: "GET",
+        delay: 250,
+        data: function (params) {
+          return {
+            keyWord: params.term,
+          };
+        },
+        processResults: function (data) {
+          /* Data return must be 
+            data = {
+              results: [
+                {
+                  id: 1,
+                  text: "Option 1",
+                },
+                {
+                  id: 2,
+                  text: "Option 2",
+                },
+              ],
+            };
+          */
+          return {
+            results: data.results,
+          };
+        },
+        cache: true,
+      },
+    });
+
+    //For submit search
+    $(".c-search-box").change(function () {
+      alert($(this).val());
+    });
+
+    $(function () {
+      $("#dg").datagrid({
+        url: prefix + "/list",
+        singleSelect: true,
+        height: document.documentElement.clientHeight - 70,
+        clientPaging: false,
+        pagination: true,
+        rownumbers: true,
+        pageSize: 50,
+        nowrap: false,
+        striped: true,
+        loadMsg: " Đang xử lý...",
+        loader: function (param, success, error) {
+          var opts = $(this).datagrid("options");
+          if (!opts.url) return false;
+          $.ajax({
+            type: opts.method,
+            url: opts.url,
+            data: {
+              pageNum: param.page,
+              pageSize: param.rows,
+              orderByColumn: param.sort,
+              isAsc: param.order,
+            },
+            dataType: "json",
+            success: function (data) {
+              success(data);
+            },
+            error: function () {
+              error.apply(this, arguments);
+            },
+          });
+        },
+      });
+    });
+  </script>
 </html>
