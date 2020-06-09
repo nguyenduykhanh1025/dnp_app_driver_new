@@ -60,4 +60,6 @@ public interface IShipmentDetailService
     public int deleteShipmentDetailById(Long id);
 
     public List<ShipmentDetail> selectShipmentDetailByIds(String ids);
+
+    public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 }

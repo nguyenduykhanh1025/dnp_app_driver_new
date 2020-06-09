@@ -227,7 +227,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where id = #{id}
     </update>
-
+    
     <delete id="deleteShipmentDetailById" parameterType="Long">
         delete from shipment_detail where id = #{id}
     </delete>
@@ -245,5 +245,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </select>
+
+    <select id="selectShipmentDetailByBlno" parameterType="String" resultMap="ShipmentDetailResult">
+        <include refid="selectShipmentDetailVo"/>
+        where bl_no #{Blno} 
+        
     </select>
 </mapper>

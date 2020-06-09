@@ -99,4 +99,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     public List<ShipmentDetail> selectShipmentDetailByIds(String ids) {
         return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids));
     }
+
+    @Override
+    public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno)
+    {
+        return shipmentDetailMapper.selectShipmentDetailByBlno(Blno);
+    }
 }

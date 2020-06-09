@@ -60,4 +60,6 @@ public interface ShipmentDetailMapper
     public int deleteShipmentDetailByIds(String[] ids);
 
     public List<ShipmentDetail> selectShipmentDetailByIds(String[] ids);
+
+    public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 }
