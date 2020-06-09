@@ -1,1 +1,0 @@
-ALTER TABLE `transport_account` CHANGE `valid_date` `valid_date` DATETIME NULL DEFAULT NULL COMMENT 'Hieu Luc Den';
