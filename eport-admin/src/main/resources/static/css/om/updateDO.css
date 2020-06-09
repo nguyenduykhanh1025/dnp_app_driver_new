@@ -1,0 +1,27 @@
+.p-header, .p-body {
+  background: #fff;
+  border-radius: 6px;
+  margin-top: 10px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  padding: 5px 10px 13px 10px;
+}
+
+.p-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.c-search {
+  margin-top: 15px;
+  width: 50%;
+}
+
+.c-search-box {
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .c-search {
+    width: 80%;
+  }
+}
