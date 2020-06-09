@@ -9,10 +9,11 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 @Controller
 @RequestMapping("/executeCatos")
 public class ExecuteCatosController extends BaseController{
-    private String prefix = "/executeCatos";
+    private String prefix = "om/executeCatos";
+    
     @GetMapping("/index")
     public String getViewexEcuteCatos()
     {
-        return(prefix + "/index");
+        return prefix + "/executeCatos";
     }
 }
