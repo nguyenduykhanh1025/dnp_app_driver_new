@@ -10,11 +10,11 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 @RequestMapping("/updateDO")
 public class UpdateDoController extends BaseController{
 
-    private String prefix = "/updateDO";
+    private String prefix = "/om/updateDO";
     @GetMapping("/index")
     public String getViewUpdateDo()
     {
-        return(prefix + "/index");
+        return prefix + "/updateDO";
     }
 
     
