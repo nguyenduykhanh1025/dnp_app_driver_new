@@ -33,6 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectOtpCodeVo"/>
         where id = #{id} 
     </select>
+
     <select id="selectOtpCodeByshipmentDetailId" parameterType="String" resultMap="OtpCodeResult">
         <include refid="selectOtpCodeVo"/>
         where shipment_detailIds = #{shipmentDetailid} ORDER BY id DESC LIMIT 1
@@ -81,5 +82,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="verifyOtpCodeAvailable" parameterType="OtpCode" resultType="int">
+        select count(*) from otp_code
+        where opt_code = #{optCode} 
+        and shipment_detailids = #{shipmentDetailids}
+        and (create_time = #{createTime} or create_time > #{createTime})
+    </select>
     
+    <delete id="deleteOtpCodeByShipmentDetailIds" parameterType="String">
+        delete from otp_code where shipment_detailIds = #{shipmentDetailids}
+    </delete>
 </mapper>
