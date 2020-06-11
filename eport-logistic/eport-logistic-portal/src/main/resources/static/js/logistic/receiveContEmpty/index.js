@@ -284,32 +284,32 @@ config = {
             case 1:
                 return "Số Đăng Ký";
             case 2:
-                return "T.T Làm Lệnh";
-            case 3:
-                return "T.T Thanh Toán";
-            case 4:
-                return "T.T Nhận Cont";
-            case 5:
                 return '<span>Chủ khai thác</span><span style="color: red;">(*)</span>';
-            case 6:
+            case 3:
                 return '<span>Số Book</span><span style="color: red;">(*)</span>';
-            case 7:
+            case 4:
                 return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
-            case 8:
+            case 5:
                 return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
-            case 9:
+            case 6:
                 return "Tàu";
-            case 10:
+            case 7:
                 return "Chuyến";
+            case 8:
+                return "Cảng Xếp Hàng";
+            case 9:
+                return "Cảng Dỡ Hàng";
+            case 10:
+                return "T.T Làm Lệnh";
             case 11:
-                return "Cảng Nguồn";
+                return "T.T Thanh Toán";
             case 12:
-                return "Cảng Đích";
+                return "T.T Nhận Cont";
             case 13:
                 return "Ghi Chú";
         }
     },
-    colWidths: [50, 100, 150, 150, 150, 100, 100, 100, 100, 100, 100, 100, 100, 200],
+    colWidths: [50, 100, 100, 100, 100, 100, 100, 100, 100, 100, 150, 150, 150, 200],
     filter: "true",
     columns: [
         {
@@ -321,21 +321,6 @@ config = {
             data: "registerNo",
             readOnly: true,
             renderer: registerNoRenderer
-        },
-        {
-            data: "processStatus",
-            readOnly: true,
-            renderer: processRenderer
-        },
-        {
-            data: "paymentStatus",
-            readOnly: true,
-            renderer: paymentRenderer
-        },
-        {
-            data: "status",
-            readOnly: true,
-            renderer: statusRenderer
         },
         {
             data: "opeCode",
@@ -393,81 +378,94 @@ config = {
             renderer: dischargePortRenderer
         },
         {
+            data: "processStatus",
+            readOnly: true,
+            renderer: processRenderer
+        },
+        {
+            data: "paymentStatus",
+            readOnly: true,
+            renderer: paymentRenderer
+        },
+        {
+            data: "status",
+            readOnly: true,
+            renderer: statusRenderer
+        },
+        {
             data: "remark",
             renderer: remarkRenderer
         },
     ],
     afterRenderer: function (TD, row, column, prop, value, cellProperties) {
-        if (row == 2) {
-            switch (column) {
-                case 1:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "registerNo")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 2:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "process")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 3:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "payment")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 4:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "status")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 5:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "opeCode")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 6:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 9 || $(TD).attr("id").substring(0, 9) != "bookingNo")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 7:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 8:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "expiredDem")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 9:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "vslNm")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 10:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "voyNo")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 11:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "loadingPort")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 12:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 13:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                default:
-                    break;
-            }
+        switch (column) {
+            case 1:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "registerNo")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 2:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "opeCode")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 3:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 9 || $(TD).attr("id").substring(0, 9) != "bookingNo")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 4:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 5:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "expiredDem")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 6:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "vslNm")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 7:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "voyNo")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 8:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "loadingPort")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 9:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 10:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "process")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 11:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "payment")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 12:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "status")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            case 13:
+                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
+                    hot.setDataAtCell(row, column, '');
+                }
+                break;
+            default:
+                break;
         }
     },
     afterChange: function (changes, src) {
@@ -493,15 +491,24 @@ config = {
                                 if (verifyStatus || notVerify) {
                                     status = 1;
                                 } else {
-                                    status = 4;
+                                    status = 5;
                                     paymentStatus = true;
                                 }
-                            } else if (shipmentDetails[i].processStatus == "Y") {
-                                if (paymentStatus || notVerify) {
-                                    status = 1;
+                            } else if (shipmentDetails[i].userVerifyStatus == "Y") {
+                                if (shipmentDetails[i].processStatus == "Y") {
+                                    if (paymentStatus || notVerify) {
+                                        status = 1;
+                                    } else {
+                                        status = 4;
+                                        verifyStatus = true;
+                                    }
                                 } else {
-                                    status = 3;
-                                    verifyStatus = true;
+                                    if (paymentStatus || notVerify) {
+                                        status = 1;
+                                    } else {
+                                        status = 3;
+                                        verifyStatus = true;
+                                    }
                                 }
                             } else {
                                 if (verifyStatus || paymentStatus) {
@@ -520,9 +527,14 @@ config = {
                                 setLayoutVerifyUser();
                                 break;
                             case 3:
-                                setLayoutPaymentStatus();
+                                setLayoutVerifyUser();
+                                $("#deleteBtn").prop("disabled", true);
+                                $("#verifyBtn").prop("disabled", true);
                                 break;
                             case 4:
+                                setLayoutPaymentStatus();
+                                break;
+                            case 5:
                                 setLayoutFinish();
                                 break;
                         }
@@ -599,6 +611,7 @@ function getDataSelectedFromTable(isValidate) {
         var shipmentDetail = new Object();
         shipmentDetail.processStatus = object["processStatus"];
         shipmentDetail.paymentStatus = object["paymentStatus"];
+        shipmentDetail.userVerifyStatus = object["userVerifyStatus"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
