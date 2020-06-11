@@ -8,19 +8,21 @@
 </head>
 <style type="text/css">
   .container {
-    position: relative;
     padding: 0;
     width: 100%;
+    display: flex;
+    height: 100%;
+    flex-flow: column;
   }
 
   .footer {
     background-color: #f0f4f7;
-    height: 55px;
+    flex: 0 1 55px;
     padding: 10px 30px 12px 15px !important;
   }
 
   .content {
-    height: 467px;
+    flex: 1 1 auto;
     padding: 12px 15px 12px 15px;
     margin-left: 10px;
   }
@@ -34,16 +36,19 @@
 
   .bayPosition {
     display: flex;
+    width: fit-content;
+    margin: 0 auto;
   }
 
   .contListPicked {
     margin-top: 12px;
     height: 185px;
-    width: 670px;
+    width: fit-content;
   }
 
   .contBill {
     height: 103px;
+    width: fit-content;
   }
 
   .columnDiv {
@@ -87,9 +92,11 @@
   <div class="container">
     <div class="content">
       <div class="contListPosition"></div>
-      <div class="contListPicked">
-        <b>Danh sách container chỉ dịnh</b>
-        <table id="pickedContTable" class="table" border="1" align="left" > 
+      <div class="contListPicked" style="overflow-x:auto;margin: 0 auto;">
+        <div style="margin: 5px;">
+          <b>Danh sách container chỉ dịnh</b>
+        </div>
+        <table id="pickedContTable" class="table w-auto" border="1" align="left" > 
           <thead>
             <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
               <th width="240px">Container No</th>
@@ -100,8 +107,10 @@
           <tbody id="pickedContList"></tbody>
         </table>
       </div>
-      <div class="contBill">
-        <b>Phí dịch chuyển</b>
+      <div class="contBill" style="margin: 0 auto;">
+        <div style="margin: 5px;">
+          <b>Phí dịch chuyển</b>
+        </div>
         <table id="pickedContTable" class="table" style="width: 660px;" border="1" align="left" > 
           <thead>
             <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
