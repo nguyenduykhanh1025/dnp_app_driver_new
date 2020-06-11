@@ -13,13 +13,26 @@ var checkField;
 var plateNumberField;
 var mobileNumberField;
 var fullNameField;
+var widthExternal;
+var sttExternalField;
+var plateNumberExternalField;
+var mobileNumberExternalField;
+var fullNameExternalField;
+var pwdExternalField;
 setTimeout(() => {
     width = $('#truckList').width();
-    // console.log(width)
+    widthExternal = $('.interDeliveryTeam').width();
     checkField = width *10 / 100;
     plateNumberField = width *25 / 100;
     mobileNumberField = width *25/ 100;
     fullNameField = width *40/ 100;
+
+    sttExternalField = widthExternal *10 / 100;
+    plateNumberExternalField = widthExternal * 30/100;
+    mobileNumberExternalField = widthExternal *20/100;
+    fullNameExternalField = widthExternal *20/100;
+    pwdExternalField = widthExternal *20/100;
+
     $.ajax({
         url: "/logistic/transport/listTransportAccount",
         method: "get",
@@ -74,7 +87,13 @@ function Init(){
 	$('#checkOutField').css("width", checkField);
 	$('#plateNumberOutField').css("width", plateNumberField);
 	$('#mobileNumberOutField').css("width", mobileNumberField);
-	$('#fullNameOutField').css("width", fullNameField);
+    $('#fullNameOutField').css("width", fullNameField);
+    //External
+    $('#sttExternalField').css("width", sttExternalField);
+	$('#plateNumberExternalField').css("width", plateNumberExternalField);
+	$('#mobileNumberExternalField').css("width", mobileNumberExternalField);
+    $('#fullNameExternalField').css("width", fullNameExternalField);
+    $('#pwdExternalField').css("width", pwdExternalField);
 }
 function pickTruckWithoutExternal() {
     if (externalTransport.length > 0) {
@@ -227,7 +246,7 @@ function interDeliveryTab() {
 }
 
 function exterDeliveryTab() {
-    $(".exterDeliveryTeam").show();
+    $(".exterDeliveryTeam").css("display","flex");;
     $("#exterBtn").css({"background-color": "#72c072"});
     $(".interDeliveryTeam").hide();
     $("#interBtn").css({"background-color": "#c7c1c1"});
@@ -337,7 +356,7 @@ $("#inputExternalRentNumber").keypress(function (event) {
         number = parseInt($("#inputExternalRentNumber").val(), 10);
         var externalDriver = '';
         for (var i = 0; i < number; i++) {
-            externalDriver += '<tr><td width="40px" style="padding: 0;">'+i+'</td><td width="140px" style="padding: 0;"><input id="numberPlate' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="135px" style="padding: 0;"><input id="numberPhone' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="150px" style="padding: 0;"><input id="name' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="150px" style="padding: 0;"><input id="pass' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td></tr>'
+            externalDriver += '<tr><td width="' + sttExternalField + '" style="padding: 0;">'+i+'</td><td width="' + plateNumberExternalField + '" style="padding: 0;"><input id="numberPlate' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="' + mobileNumberExternalField + '" style="padding: 0;"><input id="numberPhone' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="' + fullNameExternalField + '" style="padding: 0;"><input id="name' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="' + pwdExternalField + '" style="padding: 0;"><input id="pass' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td></tr>'
         }
         $("#externalInputList").html(externalDriver);
     }

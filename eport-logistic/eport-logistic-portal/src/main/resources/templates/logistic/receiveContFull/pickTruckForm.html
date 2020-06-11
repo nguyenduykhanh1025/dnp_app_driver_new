@@ -23,6 +23,8 @@
 
     .content {
         flex: 1 1 auto;
+        flex-flow: column;
+        display: flex;
         padding: 12px 15px 12px 15px;
         text-align: center;
     }
@@ -31,17 +33,18 @@
         display: flex;
         justify-content: center;
     }
-
     .interDeliveryTeam {
-        
+        flex: 1 1 auto;
         margin-top: 10px;
-        height: 250px;
+        flex-flow: column;
+        display: flex;
     }
 
     .exterDeliveryTeam {
+        flex: 1 1 auto;
         margin-top: 10px;
-        height: 250px;
         display: none;
+        flex-flow: column;
     }
 
     table tbody,
@@ -51,7 +54,7 @@
 
     table tbody {
         overflow: auto;
-        height: 400px;
+        height: calc(100% - 55px);
     }
 
     table {
@@ -61,6 +64,7 @@
         border-collapse: collapse;
         border-spacing: 0;
         border: 1px solid #ddd;
+        width: 100%;
     }
 
     .thHover :hover {
@@ -84,10 +88,10 @@
             </div>
             <div class="interDeliveryTeam">
                 <div style="display: flex; justify-content: center;">
-                    <b style="margin-right: 120px;">Danh sách xe</b>
-                    <b style="margin-left: 120px;">Xe điều</b>
+                    <b style="margin-right: 150px;">Danh sách xe</b>
+                    <b style="margin-left: 150px;">Xe điều</b>
                 </div>
-                <div style="display: flex;">
+                <div style="display: flex; flex: 1 1 auto;">
                     <table id="truckList" class="table" border="1" style="margin-right: 10px;">
                         <thead>
                             <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
@@ -121,18 +125,20 @@
                     <b>Số lượng xe thuê ngoài: </b>
                     <input type="number" id="inputExternalRentNumber"/>
                 </div>
-                <table id="externalInput" class="table" border="1" style="margin-left: 10px; margin-top: 10px;">
-                    <thead>
-                        <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
-                            <th width="40px" class="th-custom">Stt</th>
-                            <th width="140px" class="th-custom">Biển số</th>
-                            <th width="135px" class="th-custom">Số điện thoại</th>
-                            <th width="150px" class="th-custom">Tên tài xế</th>
-                            <th width="150px" class="th-custom">Mật khẩu</th>
-                        </tr>
-                    </thead>
-                    <tbody id="externalInputList" style="height: 170px;"></tbody>
-                </table>
+                <div style="flex: 1 1 auto;">
+                    <table id="externalInput" class="table" border="1" style="margin-top: 10px;">
+                        <thead>
+                            <tr style="background: #a1f3a8; color: rgb(0, 0, 0);">
+                                <th id="sttExternalField" width="10%" class="th-custom">Stt</th>
+                                <th id="plateNumberExternalField" width="30%" class="th-custom">Biển số</th>
+                                <th id="mobileNumberExternalField" width="20%" class="th-custom">Số điện thoại</th>
+                                <th id="fullNameExternalField" width="20%" class="th-custom">Tên tài xế</th>
+                                <th id="pwdExternalField" width="20%" class="th-custom">Mật khẩu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="externalInputList"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <div class="layui-layer-btn footer">
