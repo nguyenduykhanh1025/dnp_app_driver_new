@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('Thông tin Lô')" />
+    <th:block th:include="include :: handsontable-css" />
+    <link th:href="@{/css/om/executeCatos/edit.css}" rel="stylesheet" />
+</head>
+<body class="white-bg">
+    <div id="grid" class="hot handsontable htColumnHeaders"></div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: handsontable-js" />
+    <script type="text/javascript" th:inline="javascript">
+        var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
+        var shipmentDetail = /*[[${shipmentDetail}]]*/;
+    </script>
+    <script th:src="@{/eport/js/modules/om/executeCatos/edit.js}"></script>
+</body>
+</html>

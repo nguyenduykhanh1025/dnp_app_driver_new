@@ -246,4 +246,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </select>
+    
+    <resultMap id="ShipmentWaitExecResult" type="vn.com.irtech.eport.logistic.dto.ShipmentWaitExec">
+    	<result property="processStatus"    column="process_status"    />
+  		<collection property="shipmentDetailIds" javaType="ArrayList" 
+  			column="{shipmentId=shipment_id,processStatus=process_status}" ofType="java.lang.Long" 
+  			select="selectListShipmentDetailWaitExec"/>
+	</resultMap>
+    
+    <select id="selectListShipmentDetailWaitExec" resultType="java.lang.Long">
+	  select id
+	  from shipment_detail
+	  where shipment_id=#{shipmentId} and process_status=#{processStatus}
+	</select>
+
+    <select id="selectListShipmentWaitExec" resultMap="ShipmentWaitExecResult">
+    	SELECT
+			DISTINCT(CONCAT(shipment_id,process_status)),
+			shipment_id,
+		    process_status
+		FROM
+		 	shipment_detail
+		WHERE user_verify_status = "Y"
+			AND (process_status = "E" or process_status = "N")
+		ORDER BY process_status
+    </select>
 </mapper>

@@ -757,10 +757,12 @@ var table = {
                     shadeClose: $.common.isEmpty(options.shadeClose) ? true : options.shadeClose,
                     skin: options.skin,
                     btn: $.common.isEmpty(options.btn) ? _btn : options.btn,
-                    yes: options.yes,
+										yes: options.yes,
+										btn2: options.btn2,
+										btn3: options.btn3,
                     cancel: function () {
                         return true;
-                    }
+										}
                 });
             },
             openFull: function (title, url, width, height) {
@@ -1009,7 +1011,7 @@ var table = {
             			$.modal.alertWarning("Hãy chọn dong để xử lý");
             			return;
             		}
-                    var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
+					var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
                     $.modal.open("Chỉnh Sửa " + table.options.modalName, url);
             	} else {
             	    $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id));
@@ -1106,7 +1108,7 @@ var table = {
             			return;
             		}
             	    url = table.options.updateUrl.replace("{id}", id);
-            	}
+				}
                 return url;
             },
             save: function(url, data, callback) {
