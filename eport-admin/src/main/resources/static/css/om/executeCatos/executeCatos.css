@@ -1,0 +1,21 @@
+span {
+  color: grey;
+}
+
+hr {
+  margin: 20px 0px;
+}
+
+.title {
+  margin-top: 10px;
+}
+
+.table-container {
+  padding: 0px;
+}
+
+.custom-modal .layui-layer-btn1 {
+  border-color: #1e9fff;
+  background-color: #1e9fff;
+  color: #fff;
+}
