@@ -10,4 +10,5 @@ import vn.com.irtech.api.entity.ShipmentDetailEntity;
 public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
     List<ShipmentDetailEntity> selectShipmentDetailsByBLNo(ShipmentDetailEntity shipmentDetailEntity);
     ShipmentDetailEntity selectShipmentDetailByContNo(ShipmentDetailEntity shipmentDetailEntity);
+    List<ShipmentDetailEntity> selectCoordinateOfContainers(ShipmentDetailEntity shipmentDetailEntity);
 }

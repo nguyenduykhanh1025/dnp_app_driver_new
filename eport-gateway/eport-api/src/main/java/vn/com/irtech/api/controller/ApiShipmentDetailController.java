@@ -29,4 +29,9 @@ public class ApiShipmentDetailController {
 		ShipmentDetailEntity ship = shipmentDetailDao.selectShipmentDetailByContNo(shipmentDetail);
 		return R.ok().put("data", ship);
 	}
+	@PostMapping("/shipmentDetail/getCoordinateOfContainers")
+	public R getCoordinateOfContainers(@RequestBody ShipmentDetailEntity shipmentDetail) {
+		List<ShipmentDetailEntity> list = shipmentDetailDao.selectCoordinateOfContainers(shipmentDetail);
+		return R.ok().put("data", list);
+	}
 }

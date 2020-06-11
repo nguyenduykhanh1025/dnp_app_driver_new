@@ -403,4 +403,15 @@
         WHERE     M.CNTR_NO = #{containerNo}
         ORDER BY M.CNTR_NO ASC
     </select>
+    <select id="selectCoordinateOfContainers" parameterType="ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
+       SELECT            
+                CNTR_NO AS containerNo,
+                BL_NO AS blNo,
+                ROWW AS roww,
+                BAY AS bay,
+                TIER AS tier
+            FROM TB_INVENTORY
+        WHERE BL_NO = #{blNo}
+        ORDER BY CNTR_NO ASC
+    </select>
 </mapper>

@@ -412,6 +412,11 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		final ShipmentDetail shipmentDt = new ShipmentDetail();
 		shipmentDt.setBlNo(blNo);
 		final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+		//Get coordinate from catos test
+		String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers";
+		RestTemplate restTemplate = new RestTemplate();
+		R r = restTemplate.postForObject(url,shipmentDt , R.class);
+		List<ShipmentDetail> coordinateOfList = (List<ShipmentDetail>) r.get("data");
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			// simulating the location of container in da nang port, mapping to matrix
 			final List<ShipmentDetail[][]> bayList = new ArrayList<>();
