@@ -60,4 +60,8 @@ public interface IOtpCodeService
     public int deleteOtpCodeById(Long id);
 
     public OtpCode selectOtpCodeByshipmentDetailId(String shipmentDetailId);
+
+    public int verifyOtpCodeAvailable(OtpCode otpCode);
+
+    public int deleteOtpCodeByShipmentDetailIds(String shipmentDetailIds);
 }
