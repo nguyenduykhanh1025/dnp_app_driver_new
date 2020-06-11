@@ -1,10 +1,51 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
 <head>
-    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <th:block th:include="include :: header('Hỗ trợ Robot làm lệnh')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/om/executeCatos/executeCatos.css}" rel="stylesheet" />
 </head>
-<body class="gray-bg">
-    <h1>Execute Catos</h1>
+
+<body class="white-bg">
+    <div class="ui-layout-center">
+        <div class="container-div">
+            <div class="row">
+                <h2>Danh sách lệnh đang chờ</h2>
+                <hr>
+            </div>
+            <div class="row">
+                <!-- /table toolbar -->
+                <div class="col-sm-12 table-container">
+                    <table id="dg" pageList="[20,50,100,150,200]">
+                        <thead>
+                            <tr>
+                                <th data-options="field: 'process', halign:'left', align:'left', formatter: formatProcess" width="250">
+                                    Lệnh
+                                </th>
+                                <th data-options="field: 'blNo', halign:'left', align:'left', formatter: formatBLNo" width="250">
+                                    B/L no
+                                </th>
+                                <th data-options="field: 'ship', halign:'left', align:'left', formatter: formatShip" width="250">
+                                    Tàu
+                                </th>
+                                <th data-options="field:'processStatus', halign:'left', align:'left', fixed:true, formatter: formatProcessStatus" width="250">
+                                    Trạng thái
+                                </th>
+                                <th data-options="field: 'shipmentId', halign:'left', align:'left', fixed:true, formatter: formatAction" width="250">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script th:src="@{/eport/js/modules/om/executeCatos/executeCatos.js}"></script>
 </body>
+
 </html>

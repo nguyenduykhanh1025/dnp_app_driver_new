@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 
 /**
  * Shipment DetailsMapper Interface
@@ -60,4 +61,11 @@ public interface ShipmentDetailMapper
     public int deleteShipmentDetailByIds(String[] ids);
 
     public List<ShipmentDetail> selectShipmentDetailByIds(String[] ids);
+    
+    /**
+     * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id
+     * 
+     * @return Shipment Details List
+     */
+    public List<ShipmentWaitExec> selectListShipmentWaitExec();
 }
