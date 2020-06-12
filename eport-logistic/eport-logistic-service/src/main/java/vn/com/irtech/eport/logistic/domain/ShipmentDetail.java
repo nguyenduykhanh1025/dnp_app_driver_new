@@ -154,7 +154,7 @@ public class ShipmentDetail extends BaseEntity
 
     private String bay;
 
-    private int row;
+    private int roww;
 
     private int tier;
 
@@ -443,12 +443,12 @@ public class ShipmentDetail extends BaseEntity
         return bay;
     }
 
-    public void setRow(int row) {
-        this.row = row;
+    public void setRow(int roww) {
+        this.roww = roww;
     }
 
     public int getRow() {
-        return row;
+        return roww;
     }
 
     public void setTier(int tier) {
@@ -503,7 +503,7 @@ public class ShipmentDetail extends BaseEntity
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("bay", getBay())
-            .append("row", getRow())
+            .append("roww", getRow())
             .append("tier", getTier())
             .toString();
     }

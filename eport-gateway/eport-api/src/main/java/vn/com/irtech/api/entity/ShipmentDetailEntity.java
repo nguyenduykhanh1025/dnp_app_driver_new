@@ -119,7 +119,40 @@ public class ShipmentDetailEntity extends BaseEntity
     /** Status */
     private Integer status;
 
-    public void setId(Long id) 
+    /** Bay*/
+    private Integer bay;
+    
+    /** Roww*/
+    private Integer roww;
+    
+    /** Tier*/
+    private Integer tier;
+    
+    public Integer getBay() {
+		return bay;
+	}
+
+	public void setBay(Integer bay) {
+		this.bay = bay;
+	}
+
+	public Integer getRow() {
+		return roww;
+	}
+
+	public void setRow(Integer roww) {
+		this.roww = roww;
+	}
+
+	public Integer getTier() {
+		return tier;
+	}
+
+	public void setTier(Integer tier) {
+		this.tier = tier;
+	}
+
+	public void setId(Long id) 
     {
         this.id = id;
     }
@@ -473,6 +506,9 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("movingContAmount", getMovingContAmount())
             .append("transportIds", getTransportIds())
             .append("status", getStatus())
+            .append("bay", getBay())
+            .append("roww", getRow())
+            .append("tier", getTier())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

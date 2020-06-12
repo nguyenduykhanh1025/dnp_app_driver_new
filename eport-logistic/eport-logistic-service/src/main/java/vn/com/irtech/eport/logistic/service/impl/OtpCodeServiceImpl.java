@@ -99,4 +99,14 @@ public class OtpCodeServiceImpl implements IOtpCodeService
     {
         return otpCodeMapper.selectOtpCodeByshipmentDetailId(shipmentDetailId);
     }
+
+    @Override
+    public int verifyOtpCodeAvailable(OtpCode otpCode) {
+        return otpCodeMapper.verifyOtpCodeAvailable(otpCode);
+    }
+
+    @Override
+    public int deleteOtpCodeByShipmentDetailIds(String shipmentDetailIds) {
+        return otpCodeMapper.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
+    }
 }

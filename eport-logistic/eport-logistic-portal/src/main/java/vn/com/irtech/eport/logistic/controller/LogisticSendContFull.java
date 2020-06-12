@@ -1,7 +1,9 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,8 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
@@ -32,6 +37,9 @@ public class LogisticSendContFull extends LogisticBaseController {
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+
+	@Autowired
+	private IOtpCodeService otpCodeService;
 
     @GetMapping()
 	public String sendContEmpty() {
@@ -168,22 +176,53 @@ public class LogisticSendContFull extends LogisticBaseController {
 		return prefix + "/verifyOtp";
 	}
 
+	@PostMapping("sendOTP")
+	@ResponseBody
+	public AjaxResult sendOTP(String shipmentDetailIds) {
+		LogisticGroup lGroup = getGroup();
+
+		OtpCode otpCode = new OtpCode();
+		Random rd = new Random();
+		long OTPCODE = rd.nextInt(900000)+100000;
+
+		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
+
+		otpCode.setShipmentDetailids(shipmentDetailIds);
+		otpCode.setPhoneNumber(lGroup.getMobilePhone());
+		otpCode.setOptCode(OTPCODE);
+		otpCodeService.insertOtpCode(otpCode);
+
+		final String contentOtp = "Ma xac thuc lam lenh lay cont hang ra khoi cang la " + OTPCODE;
+		String response = "";
+
+		return AjaxResult.success(response.toString());
+	}
+
 	@PostMapping("/verifyOtp")
 	@ResponseBody
-	public AjaxResult verifyOtp(String shipmentDetailIds, String otp) {
-		if (otp.equals("1234")) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+	public AjaxResult verifyOtp(String shipmentDetailIds,Long otp) {
+		OtpCode otpCode = new OtpCode();
+		otpCode.setShipmentDetailids(shipmentDetailIds);
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		cal.add(Calendar.MINUTE, -5);
+		otpCode.setCreateTime(cal.getTime());
+		otpCode.setOptCode(otp);
+		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
+			final List<ShipmentDetail> shipmentDetails = shipmentDetailService
+					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				for (final ShipmentDetail shipmentDetail : shipmentDetails) {
 					shipmentDetail.setUserVerifyStatus("Y");
-					shipmentDetail.setStatus(2);
+					shipmentDetail.setStatus(3);
 					shipmentDetail.setProcessStatus("Y");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 				}
 				return success("Xác thực OTP thành công");
 			}
 		}
-		return error("Mã OTP không chính xác!");
+		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 	}
 
 	@GetMapping("paymentForm/{shipmentDetailIds}")

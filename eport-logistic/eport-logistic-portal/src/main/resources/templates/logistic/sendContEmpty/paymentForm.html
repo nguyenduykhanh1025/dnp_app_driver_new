@@ -25,15 +25,19 @@
   }
 
   .unloadContCosts {
-    height: 80px;
+    height: 30px;
   }
 
   .moveContCosts {
-    height: 80px;
+    height: 30px;
   }
 
   .total {
-    height: 43px;
+    height: 33px;
+  }
+
+  .paymentMethod {
+    height: 83px;
   }
 
 </style>
@@ -42,7 +46,7 @@
   <div class="container">
     <div class="content">
         <div class="unloadContCosts">
-          <b>Phí hạ container</b>
+          <b>Phí bốc dỡ container</b>
         </div>
         <div class="moveContCosts">
           <!-- <b>Phí dịch chuyển</b>
@@ -59,6 +63,19 @@
         </div>
         <div class="total">
           <b>Tổng cộng: <span id="total"></span><span> đồng.</span></b>
+        </div>
+        <div class="paymentMethod">
+          <div>
+            <b>Phương thức thanh toán</b>
+          </div>
+          <div>
+            <input style="margin-top: 6px;" type="radio" name="edoFlg" value="0" checked/>
+            <label>Trả trước thông qua cổng thanh toán</label>
+          </div>
+          <div>
+            <input style="margin-top: 6px;" type="radio" name="edoFlg" value="0" checked/>
+            <label>Trả sau (Credit)</label>
+          </div>
         </div>
     </div>
     <div class="layui-layer-btn footer">

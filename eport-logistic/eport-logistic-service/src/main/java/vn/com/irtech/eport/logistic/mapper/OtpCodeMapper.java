@@ -61,4 +61,7 @@ public interface OtpCodeMapper
 
     public OtpCode selectOtpCodeByshipmentDetailId(String shipmentDetailId);
 
+    public int verifyOtpCodeAvailable(OtpCode otpCode);
+
+    public int deleteOtpCodeByShipmentDetailIds(String shipmentDetailIds);
 }

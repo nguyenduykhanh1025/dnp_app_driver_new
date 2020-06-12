@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 
 /**
  * Shipment DetailsService Interface
@@ -68,4 +69,10 @@ public interface IShipmentDetailService
     public long countShipmentDetailList(ShipmentDetail shipmentDetail);
 
     public int updateDoStatusShipmentDetail(ShipmentDetail shipmentDetail);
+    
+    /**
+     * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id
+     * @return result
+     */
+    public List<ShipmentWaitExec> selectListShipmentWaitExec();
 }

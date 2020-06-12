@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -298,13 +299,6 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return prefix + "/checkContListBeforeVerify";
 	}
 
-	// @RequestMapping("/listShipmentDetailByIds")
-	// @ResponseBody
-	// public List<ShipmentDetail> listShipmentDetailByIds(String shipmentDetailIds)
-	// {
-	// return shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-	// }
-
 	@GetMapping("verifyOtpForm/{shipmentDetailIds}")
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") final String shipmentDetailIds,
 			final ModelMap mmap) {
@@ -317,16 +311,15 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult sendOTP(String shipmentDetailIds) {
 		final LogisticGroup lGroup = getGroup();
-		final String shipmentDetailId = shipmentDetailIds;
-		final String phoneNumber = lGroup.getMobilePhone();
 
 		final OtpCode otpCode = new OtpCode();
-
 		final Random rd = new Random();
-		final long OTPCODE = rd.nextInt(999999);
+		final long OTPCODE = rd.nextInt(900000)+100000;
 
-		otpCode.setShipmentDetailids(shipmentDetailId);
-		otpCode.setPhoneNumber(phoneNumber);
+		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
+
+		otpCode.setShipmentDetailids(shipmentDetailIds);
+		otpCode.setPhoneNumber(lGroup.getMobilePhone());
 		otpCode.setOptCode(OTPCODE);
 		otpCodeService.insertOtpCode(otpCode);
 
@@ -343,54 +336,48 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return AjaxResult.success(response.toString());
 	}
 
-	// Send SMS OTP
-	private int otpGenerator() {
-		final int opt = 000000;
-		// random code;
-		return opt;
-	}
+	// // Send SMS OTP
+	// private int otpGenerator() {
+	// 	final int opt = 000000;
+	// 	// random code;
+	// 	return opt;
+	// }
 
-	public String postOtpMessage(final String contentOtp) throws IOException {
+	// public String postOtpMessage(final String contentOtp) throws IOException {
 
-		final StringBuffer content = new StringBuffer();
-		final URL url = new URL("http://113.185.0.35:8888/smsmarketing/api");
-		final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestMethod("POST");
-		conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
-		conn.setDoOutput(true);
-		final DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-		final String msg = "<RQST><name>send_sms_list</name><REQID>1572859194</REQID><LABELID>56703</LABELID><TEMPLATEID>222027</TEMPLATEID><ISTELCOSUB>0</ISTELCOSUB><CONTRACTTYPEID>1</CONTRACTTYPEID><SCHEDULETIME></SCHEDULETIME><MOBILELIST>84983960445</MOBILELIST><AGENTID>121</AGENTID><APIUSER>demo</APIUSER><APIPASS>demo</APIPASS><USERNAME>DN_CS</USERNAME><CONTRACTID>407</CONTRACTID><PARAMS><NUM>1</NUM><CONTENT>"
-				+ contentOtp + "</CONTENT></PARAMS></RQST>";
-		wr.writeBytes(msg);
-		wr.flush();
-		wr.close();
-		final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		String str;
-		while ((str = in.readLine()) != null) {
-			content.append(str);
-		}
-		in.close();
-		return content.toString();
-	}
+	// 	final StringBuffer content = new StringBuffer();
+	// 	final URL url = new URL("http://113.185.0.35:8888/smsmarketing/api");
+	// 	final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	// 	conn.setRequestMethod("POST");
+	// 	conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+	// 	conn.setDoOutput(true);
+	// 	final DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+	// 	final String msg = "<RQST><name>send_sms_list</name><REQID>1572859194</REQID><LABELID>56703</LABELID><TEMPLATEID>222027</TEMPLATEID><ISTELCOSUB>0</ISTELCOSUB><CONTRACTTYPEID>1</CONTRACTTYPEID><SCHEDULETIME></SCHEDULETIME><MOBILELIST>84983960445</MOBILELIST><AGENTID>121</AGENTID><APIUSER>demo</APIUSER><APIPASS>demo</APIPASS><USERNAME>DN_CS</USERNAME><CONTRACTID>407</CONTRACTID><PARAMS><NUM>1</NUM><CONTENT>"
+	// 			+ contentOtp + "</CONTENT></PARAMS></RQST>";
+	// 	wr.writeBytes(msg);
+	// 	wr.flush();
+	// 	wr.close();
+	// 	final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	// 	String str;
+	// 	while ((str = in.readLine()) != null) {
+	// 		content.append(str);
+	// 	}
+	// 	in.close();
+	// 	return content.toString();
+	// }
 
 	@PostMapping("/verifyOtp")
 	@ResponseBody
-	public AjaxResult verifyOtp(final String shipmentDetailIds, final String otp) {
+	public AjaxResult verifyOtp(String shipmentDetailIds,Long otp) {
 		OtpCode otpCode = new OtpCode();
-		String[] shipmentDetailId = shipmentDetailIds.split(",");
-		final String phoneNumber = "84983960445";
-		try {
-			otpCode = otpCodeService.selectOtpCodeByshipmentDetailId(shipmentDetailId[0]);
-		} catch(Exception e) {
-
-		}
-		final Date now = new Date();
-		final Date otpCreateTime = otpCode.getCreateTime();
-		final long diff = now.getTime() - otpCreateTime.getTime();
-		// if (diff > 5) {
-		// 	return error("Mã OTP đã hết hạn!");
-		// }
-		if (otp.equals(otpCode.getOptCode().toString())) {
+		otpCode.setShipmentDetailids(shipmentDetailIds);
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		cal.add(Calendar.MINUTE, -5);
+		otpCode.setCreateTime(cal.getTime());
+		otpCode.setOptCode(otp);
+		if (otpCodeService.verifyOtpCodeAvailable(otpCode) > 0) {
 			final List<ShipmentDetail> shipmentDetails = shipmentDetailService
 					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
@@ -400,7 +387,6 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 					shipmentDetail.setProcessStatus("Y");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 				}
-
 				return success("Xác thực OTP thành công");
 			}
 		}
@@ -412,6 +398,11 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		final ShipmentDetail shipmentDt = new ShipmentDetail();
 		shipmentDt.setBlNo(blNo);
 		final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+		//Get coordinate from catos test
+		String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers";
+		RestTemplate restTemplate = new RestTemplate();
+		R r = restTemplate.postForObject(url,shipmentDt , R.class);
+		List<ShipmentDetail> coordinateOfList = (List<ShipmentDetail>) r.get("data");
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			// simulating the location of container in da nang port, mapping to matrix
 			final List<ShipmentDetail[][]> bayList = new ArrayList<>();

@@ -1,13 +1,16 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
-import vn.com.irtech.eport.common.utils.DateUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
-import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
+import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 
 /**
  * Shipment DetailsService Business Processing
@@ -100,6 +103,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
         return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids));
     }
 
+<<<<<<< HEAD
     @Override
     public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno)
     {
@@ -121,4 +125,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     {
         return shipmentDetailMapper.updateDoStatusShipmentDetail(shipmentDetail);
     }
+=======
+    /**
+     * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id
+     * @return result
+     */
+	@Override
+	public List<ShipmentWaitExec> selectListShipmentWaitExec() {
+		return shipmentDetailMapper.selectListShipmentWaitExec();
+	}
+>>>>>>> ef4272574318fead6f72c85a9b605da8e3ae6dec
 }
