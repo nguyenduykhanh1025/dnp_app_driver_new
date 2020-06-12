@@ -48,6 +48,7 @@ public class UpdateDoController extends BaseController{
         pageInfo.put("pageNum", (pageNum - 1 ) * pageSize);
         pageInfo.put("pageSize", pageSize);
         ShipmentDetail shipmentDetail = new ShipmentDetail();
+        shipmentDetail.setDoStatus("N");
         if(blNo != null)
         {
             shipmentDetail.setBlNo(blNo);
