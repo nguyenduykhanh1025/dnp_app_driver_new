@@ -61,6 +61,14 @@ public interface ShipmentDetailMapper
     public int deleteShipmentDetailByIds(String[] ids);
 
     public List<ShipmentDetail> selectShipmentDetailByIds(String[] ids);
+
+    public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
+
+    public List<String> selectBlList(String keyString);
+
+    public long countShipmentDetailList(ShipmentDetail shipmentDetail);
+
+    public int updateDoStatusShipmentDetail(ShipmentDetail shipmentDetail);
     
     /**
      * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id

@@ -314,24 +314,24 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 		final OtpCode otpCode = new OtpCode();
 		final Random rd = new Random();
-		final long OTPCODE = rd.nextInt(900000)+100000;
+		final long rD = rd.nextInt(900000)+100000;
 
 		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
 		otpCode.setShipmentDetailids(shipmentDetailIds);
 		otpCode.setPhoneNumber(lGroup.getMobilePhone());
-		otpCode.setOptCode(OTPCODE);
+		otpCode.setOptCode(rD);
 		otpCodeService.insertOtpCode(otpCode);
 
-		final String contentOtp = "Ma xac thuc lam lenh lay cont hang ra khoi cang la " + OTPCODE;
+		final String contentabc = "Lam lenh lay cont la  " + rD;
 		String response = "";
-		// try {
+		try {
 
-		// 	response = postOtpMessage(contentOtp);
-		// 	System.out.println(response);
-		// } catch (final IOException ex) {
-		// 	// process the exception
-		// }
+			response = postOtpMessage(contentabc);
+			System.out.println(response);
+		} catch (final IOException ex) {
+			// process the exception
+		}
 
 		return AjaxResult.success(response.toString());
 	}
@@ -342,30 +342,6 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	// 	// random code;
 	// 	return opt;
 	// }
-
-	// public String postOtpMessage(final String contentOtp) throws IOException {
-
-	// 	final StringBuffer content = new StringBuffer();
-	// 	final URL url = new URL("http://113.185.0.35:8888/smsmarketing/api");
-	// 	final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-	// 	conn.setRequestMethod("POST");
-	// 	conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
-	// 	conn.setDoOutput(true);
-	// 	final DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-	// 	final String msg = "<RQST><name>send_sms_list</name><REQID>1572859194</REQID><LABELID>56703</LABELID><TEMPLATEID>222027</TEMPLATEID><ISTELCOSUB>0</ISTELCOSUB><CONTRACTTYPEID>1</CONTRACTTYPEID><SCHEDULETIME></SCHEDULETIME><MOBILELIST>84983960445</MOBILELIST><AGENTID>121</AGENTID><APIUSER>demo</APIUSER><APIPASS>demo</APIPASS><USERNAME>DN_CS</USERNAME><CONTRACTID>407</CONTRACTID><PARAMS><NUM>1</NUM><CONTENT>"
-	// 			+ contentOtp + "</CONTENT></PARAMS></RQST>";
-	// 	wr.writeBytes(msg);
-	// 	wr.flush();
-	// 	wr.close();
-	// 	final BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-	// 	String str;
-	// 	while ((str = in.readLine()) != null) {
-	// 		content.append(str);
-	// 	}
-	// 	in.close();
-	// 	return content.toString();
-	// }
-
 	@PostMapping("/verifyOtp")
 	@ResponseBody
 	public AjaxResult verifyOtp(String shipmentDetailIds,Long otp) {
