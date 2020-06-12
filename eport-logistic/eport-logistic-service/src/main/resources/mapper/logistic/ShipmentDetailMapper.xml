@@ -127,7 +127,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="transportIds != null  and transportIds != ''"> and transport_ids = #{transportIds}</if>
             <if test="status != null "> and status = #{status}</if>
         </where>
-         order by id desc LIMIT #{params.pageSize} OFFSET #{params.pageNum} 
+       
     </select>
     
     <select id="selectShipmentDetailById" parameterType="Long" resultMap="ShipmentDetailResult">
