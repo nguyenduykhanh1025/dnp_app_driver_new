@@ -111,4 +111,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     {
         return shipmentDetailMapper.selectBlList(keyString);
     }
+
+    public long countShipmentDetailList(ShipmentDetail shipmentDetail)
+    {
+        return shipmentDetailMapper.countShipmentDetailList(shipmentDetail);
+    }
+
+    public int updateDoStatusShipmentDetail(ShipmentDetail shipmentDetail)
+    {
+        return shipmentDetailMapper.updateDoStatusShipmentDetail(shipmentDetail);
+    }
 }

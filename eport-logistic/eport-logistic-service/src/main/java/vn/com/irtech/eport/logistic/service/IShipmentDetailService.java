@@ -64,4 +64,8 @@ public interface IShipmentDetailService
     public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 
     public List<String> selectBlList(String keyString);
+
+    public long countShipmentDetailList(ShipmentDetail shipmentDetail);
+
+    public int updateDoStatusShipmentDetail(ShipmentDetail shipmentDetail);
 }

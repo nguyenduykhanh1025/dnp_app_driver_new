@@ -13,15 +13,15 @@
           <h2>Danh sách DO</h2>
           <div class="row c-search container">
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-              <select class="c-search-box">
-                <option></option>
+              <select class="c-search-box"> 
+                <option selected="selected"></option>
               </select>
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
               
             </div>
             <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-              <button class="btn btn-primary" title="Xác nhận">Đã nhận DO gốc</button>
+              <button id="btnReceiverDo" class="btn btn-primary" disabled title="Xác nhận" onclick='receiverDo()'>Đã nhận DO gốc</button>
             </div>
           </div>
         </div>
@@ -70,52 +70,50 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
   </body>
   <script type="text/javascript">
+    $(function () {
+        loadTable(blNo = null);
+    });
     var prefix = "/updateDO";
     $(".c-search-box").select2({
       placeholder: "Nhập BL No",
       allowClear: true,
+      minimumInputLength: 2,
+      //tags: true,
       ajax: {
         url: prefix + "/getOptionSearch",
         dataType: "json",
         method: "GET",
-        delay: 250,
         data: function (params) {
           return {
             keyString: params.term,
           };
         },
         processResults: function (data) {
-          
-          //data = JSON.stringify(data.data);
-          console.log(data.data);
-          /* Data return must be 
-            data = {
-              results: [
-                {
-                  id: 1,
-                  text: "Option 1",
-                },
-                {
-                  id: 2,
-                  text: "Option 2",
-                },
-              ],
-            };
-          */
+            let results = [];
+            data.data.forEach(function(element,i){
+            let obj = {};
+              obj.id = i;
+              obj.text = element;
+              results.push(obj); 
+            }) 
           return {
-            results: data.results,
+            results: results,
           };
         },
-        cache: true,
       },
     });
 
     //For submit search
     $(".c-search-box").change(function () {
-      alert($(this).val());
+        loadTable($(this).text().trim());
+        console.log("Tìm kiếm",$(".c-search-box").text().trim());
+        $('#btnReceiverDo').removeAttr("disabled");
+        
+        //$(this).val(null);
     });
-
-    $(function () {
+    function loadTable(blNo)
+    {
+      //console.log(blNo)
       $("#dg").datagrid({
         url: prefix + "/getShipmentDetail",
         method : "GET",
@@ -139,11 +137,11 @@
               pageSize: param.rows,
               orderByColumn: param.sort,
               isAsc: param.order,
+              blNo : blNo
             },
             dataType: "json",
-           success: function (data) {
-              // console.log(data.data);
-              success(data.data);
+            success: function (data) {
+              success(data);
            },
             error: function () {
               error.apply(this, arguments);
@@ -151,6 +149,28 @@
           });
         },
       });
-    });
+    }
+
+    function receiverDo()
+    {
+      let blNo = $(".c-search-box").text().trim();
+      $.modal.confirm("Xác nhận đã nhận DO của Billing " + blNo, function() {
+          $.ajax({
+            url : prefix + "/updateStatusDo",
+            method : "GET",
+            data : {
+              blNo : blNo,
+            },
+            success: function (data) {
+              $.modal.alertSuccess(data);
+            },
+            error: function (data) {
+              $.modal.alertError(data);
+            },
+      })
+		})
+     // console.log($(".c-search-box").text().trim());
+      //$(this).text(null);
+    }
   </script>
 </html>
