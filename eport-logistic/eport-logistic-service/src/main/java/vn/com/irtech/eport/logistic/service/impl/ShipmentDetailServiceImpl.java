@@ -103,7 +103,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
         return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids));
     }
 
-<<<<<<< HEAD
     @Override
     public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno)
     {
@@ -125,7 +124,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     {
         return shipmentDetailMapper.updateDoStatusShipmentDetail(shipmentDetail);
     }
-=======
     /**
      * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id
      * @return result
@@ -134,5 +132,4 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
 	public List<ShipmentWaitExec> selectListShipmentWaitExec() {
 		return shipmentDetailMapper.selectListShipmentWaitExec();
 	}
->>>>>>> ef4272574318fead6f72c85a9b605da8e3ae6dec
 }

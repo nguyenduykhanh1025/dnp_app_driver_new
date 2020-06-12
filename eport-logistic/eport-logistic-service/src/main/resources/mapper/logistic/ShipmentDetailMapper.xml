@@ -285,7 +285,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </select>
-<<<<<<< HEAD
 
     <select id="selectShipmentDetailByBlno" parameterType="String" resultMap="ShipmentDetailResult">
         <include refid="selectShipmentDetailVo"/>
@@ -305,7 +304,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where bl_no = #{bookingNo}
     </update>  
-=======
     
     <resultMap id="ShipmentWaitExecResult" type="vn.com.irtech.eport.logistic.dto.ShipmentWaitExec">
     	<result property="processStatus"    column="process_status"    />
@@ -331,5 +329,4 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			AND (process_status = "E" or process_status = "N")
 		ORDER BY process_status
     </select>
->>>>>>> ef4272574318fead6f72c85a9b605da8e3ae6dec
 </mapper>
