@@ -3,6 +3,7 @@
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <link th:href="@{/css/om/updateDO.css}" rel="stylesheet" />
+    <th:block th:include="include :: easyui-css" />
     <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
   </head>
   <body class="gray-bg">
@@ -12,16 +13,15 @@
           <h2>Danh sách DO</h2>
           <div class="row c-search container">
             <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-              <select class="c-search-box">
-                <option></option>
+              <select class="c-search-box"> 
+                <option selected="selected"></option>
               </select>
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
               
             </div>
             <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-              <button class="btn btn-primary" title="Xác nhận">Đã nhận DO gốc</button>
-              <button class="btn btn-danger" title="Làm mới"><span class="fa fa-refresh"></span></button>
+              <button id="btnReceiverDo" class="btn btn-primary" disabled title="Xác nhận" onclick='receiverDo()'>Đã nhận DO gốc</button>
             </div>
           </div>
         </div>
@@ -29,34 +29,38 @@
           <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead>
               <tr>
-                <th data-options="field:'carrierCode',halign:'center',resizable:true">Hãng tàu <br />Carrier</th>
-                <th data-options="field:'billOfLading',halign:'center'" sortable="true">Số vận đơn<br />B/L No</th>
-                <th data-options="field:'containerNumber',align:'center'," sortable="true">
-                  Số lượng <br />
-                  container
+                <th data-options="field:'shipmentId',halign:'center',resizable:true">Ma Lo</th>
+                <th data-options="field:'blNo',halign:'center',align:'center'" sortable="true">BL number</th>
+                <th data-options="field:'containerNo',halign:'center'" sortable="true">Container Number</th>
+                <th data-options="field:'sztp',align:'center'," sortable="true">
+                  Size Type
                 </th>
-                <th data-options="field:'consignee',halign:'center'">Tên khách hàng<br />Consignee</th>
-                <th data-options="field:'expiredDem',halign:'center',align:'center'" sortable="true">Hạn lệnh<br />Expired Date</th>
-                <th data-options="field:'newExpiredDem',halign:'center',align:'center'" sortable="true">Hạn lệnh<br />gia hạn</th>
-                <th data-options="field:'emptyContainerDepot',halign:'center'">Nơi hạ rỗng<br />Empty Depot</th>
-                <th data-options="field:'detFreeTime',halign:'center',align:'center'">Ngày miễn lưu<br />DET Free Time</th>
-                <th data-options="field:'vessel',align:'center'">Tên tàu<br />Vessel</th>
-                <th data-options="field:'voyNo',align:'center'">Chuyến tàu<br />Voyage No</th>
-                <th data-options="field:'status',align:'center'">
-                  Trạng thái
+                <th data-options="field:'FE',halign:'center'">F/E</th>
+                <th data-options="field:'sealNo',halign:'center',align:'center'" sortable="true">Seal Number</th>                
+                <th data-options="field:'emptyContainerDepot',halign:'center'">Nơi hạ rỗng</th>
+                <th data-options="field:'doStatus',align:'center'">
+                  Trạng thái nhận DO gốc
                 </th>
-                <th data-options="field:'documentReceiptDate',halign:'center',align:'center'" sortable="true">
-                  Ngày nhận<br />
-                  DO gốc
+                <th data-options="field:'vessel',align:'center'" width="10%">
+                  Tên tàu<br />Vessel
                 </th>
-                <th data-options="field:'createTime',halign:'center',align:'center'" sortable="true">
+                <th data-options="field:'voyNo',align:'center'" width="10%">
+                  Chuyến tàu<br />Voyage No
+                </th>
+                <th data-options="field:'documentReceiptDate',halign:'center',align:'center'"
+                  sortable="true" width="100">
+                  Ngày nhận<br /> DO gốc
+                </th>
+                <th data-options="field:'createTime',halign:'center',align:'center'" sortable="true"
+                  width="100">
                   Ngày gửi DO
                 </th>
-                <th data-options="field:'processRemark',align:'center'">
+                <th data-options="field:'processRemark',align:'center'" width="10%">
                   Ghi chú làm lệnh
                 </th>
               </tr>
             </thead>
+            <tbody></tbody>
           </table>
         </div>
       </div>
@@ -66,51 +70,53 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
   </body>
   <script type="text/javascript">
-    var prefix = "/carrier/admin/do";
+    $(function () {
+        loadTable(blNo = null);
+    });
+    var prefix = "/updateDO";
     $(".c-search-box").select2({
       placeholder: "Nhập BL No",
       allowClear: true,
+      minimumInputLength: 2,
+      //tags: true,
       ajax: {
-        url: "/updateDO/getOptionSearch",
+        url: prefix + "/getOptionSearch",
         dataType: "json",
         method: "GET",
-        delay: 250,
         data: function (params) {
           return {
-            keyWord: params.term,
+            keyString: params.term,
           };
         },
         processResults: function (data) {
-          /* Data return must be 
-            data = {
-              results: [
-                {
-                  id: 1,
-                  text: "Option 1",
-                },
-                {
-                  id: 2,
-                  text: "Option 2",
-                },
-              ],
-            };
-          */
+            let results = [];
+            data.data.forEach(function(element,i){
+            let obj = {};
+              obj.id = i;
+              obj.text = element;
+              results.push(obj); 
+            }) 
           return {
-            results: data.results,
+            results: results,
           };
         },
-        cache: true,
       },
     });
 
     //For submit search
     $(".c-search-box").change(function () {
-      alert($(this).val());
+        loadTable($(this).text().trim());
+        console.log("Tìm kiếm",$(".c-search-box").text().trim());
+        $('#btnReceiverDo').removeAttr("disabled");
+        
+        //$(this).val(null);
     });
-
-    $(function () {
+    function loadTable(blNo)
+    {
+      //console.log(blNo)
       $("#dg").datagrid({
-        url: prefix + "/list",
+        url: prefix + "/getShipmentDetail",
+        method : "GET",
         singleSelect: true,
         height: document.documentElement.clientHeight - 70,
         clientPaging: false,
@@ -131,17 +137,40 @@
               pageSize: param.rows,
               orderByColumn: param.sort,
               isAsc: param.order,
+              blNo : blNo
             },
             dataType: "json",
             success: function (data) {
               success(data);
-            },
+           },
             error: function () {
               error.apply(this, arguments);
             },
           });
         },
       });
-    });
+    }
+
+    function receiverDo()
+    {
+      let blNo = $(".c-search-box").text().trim();
+      $.modal.confirm("Xác nhận đã nhận DO của Billing " + blNo, function() {
+          $.ajax({
+            url : prefix + "/updateStatusDo",
+            method : "GET",
+            data : {
+              blNo : blNo,
+            },
+            success: function (data) {
+              $.modal.alertSuccess(data);
+            },
+            error: function (data) {
+              $.modal.alertError(data);
+            },
+      })
+		})
+     // console.log($(".c-search-box").text().trim());
+      //$(this).text(null);
+    }
   </script>
 </html>

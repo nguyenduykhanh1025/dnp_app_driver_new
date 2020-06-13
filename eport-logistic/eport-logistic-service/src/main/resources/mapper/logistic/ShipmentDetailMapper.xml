@@ -50,7 +50,45 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectShipmentDetailVo">
         select id, shipment_id, logistic_group_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_nm, voy_no, ope_code, loading_port, discharge_port, transport_type, empty_depot, vgm_chk, vgm, vgm_person_info, custom_declare_no, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, preorder_pickup, moving_cont_amount, transport_ids ,status, remark, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
-
+     <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
+        select count(*) from shipment_detail
+         <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="registerNo != null  and registerNo != ''"> and register_no = #{registerNo}</if>
+            <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
+            <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
+            <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
+            <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
+            <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
+            <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
+            <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
+            <if test="customDeclareNo != null  and customDeclareNo != ''"> and custom_declare_no = #{customDeclareNo}</if>
+            <if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
+            <if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
+            <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
+            <if test="doStatus != null  and doStatus != ''"> and do_status = #{doStatus}</if>
+            <if test="doReceivedTime != null  and doReceivedTime != ''"> and do_received_time = #{doReceivedTime}</if>
+            <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
+            <if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
+            <if test="movingContAmount != null"> and moving_cont_amount = #{movingContAmount}</if>
+            <if test="transportIds != null  and transportIds != ''"> and transport_ids = #{transportIds}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
     <select id="selectShipmentDetailList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
         <include refid="selectShipmentDetailVo"/>
         <where>  
@@ -89,6 +127,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="transportIds != null  and transportIds != ''"> and transport_ids = #{transportIds}</if>
             <if test="status != null "> and status = #{status}</if>
         </where>
+       
     </select>
     
     <select id="selectShipmentDetailById" parameterType="Long" resultMap="ShipmentDetailResult">
@@ -227,7 +266,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         where id = #{id}
     </update>
-
+    
     <delete id="deleteShipmentDetailById" parameterType="Long">
         delete from shipment_detail where id = #{id}
     </delete>
@@ -246,6 +285,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </select>
+
+    <select id="selectShipmentDetailByBlno" parameterType="String" resultMap="ShipmentDetailResult">
+        <include refid="selectShipmentDetailVo"/>
+        where bl_no #{Blno} 
+        
+    </select>
+
+      <select id="selectBlList" parameterType="String" resultType="String">
+        select distinct bl_no from shipment_detail
+        where bl_no like concat('%', #{keyString}, '%') limit 5
+    </select>
+       <update id="updateDoStatusShipmentDetail" parameterType="ShipmentDetail">
+        update shipment_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="doStatus != null  and doStatus != ''">do_status = #{doStatus},</if>
+            <if test="doReceivedTime != null  and doReceivedTime != ''">do_received_time = #{doReceivedTime},</if>
+        </trim>
+        where bl_no = #{bookingNo}
+    </update>  
     
     <resultMap id="ShipmentWaitExecResult" type="vn.com.irtech.eport.logistic.dto.ShipmentWaitExec">
     	<result property="processStatus"    column="process_status"    />

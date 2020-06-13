@@ -103,6 +103,27 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
         return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids));
     }
 
+    @Override
+    public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno)
+    {
+        return shipmentDetailMapper.selectShipmentDetailByBlno(Blno);
+    }
+
+    @Override
+    public List<String> selectBlList(String keyString)
+    {
+        return shipmentDetailMapper.selectBlList(keyString);
+    }
+
+    public long countShipmentDetailList(ShipmentDetail shipmentDetail)
+    {
+        return shipmentDetailMapper.countShipmentDetailList(shipmentDetail);
+    }
+
+    public int updateDoStatusShipmentDetail(ShipmentDetail shipmentDetail)
+    {
+        return shipmentDetailMapper.updateDoStatusShipmentDetail(shipmentDetail);
+    }
     /**
      * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id
      * @return result
