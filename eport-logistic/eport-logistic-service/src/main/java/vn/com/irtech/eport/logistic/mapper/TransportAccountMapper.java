@@ -18,6 +18,14 @@ public interface TransportAccountMapper
      * @return Driver login info
      */
     public TransportAccount selectTransportAccountById(Long id);
+    
+    /**
+     * Get Driver login info
+     * 
+     * @param id Driver login infoID
+     * @return Driver login info
+     */
+    public TransportAccount selectTransportAccountByMobileNumber(String mobileNumber);
 
     /**
      * Get Driver login info List

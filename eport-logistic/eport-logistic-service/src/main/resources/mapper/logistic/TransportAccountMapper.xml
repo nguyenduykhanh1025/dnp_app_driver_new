@@ -50,6 +50,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectTransportAccountVo"/>
         where id = #{id}
     </select>
+    
+    <select id="selectTransportAccountByMobileNumber" parameterType="String" resultMap="TransportAccountResult">
+        <include refid="selectTransportAccountVo"/>
+        where mobile_number = #{mobileNumber}
+    </select>
         
     <insert id="insertTransportAccount" parameterType="TransportAccount" useGeneratedKeys="true" keyProperty="id">
         insert into transport_account
