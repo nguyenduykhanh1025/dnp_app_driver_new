@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
@@ -233,6 +234,9 @@ public class LogisticReceiveContEmpty extends LogisticBaseController {
 					shipmentDetail.setProcessStatus("Y");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 				}
+				JSONObject data = new JSONObject();
+				data.put("something", "something");
+				sendDataToTopic(data.toString(), "receive_cont_empty_order");
 				return success("Xác thực OTP thành công");
 			}
 		}
