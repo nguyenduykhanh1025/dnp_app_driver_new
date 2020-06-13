@@ -1,15 +1,11 @@
 package vn.com.irtech.eport.logistic.controller;
 
-<<<<<<< HEAD
-import java.util.HashMap;
-=======
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
->>>>>>> 21c14bab0b6f838c93a6351f2091d128a08faf6b
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -57,6 +53,7 @@ public abstract class LogisticBaseController extends BaseController {
 	public void sendDataToTopic(String data, String topic) {
     	mqttPushClient.publish(1, true, topic, data);
 	}
+	
 	public String postOtpMessage(String contentabc) throws IOException {
 		String url = "http://svc.netplus.vn/WSSendSMS.asmx";
 		URL obj = new URL(url);
