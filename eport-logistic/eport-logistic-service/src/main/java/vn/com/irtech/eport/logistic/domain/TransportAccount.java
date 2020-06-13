@@ -2,6 +2,9 @@ package vn.com.irtech.eport.logistic.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
@@ -37,10 +40,12 @@ public class TransportAccount extends BaseEntity
 
     /** Mat Khau */
     @Excel(name = "Mat Khau")
+    @JsonIgnore
     private String password;
 
     /** Salt */
     @Excel(name = "Salt")
+    @JsonIgnore
     private String salt;
 
     /** Trang Thai */
