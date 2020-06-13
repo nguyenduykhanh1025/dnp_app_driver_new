@@ -10,6 +10,7 @@ import java.net.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import vn.com.irtech.eport.common.core.controller.BaseController;
+import vn.com.irtech.eport.framework.mqtt.service.MqttPushClient;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
@@ -23,6 +24,9 @@ public abstract class LogisticBaseController extends BaseController {
 
 	@Autowired
 	ILogisticGroupService logisticGroupService;
+	
+	@Autowired
+    private MqttPushClient mqttPushClient;
 
 	public LogisticAccount getUser() {
 		return ShiroUtils.getSysUser();
@@ -45,6 +49,11 @@ public abstract class LogisticBaseController extends BaseController {
 		}
 		return false;
 	}
+	
+	public void sendDataToTopic(String data, String topic) {
+    	mqttPushClient.publish(1, true, topic, data);
+	}
+	
 	public String postOtpMessage(String contentabc) throws IOException {
 		String url = "http://svc.netplus.vn/WSSendSMS.asmx";
 		URL obj = new URL(url);

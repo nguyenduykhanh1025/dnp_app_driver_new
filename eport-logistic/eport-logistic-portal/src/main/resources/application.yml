@@ -5,7 +5,7 @@ eport:
   demoEnabled: true
   profile: D:/eport/upload
   addressEnabled: true
-  apiUrl: http://192.168.1.66:8081/api
+  apiUrl: http://127.0.0.1:9090/api
 server:
   port: 7070
   servlet:
@@ -82,3 +82,12 @@ xss:
   enabled: true
   excludes: /system/notice/*
   urlPatterns: /system/*,/monitor/*,/tool/*
+  
+mqtt:
+  username: admin             
+  password: public            
+  host-url: tcp://127.0.0.1:1883                # The address and port of your own server need to be changed 
+  clientID: admin                               # This change is not optional, but different clients must not be the same
+  default-topic: order_result                   # Default theme
+  timeout: 100                 
+  keepalive: 100

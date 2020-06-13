@@ -50,7 +50,9 @@ bayList.forEach(function(bay) {
                 bay[row][col].expiredDem = null;
                 bayName = bay[row][col].bay;
                 shipmentId = bay[row][col].shipmentId;
-                if (bay[row][col].status > 1) {
+                if (bay[row][col].containerNo == null) {
+                    str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" style="background-color: #dbcfcf;" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">CONT</div>';
+                } else if (bay[row][col].status > 1) {
                     if (bay[row][col].preorderPickup == "Y") {
                         str += '<div id="cell'+ bay[row][col].id +'" style="background-color: #72ecea;" class="cellDiv" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + true +')">'+ bay[row][col].containerNo +'</div>';
                         var tableRow = '<tr id="row'+ bay[row][col].id +'"><td width="240px">' + bay[row][col].containerNo + '</td><td id="tdTransport'+ bay[row][col].id +'" width="240px">Đã chỉ định</td><td width="180px"><button onclick="pickTruck('+ bay[row][col].id + ',' + index + ',' + col + ',' + row +')">Điều xe</button></td></tr>';
@@ -74,7 +76,9 @@ bayList.forEach(function(bay) {
 });
 
 function pickCont(id, row, col, index, isPicked) {
-    if (bayList[index][row][col].status > 1) {
+    if (bayList[index][row][col].containerNo == null) {
+        $.modal.msgError("Container này không nằm trong lô của quý<br>khách.");
+    } else if (bayList[index][row][col].status > 1) {
         if (isPicked) {
             $.modal.msgError("Container này đã được chỉ định.");
         } else {
@@ -127,6 +131,7 @@ function calculateMovingCont() {
                     }
                 }
             }
+            moveContAmountTemp = 0;
         }
     }
     $("#pickedContAmount").html(moveContAmount);
