@@ -3,6 +3,7 @@ package vn.com.irtech.eport.api.config;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.validation.Validator;
@@ -11,10 +12,11 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import vn.com.irtech.eport.api.intercepter.JwtAuthenticationInterceptor;
+import vn.com.irtech.eport.api.security.JwtAuthenticationInterceptor;
 
 @Configuration
 @MapperScan("vn.com.irtech.eport.**.mapper")
+@ComponentScan(basePackages = { "vn.com.irtech.eport.**.service" })
 public class WebConfig implements WebMvcConfigurer {
 
 	@Override
@@ -38,7 +40,7 @@ public class WebConfig implements WebMvcConfigurer {
 		messageSource.setBasename("classpath:messages/messages");
 		return messageSource;
 	}
-	
+
 	@Bean
 	@Override
 	public Validator getValidator() {
@@ -46,12 +48,12 @@ public class WebConfig implements WebMvcConfigurer {
 		bean.setValidationMessageSource(validationMessageSource());
 		return bean;
 	}
-	
+
 	@Bean
 	public JwtAuthenticationInterceptor jwtAuthenticationInterceptor() {
 		return new JwtAuthenticationInterceptor();
 	}
-	
+
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(jwtAuthenticationInterceptor()).addPathPatterns("/**");

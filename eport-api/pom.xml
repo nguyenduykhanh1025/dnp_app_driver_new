@@ -76,7 +76,7 @@
 
 		<dependency>
 			<groupId>vn.com.irtech.eport</groupId>
-			<artifactId>eport-logistic-framework</artifactId>
+			<artifactId>eport-logistic-service</artifactId>
 		</dependency>
 	</dependencies>
 

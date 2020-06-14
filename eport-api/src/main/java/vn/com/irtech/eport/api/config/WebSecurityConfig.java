@@ -16,14 +16,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import vn.com.irtech.eport.api.common.encoder.CustomPasswordEncoder;
-import vn.com.irtech.eport.api.service.impl.UserService;
+import vn.com.irtech.eport.api.security.CustomPasswordEncoder;
+import vn.com.irtech.eport.api.security.service.CustomUserDetailsService;
 
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private UserService userService;
+	private CustomUserDetailsService userService;
 
 	@Bean(BeanIds.AUTHENTICATION_MANAGER)
 	@Override

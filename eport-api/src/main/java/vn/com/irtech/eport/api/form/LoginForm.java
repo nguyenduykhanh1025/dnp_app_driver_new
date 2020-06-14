@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.api.dto.request;
+package vn.com.irtech.eport.api.form;
 
 public class LoginForm {
 	private String userName;

@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.api.common.message;
+package vn.com.irtech.eport.api.message;
 
 import java.util.ArrayList;
 import java.util.List;
