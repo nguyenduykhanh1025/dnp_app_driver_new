@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.api.intercepter;
+package vn.com.irtech.eport.api.security;
 
 import java.io.IOException;
 
@@ -15,10 +15,10 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import vn.com.irtech.eport.api.common.consts.MessageConsts;
-import vn.com.irtech.eport.api.common.message.MessageHelper;
-import vn.com.irtech.eport.api.domain.UserDetails;
-import vn.com.irtech.eport.api.service.impl.UserService;
+import vn.com.irtech.eport.api.consts.BusinessConst;
+import vn.com.irtech.eport.api.consts.MessageConsts;
+import vn.com.irtech.eport.api.message.MessageHelper;
+import vn.com.irtech.eport.api.security.service.CustomUserDetailsService;
 import vn.com.irtech.eport.api.util.StringUtils;
 import vn.com.irtech.eport.api.util.TokenUtils;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -26,9 +26,9 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 public class JwtAuthenticationInterceptor extends HandlerInterceptorAdapter {
 
 	protected static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationInterceptor.class);
-
+	
 	@Autowired
-	private UserService userService;
+	private CustomUserDetailsService userDetailService;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -43,9 +43,15 @@ public class JwtAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		String token = request.getHeader("Authorization");
 		try {
 			if (StringUtils.isNotBlank(token) && TokenUtils.validateToken(token)) {
-				Long userId = TokenUtils.getUserIdFromToken(token);
-
-				UserDetails userDetails = (UserDetails) userService.loadUserByUserId(userId);
+				String subject = TokenUtils.getSubjectFromToken(token);
+				
+				if (!validatePermission(requestURI, subject)) {
+					logger.debug("Do not permission!");
+					setResponseError(response);
+					return false;
+				}
+				
+				CustomUserDetails userDetails = (CustomUserDetails) userDetailService.loadUserByUsername(subject);
 
 				if (userDetails != null) {
 					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -66,6 +72,19 @@ public class JwtAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		} catch (Exception e) {
 			logger.debug("Failed on authentication user: " + e.getMessage());
 			setResponseError(response);
+			return false;
+		}
+	}
+	
+	private Boolean validatePermission(String requestUri, String subject) {
+		try {
+			String perm = subject.split(BusinessConst.BLANK)[1];
+			if (requestUri.toLowerCase().contains(perm.toLowerCase())){
+				return true;
+			}else {
+				return false;
+			}
+		} catch(Exception ex) {
 			return false;
 		}
 	}

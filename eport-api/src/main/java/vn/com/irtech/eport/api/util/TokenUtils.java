@@ -13,7 +13,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
-import vn.com.irtech.eport.api.domain.UserDetails;
+import vn.com.irtech.eport.api.security.CustomUserDetails;
 import vn.com.irtech.eport.common.utils.DateUtils;
 
 @Service
@@ -42,17 +42,17 @@ public class TokenUtils {
 		SIGNING_KEY = signingKey;
 	}
 
-	public static String generateToken(UserDetails userDetails) {
+	public static String generateToken(CustomUserDetails userDetails) {
 		Date now = new Date();
 		Date expiryDate = DateUtils.addSeconds(now, EXPIRATION_TIME);
-		return Jwts.builder().setIssuer(ISSUER).setSubject(Long.toString(userDetails.getUser().getId()))
+		return Jwts.builder().setIssuer(ISSUER).setSubject(userDetails.getUser().getSubject())
 				.setIssuedAt(now).setExpiration(expiryDate).signWith(SignatureAlgorithm.HS512, SIGNING_KEY).compact();
 	}
 
-	public static Long getUserIdFromToken(String token) {
+	public static String getSubjectFromToken(String token) {
 		try {
 			Claims claims = Jwts.parser().setSigningKey(SIGNING_KEY).parseClaimsJws(token).getBody();
-			return Long.parseLong(claims.getSubject());
+			return claims.getSubject();
 		} catch (Exception ex) {
 			return null;
 		}

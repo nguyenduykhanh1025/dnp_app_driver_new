@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.api.common.consts;
+package vn.com.irtech.eport.api.consts;
 
 public class MessageConsts {
 

@@ -48,6 +48,9 @@ public final class SpringUtils implements BeanFactoryPostProcessor
      */
     public static <T> T getBean(Class<T> clz) throws BeansException
     {
+    	if (beanFactory == null) {
+			return null;
+		}
         T result = (T) beanFactory.getBean(clz);
         return result;
     }

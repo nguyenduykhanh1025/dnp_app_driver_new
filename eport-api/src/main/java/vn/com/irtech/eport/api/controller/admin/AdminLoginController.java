@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.api.controller;
+package vn.com.irtech.eport.api.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,23 +7,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import vn.com.irtech.eport.api.dto.request.LoginForm;
-import vn.com.irtech.eport.api.service.ILoginService;
+import vn.com.irtech.eport.api.domain.EportUserType;
+import vn.com.irtech.eport.api.form.LoginForm;
+import vn.com.irtech.eport.api.security.service.LoginService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 
 @RestController
-@RequestMapping("/login")
-public class LoginController extends BaseController {
+@RequestMapping("/admin")
+public class AdminLoginController extends BaseController {
 
 	@Autowired
-	private ILoginService loginService;
+	private LoginService loginService;
 
-	@PostMapping("/transport")
+	@PostMapping("/login")
 	@ResponseBody
-	public AjaxResult loginAdmin(@RequestBody LoginForm loginForm) {
+	public AjaxResult login(@RequestBody LoginForm loginForm) {
 		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("token", loginService.login(loginForm));
+		ajaxResult.put("token", loginService.login(loginForm, EportUserType.ADMIN));
 		return ajaxResult;
 	}
 }

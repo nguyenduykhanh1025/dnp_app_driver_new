@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.api.common.encoder;
+package vn.com.irtech.eport.api.security;
 
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.slf4j.Logger;

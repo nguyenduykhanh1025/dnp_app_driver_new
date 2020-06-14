@@ -26,7 +26,7 @@ mybatis:
 jwt:
    token-expiration-time: 3600 #1 hour
    token-issuer: EPORT
-   token-signing-key: Ypm4BwgXO6rd085xtVj4ysJESTOPopr
+   token-signing-key: Dpm4BwgXO6ad085xgVj6ysFHSTOUozr
 
 logging:
   level:
