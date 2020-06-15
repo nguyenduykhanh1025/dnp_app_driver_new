@@ -67,6 +67,37 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return prefix + "/index";
 	}
 
+	@RequestMapping("/getFieldList")
+	@ResponseBody
+	public AjaxResult GetField(){
+		//vesselCode
+		List<String> vesselCodelist = getVesselCodeList();
+		//voyage
+		List<String> voyageList = getVoyageList();
+		//consignee
+		List<String> consigneeList = getConsigneeList();
+		//Truck Co.
+		List<String> truckCoList = getTruckCoList();
+		//Operator Code
+		List<String> operatorCodeList = getOperatorCodeList();
+		//FE
+		List<String> feList = getFeList();
+		//Cargo Type
+		List<String> cargoTypeList = getCargoTypeList();
+		//POD
+		List<String> podList = getPODList();
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("vesselCode", vesselCodelist);
+		ajaxResult.put("voyage", voyageList);
+		ajaxResult.put("consignee", consigneeList);
+		ajaxResult.put("truckCo", truckCoList);
+		ajaxResult.put("opr", operatorCodeList);
+		ajaxResult.put("fe", feList);
+		ajaxResult.put("cargoType", cargoTypeList);
+		ajaxResult.put("pod", podList);
+		return ajaxResult;
+	}
+	
 	@RequestMapping("/listShipment")
 	@ResponseBody
 	public TableDataInfo listShipment(final Shipment shipment) {
