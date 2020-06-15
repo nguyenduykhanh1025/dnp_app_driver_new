@@ -44,6 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
         </where>
+        order by create_time desc
     </select>
     
     <select id="selectShipmentById" parameterType="Long" resultMap="ShipmentResult">
@@ -120,5 +121,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select s.id, s.logistic_account_id, s.logistic_group_id, s.service_id, s.bl_no ,s.tax_code, s.container_amount, s.edo_flg, s.reference_no, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
         from shipment s left join logistic_group g on s.logistic_group_id = g.id
         where s.id = #{id}
+    </select>
+
+    <select id="checkBillNoIsUnique" parameterType="Shipment" resultType="int">
+        select count(*) from shipment
+        where bl_no = #{blNo} 
+        and service_id = #{serviceId}
     </select>
 </mapper>
