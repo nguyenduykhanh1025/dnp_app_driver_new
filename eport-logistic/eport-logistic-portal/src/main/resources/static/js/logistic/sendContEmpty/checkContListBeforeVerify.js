@@ -10,6 +10,7 @@ function closeForm() {
 }
 
 $("#contTable").datagrid({
+    singleSelect: true,
     loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
         var index = 1;

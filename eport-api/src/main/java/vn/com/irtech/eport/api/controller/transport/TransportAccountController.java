@@ -27,8 +27,7 @@ public class TransportAccountController extends BaseController {
 		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
 		TransportAccount user = transportAccountService.selectTransportAccountById(userId);
 		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("user", user);
+		ajaxResult.put("data", user);
 		return ajaxResult;
 	}
-
 }

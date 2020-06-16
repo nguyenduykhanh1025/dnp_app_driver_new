@@ -14,6 +14,7 @@ var sizeList = ["22G0", "23G0"];
 var LoadingPortList = ["Cảng nguồn 1", "Cảng nguồn 2"];
 var DischargePortList = ["Cảng đích 1", "Cảng đích 2"];
 var selectedRow = null;
+var rowAmount = 0;
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
@@ -549,270 +550,274 @@ edoConfig = {
 };
 
 // CONFIGURATE HANDSONTABLE NOT EDO
-config = {
-    stretchH: "all",
-    height: document.documentElement.clientHeight - 100,
-    minRows: 100,
-    width: "100%",
-    minSpareRows: 1,
-    rowHeights: 30,
-    manualColumnMove: false,
-    rowHeaders: true,
-    className: "htMiddle",
-    colHeaders: function (col) {
-        switch (col) {
-            case 0:
-                var txt = "<input type='checkbox' class='checker' ";
-                txt += "onclick='checkAll()' ";
-                txt += ">";
-                return txt;
-            case 1:
-                return "Số Đăng Ký";
-            case 2:
-                return '<span>Container No</span><span style="color: red;">(*)</span>';
-            case 3:
-                return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
-            case 4:
-                return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
-            case 5:
-                return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
-            case 6:
-                return "Cảng Xêp Hàng";
-            case 7:
-                return "Cảng Dỡ Hàng";
-            case 8:
-                return "T.T Làm Lệnh";
-            case 9:
-                return "T.T Thanh Toán";
-            case 10:
-                return "T.T Hạ Cont";
-            case 11:
-                return "Ghi Chú";
-        }
-    },
-    colWidths: [50, 100, 100, 120, 100, 100, 100, 100, 150, 150, 150, 200],
-    filter: "true",
-    columns: [
-        {
-            data: "active",
-            type: "checkbox",
-            className: "htCenter",
+function configHandson() {
+    config = {
+        stretchH: "all",
+        height: document.documentElement.clientHeight - 100,
+        minRows: rowAmount,
+        maxRows: rowAmount,
+        width: "100%",
+        minSpareRows: 1,
+        rowHeights: 30,
+        manualColumnMove: false,
+        rowHeaders: true,
+        className: "htMiddle",
+        colHeaders: function (col) {
+            switch (col) {
+                case 0:
+                    var txt = "<input type='checkbox' class='checker' ";
+                    txt += "onclick='checkAll()' ";
+                    txt += ">";
+                    return txt;
+                case 1:
+                    return "Số Đăng Ký";
+                case 2:
+                    return '<span>Container No</span><span style="color: red;">(*)</span>';
+                case 3:
+                    return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
+                case 4:
+                    return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+                case 5:
+                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+                case 6:
+                    return "Cảng Xêp Hàng";
+                case 7:
+                    return "Cảng Dỡ Hàng";
+                case 8:
+                    return "T.T Làm Lệnh";
+                case 9:
+                    return "T.T Thanh Toán";
+                case 10:
+                    return "T.T Hạ Cont";
+                case 11:
+                    return "Ghi Chú";
+            }
         },
-        {
-            data: "registerNo",
-            readOnly: true,
-            renderer: registerNoRenderer
-        },
-        {
-            data: "containerNo",
-            renderer: containerNoRenderer
-        },
-        {
-            data: "opeCode",
-            type: "autocomplete",
-            source: opeCodeList,
-            strict: true,
-            renderer: opeCodeRenderer
-        },
-        {
-            data: "expiredDem",
-            type: "date",
-            dateFormat: "DD/MM/YYYY",
-            correctFormat: true,
-            defaultDate: new Date(),
-            renderer: expiredDemRenderer
-        },
-        {
-            data: "sztp",
-            type: "autocomplete",
-            source: sizeList,
-            strict: true,
-            renderer: sizeRenderer
-        },
-        {
-            data: "loadingPort",
-            type: "autocomplete",
-            source: LoadingPortList,
-            strict: true,
-            renderer: loadingPortRenderer
-        },
-        {
-            data: "dischargePort",
-            type: "autocomplete",
-            source: DischargePortList,
-            strict: true,
-            renderer: dischargePortRenderer
-        },
-        {
-            data: "processStatus",
-            readOnly: true,
-            renderer: processRenderer
-        },
-        {
-            data: "paymentStatus",
-            readOnly: true,
-            renderer: paymentRenderer
-        },
-        {
-            data: "status",
-            readOnly: true,
-            renderer: statusRenderer
-        },
-        {
-            data: "remark",
-            renderer: remarkRenderer
-        },
-    ],
-    afterRenderer: function (TD, row, column, prop, value, cellProperties) {
-        switch (column) {
-            case 1:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "registerNo")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 2:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "containerNo")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 3:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "opeCode")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 4:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "expiredDem")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 5:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 6:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "loadingPort")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 7:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 8:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "process")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 9:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "payment")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 10:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "status")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 11:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            default:
-                break;
-        }
-    },
-    afterChange: function (changes, src) {
-        //Get data change in cell to render another column
-        if (src !== "loadData") {
-            var verifyStatus = false;
-            var paymentStatus = false;
-            var notVerify = false;
-            changes.forEach(function interate(row) {
-                if (row[1] == "active" && !isIterate) {
-                    getDataSelectedFromTable(false);
-                    if (allChecked) {
-                        $(".checker").prop("checked", true);
-                        checked = true;
-                    } else {
-                        $(".checker").prop("checked", false);
-                        checked = false;
+        colWidths: [50, 100, 100, 120, 100, 100, 100, 100, 150, 150, 150, 200],
+        filter: "true",
+        columns: [
+            {
+                data: "active",
+                type: "checkbox",
+                className: "htCenter",
+            },
+            {
+                data: "registerNo",
+                readOnly: true,
+                renderer: registerNoRenderer
+            },
+            {
+                data: "containerNo",
+                renderer: containerNoRenderer
+            },
+            {
+                data: "opeCode",
+                type: "autocomplete",
+                source: opeCodeList,
+                strict: true,
+                renderer: opeCodeRenderer
+            },
+            {
+                data: "expiredDem",
+                type: "date",
+                dateFormat: "DD/MM/YYYY",
+                correctFormat: true,
+                defaultDate: new Date(),
+                renderer: expiredDemRenderer
+            },
+            {
+                data: "sztp",
+                type: "autocomplete",
+                source: sizeList,
+                strict: true,
+                renderer: sizeRenderer
+            },
+            {
+                data: "loadingPort",
+                type: "autocomplete",
+                source: LoadingPortList,
+                strict: true,
+                renderer: loadingPortRenderer
+            },
+            {
+                data: "dischargePort",
+                type: "autocomplete",
+                source: DischargePortList,
+                strict: true,
+                renderer: dischargePortRenderer
+            },
+            {
+                data: "processStatus",
+                readOnly: true,
+                renderer: processRenderer
+            },
+            {
+                data: "paymentStatus",
+                readOnly: true,
+                renderer: paymentRenderer
+            },
+            {
+                data: "status",
+                readOnly: true,
+                renderer: statusRenderer
+            },
+            {
+                data: "remark",
+                renderer: remarkRenderer
+            },
+        ],
+        afterRenderer: function (TD, row, column, prop, value, cellProperties) {
+            switch (column) {
+                case 1:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "registerNo")) {
+                        hot.setDataAtCell(row, column, '');
                     }
-                    if (shipmentDetails.length > 0) {
-                        var status = 1;
-                        for (var i = 0; i < shipmentDetails.length; i++) {
-                            if (shipmentDetails[i].paymentStatus == "Y") {
-                                if (verifyStatus || notVerify) {
-                                    status = 1;
-                                } else {
-                                    status = 5;
-                                    paymentStatus = true;
-                                }
-                            } else if (shipmentDetails[i].userVerifyStatus == "Y") {
-                                if (shipmentDetails[i].processStatus == "Y") {
-                                    if (paymentStatus || notVerify) {
+                    break;
+                case 2:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "containerNo")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 3:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "opeCode")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 4:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "expiredDem")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 5:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 6:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "loadingPort")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 7:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 8:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "process")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 9:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "payment")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 10:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "status")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 11:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                default:
+                    break;
+            }
+        },
+        afterChange: function (changes, src) {
+            //Get data change in cell to render another column
+            if (src !== "loadData") {
+                var verifyStatus = false;
+                var paymentStatus = false;
+                var notVerify = false;
+                changes.forEach(function interate(row) {
+                    if (row[1] == "active" && !isIterate) {
+                        getDataSelectedFromTable(false);
+                        if (allChecked) {
+                            $(".checker").prop("checked", true);
+                            checked = true;
+                        } else {
+                            $(".checker").prop("checked", false);
+                            checked = false;
+                        }
+                        if (shipmentDetails.length > 0) {
+                            var status = 1;
+                            for (var i = 0; i < shipmentDetails.length; i++) {
+                                if (shipmentDetails[i].paymentStatus == "Y") {
+                                    if (verifyStatus || notVerify) {
                                         status = 1;
                                     } else {
-                                        status = 4;
-                                        verifyStatus = true;
+                                        status = 5;
+                                        paymentStatus = true;
+                                    }
+                                } else if (shipmentDetails[i].userVerifyStatus == "Y") {
+                                    if (shipmentDetails[i].processStatus == "Y") {
+                                        if (paymentStatus || notVerify) {
+                                            status = 1;
+                                        } else {
+                                            status = 4;
+                                            verifyStatus = true;
+                                        }
+                                    } else {
+                                        if (paymentStatus || notVerify) {
+                                            status = 1;
+                                        } else {
+                                            status = 3;
+                                            verifyStatus = true;
+                                        }
                                     }
                                 } else {
-                                    if (paymentStatus || notVerify) {
+                                    if (verifyStatus || paymentStatus) {
                                         status = 1;
                                     } else {
-                                        status = 3;
-                                        verifyStatus = true;
+                                        status = 2;
                                     }
+                                    notVerify = true;
                                 }
-                            } else {
-                                if (verifyStatus || paymentStatus) {
-                                    status = 1;
-                                } else {
-                                    status = 2;
-                                }
-                                notVerify = true;
                             }
+                            switch (status) {
+                                case 1:
+                                    setLayoutRegisterStatus();
+                                    break;
+                                case 2:
+                                    setLayoutVerifyUser();
+                                    break;
+                                case 3:
+                                    setLayoutVerifyUser();
+                                    $("#deleteBtn").prop("disabled", true);
+                                    $("#verifyBtn").prop("disabled", true);
+                                    break;
+                                case 4:
+                                    setLayoutPaymentStatus();
+                                    break;
+                                case 5:
+                                    setLayoutFinish();
+                                    break;
+                            }
+                        } else {
+                            setLayoutRegisterStatus();
                         }
-                        switch (status) {
-                            case 1:
-                                setLayoutRegisterStatus();
-                                break;
-                            case 2:
-                                setLayoutVerifyUser();
-                                break;
-                            case 3:
-                                setLayoutVerifyUser();
-                                $("#deleteBtn").prop("disabled", true);
-                                $("#verifyBtn").prop("disabled", true);
-                                break;
-                            case 4:
-                                setLayoutPaymentStatus();
-                                break;
-                            case 5:
-                                setLayoutFinish();
-                                break;
-                        }
-                    } else {
-                        setLayoutRegisterStatus();
                     }
-                }
-            });
-        }
-    },
-    afterSelectionEnd: function (r, c, r2, c2) {
-        selectedRow = null;
-        if (c == 0 && c2 == 12) {
-            selectedRow = r;
-        }
-    },
-    beforeKeyDown: function(e) {
-        if (e.keyCode == 8) {
-            e.stopImmediatePropagation();
-        }
-    },
-};
+                });
+            }
+        },
+        afterSelectionEnd: function (r, c, r2, c2) {
+            selectedRow = null;
+            if (c == 0 && c2 == 12) {
+                selectedRow = r;
+            }
+        },
+        beforeKeyDown: function(e) {
+            if (e.keyCode == 8) {
+                e.stopImmediatePropagation();
+            }
+        },
+    };
+}
+configHandson();
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
@@ -831,6 +836,7 @@ function loadShipmentDetail(id) {
                 isSaved = true;
             }
             hot.destroy();
+            configHandson();
             if (shipmentSelected.edoFlg == "0") {
                 hot = new Handsontable(dogrid, config);
             } else {
