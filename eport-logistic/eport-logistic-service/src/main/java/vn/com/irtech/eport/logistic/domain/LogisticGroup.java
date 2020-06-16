@@ -42,6 +42,10 @@ public class LogisticGroup extends BaseEntity
     /** Điện thoại di động */
     @Excel(name = "Điện thoại di động")
     private String mobilePhone;
+    
+    /** Credit Card (1:có,0:không(default))) */
+    @Excel(name = "Credit Card")
+    private String creditFlag;
 
     /** Fax */
     @Excel(name = "Fax")
@@ -161,6 +165,17 @@ public class LogisticGroup extends BaseEntity
     {
         return mobilePhone;
     }
+    
+    public void setCreditFlag(String creditFlag) 
+    {
+        this.creditFlag = creditFlag;
+    }
+
+    public String getCreditFlag() 
+    {
+        return creditFlag;
+    }
+    
     public void setFax(String fax) 
     {
         this.fax = fax;
@@ -299,6 +314,7 @@ public class LogisticGroup extends BaseEntity
             .append("mst", getMst())
             .append("phone", getPhone())
             .append("mobilePhone", getMobilePhone())
+            .append("creditFlag", getCreditFlag())
             .append("fax", getFax())
             .append("delFlag", getDelFlag())
             .append("businessRegistrationCertificate", getBusinessRegistrationCertificate())
