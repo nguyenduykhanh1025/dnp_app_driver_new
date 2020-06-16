@@ -840,7 +840,7 @@ function pay() {
 
 function pickTruck() {
     $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id);
-  }
+}
 
 function exportBill() {
 

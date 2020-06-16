@@ -361,13 +361,13 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 		final String contentabc = "Lam lenh lay cont la  " + rD;
 		String response = "";
-		try {
+		// try {
 
-			response = postOtpMessage(contentabc);
-			System.out.println(response);
-		} catch (final IOException ex) {
-			// process the exception
-		}
+		// 	response = postOtpMessage(contentabc);
+		// 	System.out.println(response);
+		// } catch (final IOException ex) {
+		// 	// process the exception
+		// }
 
 		return AjaxResult.success(response.toString());
 	}
