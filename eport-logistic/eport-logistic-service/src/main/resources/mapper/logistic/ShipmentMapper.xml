@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="serviceId"    column="service_id"    />
         <result property="blNo"    column="bl_no"    />
+        <result property="bookingNo"    column="booking_no"    />
         <result property="taxCode"    column="tax_code"    />
         <result property="containerAmount"    column="container_amount"    />
         <result property="edoFlg"    column="edo_flg"    />
@@ -28,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentVo">
-        select id, logistic_account_id, logistic_group_id, service_id, bl_no, tax_code, container_amount, edo_flg, reference_no, remark, create_by, create_time, update_by, update_time from shipment
+        select id, logistic_account_id, logistic_group_id, service_id, bl_no, booking_no, tax_code, container_amount, edo_flg, reference_no, remark, create_by, create_time, update_by, update_time from shipment
     </sql>
 
     <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
@@ -38,6 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="serviceId != null "> and service_id = #{serviceId}</if>
             <if test="blNo != null and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
             <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
@@ -59,6 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="serviceId != null ">service_id,</if>
             <if test="blNo != null  and blNo != ''">bl_no,</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no,</if>
             <if test="taxCode != null  and taxCode != ''">tax_code,</if>
             <if test="containerAmount != null ">container_amount,</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg,</if>
@@ -74,6 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="serviceId != null ">#{serviceId},</if>
             <if test="blNo != null  and blNo != ''">#{blNo},</if>
+            <if test="bookingNo != null  and bookingNo != ''">#{bookingNo},</if>
             <if test="taxCode != null  and taxCode != ''">#{taxCode},</if>
             <if test="containerAmount != null ">#{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">#{edoFlg},</if>
@@ -93,6 +97,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="serviceId != null ">service_id = #{serviceId},</if>
             <if test="blNo != null  and blNo != ''">bl_no = #{blNo},</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no = #{bookingNo},</if>
             <if test="taxCode != null  and taxCode != ''">tax_code = #{taxCode},</if>
             <if test="containerAmount != null ">container_amount = #{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg = #{edoFlg},</if>
@@ -118,7 +123,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
     
     <select id="selectShipmentWithGroupById" parameterType="Long" resultMap="ShipmentResult">
-        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_id, s.bl_no ,s.tax_code, s.container_amount, s.edo_flg, s.reference_no, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
+        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_id, s.bl_no, s.booking_no ,s.tax_code, s.container_amount, s.edo_flg, s.reference_no, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
         from shipment s left join logistic_group g on s.logistic_group_id = g.id
         where s.id = #{id}
     </select>
