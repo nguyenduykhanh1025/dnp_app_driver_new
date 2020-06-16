@@ -28,18 +28,18 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 @Controller
-@RequestMapping("/logistic/sendContFull")
-public class LogisticSendContFull extends LogisticBaseController {
-    
-    private final String prefix = "logistic/sendContFull";
+@RequestMapping("/logistic/sendContEmpty")
+public class LogisticSendContEmptyController extends LogisticBaseController {
+
+	private final String prefix = "logistic/sendContEmpty";
 	
 	@Autowired
 	private IShipmentService shipmentService;
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
-
-	@Autowired
+	
+	@Autowired 
 	private IOtpCodeService otpCodeService;
 
     @GetMapping()
@@ -53,7 +53,7 @@ public class LogisticSendContFull extends LogisticBaseController {
 		startPage();
 		LogisticAccount user = getUser();
 		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setServiceId(4);
+		shipment.setServiceId(2);
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}
@@ -72,7 +72,7 @@ public class LogisticSendContFull extends LogisticBaseController {
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceId(4);
+		shipment.setServiceId(2);
 		shipment.setBlNo("null");
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
@@ -124,7 +124,7 @@ public class LogisticSendContFull extends LogisticBaseController {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				index++;
 				if (shipmentDetail.getId() != null) {
-					if (shipmentDetail.getRegisterNo() == null || shipmentDetail.getRegisterNo().equals("")) {
+					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
 						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
 					} else {
 						shipmentDetail.setUpdateBy(user.getFullName());
@@ -141,6 +141,15 @@ public class LogisticSendContFull extends LogisticBaseController {
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setWgt(1l);
+					shipmentDetail.setVslNm("vslNm");
+					shipmentDetail.setVoyNo("voyNo");
+					if(shipmentDetail.getLoadingPort() == null) {
+						shipmentDetail.setLoadingPort(" ");
+					}
+					if(shipmentDetail.getDischargePort() == null) {
+						shipmentDetail.setDischargePort(" ");
+					}
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
@@ -222,7 +231,7 @@ public class LogisticSendContFull extends LogisticBaseController {
 				}
 				JSONObject data = new JSONObject();
 				data.put("something", "something");
-				sendDataToTopic(data.toString(), "send_cont_full_order");
+				sendDataToTopic(data.toString(), "send_cont_empty_order");
 				return success("Xác thực OTP thành công");
 			}
 		}
@@ -249,7 +258,7 @@ public class LogisticSendContFull extends LogisticBaseController {
 		}
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
-	
+
 	@GetMapping("pickTruckForm/{shipmentId}")
 	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
 		mmap.put("shipmentId", shipmentId);

@@ -18,7 +18,7 @@
     box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
   }
 
-  .errorInput {
+  .error-input {
     background-color: #fbe2e2;
     border-color: #c66161;
     color: #c00;
@@ -112,11 +112,11 @@
     }).done(function(result) {
       if (result.code == 0) {
         billUnique = true;
-        $("#blNo").removeClass("errorInput");
+        $("#blNo").removeClass("error-input");
       } else {
         $.modal.msgError("Số bill đã tồn tại!");
         billUnique = false;
-        $("#blNo").addClass("errorInput");
+        $("#blNo").addClass("error-input");
       }
     });
   }

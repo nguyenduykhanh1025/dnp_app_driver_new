@@ -42,7 +42,7 @@ import java.io.IOException;
 
 @Controller
 @RequestMapping("/logistic/receiveContFull")
-public class LogisticReceiveContFull extends LogisticBaseController {
+public class LogisticReceiveContFullController extends LogisticBaseController {
 	
 	private final String prefix = "logistic/receiveContFull";
 
