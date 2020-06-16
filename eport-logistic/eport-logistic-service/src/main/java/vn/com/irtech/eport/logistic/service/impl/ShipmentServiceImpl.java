@@ -99,4 +99,9 @@ public class ShipmentServiceImpl implements IShipmentService
     public Shipment selectShipmentWithGroupById(Long id) {
         return shipmentMapper.selectShipmentWithGroupById(id);
     }
+
+    @Override
+    public int checkBillNoIsUnique(Shipment shipment) {
+        return shipmentMapper.checkBillNoIsUnique(shipment);
+    }
 }

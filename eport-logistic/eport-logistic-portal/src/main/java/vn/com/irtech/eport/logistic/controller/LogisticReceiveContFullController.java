@@ -37,19 +37,12 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.utils.R;
 
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 
 
 @Controller
 @RequestMapping("/logistic/receiveContFull")
-public class LogisticReceiveContFull extends LogisticBaseController {
+public class LogisticReceiveContFullController extends LogisticBaseController {
 	
 	private final String prefix = "logistic/receiveContFull";
 
@@ -159,6 +152,16 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	public String add(final ModelMap mmap) {
 		mmap.put("groupName", getGroup().getGroupName());
 		return prefix + "/add";
+	}
+
+	@PostMapping("/checkBlNoUnique")
+	@ResponseBody
+	public AjaxResult checkBlNoUnique(Shipment shipment) {
+		shipment.setServiceId(1);
+		if (shipmentService.checkBillNoIsUnique(shipment) == 0) {
+			return success();
+		}
+		return error();
 	}
 
 	@PostMapping("/addShipment")

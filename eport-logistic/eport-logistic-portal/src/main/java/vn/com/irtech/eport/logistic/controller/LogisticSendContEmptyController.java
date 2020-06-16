@@ -29,7 +29,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 @Controller
 @RequestMapping("/logistic/sendContEmpty")
-public class LogisticSendContEmpty extends LogisticBaseController {
+public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	private final String prefix = "logistic/sendContEmpty";
 	
