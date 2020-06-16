@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 @RequestMapping("/logistic/assignTruck")
 public class LogisticAssignTruckController extends LogisticBaseController{
 
-	private String prefix = "logistic/assignTruck";
+	private final String PREFIX = "logistic/assignTruck";
 	
 	@Autowired
 	private IShipmentService shipmentService;
@@ -33,7 +34,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 
 	@GetMapping
     public String assignTruck() {
-    	return prefix + "/assignTruck";
+    	return PREFIX + "/assignTruck";
 	}
 	
 	@RequestMapping("/listShipment")
@@ -80,15 +81,16 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		}
 		mmap.put("transportIds", transportId);
 		mmap.put("shipmentDetailIds", shipmentIds);
-		return prefix + "/pickTruckForm";
+		return PREFIX + "/pickTruckForm";
 	}
 
 	@PostMapping("/pickTruck")
+	@Transactional
 	@ResponseBody
-	public AjaxResult pickTruck(final String shipmentDetailIds, final String driverIds) {
-		final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+	public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			for (final ShipmentDetail shipmentDetail : shipmentDetails) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setTransportIds(driverIds);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
