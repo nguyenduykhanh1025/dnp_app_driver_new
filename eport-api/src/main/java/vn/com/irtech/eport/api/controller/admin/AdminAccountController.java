@@ -30,5 +30,4 @@ public class AdminAccountController extends BaseController {
 		ajaxResult.put("user", user);
 		return ajaxResult;
 	}
-
 }
