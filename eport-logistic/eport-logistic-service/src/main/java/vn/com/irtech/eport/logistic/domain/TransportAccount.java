@@ -26,10 +26,6 @@ public class TransportAccount extends BaseEntity
     @Excel(name = "Logistic Group")
     private Long logisticGroupId;
 
-    /** Bien So Xe */
-    @Excel(name = "Bien So Xe")
-    private String plateNumber;
-
     /** So DT */
     @Excel(name = "So DT")
     private String mobileNumber;
@@ -48,17 +44,13 @@ public class TransportAccount extends BaseEntity
     @JsonIgnore
     private String salt;
 
-    /** Trang Thai */
-    @Excel(name = "Trang Thai")
+    /** Trạng thái khóa (default 0) */
+    @Excel(name = "Khóa tài khoản")
     private String status;
 
     /** Delete Flag */
     private boolean delFlag;
     
-    /** Thuê ngoài (0 nomal 1 rent) */
-    @Excel(name = "Thuê ngoài (0 nomal 1 rent)")
-    private String externalRentStatus;
-
     /** Hieu Luc Den */
     @Excel(name = "Hieu Luc Den", width = 30, dateFormat = "yyyy-MM-dd")
     private Date validDate;
@@ -93,15 +85,6 @@ public class TransportAccount extends BaseEntity
     public Long getLogisticGroupId() 
     {
         return logisticGroupId;
-    }
-    public void setPlateNumber(String plateNumber) 
-    {
-        this.plateNumber = plateNumber;
-    }
-
-    public String getPlateNumber() 
-    {
-        return plateNumber;
     }
     public void setMobileNumber(String mobileNumber) 
     {
@@ -157,15 +140,6 @@ public class TransportAccount extends BaseEntity
     {
         return delFlag;
     }
-    public void setExternalRentStatus(String externalRentStatus) 
-    {
-        this.externalRentStatus = externalRentStatus;
-    }
-
-    public String getExternalRentStatus() 
-    {
-        return externalRentStatus;
-    }
     public void setValidDate(Date validDate) 
     {
         this.validDate = validDate;
@@ -181,14 +155,12 @@ public class TransportAccount extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("logisticGroupId", getLogisticGroupId())
-            .append("plateNumber", getPlateNumber())
             .append("mobileNumber", getMobileNumber())
             .append("fullName", getFullName())
             .append("password", getPassword())
             .append("salt", getSalt())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())
-            .append("externalRentStatus", getExternalRentStatus())
             .append("validDate", getValidDate())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())

@@ -62,10 +62,10 @@
 		                    <input name="mst" th:field="*{mst}" class="form-control" type="text" required>
 		                </div>
 		                <label class="col-sm-1 control-label">PT Thanh toán：</label>
-				        <input style="margin-top: 6px;" type="radio" name="creditFlag" id="creditRadio" value="0"/>
-				        <label style="margin-right: 30px;">Tiền mặt (Cash)</label>
-				        <input style="margin-top: 6px;" type="radio" name="creditFlag" id="cashRadio" value="1"/>
-				        <label>Thẻ ghi nợ (Credit Card)</label>
+				        <input style="margin-top: 10px;" type="radio" name="creditFlag" id="cashRadio" value="0" checked/>
+				        <label style="margin-left: 5px;">Cash</label>
+				        <input style="margin-top: 10px; margin-left: 20px" type="radio" name="creditFlag" id="creditRadio" value="1"/>
+				        <label style="margin-left: 5px;">Credit</label>
 		            </div>
             	</div>
             </div>
@@ -190,8 +190,16 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
-    <script type="text/javascript">
-        var prefix = ctx + "logistic/group";
+    <script type="text/javascript" th:inline="javascript">
+        var logisticGroup = /*[[${logisticGroup}]]*/ ;
+		var prefix = ctx + "logistic/group";
+        if(logisticGroup != null){
+        	if(logisticGroup.creditFlag == "0"){
+        		$('#cashRadio').prop("checked", true);
+        	} else{
+        		$('#creditRadio').prop("checked", true);
+        	}
+        }
         $("#form-group-edit").validate({
             focusCleanup: true
         });

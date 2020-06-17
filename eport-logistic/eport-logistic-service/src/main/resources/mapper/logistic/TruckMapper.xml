@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.TruckMapper">
+    
+    <resultMap type="Truck" id="TruckResult">
+        <result property="id"    column="id"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
+        <result property="plateNumber"    column="plate_number"    />
+        <result property="type"    column="type"    />
+        <result property="wgt"    column="wgt"    />
+        <result property="registryExpiryDate"    column="registry_expiry_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTruckVo">
+        select id, logistic_group_id, plate_number, type, wgt, registry_expiry_date, remark, create_by, create_time, update_by, update_time from truck
+    </sql>
+
+    <select id="selectTruckList" parameterType="Truck" resultMap="TruckResult">
+        <include refid="selectTruckVo"/>
+        <where>  
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="plateNumber != null  and plateNumber != ''"> and plate_number = #{plateNumber}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="registryExpiryDate != null "> and registry_expiry_date = #{registryExpiryDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectTruckById" parameterType="Long" resultMap="TruckResult">
+        <include refid="selectTruckVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTruck" parameterType="Truck" useGeneratedKeys="true" keyProperty="id">
+        insert into truck
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logisticGroupId != null ">logistic_group_id,</if>
+            <if test="plateNumber != null  and plateNumber != ''">plate_number,</if>
+            <if test="type != null  and type != ''">type,</if>
+            <if test="wgt != null ">wgt,</if>
+            <if test="registryExpiryDate != null ">registry_expiry_date,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="logisticGroupId != null ">#{logisticGroupId},</if>
+            <if test="plateNumber != null  and plateNumber != ''">#{plateNumber},</if>
+            <if test="type != null  and type != ''">#{type},</if>
+            <if test="wgt != null ">#{wgt},</if>
+            <if test="registryExpiryDate != null ">#{registryExpiryDate},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTruck" parameterType="Truck">
+        update truck
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
+            <if test="plateNumber != null  and plateNumber != ''">plate_number = #{plateNumber},</if>
+            <if test="type != null  and type != ''">type = #{type},</if>
+            <if test="wgt != null ">wgt = #{wgt},</if>
+            <if test="registryExpiryDate != null ">registry_expiry_date = #{registryExpiryDate},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTruckById" parameterType="Long">
+        delete from truck where id = #{id}
+    </delete>
+
+    <delete id="deleteTruckByIds" parameterType="String">
+        delete from truck where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
