@@ -45,14 +45,14 @@ function loadTable() {
         clientPaging: false,
         pagination: true,
         onClickRow: function () {
-            getSelected();
+            getSelectedShipment();
         },
         pageSize: 50,
         nowrap: false,
         striped: true,
         loadMsg: " Đang xử lý...",
         loader: function (param, success, error) {
-            var opts = $(this).datagrid("options");
+            let opts = $(this).datagrid("options");
             if (!opts.url) return false;
             $.ajax({
                 type: opts.method,
@@ -94,16 +94,16 @@ function loadTable() {
 
 // FORMAT DATE FOR SHIPMENT LIST
 function formatDate(value) {
-    var date = new Date(value);
-    var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    var month = date.getMonth() + 1;
-    var monthText = month < 10 ? "0" + month : month;
+    let date = new Date(value);
+    let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    let month = date.getMonth() + 1;
+    let monthText = month < 10 ? "0" + month : month;
     return day + "/" + monthText + "/" + date.getFullYear();
 }
 
 // HANDLE WHEN SELECT A SHIPMENT
-function getSelected() {
-    var row = $("#dg").datagrid("getSelected");
+function getSelectedShipment() {
+    let row = $("#dg").datagrid("getSelected");
     if (row) {
         shipmentSelected = row;
         $("#batchCode").text(row.id);
@@ -122,9 +122,12 @@ function loadShipmentDetail(id) {
         clientPaging: false,
         nowrap: false,
         striped: true,
+        onClickRows: function () {
+            getSelectedShipment();
+        },
         loadMsg: " Đang xử lý...",
         loader: function (param, success, error) {
-            var opts = $(this).datagrid("options");
+            let opts = $(this).datagrid("options");
             if (!opts.url) return false;
             $.ajax({
                 type: opts.method,
@@ -136,6 +139,7 @@ function loadShipmentDetail(id) {
                 success: function (data) {
                     success(data);
                     $("#dgShipmentDetail").datagrid("hideColumn", "id");
+                    $("#quantity").text(data.total);
                     if ($('#shipmentType').val() == 1) {
                         $("#dgShipmentDetail").datagrid("showColumn", "preorderPickup");
                     } else {
@@ -150,6 +154,19 @@ function loadShipmentDetail(id) {
     });
 }
 
+// HANDLE WHEN SELECT A SHIPMENT
+function getSelectedShipmentDetail() {
+    let row = $("#dg").datagrid("getSelected");
+    if (row) {
+        shipmentSelected = row;
+        $("#batchCode").text(row.id);
+        $("#taxCode").text(row.taxCode);
+        $("#blNo").text(row.blNo);
+        $("#bookingNo").text(row.bookingNo);
+        loadShipmentDetail(row.id);
+    }
+}
+
 function formatPickup(value) {
     if (value != "Y") {
         return "<span class='label label-success'>Có</span>"
@@ -157,8 +174,20 @@ function formatPickup(value) {
     return "<span class='label label-default'>Không</span>"
 }
 
-function pickTruck() {
-    $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + "0");
+function pickTruckForAll() {
+    if ($("#quantity").text() != "0") {
+        $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + "0");
+    } else {
+        $.modal.alertError("Lô này hiện đang trống!");
+    }
+}
+
+function pickTruckForChosenList() {
+    if ($("#quantity").text() != "0") {
+        $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + "0");
+    } else {
+        $.modal.alertError("Quý khách chưa chọn container!");
+    }
 }
 
 
