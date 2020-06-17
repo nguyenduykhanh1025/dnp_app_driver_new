@@ -44,7 +44,7 @@ import java.io.IOException;
 @RequestMapping("/logistic/receiveContFull")
 public class LogisticReceiveContFullController extends LogisticBaseController {
 	
-	private final String prefix = "logistic/receiveContFull";
+	private final String PREFIX = "logistic/receiveContFull";
 
 	@Autowired
 	private IShipmentService shipmentService;
@@ -57,7 +57,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@GetMapping()
 	public String receiveContFull() {
-		return prefix + "/index";
+		return PREFIX + "/index";
 	}
 
 	@GetMapping("/getFieldList")
@@ -105,7 +105,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@GetMapping("/addShipmentForm")
 	public String add(ModelMap mmap) {
 		mmap.put("groupName", getGroup().getGroupName());
-		return prefix + "/add";
+		return PREFIX + "/add";
 	}
 
 	@PostMapping("/checkBlNoUnique")
@@ -139,7 +139,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
 		}
-		return prefix + "/edit";
+		return PREFIX + "/edit";
 	}
 
 	@PostMapping("/editShipment")
@@ -255,7 +255,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				mmap.put("contList", shipmentDetails);
 			}
 		}
-		return prefix + "/checkCustomStatus";
+		return PREFIX + "/checkCustomStatus";
 	}
 
 	@PostMapping("/checkCustomStatus")
@@ -286,7 +286,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
-		return prefix + "/checkContListBeforeVerify";
+		return PREFIX + "/checkContListBeforeVerify";
 	}
 
 	@GetMapping("verifyOtpForm/{shipmentDetailIds}")
@@ -294,7 +294,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
-		return prefix + "/verifyOtp";
+		return PREFIX + "/verifyOtp";
 	}
 
 	@PostMapping("sendOTP")
@@ -376,7 +376,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			mmap.put("bayList", shipmentDetailService.getContPosition(coordinateOfList, shipmentDetails));
 			mmap.put("unitCosts", 20000);
 		}
-		return prefix + "/pickContOnDemand";
+		return PREFIX + "/pickContOnDemand";
 	}
 
 	@PostMapping("/pickContOnDemand")
@@ -402,7 +402,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@GetMapping("paymentForm/{shipmentDetailIds}")
 	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		return prefix + "/paymentForm";
+		return PREFIX + "/paymentForm";
 	}
 
 	@PostMapping("/payment")
@@ -443,7 +443,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		mmap.put("transportIds", transportId);
 		mmap.put("shipmentDetailIds", shipmentIds);
-		return prefix + "/pickTruckForm";
+		return PREFIX + "/pickTruckForm";
 	}
 
 	@PostMapping("/pickTruck")
