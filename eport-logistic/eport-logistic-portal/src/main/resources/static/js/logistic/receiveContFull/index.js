@@ -248,7 +248,7 @@ function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties)
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value != null && value != '') {
     $(td).attr('id', 'consignee' + row).html(value).addClass("htMiddle");
-    if (hot.getDataAtCell(row, 1) != null || hot.getDataAtCell(row, 1) < 3) {
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -260,6 +260,8 @@ function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) 
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value != null && value != '') {
     $(td).attr('id', 'opeCode' + row).html(value).addClass("htMiddle");
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
   } else {
     $(td).html('');
   }
@@ -268,7 +270,7 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
 function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value != null && value != '') {
     $(td).attr('id', 'emptyDepot' + row).html(value).addClass("htMiddle");
-    if (hot.getDataAtCell(row, 1) != null || hot.getDataAtCell(row, 1) < 3) {
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
