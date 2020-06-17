@@ -26,7 +26,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 public class JwtAuthenticationInterceptor extends HandlerInterceptorAdapter {
 
 	protected static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationInterceptor.class);
-	
+
 	@Autowired
 	private CustomUserDetailsService userDetailService;
 
@@ -44,16 +44,23 @@ public class JwtAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		try {
 			if (StringUtils.isNotBlank(token) && TokenUtils.validateToken(token)) {
 				String subject = TokenUtils.getSubjectFromToken(token);
-				
+
 				if (!validatePermission(requestURI, subject)) {
 					logger.debug("Do not permission!");
 					setResponseError(response);
 					return false;
 				}
-				
+
 				CustomUserDetails userDetails = (CustomUserDetails) userDetailService.loadUserByUsername(subject);
 
 				if (userDetails != null) {
+
+					if (!userDetails.isAccountNonExpired() || !userDetails.isAccountNonLocked()
+							|| !userDetails.isCredentialsNonExpired() || !userDetails.isEnabled()) {
+						setResponseError(response);
+						return false;
+					}
+
 					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 							userDetails, null, userDetails.getAuthorities());
 					authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -75,16 +82,16 @@ public class JwtAuthenticationInterceptor extends HandlerInterceptorAdapter {
 			return false;
 		}
 	}
-	
+
 	private Boolean validatePermission(String requestUri, String subject) {
 		try {
 			String perm = subject.split(BusinessConst.BLANK)[1];
-			if (requestUri.toLowerCase().contains(perm.toLowerCase())){
+			if (requestUri.toLowerCase().contains(perm.toLowerCase())) {
 				return true;
-			}else {
+			} else {
 				return false;
 			}
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			return false;
 		}
 	}
