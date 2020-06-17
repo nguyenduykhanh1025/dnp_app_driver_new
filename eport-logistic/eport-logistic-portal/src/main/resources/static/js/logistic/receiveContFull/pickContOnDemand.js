@@ -17,7 +17,7 @@ function confirm() {
                 data: JSON.stringify(preorderPickupConts),
                 dataType: 'text',
                 success: function (data) {
-                    var result = JSON.parse(data);
+                    let result = JSON.parse(data);
                     if (result.code != 0) {
                         $.modal.msgError(result.msg);
                     } else {
@@ -41,11 +41,11 @@ function closeForm() {
 
 var index = 0;
 bayList.forEach(function(bay) {
-    var str = '<div class="bayPosition">';
-    var bayName = "";
-    for (var col=0; col<6; col++) {
+    let str = '<div class="bayPosition">';
+    let bayName = "";
+    for (let col=0; col<6; col++) {
         str += '<div class="columnDiv">';
-        for (var row=4; row>=0; row--) {
+        for (let row=4; row>=0; row--) {
             if (bay[row][col] != null) {
                 bay[row][col].expiredDem = null;
                 bayName = bay[row][col].bay;
@@ -55,7 +55,7 @@ bayList.forEach(function(bay) {
                 } else if (bay[row][col].status > 1) {
                     if (bay[row][col].preorderPickup == "Y") {
                         str += '<div id="cell'+ bay[row][col].id +'" style="background-color: #72ecea;" class="cellDiv" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + true +')">'+ bay[row][col].containerNo +'</div>';
-                        var tableRow = '<tr id="row'+ bay[row][col].id +'"><td width="240px">' + bay[row][col].containerNo + '</td><td id="tdTransport'+ bay[row][col].id +'" width="240px">Đã chỉ định</td><td width="180px"><button onclick="pickTruck('+ bay[row][col].id + ',' + index + ',' + col + ',' + row +')">Điều xe</button></td></tr>';
+                        let tableRow = '<tr id="row'+ bay[row][col].id +'"><td width="240px">' + bay[row][col].containerNo + '</td><td id="tdTransport'+ bay[row][col].id +'" width="240px">Đã chỉ định</td><td width="180px"><button onclick="pickTruck('+ bay[row][col].id + ',' + index + ',' + col + ',' + row +')">Điều xe</button></td></tr>';
                         $("#pickedContList").append(tableRow);
                     } else {
                         str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">'+ bay[row][col].containerNo +'</div>';
@@ -85,7 +85,7 @@ function pickCont(id, row, col, index, isPicked) {
             if (bayList[index][row][col].preorderPickup == "N") {
                 bayList[index][row][col].preorderPickup = "Y";
                 $('#cell'+ id).css("background-color", "#bfe5bf");
-                var tableRow = '<tr id="row'+ id +'"><td width="240px">' + bayList[index][row][col].containerNo + '</td><td id="tdTransport'+ id +'" width="240px"></td><td width="180px"><button onclick="pickTruck('+ id + ',' + index + ',' + col + ',' + row +')">Điều xe</button></td></tr>';
+                let tableRow = '<tr id="row'+ id +'"><td width="240px">' + bayList[index][row][col].containerNo + '</td><td id="tdTransport'+ id +'" width="240px"></td><td width="180px"><button onclick="pickTruck('+ id + ',' + index + ',' + col + ',' + row +')">Điều xe</button></td></tr>';
                 $("#pickedContList").append(tableRow);
             } else {
                 bayList[index][row][col].preorderPickup = "N";
@@ -117,11 +117,11 @@ function finishPickTruck(plateNumber, driverIds) {
 function calculateMovingCont() {
     preorderPickupConts = [];
     moveContAmount = 0;
-    var moveContCol = 0;
-    for (var b=0; b<bayList.length; b++) {
-        var moveContAmountTemp = 0;
-        for (var j=0; j<6; j++) {
-            for (var i=4; i>=0; i--) {
+    let moveContCol = 0;
+    for (let b=0; b<bayList.length; b++) {
+        let moveContAmountTemp = 0;
+        for (let j=0; j<6; j++) {
+            for (let i=4; i>=0; i--) {
                 if (bayList[b][i][j] != null) {
                     if (bayList[b][i][j].preorderPickup == "Y") {
                         preorderPickupConts.push(bayList[b][i][j]);

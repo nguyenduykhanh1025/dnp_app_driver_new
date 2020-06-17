@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -158,6 +159,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	}
 
 	@PostMapping("/saveShipmentDetail")
+	@Transactional
 	@ResponseBody
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
@@ -244,6 +246,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	}
 
 	@GetMapping("checkCustomStatusForm/{shipmentId}")
+	@Transactional
 	public String checkCustomStatus(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
 		mmap.put("shipmentId", shipmentId);
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
@@ -333,6 +336,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	// 	return opt;
 	// }
 	@PostMapping("/verifyOtp")
+	@Transactional
 	@ResponseBody
 	public AjaxResult verifyOtp(String shipmentDetailIds,Long otp) {
 		OtpCode otpCode = new OtpCode();
@@ -406,6 +410,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	}
 
 	@PostMapping("/payment")
+	@Transactional
 	@ResponseBody
 	public AjaxResult payment( String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
@@ -447,6 +452,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	}
 
 	@PostMapping("/pickTruck")
+	@Transactional
 	@ResponseBody
 	public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);

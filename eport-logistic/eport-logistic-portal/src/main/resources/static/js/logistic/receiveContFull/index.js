@@ -85,7 +85,7 @@ function loadTable() {
     striped: true,
     loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
+      let opts = $(this).datagrid("options");
       if (!opts.url) return false;
       $.ajax({
         type: opts.method,
@@ -117,10 +117,10 @@ function loadTable() {
 
 // FORMAT DATE FOR SHIPMENT LIST
 function formatDate(value) {
-  var date = new Date(value);
-  var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-  var month = date.getMonth() + 1;
-  var monthText = month < 10 ? "0" + month : month;
+  let date = new Date(value);
+  let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+  let month = date.getMonth() + 1;
+  let monthText = month < 10 ? "0" + month : month;
   return day + "/" + monthText + "/" + date.getFullYear();
 }
 
@@ -131,7 +131,7 @@ function formatRemark(value) {
 
 // Handle add
 $(function () {
-  var options = {
+  let options = {
     createUrl: prefix + "/addShipmentForm",
     updateUrl: "0",
     modalName: " Lô"
@@ -145,11 +145,11 @@ function handleRefresh() {
 
 // HANDLE WHEN SELECT A SHIPMENT
 function getSelected() {
-  var row = $("#dg").datagrid("getSelected");
+  let row = $("#dg").datagrid("getSelected");
   if (row) {
     shipmentSelected = row;
     $(function () {
-      var options = {
+      let options = {
         createUrl: prefix + "/addShipmentForm",
         updateUrl: prefix + "/editShipmentForm/" + shipmentSelected.id,
         modalName: " Lô"
@@ -173,7 +173,7 @@ function getSelected() {
 // FORMAT HANDSONTABLE COLUMN
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
   if (value != null && value != '') {
-    var content = '';
+    let content = '';
     switch (value) {
       case 1:
         content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="color: rgb(5, 148, 148);"></i>';
@@ -376,7 +376,7 @@ function configHandson() {
     colHeaders: function (col) {
       switch (col) {
         case 0:
-          var txt = "<input type='checkbox' class='checker' ";
+          let txt = "<input type='checkbox' class='checker' ";
           txt += "onclick='checkAll()' ";
           txt += ">";
           return txt;
@@ -587,12 +587,12 @@ function configHandson() {
     afterChange: function (changes, src) {
       //Get data change in cell to render another column
       if (src !== "loadData") {
-        var verifyStatus = false;
-        var paymentStatus = false;
-        var makeOrder = false;
-        var notVerify = false;
+        let verifyStatus = false;
+        let paymentStatus = false;
+        let makeOrder = false;
+        let notVerify = false;
         changes.forEach(function interate(row) {
-          var containerNo;
+          let containerNo;
           if (row[1] == "active" && !isIterate) {
             getDataSelectedFromTable(false, false);
             if (allChecked) {
@@ -603,8 +603,8 @@ function configHandson() {
               checked = false;
             }
             if (shipmentDetails.length > 0) {
-              var status = 1;
-              for (var i=0; i<shipmentDetails.length; i++) {
+              let status = 1;
+              for (let i=0; i<shipmentDetails.length; i++) {
                 console.log(shipmentDetails[i].status);
                 switch (shipmentDetails[i].status) {
                   case 1:
@@ -745,7 +745,7 @@ function loadShipmentDetail(id) {
         if (rowAmount < sourceData.length) {
           sourceData = sourceData.slice(0, rowAmount);
         }
-        var saved = true;
+        let saved = true;
         customStatus = true;
         simpleCustom = false;
         sourceData.forEach(function iterate(shipmentDetail) {
@@ -787,12 +787,12 @@ function reloadShipmentDetail() {
 
 // GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
 function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
-  var myTableData = hot.getSourceData();
-  var errorFlg = false;
+  let myTableData = hot.getSourceData();
+  let errorFlg = false;
   if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
     hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
   }
-  var cleanedGridData = [];
+  let cleanedGridData = [];
   allChecked = true;
   $.each(myTableData, function (rowKey, object) {
     if (!hot.isEmptyRow(rowKey)) {
@@ -809,7 +809,7 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   shipmentDetailIds = "";
   shipmentDetails = [];
   $.each(cleanedGridData, function (index, object) {
-    var shipmentDetail = new Object();
+    let shipmentDetail = new Object();
     if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && isValidate) {
       $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
       errorFlg = true;
@@ -827,7 +827,7 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
     shipmentDetailIds += object["id"]+",";
   });
 
-  // Get result in "selectedList" variable
+  // Get result in "selectedList" letiable
   if (shipmentDetails.length == 0 && isValidate) {
     $.modal.alert("Bạn chưa chọn container.");
     errorFlg = true;
@@ -841,12 +841,12 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
 
 // GET SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
 function getDataFromTable(isValidate) {
-  var myTableData = hot.getSourceData();
-  var errorFlg = false;
+  let myTableData = hot.getSourceData();
+  let errorFlg = false;
   if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
     hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
   }
-  var cleanedGridData = [];
+  let cleanedGridData = [];
   $.each(myTableData, function (rowKey, object) {
     if (!hot.isEmptyRow(rowKey)) {
       cleanedGridData.push(object);
@@ -858,7 +858,7 @@ function getDataFromTable(isValidate) {
   }
   contList = [];
   $.each(cleanedGridData, function (index, object) {
-    var shipmentDetail = new Object();
+    let shipmentDetail = new Object();
     if (isValidate && object["delFlag"] == null) {
       if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"])) {
         $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
@@ -878,7 +878,7 @@ function getDataFromTable(isValidate) {
         return false;
       }
     }
-    var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
+    let expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
     shipmentDetail.blNo = shipmentSelected.blNo;
     shipmentDetail.containerNo = object["containerNo"];
     contList.push(object["containerNo"]);
@@ -899,7 +899,7 @@ function getDataFromTable(isValidate) {
     shipmentDetail.shipmentId = shipmentSelected.id;
     shipmentDetail.id = object["id"];
     shipmentDetails.push(shipmentDetail);
-    var now = new Date();
+    let now = new Date();
     now.setHours(0, 0, 0);
     expiredDem.setHours(23, 59, 59);
     if (expiredDem.getTime() < now.getTime() && isValidate && object["delFlag"] == null) {
@@ -911,7 +911,7 @@ function getDataFromTable(isValidate) {
 
   if (isValidate) {
     contList.sort();
-    var contTemp = "";
+    let contTemp = "";
     $.each(contList, function (index, cont) {
       if (cont != "" && cont == contTemp) {
         $.modal.alertError("Số container không được giống nhau!");

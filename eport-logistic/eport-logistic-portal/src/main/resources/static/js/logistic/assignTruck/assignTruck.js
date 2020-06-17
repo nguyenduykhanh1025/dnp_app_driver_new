@@ -52,7 +52,7 @@ function loadTable() {
         striped: true,
         loadMsg: " Đang xử lý...",
         loader: function (param, success, error) {
-            var opts = $(this).datagrid("options");
+            let opts = $(this).datagrid("options");
             if (!opts.url) return false;
             $.ajax({
                 type: opts.method,
@@ -94,16 +94,16 @@ function loadTable() {
 
 // FORMAT DATE FOR SHIPMENT LIST
 function formatDate(value) {
-    var date = new Date(value);
-    var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    var month = date.getMonth() + 1;
-    var monthText = month < 10 ? "0" + month : month;
+    let date = new Date(value);
+    let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    let month = date.getMonth() + 1;
+    let monthText = month < 10 ? "0" + month : month;
     return day + "/" + monthText + "/" + date.getFullYear();
 }
 
 // HANDLE WHEN SELECT A SHIPMENT
 function getSelectedShipment() {
-    var row = $("#dg").datagrid("getSelected");
+    let row = $("#dg").datagrid("getSelected");
     if (row) {
         shipmentSelected = row;
         $("#batchCode").text(row.id);
@@ -127,7 +127,7 @@ function loadShipmentDetail(id) {
         },
         loadMsg: " Đang xử lý...",
         loader: function (param, success, error) {
-            var opts = $(this).datagrid("options");
+            let opts = $(this).datagrid("options");
             if (!opts.url) return false;
             $.ajax({
                 type: opts.method,
@@ -156,7 +156,7 @@ function loadShipmentDetail(id) {
 
 // HANDLE WHEN SELECT A SHIPMENT
 function getSelectedShipmentDetail() {
-    var row = $("#dg").datagrid("getSelected");
+    let row = $("#dg").datagrid("getSelected");
     if (row) {
         shipmentSelected = row;
         $("#batchCode").text(row.id);
