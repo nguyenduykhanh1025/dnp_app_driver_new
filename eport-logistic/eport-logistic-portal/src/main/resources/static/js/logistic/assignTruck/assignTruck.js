@@ -136,6 +136,7 @@ function loadShipmentDetail(id) {
                 success: function (data) {
                     success(data);
                     $("#dgShipmentDetail").datagrid("hideColumn", "id");
+                    $("#quantity").text(data.total);
                     if ($('#shipmentType').val() == 1) {
                         $("#dgShipmentDetail").datagrid("showColumn", "preorderPickup");
                     } else {
