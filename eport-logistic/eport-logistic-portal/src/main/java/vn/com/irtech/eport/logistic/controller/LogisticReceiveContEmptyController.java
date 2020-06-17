@@ -2,7 +2,9 @@ package vn.com.irtech.eport.logistic.controller;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
@@ -28,7 +31,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 @Controller
 @RequestMapping("/logistic/receiveContEmpty")
-public class LogisticReceiveContEmpty extends LogisticBaseController {
+public class LogisticReceiveContEmptyController extends LogisticBaseController {
     
     private final String prefix = "logistic/receiveContEmpty";
 	
@@ -44,6 +47,37 @@ public class LogisticReceiveContEmpty extends LogisticBaseController {
     @GetMapping()
 	public String sendContEmpty() {
 		return prefix + "/index";
+	}
+
+	@RequestMapping("/getFieldList")
+	@ResponseBody
+	public AjaxResult GetField(){
+		//vesselCode
+		List<String> vesselCodelist = getVesselCodeList();
+		//voyage
+		List<String> voyageList = getVoyageList();
+		//consignee
+		List<String> consigneeList = getConsigneeList();
+		//Truck Co.
+		List<String> truckCoList = getTruckCoList();
+		//Operator Code
+		List<String> operatorCodeList = getOperatorCodeList();
+		//FE
+		List<String> feList = getFeList();
+		//Cargo Type
+		List<String> cargoTypeList = getCargoTypeList();
+		//POD
+		List<String> podList = getPODList();
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("vesselCode", vesselCodelist);
+		ajaxResult.put("voyage", voyageList);
+		ajaxResult.put("consignee", consigneeList);
+		ajaxResult.put("truckCo", truckCoList);
+		ajaxResult.put("opr", operatorCodeList);
+		ajaxResult.put("fe", feList);
+		ajaxResult.put("cargoType", cargoTypeList);
+		ajaxResult.put("pod", podList);
+		return ajaxResult;
 	}
 	
     @RequestMapping("/listShipment")
@@ -233,6 +267,9 @@ public class LogisticReceiveContEmpty extends LogisticBaseController {
 					shipmentDetail.setProcessStatus("Y");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 				}
+				JSONObject data = new JSONObject();
+				data.put("something", "something");
+				sendDataToTopic(data.toString(), "receive_cont_empty_order");
 				return success("Xác thực OTP thành công");
 			}
 		}

@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -25,6 +26,7 @@ import org.springframework.web.client.RestTemplate;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
@@ -35,19 +37,12 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.utils.R;
 
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 
 
 @Controller
 @RequestMapping("/logistic/receiveContFull")
-public class LogisticReceiveContFull extends LogisticBaseController {
+public class LogisticReceiveContFullController extends LogisticBaseController {
 	
 	private final String prefix = "logistic/receiveContFull";
 
@@ -65,6 +60,37 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		return prefix + "/index";
 	}
 
+	@RequestMapping("/getFieldList")
+	@ResponseBody
+	public AjaxResult GetField(){
+		//vesselCode
+		List<String> vesselCodelist = getVesselCodeList();
+		//voyage
+		List<String> voyageList = getVoyageList();
+		//consignee
+		List<String> consigneeList = getConsigneeList();
+		//Truck Co.
+		List<String> truckCoList = getTruckCoList();
+		//Operator Code
+		List<String> operatorCodeList = getOperatorCodeList();
+		//FE
+		List<String> feList = getFeList();
+		//Cargo Type
+		List<String> cargoTypeList = getCargoTypeList();
+		//POD
+		List<String> podList = getPODList();
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("vesselCode", vesselCodelist);
+		ajaxResult.put("voyage", voyageList);
+		ajaxResult.put("consignee", consigneeList);
+		ajaxResult.put("truckCo", truckCoList);
+		ajaxResult.put("opr", operatorCodeList);
+		ajaxResult.put("fe", feList);
+		ajaxResult.put("cargoType", cargoTypeList);
+		ajaxResult.put("pod", podList);
+		return ajaxResult;
+	}
+	
 	@RequestMapping("/listShipment")
 	@ResponseBody
 	public TableDataInfo listShipment(final Shipment shipment) {
@@ -126,6 +152,16 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	public String add(final ModelMap mmap) {
 		mmap.put("groupName", getGroup().getGroupName());
 		return prefix + "/add";
+	}
+
+	@PostMapping("/checkBlNoUnique")
+	@ResponseBody
+	public AjaxResult checkBlNoUnique(Shipment shipment) {
+		shipment.setServiceId(1);
+		if (shipmentService.checkBillNoIsUnique(shipment) == 0) {
+			return success();
+		}
+		return error();
 	}
 
 	@PostMapping("/addShipment")
@@ -325,13 +361,13 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 
 		final String contentabc = "Lam lenh lay cont la  " + rD;
 		String response = "";
-		try {
+		// try {
 
-			response = postOtpMessage(contentabc);
-			System.out.println(response);
-		} catch (final IOException ex) {
-			// process the exception
-		}
+		// 	response = postOtpMessage(contentabc);
+		// 	System.out.println(response);
+		// } catch (final IOException ex) {
+		// 	// process the exception
+		// }
 
 		return AjaxResult.success(response.toString());
 	}
@@ -363,6 +399,9 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 					shipmentDetail.setProcessStatus("Y");
 					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 				}
+				JSONObject data = new JSONObject();
+				data.put("something", "something");
+				sendDataToTopic(data.toString(), "receive_cont_full_order");
 				return success("Xác thực OTP thành công");
 			}
 		}
@@ -373,42 +412,33 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 	public String pickContOnDemand(@PathVariable("blNo") final String blNo, final ModelMap mmap) {
 		final ShipmentDetail shipmentDt = new ShipmentDetail();
 		shipmentDt.setBlNo(blNo);
-		final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
 		//Get coordinate from catos test
 		String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers";
 		RestTemplate restTemplate = new RestTemplate();
 		R r = restTemplate.postForObject(url,shipmentDt , R.class);
-		List<ShipmentDetail> coordinateOfList = (List<ShipmentDetail>) r.get("data");
+		List<LinkedHashMap> coordinateOfList = (List<LinkedHashMap>) r.get("data");
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			// simulating the location of container in da nang port, mapping to matrix
-			final List<ShipmentDetail[][]> bayList = new ArrayList<>();
-			final String bay1 = "AB123";
-			int row1 = 1;
-			int tier1 = 1;
-			final String bay2 = "AB124";
-			int row2 = 1;
-			int tier2 = 1;
-			boolean next = true;
+			List<ShipmentDetail[][]> bayList = new ArrayList<>();
 			for (final ShipmentDetail shipmentDetail : shipmentDetails) {
-				if (next) {
-					if (tier1 == 6) {
-						tier1 = 1;
-						row1++;
+				for (int i=0; i<coordinateOfList.size(); i++) {
+					if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).get("containerNo"))) {
+						shipmentDetail.setBay(coordinateOfList.get(i).get("bay").toString());
+						shipmentDetail.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
+						shipmentDetail.setTier(Integer.parseInt(coordinateOfList.get(i).get("tier").toString()));
+						coordinateOfList.remove(i);
+						i--;
 					}
-					shipmentDetail.setBay(bay1);
-					shipmentDetail.setRow(row1);
-					shipmentDetail.setTier(tier1++);
-					next = false;
-				} else {
-					if (tier2 == 6) {
-						tier2 = 1;
-						row2++;
-					}
-					shipmentDetail.setBay(bay2);
-					shipmentDetail.setRow(row2);
-					shipmentDetail.setTier(tier2++);
-					next = true;
 				}
+			}
+
+			for (int i=0; i<coordinateOfList.size(); i++) {
+				ShipmentDetail shipmentDetail2 = new ShipmentDetail();
+				shipmentDetail2.setBay(coordinateOfList.get(i).get("bay").toString());
+				shipmentDetail2.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
+				shipmentDetail2.setTier(Integer.parseInt(coordinateOfList.get(i).get("tier").toString()));
+				shipmentDetails.add(shipmentDetail2);
 			}
 
 			// Mapping container to matrix by location row, tier, bay
@@ -439,37 +469,32 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 		if (preorderPickupConts.size() > 0) {
 			final ShipmentDetail shipmentDt = new ShipmentDetail();
 			shipmentDt.setBlNo(preorderPickupConts.get(0).getBlNo());
-			final List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+			String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers";
+			RestTemplate restTemplate = new RestTemplate();
+			R r = restTemplate.postForObject(url, shipmentDt, R.class);
+			List<LinkedHashMap> coordinateOfList = (List<LinkedHashMap>) r.get("data");
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				// simulating the location of container in da nang port
-				final List<ShipmentDetail[][]> bayList = new ArrayList<>();
-				final String bay1 = "AB123";
-				int row1 = 1;
-				int tier1 = 1;
-				final String bay2 = "AB124";
-				int row2 = 1;
-				int tier2 = 1;
-				boolean next = true;
+				// simulating the location of container in da nang port, mapping to matrix
+				List<ShipmentDetail[][]> bayList = new ArrayList<>();
 				for (final ShipmentDetail shipmentDetail : shipmentDetails) {
-					if (next) {
-						if (tier1 == 6) {
-							tier1 = 1;
-							row1++;
+					for (int i = 0; i < coordinateOfList.size(); i++) {
+						if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).get("containerNo"))) {
+							shipmentDetail.setBay(coordinateOfList.get(i).get("bay").toString());
+							shipmentDetail.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
+							shipmentDetail.setTier(Integer.parseInt(coordinateOfList.get(i).get("tier").toString()));
+							coordinateOfList.remove(i);
+							i--;
 						}
-						shipmentDetail.setBay(bay1);
-						shipmentDetail.setRow(row1);
-						shipmentDetail.setTier(tier1++);
-						next = false;
-					} else {
-						if (tier2 == 6) {
-							tier2 = 1;
-							row2++;
-						}
-						shipmentDetail.setBay(bay2);
-						shipmentDetail.setRow(row2);
-						shipmentDetail.setTier(tier2++);
-						next = true;
 					}
+				}
+
+				for (int i = 0; i < coordinateOfList.size(); i++) {
+					ShipmentDetail shipmentDetail2 = new ShipmentDetail();
+					shipmentDetail2.setBay(coordinateOfList.get(i).get("bay").toString());
+					shipmentDetail2.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
+					shipmentDetail2.setTier(Integer.parseInt(coordinateOfList.get(i).get("tier").toString()));
+					shipmentDetails.add(shipmentDetail2);
 				}
 
 				// Mapping container to matrix by location row, tier, bay
@@ -506,6 +531,7 @@ public class LogisticReceiveContFull extends LogisticBaseController {
 								movingContAmountTemp++;
 							}
 						}
+						movingContAmountTemp = 0;
 					}
 				}
 

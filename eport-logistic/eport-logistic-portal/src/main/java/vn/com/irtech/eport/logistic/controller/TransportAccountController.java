@@ -76,7 +76,7 @@ public class TransportAccountController extends LogisticBaseController
         transportAccount.setLogisticGroupId(currentUser.getGroupId());
         transportAccount.setLogisticGroup(logisticGroup);
         transportAccount.setFullName(transportAccount.getFullName().toLowerCase());
-        transportAccount.setPlateNumber(transportAccount.getPlateNumber().toLowerCase());
+//        transportAccount.setPlateNumber(transportAccount.getPlateNumber().toLowerCase());
         List<TransportAccount> list = transportAccountService.selectTransportAccountList(transportAccount);
         return getDataTable(list);
     }
@@ -231,14 +231,14 @@ public class TransportAccountController extends LogisticBaseController
                 transportAccount.setDelFlag(false);
                 transportAccount.setCreateBy(user.getFullName());
                 transportAccount.setStatus("1");
-                transportAccount.setExternalRentStatus("1");
+                //transportAccount.setExternalRentStatus("1");
                 transportAccount.setLogisticGroupId(user.getGroupId());
                 transportAccount.setSalt(ShiroUtils.randomSalt());
                 transportAccount.setPassword(passwordService.encryptPassword(transportAccount.getMobileNumber(), transportAccount.getPassword(), transportAccount.getSalt()));
                 transportAccountService.insertTransportAccount(transportAccount);
             }
             TransportAccount transportAccount = new TransportAccount();
-            transportAccount.setExternalRentStatus("1");
+            //transportAccount.setExternalRentStatus("1");
             transportAccount.setLogisticGroupId(user.getGroupId());
             return transportAccountService.selectTransportAccountList(transportAccount);
         }

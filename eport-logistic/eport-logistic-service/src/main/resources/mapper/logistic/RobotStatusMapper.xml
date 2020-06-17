@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.RobotStatusMapper">
+    
+    <resultMap type="RobotStatus" id="RobotStatusResult">
+        <result property="id"    column="id"    />
+        <result property="seviceId"    column="sevice_id"    />
+        <result property="activeFlag"    column="active_flag"    />
+    </resultMap>
+
+    <sql id="selectRobotStatusVo">
+        select id, sevice_id, active_flag from robot_status
+    </sql>
+
+    <select id="selectRobotStatusList" parameterType="RobotStatus" resultMap="RobotStatusResult">
+        <include refid="selectRobotStatusVo"/>
+        <where>  
+            <if test="seviceId != null "> and sevice_id = #{seviceId}</if>
+            <if test="activeFlag != null  and activeFlag != ''"> and active_flag = #{activeFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectRobotStatusById" parameterType="Integer" resultMap="RobotStatusResult">
+        <include refid="selectRobotStatusVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRobotStatus" parameterType="RobotStatus" useGeneratedKeys="true" keyProperty="id">
+        insert into robot_status
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="seviceId != null ">sevice_id,</if>
+            <if test="activeFlag != null  and activeFlag != ''">active_flag,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="seviceId != null ">#{seviceId},</if>
+            <if test="activeFlag != null  and activeFlag != ''">#{activeFlag},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRobotStatus" parameterType="RobotStatus">
+        update robot_status
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="seviceId != null ">sevice_id = #{seviceId},</if>
+            <if test="activeFlag != null  and activeFlag != ''">active_flag = #{activeFlag},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRobotStatusById" parameterType="Integer">
+        delete from robot_status where id = #{id}
+    </delete>
+
+    <delete id="deleteRobotStatusByIds" parameterType="String">
+        delete from robot_status where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

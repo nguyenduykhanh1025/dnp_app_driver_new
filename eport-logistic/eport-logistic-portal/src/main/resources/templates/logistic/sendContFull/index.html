@@ -7,6 +7,15 @@
     <th:block th:include="include :: handsontable-css" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+    <style>
+      .finish-color {
+        color: #3498db;
+      }
+
+      .ongoing-color {
+        color: rgb(5, 148, 148);
+      }
+    </style>
   </head>
   <body>
     <div id="wrapper">
@@ -27,6 +36,7 @@
             <thead>
               <tr>
                 <th data-options="field:'id'" width="1"></th>
+                <th data-options="field:'containerAmount'" width="1"></th>
                 <th data-options="field:'taxCode',halign:'center'" width="100">MST</th>
                 <th data-options="field:'containerAmount',align:'right',halign:'center'" width="70">Số Cont</th>
                 <th data-options="field:'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="80">Ngày tạo</th>
@@ -67,7 +77,7 @@
             <button id="deleteBtn" class="btn btn-sm btn-primary" onclick="deleteShipmentDetail()" disabled>Xóa</button>
             <button id="verifyBtn" class="btn btn-sm btn-primary" onclick="verify()" disabled>Xác Thực</button>
             <button id="payBtn" class="btn btn-sm btn-primary" onclick="pay()" disabled>Thanh Toán</button>
-            <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruck()" disabled>Điều Xe</button>
+            <!-- <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruck()" disabled>Điều Xe</button> -->
           </div>
           <div class="search-bar">
             <button id="exportBillBtn" class="btn btn-sm btn-success" onclick="exportBill()" disabled>Xuất Hóa Đơn</button>

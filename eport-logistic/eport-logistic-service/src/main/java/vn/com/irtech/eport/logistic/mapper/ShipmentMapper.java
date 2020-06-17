@@ -60,4 +60,6 @@ public interface ShipmentMapper
     public int deleteShipmentByIds(String[] ids);
 
     public Shipment selectShipmentWithGroupById(Long id);
+
+    public int checkBillNoIsUnique(Shipment shipment);
 }

@@ -102,7 +102,10 @@ public class CacheUtils
      */
     public static void put(String cacheName, String key, Object value)
     {
-        getCache(cacheName).put(getKey(key), value);
+    	 Cache<String, Object> cache = getCache(cacheName);
+    	 if (cache != null) {
+    		 cache.put(getKey(key), value);
+    	 }
     }
 
     /**
@@ -176,6 +179,9 @@ public class CacheUtils
      */
     private static Cache<String, Object> getCache(String cacheName)
     {
+    	if (cacheManager == null) {
+			return null;
+		}
         Cache<String, Object> cache = cacheManager.getCache(cacheName);
         if (cache == null)
         {

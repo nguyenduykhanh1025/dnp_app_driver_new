@@ -60,4 +60,6 @@ public interface IShipmentService
     public int deleteShipmentById(Long id);
 
     public Shipment selectShipmentWithGroupById(Long  id);
+
+    public int checkBillNoIsUnique(Shipment shipment);
 }

@@ -36,7 +36,7 @@ function loadTable() {
 			  isAsc: param.order,
 			  groupName: $('#groupName').val() == null ? "" : $('#groupName').val(),
 			  fullName: $('#fullName').val() == null ? "" : $('#fullName').val(),
-			  plateNumber: $('#plateNumber').val() == null ? "" : $('#plateNumber').val(),
+//			  plateNumber: $('#plateNumber').val() == null ? "" : $('#plateNumber').val(),
 			  mobileNumber: $('#mobileNumber').val() == null ? "" : $('#mobileNumber').val(),
 			  validDate: $('#validDate').val() == null ? "" : $('#validDate').val(),
 	        },
@@ -76,9 +76,9 @@ function formatDate(value) {
 
 function formatStatus(value) {
   if (value != 0) {
-    return "<span class='label label-default'>Khóa</span>"
+    return "<span class='label label-success'>Khóa</span>"
   }
-  return "<span class='label label-success'>Hoạt động</span>"
+  return "<span class='label label-default'>Không</span>"
 }
 function formatExternalRent(value){
 	  if (value != 0) {
@@ -137,28 +137,28 @@ function resetPwd(id) {
 function reset(){
 	$('#groupName').val("");
 	$('#fullName').val("");
-	$('#plateNumber').val("");
+//	$('#plateNumber').val("");
 	$('#mobileNumber').val("");
 	$('#validDate').val("");
 }
-document.getElementById("groupName").addEventListener("keyup", function (event) {
-	  event.preventDefault();
-	  if (event.keyCode === 13) {
-	    $("#searchBtn").click();
-	  }
-	});
+//document.getElementById("groupName").addEventListener("keyup", function (event) {
+//	  event.preventDefault();
+//	  if (event.keyCode === 13) {
+//	    $("#searchBtn").click();
+//	  }
+//	});
 document.getElementById("fullName").addEventListener("keyup", function (event) {
 	  event.preventDefault();
 	  if (event.keyCode === 13) {
 	    $("#searchBtn").click();
 	  }
 	});
-document.getElementById("plateNumber").addEventListener("keyup", function (event) {
-	  event.preventDefault();
-	  if (event.keyCode === 13) {
-	    $("#searchBtn").click();
-	  }
-	});
+//document.getElementById("plateNumber").addEventListener("keyup", function (event) {
+//	  event.preventDefault();
+//	  if (event.keyCode === 13) {
+//	    $("#searchBtn").click();
+//	  }
+//	});
 document.getElementById("mobileNumber").addEventListener("keyup", function (event) {
 	  event.preventDefault();
 	  if (event.keyCode === 13) {
