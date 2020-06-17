@@ -163,6 +163,7 @@
             },
             success: function (data) {
               $.modal.alertSuccess(data);
+              $.modal.reload();
             },
             error: function (data) {
               $.modal.alertError(data);

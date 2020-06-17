@@ -294,7 +294,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
       <select id="selectBlList" parameterType="String" resultType="String">
         select distinct bl_no from shipment_detail
-        where bl_no like concat('%', #{keyString}, '%') limit 5
+        where do_status = 'N' and bl_no like concat('%', #{keyString}, '%') limit 5
     </select>
        <update id="updateDoStatusShipmentDetail" parameterType="ShipmentDetail">
         update shipment_detail
