@@ -34,5 +34,42 @@ public class UpdatePaymentStatusController extends BaseController{
         return prefix + "/updatePayment";
     }
 
+    @GetMapping("/getOptionSearch")
+    @ResponseBody
+    public AjaxResult getOptionSearch(String keyString) {
+        List<String> blNo = shipmentDetailService.getBlListByPaymentStatus(keyString);
+        return AjaxResult.success(blNo);
+    }
+
+    @GetMapping("/getShipmentDetail")
+    @ResponseBody
+    public TableDataInfo getShipmentDetail( int pageNum, int pageSize,String blNo) {
+        Map<String, Object> pageInfo = new HashMap<>();
+        pageInfo.put("pageNum", (pageNum - 1 ) * pageSize);
+        pageInfo.put("pageSize", pageSize);
+        ShipmentDetail shipmentDetail = new ShipmentDetail();
+        shipmentDetail.setPaymentStatus("N");
+        if(blNo != null)
+        {
+            shipmentDetail.setBlNo(blNo);
+        }
+        shipmentDetail.setParams(pageInfo);
+        List<ShipmentDetail> shipmentDetailList = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+        TableDataInfo dataList = getDataTable(shipmentDetailList);
+        long total = shipmentDetailService.countShipmentDetailList(shipmentDetail);
+        dataList.setTotal(total);
+        return dataList;
+    }
+
+    @GetMapping("/updatePaymentStatus")
+    @ResponseBody
+    public AjaxResult updateStatusDo(String blNo)
+    {
+        ShipmentDetail shipmentDetail = new ShipmentDetail();
+        shipmentDetail.setPaymentStatus("Y");
+        shipmentDetail.setBookingNo(blNo);
+        shipmentDetailService.updateStatusShipmentDetail(shipmentDetail);
+        return AjaxResult.success("Cập nhật thành công");
+    }
     
 }

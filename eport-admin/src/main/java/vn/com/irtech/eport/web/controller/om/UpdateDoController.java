@@ -34,10 +34,10 @@ public class UpdateDoController extends BaseController{
         return prefix + "/updateDO";
     }
 
-    @GetMapping("/getOptionSearch")
+    @GetMapping("/getOptionSearchDo")
     @ResponseBody
     public AjaxResult getOptionSearch(String keyString) {
-        List<String> blNo = shipmentDetailService.selectBlList(keyString);
+        List<String> blNo = shipmentDetailService.getBlListByDoStatus(keyString);
         return AjaxResult.success(blNo);
     }
 
@@ -68,7 +68,7 @@ public class UpdateDoController extends BaseController{
         ShipmentDetail shipmentDetail = new ShipmentDetail();
         shipmentDetail.setDoStatus("Y");
         shipmentDetail.setBookingNo(blNo);
-        shipmentDetailService.updateDoStatusShipmentDetail(shipmentDetail);
+        shipmentDetailService.updateStatusShipmentDetail(shipmentDetail);
         return AjaxResult.success("Cập nhật thành công");
     }
 }

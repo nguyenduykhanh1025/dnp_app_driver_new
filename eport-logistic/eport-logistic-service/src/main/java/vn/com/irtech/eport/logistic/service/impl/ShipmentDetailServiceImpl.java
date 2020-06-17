@@ -110,9 +110,15 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     }
 
     @Override
-    public List<String> selectBlList(String keyString)
+    public List<String> getBlListByDoStatus(String keyString)
     {
-        return shipmentDetailMapper.selectBlList(keyString);
+        return shipmentDetailMapper.getBlListByDoStatus(keyString);
+    }
+
+    @Override
+    public List<String> getBlListByPaymentStatus(String keyString)
+    {
+        return shipmentDetailMapper.getBlListByPaymentStatus(keyString);
     }
 
     public long countShipmentDetailList(ShipmentDetail shipmentDetail)
@@ -120,9 +126,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
         return shipmentDetailMapper.countShipmentDetailList(shipmentDetail);
     }
 
-    public int updateDoStatusShipmentDetail(ShipmentDetail shipmentDetail)
+    public int updateStatusShipmentDetail(ShipmentDetail shipmentDetail)
     {
-        return shipmentDetailMapper.updateDoStatusShipmentDetail(shipmentDetail);
+        return shipmentDetailMapper.updateStatusShipmentDetail(shipmentDetail);
     }
     /**
      * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id

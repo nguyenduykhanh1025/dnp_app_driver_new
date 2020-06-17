@@ -292,15 +292,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         
     </select>
 
-      <select id="selectBlList" parameterType="String" resultType="String">
+    <select id="getBlListByDoStatus" parameterType="String" resultType="String">
         select distinct bl_no from shipment_detail
         where do_status = 'N' and bl_no like concat('%', #{keyString}, '%') limit 5
     </select>
-       <update id="updateDoStatusShipmentDetail" parameterType="ShipmentDetail">
+    <select id="getBlListByPaymentStatus" parameterType="String" resultType="String">
+        select distinct bl_no from shipment_detail
+        where payment_status = 'N' and bl_no like concat('%', #{keyString}, '%') limit 5
+    </select>
+       <update id="updateStatusShipmentDetail" parameterType="ShipmentDetail">
         update shipment_detail
         <trim prefix="SET" suffixOverrides=",">
             <if test="doStatus != null  and doStatus != ''">do_status = #{doStatus},</if>
             <if test="doReceivedTime != null  and doReceivedTime != ''">do_received_time = #{doReceivedTime},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''">payment_status = #{paymentStatus},</if>
         </trim>
         where bl_no = #{bookingNo}
     </update>  
