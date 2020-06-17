@@ -117,6 +117,7 @@ function finishPickTruck(plateNumber, driverIds) {
 function calculateMovingCont() {
     preorderPickupConts = [];
     moveContAmount = 0;
+    var moveContCol = 0;
     for (var b=0; b<bayList.length; b++) {
         var moveContAmountTemp = 0;
         for (var j=0; j<6; j++) {
@@ -124,13 +125,13 @@ function calculateMovingCont() {
                 if (bayList[b][i][j] != null) {
                     if (bayList[b][i][j].preorderPickup == "Y") {
                         preorderPickupConts.push(bayList[b][i][j]);
-                        moveContAmount += moveContAmountTemp;
-                        moveContAmountTemp = 0;
-                    } else {
-                        moveContAmountTemp++;
+                        moveContCol = moveContAmountTemp;
                     }
+                    moveContAmountTemp++;
                 }
             }
+            moveContAmount += moveContCol;
+            moveContCol = 0;
             moveContAmountTemp = 0;
         }
     }

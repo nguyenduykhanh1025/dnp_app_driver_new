@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
@@ -75,4 +76,24 @@ public interface IShipmentDetailService
      * @return result
      */
     public List<ShipmentWaitExec> selectListShipmentWaitExec();
+
+	public List<String> getVesselCodeList();
+    
+	public List<String> getConsigneeList();
+    
+	public List<String> getTruckCoList();
+    
+	public List<String> getVoyageList();
+    
+	public List<String> getOperatorCodeList();
+    
+	public List<String> getFeList();
+    
+	public List<String> getCargoTypeList();
+    
+    public List<String> getPODList();
+
+    public List<ShipmentDetail[][]> getContPosition(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> shipmentDetails);
+    
+    public boolean calculateMovingCont(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails);
 }

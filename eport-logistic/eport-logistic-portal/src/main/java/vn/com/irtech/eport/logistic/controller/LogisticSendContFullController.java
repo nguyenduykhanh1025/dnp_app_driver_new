@@ -47,24 +47,24 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return prefix + "/index";
 	}
 	
-	@RequestMapping("/getFieldList")
-	@ResponseBody
-	public AjaxResult GetField(){
-		//vesselCode
-		List<String> vesselCodelist = getVesselCodeList();
-		//voyage
-		List<String> voyageList = getVoyageList();
-		//consignee
-		List<String> consigneeList = getConsigneeList();
-		//Truck Co.
-		List<String> truckCoList = getTruckCoList();
-		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("vesselCode", vesselCodelist);
-		ajaxResult.put("voyage", voyageList);
-		ajaxResult.put("consignee", consigneeList);
-		ajaxResult.put("truckCo", truckCoList);
-		return ajaxResult;
-	}
+	// @RequestMapping("/getFieldList")
+	// @ResponseBody
+	// public AjaxResult GetField(){
+	// 	//vesselCode
+	// 	List<String> vesselCodelist = getVesselCodeList();
+	// 	//voyage
+	// 	List<String> voyageList = getVoyageList();
+	// 	//consignee
+	// 	List<String> consigneeList = getConsigneeList();
+	// 	//Truck Co.
+	// 	List<String> truckCoList = getTruckCoList();
+	// 	AjaxResult ajaxResult = AjaxResult.success();
+	// 	ajaxResult.put("vesselCode", vesselCodelist);
+	// 	ajaxResult.put("voyage", voyageList);
+	// 	ajaxResult.put("consignee", consigneeList);
+	// 	ajaxResult.put("truckCo", truckCoList);
+	// 	return ajaxResult;
+	// }
 
     @RequestMapping("/listShipment")
 	@ResponseBody
