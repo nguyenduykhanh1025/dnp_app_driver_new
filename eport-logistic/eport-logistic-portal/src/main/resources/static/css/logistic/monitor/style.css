@@ -36,3 +36,13 @@
 .c-loadmore:hover {
   text-decoration: underline;
 }
+
+.c-search-zone {
+  margin-bottom: 10px;
+}
+
+.c-btn-search {
+  margin-left: 2px !important;
+  height: 28px;
+  line-height: 14px;
+}

@@ -3,11 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <th:block th:include="include :: header('Giám sát')" />
+    <th:block th:include="include :: select2-css" />
     <link th:href="@{/css/logistic/monitor/style.css}" rel="stylesheet" />
   </head>
   <body class="bg-white">
     <div class="p-main-div">
       <div class="p-list-items row">
+        <div class="c-search-zone col-md-12">
+          <div class="input-group">
+            <select class="form-control c-search-box">
+              <option></option>
+            </select>
+            <span class="input-group-btn">
+              <button class="btn btn-default c-btn-search" type="button"><i class="fa fa-search"></i></button>
+            </span>
+          </div>
+        </div>
         <div class="c-item col-md-12" onclick="setCenterMap(16.077450, 108.212149)">
           <div class="col-md-4"><span>Tên tài xế:</span></div>
           <div class="col-md-8"><span>Nguyễn Văn A</span></div>
@@ -96,11 +107,51 @@
     </div>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcB5jZhTfANWzYViExPpf7NeEl_jq0T3Q&libraries=places&&language=vi&callback=initMap" async defer></script>
-    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: monitor-view" />
+    <th:block th:include="include :: select2-js" />
     <script type="text/javascript">
       "use strict";
       $(document).ready(function () {
         $("#c-map").height($(window).height() - 70);
+        $(".c-search-box").select2({
+          placeholder: "Nhập biển số xe",
+          allowClear: true,
+          minimumInputLength: 2,
+          ajax: {
+            url: "/logistic/transportMonitor/searchTruck",
+            dataType: "json",
+            method: "GET",
+            data: function (params) {
+              return {
+                keyWord: params.term,
+              };
+            },
+            processResults: function (data) {
+              /* 
+              Data return must be
+              results = [
+                {
+                  "id": 1,
+                  "text": "label display"
+                },
+                 {
+                  "id": 2,
+                  "text": "label display"
+                }
+              ]
+            */
+              let results = [
+                {
+                  id: 1,
+                  text: "hello I'm result one",
+                },
+              ];
+              return {
+                results: results,
+              };
+            },
+          },
+        });
       });
       var map;
       var locations = [
