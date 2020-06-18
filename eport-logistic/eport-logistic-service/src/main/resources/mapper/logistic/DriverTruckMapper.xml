@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.DriverTruckMapper">
+    
+    <resultMap type="DriverTruck" id="DriverTruckResult">
+        <result property="id"    column="id"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="truckId"    column="truck_id"    />
+    </resultMap>
+
+    <sql id="selectDriverTruckVo">
+        select id, driver_id, truck_id from driver_truck
+    </sql>
+
+    <select id="selectDriverTruckList" parameterType="DriverTruck" resultMap="DriverTruckResult">
+        <include refid="selectDriverTruckVo"/>
+        <where>  
+            <if test="driverId != null "> and driver_id = #{driverId}</if>
+            <if test="truckId != null  and truckId != ''"> and truck_id = #{truckId}</if>
+        </where>
+    </select>
+    
+    <select id="selectDriverTruckById" parameterType="Long" resultMap="DriverTruckResult">
+        <include refid="selectDriverTruckVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDriverTruck" parameterType="DriverTruck" useGeneratedKeys="true" keyProperty="id">
+        insert into driver_truck
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="driverId != null ">driver_id,</if>
+            <if test="truckId != null  and truckId != ''">truck_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="driverId != null ">#{driverId},</if>
+            <if test="truckId != null  and truckId != ''">#{truckId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDriverTruck" parameterType="DriverTruck">
+        update driver_truck
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="driverId != null ">driver_id = #{driverId},</if>
+            <if test="truckId != null  and truckId != ''">truck_id = #{truckId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDriverTruckById" parameterType="Long">
+        delete from driver_truck where id = #{id}
+    </delete>
+
+    <delete id="deleteDriverTruckByIds" parameterType="String">
+        delete from driver_truck where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
