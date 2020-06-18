@@ -43,13 +43,13 @@ function loadTable() {
   }
 // **********************************
 function getSelected() {
-    var row = $("#dg").datagrid("getSelected");
+    let row = $("#dg").datagrid("getSelected");
     if (row) {
-      Selected = row.id;
+      let selected = row.id;
       $(function() {
         var options = {
           createUrl: prefix + "/add",
-          updateUrl: prefix + "/edit/" + Selected,
+          updateUrl: prefix + "/edit/" + selected,
           modalName: " Đội Xe"
         };
         $.table.init(options);

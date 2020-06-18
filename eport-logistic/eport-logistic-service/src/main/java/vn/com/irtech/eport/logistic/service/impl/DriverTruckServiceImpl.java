@@ -23,13 +23,13 @@ public class DriverTruckServiceImpl implements IDriverTruckService
     /**
      * Get driver_truck
      * 
-     * @param id driver_truckID
+     * @param driverId driver_truckID
      * @return driver_truck
      */
     @Override
-    public DriverTruck selectDriverTruckById(Long id)
+    public DriverTruck selectDriverTruckById(Long driverId)
     {
-        return driverTruckMapper.selectDriverTruckById(id);
+        return driverTruckMapper.selectDriverTruckById(driverId);
     }
 
     /**
@@ -83,12 +83,12 @@ public class DriverTruckServiceImpl implements IDriverTruckService
     /**
      * Delete driver_truck
      * 
-     * @param id driver_truckID
+     * @param driverId driver_truckID
      * @return result
      */
     @Override
-    public int deleteDriverTruckById(Long id)
+    public int deleteDriverTruckById(Long driverId)
     {
-        return driverTruckMapper.deleteDriverTruckById(id);
+        return driverTruckMapper.deleteDriverTruckById(driverId);
     }
 }

@@ -67,7 +67,7 @@ public class TruckController extends LogisticBaseController
     @ResponseBody
     public AjaxResult addSave(Truck truck)
     {
-    	truck.setLogisticGroupId(TruckController.this.getUser().getGroupId());
+    	truck.setLogisticGroupId(getUser().getGroupId());
     	truck.setPlateNumber(truck.getPlateNumber().trim().toUpperCase());
     	if(truckService.checkPlateNumberUnique(truck.getPlateNumber()) > 0) {
     		error("Biển số xe này đã tồn tại!");

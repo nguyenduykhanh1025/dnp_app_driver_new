@@ -14,11 +14,10 @@ CREATE TABLE IF NOT EXISTS `truck`(
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Truck';
 
 CREATE TABLE IF NOT EXISTS `driver_truck`(
-    `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
     `driver_id` bigint(20) NOT NULL COMMENT 'ID tài xế',
-    `truck_id` varchar(100) NOT NULL COMMENT 'truck_id',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='driver_truck';
+    `truck_id` bigint(20) NOT NULL COMMENT 'truck_id',
+    PRIMARY KEY (`driver_id`,`truck_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='driver_truck';
 
 CREATE TABLE IF NOT EXISTS `assign`(
     `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',

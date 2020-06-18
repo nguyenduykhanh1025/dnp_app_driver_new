@@ -14,10 +14,10 @@ public interface DriverTruckMapper
     /**
      * Get driver_truck
      * 
-     * @param id driver_truckID
+     * @param driverId driver_truckID
      * @return driver_truck
      */
-    public DriverTruck selectDriverTruckById(Long id);
+    public DriverTruck selectDriverTruckById(Long driverId);
 
     /**
      * Get driver_truck List
@@ -46,16 +46,16 @@ public interface DriverTruckMapper
     /**
      * Delete driver_truck
      * 
-     * @param id driver_truckID
+     * @param driverId driver_truckID
      * @return result
      */
-    public int deleteDriverTruckById(Long id);
+    public int deleteDriverTruckById(Long driverId);
 
     /**
      * Batch Delete driver_truck
      * 
-     * @param ids IDs
+     * @param driverIds IDs
      * @return result
      */
-    public int deleteDriverTruckByIds(String[] ids);
+    public int deleteDriverTruckByIds(String[] driverIds);
 }
