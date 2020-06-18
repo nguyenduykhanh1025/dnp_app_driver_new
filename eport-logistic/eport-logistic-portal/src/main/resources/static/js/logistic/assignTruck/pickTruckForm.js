@@ -39,30 +39,30 @@ setTimeout(() => {
     }).done(function(data) {
         if (data != null) {
             driverList = data;
-            var transportArr;
+            let transportArr;
             if (transportIds.length != 0) {
                 transportArr = transportIds.split(",");
-                for (var i=0; i<data.length; i++) {
-                    var check = true;
-                    for (var j=0; j<transportArr.length; j++) {
+                for (let i=0; i<data.length; i++) {
+                    let check = true;
+                    for (let j=0; j<transportArr.length; j++) {
                         if(data[i].id == transportArr[j]) {
                             externalTransport.push(data[i]);
                             check = false;
-                            var tableRow = '<tr id="pickedTransport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="externalCheckbox' + data[i].id +'" onclick="externalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
+                            let tableRow = '<tr id="pickedTransport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="externalCheckbox' + data[i].id +'" onclick="externalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
                             $("#pickedTruckList").append(tableRow);
                             break;
                         }
                     }
                     if (check) {
                         internalTransport.push(data[i]);
-                        var tableRow = '<tr id="transport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="internalCheckbox' + data[i].id +'" onclick="internalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
+                        let tableRow = '<tr id="transport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="internalCheckbox' + data[i].id +'" onclick="internalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
                         $("#transportList").append(tableRow);
                     }
                 }
             } else {
-                for (var i=0; i<data.length; i++) {
+                for (let i=0; i<data.length; i++) {
                     externalTransport.push(data[i]);
-                    var tableRow = '<tr id="pickedTransport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="externalCheckbox' + data[i].id +'" onclick="externalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
+                    let tableRow = '<tr id="pickedTransport'+ data[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="externalCheckbox' + data[i].id +'" onclick="externalCheck()"/></td><td width="' + plateNumberField + '">' + data[i].plateNumber + '</td><td width="' + mobileNumberField + '">' + data[i].mobileNumber + '</td><td width="' + fullNameField + '">' + data[i].fullName + '</td></tr>';
                     $("#pickedTruckList").append(tableRow);
                 }
             }
@@ -97,7 +97,7 @@ function Init(){
 }
 function pickTruckWithoutExternal() {
     if (externalTransport.length > 0) {
-        var ids = "";
+        let ids = "";
         externalTransport.forEach(function(driver) {
             ids += driver.id + ",";
         });
@@ -146,9 +146,9 @@ function pickTruckWithExternal() {
             data: JSON.stringify(externalDriverList),
             dataType: 'text',
             success: function (data) {
-                var result = JSON.parse(data);
+                let result = JSON.parse(data);
                 if (result.length > 0) {
-                    var ids = "";
+                    let ids = "";
                     result.forEach(function(driver) {
                         ids += driver.id + ",";
                     });
@@ -199,9 +199,9 @@ function pickTruckWithExternal() {
 }
 
 function validateInput() {
-    var error = false;
+    let error = false;
     externalDriverList = [];
-    for (var i=0; i<number; i++) {
+    for (let i=0; i<number; i++) {
         if ($("#numberPlate" + i).val() == "" || $("#numberPhone" + i).val() == "" || $("#name" + i).val() == "" || $("#pass" + i).val() == "") {
             $.modal.alertError("Quý khách chưa nhập đủ thông tin cho xe<br>thuê ngoài.");
             error = true;
@@ -217,12 +217,12 @@ function validateInput() {
             error = true;
             break;
         }
-        var object = new Object();
+        let object = new Object();
         object.plateNumber = $("#numberPlate" + i).val();
         object.mobileNumber = $("#numberPhone" + i).val();
         object.fullName = $("#name" + i).val();
         object.password = $("#pass" + i).val();
-        var now = new Date();
+        let now = new Date();
         object.validDate = now.setDate(now.getDate() + 7);
         externalDriverList.push(object);
     }
@@ -253,13 +253,13 @@ function exterDeliveryTab() {
 }
 
 function transferInToOut() {
-    var size = internalTransport.length;
-    var i = 0;
+    let size = internalTransport.length;
+    let i = 0;
     while (i < size) {
         if ($("#internalCheckbox" + internalTransport[i].id).prop("checked")) {
             externalTransport.push(internalTransport[i]);
             $("#transport"+internalTransport[i].id).remove();
-            var tableRow = '<tr id="pickedTransport'+ internalTransport[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="externalCheckbox' + internalTransport[i].id +'" onclick="internalCheck()"/></td><td width="' + plateNumberField + '">' + internalTransport[i].plateNumber + '</td><td width="' + mobileNumberField +'">' + internalTransport[i].mobileNumber + '</td><td width="' + fullNameField +'">' + internalTransport[i].fullName + '</td></tr>';
+            let tableRow = '<tr id="pickedTransport'+ internalTransport[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="externalCheckbox' + internalTransport[i].id +'" onclick="internalCheck()"/></td><td width="' + plateNumberField + '">' + internalTransport[i].plateNumber + '</td><td width="' + mobileNumberField +'">' + internalTransport[i].mobileNumber + '</td><td width="' + fullNameField +'">' + internalTransport[i].fullName + '</td></tr>';
             $("#pickedTruckList").append(tableRow);
             internalTransport.splice(i, 1);
             size--;
@@ -273,13 +273,13 @@ function transferInToOut() {
 }
 
 function transferOutToIn() {
-    var size = externalTransport.length;
-    var i = 0;
+    let size = externalTransport.length;
+    let i = 0;
     while (i < size) {
         if ($("#externalCheckbox" + externalTransport[i].id).prop("checked")) {
             internalTransport.push(externalTransport[i]);
             $("#pickedTransport"+externalTransport[i].id).remove();
-            var tableRow = '<tr id="transport'+ externalTransport[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="internalCheckbox' + externalTransport[i].id +'" onclick="externalCheck()"/></td><td width="' + plateNumberField + '">' + externalTransport[i].plateNumber + '</td><td width="' + mobileNumberField +'">' + externalTransport[i].mobileNumber + '</td><td width="' + fullNameField +'">' + internalTransport[i].fullName + '</td></tr>';
+            let tableRow = '<tr id="transport'+ externalTransport[i].id +'"><td width="' + checkField + '"><input type="checkbox" id="internalCheckbox' + externalTransport[i].id +'" onclick="externalCheck()"/></td><td width="' + plateNumberField + '">' + externalTransport[i].plateNumber + '</td><td width="' + mobileNumberField +'">' + externalTransport[i].mobileNumber + '</td><td width="' + fullNameField +'">' + internalTransport[i].fullName + '</td></tr>';
             $("#truckList").append(tableRow);
             externalTransport.splice(i, 1);
             size--;
@@ -294,12 +294,12 @@ function transferOutToIn() {
 function checkAllInternal() {
     if (isCheckAllInternal) {
         isCheckAllInternal = false;
-        for (var i=0; i<internalTransport.length; i++) {
+        for (let i=0; i<internalTransport.length; i++) {
             $("#internalCheckbox" + internalTransport[i].id).prop("checked", false);
         }
     } else {
         isCheckAllInternal = true;
-        for (var i=0; i<internalTransport.length; i++) {
+        for (let i=0; i<internalTransport.length; i++) {
             $("#internalCheckbox" + internalTransport[i].id).prop("checked", true);
         }
     }
@@ -308,12 +308,12 @@ function checkAllInternal() {
 function checkAllExternal() {
     if (isCheckAllExternal) {
         isCheckAllExternal = false;
-        for (var i=0; i<externalTransport.length; i++) {
+        for (let i=0; i<externalTransport.length; i++) {
             $("#externalCheckbox" + externalTransport[i].id).prop("checked", false);
         }
     } else {
         isCheckAllExternal = true;
-        for (var i=0; i<externalTransport.length; i++) {
+        for (let i=0; i<externalTransport.length; i++) {
             $("#externalCheckbox" + externalTransport[i].id).prop("checked", true);
         }
     }
@@ -321,7 +321,7 @@ function checkAllExternal() {
 
 function internalCheck() {
     isCheckAllInternal = true;
-    for (var i=0; i<internalTransport.length; i++) {
+    for (let i=0; i<internalTransport.length; i++) {
         if (!$("#internalCheckbox" + internalTransport[i].id).prop("checked")) {
             isCheckAllInternal = false;
             break;
@@ -336,7 +336,7 @@ function internalCheck() {
 
 function externalCheck() {
     isCheckAllExternal = true;
-    for (var i=0; i<externalTransport.length; i++) {
+    for (let i=0; i<externalTransport.length; i++) {
         if (!$("#externalCheckbox" + externalTransport[i].id).prop("checked")) {
             isCheckAllExternal = false;
             break;
@@ -350,12 +350,12 @@ function externalCheck() {
 }
 
 $("#inputExternalRentNumber").keypress(function (event) {
-    var keycode = (event.keyCode ? event.keyCode : event.which);
+    let keycode = (event.keyCode ? event.keyCode : event.which);
     if (keycode == '13') {
         event.preventDefault();
         number = parseInt($("#inputExternalRentNumber").val(), 10);
-        var externalDriver = '';
-        for (var i = 0; i < number; i++) {
+        let externalDriver = '';
+        for (let i = 0; i < number; i++) {
             externalDriver += '<tr><td width="' + sttExternalField + '" style="padding: 0;">'+i+'</td><td width="' + plateNumberExternalField + '" style="padding: 0;"><input id="numberPlate' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="' + mobileNumberExternalField + '" style="padding: 0;"><input id="numberPhone' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="' + fullNameExternalField + '" style="padding: 0;"><input id="name' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td><td width="' + pwdExternalField + '" style="padding: 0;"><input id="pass' + i + '"type="text" style="width: 100%; box-sizing: border-box;"/></td></tr>'
         }
         $("#externalInputList").html(externalDriver);

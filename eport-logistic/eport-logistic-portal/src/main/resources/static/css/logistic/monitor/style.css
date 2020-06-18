@@ -1,0 +1,48 @@
+.p-main-div {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+#c-map {
+  border: 20px solid #f1f1f2;
+  border-radius: 15px;
+  box-shadow: 5px 6px 6px black;
+  width: 80%;
+  height: 500px;
+  margin-bottom: 20px;
+}
+.p-list-items {
+  width: 20%;
+  border: 1px solid #dde;
+  padding: 10px;
+}
+.c-item {
+  border: 1px solid #000;
+  padding: 5px;
+  border-radius: 5px;
+  max-height: 80px;
+  overflow-y: auto;
+  margin-bottom: 5px;
+}
+.c-item:hover {
+  cursor: pointer;
+  box-shadow: 1px 2px 2px black;
+  background-color: #eee;
+}
+.c-loadmore {
+  font-weight: bolder;
+  cursor: pointer;
+}
+.c-loadmore:hover {
+  text-decoration: underline;
+}
+
+.c-search-zone {
+  margin-bottom: 10px;
+}
+
+.c-btn-search {
+  margin-left: 2px !important;
+  height: 28px;
+  line-height: 14px;
+}

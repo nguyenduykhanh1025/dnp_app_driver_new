@@ -1,10 +1,232 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <th:block th:include="include :: header('Giám sát')" />
+    <th:block th:include="include :: select2-css" />
+    <link th:href="@{/css/logistic/monitor/style.css}" rel="stylesheet" />
+  </head>
+  <body class="bg-white">
+    <div class="p-main-div">
+      <div class="p-list-items row">
+        <div class="c-search-zone col-md-12">
+          <div class="input-group">
+            <select class="form-control c-search-box">
+              <option></option>
+            </select>
+            <span class="input-group-btn">
+              <button class="btn btn-default c-btn-search" type="button"><i class="fa fa-search"></i></button>
+            </span>
+          </div>
+        </div>
+        <div class="c-item col-md-12" onclick="setCenterMap(16.077450, 108.212149)">
+          <div class="col-md-4"><span>Tên tài xế:</span></div>
+          <div class="col-md-8"><span>Nguyễn Văn A</span></div>
+          <div class="col-md-4"><span>Biển số xe:</span></div>
+          <div class="col-md-8"><span>43A - 254.526</span></div>
+          <div class="col-md-4"><span>Container:</span></div>
+          <div class="col-md-8"><span>NO 123456789</span></div>
+        </div>
+        <div class="c-item col-md-12">
+          <div class="col-md-4"><span>Tên tài xế:</span></div>
+          <div class="col-md-8"><span>Nguyễn Văn A</span></div>
+          <div class="col-md-4"><span>Biển số xe:</span></div>
+          <div class="col-md-8"><span>43A - 254.526</span></div>
+          <div class="col-md-4"><span>Container:</span></div>
+          <div class="col-md-8"><span>NO 123456789</span></div>
+        </div>
+        <div class="c-item col-md-12">
+          <div class="col-md-4"><span>Tên tài xế:</span></div>
+          <div class="col-md-8"><span>Nguyễn Văn A</span></div>
+          <div class="col-md-4"><span>Biển số xe:</span></div>
+          <div class="col-md-8"><span>43A - 254.526</span></div>
+          <div class="col-md-4"><span>Container:</span></div>
+          <div class="col-md-8"><span>NO 123456789</span></div>
+        </div>
+        <div class="c-item col-md-12">
+          <div class="col-md-4"><span>Tên tài xế:</span></div>
+          <div class="col-md-8"><span>Nguyễn Văn A</span></div>
+          <div class="col-md-4"><span>Biển số xe:</span></div>
+          <div class="col-md-8"><span>43A - 254.526</span></div>
+          <div class="col-md-4"><span>Container:</span></div>
+          <div class="col-md-8"><span>NO 123456789</span></div>
+        </div>
+        <div class="c-item col-md-12">
+          <div class="col-md-4"><span>Tên tài xế:</span></div>
+          <div class="col-md-8"><span>Nguyễn Văn A</span></div>
+          <div class="col-md-4"><span>Biển số xe:</span></div>
+          <div class="col-md-8"><span>43A - 254.526</span></div>
+          <div class="col-md-4"><span>Container:</span></div>
+          <div class="col-md-8"><span>NO 123456789</span></div>
+        </div>
+        <div class="c-item col-md-12">
+          <div class="col-md-4"><span>Tên tài xế:</span></div>
+          <div class="col-md-8"><span>Nguyễn Văn A</span></div>
+          <div class="col-md-4"><span>Biển số xe:</span></div>
+          <div class="col-md-8"><span>43A - 254.526</span></div>
+          <div class="col-md-4"><span>Container:</span></div>
+          <div class="col-md-8"><span>NO 123456789</span></div>
+        </div>
+        <div class="c-item col-md-12">
+          <div class="col-md-4"><span>Tên tài xế:</span></div>
+          <div class="col-md-8"><span>Nguyễn Văn A</span></div>
+          <div class="col-md-4"><span>Biển số xe:</span></div>
+          <div class="col-md-8"><span>43A - 254.526</span></div>
+          <div class="col-md-4"><span>Container:</span></div>
+          <div class="col-md-8"><span>NO 123456789</span></div>
+        </div>
+        <div class="c-item col-md-12">
+          <div class="col-md-4"><span>Tên tài xế:</span></div>
+          <div class="col-md-8"><span>Nguyễn Văn A</span></div>
+          <div class="col-md-4"><span>Biển số xe:</span></div>
+          <div class="col-md-8"><span>43A - 254.526</span></div>
+          <div class="col-md-4"><span>Container:</span></div>
+          <div class="col-md-8"><span>NO 123456789</span></div>
+        </div>
+        <div class="c-item col-md-12">
+          <div class="col-md-4"><span>Tên tài xế:</span></div>
+          <div class="col-md-8"><span>Nguyễn Văn A</span></div>
+          <div class="col-md-4"><span>Biển số xe:</span></div>
+          <div class="col-md-8"><span>43A - 254.526</span></div>
+          <div class="col-md-4"><span>Container:</span></div>
+          <div class="col-md-8"><span>NO 123456789</span></div>
+        </div>
+        <div class="c-item col-md-12">
+          <div class="col-md-4"><span>Tên tài xế:</span></div>
+          <div class="col-md-8"><span>Nguyễn Văn A</span></div>
+          <div class="col-md-4"><span>Biển số xe:</span></div>
+          <div class="col-md-8"><span>43A - 254.526</span></div>
+          <div class="col-md-4"><span>Container:</span></div>
+          <div class="col-md-8"><span>NO 123456789</span></div>
+        </div>
+        <div class="col-md-12 text-center">
+          <span class="c-loadmore"><i class="fa fa-angle-double-down" aria-hidden="true"></i>&nbsp;Thêm</span>
+        </div>
+      </div>
+      <div id="c-map"></div>
+    </div>
 
-</body>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBcB5jZhTfANWzYViExPpf7NeEl_jq0T3Q&libraries=places&&language=vi&callback=initMap" async defer></script>
+    <th:block th:include="include :: monitor-view" />
+    <th:block th:include="include :: select2-js" />
+    <script type="text/javascript">
+      "use strict";
+      $(document).ready(function () {
+        $("#c-map").height($(window).height() - 70);
+        $(".c-search-box").select2({
+          placeholder: "Nhập biển số xe",
+          allowClear: true,
+          minimumInputLength: 2,
+          ajax: {
+            url: "/logistic/transportMonitor/searchTruck",
+            dataType: "json",
+            method: "GET",
+            data: function (params) {
+              return {
+                keyWord: params.term,
+              };
+            },
+            processResults: function (data) {
+              /* 
+              Data return must be
+              results = [
+                {
+                  "id": 1,
+                  "text": "label display"
+                },
+                 {
+                  "id": 2,
+                  "text": "label display"
+                }
+              ]
+            */
+              let results = [
+                {
+                  id: 1,
+                  text: "hello I'm result one",
+                },
+              ];
+              return {
+                results: results,
+              };
+            },
+          },
+        });
+      });
+      var map;
+      var locations = [
+        ["Anh Tai", "43A-253.254", "Cont 123456", "16.076146", "108.21415"],
+        ["Anh Tai 2", "43A-523.124", "Cont 98732164", "16.077450", "108.212149"],
+        ["Anh Tai 3", "43A-525.124", "Cont 98732164", "16.068599", "108.213801"],
+      ];
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("c-map"), {
+          center: { lat: Number(16.047079), lng: Number(108.20623) },
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          zoom: 13,
+        });
+        let image = {
+          url: "/img/truck32x32.png",
+          size: new google.maps.Size(32, 32),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(16, 16),
+        };
+
+        let shape = {
+          coords: [1, 1, 1, 25, 20, 25, 20, 1],
+          type: "poly",
+        };
+        for (let i = 0; i < locations.length; i++) {
+          let location = new google.maps.LatLng(locations[i][3], locations[i][4]);
+          let driverName = locations[i][0];
+          let plate = locations[i][1];
+          let contNo = locations[i][2];
+          var marker = new google.maps.Marker({
+            position: location,
+            map: map,
+            icon: image,
+            shape: shape,
+            animation: google.maps.Animation.DROP,
+            title: plate,
+            html:
+              "    <div>\n" +
+              "		<h2>Thông tin chi tiết</h2>" +
+              '        <table class="table table-striped">\n' +
+              "			<tr>" +
+              "			<td>Tài xế: " +
+              "</td>" +
+              "			<td>" +
+              driverName +
+              "</td></tr>" +
+              "			<tr><td>Biển số: " +
+              "</td>" +
+              "			<td>" +
+              plate +
+              "</td></tr>" +
+              "			</tr>" +
+              "            <tr>\n" +
+              "                <td>Container:</td>\n" +
+              "                <td> " +
+              contNo +
+              " </td></tr>\n" +
+              "        </table>\n" +
+              "    </div>",
+          });
+          bindMarkerinfo(marker);
+        }
+      }
+      var bindMarkerinfo = function (marker) {
+        google.maps.event.addListener(marker, "click", function (point) {
+          let infowindow = new google.maps.InfoWindow();
+          infowindow.setContent(marker.html);
+          infowindow.open(map, marker);
+        });
+      };
+      function setCenterMap(lat, lng) {
+        let location = new google.maps.LatLng(lat, lng);
+        map.setZoom(16);
+        map.panTo(location);
+      }
+    </script>
+  </body>
 </html>
