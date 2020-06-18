@@ -39,6 +39,9 @@ public class Truck extends BaseEntity
     @Excel(name = "Hạn đăng kiểm", width = 30, dateFormat = "yyyy-MM-dd")
     private Date registryExpiryDate;
 
+    /** Delete Flag(default 0) */
+    private boolean delFlag;
+    
     public void setId(Long id) 
     {
         this.id = id;
@@ -94,6 +97,15 @@ public class Truck extends BaseEntity
         return registryExpiryDate;
     }
 
+    public void setDelFlag(boolean delFlag) 
+    {
+        this.delFlag = delFlag;
+    }
+
+    public boolean getDelFlag() 
+    {
+        return delFlag;
+    }
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -103,6 +115,7 @@ public class Truck extends BaseEntity
             .append("type", getType())
             .append("wgt", getWgt())
             .append("registryExpiryDate", getRegistryExpiryDate())
+            .append("delFlag", getDelFlag())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

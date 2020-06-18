@@ -1,7 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.util.List;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,9 +13,7 @@ import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.Truck;
 import vn.com.irtech.eport.logistic.service.ITruckService;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
-import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 /**
@@ -27,7 +24,7 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
  */
 @Controller
 @RequestMapping("/logistic/truck")
-public class TruckController extends BaseController
+public class TruckController extends LogisticBaseController
 {
     private String prefix = "logistic/truck";
 
@@ -48,21 +45,9 @@ public class TruckController extends BaseController
     public TableDataInfo list(Truck truck)
     {
         startPage();
+        truck.setDelFlag(false);
         List<Truck> list = truckService.selectTruckList(truck);
         return getDataTable(list);
-    }
-
-    /**
-     * Export Truck List
-     */
-    @Log(title = "Truck", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    @ResponseBody
-    public AjaxResult export(Truck truck)
-    {
-        List<Truck> list = truckService.selectTruckList(truck);
-        ExcelUtil<Truck> util = new ExcelUtil<Truck>(Truck.class);
-        return util.exportExcel(list, "truck");
     }
 
     /**
@@ -82,6 +67,11 @@ public class TruckController extends BaseController
     @ResponseBody
     public AjaxResult addSave(Truck truck)
     {
+    	truck.setLogisticGroupId(TruckController.this.getUser().getGroupId());
+    	truck.setPlateNumber(truck.getPlateNumber().trim().toUpperCase());
+    	if(truckService.checkPlateNumberUnique(truck.getPlateNumber()) > 0) {
+    		error("Biển số xe này đã tồn tại!");
+    	}
         return toAjax(truckService.insertTruck(truck));
     }
 
@@ -104,9 +94,12 @@ public class TruckController extends BaseController
     @ResponseBody
     public AjaxResult editSave(Truck truck)
     {
+    	truck.setPlateNumber(truck.getPlateNumber().trim().toUpperCase());
+    	if(truckService.checkPlateNumberUnique(truck.getPlateNumber()) > 1) {
+    		error("Biển số xe này đã tồn tại!");
+    	}
         return toAjax(truckService.updateTruck(truck));
     }
-
     /**
      * Delete Truck
      */
@@ -115,6 +108,6 @@ public class TruckController extends BaseController
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        return toAjax(truckService.deleteTruckByIds(ids));
+        return toAjax(truckService.updateDelFlagByIds(ids));
     }
 }
