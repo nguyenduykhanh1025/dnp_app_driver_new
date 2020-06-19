@@ -197,6 +197,7 @@ public class SysEDIController extends BaseController
 					obj.put("buildNo", s);
 					edi.setBuildNo(s);
 				}
+				listObj.add(obj);
 			}
 			//businessUnit
 			if(s.contains("UNB+UNOA"))
