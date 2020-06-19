@@ -1,6 +1,11 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
+
+=======
+>>>>>>> 986ddb0e9450887e343fe8a9057236777a3d78c4
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -11,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.Truck;
 import vn.com.irtech.eport.logistic.service.ITruckService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -109,5 +115,26 @@ public class TruckController extends LogisticBaseController
     public AjaxResult remove(String ids)
     {
         return toAjax(truckService.updateDelFlagByIds(ids));
+    }
+    
+    @GetMapping("/searchPlaceNumberByKeyword")
+    @ResponseBody
+    public List<JSONObject> searchPlaceNumberByKeyword(String keyword){
+    	Truck truck = new Truck();
+    	truck.setLogisticGroupId(getUser().getGroupId());
+    	truck.setPlateNumber(keyword);
+    	List<Truck> list = truckService.selectTruckList(truck);
+    	List<JSONObject> result = new ArrayList<>();
+    	if(list.size() > 0) {
+        	for(Truck i : list) {
+        		JSONObject jsonObject = new JSONObject();
+        		jsonObject.put("id", i.getId());
+        		jsonObject.put("text", i.getPlateNumber());
+        		result.add(jsonObject);
+        	}
+    	}else {
+    		return null;
+    	}
+    	return result;
     }
 }

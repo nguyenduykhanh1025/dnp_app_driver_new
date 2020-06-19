@@ -7,21 +7,25 @@ import java.util.regex.Pattern;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.logistic.domain.DriverTruck;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.TransportAccount;
+import vn.com.irtech.eport.logistic.service.IDriverTruckService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.ITransportAccountService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -29,6 +33,7 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.core.text.Convert;
 
 /**
  * Driver login infoController
@@ -51,7 +56,9 @@ public class TransportAccountController extends LogisticBaseController
     
     @Autowired
     private SysPasswordService passwordService;
-
+    
+    @Autowired
+    private IDriverTruckService driverTruckService;
     @GetMapping()
     public String account()
     {
@@ -243,5 +250,32 @@ public class TransportAccountController extends LogisticBaseController
             return transportAccountService.selectTransportAccountList(transportAccount);
         }
         return null;
+    }
+    /**
+     * Update Truck
+     */
+    @GetMapping("/driverTruck/{id}")
+    public String driverTruck(@PathVariable("id") Long id, ModelMap mmap)
+    {
+        //mmap.put("transportAccount", transportAccountService.selectTransportAccountById(id));
+        mmap.put("driverTruck", driverTruckService.selectDriverTruckById(id));
+        return prefix + "/driverTruck";
+    }
+
+    @PostMapping("/truckAssign")
+    @ResponseBody
+    @Transactional
+    public AjaxResult addDriverTruck(String[] truckIds, Long id){
+        if(truckIds == null || id == null){
+            return error();
+        } else{
+            for (String i : truckIds) {
+                DriverTruck driverTruck = new DriverTruck();
+                driverTruck.setDriverId(id);
+                driverTruck.setTruckId(Long.parseLong(i));
+                driverTruckService.insertDriverTruck(driverTruck);
+            }
+            return success();
+        }
     }
 }
