@@ -94,7 +94,7 @@ public interface IShipmentDetailService
 
     public QueueOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 
-    public boolean makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
+    public List<QueueOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
 
-    public boolean makeOrderSendContFull(List<ShipmentDetail> shipmentDetails);
+    public QueueOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 }

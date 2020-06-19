@@ -24,9 +24,11 @@ import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.QueueOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IQueueOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
@@ -44,6 +46,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 	@Autowired
 	private IOtpCodeService otpCodeService;
+
+	@Autowired
+	private IQueueOrderService queueOrderService;
 
     @GetMapping()
 	public String sendContEmpty() {
@@ -269,7 +274,10 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService
 					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				if (shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails)) {
+				List<QueueOrder> queueOrders = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails);
+				if (queueOrders != null) {
+					queueOrderService.insertQueueOrderList(queueOrders);
+					// 
 					return success("Xác thực OTP thành công");
 				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
