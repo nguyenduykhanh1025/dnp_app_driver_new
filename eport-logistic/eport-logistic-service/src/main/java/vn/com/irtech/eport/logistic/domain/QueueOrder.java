@@ -241,6 +241,14 @@ public class QueueOrder extends BaseEntity
         return sizeType;
     }
 
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -261,6 +269,7 @@ public class QueueOrder extends BaseEntity
             .append("beforeAfter", getBeforeAfter())
             .append("bookingNo", getBookingNo())
             .append("sizeType", getSizeType())
+            .append("serviceId", getServiceId())
             .toString();
     }
 }
