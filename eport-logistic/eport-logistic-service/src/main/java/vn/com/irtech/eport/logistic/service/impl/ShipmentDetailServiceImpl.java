@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.commons.collections4.QueueUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -387,11 +388,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     }
 
     @Transactional
-    public boolean makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
+    public List<QueueOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
         if (shipmentDetails.size() > 0) {
             Collections.sort(shipmentDetails, new SztpComparator());
             String sztp = shipmentDetails.get(0).getSztp();
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
+            List<QueueOrder> queueOrders = new ArrayList<>();
+            QueueOrder queueOrder = new QueueOrder();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (sztp.equals(shipmentDetail.getSztp())) {
                     shipmentOrderList.add(shipmentDetail);
@@ -399,8 +402,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
                     for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
                         shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
                         shipmentDetail2.setUserVerifyStatus("Y");
-                        // shipmentDetail2.setProcessStatus("Y");
-                        // shipmentDetail2.setStatus(3);
                         shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
                     }
                 }
@@ -408,18 +409,29 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
             for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
                 shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
                 shipmentDetail2.setUserVerifyStatus("Y");
-                // shipmentDetail2.setProcessStatus("Y");
-                // shipmentDetail2.setStatus(3);
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
             }
-            return true;
+            return queueOrders;
         }
-        return false;
+        return null;
     }
 
     @Override
-    public boolean makeOrderSendContFull(List<ShipmentDetail> shipmentDetails) {
+    public QueueOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
         if (shipmentDetails.size() > 0) {
+            QueueOrder queueOrder = new QueueOrder();
+            queueOrder.setTaxCode(shipment.getTaxCode());
+            if ("0".equals(isCredit)) {
+                queueOrder.setPayType("Cash");
+                queueOrder.setInvoiceType("200");
+                queueOrder.setInvoiceTemplate("Dịch vụ hạ container - CASH");
+                queueOrder.setContNumber(shipmentDetails.size());
+                queueOrder.setVessel(shipmentDetails.get(0).getVslNm());
+                queueOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+                queueOrder.setYear("2020");
+                queueOrder.setBeforeAfter("Before");
+                queueOrder.setId(shipmentDetails.get(0).getId());
+            }
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
                 shipmentDetail.setUserVerifyStatus("Y");
@@ -427,9 +439,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
                 // shipmentDetail.setStatus(3);
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
-            return true;
+            return queueOrder;
         }
-        return false;
+        return null;
     }
 
 

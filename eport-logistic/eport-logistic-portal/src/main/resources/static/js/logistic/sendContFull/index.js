@@ -18,8 +18,8 @@ var customStatus;
 var rowAmount = 0;
 var sourceData;
 var opeCodeList = ["CMC", "AVS", "QEW"];
-var vslNmList = ["SDF", "SDA", "EQW"];
-var voyNoList = ["2342", "3221", "1542"];
+var vslNmList = ["SDF", "SDA", "EQW", "HABE"];
+var voyNoList = ["2342", "3221", "1542", "0235"];
 var sizeList = ["20G0", "22G0", "40G0", "45G0"];
 var dischargePortList = [
     "VNDAD:Da Nang",
@@ -411,16 +411,10 @@ function configHandson() {
                 case 10:
                     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
                 case 11:
-                    return "VGM";
-                case 12:
-                    return "Đơn Vị Kiểm Định";
-                case 13:
-                    return "Max Gross(Tấn)";
-                case 14:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 100, 100, 100, 100, 100, 100, 150, 150, 100, 130, 100, 200],
+        colWidths: [50, 100, 100, 100, 100, 100, 100, 100, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -459,6 +453,8 @@ function configHandson() {
             },
             {
                 data: "voyNo",
+                type: "autocomplete",
+                source: voyNoList,
                 strict: true,
                 renderer: voyNoRenderer
             },
@@ -488,21 +484,6 @@ function configHandson() {
                 type: "autocomplete",
                 source: dischargePortList,
                 renderer: dischargePortRenderer
-            },
-            {
-                data: "vgmChk",
-                type: "checkbox",
-                className: "htCenter",
-            },
-            {
-                data: "vgmPersonInfo",
-                strict: true,
-                renderer: vgmPersonInfoRenderer
-            },
-            {
-                data: "vgm",
-                strict: true,
-                renderer: vgmRenderer
             },
             {
                 data: "remark",
@@ -561,17 +542,7 @@ function configHandson() {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
-                case 12:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "vgmPersonInfo")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 13:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 3 || $(TD).attr("id").substring(0, 3) != "vgm")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 14:
+                case 11:
                     if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
                         hot.setDataAtCell(row, column, '');
                     }
@@ -843,6 +814,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.voyNo = object["voyNo"];
         shipmentDetail.dischargePort = object["dischargePort"];
         shipmentDetail.transportType = object["transportType"];
+        shipmentDetail.cargoType = object["cargoType"];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
