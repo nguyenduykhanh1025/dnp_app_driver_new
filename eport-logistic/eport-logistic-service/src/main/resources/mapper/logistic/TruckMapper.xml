@@ -26,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectTruckList" parameterType="Truck" resultMap="TruckResult">
         <include refid="selectTruckVo"/>
         <where>  
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="delFlag != null"> and del_flag = #{delFlag}</if>
             <if test="plateNumber != null  and plateNumber != ''"> and plate_number like concat('%', #{plateNumber}, '%')</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>

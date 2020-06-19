@@ -21,7 +21,7 @@
               
             </div>
             <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-              <button id="btnReceiverDo" class="btn btn-primary" disabled title="Xác nhận" onclick='receiverDo()'>Đã nhận DO gốc</button>
+              <button id="btnReceiverDo" class="btn btn-primary" disabled title="Xác nhận" onclick='printQrCode()'>In QR Code</button>
             </div>
           </div>
         </div>
@@ -38,8 +38,8 @@
                 <th data-options="field:'FE',halign:'center'">F/E</th>
                 <th data-options="field:'sealNo',halign:'center',align:'center'" sortable="true">Seal Number</th>                
                 <th data-options="field:'emptyContainerDepot',halign:'center'">Nơi hạ rỗng</th>
-                <th data-options="field:'doStatus',align:'center'">
-                  Trạng thái nhận DO gốc
+                <th data-options="field:'paymentStatus',align:'center'">
+                  Đã thanh toán
                 </th>
                 <th data-options="field:'vessel',align:'center'" width="10%">
                   Tên tàu<br />Vessel
@@ -69,5 +69,6 @@
     <th:block th:include="include :: easyui-js" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
   </body>
-  <script th:src="@{/eport/js/modules/om/updateDO/updateDO.js}"></script>
+  <script th:src="@{/eport/js/modules/om/printQrCode/printQrCode.js}"></script>
+
 </html>

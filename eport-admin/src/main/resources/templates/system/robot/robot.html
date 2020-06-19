@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+	<th:block th:include="include :: header('Robot list')" />
+	<link th:href="@{/css/system/robot/robot.css}" rel="stylesheet" />
+</head>
+
+<body class="gray-bg">
+	<div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="menu-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								<span class="font-bold">UUID: </span><input type="text" name="uuId" />
+							</li>
+							<li>
+								<span class="font-bold">Địa chỉ IP: </span><input type="text" name="ipAddress" />
+							</li>
+							<li>
+								<span class="font-bold">Trạng thái: </span>
+								<select name="status">
+									<option value="">Tất cả</option>
+									<option value="0">Available</option>
+									<option value="1">Busy</option>
+									<option value="2">Offline</option>
+								</select>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search">
+										Tìm
+										kiếm</i>&nbsp;</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"> Làm
+										mới</i>&nbsp;</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+
+			<div class="btn-group-sm" id="toolbar" role="group">
+				<a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:user:add">
+					<i class="fa fa-plus"> Thêm</i>
+				</a>
+				<a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:user:edit">
+					<i class="fa fa-edit"> Sửa</i>
+				</a>
+				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
+					shiro:hasPermission="system:user:remove">
+					<i class="fa fa-remove"> Xóa</i>
+				</a>
+			</div>
+
+			<div class="col-sm-12 select-table table-striped">
+				<table id="bootstrap-table"></table>
+			</div>
+
+			<th:block th:include="include :: footer" />
+			<script th:src="@{/eport/js/modules/robot/robot.js}"></script>
+			<script th:inline="javascript">
+			</script>
+</body>
+
+</html>

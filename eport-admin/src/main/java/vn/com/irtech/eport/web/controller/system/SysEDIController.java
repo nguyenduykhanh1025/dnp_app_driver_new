@@ -197,6 +197,7 @@ public class SysEDIController extends BaseController
 					obj.put("buildNo", s);
 					edi.setBuildNo(s);
 				}
+				listObj.add(obj);
 			}
 			//businessUnit
 			if(s.contains("UNB+UNOA"))
@@ -218,7 +219,7 @@ public class SysEDIController extends BaseController
 					obj.put("contNo",contNo[2]);
                 	edi.setContNo(contNo[2]);
 				}
-				
+				listObj.add(obj);
 			}
 			//orderNo
 			if(s.contains("RFF+AAJ"))	
@@ -279,9 +280,10 @@ public class SysEDIController extends BaseController
 				}
 				// edi.setStatus(2);
 				//sysEdiService.insertSysEdi(edi);  
-				listObj.add(obj);
-				obj = new JSONObject();
+				
+				
 			}
+			
         }
 		return listObj;
 	}
