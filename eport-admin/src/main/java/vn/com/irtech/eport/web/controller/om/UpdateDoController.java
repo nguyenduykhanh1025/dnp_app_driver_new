@@ -42,6 +42,7 @@ public class UpdateDoController extends BaseController{
     @GetMapping("/getShipmentDetail")
     @ResponseBody
     public TableDataInfo getShipmentDetail( int pageNum, int pageSize,String blNo) {
+        startPage();
         ShipmentDetail shipmentDetail = new ShipmentDetail();
         shipmentDetail.setDoStatus("N");
         if(blNo != null)
