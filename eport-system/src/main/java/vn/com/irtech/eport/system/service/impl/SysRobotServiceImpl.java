@@ -1,17 +1,16 @@
 package vn.com.irtech.eport.system.service.impl;
 
 import java.util.List;
-import vn.com.irtech.eport.common.utils.DateUtils;
-import vn.com.irtech.eport.common.utils.StringUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.com.irtech.eport.system.mapper.SysRobotMapper;
-import vn.com.irtech.eport.system.domain.SysConfig;
-import vn.com.irtech.eport.system.domain.SysRobot;
-import vn.com.irtech.eport.system.service.ISysRobotService;
+
 import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.mapper.SysRobotMapper;
+import vn.com.irtech.eport.system.service.ISysRobotService;
 
 /**
  * Robot service
@@ -105,5 +104,50 @@ public class SysRobotServiceImpl implements ISysRobotService {
 			return UserConstants.CONFIG_KEY_NOT_UNIQUE;
 		}
 		return UserConstants.CONFIG_KEY_UNIQUE;
+	}
+
+	/**
+	 * Update robot status by uuid
+	 * 
+	 * @param uuId
+	 * @param status
+	 * @return result
+	 */
+	@Override
+	public int updateRobotStatusByUuId(String uuId, String status) {
+		return sysRobotMapper.updateRobotStatusByUuId(uuId, status);
+	}
+	
+	/**
+	 * Get Robot by uuid
+	 * 
+	 * @param uuid
+	 * @return robot
+	 */
+	@Override
+	public SysRobot selectRobotByUuId(String uuid) {
+		return sysRobotMapper.selectRobotByUuId(uuid);
+	}
+
+	/**
+	 * Update robot by uuid
+	 * 
+	 * @param robot
+	 * @return Result
+	 */
+	@Override
+	public int updateRobotByUuId(SysRobot robot) {
+		return sysRobotMapper.updateRobotByUuId(robot);
+	}
+
+	/**
+	 * Delete robots by uuid
+	 * 
+	 * @param robotIds
+	 * @return result
+	 */
+	@Override
+	public int deleteRobotByUuId(String uuId) {
+		return sysRobotMapper.deleteRobotByUuId(uuId);
 	}
 }
