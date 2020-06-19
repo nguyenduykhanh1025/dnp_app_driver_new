@@ -1,11 +1,13 @@
 package vn.com.irtech.eport.framework.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import vn.com.irtech.eport.framework.mqtt.service.MqttPushClient;
+import vn.com.irtech.eport.framework.mqtt.service.MqttService;
 
 /**
  * @Classname MqttConfig
@@ -16,8 +18,11 @@ import vn.com.irtech.eport.framework.mqtt.service.MqttPushClient;
 @Component
 @ConfigurationProperties("mqtt")
 public class MqttConfig {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MqttConfig.class);
+	
     @Autowired
-    private MqttPushClient mqttPushClient;
+    private MqttService mqttService;
 
     /**
      * User name
@@ -104,21 +109,19 @@ public class MqttConfig {
 		this.keepalive = keepalive;
 	}
 
-	public void setMqttPushClient(MqttPushClient mqttPushClient) {
-		this.mqttPushClient = mqttPushClient;
+	public void setMqttPushClient(MqttService mqttPushClient) {
+		this.mqttService = mqttPushClient;
 	}
 
     @Bean
-    public MqttPushClient getMqttPushClient() {
-    	System.out.println("hostUrl: "+ hostUrl);
-    	System.out.println("clientID: "+ clientID);
-    	System.out.println("username: "+ username);
-    	System.out.println("password: "+ password);
-    	System.out.println("timeout: "+timeout);
-    	System.out.println("keepalive: "+ keepalive);
-        mqttPushClient.connect(hostUrl, clientID, username, password, timeout, keepalive);
-        // End with / / to subscribe to all topics starting with test
-        mqttPushClient.subscribe(defaultTopic, 0);
-        return mqttPushClient;
+    public MqttService getMqttPushClient() throws Exception {
+        try {
+        	mqttService.connect(hostUrl, clientID, username, password, timeout, keepalive);
+        	mqttService.subscribeDefaultTopics();
+	        return mqttService;
+		} catch (Exception e) {
+			logger.error("Bad thing happen when connect Mqtt server: " + e.getMessage());
+			throw e;
+		}
     }
 }

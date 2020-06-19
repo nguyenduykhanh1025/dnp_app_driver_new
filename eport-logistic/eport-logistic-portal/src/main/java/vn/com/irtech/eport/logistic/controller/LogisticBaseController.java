@@ -1,8 +1,11 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import vn.com.irtech.eport.common.core.controller.BaseController;
-import vn.com.irtech.eport.framework.mqtt.service.MqttPushClient;
+import vn.com.irtech.eport.framework.mqtt.service.MqttService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
@@ -13,12 +16,14 @@ import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
  *
  */
 public abstract class LogisticBaseController extends BaseController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(LogisticBaseController.class);
 
 	@Autowired
 	ILogisticGroupService logisticGroupService;
 	
 	@Autowired
-    private MqttPushClient mqttPushClient;
+    private MqttService mqttService;
 
 	public LogisticAccount getUser() {
 		return ShiroUtils.getSysUser();
@@ -43,7 +48,11 @@ public abstract class LogisticBaseController extends BaseController {
 	}
 	
 	public void sendDataToTopic(String data, String topic) {
-    	mqttPushClient.publish(1, true, topic, data);
+    	try {
+    		mqttService.publish(topic, data);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 	}
 	
 	
