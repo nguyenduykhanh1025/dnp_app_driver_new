@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+  <head>
+    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <link th:href="@{/css/om/updateDO.css}" rel="stylesheet" />
+    <th:block th:include="include :: easyui-css" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+  </head>
+  <body class="gray-bg">
+    <div class="container-div">
+      <div class="p-background">
+        <div class="p-header">
+          <h2>Danh sách DO</h2>
+          <div class="row c-search container">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+              <select class="c-search-box"> 
+                <option selected="selected"></option>
+              </select>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+              
+            </div>
+            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+              <button id="btnReceiverDo" class="btn btn-primary" disabled title="Xác nhận" onclick='printQrCode()'>In QR Code</button>
+            </div>
+          </div>
+        </div>
+        <div class="p-body">
+          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'shipmentId',halign:'center',resizable:true">Ma Lo</th>
+                <th data-options="field:'blNo',halign:'center',align:'center'" sortable="true">BL number</th>
+                <th data-options="field:'containerNo',halign:'center'" sortable="true">Container Number</th>
+                <th data-options="field:'sztp',align:'center'," sortable="true">
+                  Size Type
+                </th>
+                <th data-options="field:'FE',halign:'center'">F/E</th>
+                <th data-options="field:'sealNo',halign:'center',align:'center'" sortable="true">Seal Number</th>                
+                <th data-options="field:'emptyContainerDepot',halign:'center'">Nơi hạ rỗng</th>
+                <th data-options="field:'paymentStatus',align:'center'">
+                  Đã thanh toán
+                </th>
+                <th data-options="field:'vessel',align:'center'" width="10%">
+                  Tên tàu<br />Vessel
+                </th>
+                <th data-options="field:'voyNo',align:'center'" width="10%">
+                  Chuyến tàu<br />Voyage No
+                </th>
+                <th data-options="field:'documentReceiptDate',halign:'center',align:'center'"
+                  sortable="true" width="100">
+                  Ngày nhận<br /> DO gốc
+                </th>
+                <th data-options="field:'createTime',halign:'center',align:'center'" sortable="true"
+                  width="100">
+                  Ngày gửi DO
+                </th>
+                <th data-options="field:'processRemark',align:'center'" width="10%">
+                  Ghi chú làm lệnh
+                </th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+  </body>
+  <script th:src="@{/eport/js/modules/om/printQrCode/printQrCode.js}"></script>
+
+</html>

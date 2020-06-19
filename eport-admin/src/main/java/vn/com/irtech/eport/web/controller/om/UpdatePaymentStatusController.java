@@ -2,10 +2,8 @@ package vn.com.irtech.eport.web.controller.om;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,20 +42,14 @@ public class UpdatePaymentStatusController extends BaseController{
     @GetMapping("/getShipmentDetail")
     @ResponseBody
     public TableDataInfo getShipmentDetail( int pageNum, int pageSize,String blNo) {
-        Map<String, Object> pageInfo = new HashMap<>();
-        pageInfo.put("pageNum", (pageNum - 1 ) * pageSize);
-        pageInfo.put("pageSize", pageSize);
         ShipmentDetail shipmentDetail = new ShipmentDetail();
         shipmentDetail.setPaymentStatus("N");
         if(blNo != null)
         {
             shipmentDetail.setBlNo(blNo);
         }
-        shipmentDetail.setParams(pageInfo);
         List<ShipmentDetail> shipmentDetailList = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
         TableDataInfo dataList = getDataTable(shipmentDetailList);
-        long total = shipmentDetailService.countShipmentDetailList(shipmentDetail);
-        dataList.setTotal(total);
         return dataList;
     }
 

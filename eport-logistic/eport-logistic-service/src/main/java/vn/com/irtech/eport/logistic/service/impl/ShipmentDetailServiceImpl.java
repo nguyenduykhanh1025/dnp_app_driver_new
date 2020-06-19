@@ -126,6 +126,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
         return shipmentDetailMapper.getBlListByPaymentStatus(keyString);
     }
 
+    @Override
+    public List<String> getBlLists(String keyString)
+    {
+        return shipmentDetailMapper.getBlLists(keyString);
+    }
+
     public long countShipmentDetailList(ShipmentDetail shipmentDetail)
     {
         return shipmentDetailMapper.countShipmentDetailList(shipmentDetail);

@@ -66,6 +66,8 @@ public interface ShipmentDetailMapper
 
     public List<String> getBlListByDoStatus(String keyString);
 
+    public List<String> getBlLists(String keyString);
+
     public List<String> getBlListByPaymentStatus(String keyString);
 
     public long countShipmentDetailList(ShipmentDetail shipmentDetail);

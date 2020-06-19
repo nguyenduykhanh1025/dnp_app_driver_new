@@ -1,12 +1,11 @@
 $(function () {
-    loadTable(blNo = null);
+  loadTable(blNo = null);
 });
-var prefix = "/updatePayment";
+var prefix = "/printQrCode";
 $(".c-search-box").select2({
   placeholder: "Nhập BL No",
   allowClear: true,
   minimumInputLength: 2,
-  //tags: true,
   ajax: {
     url: prefix + "/getOptionSearch",
     dataType: "json",
@@ -17,32 +16,33 @@ $(".c-search-box").select2({
       };
     },
     processResults: function (data) {
-        let results = [];
-        data.data.forEach(function(element,i){
+      let results = [];
+      data.data.forEach(function (element, i) {
         let obj = {};
-          obj.id = i;
-          obj.text = element;
-          results.push(obj); 
-        }) 
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
+      })
       return {
         results: results,
       };
     },
   },
 });
-
+var blNo;
 //For submit search
 $(".c-search-box").change(function () {
-    loadTable($(this).text().trim());
-    $(this).text(null);
-    $('#btnReceiverDo').removeAttr("disabled");
+  blNo = $(this).text().trim();
+  loadTable(blNo);
+  $(this).text(null);
+  $('#btnReceiverDo').removeAttr("disabled");
+
 });
-function loadTable(blNo)
-{
-  //console.log(blNo)
+
+function loadTable(blNo) {
   $("#dg").datagrid({
     url: prefix + "/getShipmentDetail",
-    method : "GET",
+    method: "GET",
     singleSelect: true,
     height: document.documentElement.clientHeight - 70,
     clientPaging: false,
@@ -63,12 +63,12 @@ function loadTable(blNo)
           pageSize: param.rows,
           orderByColumn: param.sort,
           isAsc: param.order,
-          blNo : blNo
+          blNo: blNo
         },
         dataType: "json",
         success: function (data) {
           success(data);
-       },
+        },
         error: function () {
           error.apply(this, arguments);
         },
@@ -77,25 +77,6 @@ function loadTable(blNo)
   });
 }
 
-function receiverDo()
-{
-  let blNo = $(".c-search-box").text().trim();
-  $.modal.confirm("Xác nhận đã nhận DO của Billing " + blNo, function() {
-      $.ajax({
-        url : prefix + "/updatePaymentStatus",
-        method : "GET",
-        data : {
-          blNo : blNo,
-        },
-        success: function (data) {
-          $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liệu...",5000, modal_status.SUCCESS);
-          $.modal.closeLoading();
-        },
-        error: function (data) {
-          $.modal.alertError(data);
-        },
-  })
-    })
- // console.log($(".c-search-box").text().trim());
-  //$(this).text(null);
+function printQrCode() {
+  $.modal.openQR('In QR code', prefix + '/QrCode/' + blNo, 400, 400);
 }
