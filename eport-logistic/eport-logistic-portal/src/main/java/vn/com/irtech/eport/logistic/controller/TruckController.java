@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -113,12 +114,34 @@ public class TruckController extends LogisticBaseController
         return toAjax(truckService.updateDelFlagByIds(ids));
     }
     
-    @GetMapping("/searchPlaceNumberByKeyword")
+    @GetMapping("/searchTractorByKeyword")
     @ResponseBody
-    public List<JSONObject> searchPlaceNumberByKeyword(String keyword){
+    public List<JSONObject> searchTractorByKeyword(String keyword, @RequestParam(value = "tractorIdArray[]") String[] tractorIdArray){
     	Truck truck = new Truck();
     	truck.setLogisticGroupId(getUser().getGroupId());
-    	truck.setPlateNumber(keyword);
+        truck.setPlateNumber(keyword);
+        truck.setType("0");
+    	List<Truck> list = truckService.selectTruckList(truck);
+    	List<JSONObject> result = new ArrayList<>();
+    	if(list.size() > 0) {
+        	for(Truck i : list) {
+        		JSONObject jsonObject = new JSONObject();
+        		jsonObject.put("id", i.getId());
+        		jsonObject.put("text", i.getPlateNumber());
+        		result.add(jsonObject);
+        	}
+    	}else {
+    		return null;
+    	}
+    	return result;
+    }
+    @GetMapping("/searchTrailerByKeyword")
+    @ResponseBody
+    public List<JSONObject> searchTrailerByKeyword(String keyword, @RequestParam(value = "trailerIdArray[]") String[] trailerIdArray){
+    	Truck truck = new Truck();
+    	truck.setLogisticGroupId(getUser().getGroupId());
+        truck.setPlateNumber(keyword);
+        truck.setType("1");
     	List<Truck> list = truckService.selectTruckList(truck);
     	List<JSONObject> result = new ArrayList<>();
     	if(list.size() > 0) {
