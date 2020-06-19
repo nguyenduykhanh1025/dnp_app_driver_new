@@ -1,50 +1,48 @@
 package vn.com.irtech.eport.web.controller.om;
 
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 
 @Controller
-@RequestMapping("/updateDO")
-public class UpdateDoController extends BaseController{
-
-    private String prefix = "/om/updateDO";
-
+@RequestMapping("/printQrCode")
+public class PrintQrCodeController extends BaseController{
+    private String prefix = "/om/printQrCode";
     @Autowired
     private IShipmentDetailService shipmentDetailService;
 
     @GetMapping("/index")
     public String getViewUpdateDo()
     {
-        return prefix + "/updateDO";
+        return prefix + "/printQrCode";
     }
 
-    @GetMapping("/getOptionSearchDo")
+    @GetMapping("/getOptionSearch")
     @ResponseBody
     public AjaxResult getOptionSearch(String keyString) {
-        List<String> blNo = shipmentDetailService.getBlListByDoStatus(keyString);
+        List<String> blNo = shipmentDetailService.getBlLists(keyString);
         return AjaxResult.success(blNo);
     }
-
+    
     @GetMapping("/getShipmentDetail")
     @ResponseBody
-    public TableDataInfo getShipmentDetail( int pageNum, int pageSize,String blNo) {
+    public TableDataInfo getShipmentDetail(String blNo) {
         startPage();
         ShipmentDetail shipmentDetail = new ShipmentDetail();
-        shipmentDetail.setDoStatus("N");
         if(blNo != null)
         {
             shipmentDetail.setBlNo(blNo);
@@ -53,15 +51,10 @@ public class UpdateDoController extends BaseController{
         TableDataInfo dataList = getDataTable(shipmentDetailList);
         return dataList;
     }
-
-    @GetMapping("/updateStatusDo")
-    @ResponseBody
-    public AjaxResult updateStatusDo(String blNo)
+    @GetMapping("/QrCode/{blNo}")
+    public String getQrCode(@PathVariable("blNo") String blNo,ModelMap mmap)
     {
-        ShipmentDetail shipmentDetail = new ShipmentDetail();
-        shipmentDetail.setDoStatus("Y");
-        shipmentDetail.setBookingNo(blNo);
-        shipmentDetailService.updateStatusShipmentDetail(shipmentDetail);
-        return AjaxResult.success("Cập nhật thành công");
+        mmap.addAttribute("blNo", blNo);
+        return prefix + "/QrCode";
     }
 }

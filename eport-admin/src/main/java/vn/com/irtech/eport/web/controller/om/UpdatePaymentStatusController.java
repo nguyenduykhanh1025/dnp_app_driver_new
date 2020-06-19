@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
-@RequestMapping("/updateDO")
-public class UpdateDoController extends BaseController{
+@RequestMapping("/updatePayment")
+public class UpdatePaymentStatusController extends BaseController{
 
-    private String prefix = "/om/updateDO";
+    private String prefix = "/om/updatePayment";
 
     @Autowired
     private IShipmentDetailService shipmentDetailService;
@@ -29,13 +29,13 @@ public class UpdateDoController extends BaseController{
     @GetMapping("/index")
     public String getViewUpdateDo()
     {
-        return prefix + "/updateDO";
+        return prefix + "/updatePayment";
     }
 
-    @GetMapping("/getOptionSearchDo")
+    @GetMapping("/getOptionSearch")
     @ResponseBody
     public AjaxResult getOptionSearch(String keyString) {
-        List<String> blNo = shipmentDetailService.getBlListByDoStatus(keyString);
+        List<String> blNo = shipmentDetailService.getBlListByPaymentStatus(keyString);
         return AjaxResult.success(blNo);
     }
 
@@ -44,7 +44,7 @@ public class UpdateDoController extends BaseController{
     public TableDataInfo getShipmentDetail( int pageNum, int pageSize,String blNo) {
         startPage();
         ShipmentDetail shipmentDetail = new ShipmentDetail();
-        shipmentDetail.setDoStatus("N");
+        shipmentDetail.setPaymentStatus("N");
         if(blNo != null)
         {
             shipmentDetail.setBlNo(blNo);
@@ -54,14 +54,15 @@ public class UpdateDoController extends BaseController{
         return dataList;
     }
 
-    @GetMapping("/updateStatusDo")
+    @GetMapping("/updatePaymentStatus")
     @ResponseBody
     public AjaxResult updateStatusDo(String blNo)
     {
         ShipmentDetail shipmentDetail = new ShipmentDetail();
-        shipmentDetail.setDoStatus("Y");
+        shipmentDetail.setPaymentStatus("Y");
         shipmentDetail.setBookingNo(blNo);
         shipmentDetailService.updateStatusShipmentDetail(shipmentDetail);
         return AjaxResult.success("Cập nhật thành công");
     }
+    
 }

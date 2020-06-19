@@ -64,11 +64,15 @@ public interface ShipmentDetailMapper
 
     public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 
-    public List<String> selectBlList(String keyString);
+    public List<String> getBlListByDoStatus(String keyString);
+
+    public List<String> getBlLists(String keyString);
+
+    public List<String> getBlListByPaymentStatus(String keyString);
 
     public long countShipmentDetailList(ShipmentDetail shipmentDetail);
 
-    public int updateDoStatusShipmentDetail(ShipmentDetail shipmentDetail);
+    public int updateStatusShipmentDetail(ShipmentDetail shipmentDetail);
     
     /**
      * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id
