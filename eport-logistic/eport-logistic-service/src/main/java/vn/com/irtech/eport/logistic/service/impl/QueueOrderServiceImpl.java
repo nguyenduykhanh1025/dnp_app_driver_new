@@ -3,6 +3,8 @@ package vn.com.irtech.eport.logistic.service.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import vn.com.irtech.eport.logistic.mapper.QueueOrderMapper;
 import vn.com.irtech.eport.logistic.domain.QueueOrder;
 import vn.com.irtech.eport.logistic.service.IQueueOrderService;
@@ -90,5 +92,14 @@ public class QueueOrderServiceImpl implements IQueueOrderService
     public int deleteQueueOrderById(Long id)
     {
         return queueOrderMapper.deleteQueueOrderById(id);
+    }
+
+    @Override
+    @Transactional
+    public boolean insertQueueOrderList(List<QueueOrder> queueOrders) {
+        for (QueueOrder queueOrder : queueOrders) {
+            queueOrderMapper.insertQueueOrder(queueOrder);
+        }
+        return true;
     }
 }

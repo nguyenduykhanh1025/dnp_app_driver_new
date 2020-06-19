@@ -398,8 +398,6 @@ function configHandson() {
             },
             {
                 data: "voyNo",
-                type: "autocomplete",
-                source: voyNoList,
                 strict: true,
                 renderer: voyNoRenderer
             },
