@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.DriverTruckMapper">
+    
+    <resultMap type="DriverTruck" id="DriverTruckResult">
+        <result property="driverId"    column="driver_id"    />
+        <result property="truckId"    column="truck_id"    />
+    </resultMap>
+
+    <sql id="selectDriverTruckVo">
+        select driver_id, truck_id from driver_truck
+    </sql>
+
+    <select id="selectDriverTruckList" parameterType="DriverTruck" resultMap="DriverTruckResult">
+        <include refid="selectDriverTruckVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectDriverTruckById" parameterType="Long" resultMap="DriverTruckResult">
+        <include refid="selectDriverTruckVo"/>
+        where driver_id = #{driverId}
+    </select>
+        
+    <insert id="insertDriverTruck" parameterType="DriverTruck">
+        insert into driver_truck
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="driverId != null ">driver_id,</if>
+            <if test="truckId != null ">truck_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="driverId != null ">#{driverId},</if>
+            <if test="truckId != null ">#{truckId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDriverTruck" parameterType="DriverTruck">
+        update driver_truck
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="truckId != null ">truck_id = #{truckId},</if>
+        </trim>
+        where driver_id = #{driverId}
+    </update>
+
+    <delete id="deleteDriverTruckById" parameterType="Long">
+        delete from driver_truck where driver_id = #{driverId}
+    </delete>
+
+    <delete id="deleteDriverTruckByIds" parameterType="String">
+        delete from driver_truck where driver_id in 
+        <foreach item="driverId" collection="array" open="(" separator="," close=")">
+            #{driverId}
+        </foreach>
+    </delete>
+    
+</mapper>
