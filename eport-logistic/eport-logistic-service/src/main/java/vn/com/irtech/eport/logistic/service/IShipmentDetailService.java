@@ -92,7 +92,7 @@ public interface IShipmentDetailService
 
     public String getGroupNameByTaxCode(String taxCode);
 
-    public boolean makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails);
+    public QueueOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 
     public boolean makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
 

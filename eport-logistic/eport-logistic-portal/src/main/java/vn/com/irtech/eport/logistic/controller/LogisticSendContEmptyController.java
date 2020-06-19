@@ -22,9 +22,11 @@ import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.QueueOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IQueueOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
@@ -43,20 +45,13 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@Autowired 
 	private IOtpCodeService otpCodeService;
 
+	@Autowired
+	private IQueueOrderService queueOrderService;
+
     @GetMapping()
 	public String sendContEmpty() {
 		return prefix + "/index";
 	}
-
-	// @GetMapping("/getFieldList")
-	// @ResponseBody
-	// public AjaxResult GetField(){
-	// 	AjaxResult ajaxResult = AjaxResult.success();
-	// 	ajaxResult.put("opeCodeList", shipmentDetailService.getOperatorCodeList());
-	// 	ajaxResult.put("vslNmList", shipmentDetailService.getVesselCodeList());
-	// 	ajaxResult.put("voyNoList", shipmentDetailService.getVoyageList());
-	// 	return ajaxResult;
-	// }
 
 	@GetMapping("/getGroupNameByTaxCode")
 	@ResponseBody
@@ -261,7 +256,10 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				if (shipmentDetailService.makeOrderSendContEmpty(shipmentDetails)) {
+				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+				QueueOrder queueOrder = shipmentDetailService.makeOrderSendContEmpty(shipmentDetails, shipment, getGroup().getCreditFlag());
+				if (queueOrder != null) {
+					queueOrderService.insertQueueOrder(queueOrder);
 					return success("Xác thực OTP thành công");
 				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
