@@ -17,37 +17,37 @@ var selectedRow;
 var customStatus;
 var rowAmount = 0;
 var sourceData;
-var opeCodeList = ["CMC", "AVS", "QEW"];
+var opeCodeList = ["CMC", "AVS", "QEW", "CNC"];
 var vslNmList = ["SDF", "SDA", "EQW", "HABE"];
 var voyNoList = ["2342", "3221", "1542", "0235"];
 var sizeList = ["20G0", "22G0", "40G0", "45G0"];
 var dischargePortList = [
-    "VNDAD:Da Nang",
-    "CMTVN:CAI MEP",
-    "CNSHA:Shanghai",
-    "HKHKG:Hong Kong",
-    "KRINC:Inchon",
-    "KRPUS:Pusan",
-    "MYKUA:Kuantan",
-    "MYPKG:Port Kelang",
-    "MYTPP:Tanjong Pelepas",
-    "SGSIN:Singapore",
-    "TCCVN:TCCVN",
-    "TWKEL:Keelung",
-    "VNHCM:Ho Chin Minh",
-    "VNHPH:Haiphong"
+    "VNDAD",
+    "CMTVN",
+    "CNSHA",
+    "HKHKG",
+    "KRINC",
+    "KRPUS",
+    "MYKUA",
+    "MYPKG",
+    "MYTPP",
+    "SGSIN",
+    "TCCVN",
+    "TWKEL",
+    "VNHCM",
+    "VNHPH"
 ];
 var cargoTypeList = [
-    "AK:Over Dimension",
-    "BB:Break Bulk",
-    "BN:Bundle",
-    "DG:Dangerous",
-    "DR:Reefer & DG",
-    "DE:Dangerous Empty",
-    "FR:Fragile",
-    "GP:General",
-    "MT:Empty",
-    "RF:Reefer"
+    "AK",
+    "BB",
+    "BN",
+    "DG",
+    "DR",
+    "DE",
+    "FR",
+    "GP",
+    "MT",
+    "RF"
 ];
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
