@@ -357,16 +357,33 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     }
 
     @Transactional
-    public boolean makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails) {
+    public QueueOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
         if (shipmentDetails.size() > 0) {
+            QueueOrder queueOrder = new QueueOrder();
+            queueOrder.setTaxCode(shipment.getTaxCode());
+            if ("0".equals(isCredit)) {
+                queueOrder.setPayType("Cash");
+                queueOrder.setInvoiceTemplate("Dịch vụ hạ container - Cash");
+            } else {
+                queueOrder.setPayType("Credit");
+                queueOrder.setInvoiceTemplate("Dịch vụ hạ container - Credit");
+            }
+            queueOrder.setVessel(shipmentDetails.get(0).getVslNm());
+            queueOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+            queueOrder.setYear("2020");
+            queueOrder.setBeforeAfter("Before");
+            queueOrder.setInvoiceType("200");
+            queueOrder.setContNumber(shipmentDetails.size());
+            queueOrder.setId(shipmentDetails.get(0).getId());
+            queueOrder.setServiceId("2");
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
                 shipmentDetail.setUserVerifyStatus("Y");
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
-            return true;
+            return queueOrder;
         }
-        return false;
+        return null;
     }
 
     @Transactional
