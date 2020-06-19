@@ -736,6 +736,16 @@ var table = {
         	    	layer.close(index);
         	        callBack(true);
         	    });
+			},
+			confirmTruck: function (content, callBack) {
+            	layer.confirm(content, {
+        	        icon: 3,
+        	        title: "Xác Nhận",
+        	        btn: ['Đồng Ý', 'Hủy Bỏ']
+        	    }, function (index) {
+        	    	layer.close(index);
+        	        callBack(true);
+        	    });
             },
             // 弹出层指定宽度
             open: function (title, url, width, height, callback) {
@@ -1172,17 +1182,17 @@ var table = {
 			// add shipment
             addShipment: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 500);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 520);
 			},
 			// add shipment
             addShipmentSendEmpty: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 520);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
 			},
 			// add shipment
             addShipmentReceiveEmpty: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 480);
 			},
 			// add shipment
             addShipmentSendFull: function(id) {
@@ -1190,6 +1200,10 @@ var table = {
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
             },
 			addTransportAccount: function(id) {
+            	table.set();
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 850, 460);
+			},
+			addTruck: function(id) {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 850, 460);
             },
@@ -1228,7 +1242,7 @@ var table = {
             editShipment: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 500);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 520);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
@@ -1237,7 +1251,7 @@ var table = {
             editShipmentSendEmpty: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 520);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 420);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
@@ -1246,7 +1260,7 @@ var table = {
             editShipmentReceiveEmpty: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 420);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 480);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}

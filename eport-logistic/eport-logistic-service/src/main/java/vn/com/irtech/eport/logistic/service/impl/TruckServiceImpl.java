@@ -94,4 +94,18 @@ public class TruckServiceImpl implements ITruckService
     {
         return truckMapper.deleteTruckById(id);
     }
+
+	@Override
+	public int checkPlateNumberUnique(String plateNumber) {
+		int count = truckMapper.checkPlateNumberUnique(plateNumber);
+		if (count > 0) {
+			return count;
+		}
+		return 0;
+	}
+
+	@Override
+	public int updateDelFlagByIds(String ids) {
+		return truckMapper.updateDelFlagByIds(Convert.toStrArray(ids));
+	}
 }

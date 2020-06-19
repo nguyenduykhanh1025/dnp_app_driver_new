@@ -128,9 +128,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where s.id = #{id}
     </select>
 
-    <select id="checkBillNoIsUnique" parameterType="Shipment" resultType="int">
+    <select id="checkBillBookingNoUnique" parameterType="Shipment" resultType="int">
         select count(*) from shipment
-        where bl_no = #{blNo} 
-        and service_id = #{serviceId}
+        <where>  
+            <if test="serviceId != null "> and service_id = #{serviceId}</if>
+            <if test="blNo != null and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+        </where>
     </select>
 </mapper>

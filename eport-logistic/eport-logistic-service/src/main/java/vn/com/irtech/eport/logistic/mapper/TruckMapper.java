@@ -58,4 +58,6 @@ public interface TruckMapper
      * @return result
      */
     public int deleteTruckByIds(String[] ids);
+    public int checkPlateNumberUnique(String plateNumber);
+    public int updateDelFlagByIds(String[] ids);
 }

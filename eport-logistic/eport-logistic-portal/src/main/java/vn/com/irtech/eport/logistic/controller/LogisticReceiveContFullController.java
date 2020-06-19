@@ -61,11 +61,19 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return PREFIX + "/index";
 	}
 
-	@GetMapping("/getFieldList")
+	@GetMapping("/getGroupNameByTaxCode")
 	@ResponseBody
-	public AjaxResult GetField(){
+	public AjaxResult getGroupNameByTaxCode(String taxCode){
 		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("consigneeList", shipmentDetailService.getConsigneeList());
+		if (taxCode == null || "".equals(taxCode)) {
+			return error();
+		}
+		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		if (groupName != null) {
+			ajaxResult.put("groupName", groupName);
+		} else {
+			ajaxResult = AjaxResult.error();
+		}
 		return ajaxResult;
 	}
 	
@@ -105,7 +113,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@GetMapping("/addShipmentForm")
 	public String add(ModelMap mmap) {
-		mmap.put("groupName", getGroup().getGroupName());
 		return PREFIX + "/add";
 	}
 
@@ -113,7 +120,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult checkBlNoUnique(Shipment shipment) {
 		shipment.setServiceId(1);
-		if (shipmentService.checkBillNoIsUnique(shipment) == 0) {
+		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
 		return error();
@@ -139,6 +146,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		Shipment shipment = shipmentService.selectShipmentWithGroupById(id);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
+			mmap.put("groupName", shipmentDetailService.getGroupNameByTaxCode(shipment.getTaxCode()));
 		}
 		return PREFIX + "/edit";
 	}
@@ -170,7 +178,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				if (shipmentDetail.getId() != null) {
 					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
 						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
-					} else {
+					} else if ("N".equals(shipmentDetail.getUserVerifyStatus())) {
 						shipmentDetail.setUpdateBy(user.getFullName());
 						shipmentDetail.setUpdateTime(new Date());
 						if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
@@ -181,7 +189,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
 					shipmentDetail.setCreateTime(new Date());
-					shipmentDetail.setRegisterNo(shipmentDetail.getShipmentId().toString() + index);
+					shipmentDetail.setRegisterNo("-1");
+					shipmentDetail.setFe("F");
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setCustomStatus("N");
 					shipmentDetail.setPaymentStatus("N");
@@ -212,26 +221,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public ShipmentDetail getContInfo(ShipmentDetail shipmentDetail) {
 		if (shipmentDetail.getBlNo() != null && shipmentDetail.getContainerNo() != null) {
-			// shipmentDetail.setOpeCode("CMC");
-			// shipmentDetail.setSztp("22G0");
-			// shipmentDetail.setFe("F");
-			// shipmentDetail.setConsignee("VINCOSHIP");
-			// shipmentDetail.setSealNo("G8331306");
-			// shipmentDetail.setExpiredDem(new Date());
-			// shipmentDetail.setWgt(11l);
-			// shipmentDetail.setVslNm("Vessel");
-			// shipmentDetail.setVoyNo("Voyage");
-			// shipmentDetail.setLoadingPort("LoadingPort");
-			// shipmentDetail.setDischargePort("dischargePort");
-			// shipmentDetail.setTransportType("Truck");
-			// shipmentDetail.setEmptyDepot("emptyDepot");
-			// shipmentDetail.setCustomStatus("N");
-			// shipmentDetail.setPaymentStatus("N");
-			// shipmentDetail.setProcessStatus("N");
-			// shipmentDetail.setDoStatus("N");
-			// shipmentDetail.setUserVerifyStatus("N");
-			// shipmentDetail.setStatus(1);
-			// shipmentDetail.setRemark("Ghi chu");
 			String url = Global.getApiUrl() + "/shipmentDetail/containerInfor";
 			RestTemplate restTemplate = new RestTemplate();
 			R r = restTemplate.postForObject(url, shipmentDetail, R.class);
@@ -336,7 +325,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	// 	return opt;
 	// }
 	@PostMapping("/verifyOtp")
-	@Transactional
 	@ResponseBody
 	public AjaxResult verifyOtp(String shipmentDetailIds,Long otp) {
 		OtpCode otpCode = new OtpCode();
@@ -351,16 +339,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService
 					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				for (ShipmentDetail shipmentDetail : shipmentDetails) {
-					shipmentDetail.setUserVerifyStatus("Y");
-					shipmentDetail.setStatus(3);
-					shipmentDetail.setProcessStatus("Y");
-					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+				// JSONObject data = new JSONObject();
+				// data.put("something", "something");
+				// sendDataToTopic(data.toString(), "receive_cont_full_order");
+				if (shipmentDetailService.makeOrderReceiveContFull(shipmentDetails)) {
+					return success("Xác thực OTP thành công");
+				} else {
+					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
-				JSONObject data = new JSONObject();
-				data.put("something", "something");
-				sendDataToTopic(data.toString(), "receive_cont_full_order");
-				return success("Xác thực OTP thành công");
 			}
 		}
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");

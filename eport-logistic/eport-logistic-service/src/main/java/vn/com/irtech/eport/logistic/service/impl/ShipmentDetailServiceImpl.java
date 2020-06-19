@@ -29,6 +29,22 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     @Autowired
     private ShipmentDetailMapper shipmentDetailMapper;
 
+    class BayComparator implements Comparator<ShipmentDetail> {
+		public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
+			// In the following line you set the criterion,
+			// which is the name of Contact in my example scenario
+			return shipmentDetail1.getBay().compareTo(shipmentDetail2.getBay());
+		}
+    }
+
+    class SztpComparator implements Comparator<ShipmentDetail> {
+		public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
+			// In the following line you set the criterion,
+			// which is the name of Contact in my example scenario
+			return shipmentDetail1.getSztp().compareTo(shipmentDetail2.getSztp());
+		}
+    }
+
     /**
      * Get Shipment Details
      * 
@@ -151,91 +167,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     }
     
     @Override
-	public List<String> getVesselCodeList() {
-		List<String> list = new ArrayList<>();
-		list.add("VESSEL1");
-		list.add("VESSEL2");
-		list.add("VESSEL3");
-		list.add("VESSEL4");
-		return list;
-    }
-    
-    @Override
-	public List<String> getConsigneeList() {
-		List<String> list = new ArrayList<>();
-		list.add("HAHPHU");
-		list.add("VINAL");
-		list.add("MAVI");
-		list.add("BACHYSOLY");
-		list.add("SUNPAPER");
-		list.add("DIENXANH");
-		return list;
-    }
-    
-    @Override
-	public List<String> getTruckCoList(){
-		List<String> list = new ArrayList<>();
-		list.add("0120314052601 : CTY TNHH HAHPHU");
-		list.add("013105020130 : CTY CP VINAL");
-		list.add("010201011023: MAVI");
-		return list;
-    }
-    
-    @Override
-	public List<String> getVoyageList(){
-		List<String> list = new ArrayList<>();
-		list.add("0101");
-		list.add("0102");
-		list.add("0103");
-		list.add("0120");
-		list.add("0130");
-		list.add("0210");
-		return list;
-    }
-    
-    @Override
-	public List<String> getOperatorCodeList(){
-		List<String> list = new ArrayList<>();
-		list.add("SIT");
-		list.add("COS");
-		list.add("MSC");
-		list.add("OWN");
-		list.add("MSL");
-		list.add("CMA");
-		return list;
-    }
-    
-    @Override
-	public List<String> getFeList(){
-		List<String> list = new ArrayList<>();
-		list.add("F");
-		list.add("E");
-		return list;
-    }
-    
-    @Override
-	public List<String> getCargoTypeList(){
-		List<String> list = new ArrayList<>();
-		list.add("MT");
-		list.add("DR");
-		list.add("RF");
-		list.add("GP");
-		return list;
-    }
-    
-    @Override
-	public List<String> getPODList(){
-		List<String> list = new ArrayList<>();
-		list.add("VNDAD");
-		list.add("CMTVN");
-		list.add("HKHKG");
-		list.add("TCCVN");
-		list.add("TWTXG");
-		list.add("CNTAO");
-		return list;
-    }
-
-    @Override
     public List<ShipmentDetail[][]> getContPosition(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> shipmentDetails) {
         // simulating the location of container in da nang port, mapping to matrix
         List<ShipmentDetail[][]> bayList = new ArrayList<>();
@@ -350,12 +281,55 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
             return false;
         }
     }
+    
+    @Transactional
+    public boolean makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails) {
+        if (shipmentDetails.size() > 0) {
+            Collections.sort(shipmentDetails, new SztpComparator());
+            String sztp = shipmentDetails.get(0).getSztp();
+            List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
+            for (ShipmentDetail shipmentDetail : shipmentDetails) {
+                if (sztp.equals(shipmentDetail.getSztp())) {
+                    shipmentOrderList.add(shipmentDetail);
+                } else {
+                    for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
+                        shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
+                        shipmentDetail2.setUserVerifyStatus("Y");
+                        // shipmentDetail2.setProcessStatus("Y");
+                        // shipmentDetail2.setStatus(3);
+                        shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
+                    }
+                }
+            }
+            for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
+                shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
+                shipmentDetail2.setUserVerifyStatus("Y");
+                // shipmentDetail2.setProcessStatus("Y");
+                // shipmentDetail2.setStatus(3);
+                shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
+            }
+            return true;
+        }
+        return false;
+    }
 
-    class BayComparator implements Comparator<ShipmentDetail> {
-		public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
-			// In the following line you set the criterion,
-			// which is the name of Contact in my example scenario
-			return shipmentDetail1.getBay().compareTo(shipmentDetail2.getBay());
-		}
-	}
+    @Transactional
+    public boolean makeOrdersendContEmpty(List<ShipmentDetail> shipmentDetails) {
+        if (shipmentDetails.size() > 0) {
+            for (ShipmentDetail shipmentDetail : shipmentDetails) {
+                shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
+                shipmentDetail.setUserVerifyStatus("Y");
+                // shipmentDetail.setProcessStatus("Y");
+                // shipmentDetail.setStatus(3);
+                shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String getGroupNameByTaxCode(String taxCode) {
+        return "Công ty abc";
+    }
 }

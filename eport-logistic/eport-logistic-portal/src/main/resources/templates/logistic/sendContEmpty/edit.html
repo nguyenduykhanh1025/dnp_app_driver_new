@@ -17,6 +17,12 @@
     border-color: #80bdff;
     box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
   }
+
+  .error-input {
+    background-color: #fbe2e2;
+    border-color: #c66161;
+    color: #c00;
+  }
 </style>
 <body>
   <div class="container">
@@ -31,22 +37,7 @@
       <div class="form-group row" style="margin-bottom: 0;">
         <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Mã Số Thuế</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="taxCode" id="taxCode" type="text" class="form-control" required/>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label style="margin-top: 4px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Đăng ký truyền EDO</label>
-        <div class="col-md-10 col-sm-9 col-xs-7">
-          <input style="margin-top: 6px;" type="radio" id="edoUnCheck" name="edoFlg" value="0" checked/>
-          <label style="margin-right: 30px;">Không</label>
-          <input style="margin-top: 6px;" type="radio" id="edoCheck" name="edoFlg" value="1"/>
-          <label>Có</label>
-        </div>
-      </div>
-      <div id="blNoDiv" style="display: none;" class="form-group row">
-        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>B/L No</label>
-        <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="blNo" id="blNo" type="text" class="form-control" required/>
+          <input name="taxCode" id="taxCode" type="text" class="form-control" onfocusout="loadGroupName()" required/>
         </div>
       </div>
       <div class="form-group row">
@@ -79,40 +70,48 @@
   var shipment = /*[[${shipment}]]*/ ;
   var prefix = ctx + "logistic/sendContEmpty";
 
+  function loadGroupName() {
+    if ($("#taxCode").val() != null && $("#taxCode").val() != '') {
+      $.ajax({
+        url: prefix + "/getGroupNameByTaxCode",
+        method: "get",
+        data: {
+          taxCode: $("#taxCode").val()
+        }
+      }).done(function (result) {
+        if (result.code == 0) {
+          $("#groupName").val(result.groupName);
+          $("#taxCode").removeClass("error-input");
+        } else {
+          $.modal.msgError("Không tìm ra mã số thuế!");
+          $("#taxCode").addClass("error-input");
+        }
+      });
+    } else {
+      $("#groupName").val('');
+    }
+  }
+
   // Map data to form
   if (shipment != null) {
     $("#id").val(shipment.id);
     $("#shipmentCode").val(shipment.id);
     $("#taxCode").val(shipment.taxCode);
     $("#containerAmount").val(shipment.containerAmount);
-    $("#groupName").val(shipment.logisticGroup.groupName);
     $("#remark").val(shipment.remark);
-    if (shipment.edoFlg == "0") {
-      $("#edoUnCheck").prop("checked", true);
-    } else {
-      $("#edoCheck").prop("checked", true);
-    }
-    $("#blNoDiv").show();
-    $("#blNo").val(shipment.blNo);
+    loadGroupName();
   }
 
-  $('input[name="edoFlg"]').change(function () {
-    if ($('#edoCheck').prop('checked')) {
-      $('#blNoDiv').show();
-    } else {
-      $('#blNoDiv').hide();
-    }
-  });
-  
   $("#form-edit-shipment").validate({
       focusCleanup: true
   });
 
   function submitHandler() {
-      if ($.validate.form()) {
-          $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
-          parent.loadTable();
-      }
+    if ($.validate.form()) {
+      $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
+      parent.loadTable();
+    }
   }
+
 </script>
 </html>

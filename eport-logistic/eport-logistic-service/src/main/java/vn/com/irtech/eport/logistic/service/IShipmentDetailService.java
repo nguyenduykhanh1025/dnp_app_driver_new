@@ -81,23 +81,13 @@ public interface IShipmentDetailService
      */
     public List<ShipmentWaitExec> selectListShipmentWaitExec();
 
-	public List<String> getVesselCodeList();
-    
-	public List<String> getConsigneeList();
-    
-	public List<String> getTruckCoList();
-    
-	public List<String> getVoyageList();
-    
-	public List<String> getOperatorCodeList();
-    
-	public List<String> getFeList();
-    
-	public List<String> getCargoTypeList();
-    
-    public List<String> getPODList();
-
     public List<ShipmentDetail[][]> getContPosition(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> shipmentDetails);
     
     public boolean calculateMovingCont(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails);
+
+    public boolean makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails);
+
+    public String getGroupNameByTaxCode(String taxCode);
+
+    public boolean makeOrdersendContEmpty(List<ShipmentDetail> shipmentDetails);
 }

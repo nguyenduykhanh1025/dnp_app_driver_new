@@ -49,36 +49,21 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return prefix + "/index";
 	}
 
-	// @RequestMapping("/getFieldList")
-	// @ResponseBody
-	// public AjaxResult GetField(){
-	// 	//vesselCode
-	// 	List<String> vesselCodelist = getVesselCodeList();
-	// 	//voyage
-	// 	List<String> voyageList = getVoyageList();
-	// 	//consignee
-	// 	List<String> consigneeList = getConsigneeList();
-	// 	//Truck Co.
-	// 	List<String> truckCoList = getTruckCoList();
-	// 	//Operator Code
-	// 	List<String> operatorCodeList = getOperatorCodeList();
-	// 	//FE
-	// 	List<String> feList = getFeList();
-	// 	//Cargo Type
-	// 	List<String> cargoTypeList = getCargoTypeList();
-	// 	//POD
-	// 	List<String> podList = getPODList();
-	// 	AjaxResult ajaxResult = AjaxResult.success();
-	// 	ajaxResult.put("vesselCode", vesselCodelist);
-	// 	ajaxResult.put("voyage", voyageList);
-	// 	ajaxResult.put("consignee", consigneeList);
-	// 	ajaxResult.put("truckCo", truckCoList);
-	// 	ajaxResult.put("opr", operatorCodeList);
-	// 	ajaxResult.put("fe", feList);
-	// 	ajaxResult.put("cargoType", cargoTypeList);
-	// 	ajaxResult.put("pod", podList);
-	// 	return ajaxResult;
-	// }
+	@GetMapping("/getGroupNameByTaxCode")
+	@ResponseBody
+	public AjaxResult getGroupNameByTaxCode(String taxCode){
+		AjaxResult ajaxResult = AjaxResult.success();
+		if (taxCode == null || "".equals(taxCode)) {
+			return error();
+		}
+		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		if (groupName != null) {
+			ajaxResult.put("groupName", groupName);
+		} else {
+			ajaxResult = AjaxResult.error();
+		}
+		return ajaxResult;
+	}
 	
     @RequestMapping("/listShipment")
 	@ResponseBody
@@ -93,8 +78,17 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 	@GetMapping("/addShipmentForm")
 	public String add(ModelMap mmap) {
-		mmap.put("groupName", getGroup().getGroupName());
 		return prefix + "/add";
+	}
+
+	@PostMapping("/checkBookingNoUnique")
+	@ResponseBody
+	public AjaxResult checkBookingNoUnique(Shipment shipment) {
+		shipment.setServiceId(3);
+		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
+			return success();
+		}
+		return error();
 	}
 
 	@PostMapping("/addShipment")
@@ -139,13 +133,20 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 	@RequestMapping("/listShipmentDetail")
 	@ResponseBody
-	public List<ShipmentDetail> listShipmentDetail(ShipmentDetail shipmentDetail) {
-		Shipment shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
+	public AjaxResult listShipmentDetail(Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(shipmentId);
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-			return shipmentDetails;
+			if (shipmentDetails != null) {
+				ajaxResult.put("shipmentDetails", shipmentDetails);
+			} else {
+				ajaxResult = AjaxResult.error();
+			}
 		}
-		return null;
+		return ajaxResult;
 	}
 
 	@PostMapping("/saveShipmentDetail")
