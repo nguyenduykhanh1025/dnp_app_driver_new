@@ -219,7 +219,7 @@ public class SysEDIController extends BaseController
 					obj.put("contNo",contNo[2]);
                 	edi.setContNo(contNo[2]);
 				}
-				
+				listObj.add(obj);
 			}
 			//orderNo
 			if(s.contains("RFF+AAJ"))	

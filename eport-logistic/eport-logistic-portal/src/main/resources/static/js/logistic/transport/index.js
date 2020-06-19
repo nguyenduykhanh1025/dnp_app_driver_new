@@ -89,9 +89,13 @@ function formatExternalRent(value){
 function formatAction(value, row, index) {
 	var actions = [];
     actions.push('<a class="btn btn-success btn-xs" onclick="editt(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
-    actions.push('<a class="btn btn-danger btn-xs " onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
+	actions.push('<a class="btn btn-danger btn-xs " onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
+	actions.push('<a class="btn btn-default btn-xs " onclick="assignTruck(\'' + row.id + '\')"><i class="fa fa-eyedropper"></i>Chỉ định xe</a>');
     actions.push("<a class='btn btn-default btn-xs' onclick='resetPwd(" + row.id + ")'><i class='fa fa-key'></i>Đặt lại mật khẩu</a> ");
     return actions.join('');
+}
+function assignTruck(id){
+	$.modal.open("Chỉ định xe", prefix+"/driverTruck/"+id , 800, 300);
 }
 function remove(id){
 	$.modal.confirmTransport("Xác nhận thực hiện xóa thông tin  ?", function() {
