@@ -9,12 +9,43 @@ var checked = false;
 var allChecked = true;
 var isIterate = false;
 var isSaved = false;
-var opeCodeList = ["MCM", "NIC", "BMW"];
-var sizeList = ["22G0", "23G0"];
-var LoadingPortList = ["Cảng nguồn 1", "Cảng nguồn 2"];
-var DischargePortList = ["Cảng đích 1", "Cảng đích 2"];
+var opeCodeList = ["CMC", "AVS", "QEW"];
+var vslNmList = ["SDF", "SDA", "EQW"];
+var voyNoList = ["2342", "3221", "1542"];
+var sizeList = ["20G0", "22G0", "40G0", "45G0"];
+var dischargePortList = [
+    "VNDAD:Da Nang",
+    "CMTVN:CAI MEP",
+    "CNSHA:Shanghai",
+    "HKHKG:Hong Kong",
+    "KRINC:Inchon",
+    "KRPUS:Pusan",
+    "MYKUA:Kuantan",
+    "MYPKG:Port Kelang",
+    "MYTPP:Tanjong Pelepas",
+    "SGSIN:Singapore",
+    "TCCVN:TCCVN",
+    "TWKEL:Keelung",
+    "VNHCM:Ho Chin Minh",
+    "VNHPH:Haiphong"];
 var selectedRow = null;
 var rowAmount = 0;
+var sourceData;
+// GET RESOURCE DATA LIST
+// $.ajax({
+//     url: prefix + "/getFieldList",
+//     method: "get",
+//     success: function (data) {
+//         if (data.code == 0) {
+//             opeCodeList = data.opeCodeList;
+//             vslNmList = data.vslNmList;
+//             voyNoList = data.voyNoList;
+//         }
+//     },
+//     error: function (result) {
+//         console.log("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+//     },
+// });
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
@@ -81,8 +112,6 @@ function loadTable() {
                 success: function (data) {
                     success(data);
                     $("#dg").datagrid("hideColumn", "id");
-                    $("#dg").datagrid("hideColumn", "blNo");
-                    $("#dg").datagrid("hideColumn", "edoFlg");
                 },
                 error: function () {
                     error.apply(this, arguments);
@@ -136,33 +165,56 @@ function getSelected() {
         $("#loCode").text(row.id);
         $("#taxCode").text(row.taxCode);
         $("#quantity").text(row.containerAmount);
-        if (row.edoFlg == "0") {
-            $("#edoDiv").hide();
-            $("#blDiv").hide();
-        } else {
-            $("#edoDiv").show();
-            $("#blDiv").show();
-            $("#edo").text("Đăng ký truyền EDO");
-            $("#blNo").text(row.blNo);
-        }
+        rowAmount = row.containerAmount;
         loadShipmentDetail(row.id);
     }
 }
 
 // FORMAT HANDSONTABLE COLUMN
-function registerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
-        $(td).attr('id', 'registerNo' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-        cellProperties.readOnly = 'true';
-    } else {
-        $(td).html('');
+        let content = '';
+        switch (value) {
+            case 1:
+                if (sourceData[row].userVerifyStatus == "Y") {
+                    content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
+                    content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 8px;  color: rgb(5, 148, 148);"></i>';
+                } else {
+                    content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148); font-size: 15px;"></i>';
+                    content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 8px;"></i>';
+                }
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+                break;
+            case 2:
+                content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
+                content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+                break;
+            case 3:
+                content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
+                content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
+                break;
+            case 4:
+                content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
+                content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Đã Hạ Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i></div>';
+                break;
+            default:
+                break;
+        }
+        $(td).html(content).addClass("htMiddle");
     }
     return td;
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
         $(td).attr('id', 'containerNo' + row).html(value).addClass("htMiddle");
-        if (hot.getDataAtCell(row, 1) != null) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
@@ -171,48 +223,13 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
     }
     return td;
 }
-function processRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null && value != '') {
-        if (value == "Y") {
-            $(td).css("background-color", "rgb(92, 255, 92)").html("Đã làm lệnh").addClass("htMiddle");
-        } else {
-            $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa làm lệnh").addClass("htMiddle");
-        }
-        $(td).attr('id', 'process' + row);
-    } else {
-        $(td).html('');
-    }
-    return td;
-}
-function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null && value != '') {
-        if (value == "Y") {
-            $(td).css("background-color", "rgb(92, 255, 92)").html("Đã Thanh toán").addClass("htMiddle");
-        } else {
-            $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa thanh toán").addClass("htMiddle");
-        }
-        $(td).attr('id', 'payment' + row);
-    } else {
-        $(td).html('');
-    }
-    return td;
-}
-function statusRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null && value != '') {
-        if (value != 4) {
-            $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa hạ container").addClass("htMiddle");
-        } else {
-            $(td).css("background-color", "rgb(92, 255, 92)").html("Đã hạ container").addClass("htMiddle");
-        }
-        $(td).attr('id', 'status' + row);
-    } else {
-        $(td).html('');
-    }
-    return td;
-}
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
         $(td).attr('id', 'opeCode' + row).html(value).addClass("htMiddle");
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
     } else {
         $(td).html('');
     }
@@ -229,17 +246,49 @@ function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties)
     }
     return td;
 }
-function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
-        $(td).attr('id', 'size' + row).html(value).addClass("htMiddle");
+        $(td).attr('id', 'vslNm' + row).html(value).addClass("htMiddle");
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
     } else {
         $(td).html('');
     }
     return td;
 }
-function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
+function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
-        $(td).attr('id', 'loadingPort' + row).html(value).addClass("htMiddle");
+        $(td).attr('id', 'voyNo' + row).html(value).addClass("htMiddle");
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    } else {
+        $(td).html('');
+    }
+    return td;
+}
+function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value != null && value != '') {
+        $(td).attr('id', 'sztp' + row).html(value).addClass("htMiddle");
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    } else {
+        $(td).html('');
+    }
+    return td;
+}
+function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value != null && value != '') {
+        $(td).attr('id', 'wgt' + row).html(value).addClass("htMiddle");
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
     } else {
         $(td).html('');
     }
@@ -248,6 +297,10 @@ function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
         $(td).attr('id', 'dischargePort' + row).html(value).addClass("htMiddle");
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
     } else {
         $(td).html('');
     }
@@ -262,293 +315,6 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 
-// CONFIGURATE HANDSONTABLE EDO
-edoConfig = {
-    stretchH: "all",
-    height: document.documentElement.clientHeight - 100,
-    minRows: 100,
-    width: "100%",
-    minSpareRows: 1,
-    rowHeights: 30,
-    manualColumnMove: false,
-    rowHeaders: true,
-    className: "htMiddle",
-    colHeaders: function (col) {
-        switch (col) {
-            case 0:
-                var txt = "<input type='checkbox' class='checker' ";
-                txt += "onclick='checkAll()' ";
-                txt += ">";
-                return txt;
-            case 1:
-                return "Số Đăng Ký";
-            case 2:
-                return '<span>Container No</span><span style="color: red;">(*)</span>';
-            case 3:
-                return '<span>Lệnh Cấp Hàng</span><span style="color: red;">(*)</span>';
-            case 4:
-                return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
-            case 5:
-                return '<span>Số Ngày Miễn</span><span style="color: red;">(*)</span>';
-            case 6:
-                return 'Ngày Cấp Hàng';
-            case 7:
-                return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
-            case 8:
-                return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
-            case 9:
-                return "Cảng Xếp Hàng";
-            case 10:
-                return "Cảng Dỡ Hàng";
-            case 11:
-                return "T.T Làm Lệnh";
-            case 12:
-                return "T.T Thanh Toán";
-            case 13:
-                return "T.T Hạ Cont";
-            case 14:
-                return "Ghi Chú";
-        }
-    },
-    colWidths: [50, 100, 100, 120, 120, 110, 100, 100, 100, 100, 100, 150, 150, 150, 200],
-    filter: "true",
-    columns: [
-        {
-            data: "active",
-            type: "checkbox",
-            className: "htCenter",
-        },
-        {
-            data: "registerNo",
-            readOnly: true,
-            renderer: registerNoRenderer
-        },
-        {
-            data: "containerNo",
-            renderer: containerNoRenderer
-        },
-        {
-            data: "orderSendContEmpty",
-        },
-        {
-            data: "opeCode",
-            type: "autocomplete",
-            source: opeCodeList,
-            strict: true,
-            renderer: opeCodeRenderer
-        },
-        {
-            data: "exemptDayNumber",
-            readOnly: true,
-        },
-        {
-            data: "provideProductDate",
-            type: "date",
-            dateFormat: "DD/MM/YYYY",
-            correctFormat: true,
-            defaultDate: new Date(),
-            renderer: expiredDemRenderer
-        },
-        {
-            data: "expiredDem",
-            type: "date",
-            dateFormat: "DD/MM/YYYY",
-            correctFormat: true,
-            defaultDate: new Date(),
-            renderer: expiredDemRenderer
-        },
-        {
-            data: "sztp",
-            type: "autocomplete",
-            source: sizeList,
-            strict: true,
-            renderer: sizeRenderer
-        },
-        {
-            data: "loadingPort",
-            type: "autocomplete",
-            source: LoadingPortList,
-            strict: true,
-            renderer: loadingPortRenderer
-        },
-        {
-            data: "dischargePort",
-            type: "autocomplete",
-            source: DischargePortList,
-            strict: true,
-            renderer: dischargePortRenderer
-        },
-        {
-            data: "processStatus",
-            readOnly: true,
-            renderer: processRenderer
-        },
-        {
-            data: "paymentStatus",
-            readOnly: true,
-            renderer: paymentRenderer
-        },
-        {
-            data: "status",
-            readOnly: true,
-            renderer: statusRenderer
-        },
-        {
-            data: "remark",
-            renderer: remarkRenderer
-        },
-    ],
-    afterRenderer: function (TD, row, column, prop, value, cellProperties) {
-        switch (column) {
-            case 1:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "registerNo")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 2:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "containerNo")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 4:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "opeCode")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 7:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "expiredDem")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 8:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 9:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "loadingPort")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 11:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-                case 4:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "process")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 12:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "payment")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 13:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "status")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            case 14:
-                if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
-                    hot.setDataAtCell(row, column, '');
-                }
-                break;
-            default:
-                break;
-        }
-    },
-    afterChange: function (changes, src) {
-        //Get data change in cell to render another column
-        if (src !== "loadData") {
-            var verifyStatus = false;
-            var paymentStatus = false;
-            var notVerify = false;
-            changes.forEach(function interate(row) {
-                if (row[1] == "active" && !isIterate) {
-                    getDataSelectedFromTable(false);
-                    if (allChecked) {
-                        $(".checker").prop("checked", true);
-                        checked = true;
-                    } else {
-                        $(".checker").prop("checked", false);
-                        checked = false;
-                    }
-                    if (shipmentDetails.length > 0) {
-                        var status = 1;
-                        for (var i = 0; i < shipmentDetails.length; i++) {
-                            if (shipmentDetails[i].paymentStatus == "Y") {
-                                if (verifyStatus || notVerify) {
-                                    status = 1;
-                                } else {
-                                    status = 5;
-                                    paymentStatus = true;
-                                }
-                            } else if (shipmentDetails[i].userVerifyStatus == "Y") {
-                                if (shipmentDetails[i].processStatus == "Y") {
-                                    if (paymentStatus || notVerify) {
-                                        status = 1;
-                                    } else {
-                                        status = 4;
-                                        verifyStatus = true;
-                                    }
-                                } else {
-                                    if (paymentStatus || notVerify) {
-                                        status = 1;
-                                    } else {
-                                        status = 3;
-                                        verifyStatus = true;
-                                    }
-                                }
-                            } else {
-                                if (verifyStatus || paymentStatus) {
-                                    status = 1;
-                                } else {
-                                    status = 2;
-                                }
-                                notVerify = true;
-                            }
-                        }
-                        switch (status) {
-                            case 1:
-                                setLayoutRegisterStatus();
-                                break;
-                            case 2:
-                                setLayoutVerifyUser();
-                                break;
-                            case 3:
-                                setLayoutVerifyUser();
-                                $("#deleteBtn").prop("disabled", true);
-                                $("#verifyBtn").prop("disabled", true);
-                                break;
-                            case 4:
-                                setLayoutPaymentStatus();
-                                break;
-                            case 5:
-                                setLayoutFinish();
-                                break;
-                        }
-                    } else {
-                        setLayoutRegisterStatus();
-                    }
-                }
-            });
-        }
-    },
-    afterSelectionEnd: function (r, c, r2, c2) {
-        selectedRow = null;
-        if (c == 0 && c2 == 12) {
-            selectedRow = r;
-        }
-    },
-    beforeKeyDown: function(e) {
-        if (e.keyCode == 8) {
-            e.stopImmediatePropagation();
-        }
-    },
-};
-
 // CONFIGURATE HANDSONTABLE NOT EDO
 function configHandson() {
     config = {
@@ -557,7 +323,7 @@ function configHandson() {
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
-        minSpareRows: 1,
+        minSpareRows: 0,
         rowHeights: 30,
         manualColumnMove: false,
         rowHeaders: true,
@@ -570,7 +336,7 @@ function configHandson() {
                     txt += ">";
                     return txt;
                 case 1:
-                    return "Số Đăng Ký";
+                    return "Trạng Thái";
                 case 2:
                     return '<span>Container No</span><span style="color: red;">(*)</span>';
                 case 3:
@@ -578,22 +344,20 @@ function configHandson() {
                 case 4:
                     return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
                 case 5:
-                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
                 case 6:
-                    return "Cảng Xêp Hàng";
+                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
                 case 7:
-                    return "Cảng Dỡ Hàng";
+                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
                 case 8:
-                    return "T.T Làm Lệnh";
+                    return '<span>Trọng Tải</span><span style="color: red;">(*)</span>';
                 case 9:
-                    return "T.T Thanh Toán";
+                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
                 case 10:
-                    return "T.T Hạ Cont";
-                case 11:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 120, 100, 100, 100, 100, 150, 150, 150, 200],
+        colWidths: [50, 100, 100, 120, 100, 100, 100, 100, 100, 150, 200],
         filter: "true",
         columns: [
             {
@@ -602,9 +366,9 @@ function configHandson() {
                 className: "htCenter",
             },
             {
-                data: "registerNo",
+                data: "status",
                 readOnly: true,
-                renderer: registerNoRenderer
+                renderer: statusIconsRenderer
             },
             {
                 data: "containerNo",
@@ -626,6 +390,20 @@ function configHandson() {
                 renderer: expiredDemRenderer
             },
             {
+                data: "vslNm",
+                type: "autocomplete",
+                source: vslNmList,
+                strict: true,
+                renderer: vslNmRenderer
+            },
+            {
+                data: "voyNo",
+                type: "autocomplete",
+                source: voyNoList,
+                strict: true,
+                renderer: voyNoRenderer
+            },
+            {
                 data: "sztp",
                 type: "autocomplete",
                 source: sizeList,
@@ -633,33 +411,16 @@ function configHandson() {
                 renderer: sizeRenderer
             },
             {
-                data: "loadingPort",
-                type: "autocomplete",
-                source: LoadingPortList,
-                strict: true,
-                renderer: loadingPortRenderer
+                data: "wgt",
+                type: "numeric",
+                renderer: wgtRenderer
             },
             {
                 data: "dischargePort",
                 type: "autocomplete",
-                source: DischargePortList,
+                source: dischargePortList,
                 strict: true,
                 renderer: dischargePortRenderer
-            },
-            {
-                data: "processStatus",
-                readOnly: true,
-                renderer: processRenderer
-            },
-            {
-                data: "paymentStatus",
-                readOnly: true,
-                renderer: paymentRenderer
-            },
-            {
-                data: "status",
-                readOnly: true,
-                renderer: statusRenderer
             },
             {
                 data: "remark",
@@ -669,7 +430,7 @@ function configHandson() {
         afterRenderer: function (TD, row, column, prop, value, cellProperties) {
             switch (column) {
                 case 1:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "registerNo")) {
+                    if ($(TD).attr("id") != null) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
@@ -689,36 +450,31 @@ function configHandson() {
                     }
                     break;
                 case 5:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "vslNm")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
                 case 6:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "loadingPort")) {
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "voyNo")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
                 case 7:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "sztp")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
                 case 8:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "process")) {
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 3 || $(TD).attr("id").substring(0, 3) != "wgt")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
                 case 9:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "payment")) {
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
                 case 10:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "status")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 11:
                     if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
                         hot.setDataAtCell(row, column, '');
                     }
@@ -778,28 +534,31 @@ function configHandson() {
                                     notVerify = true;
                                 }
                             }
-                            switch (status) {
-                                case 1:
-                                    setLayoutRegisterStatus();
-                                    break;
-                                case 2:
-                                    setLayoutVerifyUser();
-                                    break;
-                                case 3:
-                                    setLayoutVerifyUser();
-                                    $("#deleteBtn").prop("disabled", true);
-                                    $("#verifyBtn").prop("disabled", true);
-                                    break;
-                                case 4:
-                                    setLayoutPaymentStatus();
-                                    break;
-                                case 5:
-                                    setLayoutFinish();
-                                    break;
+                            if (shipmentDetails[0].status != null) {
+                                switch (status) {
+                                    case 1:
+                                        setLayoutRegisterStatus();
+                                        break;
+                                    case 2:
+                                        setLayoutVerifyUser();
+                                        break;
+                                    case 3:
+                                        setLayoutVerifyUser();
+                                        $("#deleteBtn").prop("disabled", true);
+                                        $("#verifyBtn").prop("disabled", true);
+                                        break;
+                                    case 4:
+                                        setLayoutPaymentStatus();
+                                        break;
+                                    case 5:
+                                        setLayoutFinish();
+                                        break;
+                                }
+                            } else {
+                                setLayoutRegisterStatus();
                             }
-                        } else {
-                            setLayoutRegisterStatus();
                         }
+                            
                     }
                 });
             }
@@ -830,21 +589,19 @@ function loadShipmentDetail(id) {
         data: {
             shipmentId: id
         },
-        success: function (result) {
-            isSaved = false;
-            if(result.length > 0 && result[0].id != null) {
-                isSaved = true;
-            }
-            hot.destroy();
-            configHandson();
-            if (shipmentSelected.edoFlg == "0") {
+        success: function (data) {
+            if (data.code == 0) {
+                sourceData = data.shipmentDetails;
+                if (rowAmount < sourceData.length) {
+                    sourceData = sourceData.slice(0, rowAmount);
+                }
+                setLayoutRegisterStatus();
+                hot.destroy();
+                configHandson();
                 hot = new Handsontable(dogrid, config);
-            } else {
-                hot = new Handsontable(dogrid, edoConfig);
+                hot.loadData(sourceData);
+                hot.render();
             }
-            hot.loadData(result);
-            hot.render();
-            setLayoutRegisterStatus();
         }
     });
 }
@@ -883,6 +640,7 @@ function getDataSelectedFromTable(isValidate) {
         shipmentDetail.processStatus = object["processStatus"];
         shipmentDetail.paymentStatus = object["paymentStatus"];
         shipmentDetail.userVerifyStatus = object["userVerifyStatus"];
+        shipmentDetail.status = object["status"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
@@ -925,24 +683,38 @@ function getDataFromTable(isValidate) {
             } else if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"])) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
                 errorFlg = true;
-            } else if (object["expiredDem"] == null || object["expiredDem"] == "") {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
-                errorFlg = true;
             } else if (object["opeCode"] == null || object["opeCode"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ khai thác!");
                 errorFlg = true;
+            } else if (object["expiredDem"] == null || object["expiredDem"] == "") {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
+                errorFlg = true;
+            } else if (object["vslNm"] == null || object["vslNm"] == "") {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu!");
+                errorFlg = true;
+            } else if (object["voyNo"] == null || object["voyNo"] == "") {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chuyến!");
+                errorFlg = true;
             } else if (object["sztp"] == null || object["sztp"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
+                errorFlg = true;
+            } else if (object["wgt"] == null || object["wgt"] == "") {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn trọng tải!");
+                errorFlg = true;
+            } else if (object["dischargePort"] == null || object["dischargePort"] == "") {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
                 errorFlg = true;
             }
         }
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
-        shipmentDetail.sztp = object["sztp"];
         shipmentDetail.opeCode = object["opeCode"];
         shipmentDetail.expiredDem = expiredDem.getTime();
-        shipmentDetail.loadingPort = object["loadingPort"];
+        shipmentDetail.vslNm = object["vslNm"];
+        shipmentDetail.voyNo = object["voyNo"];
+        shipmentDetail.sztp = object["sztp"];
+        shipmentDetail.wgt = object["wgt"];
         shipmentDetail.dischargePort = object["dischargePort"];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
@@ -988,28 +760,26 @@ document.addEventListener("keyup", function(e){
     if (e.keyCode == 8) {
         if (selectedRow != null && $("#process" + selectedRow).html() != "Đã làm lệnh") {
             var myTableData = hot.getSourceData();
-            myTableData[selectedRow].registerNo = '';
             myTableData[selectedRow].containerNo = '';
-            myTableData[selectedRow].process = '';
-            myTableData[selectedRow].payment = '';
             myTableData[selectedRow].status = '';
             myTableData[selectedRow].opeCode = '';
             myTableData[selectedRow].expiredDem = '';
-            myTableData[selectedRow].size = '';
-            myTableData[selectedRow].loadingPort = '';
+            myTableData[selectedRow].vslNm = '';
+            myTableData[selectedRow].voyNo = '';
+            myTableData[selectedRow].sztp = '';
+            myTableData[selectedRow].wgt = '';
             myTableData[selectedRow].dischargePort = '';
             myTableData[selectedRow].remark = '';
             myTableData[selectedRow].delFlag = true;
             hot.loadData(myTableData);
-            $("#registerNo"+selectedRow).html('');
             $("#containerNo"+selectedRow).html('');
-            $("#process"+selectedRow).html('');
-            $("#payment"+selectedRow).html('');
             $("#status"+selectedRow).html('');
             $("#opeCode"+selectedRow).html('');
             $("#expiredDem"+selectedRow).html('');
-            $("#size"+selectedRow).html('');
-            $("#loadingPort"+selectedRow).html('');
+            $("#vslNm"+selectedRow).html('');
+            $("#voyNo"+selectedRow).html('');
+            $("#sztp"+selectedRow).html('');
+            $("#wgt"+selectedRow).html('');
             $("#dischargePort"+selectedRow).html('');
             $("#remark"+selectedRow).html('');
         }
@@ -1022,32 +792,36 @@ function saveShipmentDetail() {
         $.modal.msgError("Bạn cần chọn lô trước");
         return;
     } else {
-        if (getDataFromTable(true) && shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
-            $.modal.loading("Đang xử lý...");
-            $.ajax({
-                url: prefix + "/saveShipmentDetail",
-                method: "post",
-                contentType: "application/json",
-                accept: 'text/plain',
-                data: JSON.stringify(shipmentDetails),
-                dataType: 'text',
-                success: function (data) {
-                    var result = JSON.parse(data);
-                    if (result.code == 0) {
-                        $.modal.msgSuccess(result.msg);
-                        loadShipmentDetail(shipmentSelected.id);
-                    } else {
-                        $.modal.msgError(result.msg);
-                    }
-                    $.modal.closeLoading();
-                },
-                error: function (result) {
-                    $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-                    $.modal.closeLoading();
-                },
-            });
-        } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
-            $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
+        if (getDataFromTable(true)) {
+            if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
+                $.modal.loading("Đang xử lý...");
+                $.ajax({
+                    url: prefix + "/saveShipmentDetail",
+                    method: "post",
+                    contentType: "application/json",
+                    accept: 'text/plain',
+                    data: JSON.stringify(shipmentDetails),
+                    dataType: 'text',
+                    success: function (data) {
+                        var result = JSON.parse(data);
+                        if (result.code == 0) {
+                            $.modal.msgSuccess(result.msg);
+                            loadShipmentDetail(shipmentSelected.id);
+                        } else {
+                            $.modal.msgError(result.msg);
+                        }
+                        $.modal.closeLoading();
+                    },
+                    error: function (result) {
+                        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+                        $.modal.closeLoading();
+                    },
+                });
+            } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
+                $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
+            } else {
+                $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
+            }
         }
     }
 }

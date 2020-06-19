@@ -102,7 +102,7 @@ public class ShipmentServiceImpl implements IShipmentService
     }
 
     @Override
-    public int checkBillNoIsUnique(Shipment shipment) {
-        return shipmentMapper.checkBillNoIsUnique(shipment);
+    public int checkBillBookingNoUnique(Shipment shipment) {
+        return shipmentMapper.checkBillBookingNoUnique(shipment);
     }
 }

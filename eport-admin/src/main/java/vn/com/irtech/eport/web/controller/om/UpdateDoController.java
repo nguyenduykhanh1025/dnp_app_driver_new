@@ -2,10 +2,8 @@ package vn.com.irtech.eport.web.controller.om;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,30 +32,25 @@ public class UpdateDoController extends BaseController{
         return prefix + "/updateDO";
     }
 
-    @GetMapping("/getOptionSearch")
+    @GetMapping("/getOptionSearchDo")
     @ResponseBody
     public AjaxResult getOptionSearch(String keyString) {
-        List<String> blNo = shipmentDetailService.selectBlList(keyString);
+        List<String> blNo = shipmentDetailService.getBlListByDoStatus(keyString);
         return AjaxResult.success(blNo);
     }
 
     @GetMapping("/getShipmentDetail")
     @ResponseBody
     public TableDataInfo getShipmentDetail( int pageNum, int pageSize,String blNo) {
-        Map<String, Object> pageInfo = new HashMap<>();
-        pageInfo.put("pageNum", (pageNum - 1 ) * pageSize);
-        pageInfo.put("pageSize", pageSize);
+        startPage();
         ShipmentDetail shipmentDetail = new ShipmentDetail();
         shipmentDetail.setDoStatus("N");
         if(blNo != null)
         {
             shipmentDetail.setBlNo(blNo);
         }
-        shipmentDetail.setParams(pageInfo);
         List<ShipmentDetail> shipmentDetailList = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
         TableDataInfo dataList = getDataTable(shipmentDetailList);
-        long total = shipmentDetailService.countShipmentDetailList(shipmentDetail);
-        dataList.setTotal(total);
         return dataList;
     }
 
@@ -68,7 +61,7 @@ public class UpdateDoController extends BaseController{
         ShipmentDetail shipmentDetail = new ShipmentDetail();
         shipmentDetail.setDoStatus("Y");
         shipmentDetail.setBookingNo(blNo);
-        shipmentDetailService.updateDoStatusShipmentDetail(shipmentDetail);
+        shipmentDetailService.updateStatusShipmentDetail(shipmentDetail);
         return AjaxResult.success("Cập nhật thành công");
     }
 }

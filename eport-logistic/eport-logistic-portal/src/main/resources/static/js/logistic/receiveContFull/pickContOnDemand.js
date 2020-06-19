@@ -52,14 +52,16 @@ bayList.forEach(function(bay) {
                 shipmentId = bay[row][col].shipmentId;
                 if (bay[row][col].containerNo == null) {
                     str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" style="background-color: #dbcfcf;" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">CONT</div>';
-                } else if (bay[row][col].status > 1) {
+                } else if (bay[row][col].status > 1 && bay[row][col].status < 4) {
                     if (bay[row][col].preorderPickup == "Y") {
                         str += '<div id="cell'+ bay[row][col].id +'" style="background-color: #72ecea;" class="cellDiv" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + true +')">'+ bay[row][col].containerNo +'</div>';
-                        let tableRow = '<tr id="row'+ bay[row][col].id +'"><td width="240px">' + bay[row][col].containerNo + '</td><td id="tdTransport'+ bay[row][col].id +'" width="240px">Đã chỉ định</td><td width="180px"><button onclick="pickTruck('+ bay[row][col].id + ',' + index + ',' + col + ',' + row +')">Điều xe</button></td></tr>';
+                        let tableRow = '<tr id="row'+ bay[row][col].id +'"><td width="330px">' + bay[row][col].containerNo + '</td><td width="330px">' + bay[row][col].sztp + '</td></tr>';
                         $("#pickedContList").append(tableRow);
                     } else {
                         str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">'+ bay[row][col].containerNo +'</div>';
                     }
+                } else if (bay[row][col].status > 3) {
+                    str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" style="background-color: #dbcfcf;" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">'+ bay[row][col].containerNo +'</div>';
                 } else {
                     str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" style="background-color: #dbcfcf;" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">'+ bay[row][col].containerNo +'</div>';
                 }
@@ -78,6 +80,8 @@ bayList.forEach(function(bay) {
 function pickCont(id, row, col, index, isPicked) {
     if (bayList[index][row][col].containerNo == null) {
         $.modal.msgError("Container này không nằm trong lô của quý<br>khách.");
+    } else if (bayList[index][row][col].status > 3) {
+        $.modal.msgError("Container này đã được thanh toán.");
     } else if (bayList[index][row][col].status > 1) {
         if (isPicked) {
             $.modal.msgError("Container này đã được chỉ định.");
@@ -85,7 +89,7 @@ function pickCont(id, row, col, index, isPicked) {
             if (bayList[index][row][col].preorderPickup == "N") {
                 bayList[index][row][col].preorderPickup = "Y";
                 $('#cell'+ id).css("background-color", "#bfe5bf");
-                let tableRow = '<tr id="row'+ id +'"><td width="240px">' + bayList[index][row][col].containerNo + '</td><td id="tdTransport'+ id +'" width="240px"></td><td width="180px"><button onclick="pickTruck('+ id + ',' + index + ',' + col + ',' + row +')">Điều xe</button></td></tr>';
+                let tableRow = '<tr id="row'+ id +'"><td width="330px">' + bayList[index][row][col].containerNo + '</td><td width="330px">' + bayList[index][row][col].sztp + '</td></tr>';
                 $("#pickedContList").append(tableRow);
             } else {
                 bayList[index][row][col].preorderPickup = "N";
@@ -100,19 +104,19 @@ function pickCont(id, row, col, index, isPicked) {
     }
 }
 
-function pickTruck(id, bay, row, tier) {
-    currentPickedId = id;
-    currentPickedBay = bay;
-    currentPickedRow = row;
-    currentPickedTier = tier;
-    $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentId + "/" + true + "/" + id, 700, 400);
-}
+// function pickTruck(id, bay, row, tier) {
+//     currentPickedId = id;
+//     currentPickedBay = bay;
+//     currentPickedRow = row;
+//     currentPickedTier = tier;
+//     $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentId + "/" + true + "/" + id, 700, 400);
+// }
 
-function finishPickTruck(plateNumber, driverIds) {
-    $("#tdTransport" + currentPickedId).html(plateNumber);
-    bayList[currentPickedBay][currentPickedTier][currentPickedRow].transportIds = driverIds;
-    calculateMovingCont();
-}
+// function finishPickTruck(plateNumber, driverIds) {
+//     $("#tdTransport" + currentPickedId).html(plateNumber);
+//     bayList[currentPickedBay][currentPickedTier][currentPickedRow].transportIds = driverIds;
+//     calculateMovingCont();
+// }
 
 function calculateMovingCont() {
     preorderPickupConts = [];

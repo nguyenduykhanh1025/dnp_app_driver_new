@@ -27,7 +27,7 @@
             <thead>
               <tr>
                 <th data-options="field:'id'" width="1"></th>
-                <th data-options="field:'containerAmount'" width="1"></th>
+                <th data-options="field:'bookingNo',halign:'center',resizable:true" width="120">Booking No</th>
                 <th data-options="field:'taxCode',halign:'center'" width="100">MST</th>
                 <th data-options="field:'containerAmount',align:'right',halign:'center'" width="70">Số Cont</th>
                 <th data-options="field:'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="80">Ngày tạo</th>
@@ -52,6 +52,10 @@
               <div>
                 <span class="label-title">Số Lượng: </span>
                 <span id="quantity"></span>
+              </div>
+              <div>
+                <span class="label-title">Booking No: </span>
+                <span id="bookingNo"></span>
               </div>
             </div>
             <ul class="right-info">
