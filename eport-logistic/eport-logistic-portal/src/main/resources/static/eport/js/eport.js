@@ -1172,17 +1172,17 @@ var table = {
 			// add shipment
             addShipment: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 500);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 520);
 			},
 			// add shipment
             addShipmentSendEmpty: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 520);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
 			},
 			// add shipment
             addShipmentReceiveEmpty: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 480);
 			},
 			// add shipment
             addShipmentSendFull: function(id) {
@@ -1228,7 +1228,7 @@ var table = {
             editShipment: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 500);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 520);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
@@ -1237,7 +1237,7 @@ var table = {
             editShipmentSendEmpty: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 520);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 420);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
@@ -1246,7 +1246,7 @@ var table = {
             editShipmentReceiveEmpty: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 420);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 480);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
