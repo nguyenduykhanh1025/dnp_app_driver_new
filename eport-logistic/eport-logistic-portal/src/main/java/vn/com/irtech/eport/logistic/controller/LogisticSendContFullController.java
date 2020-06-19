@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.json.JSONObject;
@@ -188,6 +190,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setFe("F");
 					if (shipmentDetail.getLoadingPort() == null || shipmentDetail.getLoadingPort().equals("")) {
 						shipmentDetail.setLoadingPort(" ");
 					}
@@ -285,12 +288,12 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 		String content = "Lam lenh giao cont la  " + rD;
 		String response = "";
-		try {
-			response = otpCodeService.postOtpMessage(content);
-			System.out.println(response);
-		} catch (IOException ex) {
-			// process the exception
-		}
+//		try {
+//			response = otpCodeService.postOtpMessage(content);
+//			System.out.println(response);
+//		} catch (IOException ex) {
+//			// process the exception
+//		}
 		return AjaxResult.success(response.toString());
 	}
 
@@ -316,6 +319,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					//
 					ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(queueOrder, shipmentDetails);
 					mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
+					ObjectMapper mapper = new ObjectMapper();
+					try {
+						String jsonString = mapper.writeValueAsString(serviceRobotReq);
+						mqttService.publish("eport/robot/WIN-4ACSD0UROP2/request", jsonString);
+					} catch (Exception e) {
+						
+					}
+					
 					return success("Xác thực OTP thành công");
 				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
