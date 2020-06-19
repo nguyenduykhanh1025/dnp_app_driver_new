@@ -58,4 +58,6 @@ public interface ITruckService
      * @return result
      */
     public int deleteTruckById(Long id);
+    public int checkPlateNumberUnique(String plateNumber);
+    public int updateDelFlagByIds(String ids);
 }
