@@ -658,7 +658,7 @@ var table = {
         	        callBack(true);
         	    });
 			},
-            open: function (title, url, width, height, open) {
+            open: function (title, url, width, height, callback) {
             	if ($.common.isMobile()) {
             	    width = 'auto';
             	    height = 'auto';
@@ -697,7 +697,7 @@ var table = {
             	    }
             	});
 			},
-			openQR: function (title, url, width, height, open) {
+			openQR: function (title, url, width, height, callback) {
             	if ($.common.isMobile()) {
             	    width = 'auto';
             	    height = 'auto';
@@ -730,7 +730,7 @@ var table = {
             		content: url,
             		//btn: ['OK', 'Đóng'],
             		shadeClose: true,
-            		//yes: callback,
+            		yes: callback,
             	    cancel: function(index) {
             	        return true;
             	    }
