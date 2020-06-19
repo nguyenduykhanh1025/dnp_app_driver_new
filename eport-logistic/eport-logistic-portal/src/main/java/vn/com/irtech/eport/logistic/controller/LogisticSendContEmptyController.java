@@ -254,7 +254,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				if (shipmentDetailService.makeOrdersendContEmpty(shipmentDetails)) {
+				if (shipmentDetailService.makeOrderSendContEmpty(shipmentDetails)) {
 					return success("Xác thực OTP thành công");
 				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");

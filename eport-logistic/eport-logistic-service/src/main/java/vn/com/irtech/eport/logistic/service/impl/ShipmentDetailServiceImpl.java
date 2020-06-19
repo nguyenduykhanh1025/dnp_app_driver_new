@@ -302,7 +302,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     }
 
     @Transactional
-    public boolean makeOrdersendContEmpty(List<ShipmentDetail> shipmentDetails) {
+    public boolean makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails) {
         if (shipmentDetails.size() > 0) {
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
@@ -310,6 +310,37 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
                 // shipmentDetail.setProcessStatus("Y");
                 // shipmentDetail.setStatus(3);
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Transactional
+    public boolean makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
+        if (shipmentDetails.size() > 0) {
+            Collections.sort(shipmentDetails, new SztpComparator());
+            String sztp = shipmentDetails.get(0).getSztp();
+            List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
+            for (ShipmentDetail shipmentDetail : shipmentDetails) {
+                if (sztp.equals(shipmentDetail.getSztp())) {
+                    shipmentOrderList.add(shipmentDetail);
+                } else {
+                    for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
+                        shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
+                        shipmentDetail2.setUserVerifyStatus("Y");
+                        // shipmentDetail2.setProcessStatus("Y");
+                        // shipmentDetail2.setStatus(3);
+                        shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
+                    }
+                }
+            }
+            for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
+                shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
+                shipmentDetail2.setUserVerifyStatus("Y");
+                // shipmentDetail2.setProcessStatus("Y");
+                // shipmentDetail2.setStatus(3);
+                shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
             }
             return true;
         }
