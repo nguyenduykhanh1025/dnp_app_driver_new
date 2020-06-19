@@ -33,7 +33,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 @RequestMapping("/logistic/receiveContEmpty")
 public class LogisticReceiveContEmptyController extends LogisticBaseController {
     
-    private final String prefix = "logistic/receiveContEmpty";
+    private final String PREFIX = "logistic/receiveContEmpty";
 	
 	@Autowired
 	private IShipmentService shipmentService;
@@ -46,7 +46,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
     @GetMapping()
 	public String sendContEmpty() {
-		return prefix + "/index";
+		return PREFIX + "/index";
 	}
 
 	@GetMapping("/getGroupNameByTaxCode")
@@ -78,7 +78,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 	@GetMapping("/addShipmentForm")
 	public String add(ModelMap mmap) {
-		return prefix + "/add";
+		return PREFIX + "/add";
 	}
 
 	@PostMapping("/checkBookingNoUnique")
@@ -113,7 +113,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
 		}
-        return prefix + "/edit";
+        return PREFIX + "/edit";
 	}
 	
 	@PostMapping("/editShipment")
@@ -215,14 +215,14 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
-		return prefix + "/checkContListBeforeVerify";
+		return PREFIX + "/checkContListBeforeVerify";
 	}
 
 	@GetMapping("verifyOtpForm/{shipmentDetailIds}")
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
-		return prefix + "/verifyOtp";
+		return PREFIX + "/verifyOtp";
 	}
 
 	@PostMapping("sendOTP")
@@ -241,7 +241,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		otpCode.setOptCode(OTPCODE);
 		otpCodeService.insertOtpCode(otpCode);
 
-		final String contentOtp = "Ma xac thuc lam lenh lay cont hang ra khoi cang la " + OTPCODE;
+		String contentOtp = "Ma xac thuc lam lenh lay cont hang ra khoi cang la " + OTPCODE;
 		String response = "";
 
 		return AjaxResult.success(response.toString());
@@ -259,19 +259,14 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		otpCode.setCreateTime(cal.getTime());
 		otpCode.setOptCode(otp);
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
-			final List<ShipmentDetail> shipmentDetails = shipmentDetailService
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService
 					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				for (final ShipmentDetail shipmentDetail : shipmentDetails) {
-					shipmentDetail.setUserVerifyStatus("Y");
-					shipmentDetail.setStatus(3);
-					shipmentDetail.setProcessStatus("Y");
-					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+				if (shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails)) {
+					return success("Xác thực OTP thành công");
+				} else {
+					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
-				JSONObject data = new JSONObject();
-				data.put("something", "something");
-				sendDataToTopic(data.toString(), "receive_cont_empty_order");
-				return success("Xác thực OTP thành công");
 			}
 		}
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
@@ -280,7 +275,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@GetMapping("paymentForm/{shipmentDetailIds}")
 	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		return prefix + "/paymentForm";
+		return PREFIX + "/paymentForm";
 	}
 
 	@PostMapping("/payment")
@@ -315,7 +310,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		mmap.put("transportIds", transportId);
 		mmap.put("shipmentDetailIds", shipmentIds);
-		return prefix + "/pickTruckForm";
+		return PREFIX + "/pickTruckForm";
 	}
 
 	@PostMapping("/pickTruck")

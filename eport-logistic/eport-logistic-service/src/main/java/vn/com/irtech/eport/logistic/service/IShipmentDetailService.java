@@ -89,5 +89,7 @@ public interface IShipmentDetailService
 
     public String getGroupNameByTaxCode(String taxCode);
 
-    public boolean makeOrdersendContEmpty(List<ShipmentDetail> shipmentDetails);
+    public boolean makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails);
+
+    public boolean makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
 }

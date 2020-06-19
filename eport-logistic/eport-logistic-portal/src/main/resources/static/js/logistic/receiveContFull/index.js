@@ -103,7 +103,6 @@ function loadTable() {
           success(data);
           $("#dg").datagrid("hideColumn", "id");
           $("#dg").datagrid("hideColumn", "edoFlg");
-          $("#dg").datagrid("hideColumn", "containerAmount");
         },
         error: function () {
           error.apply(this, arguments);
