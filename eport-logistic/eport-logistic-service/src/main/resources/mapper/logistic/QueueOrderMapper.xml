@@ -22,10 +22,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="beforeAfter"    column="before_after"    />
         <result property="bookingNo"    column="booking_no"    />
         <result property="sizeType"    column="size_type"    />
+        <result property="serviceId"    column="service_id"    />
     </resultMap>
 
     <sql id="selectQueueOrderVo">
-        select id, mode, consignee, truck_co, tax_code, pay_type, bl_no, pickup_date, vessel, voyage, year, invoice_type, invoice_template, cont_number, before_after, booking_no, size_type from queue_order
+        select id, mode, consignee, truck_co, tax_code, pay_type, bl_no, pickup_date, vessel, voyage, year, invoice_type, invoice_template, cont_number, before_after, booking_no, size_type, service_id from queue_order
     </sql>
 
     <select id="selectQueueOrderList" parameterType="QueueOrder" resultMap="QueueOrderResult">
@@ -47,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="beforeAfter != null  and beforeAfter != ''"> and before_after = #{beforeAfter}</if>
             <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="sizeType != null  and sizeType != ''"> and size_type = #{sizeType}</if>
+            <if test="serviceId != null  and serviceId != ''"> and service_id = #{serviceId}</if>
         </where>
     </select>
     
@@ -75,6 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="beforeAfter != null  and beforeAfter != ''">before_after,</if>
             <if test="bookingNo != null  and bookingNo != ''">booking_no,</if>
             <if test="sizeType != null  and sizeType != ''">size_type,</if>
+            <if test="serviceId != null  and serviceId != ''">service_id,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null ">#{id},</if>
@@ -94,6 +97,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="beforeAfter != null  and beforeAfter != ''">#{beforeAfter},</if>
             <if test="bookingNo != null  and bookingNo != ''">#{bookingNo},</if>
             <if test="sizeType != null  and sizeType != ''">#{sizeType},</if>
+            <if test="serviceId != null  and serviceId != ''">#{serviceId},</if>
          </trim>
     </insert>
 
@@ -116,6 +120,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="beforeAfter != null  and beforeAfter != ''">before_after = #{beforeAfter},</if>
             <if test="bookingNo != null  and bookingNo != ''">booking_no = #{bookingNo},</if>
             <if test="sizeType != null  and sizeType != ''">size_type = #{sizeType},</if>
+            <if test="serviceId != null  and serviceId != ''">service_id = #{serviceId},</if>
         </trim>
         where id = #{id}
     </update>

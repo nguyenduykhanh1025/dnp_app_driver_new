@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `queue_order`;
 CREATE TABLE IF NOT EXISTS `queue_order`(
     `id` bigint(20) NOT NULL COMMENT 'ID',
     `mode`varchar(50) COLLATE utf8_bin NULL COMMENT 'Loại lệnh',
@@ -16,5 +17,6 @@ CREATE TABLE IF NOT EXISTS `queue_order`(
     `before_after` varchar(10) COLLATE utf8_bin NULL COMMENT 'Trước-Sau',
     `booking_no` varchar(15) COLLATE utf8_bin NULL COMMENT 'Booking no',
     `size_type` varchar(10) COLLATE utf8_bin NULL COMMENT 'Kích thước cont',
+    `service_id` char(1) COLLATE utf8_bin NULL COMMENT 'Dich vu',
     PRIMARY KEY (`id`)
 )CHARSET=utf8 COLLATE=utf8_bin COMMENT='queue order';

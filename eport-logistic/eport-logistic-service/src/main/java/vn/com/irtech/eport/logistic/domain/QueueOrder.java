@@ -83,6 +83,10 @@ public class QueueOrder extends BaseEntity
     @Excel(name = "Kích thước cont")
     private String sizeType;
 
+    /** Dich vu */
+    @Excel(name = "Dich vu")
+    private String serviceId;
+    
     public void setId(Long id) 
     {
         this.id = id;
