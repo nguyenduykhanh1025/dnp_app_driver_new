@@ -46,25 +46,32 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	public String sendContEmpty() {
 		return prefix + "/index";
 	}
-	
-	// @RequestMapping("/getFieldList")
+
+	// @GetMapping("/getFieldList")
 	// @ResponseBody
 	// public AjaxResult GetField(){
-	// 	//vesselCode
-	// 	List<String> vesselCodelist = getVesselCodeList();
-	// 	//voyage
-	// 	List<String> voyageList = getVoyageList();
-	// 	//consignee
-	// 	List<String> consigneeList = getConsigneeList();
-	// 	//Truck Co.
-	// 	List<String> truckCoList = getTruckCoList();
 	// 	AjaxResult ajaxResult = AjaxResult.success();
-	// 	ajaxResult.put("vesselCode", vesselCodelist);
-	// 	ajaxResult.put("voyage", voyageList);
-	// 	ajaxResult.put("consignee", consigneeList);
-	// 	ajaxResult.put("truckCo", truckCoList);
+	// 	ajaxResult.put("opeCodeList", shipmentDetailService.getOperatorCodeList());
+	// 	ajaxResult.put("vslNmList", shipmentDetailService.getVesselCodeList());
+	// 	ajaxResult.put("voyNoList", shipmentDetailService.getVoyageList());
 	// 	return ajaxResult;
 	// }
+
+	@GetMapping("/getGroupNameByTaxCode")
+	@ResponseBody
+	public AjaxResult getGroupNameByTaxCode(String taxCode){
+		AjaxResult ajaxResult = AjaxResult.success();
+		if (taxCode == null || "".equals(taxCode)) {
+			return error();
+		}
+		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		if (groupName != null) {
+			ajaxResult.put("groupName", groupName);
+		} else {
+			ajaxResult = AjaxResult.error();
+		}
+		return ajaxResult;
+	}
 
     @RequestMapping("/listShipment")
 	@ResponseBody
@@ -79,7 +86,6 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@GetMapping("/addShipmentForm")
 	public String add(ModelMap mmap) {
-		mmap.put("groupName", getGroup().getGroupName());
 		return prefix + "/add";
 	}
 
@@ -123,15 +129,22 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		return error("Chỉnh sửa lô thất bại");
 	}
 
-	@RequestMapping("/listShipmentDetail")
+	@GetMapping("/listShipmentDetail")
 	@ResponseBody
-	public List<ShipmentDetail> listShipmentDetail(ShipmentDetail shipmentDetail) {
-		Shipment shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
+	public AjaxResult listShipmentDetail(Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(shipmentId);
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-			return shipmentDetails;
+			if (shipmentDetails != null) {
+				ajaxResult.put("shipmentDetails", shipmentDetails);
+			} else {
+				ajaxResult = AjaxResult.error();
+			}
 		}
-		return null;
+		return ajaxResult;
 	}
 
 	@PostMapping("/saveShipmentDetail")
@@ -239,19 +252,13 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		otpCode.setCreateTime(cal.getTime());
 		otpCode.setOptCode(otp);
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
-			final List<ShipmentDetail> shipmentDetails = shipmentDetailService
-					.selectShipmentDetailByIds(shipmentDetailIds);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				for (final ShipmentDetail shipmentDetail : shipmentDetails) {
-					shipmentDetail.setUserVerifyStatus("Y");
-					shipmentDetail.setStatus(3);
-					shipmentDetail.setProcessStatus("Y");
-					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+				if (shipmentDetailService.makeOrdersendContEmpty(shipmentDetails)) {
+					return success("Xác thực OTP thành công");
+				} else {
+					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
-				JSONObject data = new JSONObject();
-				data.put("something", "something");
-				sendDataToTopic(data.toString(), "send_cont_empty_order");
-				return success("Xác thực OTP thành công");
 			}
 		}
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");

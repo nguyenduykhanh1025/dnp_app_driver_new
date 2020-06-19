@@ -61,5 +61,5 @@ public interface IShipmentService
 
     public Shipment selectShipmentWithGroupById(Long  id);
 
-    public int checkBillNoIsUnique(Shipment shipment);
+    public int checkBillBookingNoUnique(Shipment shipment);
 }

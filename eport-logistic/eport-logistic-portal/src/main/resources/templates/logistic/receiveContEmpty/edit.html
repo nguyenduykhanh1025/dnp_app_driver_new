@@ -29,6 +29,12 @@
         </div>
       </div>
       <div class="form-group row">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Booking No</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input name="bookingNo" id="bookingNo" type="text" class="form-control" onfocusout="checkBookingNoUnique()" required/>
+        </div>
+      </div>
+      <div class="form-group row">
         <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Mã Số Thuế</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
           <input name="taxCode" id="taxCode" type="text" class="form-control" required/>
@@ -63,15 +69,39 @@
 <script type="text/javascript" th:inline="javascript">
   var shipment = /*[[${shipment}]]*/ ;
   var prefix = ctx + "logistic/receiveContEmpty";
+  var currentBooking = shipment.bookingNo;
+
+  function loadGroupName() {
+    if ($("#taxCode").val() != null && $("#taxCode").val() != '') {
+      $.ajax({
+        url: prefix + "/getGroupNameByTaxCode",
+        method: "get",
+        data: {
+          taxCode: $("#taxCode").val()
+        }
+      }).done(function (result) {
+        if (result.code == 0) {
+          $("#groupName").val(result.groupName);
+          $("#taxCode").removeClass("error-input");
+        } else {
+          $.modal.msgError("Không tìm ra mã số thuế!");
+          $("#taxCode").addClass("error-input");
+        }
+      });
+    } else {
+      $("#groupName").val('');
+    }
+  }
 
   // Map data to form
   if (shipment != null) {
     $("#id").val(shipment.id);
     $("#shipmentCode").val(shipment.id);
+    $("#bookingNo").val(shipment.bookingNo);
     $("#taxCode").val(shipment.taxCode);
     $("#containerAmount").val(shipment.containerAmount);
-    $("#groupName").val(shipment.logisticGroup.groupName);
     $("#remark").val(shipment.remark);
+    loadGroupName();
   }
   
   $("#form-edit-shipment").validate({
@@ -79,10 +109,35 @@
   });
 
   function submitHandler() {
-      if ($.validate.form()) {
-          $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
-          parent.loadTable();
+    if ($.validate.form()) {
+      if (checkBookingNoUnique()) {
+        $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
+        parent.loadTable();
       }
+    }
   }
+
+  function checkBookingNoUnique() {
+    let errorFlag = true;
+    if ($("#bookingNo").val() != null && $("#bookingNo").val() != '' && $("#bookingNo").val() != currentBooking) {
+      $.ajax({
+        url: prefix + "/checkBookingNoUnique",
+        method: "post",
+        data: {
+          bookingNo: $("#bookingNo").val()
+        }
+      }).done(function (result) {
+        if (result.code == 0) {
+          $("#bookingNo").removeClass("error-input");
+        } else {
+          $.modal.msgError("Số book đã tồn tại!");
+          $("#bookingNo").addClass("error-input");
+          errorFlag = false;
+        }
+        return errorFlag;
+      });
+    }
+  }
+
 </script>
 </html>
