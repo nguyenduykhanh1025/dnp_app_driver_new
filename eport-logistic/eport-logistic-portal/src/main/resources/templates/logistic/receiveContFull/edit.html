@@ -126,7 +126,25 @@
 
   function submitHandler() {
     if ($.validate.form()) {
-      if (checkBlNoUnique()) {
+      checkBlNoUnique();
+      if ($("#blNo").val() != currentBill) {
+        $.ajax({
+          url: prefix + "/checkBlNoUnique",
+          method: "post",
+          data: {
+            blNo: $("#blNo").val()
+          }
+        }).done(function (result) {
+          if (result.code == 0) {
+            $("#blNo").removeClass("error-input");
+            $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
+            parent.loadTable();
+          } else {
+            $.modal.msgError("Số bill đã tồn tại!");
+            $("#blNo").addClass("error-input");
+          }
+        });
+      } else {
         $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
         parent.loadTable();
       }
@@ -134,7 +152,6 @@
   }
 
   function checkBlNoUnique() {
-    let errorFlag = true;
     if ($("#blNo").val() != null && $("#blNo").val() != '' && $("#blNo").val() != currentBill) {
       $.ajax({
         url: prefix + "/checkBlNoUnique",
@@ -148,9 +165,7 @@
         } else {
           $.modal.msgError("Số bill đã tồn tại!");
           $("#blNo").addClass("error-input");
-          errorFlag = false;
         }
-        return errorFlag;
       });
     }
   }

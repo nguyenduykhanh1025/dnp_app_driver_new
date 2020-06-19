@@ -7,12 +7,14 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -31,7 +33,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 @RequestMapping("/logistic/sendContFull")
 public class LogisticSendContFullController extends LogisticBaseController {
     
-    private final String prefix = "logistic/sendContFull";
+    private final String PREFIX = "logistic/sendContFull";
 	
 	@Autowired
 	private IShipmentService shipmentService;
@@ -44,27 +46,24 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
     @GetMapping()
 	public String sendContEmpty() {
-		return prefix + "/index";
+		return PREFIX + "/index";
 	}
-	
-	// @RequestMapping("/getFieldList")
-	// @ResponseBody
-	// public AjaxResult GetField(){
-	// 	//vesselCode
-	// 	List<String> vesselCodelist = getVesselCodeList();
-	// 	//voyage
-	// 	List<String> voyageList = getVoyageList();
-	// 	//consignee
-	// 	List<String> consigneeList = getConsigneeList();
-	// 	//Truck Co.
-	// 	List<String> truckCoList = getTruckCoList();
-	// 	AjaxResult ajaxResult = AjaxResult.success();
-	// 	ajaxResult.put("vesselCode", vesselCodelist);
-	// 	ajaxResult.put("voyage", voyageList);
-	// 	ajaxResult.put("consignee", consigneeList);
-	// 	ajaxResult.put("truckCo", truckCoList);
-	// 	return ajaxResult;
-	// }
+
+	@GetMapping("/getGroupNameByTaxCode")
+	@ResponseBody
+	public AjaxResult getGroupNameByTaxCode(String taxCode){
+		AjaxResult ajaxResult = AjaxResult.success();
+		if (taxCode == null || "".equals(taxCode)) {
+			return error();
+		}
+		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		if (groupName != null) {
+			ajaxResult.put("groupName", groupName);
+		} else {
+			ajaxResult = AjaxResult.error();
+		}
+		return ajaxResult;
+	}
 
     @RequestMapping("/listShipment")
 	@ResponseBody
@@ -79,8 +78,17 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@GetMapping("/addShipmentForm")
 	public String add(ModelMap mmap) {
-		mmap.put("groupName", getGroup().getGroupName());
-		return prefix + "/add";
+		return PREFIX + "/add";
+	}
+
+	@PostMapping("/checkBookingNoUnique")
+	@ResponseBody
+	public AjaxResult checkBookingNoUnique(Shipment shipment) {
+		shipment.setServiceId(4);
+		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
+			return success();
+		}
+		return error();
 	}
 
 	@PostMapping("/addShipment")
@@ -105,7 +113,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
 		}
-        return prefix + "/edit";
+        return PREFIX + "/edit";
 	}
 	
 	@PostMapping("/editShipment")
@@ -123,15 +131,22 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Chỉnh sửa lô thất bại");
 	}
 
-	@RequestMapping("/listShipmentDetail")
+	@GetMapping("/listShipmentDetail")
 	@ResponseBody
-	public List<ShipmentDetail> listShipmentDetail(ShipmentDetail shipmentDetail) {
-		Shipment shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
+	public AjaxResult listShipmentDetail(Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(shipmentId);
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-			return shipmentDetails;
+			if (shipmentDetails != null) {
+				ajaxResult.put("shipmentDetails", shipmentDetails);
+			} else {
+				ajaxResult = AjaxResult.error();
+			}
 		}
-		return null;
+		return ajaxResult;
 	}
 
 	@PostMapping("/saveShipmentDetail")
@@ -180,20 +195,57 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
+	@GetMapping("checkCustomStatusForm/{shipmentId}")
+	@Transactional
+	public String checkCustomStatus(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
+		mmap.put("shipmentId", shipmentId);
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setStatus(1);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		if (shipmentDetails.size() > 0) {
+			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				mmap.put("contList", shipmentDetails);
+			}
+		}
+		return PREFIX + "/checkCustomStatus";
+	}
+
+	@PostMapping("/checkCustomStatus")
+	@ResponseBody
+	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
+			String shipmentDetailIds) {
+		if (declareNoList != null) {
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService
+					.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() > 0) {
+				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						shipmentDetail.setStatus(2);
+						shipmentDetail.setCustomStatus("R");
+						shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					}
+					return shipmentDetails;
+				}
+			}
+		}
+		return null;
+	}
+
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
-		return prefix + "/checkContListBeforeVerify";
+		return PREFIX + "/checkContListBeforeVerify";
 	}
 
 	@GetMapping("verifyOtpForm/{shipmentDetailIds}")
 	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
-		return prefix + "/verifyOtp";
+		return PREFIX + "/verifyOtp";
 	}
 
 	@PostMapping("sendOTP")
@@ -251,7 +303,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@GetMapping("paymentForm/{shipmentDetailIds}")
 	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
-		return prefix + "/paymentForm";
+		return PREFIX + "/paymentForm";
 	}
 
 	@PostMapping("/payment")
@@ -286,7 +338,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		}
 		mmap.put("transportIds", transportId);
 		mmap.put("shipmentDetailIds", shipmentIds);
-		return prefix + "/pickTruckForm";
+		return PREFIX + "/pickTruckForm";
 	}
 
 	@PostMapping("/pickTruck")

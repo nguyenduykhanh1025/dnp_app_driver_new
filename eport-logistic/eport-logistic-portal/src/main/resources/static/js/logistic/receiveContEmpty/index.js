@@ -160,77 +160,48 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         let content = '';
         switch (value) {
             case 1:
-                if (sourceData[row].userVerifyStatus == "Y") {
-                    content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-                    content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 8px;  color: rgb(5, 148, 148);"></i>';
+                if(sourceData[row].containerNo == "containerNo") {
+                    content += '<i id="receiveCont" class="fa fa-exchange easyui-tooltip" title="Chưa Được Cấp Container" aria-hidden="true" style="margin-left: 5px; color: rgb(5, 148, 148);"></i>';
+                    content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 5px; font-size: 15px;"></i>';
+                    content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 5px;"></i>';
                 } else {
-                    content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148); font-size: 15px;"></i>';
-                    content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 8px;"></i>';
+                    content += '<i id="receiveCont" class="fa fa-exchange easyui-tooltip" title="Đã Được Cấp Container" aria-hidden="true" style="margin-left: 5px; color: #3498db;"></i>';
+                    if (sourceData[row].userVerifyStatus == "Y") {
+                        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 5px; color: #3498db; font-size: 15px;"></i>';
+                        content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 5px;  color: rgb(5, 148, 148);"></i>';
+                    } else {
+                        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 5px; color: rgb(5, 148, 148); font-size: 15px;"></i>';
+                        content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 5px;"></i>';
+                    }
                 }
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 5px;"></i>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 5px;"></i></div>';
                 break;
             case 2:
-                content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-                content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
-                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+                content += '<i id="receiveCont" class="fa fa-exchange easyui-tooltip" title="Đã Được Cấp Container" aria-hidden="true" style="margin-left: 5px; color: #3498db;"></i>';
+                content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 5px; color: #3498db; font-size: 15px;"></i>';
+                content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 5px; color: #3498db;"></i>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 5px; color: rgb(5, 148, 148);"></i>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 5px;"></i></div>';
                 break;
             case 3:
-                content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-                content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
+                content += '<i id="receiveCont" class="fa fa-exchange easyui-tooltip" title="Đã Được Cấp Container" aria-hidden="true" style="margin-left: 5px; color: #3498db;"></i>';
+                content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 5px; color: #3498db; font-size: 15px;"></i>';
+                content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 5px; color: #3498db;"></i>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 5px; color: #3498db;"></i>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 5px; color: rgb(5, 148, 148);"></i></div>';
                 break;
             case 4:
-                content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-                content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Đã Hạ Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i></div>';
+                content += '<i id="receiveCont" class="fa fa-exchange easyui-tooltip" title="Đã Được Cấp Container" aria-hidden="true" style="margin-left: 5px; color: #3498db;"></i>';
+                content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 5px; color: #3498db; font-size: 15px;"></i>';
+                content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 5px; color: #3498db;"></i>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 5px; color: #3498db;"></i>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Đã Hạ Container" aria-hidden="true" style="margin-left: 5px; color: #3498db;"></i></div>';
                 break;
             default:
                 break;
         }
         $(td).html(content).addClass("htMiddle");
-    }
-    return td;
-}
-function processRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null && value != '') {
-        if (value == "Y") {
-            $(td).css("background-color", "rgb(92, 255, 92)").html("Đã làm lệnh").addClass("htMiddle");
-        } else {
-            $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa làm lệnh").addClass("htMiddle");
-        }
-        $(td).attr('id', 'process' + row);
-    } else {
-        $(td).html('');
-    }
-    return td;
-}
-function paymentRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null && value != '') {
-        if (value == "Y") {
-            $(td).css("background-color", "rgb(92, 255, 92)").html("Đã Thanh toán").addClass("htMiddle");
-        } else {
-            $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa thanh toán").addClass("htMiddle");
-        }
-        $(td).attr('id', 'payment' + row);
-    } else {
-        $(td).html('');
-    }
-    return td;
-}
-function statusRenderer(instance, td, row, col, prop, value, cellProperties) {
-    if (value != null && value != '') {
-        if (value != 4) {
-            $(td).css("background-color", "rgb(225, 255, 34)").html("Chưa hạ container").addClass("htMiddle");
-        } else {
-            $(td).css("background-color", "rgb(92, 255, 92)").html("Đã hạ container").addClass("htMiddle");
-        }
-        $(td).attr('id', 'status' + row);
-    } else {
-        $(td).html('');
     }
     return td;
 }
@@ -349,7 +320,7 @@ function configHandson() {
                 case 3:
                     return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
                 case 4:
-                    return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
+                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
                 case 5:
                     return '<span>Tàu</span><span style="color: red;">(*)</span>';
                 case 6:
@@ -359,16 +330,10 @@ function configHandson() {
                 case 8:
                     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
                 case 9:
-                    return "T.T Làm Lệnh";
-                case 10:
-                    return "T.T Thanh Toán";
-                case 11:
-                    return "T.T Nhận Cont";
-                case 12:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 100, 120, 100, 100, 100, 150, 150, 150, 150, 200],
+        colWidths: [50, 100, 100, 100, 120, 100, 100, 100, 150, 200],
         filter: "true",
         columns: [
             {
@@ -429,21 +394,6 @@ function configHandson() {
                 renderer: dischargePortRenderer
             },
             {
-                data: "processStatus",
-                readOnly: true,
-                renderer: processRenderer
-            },
-            {
-                data: "paymentStatus",
-                readOnly: true,
-                renderer: paymentRenderer
-            },
-            {
-                data: "status",
-                readOnly: true,
-                renderer: statusRenderer
-            },
-            {
                 data: "remark",
                 renderer: remarkRenderer
             },
@@ -491,21 +441,6 @@ function configHandson() {
                     }
                     break;
                 case 9:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "process")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 10:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "payment")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 11:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "status")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 12:
                     if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
                         hot.setDataAtCell(row, column, '');
                     }
@@ -770,28 +705,23 @@ document.addEventListener("keyup", function(e){
     if (e.keyCode == 8) {
         if (selectedRow != null && $("#process" + selectedRow).html() != "Đã làm lệnh") {
             var myTableData = hot.getSourceData();
-            myTableData[selectedRow].registerNo = '';
             myTableData[selectedRow].containerNo = '';
-            myTableData[selectedRow].process = '';
-            myTableData[selectedRow].payment = '';
             myTableData[selectedRow].status = '';
             myTableData[selectedRow].opeCode = '';
             myTableData[selectedRow].expiredDem = '';
-            myTableData[selectedRow].size = '';
-            myTableData[selectedRow].loadingPort = '';
+            myTableData[selectedRow].vslNm = '';
+            myTableData[selectedRow].voyNo = '';
+            myTableData[selectedRow].sztp = '';
             myTableData[selectedRow].dischargePort = '';
             myTableData[selectedRow].remark = '';
             myTableData[selectedRow].delFlag = true;
             hot.loadData(myTableData);
-            $("#registerNo"+selectedRow).html('');
             $("#containerNo"+selectedRow).html('');
-            $("#process"+selectedRow).html('');
-            $("#payment"+selectedRow).html('');
-            $("#status"+selectedRow).html('');
             $("#opeCode"+selectedRow).html('');
             $("#expiredDem"+selectedRow).html('');
-            $("#size"+selectedRow).html('');
-            $("#loadingPort"+selectedRow).html('');
+            $("#vslNm"+selectedRow).html('');
+            $("#voyNo"+selectedRow).html('');
+            $("#sztp"+selectedRow).html('');
             $("#dischargePort"+selectedRow).html('');
             $("#remark"+selectedRow).html('');
         }

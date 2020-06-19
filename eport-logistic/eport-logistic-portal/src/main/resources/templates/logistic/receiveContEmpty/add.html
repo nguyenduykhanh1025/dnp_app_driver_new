@@ -80,15 +80,26 @@
 
   function submitHandler() {
     if ($.validate.form()) {
-      if (checkBookingNoUnique()) {
-        $.operate.save(prefix + "/addShipment", $('#form-add-shipment').serialize());
-        parent.loadTable();
-      }
+      $.ajax({
+        url: prefix + "/checkBookingNoUnique",
+        method: "post",
+        data: {
+          bookingNo: $("#bookingNo").val()
+        }
+      }).done(function (result) {
+        if (result.code == 0) {
+          $("#bookingNo").removeClass("error-input");
+          $.operate.save(prefix + "/addShipment", $('#form-add-shipment').serialize());
+          parent.loadTable();
+        } else {
+          $.modal.msgError("Số book đã tồn tại!");
+          $("#bookingNo").addClass("error-input");
+        }
+      });
     }
   }
 
   function checkBookingNoUnique() {
-    let errorFlag = true;
     if ($("#bookingNo").val() != null && $("#bookingNo").val() != '') {
       $.ajax({
         url: prefix + "/checkBookingNoUnique",
@@ -102,9 +113,7 @@
         } else {
           $.modal.msgError("Số book đã tồn tại!");
           $("#bookingNo").addClass("error-input");
-          errorFlag = false;
         }
-        return errorFlag;
       });
     }
   }
