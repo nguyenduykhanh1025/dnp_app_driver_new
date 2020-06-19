@@ -137,7 +137,7 @@ public class TruckController extends LogisticBaseController
     }
     @GetMapping("/searchTrailerByKeyword")
     @ResponseBody
-    public List<JSONObject> searchTrailerByKeyword(String keyword, @RequestParam(value = "trailerIdArray[]") String[] trailerIdArray){
+    public List<JSONObject> searchTrailerByKeyword(String keyword){
     	Truck truck = new Truck();
     	truck.setLogisticGroupId(getUser().getGroupId());
         truck.setPlateNumber(keyword);
