@@ -257,8 +257,9 @@ public class TransportAccountController extends LogisticBaseController
     @GetMapping("/driverTruck/{id}")
     public String driverTruck(@PathVariable("id") Long id, ModelMap mmap)
     {
-        //mmap.put("transportAccount", transportAccountService.selectTransportAccountById(id));
-        mmap.put("driverTruck", driverTruckService.selectDriverTruckById(id));
+        DriverTruck driverTruck = new DriverTruck();
+        driverTruck.setDriverId(id);
+        List<DriverTruck> list = driverTruckService.selectDriverTruckList(driverTruck);
         return prefix + "/driverTruck";
     }
 

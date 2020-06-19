@@ -11,13 +11,20 @@
 </head>
 <body class="white-bg">
 	<div class="wrapper wrapper-content animated fadeInRight ibox-content">
-		<form class="form-horizontal m" id="form-logistic-account-assignTruck" th:object="${truckIds}">
-            <input name="id" type="hidden" th:field="*{driverId}"/>
+		<form class="form-horizontal m" id="form-logistic-account-assignTruck">
+            <input name="id" type="hidden" />
             <div class="form-group">
-                <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe:</label>
+                <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe đầu kéo:</label>
                 <div class="col-sm-8 col-xs-8 col-md-10">
-                    <input type="hidden" name="truckIds" th:field="*{truckIds}" id="truckIds">
-                    <select class="truckList" id="truckList"></select>
+                    <input type="hidden" name="tractorId" id="tractorId">
+                    <select class="tractorList" id="tractorList"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe rơ mooc:</label>
+                <div class="col-sm-8 col-xs-8 col-md-10">
+                    <input type="hidden" name="trailerId" id="trailerId">
+                    <select class="trailerList" id="trailerList"></select>
                 </div>
             </div>
 		</form>
@@ -25,15 +32,18 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: select2-js" />
     <script type="text/javascript">
-    var truckIdArray = [];
-        $('.truckList').select2({
+    var tractorIdArray = [];
+    var trailerIdArray = [];
+    $(document).ready(function(){
+        $('.tractorList').select2({
             ajax: {
-                url: '/logistic/truck/searchPlaceNumberByKeyword',
+                url: '/logistic/truck/searchTractorByKeyword',
                 method: 'get',
                 delay: 250,
                 data: function (params) {
                     return {
                         keyword: params.term == null ? "" : params.term,
+                        tractorIdArray:tractorIdArray
                     }
                 },
                 processResults: function (data, params) {
@@ -42,28 +52,75 @@
                     }
                 }
             },
-            placeholder: 'Chọn xe chỉ định',
+            placeholder: 'Chọn xe đầu kéo',
             minimumInputLength: 0,
             multiple: true,
         });
-        // when select option truckId
-        $('.truckList').change(function () {
-            truckIdArray = $(".truckList").val();
-            let str = "";
-            if (truckIdArray != null) {
-                for (var i = 0; i < truckIdArray.length; i++) {
-                    str += truckIdArray[i] + ",";
+
+        $('.trailerList').select2({
+            ajax: {
+                url: '/logistic/truck/searchTrailerByKeyword',
+                method: 'get',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        keyword: params.term == null ? "" : params.term,
+                        trailerIdArray:trailerIdArray
+                    }
+                },
+                processResults: function (data, params) {
+                    return {
+                        results: data
+                    }
                 }
-                str = str.substring(0, str.length - 1);
-                $('#truckIds').val(str);
-            }
+            },
+            placeholder: 'Chọn xe rơ mooc',
+            minimumInputLength: 0,
+            multiple: true,
         });
-        function submitHandler() {
-            console.log
-	        if ($.validate.form()) {
-	        	$.operate.save(ctx + "logistic/transport/truckAssign", $('#form-logistic-account-assignTruck').serialize());
-	        }
-	    }
+    })
+    setTimeout(() => {
+            // Init truckIds select 2
+            let tractorIds = $('#tractorId').val().split(",");
+            for (var i=0; i<tractorIds.length; i++) {
+                let $option = $("<option selected></option>").val(tractorIds[i]).text(tractorIds[i]);
+                $('.tractorList').append($option).trigger('change');
+            }
+            let trailerIds = $('#trailerId').val().split(",");
+            for (var i=0; i<trailerIds.length; i++) {
+                let $option = $("<option selected></option>").val(trailerIds[i]).text(trailerIds[i]);
+                $('.trailerList').append($option).trigger('change');
+            }                  
+        }, 200);
+    
+    // when select option truckId
+    $('.tractorList').change(function () {
+        tractorIdArray = $(".tractorList").val();
+        var str = [];
+        if (tractorIdArray != null) {
+            for (var i = 0; i < tractorIdArray.length; i++) {
+                str.push(tractorIdArray[i]);
+            }
+            $('#tractorId').val(str);
+        }
+    });
+    $('.trailerList').change(function () {
+        trailerIdArray = $(".trailerList").val();
+        var str = "";
+        if (trailerIdArray != null) {
+            for (var i = 0; i < trailerIdArray.length; i++) {
+                str += trailerIdArray[i] + ",";
+            }
+            str = str.substring(0, str.length - 1);
+            $('#trailerId').val(str);
+        }
+    });
+    function submitHandler() {
+        console.log
+        if ($.validate.form()) {
+            $.operate.save(ctx + "logistic/transport/truckAssign", $('#form-logistic-account-assignTruck').serialize());
+        }
+    }
     </script>
 </body>
 </html>
