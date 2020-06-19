@@ -736,6 +736,16 @@ var table = {
         	    	layer.close(index);
         	        callBack(true);
         	    });
+			},
+			confirmTruck: function (content, callBack) {
+            	layer.confirm(content, {
+        	        icon: 3,
+        	        title: "Xác Nhận",
+        	        btn: ['Đồng Ý', 'Hủy Bỏ']
+        	    }, function (index) {
+        	    	layer.close(index);
+        	        callBack(true);
+        	    });
             },
             // 弹出层指定宽度
             open: function (title, url, width, height, callback) {
@@ -1190,6 +1200,10 @@ var table = {
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
             },
 			addTransportAccount: function(id) {
+            	table.set();
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 850, 460);
+			},
+			addTruck: function(id) {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 850, 460);
             },
