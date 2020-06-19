@@ -21,12 +21,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.json.JSONObject;
+import vn.com.irtech.eport.framework.mqtt.service.MqttService;
+import vn.com.irtech.eport.framework.mqtt.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.QueueOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IQueueOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -49,6 +53,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@Autowired
 	private IQueueOrderService queueOrderService;
+
+	@Autowired
+	private MqttService mqttService;
 
     @GetMapping()
 	public String sendContEmpty() {
@@ -307,8 +314,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				if (queueOrder != null) {
 					queueOrderService.insertQueueOrder(queueOrder);
 					//
-					
-
+					ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(queueOrder, shipmentDetails);
+					mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
 					return success("Xác thực OTP thành công");
 				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
