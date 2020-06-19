@@ -2,10 +2,6 @@ package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
-
-=======
->>>>>>> 986ddb0e9450887e343fe8a9057236777a3d78c4
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
