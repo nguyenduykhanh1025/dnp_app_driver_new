@@ -35,8 +35,20 @@ var dischargePortList = [
     "TCCVN:TCCVN",
     "TWKEL:Keelung",
     "VNHCM:Ho Chin Minh",
-    "VNHPH:Haiphong"];
-
+    "VNHPH:Haiphong"
+];
+var cargoTypeList = [
+    "AK:Over Dimension",
+    "BB:Break Bulk",
+    "BN:Bundle",
+    "DG:Dangerous",
+    "DR:Reefer & DG",
+    "DE:Dangerous Empty",
+    "FR:Fragile",
+    "GP:General",
+    "MT:Empty",
+    "RF:Reefer"
+];
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
     loadTable();
@@ -301,6 +313,18 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     }
     return td;
 }
+function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (value != null && value != '') {
+        $(td).attr('id', 'cargoType' + row).html(value).addClass("htMiddle");
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    } else {
+        $(td).html('');
+    }
+    return td;
+}
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
     if (value != null && value != '') {
         $(td).attr('id', 'dischargePort' + row).html(value).addClass("htMiddle");
@@ -383,18 +407,20 @@ function configHandson() {
                 case 8:
                     return '<span>Trọng Lượng</span><span style="color: red;">(*)</span>';
                 case 9:
-                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
                 case 10:
-                    return "VGM";
+                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
                 case 11:
-                    return "Đơn Vị Kiểm Định";
+                    return "VGM";
                 case 12:
-                    return "Max Gross(Tấn)";
+                    return "Đơn Vị Kiểm Định";
                 case 13:
+                    return "Max Gross(Tấn)";
+                case 14:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 100, 100, 100, 100, 100, 100, 150, 100, 130, 100, 200],
+        colWidths: [50, 100, 100, 100, 100, 100, 100, 100, 100, 150, 150, 100, 130, 100, 200],
         filter: "true",
         columns: [
             {
@@ -448,6 +474,13 @@ function configHandson() {
                 type: "numeric",
                 strict: true,
                 renderer: wgtRenderer
+            },
+            {
+                data: "cargoType",
+                strict: true,
+                type: "autocomplete",
+                source: cargoTypeList,
+                renderer: cargoTypeRenderer
             },
             {
                 data: "dischargePort",
@@ -519,21 +552,26 @@ function configHandson() {
                     }
                     break;
                 case 9:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 12 || $(TD).attr("id").substring(0, 12) != "dischargePort")) {
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 9 || $(TD).attr("id").substring(0, 9) != "cargoType")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
-                case 11:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "vgmPersonInfo")) {
+                case 10:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
                 case 12:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 3 || $(TD).attr("id").substring(0, 3) != "vgm")) {
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "vgmPersonInfo")) {
                         hot.setDataAtCell(row, column, '');
                     }
                     break;
                 case 13:
+                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 3 || $(TD).attr("id").substring(0, 3) != "vgm")) {
+                        hot.setDataAtCell(row, column, '');
+                    }
+                    break;
+                case 14:
                     if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
                         hot.setDataAtCell(row, column, '');
                     }

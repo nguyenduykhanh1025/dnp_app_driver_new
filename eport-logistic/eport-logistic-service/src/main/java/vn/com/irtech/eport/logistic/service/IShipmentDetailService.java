@@ -92,4 +92,6 @@ public interface IShipmentDetailService
     public boolean makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails);
 
     public boolean makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
+
+    public boolean makeOrderSendContFull(List<ShipmentDetail> shipmentDetails);
 }

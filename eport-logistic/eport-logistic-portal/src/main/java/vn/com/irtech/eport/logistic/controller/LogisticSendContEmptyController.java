@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -225,17 +226,23 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 		OtpCode otpCode = new OtpCode();
 		Random rd = new Random();
-		long OTPCODE = rd.nextInt(900000)+100000;
+		long rD = rd.nextInt(900000)+100000;
 
 		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
 		otpCode.setShipmentDetailids(shipmentDetailIds);
 		otpCode.setPhoneNumber(lGroup.getMobilePhone());
-		otpCode.setOptCode(OTPCODE);
+		otpCode.setOptCode(rD);
 		otpCodeService.insertOtpCode(otpCode);
 
-		final String contentOtp = "Ma xac thuc lam lenh lay cont hang ra khoi cang la " + OTPCODE;
+		String content = "Lam lenh giao cont la  " + rD;
 		String response = "";
+		try {
+			response = otpCodeService.postOtpMessage(content);
+			System.out.println(response);
+		} catch (IOException ex) {
+			// process the exception
+		}
 
 		return AjaxResult.success(response.toString());
 	}

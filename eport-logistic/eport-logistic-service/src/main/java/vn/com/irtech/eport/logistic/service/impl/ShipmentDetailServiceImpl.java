@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
@@ -360,7 +361,27 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     }
 
     @Override
+    public boolean makeOrderSendContFull(List<ShipmentDetail> shipmentDetails) {
+        if (shipmentDetails.size() > 0) {
+            for (ShipmentDetail shipmentDetail : shipmentDetails) {
+                shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
+                shipmentDetail.setUserVerifyStatus("Y");
+                // shipmentDetail.setProcessStatus("Y");
+                // shipmentDetail.setStatus(3);
+                shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
     public String getGroupNameByTaxCode(String taxCode) {
+        String uri = "https://thongtindoanhnghiep.co/api/company/" + taxCode;
+
+        // RestTemplate restTemplate = new RestTemplate();
+        // String result = restTemplate.getForObject(uri, String.class);
         return "Công ty abc";
     }
 }

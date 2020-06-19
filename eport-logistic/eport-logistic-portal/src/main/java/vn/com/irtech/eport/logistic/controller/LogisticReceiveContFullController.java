@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -27,7 +28,6 @@ import org.springframework.web.client.RestTemplate;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
@@ -38,7 +38,6 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.utils.R;
 
-import java.io.IOException;
 
 
 @Controller
@@ -172,9 +171,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
-			int index = 0;
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				index++;
 				if (shipmentDetail.getId() != null) {
 					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
 						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
@@ -305,15 +302,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		otpCode.setOptCode(rD);
 		otpCodeService.insertOtpCode(otpCode);
 
-		String contentabc = "Lam lenh lay cont la  " + rD;
+		String content = "Lam lenh lay cont la  " + rD;
 		String response = "";
-		// try {
-
-		// 	response = postOtpMessage(contentabc);
-		// 	System.out.println(response);
-		// } catch (IOException ex) {
-		// 	// process the exception
-		// }
+		try {
+			response = otpCodeService.postOtpMessage(content);
+			System.out.println(response);
+		} catch (IOException ex) {
+			// process the exception
+		}
 
 		return AjaxResult.success(response.toString());
 	}
