@@ -102,4 +102,12 @@ public interface SysRobotMapper
      * @return result
      */
     public int deleteRobotByUuId(String uuId);
+    
+    /**
+	 * Find first robot
+	 * 
+	 * @param robot
+	 * @return robot
+	 */
+    public SysRobot findFirstRobot(SysRobot robot);
 }
