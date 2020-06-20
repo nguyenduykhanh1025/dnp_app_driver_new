@@ -7,12 +7,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="DriverTruck" id="DriverTruckResult">
         <result property="driverId"    column="driver_id"    />
         <result property="truckId"    column="truck_id"    />
+        <association property="truck"    column="truck_id" javaType="Truck" resultMap="truckResult" />
     </resultMap>
-
+    <resultMap type="Truck" id="truckResult">
+        <result property="id"    column="id"    />
+        <result property="plateNumber"    column="plate_number"    />
+        <result property="type"    column="type"    />
+    </resultMap>
     <sql id="selectDriverTruckVo">
         select driver_id, truck_id from driver_truck
     </sql>
-
+    <select id="selectTractorByDriverId" parameterType="Long" resultMap="DriverTruckResult">
+        select d.driver_id, d.truck_id, t.plate_number, t.type
+        from driver_truck d left join truck t on d.truck_id = t.id
+        where d.driver_id = #{driverId} and t.type = '0'
+    </select>
+    <select id="selectTrailerByDriverId" parameterType="Long" resultMap="DriverTruckResult">
+        select d.driver_id, d.truck_id, t.plate_number, t.type
+        from driver_truck d left join truck t on d.truck_id = t.id
+        where d.driver_id = #{driverId} and t.type = '1'
+    </select>
     <select id="selectDriverTruckList" parameterType="DriverTruck" resultMap="DriverTruckResult">
         <include refid="selectDriverTruckVo"/>
         <where>  
