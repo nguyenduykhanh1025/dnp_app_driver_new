@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.framework.mqtt.service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -17,6 +18,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.com.irtech.eport.framework.config.MqttConfig;
+import vn.com.irtech.eport.logistic.domain.QueueOrder;
+import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.IQueueOrderService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
@@ -35,6 +41,12 @@ public class CustomMqttCallback implements MqttCallback {
 
 	@Autowired
 	private ISysRobotService robotService;
+	
+	@Autowired
+	private IQueueOrderService queueOrderService;
+	
+	@Autowired
+	private IShipmentDetailService shipmentDetailService;
 
 	@Override
 	public void connectionLost(Throwable throwable) {
@@ -185,6 +197,18 @@ public class CustomMqttCallback implements MqttCallback {
 	 */
 	private void updateShipmentDetail(String result, String receiptId) {
 		// TODO: update shipment detail
+		Long id = Long.parseLong(receiptId);
+		QueueOrder queueOrder = queueOrderService.selectQueueOrderById(id);
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setRegisterNo(receiptId);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		if (queueOrder != null) {
+			if ("success".equalsIgnoreCase(result)) {
+				 shipmentDetailService.updateProcessStatus(shipmentDetails, "Y");
+			} else {
+				shipmentDetailService.updateProcessStatus(shipmentDetails, "E");
+			}
+		}	
 	}
 
 	@Override

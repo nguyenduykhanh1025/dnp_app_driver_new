@@ -453,4 +453,16 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
         // String result = restTemplate.getForObject(uri, String.class);
         return "Công ty abc";
     }
+    
+    @Override
+    @Transactional
+    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status) {
+    	for (ShipmentDetail shipmentDetail : shipmentDetails) {
+    		shipmentDetail.setProcessStatus(status);
+    		if ("Y".equalsIgnoreCase(status)) {
+    			shipmentDetail.setStatus(3);
+    		} 		
+    		shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+    	}
+    }
 }
