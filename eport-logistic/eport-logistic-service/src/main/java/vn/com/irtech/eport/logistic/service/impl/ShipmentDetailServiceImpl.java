@@ -460,7 +460,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     	for (ShipmentDetail shipmentDetail : shipmentDetails) {
     		shipmentDetail.setProcessStatus(status);
     		if ("Y".equalsIgnoreCase(status)) {
-    			shipmentDetail.setStatus(2);
+    			shipmentDetail.setStatus(3);
     		} 		
     		shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
     	}
