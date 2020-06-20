@@ -25,6 +25,14 @@ public interface ISysRobotService {
 	 * @return list robot
 	 */
 	public List<SysRobot> selectRobotList(SysRobot robot);
+	
+	/**
+	 * Find first robot
+	 * 
+	 * @param robot
+	 * @return robot
+	 */
+	public SysRobot findFirstRobot(SysRobot robot);
 
 	/**
 	 * Add Robot

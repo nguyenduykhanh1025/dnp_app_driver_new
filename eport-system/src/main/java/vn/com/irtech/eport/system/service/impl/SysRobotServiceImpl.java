@@ -150,4 +150,15 @@ public class SysRobotServiceImpl implements ISysRobotService {
 	public int deleteRobotByUuId(String uuId) {
 		return sysRobotMapper.deleteRobotByUuId(uuId);
 	}
+
+	/**
+	 * Find first robot
+	 * 
+	 * @param robot
+	 * @return robot
+	 */
+	@Override
+	public SysRobot findFirstRobot(SysRobot robot) {
+		return sysRobotMapper.findFirstRobot(robot);
+	}
 }

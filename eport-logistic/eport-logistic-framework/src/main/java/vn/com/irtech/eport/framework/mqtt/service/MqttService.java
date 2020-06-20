@@ -13,8 +13,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
+
 import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.service.ISysRobotService;
 
 /**
  * 
@@ -26,7 +29,7 @@ public class MqttService {
 	private static final Logger logger = LoggerFactory.getLogger(MqttService.class);
 
 	public static final String ROBOT_TOPIC_REQ = "eport/robot/+/request";
-	
+
 	public static final String ROBOT_STATUS_TOPIC = "eport/robot";
 
 	public static final String ROBOT_TOPIC_RES = "eport/robot/+/response";
@@ -46,6 +49,9 @@ public class MqttService {
 	@Autowired
 	private CustomMqttCallback customMqttCallback;
 
+	@Autowired
+	private ISysRobotService robotService;
+
 	private static MqttClient client;
 
 	private static MqttClient getClient() {
@@ -55,12 +61,9 @@ public class MqttService {
 	private static void setClient(MqttClient client) {
 		MqttService.client = client;
 	}
-	
-	public enum EServiceRobot{
-		RECEIVE_CONT_FULL,
-		RECEIVE_CONT_EMPTY,
-		SEND_CONT_FULL,
-		SEND_CONT_EMPTY
+
+	public enum EServiceRobot {
+		RECEIVE_CONT_FULL, RECEIVE_CONT_EMPTY, SEND_CONT_FULL, SEND_CONT_EMPTY
 	}
 
 	/**
@@ -102,7 +105,10 @@ public class MqttService {
 	 */
 	public void publish(String topic, int qos, boolean retained, String pushMessage)
 			throws MqttPersistenceException, MqttException {
-
+		logger.info("Send topic: " + topic);
+		logger.info("QOS: " + qos);
+		logger.info("Retained: " + retained);
+		logger.info("Message: " + pushMessage);
 		MqttMessage message = new MqttMessage();
 		message.setQos(qos);
 		message.setRetained(retained);
@@ -127,28 +133,48 @@ public class MqttService {
 	public void publish(String topic, String pushMessage) throws MqttPersistenceException, MqttException {
 		this.publish(topic, DEFAULT_QOS, DEFAULT_RETAINED, pushMessage);
 	}
-	
+
 	/**
 	 * publish message call robot execute service
+	 * 
 	 * @param contentMessage
+	 * @throws Exception
 	 */
-	public void publishMessageToRobot(ServiceRobotReq serviceRobotReq, EServiceRobot serviceRobot) {
+	public void publishMessageToRobot(ServiceRobotReq serviceRobotReq, EServiceRobot serviceRobot) throws Exception {
 		SysRobot sysRobot = this.getAvailableRobot(serviceRobot);
 		if (sysRobot != null) {
-			// TODO: get uuid, publish message
+			String jsonMessage = new Gson().toJson(serviceRobotReq);
+			String topic = ROBOT_TOPIC_REQ.replace("+", sysRobot.getUuId());
+			this.publish(topic, jsonMessage);
 		}
 	}
 
 	/**
 	 * Get a robot already to execute service
+	 * 
 	 * @param service
 	 * @return
 	 */
 	public SysRobot getAvailableRobot(EServiceRobot serviceRobot) {
-		// TODO
-		return null;
+		SysRobot sysRobot = new SysRobot();
+		sysRobot.setStatus("0");
+		switch (serviceRobot) {
+		case RECEIVE_CONT_FULL:
+			sysRobot.setIsReceiveContFullOrder(true);
+			break;
+		case RECEIVE_CONT_EMPTY:
+			sysRobot.setIsReceiveContEmptyOrder(true);
+			break;
+		case SEND_CONT_FULL:
+			sysRobot.setIsSendContFullOrder(true);
+			break;
+		case SEND_CONT_EMPTY:
+			sysRobot.setIsSendContEmptyOrder(true);
+			break;
+		}
+		return robotService.findFirstRobot(sysRobot);
 	}
-	
+
 	/**
 	 * Subscribe to a topic
 	 *
