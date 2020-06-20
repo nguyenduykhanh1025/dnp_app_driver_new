@@ -2,7 +2,6 @@ package vn.com.irtech.eport.logistic.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
@@ -20,6 +19,8 @@ public class DriverTruck extends BaseEntity
 
     /** truck_id */
     private Long truckId;
+
+    private Truck truck;
 
     public void setDriverId(Long driverId) 
     {
@@ -46,5 +47,16 @@ public class DriverTruck extends BaseEntity
             .append("driverId", getDriverId())
             .append("truckId", getTruckId())
             .toString();
+    }
+
+    public Truck getTruck() {
+        if(truck == null){
+            truck = new Truck();
+        }
+        return truck;
+    }
+
+    public void setTruck(Truck truck) {
+        this.truck = truck;
     }
 }

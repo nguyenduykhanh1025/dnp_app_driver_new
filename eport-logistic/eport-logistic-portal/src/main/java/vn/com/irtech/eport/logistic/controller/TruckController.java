@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -116,7 +115,7 @@ public class TruckController extends LogisticBaseController
     
     @GetMapping("/searchTractorByKeyword")
     @ResponseBody
-    public List<JSONObject> searchTractorByKeyword(String keyword, @RequestParam(value = "tractorIdArray[]") String[] tractorIdArray){
+    public List<JSONObject> searchTractorByKeyword(String keyword){
     	Truck truck = new Truck();
     	truck.setLogisticGroupId(getUser().getGroupId());
         truck.setPlateNumber(keyword);
