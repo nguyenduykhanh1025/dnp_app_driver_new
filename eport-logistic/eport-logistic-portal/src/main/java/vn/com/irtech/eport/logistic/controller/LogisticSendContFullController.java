@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -17,15 +18,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.json.JSONObject;
+import vn.com.irtech.eport.framework.mqtt.service.MqttService;
+import vn.com.irtech.eport.framework.mqtt.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.QueueOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IQueueOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
@@ -43,6 +52,12 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@Autowired
 	private IOtpCodeService otpCodeService;
+
+	@Autowired
+	private IQueueOrderService queueOrderService;
+
+	@Autowired
+	private MqttService mqttService;
 
     @GetMapping()
 	public String sendContEmpty() {
@@ -158,7 +173,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				index++;
 				if (shipmentDetail.getId() != null) {
-					if (shipmentDetail.getRegisterNo() == null || shipmentDetail.getRegisterNo().equals("")) {
+					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
 						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
 					} else {
 						shipmentDetail.setUpdateBy(user.getFullName());
@@ -175,6 +190,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setFe("F");
+					if (shipmentDetail.getLoadingPort() == null || shipmentDetail.getLoadingPort().equals("")) {
+						shipmentDetail.setLoadingPort(" ");
+					}
+					if (shipmentDetail.getDischargePort() == null || shipmentDetail.getDischargePort().equals("")) {
+						shipmentDetail.setDischargePort(" ");
+					}
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
@@ -255,18 +277,23 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 		OtpCode otpCode = new OtpCode();
 		Random rd = new Random();
-		long OTPCODE = rd.nextInt(900000)+100000;
+		long rD = rd.nextInt(900000)+100000;
 
 		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
 		otpCode.setShipmentDetailids(shipmentDetailIds);
 		otpCode.setPhoneNumber(lGroup.getMobilePhone());
-		otpCode.setOptCode(OTPCODE);
+		otpCode.setOptCode(rD);
 		otpCodeService.insertOtpCode(otpCode);
 
-		final String contentOtp = "Ma xac thuc lam lenh lay cont hang ra khoi cang la " + OTPCODE;
+		String content = "Lam lenh giao cont la  " + rD;
 		String response = "";
-
+//		try {
+//			response = otpCodeService.postOtpMessage(content);
+//			System.out.println(response);
+//		} catch (IOException ex) {
+//			// process the exception
+//		}
 		return AjaxResult.success(response.toString());
 	}
 
@@ -285,16 +312,29 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			final List<ShipmentDetail> shipmentDetails = shipmentDetailService
 					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				for (final ShipmentDetail shipmentDetail : shipmentDetails) {
-					shipmentDetail.setUserVerifyStatus("Y");
-					shipmentDetail.setStatus(3);
-					shipmentDetail.setProcessStatus("Y");
-					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+				QueueOrder queueOrder = shipmentDetailService.makeOrderSendContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
+				if (queueOrder != null) {
+					queueOrderService.insertQueueOrder(queueOrder);
+					//
+					ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(queueOrder, shipmentDetails);
+					try {
+						mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					ObjectMapper mapper = new ObjectMapper();
+					try {
+						String jsonString = mapper.writeValueAsString(serviceRobotReq);
+						mqttService.publish("eport/robot/WIN-4ACSD0UROP2/request", jsonString);
+					} catch (Exception e) {
+						
+					}
+					
+					return success("Xác thực OTP thành công");
+				} else {
+					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
-				JSONObject data = new JSONObject();
-				data.put("something", "something");
-				sendDataToTopic(data.toString(), "send_cont_full_order");
-				return success("Xác thực OTP thành công");
 			}
 		}
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
@@ -312,7 +352,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setStatus(3);
+				shipmentDetail.setStatus(4);
 				shipmentDetail.setPaymentStatus("Y");
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}

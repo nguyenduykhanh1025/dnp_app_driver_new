@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.service;
 
+import java.io.IOException;
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 
@@ -64,4 +65,6 @@ public interface IOtpCodeService
     public int verifyOtpCodeAvailable(OtpCode otpCode);
 
     public int deleteOtpCodeByShipmentDetailIds(String shipmentDetailIds);
+
+    public String postOtpMessage(String content) throws IOException;
 }

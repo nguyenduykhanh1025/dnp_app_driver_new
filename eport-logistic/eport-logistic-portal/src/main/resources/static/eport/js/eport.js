@@ -1197,7 +1197,7 @@ var table = {
 			// add shipment
             addShipmentSendFull: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 480);
             },
 			addTransportAccount: function(id) {
             	table.set();
@@ -1269,7 +1269,7 @@ var table = {
             editShipmentSendFull: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 420);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 480);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}

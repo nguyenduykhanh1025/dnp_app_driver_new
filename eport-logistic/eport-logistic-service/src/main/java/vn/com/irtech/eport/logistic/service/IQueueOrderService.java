@@ -58,4 +58,6 @@ public interface IQueueOrderService
      * @return result
      */
     public int deleteQueueOrderById(Long id);
+
+    public boolean insertQueueOrderList(List<QueueOrder> queueOrders);
 }

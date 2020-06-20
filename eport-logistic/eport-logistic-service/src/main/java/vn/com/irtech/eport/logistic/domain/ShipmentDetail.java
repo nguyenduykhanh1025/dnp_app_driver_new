@@ -95,8 +95,12 @@ public class ShipmentDetail extends BaseEntity
     private String transportType;
 
     /** Empty depot */
-    @Excel(name = "Nơi hạ vỏ")
+    @Excel(name = "Nơi Ha Vo")
     private String emptyDepot;
+
+    /** Cargo Type */
+    @Excel(name = "Loại Hang")
+    private String cargoType;
 
     /** VGM Check */
     @Excel(name = "VGM Check")
@@ -323,6 +327,14 @@ public class ShipmentDetail extends BaseEntity
         return emptyDepot;
     }
 
+    public void setCargoType(String cargoType) {
+        this.cargoType = cargoType;
+    }
+
+    public String getCargoType() {
+        return cargoType;
+    }
+
     public void setVgmChk(Boolean vgmChk) {
         this.vgmChk = vgmChk;
     }
@@ -483,6 +495,7 @@ public class ShipmentDetail extends BaseEntity
             .append("dischargePort", getDischargePort())
             .append("transportType", getTransportType())
             .append("emptyDepot", getEmptyDepot())
+            .append("cargoType", getCargoType())
             .append("vgmChk", getVgmChk())
             .append("vgm", getVgm())
             .append("vgmPersonInfo", getVgmPersonInfo())

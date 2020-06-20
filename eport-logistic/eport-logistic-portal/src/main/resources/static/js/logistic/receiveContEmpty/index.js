@@ -9,7 +9,6 @@ var allChecked = true;
 var isIterate = false;
 var opeCodeList = ["CMC", "AVS", "QEW"];
 var vslNmList = ["SDF", "SDA", "EQW"];
-var voyNoList = ["2342", "3221", "1542"];
 var sizeList = ["20G0", "22G0", "40G0", "45G0"];
 var dischargePortList = [
     "VNDAD:Da Nang",
@@ -374,8 +373,6 @@ function configHandson() {
             },
             {
                 data: "voyNo",
-                type: "autocomplete",
-                source: voyNoList,
                 strict: true,
                 renderer: voyNoRenderer
             },
