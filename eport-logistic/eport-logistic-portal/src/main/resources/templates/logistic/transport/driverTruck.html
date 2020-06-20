@@ -16,14 +16,14 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe đầu kéo:</label>
                 <div class="col-sm-8 col-xs-8 col-md-10">
-                    <input type="hidden" name="tractorId" id="tractorId">
+                    <!-- <input type="hidden" name="tractorId" id="tractorId"> -->
                     <select class="tractorList" id="tractorList"></select>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe rơ mooc:</label>
                 <div class="col-sm-8 col-xs-8 col-md-10">
-                    <input type="hidden" name="trailerId" id="trailerId">
+                    <!-- <input type="hidden" name="trailerId" id="trailerId"> -->
                     <select class="trailerList" id="trailerList"></select>
                 </div>
             </div>
@@ -31,10 +31,13 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: select2-js" />
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
+    var tractorList = /*[[${tractorList}]]*/;
+    var trailerList = /*[[${trailerList}]]*/;
+    var driverId = /*[[${driverId}]]*/;
     var tractorIdArray = [];
     var trailerIdArray = [];
-    $(document).ready(function(){
+    $(document).ready(function(){         
         $('.tractorList').select2({
             ajax: {
                 url: '/logistic/truck/searchTractorByKeyword',
@@ -42,7 +45,7 @@
                 delay: 250,
                 data: function (params) {
                     return {
-                        keyword: params.term == null ? "" : params.term,
+                        keyword: params.term == null ? "" : params.term
                     }
                 },
                 processResults: function (data, params) {
@@ -63,7 +66,7 @@
                 delay: 250,
                 data: function (params) {
                     return {
-                        keyword: params.term == null ? "" : params.term,
+                        keyword: params.term == null ? "" : params.term
                     }
                 },
                 processResults: function (data, params) {
@@ -76,47 +79,54 @@
             minimumInputLength: 0,
             multiple: true,
         });
-    })
+    })                 
     setTimeout(() => {
-            // Init truckIds select 2
-            let tractorIds = $('#tractorId').val().split(",");
-            for (var i=0; i<tractorIds.length; i++) {
-                let $option = $("<option selected></option>").val(tractorIds[i]).text(tractorIds[i]);
-                $('.tractorList').append($option).trigger('change');
-            }
-            let trailerIds = $('#trailerId').val().split(",");
-            for (var i=0; i<trailerIds.length; i++) {
-                let $option = $("<option selected></option>").val(trailerIds[i]).text(trailerIds[i]);
-                $('.trailerList').append($option).trigger('change');
-            }                  
-        }, 200);
-    
+        // Init truckIds select 2
+        for (let i=0; i < tractorList.length; i++) {
+            let $option = $("<option selected></option>").val(tractorList[i].truckId).text(tractorList[i].truck.plateNumber);
+            $('.tractorList').append($option).trigger('change');
+        }
+        for (let i=0; i < trailerList.length; i++) {
+            let $option = $("<option selected></option>").val(trailerList[i].truckId).text(trailerList[i].truck.plateNumber);
+            $('.trailerList').append($option).trigger('change');
+        }
+    }, 200);
     // when select option truckId
     $('.tractorList').change(function () {
         tractorIdArray = $(".tractorList").val();
-        var str = [];
-        if (tractorIdArray != null) {
-            for (var i = 0; i < tractorIdArray.length; i++) {
-                str.push(tractorIdArray[i]);
-            }
-            $('#tractorId').val(str);
-        }
     });
     $('.trailerList').change(function () {
         trailerIdArray = $(".trailerList").val();
-        var str = "";
-        if (trailerIdArray != null) {
-            for (var i = 0; i < trailerIdArray.length; i++) {
-                str += trailerIdArray[i] + ",";
-            }
-            str = str.substring(0, str.length - 1);
-            $('#trailerId').val(str);
-        }
     });
     function submitHandler() {
-        console.log
         if ($.validate.form()) {
-            $.operate.save(ctx + "logistic/transport/truckAssign", $('#form-logistic-account-assignTruck').serialize());
+            //$.operate.save(ctx + "logistic/transport/truckAssign", $('#form-logistic-account-assignTruck').serialize());
+            let truckIds = [];
+            if(tractorIdArray != null){
+                for (var i=0; i<tractorIdArray.length; i++) {
+                    truckIds.push(tractorIdArray[i])
+                }
+            }
+            if(trailerIdArray != null){
+                for (var i=0; i<trailerIdArray.length; i++) {
+                truckIds.push(trailerIdArray[i])
+                }
+            }
+            $.ajax({
+                url: ctx + "logistic/transport/truckAssign",
+                type: 'POST',
+                data: {
+                    truckIds: truckIds,
+                    driverId: driverId
+                }
+            }).done(function(rs) {
+                if(rs.code  == 0){
+                    $.modal.msgSuccess(rs.msg);
+                }
+                else{
+                    $.modal.msgError(rs.msg)
+                }
+            });
         }
     }
     </script>

@@ -318,7 +318,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					queueOrderService.insertQueueOrder(queueOrder);
 					//
 					ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(queueOrder, shipmentDetails);
-					mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
+					try {
+						mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 					ObjectMapper mapper = new ObjectMapper();
 					try {
 						String jsonString = mapper.writeValueAsString(serviceRobotReq);

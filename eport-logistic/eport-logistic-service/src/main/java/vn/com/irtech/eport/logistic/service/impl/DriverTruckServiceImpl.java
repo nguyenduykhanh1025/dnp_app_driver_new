@@ -15,8 +15,7 @@ import vn.com.irtech.eport.common.core.text.Convert;
  * @date 2020-06-18
  */
 @Service
-public class DriverTruckServiceImpl implements IDriverTruckService 
-{
+public class DriverTruckServiceImpl implements IDriverTruckService {
     @Autowired
     private DriverTruckMapper driverTruckMapper;
 
@@ -27,8 +26,7 @@ public class DriverTruckServiceImpl implements IDriverTruckService
      * @return driver_truck
      */
     @Override
-    public DriverTruck selectDriverTruckById(Long driverId)
-    {
+    public DriverTruck selectDriverTruckById(Long driverId) {
         return driverTruckMapper.selectDriverTruckById(driverId);
     }
 
@@ -39,8 +37,7 @@ public class DriverTruckServiceImpl implements IDriverTruckService
      * @return driver_truck
      */
     @Override
-    public List<DriverTruck> selectDriverTruckList(DriverTruck driverTruck)
-    {
+    public List<DriverTruck> selectDriverTruckList(DriverTruck driverTruck) {
         return driverTruckMapper.selectDriverTruckList(driverTruck);
     }
 
@@ -51,8 +48,7 @@ public class DriverTruckServiceImpl implements IDriverTruckService
      * @return result
      */
     @Override
-    public int insertDriverTruck(DriverTruck driverTruck)
-    {
+    public int insertDriverTruck(DriverTruck driverTruck) {
         return driverTruckMapper.insertDriverTruck(driverTruck);
     }
 
@@ -63,8 +59,7 @@ public class DriverTruckServiceImpl implements IDriverTruckService
      * @return result
      */
     @Override
-    public int updateDriverTruck(DriverTruck driverTruck)
-    {
+    public int updateDriverTruck(DriverTruck driverTruck) {
         return driverTruckMapper.updateDriverTruck(driverTruck);
     }
 
@@ -75,8 +70,7 @@ public class DriverTruckServiceImpl implements IDriverTruckService
      * @return result
      */
     @Override
-    public int deleteDriverTruckByIds(String ids)
-    {
+    public int deleteDriverTruckByIds(String ids) {
         return driverTruckMapper.deleteDriverTruckByIds(Convert.toStrArray(ids));
     }
 
@@ -87,8 +81,19 @@ public class DriverTruckServiceImpl implements IDriverTruckService
      * @return result
      */
     @Override
-    public int deleteDriverTruckById(Long driverId)
-    {
+    public int deleteDriverTruckById(Long driverId) {
         return driverTruckMapper.deleteDriverTruckById(driverId);
     }
+
+    @Override
+    public List<DriverTruck> selectTractorByDriverId(Long driverId) {
+        return driverTruckMapper.selectTractorByDriverId(driverId);
+    }
+
+    @Override
+    public List<DriverTruck> selectTrailerByDriverId(Long driverId) {
+        return driverTruckMapper.selectTrailerByDriverId(driverId);
+    }
+
+    
 }

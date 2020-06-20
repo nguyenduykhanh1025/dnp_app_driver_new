@@ -58,4 +58,6 @@ public interface DriverTruckMapper
      * @return result
      */
     public int deleteDriverTruckByIds(String[] driverIds);
+    public List<DriverTruck> selectTractorByDriverId(Long driverId);
+    public List<DriverTruck> selectTrailerByDriverId(Long driverId);
 }

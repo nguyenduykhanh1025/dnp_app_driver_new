@@ -255,32 +255,31 @@ public class TransportAccountController extends LogisticBaseController
      * Update Truck
      */
     @GetMapping("/driverTruck/{id}")
-    public String driverTruck(@PathVariable("id") Long id, ModelMap mmap)
+    public String editDriverTruck(@PathVariable("id") Long id, ModelMap mmap)
     {
         DriverTruck driverTruck = new DriverTruck();
-        // driverTruck.setDriverId(id);
-        // Long tractorIds[], trailerIds[];
-        // List<DriverTruck> list = driverTruckService.selectDriverTruckList(driverTruck);
-        // for(DriverTruck i: list){
-
-        // }
+        driverTruck.setDriverId(id);
+        List<DriverTruck> tractorList = driverTruckService.selectTractorByDriverId(id);
+        List<DriverTruck> trailerList = driverTruckService.selectTrailerByDriverId(id);
+        mmap.put("tractorList", tractorList);
+        mmap.put("trailerList", trailerList);
+        mmap.put("driverId", id);
         return prefix + "/driverTruck";
     }
 
     @PostMapping("/truckAssign")
     @ResponseBody
     @Transactional
-    public AjaxResult addDriverTruck(String[] truckIds, Long id){
-        if(truckIds == null || id == null){
-            return error();
-        } else{
+    public AjaxResult addDriverTruck(@RequestParam(value = "truckIds[]")  String[] truckIds, Long driverId){
+        driverTruckService.deleteDriverTruckById(driverId);
+        if(truckIds != null){
             for (String i : truckIds) {
                 DriverTruck driverTruck = new DriverTruck();
-                driverTruck.setDriverId(id);
+                driverTruck.setDriverId(driverId);
                 driverTruck.setTruckId(Long.parseLong(i));
                 driverTruckService.insertDriverTruck(driverTruck);
             }
-            return success();
         }
+        return success();
     }
 }
