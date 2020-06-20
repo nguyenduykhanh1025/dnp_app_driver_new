@@ -288,12 +288,12 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 		String content = "Lam lenh giao cont la  " + rD;
 		String response = "";
-//		try {
-//			response = otpCodeService.postOtpMessage(content);
-//			System.out.println(response);
-//		} catch (IOException ex) {
-//			// process the exception
-//		}
+		try {
+			response = otpCodeService.postOtpMessage(content);
+			System.out.println(response);
+		} catch (IOException ex) {
+			// process the exception
+		}
 		return AjaxResult.success(response.toString());
 	}
 
