@@ -71,7 +71,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		String groupName = shipmentDetailService.getNameCompany(taxCode);
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {
@@ -236,15 +236,16 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@PostMapping("/checkCustomStatus")
 	@ResponseBody
 	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
-			String shipmentDetailIds) {
+			String shipmentDetailIds) throws IOException {
 		if (declareNoList != null) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService
 					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0) {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
-						shipmentDetail.setStatus(2);
-						shipmentDetail.setCustomStatus("R");
+						//shipmentDetail.setStatus(2);
+						//shipmentDetail.setCustomStatus("R");
+						shipmentDetailService.checkCustomStatus("AC123");
 						shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					}
 					return shipmentDetails;

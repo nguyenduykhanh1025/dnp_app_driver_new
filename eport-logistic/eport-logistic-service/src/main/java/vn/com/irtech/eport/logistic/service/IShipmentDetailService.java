@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.service;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -99,4 +100,8 @@ public interface IShipmentDetailService
     public QueueOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
     
     public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status);
+
+    public boolean checkCustomStatus(String customNumber) throws IOException;
+
+    public String getNameCompany(String taxCode);
 }

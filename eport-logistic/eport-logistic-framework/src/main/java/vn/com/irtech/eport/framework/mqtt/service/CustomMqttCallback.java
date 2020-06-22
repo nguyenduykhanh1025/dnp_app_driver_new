@@ -51,12 +51,12 @@ public class CustomMqttCallback implements MqttCallback {
 	@Override
 	public void connectionLost(Throwable throwable) {
 		// After the connection is lost, it is usually reconnected here
-		logger.info("Disconnected, can be reconnected");
-		try {
-			mqttConfig.getMqttPushClient();
-		} catch (Exception e) {
-			logger.error("Bad thing happen when reconnected Mqtt server: " + e.getMessage());
-		}
+		// logger.info("Disconnected, can be reconnected");
+		// try {
+		// 	mqttConfig.getMqttPushClient();
+		// } catch (Exception e) {
+		// 	logger.error("Bad thing happen when reconnected Mqtt server: " + e.getMessage());
+		// }
 	}
 
 	@Override
