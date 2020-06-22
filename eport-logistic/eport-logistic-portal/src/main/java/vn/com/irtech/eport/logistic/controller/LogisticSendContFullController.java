@@ -346,6 +346,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return PREFIX + "/paymentForm";
 	}
 
+	@GetMapping("/napasPaymentForm")
+	public String napasPaymentForm() {
+		return PREFIX + "/napasPaymentForm";
+	}
+
 	@PostMapping("/payment")
 	@ResponseBody
 	public AjaxResult payment(String shipmentDetailIds) {

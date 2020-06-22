@@ -381,6 +381,7 @@ function configHandson() {
         minSpareRows: 1,
         rowHeights: 30,
         manualColumnMove: false,
+        renderAllRows: true,
         rowHeaders: true,
         className: "htMiddle",
         colHeaders: function (col) {
@@ -490,67 +491,67 @@ function configHandson() {
                 renderer: remarkRenderer
             },
         ],
-        afterRenderer: function (TD, row, column, prop, value, cellProperties) {
-            switch (column) {
-                case 1:
-                    if ($(TD).attr("id") != null) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 2:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "containerNo")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 3:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 9 || $(TD).attr("id").substring(0, 9) != "consignee")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 4:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "opeCode")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 5:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "vslNm")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 6:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "voyNo")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 7:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "sztp")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 8:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 3 || $(TD).attr("id").substring(0, 3) != "wgt")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 9:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 9 || $(TD).attr("id").substring(0, 9) != "cargoType")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 10:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                case 11:
-                    if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
-                        hot.setDataAtCell(row, column, '');
-                    }
-                    break;
-                default:
-                    break;
-            }
-        },
+        // afterRenderer: function (TD, row, column, prop, value, cellProperties) {
+        //     switch (column) {
+        //         case 1:
+        //             if ($(TD).attr("id") != null) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         case 2:
+        //             if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "containerNo")) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         case 3:
+        //             if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 9 || $(TD).attr("id").substring(0, 9) != "consignee")) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         case 4:
+        //             if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "opeCode")) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         case 5:
+        //             if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "vslNm")) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         case 6:
+        //             if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "voyNo")) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         case 7:
+        //             if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "sztp")) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         case 8:
+        //             if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 3 || $(TD).attr("id").substring(0, 3) != "wgt")) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         case 9:
+        //             if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 9 || $(TD).attr("id").substring(0, 9) != "cargoType")) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         case 10:
+        //             if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         case 11:
+        //             if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
+        //                 hot.setDataAtCell(row, column, '');
+        //             }
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        // },
         afterChange: function (changes, src) {
             //Get data change in cell to render another column
             if (src !== "loadData") {
@@ -1006,7 +1007,7 @@ function setLayoutRegisterStatus() {
     $("#customBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);
     $("#deleteBtn").prop("disabled", true);
-    $("#payBtn").prop("disabled", true);
+    $("#payBtn").prop("disabled", false);
     $("#exportBillBtn").prop("disabled", true);
 }
 
@@ -1017,7 +1018,7 @@ function setLayoutCustomStatus() {
     $("#paymentStatus").removeClass("label-primary active").addClass("disable");
     $("#finishStatus").removeClass("label-primary active").addClass("disable");
     $("#saveShipmentDetailBtn").prop("disabled", false);
-    $("#verifyBtn").prop("disabled", true);
+    $("#verifyBtn").prop("disabled", false);
     if (customStatus) {
         $("#customBtn").prop("disabled", true);
     } else {
@@ -1036,7 +1037,7 @@ function setLayoutVerifyUser() {
     $("#finishStatus").removeClass("label-primary active").addClass("disable");
     $("#verifyBtn").prop("disabled", false);
     $("#deleteBtn").prop("disabled", true);
-    $("#payBtn").prop("disabled", true);
+    $("#payBtn").prop("disabled", false);
     $("#exportBillBtn").prop("disabled", true);
 }
 
@@ -1071,5 +1072,9 @@ function finishForm(result) {
         $.modal.msgError(result.msg);
     }
     reloadShipmentDetail();
+}
+
+function napasPaymentForm() {
+    $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/napasPaymentForm");
 }
 
