@@ -58,4 +58,6 @@ public interface IDriverTruckService
      * @return result
      */
     public int deleteDriverTruckById(Long driverId);
+    public List<DriverTruck> selectTractorByDriverId(Long driverId);
+    public List<DriverTruck> selectTrailerByDriverId(Long driverId);
 }

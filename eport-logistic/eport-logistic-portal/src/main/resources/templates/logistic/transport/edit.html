@@ -75,76 +75,18 @@
                 </div>
             </div>
         </form>
-        <div class="form-group" style="padding-top: 15px;">
-            <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe:</label>
-            <div class="col-sm-8 col-xs-8 col-md-10">
-                <input type="hidden" name="truckIds" id="truckIds">
-                <select class="truckList" id="truckList"></select>
-            </div>
-        </div>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: select2-js" />
     <script type="text/javascript">
         var prefix = ctx + "logistic/transport";
-        var truckIdArray = [];
         $("#form-account-edit").validate({
             focusCleanup: true
         });
-        // Init chỉ định xe select 2
-        $('.truckList').select2({
-            ajax: {
-                url: '/logistic/truck/searchPlaceNumberByKeyword',
-                method: 'get',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        keyword: params.term == null ? "" : params.term,
-                    }
-                },
-                processResults: function (data, params) {
-                    return {
-                        results: data
-                    }
-                }
-            },
-            placeholder: 'Chọn xe chỉ định',
-            minimumInputLength: 0,
-            multiple: true,
-        });
-        // when select option truckId
-        $('.truckList').change(function () {
-            truckIdArray = $(".truckList").val();
-            let str = "";
-            if (truckIdArray != null) {
-                for (var i = 0; i < truckIdArray.length; i++) {
-                    str += truckIdArray[i] + ",";
-                }
-                str = str.substring(0, str.length - 1);
-                $('#truckIds').val(str);
-            }
-        });
         function submitHandler() {
             if ($.validate.form()) {
-                $.operate.save(prefix + "/edit", $('#form-account-edit').serialize());
-                // add chỉ định xe
-                console.log($('#id').val())
-                $.ajax({
-                    url: prefix + '/truckAssign',
-                    type: 'POST',
-                    data: {
-                        truckIdArray : truckIdArray,
-                        driverId: $('#id').val()
-                    }
-                }).done(function(rs) {
-                    if(rs.code  == 0){
-                        $.modal.msgSuccess(rs.msg);
-                    }
-                    else{
-                        $.modal.msgError(rs.msg)
-                    }
-                });                
+                $.operate.save(prefix + "/edit", $('#form-account-edit').serialize());               
             }
             parent.loadTable();
         }

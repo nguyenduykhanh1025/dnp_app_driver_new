@@ -2,6 +2,9 @@ package vn.com.irtech.eport.logistic.service;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import vn.com.irtech.eport.logistic.domain.QueueOrder;
+import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 
@@ -85,11 +88,15 @@ public interface IShipmentDetailService
     
     public boolean calculateMovingCont(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails);
 
-    public boolean makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails);
+    public List<QueueOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 
     public String getGroupNameByTaxCode(String taxCode);
 
-    public boolean makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails);
+    public QueueOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 
-    public boolean makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
+    public List<QueueOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
+
+    public QueueOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
+    
+    public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status);
 }

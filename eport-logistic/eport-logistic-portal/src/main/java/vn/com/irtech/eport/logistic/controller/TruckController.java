@@ -113,12 +113,34 @@ public class TruckController extends LogisticBaseController
         return toAjax(truckService.updateDelFlagByIds(ids));
     }
     
-    @GetMapping("/searchPlaceNumberByKeyword")
+    @GetMapping("/searchTractorByKeyword")
     @ResponseBody
-    public List<JSONObject> searchPlaceNumberByKeyword(String keyword){
+    public List<JSONObject> searchTractorByKeyword(String keyword){
     	Truck truck = new Truck();
     	truck.setLogisticGroupId(getUser().getGroupId());
-    	truck.setPlateNumber(keyword);
+        truck.setPlateNumber(keyword);
+        truck.setType("0");
+    	List<Truck> list = truckService.selectTruckList(truck);
+    	List<JSONObject> result = new ArrayList<>();
+    	if(list.size() > 0) {
+        	for(Truck i : list) {
+        		JSONObject jsonObject = new JSONObject();
+        		jsonObject.put("id", i.getId());
+        		jsonObject.put("text", i.getPlateNumber());
+        		result.add(jsonObject);
+        	}
+    	}else {
+    		return null;
+    	}
+    	return result;
+    }
+    @GetMapping("/searchTrailerByKeyword")
+    @ResponseBody
+    public List<JSONObject> searchTrailerByKeyword(String keyword){
+    	Truck truck = new Truck();
+    	truck.setLogisticGroupId(getUser().getGroupId());
+        truck.setPlateNumber(keyword);
+        truck.setType("1");
     	List<Truck> list = truckService.selectTruckList(truck);
     	List<JSONObject> result = new ArrayList<>();
     	if(list.size() > 0) {

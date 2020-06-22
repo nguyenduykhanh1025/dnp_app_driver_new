@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -27,18 +28,18 @@ import org.springframework.web.client.RestTemplate;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.QueueOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IQueueOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.utils.R;
 
-import java.io.IOException;
 
 
 @Controller
@@ -55,6 +56,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired 
 	private IOtpCodeService otpCodeService;
+
+	@Autowired
+	private IQueueOrderService queueOrderService;
 
 	@GetMapping()
 	public String receiveContFull() {
@@ -172,9 +176,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
-			int index = 0;
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				index++;
 				if (shipmentDetail.getId() != null) {
 					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
 						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
@@ -305,15 +307,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		otpCode.setOptCode(rD);
 		otpCodeService.insertOtpCode(otpCode);
 
-		String contentabc = "Lam lenh lay cont la  " + rD;
+		String content = "Lam lenh lay cont la  " + rD;
 		String response = "";
-		// try {
-
-		// 	response = postOtpMessage(contentabc);
-		// 	System.out.println(response);
-		// } catch (IOException ex) {
-		// 	// process the exception
-		// }
+		try {
+			response = otpCodeService.postOtpMessage(content);
+			System.out.println(response);
+		} catch (IOException ex) {
+			// process the exception
+		}
 
 		return AjaxResult.success(response.toString());
 	}
@@ -336,13 +337,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		otpCode.setCreateTime(cal.getTime());
 		otpCode.setOptCode(otp);
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) > 0) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService
-					.selectShipmentDetailByIds(shipmentDetailIds);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				// JSONObject data = new JSONObject();
-				// data.put("something", "something");
-				// sendDataToTopic(data.toString(), "receive_cont_full_order");
-				if (shipmentDetailService.makeOrderReceiveContFull(shipmentDetails)) {
+				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+				List<QueueOrder> queueOrders = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
+				if (queueOrders != null) {
+					queueOrderService.insertQueueOrderList(queueOrders);
 					return success("Xác thực OTP thành công");
 				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");

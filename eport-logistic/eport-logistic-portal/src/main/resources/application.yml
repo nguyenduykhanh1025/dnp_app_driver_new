@@ -89,5 +89,5 @@ mqtt:
   host-url: tcp://127.0.0.1:1883                # The address and port of your own server need to be changed 
   clientID: admin                               # This change is not optional, but different clients must not be the same
   default-topic: order_result                   # Default theme
-  timeout: 100                 
-  keepalive: 100
+  timeout: 200                 
+  keepalive: 200

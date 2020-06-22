@@ -25,6 +25,14 @@ public interface ISysRobotService {
 	 * @return list robot
 	 */
 	public List<SysRobot> selectRobotList(SysRobot robot);
+	
+	/**
+	 * Find first robot
+	 * 
+	 * @param robot
+	 * @return robot
+	 */
+	public SysRobot findFirstRobot(SysRobot robot);
 
 	/**
 	 * Add Robot
@@ -51,7 +59,7 @@ public interface ISysRobotService {
 	public int deleteRobotByIds(String ids);
 
 	/**
-	 * Delete robots by ids
+	 * Delete robots by id
 	 * 
 	 * @param robotIds
 	 * @return result
@@ -65,4 +73,37 @@ public interface ISysRobotService {
 	 * @return result
 	 */
 	public String checkUuidRobotUnique(String uuId);
+	
+	/**
+	 * Update robot status by uuid
+	 * 
+	 * @param uuId
+	 * @param status
+	 * @return result
+	 */
+	public int updateRobotStatusByUuId(String uuId, String status);
+	
+	/**
+	 * Get Robot by uuid
+	 * 
+	 * @param uuid
+	 * @return robot
+	 */
+	public SysRobot selectRobotByUuId(String uuid);
+	
+	/**
+	 * Update robot by uuid
+	 * 
+	 * @param robot
+	 * @return Result
+	 */
+	public int updateRobotByUuId(SysRobot robot);
+	
+	/**
+	 * Delete robots by uuid
+	 * 
+	 * @param robotIds
+	 * @return result
+	 */
+	public int deleteRobotByUuId(String uuId);
 }

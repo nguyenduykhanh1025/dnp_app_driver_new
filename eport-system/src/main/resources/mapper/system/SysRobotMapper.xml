@@ -41,6 +41,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectRobotVo"/>
         where robot_id = #{robotId}
     </select>
+    
+    <select id="selectRobotByUuId" parameterType="String" resultMap="RobotResult">
+        <include refid="selectRobotVo"/>
+        where uuid = #{uuId}
+        limit 1
+    </select>
+    
+    <select id="findFirstRobot" parameterType="SysRobot" resultMap="RobotResult">
+        <include refid="selectRobotVo"/>
+        <where>  
+            <if test="uuId != null  and uuId != ''"> and uuid = #{uuId}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="isReceiveContFullOrder != null"> and is_receive_cont_full_order = #{isReceiveContFullOrder}</if>
+            <if test="isReceiveContEmptyOrder != null"> and is_receive_cont_empty_order = #{isReceiveContEmptyOrder}</if>
+            <if test="isSendContFullOrder != null"> and is_send_cont_full_order = #{isSendContFullOrder}</if>
+            <if test="isSendContEmptyOrder != null"> and is_send_cont_empty_order = #{isSendContEmptyOrder}</if>
+            <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
+        </where>
+        limit 1
+    </select>
         
     <insert id="insertRobot" parameterType="SysRobot" useGeneratedKeys="true" keyProperty="robotId">
         insert into sys_robot
@@ -110,4 +130,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         limit 1
     </select>
     
+    <update id="updateRobotStatusByUuId">
+        update sys_robot
+        set status = #{status}
+        where uuid = #{uuId}
+    </update>
+    
+    <update id="updateRobotByUuId" parameterType="SysRobot">
+        update sys_robot
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="isReceiveContFullOrder != null">is_receive_cont_full_order = #{isReceiveContFullOrder},</if>
+            <if test="isReceiveContEmptyOrder != null">is_receive_cont_empty_order = #{isReceiveContEmptyOrder},</if>
+            <if test="isSendContFullOrder != null">is_send_cont_full_order = #{isSendContFullOrder},</if>
+            <if test="isSendContEmptyOrder != null">is_send_cont_empty_order = #{isSendContEmptyOrder},</if>
+            <if test="ipAddress != null  and ipAddress != ''">ip_address = #{ipAddress},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where uuid = #{uuId}
+    </update>
+    
+    <delete id="deleteRobotByUuId" parameterType="String">
+        delete from sys_robot where uuid = #{uuId}
+    </delete>
 </mapper>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.QueueOrderMapper">
+    
+    <resultMap type="QueueOrder" id="QueueOrderResult">
+        <result property="id"    column="id"    />
+        <result property="mode"    column="mode"    />
+        <result property="consignee"    column="consignee"    />
+        <result property="truckCo"    column="truck_co"    />
+        <result property="taxCode"    column="tax_code"    />
+        <result property="payType"    column="pay_type"    />
+        <result property="blNo"    column="bl_no"    />
+        <result property="pickupDate"    column="pickup_date"    />
+        <result property="vessel"    column="vessel"    />
+        <result property="voyage"    column="voyage"    />
+        <result property="year"    column="year"    />
+        <result property="invoiceType"    column="invoice_type"    />
+        <result property="invoiceTemplate"    column="invoice_template"    />
+        <result property="contNumber"    column="cont_number"    />
+        <result property="beforeAfter"    column="before_after"    />
+        <result property="bookingNo"    column="booking_no"    />
+        <result property="sizeType"    column="size_type"    />
+        <result property="serviceId"    column="service_id"    />
+    </resultMap>
+
+    <sql id="selectQueueOrderVo">
+        select id, mode, consignee, truck_co, tax_code, pay_type, bl_no, pickup_date, vessel, voyage, year, invoice_type, invoice_template, cont_number, before_after, booking_no, size_type, service_id from queue_order
+    </sql>
+
+    <select id="selectQueueOrderList" parameterType="QueueOrder" resultMap="QueueOrderResult">
+        <include refid="selectQueueOrderVo"/>
+        <where>  
+            <if test="mode != null  and mode != ''"> and mode = #{mode}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="truckCo != null  and truckCo != ''"> and truck_co = #{truckCo}</if>
+            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
+            <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="pickupDate != null "> and pickup_date = #{pickupDate}</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="voyage != null  and voyage != ''"> and voyage = #{voyage}</if>
+            <if test="year != null  and year != ''"> and year = #{year}</if>
+            <if test="invoiceType != null  and invoiceType != ''"> and invoice_type = #{invoiceType}</if>
+            <if test="invoiceTemplate != null  and invoiceTemplate != ''"> and invoice_template = #{invoiceTemplate}</if>
+            <if test="contNumber != null "> and cont_number = #{contNumber}</if>
+            <if test="beforeAfter != null  and beforeAfter != ''"> and before_after = #{beforeAfter}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="sizeType != null  and sizeType != ''"> and size_type = #{sizeType}</if>
+            <if test="serviceId != null  and serviceId != ''"> and service_id = #{serviceId}</if>
+        </where>
+    </select>
+    
+    <select id="selectQueueOrderById" parameterType="Long" resultMap="QueueOrderResult">
+        <include refid="selectQueueOrderVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertQueueOrder" parameterType="QueueOrder">
+        insert into queue_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="mode != null  and mode != ''">mode,</if>
+            <if test="consignee != null  and consignee != ''">consignee,</if>
+            <if test="truckCo != null  and truckCo != ''">truck_co,</if>
+            <if test="taxCode != null  and taxCode != ''">tax_code,</if>
+            <if test="payType != null  and payType != ''">pay_type,</if>
+            <if test="blNo != null  and blNo != ''">bl_no,</if>
+            <if test="pickupDate != null ">pickup_date,</if>
+            <if test="vessel != null  and vessel != ''">vessel,</if>
+            <if test="voyage != null  and voyage != ''">voyage,</if>
+            <if test="year != null  and year != ''">year,</if>
+            <if test="invoiceType != null  and invoiceType != ''">invoice_type,</if>
+            <if test="invoiceTemplate != null  and invoiceTemplate != ''">invoice_template,</if>
+            <if test="contNumber != null ">cont_number,</if>
+            <if test="beforeAfter != null  and beforeAfter != ''">before_after,</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no,</if>
+            <if test="sizeType != null  and sizeType != ''">size_type,</if>
+            <if test="serviceId != null  and serviceId != ''">service_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="mode != null  and mode != ''">#{mode},</if>
+            <if test="consignee != null  and consignee != ''">#{consignee},</if>
+            <if test="truckCo != null  and truckCo != ''">#{truckCo},</if>
+            <if test="taxCode != null  and taxCode != ''">#{taxCode},</if>
+            <if test="payType != null  and payType != ''">#{payType},</if>
+            <if test="blNo != null  and blNo != ''">#{blNo},</if>
+            <if test="pickupDate != null ">#{pickupDate},</if>
+            <if test="vessel != null  and vessel != ''">#{vessel},</if>
+            <if test="voyage != null  and voyage != ''">#{voyage},</if>
+            <if test="year != null  and year != ''">#{year},</if>
+            <if test="invoiceType != null  and invoiceType != ''">#{invoiceType},</if>
+            <if test="invoiceTemplate != null  and invoiceTemplate != ''">#{invoiceTemplate},</if>
+            <if test="contNumber != null ">#{contNumber},</if>
+            <if test="beforeAfter != null  and beforeAfter != ''">#{beforeAfter},</if>
+            <if test="bookingNo != null  and bookingNo != ''">#{bookingNo},</if>
+            <if test="sizeType != null  and sizeType != ''">#{sizeType},</if>
+            <if test="serviceId != null  and serviceId != ''">#{serviceId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateQueueOrder" parameterType="QueueOrder">
+        update queue_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mode != null  and mode != ''">mode = #{mode},</if>
+            <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
+            <if test="truckCo != null  and truckCo != ''">truck_co = #{truckCo},</if>
+            <if test="taxCode != null  and taxCode != ''">tax_code = #{taxCode},</if>
+            <if test="payType != null  and payType != ''">pay_type = #{payType},</if>
+            <if test="blNo != null  and blNo != ''">bl_no = #{blNo},</if>
+            <if test="pickupDate != null ">pickup_date = #{pickupDate},</if>
+            <if test="vessel != null  and vessel != ''">vessel = #{vessel},</if>
+            <if test="voyage != null  and voyage != ''">voyage = #{voyage},</if>
+            <if test="year != null  and year != ''">year = #{year},</if>
+            <if test="invoiceType != null  and invoiceType != ''">invoice_type = #{invoiceType},</if>
+            <if test="invoiceTemplate != null  and invoiceTemplate != ''">invoice_template = #{invoiceTemplate},</if>
+            <if test="contNumber != null ">cont_number = #{contNumber},</if>
+            <if test="beforeAfter != null  and beforeAfter != ''">before_after = #{beforeAfter},</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no = #{bookingNo},</if>
+            <if test="sizeType != null  and sizeType != ''">size_type = #{sizeType},</if>
+            <if test="serviceId != null  and serviceId != ''">service_id = #{serviceId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteQueueOrderById" parameterType="Long">
+        delete from queue_order where id = #{id}
+    </delete>
+
+    <delete id="deleteQueueOrderByIds" parameterType="String">
+        delete from queue_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
