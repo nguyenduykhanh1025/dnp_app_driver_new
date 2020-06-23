@@ -105,7 +105,7 @@
 	</select>
 	<select id="selectPODList"	resultType="String">
 			SELECT 
-    			CNTRY_CD || PORT_CD || ': ' || PORT_NM AS POD
+    			CNTRY_CD || PORT_CD AS POD
 			FROM TB_PORT 
 			OFFSET 0 ROWS FETCH NEXT 1000 ROWS ONLY
 	</select>
