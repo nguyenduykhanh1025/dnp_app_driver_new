@@ -75,13 +75,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@GetMapping("/getGroupNameByTaxCode")
 	@ResponseBody
-	public AjaxResult getGroupNameByTaxCode(String taxCode){
+	public AjaxResult getGroupNameByTaxCode(String taxCode) throws Exception {
 		AjaxResult ajaxResult = AjaxResult.success();
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		// String groupName = shipmentDetailService.getNameCompany(taxCode);
-		String groupName = "Công ty abc";
+		String groupName = shipmentDetailService.getNameCompany(taxCode);
+		//String groupName = "Công ty abc";
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {
@@ -251,11 +251,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
 						try {
-							Thread.sleep(5000);
+							Thread.sleep(500);
 							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
 							{
-								shipmentDetail.setStatus(2);
-								shipmentDetail.setCustomStatus("R");
+								shipmentDetail.setStatus(4);
+								shipmentDetail.setCustomStatus("Y");
 								shipmentDetailService.updateShipmentDetail(shipmentDetail);
 								// push notification with socketIO 
 							}else {
@@ -263,7 +263,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 							};
 						
 						} catch(Exception e) {
-							//Exception 
+							e.printStackTrace(); 
 						}
 						
 					}

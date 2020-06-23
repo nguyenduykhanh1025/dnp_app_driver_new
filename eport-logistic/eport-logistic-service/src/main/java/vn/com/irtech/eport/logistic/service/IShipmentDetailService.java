@@ -101,5 +101,5 @@ public interface IShipmentDetailService
 
     public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
 
-    public String getNameCompany(String taxCode);
+    public String getNameCompany(String taxCode) throws Exception;
 }
