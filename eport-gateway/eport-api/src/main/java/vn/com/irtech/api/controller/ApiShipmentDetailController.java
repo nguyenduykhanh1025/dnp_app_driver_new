@@ -55,8 +55,14 @@ public class ApiShipmentDetailController {
 		List<String> list = shipmentDetailDao.selectVoyageNoListByVesselCode(vesselCode);
 		return R.ok().put("data", list);
 	}
-	@GetMapping("/shipmentDetail/getYearAndBeforeAfter")
-	public R getYearAndBeforeAfter(String vesselCode, String voyageNo) {
-		
+	@GetMapping("/shipmentDetail/getYear")
+	public R getYear(String vesselCode, String voyageNo) {
+		String year = shipmentDetailDao.selectYearByVesselCodeAndVoyageNo(vesselCode, voyageNo);
+		return R.ok().put("data", year);
+	}
+	@GetMapping("/shipmentDetail/getBeforeAfterDeparture")
+	public R getBeforeAfterDeparture(String vesselCode, String voyageNo) {
+		String beforeAfterDeparture = shipmentDetailDao.selectBeforeAfterDepartureByVesselCodeAndVoyageNo(vesselCode, voyageNo);
+		return R.ok().put("data", beforeAfterDeparture);
 	}
 }

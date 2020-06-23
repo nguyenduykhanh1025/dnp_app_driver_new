@@ -3,6 +3,7 @@ package vn.com.irtech.api.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
@@ -15,4 +16,6 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public List<String> selectPODList();
 	public List<String> selectConsigneeList();
 	public List<String> selectVoyageNoListByVesselCode(String vesselCode);
+	public String selectYearByVesselCodeAndVoyageNo(@Param("vesselCode") String vesselCode, @Param("voyageNo") String voyageNo);
+	public String selectBeforeAfterDepartureByVesselCodeAndVoyageNo(@Param("vesselCode") String vesselCode, @Param("voyageNo") String voyageNo);
 }
