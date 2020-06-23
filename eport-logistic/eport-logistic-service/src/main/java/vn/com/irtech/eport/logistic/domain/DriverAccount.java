@@ -15,7 +15,7 @@ import java.util.Date;
  * @author ruoyi
  * @date 2020-05-19
  */
-public class TransportAccount extends BaseEntity
+public class DriverAccount extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 

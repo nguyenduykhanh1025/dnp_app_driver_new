@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="vn.com.irtech.eport.logistic.mapper.TruckMapper">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.LogisticTruckMapper">
     
-    <resultMap type="Truck" id="TruckResult">
+    <resultMap type="LogisticTruck" id="LogisticTruckResult">
         <result property="id"    column="id"    />
         <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="plateNumber"    column="plate_number"    />
@@ -19,12 +19,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
-    <sql id="selectTruckVo">
-        select id, logistic_group_id, plate_number, type, wgt, registry_expiry_date, del_flag, remark, create_by, create_time, update_by, update_time from truck
+    <sql id="selectLogisticTruckVo">
+        select id, logistic_group_id, plate_number, type, wgt, registry_expiry_date, del_flag, remark, create_by, create_time, update_by, update_time from logistic_truck
     </sql>
 
-    <select id="selectTruckList" parameterType="Truck" resultMap="TruckResult">
-        <include refid="selectTruckVo"/>
+    <select id="selectLogisticTruckList" parameterType="LogisticTruck" resultMap="LogisticTruckResult">
+        <include refid="selectLogisticTruckVo"/>
         <where>  
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="delFlag != null"> and del_flag = #{delFlag}</if>
@@ -35,13 +35,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectTruckById" parameterType="Long" resultMap="TruckResult">
-        <include refid="selectTruckVo"/>
+    <select id="selectLogisticTruckById" parameterType="Long" resultMap="LogisticTruckResult">
+        <include refid="selectLogisticTruckVo"/>
         where id = #{id}
     </select>
         
-    <insert id="insertTruck" parameterType="Truck" useGeneratedKeys="true" keyProperty="id">
-        insert into truck
+    <insert id="insertLogisticTruck" parameterType="LogisticTruck" useGeneratedKeys="true" keyProperty="id">
+        insert into logistic_truck
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="plateNumber != null  and plateNumber != ''">plate_number,</if>
@@ -70,8 +70,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateTruck" parameterType="Truck">
-        update truck
+    <update id="updateLogisticTruck" parameterType="LogisticTruck">
+        update logistic_truck
         <trim prefix="SET" suffixOverrides=",">
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="plateNumber != null  and plateNumber != ''">plate_number = #{plateNumber},</if>
@@ -88,25 +88,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
     <update id="updateDelFlagByIds" parameterType="String">
-    	update truck
+    	update logistic_truck
     	set del_flag = 1
     	where id in
     	<foreach item="id" collection="array" open="(" separator="," close=")">
     		#{id}
     	</foreach>
     </update>
-    <delete id="deleteTruckById" parameterType="Long">
-        delete from truck where id = #{id}
+    <delete id="deleteLogisticTruckById" parameterType="Long">
+        delete from logistic_truck where id = #{id}
     </delete>
 
-    <delete id="deleteTruckByIds" parameterType="String">
-        delete from truck where id in 
+    <delete id="deleteLogisticTruckByIds" parameterType="String">
+        delete from logistic_truck where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
     <select id="checkPlateNumberUnique" parameterType="String" resultType="int">
-		select count(1) from truck where lower(plate_number)=#{plateNumber}
+		select count(1) from logistic_truck where lower(plate_number)=#{plateNumber}
 	</select>
     
 </mapper>

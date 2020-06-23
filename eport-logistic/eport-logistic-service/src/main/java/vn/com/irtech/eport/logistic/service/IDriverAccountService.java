@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
-import vn.com.irtech.eport.logistic.domain.TransportAccount;
+import vn.com.irtech.eport.logistic.domain.DriverAccount;
 
 /**
  * Driver login infoService Interface
@@ -9,7 +9,7 @@ import vn.com.irtech.eport.logistic.domain.TransportAccount;
  * @author ruoyi
  * @date 2020-05-19
  */
-public interface ITransportAccountService 
+public interface IDriverAccountService 
 {
     /**
      * Get Driver login info
@@ -17,31 +17,31 @@ public interface ITransportAccountService
      * @param id Driver login infoID
      * @return Driver login info
      */
-    public TransportAccount selectTransportAccountById(Long id);
+    public DriverAccount selectDriverAccountById(Long id);
 
     /**
      * Get Driver login info List
      * 
-     * @param transportAccount Driver login info
+     * @param driverAccount Driver login info
      * @return Driver login info List
      */
-    public List<TransportAccount> selectTransportAccountList(TransportAccount transportAccount);
+    public List<DriverAccount> selectDriverAccountList(DriverAccount driverAccount);
 
     /**
      * Add Driver login info
      * 
-     * @param transportAccount Driver login info
+     * @param driverAccount Driver login info
      * @return result
      */
-    public int insertTransportAccount(TransportAccount transportAccount);
+    public int insertDriverAccount(DriverAccount driverAccount);
 
     /**
      * Update Driver login info
      * 
-     * @param transportAccount Driver login info
+     * @param driverAccount Driver login info
      * @return result
      */
-    public int updateTransportAccount(TransportAccount transportAccount);
+    public int updateDriverAccount(DriverAccount driverAccount);
 
     /**
      * Batch Delete Driver login info
@@ -49,7 +49,7 @@ public interface ITransportAccountService
      * @param ids Entity Ids
      * @return result
      */
-    public int deleteTransportAccountByIds(String ids);
+    public int deleteDriverAccountByIds(String ids);
 
     /**
      * Delete Driver login info
@@ -57,6 +57,6 @@ public interface ITransportAccountService
      * @param id Driver login infoID
      * @return result
      */
-    public int deleteTransportAccountById(Long id);
+    public int deleteDriverAccountById(Long id);
 	public int checkPhoneUnique(String phoneNumber);
 }

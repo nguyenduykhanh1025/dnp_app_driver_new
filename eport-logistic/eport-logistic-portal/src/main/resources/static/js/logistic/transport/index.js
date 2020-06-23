@@ -128,7 +128,7 @@ function addTransport(id) {
 	      };
 	      $.table.init(options);
 	    });
-	$.operate.addTransportAccount();
+	$.operate.addDriverAccount();
 }
 
 /*function formatGroup(value){

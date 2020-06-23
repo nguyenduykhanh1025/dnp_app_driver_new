@@ -35,7 +35,7 @@ setTimeout(() => {
     fullNameExternalField = widthExternal *20/100;
     pwdExternalField = widthExternal *20/100;
     $.ajax({
-        url: "/logistic/transport/listTransportAccount",
+        url: "/logistic/transport/listDriverAccount",
         method: "get",
     }).done(function(data) {
         if (data != null) {
@@ -129,7 +129,7 @@ function pickTruckWithoutExternal() {
 function pickTruckWithExternal() {
     if(validateInput()) {
         $.ajax({
-            url: "/logistic/transport/saveExternalTransportAccount",
+            url: "/logistic/transport/saveExternalDriverAccount",
             method: "post",
             contentType: "application/json",
             accept: 'text/plain',

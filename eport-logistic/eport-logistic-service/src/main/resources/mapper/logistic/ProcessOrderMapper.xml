@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.ProcessOrderMapper">
+    
+    <resultMap type="ProcessOrder" id="ProcessOrderResult">
+        <result property="id"    column="id"    />
+        <result property="shipmentId"    column="shipment_id"    />
+        <result property="serviceType"    column="service_type"    />
+        <result property="referenceNo"    column="reference_no"    />
+        <result property="payType"    column="pay_type"    />
+        <result property="sztp"    column="sztp"    />
+        <result property="mode"    column="mode"    />
+        <result property="consignee"    column="consignee"    />
+        <result property="truckCo"    column="truck_co"    />
+        <result property="taxCode"    column="tax_code"    />
+        <result property="blNo"    column="bl_no"    />
+        <result property="bookingNo"    column="booking_no"    />
+        <result property="pickupDate"    column="pickup_date"    />
+        <result property="vessel"    column="vessel"    />
+        <result property="voyage"    column="voyage"    />
+        <result property="beforeAfter"    column="before_after"    />
+        <result property="year"    column="year"    />
+        <result property="contNumber"    column="cont_number"    />
+        <result property="status"    column="status"    />
+        <result property="result"    column="result"    />
+        <result property="data"    column="data"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectProcessOrderVo">
+        select id, shipment_id, service_type, reference_no, pay_type, sztp, mode, consignee, truck_co, tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, result, data, create_by, create_time, update_by, update_time from process_order
+    </sql>
+
+    <select id="selectProcessOrderList" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
+        <include refid="selectProcessOrderVo"/>
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="serviceType != null "> and service_type = #{serviceType}</if>
+            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
+            <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="mode != null  and mode != ''"> and mode = #{mode}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="truckCo != null  and truckCo != ''"> and truck_co = #{truckCo}</if>
+            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="pickupDate != null "> and pickup_date = #{pickupDate}</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="voyage != null  and voyage != ''"> and voyage = #{voyage}</if>
+            <if test="beforeAfter != null  and beforeAfter != ''"> and before_after = #{beforeAfter}</if>
+            <if test="year != null  and year != ''"> and year = #{year}</if>
+            <if test="contNumber != null "> and cont_number = #{contNumber}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="data != null  and data != ''"> and data = #{data}</if>
+        </where>
+    </select>
+    
+    <select id="selectProcessOrderById" parameterType="Long" resultMap="ProcessOrderResult">
+        <include refid="selectProcessOrderVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProcessOrder" parameterType="ProcessOrder">
+        insert into process_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="shipmentId != null ">shipment_id,</if>
+            <if test="serviceType != null ">service_type,</if>
+            <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
+            <if test="payType != null  and payType != ''">pay_type,</if>
+            <if test="sztp != null  and sztp != ''">sztp,</if>
+            <if test="mode != null  and mode != ''">mode,</if>
+            <if test="consignee != null  and consignee != ''">consignee,</if>
+            <if test="truckCo != null  and truckCo != ''">truck_co,</if>
+            <if test="taxCode != null  and taxCode != ''">tax_code,</if>
+            <if test="blNo != null  and blNo != ''">bl_no,</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no,</if>
+            <if test="pickupDate != null ">pickup_date,</if>
+            <if test="vessel != null  and vessel != ''">vessel,</if>
+            <if test="voyage != null  and voyage != ''">voyage,</if>
+            <if test="beforeAfter != null  and beforeAfter != ''">before_after,</if>
+            <if test="year != null  and year != ''">year,</if>
+            <if test="contNumber != null ">cont_number,</if>
+            <if test="status != null ">status,</if>
+            <if test="result != null  and result != ''">result,</if>
+            <if test="data != null  and data != ''">data,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="shipmentId != null ">#{shipmentId},</if>
+            <if test="serviceType != null ">#{serviceType},</if>
+            <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
+            <if test="payType != null  and payType != ''">#{payType},</if>
+            <if test="sztp != null  and sztp != ''">#{sztp},</if>
+            <if test="mode != null  and mode != ''">#{mode},</if>
+            <if test="consignee != null  and consignee != ''">#{consignee},</if>
+            <if test="truckCo != null  and truckCo != ''">#{truckCo},</if>
+            <if test="taxCode != null  and taxCode != ''">#{taxCode},</if>
+            <if test="blNo != null  and blNo != ''">#{blNo},</if>
+            <if test="bookingNo != null  and bookingNo != ''">#{bookingNo},</if>
+            <if test="pickupDate != null ">#{pickupDate},</if>
+            <if test="vessel != null  and vessel != ''">#{vessel},</if>
+            <if test="voyage != null  and voyage != ''">#{voyage},</if>
+            <if test="beforeAfter != null  and beforeAfter != ''">#{beforeAfter},</if>
+            <if test="year != null  and year != ''">#{year},</if>
+            <if test="contNumber != null ">#{contNumber},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="result != null  and result != ''">#{result},</if>
+            <if test="data != null  and data != ''">#{data},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProcessOrder" parameterType="ProcessOrder">
+        update process_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
+            <if test="serviceType != null ">service_type = #{serviceType},</if>
+            <if test="referenceNo != null  and referenceNo != ''">reference_no = #{referenceNo},</if>
+            <if test="payType != null  and payType != ''">pay_type = #{payType},</if>
+            <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
+            <if test="mode != null  and mode != ''">mode = #{mode},</if>
+            <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
+            <if test="truckCo != null  and truckCo != ''">truck_co = #{truckCo},</if>
+            <if test="taxCode != null  and taxCode != ''">tax_code = #{taxCode},</if>
+            <if test="blNo != null  and blNo != ''">bl_no = #{blNo},</if>
+            <if test="bookingNo != null  and bookingNo != ''">booking_no = #{bookingNo},</if>
+            <if test="pickupDate != null ">pickup_date = #{pickupDate},</if>
+            <if test="vessel != null  and vessel != ''">vessel = #{vessel},</if>
+            <if test="voyage != null  and voyage != ''">voyage = #{voyage},</if>
+            <if test="beforeAfter != null  and beforeAfter != ''">before_after = #{beforeAfter},</if>
+            <if test="year != null  and year != ''">year = #{year},</if>
+            <if test="contNumber != null ">cont_number = #{contNumber},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="result != null  and result != ''">result = #{result},</if>
+            <if test="data != null  and data != ''">data = #{data},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProcessOrderById" parameterType="Long">
+        delete from process_order where id = #{id}
+    </delete>
+
+    <delete id="deleteProcessOrderByIds" parameterType="String">
+        delete from process_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

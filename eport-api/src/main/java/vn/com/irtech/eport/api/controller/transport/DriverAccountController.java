@@ -10,22 +10,22 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.com.irtech.eport.api.util.SecurityUtils;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
-import vn.com.irtech.eport.logistic.domain.TransportAccount;
-import vn.com.irtech.eport.logistic.service.ITransportAccountService;
+import vn.com.irtech.eport.logistic.domain.DriverAccount;
+import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 
 @RestController
 @RequestMapping("/transport/user")
-public class TransportAccountController extends BaseController {
+public class DriverAccountController extends BaseController {
 
-	private static final Logger log = LoggerFactory.getLogger(TransportAccountController.class);
+	private static final Logger log = LoggerFactory.getLogger(DriverAccountController.class);
 
 	@Autowired()
-	private ITransportAccountService transportAccountService;
+	private IDriverAccountService driverAccountService;
 
 	@GetMapping("/info")
 	public AjaxResult getUserInfo() {
 		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
-		TransportAccount user = transportAccountService.selectTransportAccountById(userId);
+		DriverAccount user = driverAccountService.selectDriverAccountById(userId);
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("data", user);
 		return ajaxResult;

@@ -12,7 +12,7 @@
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-account-edit" th:object="${transportAccount}">
+        <form class="form-horizontal m" id="form-account-edit" th:object="${driverAccount}">
             <input name="id" id="id" th:field="*{id}" type="hidden">
 <!--             <div class="form-group">    
                 <label class="col-sm-3 control-label is-required">Nhóm Logistic:</label>
@@ -56,7 +56,7 @@
                 <div class="col-sm-8">
                     <div class="input-group date">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="validDate" th:value="${#dates.format(transportAccount.validDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text" >
+                        <input name="validDate" th:value="${#dates.format(driverAccount.validDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text" >
                     </div>
                 </div>
             </div>
