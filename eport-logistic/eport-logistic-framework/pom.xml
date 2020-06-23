@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>eport</artifactId>
-        <groupId>vn.com.irtech.eport</groupId>
-        <version>4.2.0</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-	
-    <artifactId>eport-logistic-framework</artifactId>
-	
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<artifactId>eport</artifactId>
+		<groupId>vn.com.irtech.eport</groupId>
+		<version>4.2.0</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>eport-logistic-framework</artifactId>
+
 	<description>
 	    framework for logistic
 	</description>
-    
-    <dependencies>
+
+	<dependencies>
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-		
-	     <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
-        
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 
 		<dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-        </dependency>
-		
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid-spring-boot-starter</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>com.github.penggle</groupId>
 			<artifactId>kaptcha</artifactId>
@@ -61,7 +61,7 @@
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-ehcache</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.github.theborakompanioni</groupId>
 			<artifactId>thymeleaf-extras-shiro</artifactId>
@@ -72,21 +72,21 @@
 			<artifactId>UserAgentUtils</artifactId>
 		</dependency>
 
-        <dependency>
-            <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-logistic-service</artifactId>
-        </dependency>
-		
+		<dependency>
+			<groupId>vn.com.irtech.eport</groupId>
+			<artifactId>eport-logistic-service</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>com.github.oshi</groupId>
 			<artifactId>oshi-core</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna-platform</artifactId>
@@ -100,6 +100,11 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
-    </dependencies>
-    
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+	</dependencies>
+
 </project>
