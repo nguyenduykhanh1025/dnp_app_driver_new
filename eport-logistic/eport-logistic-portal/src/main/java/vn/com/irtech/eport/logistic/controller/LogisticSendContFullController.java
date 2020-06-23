@@ -288,68 +288,80 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@PostMapping("sendOTP")
 	@ResponseBody
 	public AjaxResult sendOTP(String shipmentDetailIds) {
-		LogisticGroup lGroup = getGroup();
+		// LogisticGroup lGroup = getGroup();
 
-		OtpCode otpCode = new OtpCode();
-		Random rd = new Random();
-		long rD = rd.nextInt(900000)+100000;
+		// OtpCode otpCode = new OtpCode();
+		// Random rd = new Random();
+		// long rD = rd.nextInt(900000)+100000;
 
-		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
+		// otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
-		otpCode.setShipmentDetailids(shipmentDetailIds);
-		otpCode.setPhoneNumber(lGroup.getMobilePhone());
-		otpCode.setOptCode(rD);
-		otpCodeService.insertOtpCode(otpCode);
+		// otpCode.setShipmentDetailids(shipmentDetailIds);
+		// otpCode.setPhoneNumber(lGroup.getMobilePhone());
+		// otpCode.setOptCode(rD);
+		// otpCodeService.insertOtpCode(otpCode);
 
-		String content = "Lam lenh giaoa cont la  " + rD;
-		String response = "";
+		// String content = "Lam lenh giaoa cont la  " + rD;
+		// String response = "";
 //		try {
 //			response = otpCodeService.postOtpMessage(content);
 //			System.out.println(response);
 //		} catch (IOException ex) {
 //			// process the exception
 //		}
-		return AjaxResult.success(response.toString());
+		return AjaxResult.success("response.toString()");
 	}
 
 	@PostMapping("/verifyOtp")
 	@ResponseBody
 	public AjaxResult verifyOtp(String shipmentDetailIds,Long otp) {
-		OtpCode otpCode = new OtpCode();
-		otpCode.setShipmentDetailids(shipmentDetailIds);
-		Date now = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(now);
-		cal.add(Calendar.MINUTE, -5);
-		otpCode.setCreateTime(cal.getTime());
-		otpCode.setOptCode(otp);
-		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
-			final List<ShipmentDetail> shipmentDetails = shipmentDetailService
-					.selectShipmentDetailByIds(shipmentDetailIds);
-			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-				ProcessOrder processOrder = shipmentDetailService.makeOrderSendContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
-				if (processOrder != null) {
-					processOrderService.insertProcessOrder(processOrder);
-					//
-					ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
-					try {
-						mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-//					ObjectMapper mapper = new ObjectMapper();
-//					try {
-//						String jsonString = mapper.writeValueAsString(serviceRobotReq);
-//						mqttService.publish("eport/robot/WIN-4ACSD0UROP2/request", jsonString);
-//					} catch (Exception e) {
-//						
-//					}
+		
+		// OtpCode otpCode = new OtpCode();
+		// otpCode.setShipmentDetailids(shipmentDetailIds);
+		// Date now = new Date();
+		// Calendar cal = Calendar.getInstance();
+		// cal.setTime(now);
+		// cal.add(Calendar.MINUTE, -5);
+		// otpCode.setCreateTime(cal.getTime());
+		// otpCode.setOptCode(otp);
+		// if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
+		// 	List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		// 	if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+		// 		Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+		// 		ProcessOrder processOrder = shipmentDetailService.makeOrderSendContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
+		// 		if (processOrder != null) {
+		// 			processOrderService.insertProcessOrder(processOrder);
+		// 			//
+		// 			ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+		// 			try {
+		// 				mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
+		// 			} catch (Exception e1) {
+		// 				e1.printStackTrace();
+		// 			}
 					
-					return success("Xác thực OTP thành công");
-				} else {
-					return error("Có lỗi xảy ra trong quá trình xác thực!");
+		// 			return success("Xác thực OTP thành công");
+		// 		} else {
+		// 			return error("Có lỗi xảy ra trong quá trình xác thực!");
+		// 		}
+		// 	}
+		// }
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+			ProcessOrder processOrder = shipmentDetailService.makeOrderSendContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
+			if (processOrder != null) {
+				processOrderService.insertProcessOrder(processOrder);
+				//
+				ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+				try {
+					mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
+				} catch (Exception e1) {
+					e1.printStackTrace();
 				}
+				
+				return success("Xác thực OTP thành công");
+			} else {
+				return error("Có lỗi xảy ra trong quá trình xác thực!");
 			}
 		}
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
