@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import vn.com.irtech.eport.common.core.controller.BaseController;
-import vn.com.irtech.eport.framework.mqtt.service.MqttService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
@@ -21,9 +20,6 @@ public abstract class LogisticBaseController extends BaseController {
 
 	@Autowired
 	ILogisticGroupService logisticGroupService;
-	
-	@Autowired
-    private MqttService mqttService;
 
 	public LogisticAccount getUser() {
 		return ShiroUtils.getSysUser();
@@ -45,14 +41,6 @@ public abstract class LogisticBaseController extends BaseController {
 			return true;
 		}
 		return false;
-	}
-	
-	public void sendDataToTopic(String data, String topic) {
-    	try {
-    		mqttService.publish(topic, data);
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
 	}
 	
 	
