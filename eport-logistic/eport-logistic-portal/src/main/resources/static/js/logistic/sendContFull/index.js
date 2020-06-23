@@ -45,7 +45,11 @@ $(document).ready(function () {
     $("#btn-uncollapse").click(function () {
         handleCollapse(false);
     });
+
+    connectToWebsocketServer();
 });
+
+
 function handleCollapse(status) {
     if (status) {
         $(".left-side").css("width", "0.5%");
@@ -876,15 +880,40 @@ function setLayoutFinishStatus() {
 }
 
 function finishForm(result) {
-    if (result.code == 0) {
-        $.modal.msgSuccess(result.msg);
+    if (result.code == 0 || result.code == 301){
+        $.modal.loading("Đang xử lý, vui lòng chờ..");
+        let processId = result.processId;
+        $.websocket.subscribe('/eportTopic/' + processId + '/response', onMessageReceived);
     } else {
         $.modal.msgError(result.msg);
+        reloadShipmentDetail();
     }
-    reloadShipmentDetail();
 }
 
 function napasPaymentForm() {
     $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/napasPaymentForm");
 }
 
+function onMessageReceived(payload) {
+    let message = JSON.parse(payload.body);
+    if (message.code == 0){
+        $.modal.alertSuccess(message.msg);
+    }else{
+        $.modal.alertError(message.msg);
+    }
+    $.modal.closeLoading();
+    reloadShipmentDetail();
+}
+
+function connectToWebsocketServer(){
+    // Connect to WebSocket Server.
+    $.websocket.connect({}, onConnected, onError);
+}
+
+function onConnected() {
+}
+
+function onError(error) {
+    console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
+}
+  
