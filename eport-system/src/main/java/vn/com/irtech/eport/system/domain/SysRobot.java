@@ -17,7 +17,7 @@ public class SysRobot extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	/** Robot ID */
-	private Long robotId;
+	private Long id;
 
 	/** UUID */
 	@NotBlank(message = "Uuid là trường bắt buộc")
@@ -44,12 +44,12 @@ public class SysRobot extends BaseEntity {
 	@Excel(name = "ip address")
 	private String ipAddress;
 
-	public Long getRobotId() {
-		return robotId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setRobotId(Long robotId) {
-		this.robotId = robotId;
+	public void setId(Long robotId) {
+		this.id = robotId;
 	}
 
 	public String getUuId() {
@@ -110,7 +110,7 @@ public class SysRobot extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("robotId", getRobotId())
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("robotId", getId())
 				.append("uuId", getUuId()).append("status", getStatus())
 				.append("isReceiveContFullOrder", getIsReceiveContFullOrder())
 				.append("isReceiveContEmptyOrder", getIsReceiveContEmptyOrder())
