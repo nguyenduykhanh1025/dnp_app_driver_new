@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="vn.com.irtech.eport.system.mapper.SysRobotMapper">
     
     <resultMap type="SysRobot" id="RobotResult">
-        <result property="robotId"    column="robot_id"    />
+        <result property="id"    column="id"    />
         <result property="uuId"    column="uuid"    />
         <result property="status"    column="status"    />
         <result property="isReceiveContFullOrder"    column="is_receive_cont_full_order"    />
@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectRobotVo">
-        select robot_id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, ip_address, create_by, create_time, update_by, update_time, remark from sys_robot
+        select id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, ip_address, create_by, create_time, update_by, update_time, remark from sys_robot
     </sql>
 
     <select id="selectRobotList" parameterType="SysRobot" resultMap="RobotResult">
@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
     <select id="selectRobotById" parameterType="Long" resultMap="RobotResult">
         <include refid="selectRobotVo"/>
-        where robot_id = #{robotId}
+        where id = #{id}
     </select>
     
     <select id="selectRobotByUuId" parameterType="String" resultMap="RobotResult">
@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         limit 1
     </select>
         
-    <insert id="insertRobot" parameterType="SysRobot" useGeneratedKeys="true" keyProperty="robotId">
+    <insert id="insertRobot" parameterType="SysRobot" useGeneratedKeys="true" keyProperty="id">
         insert into sys_robot
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="uuId != null  and uuId != ''">uuid,</if>
@@ -110,17 +110,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
         </trim>
-        where robot_id = #{robotId}
+        where id = #{id}
     </update>
 
     <delete id="deleteRobotById" parameterType="Long">
-        delete from sys_robot where robot_id = #{robotId}
+        delete from sys_robot where id = #{id}
     </delete>
 
     <delete id="deleteRobotByIds" parameterType="String">
-        delete from sys_robot where robot_id in 
-        <foreach item="robotId" collection="array" open="(" separator="," close=")">
-            #{robotId}
+        delete from sys_robot where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
         </foreach>
     </delete>
     

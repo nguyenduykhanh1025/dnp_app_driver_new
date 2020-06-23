@@ -40,7 +40,7 @@ function checkCustomStatus() {
                 }
                 if (completeInput) {
                     asked = true;
-                    $.modal.loading("Đang xử lý...");
+                    $(".loaderbox").css('display','block');
                     $.ajax({
                         url: prefix + "/checkCustomStatus",
                         method: "post",
@@ -49,6 +49,7 @@ function checkCustomStatus() {
                             shipmentDetailIds: shipmentDetailIds.substring(0, shipmentDetailIds.length - 1)
                         },
                         success: function (data) {
+                            $(".loaderbox").css('display','none');
                             $.modal.closeLoading();
                             if (data != null) {
                                 $("#contTable").datagrid({
@@ -60,6 +61,8 @@ function checkCustomStatus() {
                             } else {
                                 $.modal.msgError("Có lỗi xảy ra trong quá trình khai hải quan.");
                             }
+                           
+                           // loadData() 
                             $("#checkBtn").html("Kết thúc");
                         },
                         error: function (result) {
@@ -76,23 +79,27 @@ function checkCustomStatus() {
     }
 }
 
+loadData() 
 function closeForm() {
     $.modal.close();
 }
+function loadData() 
+{
+    $("#contTable").datagrid({
+        singleSelect: true,
+        loadMsg: " Đang xử lý...",
+        loader: function (param, success, error) {
+            shipmentDetailIds = "";
+            var index = 0;
+            contList.forEach(function (cont) {
+                shipmentDetailIds += cont.id + ",";
+                cont.id = ++index;
+            });
+            success(contList);
+        },
+    });
+}
 
-$("#contTable").datagrid({
-    singleSelect: true,
-    loadMsg: " Đang xử lý...",
-    loader: function (param, success, error) {
-        shipmentDetailIds = "";
-        var index = 0;
-        contList.forEach(function (cont) {
-            shipmentDetailIds += cont.id + ",";
-            cont.id = ++index;
-        });
-        success(contList);
-    },
-});
 
 $("#declareNoAmount").keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -109,10 +116,12 @@ $("#declareNoAmount").keypress(function (event) {
 
 function formatStatus(value) {
     switch (value) {
-        case "R":
+        case "Y":
             return "Đã thông quan";
         case "N":
             return "Chưa thông quan";
+        default :
+            return' <span class="label label-success">Đang chờ</span>';
     }
 }
 

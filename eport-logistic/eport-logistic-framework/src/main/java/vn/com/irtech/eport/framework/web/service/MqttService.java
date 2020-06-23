@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.framework.mqtt.listener.RobotResponseHandler;
 import vn.com.irtech.eport.framework.mqtt.listener.RobotUpdateStatusHandler;
 import vn.com.irtech.eport.system.domain.SysRobot;
@@ -32,22 +33,22 @@ public class MqttService implements MqttCallback {
 
 	private static final String BASE = "eport/robot";
 	private static final String RESPONSE_TOPIC = BASE + "/+/response";
-	
+
 	private static final String REQUEST_TOPIC = BASE + "/+/request";
 
 	private static MqttService instance = null;
 	private MqttAsyncClient mqttClient;
 	private Object connectLock = new Object();
-	
+
 	@Autowired
 	private RobotUpdateStatusHandler robotUpdateStatusHandler;
-	
+
 	@Autowired
 	private RobotResponseHandler robotResponseHandler;
-	
+
 	@Autowired
 	private ISysRobotService robotService;
-	
+
 	private Boolean isReconnecting = false;
 
 	public static MqttService getInstance() {
@@ -152,7 +153,7 @@ public class MqttService implements MqttCallback {
 		while (true) {
 			logger.info("Retry connect to Mqtt");
 			try {
-				if  (!isReconnecting) {
+				if (!isReconnecting) {
 					this.isReconnecting = true;
 					reconnect();
 				}
@@ -186,7 +187,7 @@ public class MqttService implements MqttCallback {
 		}
 	}
 
-	public void publish(String topic, MqttMessage msg) {
+	public void publish(String topic, MqttMessage msg) throws MqttException {
 		logger.info("Send topic: " + topic);
 		try {
 			mqttClient.publish(topic, msg, null, new IMqttActionListener() {
@@ -199,22 +200,26 @@ public class MqttService implements MqttCallback {
 				}
 			});
 		} catch (MqttException e) {
+			logger.warn(e.getMessage());
+			throw e;
 		}
 	}
-	
+
 	public enum EServiceRobot {
 		RECEIVE_CONT_FULL, RECEIVE_CONT_EMPTY, SEND_CONT_FULL, SEND_CONT_EMPTY
 	}
-	
-	public void publishMessageToRobot(Object payLoad,  EServiceRobot serviceRobot) {
+
+	public boolean publishMessageToRobot(Object payLoad, EServiceRobot serviceRobot) throws MqttException {
 		SysRobot sysRobot = this.getAvailableRobot(serviceRobot);
-		if (sysRobot != null) {
-			String msg = new Gson().toJson(payLoad);
-			String topic = REQUEST_TOPIC.replace("+", sysRobot.getUuId());
-			publish(topic, new MqttMessage(msg.getBytes()));
+		if (sysRobot == null) {
+			return false;
 		}
+		String msg = new Gson().toJson(payLoad);
+		String topic = REQUEST_TOPIC.replace("+", sysRobot.getUuId());
+		publish(topic, new MqttMessage(msg.getBytes()));
+		return true;
 	}
-	
+
 	/**
 	 * Get a robot already to execute service
 	 * 

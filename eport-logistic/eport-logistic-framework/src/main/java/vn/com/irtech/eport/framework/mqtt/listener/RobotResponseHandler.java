@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -34,6 +36,9 @@ public class RobotResponseHandler implements IMqttMessageListener{
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+	
+	@Autowired
+	private WebSocketService webSocketService;
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -67,7 +72,11 @@ public class RobotResponseHandler implements IMqttMessageListener{
 
 		robotService.updateRobotStatusByUuId(uuId, status);
 
-		this.updateShipmentDetail(result, receiptId);
+		if (receiptId != null && status != null) {
+			this.updateShipmentDetail(result, receiptId);
+			this.sendMessageWebsocket(result, receiptId);
+		}
+		
 	}
 	
 	/**
@@ -90,6 +99,17 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				shipmentDetailService.updateProcessStatus(shipmentDetails, "E");
 			}
 		}
+	}
+	
+	private void sendMessageWebsocket(String result, String receiptId) {
+		AjaxResult ajaxResult= null;
+		if ("success".equalsIgnoreCase(result)) {
+			ajaxResult = AjaxResult.success("Làm lệnh thành công!");
+		} else {
+			ajaxResult = AjaxResult.success("Làm lệnh thất bại!");
+		}
+		
+		webSocketService.sendMessage("/" + receiptId + "/response", ajaxResult);
 	}
 
 }

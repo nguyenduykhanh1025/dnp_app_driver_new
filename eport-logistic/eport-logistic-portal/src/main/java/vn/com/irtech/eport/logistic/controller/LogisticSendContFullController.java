@@ -75,13 +75,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@GetMapping("/getGroupNameByTaxCode")
 	@ResponseBody
-	public AjaxResult getGroupNameByTaxCode(String taxCode){
+	public AjaxResult getGroupNameByTaxCode(String taxCode) throws Exception {
 		AjaxResult ajaxResult = AjaxResult.success();
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		// String groupName = shipmentDetailService.getNameCompany(taxCode);
-		String groupName = "Công ty abc";
+		String groupName = shipmentDetailService.getNameCompany(taxCode);
+		//String groupName = "Công ty abc";
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {
@@ -251,11 +251,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
 						try {
-							Thread.sleep(5000);
+							Thread.sleep(500);
 							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
 							{
-								shipmentDetail.setStatus(2);
-								shipmentDetail.setCustomStatus("R");
+								shipmentDetail.setStatus(4);
+								shipmentDetail.setCustomStatus("Y");
 								shipmentDetailService.updateShipmentDetail(shipmentDetail);
 								// push notification with socketIO 
 							}else {
@@ -263,7 +263,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 							};
 						
 						} catch(Exception e) {
-							//Exception 
+							e.printStackTrace(); 
 						}
 						
 					}
@@ -352,6 +352,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		// }
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			ProcessOrder processOrder = shipmentDetailService.makeOrderSendContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
 			if (processOrder != null) {
@@ -359,12 +360,18 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				//
 				ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
 				try {
-					mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
-				} catch (Exception e1) {
-					e1.printStackTrace();
+					if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL)) {
+						ajaxResult = AjaxResult.warn("Yêu cầu đang được xử lý. Hệ thống sẽ thông báo khi có kết quả!");
+						ajaxResult.put("processId", processOrder.getId());
+						return ajaxResult;
+					}
+				} catch (Exception e) {
+					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
 				
-				return success("Xác thực OTP thành công");
+				ajaxResult =  AjaxResult.success("Xác thực OTP thành công");
+				ajaxResult.put("processId", processOrder.getId());
+				return ajaxResult;
 			} else {
 				return error("Có lỗi xảy ra trong quá trình xác thực!");
 			}
