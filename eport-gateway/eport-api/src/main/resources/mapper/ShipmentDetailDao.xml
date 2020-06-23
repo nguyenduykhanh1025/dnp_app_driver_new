@@ -98,4 +98,19 @@
         WHERE BL_NO = #{blNo}
         ORDER BY CNTR_NO ASC
     </select>
+    <select id="selectVesselCodeList" resultType="String">
+	        SELECT
+                VSL_CD AS VSL_CD
+        	FROM TB_VSL
+	</select>
+	<select id="selectPODList"	resultType="String">
+			SELECT 
+    		CNTRY_CD || PORT_CD || ': ' || PORT_NM AS POD
+			FROM TB_PORT
+	</select>
+	<select id="selectConsigneeList" resultType="String">
+			SELECT 
+		    ENG_LNM AS CONSIGNEE
+			FROM TB_PTNR
+	</select>
 </mapper>
