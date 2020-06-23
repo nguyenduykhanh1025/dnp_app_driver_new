@@ -420,14 +420,16 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         if (shipmentDetails.size() > 0) {
             ProcessOrder processOrder = new ProcessOrder();
             processOrder.setTaxCode(shipment.getTaxCode());
+            processOrder.setContNumber(shipmentDetails.size());
+            processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+            processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+            processOrder.setYear("2020");
+            processOrder.setBeforeAfter("Before");
+            processOrder.setId(shipmentDetails.get(0).getId());
+            processOrder.setShipmentId(shipment.getId());
+            processOrder.setServiceType(4);
             if ("0".equals(isCredit)) {
                 processOrder.setPayType("Cash");
-                processOrder.setContNumber(shipmentDetails.size());
-                processOrder.setVessel(shipmentDetails.get(0).getVslNm());
-                processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-                processOrder.setYear("2020");
-                processOrder.setBeforeAfter("Before");
-                processOrder.setId(shipmentDetails.get(0).getId());
             }
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
