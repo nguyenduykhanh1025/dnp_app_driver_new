@@ -136,4 +136,11 @@
 			FROM TB_BERTHPLAN
 			WHERE VSL_CD = #{vesselCode} AND CALL_SEQ = #{voyageNo}
 	</select>
+	<select id="selectOpeCodeList" resultType="String">
+		    SELECT 
+	        	PTNR_CODE AS PTNR_CODE
+		    FROM TB_PTNR
+		    WHERE PTNR_TYPE = 'SHP'
+		    GROUP BY PTNR_CODE
+	</select>
 </mapper>
