@@ -16,7 +16,6 @@ var isIterate = false;
 var selectedRow;
 var customStatus;
 var rowAmount = 0;
-var sourceData;
 var opeCodeList = ["CMC", "AVS", "QEW", "CNC"];
 var vslNmList = ["SDF", "SDA", "EQW", "HABE"];
 var voyNoList = ["2342", "3221", "1542", "0235"];
@@ -199,42 +198,42 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
             case 1:
                 content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: rgb(5, 148, 148);"></i>';
                 content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true"></i>';
+                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
                 content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
             case 2:
-                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
                 content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
-                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
+                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
                 content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
             case 3:
                 content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
                 content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
             case 4:
                 content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
-                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
                 break;
             case 5:
                 content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
-                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Đã Hạ Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i></div>';
                 break;
             default:
                 break;
         }
-        if (content == '' && value != null && value != '') {
-            content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
-            content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-            content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
-            content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-        }
+        // if (content == '' && value != null && value != '') {
+        //     content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
+        //     content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
+        //     content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
+        //     content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+        // }
         $(td).html(content);
     return td;
 }
@@ -347,7 +346,7 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
     config = {
         stretchH: "all",
-        height: document.documentElement.clientHeight - 100,
+        height: document.documentElement.clientHeight - 105,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -466,99 +465,99 @@ function configHandson() {
                 renderer: remarkRenderer
             },
         ],
-        afterChange: function (changes, src) {
-            //Get data change in cell to render another column
-            if (src !== "loadData") {
-                let verifyStatus = false;
-                let paymentStatus = false;
-                let makeOrder = false;
-                let notVerify = false;
-                changes.forEach(function interate(row) {
-                    if (row[1] == "active" && !isIterate) {
-                        getDataSelectedFromTable(false, false);
-                        if (allChecked) {
-                            //$(".checker").prop("checked", true);
-                            checked = true;
-                        } else {
-                            //$(".checker").prop("checked", false);
-                            checked = false;
-                        }
-                        if (shipmentDetails.length > 0) {
-                            let status = 1;
-                            for (let i = 0; i < shipmentDetails.length; i++) {
-                                switch (shipmentDetails[i].status) {
-                                    case 1:
-                                        status = 1;
-                                        break;
-                                    case 2:
-                                        if (shipmentDetails[i].userVerifyStatus == "Y") {
-                                            if (notVerify || makeOrder || paymentStatus) {
-                                                status = 1;
-                                            } else {
-                                                verifyStatus = true;
-                                                status = 3;
-                                            }
-                                        } else {
-                                            if (verifyStatus || makeOrder || paymentStatus) {
-                                                status = 1;
-                                            } else {
-                                                status = 2;
-                                                notVerify = true;
-                                            }
-                                        }
-                                        break;
-                                    case 3:
-                                        if (verifyStatus || notVerify || paymentStatus) {
-                                            status = 1;
-                                        } else {
-                                            status = 4;
-                                            makeOrder = true;
-                                        }
-                                        break;
-                                    case 4:
-                                        if (verifyStatus || notVerify || makeOrder) {
-                                            status = 1;
-                                        } else {
-                                            status = 5;
-                                            paymentStatus = true;
-                                        }
-                                        break;
-                                }
-                            }
-                            switch (status) {
-                                case 1:
-                                    setLayoutCustomStatus(simpleCustom);
-                                    if (!paymentStatus && !notVerify && !verifyStatus) {
-                                        $("#deleteBtn").prop("disabled", false);
-                                    }
-                                    break;
-                                case 2:
-                                    setLayoutVerifyUserStatus();
-                                    break;
-                                case 3:
-                                    setLayoutVerifyUserStatus();
-                                    $("#verifyBtn").prop("disabled", true);
-                                    break;
-                                case 4:
-                                    setLayoutPaymentStatus();
-                                    break;
-                                case 5:
-                                    setLayoutFinishStatus();
-                                    break;
-                            }
-                        } else {
-                            setLayoutCustomStatus();
-                        }
-                    }
-                });
-            }
-        },
-        afterSelectionEnd: function (r, c, r2, c2) {
-            selectedRow = null;
-            if (c == 0 && c2 == 12) {
-                selectedRow = r;
-            }
-        },
+        // afterChange: function (changes, src) {
+        //     //Get data change in cell to render another column
+        //     if (src !== "loadData") {
+        //         let verifyStatus = false;
+        //         let paymentStatus = false;
+        //         let makeOrder = false;
+        //         let notVerify = false;
+        //         changes.forEach(function interate(row) {
+        //             if (row[1] == "active" && !isIterate) {
+        //                 getDataSelectedFromTable(false, false);
+        //                 if (allChecked) {
+        //                     //$(".checker").prop("checked", true);
+        //                     checked = true;
+        //                 } else {
+        //                     //$(".checker").prop("checked", false);
+        //                     checked = false;
+        //                 }
+        //                 if (shipmentDetails.length > 0) {
+        //                     let status = 1;
+        //                     for (let i = 0; i < shipmentDetails.length; i++) {
+        //                         switch (shipmentDetails[i].status) {
+        //                             case 1:
+        //                                 status = 1;
+        //                                 break;
+        //                             case 2:
+        //                                 if (shipmentDetails[i].userVerifyStatus == "Y") {
+        //                                     if (notVerify || makeOrder || paymentStatus) {
+        //                                         status = 1;
+        //                                     } else {
+        //                                         verifyStatus = true;
+        //                                         status = 3;
+        //                                     }
+        //                                 } else {
+        //                                     if (verifyStatus || makeOrder || paymentStatus) {
+        //                                         status = 1;
+        //                                     } else {
+        //                                         status = 2;
+        //                                         notVerify = true;
+        //                                     }
+        //                                 }
+        //                                 break;
+        //                             case 3:
+        //                                 if (verifyStatus || notVerify || paymentStatus) {
+        //                                     status = 1;
+        //                                 } else {
+        //                                     status = 4;
+        //                                     makeOrder = true;
+        //                                 }
+        //                                 break;
+        //                             case 4:
+        //                                 if (verifyStatus || notVerify || makeOrder) {
+        //                                     status = 1;
+        //                                 } else {
+        //                                     status = 5;
+        //                                     paymentStatus = true;
+        //                                 }
+        //                                 break;
+        //                         }
+        //                     }
+        //                     switch (status) {
+        //                         case 1:
+        //                             setLayoutCustomStatus(simpleCustom);
+        //                             if (!paymentStatus && !notVerify && !verifyStatus) {
+        //                                 $("#deleteBtn").prop("disabled", false);
+        //                             }
+        //                             break;
+        //                         case 2:
+        //                             setLayoutVerifyUserStatus();
+        //                             break;
+        //                         case 3:
+        //                             setLayoutVerifyUserStatus();
+        //                             $("#verifyBtn").prop("disabled", true);
+        //                             break;
+        //                         case 4:
+        //                             setLayoutPaymentStatus();
+        //                             break;
+        //                         case 5:
+        //                             setLayoutFinishStatus();
+        //                             break;
+        //                     }
+        //                 } else {
+        //                     setLayoutCustomStatus();
+        //                 }
+        //             }
+        //         });
+        //     }
+        // },
+        // afterSelectionEnd: function (r, c, r2, c2) {
+        //     selectedRow = null;
+        //     if (c == 0 && c2 == 12) {
+        //         selectedRow = r;
+        //     }
+        // },
         // beforeKeyDown: function (e) {
         //     if (e.keyCode == 8) {
         //         e.stopImmediatePropagation();
@@ -599,13 +598,16 @@ function check(id) {
     } else {
         checkList[id] = 0;
     }
-    let disposable = true;
+    let disposable = null;
     let status = 1;
     let diff = false;
     allChecked = true;
     for (let i=0; i<checkList.length; i++) {
         let cellStatus = hot.getDataAtCell(i, 1);
-        if (checkList[i] == 1) {
+        if (checkList[i] == 1 && cellStatus != null) {
+            if (disposable == null) {
+                disposable = true;
+            }
             if (cellStatus > 2) {
                 disposable = false;
             }
@@ -622,8 +624,10 @@ function check(id) {
     if (allChecked) {
         $('.checker').prop('checked', true);
     }
-    if (disposable) {
+    if (disposable != null && disposable) {
         $("#deleteBtn").prop("disabled", false);
+    } else {
+        $("#deleteBtn").prop("disabled", true);
     }
     if (diff) {
         status = 1;
@@ -659,25 +663,15 @@ function loadShipmentDetail(id) {
         },
         success: function (data) {
             if (data.code == 0) {
-                sourceData = data.shipmentDetails;
+                let sourceData = data.shipmentDetails;
                 if (rowAmount < sourceData.length) {
                     sourceData = sourceData.slice(0, rowAmount);
                 }
-                customStatus = true;
-                sourceData.forEach(function iterate(shipmentDetail) {
-                    if (shipmentDetail.status < 2) {
-                        customStatus = false;
-                    }
-                    setLayoutCustomStatus();
-                });
                 hot.destroy();
                 configHandson();
                 hot = new Handsontable(dogrid, config);
                 hot.loadData(sourceData);
                 hot.render();
-                if (customStatus) {
-                    $("#customBtn").prop("disabled", true);
-                }
             }
         }
     });
@@ -928,9 +922,9 @@ function setLayoutRegisterStatus() {
     $("#paymentStatus").removeClass("label-primary active").addClass("disable");
     $("#customStatus").removeClass("label-primary active").addClass("disable");
     $("#finishStatus").removeClass("label-primary active").addClass("disable");
-    $("#customBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", true);
+    $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
 }
 
