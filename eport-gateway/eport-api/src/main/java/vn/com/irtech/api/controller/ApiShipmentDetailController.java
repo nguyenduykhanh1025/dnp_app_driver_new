@@ -66,4 +66,9 @@ public class ApiShipmentDetailController {
 		String beforeAfterDeparture = shipmentDetailDao.selectBeforeAfterDepartureByVesselCodeAndVoyageNo(vesselCode, voyageNo);
 		return R.ok().put("data", beforeAfterDeparture);
 	}
+	@GetMapping("/shipmentDetail/getOpeCodeList")
+	public R getOpeCodeList() {
+		List<String> list = shipmentDetailDao.selectOpeCodeList();
+		return R.ok().put("data", list);
+	}
 }
