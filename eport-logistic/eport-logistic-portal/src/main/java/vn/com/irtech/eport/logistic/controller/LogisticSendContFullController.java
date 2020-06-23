@@ -179,10 +179,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
-			mqttService.publishMessageToRobot(user, EServiceRobot.SEND_CONT_FULL);
-			int index = 0;
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				index++;
 				if (shipmentDetail.getId() != null) {
 					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
 						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
@@ -197,7 +194,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
 					shipmentDetail.setCreateTime(new Date());
-					shipmentDetail.setRegisterNo(shipmentDetail.getShipmentId().toString()+index);
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
