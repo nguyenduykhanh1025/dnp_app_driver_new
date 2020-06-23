@@ -3,6 +3,7 @@ var interval;
 var minutes = 0, seconds = 0;
 
 function confirm() {
+    
     if ($("#otpInput").val() !=null && $("#otpInput").val() != "") {
         $.ajax({
             url: prefix + "/verifyOtp",
@@ -12,7 +13,7 @@ function confirm() {
                 shipmentDetailIds: shipmentDetailIds
             },
             success: function (data) {
-                if (data.code != 0) {
+                if (data.code != 0 && data.code != 301) {
                     $.modal.msgError(data.msg);
                 } else {
                     parent.finishForm(data);
