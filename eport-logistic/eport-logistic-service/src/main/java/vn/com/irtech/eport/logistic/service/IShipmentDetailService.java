@@ -101,7 +101,7 @@ public interface IShipmentDetailService
     
     public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status);
 
-    public boolean checkCustomStatus(String customNumber) throws IOException;
+    public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
 
     public String getNameCompany(String taxCode);
 }
