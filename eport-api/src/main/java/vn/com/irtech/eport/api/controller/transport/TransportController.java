@@ -34,7 +34,7 @@ public class TransportController extends BaseController{
     public AjaxResult getShipmentList(@PathVariable("serviceId") Integer serviceId){
         AjaxResult ajaxResult = AjaxResult.success();
         Shipment shipment = new Shipment();
-        shipment.setServiceId(serviceId);
+        shipment.setServiceType(serviceId);
         ajaxResult.put("data", shipmentService.selectShipmentList(shipment));
         return ajaxResult;
     }

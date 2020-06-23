@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.logistic.domain.Truck;
-import vn.com.irtech.eport.logistic.service.ITruckService;
+import vn.com.irtech.eport.logistic.domain.LogisticTruck;
+import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 
 @Controller
 @RequestMapping("/dailyPlan")

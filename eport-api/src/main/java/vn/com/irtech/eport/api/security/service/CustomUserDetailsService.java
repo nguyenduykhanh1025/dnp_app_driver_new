@@ -10,9 +10,9 @@ import vn.com.irtech.eport.api.domain.EportUser;
 import vn.com.irtech.eport.api.domain.EportUserType;
 import vn.com.irtech.eport.api.security.CustomUserDetails;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
-import vn.com.irtech.eport.logistic.domain.TransportAccount;
+import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.mapper.LogisticAccountMapper;
-import vn.com.irtech.eport.logistic.mapper.TransportAccountMapper;
+import vn.com.irtech.eport.logistic.mapper.DriverAccountMapper;
 import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.mapper.SysUserMapper;
 
@@ -25,7 +25,7 @@ import vn.com.irtech.eport.system.mapper.SysUserMapper;
 public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private TransportAccountMapper transportAccountMapper;
+	private DriverAccountMapper driverAccountMapper;
 
 	@Autowired
 	private SysUserMapper sysUserMapper;
@@ -107,18 +107,18 @@ public class CustomUserDetailsService implements UserDetailsService {
 	}
 
 	private EportUser loadTransportUserByUsername(String userName) {
-		TransportAccount transportAccount = transportAccountMapper.selectTransportAccountByMobileNumber(userName);
-		if (transportAccount == null) {
+		DriverAccount driverAccount = driverAccountMapper.selectDriverAccountByMobileNumber(userName);
+		if (driverAccount == null) {
 			return null;
 		}
 
 		EportUser eportUser = new EportUser();
-		eportUser.setUserId(transportAccount.getId());
-		eportUser.setLoginName(transportAccount.getMobileNumber());
-		eportUser.setPassword(transportAccount.getPassword());
-		eportUser.setSalt(transportAccount.getSalt());
-		eportUser.setIsDeleted(transportAccount.getDelFlag());
-		eportUser.setIsLocked("1".equals(transportAccount.getStatus()));
+		eportUser.setUserId(driverAccount.getId());
+		eportUser.setLoginName(driverAccount.getMobileNumber());
+		eportUser.setPassword(driverAccount.getPassword());
+		eportUser.setSalt(driverAccount.getSalt());
+		eportUser.setIsDeleted(driverAccount.getDelFlag());
+		eportUser.setIsLocked("1".equals(driverAccount.getStatus()));
 		eportUser.setUserType(EportUserType.TRANSPORT);
 		return eportUser;
 	}

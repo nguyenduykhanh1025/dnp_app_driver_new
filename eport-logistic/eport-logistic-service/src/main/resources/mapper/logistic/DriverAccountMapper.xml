@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="vn.com.irtech.eport.logistic.mapper.TransportAccountMapper">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.DriverAccountMapper">
     
-    <resultMap type="TransportAccount" id="TransportAccountResult">
+    <resultMap type="DriverAccount" id="DriverAccountResult">
         <result property="id"    column="id"    />
         <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="mobileNumber"    column="mobile_number"    />
@@ -25,13 +25,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="groupName"    column="group_name"    />
     </resultMap>
-    <sql id="selectTransportAccountVo">
-        select id, logistic_group_id, mobile_number, full_name, password, salt, status, del_flag, valid_date, remark, create_by, create_time, update_by, update_time from transport_account
+    <sql id="selectDriverAccountVo">
+        select id, logistic_group_id, mobile_number, full_name, password, salt, status, del_flag, valid_date, remark, create_by, create_time, update_by, update_time from driver_account
     </sql>
 
-    <select id="selectTransportAccountList" parameterType="TransportAccount" resultMap="TransportAccountResult">
+    <select id="selectDriverAccountList" parameterType="DriverAccount" resultMap="DriverAccountResult">
         select c.id, c.logistic_group_id, c.mobile_number, c.full_name, c.password, c.salt, c.status, c.del_flag, c.valid_date, c.remark, c.create_by, c.create_time, c.update_by, c.update_time, g.group_name 
-        from transport_account c left join logistic_group g on c.logistic_group_id = g.id
+        from driver_account c left join logistic_group g on c.logistic_group_id = g.id
         <where>  
             <if test="logisticGroup.groupName != null and logisticGroup.groupName !=''"> <bind name="groupNamePattern" value="'%' + logisticGroup.groupName + '%'"/> and lower(g.group_name) like #{groupNamePattern}</if>
             <if test="mobileNumber != null  and mobileNumber != ''"> and c.mobile_number like concat('%', #{mobileNumber}, '%')</if>
@@ -42,18 +42,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="selectTransportAccountById" parameterType="Long" resultMap="TransportAccountResult">
-        <include refid="selectTransportAccountVo"/>
+    <select id="selectDriverAccountById" parameterType="Long" resultMap="DriverAccountResult">
+        <include refid="selectDriverAccountVo"/>
         where id = #{id}
     </select>
     
-    <select id="selectTransportAccountByMobileNumber" parameterType="String" resultMap="TransportAccountResult">
-        <include refid="selectTransportAccountVo"/>
+    <select id="selectDriverAccountByMobileNumber" parameterType="String" resultMap="DriverAccountResult">
+        <include refid="selectDriverAccountVo"/>
         where mobile_number = #{mobileNumber}
     </select>
         
-    <insert id="insertTransportAccount" parameterType="TransportAccount" useGeneratedKeys="true" keyProperty="id">
-        insert into transport_account
+    <insert id="insertDriverAccount" parameterType="DriverAccount" useGeneratedKeys="true" keyProperty="id">
+        insert into driver_account
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="mobileNumber != null  and mobileNumber != ''">mobile_number,</if>
@@ -86,8 +86,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateTransportAccount" parameterType="TransportAccount">
-        update transport_account
+    <update id="updateDriverAccount" parameterType="DriverAccount">
+        update driver_account
         <trim prefix="SET" suffixOverrides=",">
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="mobileNumber != null  and mobileNumber != ''">mobile_number = #{mobileNumber},</if>
@@ -106,18 +106,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </update>
 
-    <delete id="deleteTransportAccountById" parameterType="Long">
-        update transport_account set del_flag = 1 where id = #{id}
+    <delete id="deleteDriverAccountById" parameterType="Long">
+        update driver_account set del_flag = 1 where id = #{id}
     </delete>
 
-    <delete id="deleteTransportAccountByIds" parameterType="String">
-        delete from transport_account where id in 
+    <delete id="deleteDriverAccountByIds" parameterType="String">
+        delete from driver_account where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>
     </delete>
     <select id="checkPhoneUnique" parameterType="String" resultType="int">
-		select count(1) from transport_account where lower(mobile_number)=#{mobile_number}
+		select count(1) from driver_account where lower(mobile_number)=#{mobile_number}
 	</select>
     
 </mapper>

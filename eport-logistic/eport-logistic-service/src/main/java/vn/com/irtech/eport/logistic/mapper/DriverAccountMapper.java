@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
-import vn.com.irtech.eport.logistic.domain.TransportAccount;
+import vn.com.irtech.eport.logistic.domain.DriverAccount;
 
 /**
  * Driver login infoMapper Interface
@@ -9,7 +9,7 @@ import vn.com.irtech.eport.logistic.domain.TransportAccount;
  * @author ruoyi
  * @date 2020-05-19
  */
-public interface TransportAccountMapper 
+public interface DriverAccountMapper 
 {
     /**
      * Get Driver login info
@@ -17,7 +17,7 @@ public interface TransportAccountMapper
      * @param id Driver login infoID
      * @return Driver login info
      */
-    public TransportAccount selectTransportAccountById(Long id);
+    public DriverAccount selectDriverAccountById(Long id);
     
     /**
      * Get Driver login info
@@ -25,31 +25,31 @@ public interface TransportAccountMapper
      * @param id Driver login infoID
      * @return Driver login info
      */
-    public TransportAccount selectTransportAccountByMobileNumber(String mobileNumber);
+    public DriverAccount selectDriverAccountByMobileNumber(String mobileNumber);
 
     /**
      * Get Driver login info List
      * 
-     * @param transportAccount Driver login info
+     * @param driverAccount Driver login info
      * @return Driver login info List
      */
-    public List<TransportAccount> selectTransportAccountList(TransportAccount transportAccount);
+    public List<DriverAccount> selectDriverAccountList(DriverAccount driverAccount);
 
     /**
      * Add Driver login info
      * 
-     * @param transportAccount Driver login info
+     * @param driverAccount Driver login info
      * @return Result
      */
-    public int insertTransportAccount(TransportAccount transportAccount);
+    public int insertDriverAccount(DriverAccount driverAccount);
 
     /**
      * Update Driver login info
      * 
-     * @param transportAccount Driver login info
+     * @param driverAccount Driver login info
      * @return Result
      */
-    public int updateTransportAccount(TransportAccount transportAccount);
+    public int updateDriverAccount(DriverAccount driverAccount);
 
     /**
      * Delete Driver login info
@@ -57,7 +57,7 @@ public interface TransportAccountMapper
      * @param id Driver login infoID
      * @return result
      */
-    public int deleteTransportAccountById(Long id);
+    public int deleteDriverAccountById(Long id);
 
     /**
      * Batch Delete Driver login info
@@ -65,6 +65,6 @@ public interface TransportAccountMapper
      * @param ids IDs
      * @return result
      */
-    public int deleteTransportAccountByIds(String[] ids);
+    public int deleteDriverAccountByIds(String[] ids);
 	public int checkPhoneUnique(String phoneNumber);
 }

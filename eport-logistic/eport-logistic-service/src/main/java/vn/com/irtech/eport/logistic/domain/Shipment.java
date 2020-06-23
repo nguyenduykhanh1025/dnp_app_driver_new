@@ -19,16 +19,16 @@ public class Shipment extends BaseEntity
     private Long id;
 
     /** null */
-    @Excel(name = "null")
+    @Excel(name = "Logistics Account Id")
     private Long logisticAccountId;
 
     /** null */
-    @Excel(name = "null")
+    @Excel(name = "Logistics Group Id")
     private Long logisticGroupId;
 
     /** Dich Vu */
     @Excel(name = "Dich Vu")
-    private Integer serviceId;
+    private Integer serviceType;
 
     /** Bill No */
     @Excel(name = "B/L No")
@@ -87,14 +87,14 @@ public class Shipment extends BaseEntity
     {
         return logisticGroupId;
     }
-    public void setServiceId(Integer serviceId) 
+    public void setServiceType(Integer serviceType) 
     {
-        this.serviceId = serviceId;
+        this.serviceType = serviceType;
     }
 
-    public Integer getServiceId() 
+    public Integer getServiceType() 
     {
-        return serviceId;
+        return serviceType;
     }
 
     public void setBlNo(String blNo) {
@@ -166,7 +166,7 @@ public class Shipment extends BaseEntity
             .append("id", getId())
             .append("logisticAccountId", getLogisticAccountId())
             .append("logisticGroupId", getLogisticGroupId())
-            .append("serviceId", getServiceId())
+            .append("serviceType", getServiceType())
             .append("blNo", getBlNo())
             .append("bookingNo", getBookingNo())
             .append("taxCode", getTaxCode())

@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import vn.com.irtech.eport.logistic.domain.QueueOrder;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.service.IQueueOrderService;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
@@ -30,7 +30,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	private ISysRobotService robotService;
 	
 	@Autowired
-	private IQueueOrderService queueOrderService;
+	private IProcessOrderService processOrderService;
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
@@ -79,11 +79,11 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	private void updateShipmentDetail(String result, String receiptId) {
 		// TODO: update shipment detail
 		Long id = Long.parseLong(receiptId);
-		QueueOrder queueOrder = queueOrderService.selectQueueOrderById(id);
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setRegisterNo(receiptId);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		if (queueOrder != null) {
+		if (processOrder != null) {
 			if ("success".equalsIgnoreCase(result)) {
 				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y");
 			} else {
