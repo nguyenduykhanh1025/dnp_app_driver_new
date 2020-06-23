@@ -14,4 +14,5 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public List<String> selectVesselCodeList();
 	public List<String> selectPODList();
 	public List<String> selectConsigneeList();
+	public List<String> selectVoyageNoListByVesselCode(String vesselCode);
 }

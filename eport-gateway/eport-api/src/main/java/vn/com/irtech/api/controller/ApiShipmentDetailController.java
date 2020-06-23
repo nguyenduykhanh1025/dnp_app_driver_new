@@ -50,4 +50,13 @@ public class ApiShipmentDetailController {
 		List<String> list = shipmentDetailDao.selectConsigneeList();
 		return R.ok().put("data", list);
 	}
+	@GetMapping("/shipmentDetail/getVoyageNoList")
+	public R getVoyageNoList(String vesselCode){
+		List<String> list = shipmentDetailDao.selectVoyageNoListByVesselCode(vesselCode);
+		return R.ok().put("data", list);
+	}
+	@GetMapping("/shipmentDetail/getYearAndBeforeAfter")
+	public R getYearAndBeforeAfter(String vesselCode, String voyageNo) {
+		
+	}
 }

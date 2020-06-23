@@ -105,12 +105,18 @@
 	</select>
 	<select id="selectPODList"	resultType="String">
 			SELECT 
-    		CNTRY_CD || PORT_CD || ': ' || PORT_NM AS POD
+    			CNTRY_CD || PORT_CD || ': ' || PORT_NM AS POD
 			FROM TB_PORT
 	</select>
 	<select id="selectConsigneeList" resultType="String">
 			SELECT 
-		    ENG_LNM AS CONSIGNEE
+		    	ENG_LNM AS CONSIGNEE
 			FROM TB_PTNR
+	</select>
+	<select id="selectVoyageNoListByVesselCode" parameterType="String" resultType="String">
+			SELECT
+		    	CALL_SEQ AS VOYAGE
+			FROM TB_BERTHPLAN
+			WHERE VSL_CD = #{vesselCode}
 	</select>
 </mapper>
