@@ -91,6 +91,7 @@
           $("#taxCode").removeClass("error-input");
         } else {
           $.modal.msgError("Không tìm ra mã số thuế!");
+          $("#groupName").val('');
           $("#taxCode").addClass("error-input");
         }
       });
@@ -117,26 +118,30 @@
 
   function submitHandler() {
     if ($.validate.form()) {
-      if ($("#bookingNo").val() != currentBooking) {
-        $.ajax({
-          url: prefix + "/checkBookingNoUnique",
-          method: "post",
-          data: {
-            bookingNo: $("#bookingNo").val()
-          }
-        }).done(function (result) {
-          if (result.code == 0) {
-            $("#bookingNo").removeClass("error-input");
-            $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
-            parent.loadTable();
-          } else {
-            $.modal.msgError("Số book đã tồn tại!");
-            $("#bookingNo").addClass("error-input");
-          }
-        });
+      if ($("#groupName").val() != null && $("#groupName").val() != '') {
+        if ($("#bookingNo").val() != currentBooking) {
+          $.ajax({
+            url: prefix + "/checkBookingNoUnique",
+            method: "post",
+            data: {
+              bookingNo: $("#bookingNo").val()
+            }
+          }).done(function (result) {
+            if (result.code == 0) {
+              $("#bookingNo").removeClass("error-input");
+              $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
+              parent.loadTable();
+            } else {
+              $.modal.msgError("Số book đã tồn tại!");
+              $("#bookingNo").addClass("error-input");
+            }
+          });
+        } else {
+          $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
+          parent.loadTable();
+        }
       } else {
-        $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
-        parent.loadTable();
+        $.modal.msgError("Không tìm thấy mã số thuế!");
       }
     }
   }

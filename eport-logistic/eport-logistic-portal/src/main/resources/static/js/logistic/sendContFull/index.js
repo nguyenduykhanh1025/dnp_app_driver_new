@@ -17,26 +17,23 @@ var selectedRow;
 var customStatus;
 var rowAmount = 0;
 var opeCodeList = ["CMC", "AVS", "QEW", "CNC"];
-var vslNmList = ["SDF", "SDA", "EQW", "HABE"];
-var voyNoList = ["2342", "3221", "1542", "0235"];
 var sizeList = ["20G0", "22G0", "40G0", "45G0"];
-var dischargePortList = [
-    "VNDAD",
-    "CMTVN",
-    "CNSHA",
-    "HKHKG",
-    "KRINC",
-    "KRPUS",
-    "MYKUA",
-    "MYPKG",
-    "MYTPP",
-    "SGSIN",
-    "TCCVN",
-    "TWKEL",
-    "VNHCM",
-    "VNHPH"
-];
-var cargoTypeList = ["AK", "BB", "BN", "DG", "DR", "DE", "FR", "GP", "MT", "RF"];
+var consigneeList;
+var dischargePortList;
+var vslNmList;
+$.ajax({
+    url: prefix + "/getField",
+    method: "GET",
+    success: function (data) {
+        if (data.code == 0) {
+            dischargePortList = data.dischargePortList;
+            vslNmList = data.vslNmList;
+            consigneeList = data.consigneeList;
+        }
+    }
+});
+
+var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 var checkList = [];
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
@@ -370,7 +367,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 110, 100, 100, 100, 100, 100, 100, 100, 150, 150, 200],
+        colWidths: [50, 110, 100, 200, 100, 100, 100, 100, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -393,6 +390,8 @@ function configHandson() {
             {
                 data: "consignee",
                 strict: true,
+                type: "autocomplete",
+                source: consigneeList,
                 renderer: consigneeRenderer
               },
             {
@@ -411,8 +410,6 @@ function configHandson() {
             },
             {
                 data: "voyNo",
-                type: "autocomplete",
-                source: voyNoList,
                 strict: true,
                 renderer: voyNoRenderer
             },
@@ -685,7 +682,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.voyNo = object["voyNo"];
         shipmentDetail.dischargePort = object["dischargePort"];
         shipmentDetail.transportType = object["transportType"];
-        shipmentDetail.cargoType = object["cargoType"];
+        shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];

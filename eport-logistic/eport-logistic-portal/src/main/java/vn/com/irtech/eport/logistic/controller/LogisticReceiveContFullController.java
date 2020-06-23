@@ -67,7 +67,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@GetMapping("/getGroupNameByTaxCode")
 	@ResponseBody
-	public AjaxResult getGroupNameByTaxCode(String taxCode){
+	public AjaxResult getGroupNameByTaxCode(String taxCode) throws Exception {
 		AjaxResult ajaxResult = AjaxResult.success();
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
@@ -150,7 +150,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		Shipment shipment = shipmentService.selectShipmentWithGroupById(id);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
-			mmap.put("groupName", shipmentDetailService.getGroupNameByTaxCode(shipment.getTaxCode()));
 		}
 		return PREFIX + "/edit";
 	}

@@ -80,8 +80,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		String groupName = shipmentDetailService.getNameCompany(taxCode);
-		//String groupName = "Công ty abc";
+		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {
@@ -226,53 +225,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
-	@GetMapping("checkCustomStatusForm/{shipmentDetailIds}")
-	@Transactional
-	public String checkCustomStatus(@PathVariable String shipmentDetailIds, ModelMap mmap) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0) {
-			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				mmap.put("shipmentId", shipmentDetails.get(0).getShipmentId());
-				mmap.put("contList", shipmentDetails);
-			}
-		}
-		return PREFIX + "/checkCustomStatus";
-	}
-
-	@PostMapping("/checkCustomStatus")
-	@ResponseBody
-	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
-			String shipmentDetailIds) throws IOException {
-		if (declareNoList != null) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService
-					.selectShipmentDetailByIds(shipmentDetailIds);
-			if (shipmentDetails.size() > 0) {
-				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-					for (ShipmentDetail shipmentDetail : shipmentDetails) {
-						try {
-							Thread.sleep(500);
-							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
-							{
-								shipmentDetail.setStatus(4);
-								shipmentDetail.setCustomStatus("Y");
-								shipmentDetailService.updateShipmentDetail(shipmentDetail);
-								// push notification with socketIO 
-							}else {
-								// push notification with socketIO 
-							};
-						
-						} catch(Exception e) {
-							e.printStackTrace(); 
-						}
-						
-					}
-					return shipmentDetails;
-				}
-			}
-		}
-		return null;
-	}
-
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
@@ -397,6 +349,53 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 	
+	@GetMapping("checkCustomStatusForm/{shipmentDetailIds}")
+	@Transactional
+	public String checkCustomStatus(@PathVariable String shipmentDetailIds, ModelMap mmap) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0) {
+			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				mmap.put("shipmentId", shipmentDetails.get(0).getShipmentId());
+				mmap.put("contList", shipmentDetails);
+			}
+		}
+		return PREFIX + "/checkCustomStatus";
+	}
+
+	@PostMapping("/checkCustomStatus")
+	@ResponseBody
+	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
+			String shipmentDetailIds) throws IOException {
+		if (declareNoList != null) {
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService
+					.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() > 0) {
+				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						try {
+							Thread.sleep(500);
+							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
+							{
+								shipmentDetail.setStatus(4);
+								shipmentDetail.setCustomStatus("Y");
+								shipmentDetailService.updateShipmentDetail(shipmentDetail);
+								// push notification with socketIO 
+							}else {
+								// push notification with socketIO 
+							};
+						
+						} catch(Exception e) {
+							e.printStackTrace(); 
+						}
+						
+					}
+					return shipmentDetails;
+				}
+			}
+		}
+		return null;
+	}
+
 	@GetMapping("pickTruckForm/{shipmentId}")
 	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
 //		mmap.put("shipmentId", shipmentId);
@@ -430,40 +429,35 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		}
 		return error("Xảy ra lỗi trong quá trình điều xe.");
 	}
-	@GetMapping("/getVesselCodeList")
-	@ResponseBody
-	public List<String> getVesselCodeList(){
-		String url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class);
-		List<String> listVessel =(List<String>) r.get("data");
-		return listVessel;
-	}
 	
-	@GetMapping("/getConsigneeList")
+	@GetMapping("/getField")
 	@ResponseBody
-	public List<String> getConsigneeList(){
-		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class);
-		List<String> listVessel =(List<String>) r.get("data");
-		return listVessel;
-	}
-	
-	@GetMapping("/getPODList")
-	@ResponseBody
-	public List<String> getPODList(){
+	public AjaxResult getField() {
+		AjaxResult ajaxResult = success();
 		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
 		RestTemplate restTemplate = new RestTemplate();
 		R r = restTemplate.getForObject(url, R.class);
 		List<String> listPOD =(List<String>) r.get("data");
-		return listPOD;
+		ajaxResult.put("dischargePortList", listPOD);
+
+		url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+		restTemplate = new RestTemplate();
+		r = restTemplate.getForObject(url, R.class);
+		List<String> listConsignee =(List<String>) r.get("data");
+		ajaxResult.put("consigneeList", listConsignee);
+
+		url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
+		restTemplate = new RestTemplate();
+		r = restTemplate.getForObject(url, R.class);
+		List<String> listVessel =(List<String>) r.get("data");
+		ajaxResult.put("vslNmList", listVessel);
+		return ajaxResult;
 	}
 	
 	@GetMapping("/getVoyageNoList")
 	@ResponseBody
 	public List<String> getVoyageNoList(String vesselCode){
-		String url = Global.getApiUrl() + "/shipmentDetail/getVoyageNoList?vesselCode={q}";
+		String url = Global.getApiUrl() + "/shipmentDetail/getVoyageNoList/"+vesselCode;
 		RestTemplate restTemplate = new RestTemplate();
 		R r = restTemplate.getForObject(url, R.class, vesselCode);
 		List<String> listVoyageNo =(List<String>) r.get("data");
