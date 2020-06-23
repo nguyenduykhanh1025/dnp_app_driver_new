@@ -3,10 +3,16 @@ package vn.com.irtech.eport.logistic.controller;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
@@ -17,9 +23,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.json.JSONObject;
@@ -37,6 +45,7 @@ import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.logistic.utils.R;
 
 @Controller
 @RequestMapping("/logistic/sendContFull")
@@ -421,5 +430,70 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			return success("Điều xe thành công");
 		}
 		return error("Xảy ra lỗi trong quá trình điều xe.");
+	}
+	@GetMapping("/getVesselCodeList")
+	@ResponseBody
+	public List<String> getVesselCodeList(){
+		String url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
+		RestTemplate restTemplate = new RestTemplate();
+		R r = restTemplate.getForObject(url, R.class);
+		List<String> listVessel =(List<String>) r.get("data");
+		return listVessel;
+	}
+	
+	@GetMapping("/getConsigneeList")
+	@ResponseBody
+	public List<String> getConsigneeList(){
+		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+		RestTemplate restTemplate = new RestTemplate();
+		R r = restTemplate.getForObject(url, R.class);
+		List<String> listVessel =(List<String>) r.get("data");
+		return listVessel;
+	}
+	
+	@GetMapping("/getPODList")
+	@ResponseBody
+	public List<String> getPODList(){
+		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
+		RestTemplate restTemplate = new RestTemplate();
+		R r = restTemplate.getForObject(url, R.class);
+		List<String> listPOD =(List<String>) r.get("data");
+		return listPOD;
+	}
+	
+	@GetMapping("/getVoyageNoList")
+	@ResponseBody
+	public List<String> getVoyageNoList(String vesselCode){
+		String url = Global.getApiUrl() + "/shipmentDetail/getVoyageNoList?vesselCode={q}";
+		RestTemplate restTemplate = new RestTemplate();
+		R r = restTemplate.getForObject(url, R.class, vesselCode);
+		List<String> listVoyageNo =(List<String>) r.get("data");
+		return listVoyageNo;
+	}
+	
+	@GetMapping("/getYear")
+	@ResponseBody
+	public String getYear(String vesselCode, String voyageNo){
+		String url = Global.getApiUrl() + "/shipmentDetail/getYear/"+vesselCode+"/"+voyageNo;
+		RestTemplate restTemplate = new RestTemplate();
+		Map<String, String> vars = new HashMap<>();
+		vars.put("vesselCode", vesselCode);
+		vars.put("voyageNo", voyageNo);
+		R r = restTemplate.getForObject(url, R.class, vars);
+		String year =(String) r.get("data");
+		return year;
+	}
+	
+	@GetMapping("/getBeforeAfterDeparture")
+	@ResponseBody
+	public String getBeforeAfterDeparture(String vesselCode, String voyageNo){
+		String url = Global.getApiUrl() + "/shipmentDetail/getBeforeAfterDeparture/"+vesselCode+"/"+voyageNo;
+		RestTemplate restTemplate = new RestTemplate();
+		Map<String, String> vars = new HashMap<>();
+		vars.put("vesselCode", vesselCode);
+		vars.put("voyageNo", voyageNo);
+		R r = restTemplate.getForObject(url, R.class, vars);
+		String beforeAfter =(String) r.get("data");
+		return beforeAfter;
 	}
 }

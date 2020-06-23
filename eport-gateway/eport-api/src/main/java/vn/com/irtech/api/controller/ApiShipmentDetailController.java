@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,5 +50,20 @@ public class ApiShipmentDetailController {
 	public R getConsigneeList() {
 		List<String> list = shipmentDetailDao.selectConsigneeList();
 		return R.ok().put("data", list);
+	}
+	@GetMapping("/shipmentDetail/getVoyageNoList")
+	public R getVoyageNoList(String vesselCode){
+		List<String> list = shipmentDetailDao.selectVoyageNoListByVesselCode(vesselCode);
+		return R.ok().put("data", list);
+	}
+	@GetMapping("/shipmentDetail/getYear/{vesselCode}/{voyageNo}")
+	public R getYear(@PathVariable String vesselCode, @PathVariable String voyageNo) {
+		String year = shipmentDetailDao.selectYearByVesselCodeAndVoyageNo(vesselCode, voyageNo);
+		return R.ok().put("data", year);
+	}
+	@GetMapping("/shipmentDetail/getBeforeAfterDeparture/{vesselCode}/{voyageNo}")
+	public R getBeforeAfterDeparture(@PathVariable String vesselCode, @PathVariable String voyageNo) {
+		String beforeAfterDeparture = shipmentDetailDao.selectBeforeAfterDepartureByVesselCodeAndVoyageNo(vesselCode, voyageNo);
+		return R.ok().put("data", beforeAfterDeparture);
 	}
 }
