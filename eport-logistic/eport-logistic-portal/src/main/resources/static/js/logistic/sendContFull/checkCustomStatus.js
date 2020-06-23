@@ -40,7 +40,7 @@ function checkCustomStatus() {
                 }
                 if (completeInput) {
                     asked = true;
-                    $.modal.loading("Đang xử lý...");
+                    $(".loaderbox").css('display','block');
                     $.ajax({
                         url: prefix + "/checkCustomStatus",
                         method: "post",
@@ -49,17 +49,19 @@ function checkCustomStatus() {
                             shipmentDetailIds: shipmentDetailIds.substring(0, shipmentDetailIds.length - 1)
                         },
                         success: function (data) {
-                            $.modal.closeLoading();
-                            if (data != null) {
-                                $("#contTable").datagrid({
-                                    loadMsg: " Đang xử lý...",
-                                    loader: function (param, success, error) {
-                                        success(data);
-                                    },
-                                });
-                            } else {
-                                $.modal.msgError("Có lỗi xảy ra trong quá trình khai hải quan.");
-                            }
+                            // $.modal.closeLoading();
+                            // if (data != null) {
+                            //     $("#contTable").datagrid({
+                            //         loadMsg: " Đang xử lý...",
+                            //         loader: function (param, success, error) {
+                            //             success(data);
+                            //         },
+                            //     });
+                            // } else {
+                            //     $.modal.msgError("Có lỗi xảy ra trong quá trình khai hải quan.");
+                            // }
+                            $(".loaderbox").css('display','none');
+                            loadData() 
                             $("#checkBtn").html("Kết thúc");
                         },
                         error: function (result) {
@@ -76,23 +78,27 @@ function checkCustomStatus() {
     }
 }
 
+loadData() 
 function closeForm() {
     $.modal.close();
 }
+function loadData() 
+{
+    $("#contTable").datagrid({
+        singleSelect: true,
+        loadMsg: " Đang xử lý...",
+        loader: function (param, success, error) {
+            shipmentDetailIds = "";
+            var index = 0;
+            contList.forEach(function (cont) {
+                shipmentDetailIds += cont.id + ",";
+                cont.id = ++index;
+            });
+            success(contList);
+        },
+    });
+}
 
-$("#contTable").datagrid({
-    singleSelect: true,
-    loadMsg: " Đang xử lý...",
-    loader: function (param, success, error) {
-        shipmentDetailIds = "";
-        var index = 0;
-        contList.forEach(function (cont) {
-            shipmentDetailIds += cont.id + ",";
-            cont.id = ++index;
-        });
-        success(contList);
-    },
-});
 
 $("#declareNoAmount").keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -109,10 +115,12 @@ $("#declareNoAmount").keypress(function (event) {
 
 function formatStatus(value) {
     switch (value) {
-        case "R":
+        case "TQ":
             return "Đã thông quan";
-        case "N":
+        case "CTQ":
             return "Chưa thông quan";
+        default :
+            return' <span class="label label-success">Đang chờ</span>';
     }
 }
 

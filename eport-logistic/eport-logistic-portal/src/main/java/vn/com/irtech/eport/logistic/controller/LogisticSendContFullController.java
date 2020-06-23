@@ -250,7 +250,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
 							{
 								shipmentDetail.setStatus(2);
-								shipmentDetail.setCustomStatus("R");
+								shipmentDetail.setCustomStatus("TQ");
 								shipmentDetailService.updateShipmentDetail(shipmentDetail);
 								// push notification with socketIO 
 							}else {
