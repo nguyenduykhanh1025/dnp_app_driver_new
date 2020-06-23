@@ -1,7 +1,12 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +17,7 @@ import java.util.Map;
 
 import javax.servlet.http.Cookie;
 
+import com.alibaba.fastjson.JSONException;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -291,7 +297,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Transactional
-    public List<ProcessOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
+    public List<ProcessOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment,
+            String isCredit) {
         if (shipmentDetails.size() > 0) {
             Collections.sort(shipmentDetails, new SztpComparator());
             String sztp = shipmentDetails.get(0).getSztp();
@@ -360,7 +367,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Transactional
-    public ProcessOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
+    public ProcessOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment,
+            String isCredit) {
         if (shipmentDetails.size() > 0) {
             ProcessOrder processOrder = new ProcessOrder();
             processOrder.setTaxCode(shipment.getTaxCode());
@@ -416,7 +424,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
+    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment,
+            String isCredit) {
         if (shipmentDetails.size() > 0) {
             ProcessOrder processOrder = new ProcessOrder();
             processOrder.setTaxCode(shipment.getTaxCode());
@@ -465,48 +474,62 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException {
-        
-        String uri = "http://192.168.0.36:8060/ACCIS-Web/rest/v1/eportcontroller/getCustomsStatus/?UserVoy="+userVoy+"&CntrNo="+cntrNo+"";
+    public boolean checkCustomStatus(String userVoy, String cntrNo) throws IOException {
+
+        String uri = "http://192.168.0.36:8060/ACCIS-Web/rest/v1/eportcontroller/getCustomsStatus/?UserVoy=" + userVoy
+                + "&CntrNo=" + cntrNo + "";
         // URI uri = new URI(uri);
-        
+
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "text/xml;charset=UTF-8");
-        headers.set("Authorization", "Basic VFNCOkFBQQ==");
+        headers.set("Authorization", "Basic RVBPUlQ6MTEx");
         RestTemplate restTemplate = new RestTemplate();
         // String result = restTemplate.getForObject(uri,HttpMethod.GET,
         // String.class,headers);
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-        ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+        ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
         String stringJson = result.getBody();
         JsonObject convertedObject = new Gson().fromJson(stringJson, JsonObject.class);
         convertedObject = convertedObject.getAsJsonObject("response");
         JsonArray jarray = convertedObject.getAsJsonArray("data");
-        if(jarray.toString().equals("")) {
+        if (!jarray.toString().equals("")) {
             convertedObject = jarray.get(0).getAsJsonObject();
             String rs = convertedObject.get("customsStatus").toString();
             System.out.print(rs);
-            if("TQ".equals(rs.substring(1,rs.length()-1))){
+            if ("TQ".equals(rs.substring(1, rs.length() - 1))) {
                 return true;
             }
         }
         return false;
     }
-    @Override
-    public String getNameCompany(String taxCode)
-    {
-        String uri = "https://thongtindoanhnghiep.co/api/company/0200453688";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "text/xml;charset=UTF-8");
-       
-        RestTemplate restTemplate = new RestTemplate();
-        
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-        ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
-        String stringJson = result.getBody();
-        System.out.print(stringJson);
-        
-        return "Ok";
-    }
 
+    @Override
+    public String getNameCompany(String taxCode) throws Exception {
+        String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
+        String methodName = "GET";
+        String readLine = null;
+        HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl + "/" + taxCode).openConnection();
+        connection.setRequestMethod(methodName);
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+
+        int responseCode = connection.getResponseCode();
+        StringBuffer response = new StringBuffer();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            while ((readLine = in.readLine()) != null) {
+                response.append(readLine);
+            };
+            in.close();
+        } else {
+        	String error = responseCode + " : " + methodName + " NOT WORKED";
+            return error;
+        }
+        String str = response.toString();
+        JsonObject convertedObject = new Gson().fromJson(str, JsonObject.class);
+        if(convertedObject.get("Title").toString().equals("null"))
+        {
+            return "Thông tin doanh nghiệp này không được tìm thấy";
+        }
+        return convertedObject.get("Title").toString();
+    }
 }

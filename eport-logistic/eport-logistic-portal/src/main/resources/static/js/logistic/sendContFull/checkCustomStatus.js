@@ -49,19 +49,20 @@ function checkCustomStatus() {
                             shipmentDetailIds: shipmentDetailIds.substring(0, shipmentDetailIds.length - 1)
                         },
                         success: function (data) {
-                            // $.modal.closeLoading();
-                            // if (data != null) {
-                            //     $("#contTable").datagrid({
-                            //         loadMsg: " Đang xử lý...",
-                            //         loader: function (param, success, error) {
-                            //             success(data);
-                            //         },
-                            //     });
-                            // } else {
-                            //     $.modal.msgError("Có lỗi xảy ra trong quá trình khai hải quan.");
-                            // }
                             $(".loaderbox").css('display','none');
-                            loadData() 
+                            $.modal.closeLoading();
+                            if (data != null) {
+                                $("#contTable").datagrid({
+                                    loadMsg: " Đang xử lý...",
+                                    loader: function (param, success, error) {
+                                        success(data);
+                                    },
+                                });
+                            } else {
+                                $.modal.msgError("Có lỗi xảy ra trong quá trình khai hải quan.");
+                            }
+                           
+                           // loadData() 
                             $("#checkBtn").html("Kết thúc");
                         },
                         error: function (result) {
@@ -115,9 +116,9 @@ $("#declareNoAmount").keypress(function (event) {
 
 function formatStatus(value) {
     switch (value) {
-        case "TQ":
+        case "Y":
             return "Đã thông quan";
-        case "CTQ":
+        case "N":
             return "Chưa thông quan";
         default :
             return' <span class="label label-success">Đang chờ</span>';
