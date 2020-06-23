@@ -22,11 +22,11 @@ import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
-import vn.com.irtech.eport.logistic.domain.QueueOrder;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
-import vn.com.irtech.eport.logistic.service.IQueueOrderService;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
@@ -46,7 +46,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	private IOtpCodeService otpCodeService;
 
 	@Autowired
-	private IQueueOrderService queueOrderService;
+	private IProcessOrderService processOrderService;
 
     @GetMapping()
 	public String sendContEmpty() {
@@ -75,7 +75,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		startPage();
 		LogisticAccount user = getUser();
 		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setServiceId(2);
+		shipment.setServiceType(2);
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}
@@ -93,7 +93,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceId(2);
+		shipment.setServiceType(2);
 		shipment.setBlNo("null");
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
@@ -257,9 +257,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-				QueueOrder queueOrder = shipmentDetailService.makeOrderSendContEmpty(shipmentDetails, shipment, getGroup().getCreditFlag());
-				if (queueOrder != null) {
-					queueOrderService.insertQueueOrder(queueOrder);
+				ProcessOrder processOrder = shipmentDetailService.makeOrderSendContEmpty(shipmentDetails, shipment, getGroup().getCreditFlag());
+				if (processOrder != null) {
+					processOrderService.insertProcessOrder(processOrder);
 					return success("Xác thực OTP thành công");
 				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
@@ -292,21 +292,21 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@GetMapping("pickTruckForm/{shipmentId}")
 	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
-		mmap.put("shipmentId", shipmentId);
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
-		String transportId = "";
-		String shipmentIds = "";
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
-			if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
-				transportId = shipmentDetail2.getTransportIds();
-			}
-			shipmentIds += shipmentDetail2.getId() + ",";
-		}
-		mmap.put("transportIds", transportId);
-		mmap.put("shipmentDetailIds", shipmentIds);
+//		mmap.put("shipmentId", shipmentId);
+//		ShipmentDetail shipmentDetail = new ShipmentDetail();
+//		shipmentDetail.setShipmentId(shipmentId);
+//		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
+//		String transportId = "";
+//		String shipmentIds = "";
+//		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+//		for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+//			if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
+//				transportId = shipmentDetail2.getTransportIds();
+//			}
+//			shipmentIds += shipmentDetail2.getId() + ",";
+//		}
+//		mmap.put("transportIds", transportId);
+//		mmap.put("shipmentDetailIds", shipmentIds);
 		return prefix + "/pickTruckForm";
 	}
 
@@ -316,7 +316,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setTransportIds(driverIds);
+				//shipmentDetail.setTransportIds(driverIds);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 			return success("Điều xe thành công");

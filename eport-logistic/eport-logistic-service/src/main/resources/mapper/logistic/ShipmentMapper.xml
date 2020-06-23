@@ -8,7 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="logisticAccountId"    column="logistic_account_id"    />
         <result property="logisticGroupId"    column="logistic_group_id"    />
-        <result property="serviceId"    column="service_id"    />
+        <result property="serviceType"    column="service_type"    />
         <result property="blNo"    column="bl_no"    />
         <result property="bookingNo"    column="booking_no"    />
         <result property="taxCode"    column="tax_code"    />
@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentVo">
-        select id, logistic_account_id, logistic_group_id, service_id, bl_no, booking_no, tax_code, container_amount, edo_flg, reference_no, remark, create_by, create_time, update_by, update_time from shipment
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, tax_code, container_amount, edo_flg, reference_no, remark, create_by, create_time, update_by, update_time from shipment
     </sql>
 
     <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
@@ -37,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
-            <if test="serviceId != null "> and service_id = #{serviceId}</if>
+            <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="blNo != null and blNo != ''"> and bl_no = #{blNo}</if>
             <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="logisticAccountId != null ">logistic_account_id,</if>
             <if test="logisticGroupId != null ">logistic_group_id,</if>
-            <if test="serviceId != null ">service_id,</if>
+            <if test="serviceType != null ">service_type,</if>
             <if test="blNo != null  and blNo != ''">bl_no,</if>
             <if test="bookingNo != null  and bookingNo != ''">booking_no,</if>
             <if test="taxCode != null  and taxCode != ''">tax_code,</if>
@@ -75,7 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="logisticAccountId != null ">#{logisticAccountId},</if>
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
-            <if test="serviceId != null ">#{serviceId},</if>
+            <if test="serviceType != null ">#{serviceType},</if>
             <if test="blNo != null  and blNo != ''">#{blNo},</if>
             <if test="bookingNo != null  and bookingNo != ''">#{bookingNo},</if>
             <if test="taxCode != null  and taxCode != ''">#{taxCode},</if>
@@ -95,7 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="logisticAccountId != null ">logistic_account_id = #{logisticAccountId},</if>
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
-            <if test="serviceId != null ">service_id = #{serviceId},</if>
+            <if test="serviceType != null ">service_type = #{serviceType},</if>
             <if test="blNo != null  and blNo != ''">bl_no = #{blNo},</if>
             <if test="bookingNo != null  and bookingNo != ''">booking_no = #{bookingNo},</if>
             <if test="taxCode != null  and taxCode != ''">tax_code = #{taxCode},</if>
@@ -123,7 +123,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
     
     <select id="selectShipmentWithGroupById" parameterType="Long" resultMap="ShipmentResult">
-        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_id, s.bl_no, s.booking_no ,s.tax_code, s.container_amount, s.edo_flg, s.reference_no, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
+        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no ,s.tax_code, s.container_amount, s.edo_flg, s.reference_no, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
         from shipment s left join logistic_group g on s.logistic_group_id = g.id
         where s.id = #{id}
     </select>
@@ -131,7 +131,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="checkBillBookingNoUnique" parameterType="Shipment" resultType="int">
         select count(*) from shipment
         <where>  
-            <if test="serviceId != null "> and service_id = #{serviceId}</if>
+            <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="blNo != null and blNo != ''"> and bl_no = #{blNo}</if>
             <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
         </where>

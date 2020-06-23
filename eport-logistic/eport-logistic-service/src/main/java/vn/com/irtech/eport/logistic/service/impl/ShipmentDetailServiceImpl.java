@@ -30,7 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.utils.DateUtils;
-import vn.com.irtech.eport.logistic.domain.QueueOrder;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
@@ -161,10 +161,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         return shipmentDetailMapper.countShipmentDetailList(shipmentDetail);
     }
 
-    public int updateStatusShipmentDetail(ShipmentDetail shipmentDetail) {
-        return shipmentDetailMapper.updateStatusShipmentDetail(shipmentDetail);
-    }
-
     /**
      * Select list shipment detail wait robot execute or robot can't be execute,
      * group by shipment id
@@ -285,7 +281,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             }
 
             for (ShipmentDetail shipmentDetail : preorderPickupConts) {
-                shipmentDetail.setMovingContAmount(movingContAmount);
+                shipmentDetail.setShiftingContNumber(movingContAmount);
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
             return true;
@@ -295,38 +291,36 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Transactional
-    public List<QueueOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment,
-            String isCredit) {
+    public List<ProcessOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
         if (shipmentDetails.size() > 0) {
             Collections.sort(shipmentDetails, new SztpComparator());
             String sztp = shipmentDetails.get(0).getSztp();
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-            List<QueueOrder> queueOrders = new ArrayList<>();
-            QueueOrder queueOrder = new QueueOrder();
+            List<ProcessOrder> processOrders = new ArrayList<>();
+            ProcessOrder processOrder = new ProcessOrder();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (sztp.equals(shipmentDetail.getSztp())) {
                     shipmentOrderList.add(shipmentDetail);
                 } else {
-                    queueOrder.setMode("Truck Out");
-                    queueOrder.setConsignee(shipmentOrderList.get(0).getConsignee());
-                    queueOrder.setTruckCo("0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ");
-                    queueOrder.setTaxCode(shipment.getTaxCode());
+                    processOrder.setMode("Truck Out");
+                    processOrder.setConsignee(shipmentOrderList.get(0).getConsignee());
+                    processOrder.setTruckCo("0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ");
+                    processOrder.setTaxCode(shipment.getTaxCode());
                     if ("0".equals(isCredit)) {
-                        queueOrder.setPayType("Cash");
+                        processOrder.setPayType("Cash");
                     } else {
-                        queueOrder.setPayType("Credit");
+                        processOrder.setPayType("Credit");
                     }
-                    queueOrder.setBlNo(shipmentDetails.get(0).getBlNo());
-                    queueOrder.setPickupDate(new Date());
-                    queueOrder.setVessel(shipmentDetails.get(0).getVslNm());
-                    queueOrder.setVessel(shipmentDetails.get(0).getVoyNo());
-                    queueOrder.setYear("2020");
-                    queueOrder.setSizeType(shipmentDetails.get(0).getSztp());
-                    queueOrder.setBeforeAfter("Before");
-                    queueOrder.setContNumber(shipmentDetails.size());
-                    queueOrder.setId(shipmentDetails.get(0).getId());
-                    queueOrders.add(queueOrder);
-                    queueOrder = new QueueOrder();
+                    processOrder.setBlNo(shipmentDetails.get(0).getBlNo());
+                    processOrder.setPickupDate(new Date());
+                    processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+                    processOrder.setVessel(shipmentDetails.get(0).getVoyNo());
+                    processOrder.setYear("2020");
+                    processOrder.setBeforeAfter("Before");
+                    processOrder.setContNumber(shipmentDetails.size());
+                    processOrder.setId(shipmentDetails.get(0).getId());
+                    processOrders.add(processOrder);
+                    processOrder = new ProcessOrder();
                     for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
 
                         shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
@@ -335,74 +329,71 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                     }
                 }
             }
-            queueOrder.setMode("Truck Out");
-            queueOrder.setConsignee(shipmentOrderList.get(0).getConsignee());
-            queueOrder.setTruckCo("0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ");
-            queueOrder.setTaxCode(shipment.getTaxCode());
+            processOrder.setMode("Truck Out");
+            processOrder.setConsignee(shipmentOrderList.get(0).getConsignee());
+            processOrder.setTruckCo("0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ");
+            processOrder.setTaxCode(shipment.getTaxCode());
             if ("0".equals(isCredit)) {
-                queueOrder.setPayType("Cash");
+                processOrder.setPayType("Cash");
             } else {
-                queueOrder.setPayType("Credit");
+                processOrder.setPayType("Credit");
             }
-            queueOrder.setBlNo(shipmentDetails.get(0).getBlNo());
-            queueOrder.setPickupDate(new Date());
-            queueOrder.setVessel(shipmentDetails.get(0).getVslNm());
-            queueOrder.setVessel(shipmentDetails.get(0).getVoyNo());
-            queueOrder.setYear("2020");
-            queueOrder.setSizeType(shipmentDetails.get(0).getSztp());
-            queueOrder.setBeforeAfter("Before");
-            queueOrder.setContNumber(shipmentDetails.size());
-            queueOrder.setId(shipmentDetails.get(0).getId());
-            queueOrder.setServiceId("1");
-            queueOrders.add(queueOrder);
+            processOrder.setBlNo(shipmentDetails.get(0).getBlNo());
+            processOrder.setPickupDate(new Date());
+            processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+            processOrder.setVessel(shipmentDetails.get(0).getVoyNo());
+            processOrder.setYear("2020");
+            processOrder.setSztp(shipmentDetails.get(0).getSztp());
+            processOrder.setBeforeAfter("Before");
+            processOrder.setContNumber(shipmentDetails.size());
+            processOrder.setId(shipmentDetails.get(0).getId());
+            processOrder.setServiceType(1);
+            processOrders.add(processOrder);
             for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
                 shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
                 shipmentDetail2.setUserVerifyStatus("Y");
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
             }
-            return queueOrders;
+            return processOrders;
         }
         return null;
     }
 
     @Transactional
-    public QueueOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
+    public ProcessOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
         if (shipmentDetails.size() > 0) {
-            QueueOrder queueOrder = new QueueOrder();
-            queueOrder.setTaxCode(shipment.getTaxCode());
+            ProcessOrder processOrder = new ProcessOrder();
+            processOrder.setTaxCode(shipment.getTaxCode());
             if ("0".equals(isCredit)) {
-                queueOrder.setPayType("Cash");
-                queueOrder.setInvoiceTemplate("Dịch vụ hạ container - Cash");
+                processOrder.setPayType("Cash");
             } else {
-                queueOrder.setPayType("Credit");
-                queueOrder.setInvoiceTemplate("Dịch vụ hạ container - Credit");
+                processOrder.setPayType("Credit");
             }
-            queueOrder.setVessel(shipmentDetails.get(0).getVslNm());
-            queueOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-            queueOrder.setYear("2020");
-            queueOrder.setBeforeAfter("Before");
-            queueOrder.setInvoiceType("200");
-            queueOrder.setContNumber(shipmentDetails.size());
-            queueOrder.setId(shipmentDetails.get(0).getId());
-            queueOrder.setServiceId("2");
+            processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+            processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+            processOrder.setYear("2020");
+            processOrder.setBeforeAfter("Before");
+            processOrder.setContNumber(shipmentDetails.size());
+            processOrder.setId(shipmentDetails.get(0).getId());
+            processOrder.setServiceType(2);
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
                 shipmentDetail.setUserVerifyStatus("Y");
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
-            return queueOrder;
+            return processOrder;
         }
         return null;
     }
 
     @Transactional
-    public List<QueueOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
+    public List<ProcessOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
         if (shipmentDetails.size() > 0) {
             Collections.sort(shipmentDetails, new SztpComparator());
             String sztp = shipmentDetails.get(0).getSztp();
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-            List<QueueOrder> queueOrders = new ArrayList<>();
-            QueueOrder queueOrder = new QueueOrder();
+            List<ProcessOrder> processOrders = new ArrayList<>();
+            ProcessOrder processOrder = new ProcessOrder();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (sztp.equals(shipmentDetail.getSztp())) {
                     shipmentOrderList.add(shipmentDetail);
@@ -419,26 +410,24 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 shipmentDetail2.setUserVerifyStatus("Y");
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
             }
-            return queueOrders;
+            return processOrders;
         }
         return null;
     }
 
     @Override
-    public QueueOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
+    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
         if (shipmentDetails.size() > 0) {
-            QueueOrder queueOrder = new QueueOrder();
-            queueOrder.setTaxCode(shipment.getTaxCode());
+            ProcessOrder processOrder = new ProcessOrder();
+            processOrder.setTaxCode(shipment.getTaxCode());
             if ("0".equals(isCredit)) {
-                queueOrder.setPayType("Cash");
-                queueOrder.setInvoiceType("200");
-                queueOrder.setInvoiceTemplate("Dịch vụ hạ container - CASH");
-                queueOrder.setContNumber(shipmentDetails.size());
-                queueOrder.setVessel(shipmentDetails.get(0).getVslNm());
-                queueOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-                queueOrder.setYear("2020");
-                queueOrder.setBeforeAfter("Before");
-                queueOrder.setId(shipmentDetails.get(0).getId());
+                processOrder.setPayType("Cash");
+                processOrder.setContNumber(shipmentDetails.size());
+                processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+                processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+                processOrder.setYear("2020");
+                processOrder.setBeforeAfter("Before");
+                processOrder.setId(shipmentDetails.get(0).getId());
             }
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
@@ -447,7 +436,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 // shipmentDetail.setStatus(3);
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
-            return queueOrder;
+            return processOrder;
         }
         return null;
     }

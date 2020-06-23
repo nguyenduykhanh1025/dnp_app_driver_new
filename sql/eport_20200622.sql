@@ -12,12 +12,12 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 
--- Dumping database structure for eport2
-DROP DATABASE IF EXISTS `eport2`;
-CREATE DATABASE IF NOT EXISTS `eport2` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
-USE `eport2`;
+-- Dumping database structure for eport
+DROP DATABASE IF EXISTS `eport`;
+CREATE DATABASE IF NOT EXISTS `eport` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+USE `eport`;
 
--- Dumping structure for table eport2.carrier_account
+-- Dumping structure for table eport.carrier_account
 DROP TABLE IF EXISTS `carrier_account`;
 CREATE TABLE IF NOT EXISTS `carrier_account` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `carrier_account` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Carrier account';
 
--- Dumping data for table eport2.carrier_account: ~3 rows (approximately)
+-- Dumping data for table eport.carrier_account: ~3 rows (approximately)
 /*!40000 ALTER TABLE `carrier_account` DISABLE KEYS */;
 INSERT IGNORE INTO `carrier_account` (`id`, `group_id`, `carrier_code`, `email`, `password`, `salt`, `full_name`, `status`, `del_flag`, `login_ip`, `login_date`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(1, 1, 'CNC,CMA,APL', 'tai@gmail.com', 'a8073909b5853562442cb342386d8a76', '0f1722', 'Anh Tài', '0', '0', '127.0.0.1', '2020-05-07 12:53:08', NULL, '', '2020-04-07 11:18:40', 'DNG', '2020-05-07 12:53:08'),
@@ -47,7 +47,7 @@ INSERT IGNORE INTO `carrier_account` (`id`, `group_id`, `carrier_code`, `email`,
 	(3, 1, '1', 'tronghieu8531@gmail.com', 'f674d92c99ed8e12d33338b6f4fcf727', 'f4a5e2', 'Nguyễn Trọng Hiếu', '0', '0', '127.0.0.1', '2020-04-14 11:50:12', NULL, 'DNG', '2020-04-14 11:49:30', '', '2020-04-14 11:50:12');
 /*!40000 ALTER TABLE `carrier_account` ENABLE KEYS */;
 
--- Dumping structure for table eport2.carrier_group
+-- Dumping structure for table eport.carrier_group
 DROP TABLE IF EXISTS `carrier_group`;
 CREATE TABLE IF NOT EXISTS `carrier_group` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `carrier_group` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Carrier Group';
 
--- Dumping data for table eport2.carrier_group: ~3 rows (approximately)
+-- Dumping data for table eport.carrier_group: ~3 rows (approximately)
 /*!40000 ALTER TABLE `carrier_group` DISABLE KEYS */;
 INSERT IGNORE INTO `carrier_group` (`id`, `group_code`, `group_name`, `operate_code`, `main_email`, `create_by`, `create_time`, `update_by`, `update_time`, `do_flag`, `edo_flag`) VALUES
 	(1, '1', 'WWHA', '1', 'hello@gmail.com', '123123', NULL, 'DNG', '2020-05-07 13:10:22', '0', '0'),
@@ -72,7 +72,7 @@ INSERT IGNORE INTO `carrier_group` (`id`, `group_code`, `group_name`, `operate_c
 	(3, 'sdf', '1asd', 'asd', 'asdfa@asdf.com', 'DNG', '2020-05-07 13:11:30', 'DNG', '2020-05-07 13:11:54', '0', '0');
 /*!40000 ALTER TABLE `carrier_group` ENABLE KEYS */;
 
--- Dumping structure for table eport2.driver_account
+-- Dumping structure for table eport.driver_account
 DROP TABLE IF EXISTS `driver_account`;
 CREATE TABLE IF NOT EXISTS `driver_account` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `driver_account` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Driver login info';
 
--- Dumping data for table eport2.driver_account: ~10 rows (approximately)
+-- Dumping data for table eport.driver_account: ~10 rows (approximately)
 /*!40000 ALTER TABLE `driver_account` DISABLE KEYS */;
 INSERT IGNORE INTO `driver_account` (`id`, `logistic_group_id`, `mobile_number`, `full_name`, `password`, `salt`, `status`, `del_flag`, `valid_date`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(1, 2, '1231231231', 'Nguyễn Trọng Hiếu', '4b45af63306e999b4a999e304ac27fac', '413b85', '1', b'0', '2020-11-13 00:00:00', NULL, 'Nguyễn Trọng Hiếu', '2020-05-22 23:19:25', NULL, NULL),
@@ -107,7 +107,7 @@ INSERT IGNORE INTO `driver_account` (`id`, `logistic_group_id`, `mobile_number`,
 	(13, 1, '1231231231', 'ádà', 'df9e24ec0c86fa75f1eb87b2bb8d0a6f', '4e23c1', '1', b'0', '2020-06-06 07:20:35', NULL, 'nguyen trong hieu', '2020-05-30 07:20:35', NULL, NULL);
 /*!40000 ALTER TABLE `driver_account` ENABLE KEYS */;
 
--- Dumping structure for table eport2.driver_truck
+-- Dumping structure for table eport.driver_truck
 DROP TABLE IF EXISTS `driver_truck`;
 CREATE TABLE IF NOT EXISTS `driver_truck` (
   `driver_id` bigint(20) NOT NULL COMMENT 'ID tài xế',
@@ -115,11 +115,11 @@ CREATE TABLE IF NOT EXISTS `driver_truck` (
   PRIMARY KEY (`driver_id`,`truck_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='driver_truck';
 
--- Dumping data for table eport2.driver_truck: ~0 rows (approximately)
+-- Dumping data for table eport.driver_truck: ~0 rows (approximately)
 /*!40000 ALTER TABLE `driver_truck` DISABLE KEYS */;
 /*!40000 ALTER TABLE `driver_truck` ENABLE KEYS */;
 
--- Dumping structure for table eport2.equipment_do
+-- Dumping structure for table eport.equipment_do
 DROP TABLE IF EXISTS `equipment_do`;
 CREATE TABLE IF NOT EXISTS `equipment_do` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `equipment_do` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=130 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Exchange Delivery Order';
 
--- Dumping data for table eport2.equipment_do: ~129 rows (approximately)
+-- Dumping data for table eport.equipment_do: ~129 rows (approximately)
 /*!40000 ALTER TABLE `equipment_do` DISABLE KEYS */;
 INSERT IGNORE INTO `equipment_do` (`id`, `carrier_id`, `carrier_code`, `order_number`, `bill_of_lading`, `business_unit`, `consignee`, `container_number`, `expired_dem`, `empty_container_depot`, `det_free_time`, `secure_code`, `release_date`, `vessel`, `voy_no`, `do_type`, `status`, `process_status`, `document_status`, `document_receipt_date`, `release_status`, `create_source`, `remark`, `process_remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(1, 1, '"23"', NULL, '"213"', NULL, '"07/04/2020"', '12', '2020-04-07 11:26:08', '"23"', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, NULL, '2020-04-07 11:26:08', NULL, NULL),
@@ -287,7 +287,7 @@ INSERT IGNORE INTO `equipment_do` (`id`, `carrier_id`, `carrier_code`, `order_nu
 	(129, 3, '1', NULL, 'bil1', NULL, 'sdf', 'dsfs1231290', '2020-04-15 23:59:59', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Nguyễn Trọng Hiếu', '2020-04-14 11:51:03', 'Nguyễn Trọng Hiếu', '2020-04-14 11:58:00');
 /*!40000 ALTER TABLE `equipment_do` ENABLE KEYS */;
 
--- Dumping structure for table eport2.gen_table
+-- Dumping structure for table eport.gen_table
 DROP TABLE IF EXISTS `gen_table`;
 CREATE TABLE IF NOT EXISTS `gen_table` (
   `table_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -309,13 +309,13 @@ CREATE TABLE IF NOT EXISTS `gen_table` (
   PRIMARY KEY (`table_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='代码生成业务表';
 
--- Dumping data for table eport2.gen_table: ~0 rows (approximately)
+-- Dumping data for table eport.gen_table: ~0 rows (approximately)
 /*!40000 ALTER TABLE `gen_table` DISABLE KEYS */;
 INSERT IGNORE INTO `gen_table` (`table_id`, `table_name`, `table_comment`, `class_name`, `tpl_category`, `package_name`, `module_name`, `business_name`, `function_name`, `function_author`, `options`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 	(2, 'sys_post', 'Job Information Sheet', 'SysPost', 'crud', 'vn.com.irtech.eport.system', 'system', 'post', 'Job Information Sheet', 'ruoyi', NULL, 'admin', '2020-03-30 00:54:19', '', NULL, NULL);
 /*!40000 ALTER TABLE `gen_table` ENABLE KEYS */;
 
--- Dumping structure for table eport2.gen_table_column
+-- Dumping structure for table eport.gen_table_column
 DROP TABLE IF EXISTS `gen_table_column`;
 CREATE TABLE IF NOT EXISTS `gen_table_column` (
   `column_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号',
@@ -343,7 +343,7 @@ CREATE TABLE IF NOT EXISTS `gen_table_column` (
   PRIMARY KEY (`column_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='代码生成业务表字段';
 
--- Dumping data for table eport2.gen_table_column: ~10 rows (approximately)
+-- Dumping data for table eport.gen_table_column: ~10 rows (approximately)
 /*!40000 ALTER TABLE `gen_table_column` DISABLE KEYS */;
 INSERT IGNORE INTO `gen_table_column` (`column_id`, `table_id`, `column_name`, `column_comment`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_insert`, `is_edit`, `is_list`, `is_query`, `query_type`, `html_type`, `dict_type`, `sort`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(3, '2', 'post_id', 'Job ID', 'bigint(20)', 'Long', 'postId', '1', '1', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2020-03-30 00:54:19', '', NULL),
@@ -358,7 +358,7 @@ INSERT IGNORE INTO `gen_table_column` (`column_id`, `table_id`, `column_name`, `
 	(12, '2', 'remark', 'Remark', 'varchar(500)', 'String', 'remark', '0', '0', NULL, '1', '1', '1', NULL, 'EQ', 'textarea', '', 10, 'admin', '2020-03-30 00:54:19', '', NULL);
 /*!40000 ALTER TABLE `gen_table_column` ENABLE KEYS */;
 
--- Dumping structure for table eport2.logistic_account
+-- Dumping structure for table eport.logistic_account
 DROP TABLE IF EXISTS `logistic_account`;
 CREATE TABLE IF NOT EXISTS `logistic_account` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -380,13 +380,13 @@ CREATE TABLE IF NOT EXISTS `logistic_account` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Logistic account';
 
--- Dumping data for table eport2.logistic_account: ~0 rows (approximately)
+-- Dumping data for table eport.logistic_account: ~0 rows (approximately)
 /*!40000 ALTER TABLE `logistic_account` DISABLE KEYS */;
 INSERT IGNORE INTO `logistic_account` (`id`, `group_id`, `user_name`, `email`, `password`, `salt`, `full_name`, `status`, `del_flag`, `login_ip`, `login_date`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(1, 1, 'mst123123', 'asdfasd@sadfs.com', '054d07e1dee07d685e989fbede83d06b', '0e440a', 'nguyen trong hieu', '0', '0', '127.0.0.1', '2020-06-19 22:54:39', NULL, 'DNG', '2020-05-28 13:50:26', '', '2020-06-19 22:54:39');
 /*!40000 ALTER TABLE `logistic_account` ENABLE KEYS */;
 
--- Dumping structure for table eport2.logistic_group
+-- Dumping structure for table eport.logistic_group
 DROP TABLE IF EXISTS `logistic_group`;
 CREATE TABLE IF NOT EXISTS `logistic_group` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -418,13 +418,13 @@ CREATE TABLE IF NOT EXISTS `logistic_group` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Logistic Group';
 
--- Dumping data for table eport2.logistic_group: ~0 rows (approximately)
+-- Dumping data for table eport.logistic_group: ~0 rows (approximately)
 /*!40000 ALTER TABLE `logistic_group` DISABLE KEYS */;
 INSERT IGNORE INTO `logistic_group` (`id`, `group_name`, `email_address`, `address`, `mst`, `phone`, `mobile_phone`, `credit_flag`, `fax`, `del_flag`, `business_registration_certificate`, `date_of_issue_registration`, `place_of_issue_registration`, `authorized_representative`, `representative_position`, `following_authorization_form_no`, `sign_date`, `owned`, `identify_card_no`, `date_of_issue_identify`, `place_of_issue_identify`, `email`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(1, 'Vinconship', 'email@email.com', '35 Cao Thang', '123123123123', '0541123412341', '0935802290', '0', '1234234', '0', 'asdfsadf', '2020-05-28 00:00:00', 'asdfsadf', 'asdfsdaf', 'asdfsadf', 'asdfas', '2020-05-29 00:00:00', 'asdfasdf', '12341231231', '2020-05-14 00:00:00', 'asdfasdf', 'tronghieu8531@gmail.com', '', '2020-05-28 13:49:52', '', NULL);
 /*!40000 ALTER TABLE `logistic_group` ENABLE KEYS */;
 
--- Dumping structure for table eport2.logistic_truck
+-- Dumping structure for table eport.logistic_truck
 DROP TABLE IF EXISTS `logistic_truck`;
 CREATE TABLE IF NOT EXISTS `logistic_truck` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -442,11 +442,11 @@ CREATE TABLE IF NOT EXISTS `logistic_truck` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Logistics Truck';
 
--- Dumping data for table eport2.logistic_truck: ~0 rows (approximately)
+-- Dumping data for table eport.logistic_truck: ~0 rows (approximately)
 /*!40000 ALTER TABLE `logistic_truck` DISABLE KEYS */;
 /*!40000 ALTER TABLE `logistic_truck` ENABLE KEYS */;
 
--- Dumping structure for table eport2.pickup_assign
+-- Dumping structure for table eport.pickup_assign
 DROP TABLE IF EXISTS `pickup_assign`;
 CREATE TABLE IF NOT EXISTS `pickup_assign` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -466,11 +466,11 @@ CREATE TABLE IF NOT EXISTS `pickup_assign` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Pickup Assign';
 
--- Dumping data for table eport2.pickup_assign: ~0 rows (approximately)
+-- Dumping data for table eport.pickup_assign: ~0 rows (approximately)
 /*!40000 ALTER TABLE `pickup_assign` DISABLE KEYS */;
 /*!40000 ALTER TABLE `pickup_assign` ENABLE KEYS */;
 
--- Dumping structure for table eport2.pickup_hisory
+-- Dumping structure for table eport.pickup_hisory
 DROP TABLE IF EXISTS `pickup_hisory`;
 CREATE TABLE IF NOT EXISTS `pickup_hisory` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -495,11 +495,11 @@ CREATE TABLE IF NOT EXISTS `pickup_hisory` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Pickup history';
 
--- Dumping data for table eport2.pickup_hisory: ~0 rows (approximately)
+-- Dumping data for table eport.pickup_hisory: ~0 rows (approximately)
 /*!40000 ALTER TABLE `pickup_hisory` DISABLE KEYS */;
 /*!40000 ALTER TABLE `pickup_hisory` ENABLE KEYS */;
 
--- Dumping structure for table eport2.process_bill
+-- Dumping structure for table eport.process_bill
 DROP TABLE IF EXISTS `process_bill`;
 CREATE TABLE IF NOT EXISTS `process_bill` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -521,11 +521,11 @@ CREATE TABLE IF NOT EXISTS `process_bill` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Process billing';
 
--- Dumping data for table eport2.process_bill: ~0 rows (approximately)
+-- Dumping data for table eport.process_bill: ~0 rows (approximately)
 /*!40000 ALTER TABLE `process_bill` DISABLE KEYS */;
 /*!40000 ALTER TABLE `process_bill` ENABLE KEYS */;
 
--- Dumping structure for table eport2.process_history
+-- Dumping structure for table eport.process_history
 DROP TABLE IF EXISTS `process_history`;
 CREATE TABLE IF NOT EXISTS `process_history` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -541,11 +541,11 @@ CREATE TABLE IF NOT EXISTS `process_history` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Process order history';
 
--- Dumping data for table eport2.process_history: ~0 rows (approximately)
+-- Dumping data for table eport.process_history: ~0 rows (approximately)
 /*!40000 ALTER TABLE `process_history` DISABLE KEYS */;
 /*!40000 ALTER TABLE `process_history` ENABLE KEYS */;
 
--- Dumping structure for table eport2.process_order
+-- Dumping structure for table eport.process_order
 DROP TABLE IF EXISTS `process_order`;
 CREATE TABLE IF NOT EXISTS `process_order` (
   `id` bigint(20) NOT NULL COMMENT 'ID',
@@ -576,7 +576,7 @@ CREATE TABLE IF NOT EXISTS `process_order` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Process order';
 
--- Dumping data for table eport2.process_order: ~4 rows (approximately)
+-- Dumping data for table eport.process_order: ~4 rows (approximately)
 /*!40000 ALTER TABLE `process_order` DISABLE KEYS */;
 INSERT IGNORE INTO `process_order` (`id`, `shipment_id`, `service_type`, `reference_no`, `pay_type`, `sztp`, `mode`, `consignee`, `truck_co`, `tax_code`, `bl_no`, `booking_no`, `pickup_date`, `vessel`, `voyage`, `before_after`, `year`, `cont_number`, `status`, `result`, `data`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(93, 0, 0, NULL, 'Cash', '45R0', 'Truck Out', 'Khach hang', '0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ', '1', 'SMJ2014SDA701', NULL, '2020-06-19 20:29:35', 'SIMO0286', NULL, 'Before', '2020', 3, 0, NULL, NULL, NULL, NULL, NULL, NULL),
@@ -585,7 +585,7 @@ INSERT IGNORE INTO `process_order` (`id`, `shipment_id`, `service_type`, `refere
 	(99, 0, 0, NULL, 'Cash', NULL, NULL, NULL, NULL, '111110101', NULL, NULL, NULL, 'SDA', '122', 'Before', '2020', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL);
 /*!40000 ALTER TABLE `process_order` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_blob_triggers
+-- Dumping structure for table eport.qrtz_blob_triggers
 DROP TABLE IF EXISTS `qrtz_blob_triggers`;
 CREATE TABLE IF NOT EXISTS `qrtz_blob_triggers` (
   `sched_name` varchar(120) NOT NULL,
@@ -596,11 +596,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_blob_triggers` (
   CONSTRAINT `qrtz_blob_triggers_ibfk_1` FOREIGN KEY (`sched_name`, `trigger_name`, `trigger_group`) REFERENCES `qrtz_triggers` (`sched_name`, `trigger_name`, `trigger_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_blob_triggers: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_blob_triggers: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_blob_triggers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_blob_triggers` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_calendars
+-- Dumping structure for table eport.qrtz_calendars
 DROP TABLE IF EXISTS `qrtz_calendars`;
 CREATE TABLE IF NOT EXISTS `qrtz_calendars` (
   `sched_name` varchar(120) NOT NULL,
@@ -609,11 +609,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_calendars` (
   PRIMARY KEY (`sched_name`,`calendar_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_calendars: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_calendars: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_calendars` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_calendars` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_cron_triggers
+-- Dumping structure for table eport.qrtz_cron_triggers
 DROP TABLE IF EXISTS `qrtz_cron_triggers`;
 CREATE TABLE IF NOT EXISTS `qrtz_cron_triggers` (
   `sched_name` varchar(120) NOT NULL,
@@ -625,11 +625,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_cron_triggers` (
   CONSTRAINT `qrtz_cron_triggers_ibfk_1` FOREIGN KEY (`sched_name`, `trigger_name`, `trigger_group`) REFERENCES `qrtz_triggers` (`sched_name`, `trigger_name`, `trigger_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_cron_triggers: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_cron_triggers: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_cron_triggers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_cron_triggers` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_fired_triggers
+-- Dumping structure for table eport.qrtz_fired_triggers
 DROP TABLE IF EXISTS `qrtz_fired_triggers`;
 CREATE TABLE IF NOT EXISTS `qrtz_fired_triggers` (
   `sched_name` varchar(120) NOT NULL,
@@ -648,11 +648,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_fired_triggers` (
   PRIMARY KEY (`sched_name`,`entry_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_fired_triggers: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_fired_triggers: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_fired_triggers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_fired_triggers` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_job_details
+-- Dumping structure for table eport.qrtz_job_details
 DROP TABLE IF EXISTS `qrtz_job_details`;
 CREATE TABLE IF NOT EXISTS `qrtz_job_details` (
   `sched_name` varchar(120) NOT NULL,
@@ -668,11 +668,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_job_details` (
   PRIMARY KEY (`sched_name`,`job_name`,`job_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_job_details: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_job_details: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_job_details` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_job_details` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_locks
+-- Dumping structure for table eport.qrtz_locks
 DROP TABLE IF EXISTS `qrtz_locks`;
 CREATE TABLE IF NOT EXISTS `qrtz_locks` (
   `sched_name` varchar(120) NOT NULL,
@@ -680,11 +680,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_locks` (
   PRIMARY KEY (`sched_name`,`lock_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_locks: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_locks: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_locks` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_locks` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_paused_trigger_grps
+-- Dumping structure for table eport.qrtz_paused_trigger_grps
 DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
 CREATE TABLE IF NOT EXISTS `qrtz_paused_trigger_grps` (
   `sched_name` varchar(120) NOT NULL,
@@ -692,11 +692,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_paused_trigger_grps` (
   PRIMARY KEY (`sched_name`,`trigger_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_paused_trigger_grps: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_paused_trigger_grps: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_paused_trigger_grps` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_paused_trigger_grps` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_scheduler_state
+-- Dumping structure for table eport.qrtz_scheduler_state
 DROP TABLE IF EXISTS `qrtz_scheduler_state`;
 CREATE TABLE IF NOT EXISTS `qrtz_scheduler_state` (
   `sched_name` varchar(120) NOT NULL,
@@ -706,11 +706,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_scheduler_state` (
   PRIMARY KEY (`sched_name`,`instance_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_scheduler_state: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_scheduler_state: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_scheduler_state` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_scheduler_state` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_simple_triggers
+-- Dumping structure for table eport.qrtz_simple_triggers
 DROP TABLE IF EXISTS `qrtz_simple_triggers`;
 CREATE TABLE IF NOT EXISTS `qrtz_simple_triggers` (
   `sched_name` varchar(120) NOT NULL,
@@ -723,11 +723,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_simple_triggers` (
   CONSTRAINT `qrtz_simple_triggers_ibfk_1` FOREIGN KEY (`sched_name`, `trigger_name`, `trigger_group`) REFERENCES `qrtz_triggers` (`sched_name`, `trigger_name`, `trigger_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_simple_triggers: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_simple_triggers: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_simple_triggers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_simple_triggers` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_simprop_triggers
+-- Dumping structure for table eport.qrtz_simprop_triggers
 DROP TABLE IF EXISTS `qrtz_simprop_triggers`;
 CREATE TABLE IF NOT EXISTS `qrtz_simprop_triggers` (
   `sched_name` varchar(120) NOT NULL,
@@ -748,11 +748,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_simprop_triggers` (
   CONSTRAINT `qrtz_simprop_triggers_ibfk_1` FOREIGN KEY (`sched_name`, `trigger_name`, `trigger_group`) REFERENCES `qrtz_triggers` (`sched_name`, `trigger_name`, `trigger_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_simprop_triggers: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_simprop_triggers: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_simprop_triggers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_simprop_triggers` ENABLE KEYS */;
 
--- Dumping structure for table eport2.qrtz_triggers
+-- Dumping structure for table eport.qrtz_triggers
 DROP TABLE IF EXISTS `qrtz_triggers`;
 CREATE TABLE IF NOT EXISTS `qrtz_triggers` (
   `sched_name` varchar(120) NOT NULL,
@@ -776,11 +776,11 @@ CREATE TABLE IF NOT EXISTS `qrtz_triggers` (
   CONSTRAINT `qrtz_triggers_ibfk_1` FOREIGN KEY (`sched_name`, `job_name`, `job_group`) REFERENCES `qrtz_job_details` (`sched_name`, `job_name`, `job_group`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- Dumping data for table eport2.qrtz_triggers: ~0 rows (approximately)
+-- Dumping data for table eport.qrtz_triggers: ~0 rows (approximately)
 /*!40000 ALTER TABLE `qrtz_triggers` DISABLE KEYS */;
 /*!40000 ALTER TABLE `qrtz_triggers` ENABLE KEYS */;
 
--- Dumping structure for table eport2.shipment
+-- Dumping structure for table eport.shipment
 DROP TABLE IF EXISTS `shipment`;
 CREATE TABLE IF NOT EXISTS `shipment` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -801,7 +801,7 @@ CREATE TABLE IF NOT EXISTS `shipment` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Shipment';
 
--- Dumping data for table eport2.shipment: ~29 rows (approximately)
+-- Dumping data for table eport.shipment: ~29 rows (approximately)
 /*!40000 ALTER TABLE `shipment` DISABLE KEYS */;
 INSERT IGNORE INTO `shipment` (`id`, `logistic_account_id`, `logistic_group_id`, `service_type`, `bl_no`, `booking_no`, `tax_code`, `container_amount`, `edo_flg`, `reference_no`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(1, 1, 1, 1, 'asdfaf', NULL, '123123', 11, '1', NULL, 'asdf', 'nguyen trong hieu', '2020-05-28 21:05:15', 'nguyen trong hieu', '2020-05-30 08:49:23'),
@@ -835,7 +835,7 @@ INSERT IGNORE INTO `shipment` (`id`, `logistic_account_id`, `logistic_group_id`,
 	(29, 1, 1, 4, 'null', 'BFDKjdfj', '111110101', 3, NULL, NULL, NULL, 'nguyen trong hieu', '2020-06-19 22:53:45', '', NULL);
 /*!40000 ALTER TABLE `shipment` ENABLE KEYS */;
 
--- Dumping structure for table eport2.shipment_custom
+-- Dumping structure for table eport.shipment_custom
 DROP TABLE IF EXISTS `shipment_custom`;
 CREATE TABLE IF NOT EXISTS `shipment_custom` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -848,11 +848,11 @@ CREATE TABLE IF NOT EXISTS `shipment_custom` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Shipment custom: Hai quan';
 
--- Dumping data for table eport2.shipment_custom: ~0 rows (approximately)
+-- Dumping data for table eport.shipment_custom: ~0 rows (approximately)
 /*!40000 ALTER TABLE `shipment_custom` DISABLE KEYS */;
 /*!40000 ALTER TABLE `shipment_custom` ENABLE KEYS */;
 
--- Dumping structure for table eport2.shipment_detail
+-- Dumping structure for table eport.shipment_detail
 DROP TABLE IF EXISTS `shipment_detail`;
 CREATE TABLE IF NOT EXISTS `shipment_detail` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -898,7 +898,7 @@ CREATE TABLE IF NOT EXISTS `shipment_detail` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Shipment Details';
 
--- Dumping data for table eport2.shipment_detail: ~80 rows (approximately)
+-- Dumping data for table eport.shipment_detail: ~80 rows (approximately)
 /*!40000 ALTER TABLE `shipment_detail` DISABLE KEYS */;
 INSERT IGNORE INTO `shipment_detail` (`id`, `logistic_group_id`, `shipment_id`, `process_order_id`, `register_no`, `container_no`, `container_status`, `sztp`, `fe`, `bl_no`, `booking_no`, `seal_no`, `consignee`, `expired_dem`, `wgt`, `vsl_nm`, `voy_no`, `ope_code`, `loading_port`, `discharge_port`, `transport_type`, `empty_depot`, `cargo_type`, `vgm_chk`, `vgm`, `vgm_person_info`, `preorder_pickup`, `shifting_cont_number`, `custom_status`, `payment_status`, `process_status`, `do_status`, `do_received_time`, `user_verify_status`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(1, 1, 1, NULL, '11', 'CONT1234560', NULL, '22G0', 'F', 'asdfaf', NULL, 'G8331306', 'VINCOSHIP', '2020-05-28 00:00:00', 11, 'Vessel', 'Voyage', 'CMC', 'LoadingPort', 'dischargePort', 'Truck', 'emptyDepot', NULL, NULL, NULL, NULL, 'Y', 4, 'R', 'N', 'Y', 'N', NULL, 'Y', 3, NULL, 'nguyen trong hieu', '2020-05-28 00:08:54', NULL, '2020-06-12 20:53:13'),
@@ -983,7 +983,7 @@ INSERT IGNORE INTO `shipment_detail` (`id`, `logistic_group_id`, `shipment_id`, 
 	(100, 1, 29, NULL, '293', 'CONT2342345', NULL, '22G0', NULL, NULL, 'BFDKjdfj', NULL, 'DSFSDF', NULL, 12, 'HABE', '0235', 'AVS', ' ', 'CNSHA:Shanghai', NULL, NULL, 'DG:Dangerous', NULL, NULL, NULL, NULL, NULL, NULL, 'N', 'N', NULL, NULL, NULL, 1, NULL, 'nguyen trong hieu', '2020-06-19 23:03:00', NULL, NULL);
 /*!40000 ALTER TABLE `shipment_detail` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_config
+-- Dumping structure for table eport.sys_config
 DROP TABLE IF EXISTS `sys_config`;
 CREATE TABLE IF NOT EXISTS `sys_config` (
   `config_id` int(5) NOT NULL AUTO_INCREMENT COMMENT '参数主键',
@@ -999,7 +999,7 @@ CREATE TABLE IF NOT EXISTS `sys_config` (
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='参数配置表';
 
--- Dumping data for table eport2.sys_config: ~4 rows (approximately)
+-- Dumping data for table eport.sys_config: ~4 rows (approximately)
 /*!40000 ALTER TABLE `sys_config` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 	(1, 'Main Frame Page', 'sys.index.skinName', 'skin-blue', 'Y', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
@@ -1008,7 +1008,7 @@ INSERT IGNORE INTO `sys_config` (`config_id`, `config_name`, `config_key`, `conf
 	(4, 'Enable User Register', 'sys.account.registerUser', 'false', 'Y', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
 /*!40000 ALTER TABLE `sys_config` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_dept
+-- Dumping structure for table eport.sys_dept
 DROP TABLE IF EXISTS `sys_dept`;
 CREATE TABLE IF NOT EXISTS `sys_dept` (
   `dept_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Department id',
@@ -1028,7 +1028,7 @@ CREATE TABLE IF NOT EXISTS `sys_dept` (
   PRIMARY KEY (`dept_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=200 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='部门表';
 
--- Dumping data for table eport2.sys_dept: ~10 rows (approximately)
+-- Dumping data for table eport.sys_dept: ~10 rows (approximately)
 /*!40000 ALTER TABLE `sys_dept` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_dept` (`dept_id`, `parent_id`, `ancestors`, `dept_name`, `order_num`, `leader`, `phone`, `email`, `status`, `del_flag`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(100, 0, '0', 'DNG Port', 0, 'DNG', '15888888888', 'ry@qq.com', '0', '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00'),
@@ -1043,7 +1043,7 @@ INSERT IGNORE INTO `sys_dept` (`dept_id`, `parent_id`, `ancestors`, `dept_name`,
 	(109, 102, '0,100,102', 'Finance', 2, 'DNG', '15888888888', 'ry@qq.com', '0', '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00');
 /*!40000 ALTER TABLE `sys_dept` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_dict_data
+-- Dumping structure for table eport.sys_dict_data
 DROP TABLE IF EXISTS `sys_dict_data`;
 CREATE TABLE IF NOT EXISTS `sys_dict_data` (
   `dict_code` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '字典编码',
@@ -1063,7 +1063,7 @@ CREATE TABLE IF NOT EXISTS `sys_dict_data` (
   PRIMARY KEY (`dict_code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='字典数据表';
 
--- Dumping data for table eport2.sys_dict_data: ~29 rows (approximately)
+-- Dumping data for table eport.sys_dict_data: ~29 rows (approximately)
 /*!40000 ALTER TABLE `sys_dict_data` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_dict_data` (`dict_code`, `dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 	(1, 1, 'Male', '0', 'sys_user_sex', '', '', 'Y', '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
@@ -1097,7 +1097,7 @@ INSERT IGNORE INTO `sys_dict_data` (`dict_code`, `dict_sort`, `dict_label`, `dic
 	(29, 2, 'Error', '1', 'sys_common_status', '', 'danger', 'N', '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
 /*!40000 ALTER TABLE `sys_dict_data` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_dict_type
+-- Dumping structure for table eport.sys_dict_type
 DROP TABLE IF EXISTS `sys_dict_type`;
 CREATE TABLE IF NOT EXISTS `sys_dict_type` (
   `dict_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Dictionary ID',
@@ -1113,7 +1113,7 @@ CREATE TABLE IF NOT EXISTS `sys_dict_type` (
   UNIQUE KEY `dict_type` (`dict_type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Dictionary type';
 
--- Dumping data for table eport2.sys_dict_type: ~10 rows (approximately)
+-- Dumping data for table eport.sys_dict_type: ~10 rows (approximately)
 /*!40000 ALTER TABLE `sys_dict_type` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_dict_type` (`dict_id`, `dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 	(1, 'User Gender', 'sys_user_sex', '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
@@ -1128,7 +1128,7 @@ INSERT IGNORE INTO `sys_dict_type` (`dict_id`, `dict_name`, `dict_type`, `status
 	(10, 'System status', 'sys_common_status', '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
 /*!40000 ALTER TABLE `sys_dict_type` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_job
+-- Dumping structure for table eport.sys_job
 DROP TABLE IF EXISTS `sys_job`;
 CREATE TABLE IF NOT EXISTS `sys_job` (
   `job_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务ID',
@@ -1147,7 +1147,7 @@ CREATE TABLE IF NOT EXISTS `sys_job` (
   PRIMARY KEY (`job_id`,`job_name`,`job_group`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='定时任务调度表';
 
--- Dumping data for table eport2.sys_job: ~3 rows (approximately)
+-- Dumping data for table eport.sys_job: ~3 rows (approximately)
 /*!40000 ALTER TABLE `sys_job` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_job` (`job_id`, `job_name`, `job_group`, `invoke_target`, `cron_expression`, `misfire_policy`, `concurrent`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 	(1, '系统默认（无参）', 'DEFAULT', 'ryTask.ryNoParams', '0/10 * * * * ?', '3', '1', '1', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
@@ -1155,7 +1155,7 @@ INSERT IGNORE INTO `sys_job` (`job_id`, `job_name`, `job_group`, `invoke_target`
 	(3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(\'ry\', true, 2000L, 316.50D, 100)', '0/20 * * * * ?', '3', '1', '1', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
 /*!40000 ALTER TABLE `sys_job` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_job_log
+-- Dumping structure for table eport.sys_job_log
 DROP TABLE IF EXISTS `sys_job_log`;
 CREATE TABLE IF NOT EXISTS `sys_job_log` (
   `job_log_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务日志ID',
@@ -1169,11 +1169,11 @@ CREATE TABLE IF NOT EXISTS `sys_job_log` (
   PRIMARY KEY (`job_log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='定时任务调度日志表';
 
--- Dumping data for table eport2.sys_job_log: ~0 rows (approximately)
+-- Dumping data for table eport.sys_job_log: ~0 rows (approximately)
 /*!40000 ALTER TABLE `sys_job_log` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sys_job_log` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_logininfor
+-- Dumping structure for table eport.sys_logininfor
 DROP TABLE IF EXISTS `sys_logininfor`;
 CREATE TABLE IF NOT EXISTS `sys_logininfor` (
   `info_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '访问ID',
@@ -1188,7 +1188,7 @@ CREATE TABLE IF NOT EXISTS `sys_logininfor` (
   PRIMARY KEY (`info_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=526 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='系统访问记录';
 
--- Dumping data for table eport2.sys_logininfor: ~426 rows (approximately)
+-- Dumping data for table eport.sys_logininfor: ~426 rows (approximately)
 /*!40000 ALTER TABLE `sys_logininfor` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_logininfor` (`info_id`, `login_name`, `ipaddr`, `login_location`, `browser`, `os`, `status`, `msg`, `login_time`) VALUES
 	(100, 'giaphd', '127.0.0.1', '内网IP', 'Chrome 8', 'Windows 10', '1', '验证码错误', '2020-03-28 07:16:13'),
@@ -1619,7 +1619,7 @@ INSERT IGNORE INTO `sys_logininfor` (`info_id`, `login_name`, `ipaddr`, `login_l
 	(525, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 22:54:39');
 /*!40000 ALTER TABLE `sys_logininfor` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_menu
+-- Dumping structure for table eport.sys_menu
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE IF NOT EXISTS `sys_menu` (
   `menu_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Menu ID',
@@ -1640,7 +1640,7 @@ CREATE TABLE IF NOT EXISTS `sys_menu` (
   PRIMARY KEY (`menu_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2027 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Menu permission';
 
--- Dumping data for table eport2.sys_menu: ~109 rows (approximately)
+-- Dumping data for table eport.sys_menu: ~109 rows (approximately)
 /*!40000 ALTER TABLE `sys_menu` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `url`, `target`, `menu_type`, `visible`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 	(1, 'Quản Lý Hệ Thống', 0, 1, '#', '', 'M', '0', '', 'fa fa-gear', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', 'System Management'),
@@ -1754,7 +1754,7 @@ INSERT IGNORE INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`,
 	(2026, 'Quản lý robot', 2, 6, 'system/robot/index', 'menuItem', 'C', '0', '', 'fa fa-cogs', 'admin', '2020-06-18 15:17:24', 'admin', '2020-06-18 15:17:49', '');
 /*!40000 ALTER TABLE `sys_menu` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_notice
+-- Dumping structure for table eport.sys_notice
 DROP TABLE IF EXISTS `sys_notice`;
 CREATE TABLE IF NOT EXISTS `sys_notice` (
   `notice_id` int(4) NOT NULL AUTO_INCREMENT COMMENT '公告ID',
@@ -1770,14 +1770,14 @@ CREATE TABLE IF NOT EXISTS `sys_notice` (
   PRIMARY KEY (`notice_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='通知公告表';
 
--- Dumping data for table eport2.sys_notice: ~2 rows (approximately)
+-- Dumping data for table eport.sys_notice: ~2 rows (approximately)
 /*!40000 ALTER TABLE `sys_notice` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_notice` (`notice_id`, `notice_title`, `notice_type`, `notice_content`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 	(1, 'Warm reminder: 2018-07-01 DNG new version released', '2', 'New version content', '0', 'admin', '2018-03-16 11:33:00', 'admin', '2020-03-28 14:23:04', ''),
 	(2, 'Maintenance notice: 2018-07-01 Early morning maint', '1', 'Maintenance content', '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
 /*!40000 ALTER TABLE `sys_notice` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_oper_log
+-- Dumping structure for table eport.sys_oper_log
 DROP TABLE IF EXISTS `sys_oper_log`;
 CREATE TABLE IF NOT EXISTS `sys_oper_log` (
   `oper_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Log PK',
@@ -1799,7 +1799,7 @@ CREATE TABLE IF NOT EXISTS `sys_oper_log` (
   PRIMARY KEY (`oper_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=141 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Operational logging';
 
--- Dumping data for table eport2.sys_oper_log: ~32 rows (approximately)
+-- Dumping data for table eport.sys_oper_log: ~32 rows (approximately)
 /*!40000 ALTER TABLE `sys_oper_log` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_oper_log` (`oper_id`, `title`, `business_type`, `method`, `request_method`, `operator_type`, `oper_name`, `dept_name`, `oper_url`, `oper_ip`, `oper_location`, `oper_param`, `json_result`, `status`, `error_msg`, `oper_time`) VALUES
 	(109, 'Carrier Account', 1, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/add', '127.0.0.1', 'Intranet IP', '{\r\n  "groupId" : [ "1" ],\r\n  "carrierCode" : [ "123546" ],\r\n  "email" : [ "tai@gmail.com" ],\r\n  "password" : [ "admin123" ],\r\n  "fullName" : [ "Anh Tài" ]\r\n}', '{\r\n  "msg" : "Success",\r\n  "code" : 0\r\n}', 0, NULL, '2020-04-07 11:18:42'),
@@ -1836,7 +1836,7 @@ INSERT IGNORE INTO `sys_oper_log` (`oper_id`, `title`, `business_type`, `method`
 	(140, '菜单管理', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  "menuId" : [ "114" ],\r\n  "parentId" : [ "3" ],\r\n  "menuType" : [ "C" ],\r\n  "menuName" : [ "Code Gen" ],\r\n  "url" : [ "/tool/gen" ],\r\n  "target" : [ "menuItem" ],\r\n  "perms" : [ "tool:gen:view" ],\r\n  "orderNum" : [ "2" ],\r\n  "icon" : [ "#" ],\r\n  "visible" : [ "0" ]\r\n}', '{\r\n  "msg" : "Thành công",\r\n  "code" : 0\r\n}', 0, NULL, '2020-06-19 18:28:26');
 /*!40000 ALTER TABLE `sys_oper_log` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_otp
+-- Dumping structure for table eport.sys_otp
 DROP TABLE IF EXISTS `sys_otp`;
 CREATE TABLE IF NOT EXISTS `sys_otp` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -1851,7 +1851,7 @@ CREATE TABLE IF NOT EXISTS `sys_otp` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='otp Code';
 
--- Dumping data for table eport2.sys_otp: ~27 rows (approximately)
+-- Dumping data for table eport.sys_otp: ~27 rows (approximately)
 /*!40000 ALTER TABLE `sys_otp` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_otp` (`id`, `opt_code`, `msg_status`, `verify_status`, `expired_time`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
 	(1, '226127', NULL, NULL, '0000-00-00 00:00:00', NULL, NULL, NULL, NULL),
@@ -1883,7 +1883,7 @@ INSERT IGNORE INTO `sys_otp` (`id`, `opt_code`, `msg_status`, `verify_status`, `
 	(40, '348763', NULL, NULL, '0000-00-00 00:00:00', NULL, NULL, NULL, NULL);
 /*!40000 ALTER TABLE `sys_otp` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_post
+-- Dumping structure for table eport.sys_post
 DROP TABLE IF EXISTS `sys_post`;
 CREATE TABLE IF NOT EXISTS `sys_post` (
   `post_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Job ID',
@@ -1899,7 +1899,7 @@ CREATE TABLE IF NOT EXISTS `sys_post` (
   PRIMARY KEY (`post_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Job Information Sheet';
 
--- Dumping data for table eport2.sys_post: ~4 rows (approximately)
+-- Dumping data for table eport.sys_post: ~4 rows (approximately)
 /*!40000 ALTER TABLE `sys_post` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_post` (`post_id`, `post_code`, `post_name`, `post_sort`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 	(1, 'ceo', 'Chairman', 1, '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
@@ -1908,7 +1908,7 @@ INSERT IGNORE INTO `sys_post` (`post_id`, `post_code`, `post_name`, `post_sort`,
 	(4, 'user', 'General staff', 4, '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
 /*!40000 ALTER TABLE `sys_post` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_robot
+-- Dumping structure for table eport.sys_robot
 DROP TABLE IF EXISTS `sys_robot`;
 CREATE TABLE IF NOT EXISTS `sys_robot` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -1929,11 +1929,11 @@ CREATE TABLE IF NOT EXISTS `sys_robot` (
   UNIQUE KEY `UC_uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Robot';
 
--- Dumping data for table eport2.sys_robot: ~0 rows (approximately)
+-- Dumping data for table eport.sys_robot: ~0 rows (approximately)
 /*!40000 ALTER TABLE `sys_robot` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sys_robot` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_role
+-- Dumping structure for table eport.sys_role
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE IF NOT EXISTS `sys_role` (
   `role_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Role ID',
@@ -1951,14 +1951,14 @@ CREATE TABLE IF NOT EXISTS `sys_role` (
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Role Information';
 
--- Dumping data for table eport2.sys_role: ~2 rows (approximately)
+-- Dumping data for table eport.sys_role: ~2 rows (approximately)
 /*!40000 ALTER TABLE `sys_role` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_role` (`role_id`, `role_name`, `role_key`, `role_sort`, `data_scope`, `status`, `del_flag`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 	(1, 'Administrator', 'admin', 1, '1', '0', '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', 'Quản trị viên'),
 	(2, 'Normal User', 'common', 2, '2', '0', '0', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', 'Nhân viên bình thường');
 /*!40000 ALTER TABLE `sys_role` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_role_dept
+-- Dumping structure for table eport.sys_role_dept
 DROP TABLE IF EXISTS `sys_role_dept`;
 CREATE TABLE IF NOT EXISTS `sys_role_dept` (
   `role_id` bigint(20) NOT NULL COMMENT 'Role ID',
@@ -1966,7 +1966,7 @@ CREATE TABLE IF NOT EXISTS `sys_role_dept` (
   PRIMARY KEY (`role_id`,`dept_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Role and department';
 
--- Dumping data for table eport2.sys_role_dept: ~3 rows (approximately)
+-- Dumping data for table eport.sys_role_dept: ~3 rows (approximately)
 /*!40000 ALTER TABLE `sys_role_dept` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_role_dept` (`role_id`, `dept_id`) VALUES
 	(2, 100),
@@ -1974,7 +1974,7 @@ INSERT IGNORE INTO `sys_role_dept` (`role_id`, `dept_id`) VALUES
 	(2, 105);
 /*!40000 ALTER TABLE `sys_role_dept` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_role_menu
+-- Dumping structure for table eport.sys_role_menu
 DROP TABLE IF EXISTS `sys_role_menu`;
 CREATE TABLE IF NOT EXISTS `sys_role_menu` (
   `role_id` bigint(20) NOT NULL COMMENT 'Role ID',
@@ -1982,7 +1982,7 @@ CREATE TABLE IF NOT EXISTS `sys_role_menu` (
   PRIMARY KEY (`role_id`,`menu_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Role and menu association';
 
--- Dumping data for table eport2.sys_role_menu: ~83 rows (approximately)
+-- Dumping data for table eport.sys_role_menu: ~83 rows (approximately)
 /*!40000 ALTER TABLE `sys_role_menu` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES
 	(2, 1),
@@ -2070,7 +2070,7 @@ INSERT IGNORE INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES
 	(2, 1061);
 /*!40000 ALTER TABLE `sys_role_menu` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_user
+-- Dumping structure for table eport.sys_user
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE IF NOT EXISTS `sys_user` (
   `user_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'User ID',
@@ -2096,14 +2096,14 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User Information';
 
--- Dumping data for table eport2.sys_user: ~2 rows (approximately)
+-- Dumping data for table eport.sys_user: ~2 rows (approximately)
 /*!40000 ALTER TABLE `sys_user` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_user` (`user_id`, `dept_id`, `login_name`, `user_name`, `user_type`, `email`, `phonenumber`, `sex`, `avatar`, `password`, `salt`, `status`, `del_flag`, `login_ip`, `login_date`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 	(1, 103, 'admin', 'DNG', '00', 'ry@163.com', '15888888888', '1', '', '29c67a30398638269fe600f73a054934', '111111', '0', '0', '127.0.0.1', '2020-06-19 18:27:59', 'admin', '2018-03-16 11:33:00', 'ry', '2020-06-19 18:27:59', '管理员'),
 	(2, 105, 'ry', 'DNG', '00', 'ry@qq.com', '15666666666', '1', '', '8e6d98b90472783cc73c17047ddccf36', '222222', '0', '0', '127.0.0.1', '2018-03-16 11:33:00', 'admin', '2018-03-16 11:33:00', 'ry', '2020-03-28 07:21:51', '测试员');
 /*!40000 ALTER TABLE `sys_user` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_user_online
+-- Dumping structure for table eport.sys_user_online
 DROP TABLE IF EXISTS `sys_user_online`;
 CREATE TABLE IF NOT EXISTS `sys_user_online` (
   `sessionId` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '用户会话id',
@@ -2120,14 +2120,14 @@ CREATE TABLE IF NOT EXISTS `sys_user_online` (
   PRIMARY KEY (`sessionId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='在线用户记录';
 
--- Dumping data for table eport2.sys_user_online: ~2 rows (approximately)
+-- Dumping data for table eport.sys_user_online: ~2 rows (approximately)
 /*!40000 ALTER TABLE `sys_user_online` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_user_online` (`sessionId`, `login_name`, `dept_name`, `ipaddr`, `login_location`, `browser`, `os`, `status`, `start_timestamp`, `last_access_time`, `expire_time`) VALUES
 	('0e1b5540-c9bc-4824-99b5-10584c90fe0f', 'asdfasd@sadfs.com', 'Logistic', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', 'on_line', '2020-06-19 22:34:22', '2020-06-19 23:02:21', NULL),
 	('ee921558-62b0-4be5-ab8d-35f409695cb8', 'asdfasd@sadfs.com', 'Logistic', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', 'on_line', '2020-06-19 22:54:34', '2020-06-19 23:02:35', NULL);
 /*!40000 ALTER TABLE `sys_user_online` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_user_post
+-- Dumping structure for table eport.sys_user_post
 DROP TABLE IF EXISTS `sys_user_post`;
 CREATE TABLE IF NOT EXISTS `sys_user_post` (
   `user_id` bigint(20) NOT NULL COMMENT 'User ID',
@@ -2135,14 +2135,14 @@ CREATE TABLE IF NOT EXISTS `sys_user_post` (
   PRIMARY KEY (`user_id`,`post_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User and post';
 
--- Dumping data for table eport2.sys_user_post: ~2 rows (approximately)
+-- Dumping data for table eport.sys_user_post: ~2 rows (approximately)
 /*!40000 ALTER TABLE `sys_user_post` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_user_post` (`user_id`, `post_id`) VALUES
 	(1, 1),
 	(2, 2);
 /*!40000 ALTER TABLE `sys_user_post` ENABLE KEYS */;
 
--- Dumping structure for table eport2.sys_user_role
+-- Dumping structure for table eport.sys_user_role
 DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE IF NOT EXISTS `sys_user_role` (
   `user_id` bigint(20) NOT NULL COMMENT 'User ID',
@@ -2150,7 +2150,7 @@ CREATE TABLE IF NOT EXISTS `sys_user_role` (
   PRIMARY KEY (`user_id`,`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User and role association';
 
--- Dumping data for table eport2.sys_user_role: ~2 rows (approximately)
+-- Dumping data for table eport.sys_user_role: ~2 rows (approximately)
 /*!40000 ALTER TABLE `sys_user_role` DISABLE KEYS */;
 INSERT IGNORE INTO `sys_user_role` (`user_id`, `role_id`) VALUES
 	(1, 1),

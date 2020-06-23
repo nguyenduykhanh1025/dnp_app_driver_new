@@ -7,12 +7,12 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
 /**
- * Truck Object truck
+ *LogisticTruck Object truck
  * 
  * @author admin
  * @date 2020-06-16
  */
-public class Truck extends BaseEntity
+public class LogisticTruck extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 

@@ -1144,7 +1144,7 @@ var table = {
             	});
             	
             },
-            removeTransportAccount: function(id) {
+            removeDriverAccount: function(id) {
             	table.set();
             	$.modal.confirm("Xác nhận thực hiện xóa thông tin " + table.options.modalName + "?", function() {
                     var url = table.options.removeUrl.replace("{id}", id);
@@ -1199,7 +1199,7 @@ var table = {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 480);
             },
-			addTransportAccount: function(id) {
+			addDriverAccount: function(id) {
             	table.set();
             	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 850, 460);
 			},

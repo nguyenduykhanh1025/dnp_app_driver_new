@@ -1,0 +1,322 @@
+package vn.com.irtech.eport.logistic.domain;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import vn.com.irtech.eport.common.annotation.Excel;
+import vn.com.irtech.eport.common.core.domain.BaseEntity;
+import java.util.Date;
+
+/**
+ * Process order Object process_order
+ * 
+ * @author HieuNT
+ * @date 2020-06-23
+ */
+public class ProcessOrder extends BaseEntity
+{
+    private static final long serialVersionUID = 1L;
+
+    /** ID */
+    private Long id;
+
+    /** Mã Lô */
+    @Excel(name = "Mã Lô")
+    private Long shipmentId;
+
+    /** Loại dịch vụ (bốc, hạ, gate) */
+    @Excel(name = "Loại dịch vụ (bốc, hạ, gate)")
+    private Integer serviceType;
+
+    /** Mã Tham Chiếu */
+    @Excel(name = "Mã Tham Chiếu")
+    private String referenceNo;
+
+    /** PT thanh toán */
+    @Excel(name = "PT thanh toán")
+    private String payType;
+
+    /** Kích thước cont */
+    @Excel(name = "Kích thước cont")
+    private String sztp;
+
+    /** Loại lệnh */
+    @Excel(name = "Loại lệnh")
+    private String mode;
+
+    /** Chủ hàng */
+    @Excel(name = "Chủ hàng")
+    private String consignee;
+
+    /** MST-Tên cty */
+    @Excel(name = "MST-Tên cty")
+    private String truckCo;
+
+    /** MST */
+    @Excel(name = "MST")
+    private String taxCode;
+
+    /** Billing No */
+    @Excel(name = "Billing No")
+    private String blNo;
+
+    /** Booking no */
+    @Excel(name = "Booking no")
+    private String bookingNo;
+
+    /** Ngày bốc */
+    @Excel(name = "Ngày bốc", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date pickupDate;
+
+    /** Tàu */
+    @Excel(name = "Tàu")
+    private String vessel;
+
+    /** Chuyến */
+    @Excel(name = "Chuyến")
+    private String voyage;
+
+    /** Trước-Sau */
+    @Excel(name = "Trước-Sau")
+    private String beforeAfter;
+
+    /** Năm */
+    @Excel(name = "Năm")
+    private String year;
+
+    /** Số lượng container */
+    @Excel(name = "Số lượng container")
+    private Integer contNumber;
+
+    /** Trạng thái: 0 waiting, 1: processing, 2:done */
+    @Excel(name = "Trạng thái: 0 waiting, 1: processing, 2:done")
+    private Integer status;
+
+    /** Kết quả (F:Failed,S:Success) */
+    @Excel(name = "Kết quả (F:Failed,S:Success)")
+    private String result;
+
+    /** Detail Data (Json) */
+    @Excel(name = "Detail Data (Json)")
+    private String data;
+
+    public void setId(Long id) 
+    {
+        this.id = id;
+    }
+
+    public Long getId() 
+    {
+        return id;
+    }
+    public void setShipmentId(Long shipmentId) 
+    {
+        this.shipmentId = shipmentId;
+    }
+
+    public Long getShipmentId() 
+    {
+        return shipmentId;
+    }
+    public void setServiceType(Integer serviceType) 
+    {
+        this.serviceType = serviceType;
+    }
+
+    public Integer getServiceType() 
+    {
+        return serviceType;
+    }
+    public void setReferenceNo(String referenceNo) 
+    {
+        this.referenceNo = referenceNo;
+    }
+
+    public String getReferenceNo() 
+    {
+        return referenceNo;
+    }
+    public void setPayType(String payType) 
+    {
+        this.payType = payType;
+    }
+
+    public String getPayType() 
+    {
+        return payType;
+    }
+    public void setSztp(String sztp) 
+    {
+        this.sztp = sztp;
+    }
+
+    public String getSztp() 
+    {
+        return sztp;
+    }
+    public void setMode(String mode) 
+    {
+        this.mode = mode;
+    }
+
+    public String getMode() 
+    {
+        return mode;
+    }
+    public void setConsignee(String consignee) 
+    {
+        this.consignee = consignee;
+    }
+
+    public String getConsignee() 
+    {
+        return consignee;
+    }
+    public void setTruckCo(String truckCo) 
+    {
+        this.truckCo = truckCo;
+    }
+
+    public String getTruckCo() 
+    {
+        return truckCo;
+    }
+    public void setTaxCode(String taxCode) 
+    {
+        this.taxCode = taxCode;
+    }
+
+    public String getTaxCode() 
+    {
+        return taxCode;
+    }
+    public void setBlNo(String blNo) 
+    {
+        this.blNo = blNo;
+    }
+
+    public String getBlNo() 
+    {
+        return blNo;
+    }
+    public void setBookingNo(String bookingNo) 
+    {
+        this.bookingNo = bookingNo;
+    }
+
+    public String getBookingNo() 
+    {
+        return bookingNo;
+    }
+    public void setPickupDate(Date pickupDate) 
+    {
+        this.pickupDate = pickupDate;
+    }
+
+    public Date getPickupDate() 
+    {
+        return pickupDate;
+    }
+    public void setVessel(String vessel) 
+    {
+        this.vessel = vessel;
+    }
+
+    public String getVessel() 
+    {
+        return vessel;
+    }
+    public void setVoyage(String voyage) 
+    {
+        this.voyage = voyage;
+    }
+
+    public String getVoyage() 
+    {
+        return voyage;
+    }
+    public void setBeforeAfter(String beforeAfter) 
+    {
+        this.beforeAfter = beforeAfter;
+    }
+
+    public String getBeforeAfter() 
+    {
+        return beforeAfter;
+    }
+    public void setYear(String year) 
+    {
+        this.year = year;
+    }
+
+    public String getYear() 
+    {
+        return year;
+    }
+    public void setContNumber(Integer contNumber) 
+    {
+        this.contNumber = contNumber;
+    }
+
+    public Integer getContNumber() 
+    {
+        return contNumber;
+    }
+    public void setStatus(Integer status) 
+    {
+        this.status = status;
+    }
+
+    public Integer getStatus() 
+    {
+        return status;
+    }
+    public void setResult(String result) 
+    {
+        this.result = result;
+    }
+
+    public String getResult() 
+    {
+        return result;
+    }
+    public void setData(String data) 
+    {
+        this.data = data;
+    }
+
+    public String getData() 
+    {
+        return data;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+            .append("id", getId())
+            .append("shipmentId", getShipmentId())
+            .append("serviceType", getServiceType())
+            .append("referenceNo", getReferenceNo())
+            .append("payType", getPayType())
+            .append("sztp", getSztp())
+            .append("mode", getMode())
+            .append("consignee", getConsignee())
+            .append("truckCo", getTruckCo())
+            .append("taxCode", getTaxCode())
+            .append("blNo", getBlNo())
+            .append("bookingNo", getBookingNo())
+            .append("pickupDate", getPickupDate())
+            .append("vessel", getVessel())
+            .append("voyage", getVoyage())
+            .append("beforeAfter", getBeforeAfter())
+            .append("year", getYear())
+            .append("contNumber", getContNumber())
+            .append("status", getStatus())
+            .append("result", getResult())
+            .append("data", getData())
+            .append("createBy", getCreateBy())
+            .append("createTime", getCreateTime())
+            .append("updateBy", getUpdateBy())
+            .append("updateTime", getUpdateTime())
+            .toString();
+    }
+}
