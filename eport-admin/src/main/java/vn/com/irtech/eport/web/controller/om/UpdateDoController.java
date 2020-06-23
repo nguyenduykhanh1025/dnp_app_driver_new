@@ -61,7 +61,7 @@ public class UpdateDoController extends BaseController{
         ShipmentDetail shipmentDetail = new ShipmentDetail();
         shipmentDetail.setDoStatus("Y");
         shipmentDetail.setBookingNo(blNo);
-        shipmentDetailService.updateStatusShipmentDetail(shipmentDetail);
+        shipmentDetailService.updateShipmentDetail(shipmentDetail);
         return AjaxResult.success("Cập nhật thành công");
     }
 }

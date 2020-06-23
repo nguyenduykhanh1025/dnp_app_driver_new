@@ -71,8 +71,6 @@ public interface ShipmentDetailMapper
     public List<String> getBlListByPaymentStatus(String keyString);
 
     public long countShipmentDetailList(ShipmentDetail shipmentDetail);
-
-    public int updateStatusShipmentDetail(ShipmentDetail shipmentDetail);
     
     /**
      * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id

@@ -31,11 +31,11 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
-import vn.com.irtech.eport.logistic.domain.QueueOrder;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
-import vn.com.irtech.eport.logistic.service.IQueueOrderService;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.utils.R;
@@ -58,7 +58,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	private IOtpCodeService otpCodeService;
 
 	@Autowired
-	private IQueueOrderService queueOrderService;
+	private IProcessOrderService processOrderService;
 
 	@GetMapping()
 	public String receiveContFull() {
@@ -87,7 +87,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		startPage();
 		LogisticAccount user = getUser();
 		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setServiceId(1);
+		shipment.setServiceType(1);
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}
@@ -123,7 +123,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@PostMapping("/checkBlNoUnique")
 	@ResponseBody
 	public AjaxResult checkBlNoUnique(Shipment shipment) {
-		shipment.setServiceId(1);
+		shipment.setServiceType(1);
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
@@ -138,7 +138,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceId(1);
+		shipment.setServiceType(1);
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
 		}
@@ -340,9 +340,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-				List<QueueOrder> queueOrders = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
-				if (queueOrders != null) {
-					queueOrderService.insertQueueOrderList(queueOrders);
+				List<ProcessOrder> processOrders = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
+				if (processOrders != null) {
+					processOrderService.insertProcessOrderList(processOrders);
 					return success("Xác thực OTP thành công");
 				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
@@ -413,27 +413,27 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}/{shipmentDetailId}")
 	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, @PathVariable("pickCont") boolean pickCont,@PathVariable("shipmentDetailId") Integer shipmentDetailId, ModelMap mmap) {
-		mmap.put("shipmentId", shipmentId);
-		mmap.put("pickCont", pickCont);
-		mmap.put("shipmentDetailId", shipmentDetailId);
-		String transportId = "";
-		String shipmentIds = "";
-		if (!pickCont) {
-			ShipmentDetail shipmentDetail = new ShipmentDetail();
-			shipmentDetail.setShipmentId(shipmentId);
-			shipmentDetail.setLogisticGroupId(getUser().getGroupId());
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
-				if (shipmentDetail2.getPreorderPickup() == null || !shipmentDetail2.getPreorderPickup().equals("Y")) {
-					shipmentIds += shipmentDetail2.getId() + ",";
-					if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
-						transportId = shipmentDetail2.getTransportIds();
-					}
-				}
-			}
-		}
-		mmap.put("transportIds", transportId);
-		mmap.put("shipmentDetailIds", shipmentIds);
+//		mmap.put("shipmentId", shipmentId);
+//		mmap.put("pickCont", pickCont);
+//		mmap.put("shipmentDetailId", shipmentDetailId);
+//		String transportId = "";
+//		String shipmentIds = "";
+//		if (!pickCont) {
+//			ShipmentDetail shipmentDetail = new ShipmentDetail();
+//			shipmentDetail.setShipmentId(shipmentId);
+//			shipmentDetail.setLogisticGroupId(getUser().getGroupId());
+//			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+//			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+//				if (shipmentDetail2.getPreorderPickup() == null || !shipmentDetail2.getPreorderPickup().equals("Y")) {
+//					shipmentIds += shipmentDetail2.getId() + ",";
+//					if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
+//						transportId = shipmentDetail2.getTransportIds();
+//					}
+//				}
+//			}
+//		}
+//		mmap.put("transportIds", transportId);
+//		mmap.put("shipmentDetailIds", shipmentIds);
 		return PREFIX + "/pickTruckForm";
 	}
 
@@ -444,7 +444,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setTransportIds(driverIds);
+				//shipmentDetail.setTransportIds(driverIds);
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 			return success("Điều xe thành công");
