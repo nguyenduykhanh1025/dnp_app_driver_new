@@ -2,17 +2,17 @@ package vn.com.irtech.eport.logistic.dto;
 
 import java.util.List;
 
-import vn.com.irtech.eport.logistic.domain.QueueOrder;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 
 public class ServiceSendFullRobotReq extends ServiceRobotReq {
 
-    public QueueOrder shipment;
+    public ProcessOrder processOrder;
     public List<ShipmentDetail> containers;
 
-    public ServiceSendFullRobotReq(QueueOrder shipment, List<ShipmentDetail> containers) {
+    public ServiceSendFullRobotReq(ProcessOrder processOrder, List<ShipmentDetail> containers) {
         this.containers = containers;
-        this.shipment = shipment;
+        this.processOrder = processOrder;
     }
 
 }

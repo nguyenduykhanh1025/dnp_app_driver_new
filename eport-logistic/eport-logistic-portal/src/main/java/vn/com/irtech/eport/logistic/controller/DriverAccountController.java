@@ -24,10 +24,10 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.DriverTruck;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
-import vn.com.irtech.eport.logistic.domain.TransportAccount;
+import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.service.IDriverTruckService;
 import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
-import vn.com.irtech.eport.logistic.service.ITransportAccountService;
+import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
@@ -43,13 +43,13 @@ import vn.com.irtech.eport.common.core.text.Convert;
  */
 @Controller
 @RequestMapping("/logistic/transport")
-public class TransportAccountController extends LogisticBaseController
+public class DriverAccountController extends LogisticBaseController
 {
     private String prefix = "logistic/transport";
 	public static final String PHONE_PATTERN = "^[0-9]{10,11}$";
 
     @Autowired
-    private ITransportAccountService transportAccountService;
+    private IDriverAccountService driverAccountService;
     
     @Autowired
     private ILogisticGroupService logisticGroupService;
@@ -73,18 +73,18 @@ public class TransportAccountController extends LogisticBaseController
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(TransportAccount transportAccount, String groupName)
+    public TableDataInfo list(DriverAccount driverAccount, String groupName)
     {
         startPage();
         LogisticAccount currentUser = ShiroUtils.getSysUser();
-        transportAccount.setDelFlag(false);
+        driverAccount.setDelFlag(false);
         LogisticGroup logisticGroup = new LogisticGroup();
         logisticGroup.setGroupName(groupName.toLowerCase());
-        transportAccount.setLogisticGroupId(currentUser.getGroupId());
-        transportAccount.setLogisticGroup(logisticGroup);
-        transportAccount.setFullName(transportAccount.getFullName().toLowerCase());
-//        transportAccount.setPlateNumber(transportAccount.getPlateNumber().toLowerCase());
-        List<TransportAccount> list = transportAccountService.selectTransportAccountList(transportAccount);
+        driverAccount.setLogisticGroupId(currentUser.getGroupId());
+        driverAccount.setLogisticGroup(logisticGroup);
+        driverAccount.setFullName(driverAccount.getFullName().toLowerCase());
+//        driverAccount.setPlateNumber(driverAccount.getPlateNumber().toLowerCase());
+        List<DriverAccount> list = driverAccountService.selectDriverAccountList(driverAccount);
         return getDataTable(list);
     }
 
@@ -95,10 +95,10 @@ public class TransportAccountController extends LogisticBaseController
     @Log(title = "Driver login info", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
-    public AjaxResult export(TransportAccount transportAccount)
+    public AjaxResult export(DriverAccount driverAccount)
     {
-        List<TransportAccount> list = transportAccountService.selectTransportAccountList(transportAccount);
-        ExcelUtil<TransportAccount> util = new ExcelUtil<TransportAccount>(TransportAccount.class);
+        List<DriverAccount> list = driverAccountService.selectDriverAccountList(driverAccount);
+        ExcelUtil<DriverAccount> util = new ExcelUtil<DriverAccount>(DriverAccount.class);
         return util.exportExcel(list, "account");
     }
 
@@ -117,23 +117,23 @@ public class TransportAccountController extends LogisticBaseController
     @Log(title = "Driver login info", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(TransportAccount transportAccount)
+    public AjaxResult addSave(DriverAccount driverAccount)
     {
-        transportAccount.setLogisticGroupId(TransportAccountController.this.getUser().getGroupId());
-        if (transportAccount.getPassword().length() < 6) {
+        driverAccount.setLogisticGroupId(DriverAccountController.this.getUser().getGroupId());
+        if (driverAccount.getPassword().length() < 6) {
             return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
-        if(transportAccountService.checkPhoneUnique(transportAccount.getMobileNumber()) > 0) {
+        if(driverAccountService.checkPhoneUnique(driverAccount.getMobileNumber()) > 0) {
         	return error("PhoneNumber này đã tồn tại!");
         }
-        if(!Pattern.matches(PHONE_PATTERN, transportAccount.getMobileNumber())){
+        if(!Pattern.matches(PHONE_PATTERN, driverAccount.getMobileNumber())){
         	return error("PhoneNumber này phải từ 10 đến 11 số!");
         }
-        transportAccount.setSalt(ShiroUtils.randomSalt());
-        transportAccount.setPassword(passwordService.encryptPassword(transportAccount.getMobileNumber()
-        , transportAccount.getPassword(), transportAccount.getSalt()));
-        transportAccount.setCreateBy(ShiroUtils.getSysUser().getFullName());
-        return toAjax(transportAccountService.insertTransportAccount(transportAccount));
+        driverAccount.setSalt(ShiroUtils.randomSalt());
+        driverAccount.setPassword(passwordService.encryptPassword(driverAccount.getMobileNumber()
+        , driverAccount.getPassword(), driverAccount.getSalt()));
+        driverAccount.setCreateBy(ShiroUtils.getSysUser().getFullName());
+        return toAjax(driverAccountService.insertDriverAccount(driverAccount));
     }
 
     /**
@@ -142,8 +142,8 @@ public class TransportAccountController extends LogisticBaseController
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long id, ModelMap mmap)
     {
-        TransportAccount transportAccount = transportAccountService.selectTransportAccountById(id);
-        mmap.put("transportAccount", transportAccount);
+        DriverAccount driverAccount = driverAccountService.selectDriverAccountById(id);
+        mmap.put("driverAccount", driverAccount);
         return prefix + "/edit";
     }
 
@@ -153,15 +153,15 @@ public class TransportAccountController extends LogisticBaseController
     @Log(title = "Driver login info", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(TransportAccount transportAccount)
+    public AjaxResult editSave(DriverAccount driverAccount)
     {
-        if(transportAccountService.checkPhoneUnique(transportAccount.getMobileNumber()) > 1) {
+        if(driverAccountService.checkPhoneUnique(driverAccount.getMobileNumber()) > 1) {
         	return error("PhoneNumber này đã tồn tại!");
         }
-        if(!Pattern.matches(PHONE_PATTERN, transportAccount.getMobileNumber())){
+        if(!Pattern.matches(PHONE_PATTERN, driverAccount.getMobileNumber())){
         	return error("PhoneNumber này phải từ 10 đến 11 số!");
         }
-        return toAjax(transportAccountService.updateTransportAccount(transportAccount));
+        return toAjax(driverAccountService.updateDriverAccount(driverAccount));
     }
 
     /**
@@ -172,24 +172,24 @@ public class TransportAccountController extends LogisticBaseController
     @ResponseBody
     public AjaxResult remove(Long id)
     {
-        return toAjax(transportAccountService.deleteTransportAccountById(id));
+        return toAjax(driverAccountService.deleteDriverAccountById(id));
     }
     @Log(title = "Reset password", businessType = BusinessType.UPDATE)
     @GetMapping("/resetPwd/{id}")
     public String resetPwd(@PathVariable("id") Long id, ModelMap mmap)
     {
-        mmap.put("transportAccount", transportAccountService.selectTransportAccountById(id));
+        mmap.put("driverAccount", driverAccountService.selectDriverAccountById(id));
         return prefix + "/resetPwd";
     }
     @Log(title = "Reset password", businessType = BusinessType.UPDATE)
     @PostMapping("/resetPwd")
     @ResponseBody
-    public AjaxResult resetPwdSave(TransportAccount transportAccount)
+    public AjaxResult resetPwdSave(DriverAccount driverAccount)
     {
-    	transportAccount.setUpdateBy(ShiroUtils.getSysUser().getFullName());
-    	transportAccount.setSalt(ShiroUtils.randomSalt());
-    	transportAccount.setPassword(passwordService.encryptPassword(transportAccount.getMobileNumber(), transportAccount.getPassword(), transportAccount.getSalt()));
-        if(transportAccountService.updateTransportAccount(transportAccount) == 1)
+    	driverAccount.setUpdateBy(ShiroUtils.getSysUser().getFullName());
+    	driverAccount.setSalt(ShiroUtils.randomSalt());
+    	driverAccount.setPassword(passwordService.encryptPassword(driverAccount.getMobileNumber(), driverAccount.getPassword(), driverAccount.getSalt()));
+        if(driverAccountService.updateDriverAccount(driverAccount) == 1)
         	return success();
         return error();
     }
@@ -220,39 +220,39 @@ public class TransportAccountController extends LogisticBaseController
         return logisticGroup.getGroupName();
     }
 
-    @GetMapping("/listTransportAccount")
+    @GetMapping("/listDriverAccount")
     @ResponseBody
-    public List<TransportAccount> listTransportAccount(TransportAccount transportAccount)
+    public List<DriverAccount> listDriverAccount(DriverAccount driverAccount)
     {
-        transportAccount.setLogisticGroupId(getUser().getGroupId());
-        transportAccount.setDelFlag(false);
-        return transportAccountService.selectTransportAccountList(transportAccount);
+        driverAccount.setLogisticGroupId(getUser().getGroupId());
+        driverAccount.setDelFlag(false);
+        return driverAccountService.selectDriverAccountList(driverAccount);
     }
 
-    @PostMapping("/saveExternalTransportAccount")
+    @PostMapping("/saveExternalDriverAccount")
     @ResponseBody
-    public List<TransportAccount> saveExternalTransportAccount(@RequestBody List<TransportAccount> transportAccounts) {
-        if (transportAccounts.size() > 0) {
+    public List<DriverAccount> saveExternalDriverAccount(@RequestBody List<DriverAccount> driverAccounts) {
+        if (driverAccounts.size() > 0) {
             LogisticAccount user = getUser();
-            for (TransportAccount transportAccount : transportAccounts) {
-                transportAccount.setDelFlag(false);
-                transportAccount.setCreateBy(user.getFullName());
-                transportAccount.setStatus("1");
-                //transportAccount.setExternalRentStatus("1");
-                transportAccount.setLogisticGroupId(user.getGroupId());
-                transportAccount.setSalt(ShiroUtils.randomSalt());
-                transportAccount.setPassword(passwordService.encryptPassword(transportAccount.getMobileNumber(), transportAccount.getPassword(), transportAccount.getSalt()));
-                transportAccountService.insertTransportAccount(transportAccount);
+            for (DriverAccount driverAccount : driverAccounts) {
+                driverAccount.setDelFlag(false);
+                driverAccount.setCreateBy(user.getFullName());
+                driverAccount.setStatus("1");
+                //driverAccount.setExternalRentStatus("1");
+                driverAccount.setLogisticGroupId(user.getGroupId());
+                driverAccount.setSalt(ShiroUtils.randomSalt());
+                driverAccount.setPassword(passwordService.encryptPassword(driverAccount.getMobileNumber(), driverAccount.getPassword(), driverAccount.getSalt()));
+                driverAccountService.insertDriverAccount(driverAccount);
             }
-            TransportAccount transportAccount = new TransportAccount();
-            //transportAccount.setExternalRentStatus("1");
-            transportAccount.setLogisticGroupId(user.getGroupId());
-            return transportAccountService.selectTransportAccountList(transportAccount);
+            DriverAccount driverAccount = new DriverAccount();
+            //driverAccount.setExternalRentStatus("1");
+            driverAccount.setLogisticGroupId(user.getGroupId());
+            return driverAccountService.selectDriverAccountList(driverAccount);
         }
         return null;
     }
     /**
-     * Update Truck
+     * UpdateLogisticTruck
      */
     @GetMapping("/driverTruck/{id}")
     public String editDriverTruck(@PathVariable("id") Long id, ModelMap mmap)

@@ -13,47 +13,47 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.json.JSONObject;
-import vn.com.irtech.eport.logistic.domain.Truck;
-import vn.com.irtech.eport.logistic.service.ITruckService;
+import vn.com.irtech.eport.logistic.domain.LogisticTruck;
+import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 /**
- * TruckController
+ *LogisticTruckController
  * 
  * @author admin
  * @date 2020-06-16
  */
 @Controller
-@RequestMapping("/logistic/truck")
-public class TruckController extends LogisticBaseController
+@RequestMapping("/logistic/logisticTruck")
+public class LogisticTruckController extends LogisticBaseController
 {
-    private String prefix = "logistic/truck";
+    private String prefix = "logistic/logisticTruck";
 
     @Autowired
-    private ITruckService truckService;
+    private ILogisticTruckService logisticTruckService;
 
     @GetMapping()
-    public String truck()
+    public String logisticTruck()
     {
-        return prefix + "/truck";
+        return prefix + "/logisticTruck";
     }
 
     /**
-     * Get Truck List
+     * GetLogisticTruck List
      */
     @PostMapping("/list")
     @ResponseBody
-    public TableDataInfo list(Truck truck)
+    public TableDataInfo list(LogisticTruck logisticTruck)
     {
         startPage();
-        truck.setDelFlag(false);
-        List<Truck> list = truckService.selectTruckList(truck);
+        logisticTruck.setDelFlag(false);
+        List<LogisticTruck> list = logisticTruckService.selectLogisticTruckList(logisticTruck);
         return getDataTable(list);
     }
 
     /**
-     * Add Truck
+     * AddLogisticTruck
      */
     @GetMapping("/add")
     public String add()
@@ -62,68 +62,68 @@ public class TruckController extends LogisticBaseController
     }
 
     /**
-     * Add or Update Truck
+     * Add or UpdateLogisticTruck
      */
-    @Log(title = "Truck", businessType = BusinessType.INSERT)
+    @Log(title = "LogisticTruck", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(Truck truck)
+    public AjaxResult addSave(LogisticTruck logisticTruck)
     {
-    	truck.setLogisticGroupId(getUser().getGroupId());
-    	truck.setPlateNumber(truck.getPlateNumber().trim().toUpperCase());
-    	if(truckService.checkPlateNumberUnique(truck.getPlateNumber()) > 0) {
+    	logisticTruck.setLogisticGroupId(getUser().getGroupId());
+    	logisticTruck.setPlateNumber(logisticTruck.getPlateNumber().trim().toUpperCase());
+    	if(logisticTruckService.checkPlateNumberUnique(logisticTruck.getPlateNumber()) > 0) {
     		error("Biển số xe này đã tồn tại!");
     	}
-        return toAjax(truckService.insertTruck(truck));
+        return toAjax(logisticTruckService.insertLogisticTruck(logisticTruck));
     }
 
     /**
-     * Update Truck
+     * UpdateLogisticTruck
      */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Long id, ModelMap mmap)
     {
-        Truck truck = truckService.selectTruckById(id);
-        mmap.put("truck", truck);
+        LogisticTruck logisticTruck = logisticTruckService.selectLogisticTruckById(id);
+        mmap.put("logisticTruck", logisticTruck);
         return prefix + "/edit";
     }
 
     /**
-     * Update Save Truck
+     * Update SaveLogisticTruck
      */
-    @Log(title = "Truck", businessType = BusinessType.UPDATE)
+    @Log(title = "LogisticTruck", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(Truck truck)
+    public AjaxResult editSave(LogisticTruck logisticTruck)
     {
-    	truck.setPlateNumber(truck.getPlateNumber().trim().toUpperCase());
-    	if(truckService.checkPlateNumberUnique(truck.getPlateNumber()) > 1) {
+    	logisticTruck.setPlateNumber(logisticTruck.getPlateNumber().trim().toUpperCase());
+    	if(logisticTruckService.checkPlateNumberUnique(logisticTruck.getPlateNumber()) > 1) {
     		error("Biển số xe này đã tồn tại!");
     	}
-        return toAjax(truckService.updateTruck(truck));
+        return toAjax(logisticTruckService.updateLogisticTruck(logisticTruck));
     }
     /**
-     * Delete Truck
+     * DeleteLogisticTruck
      */
-    @Log(title = "Truck", businessType = BusinessType.DELETE)
+    @Log(title = "LogisticTruck", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
     public AjaxResult remove(String ids)
     {
-        return toAjax(truckService.updateDelFlagByIds(ids));
+        return toAjax(logisticTruckService.updateDelFlagByIds(ids));
     }
     
     @GetMapping("/searchTractorByKeyword")
     @ResponseBody
     public List<JSONObject> searchTractorByKeyword(String keyword){
-    	Truck truck = new Truck();
-    	truck.setLogisticGroupId(getUser().getGroupId());
-        truck.setPlateNumber(keyword);
-        truck.setType("0");
-    	List<Truck> list = truckService.selectTruckList(truck);
+    	LogisticTruck logisticTruck = new LogisticTruck();
+    	logisticTruck.setLogisticGroupId(getUser().getGroupId());
+        logisticTruck.setPlateNumber(keyword);
+        logisticTruck.setType("0");
+    	List<LogisticTruck> list = logisticTruckService.selectLogisticTruckList(logisticTruck);
     	List<JSONObject> result = new ArrayList<>();
     	if(list.size() > 0) {
-        	for(Truck i : list) {
+        	for(LogisticTruck i : list) {
         		JSONObject jsonObject = new JSONObject();
         		jsonObject.put("id", i.getId());
         		jsonObject.put("text", i.getPlateNumber());
@@ -137,14 +137,14 @@ public class TruckController extends LogisticBaseController
     @GetMapping("/searchTrailerByKeyword")
     @ResponseBody
     public List<JSONObject> searchTrailerByKeyword(String keyword){
-    	Truck truck = new Truck();
-    	truck.setLogisticGroupId(getUser().getGroupId());
-        truck.setPlateNumber(keyword);
-        truck.setType("1");
-    	List<Truck> list = truckService.selectTruckList(truck);
+    	LogisticTruck logisticTruck = new LogisticTruck();
+    	logisticTruck.setLogisticGroupId(getUser().getGroupId());
+        logisticTruck.setPlateNumber(keyword);
+        logisticTruck.setType("1");
+    	List<LogisticTruck> list = logisticTruckService.selectLogisticTruckList(logisticTruck);
     	List<JSONObject> result = new ArrayList<>();
     	if(list.size() > 0) {
-        	for(Truck i : list) {
+        	for(LogisticTruck i : list) {
         		JSONObject jsonObject = new JSONObject();
         		jsonObject.put("id", i.getId());
         		jsonObject.put("text", i.getPlateNumber());

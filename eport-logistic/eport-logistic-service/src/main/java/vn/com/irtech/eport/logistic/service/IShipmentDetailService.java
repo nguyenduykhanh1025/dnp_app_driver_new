@@ -1,9 +1,10 @@
 package vn.com.irtech.eport.logistic.service;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import vn.com.irtech.eport.logistic.domain.QueueOrder;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
@@ -75,8 +76,6 @@ public interface IShipmentDetailService
     public List<String> getBlListByPaymentStatus(String keyString);
     
     public long countShipmentDetailList(ShipmentDetail shipmentDetail);
-
-    public int updateStatusShipmentDetail(ShipmentDetail shipmentDetail);
     
     /**
      * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id
@@ -88,15 +87,19 @@ public interface IShipmentDetailService
     
     public boolean calculateMovingCont(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails);
 
-    public List<QueueOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
+    public List<ProcessOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 
     public String getGroupNameByTaxCode(String taxCode);
 
-    public QueueOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
+    public ProcessOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 
-    public List<QueueOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
+    public List<ProcessOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
 
-    public QueueOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
+    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
     
     public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status);
+
+    public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
+
+    public String getNameCompany(String taxCode);
 }

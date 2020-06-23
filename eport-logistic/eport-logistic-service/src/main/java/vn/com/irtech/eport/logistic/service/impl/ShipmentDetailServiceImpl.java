@@ -1,21 +1,36 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.collections4.QueueUtils;
+import javax.servlet.http.Cookie;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import org.apache.shiro.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.utils.DateUtils;
-import vn.com.irtech.eport.logistic.domain.QueueOrder;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
@@ -29,25 +44,24 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
  * @date 2020-05-07
  */
 @Service
-public class ShipmentDetailServiceImpl implements IShipmentDetailService 
-{
+public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Autowired
     private ShipmentDetailMapper shipmentDetailMapper;
 
     class BayComparator implements Comparator<ShipmentDetail> {
-		public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
-			// In the following line you set the criterion,
-			// which is the name of Contact in my example scenario
-			return shipmentDetail1.getBay().compareTo(shipmentDetail2.getBay());
-		}
+        public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
+            // In the following line you set the criterion,
+            // which is the name of Contact in my example scenario
+            return shipmentDetail1.getBay().compareTo(shipmentDetail2.getBay());
+        }
     }
 
     class SztpComparator implements Comparator<ShipmentDetail> {
-		public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
-			// In the following line you set the criterion,
-			// which is the name of Contact in my example scenario
-			return shipmentDetail1.getSztp().compareTo(shipmentDetail2.getSztp());
-		}
+        public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
+            // In the following line you set the criterion,
+            // which is the name of Contact in my example scenario
+            return shipmentDetail1.getSztp().compareTo(shipmentDetail2.getSztp());
+        }
     }
 
     /**
@@ -57,8 +71,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
      * @return Shipment Details
      */
     @Override
-    public ShipmentDetail selectShipmentDetailById(Long id)
-    {
+    public ShipmentDetail selectShipmentDetailById(Long id) {
         return shipmentDetailMapper.selectShipmentDetailById(id);
     }
 
@@ -69,8 +82,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
      * @return Shipment Details
      */
     @Override
-    public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail)
-    {
+    public List<ShipmentDetail> selectShipmentDetailList(ShipmentDetail shipmentDetail) {
         return shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
     }
 
@@ -81,8 +93,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
      * @return result
      */
     @Override
-    public int insertShipmentDetail(ShipmentDetail shipmentDetail)
-    {
+    public int insertShipmentDetail(ShipmentDetail shipmentDetail) {
         shipmentDetail.setCreateTime(DateUtils.getNowDate());
         return shipmentDetailMapper.insertShipmentDetail(shipmentDetail);
     }
@@ -94,8 +105,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
      * @return result
      */
     @Override
-    public int updateShipmentDetail(ShipmentDetail shipmentDetail)
-    {
+    public int updateShipmentDetail(ShipmentDetail shipmentDetail) {
         shipmentDetail.setUpdateTime(DateUtils.getNowDate());
         return shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
     }
@@ -107,8 +117,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
      * @return result
      */
     @Override
-    public int deleteShipmentDetailByIds(String ids)
-    {
+    public int deleteShipmentDetailByIds(String ids) {
         return shipmentDetailMapper.deleteShipmentDetailByIds(Convert.toStrArray(ids));
     }
 
@@ -119,8 +128,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
      * @return result
      */
     @Override
-    public int deleteShipmentDetailById(Long id)
-    {
+    public int deleteShipmentDetailById(Long id) {
         return shipmentDetailMapper.deleteShipmentDetailById(id);
     }
 
@@ -130,53 +138,47 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
     }
 
     @Override
-    public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno)
-    {
+    public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno) {
         return shipmentDetailMapper.selectShipmentDetailByBlno(Blno);
     }
 
     @Override
-    public List<String> getBlListByDoStatus(String keyString)
-    {
+    public List<String> getBlListByDoStatus(String keyString) {
         return shipmentDetailMapper.getBlListByDoStatus(keyString);
     }
 
     @Override
-    public List<String> getBlListByPaymentStatus(String keyString)
-    {
+    public List<String> getBlListByPaymentStatus(String keyString) {
         return shipmentDetailMapper.getBlListByPaymentStatus(keyString);
     }
 
     @Override
-    public List<String> getBlLists(String keyString)
-    {
+    public List<String> getBlLists(String keyString) {
         return shipmentDetailMapper.getBlLists(keyString);
     }
 
-    public long countShipmentDetailList(ShipmentDetail shipmentDetail)
-    {
+    public long countShipmentDetailList(ShipmentDetail shipmentDetail) {
         return shipmentDetailMapper.countShipmentDetailList(shipmentDetail);
     }
 
-    public int updateStatusShipmentDetail(ShipmentDetail shipmentDetail)
-    {
-        return shipmentDetailMapper.updateStatusShipmentDetail(shipmentDetail);
-    }
     /**
-     * Select list shipment detail wait robot execute or robot can't be execute, group by shipment id
+     * Select list shipment detail wait robot execute or robot can't be execute,
+     * group by shipment id
+     * 
      * @return result
      */
-	@Override
-	public List<ShipmentWaitExec> selectListShipmentWaitExec() {
-		return shipmentDetailMapper.selectListShipmentWaitExec();
-    }
-    
     @Override
-    public List<ShipmentDetail[][]> getContPosition(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> shipmentDetails) {
+    public List<ShipmentWaitExec> selectListShipmentWaitExec() {
+        return shipmentDetailMapper.selectListShipmentWaitExec();
+    }
+
+    @Override
+    public List<ShipmentDetail[][]> getContPosition(List<LinkedHashMap> coordinateOfList,
+            List<ShipmentDetail> shipmentDetails) {
         // simulating the location of container in da nang port, mapping to matrix
         List<ShipmentDetail[][]> bayList = new ArrayList<>();
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
-            for (int i=0; i<coordinateOfList.size(); i++) {
+            for (int i = 0; i < coordinateOfList.size(); i++) {
                 if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).get("containerNo"))) {
                     shipmentDetail.setBay(coordinateOfList.get(i).get("bay").toString());
                     shipmentDetail.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
@@ -187,7 +189,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
             }
         }
 
-        for (int i=0; i<coordinateOfList.size(); i++) {
+        for (int i = 0; i < coordinateOfList.size(); i++) {
             ShipmentDetail shipmentDetail2 = new ShipmentDetail();
             shipmentDetail2.setBay(coordinateOfList.get(i).get("bay").toString());
             shipmentDetail2.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
@@ -213,10 +215,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
 
         return bayList;
     }
-    
+
     @Override
     @Transactional
-    public boolean calculateMovingCont(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails) {
+    public boolean calculateMovingCont(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> preorderPickupConts,
+            List<ShipmentDetail> shipmentDetails) {
         try {
             List<ShipmentDetail[][]> bayList = new ArrayList<>();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
@@ -278,7 +281,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
             }
 
             for (ShipmentDetail shipmentDetail : preorderPickupConts) {
-                shipmentDetail.setMovingContAmount(movingContAmount);
+                shipmentDetail.setShiftingContNumber(movingContAmount);
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
             return true;
@@ -286,115 +289,111 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
             return false;
         }
     }
-    
+
     @Transactional
-    public List<QueueOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
+    public List<ProcessOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
         if (shipmentDetails.size() > 0) {
             Collections.sort(shipmentDetails, new SztpComparator());
             String sztp = shipmentDetails.get(0).getSztp();
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-            List<QueueOrder> queueOrders = new ArrayList<>();
-            QueueOrder queueOrder = new QueueOrder();
+            List<ProcessOrder> processOrders = new ArrayList<>();
+            ProcessOrder processOrder = new ProcessOrder();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (sztp.equals(shipmentDetail.getSztp())) {
                     shipmentOrderList.add(shipmentDetail);
                 } else {
-                    queueOrder.setMode("Truck Out");
-                    queueOrder.setConsignee(shipmentOrderList.get(0).getConsignee());
-                    queueOrder.setTruckCo("0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ");
-                    queueOrder.setTaxCode(shipment.getTaxCode());
+                    processOrder.setMode("Truck Out");
+                    processOrder.setConsignee(shipmentOrderList.get(0).getConsignee());
+                    processOrder.setTruckCo("0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ");
+                    processOrder.setTaxCode(shipment.getTaxCode());
                     if ("0".equals(isCredit)) {
-                        queueOrder.setPayType("Cash");
+                        processOrder.setPayType("Cash");
                     } else {
-                        queueOrder.setPayType("Credit");
+                        processOrder.setPayType("Credit");
                     }
-                    queueOrder.setBlNo(shipmentDetails.get(0).getBlNo());
-                    queueOrder.setPickupDate(new Date());
-                    queueOrder.setVessel(shipmentDetails.get(0).getVslNm());
-                    queueOrder.setVessel(shipmentDetails.get(0).getVoyNo());
-                    queueOrder.setYear("2020");
-                    queueOrder.setSizeType(shipmentDetails.get(0).getSztp());
-                    queueOrder.setBeforeAfter("Before");
-                    queueOrder.setContNumber(shipmentDetails.size());
-                    queueOrder.setId(shipmentDetails.get(0).getId());
-                    queueOrders.add(queueOrder);
-                    queueOrder = new QueueOrder();
+                    processOrder.setBlNo(shipmentDetails.get(0).getBlNo());
+                    processOrder.setPickupDate(new Date());
+                    processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+                    processOrder.setVessel(shipmentDetails.get(0).getVoyNo());
+                    processOrder.setYear("2020");
+                    processOrder.setBeforeAfter("Before");
+                    processOrder.setContNumber(shipmentDetails.size());
+                    processOrder.setId(shipmentDetails.get(0).getId());
+                    processOrders.add(processOrder);
+                    processOrder = new ProcessOrder();
                     for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
-                        
+
                         shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
                         shipmentDetail2.setUserVerifyStatus("Y");
                         shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
                     }
                 }
             }
-            queueOrder.setMode("Truck Out");
-            queueOrder.setConsignee(shipmentOrderList.get(0).getConsignee());
-            queueOrder.setTruckCo("0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ");
-            queueOrder.setTaxCode(shipment.getTaxCode());
+            processOrder.setMode("Truck Out");
+            processOrder.setConsignee(shipmentOrderList.get(0).getConsignee());
+            processOrder.setTruckCo("0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ");
+            processOrder.setTaxCode(shipment.getTaxCode());
             if ("0".equals(isCredit)) {
-                queueOrder.setPayType("Cash");
+                processOrder.setPayType("Cash");
             } else {
-                queueOrder.setPayType("Credit");
+                processOrder.setPayType("Credit");
             }
-            queueOrder.setBlNo(shipmentDetails.get(0).getBlNo());
-            queueOrder.setPickupDate(new Date());
-            queueOrder.setVessel(shipmentDetails.get(0).getVslNm());
-            queueOrder.setVessel(shipmentDetails.get(0).getVoyNo());
-            queueOrder.setYear("2020");
-            queueOrder.setSizeType(shipmentDetails.get(0).getSztp());
-            queueOrder.setBeforeAfter("Before");
-            queueOrder.setContNumber(shipmentDetails.size());
-            queueOrder.setId(shipmentDetails.get(0).getId());
-            queueOrder.setServiceId("1");
-            queueOrders.add(queueOrder);
+            processOrder.setBlNo(shipmentDetails.get(0).getBlNo());
+            processOrder.setPickupDate(new Date());
+            processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+            processOrder.setVessel(shipmentDetails.get(0).getVoyNo());
+            processOrder.setYear("2020");
+            processOrder.setSztp(shipmentDetails.get(0).getSztp());
+            processOrder.setBeforeAfter("Before");
+            processOrder.setContNumber(shipmentDetails.size());
+            processOrder.setId(shipmentDetails.get(0).getId());
+            processOrder.setServiceType(1);
+            processOrders.add(processOrder);
             for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
                 shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
                 shipmentDetail2.setUserVerifyStatus("Y");
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
             }
-            return queueOrders;
+            return processOrders;
         }
         return null;
     }
 
     @Transactional
-    public QueueOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
+    public ProcessOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
         if (shipmentDetails.size() > 0) {
-            QueueOrder queueOrder = new QueueOrder();
-            queueOrder.setTaxCode(shipment.getTaxCode());
+            ProcessOrder processOrder = new ProcessOrder();
+            processOrder.setTaxCode(shipment.getTaxCode());
             if ("0".equals(isCredit)) {
-                queueOrder.setPayType("Cash");
-                queueOrder.setInvoiceTemplate("Dịch vụ hạ container - Cash");
+                processOrder.setPayType("Cash");
             } else {
-                queueOrder.setPayType("Credit");
-                queueOrder.setInvoiceTemplate("Dịch vụ hạ container - Credit");
+                processOrder.setPayType("Credit");
             }
-            queueOrder.setVessel(shipmentDetails.get(0).getVslNm());
-            queueOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-            queueOrder.setYear("2020");
-            queueOrder.setBeforeAfter("Before");
-            queueOrder.setInvoiceType("200");
-            queueOrder.setContNumber(shipmentDetails.size());
-            queueOrder.setId(shipmentDetails.get(0).getId());
-            queueOrder.setServiceId("2");
+            processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+            processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+            processOrder.setYear("2020");
+            processOrder.setBeforeAfter("Before");
+            processOrder.setContNumber(shipmentDetails.size());
+            processOrder.setId(shipmentDetails.get(0).getId());
+            processOrder.setServiceType(2);
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
                 shipmentDetail.setUserVerifyStatus("Y");
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
-            return queueOrder;
+            return processOrder;
         }
         return null;
     }
 
     @Transactional
-    public List<QueueOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
+    public List<ProcessOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
         if (shipmentDetails.size() > 0) {
             Collections.sort(shipmentDetails, new SztpComparator());
             String sztp = shipmentDetails.get(0).getSztp();
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-            List<QueueOrder> queueOrders = new ArrayList<>();
-            QueueOrder queueOrder = new QueueOrder();
+            List<ProcessOrder> processOrders = new ArrayList<>();
+            ProcessOrder processOrder = new ProcessOrder();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (sztp.equals(shipmentDetail.getSztp())) {
                     shipmentOrderList.add(shipmentDetail);
@@ -411,26 +410,24 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
                 shipmentDetail2.setUserVerifyStatus("Y");
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
             }
-            return queueOrders;
+            return processOrders;
         }
         return null;
     }
 
     @Override
-    public QueueOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
+    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit) {
         if (shipmentDetails.size() > 0) {
-            QueueOrder queueOrder = new QueueOrder();
-            queueOrder.setTaxCode(shipment.getTaxCode());
+            ProcessOrder processOrder = new ProcessOrder();
+            processOrder.setTaxCode(shipment.getTaxCode());
             if ("0".equals(isCredit)) {
-                queueOrder.setPayType("Cash");
-                queueOrder.setInvoiceType("200");
-                queueOrder.setInvoiceTemplate("Dịch vụ hạ container - CASH");
-                queueOrder.setContNumber(shipmentDetails.size());
-                queueOrder.setVessel(shipmentDetails.get(0).getVslNm());
-                queueOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-                queueOrder.setYear("2020");
-                queueOrder.setBeforeAfter("Before");
-                queueOrder.setId(shipmentDetails.get(0).getId());
+                processOrder.setPayType("Cash");
+                processOrder.setContNumber(shipmentDetails.size());
+                processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+                processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+                processOrder.setYear("2020");
+                processOrder.setBeforeAfter("Before");
+                processOrder.setId(shipmentDetails.get(0).getId());
             }
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
@@ -439,11 +436,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
                 // shipmentDetail.setStatus(3);
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
-            return queueOrder;
+            return processOrder;
         }
         return null;
     }
-
 
     @Override
     public String getGroupNameByTaxCode(String taxCode) {
@@ -453,16 +449,62 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService
         // String result = restTemplate.getForObject(uri, String.class);
         return "Công ty abc";
     }
-    
+
     @Override
     @Transactional
     public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status) {
-    	for (ShipmentDetail shipmentDetail : shipmentDetails) {
-    		shipmentDetail.setProcessStatus(status);
-    		if ("Y".equalsIgnoreCase(status)) {
-    			shipmentDetail.setStatus(3);
-    		} 		
-    		shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
-    	}
+        for (ShipmentDetail shipmentDetail : shipmentDetails) {
+            shipmentDetail.setProcessStatus(status);
+            if ("Y".equalsIgnoreCase(status)) {
+                shipmentDetail.setStatus(3);
+            }
+            shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+        }
     }
+
+    @Override
+    public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException {
+        
+        // String uri = "http://192.168.0.36:8060/ACCIS-Web/rest/v1/eportcontroller/getCustomsStatus/?UserVoy="+userVoy+"&CntrNo="+cntrNo+"";
+        // // URI uri = new URI(uri);
+        
+        // HttpHeaders headers = new HttpHeaders();
+        // headers.set("Content-Type", "text/xml;charset=UTF-8");
+        // headers.set("Authorization", "Basic VFNCOkFBQQ==");
+        // RestTemplate restTemplate = new RestTemplate();
+        // // String result = restTemplate.getForObject(uri,HttpMethod.GET,
+        // // String.class,headers);
+        // HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+        // ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+        // String stringJson = result.getBody();
+        // JsonObject convertedObject = new Gson().fromJson(stringJson, JsonObject.class);
+        // convertedObject = convertedObject.getAsJsonObject("response");
+        // JsonArray jarray = convertedObject.getAsJsonArray("data");
+        // if(jarray.toString().equals("")) {
+        //     convertedObject = jarray.get(0).getAsJsonObject();
+        //     String rs = convertedObject.get("customsStatus").toString();
+        //     System.out.print(rs);
+        //     if("TQ".equals(rs.substring(1,rs.length()-1))){
+        //         return true;
+        //     }
+        // }
+        return false;
+    }
+    @Override
+    public String getNameCompany(String taxCode)
+    {
+        String uri = "https://thongtindoanhnghiep.co/api/company/0200453688";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "text/xml;charset=UTF-8");
+       
+        RestTemplate restTemplate = new RestTemplate();
+        
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+        ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+        String stringJson = result.getBody();
+        System.out.print(stringJson);
+        
+        return "Ok";
+    }
+
 }
