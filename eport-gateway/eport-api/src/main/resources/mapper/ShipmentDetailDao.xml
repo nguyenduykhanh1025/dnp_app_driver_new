@@ -105,12 +105,35 @@
 	</select>
 	<select id="selectPODList"	resultType="String">
 			SELECT 
-    		CNTRY_CD || PORT_CD || ': ' || PORT_NM AS POD
-			FROM TB_PORT
+    			CNTRY_CD || PORT_CD || ': ' || PORT_NM AS POD
+			FROM TB_PORT 
+			OFFSET 0 ROWS FETCH NEXT 1000 ROWS ONLY
 	</select>
 	<select id="selectConsigneeList" resultType="String">
 			SELECT 
-		    ENG_LNM AS CONSIGNEE
-			FROM TB_PTNR
+		    	ENG_LNM AS CONSIGNEE
+			FROM TB_PTNR 
+			OFFSET 0 ROWS FETCH NEXT 1000 ROWS ONLY
+	</select>
+	<select id="selectVoyageNoListByVesselCode" parameterType="String" resultType="String">
+			SELECT
+		    	CALL_SEQ AS VOYAGE
+			FROM TB_BERTHPLAN
+			WHERE VSL_CD = #{vesselCode}
+	</select>
+	<select id="selectYearByVesselCodeAndVoyageNo" resultType="String">
+			SELECT
+		    	CALL_YEAR AS CALL_YEAR
+			FROM TB_BERTHPLAN
+			WHERE VSL_CD = #{vesselCode} AND CALL_SEQ = #{voyageNo}
+	</select>
+	<select id="selectBeforeAfterDepartureByVesselCodeAndVoyageNo" resultType="String">
+			SELECT
+			    CASE
+			        WHEN ATD IS NULL THEN 'BEFORE'
+			        WHEN ATB IS NOT NULL THEN 'AFTER'
+			    END AS BEFORE_AFTER
+			FROM TB_BERTHPLAN
+			WHERE VSL_CD = #{vesselCode} AND CALL_SEQ = #{voyageNo}
 	</select>
 </mapper>
