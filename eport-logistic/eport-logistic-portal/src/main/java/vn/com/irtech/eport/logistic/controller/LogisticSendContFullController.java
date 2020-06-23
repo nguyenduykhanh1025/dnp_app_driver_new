@@ -23,8 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.json.JSONObject;
-import vn.com.irtech.eport.framework.mqtt.service.MqttService;
-import vn.com.irtech.eport.framework.mqtt.service.MqttService.EServiceRobot;
+import vn.com.irtech.eport.framework.web.service.MqttService;
+import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
@@ -169,6 +169,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
+			mqttService.publishMessageToRobot(user, EServiceRobot.SEND_CONT_FULL);
 			int index = 0;
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				index++;
@@ -286,14 +287,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		otpCode.setOptCode(rD);
 		otpCodeService.insertOtpCode(otpCode);
 
-		String content = "Lam lenh giao cont la  " + rD;
+		String content = "Lam lenh giaoa cont la  " + rD;
 		String response = "";
-		try {
-			response = otpCodeService.postOtpMessage(content);
-			System.out.println(response);
-		} catch (IOException ex) {
-			// process the exception
-		}
+//		try {
+//			response = otpCodeService.postOtpMessage(content);
+//			System.out.println(response);
+//		} catch (IOException ex) {
+//			// process the exception
+//		}
 		return AjaxResult.success(response.toString());
 	}
 
@@ -323,13 +324,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
-					ObjectMapper mapper = new ObjectMapper();
-					try {
-						String jsonString = mapper.writeValueAsString(serviceRobotReq);
-						mqttService.publish("eport/robot/WIN-4ACSD0UROP2/request", jsonString);
-					} catch (Exception e) {
-						
-					}
+//					ObjectMapper mapper = new ObjectMapper();
+//					try {
+//						String jsonString = mapper.writeValueAsString(serviceRobotReq);
+//						mqttService.publish("eport/robot/WIN-4ACSD0UROP2/request", jsonString);
+//					} catch (Exception e) {
+//						
+//					}
 					
 					return success("Xác thực OTP thành công");
 				} else {
