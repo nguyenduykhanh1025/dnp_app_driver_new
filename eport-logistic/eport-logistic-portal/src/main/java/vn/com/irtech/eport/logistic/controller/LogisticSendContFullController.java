@@ -71,7 +71,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		// String groupName = shipmentDetailService.getNameCompany(taxCode);
+		String groupName = "Công ty abc";
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {
@@ -218,6 +219,56 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
+	@GetMapping("checkCustomStatusForm/{shipmentId}")
+	@Transactional
+	public String checkCustomStatus(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
+		mmap.put("shipmentId", shipmentId);
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentId);
+		shipmentDetail.setStatus(1);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		if (shipmentDetails.size() > 0) {
+			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				mmap.put("contList", shipmentDetails);
+			}
+		}
+		return PREFIX + "/checkCustomStatus";
+	}
+
+	@PostMapping("/checkCustomStatus")
+	@ResponseBody
+	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
+			String shipmentDetailIds) throws IOException {
+		if (declareNoList != null) {
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService
+					.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() > 0) {
+				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						try {
+							Thread.sleep(5000);
+							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
+							{
+								shipmentDetail.setStatus(2);
+								shipmentDetail.setCustomStatus("R");
+								shipmentDetailService.updateShipmentDetail(shipmentDetail);
+								// push notification with socketIO 
+							}else {
+								// push notification with socketIO 
+							};
+						
+						} catch(Exception e) {
+							//Exception 
+						}
+						
+					}
+					return shipmentDetails;
+				}
+			}
+		}
+		return null;
+	}
+
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
@@ -328,43 +379,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			return success("Thanh toán thành công");
 		}
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
-	}
-
-	@GetMapping("checkCustomStatusForm/{shipmentId}")
-	@Transactional
-	public String checkCustomStatus(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
-		mmap.put("shipmentId", shipmentId);
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setStatus(1);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		if (shipmentDetails.size() > 0) {
-			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				mmap.put("contList", shipmentDetails);
-			}
-		}
-		return PREFIX + "/checkCustomStatus";
-	}
-
-	@PostMapping("/checkCustomStatus")
-	@ResponseBody
-	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
-			String shipmentDetailIds) {
-		if (declareNoList != null) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService
-					.selectShipmentDetailByIds(shipmentDetailIds);
-			if (shipmentDetails.size() > 0) {
-				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-					for (ShipmentDetail shipmentDetail : shipmentDetails) {
-						shipmentDetail.setStatus(4);
-						shipmentDetail.setCustomStatus("R");
-						shipmentDetailService.updateShipmentDetail(shipmentDetail);
-					}
-					return shipmentDetails;
-				}
-			}
-		}
-		return null;
 	}
 	
 	@GetMapping("pickTruckForm/{shipmentId}")

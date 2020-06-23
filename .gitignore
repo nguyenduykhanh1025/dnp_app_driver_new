@@ -50,4 +50,4 @@ upload
 !*/build/*.html
 !*/build/*.xml
 /eport-admin/.vscode
-/eport-logistic-portal/src/main/resources/application.yml
+

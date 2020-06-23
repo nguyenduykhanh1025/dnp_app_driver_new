@@ -86,8 +86,8 @@ xss:
 mqtt:
   username: admin             
   password: public            
-  host-url: tcp://127.0.0.1:1883                # The address and port of your own server need to be changed 
-  clientID: truc                               # This change is not optional, but different clients must not be the same
+  host-url: tcp://localhost:1883                # The address and port of your own server need to be changed 
+  clientID: minhdd                               # This change is not optional, but different clients must not be the same
   default-topic: order_result                   # Default theme
   timeout: 200                 
   keepalive: 200
