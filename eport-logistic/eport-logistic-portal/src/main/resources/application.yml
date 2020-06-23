@@ -91,3 +91,8 @@ mqtt:
   default-topic: order_result                   # Default theme
   timeout: 200                 
   keepalive: 200
+
+websocket:
+   endpoint: /eport_websocket
+   app-destination-prefix: /eportApp
+   message-broker: /eportTopic

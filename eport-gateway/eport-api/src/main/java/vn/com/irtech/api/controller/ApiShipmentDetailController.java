@@ -3,6 +3,7 @@ package vn.com.irtech.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,21 @@ public class ApiShipmentDetailController {
 	@PostMapping("/shipmentDetail/getCoordinateOfContainers")
 	public R getCoordinateOfContainers(@RequestBody ShipmentDetailEntity shipmentDetail) {
 		List<ShipmentDetailEntity> list = shipmentDetailDao.selectCoordinateOfContainers(shipmentDetail);
+		return R.ok().put("data", list);
+	}
+	@GetMapping("/shipmentDetail/getPODList")
+	public R getPODList() {
+		List<String> list = shipmentDetailDao.selectPODList();
+		return R.ok().put("data", list);
+	}
+	@GetMapping("/shipmentDetail/getVesselCodeList")
+	public R getVesselCodeList() {
+		List<String> list = shipmentDetailDao.selectVesselCodeList();
+		return R.ok().put("data", list);
+	}
+	@GetMapping("/shipmentDetail/getConsigneeList")
+	public R getConsigneeList() {
+		List<String> list = shipmentDetailDao.selectConsigneeList();
 		return R.ok().put("data", list);
 	}
 }
