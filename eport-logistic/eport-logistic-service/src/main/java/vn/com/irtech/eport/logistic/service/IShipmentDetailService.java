@@ -89,8 +89,6 @@ public interface IShipmentDetailService
 
     public List<ProcessOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 
-    public String getGroupNameByTaxCode(String taxCode);
-
     public ProcessOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 
     public List<ProcessOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
@@ -101,5 +99,5 @@ public interface IShipmentDetailService
 
     public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
 
-    public String getNameCompany(String taxCode) throws Exception;
+    public String getGroupNameByTaxCode(String taxCode) throws Exception;
 }

@@ -57,7 +57,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 	@GetMapping("/getGroupNameByTaxCode")
 	@ResponseBody
-	public AjaxResult getGroupNameByTaxCode(String taxCode){
+	public AjaxResult getGroupNameByTaxCode(String taxCode) throws Exception {
 		AjaxResult ajaxResult = AjaxResult.success();
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();

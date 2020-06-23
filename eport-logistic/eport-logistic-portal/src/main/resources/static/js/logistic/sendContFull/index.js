@@ -17,37 +17,23 @@ var selectedRow;
 var customStatus;
 var rowAmount = 0;
 var opeCodeList = ["CMC", "AVS", "QEW", "CNC"];
-var vslNmList = ["SDF", "SDA", "EQW", "HABE"];
-var voyNoList = ["2342", "3221", "1542", "0235"];
 var sizeList = ["20G0", "22G0", "40G0", "45G0"];
-var dischargePortList = [
-    "VNDAD",
-    "CMTVN",
-    "CNSHA",
-    "HKHKG",
-    "KRINC",
-    "KRPUS",
-    "MYKUA",
-    "MYPKG",
-    "MYTPP",
-    "SGSIN",
-    "TCCVN",
-    "TWKEL",
-    "VNHCM",
-    "VNHPH"
-];
-var cargoTypeList = [
-    "AK",
-    "BB",
-    "BN",
-    "DG",
-    "DR",
-    "DE",
-    "FR",
-    "GP",
-    "MT",
-    "RF"
-];
+var consigneeList;
+var dischargePortList;
+var vslNmList;
+$.ajax({
+    url: prefix + "/getField",
+    method: "GET",
+    success: function (data) {
+        if (data.code == 0) {
+            dischargePortList = data.dischargePortList;
+            vslNmList = data.vslNmList;
+            consigneeList = data.consigneeList;
+        }
+    }
+});
+
+var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 var checkList = [];
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
@@ -232,12 +218,6 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
             default:
                 break;
         }
-        // if (content == '' && value != null && value != '') {
-        //     content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
-        //     content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-        //     content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
-        //     content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-        // }
         $(td).html(content);
     return td;
 }
@@ -245,7 +225,7 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
     $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
@@ -256,7 +236,7 @@ function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) 
     $(td).attr('id', 'consignee' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
@@ -267,7 +247,7 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
@@ -278,7 +258,7 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
@@ -289,7 +269,7 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
@@ -300,7 +280,7 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
@@ -311,7 +291,7 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'wgt' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
@@ -322,7 +302,7 @@ function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) 
     $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
@@ -333,7 +313,7 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
@@ -391,7 +371,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 110, 100, 100, 100, 100, 100, 100, 100, 150, 150, 200],
+        colWidths: [50, 110, 100, 200, 100, 100, 100, 100, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -414,6 +394,8 @@ function configHandson() {
             {
                 data: "consignee",
                 strict: true,
+                type: "autocomplete",
+                source: consigneeList,
                 renderer: consigneeRenderer
               },
             {
@@ -432,8 +414,6 @@ function configHandson() {
             },
             {
                 data: "voyNo",
-                type: "autocomplete",
-                source: voyNoList,
                 strict: true,
                 renderer: voyNoRenderer
             },
@@ -469,104 +449,6 @@ function configHandson() {
                 renderer: remarkRenderer
             },
         ],
-        // afterChange: function (changes, src) {
-        //     //Get data change in cell to render another column
-        //     if (src !== "loadData") {
-        //         let verifyStatus = false;
-        //         let paymentStatus = false;
-        //         let makeOrder = false;
-        //         let notVerify = false;
-        //         changes.forEach(function interate(row) {
-        //             if (row[1] == "active" && !isIterate) {
-        //                 getDataSelectedFromTable(false, false);
-        //                 if (allChecked) {
-        //                     //$(".checker").prop("checked", true);
-        //                     checked = true;
-        //                 } else {
-        //                     //$(".checker").prop("checked", false);
-        //                     checked = false;
-        //                 }
-        //                 if (shipmentDetails.length > 0) {
-        //                     let status = 1;
-        //                     for (let i = 0; i < shipmentDetails.length; i++) {
-        //                         switch (shipmentDetails[i].status) {
-        //                             case 1:
-        //                                 status = 1;
-        //                                 break;
-        //                             case 2:
-        //                                 if (shipmentDetails[i].userVerifyStatus == "Y") {
-        //                                     if (notVerify || makeOrder || paymentStatus) {
-        //                                         status = 1;
-        //                                     } else {
-        //                                         verifyStatus = true;
-        //                                         status = 3;
-        //                                     }
-        //                                 } else {
-        //                                     if (verifyStatus || makeOrder || paymentStatus) {
-        //                                         status = 1;
-        //                                     } else {
-        //                                         status = 2;
-        //                                         notVerify = true;
-        //                                     }
-        //                                 }
-        //                                 break;
-        //                             case 3:
-        //                                 if (verifyStatus || notVerify || paymentStatus) {
-        //                                     status = 1;
-        //                                 } else {
-        //                                     status = 4;
-        //                                     makeOrder = true;
-        //                                 }
-        //                                 break;
-        //                             case 4:
-        //                                 if (verifyStatus || notVerify || makeOrder) {
-        //                                     status = 1;
-        //                                 } else {
-        //                                     status = 5;
-        //                                     paymentStatus = true;
-        //                                 }
-        //                                 break;
-        //                         }
-        //                     }
-        //                     switch (status) {
-        //                         case 1:
-        //                             setLayoutCustomStatus(simpleCustom);
-        //                             if (!paymentStatus && !notVerify && !verifyStatus) {
-        //                                 $("#deleteBtn").prop("disabled", false);
-        //                             }
-        //                             break;
-        //                         case 2:
-        //                             setLayoutVerifyUserStatus();
-        //                             break;
-        //                         case 3:
-        //                             setLayoutVerifyUserStatus();
-        //                             $("#verifyBtn").prop("disabled", true);
-        //                             break;
-        //                         case 4:
-        //                             setLayoutPaymentStatus();
-        //                             break;
-        //                         case 5:
-        //                             setLayoutFinishStatus();
-        //                             break;
-        //                     }
-        //                 } else {
-        //                     setLayoutCustomStatus();
-        //                 }
-        //             }
-        //         });
-        //     }
-        // },
-        // afterSelectionEnd: function (r, c, r2, c2) {
-        //     selectedRow = null;
-        //     if (c == 0 && c2 == 12) {
-        //         selectedRow = r;
-        //     }
-        // },
-        // beforeKeyDown: function (e) {
-        //     if (e.keyCode == 8) {
-        //         e.stopImmediatePropagation();
-        //     }
-        // },
     };
 }
 configHandson();
@@ -595,6 +477,7 @@ function checkAll() {
             $('#check'+i).prop('checked', false);
         }
     }
+    updateLayout();
 }
 function check(id) {
     if ($('#check'+id).prop('checked')) {
@@ -602,25 +485,29 @@ function check(id) {
     } else {
         checkList[id] = 0;
     }
-    let disposable = null;
+    updateLayout();
+}
+function updateLayout() {
+    let disposable = true;
     let status = 1;
     let diff = false;
+    let check = false;
     allChecked = true;
     for (let i=0; i<checkList.length; i++) {
         let cellStatus = hot.getDataAtCell(i, 1);
-        if (checkList[i] == 1 && cellStatus != null) {
-            if (disposable == null) {
-                disposable = true;
+        if (cellStatus != null) {
+            if (checkList[i] == 1) {
+                check = true;
+                if (cellStatus > 1) {
+                    disposable = false;
+                }
+                if (status != 1 && status != cellStatus) {
+                    diff = true;
+                } else {
+                    status = cellStatus;
+                }
             }
-            if (cellStatus > 2) {
-                disposable = false;
-            }
-            if (status != 1 && status != cellStatus) {
-                diff = true;
-            } else {
-                status = cellStatus;
-            }
-        } else if (cellStatus != null) {
+        } else {
             allChecked = false;
             $('.checker').prop('checked', false);
         }
@@ -628,12 +515,18 @@ function check(id) {
     if (allChecked) {
         $('.checker').prop('checked', true);
     }
-    if (disposable != null && disposable) {
+    if (disposable) {
         $("#deleteBtn").prop("disabled", false);
     } else {
         $("#deleteBtn").prop("disabled", true);
     }
     if (diff) {
+        status = 1;
+    } else {
+        status++;
+    }
+    if (!check) {
+        $("#deleteBtn").prop("disabled", true);
         status = 1;
     }
     switch (status) {
@@ -686,7 +579,7 @@ function reloadShipmentDetail() {
 }
 
 // GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
-function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
+function getDataSelectedFromTable(isValidate) {
     let myTableData = hot.getSourceData();
     let errorFlg = false;
     if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
@@ -702,10 +595,6 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
     shipmentDetails = [];
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
-        if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && isValidate) {
-            $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
-            errorFlg = true;
-        }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
         shipmentDetail.customStatus = object["customStatus"];
@@ -797,7 +686,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.voyNo = object["voyNo"];
         shipmentDetail.dischargePort = object["dischargePort"];
         shipmentDetail.transportType = object["transportType"];
-        shipmentDetail.cargoType = object["cargoType"];
+        shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
@@ -872,6 +761,7 @@ function saveShipmentDetail() {
 
 // DELETE SHIPMENT DETAIL
 function deleteShipmentDetail() {
+    getDataSelectedFromTable(true);
     $.modal.loading("Đang xử lý...");
     $.ajax({
         url: prefix + "/deleteShipmentDetail",
@@ -897,14 +787,17 @@ function deleteShipmentDetail() {
 
 // Handling logic
 function verify() {
-    getDataSelectedFromTable(true, true);
+    getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
         $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
     }
 }
 
 function verifyOtp(shipmentDtIds) {
-    $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds, 600, 350);
+    getDataSelectedFromTable(true);
+    if (shipmentDetails.length > 0) {
+        $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds, 600, 350);
+    }
 }
 
 function pay() {
@@ -912,7 +805,10 @@ function pay() {
 }
 
 function checkCustomStatus() {
-    $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatusForm/" + shipmentSelected.id, 720, 500);
+    getDataSelectedFromTable(true);
+    if (shipmentDetails.length > 0) {
+        $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatusForm/" + shipmentDetailIds, 720, 500);
+    }
 }
 
 function exportBill() {
@@ -935,9 +831,9 @@ function setLayoutRegisterStatus() {
 function setLayoutVerifyUserStatus() {
     $("#registerStatus").removeClass("active disable").addClass("label-primary");
     $("#verifyStatus").removeClass("label-primary disable").addClass("active");
-    $("#paymentStatus").removeClass("label-primary active").addClass("disable");
-    $("#customStatus").removeClass("active disable").addClass("disable");
-    $("#finishStatus").removeClass("label-primary active").addClass("disable");
+    $("#paymentStatus").removeClass("active label-primary").addClass("disable");
+    $("#customStatus").removeClass("active label-primary").addClass("disable");
+    $("#finishStatus").removeClass("active label-primary").addClass("disable");
     $("#verifyBtn").prop("disabled", false);
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", true);
@@ -948,8 +844,8 @@ function setLayoutPaymentStatus() {
     $("#registerStatus").removeClass("active disable").addClass("label-primary");
     $("#verifyStatus").removeClass("active disable").addClass("label-primary");
     $("#paymentStatus").removeClass("label-primary disable").addClass("active");
-    $("#customStatus").removeClass("active disable").addClass("disable");
-    $("#finishStatus").removeClass("label-primary active").addClass("disable");
+    $("#customStatus").removeClass("active label-primary").addClass("disable");
+    $("#finishStatus").removeClass("active label-primary").addClass("disable");
     $("#deleteBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", false);
@@ -959,8 +855,8 @@ function setLayoutPaymentStatus() {
 
 function setLayoutCustomStatus() {
     $("#registerStatus").removeClass("active disable").addClass("label-primary");
-    $("#verifyStatus").removeClass("label-primary active").addClass("label-primary");
-    $("#paymentStatus").removeClass("label-primary active").addClass("label-primary");
+    $("#verifyStatus").removeClass("active disable").addClass("label-primary");
+    $("#paymentStatus").removeClass("active disable").addClass("label-primary");
     $("#customStatus").removeClass("label-primary disable").addClass("active");
     $("#finishStatus").removeClass("label-primary active").addClass("disable");
     $("#verifyBtn").prop("disabled", true);

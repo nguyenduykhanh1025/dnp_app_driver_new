@@ -453,15 +453,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public String getGroupNameByTaxCode(String taxCode) {
-        String uri = "https://thongtindoanhnghiep.co/api/company/" + taxCode;
-
-        // RestTemplate restTemplate = new RestTemplate();
-        // String result = restTemplate.getForObject(uri, String.class);
-        return "Công ty abc";
-    }
-
-    @Override
     @Transactional
     public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status) {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
@@ -504,7 +495,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public String getNameCompany(String taxCode) throws Exception {
+    public String getGroupNameByTaxCode(String taxCode) throws Exception {
         String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
         String methodName = "GET";
         String readLine = null;
@@ -528,8 +519,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         JsonObject convertedObject = new Gson().fromJson(str, JsonObject.class);
         if(convertedObject.get("Title").toString().equals("null"))
         {
-            return "Thông tin doanh nghiệp này không được tìm thấy";
+            return null;
         }
-        return convertedObject.get("Title").toString();
+        return convertedObject.get("Title").toString().replace("\"", "");
     }
 }

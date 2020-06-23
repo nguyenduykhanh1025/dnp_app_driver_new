@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
@@ -48,10 +49,10 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		logger.info("Receive message content : " + messageContent);
 		Map<String, Object> map = null;
 		try {
-			messageContent = messageContent.replace("\'", "\"");
 			ObjectMapper mapper = new ObjectMapper();
-			map = mapper.readValue(messageContent, Map.class);
+			map = new Gson().fromJson(messageContent, Map.class);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return;
 		}
 
