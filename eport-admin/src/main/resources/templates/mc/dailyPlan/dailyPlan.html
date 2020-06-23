@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+  <head>
+    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <link th:href="@{/css/om/updateDO.css}" rel="stylesheet" />
+    <th:block th:include="include :: easyui-css" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+  </head>
+  <body class="gray-bg">
+    <div class="container-div">
+      <div class="p-background">
+        <div class="p-header">
+          <h2>Danh sách DO</h2>
+          <div class="row c-search container">
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+              
+            </div>
+            <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+             <span>Tự động cập nhật : </span>
+            </div>
+          </div>
+        </div>
+        <div class="p-body">
+          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'plateNumber',halign:'center',resizable:true">Biển số xe</th>
+                <th data-options="field:'type',halign:'center',resizable:true">Loại xe</th>
+                <th data-options="field:'wgt',halign:'center',resizable:true">Trọng lượng</th>
+                <th data-options="field:'registryExpiryDate',halign:'center',resizable:true">Ma Lo</th>
+                <th data-options="field:'delFlag',halign:'center',resizable:true">Ma Lo</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+  </body>
+  <script th:src="@{/eport/js/modules/om/updatePayment/updatePayment.js}"></script>
+</html>

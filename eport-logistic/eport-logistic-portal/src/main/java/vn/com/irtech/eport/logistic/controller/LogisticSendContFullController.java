@@ -71,7 +71,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		// String groupName = shipmentDetailService.getNameCompany(taxCode);
+		String groupName = "Công ty abc";
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {
@@ -237,16 +238,29 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@PostMapping("/checkCustomStatus")
 	@ResponseBody
 	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
-			String shipmentDetailIds) {
+			String shipmentDetailIds) throws IOException {
 		if (declareNoList != null) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService
 					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0) {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
-						shipmentDetail.setStatus(2);
-						shipmentDetail.setCustomStatus("R");
-						shipmentDetailService.updateShipmentDetail(shipmentDetail);
+						try {
+							Thread.sleep(5000);
+							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
+							{
+								shipmentDetail.setStatus(2);
+								shipmentDetail.setCustomStatus("R");
+								shipmentDetailService.updateShipmentDetail(shipmentDetail);
+								// push notification with socketIO 
+							}else {
+								// push notification with socketIO 
+							};
+						
+						} catch(Exception e) {
+							//Exception 
+						}
+						
 					}
 					return shipmentDetails;
 				}
