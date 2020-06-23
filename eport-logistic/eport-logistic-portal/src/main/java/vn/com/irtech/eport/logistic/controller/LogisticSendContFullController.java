@@ -166,6 +166,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	}
 
 	@PostMapping("/saveShipmentDetail")
+	@Transactional
 	@ResponseBody
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
@@ -188,6 +189,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setCustomStatus("N");
 					shipmentDetail.setFe("F");
 					if (shipmentDetail.getLoadingPort() == null || shipmentDetail.getLoadingPort().equals("")) {
 						shipmentDetail.setLoadingPort(" ");
@@ -215,16 +217,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
-	@GetMapping("checkCustomStatusForm/{shipmentId}")
+	@GetMapping("checkCustomStatusForm/{shipmentDetailIds}")
 	@Transactional
-	public String checkCustomStatus(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
-		mmap.put("shipmentId", shipmentId);
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setStatus(1);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+	public String checkCustomStatus(@PathVariable String shipmentDetailIds, ModelMap mmap) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0) {
 			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				mmap.put("shipmentId", shipmentDetails.get(0).getShipmentId());
 				mmap.put("contList", shipmentDetails);
 			}
 		}
