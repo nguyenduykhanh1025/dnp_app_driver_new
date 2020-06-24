@@ -433,8 +433,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setContNumber(shipmentDetails.size());
             processOrder.setVessel(shipmentDetails.get(0).getVslNm());
             processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-            processOrder.setYear("2020");
-            processOrder.setBeforeAfter("Before");
+            ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+            if (tempProcessOrder != null) {
+                processOrder.setYear(tempProcessOrder.getYear());
+                processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
+            } else {
+                processOrder.setYear("2020");
+                processOrder.setBeforeAfter("Before");
+            }
             processOrder.setId(shipmentDetails.get(0).getId());
             processOrder.setShipmentId(shipment.getId());
             processOrder.setServiceType(4);
@@ -526,5 +532,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     	String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/"+taxCode;
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(url, String.class);
+    }
+
+    @Override
+    public ProcessOrder getYearBeforeAfter(String vessel, String voyage) {
+        String url = Global.getApiUrl() + "/processOrder/getYearBeforeAfter/"+vessel+"/"+voyage;
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate.getForObject(url, ProcessOrder.class);
     }
 }

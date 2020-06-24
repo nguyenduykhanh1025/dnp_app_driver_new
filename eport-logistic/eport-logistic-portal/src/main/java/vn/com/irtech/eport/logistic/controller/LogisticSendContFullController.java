@@ -446,53 +446,24 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
 		RestTemplate restTemplate = new RestTemplate();
 		R r = restTemplate.getForObject(url, R.class);
-		List<String> listPOD =(List<String>) r.get("data");
+		List<String> listPOD = (List<String>) r.get("data");
 		ajaxResult.put("dischargePortList", listPOD);
 
 		url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
-		restTemplate = new RestTemplate();
 		r = restTemplate.getForObject(url, R.class);
-		List<String> listConsignee =(List<String>) r.get("data");
+		List<String> listConsignee = (List<String>) r.get("data");
 		ajaxResult.put("consigneeList", listConsignee);
 
 		url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
-		restTemplate = new RestTemplate();
 		r = restTemplate.getForObject(url, R.class);
-		List<String> listVessel =(List<String>) r.get("data");
+		List<String> listVessel = (List<String>) r.get("data");
 		ajaxResult.put("vslNmList", listVessel);
+
+		url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
+		r = restTemplate.getForObject(url, R.class);
+		List<String> opeCodeList = (List<String>) r.get("data");
+		ajaxResult.put("opeCodeList", opeCodeList);
+		
 		return ajaxResult;
-	}
-	
-	@GetMapping("/getVoyageNoList")
-	@ResponseBody
-	public List<String> getVoyageNoList(String vesselCode){
-		String url = Global.getApiUrl() + "/shipmentDetail/getVoyageNoList/"+vesselCode;
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class, vesselCode);
-		List<String> listVoyageNo =(List<String>) r.get("data");
-		return listVoyageNo;
-	}
-	
-	@GetMapping("/getYear")
-	@ResponseBody
-	public String getYear(String vesselCode, String voyageNo){
-		String url = Global.getApiUrl() + "/shipmentDetail/getYear/"+vesselCode+"/"+voyageNo;
-		RestTemplate restTemplate = new RestTemplate();
-		Map<String, String> vars = new HashMap<>();
-		vars.put("vesselCode", vesselCode);
-		vars.put("voyageNo", voyageNo);
-		R r = restTemplate.getForObject(url, R.class, vars);
-		String year =(String) r.get("data");
-		return year;
-	}
-	
-	@GetMapping("/getBeforeAfterDeparture")
-	@ResponseBody
-	public String getBeforeAfterDeparture(String vesselCode, String voyageNo){
-		String url = Global.getApiUrl() + "/shipmentDetail/getBeforeAfterDeparture/"+vesselCode+"/"+voyageNo;
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class);
-		String beforeAfter =(String) r.get("data");
-		return beforeAfter;
 	}
 }
