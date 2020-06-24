@@ -369,29 +369,30 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Transactional
-    public ProcessOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment,
-            String isCredit) {
+    public List<ProcessOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
         if (shipmentDetails.size() > 0) {
+            Collections.sort(shipmentDetails, new SztpComparator());
+            String sztp = shipmentDetails.get(0).getSztp();
+            List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
+            List<ProcessOrder> processOrders = new ArrayList<>();
             ProcessOrder processOrder = new ProcessOrder();
-            processOrder.setTaxCode(shipment.getTaxCode());
-            if ("0".equals(isCredit)) {
-                processOrder.setPayType("Cash");
-            } else {
-                processOrder.setPayType("Credit");
-            }
-            processOrder.setVessel(shipmentDetails.get(0).getVslNm());
-            processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-            processOrder.setYear("2020");
-            processOrder.setBeforeAfter("Before");
-            processOrder.setContNumber(shipmentDetails.size());
-            processOrder.setId(shipmentDetails.get(0).getId());
-            processOrder.setServiceType(2);
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
-                shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
-                shipmentDetail.setUserVerifyStatus("Y");
-                shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+                if (sztp.equals(shipmentDetail.getSztp())) {
+                    shipmentOrderList.add(shipmentDetail);
+                } else {
+                    for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
+                        shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
+                        shipmentDetail2.setUserVerifyStatus("Y");
+                        shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
+                    }
+                }
             }
-            return processOrder;
+            for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
+                shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
+                shipmentDetail2.setUserVerifyStatus("Y");
+                shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
+            }
+            return processOrders;
         }
         return null;
     }
