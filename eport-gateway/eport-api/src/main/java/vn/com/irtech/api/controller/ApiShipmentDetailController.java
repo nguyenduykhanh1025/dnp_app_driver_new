@@ -75,7 +75,7 @@ public class ApiShipmentDetailController {
 	}
 	
 	@GetMapping("/shipmentDetail/checkContReserved/{containerNos}")
-	public List<Long> checkContReserved(@PathVariable String[] containerNos){
+	public List<String> checkContReserved(@PathVariable String[] containerNos){
 		return shipmentDetailDao.checkContReservedByContainerNos(containerNos);
 	}
 }
