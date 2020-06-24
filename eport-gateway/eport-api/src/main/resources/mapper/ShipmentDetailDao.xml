@@ -141,4 +141,12 @@
 			FROM TB_PTNR
 			WHERE PTNR_TYPE = 'TRK' AND PTNR_CODE = #{taxCode}
 	</select>
+	<select id="checkContReservedByContainerNos" parameterType="String" resultType="Long">
+			SELECT COUNT(*)
+			FROM TB_RESERVE
+			WHERE CNTR_NO IN 
+			<foreach item="containerNo" collection="array" open="(" separator="," close=")">
+            	#{containerNo}
+        	</foreach>
+	</select>
 </mapper>

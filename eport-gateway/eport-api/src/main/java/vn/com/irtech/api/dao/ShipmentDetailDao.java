@@ -28,4 +28,6 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public List<String> selectOpeCodeList();
 	
 	public String getGroupNameByTaxCode(String taxCode);
+	
+	public List<Long> checkContReservedByContainerNos(String[] containerNos);
 }
