@@ -31,10 +31,15 @@
     }
 
     .customTable {
-        height: calc(100% - 55px);
+        height: calc(100% - 75px);
         overflow-y: scroll;
         display: inline-block;
         width: 100%;
+    }
+
+    .payment-type-form {
+        display: flex;
+        margin-bottom: 10px;
     }
 </style>
 
@@ -42,6 +47,13 @@
     <div class="container">
         <div class="content">
             <p>Quý khách có chắc chắn làm lệnh cho những container này?</p>
+            <div class="payment-type-form">
+                <label></span>Phương thức thanh toán </label>
+                <input style="margin: 3px 10px 0 20px;" type="radio" name="paymentType" id="cash" value="0" checked/>
+                <label>Cash</label>
+                <input style="margin: 3px 10px 0 20px;" type="radio" name="paymentType" id="credit" value="1"/>
+                <label>Credit</label>
+            </div>
             <div class="table-content customTable">
                 <table id="contTable" style="width: 100%; height: 100%;">
                     <thead>
@@ -63,6 +75,7 @@
 <th:block th:include="include :: easyui-js" />
 <script type="text/javascript" th:inline="javascript">
     var shipmentDetails = /*[[${shipmentDetails}]]*/;
+    var creditFlag = /*[[${creditFlag}]]*/;
 </script>
 <script th:src="@{/js/logistic/sendContFull/checkContListBeforeVerify.js}"></script>
 

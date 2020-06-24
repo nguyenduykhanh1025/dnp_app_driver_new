@@ -93,7 +93,7 @@ public interface IShipmentDetailService
 
     public List<ProcessOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
 
-    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
+    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag);
     
     public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status);
 
