@@ -179,6 +179,12 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
+			List<String> contReservedList = checkSendContReserved(shipmentDetails.get(0).getProcessStatus());
+			if (contReservedList.size() > 0) {
+				AjaxResult ajaxResult = error();
+				ajaxResult.put("conts", contReservedList);
+				return error();
+			}
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				if (shipmentDetail.getId() != null) {
 					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
@@ -307,7 +313,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			ProcessOrder processOrder = shipmentDetailService.makeOrderSendContFull(shipmentDetails, shipment, creditFlag);
+			ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
 			if (processOrder != null) {
 				processOrderService.insertProcessOrder(processOrder);
 				//
@@ -396,47 +402,12 @@ public class LogisticSendContFullController extends LogisticBaseController {
 						} catch(Exception e) {
 							e.printStackTrace(); 
 						}
-						
 					}
 					return shipmentDetails;
 				}
 			}
 		}
 		return null;
-	}
-
-	@GetMapping("pickTruckForm/{shipmentId}")
-	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
-//		mmap.put("shipmentId", shipmentId);
-//		ShipmentDetail shipmentDetail = new ShipmentDetail();
-//		shipmentDetail.setShipmentId(shipmentId);
-//		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
-//		String transportId = "";
-//		String shipmentIds = "";
-//		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-//		for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
-//			if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
-//				transportId = shipmentDetail2.getTransportIds();
-//			}
-//			shipmentIds += shipmentDetail2.getId() + ",";
-//		}
-//		mmap.put("transportIds", transportId);
-//		mmap.put("shipmentDetailIds", shipmentIds);
-		return PREFIX + "/pickTruckForm";
-	}
-
-	@PostMapping("/pickTruck")
-	@ResponseBody
-	public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				//shipmentDetail.setTransportIds(driverIds);
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
-			}
-			return success("Điều xe thành công");
-		}
-		return error("Xảy ra lỗi trong quá trình điều xe.");
 	}
 	
 	@GetMapping("/getField")
