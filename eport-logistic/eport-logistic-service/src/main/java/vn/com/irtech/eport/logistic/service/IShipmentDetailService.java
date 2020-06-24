@@ -95,7 +95,7 @@ public interface IShipmentDetailService
 
     public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag);
     
-    public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status);
+    public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status, String invoiceNo);
 
     public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
 

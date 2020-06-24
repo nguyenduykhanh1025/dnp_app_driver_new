@@ -2,6 +2,7 @@ var prefix = ctx + "logistic/sendContFull";
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData;
 var contList = [];
+var conts = '';
 var allChecked = false;
 var checkList = [];
 var rowAmount = 0;
@@ -650,6 +651,7 @@ function getDataFromTable(isValidate) {
     }
     shipmentDetails = [];
     contList = [];
+    conts = '';
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
         if (isValidate) {
@@ -689,6 +691,7 @@ function getDataFromTable(isValidate) {
         }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
+        conts += object["containerNo"] + ',';
         contList.push(object["containerNo"]);
         shipmentDetail.opeCode = object["opeCode"];
         shipmentDetail.sztp = object["sztp"].split(':')[0];
@@ -703,6 +706,8 @@ function getDataFromTable(isValidate) {
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
     });
+
+    conts.substring(0, conts.length-1);
 
     if (isValidate) {
         contList.sort();
@@ -740,7 +745,7 @@ function saveShipmentDetail() {
             if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
-                    url: prefix + "/saveShipmentDetail",
+                    url: prefix + "/saveShipmentDetail/"+conts,
                     method: "post",
                     contentType: "application/json",
                     accept: 'text/plain',
