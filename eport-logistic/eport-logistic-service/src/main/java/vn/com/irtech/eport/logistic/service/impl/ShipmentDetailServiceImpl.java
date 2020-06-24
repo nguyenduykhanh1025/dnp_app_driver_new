@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.utils.DateUtils;
@@ -424,8 +426,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment,
-            String isCredit) {
+    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
             ProcessOrder processOrder = new ProcessOrder();
             processOrder.setTaxCode(shipment.getTaxCode());
@@ -437,14 +438,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setId(shipmentDetails.get(0).getId());
             processOrder.setShipmentId(shipment.getId());
             processOrder.setServiceType(4);
-            if ("0".equals(isCredit)) {
+            if (creditFlag) {
+                processOrder.setPayType("Credit");
+            } else {
                 processOrder.setPayType("Cash");
             }
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
                 shipmentDetail.setUserVerifyStatus("Y");
-                // shipmentDetail.setProcessStatus("Y");
-                // shipmentDetail.setStatus(3);
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
             return processOrder;
@@ -458,7 +459,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessStatus(status);
             if ("Y".equalsIgnoreCase(status)) {
-                shipmentDetail.setStatus(3);
+                shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
             }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
@@ -496,31 +497,34 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     public String getGroupNameByTaxCode(String taxCode) throws Exception {
-        String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
-        String methodName = "GET";
-        String readLine = null;
-        HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl + "/" + taxCode).openConnection();
-        connection.setRequestMethod(methodName);
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-
-        int responseCode = connection.getResponseCode();
-        StringBuffer response = new StringBuffer();
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while ((readLine = in.readLine()) != null) {
-                response.append(readLine);
-            };
-            in.close();
-        } else {
-        	String error = responseCode + " : " + methodName + " NOT WORKED";
-            return error;
-        }
-        String str = response.toString();
-        JsonObject convertedObject = new Gson().fromJson(str, JsonObject.class);
-        if(convertedObject.get("Title").toString().equals("null"))
-        {
-            return null;
-        }
-        return convertedObject.get("Title").toString().replace("\"", "");
+//        String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
+//        String methodName = "GET";
+//        String readLine = null;
+//        HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl + "/" + taxCode).openConnection();
+//        connection.setRequestMethod(methodName);
+//        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+//
+//        int responseCode = connection.getResponseCode();
+//        StringBuffer response = new StringBuffer();
+//        if (responseCode == HttpURLConnection.HTTP_OK) {
+//            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//            while ((readLine = in.readLine()) != null) {
+//                response.append(readLine);
+//            };
+//            in.close();
+//        } else {
+//        	String error = responseCode + " : " + methodName + " NOT WORKED";
+//            return error;
+//        }
+//        String str = response.toString();
+//        JsonObject convertedObject = new Gson().fromJson(str, JsonObject.class);
+//        if(convertedObject.get("Title").toString().equals("null"))
+//        {
+//            return null;
+//        }
+//        return convertedObject.get("Title").toString().replace("\"", "");
+    	String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/"+taxCode;
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate.getForObject(url, String.class);
     }
 }
