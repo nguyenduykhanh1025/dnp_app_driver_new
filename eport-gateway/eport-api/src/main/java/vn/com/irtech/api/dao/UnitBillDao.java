@@ -11,5 +11,5 @@ import vn.com.irtech.api.entity.UnitBillEntity;
 @Mapper
 public interface UnitBillDao extends BaseMapper<UnitBillDao>{
 
-	public List<UnitBillEntity> selectUnitBillByOrderNo(String orderNo);
+	public List<UnitBillEntity> selectUnitBillByInvNo(String invNo);
 }
