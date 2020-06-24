@@ -73,4 +73,9 @@ public class ApiShipmentDetailController {
 	public String getGroupNameByTaxCode(@PathVariable String taxCode) {
 		return shipmentDetailDao.getGroupNameByTaxCode(taxCode);
 	}
+	
+	@GetMapping("/shipmentDetail/checkContReserved/{containerNos}")
+	public List<Long> checkContReserved(@PathVariable String[] containerNos){
+		return shipmentDetailDao.checkContReservedByContainerNos(containerNos);
+	}
 }
