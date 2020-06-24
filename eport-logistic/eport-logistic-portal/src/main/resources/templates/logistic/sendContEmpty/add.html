@@ -74,8 +74,12 @@
 
   function submitHandler() {
       if ($.validate.form()) {
+        if ($("#groupName").val() != null && $("#groupName").val() != '') {
           $.operate.save(prefix + "/addShipment", $('#form-add-shipment').serialize());
           parent.loadTable();
+        } else {
+          $.modal.msgError("Không tìm thấy mã số thuế!");
+        }
       }
   }
 
@@ -94,6 +98,7 @@
         } else {
           $.modal.msgError("Không tìm ra mã số thuế!");
           $("#taxCode").addClass("error-input");
+          $("#groupName").val('');
         }
       });
     } else {

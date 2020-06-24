@@ -461,11 +461,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     @Transactional
-    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status) {
+    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status, String invoiceNo) {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessStatus(status);
             if ("Y".equalsIgnoreCase(status)) {
                 shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+                shipmentDetail.setRegisterNo(invoiceNo);
             }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
