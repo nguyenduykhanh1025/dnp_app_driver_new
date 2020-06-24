@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="vn.com.irtech.api.dao.UnitBillDao">
-	<select id="selectUnitBillByInvNo" parameterType="String" resultType="vn.com.irtech.api.entity.UnitBillEntity">
+	<select id="selectUnitBillByOrderNo" parameterType="String" resultType="vn.com.irtech.api.entity.UnitBillEntity">
 		SELECT 
-		    INV_NO AS INV_NO,
+			ORDER_NO AS ORDER_NO,
 		    NET_AMT AS NET_AMOUNT,
 		    VAT_RATE AS VAT_RATE,
 		    VAT_AMT AS VAT_AMOUNT,
@@ -11,6 +11,6 @@
 		    CNTR_NO AS CONTAINER_NO,
 		    SZTP2 AS SZTP
 		FROM TB_INVOICE_UNIT
-		WHERE INV_NO = #{invNo}
+		WHERE ORDER_NO = #{orderNo}
 	</select>
 </mapper>
