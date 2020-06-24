@@ -5,11 +5,29 @@ var contList = [];
 var allChecked = false;
 var checkList = [];
 var rowAmount = 0;
-var opeCodeList = ["CMC", "AVS", "QEW", "CNC"];
-var sizeList = ["20G0", "22G0", "40G0", "45G0"];
-var consigneeList;
-var dischargePortList;
-var vslNmList;
+var sizeList = [
+    "22G0: Cont 20 feet khô", 
+    "22P0: Cont 20 feet flat rack - quá khổ", 
+    "22R0: Cont 20 feet lạnh", 
+    "22T0: Cont 20 feet tank - cont bồn",
+    "22U0: Cont 20 feet open top", 
+    "42G0: Cont 40 feet thấp khô", 
+    "42P0: Cont 40 feet thấp flat rack - quá khổ",
+    "42R0: Cont 40 feet thấp lạnh", 
+    "42T0: Cont 40 feet thấp tank - cont bồn", 
+    "42U0: Cont 40 feet thấp open top",
+    "45G0: Cont 40 feet cao khô", 
+    "45P0: Cont 40 feet cao flat rack - quá khổ", 
+    "45R0: Cont 40 feet cao lạnh",
+    "45T0: Cont 40 feet cao tank - cont bồn",
+    "45U0: Cont 40 feet cao open top", 
+    "L4G0: Cont 45 feet khô", 
+    "L4P0: Cont 45 feet flat rack - quá khổ", 
+    "L4R0: Cont 45 feet lạnh",
+    "L4T0: Cont 45 feet tank - cont bồn",
+    "L4U0: Cont 45 feet open top"
+];
+var consigneeList, opeCodeList, dischargePortList, vslNmList;
 
 $.ajax({
     url: prefix + "/getField",
@@ -17,6 +35,7 @@ $.ajax({
     success: function (data) {
         if (data.code == 0) {
             dischargePortList = data.dischargePortList;
+            opeCodeList = data.opeCodeList;
             vslNmList = data.vslNmList;
             consigneeList = data.consigneeList;
         }
@@ -262,13 +281,14 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
-    $(td).html(value);
     if (value != null && value != '') {
+        value = value.split(':')[0];
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
+    $(td).html(value);
     return td;
 }
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -284,24 +304,26 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
-    $(td).html(value);
     if (value != null && value != '') {
+        value = value.split(':')[0];
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
+    $(td).html(value);
     return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
-    $(td).html(value);
     if (value != null && value != '') {
+        value = value.split(':')[0];
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
+    $(td).html(value);
     return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -357,7 +379,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 110, 100, 200, 100, 100, 100, 100, 100, 150, 150, 200],
+        colWidths: [50, 110, 100, 200, 100, 100, 100, 150, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -669,7 +691,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
         shipmentDetail.opeCode = object["opeCode"];
-        shipmentDetail.sztp = object["sztp"];
+        shipmentDetail.sztp = object["sztp"].split(':')[0];
         shipmentDetail.consignee = object["consignee"];
         shipmentDetail.wgt = object["wgt"];
         shipmentDetail.vslNm = object["vslNm"];
