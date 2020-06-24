@@ -5,7 +5,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class UnitBillEntity {
 
-	private String orderNo;
+	private String invNo;
 	
 	private Double netAmount;
 	
@@ -19,12 +19,12 @@ public class UnitBillEntity {
 	
 	private String sztp;
 
-	public String getOrderNo() {
-		return orderNo;
+	public String getInvNo() {
+		return invNo;
 	}
 
-	public void setOrderNo(String orderNo) {
-		this.orderNo = orderNo;
+	public void setInvNo(String invNo) {
+		this.invNo = invNo;
 	}
 
 	public Double getNetAmount() {
@@ -78,7 +78,7 @@ public class UnitBillEntity {
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-	            .append("orderNo", getOrderNo())
+	            .append("invNo", getInvNo())
 	            .append("netAmount", getNetAmount())
 	            .append("vatRate", getVatRate())
 	            .append("vatAmount", getVatAmount())

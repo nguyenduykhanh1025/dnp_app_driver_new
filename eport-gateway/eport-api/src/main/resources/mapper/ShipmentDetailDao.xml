@@ -126,19 +126,7 @@
 		    	CALL_SEQ AS VOYAGE
 			FROM TB_BERTHPLAN
 			WHERE VSL_CD = #{vesselCode}
-	</select>
-	
-	<select id="getYearBeforeAfter" resultType="vn.com.irtech.api.entity.ProcessOrderEntity">
-			SELECT
-		    	CALL_YEAR AS CALL_YEAR,
-		    	CASE
-			        WHEN ATD IS NULL THEN 'BEFORE'
-			        WHEN ATB IS NOT NULL THEN 'AFTER'
-			    END AS BEFORE_AFTER
-			FROM TB_BERTHPLAN
-			WHERE VSL_CD = #{vesselCode} AND CALL_SEQ = #{voyageNo}
-	</select>
-	
+	</select>	
 	<select id="selectOpeCodeList" resultType="String">
 		    SELECT 
 	        	PTNR_CODE AS PTNR_CODE
