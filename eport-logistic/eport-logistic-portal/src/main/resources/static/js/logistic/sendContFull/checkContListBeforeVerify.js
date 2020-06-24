@@ -24,5 +24,5 @@ $("#contTable").datagrid({
 });
 
 if ('0' == creditFlag) {
-    $('#credit').prop('disabled', true);
+    $('#credit').hide();
 }
