@@ -32,7 +32,7 @@ function checkCustomStatus() {
                 $.modal.alertError("Bạn chưa nhập đủ số tờ khai!");
             } else {
                 for (var i = 0; i < number; i++) {
-                    if (!/[0-9]{12}/g.test($("#declareNo" + i).val())) {
+                    if (!/^[0-9]{12}$/g.test($("#declareNo" + i).val())) {
                         completeInput = false;
                         $("#declareNo" + i).addClass("errorInput");
                         completeInput = false;
