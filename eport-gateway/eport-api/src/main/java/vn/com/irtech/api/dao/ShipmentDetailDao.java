@@ -19,4 +19,5 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public String selectYearByVesselCodeAndVoyageNo(@Param("vesselCode") String vesselCode, @Param("voyageNo") String voyageNo);
 	public String selectBeforeAfterDepartureByVesselCodeAndVoyageNo(@Param("vesselCode") String vesselCode, @Param("voyageNo") String voyageNo);
 	public List<String> selectOpeCodeList();
+	public String getGroupNameByTaxCode(String taxCode);
 }

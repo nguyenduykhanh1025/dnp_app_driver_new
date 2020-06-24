@@ -71,4 +71,9 @@ public class ApiShipmentDetailController {
 		List<String> list = shipmentDetailDao.selectOpeCodeList();
 		return R.ok().put("data", list);
 	}
+	@GetMapping("/shipmentDetail/getGroupNameByTaxCode/{taxCode}")
+	public R getGroupNameByTaxCode(@PathVariable String taxCode) {
+		String name = shipmentDetailDao.getGroupNameByTaxCode(taxCode);
+		return R.ok().put("data", name);
+	}
 }
