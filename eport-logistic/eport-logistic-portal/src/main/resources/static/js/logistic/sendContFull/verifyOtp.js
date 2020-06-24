@@ -10,13 +10,14 @@ function confirm() {
             method: "post",
             data: {
                 otp: $("#otpInput").val(),
-                shipmentDetailIds: shipmentDetailIds
+                shipmentDetailIds: shipmentDetailIds,
+                creditFlag: creditFlag
             },
             success: function (data) {
                 if (data.code != 0 && data.code != 301) {
-                    $.modal.msgError(data.msg);
+                    $.modal.alertError(data.msg);
                 } else {
-                    parent.finishForm(data);
+                    parent.finishVerifyForm(data);
                     $.modal.close();
                 }
             },
@@ -40,7 +41,7 @@ function getOtp() {
             url: prefix + "/sendOTP",
             method: "post",
             data: {
-                shipmentDetailIds: shipmentDetailIds
+                shipmentDetailIds: shipmentDetailIds,
             },
             success: function (data) {
                 if (data.code != 0) {

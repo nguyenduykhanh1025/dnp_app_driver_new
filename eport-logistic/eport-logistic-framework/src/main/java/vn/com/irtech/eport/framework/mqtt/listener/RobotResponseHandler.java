@@ -70,11 +70,12 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		String status = map.get("status") == null ? null : map.get("status").toString();
 		String result = map.get("result") == null ? null : map.get("result").toString();
 		String receiptId = map.get("receiptId") == null ? null : map.get("receiptId").toString();
-
+		String invoiceNo = map.get("invoiceNo") == null ? "" : map.get("invoiceNo").toString(); 
+		
 		robotService.updateRobotStatusByUuId(uuId, status);
 
 		if (receiptId != null && status != null) {
-			this.updateShipmentDetail(result, receiptId);
+			this.updateShipmentDetail(result, receiptId, invoiceNo);
 			this.sendMessageWebsocket(result, receiptId);
 		}
 		
@@ -86,17 +87,25 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 * @param result:   "success/error"
 	 * @param receiptId
 	 */
-	private void updateShipmentDetail(String result, String receiptId) {
+	private void updateShipmentDetail(String result, String receiptId, String invoiceNo) {
 		// TODO: update shipment detail
 		Long id = Long.parseLong(receiptId);
-		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setId(id);
+		processOrder.setReferenceNo(invoiceNo);
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setRegisterNo(receiptId);
+		shipmentDetail.setProcessOrderId(Long.parseLong(receiptId));
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		if (processOrder != null) {
 			if ("success".equalsIgnoreCase(result)) {
+				processOrder.setStatus(2);
+				processOrder.setResult("S");
+				processOrderService.updateProcessOrder(processOrder);
 				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y");
 			} else {
+				processOrder.setStatus(0);
+				processOrder.setResult("F");
+				processOrderService.updateProcessOrder(processOrder);
 				shipmentDetailService.updateProcessStatus(shipmentDetails, "E");
 			}
 		}
@@ -107,7 +116,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		if ("success".equalsIgnoreCase(result)) {
 			ajaxResult = AjaxResult.success("Làm lệnh thành công!");
 		} else {
-			ajaxResult = AjaxResult.success("Làm lệnh thất bại!");
+			ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
 		}
 		
 		webSocketService.sendMessage("/" + receiptId + "/response", ajaxResult);

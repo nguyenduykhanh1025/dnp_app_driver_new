@@ -1,26 +1,16 @@
-var isChange = true;
 var prefix = ctx + "logistic/sendContFull";
-var fromDate = "";
-var toDate = "";
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected;
-var shipmentDetails;
-var shipmentDetailIds;
-var originStatus;
-var billNo;
-var simpleCustom;
+var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData;
 var contList = [];
-var checked = false;
 var allChecked = false;
-var isIterate = false;
-var selectedRow;
-var customStatus;
+var checkList = [];
 var rowAmount = 0;
 var opeCodeList = ["CMC", "AVS", "QEW", "CNC"];
 var sizeList = ["20G0", "22G0", "40G0", "45G0"];
 var consigneeList;
 var dischargePortList;
 var vslNmList;
+
 $.ajax({
     url: prefix + "/getField",
     method: "GET",
@@ -32,9 +22,8 @@ $.ajax({
         }
     }
 });
-
 var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
-var checkList = [];
+
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
     loadTable();
@@ -46,9 +35,9 @@ $(document).ready(function () {
         handleCollapse(false);
     });
 
+    // CONNECT WEB SOCKET
     connectToWebsocketServer();
 });
-
 
 function handleCollapse(status) {
     if (status) {
@@ -99,10 +88,6 @@ function loadTable() {
                     pageSize: param.rows,
                     orderByColumn: param.sort,
                     isAsc: param.order,
-                    // fromDate: fromDate,
-                    // toDate: toDate,
-                    // voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
-                    // blNo: $("#blNo").val() == null ? "" : $("#blNo").val(),
                 },
                 dataType: "json",
                 success: function (data) {
@@ -171,14 +156,13 @@ function getSelected() {
 
 // FORMAT HANDSONTABLE COLUMN
 function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
-    //Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
     let content = '';
-    if (checkList[row] == 1) {
+    if (checkList[row] == 1 || value) {
         content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')" checked></div>';
     } else {
         content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
     }
-    $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
+    $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content).css("background-color", "#f0f0f0");
     return td;
 }
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -218,7 +202,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
             default:
                 break;
         }
-        $(td).html(content);
+        $(td).html(content).css("background-color", "#f0f0f0");
     return td;
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -334,9 +318,11 @@ function configHandson() {
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
-        minSpareRows: 1,
+        minSpareRows: 0,
         rowHeights: 30,
-        manualColumnMove: false,
+        fixedColumnsLeft: 2,
+        manualColumnResize: true,
+        manualRowResize: true,
         renderAllRows: true,
         rowHeaders: true,
         className: "htMiddle",
@@ -449,6 +435,9 @@ function configHandson() {
                 renderer: remarkRenderer
             },
         ],
+        beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
+            if(coords.col == 0) event.stopImmediatePropagation();
+        }
     };
 }
 configHandson();
@@ -460,43 +449,46 @@ hot = new Handsontable(dogrid, config);
 function checkAll() {
     if (!allChecked) {
         allChecked = true
-        checkList = Array(rowAmount).fill(1);
+        checkList = Array(rowAmount).fill(0);
         for (let i=0; i<checkList.length; i++) {
             if (hot.getDataAtCell(i, 1) == null) {
                 break;
             }
+            checkList[i] = 1;
             $('#check'+i).prop('checked', true);
         }
     } else {
         allChecked = false;
         checkList = Array(rowAmount).fill(0);
         for (let i=0; i<checkList.length; i++) {
-            if (hot.getDataAtCell(i, 1) == null) {
-                break;
-            }
             $('#check'+i).prop('checked', false);
         }
     }
     updateLayout();
+    hot.render();
+    $('.checker').prop('checked', allChecked);
 }
 function check(id) {
-    if ($('#check'+id).prop('checked')) {
+    if (checkList[id] == 0) {
+        $('#check'+id).prop('checked', true);
         checkList[id] = 1;
     } else {
+        $('#check'+id).prop('checked', false);
         checkList[id] = 0;
     }
+    hot.render();
     updateLayout();
 }
 function updateLayout() {
-    let disposable = true;
-    let status = 1;
-    let diff = false;
-    let check = false;
+    let disposable = true, status = 1, diff = false, check = false, verify = false;
     allChecked = true;
     for (let i=0; i<checkList.length; i++) {
         let cellStatus = hot.getDataAtCell(i, 1);
         if (cellStatus != null) {
             if (checkList[i] == 1) {
+                if(cellStatus == 1 && 'Y' == sourceData[i].userVerifyStatus) {
+                    verify = true;
+                }
                 check = true;
                 if (cellStatus > 1) {
                     disposable = false;
@@ -506,15 +498,12 @@ function updateLayout() {
                 } else {
                     status = cellStatus;
                 }
+            } else {
+                allChecked = false;
             }
-        } else {
-            allChecked = false;
-            $('.checker').prop('checked', false);
         }
     }
-    if (allChecked) {
-        $('.checker').prop('checked', true);
-    }
+    $('.checker').prop('checked', allChecked);
     if (disposable) {
         $("#deleteBtn").prop("disabled", false);
     } else {
@@ -535,6 +524,10 @@ function updateLayout() {
             break;
         case 2:
             setLayoutVerifyUserStatus();
+            if (verify) {
+                $("#verifyBtn").prop("disabled", true);
+                $("#deleteBtn").prop("disabled", true);
+            }
             break;
         case 3:
             setLayoutPaymentStatus();
@@ -560,7 +553,7 @@ function loadShipmentDetail(id) {
         },
         success: function (data) {
             if (data.code == 0) {
-                let sourceData = data.shipmentDetails;
+                sourceData = data.shipmentDetails;
                 if (rowAmount < sourceData.length) {
                     sourceData = sourceData.slice(0, rowAmount);
                 }
@@ -575,6 +568,12 @@ function loadShipmentDetail(id) {
 }
 
 function reloadShipmentDetail() {
+    checkList = Array(rowAmount).fill(0);
+    allChecked = false;
+    $('.checker').prop('checked', false);
+    for (let i=0; i<checkList.length; i++) {
+        $('#check'+i).prop('checked', false);
+    }
     loadShipmentDetail(shipmentSelected.id);
 }
 
@@ -582,12 +581,9 @@ function reloadShipmentDetail() {
 function getDataSelectedFromTable(isValidate) {
     let myTableData = hot.getSourceData();
     let errorFlg = false;
-    if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
-        hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
-    }
     let cleanedGridData = [];
     for (let i=0; i<checkList.length; i++) {
-        if (checkList[i] == 1) {
+        if (checkList[i] == 1 && Object.keys(myTableData[i]).length > 0) {
             cleanedGridData.push(myTableData[i]);
         }
     }
@@ -624,24 +620,18 @@ function getDataSelectedFromTable(isValidate) {
 function getDataFromTable(isValidate) {
     let myTableData = hot.getSourceData();
     let errorFlg = false;
-    if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
-        hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
-    }
     let cleanedGridData = [];
-    $.each(myTableData, function (rowKey, object) {
-        if (!hot.isEmptyRow(rowKey)) {
-            cleanedGridData.push(object);
+    for (let i=0; i<checkList.length; i++) {
+        if (Object.keys(myTableData[i]).length > 0) {
+            cleanedGridData.push(myTableData[i]);
         }
-    });
-    shipmentDetails = [];
-    if (cleanedGridData.length > 0) {
-        billNo = cleanedGridData[0]["blNo"];
     }
+    shipmentDetails = [];
     contList = [];
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
-        if (isValidate && object["delFlag"] == null) {
-            if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"])) {
+        if (isValidate) {
+            if (object["containerNo"] != null && object["containerNo"] != "" && !/^[A-Z]{4}[0-9]{7}$/g.test(object["containerNo"])) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
                 errorFlg = true;
                 return false;
@@ -684,8 +674,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.wgt = object["wgt"];
         shipmentDetail.vslNm = object["vslNm"];
         shipmentDetail.voyNo = object["voyNo"];
-        shipmentDetail.dischargePort = object["dischargePort"];
-        shipmentDetail.transportType = object["transportType"];
+        shipmentDetail.dischargePort = object["dischargePort"].split(':')[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
@@ -793,10 +782,10 @@ function verify() {
     }
 }
 
-function verifyOtp(shipmentDtIds) {
+function verifyOtp(shipmentDtIds, creditFlag) {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds, 600, 350);
+        $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds + "/" + creditFlag, 600, 350);
     }
 }
 
@@ -880,6 +869,15 @@ function setLayoutFinishStatus() {
 }
 
 function finishForm(result) {
+    if (result.code == 0) {
+        $.modal.msgSuccess(result.msg);
+    } else {
+        $.modal.msgError(result.msg);
+    }
+    reloadShipmentDetail();
+}
+
+function finishVerifyForm(result) {
     if (result.code == 0 || result.code == 301){
         $.modal.loading("Đang xử lý, vui lòng chờ..");
         let processId = result.processId;

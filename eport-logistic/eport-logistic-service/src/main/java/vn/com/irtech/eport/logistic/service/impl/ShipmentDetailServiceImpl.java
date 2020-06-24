@@ -424,8 +424,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment,
-            String isCredit) {
+    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
             ProcessOrder processOrder = new ProcessOrder();
             processOrder.setTaxCode(shipment.getTaxCode());
@@ -437,14 +436,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setId(shipmentDetails.get(0).getId());
             processOrder.setShipmentId(shipment.getId());
             processOrder.setServiceType(4);
-            if ("0".equals(isCredit)) {
+            if (creditFlag) {
+                processOrder.setPayType("Credit");
+            } else {
                 processOrder.setPayType("Cash");
             }
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
                 shipmentDetail.setUserVerifyStatus("Y");
-                // shipmentDetail.setProcessStatus("Y");
-                // shipmentDetail.setStatus(3);
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
             return processOrder;
@@ -458,7 +457,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessStatus(status);
             if ("Y".equalsIgnoreCase(status)) {
-                shipmentDetail.setStatus(3);
+                shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
             }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
