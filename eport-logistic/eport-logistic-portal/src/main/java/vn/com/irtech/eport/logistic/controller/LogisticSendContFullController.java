@@ -491,10 +491,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	public String getBeforeAfterDeparture(String vesselCode, String voyageNo){
 		String url = Global.getApiUrl() + "/shipmentDetail/getBeforeAfterDeparture/"+vesselCode+"/"+voyageNo;
 		RestTemplate restTemplate = new RestTemplate();
-		Map<String, String> vars = new HashMap<>();
-		vars.put("vesselCode", vesselCode);
-		vars.put("voyageNo", voyageNo);
-		R r = restTemplate.getForObject(url, R.class, vars);
+		R r = restTemplate.getForObject(url, R.class);
 		String beforeAfter =(String) r.get("data");
 		return beforeAfter;
 	}
