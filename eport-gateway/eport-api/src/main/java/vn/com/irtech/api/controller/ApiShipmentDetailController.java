@@ -63,12 +63,6 @@ public class ApiShipmentDetailController {
 		return R.ok().put("data", list);
 	}
 	
-	@GetMapping("/shipmentDetail/getYear/{vesselCode}/{voyageNo}")
-	public R getYear(@PathVariable String vesselCode, @PathVariable String voyageNo) {
-		String year = shipmentDetailDao.selectYearByVesselCodeAndVoyageNo(vesselCode, voyageNo);
-		return R.ok().put("data", year);
-	}
-	
 	@GetMapping("/shipmentDetail/getOpeCodeList")
 	public R getOpeCodeList() {
 		List<String> list = shipmentDetailDao.selectOpeCodeList();
