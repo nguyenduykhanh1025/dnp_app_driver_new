@@ -105,15 +105,15 @@
 	</select>
 	<select id="selectPODList"	resultType="String">
 			SELECT 
-    			CNTRY_CD || PORT_CD AS POD
+    			CNTRY_CD || PORT_CD || ': '|| PORT_NM AS POD
 			FROM TB_PORT 
-			OFFSET 0 ROWS FETCH NEXT 1000 ROWS ONLY
+			OFFSET 0 ROWS FETCH NEXT 5000 ROWS ONLY
 	</select>
 	<select id="selectConsigneeList" resultType="String">
 			SELECT 
 		    	ENG_LNM AS CONSIGNEE
 			FROM TB_PTNR 
-			OFFSET 0 ROWS FETCH NEXT 1000 ROWS ONLY
+			WHERE PTNR_TYPE = 'CNS'
 	</select>
 	<select id="selectVoyageNoListByVesselCode" parameterType="String" resultType="String">
 			SELECT
@@ -142,5 +142,11 @@
 		    FROM TB_PTNR
 		    WHERE PTNR_TYPE = 'SHP'
 		    GROUP BY PTNR_CODE
+	</select>
+	<select id="getGroupNameByTaxCode" parameterType="String" resultType="String">
+			SELECT
+		    	ENG_LNM
+			FROM TB_PTNR
+			WHERE PTNR_TYPE = 'TRK' AND PTNR_CODE = #{taxCode}
 	</select>
 </mapper>
