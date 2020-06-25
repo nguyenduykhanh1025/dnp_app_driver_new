@@ -1,6 +1,6 @@
 var prefix = ctx + "logistic/receiveContFull";
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData;
+var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0, isChange;
 var contList = [];
 var conts = '';
 var allChecked = false;
@@ -28,7 +28,7 @@ $(document).ready(function () {
   $("#btn-uncollapse").click(function () {
     handleCollapse(false);
   });
-  
+
   // CONNECT WEB SOCKET
   connectToWebsocketServer();
 });
@@ -107,7 +107,7 @@ function formatDate(value) {
 
 // FORMAT REMARK FOR SHIPMENT LIST
 function formatRemark(value) {
-  return '<div class="easyui-tooltip" title="'+ ((value!=null&&value!="")?value:"không có ghi chú") +'" style="width: 80; text-align: center;"><span>'+ (value!=null?(value.substring(0, 5) + "..."):"...") +'</span></div>';
+  return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null ? (value.substring(0, 5) + "...") : "...") + '</span></div>';
 }
 
 // Handle add
@@ -258,7 +258,7 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
   $(td).html(value);
   if (value != null && value != '') {
-    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+    if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -269,7 +269,7 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
   $(td).html(value);
   if (value != null && value != '') {
-    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+    if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -280,7 +280,7 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
   $(td).html(value);
   if (value != null && value != '') {
-    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+    if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -291,7 +291,7 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'sztp' + row).addClass("htMiddle");
   if (value != null && value != '') {
     value = value.split(':')[0];
-    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+    if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -303,7 +303,7 @@ function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'sztp' + row).addClass("htMiddle");
   if (value != null && value != '') {
     value = value.split(':')[0];
-    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+    if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -315,7 +315,7 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'wgt' + row).addClass("htMiddle");
   $(td).html(value);
   if (value != null && value != '') {
-    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+    if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -326,7 +326,7 @@ function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties
   $(td).attr('id', 'loadingPort' + row).addClass("htMiddle");
   if (value != null && value != '') {
     value = value.split(':')[0];
-    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+    if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -338,7 +338,7 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
   $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
   if (value != null && value != '') {
     value = value.split(':')[0];
-    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+    if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -398,14 +398,10 @@ function configHandson() {
         case 11:
           return "Trọng tải";
         case 12:
-          return '<span>Tàu</span><span style="color: red;">(*)</span>';
-        case 13:
-          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
-        case 14:
           return "Cảng Xếp Hàng";
-        case 15:
+        case 13:
           return "Cảng Dỡ Hàng";
-        case 16:
+        case 14:
           return "Ghi Chú";
       }
     },
@@ -417,8 +413,8 @@ function configHandson() {
         type: "checkbox",
         className: "htCenter",
         renderer: checkBoxRenderer
-    },
-    {
+      },
+      {
         data: "status",
         readOnly: true,
         renderer: statusIconsRenderer
@@ -497,7 +493,47 @@ function configHandson() {
     ],
     beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
       if (coords.col == 0) event.stopImmediatePropagation();
-    }
+    },
+    afterChange: function (changes, src) {
+      //Get data change in cell to render another column
+      if (src !== "loadData") {
+        changes.forEach(function interate(row) {
+          let containerNo;
+          if (row[1] == "containerNo") {
+            containerNo = hot.getDataAtRow(row[0])[2];
+            isChange = true;
+          } else {
+            isChange = false;
+          }
+          if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
+            // Call data to auto-fill
+            $.ajax({
+              url: prefix + "/getContInfo",
+              type: "post",
+              data: {
+                containerNo: containerNo,
+                blNo: shipmentSelected.blNo
+              }
+            }).done(function (shipmentDetail) {
+              if (shipmentDetail != null) {
+                hot.setDataAtCell(row[0], 3, shipmentDetail.expiredDem); //expiredem
+                hot.setDataAtCell(row[0], 4, shipmentDetail.consignee); //consignee
+                hot.setDataAtCell(row[0], 5, shipmentDetail.emptyDepot); //emptyDepot
+                hot.setDataAtCell(row[0], 6, shipmentDetail.opeCode); //opeCode
+                hot.setDataAtCell(row[0], 7, shipmentDetail.vslNm); //vslNm
+                hot.setDataAtCell(row[0], 8, shipmentDetail.voyNo); //voyNo
+                hot.setDataAtCell(row[0], 9, shipmentDetail.sztp); //sztp
+                hot.setDataAtCell(row[0], 10, shipmentDetail.sealNo); //sealNo
+                hot.setDataAtCell(row[0], 11, shipmentDetail.wgt); //wgt
+                hot.setDataAtCell(row[0], 12, shipmentDetail.loadingPort); //loadingPort
+                hot.setDataAtCell(row[0], 13, shipmentDetail.dischargePort); //dischargePort
+                hot.setDataAtCell(row[0], 14, shipmentDetail.remark); //remark
+              }
+            });
+          }
+        });
+      }
+    },
   };
 }
 configHandson();
@@ -546,7 +582,7 @@ function updateLayout() {
     let cellStatus = hot.getDataAtCell(i, 1);
     if (cellStatus != null) {
       if (checkList[i] == 1) {
-        if (cellStatus == 1 && 'Y' == sourceData[i].userVerifyStatus) {
+        if (cellStatus == 2 && 'Y' == sourceData[i].userVerifyStatus) {
           verify = true;
         }
         check = true;
@@ -578,6 +614,7 @@ function updateLayout() {
     $("#deleteBtn").prop("disabled", true);
     status = 1;
   }
+
   switch (status) {
     case 1:
       setLayoutRegisterStatus();
@@ -620,23 +657,29 @@ function loadShipmentDetail(id) {
         sourceData.forEach(function iterate(shipmentDetail) {
           if (shipmentDetail.id == null) {
             saved = false;
-          } 
+          }
         });
         hot.destroy();
         configHandson();
         hot = new Handsontable(dogrid, config);
         hot.loadData(sourceData);
         hot.render();
+        setLayoutRegisterStatus();
         if (!saved) {
           $.modal.alert("Thông tin container đã được hệ thống tự<br>động điền, quý khách vui lòng kiểm tra lại<br>thông tin và lưu khai báo.");
-          setLayoutRegisterStatus();
-        } 
+        }
       }
     }
   });
 }
 
 function reloadShipmentDetail() {
+  checkList = Array(rowAmount).fill(0);
+  allChecked = false;
+  $('.checker').prop('checked', false);
+  for (let i = 0; i < checkList.length; i++) {
+    $('#check' + i).prop('checked', false);
+  }
   loadShipmentDetail(shipmentSelected.id);
 }
 
@@ -644,28 +687,19 @@ function reloadShipmentDetail() {
 function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   let myTableData = hot.getSourceData();
   let errorFlg = false;
-  if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
-    hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
-  }
   let cleanedGridData = [];
-  allChecked = true;
-  $.each(myTableData, function (rowKey, object) {
-    if (!hot.isEmptyRow(rowKey)) {
-      if (object["active"]) {
-        cleanedGridData.push(object);
-      } else {
-        allChecked = false;
-        if (object["preorderPickup"] == "Y" && isNeedPickedCont) {
-          cleanedGridData.push(object);
-        }
+  for (let i = 0; i < checkList.length; i++) {
+    if (Object.keys(myTableData[i]).length > 0) {
+      if (checkList[i] == 1 || (isNeedPickedCont && myTableData[i].userVerifyStatus == "N" && myTableData[i].preorderPickup == "Y")) {
+        cleanedGridData.push(myTableData[i]);
       }
-    } 
-  });
+    }
+  }
   shipmentDetailIds = "";
   shipmentDetails = [];
   $.each(cleanedGridData, function (index, object) {
     let shipmentDetail = new Object();
-    if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && isValidate) {
+    if (object["containerNo"] != null && object["containerNo"] != "" && !/^[A-Z]{4}[0-9]{7}$/g.test(object["containerNo"]) && isValidate) {
       $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
       errorFlg = true;
     }
@@ -679,7 +713,7 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
     shipmentDetail.shipmentId = shipmentSelected.id;
     shipmentDetail.id = object["id"];
     shipmentDetails.push(shipmentDetail);
-    shipmentDetailIds += object["id"]+",";
+    shipmentDetailIds += object["id"] + ",";
   });
 
   // Get result in "selectedList" letiable
@@ -687,7 +721,7 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
     $.modal.alert("Bạn chưa chọn container.");
     errorFlg = true;
   } else {
-    shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length-1);
+    shipmentDetailIds = shipmentDetailIds.substring(0, shipmentDetailIds.length - 1);
   }
   if (errorFlg) {
     return false;
@@ -698,15 +732,12 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
 function getDataFromTable(isValidate) {
   let myTableData = hot.getSourceData();
   let errorFlg = false;
-  if (myTableData.length > 1 && hot.isEmptyRow(myTableData.length - 1)) {
-    hot.alter("remove_row", parseInt(myTableData.length - 1), (keepEmptyRows = false));
-  }
   let cleanedGridData = [];
-  $.each(myTableData, function (rowKey, object) {
-    if (!hot.isEmptyRow(rowKey)) {
-      cleanedGridData.push(object);
+  for (let i = 0; i < checkList.length; i++) {
+    if (Object.keys(myTableData[i]).length > 0) {
+      cleanedGridData.push(myTableData[i]);
     }
-  });
+  }
   shipmentDetails = [];
   if (cleanedGridData.length > 0) {
     billNo = cleanedGridData[0]["blNo"];
@@ -789,59 +820,6 @@ function getDataFromTable(isValidate) {
   }
 }
 
-// EVENT WHEN DELETE SELECTED SHIPMENT DETAIL WITH BACKSPACE BUTTON
-document.addEventListener("keyup", function (e) {
-  if (e.keyCode == 8) {
-    if (selectedRow != null && $("#processStatus" + selectedRow).html() != "Đã làm lệnh") {
-      var myTableData = hot.getSourceData();
-      // myTableData[selectedRow].registerNo = '';
-      myTableData[selectedRow].containerNo = '';
-      myTableData[selectedRow].expiredDem = '';
-      myTableData[selectedRow].opeCode = '';
-      myTableData[selectedRow].sztp = '';
-      myTableData[selectedRow].fe = '';
-      myTableData[selectedRow].consignee = '';
-      myTableData[selectedRow].sealNo = '';
-      myTableData[selectedRow].wgt = '';
-      myTableData[selectedRow].vslNm = '';
-      myTableData[selectedRow].voyNo = '';
-      myTableData[selectedRow].loadingPort = '';
-      myTableData[selectedRow].dischargePort = '';
-      myTableData[selectedRow].transportType = '';
-      myTableData[selectedRow].emptyDepot = '';
-      myTableData[selectedRow].customStatus = '';
-      myTableData[selectedRow].paymentStatus = '';
-      myTableData[selectedRow].processStatus = '';
-      myTableData[selectedRow].doStatus = '';
-      myTableData[selectedRow].status = '';
-      myTableData[selectedRow].remark = '';
-      myTableData[selectedRow].delFlag = true;
-      hot.loadData(myTableData);
-      // $("#registerNo" + selectedRow).html('');
-      $("#containerNo" + selectedRow).html('');
-      $("#expiredDem" + selectedRow).html('');
-      $("#opeCode" + selectedRow).html('');
-      $("#size" + selectedRow).html('');
-      $("#fe" + selectedRow).html('');
-      $("#consignee" + selectedRow).html('');
-      $("#sealNo" + selectedRow).html('');
-      $("#wgt" + selectedRow).html('');
-      $("#vslNm" + selectedRow).html('');
-      $("#voyNo" + selectedRow).html('');
-      $("#loadingPort" + selectedRow).html('');
-      $("#dischargePort" + selectedRow).html('');
-      $("#transportType" + selectedRow).html('');
-      $("#emptyDepot" + selectedRow).html('');
-      $("#customStatus" + selectedRow).html('');
-      $("#paymentStatus" + selectedRow).html('');
-      $("#processStatus" + selectedRow).html('');
-      $("#doStatus" + selectedRow).html('');
-      $("#status" + selectedRow).html('');
-      $("#remark" + selectedRow).html('');
-    }
-  }
-});
-
 // SAVE/EDIT/DELETE SHIPMENT DETAIL
 function saveShipmentDetail() {
   if (shipmentSelected == null) {
@@ -886,24 +864,24 @@ function saveShipmentDetail() {
 function deleteShipmentDetail() {
   $.modal.loading("Đang xử lý...");
   $.ajax({
-      url: prefix + "/deleteShipmentDetail",
-      method: "post",
-      data: {
-          shipmentDetailIds: shipmentDetailIds
-      },
-      success: function (result) {
-          if (result.code == 0) {
-              $.modal.msgSuccess(result.msg);
-              loadShipmentDetail(shipmentSelected.id);
-          } else {
-              $.modal.msgError(result.msg);
-          }
-          $.modal.closeLoading();
-      },
-      error: function (result) {
-          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-          $.modal.closeLoading();
-      },
+    url: prefix + "/deleteShipmentDetail",
+    method: "post",
+    data: {
+      shipmentDetailIds: shipmentDetailIds
+    },
+    success: function (result) {
+      if (result.code == 0) {
+        $.modal.msgSuccess(result.msg);
+        loadShipmentDetail(shipmentSelected.id);
+      } else {
+        $.modal.msgError(result.msg);
+      }
+      $.modal.closeLoading();
+    },
+    error: function (result) {
+      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+      $.modal.closeLoading();
+    },
   });
 }
 
@@ -912,18 +890,18 @@ function checkAll() {
   getDataFromTable(false);
   isIterate = true;
   if (checked) {
-    for (var i=0; i<shipmentDetails.length; i++) {
+    for (var i = 0; i < shipmentDetails.length; i++) {
       hot.setDataAtCell(i, 0, false);
-      if (i == shipmentDetails.length-2) {
+      if (i == shipmentDetails.length - 2) {
         isIterate = false;
       }
     }
     $(".checker").prop("checked", false);
     checked = false;
   } else {
-    for (var i=0; i<shipmentDetails.length; i++) {
+    for (var i = 0; i < shipmentDetails.length; i++) {
       hot.setDataAtCell(i, 0, true);
-      if (i == shipmentDetails.length-2) {
+      if (i == shipmentDetails.length - 2) {
         isIterate = false;
       }
     }
@@ -932,26 +910,25 @@ function checkAll() {
   }
 }
 
-
 // Handling logic
 function checkCustomStatus() {
-  getDataSelectedFromTable(true);
+  getDataSelectedFromTable(true, false);
   if (shipmentDetails.length > 0) {
-      $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatusForm/" + shipmentDetailIds, 720, 500);
+    $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatusForm/" + shipmentDetailIds, 720, 500);
   }
 }
 
 function verify() {
-  getDataSelectedFromTable(true);
+  getDataSelectedFromTable(true, true);
   if (shipmentDetails.length > 0) {
-      $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
+    $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
   }
 }
 
 function verifyOtp(shipmentDtIds, creditFlag) {
-  getDataSelectedFromTable(true);
+  getDataSelectedFromTable(true, false);
   if (shipmentDetails.length > 0) {
-      $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds + "/" + creditFlag, 600, 350);
+    $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds + "/" + creditFlag, 600, 350);
   }
 }
 
@@ -1046,13 +1023,14 @@ function finishForm(result) {
 }
 
 function finishVerifyForm(result) {
-  if (result.code == 0 || result.code == 301){
-      $.modal.loading("Đang xử lý, vui lòng chờ..");
-      let processId = result.processId;
-      $.websocket.subscribe('/eportTopic/' + processId + '/response', onMessageReceived);
+  if (result.code == 301) {
+    $.modal.alertError("Các container của các khách đang được đợi làm lệnh. Quý vui lòng liện hệ với bộ phận OM để biết thêm thông tin chi tiết.");
   } else {
-      $.modal.msgError(result.msg);
-      reloadShipmentDetail();
+    $.modal.loading("Đang xử lý, vui lòng chờ..");
+    orderNumber = result.orderNumber;
+    for (let i = 0; i < result.processIds.length; i++) {
+      $.websocket.subscribe('/eportTopic/' + result.processIds[i] + '/response', onMessageReceived);
+    }
   }
 }
 
@@ -1062,16 +1040,21 @@ function napasPaymentForm() {
 
 function onMessageReceived(payload) {
   let message = JSON.parse(payload.body);
-  if (message.code == 0){
+  if (message.code == 0) {
+    orderNumber--;
+    if (orderNumber == 0) {
       $.modal.alertSuccess(message.msg);
-  }else{
-      $.modal.alertError(message.msg);
+      $.modal.closeLoading();
+      reloadShipmentDetail();
+    }
+  } else {
+    $.modal.alertError(message.msg);
+    $.modal.closeLoading();
+    reloadShipmentDetail();
   }
-  $.modal.closeLoading();
-  reloadShipmentDetail();
 }
 
-function connectToWebsocketServer(){
+function connectToWebsocketServer() {
   // Connect to WebSocket Server.
   $.websocket.connect({}, onConnected, onError);
 }

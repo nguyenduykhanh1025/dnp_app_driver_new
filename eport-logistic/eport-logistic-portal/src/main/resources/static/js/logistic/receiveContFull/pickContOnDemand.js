@@ -104,20 +104,6 @@ function pickCont(id, row, col, index, isPicked) {
     }
 }
 
-// function pickTruck(id, bay, row, tier) {
-//     currentPickedId = id;
-//     currentPickedBay = bay;
-//     currentPickedRow = row;
-//     currentPickedTier = tier;
-//     $.modal.openCustomForm("Điều xe", prefix + "/pickTruckForm/" + shipmentId + "/" + true + "/" + id, 700, 400);
-// }
-
-// function finishPickTruck(plateNumber, driverIds) {
-//     $("#tdTransport" + currentPickedId).html(plateNumber);
-//     bayList[currentPickedBay][currentPickedTier][currentPickedRow].transportIds = driverIds;
-//     calculateMovingCont();
-// }
-
 function calculateMovingCont() {
     preorderPickupConts = [];
     moveContAmount = 0;
