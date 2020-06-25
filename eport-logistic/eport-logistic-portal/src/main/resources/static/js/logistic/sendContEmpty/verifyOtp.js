@@ -12,7 +12,7 @@ function confirm() {
                 shipmentDetailIds: shipmentDetailIds
             },
             success: function (data) {
-                console.log(data);
+                console.log(data)
                 if (data.code != 0 && data.code != 301) {
                     $.modal.alertError(data.msg);
                 } else {

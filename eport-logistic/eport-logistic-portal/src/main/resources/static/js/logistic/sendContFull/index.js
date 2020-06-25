@@ -236,6 +236,19 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
     }
     return td;
 }
+function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'expiredDem' + row).addClass("htMiddle");
+    $(td).html(value);
+    if (value != null && value != '') {
+        if (value.substring(2, 3) != "/") {
+            value = value.substring(8, 10)+"/"+value.substring(5, 7)+"/"+value.substring(0,4);
+        }
+        $(td).html(value);
+    } else {
+        $(td).html('');
+    }
+    return td;
+}
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'consignee' + row).addClass("htMiddle");
     $(td).html(value);

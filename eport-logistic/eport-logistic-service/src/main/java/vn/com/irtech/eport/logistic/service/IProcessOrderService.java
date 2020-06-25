@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 
 /**
  * Process orderService Interface
@@ -60,4 +62,6 @@ public interface IProcessOrderService
     public int deleteProcessOrderById(Long id);
 
     public boolean insertProcessOrderList(List<ProcessOrder> processOrders);
+
+    public boolean insertProcessOrderReceiveContFull(List<ServiceSendFullRobotReq> serviceRobotReqs);
 }

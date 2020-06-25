@@ -41,6 +41,8 @@ import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -298,74 +300,81 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         }
     }
 
-    @Transactional
-    public List<ProcessOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment,
-            String isCredit) {
+    public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
-            Collections.sort(shipmentDetails, new SztpComparator());
-            String sztp = shipmentDetails.get(0).getSztp();
-            List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-            List<ProcessOrder> processOrders = new ArrayList<>();
-            ProcessOrder processOrder = new ProcessOrder();
-            for (ShipmentDetail shipmentDetail : shipmentDetails) {
-                if (sztp.equals(shipmentDetail.getSztp())) {
-                    shipmentOrderList.add(shipmentDetail);
-                } else {
-                    processOrder.setMode("Truck Out");
-                    processOrder.setConsignee(shipmentOrderList.get(0).getConsignee());
-                    processOrder.setTruckCo("0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ");
-                    processOrder.setTaxCode(shipment.getTaxCode());
-                    if ("0".equals(isCredit)) {
-                        processOrder.setPayType("Cash");
-                    } else {
-                        processOrder.setPayType("Credit");
-                    }
-                    processOrder.setBlNo(shipmentDetails.get(0).getBlNo());
-                    processOrder.setPickupDate(new Date());
-                    processOrder.setVessel(shipmentDetails.get(0).getVslNm());
-                    processOrder.setVessel(shipmentDetails.get(0).getVoyNo());
-                    processOrder.setYear("2020");
-                    processOrder.setBeforeAfter("Before");
-                    processOrder.setContNumber(shipmentDetails.size());
-                    processOrder.setId(shipmentDetails.get(0).getId());
-                    processOrders.add(processOrder);
-                    processOrder = new ProcessOrder();
-                    for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
-
-                        shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
-                        shipmentDetail2.setUserVerifyStatus("Y");
-                        shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
-                    }
-                }
-            }
-            processOrder.setMode("Truck Out");
-            processOrder.setConsignee(shipmentOrderList.get(0).getConsignee());
-            processOrder.setTruckCo("0100100110 : VIỆN NGHIÊN CỨU CƠ KHÍ");
-            processOrder.setTaxCode(shipment.getTaxCode());
-            if ("0".equals(isCredit)) {
-                processOrder.setPayType("Cash");
+            List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
+            if (checkMakeOrderByBl(shipment.getBlNo(), shipmentDetails.size() , "1".equalsIgnoreCase(shipment.getEdoFlg()))) {
+                serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(), shipmentDetails, shipment, creditFlag, true));
             } else {
-                processOrder.setPayType("Credit");
+                Collections.sort(shipmentDetails, new SztpComparator());
+                String sztp = shipmentDetails.get(0).getSztp();
+                List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
+                for (ShipmentDetail shipmentDetail : shipmentDetails) {
+                    if (!sztp.equals(shipmentDetail.getSztp())) {
+                        serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag, false));
+                        shipmentOrderList = new ArrayList<>();
+                    }
+                    shipmentOrderList.add(shipmentDetail);
+                }
+                serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag, false));
             }
-            processOrder.setBlNo(shipmentDetails.get(0).getBlNo());
-            processOrder.setPickupDate(new Date());
-            processOrder.setVessel(shipmentDetails.get(0).getVslNm());
-            processOrder.setVessel(shipmentDetails.get(0).getVoyNo());
-            processOrder.setYear("2020");
-            processOrder.setSztp(shipmentDetails.get(0).getSztp());
-            processOrder.setBeforeAfter("Before");
-            processOrder.setContNumber(shipmentDetails.size());
-            processOrder.setId(shipmentDetails.get(0).getId());
-            processOrder.setServiceType(1);
-            processOrders.add(processOrder);
-            for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
-                shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
-                shipmentDetail2.setUserVerifyStatus("Y");
-                shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
-            }
-            return processOrders;
+            return serviceRobotReq;
         }
         return null;
+    }
+
+    @Transactional
+    private ServiceSendFullRobotReq groupShipmentDetailByReceiveContFullOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag, boolean orderByBl) {
+        ProcessOrder processOrder = new ProcessOrder();
+        if (orderByBl) {
+            processOrder.setMode("Pickup Order by BL");
+        } else {
+            processOrder.setMode("Truck Out");
+        }
+        processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
+        try {
+            processOrder.setTruckCo(shipment.getTaxCode()+" : "+getGroupNameByTaxCode(shipment.getTaxCode()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        processOrder.setTaxCode(shipment.getTaxCode());
+        if (creditFlag) {
+            processOrder.setPayType("Cash");
+        } else {
+            processOrder.setPayType("Credit");
+        }
+        ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+        if (tempProcessOrder != null) {
+            processOrder.setYear(tempProcessOrder.getYear());
+            processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
+        } else {
+            processOrder.setYear("2020");
+            processOrder.setBeforeAfter("Before");
+        }
+        processOrder.setBlNo(shipmentDetails.get(0).getBlNo());
+        processOrder.setPickupDate(shipmentDetails.get(0).getExpiredDem());
+        processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+        processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+        processOrder.setSztp(shipmentDetails.get(0).getSztp());
+        processOrder.setContNumber(shipmentDetails.size());
+        processOrder.setId(shipmentDetails.get(0).getId());
+        processOrder.setServiceType(1);
+        for (ShipmentDetail shipmentDetail : shipmentDetails) {
+            shipmentDetail.setProcessOrderId(shipmentDetails.get(0).getId());
+            shipmentDetail.setRegisterNo(registerNo.toString());
+            shipmentDetail.setUserVerifyStatus("Y");
+            shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+        }
+        return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+    }
+
+    private boolean checkMakeOrderByBl(String blNo, int size, boolean edoFlag) {
+        if (edoFlag) {
+
+        } else {
+
+        }
+        return false;
     }
 
     @Transactional
@@ -415,7 +424,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             }
             processOrder.setId(shipmentDetails.get(0).getId());
             processOrder.setShipmentId(shipment.getId());
-            processOrder.setServiceType(4);
+            if ("F".equalsIgnoreCase(shipmentDetails.get(0).getFe())) {
+                processOrder.setServiceType(4);
+            } else {
+                processOrder.setServiceType(2);
+            }
             if (creditFlag) {
                 processOrder.setPayType("Credit");
             } else {
