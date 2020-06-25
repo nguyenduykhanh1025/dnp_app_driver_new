@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import vn.com.irtech.api.common.utils.Convert;
 import vn.com.irtech.api.common.utils.R;
 import vn.com.irtech.api.dao.ShipmentDetailDao;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
@@ -75,7 +76,7 @@ public class ApiShipmentDetailController {
 	}
 	
 	@GetMapping("/shipmentDetail/checkContReserved/{containerNos}")
-	public List<String> checkContReserved(@PathVariable String[] containerNos){
-		return shipmentDetailDao.checkContReservedByContainerNos(containerNos);
+	public List<String> checkContReserved(@PathVariable String containerNos){
+		return shipmentDetailDao.checkContReservedByContainerNos(Convert.toStrArray(containerNos));
 	}
 }

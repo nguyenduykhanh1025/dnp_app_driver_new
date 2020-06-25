@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 
 import org.apache.shiro.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -512,4 +513,16 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(url, ProcessOrder.class);
     }
+
+	@Override
+	public List<String> checkContainerReserved(String containerNos) {
+		String url = Global.getApiUrl() + "/shipmentDetail/checkContReserved/" + containerNos;
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<String>> response = restTemplate
+				.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {
+				});
+		List<String> listCont = response.getBody();
+		return listCont;
+	}
+    
 }
