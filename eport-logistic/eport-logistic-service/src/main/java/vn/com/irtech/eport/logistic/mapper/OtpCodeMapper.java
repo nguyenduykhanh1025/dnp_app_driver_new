@@ -3,6 +3,7 @@ package vn.com.irtech.eport.logistic.mapper;
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 
+
 /**
  * otp CodeMapper Interface
  * 
@@ -11,37 +12,37 @@ import vn.com.irtech.eport.logistic.domain.OtpCode;
  */
 public interface OtpCodeMapper 
 {
-    /**
+     /**
      * Get otp Code
      * 
      * @param id otp CodeID
      * @return otp Code
      */
-    public OtpCode selectOtpCodeById(Long id);
+    public OtpCode selectSysOtpById(Long id);
 
     /**
      * Get otp Code List
      * 
-     * @param otpCode otp Code
+     * @param sysOtp otp Code
      * @return otp Code List
      */
-    public List<OtpCode> selectOtpCodeList(OtpCode otpCode);
+    public List<OtpCode> selectSysOtpList(OtpCode sysOtp);
 
     /**
      * Add otp Code
      * 
-     * @param otpCode otp Code
+     * @param sysOtp otp Code
      * @return Result
      */
-    public int insertOtpCode(OtpCode otpCode);
+    public int insertSysOtp(OtpCode sysOtp);
 
     /**
      * Update otp Code
      * 
-     * @param otpCode otp Code
+     * @param sysOtp otp Code
      * @return Result
      */
-    public int updateOtpCode(OtpCode otpCode);
+    public int updateSysOtp(OtpCode sysOtp);
 
     /**
      * Delete otp Code
@@ -49,7 +50,7 @@ public interface OtpCodeMapper
      * @param id otp CodeID
      * @return result
      */
-    public int deleteOtpCodeById(Long id);
+    public int deleteSysOtpById(Long id);
 
     /**
      * Batch Delete otp Code
@@ -57,7 +58,7 @@ public interface OtpCodeMapper
      * @param ids IDs
      * @return result
      */
-    public int deleteOtpCodeByIds(String[] ids);
+    public int deleteSysOtpByIds(String[] ids);
 
     public OtpCode selectOtpCodeByshipmentDetailId(String shipmentDetailId);
 

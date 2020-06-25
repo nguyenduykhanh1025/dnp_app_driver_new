@@ -15,16 +15,22 @@
             <input name="id" type="hidden" />
             <div class="form-group">
                 <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe đầu kéo:</label>
-                <div class="col-sm-8 col-xs-8 col-md-10">
+                <div class="col-sm-7 col-xs-7 col-md-9">
                     <!-- <input type="hidden" name="tractorId" id="tractorId"> -->
                     <select class="tractorList" id="tractorList"></select>
+                </div>
+                <div>
+                	<a class="btn btn-success btn-xs" onclick="chooseAllTractor()">Tất cả</a>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe rơ mooc:</label>
-                <div class="col-sm-8 col-xs-8 col-md-10">
+                <div class="col-sm-7 col-xs-7 col-md-9">
                     <!-- <input type="hidden" name="trailerId" id="trailerId"> -->
                     <select class="trailerList" id="trailerList"></select>
+                </div>
+                <div>
+                	<a class="btn btn-success btn-xs" onclick="chooseAllTrailer()">Tất cả</a>
                 </div>
             </div>
 		</form>
@@ -40,7 +46,7 @@
     $(document).ready(function(){         
         $('.tractorList').select2({
             ajax: {
-                url: '/logistic/truck/searchTractorByKeyword',
+                url: '/logistic/logisticTruck/searchTractorByKeyword',
                 method: 'get',
                 delay: 250,
                 data: function (params) {
@@ -61,7 +67,7 @@
 
         $('.trailerList').select2({
             ajax: {
-                url: '/logistic/truck/searchTrailerByKeyword',
+                url: '/logistic/logisticTruck/searchTrailerByKeyword',
                 method: 'get',
                 delay: 250,
                 data: function (params) {
@@ -83,11 +89,11 @@
     setTimeout(() => {
         // Init truckIds select 2
         for (let i=0; i < tractorList.length; i++) {
-            let $option = $("<option selected></option>").val(tractorList[i].truckId).text(tractorList[i].truck.plateNumber);
+            let $option = $("<option selected></option>").val(tractorList[i].truckId).text(tractorList[i].logisticTruck.plateNumber);
             $('.tractorList').append($option).trigger('change');
         }
         for (let i=0; i < trailerList.length; i++) {
-            let $option = $("<option selected></option>").val(trailerList[i].truckId).text(trailerList[i].truck.plateNumber);
+            let $option = $("<option selected></option>").val(trailerList[i].truckId).text(trailerList[i].logisticTruck.plateNumber);
             $('.trailerList').append($option).trigger('change');
         }
     }, 200);
@@ -128,6 +134,34 @@
                 }
             });
         }
+    }
+    function chooseAllTractor(){
+    	tractorIdArray = [];
+        $('.tractorList').val([]).trigger('change');
+        $.ajax({
+            url: ctx + "logistic/logisticTruck/getTractorList",
+            type: 'GET',
+            data:{}
+        }).done(function(rs){
+            for (let i=0; i < rs.length; i++) {
+                let $option = $("<option selected></option>").val(rs[i].id).text(rs[i].plateNumber);
+                $('.tractorList').append($option).trigger('change');
+            }
+        })
+    }
+    function chooseAllTrailer(){
+    	trailerIdArray = [];
+        $('.trailerList').val([]).trigger('change');
+        $.ajax({
+            url: ctx + "logistic/logisticTruck/getTrailerList",
+            type: 'GET',
+            data:{}
+        }).done(function(rs){
+            for (let i=0; i < rs.length; i++) {
+                let $option = $("<option selected></option>").val(rs[i].id).text(rs[i].plateNumber);
+                $('.trailerList').append($option).trigger('change');
+            }
+        })
     }
     </script>
 </body>

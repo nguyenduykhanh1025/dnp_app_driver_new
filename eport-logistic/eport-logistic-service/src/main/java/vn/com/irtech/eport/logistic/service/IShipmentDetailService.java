@@ -104,4 +104,6 @@ public interface IShipmentDetailService
     public ProcessOrder getYearBeforeAfter(String vessel, String voyage);
     
     public List<String> checkContainerReserved(String containerNos);
+    
+    public Integer getCountContByBlNo(String blNo);
 }
