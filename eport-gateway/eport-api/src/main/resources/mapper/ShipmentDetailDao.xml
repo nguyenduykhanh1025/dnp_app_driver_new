@@ -91,63 +91,68 @@
     
     <select id="selectCoordinateOfContainers" parameterType="ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
        SELECT            
-                CNTR_NO AS containerNo,
-                BL_NO AS blNo,
-                ROWW AS roww,
-                BAY AS bay,
-                TIER AS tier
+           CNTR_NO AS containerNo,
+           BL_NO AS blNo,
+           ROWW AS roww,
+           BAY AS bay,
+           TIER AS tier
             FROM TB_INVENTORY
         WHERE BL_NO = #{blNo}
         ORDER BY CNTR_NO ASC
     </select>
     
     <select id="selectVesselCodeList" resultType="String">
-	        SELECT
-                VSL_CD AS VSL_CD
-        	FROM TB_VSL
+        SELECT
+               VSL_CD AS VSL_CD
+       	FROM TB_VSL
 	</select>
 	
 	<select id="selectPODList"	resultType="String">
-			SELECT 
-    			CNTRY_CD || PORT_CD || ': '|| PORT_NM AS POD
-			FROM TB_PORT 
-			OFFSET 0 ROWS FETCH NEXT 5000 ROWS ONLY
+		SELECT 
+   			CNTRY_CD || PORT_CD || ': '|| PORT_NM AS POD
+		FROM TB_PORT 
+		OFFSET 0 ROWS FETCH NEXT 5000 ROWS ONLY
 	</select>
 	
 	<select id="selectConsigneeList" resultType="String">
-			SELECT 
-		    	ENG_LNM AS CONSIGNEE
-			FROM TB_PTNR 
-			WHERE PTNR_TYPE = 'CNS'
+		SELECT 
+	    	ENG_LNM AS CONSIGNEE
+		FROM TB_PTNR 
+		WHERE PTNR_TYPE = 'CNS'
 	</select>
 	
 	<select id="selectVoyageNoListByVesselCode" parameterType="String" resultType="String">
-			SELECT
-		    	CALL_SEQ AS VOYAGE
-			FROM TB_BERTHPLAN
-			WHERE VSL_CD = #{vesselCode}
+		SELECT
+	    	CALL_SEQ AS VOYAGE
+		FROM TB_BERTHPLAN
+		WHERE VSL_CD = #{vesselCode}
 	</select>	
 	<select id="selectOpeCodeList" resultType="String">
-		    SELECT 
-	        	PTNR_CODE AS PTNR_CODE
-		    FROM TB_PTNR
-		    WHERE PTNR_TYPE = 'SHP'
-		    GROUP BY PTNR_CODE
+	    SELECT 
+        	PTNR_CODE AS PTNR_CODE
+	    FROM TB_PTNR
+	    WHERE PTNR_TYPE = 'SHP'
+	    GROUP BY PTNR_CODE
 	</select>
 	
 	<select id="getGroupNameByTaxCode" parameterType="String" resultType="String">
-			SELECT
-		    	ENG_LNM
-			FROM TB_PTNR
-			WHERE PTNR_TYPE = 'TRK' AND PTNR_CODE = #{taxCode}
+		SELECT
+	    	ENG_LNM
+		FROM TB_PTNR
+		WHERE PTNR_TYPE = 'TRK' AND PTNR_CODE = #{taxCode}
 	</select>
 	<select id="checkContReservedByContainerNos" parameterType="String" resultType="String">
-			SELECT 
-				CNTR_NO
-			FROM TB_RESERVE
-			WHERE CNTR_NO IN 
-			<foreach item="containerNo" collection="array" open="(" separator="," close=")">
-            	#{containerNo}
-        	</foreach>
+		SELECT 
+			CNTR_NO
+		FROM TB_RESERVE
+		WHERE CNTR_NO IN 
+		<foreach item="containerNo" collection="array" open="(" separator="," close=")">
+           	#{containerNo}
+       	</foreach>
 	</select>
+    <select id="getCountContByBlNo" parameterType="String" resultType="Integer">
+		SELECT COUNT(*)
+		FROM TB_INVENTORY
+		WHERE BL_NO = #{blNo}
+    </select>
 </mapper>
