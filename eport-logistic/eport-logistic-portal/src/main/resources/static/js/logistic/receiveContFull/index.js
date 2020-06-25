@@ -1,37 +1,22 @@
-var isChange = true;
 var prefix = ctx + "logistic/receiveContFull";
-var fromDate = "";
-var toDate = "";
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected;
-var shipmentDetails;
-var shipmentDetailIds;
-var originStatus;
-var billNo;
-var simpleCustom;
+var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData;
 var contList = [];
-var checked = false;
-var allChecked = true;
-var isIterate = false;
-var selectedRow;
-var customStatus;
+var conts = '';
+var allChecked = false;
+var checkList = [];
 var rowAmount = 0;
-var sourceData;
 var emptyDepotList = ["Cảng Tiên Sa", "Cảng khác"];
-// GET RESOURCE DATA LIST
-// $.ajax({
-//   url: prefix + "/getFieldList",
-//   method: "get",
-//   success: function (data) {
-//     if (data.code == 0) {
-//       consigneeList =  data.consigneeList;
-//     }
-//   },
-//   error: function (result) {
-//     console.log("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-//   },
-// });
-
+var consigneeList;
+$.ajax({
+  url: prefix + "/getField",
+  method: "GET",
+  success: function (data) {
+    if (data.code == 0) {
+      consigneeList = data.consigneeList;
+    }
+  }
+});
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
@@ -43,6 +28,9 @@ $(document).ready(function () {
   $("#btn-uncollapse").click(function () {
     handleCollapse(false);
   });
+  
+  // CONNECT WEB SOCKET
+  connectToWebsocketServer();
 });
 function handleCollapse(status) {
   if (status) {
@@ -93,10 +81,6 @@ function loadTable() {
           pageSize: param.rows,
           orderByColumn: param.sort,
           isAsc: param.order,
-          // fromDate: fromDate,
-          // toDate: toDate,
-          // voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
-          // blNo: $("#blNo").val() == null ? "" : $("#blNo").val(),
         },
         dataType: "json",
         success: function (data) {
@@ -163,71 +147,77 @@ function getSelected() {
     }
     $("#blNo").text(row.blNo);
     rowAmount = row.containerAmount;
+    checkList = Array(rowAmount).fill(0);
+    allChecked = false;
     loadShipmentDetail(row.id);
   }
 }
 
 // FORMAT HANDSONTABLE COLUMN
-function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value != null && value != '') {
-    let content = '';
-    switch (value) {
-      case 1:
-        content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="color: rgb(5, 148, 148);"></i>';
-        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
-        content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 8px;"></i>';
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-        content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận DO Gốc" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-        break;
-      case 2:
-        content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="color: #3498db;"></i>';
-        if(sourceData[row].userVerifyStatus == "Y") {
-          content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-          content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 8px;  color: rgb(5, 148, 148);"></i>';
-        } else {
-          content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148); font-size: 15px;"></i>';
-          content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 8px;"></i>';
-        }
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-        content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhân DO Gốc" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-        break;
-      case 3:
-        content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="color: #3498db;"></i>';
-        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-        content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
-        content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận DO Gốc" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-        break;
-      case 4:
-        content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="color: #3498db;"></i>';
-        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-        content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận DO Gốc" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
-        break;
-      case 5:
-        content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="color: #3498db;"></i>';
-        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-        content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Đã Nhận DO Gốc" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i></div>';
-        break;
-      default:
-        break;
-    }
-    $(td).html(content).addClass("htMiddle");
+function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
+  let content = '';
+  if (checkList[row] == 1 || value) {
+    content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')" checked></div>';
+  } else {
+    content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
   }
+  $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
+  return td;
+}
+function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
+  let content = '';
+  switch (value) {
+    case 1:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+      break;
+    case 2:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: rgb(5, 148, 148);"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+      break;
+    case 3:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+      break;
+    case 4:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận DO Gốc" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
+      break;
+    case 5:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Đã Nhận DO gốc" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
+      break;
+    case 5:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i></div>';
+      break;
+    default:
+      break;
+  }
+  $(td).html(content);
   return td;
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'containerNo' + row).html(value).addClass("htMiddle");
     if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
-  } else {
-    $(td).html('');
   }
   return td;
 }
@@ -243,108 +233,122 @@ function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties)
   return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'consignee' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'consignee' + row).html(value).addClass("htMiddle");
     if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
-  } else {
-    $(td).html('');
-  }
-  return td;
-}
-function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value != null && value != '') {
-    $(td).attr('id', 'opeCode' + row).html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
-  } else {
-    $(td).html('');
   }
   return td;
 }
 function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'emptyDepot' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'emptyDepot' + row).html(value).addClass("htMiddle");
     if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
-  } else {
-    $(td).html('');
   }
   return td;
 }
-function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'size' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
-  }
-  return td;
-}
-function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value != null && value != '') {
-    $(td).attr('id', 'sealNo' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
-  }
-  return td;
-}
-function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value != null && value != '') {
-    $(td).attr('id', 'wgt' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
   return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'vslNm' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
   return td;
 }
 function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'voyNo' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  }
+  return td;
+}
+function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+  if (value != null && value != '') {
+    value = value.split(':')[0];
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  }
+  $(td).html(value);
+  return td;
+}
+function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+  if (value != null && value != '') {
+    value = value.split(':')[0];
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  }
+  $(td).html(value);
+  return td;
+}
+function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'wgt' + row).addClass("htMiddle");
+  $(td).html(value);
+  if (value != null && value != '') {
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
   return td;
 }
 function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'loadingPort' + row).addClass("htMiddle");
   if (value != null && value != '') {
-    $(td).attr('id', 'loadingPort' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
+    value = value.split(':')[0];
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
+  $(td).html(value);
   return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
   if (value != null && value != '') {
-    $(td).attr('id', 'dischargePort' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
+    value = value.split(':')[0];
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
+  $(td).html(value);
   return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value != null && value != '') {
-    $(td).attr('id', 'remark' + row).html(value).addClass("htMiddle");
-  } else {
-    $(td).html('');
-  }
+  $(td).attr('id', 'remark' + row).addClass("htMiddle");
+  $(td).html(value);
   return td;
 }
 
@@ -352,13 +356,16 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
   config = {
     stretchH: "all",
-    height: document.documentElement.clientHeight - 100,
+    height: document.documentElement.clientHeight - 105,
     minRows: rowAmount,
     maxRows: rowAmount,
     width: "100%",
     minSpareRows: 0,
     rowHeights: 30,
-    manualColumnMove: false,
+    fixedColumnsLeft: 3,
+    manualColumnResize: true,
+    manualRowResize: true,
+    renderAllRows: true,
     rowHeaders: true,
     className: "htMiddle",
     colHeaders: function (col) {
@@ -377,43 +384,49 @@ function configHandson() {
         case 4:
           return '<span>Chủ hàng</span><span style="color: red;">(*)</span>';
         case 5:
-          return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
-        case 6:
           return '<span>Nơi Hạ Vỏ</span><span style="color: red;">(*)</span>';
+        case 6:
+          return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
         case 7:
-          return "Kích Thước";
+          return '<span>Tàu</span><span style="color: red;">(*)</span>';
         case 8:
-          return "Seal No";
+          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
         case 9:
-          return "Trọng tải";
+          return "Kích Thước";
         case 10:
-          return "Tàu";
+          return "Seal No";
         case 11:
-          return "Chuyến";
+          return "Trọng tải";
         case 12:
-          return "Cảng Xếp Hàng";
+          return '<span>Tàu</span><span style="color: red;">(*)</span>';
         case 13:
-          return "Cảng Dỡ Hàng";
+          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
         case 14:
+          return "Cảng Xếp Hàng";
+        case 15:
+          return "Cảng Dỡ Hàng";
+        case 16:
           return "Ghi Chú";
       }
     },
-    colWidths: [50, 100, 100, 100, 100, 120, 100, 100, 100, 100, 100, 100, 100, 100, 200],
+    colWidths: [50, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200],
     filter: "true",
     columns: [
       {
         data: "active",
         type: "checkbox",
         className: "htCenter",
-      },
-      {
+        renderer: checkBoxRenderer
+    },
+    {
         data: "status",
         readOnly: true,
         renderer: statusIconsRenderer
       },
       {
         data: "containerNo",
-        renderer: containerNoRenderer
+        strict: true,
+        renderer: containerNoRenderer,
       },
       {
         data: "expiredDem",
@@ -426,12 +439,9 @@ function configHandson() {
       {
         data: "consignee",
         strict: true,
+        type: "autocomplete",
+        source: consigneeList,
         renderer: consigneeRenderer
-      },
-      {
-        data: "opeCode",
-        readOnly: true,
-        renderer: opeCodeRenderer
       },
       {
         data: "emptyDepot",
@@ -439,6 +449,21 @@ function configHandson() {
         source: emptyDepotList,
         strict: true,
         renderer: emptyDepotRenderer
+      },
+      {
+        data: "opeCode",
+        strict: true,
+        renderer: opeCodeRenderer
+      },
+      {
+        data: "vslNm",
+        strict: true,
+        renderer: vslNmRenderer
+      },
+      {
+        data: "voyNo",
+        strict: true,
+        renderer: voyNoRenderer
       },
       {
         data: "sztp",
@@ -456,16 +481,6 @@ function configHandson() {
         renderer: wgtRenderer
       },
       {
-        data: "vslNm",
-        readOnly: true,
-        renderer: vslNmRenderer
-      },
-      {
-        data: "voyNo",
-        readOnly: true,
-        renderer: voyNoRenderer
-      },
-      {
         data: "loadingPort",
         readOnly: true,
         renderer: loadingPortRenderer
@@ -480,229 +495,112 @@ function configHandson() {
         renderer: remarkRenderer
       },
     ],
-    afterRenderer: function (TD, row, column, prop, value, cellProperties) {
-      switch (column) {
-        case 0:
-          break;
-        case 1:
-          if ($(TD).attr("id") != null) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 2:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "containerNo")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 3:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "expiredDem")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 4:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 9 || $(TD).attr("id").substring(0, 9) != "consignee")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 5:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 7 || $(TD).attr("id").substring(0, 7) != "opeCode")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 6:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 10 || $(TD).attr("id").substring(0, 10) != "emptyDepot")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 7:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 4 || $(TD).attr("id").substring(0, 4) != "size")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 8:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "sealNo")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 9:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 3 || $(TD).attr("id").substring(0, 3) != "wgt")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 10:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "vslNm")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 11:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 5 || $(TD).attr("id").substring(0, 5) != "voyNo")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 12:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 11 || $(TD).attr("id").substring(0, 11) != "loadingPort")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 13:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 13 || $(TD).attr("id").substring(0, 13) != "dischargePort")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        case 14:
-          if (value != '' && $(TD).attr("id") != null && ($(TD).attr("id").length <= 6 || $(TD).attr("id").substring(0, 6) != "remark")) {
-            hot.setDataAtCell(row, column, '');
-          }
-          break;
-        default:
-          break;
-      }
-    },
-    afterChange: function (changes, src) {
-      //Get data change in cell to render another column
-      if (src !== "loadData") {
-        let verifyStatus = false;
-        let paymentStatus = false;
-        let makeOrder = false;
-        let notVerify = false;
-        changes.forEach(function interate(row) {
-          let containerNo;
-          if (row[1] == "active" && !isIterate) {
-            getDataSelectedFromTable(false, false);
-            if (allChecked) {
-              $(".checker").prop("checked", true);
-              checked = true;
-            } else {
-              $(".checker").prop("checked", false);
-              checked = false;
-            }
-            if (shipmentDetails.length > 0) {
-              let status = 1;
-              for (let i=0; i<shipmentDetails.length; i++) {
-                console.log(shipmentDetails[i].status);
-                switch (shipmentDetails[i].status) {
-                  case 1:
-                    status = 1;
-                    break;
-                  case 2:
-                    if (shipmentDetails[i].userVerifyStatus == "Y") {
-                      if (notVerify || makeOrder || paymentStatus) {
-                        status = 1;
-                      } else {
-                        verifyStatus = true;
-                        status = 3;
-                      }
-                    } else {
-                      if (verifyStatus || makeOrder || paymentStatus) {
-                        status = 1;
-                      } else {
-                        status = 2;
-                        notVerify = true;
-                      }
-                    }
-                    break;
-                  case 3:
-                    if (verifyStatus || notVerify || paymentStatus) {
-                      status = 1;
-                    } else {
-                      status = 4;
-                      makeOrder = true;
-                    }
-                    break;
-                  case 4:
-                    if (verifyStatus || notVerify || makeOrder) {
-                      status = 1;
-                    } else {
-                      status = 5;
-                      paymentStatus = true;
-                    }
-                    break;
-                }
-              }
-              switch (status) {
-                case 1:
-                  setLayoutCustomStatus(simpleCustom);
-                  if (!paymentStatus && !notVerify && !verifyStatus) {
-                    $("#deleteBtn").prop("disabled", false);
-                  }
-                  break;
-                case 2:
-                  setLayoutVerifyUser();
-                  break;
-                case 3:
-                  setLayoutVerifyUser();
-                  $("#verifyBtn").prop("disabled", true);
-                  break;
-                case 4:
-                  setLayoutPaymentStatus();
-                  break;
-                case 5:
-                  setLayoutFinish();
-                  break;
-              }
-            } else {
-              switch (originStatus) {
-                case 1:
-                  setLayoutRegisterStatus();
-                  break;
-                case 2:
-                  setLayoutCustomStatus(simpleCustom);
-                  break;
-              }
-            }
-          }
-          if (row[1] == "containerNo") {
-            containerNo = hot.getDataAtRow(row[0])[2];
-            isChange = true;
-          } else {
-            isChange = false;
-          }
-          if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
-            // Call data to auto-fill
-            $.ajax({
-              url: prefix + "/getContInfo",
-              type: "post",
-              data: {
-                containerNo: containerNo,
-                blNo: shipmentSelected.blNo
-              }
-            }).done(function (shipmentDetail) {
-              if (shipmentDetail != null) {
-                hot.setDataAtCell(row[0], 3, shipmentDetail.expiredDem); //expiredem
-                hot.setDataAtCell(row[0], 4, shipmentDetail.consignee); //consignee
-                hot.setDataAtCell(row[0], 5, shipmentDetail.opeCode); //opeCode
-                hot.setDataAtCell(row[0], 6, shipmentDetail.emptyDepot); //emptyDepot
-                hot.setDataAtCell(row[0], 7, shipmentDetail.sztp); //sztp
-                hot.setDataAtCell(row[0], 8, shipmentDetail.sealNo); //sealNo
-                hot.setDataAtCell(row[0], 9, shipmentDetail.wgt); //wgt
-                hot.setDataAtCell(row[0], 10, shipmentDetail.vslNm); //vslNm
-                hot.setDataAtCell(row[0], 11, shipmentDetail.voyNo); //voyNo
-                hot.setDataAtCell(row[0], 12, shipmentDetail.loadingPort); //loadingPort
-                hot.setDataAtCell(row[0], 13, shipmentDetail.dischargePort); //dischargePort
-                hot.setDataAtCell(row[0], 14, shipmentDetail.remark); //remark
-              }
-            });
-          }
-        });
-      }
-    },
-    afterSelectionEnd: function (r, c, r2, c2) {
-        selectedRow = null;
-        if (c == 0 && c2 == 12) {
-            selectedRow = r;
-        }
-    },
-    beforeKeyDown: function(e) {
-        if (e.keyCode == 8) {
-            e.stopImmediatePropagation();
-        }
-    },
+    beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
+      if (coords.col == 0) event.stopImmediatePropagation();
+    }
   };
 }
 configHandson();
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
+
+// TRIGGER CHECK ALL SHIPMENT DETAIL
+function checkAll() {
+  if (!allChecked) {
+    allChecked = true
+    checkList = Array(rowAmount).fill(0);
+    for (let i = 0; i < checkList.length; i++) {
+      if (hot.getDataAtCell(i, 1) == null) {
+        break;
+      }
+      checkList[i] = 1;
+      $('#check' + i).prop('checked', true);
+    }
+  } else {
+    allChecked = false;
+    checkList = Array(rowAmount).fill(0);
+    for (let i = 0; i < checkList.length; i++) {
+      $('#check' + i).prop('checked', false);
+    }
+  }
+  updateLayout();
+  hot.render();
+  $('.checker').prop('checked', allChecked);
+}
+function check(id) {
+  if (checkList[id] == 0) {
+    $('#check' + id).prop('checked', true);
+    checkList[id] = 1;
+  } else {
+    $('#check' + id).prop('checked', false);
+    checkList[id] = 0;
+  }
+  hot.render();
+  updateLayout();
+}
+function updateLayout() {
+  let disposable = true, status = 1, diff = false, check = false, verify = false;
+  allChecked = true;
+  for (let i = 0; i < checkList.length; i++) {
+    let cellStatus = hot.getDataAtCell(i, 1);
+    if (cellStatus != null) {
+      if (checkList[i] == 1) {
+        if (cellStatus == 1 && 'Y' == sourceData[i].userVerifyStatus) {
+          verify = true;
+        }
+        check = true;
+        if (cellStatus > 2) {
+          disposable = false;
+        }
+        if (status != 1 && status != cellStatus) {
+          diff = true;
+        } else {
+          status = cellStatus;
+        }
+      } else {
+        allChecked = false;
+      }
+    }
+  }
+  $('.checker').prop('checked', allChecked);
+  if (disposable) {
+    $("#deleteBtn").prop("disabled", false);
+  } else {
+    $("#deleteBtn").prop("disabled", true);
+  }
+  if (diff) {
+    status = 1;
+  } else {
+    status++;
+  }
+  if (!check) {
+    $("#deleteBtn").prop("disabled", true);
+    status = 1;
+  }
+  switch (status) {
+    case 1:
+      setLayoutRegisterStatus();
+      break;
+    case 2:
+      setLayoutCustomStatus();
+    case 3:
+      setLayoutVerifyUserStatus();
+      if (verify) {
+        $("#verifyBtn").prop("disabled", true);
+        $("#deleteBtn").prop("disabled", true);
+      }
+      break;
+    case 4:
+      setLayoutPaymentStatus();
+      break;
+    case 5:
+      setLayoutFinishStatus();
+      break;
+    default:
+      break;
+  }
+}
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
@@ -719,22 +617,10 @@ function loadShipmentDetail(id) {
           sourceData = sourceData.slice(0, rowAmount);
         }
         let saved = true;
-        customStatus = true;
-        simpleCustom = false;
         sourceData.forEach(function iterate(shipmentDetail) {
           if (shipmentDetail.id == null) {
             saved = false;
-            setLayoutRegisterStatus();
-            originStatus = 1;
-          } else {
-            if (shipmentDetail.status < 2) {
-              customStatus = false;
-            } else {
-              simpleCustom = true;
-            }
-            setLayoutCustomStatus(simpleCustom);
-            originStatus = 2;
-          }
+          } 
         });
         hot.destroy();
         configHandson();
@@ -744,9 +630,7 @@ function loadShipmentDetail(id) {
         if (!saved) {
           $.modal.alert("Thông tin container đã được hệ thống tự<br>động điền, quý khách vui lòng kiểm tra lại<br>thông tin và lưu khai báo.");
           setLayoutRegisterStatus();
-        } else if (customStatus) {
-          $("#customBtn").prop("disabled", true);
-        }
+        } 
       }
     }
   });
@@ -1051,18 +935,24 @@ function checkAll() {
 
 // Handling logic
 function checkCustomStatus() {
-  $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatusForm/" + shipmentSelected.id, 720, 500);
+  getDataSelectedFromTable(true);
+  if (shipmentDetails.length > 0) {
+      $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatusForm/" + shipmentDetailIds, 720, 500);
+  }
 }
 
 function verify() {
-  getDataSelectedFromTable(true, true);
+  getDataSelectedFromTable(true);
   if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
-  } 
+      $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
+  }
 }
 
-function verifyOtp(shipmentDtIds) {
-  $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds, 600, 350);
+function verifyOtp(shipmentDtIds, creditFlag) {
+  getDataSelectedFromTable(true);
+  if (shipmentDetails.length > 0) {
+      $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds + "/" + creditFlag, 600, 350);
+  }
 }
 
 function pay() {
@@ -1090,52 +980,32 @@ function setLayoutRegisterStatus() {
   $("#verifyStatus").removeClass("label-primary active").addClass("disable");
   $("#paymentStatus").removeClass("label-primary active").addClass("disable");
   $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  $("#saveShipmentDetailBtn").prop("disabled", false);
   $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
-  $("#pickContOnDemandBtn").prop("disabled", true);
-  $("#pickTruckBtn").prop("disabled", true);
-  $("#deleteBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
 }
 
-function setLayoutCustomStatus(simpleCustoms) {
+function setLayoutCustomStatus() {
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
   $("#customStatus").removeClass("label-primary disable").addClass("active");
   $("#verifyStatus").removeClass("label-primary active").addClass("disable");
   $("#paymentStatus").removeClass("label-primary active").addClass("disable");
   $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  $("#saveShipmentDetailBtn").prop("disabled", false);
+  $("#customBtn").prop("disabled", false);
   $("#verifyBtn").prop("disabled", true);
-  if (simpleCustoms) {
-    $("#pickContOnDemandBtn").prop("disabled", false);
-  } else {
-    $("#pickContOnDemandBtn").prop("disabled", true);
-  }
-  if (customStatus) {
-    $("#customBtn").prop("disabled", true);
-  } else {
-    $("#customBtn").prop("disabled", false);
-  }
-  $("#pickTruckBtn").prop("disabled", false);
-  $("#deleteBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
-  $("#exportBillBtn").prop("disabled", true);
+  $("#exportBillBtn").prop("disabled", false);
 }
 
-function setLayoutVerifyUser() {
+function setLayoutVerifyUserStatus() {
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
   $("#customStatus").removeClass("active disable").addClass("label-primary");
   $("#verifyStatus").removeClass("label-primary disable").addClass("active");
-  $("#paymentStatus").removeClass("label-primary active").addClass("disable");
-  $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  // $("#saveShipmentDetailBtn").prop("disabled", false);
-  // $("#customBtn").prop("disabled", true);
+  $("#paymentStatus").removeClass("active label-primary").addClass("disable");
+  $("#finishStatus").removeClass("active label-primary").addClass("disable");
+  $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", false);
-  $("#deleteBtn").prop("disabled", true);
-  // $("#pickContOnDemandBtn").prop("disabled", false);
-  // $("#pickTruckBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", true);
 }
@@ -1145,47 +1015,26 @@ function setLayoutPaymentStatus() {
   $("#customStatus").removeClass("active disable").addClass("label-primary");
   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
   $("#paymentStatus").removeClass("label-primary disable").addClass("active");
-  $("#finishStatus").removeClass("label-primary active").addClass("disable");
-  // $("#saveShipmentDetailBtn").prop("disabled", true);
-  // $("#customBtn").prop("disabled", true);
+  $("#finishStatus").removeClass("active label-primary").addClass("disable");
   $("#deleteBtn").prop("disabled", true);
+  $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
-  // $("#pickContOnDemandBtn").prop("disabled", true);
-  // $("#pickTruckBtn").prop("disabled", true);
   $("#payBtn").prop("disabled", false);
   $("#exportBillBtn").prop("disabled", true);
 }
 
-function setLayoutFinish() {
+function setLayoutFinishStatus() {
   $("#registerStatus").removeClass("active disable").addClass("label-primary");
-  $("#customStatus").removeClass("active disable").addClass("label-primary");
   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
   $("#paymentStatus").removeClass("active disable").addClass("label-primary");
+  $("#customStatus").removeClass("active disable").addClass("label-primary");
   $("#finishStatus").removeClass("label-primary disable").addClass("active");
-  // $("#saveShipmentDetailBtn").prop("disabled", true);
-  // $("#customBtn").prop("disabled", true);
   $("#deleteBtn").prop("disabled", true);
+  $("#customBtn").prop("disabled", true);
   $("#verifyBtn").prop("disabled", true);
-  // $("#pickContOnDemandBtn").prop("disabled", true);
-  // $("#pickTruckBtn").prop("disabled", false);
   $("#payBtn").prop("disabled", true);
   $("#exportBillBtn").prop("disabled", false);
 }
-
-// function setLayoutPickCont() {
-//   $("#registerStatus").removeClass("active disable").addClass("label-primary");
-//   $("#customStatus").removeClass("active disable").addClass("label-primary");
-//   $("#verifyStatus").removeClass("active disable").addClass("label-primary");
-//   $("#paymentStatus").removeClass("label-primary disable").addClass("active");
-//   $("#finishStatus").removeClass("label-primary active").addClass("disable");
-//   $("#saveShipmentDetailBtn").prop("disabled", true);
-//   $("#customBtn").prop("disabled", true);
-//   $("#verifyBtn").prop("disabled", true);
-//   $("#pickContOnDemandBtn").prop("disabled", false);
-//   $("#pickTruckBtn").prop("disabled", true);
-//   $("#payBtn").prop("disabled", true);
-//   $("#exportBillBtn").prop("disabled", true);
-// }
 
 function finishForm(result) {
   if (result.code == 0) {
@@ -1194,5 +1043,43 @@ function finishForm(result) {
     $.modal.msgError(result.msg);
   }
   reloadShipmentDetail();
+}
+
+function finishVerifyForm(result) {
+  if (result.code == 0 || result.code == 301){
+      $.modal.loading("Đang xử lý, vui lòng chờ..");
+      let processId = result.processId;
+      $.websocket.subscribe('/eportTopic/' + processId + '/response', onMessageReceived);
+  } else {
+      $.modal.msgError(result.msg);
+      reloadShipmentDetail();
+  }
+}
+
+function napasPaymentForm() {
+  $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/napasPaymentForm");
+}
+
+function onMessageReceived(payload) {
+  let message = JSON.parse(payload.body);
+  if (message.code == 0){
+      $.modal.alertSuccess(message.msg);
+  }else{
+      $.modal.alertError(message.msg);
+  }
+  $.modal.closeLoading();
+  reloadShipmentDetail();
+}
+
+function connectToWebsocketServer(){
+  // Connect to WebSocket Server.
+  $.websocket.connect({}, onConnected, onError);
+}
+
+function onConnected() {
+}
+
+function onError(error) {
+  console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
 }
 

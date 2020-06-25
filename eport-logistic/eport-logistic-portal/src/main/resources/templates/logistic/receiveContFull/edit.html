@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="form-group row"  style="margin-bottom: 0;">
-        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Mã Số Thuế</label>
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Mã Số Thuế</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
           <input name="taxCode" id="taxCode" type="text" class="form-control" onfocusout="loadGroupName()" required/>
         </div>
@@ -87,21 +87,26 @@
   var currentBill = shipment.blNo;
 
   function loadGroupName() {
-    $.ajax({
-      url: prefix + "/getGroupNameByTaxCode",
-      method: "get",
-      data: {
-        taxCode: $("#taxCode").val()
-      }
-    }).done(function(result) {
-      if (result.code == 0) {
-        $("#groupName").val(result.groupName);
-        $("#taxCode").removeClass("error-input");
-      } else {
-        $.modal.msgError("Không tìm ra mã số thuế!");
-        $("#taxCode").addClass("error-input");
-      }
-    });
+    if ($("#taxCode").val() != null && $("#taxCode").val() != '') {
+      $.ajax({
+        url: prefix + "/getGroupNameByTaxCode",
+        method: "get",
+        data: {
+          taxCode: $("#taxCode").val()
+        }
+      }).done(function(result) {
+        if (result.code == 0) {
+          $("#groupName").val(result.groupName);
+          $("#taxCode").removeClass("error-input");
+        } else {
+          $.modal.msgError("Không tìm ra mã số thuế!");
+          $("#taxCode").addClass("error-input");
+          $("#groupName").val('');
+        }
+      });
+    } else {
+      $("#groupName").val('');
+    }
   }
 
   // Map data to form
@@ -126,27 +131,30 @@
 
   function submitHandler() {
     if ($.validate.form()) {
-      checkBlNoUnique();
-      if ($("#blNo").val() != currentBill) {
-        $.ajax({
-          url: prefix + "/checkBlNoUnique",
-          method: "post",
-          data: {
-            blNo: $("#blNo").val()
-          }
-        }).done(function (result) {
-          if (result.code == 0) {
-            $("#blNo").removeClass("error-input");
-            $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
-            parent.loadTable();
-          } else {
-            $.modal.msgError("Số bill đã tồn tại!");
-            $("#blNo").addClass("error-input");
-          }
-        });
+      if ($("#groupName").val() != null && $("#groupName").val() != '') {
+        if ($("#blNo").val() != currentBill) {
+          $.ajax({
+            url: prefix + "/checkBlNoUnique",
+            method: "post",
+            data: {
+              blNo: $("#blNo").val()
+            }
+          }).done(function (result) {
+            if (result.code == 0) {
+              $("#blNo").removeClass("error-input");
+              $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
+              parent.loadTable();
+            } else {
+              $.modal.msgError("Số bill đã tồn tại!");
+              $("#blNo").addClass("error-input");
+            }
+          });
+        } else {
+          $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
+          parent.loadTable();
+        }
       } else {
-        $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
-        parent.loadTable();
+        $.modal.msgError("Không tìm thấy mã số thuế!");
       }
     }
   }
