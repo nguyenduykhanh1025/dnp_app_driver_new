@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.service;
 
 import java.io.IOException;
 import java.util.List;
+
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 
 /**
@@ -12,21 +13,21 @@ import vn.com.irtech.eport.logistic.domain.OtpCode;
  */
 public interface IOtpCodeService 
 {
-    /**
+   /**
      * Get otp Code
      * 
      * @param id otp CodeID
      * @return otp Code
      */
-    public OtpCode selectOtpCodeById(Long id);
+    public OtpCode selectSysOtpById(Long id);
 
     /**
      * Get otp Code List
      * 
-     * @param otpCode otp Code
+     * @param sysOtp otp Code
      * @return otp Code List
      */
-    public List<OtpCode> selectOtpCodeList(OtpCode otpCode);
+    public List<OtpCode> selectSysOtpList(OtpCode sysOtp);
 
     /**
      * Add otp Code
@@ -34,15 +35,15 @@ public interface IOtpCodeService
      * @param otpCode otp Code
      * @return result
      */
-    public int insertOtpCode(OtpCode otpCode);
+    public int insertSysOtp(OtpCode otpCode);
 
     /**
      * Update otp Code
      * 
-     * @param otpCode otp Code
+     * @param sysOtp otp Code
      * @return result
      */
-    public int updateOtpCode(OtpCode otpCode);
+    public int updateSysOtp(OtpCode sysOtp);
 
     /**
      * Batch Delete otp Code
@@ -50,7 +51,7 @@ public interface IOtpCodeService
      * @param ids Entity Ids
      * @return result
      */
-    public int deleteOtpCodeByIds(String ids);
+    public int deleteSysOtpByIds(String ids);
 
     /**
      * Delete otp Code
@@ -58,7 +59,7 @@ public interface IOtpCodeService
      * @param id otp CodeID
      * @return result
      */
-    public int deleteOtpCodeById(Long id);
+    public int deleteSysOtpById(Long id);
 
     public OtpCode selectOtpCodeByshipmentDetailId(String shipmentDetailId);
 
@@ -67,4 +68,5 @@ public interface IOtpCodeService
     public int deleteOtpCodeByShipmentDetailIds(String shipmentDetailIds);
 
     public String postOtpMessage(String content) throws IOException;
+
 }

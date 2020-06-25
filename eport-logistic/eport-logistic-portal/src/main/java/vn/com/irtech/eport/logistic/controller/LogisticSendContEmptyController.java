@@ -222,13 +222,13 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		OtpCode otpCode = new OtpCode();
 		Random rd = new Random();
 		long rD = rd.nextInt(900000)+100000;
-
+		String rdCode = Long.toString(rD);
 		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
-		otpCode.setShipmentDetailids(shipmentDetailIds);
-		otpCode.setPhoneNumber(lGroup.getMobilePhone());
-		otpCode.setOptCode(rD);
-		otpCodeService.insertOtpCode(otpCode);
+		otpCode.setTransactionId(shipmentDetailIds);
+		//otpCode.setPhoneNumber(lGroup.getMobilePhone());
+		otpCode.setOtpCode(rdCode);
+		otpCodeService.insertSysOtp(otpCode);
 
 		String content = "Lam lenh giao cont la  " + rD;
 		String response = "";
@@ -244,15 +244,17 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@PostMapping("/verifyOtp")
 	@ResponseBody
-	public AjaxResult verifyOtp(String shipmentDetailIds,Long otp) {
+	public AjaxResult verifyOtp(String shipmentDetailIds,String otp) {
+		LogisticGroup lGroup = getGroup();
 		OtpCode otpCode = new OtpCode();
-		otpCode.setShipmentDetailids(shipmentDetailIds);
+		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(now);
 		cal.add(Calendar.MINUTE, -5);
 		otpCode.setCreateTime(cal.getTime());
-		otpCode.setOptCode(otp);
+		otpCode.setOtpCode(otp);
+		otpCode.setPhoneNumber(lGroup.getMobilePhone());
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {

@@ -4,80 +4,97 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="vn.com.irtech.eport.logistic.mapper.OtpCodeMapper">
     
-    <resultMap type="OtpCode" id="OtpCodeResult">
+   <resultMap type="SysOtp" id="SysOtpResult">
         <result property="id"    column="id"    />
-        <result property="shipmentDetailids"    column="shipment_detailIds"    />
-        <result property="phoneNumber"    column="phone_number"    />
         <result property="optCode"    column="opt_code"    />
+        <result property="transactionId"    column="transaction_id"    />
+        <result property="otpType"    column="otp_type"    />
+        <result property="phoneNumber"    column="phone_number"    />
         <result property="msgStatus"    column="msg_status"    />
         <result property="verifyStatus"    column="verify_status"    />
+        <result property="expiredTime"    column="expired_time"    />
+        <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
     </resultMap>
 
-    <sql id="selectOtpCodeVo">
-        select id, shipment_detailIds, phone_number, opt_code, msg_status, verify_status, create_time from otp_code
+    <sql id="selectSysOtpVo">
+        select id, opt_code, transaction_id, otp_type, phone_number, msg_status, verify_status, expired_time, create_by, create_time, update_by, update_time from sys_otp
     </sql>
 
-    <select id="selectOtpCodeList" parameterType="OtpCode" resultMap="OtpCodeResult">
-        <include refid="selectOtpCodeVo"/>
+    <select id="selectSysOtpList" parameterType="SysOtp" resultMap="SysOtpResult">
+        <include refid="selectSysOtpVo"/>
         <where>  
-            <if test="shipmentDetailids != null  and shipmentDetailids != ''"> and shipment_detailIds = #{shipmentDetailids}</if>
+            <if test="optCode != null  and optCode != ''"> and opt_code = #{optCode}</if>
+            <if test="transactionId != null  and transactionId != ''"> and transaction_id = #{transactionId}</if>
+            <if test="otpType != null  and otpType != ''"> and otp_type = #{otpType}</if>
             <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
-            <if test="optCode != null "> and opt_code = #{optCode}</if>
             <if test="msgStatus != null  and msgStatus != ''"> and msg_status = #{msgStatus}</if>
             <if test="verifyStatus != null  and verifyStatus != ''"> and verify_status = #{verifyStatus}</if>
+            <if test="expiredTime != null "> and expired_time = #{expiredTime}</if>
         </where>
     </select>
     
-    <select id="selectOtpCodeById" parameterType="Long" resultMap="OtpCodeResult">
-        <include refid="selectOtpCodeVo"/>
-        where id = #{id} 
-    </select>
-
-    <select id="selectOtpCodeByshipmentDetailId" parameterType="String" resultMap="OtpCodeResult">
-        <include refid="selectOtpCodeVo"/>
-        where shipment_detailIds = #{shipmentDetailid} ORDER BY id DESC LIMIT 1
+    <select id="selectSysOtpById" parameterType="Long" resultMap="SysOtpResult">
+        <include refid="selectSysOtpVo"/>
+        where id = #{id}
     </select>
         
-    <insert id="insertOtpCode" parameterType="OtpCode" useGeneratedKeys="true" keyProperty="id">
-        insert into otp_code
+    <insert id="insertSysOtp" parameterType="SysOtp" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_otp
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="shipmentDetailids != null  and shipmentDetailids != ''">shipment_detailIds,</if>
+            <if test="optCode != null  and optCode != ''">opt_code,</if>
+            <if test="transactionId != null  and transactionId != ''">transaction_id,</if>
+            <if test="otpType != null  and otpType != ''">otp_type,</if>
             <if test="phoneNumber != null  and phoneNumber != ''">phone_number,</if>
-            <if test="optCode != null ">opt_code,</if>
             <if test="msgStatus != null  and msgStatus != ''">msg_status,</if>
             <if test="verifyStatus != null  and verifyStatus != ''">verify_status,</if>
+            <if test="expiredTime != null ">expired_time,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="shipmentDetailids != null  and shipmentDetailids != ''">#{shipmentDetailids},</if>
+            <if test="optCode != null  and optCode != ''">#{optCode},</if>
+            <if test="transactionId != null  and transactionId != ''">#{transactionId},</if>
+            <if test="otpType != null  and otpType != ''">#{otpType},</if>
             <if test="phoneNumber != null  and phoneNumber != ''">#{phoneNumber},</if>
-            <if test="optCode != null ">#{optCode},</if>
             <if test="msgStatus != null  and msgStatus != ''">#{msgStatus},</if>
             <if test="verifyStatus != null  and verifyStatus != ''">#{verifyStatus},</if>
+            <if test="expiredTime != null ">#{expiredTime},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
          </trim>
     </insert>
 
-    <update id="updateOtpCode" parameterType="OtpCode">
-        update otp_code
+    <update id="updateSysOtp" parameterType="SysOtp">
+        update sys_otp
         <trim prefix="SET" suffixOverrides=",">
-            <if test="shipmentDetailids != null  and shipmentDetailids != ''">shipment_detailIds = #{shipmentDetailids},</if>
+            <if test="optCode != null  and optCode != ''">opt_code = #{optCode},</if>
+            <if test="transactionId != null  and transactionId != ''">transaction_id = #{transactionId},</if>
+            <if test="otpType != null  and otpType != ''">otp_type = #{otpType},</if>
             <if test="phoneNumber != null  and phoneNumber != ''">phone_number = #{phoneNumber},</if>
-            <if test="optCode != null ">opt_code = #{optCode},</if>
             <if test="msgStatus != null  and msgStatus != ''">msg_status = #{msgStatus},</if>
             <if test="verifyStatus != null  and verifyStatus != ''">verify_status = #{verifyStatus},</if>
+            <if test="expiredTime != null ">expired_time = #{expiredTime},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
         </trim>
         where id = #{id}
     </update>
 
-    <delete id="deleteOtpCodeById" parameterType="Long">
-        delete from otp_code where id = #{id}
+    <delete id="deleteSysOtpById" parameterType="Long">
+        delete from sys_otp where id = #{id}
     </delete>
 
-    <delete id="deleteOtpCodeByIds" parameterType="String">
-        delete from otp_code where id in 
+    <delete id="deleteSysOtpByIds" parameterType="String">
+        delete from sys_otp where id in 
         <foreach item="id" collection="array" open="(" separator="," close=")">
             #{id}
         </foreach>

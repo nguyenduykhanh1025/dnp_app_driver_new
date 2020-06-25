@@ -26,55 +26,56 @@ import vn.com.irtech.eport.common.core.text.Convert;
 public class OtpCodeServiceImpl implements IOtpCodeService 
 {
     @Autowired
-    private OtpCodeMapper otpCodeMapper;
+    private OtpCodeMapper sysOtpMapper;
 
-    /**
+     /**
      * Get otp Code
      * 
      * @param id otp CodeID
      * @return otp Code
      */
     @Override
-    public OtpCode selectOtpCodeById(Long id)
+    public OtpCode selectSysOtpById(Long id)
     {
-        return otpCodeMapper.selectOtpCodeById(id);
+        return sysOtpMapper.selectSysOtpById(id);
     }
 
     /**
      * Get otp Code List
      * 
-     * @param otpCode otp Code
+     * @param sysOtp otp Code
      * @return otp Code
      */
     @Override
-    public List<OtpCode> selectOtpCodeList(OtpCode otpCode)
+    public List<OtpCode> selectSysOtpList(OtpCode sysOtp)
     {
-        return otpCodeMapper.selectOtpCodeList(otpCode);
+        return sysOtpMapper.selectSysOtpList(sysOtp);
     }
 
     /**
      * Add otp Code
      * 
-     * @param otpCode otp Code
+     * @param sysOtp otp Code
      * @return result
      */
     @Override
-    public int insertOtpCode(OtpCode otpCode)
+    public int insertSysOtp(OtpCode sysOtp)
     {
-        otpCode.setCreateTime(DateUtils.getNowDate());
-        return otpCodeMapper.insertOtpCode(otpCode);
+        sysOtp.setCreateTime(DateUtils.getNowDate());
+        return sysOtpMapper.insertSysOtp(sysOtp);
     }
 
     /**
      * Update otp Code
      * 
-     * @param otpCode otp Code
+     * @param sysOtp otp Code
      * @return result
      */
     @Override
-    public int updateOtpCode(OtpCode otpCode)
+    public int updateSysOtp(OtpCode sysOtp)
     {
-        return otpCodeMapper.updateOtpCode(otpCode);
+        sysOtp.setUpdateTime(DateUtils.getNowDate());
+        return sysOtpMapper.updateSysOtp(sysOtp);
     }
 
     /**
@@ -84,9 +85,9 @@ public class OtpCodeServiceImpl implements IOtpCodeService
      * @return result
      */
     @Override
-    public int deleteOtpCodeByIds(String ids)
+    public int deleteSysOtpByIds(String ids)
     {
-        return otpCodeMapper.deleteOtpCodeByIds(Convert.toStrArray(ids));
+        return sysOtpMapper.deleteSysOtpByIds(Convert.toStrArray(ids));
     }
 
     /**
@@ -96,25 +97,25 @@ public class OtpCodeServiceImpl implements IOtpCodeService
      * @return result
      */
     @Override
-    public int deleteOtpCodeById(Long id)
+    public int deleteSysOtpById(Long id)
     {
-        return otpCodeMapper.deleteOtpCodeById(id);
+        return sysOtpMapper.deleteSysOtpById(id);
     }
 
     @Override
     public OtpCode selectOtpCodeByshipmentDetailId(String shipmentDetailId)
     {
-        return otpCodeMapper.selectOtpCodeByshipmentDetailId(shipmentDetailId);
+        return sysOtpMapper.selectOtpCodeByshipmentDetailId(shipmentDetailId);
     }
 
     @Override
     public int verifyOtpCodeAvailable(OtpCode otpCode) {
-        return otpCodeMapper.verifyOtpCodeAvailable(otpCode);
+        return sysOtpMapper.verifyOtpCodeAvailable(otpCode);
     }
 
     @Override
     public int deleteOtpCodeByShipmentDetailIds(String shipmentDetailIds) {
-        return otpCodeMapper.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
+        return sysOtpMapper.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
     }
 
     @Override
