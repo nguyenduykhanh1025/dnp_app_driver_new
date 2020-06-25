@@ -654,6 +654,9 @@ function getDataFromTable(isValidate) {
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
+        if (object["status"] == 1) {
+            conts += object["containerNo"] + ',';
+        }
         shipmentDetail.opeCode = object["opeCode"];
         shipmentDetail.expiredDem = expiredDem.getTime();
         shipmentDetail.vslNm = object["vslNm"];
@@ -673,6 +676,8 @@ function getDataFromTable(isValidate) {
             $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được trong quá khứ!")
         }
     });
+
+    conts.substring(0, conts.length-1);
 
     if (isValidate) {
         contList.sort();

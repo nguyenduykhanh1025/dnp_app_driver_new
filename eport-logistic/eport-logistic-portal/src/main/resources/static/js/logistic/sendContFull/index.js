@@ -703,7 +703,9 @@ function getDataFromTable(isValidate) {
         }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
-        conts += object["containerNo"] + ',';
+        if (object["status"] == 1) {
+            conts += object["containerNo"] + ',';
+        }
         contList.push(object["containerNo"]);
         shipmentDetail.opeCode = object["opeCode"];
         shipmentDetail.sztp = object["sztp"];
@@ -771,7 +773,7 @@ function saveShipmentDetail() {
                             loadShipmentDetail(shipmentSelected.id);
                         } else {
                             if (result.conts != null) {
-                                $.modal.alertError("Không thể làm lệnh đối với các container: "+result.conts);
+                                $.modal.alertError("Lưu thất bại: Không thể làm lệnh đối với các container: "+result.conts);
                             } else {
                                 $.modal.msgError(result.msg);
                             }

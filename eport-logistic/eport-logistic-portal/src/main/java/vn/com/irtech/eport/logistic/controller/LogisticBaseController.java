@@ -48,11 +48,4 @@ public abstract class LogisticBaseController extends BaseController {
 		return false;
 	}
 	
-	public List<String> checkSendContReserved(String conts) {
-		String url = Global.getApiUrl() + "/shipmentDetail/checkContReserved/"+conts;
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class);
-		List<String> contList = (List<String>) r.get("data");
-		return contList;
-	}
 }
