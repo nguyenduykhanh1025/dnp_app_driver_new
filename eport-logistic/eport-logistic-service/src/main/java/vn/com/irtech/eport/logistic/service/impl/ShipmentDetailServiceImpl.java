@@ -538,5 +538,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		List<String> listCont = response.getBody();
 		return listCont;
 	}
+
+	@Override
+	public Integer getCountContByBlNo(String blNo) {
+		String url = Global.getApiUrl() + "/shipmentDetail/getCountContByBlNo" + blNo;
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate.getForObject(url, Integer.class);
+	}
+	
+	
     
 }

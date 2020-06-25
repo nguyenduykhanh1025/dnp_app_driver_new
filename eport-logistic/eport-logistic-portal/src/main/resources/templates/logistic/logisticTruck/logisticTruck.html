@@ -83,16 +83,16 @@
                     <th data-options="field:'id',align:'right',halign:'center'" width ="5%">
                       ID
                     </th>
-                    <th data-options="field:'plateNumber',halign:'center'" sortable="true" width="25%">
+                    <th data-options="field:'plateNumber',align:'center', halign:'center'" sortable="true" width="25%">
                       Biển số xe
                     </th>
-                    <th data-options="field:'type',halign:'center',formatter: formatType" sortable="true" width="15%">
+                    <th data-options="field:'type',align:'center', halign:'center',formatter: formatType" sortable="true" width="15%">
                       Loại xe
                     </th>
-                    <th data-options="field:'wgt',halign:'center'" sortable="true" width="15%">
+                    <th data-options="field:'wgt',align:'center', halign:'center'" sortable="true" width="15%">
                       Tải trọng
                     </th>
-                    <th data-options="field:'registryExpiryDate',halign:'center',align:'center', formatter: formatDate" sortable="true" width="15%">
+                    <th data-options="field:'registryExpiryDate', halign:'center',align:'center', formatter: formatDate" sortable="true" width="15%">
                       Hạn đăng kiểm
                     </th>
                     <th data-options="field:'value' ,align:'center',formatter: formatAction" width="25%" >
@@ -108,6 +108,6 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: easyui-js" />
-    <script th:src="@{/js/logistic/truck/truck.js}"></script>
+    <script th:src="@{/js/logistic/logisticTruck/logisticTruck.js}"></script>
 </body>
 </html>
