@@ -370,7 +370,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 				}
 			}
 		}
-		
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 	}
 
@@ -395,6 +394,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setStatus(3);
 				shipmentDetail.setPaymentStatus("Y");
+				if ("VN".equals(shipmentDetail.getLoadingPort().substring(0,2))) {
+					shipmentDetail.setStatus(4);
+					shipmentDetail.setCustomStatus("Y");
+				}
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 			return success("Thanh toán thành công");
@@ -402,39 +405,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 	
-	@GetMapping("pickTruckForm/{shipmentId}")
-	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
-//		mmap.put("shipmentId", shipmentId);
-//		ShipmentDetail shipmentDetail = new ShipmentDetail();
-//		shipmentDetail.setShipmentId(shipmentId);
-//		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
-//		String transportId = "";
-//		String shipmentIds = "";
-//		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-//		for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
-//			if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
-//				transportId = shipmentDetail2.getTransportIds();
-//			}
-//			shipmentIds += shipmentDetail2.getId() + ",";
-//		}
-//		mmap.put("transportIds", transportId);
-//		mmap.put("shipmentDetailIds", shipmentIds);
-		return PREFIX + "/pickTruckForm";
-	}
-
-	@PostMapping("/pickTruck")
-	@ResponseBody
-	public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				//shipmentDetail.setTransportIds(driverIds);
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
-			}
-			return success("Điều xe thành công");
-		}
-		return error("Xảy ra lỗi trong quá trình điều xe.");
-	}
 	@GetMapping("/getVesselCodeList")
 	@ResponseBody
 	public List<String> getVesselCodeList(){
