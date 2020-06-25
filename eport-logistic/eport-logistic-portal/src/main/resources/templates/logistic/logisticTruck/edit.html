@@ -6,7 +6,7 @@
 </head>
 <body class="white-bg">
     <div class="wrapper wrapper-content animated fadeInRight ibox-content">
-        <form class="form-horizontal m" id="form-truck-edit" th:object="${truck}">
+        <form class="form-horizontal m" id="form-truck-edit" th:object="${logisticTruck}">
             <input name="id" th:field="*{id}" type="hidden">
             <div class="form-group">    
                 <div class="col-sm-8">
@@ -39,7 +39,7 @@
                 <div class="col-sm-8">
                     <div class="input-group date">
                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                        <input name="registryExpiryDate" th:value="${#dates.format(truck.registryExpiryDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <input name="registryExpiryDate" th:value="${#dates.format(logisticTruck.registryExpiryDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
                     </div>
                 </div>
             </div>
@@ -48,7 +48,7 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <script type="text/javascript">
-        var prefix = ctx + "logistic/truck";
+        var prefix = ctx + "logistic/logisticTruck";
         $("#form-truck-edit").validate({
             focusCleanup: true
         });

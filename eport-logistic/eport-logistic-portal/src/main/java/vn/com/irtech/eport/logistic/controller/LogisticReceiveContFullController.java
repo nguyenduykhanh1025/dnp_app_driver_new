@@ -241,16 +241,13 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 	}
 
-	@GetMapping("checkCustomStatusForm/{shipmentId}")
+	@GetMapping("checkCustomStatusForm/{shipmentDetailIds}")
 	@Transactional
-	public String checkCustomStatus(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
-		mmap.put("shipmentId", shipmentId);
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setStatus(1);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+	public String checkCustomStatus(@PathVariable String shipmentDetailIds, ModelMap mmap) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0) {
 			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				mmap.put("shipmentId", shipmentDetails.get(0).getShipmentId());
 				mmap.put("contList", shipmentDetails);
 			}
 		}
@@ -466,6 +463,18 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			return success("Điều xe thành công");
 		}
 		return error("Xảy ra lỗi trong quá trình điều xe.");
+	}
+
+	@GetMapping("/getField")
+	@ResponseBody
+	public AjaxResult getField() {
+		AjaxResult ajaxResult = success();
+		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+		RestTemplate restTemplate = new RestTemplate();
+		R r = restTemplate.getForObject(url, R.class);
+		List<String> listConsignee = (List<String>) r.get("data");
+		ajaxResult.put("consigneeList", listConsignee);
+		return ajaxResult;
 	}
 	
 }

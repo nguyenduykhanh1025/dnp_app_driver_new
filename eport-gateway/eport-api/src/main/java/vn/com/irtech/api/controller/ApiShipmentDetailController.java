@@ -79,4 +79,9 @@ public class ApiShipmentDetailController {
 	public List<String> checkContReserved(@PathVariable String containerNos){
 		return shipmentDetailDao.checkContReservedByContainerNos(Convert.toStrArray(containerNos));
 	}
+	
+	@GetMapping("/shipmentDetail/getCountContByBlNo/{blNo}")
+	public Integer getCountContByBlNo(@PathVariable String blNo) {
+		return shipmentDetailDao.getCountContByBlNo(blNo);
+	}
 }

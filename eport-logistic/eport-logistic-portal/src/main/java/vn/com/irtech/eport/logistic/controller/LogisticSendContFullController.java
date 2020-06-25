@@ -179,7 +179,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
+			List<String> contReservedList = shipmentDetailService.checkContainerReserved(shipmentDetails.get(0).getProcessStatus());
+			if (contReservedList.size() > 0) {
+				AjaxResult ajaxResult = AjaxResult.error();
+				ajaxResult.put("conts", contReservedList);
+				return ajaxResult;
+			}
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetail.setProcessStatus(null);
 				if (shipmentDetail.getId() != null) {
 					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
 						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
