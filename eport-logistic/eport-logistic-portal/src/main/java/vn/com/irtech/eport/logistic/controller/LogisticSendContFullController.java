@@ -36,12 +36,14 @@ import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -67,6 +69,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@Autowired
 	private MqttService mqttService;
+	
+	@Autowired
+	private IProcessBillService processBillService;
 
     @GetMapping()
 	public String sendContEmpty() {
@@ -375,9 +380,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 
 
-	@GetMapping("paymentForm/{shipmentDetailIds}")
-	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+	@GetMapping("paymentForm/{shipmentDetailIds}{processOrderIds}")
+	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
+		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
 	}
 
@@ -405,69 +411,43 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 	
-	@GetMapping("/getVesselCodeList")
+	@GetMapping("/getField")
 	@ResponseBody
-	public List<String> getVesselCodeList(){
-		String url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class);
-		List<String> listVessel =(List<String>) r.get("data");
-		return listVessel;
-	}
-	
-	@GetMapping("/getConsigneeList")
-	@ResponseBody
-	public List<String> getConsigneeList(){
-		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class);
-		List<String> listVessel =(List<String>) r.get("data");
-		return listVessel;
-	}
-	
-	@GetMapping("/getPODList")
-	@ResponseBody
-	public List<String> getPODList(){
+	public AjaxResult getField() {
+		AjaxResult ajaxResult = success();
 		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
 		RestTemplate restTemplate = new RestTemplate();
 		R r = restTemplate.getForObject(url, R.class);
-		List<String> listPOD =(List<String>) r.get("data");
-		return listPOD;
+		List<String> listPOD = (List<String>) r.get("data");
+		ajaxResult.put("dischargePortList", listPOD);
+
+		url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+		r = restTemplate.getForObject(url, R.class);
+		List<String> listConsignee = (List<String>) r.get("data");
+		ajaxResult.put("consigneeList", listConsignee);
+
+		url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
+		r = restTemplate.getForObject(url, R.class);
+		List<String> listVessel = (List<String>) r.get("data");
+		ajaxResult.put("vslNmList", listVessel);
+
+		url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
+		r = restTemplate.getForObject(url, R.class);
+		List<String> opeCodeList = (List<String>) r.get("data");
+		ajaxResult.put("opeCodeList", opeCodeList);
+		
+		return ajaxResult;
 	}
-	
-	@GetMapping("/getVoyageNoList")
+
+	@PostMapping("/test")
 	@ResponseBody
-	public List<String> getVoyageNoList(String vesselCode){
-		String url = Global.getApiUrl() + "/shipmentDetail/getVoyageNoList?vesselCode={q}";
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class, vesselCode);
-		List<String> listVoyageNo =(List<String>) r.get("data");
-		return listVoyageNo;
-	}
-	
-	@GetMapping("/getYear")
-	@ResponseBody
-	public String getYear(String vesselCode, String voyageNo){
-		String url = Global.getApiUrl() + "/shipmentDetail/getYear/"+vesselCode+"/"+voyageNo;
-		RestTemplate restTemplate = new RestTemplate();
-		Map<String, String> vars = new HashMap<>();
-		vars.put("vesselCode", vesselCode);
-		vars.put("voyageNo", voyageNo);
-		R r = restTemplate.getForObject(url, R.class, vars);
-		String year =(String) r.get("data");
-		return year;
-	}
-	
-	@GetMapping("/getBeforeAfterDeparture")
-	@ResponseBody
-	public String getBeforeAfterDeparture(String vesselCode, String voyageNo){
-		String url = Global.getApiUrl() + "/shipmentDetail/getBeforeAfterDeparture/"+vesselCode+"/"+voyageNo;
-		RestTemplate restTemplate = new RestTemplate();
-		Map<String, String> vars = new HashMap<>();
-		vars.put("vesselCode", vesselCode);
-		vars.put("voyageNo", voyageNo);
-		R r = restTemplate.getForObject(url, R.class, vars);
-		String beforeAfter =(String) r.get("data");
-		return beforeAfter;
+	public boolean test() {
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setReferenceNo("");
+		processOrder.setId(1l);
+		processOrder.setServiceType(4);
+		processOrder.setShipmentId(1l);
+		processBillService.saveProcessBillByInvoiceNo(processOrder);
+		return true;
 	}
 }

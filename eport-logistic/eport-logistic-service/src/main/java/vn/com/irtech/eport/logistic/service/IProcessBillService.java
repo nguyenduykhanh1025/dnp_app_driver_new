@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 
 /**
  * Process billingService Interface
@@ -60,4 +61,8 @@ public interface IProcessBillService
     public int deleteProcessBillById(Long id);
     
     public List<ProcessBill> getUnitBillList(String invNo);
+    
+    public boolean saveProcessBillByInvoiceNo(ProcessOrder processOrder);
+
+    public List<ProcessBill> selectProcessBillListByProcessOrderIds(String processOrderIds);
 }

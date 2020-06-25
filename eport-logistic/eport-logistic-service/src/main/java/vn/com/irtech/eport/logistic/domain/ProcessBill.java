@@ -38,29 +38,9 @@ public class ProcessBill extends BaseEntity
     @Excel(name = "Size Type")
     private String sztp;
 
-    /** Số lượng cont */
-    @Excel(name = "Số lượng cont")
-    private Integer contNumber;
-
     /** Phí giao nhận */
     @Excel(name = "Phí giao nhận")
     private Long exchangeFee;
-
-    /** Số cont chỉ định */
-    @Excel(name = "Số cont chỉ định")
-    private Integer preorderContNumber;
-
-    /** Số dịch chuyển */
-    @Excel(name = "Số dịch chuyển")
-    private Integer shiftingNumber;
-
-    /** Phí dịch chuyển */
-    @Excel(name = "Phí dịch chuyển")
-    private Long shiftingFee;
-
-    /** Số hóa đơn */
-    @Excel(name = "Số hóa đơn")
-    private String invNo;
 
     /** Tỉ lệ % thuế VAT */
     @Excel(name = "Tỉ lệ % thuế VAT")
@@ -128,15 +108,6 @@ public class ProcessBill extends BaseEntity
     {
         return sztp;
     }
-    public void setContNumber(Integer contNumber) 
-    {
-        this.contNumber = contNumber;
-    }
-
-    public Integer getContNumber() 
-    {
-        return contNumber;
-    }
     public void setExchangeFee(Long exchangeFee) 
     {
         this.exchangeFee = exchangeFee;
@@ -145,42 +116,6 @@ public class ProcessBill extends BaseEntity
     public Long getExchangeFee() 
     {
         return exchangeFee;
-    }
-    public void setPreorderContNumber(Integer preorderContNumber) 
-    {
-        this.preorderContNumber = preorderContNumber;
-    }
-
-    public Integer getPreorderContNumber() 
-    {
-        return preorderContNumber;
-    }
-    public void setShiftingNumber(Integer shiftingNumber) 
-    {
-        this.shiftingNumber = shiftingNumber;
-    }
-
-    public Integer getShiftingNumber() 
-    {
-        return shiftingNumber;
-    }
-    public void setShiftingFee(Long shiftingFee) 
-    {
-        this.shiftingFee = shiftingFee;
-    }
-
-    public Long getShiftingFee() 
-    {
-        return shiftingFee;
-    }
-    public void setInvNo(String invNo) 
-    {
-        this.invNo = invNo;
-    }
-
-    public String getInvNo() 
-    {
-        return invNo;
     }
     public void setVatRate(Integer vatRate) 
     {
@@ -219,12 +154,7 @@ public class ProcessBill extends BaseEntity
             .append("serviceType", getServiceType())
             .append("referenceNo", getReferenceNo())
             .append("sztp", getSztp())
-            .append("contNumber", getContNumber())
             .append("exchangeFee", getExchangeFee())
-            .append("preorderContNumber", getPreorderContNumber())
-            .append("shiftingNumber", getShiftingNumber())
-            .append("shiftingFee", getShiftingFee())
-            .append("invNo", getInvNo())
             .append("vatRate", getVatRate())
             .append("vatAfterFee", getVatAfterFee())
             .append("containerNo", getContainerNo())

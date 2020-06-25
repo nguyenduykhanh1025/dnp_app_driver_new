@@ -1,6 +1,6 @@
 var prefix = ctx + "logistic/sendContFull";
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData;
+var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
 var contList = [];
 var conts = '';
 var allChecked = false;
@@ -624,6 +624,8 @@ function getDataSelectedFromTable(isValidate) {
     }
     shipmentDetailIds = "";
     shipmentDetails = [];
+    processOrderIds = '';
+    let temProcessOrderIds = [];
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
@@ -636,8 +638,16 @@ function getDataSelectedFromTable(isValidate) {
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
+        if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"])) {
+            temProcessOrderIds.push(object["processOrderId"]);
+            processOrderIds += object["processOrderId"] + ',';
+        }
         shipmentDetailIds += object["id"] + ",";
     });
+
+    if (processOrderIds != '') {
+        processOrderIds.substring(0, processOrderIds.length-1);
+    }
 
     // Get result in "selectedList" letiable
     if (shipmentDetails.length == 0 && isValidate) {
@@ -703,7 +713,7 @@ function getDataFromTable(isValidate) {
         }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
-        if (object["status"] == 1) {
+        if (object["status"] == 1 || object["status"] == null) {
             conts += object["containerNo"] + ',';
         }
         contList.push(object["containerNo"]);
@@ -836,8 +846,12 @@ function verifyOtp(shipmentDtIds, creditFlag) {
 }
 
 function pay() {
-    $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds, 700, 300);
+    getDataSelectedFromTable(true);
+    if (shipmentDetails.length > 0) {
+        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds + "/" + processOrderIds, 700, 300);
+    }
 }
+   
 
 function checkCustomStatus() {
     getDataSelectedFromTable(true);

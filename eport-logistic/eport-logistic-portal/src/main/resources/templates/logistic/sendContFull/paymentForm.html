@@ -47,20 +47,9 @@
     <div class="content">
         <div class="unloadContCosts">
           <b>Phí bốc dỡ container</b>
+          
         </div>
-        <div class="moveContCosts">
-          <!-- <b>Phí dịch chuyển</b>
-          <div>
-            <label class="col-md-1 col-sm-1 col-xs-4">Số container dịch chuyển</label>
-            <label class="col-md-1 col-sm-1 col-xs-3">Đơn giá</label>
-            <label class="col-md-1 col-sm-1 col-xs-3">Thành tiền</label>
-          </div>
-          <div>
-            <span id="moveContAmount" class="col-md-1 col-sm-1 col-xs-4"></span>
-            <span class="col-md-1 col-sm-1 col-xs-3"><span id="unitCosts"></span><span> đồng</span></span>
-            <span class="col-md-1 col-sm-1 col-xs-3"><span id="moveContPrice"></span><span> đồng</span></span>
-          </div> -->
-        </div>
+        
         <div class="total">
           <b>Tổng cộng: <span id="total"></span><span> đồng.</span></b>
         </div>
@@ -87,6 +76,7 @@
 <th:block th:include="include :: footer" />
 <script type="text/javascript" th:inline="javascript">
   var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
+  var processBills = /*[[${processBills}]]*/;
 </script>
 <script th:src="@{/js/logistic/sendContFull/paymentForm.js}"></script>
 </html>

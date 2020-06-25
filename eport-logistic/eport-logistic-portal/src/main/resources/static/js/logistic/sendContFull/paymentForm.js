@@ -30,3 +30,5 @@ $("#moveContAmount").html(0);
 $("#unitCosts").html(0);
 $("#moveContPrice").html(0);
 $("#total").html(0);
+
+console.log(processBills);

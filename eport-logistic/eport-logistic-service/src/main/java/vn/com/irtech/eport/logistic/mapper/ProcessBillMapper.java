@@ -58,4 +58,6 @@ public interface ProcessBillMapper
      * @return result
      */
     public int deleteProcessBillByIds(String[] ids);
+
+    public List<ProcessBill> selectProcessBillListByProcessOrderIds(String processOrderIds);
 }
