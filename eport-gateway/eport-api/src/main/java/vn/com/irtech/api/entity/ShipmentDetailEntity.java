@@ -23,6 +23,9 @@ public class ShipmentDetailEntity extends BaseEntity
     /** null */
     private Long logisticGroupId;
 
+    /** Ma Lenh */
+    private Long processOrderId;
+    
     /** Ma DK */
     private String registerNo;
 
@@ -86,9 +89,6 @@ public class ShipmentDetailEntity extends BaseEntity
     /** VGM Person Info */
     private String vgmPersonInfo;
 
-    /** Custom Declare Number */
-    private String customDeclareNo;
-
     /** Custom Status (N,C,H,R) */
     private String customStatus;
 
@@ -110,11 +110,8 @@ public class ShipmentDetailEntity extends BaseEntity
     /** Boc Chi Dinh (Y,N) */
     private String preorderPickup;
 
-    /** null */
-    private Integer movingContAmount;
-
-    /** null */
-    private String transportIds;
+    /** So Cont Dich Chuyen */
+    private Integer shiftingContNumber;
 
     /** Status */
     private Integer status;
@@ -127,6 +124,25 @@ public class ShipmentDetailEntity extends BaseEntity
     
     /** Tier*/
     private Integer tier;
+    
+    /** Cargo Type */
+    private String cargoType;
+    
+    public void setCargoType(String cargoType) {
+        this.cargoType = cargoType;
+    }
+
+    public String getCargoType() {
+        return cargoType;
+    }
+    
+    public void setProcessOrderId(Long processOrderId) {
+        this.processOrderId = processOrderId;
+    }
+
+    public Long getProcessOrderId() {
+        return processOrderId;
+    }
     
     public Integer getBay() {
 		return bay;
@@ -368,15 +384,6 @@ public class ShipmentDetailEntity extends BaseEntity
     {
         return vgmPersonInfo;
     }
-    public void setCustomDeclareNo(String customDeclareNo) 
-    {
-        this.customDeclareNo = customDeclareNo;
-    }
-
-    public String getCustomDeclareNo() 
-    {
-        return customDeclareNo;
-    }
     public void setCustomStatus(String customStatus) 
     {
         this.customStatus = customStatus;
@@ -440,23 +447,12 @@ public class ShipmentDetailEntity extends BaseEntity
     {
         return preorderPickup;
     }
-    public void setMovingContAmount(Integer movingContAmount) 
-    {
-        this.movingContAmount = movingContAmount;
+    public void setShiftingContNumber(Integer shiftingContNumber) {
+        this.shiftingContNumber = shiftingContNumber;
     }
 
-    public Integer getMovingContAmount() 
-    {
-        return movingContAmount;
-    }
-    public void setTransportIds(String transportIds) 
-    {
-        this.transportIds = transportIds;
-    }
-
-    public String getTransportIds() 
-    {
-        return transportIds;
+    public Integer getShiftingContNumber() {
+        return shiftingContNumber;
     }
     public void setStatus(Integer status) 
     {
@@ -474,6 +470,7 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("id", getId())
             .append("shipmentId", getShipmentId())
             .append("logisticGroupId", getLogisticGroupId())
+            .append("processOrderId", getProcessOrderId())
             .append("registerNo", getRegisterNo())
             .append("containerNo", getContainerNo())
             .append("containerStatus", getContainerStatus())
@@ -495,7 +492,6 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("vgmChk", getVgmChk())
             .append("vgm", getVgm())
             .append("vgmPersonInfo", getVgmPersonInfo())
-            .append("customDeclareNo", getCustomDeclareNo())
             .append("customStatus", getCustomStatus())
             .append("paymentStatus", getPaymentStatus())
             .append("processStatus", getProcessStatus())
@@ -503,8 +499,7 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("doReceivedTime", getDoReceivedTime())
             .append("userVerifyStatus", getUserVerifyStatus())
             .append("preorderPickup", getPreorderPickup())
-            .append("movingContAmount", getMovingContAmount())
-            .append("transportIds", getTransportIds())
+            .append("shiftingContNumber", getShiftingContNumber())
             .append("status", getStatus())
             .append("bay", getBay())
             .append("roww", getRow())

@@ -198,12 +198,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setCreateBy(user.getFullName());
 					shipmentDetail.setCreateTime(new Date());
 					shipmentDetail.setFe("F");
-					shipmentDetail.setStatus(1);
-					shipmentDetail.setCustomStatus("N");
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setDoStatus("N");
 					shipmentDetail.setPreorderPickup("N");
+					if ("VN".equalsIgnoreCase(shipmentDetail.getDischargePort().substring(0, 2))) {
+						shipmentDetail.setCustomStatus("R");
+						shipmentDetail.setStatus(2);
+					} else {
+						shipmentDetail.setCustomStatus("N");
+						shipmentDetail.setStatus(1);
+					}
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
@@ -235,7 +240,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			ObjectMapper mapper = new ObjectMapper();
 			ShipmentDetail aShipmentDetail = mapper.convertValue(r.get("data"), ShipmentDetail.class);
 			return aShipmentDetail;
-			
 		} else {
 			return null;
 		}
@@ -256,15 +260,29 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@PostMapping("/checkCustomStatus")
 	@ResponseBody
-	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList, String shipmentDetailIds) {
+	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
+			String shipmentDetailIds) throws IOException {
 		if (declareNoList != null) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService
+					.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails.size() > 0) {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
-						shipmentDetail.setStatus(2);
-						shipmentDetail.setCustomStatus("R");
-						shipmentDetailService.updateShipmentDetail(shipmentDetail);
+						try {
+							Thread.sleep(500);
+							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
+							{
+								shipmentDetail.setStatus(4);
+								shipmentDetail.setCustomStatus("R");
+								shipmentDetailService.updateShipmentDetail(shipmentDetail);
+								// push notification with socketIO 
+							}else {
+								// push notification with socketIO 
+							};
+						
+						} catch(Exception e) {
+							e.printStackTrace(); 
+						}
 					}
 					return shipmentDetails;
 				}
@@ -366,7 +384,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				try {
 					if (!mqttService.publishMessageToRobot(serviceRobotReqs.get(0), EServiceRobot.RECEIVE_CONT_FULL)) {
 						ajaxResult = AjaxResult.warn("Yêu cầu đang được xử lý. Hệ thống sẽ thông báo khi có kết quả!");
-						ajaxResult.put("processIds", processIds);
 						return ajaxResult;
 					}
 				} catch (Exception e) {
@@ -375,6 +392,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				
 				ajaxResult =  AjaxResult.success("Xác thực OTP thành công");
 				ajaxResult.put("processIds", processIds);
+				ajaxResult.put("orderNumber", serviceRobotReqs.size());
 				return ajaxResult;
 			} else {
 				return error("Có lỗi xảy ra trong quá trình xác thực!");

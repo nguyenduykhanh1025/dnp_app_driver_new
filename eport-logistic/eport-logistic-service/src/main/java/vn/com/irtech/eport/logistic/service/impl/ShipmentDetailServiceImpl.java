@@ -359,6 +359,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setSztp(shipmentDetails.get(0).getSztp());
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setId(shipmentDetails.get(0).getId());
+        processOrder.setShipmentId(shipment.getId());
         processOrder.setServiceType(1);
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessOrderId(shipmentDetails.get(0).getId());

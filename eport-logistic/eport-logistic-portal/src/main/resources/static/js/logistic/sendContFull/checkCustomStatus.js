@@ -116,7 +116,7 @@ $("#declareNoAmount").keypress(function (event) {
 
 function formatStatus(value) {
     switch (value) {
-        case "Y":
+        case "R":
             return "Đã thông quan";
         case "N":
             return "Chưa thông quan";
