@@ -320,66 +320,48 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@PostMapping("/verifyOtp")
 	@ResponseBody
-	public AjaxResult verifyOtp(String shipmentDetailIds, Long otp, boolean creditFlag) {
+	public AjaxResult verifyOtp(String shipmentDetailIds, String otp, boolean creditFlag) {
 		
-		// OtpCode otpCode = new OtpCode();
-		// otpCode.setShipmentDetailids(shipmentDetailIds);
-		// Date now = new Date();
-		// Calendar cal = Calendar.getInstance();
-		// cal.setTime(now);
-		// cal.add(Calendar.MINUTE, -5);
-		// otpCode.setCreateTime(cal.getTime());
-		// otpCode.setOptCode(otp);
-		// if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
-		// 	List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		// 	if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-		// 		Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-		// 		ProcessOrder processOrder = shipmentDetailService.makeOrderSendContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
-		// 		if (processOrder != null) {
-		// 			processOrderService.insertProcessOrder(processOrder);
-		// 			//
-		// 			ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
-		// 			try {
-		// 				mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
-		// 			} catch (Exception e1) {
-		// 				e1.printStackTrace();
-		// 			}
-					
-		// 			return success("Xác thực OTP thành công");
-		// 		} else {
-		// 			return error("Có lỗi xảy ra trong quá trình xác thực!");
-		// 		}
-		// 	}
-		// }
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			AjaxResult ajaxResult = null;
-			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, creditFlag);
-			if (serviceRobotReqs != null) {
-				processOrderService.insertProcessOrderReceiveContFull(serviceRobotReqs);
-				//
-				List<Long> processIds = new ArrayList<>(); 
-				for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
-					processIds.add(serviceRobotReq.processOrder.getId());
-				}
-				try {
-					if (!mqttService.publishMessageToRobot(serviceRobotReqs.get(0), EServiceRobot.RECEIVE_CONT_FULL)) {
-						ajaxResult = AjaxResult.warn("Yêu cầu đang được xử lý. Hệ thống sẽ thông báo khi có kết quả!");
-						ajaxResult.put("processIds", processIds);
-						return ajaxResult;
+		OtpCode otpCode = new OtpCode();
+		otpCode.setTransactionId(shipmentDetailIds);
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		cal.add(Calendar.MINUTE, -5);
+		otpCode.setCreateTime(cal.getTime());
+		otpCode.setOtpCode(otp);
+		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				AjaxResult ajaxResult = null;
+				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+				List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, creditFlag);
+				if (serviceRobotReqs != null) {
+					processOrderService.insertProcessOrderReceiveContFull(serviceRobotReqs);
+					//
+					List<Long> processIds = new ArrayList<>(); 
+					for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
+						processIds.add(serviceRobotReq.processOrder.getId());
 					}
-				} catch (Exception e) {
+					try {
+						if (!mqttService.publishMessageToRobot(serviceRobotReqs.get(0), EServiceRobot.RECEIVE_CONT_FULL)) {
+							ajaxResult = AjaxResult.warn("Yêu cầu đang được xử lý. Hệ thống sẽ thông báo khi có kết quả!");
+							ajaxResult.put("processIds", processIds);
+							return ajaxResult;
+						}
+					} catch (Exception e) {
+						return error("Có lỗi xảy ra trong quá trình xác thực!");
+					}
+					
+					ajaxResult =  AjaxResult.success("Xác thực OTP thành công");
+					ajaxResult.put("processIds", processIds);
+					return ajaxResult;
+				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
-				
-				ajaxResult =  AjaxResult.success("Xác thực OTP thành công");
-				ajaxResult.put("processIds", processIds);
-				return ajaxResult;
-			} else {
-				return error("Có lỗi xảy ra trong quá trình xác thực!");
 			}
 		}
+		
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 	}
 

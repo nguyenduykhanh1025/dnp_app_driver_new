@@ -461,28 +461,31 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Override
     public boolean checkCustomStatus(String userVoy, String cntrNo) throws IOException {
 
-        String uri = "http://192.168.0.36:8060/ACCIS-Web/rest/v1/eportcontroller/getCustomsStatus/?UserVoy=" + userVoy
-                + "&CntrNo=" + cntrNo + "";
+        String uri = "http://192.168.0.36:8060/ACCIS-Web/rest/v1/eportcontroller/getCustomsStatus/";
         // URI uri = new URI(uri);
-
+        
+    
+        String requestJson = "{\"RequestCntrStatus\": {\"UserVoy\": \""+userVoy+"\",\"CntrNo\": \""+cntrNo+"\"}}";
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "text/xml;charset=UTF-8");
+        headers.set("Content-Type", "application/json");
         headers.set("Authorization", "Basic RVBPUlQ6MTEx");
         RestTemplate restTemplate = new RestTemplate();
         // String result = restTemplate.getForObject(uri,HttpMethod.GET,
         // String.class,headers);
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+        HttpEntity<String> entity = new HttpEntity<String>(requestJson, headers);
         ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
         String stringJson = result.getBody();
         JsonObject convertedObject = new Gson().fromJson(stringJson, JsonObject.class);
         convertedObject = convertedObject.getAsJsonObject("response");
         JsonArray jarray = convertedObject.getAsJsonArray("data");
-        if (!jarray.toString().equals("")) {
+        if (jarray.size() > 0) {
             convertedObject = jarray.get(0).getAsJsonObject();
             String rs = convertedObject.get("customsStatus").toString();
             System.out.print(rs);
             if ("TQ".equals(rs.substring(1, rs.length() - 1))) {
                 return true;
+            }else {
+                return false;
             }
         }
         return false;

@@ -80,7 +80,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		//String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		String groupName = "Công ty abc";
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {
@@ -174,7 +175,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	}
 
 	@PostMapping("/saveShipmentDetail")
-	@Transactional
 	@ResponseBody
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
@@ -204,7 +204,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
-					shipmentDetail.setCustomStatus("N");
 					shipmentDetail.setFe("F");
 					if (shipmentDetail.getLoadingPort() == null || shipmentDetail.getLoadingPort().equals("")) {
 						shipmentDetail.setLoadingPort(" ");
@@ -232,10 +231,57 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
+	@GetMapping("checkCustomStatusForm/{shipmentDetailIds}")
+	@Transactional
+	public String checkCustomStatus(@PathVariable String shipmentDetailIds, ModelMap mmap) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0) {
+			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				mmap.put("shipmentId", shipmentDetails.get(0).getShipmentId());
+				mmap.put("contList", shipmentDetails);
+			}
+		}
+		return PREFIX + "/checkCustomStatus";
+	}
+
+
+	@PostMapping("/checkCustomStatus")
+	@ResponseBody
+	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
+			String shipmentDetailIds) throws IOException {
+		if (declareNoList != null) {
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService
+					.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() > 0) {
+				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						try {
+							Thread.sleep(500);
+							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
+							{
+								shipmentDetail.setStatus(4);
+								shipmentDetail.setCustomStatus("Y");
+								shipmentDetailService.updateShipmentDetail(shipmentDetail);
+								// push notification with socketIO 
+							}else {
+								// push notification with socketIO 
+							};
+						
+						} catch(Exception e) {
+							e.printStackTrace(); 
+						}
+						
+					}
+					return shipmentDetails;
+				}
+			}
+		}
+		return null;
+	}
+
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		mmap.put("creditFlag", getGroup().getCreditFlag());
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
@@ -250,94 +296,85 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return PREFIX + "/verifyOtp";
 	}
 
+
 	@PostMapping("sendOTP")
 	@ResponseBody
 	public AjaxResult sendOTP(String shipmentDetailIds) {
-		// LogisticGroup lGroup = getGroup();
+		LogisticGroup lGroup = getGroup();
 
-		// OtpCode otpCode = new OtpCode();
-		// Random rd = new Random();
-		// long rD = rd.nextInt(900000)+100000;
+		OtpCode otpCode = new OtpCode();
+		Random rd = new Random();
+		long rD = rd.nextInt(900000)+100000;
+		String tDCode = Long.toString(rD);
+		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
-		// otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
+		otpCode.setTransactionId(shipmentDetailIds);
+		otpCode.setPhoneNumber(lGroup.getMobilePhone());
+		otpCode.setOtpCode(tDCode);
+		otpCode.setOtpType("1");
 
-		// otpCode.setShipmentDetailids(shipmentDetailIds);
-		// otpCode.setPhoneNumber(lGroup.getMobilePhone());
-		// otpCode.setOptCode(rD);
-		// otpCodeService.insertOtpCode(otpCode);
+		Calendar cal = Calendar.getInstance();
+		Date now = new Date();
+		cal.setTime(now);
+		cal.add(Calendar.MINUTE, +5);
+		otpCode.setExpiredTime(cal.getTime());
+		otpCodeService.insertSysOtp(otpCode);
 
-		// String content = "Lam lenh giaoa cont la  " + rD;
-		// String response = "";
-//		try {
-//			response = otpCodeService.postOtpMessage(content);
-//			System.out.println(response);
-//		} catch (IOException ex) {
-//			// process the exception
-//		}
+		String content = "TEST SMS   " + rD;
+		String response = "";
+		try {
+			response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
+			System.out.println(response);
+		} catch (IOException ex) {
+			// process the exception
+		}
 		return AjaxResult.success("response.toString()");
 	}
 
 	@PostMapping("/verifyOtp")
 	@ResponseBody
-	public AjaxResult verifyOtp(String shipmentDetailIds, Long otp, boolean creditFlag) {
-		
-		// OtpCode otpCode = new OtpCode();
-		// otpCode.setShipmentDetailids(shipmentDetailIds);
-		// Date now = new Date();
-		// Calendar cal = Calendar.getInstance();
-		// cal.setTime(now);
-		// cal.add(Calendar.MINUTE, -5);
-		// otpCode.setCreateTime(cal.getTime());
-		// otpCode.setOptCode(otp);
-		// if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
-		// 	List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		// 	if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-		// 		Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-		// 		ProcessOrder processOrder = shipmentDetailService.makeOrderSendContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
-		// 		if (processOrder != null) {
-		// 			processOrderService.insertProcessOrder(processOrder);
-		// 			//
-		// 			ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
-		// 			try {
-		// 				mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
-		// 			} catch (Exception e1) {
-		// 				e1.printStackTrace();
-		// 			}
-					
-		// 			return success("Xác thực OTP thành công");
-		// 		} else {
-		// 			return error("Có lỗi xảy ra trong quá trình xác thực!");
-		// 		}
-		// 	}
-		// }
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			AjaxResult ajaxResult = null;
-			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
-			if (processOrder != null) {
-				processOrderService.insertProcessOrder(processOrder);
-				//
-				ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
-				try {
-					if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL)) {
-						ajaxResult = AjaxResult.warn("Yêu cầu đang được xử lý. Hệ thống sẽ thông báo khi có kết quả!");
-						ajaxResult.put("processId", processOrder.getId());
-						return ajaxResult;
+	public AjaxResult verifyOtp(String shipmentDetailIds, String otp, boolean creditFlag) {
+		OtpCode otpCode = new OtpCode();
+		otpCode.setTransactionId(shipmentDetailIds);
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		cal.add(Calendar.MINUTE, -5);
+		otpCode.setCreateTime(cal.getTime());
+		otpCode.setOtpCode(otp);
+		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				AjaxResult ajaxResult = null;
+				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+				ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
+				if (processOrder != null) {
+					processOrderService.insertProcessOrder(processOrder);
+					//
+					ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+					try {
+						if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL)) {
+							ajaxResult = AjaxResult.warn("Yêu cầu đang được xử lý. Hệ thống sẽ thông báo khi có kết quả!");
+							ajaxResult.put("processId", processOrder.getId());
+							return ajaxResult;
+						}
+					} catch (Exception e) {
+						return error("Có lỗi xảy ra trong quá trình xác thực!");
 					}
-				} catch (Exception e) {
+					
+					ajaxResult =  AjaxResult.success("Xác thực OTP thành công");
+					ajaxResult.put("processId", processOrder.getId());
+					return ajaxResult;
+				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
-				
-				ajaxResult =  AjaxResult.success("Xác thực OTP thành công");
-				ajaxResult.put("processId", processOrder.getId());
-				return ajaxResult;
-			} else {
-				return error("Có lỗi xảy ra trong quá trình xác thực!");
 			}
 		}
+		
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 	}
+
+
 
 	@GetMapping("paymentForm/{shipmentDetailIds}")
 	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
@@ -365,77 +402,102 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 	
-	@GetMapping("checkCustomStatusForm/{shipmentDetailIds}")
-	@Transactional
-	public String checkCustomStatus(@PathVariable String shipmentDetailIds, ModelMap mmap) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0) {
-			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				mmap.put("shipmentId", shipmentDetails.get(0).getShipmentId());
-				mmap.put("contList", shipmentDetails);
-			}
-		}
-		return PREFIX + "/checkCustomStatus";
+	@GetMapping("pickTruckForm/{shipmentId}")
+	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, ModelMap mmap) {
+//		mmap.put("shipmentId", shipmentId);
+//		ShipmentDetail shipmentDetail = new ShipmentDetail();
+//		shipmentDetail.setShipmentId(shipmentId);
+//		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
+//		String transportId = "";
+//		String shipmentIds = "";
+//		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+//		for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+//			if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
+//				transportId = shipmentDetail2.getTransportIds();
+//			}
+//			shipmentIds += shipmentDetail2.getId() + ",";
+//		}
+//		mmap.put("transportIds", transportId);
+//		mmap.put("shipmentDetailIds", shipmentIds);
+		return PREFIX + "/pickTruckForm";
 	}
 
-	@PostMapping("/checkCustomStatus")
+	@PostMapping("/pickTruck")
 	@ResponseBody
-	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
-			String shipmentDetailIds) throws IOException {
-		if (declareNoList != null) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService
-					.selectShipmentDetailByIds(shipmentDetailIds);
-			if (shipmentDetails.size() > 0) {
-				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-					for (ShipmentDetail shipmentDetail : shipmentDetails) {
-						try {
-							Thread.sleep(500);
-							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
-							{
-								shipmentDetail.setStatus(4);
-								shipmentDetail.setCustomStatus("R");
-								shipmentDetailService.updateShipmentDetail(shipmentDetail);
-								// push notification with socketIO 
-							}else {
-								// push notification with socketIO 
-							};
-						
-						} catch(Exception e) {
-							e.printStackTrace(); 
-						}
-					}
-					return shipmentDetails;
-				}
+	public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				//shipmentDetail.setTransportIds(driverIds);
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
+			return success("Điều xe thành công");
 		}
-		return null;
+		return error("Xảy ra lỗi trong quá trình điều xe.");
+	}
+	@GetMapping("/getVesselCodeList")
+	@ResponseBody
+	public List<String> getVesselCodeList(){
+		String url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
+		RestTemplate restTemplate = new RestTemplate();
+		R r = restTemplate.getForObject(url, R.class);
+		List<String> listVessel =(List<String>) r.get("data");
+		return listVessel;
 	}
 	
-	@GetMapping("/getField")
+	@GetMapping("/getConsigneeList")
 	@ResponseBody
-	public AjaxResult getField() {
-		AjaxResult ajaxResult = success();
+	public List<String> getConsigneeList(){
+		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+		RestTemplate restTemplate = new RestTemplate();
+		R r = restTemplate.getForObject(url, R.class);
+		List<String> listVessel =(List<String>) r.get("data");
+		return listVessel;
+	}
+	
+	@GetMapping("/getPODList")
+	@ResponseBody
+	public List<String> getPODList(){
 		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
 		RestTemplate restTemplate = new RestTemplate();
 		R r = restTemplate.getForObject(url, R.class);
-		List<String> listPOD = (List<String>) r.get("data");
-		ajaxResult.put("dischargePortList", listPOD);
-
-		url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
-		r = restTemplate.getForObject(url, R.class);
-		List<String> listConsignee = (List<String>) r.get("data");
-		ajaxResult.put("consigneeList", listConsignee);
-
-		url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
-		r = restTemplate.getForObject(url, R.class);
-		List<String> listVessel = (List<String>) r.get("data");
-		ajaxResult.put("vslNmList", listVessel);
-
-		url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
-		r = restTemplate.getForObject(url, R.class);
-		List<String> opeCodeList = (List<String>) r.get("data");
-		ajaxResult.put("opeCodeList", opeCodeList);
-		
-		return ajaxResult;
+		List<String> listPOD =(List<String>) r.get("data");
+		return listPOD;
+	}
+	
+	@GetMapping("/getVoyageNoList")
+	@ResponseBody
+	public List<String> getVoyageNoList(String vesselCode){
+		String url = Global.getApiUrl() + "/shipmentDetail/getVoyageNoList?vesselCode={q}";
+		RestTemplate restTemplate = new RestTemplate();
+		R r = restTemplate.getForObject(url, R.class, vesselCode);
+		List<String> listVoyageNo =(List<String>) r.get("data");
+		return listVoyageNo;
+	}
+	
+	@GetMapping("/getYear")
+	@ResponseBody
+	public String getYear(String vesselCode, String voyageNo){
+		String url = Global.getApiUrl() + "/shipmentDetail/getYear/"+vesselCode+"/"+voyageNo;
+		RestTemplate restTemplate = new RestTemplate();
+		Map<String, String> vars = new HashMap<>();
+		vars.put("vesselCode", vesselCode);
+		vars.put("voyageNo", voyageNo);
+		R r = restTemplate.getForObject(url, R.class, vars);
+		String year =(String) r.get("data");
+		return year;
+	}
+	
+	@GetMapping("/getBeforeAfterDeparture")
+	@ResponseBody
+	public String getBeforeAfterDeparture(String vesselCode, String voyageNo){
+		String url = Global.getApiUrl() + "/shipmentDetail/getBeforeAfterDeparture/"+vesselCode+"/"+voyageNo;
+		RestTemplate restTemplate = new RestTemplate();
+		Map<String, String> vars = new HashMap<>();
+		vars.put("vesselCode", vesselCode);
+		vars.put("voyageNo", voyageNo);
+		R r = restTemplate.getForObject(url, R.class, vars);
+		String beforeAfter =(String) r.get("data");
+		return beforeAfter;
 	}
 }

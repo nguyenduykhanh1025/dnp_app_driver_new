@@ -58,8 +58,11 @@ public class SysLoginController extends BaseController
     }
 
     @GetMapping("/unauth")
+    @ResponseBody
     public String unauth()
     {
         return "error/unauth";
     }
+
+
 }
