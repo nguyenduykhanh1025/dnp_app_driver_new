@@ -101,13 +101,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <select id="verifyOtpCodeAvailable" parameterType="OtpCode" resultType="int">
-        select count(*) from otp_code
+        select count(*) from sys_otp
         where opt_code = #{optCode} 
-        and shipment_detailids = #{shipmentDetailids}
+        and transaction_id = #{transactionId}
         and (create_time = #{createTime} or create_time > #{createTime})
     </select>
     
     <delete id="deleteOtpCodeByShipmentDetailIds" parameterType="String">
-        delete from otp_code where shipment_detailIds = #{shipmentDetailids}
+        delete from sys_otp where transaction_id = #{transactionId}
     </delete>
 </mapper>

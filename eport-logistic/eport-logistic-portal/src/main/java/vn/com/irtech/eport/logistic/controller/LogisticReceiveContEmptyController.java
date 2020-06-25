@@ -251,7 +251,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		String content = "Lam lenh lay cont la  " + rD;
 		String response = "";
 		try {
-			response = otpCodeService.postOtpMessage(content);
+			response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
 			System.out.println(response);
 		} catch (IOException ex) {
 			// process the exception

@@ -224,21 +224,19 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
-	@GetMapping("checkCustomStatusForm/{shipmentId}")
+	@GetMapping("checkCustomStatusForm/{shipmentDetailIds}")
 	@Transactional
-	public String checkCustomStatus(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
-		mmap.put("shipmentId", shipmentId);
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setStatus(1);
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+	public String checkCustomStatus(@PathVariable String shipmentDetailIds, ModelMap mmap) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0) {
 			if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				mmap.put("shipmentId", shipmentDetails.get(0).getShipmentId());
 				mmap.put("contList", shipmentDetails);
 			}
 		}
 		return PREFIX + "/checkCustomStatus";
 	}
+
 
 	@PostMapping("/checkCustomStatus")
 	@ResponseBody
@@ -295,34 +293,40 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@PostMapping("sendOTP")
 	@ResponseBody
 	public AjaxResult sendOTP(String shipmentDetailIds) {
-		// LogisticGroup lGroup = getGroup();
+		LogisticGroup lGroup = getGroup();
 
-		// OtpCode otpCode = new OtpCode();
-		// Random rd = new Random();
-		// long rD = rd.nextInt(900000)+100000;
+		OtpCode otpCode = new OtpCode();
+		Random rd = new Random();
+		long rD = rd.nextInt(900000)+100000;
+		String tDCode = Long.toString(rD);
+		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
-		// otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
+		otpCode.setTransactionId(shipmentDetailIds);
+		otpCode.setPhoneNumber(lGroup.getMobilePhone());
+		otpCode.setOtpCode(tDCode);
+		otpCode.setOtpType("1");
 
-		// otpCode.setShipmentDetailids(shipmentDetailIds);
-		// otpCode.setPhoneNumber(lGroup.getMobilePhone());
-		// otpCode.setOptCode(rD);
-		// otpCodeService.insertOtpCode(otpCode);
+		Calendar cal = Calendar.getInstance();
+		Date now = new Date();
+		cal.setTime(now);
+		cal.add(Calendar.MINUTE, +5);
+		otpCode.setExpiredTime(cal.getTime());
+		otpCodeService.insertSysOtp(otpCode);
 
-		// String content = "Lam lenh giaoa cont la  " + rD;
-		// String response = "";
-//		try {
-//			response = otpCodeService.postOtpMessage(content);
-//			System.out.println(response);
-//		} catch (IOException ex) {
-//			// process the exception
-//		}
+		String content = "TEST SMS   " + rD;
+		String response = "";
+		try {
+			response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
+			System.out.println(response);
+		} catch (IOException ex) {
+			// process the exception
+		}
 		return AjaxResult.success("response.toString()");
 	}
 
 	@PostMapping("/verifyOtp")
 	@ResponseBody
 	public AjaxResult verifyOtp(String shipmentDetailIds, String otp, boolean creditFlag) {
-		
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();

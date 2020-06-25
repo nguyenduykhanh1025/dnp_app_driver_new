@@ -67,6 +67,6 @@ public interface IOtpCodeService
 
     public int deleteOtpCodeByShipmentDetailIds(String shipmentDetailIds);
 
-    public String postOtpMessage(String content) throws IOException;
+    public String postOtpMessage(String mobilePhone,String content) throws IOException;
 
 }

@@ -119,14 +119,15 @@ public class OtpCodeServiceImpl implements IOtpCodeService
     }
 
     @Override
-    public String postOtpMessage(String content) throws IOException {
+    public String postOtpMessage(String mobilePhone,String content) throws IOException {
+        mobilePhone = "84"+mobilePhone.substring(mobilePhone.length()-9,mobilePhone.length());
 		String url = "http://svc.netplus.vn/WSSendSMS.asmx";
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("POST");
 		con.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
 		//String countryCode="Canada";
-		String xml = "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\"><soap12:Body><SendSMS xmlns=\"http://tempuri.org/\"><aSMS_Input><SmsType>1</SmsType><IdCustomerSent>140273</IdCustomerSent><CompanyCode>DANANGPORT</CompanyCode><Mobile>84983960445</Mobile><SMSContent>"+content+"</SMSContent></aSMS_Input><userName>danangportguitin</userName><password>568926</password></SendSMS></soap12:Body></soap12:Envelope>";
+		String xml = "<soap12:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap12=\"http://www.w3.org/2003/05/soap-envelope\"><soap12:Body><SendSMS xmlns=\"http://tempuri.org/\"><aSMS_Input><SmsType>1</SmsType><IdCustomerSent>140273</IdCustomerSent><CompanyCode>DANANGPORT</CompanyCode><Mobile>"+mobilePhone+"</Mobile><SMSContent>"+content+"</SMSContent></aSMS_Input><userName>danangportguitin</userName><password>568926</password></SendSMS></soap12:Body></soap12:Envelope>";
 		con.setDoOutput(true);
 		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 		wr.writeBytes(xml);
