@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/truck";
+var prefix = ctx + "logistic/logisticTruck";
 $(function () {
     loadTable();
 });
@@ -58,11 +58,14 @@ function getSelected() {
 }
 //format
 function formatDate(value) {
-    var date = new Date(value);
-    var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    var month = date.getMonth() + 1;
-    var monthText = month < 10 ? "0" + month : month;
-    return day + "/" + monthText + "/" + date.getFullYear();
+	if(value != null){
+	    let date = new Date(value);
+	    let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+	    let month = date.getMonth() + 1;
+	    let monthText = month < 10 ? "0" + month : month;
+	    return day + "/" + monthText + "/" + date.getFullYear();
+	}
+	return null;
 }
 function formatType(value) {
     if (value == '0') {

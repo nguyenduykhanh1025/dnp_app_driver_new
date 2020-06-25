@@ -20,7 +20,7 @@ public class DriverTruck extends BaseEntity
     /** truck_id */
     private Long truckId;
 
-    private LogisticTruck truck;
+    private LogisticTruck logisticTruck;
 
     public void setDriverId(Long driverId) 
     {
@@ -49,14 +49,14 @@ public class DriverTruck extends BaseEntity
             .toString();
     }
 
-    public LogisticTruck getTruck() {
-        if(truck == null){
-            truck = new LogisticTruck();
+    public LogisticTruck getLogisticTruck() {
+        if(logisticTruck == null){
+        	logisticTruck = new LogisticTruck();
         }
-        return truck;
+        return logisticTruck;
     }
 
-    public void setTruck(LogisticTruck truck) {
-        this.truck = truck;
+    public void setLogisticTruck(LogisticTruck logisticTruck) {
+        this.logisticTruck = logisticTruck;
     }
 }

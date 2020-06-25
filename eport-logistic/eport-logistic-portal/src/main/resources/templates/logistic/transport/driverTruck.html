@@ -40,7 +40,7 @@
     $(document).ready(function(){         
         $('.tractorList').select2({
             ajax: {
-                url: '/logistic/truck/searchTractorByKeyword',
+                url: '/logistic/logisticTruck/searchTractorByKeyword',
                 method: 'get',
                 delay: 250,
                 data: function (params) {
@@ -61,7 +61,7 @@
 
         $('.trailerList').select2({
             ajax: {
-                url: '/logistic/truck/searchTrailerByKeyword',
+                url: '/logistic/logisticTruck/searchTrailerByKeyword',
                 method: 'get',
                 delay: 250,
                 data: function (params) {
@@ -83,11 +83,11 @@
     setTimeout(() => {
         // Init truckIds select 2
         for (let i=0; i < tractorList.length; i++) {
-            let $option = $("<option selected></option>").val(tractorList[i].truckId).text(tractorList[i].truck.plateNumber);
+            let $option = $("<option selected></option>").val(tractorList[i].truckId).text(tractorList[i].logisticTruck.plateNumber);
             $('.tractorList').append($option).trigger('change');
         }
         for (let i=0; i < trailerList.length; i++) {
-            let $option = $("<option selected></option>").val(trailerList[i].truckId).text(trailerList[i].truck.plateNumber);
+            let $option = $("<option selected></option>").val(trailerList[i].truckId).text(trailerList[i].logisticTruck.plateNumber);
             $('.trailerList').append($option).trigger('change');
         }
     }, 200);
