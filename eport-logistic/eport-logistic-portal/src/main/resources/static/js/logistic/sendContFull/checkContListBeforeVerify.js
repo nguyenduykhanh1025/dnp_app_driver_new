@@ -1,7 +1,8 @@
 var prefix = ctx + "logistic/sendContFull";
 var shipmentDetailIds = "";
+
 function confirm() {
-    parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1));
+    parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $('#credit').prop('checked'));
     $.modal.close();
 }
 
@@ -21,3 +22,7 @@ $("#contTable").datagrid({
         success(shipmentDetails);
     },
 });
+
+if ('0' == creditFlag) {
+    $('#credit').hide();
+}

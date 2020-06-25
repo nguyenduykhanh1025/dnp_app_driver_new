@@ -89,17 +89,17 @@ public interface IShipmentDetailService
 
     public List<ProcessOrder> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 
-    public String getGroupNameByTaxCode(String taxCode);
-
     public ProcessOrder makeOrderSendContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
 
-    public List<ProcessOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails);
-
-    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String isCredit);
+    public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag);
     
-    public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status);
+    public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status, String invoiceNo);
 
     public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
 
-    public String getNameCompany(String taxCode) throws Exception;
+    public String getGroupNameByTaxCode(String taxCode) throws Exception;
+
+    public ProcessOrder getYearBeforeAfter(String vessel, String voyage);
+    
+    public List<String> checkContainerReserved(String containerNos);
 }

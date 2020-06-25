@@ -85,6 +85,7 @@
         } else {
           $.modal.msgError("Không tìm ra mã số thuế!");
           $("#taxCode").addClass("error-input");
+          $("#groupName").val('');
         }
       });
     } else {
@@ -108,8 +109,12 @@
 
   function submitHandler() {
     if ($.validate.form()) {
-      $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
-      parent.loadTable();
+      if ($("#groupName").val() != null && $("#groupName").val() != '') {
+        $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
+        parent.loadTable();
+      }
+    } else {
+      $.modal.msgError("Không tìm thấy mã số thuế!");
     }
   }
 

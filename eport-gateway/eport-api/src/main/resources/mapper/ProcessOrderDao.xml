@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.api.dao.ProcessOrderDao">
+	<select id="getYearBeforeAfter" resultType="vn.com.irtech.api.entity.ProcessOrderEntity">
+			SELECT
+		    	CALL_YEAR AS YEAR,
+		    	CASE
+			        WHEN ATD IS NULL THEN 'Before'
+			        WHEN ATB IS NOT NULL THEN 'After'
+			    END AS BEFORE_AFTER
+			FROM TB_BERTHPLAN
+			WHERE VSL_CD = #{vesselCode} AND CALL_SEQ = #{voyageNo}
+	</select>
+</mapper>

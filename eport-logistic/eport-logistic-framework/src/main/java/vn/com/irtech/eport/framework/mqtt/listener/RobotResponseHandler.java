@@ -13,7 +13,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -34,6 +37,9 @@ public class RobotResponseHandler implements IMqttMessageListener{
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+	
+	@Autowired
+	private WebSocketService webSocketService;
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -43,10 +49,10 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		logger.info("Receive message content : " + messageContent);
 		Map<String, Object> map = null;
 		try {
-			messageContent = messageContent.replace("\'", "\"");
 			ObjectMapper mapper = new ObjectMapper();
-			map = mapper.readValue(messageContent, Map.class);
+			map = new Gson().fromJson(messageContent, Map.class);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return;
 		}
 
@@ -64,10 +70,15 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		String status = map.get("status") == null ? null : map.get("status").toString();
 		String result = map.get("result") == null ? null : map.get("result").toString();
 		String receiptId = map.get("receiptId") == null ? null : map.get("receiptId").toString();
-
+		String invoiceNo = map.get("invoiceNo") == null ? "" : map.get("invoiceNo").toString(); 
+		
 		robotService.updateRobotStatusByUuId(uuId, status);
 
-		this.updateShipmentDetail(result, receiptId);
+		if (receiptId != null && status != null) {
+			this.updateShipmentDetail(result, receiptId, invoiceNo);
+			this.sendMessageWebsocket(result, receiptId);
+		}
+		
 	}
 	
 	/**
@@ -76,20 +87,38 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 * @param result:   "success/error"
 	 * @param receiptId
 	 */
-	private void updateShipmentDetail(String result, String receiptId) {
+	private void updateShipmentDetail(String result, String receiptId, String invoiceNo) {
 		// TODO: update shipment detail
 		Long id = Long.parseLong(receiptId);
-		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setId(id);
+		processOrder.setReferenceNo(invoiceNo);
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setRegisterNo(receiptId);
+		shipmentDetail.setProcessOrderId(Long.parseLong(receiptId));
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		if (processOrder != null) {
 			if ("success".equalsIgnoreCase(result)) {
-				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y");
+				processOrder.setStatus(2);
+				processOrder.setResult("S");
+				processOrderService.updateProcessOrder(processOrder);
+				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo);
 			} else {
-				shipmentDetailService.updateProcessStatus(shipmentDetails, "E");
+				processOrder.setStatus(0);
+				processOrder.setResult("F");
+				processOrderService.updateProcessOrder(processOrder);
 			}
 		}
+	}
+	
+	private void sendMessageWebsocket(String result, String receiptId) {
+		AjaxResult ajaxResult= null;
+		if ("success".equalsIgnoreCase(result)) {
+			ajaxResult = AjaxResult.success("Làm lệnh thành công!");
+		} else {
+			ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
+		}
+		
+		webSocketService.sendMessage("/" + receiptId + "/response", ajaxResult);
 	}
 
 }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import com.google.gson.JsonObject;
 
 import org.apache.shiro.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -33,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.utils.DateUtils;
@@ -394,57 +397,33 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         return null;
     }
 
-    @Transactional
-    public List<ProcessOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
-        if (shipmentDetails.size() > 0) {
-            Collections.sort(shipmentDetails, new SztpComparator());
-            String sztp = shipmentDetails.get(0).getSztp();
-            List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-            List<ProcessOrder> processOrders = new ArrayList<>();
-            ProcessOrder processOrder = new ProcessOrder();
-            for (ShipmentDetail shipmentDetail : shipmentDetails) {
-                if (sztp.equals(shipmentDetail.getSztp())) {
-                    shipmentOrderList.add(shipmentDetail);
-                } else {
-                    for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
-                        shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
-                        shipmentDetail2.setUserVerifyStatus("Y");
-                        shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
-                    }
-                }
-            }
-            for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
-                shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
-                shipmentDetail2.setUserVerifyStatus("Y");
-                shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
-            }
-            return processOrders;
-        }
-        return null;
-    }
-
     @Override
-    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment,
-            String isCredit) {
+    public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
             ProcessOrder processOrder = new ProcessOrder();
             processOrder.setTaxCode(shipment.getTaxCode());
             processOrder.setContNumber(shipmentDetails.size());
             processOrder.setVessel(shipmentDetails.get(0).getVslNm());
             processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-            processOrder.setYear("2020");
-            processOrder.setBeforeAfter("Before");
+            ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+            if (tempProcessOrder != null) {
+                processOrder.setYear(tempProcessOrder.getYear());
+                processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
+            } else {
+                processOrder.setYear("2020");
+                processOrder.setBeforeAfter("Before");
+            }
             processOrder.setId(shipmentDetails.get(0).getId());
             processOrder.setShipmentId(shipment.getId());
             processOrder.setServiceType(4);
-            if ("0".equals(isCredit)) {
+            if (creditFlag) {
+                processOrder.setPayType("Credit");
+            } else {
                 processOrder.setPayType("Cash");
             }
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
                 shipmentDetail.setUserVerifyStatus("Y");
-                // shipmentDetail.setProcessStatus("Y");
-                // shipmentDetail.setStatus(3);
                 shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             }
             return processOrder;
@@ -453,21 +432,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public String getGroupNameByTaxCode(String taxCode) {
-        String uri = "https://thongtindoanhnghiep.co/api/company/" + taxCode;
-
-        // RestTemplate restTemplate = new RestTemplate();
-        // String result = restTemplate.getForObject(uri, String.class);
-        return "Công ty abc";
-    }
-
-    @Override
     @Transactional
-    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status) {
+    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status, String invoiceNo) {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessStatus(status);
             if ("Y".equalsIgnoreCase(status)) {
-                shipmentDetail.setStatus(3);
+                shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+                shipmentDetail.setRegisterNo(invoiceNo);
             }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
@@ -504,32 +475,54 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public String getNameCompany(String taxCode) throws Exception {
-        String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
-        String methodName = "GET";
-        String readLine = null;
-        HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl + "/" + taxCode).openConnection();
-        connection.setRequestMethod(methodName);
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-
-        int responseCode = connection.getResponseCode();
-        StringBuffer response = new StringBuffer();
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            while ((readLine = in.readLine()) != null) {
-                response.append(readLine);
-            };
-            in.close();
-        } else {
-        	String error = responseCode + " : " + methodName + " NOT WORKED";
-            return error;
-        }
-        String str = response.toString();
-        JsonObject convertedObject = new Gson().fromJson(str, JsonObject.class);
-        if(convertedObject.get("Title").toString().equals("null"))
-        {
-            return "Thông tin doanh nghiệp này không được tìm thấy";
-        }
-        return convertedObject.get("Title").toString();
+    public String getGroupNameByTaxCode(String taxCode) throws Exception {
+//        String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
+//        String methodName = "GET";
+//        String readLine = null;
+//        HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl + "/" + taxCode).openConnection();
+//        connection.setRequestMethod(methodName);
+//        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+//
+//        int responseCode = connection.getResponseCode();
+//        StringBuffer response = new StringBuffer();
+//        if (responseCode == HttpURLConnection.HTTP_OK) {
+//            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+//            while ((readLine = in.readLine()) != null) {
+//                response.append(readLine);
+//            };
+//            in.close();
+//        } else {
+//        	String error = responseCode + " : " + methodName + " NOT WORKED";
+//            return error;
+//        }
+//        String str = response.toString();
+//        JsonObject convertedObject = new Gson().fromJson(str, JsonObject.class);
+//        if(convertedObject.get("Title").toString().equals("null"))
+//        {
+//            return null;
+//        }
+//        return convertedObject.get("Title").toString().replace("\"", "");
+    	String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/"+taxCode;
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate.getForObject(url, String.class);
     }
+
+    @Override
+    public ProcessOrder getYearBeforeAfter(String vessel, String voyage) {
+        String url = Global.getApiUrl() + "/processOrder/getYearBeforeAfter/"+vessel+"/"+voyage;
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate.getForObject(url, ProcessOrder.class);
+    }
+
+	@Override
+	public List<String> checkContainerReserved(String containerNos) {
+		String url = Global.getApiUrl() + "/shipmentDetail/checkContReserved/" + containerNos;
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<String>> response = restTemplate
+				.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {
+				});
+		List<String> listCont = response.getBody();
+		return listCont;
+	}
+    
 }
