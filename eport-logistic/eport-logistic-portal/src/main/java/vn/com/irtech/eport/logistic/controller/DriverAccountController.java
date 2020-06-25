@@ -270,7 +270,7 @@ public class DriverAccountController extends LogisticBaseController
     @PostMapping("/truckAssign")
     @ResponseBody
     @Transactional
-    public AjaxResult addDriverTruck(@RequestParam(value = "truckIds[]")  String[] truckIds, Long driverId){
+    public AjaxResult addDriverTruck(@RequestParam(value = "truckIds[]", required = false)  String[] truckIds, Long driverId){
         driverTruckService.deleteDriverTruckById(driverId);
         if(truckIds != null){
             for (String i : truckIds) {
