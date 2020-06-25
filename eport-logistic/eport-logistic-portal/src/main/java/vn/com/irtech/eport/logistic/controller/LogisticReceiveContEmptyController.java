@@ -263,7 +263,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@PostMapping("/verifyOtp")
 	@ResponseBody
 	public AjaxResult verifyOtp(String shipmentDetailIds,String otp) {
-		LogisticGroup lGroup = getGroup();
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
@@ -271,7 +270,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		cal.setTime(now);
 		cal.add(Calendar.MINUTE, -5);
 		otpCode.setCreateTime(cal.getTime());
-		otpCode.setPhoneNumber(lGroup.getMobilePhone());
 		otpCode.setOtpCode(otp);
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService
@@ -289,6 +287,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 	}
+
 
 	@GetMapping("paymentForm/{shipmentDetailIds}")
 	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {

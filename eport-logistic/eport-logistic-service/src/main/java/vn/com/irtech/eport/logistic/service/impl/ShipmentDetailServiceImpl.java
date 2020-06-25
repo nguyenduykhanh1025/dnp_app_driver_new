@@ -524,5 +524,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		List<String> listCont = response.getBody();
 		return listCont;
 	}
+
+  
     
 }
