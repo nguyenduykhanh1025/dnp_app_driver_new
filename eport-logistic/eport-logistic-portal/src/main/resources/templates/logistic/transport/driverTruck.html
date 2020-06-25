@@ -15,16 +15,22 @@
             <input name="id" type="hidden" />
             <div class="form-group">
                 <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe đầu kéo:</label>
-                <div class="col-sm-8 col-xs-8 col-md-10">
+                <div class="col-sm-7 col-xs-7 col-md-9">
                     <!-- <input type="hidden" name="tractorId" id="tractorId"> -->
                     <select class="tractorList" id="tractorList"></select>
+                </div>
+                <div>
+                	<a class="btn btn-success btn-xs" onclick="chooseAllTractor()">Tất cả</a>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label"style="text-align: right;">Chỉ định xe rơ mooc:</label>
-                <div class="col-sm-8 col-xs-8 col-md-10">
+                <div class="col-sm-7 col-xs-7 col-md-9">
                     <!-- <input type="hidden" name="trailerId" id="trailerId"> -->
                     <select class="trailerList" id="trailerList"></select>
+                </div>
+                <div>
+                	<a class="btn btn-success btn-xs" onclick="chooseAllTrailer()">Tất cả</a>
                 </div>
             </div>
 		</form>
@@ -128,6 +134,34 @@
                 }
             });
         }
+    }
+    function chooseAllTractor(){
+    	tractorIdArray = [];
+        $('.tractorList').val([]).trigger('change');
+        $.ajax({
+            url: ctx + "logistic/logisticTruck/getTractorList",
+            type: 'GET',
+            data:{}
+        }).done(function(rs){
+            for (let i=0; i < rs.length; i++) {
+                let $option = $("<option selected></option>").val(rs[i].id).text(rs[i].plateNumber);
+                $('.tractorList').append($option).trigger('change');
+            }
+        })
+    }
+    function chooseAllTrailer(){
+    	trailerIdArray = [];
+        $('.trailerList').val([]).trigger('change');
+        $.ajax({
+            url: ctx + "logistic/logisticTruck/getTrailerList",
+            type: 'GET',
+            data:{}
+        }).done(function(rs){
+            for (let i=0; i < rs.length; i++) {
+                let $option = $("<option selected></option>").val(rs[i].id).text(rs[i].plateNumber);
+                $('.trailerList').append($option).trigger('change');
+            }
+        })
     }
     </script>
 </body>

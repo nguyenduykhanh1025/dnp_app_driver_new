@@ -27,8 +27,8 @@ public class LogisticTruck extends BaseEntity
     @Excel(name = "Bien So Xe")
     private String plateNumber;
 
-    /** 1:đầu kéo, 0:rơ mooc */
-    @Excel(name = "1:đầu kéo, 0:rơ mooc")
+    /** 0:đầu kéo, 1:rơ mooc */
+    @Excel(name = "type")
     private String type;
 
     /** Weight */

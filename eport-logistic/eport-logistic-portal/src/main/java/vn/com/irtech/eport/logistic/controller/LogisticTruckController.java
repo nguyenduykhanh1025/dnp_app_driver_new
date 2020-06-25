@@ -155,4 +155,20 @@ public class LogisticTruckController extends LogisticBaseController
     	}
     	return result;
     }
+    
+    @GetMapping("/getTractorList")
+    @ResponseBody
+    public List<LogisticTruck> getTractorList(){
+    	LogisticTruck logisticTruck = new  LogisticTruck();
+    	logisticTruck.setType("0");
+    	return logisticTruckService.selectLogisticTruckList(logisticTruck);
+    }
+    
+    @GetMapping("/getTrailerList")
+    @ResponseBody
+    public List<LogisticTruck> getTrailerList(){
+    	LogisticTruck logisticTruck = new  LogisticTruck();
+    	logisticTruck.setType("1");
+    	return logisticTruckService.selectLogisticTruckList(logisticTruck);
+    }
 }
