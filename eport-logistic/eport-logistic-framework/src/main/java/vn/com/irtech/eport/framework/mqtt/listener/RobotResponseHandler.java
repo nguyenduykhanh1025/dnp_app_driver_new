@@ -19,6 +19,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysRobot;
@@ -37,6 +38,9 @@ public class RobotResponseHandler implements IMqttMessageListener{
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+	
+	@Autowired
+	private IProcessBillService processBillService;
 	
 	@Autowired
 	private WebSocketService webSocketService;
@@ -101,6 +105,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				processOrder.setStatus(2);
 				processOrder.setResult("S");
 				processOrderService.updateProcessOrder(processOrder);
+				processBillService.saveProcessBillByInvoiceNo(processOrder);
 				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo);
 			} else {
 				processOrder.setStatus(0);

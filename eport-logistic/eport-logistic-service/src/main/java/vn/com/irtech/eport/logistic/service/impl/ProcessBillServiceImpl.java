@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +8,12 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.logistic.mapper.ProcessBillMapper;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.text.Convert;
@@ -111,5 +114,27 @@ public class ProcessBillServiceImpl implements IProcessBillService
 		return response.getBody();
 	}
     
-    
+    @Override
+    @Transactional
+    public boolean saveProcessBillByInvoiceNo(ProcessOrder processOrder) {
+    	if (processOrder.getReferenceNo() != null) {
+    		List<ProcessBill> processBills = getUnitBillList(processOrder.getReferenceNo());
+        	if (processBills != null) {
+        		for (ProcessBill processBill : processBills) {
+        			processBill.setProcessOrderId(processOrder.getId());
+        			processBill.setServiceType(processOrder.getServiceType());
+        			processBill.setShipmentId(processOrder.getShipmentId());
+        			processBill.setCreateTime(new Date());
+        			processBillMapper.insertProcessBill(processBill);
+        		}
+        	}
+        	return true;
+    	}
+    	return false;
+    }
+
+    @Override
+    public List<ProcessBill> selectProcessBillListByProcessOrderIds(String processOrderIds) {
+        return processBillMapper.selectProcessBillListByProcessOrderIds(processOrderIds);
+    }
 }

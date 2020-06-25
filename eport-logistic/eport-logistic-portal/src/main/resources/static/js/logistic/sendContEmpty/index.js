@@ -654,7 +654,7 @@ function getDataFromTable(isValidate) {
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
-        if (object["status"] == 1) {
+        if (object["status"] == 1 || object["status"] == null) {
             conts += object["containerNo"] + ',';
         }
         shipmentDetail.opeCode = object["opeCode"];
