@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.ProcessBillMapper">
+    
+    <resultMap type="ProcessBill" id="ProcessBillResult">
+        <result property="id"    column="id"    />
+        <result property="shipmentId"    column="shipment_id"    />
+        <result property="processOrderId"    column="process_order_id"    />
+        <result property="serviceType"    column="service_type"    />
+        <result property="referenceNo"    column="reference_no"    />
+        <result property="sztp"    column="sztp"    />
+        <result property="contNumber"    column="cont_number"    />
+        <result property="exchangeFee"    column="exchange_fee"    />
+        <result property="preorderContNumber"    column="preorder_cont_number"    />
+        <result property="shiftingNumber"    column="shifting_number"    />
+        <result property="shiftingFee"    column="shifting_fee"    />
+        <result property="invNo"    column="inv_no"    />
+        <result property="vatRate"    column="vat_rate"    />
+        <result property="vatAfterFee"    column="vat_after_fee"    />
+        <result property="containerNo"    column="container_no"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectProcessBillVo">
+        select id, shipment_id, process_order_id, service_type, reference_no, sztp, cont_number, exchange_fee, preorder_cont_number, shifting_number, shifting_fee, inv_no, vat_rate, vat_after_fee, container_no, remark, create_by, create_time, update_by, update_time from process_bill
+    </sql>
+
+    <select id="selectProcessBillList" parameterType="ProcessBill" resultMap="ProcessBillResult">
+        <include refid="selectProcessBillVo"/>
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="processOrderId != null "> and process_order_id = #{processOrderId}</if>
+            <if test="serviceType != null "> and service_type = #{serviceType}</if>
+            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="contNumber != null "> and cont_number = #{contNumber}</if>
+            <if test="exchangeFee != null "> and exchange_fee = #{exchangeFee}</if>
+            <if test="preorderContNumber != null "> and preorder_cont_number = #{preorderContNumber}</if>
+            <if test="shiftingNumber != null "> and shifting_number = #{shiftingNumber}</if>
+            <if test="shiftingFee != null "> and shifting_fee = #{shiftingFee}</if>
+            <if test="invNo != null  and invNo != ''"> and inv_no = #{invNo}</if>
+            <if test="vatRate != null "> and vat_rate = #{vatRate}</if>
+            <if test="vatAfterFee != null "> and vat_after_fee = #{vatAfterFee}</if>
+            <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
+        </where>
+    </select>
+    
+    <select id="selectProcessBillById" parameterType="Long" resultMap="ProcessBillResult">
+        <include refid="selectProcessBillVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProcessBill" parameterType="ProcessBill" useGeneratedKeys="true" keyProperty="id">
+        insert into process_bill
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shipmentId != null ">shipment_id,</if>
+            <if test="processOrderId != null ">process_order_id,</if>
+            <if test="serviceType != null ">service_type,</if>
+            <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
+            <if test="sztp != null  and sztp != ''">sztp,</if>
+            <if test="contNumber != null ">cont_number,</if>
+            <if test="exchangeFee != null ">exchange_fee,</if>
+            <if test="preorderContNumber != null ">preorder_cont_number,</if>
+            <if test="shiftingNumber != null ">shifting_number,</if>
+            <if test="shiftingFee != null ">shifting_fee,</if>
+            <if test="invNo != null  and invNo != ''">inv_no,</if>
+            <if test="vatRate != null ">vat_rate,</if>
+            <if test="vatAfterFee != null ">vat_after_fee,</if>
+            <if test="containerNo != null  and containerNo != ''">container_no,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="shipmentId != null ">#{shipmentId},</if>
+            <if test="processOrderId != null ">#{processOrderId},</if>
+            <if test="serviceType != null ">#{serviceType},</if>
+            <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
+            <if test="sztp != null  and sztp != ''">#{sztp},</if>
+            <if test="contNumber != null ">#{contNumber},</if>
+            <if test="exchangeFee != null ">#{exchangeFee},</if>
+            <if test="preorderContNumber != null ">#{preorderContNumber},</if>
+            <if test="shiftingNumber != null ">#{shiftingNumber},</if>
+            <if test="shiftingFee != null ">#{shiftingFee},</if>
+            <if test="invNo != null  and invNo != ''">#{invNo},</if>
+            <if test="vatRate != null ">#{vatRate},</if>
+            <if test="vatAfterFee != null ">#{vatAfterFee},</if>
+            <if test="containerNo != null  and containerNo != ''">#{containerNo},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProcessBill" parameterType="ProcessBill">
+        update process_bill
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
+            <if test="processOrderId != null ">process_order_id = #{processOrderId},</if>
+            <if test="serviceType != null ">service_type = #{serviceType},</if>
+            <if test="referenceNo != null  and referenceNo != ''">reference_no = #{referenceNo},</if>
+            <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
+            <if test="contNumber != null ">cont_number = #{contNumber},</if>
+            <if test="exchangeFee != null ">exchange_fee = #{exchangeFee},</if>
+            <if test="preorderContNumber != null ">preorder_cont_number = #{preorderContNumber},</if>
+            <if test="shiftingNumber != null ">shifting_number = #{shiftingNumber},</if>
+            <if test="shiftingFee != null ">shifting_fee = #{shiftingFee},</if>
+            <if test="invNo != null  and invNo != ''">inv_no = #{invNo},</if>
+            <if test="vatRate != null ">vat_rate = #{vatRate},</if>
+            <if test="vatAfterFee != null ">vat_after_fee = #{vatAfterFee},</if>
+            <if test="containerNo != null  and containerNo != ''">container_no = #{containerNo},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProcessBillById" parameterType="Long">
+        delete from process_bill where id = #{id}
+    </delete>
+
+    <delete id="deleteProcessBillByIds" parameterType="String">
+        delete from process_bill where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
