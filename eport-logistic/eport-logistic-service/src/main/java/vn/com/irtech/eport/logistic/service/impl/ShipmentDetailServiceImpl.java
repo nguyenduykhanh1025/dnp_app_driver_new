@@ -340,9 +340,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         }
         processOrder.setTaxCode(shipment.getTaxCode());
         if (creditFlag) {
-            processOrder.setPayType("Cash");
-        } else {
             processOrder.setPayType("Credit");
+        } else {
+            processOrder.setPayType("Cash");
         }
         ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
         if (tempProcessOrder != null) {
