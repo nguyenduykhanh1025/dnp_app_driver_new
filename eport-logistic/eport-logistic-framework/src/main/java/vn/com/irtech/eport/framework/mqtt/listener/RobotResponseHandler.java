@@ -101,12 +101,11 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				processOrder.setStatus(2);
 				processOrder.setResult("S");
 				processOrderService.updateProcessOrder(processOrder);
-				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y");
+				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo);
 			} else {
 				processOrder.setStatus(0);
 				processOrder.setResult("F");
 				processOrderService.updateProcessOrder(processOrder);
-				shipmentDetailService.updateProcessStatus(shipmentDetails, "E");
 			}
 		}
 	}

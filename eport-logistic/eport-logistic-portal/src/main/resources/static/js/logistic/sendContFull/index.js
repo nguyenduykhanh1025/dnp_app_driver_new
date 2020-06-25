@@ -2,6 +2,7 @@ var prefix = ctx + "logistic/sendContFull";
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData;
 var contList = [];
+var conts = '';
 var allChecked = false;
 var checkList = [];
 var rowAmount = 0;
@@ -181,7 +182,7 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
     } else {
         content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
     }
-    $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content).css("background-color", "#f0f0f0");
+    $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
     return td;
 }
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -221,7 +222,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
             default:
                 break;
         }
-        $(td).html(content).css("background-color", "#f0f0f0");
+        $(td).html(content);
     return td;
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -342,7 +343,7 @@ function configHandson() {
         width: "100%",
         minSpareRows: 0,
         rowHeights: 30,
-        fixedColumnsLeft: 2,
+        fixedColumnsLeft: 3,
         manualColumnResize: true,
         manualRowResize: true,
         renderAllRows: true,
@@ -397,7 +398,6 @@ function configHandson() {
                 data: "containerNo",
                 strict: true,
                 renderer: containerNoRenderer,
-                validator: Handsontable.validators.NumericValidator
             },
             {
                 data: "consignee",
@@ -650,6 +650,7 @@ function getDataFromTable(isValidate) {
     }
     shipmentDetails = [];
     contList = [];
+    conts = '';
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
         if (isValidate) {
@@ -689,20 +690,23 @@ function getDataFromTable(isValidate) {
         }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
+        conts += object["containerNo"] + ',';
         contList.push(object["containerNo"]);
         shipmentDetail.opeCode = object["opeCode"];
-        shipmentDetail.sztp = object["sztp"].split(':')[0];
+        shipmentDetail.sztp = object["sztp"];
         shipmentDetail.consignee = object["consignee"];
         shipmentDetail.wgt = object["wgt"];
         shipmentDetail.vslNm = object["vslNm"];
         shipmentDetail.voyNo = object["voyNo"];
-        shipmentDetail.dischargePort = object["dischargePort"].split(':')[0];
+        shipmentDetail.dischargePort = object["dischargePort"];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
     });
+
+    conts.substring(0, conts.length-1);
 
     if (isValidate) {
         contList.sort();
@@ -738,6 +742,7 @@ function saveShipmentDetail() {
     } else {
         if (getDataFromTable(true)) {
             if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
+                shipmentDetails[0].processStatus = conts;
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
                     url: prefix + "/saveShipmentDetail",
@@ -752,7 +757,11 @@ function saveShipmentDetail() {
                             $.modal.msgSuccess(result.msg);
                             loadShipmentDetail(shipmentSelected.id);
                         } else {
-                            $.modal.msgError(result.msg);
+                            if (result.conts != null) {
+                                $.modal.alertError("Không thể làm lệnh đối với các container: "+result.conts);
+                            } else {
+                                $.modal.msgError(result.msg);
+                            }
                         }
                         $.modal.closeLoading();
                     },

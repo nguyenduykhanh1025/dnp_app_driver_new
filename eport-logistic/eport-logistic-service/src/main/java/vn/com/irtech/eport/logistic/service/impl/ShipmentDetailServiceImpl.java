@@ -397,37 +397,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         return null;
     }
 
-    @Transactional
-    public List<ProcessOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
-        if (shipmentDetails.size() > 0) {
-            Collections.sort(shipmentDetails, new SztpComparator());
-            String sztp = shipmentDetails.get(0).getSztp();
-            List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-            List<ProcessOrder> processOrders = new ArrayList<>();
-            ProcessOrder processOrder = new ProcessOrder();
-            for (ShipmentDetail shipmentDetail : shipmentDetails) {
-                if (sztp.equals(shipmentDetail.getSztp())) {
-                    shipmentOrderList.add(shipmentDetail);
-                } else {
-                    for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
-                        shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
-                        shipmentDetail2.setUserVerifyStatus("Y");
-                        shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
-                    }
-                }
-            }
-            for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
-                shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
-                shipmentDetail2.setUserVerifyStatus("Y");
-                shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
-            }
-            return processOrders;
-        }
-        return null;
-    }
-
     @Override
-    public ProcessOrder makeOrderSendContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
+    public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
             ProcessOrder processOrder = new ProcessOrder();
             processOrder.setTaxCode(shipment.getTaxCode());
@@ -462,11 +433,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     @Transactional
-    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status) {
+    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status, String invoiceNo) {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessStatus(status);
             if ("Y".equalsIgnoreCase(status)) {
                 shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+                shipmentDetail.setRegisterNo(invoiceNo);
             }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
