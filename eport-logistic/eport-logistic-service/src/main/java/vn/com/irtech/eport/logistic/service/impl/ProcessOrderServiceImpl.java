@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import vn.com.irtech.eport.logistic.mapper.ProcessOrderMapper;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.common.core.text.Convert;
 
@@ -102,6 +104,15 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
     public boolean insertProcessOrderList(List<ProcessOrder> processOrders) {
         for (ProcessOrder processOrder : processOrders) {
             processOrderMapper.insertProcessOrder(processOrder);
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean insertProcessOrderReceiveContFull(List<ServiceSendFullRobotReq> serviceRobotReqs) {
+        for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
+            processOrderMapper.insertProcessOrder(serviceRobotReq.processOrder);
         }
         return true;
     }

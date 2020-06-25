@@ -1,37 +1,11 @@
-var isChange = true;
 var prefix = ctx + "logistic/receiveContFull";
-var fromDate = "";
-var toDate = "";
-var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected;
-var shipmentDetails;
-var shipmentDetailIds;
-var originStatus;
-var billNo;
-var simpleCustom;
+var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData;
 var contList = [];
-var checked = false;
-var allChecked = true;
-var isIterate = false;
-var selectedRow;
-var customStatus;
+var conts = '';
+var allChecked = false;
+var checkList = [];
 var rowAmount = 0;
-var sourceData;
 var emptyDepotList = ["Cảng Tiên Sa", "Cảng khác"];
-// GET RESOURCE DATA LIST
-// $.ajax({
-//   url: prefix + "/getFieldList",
-//   method: "get",
-//   success: function (data) {
-//     if (data.code == 0) {
-//       consigneeList =  data.consigneeList;
-//     }
-//   },
-//   error: function (result) {
-//     console.log("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-//   },
-// });
-
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
@@ -43,6 +17,9 @@ $(document).ready(function () {
   $("#btn-uncollapse").click(function () {
     handleCollapse(false);
   });
+  
+  // CONNECT WEB SOCKET
+  connectToWebsocketServer();
 });
 function handleCollapse(status) {
   if (status) {
@@ -93,10 +70,6 @@ function loadTable() {
           pageSize: param.rows,
           orderByColumn: param.sort,
           isAsc: param.order,
-          // fromDate: fromDate,
-          // toDate: toDate,
-          // voyageNo: $("#voyageNo").val() == null ? "" : $("#voyageNo").val(),
-          // blNo: $("#blNo").val() == null ? "" : $("#blNo").val(),
         },
         dataType: "json",
         success: function (data) {
@@ -163,71 +136,77 @@ function getSelected() {
     }
     $("#blNo").text(row.blNo);
     rowAmount = row.containerAmount;
+    checkList = Array(rowAmount).fill(0);
+    allChecked = false;
     loadShipmentDetail(row.id);
   }
 }
 
 // FORMAT HANDSONTABLE COLUMN
-function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value != null && value != '') {
-    let content = '';
-    switch (value) {
-      case 1:
-        content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="color: rgb(5, 148, 148);"></i>';
-        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
-        content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 8px;"></i>';
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-        content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận DO Gốc" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-        break;
-      case 2:
-        content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="color: #3498db;"></i>';
-        if(sourceData[row].userVerifyStatus == "Y") {
-          content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-          content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 8px;  color: rgb(5, 148, 148);"></i>';
-        } else {
-          content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148); font-size: 15px;"></i>';
-          content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Chưa Làm Lệnh" aria-hidden="true" style="margin-left: 8px;"></i>';
-        }
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-        content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhân DO Gốc" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-        break;
-      case 3:
-        content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="color: #3498db;"></i>';
-        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-        content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
-        content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận DO Gốc" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-        break;
-      case 4:
-        content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="color: #3498db;"></i>';
-        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-        content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận DO Gốc" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
-        break;
-      case 5:
-        content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="color: #3498db;"></i>';
-        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; color: #3498db; font-size: 15px;"></i>';
-        content += '<i id="makeOrder" class="fa fa-keyboard-o easyui-tooltip" title="Đã Làm Lệnh" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-        content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Đã Nhận DO Gốc" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i></div>';
-        break;
-      default:
-        break;
-    }
-    $(td).html(content).addClass("htMiddle");
+function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
+  let content = '';
+  if (checkList[row] == 1 || value) {
+    content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')" checked></div>';
+  } else {
+    content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
   }
+  $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
+  return td;
+}
+function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
+  let content = '';
+  switch (value) {
+    case 1:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+      break;
+    case 2:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: rgb(5, 148, 148);"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+      break;
+    case 3:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+      break;
+    case 4:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận DO Gốc" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
+      break;
+    case 5:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Đã Nhận DO gốc" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
+      break;
+    case 5:
+      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+      content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i></div>';
+      break;
+    default:
+      break;
+  }
+  $(td).html(content);
   return td;
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'containerNo' + row).html(value).addClass("htMiddle");
     if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
-  } else {
-    $(td).html('');
   }
   return td;
 }
@@ -243,108 +222,122 @@ function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties)
   return td;
 }
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'consignee' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'consignee' + row).html(value).addClass("htMiddle");
     if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
-  } else {
-    $(td).html('');
-  }
-  return td;
-}
-function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value != null && value != '') {
-    $(td).attr('id', 'opeCode' + row).html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
-  } else {
-    $(td).html('');
   }
   return td;
 }
 function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'emptyDepot' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'emptyDepot' + row).html(value).addClass("htMiddle");
     if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
-  } else {
-    $(td).html('');
   }
   return td;
 }
-function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'size' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
-  }
-  return td;
-}
-function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value != null && value != '') {
-    $(td).attr('id', 'sealNo' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
-  }
-  return td;
-}
-function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value != null && value != '') {
-    $(td).attr('id', 'wgt' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
   return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'vslNm' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
   return td;
 }
 function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
+  $(td).html(value);
   if (value != null && value != '') {
-    $(td).attr('id', 'voyNo' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  }
+  return td;
+}
+function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+  if (value != null && value != '') {
+    value = value.split(':')[0];
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  }
+  $(td).html(value);
+  return td;
+}
+function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'sztp' + row).addClass("htMiddle");
+  if (value != null && value != '') {
+    value = value.split(':')[0];
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+  }
+  $(td).html(value);
+  return td;
+}
+function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'wgt' + row).addClass("htMiddle");
+  $(td).html(value);
+  if (value != null && value != '') {
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
   return td;
 }
 function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'loadingPort' + row).addClass("htMiddle");
   if (value != null && value != '') {
-    $(td).attr('id', 'loadingPort' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
+    value = value.split(':')[0];
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
+  $(td).html(value);
   return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
+  $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
   if (value != null && value != '') {
-    $(td).attr('id', 'dischargePort' + row).css("background-color", "rgb(232, 232, 232)").html(value).addClass("htMiddle");
-    cellProperties.readOnly = 'true';
-  } else {
-    $(td).html('');
+    value = value.split(':')[0];
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+      cellProperties.readOnly = 'true';
+      $(td).css("background-color", "rgb(232, 232, 232)");
+    }
   }
+  $(td).html(value);
   return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if (value != null && value != '') {
-    $(td).attr('id', 'remark' + row).html(value).addClass("htMiddle");
-  } else {
-    $(td).html('');
-  }
+  $(td).attr('id', 'remark' + row).addClass("htMiddle");
+  $(td).html(value);
   return td;
 }
 
@@ -352,13 +345,16 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
   config = {
     stretchH: "all",
-    height: document.documentElement.clientHeight - 100,
+    height: document.documentElement.clientHeight - 105,
     minRows: rowAmount,
     maxRows: rowAmount,
     width: "100%",
     minSpareRows: 0,
     rowHeights: 30,
-    manualColumnMove: false,
+    fixedColumnsLeft: 3,
+    manualColumnResize: true,
+    manualRowResize: true,
+    renderAllRows: true,
     rowHeaders: true,
     className: "htMiddle",
     colHeaders: function (col) {
@@ -377,28 +373,32 @@ function configHandson() {
         case 4:
           return '<span>Chủ hàng</span><span style="color: red;">(*)</span>';
         case 5:
-          return '<span>Chủ Khai Thác</span><span style="color: red;">(*)</span>';
-        case 6:
           return '<span>Nơi Hạ Vỏ</span><span style="color: red;">(*)</span>';
+        case 6:
+          return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
         case 7:
-          return "Kích Thước";
+          return '<span>Tàu</span><span style="color: red;">(*)</span>';
         case 8:
-          return "Seal No";
+          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
         case 9:
-          return "Trọng tải";
+          return "Kích Thước";
         case 10:
-          return "Tàu";
+          return "Seal No";
         case 11:
-          return "Chuyến";
+          return "Trọng tải";
         case 12:
-          return "Cảng Xếp Hàng";
+          return '<span>Tàu</span><span style="color: red;">(*)</span>';
         case 13:
-          return "Cảng Dỡ Hàng";
+          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
         case 14:
+          return "Cảng Xếp Hàng";
+        case 15:
+          return "Cảng Dỡ Hàng";
+        case 16:
           return "Ghi Chú";
       }
     },
-    colWidths: [50, 100, 100, 100, 100, 120, 100, 100, 100, 100, 100, 100, 100, 100, 200],
+    colWidths: [50, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200],
     filter: "true",
     columns: [
       {
