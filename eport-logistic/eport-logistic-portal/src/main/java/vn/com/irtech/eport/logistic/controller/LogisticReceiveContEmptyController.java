@@ -239,18 +239,19 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		OtpCode otpCode = new OtpCode();
 		Random rd = new Random();
 		long rD = rd.nextInt(900000)+100000;
-
+		String rdCode = Long.toString(rD);
 		otpCodeService.deleteOtpCodeByShipmentDetailIds(shipmentDetailIds);
 
-		otpCode.setShipmentDetailids(shipmentDetailIds);
+		otpCode.setTransactionId(shipmentDetailIds);
 		otpCode.setPhoneNumber(lGroup.getMobilePhone());
-		otpCode.setOptCode(rD);
-		otpCodeService.insertOtpCode(otpCode);
+		
+		otpCode.setOtpCode(rdCode);
+		otpCodeService.insertSysOtp(otpCode);
 
 		String content = "Lam lenh lay cont la  " + rD;
 		String response = "";
 		try {
-			response = otpCodeService.postOtpMessage(content);
+			response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
 			System.out.println(response);
 		} catch (IOException ex) {
 			// process the exception
@@ -261,15 +262,15 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 	@PostMapping("/verifyOtp")
 	@ResponseBody
-	public AjaxResult verifyOtp(String shipmentDetailIds,Long otp) {
+	public AjaxResult verifyOtp(String shipmentDetailIds,String otp) {
 		OtpCode otpCode = new OtpCode();
-		otpCode.setShipmentDetailids(shipmentDetailIds);
+		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(now);
 		cal.add(Calendar.MINUTE, -5);
 		otpCode.setCreateTime(cal.getTime());
-		otpCode.setOptCode(otp);
+		otpCode.setOtpCode(otp);
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService
 					.selectShipmentDetailByIds(shipmentDetailIds);
@@ -286,6 +287,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 	}
+
 
 	@GetMapping("paymentForm/{shipmentDetailIds}")
 	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
