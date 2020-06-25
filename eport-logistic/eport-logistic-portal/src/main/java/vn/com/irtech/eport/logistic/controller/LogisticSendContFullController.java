@@ -80,8 +80,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
-		//String groupName = "Công ty abc";
+		//String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		String groupName = "Công ty abc";
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {
@@ -283,12 +283,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return PREFIX + "/checkContListBeforeVerify";
 	}
 
-	@GetMapping("verifyOtpForm/{shipmentDetailIds}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+	@GetMapping("verifyOtpForm/{shipmentDetailIds}/{creditFlag}")
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("creditFlag") boolean creditFlag, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
+		mmap.put("creditFlag", creditFlag);
 		return PREFIX + "/verifyOtp";
 	}
+
 
 	@PostMapping("sendOTP")
 	@ResponseBody
@@ -319,63 +321,45 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@PostMapping("/verifyOtp")
 	@ResponseBody
-	public AjaxResult verifyOtp(String shipmentDetailIds, Long otp, boolean creditFlag) {
+	public AjaxResult verifyOtp(String shipmentDetailIds, String otp, boolean creditFlag) {
 		
-		// OtpCode otpCode = new OtpCode();
-		// otpCode.setShipmentDetailids(shipmentDetailIds);
-		// Date now = new Date();
-		// Calendar cal = Calendar.getInstance();
-		// cal.setTime(now);
-		// cal.add(Calendar.MINUTE, -5);
-		// otpCode.setCreateTime(cal.getTime());
-		// otpCode.setOptCode(otp);
-		// if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
-		// 	List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		// 	if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-		// 		Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-		// 		ProcessOrder processOrder = shipmentDetailService.makeOrderSendContFull(shipmentDetails, shipment, getGroup().getCreditFlag());
-		// 		if (processOrder != null) {
-		// 			processOrderService.insertProcessOrder(processOrder);
-		// 			//
-		// 			ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
-		// 			try {
-		// 				mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL);
-		// 			} catch (Exception e1) {
-		// 				e1.printStackTrace();
-		// 			}
-					
-		// 			return success("Xác thực OTP thành công");
-		// 		} else {
-		// 			return error("Có lỗi xảy ra trong quá trình xác thực!");
-		// 		}
-		// 	}
-		// }
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			AjaxResult ajaxResult = null;
-			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
-			if (processOrder != null) {
-				processOrderService.insertProcessOrder(processOrder);
-				//
-				ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
-				try {
-					if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL)) {
-						ajaxResult = AjaxResult.warn("Yêu cầu đang được xử lý. Hệ thống sẽ thông báo khi có kết quả!");
-						ajaxResult.put("processId", processOrder.getId());
-						return ajaxResult;
+		OtpCode otpCode = new OtpCode();
+		otpCode.setTransactionId(shipmentDetailIds);
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		cal.add(Calendar.MINUTE, -5);
+		otpCode.setCreateTime(cal.getTime());
+		otpCode.setOtpCode(otp);
+		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+				AjaxResult ajaxResult = null;
+				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+				ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
+				if (processOrder != null) {
+					processOrderService.insertProcessOrder(processOrder);
+					//
+					ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+					try {
+						if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL)) {
+							ajaxResult = AjaxResult.warn("Yêu cầu đang được xử lý. Hệ thống sẽ thông báo khi có kết quả!");
+							ajaxResult.put("processId", processOrder.getId());
+							return ajaxResult;
+						}
+					} catch (Exception e) {
+						return error("Có lỗi xảy ra trong quá trình xác thực!");
 					}
-				} catch (Exception e) {
+					
+					ajaxResult =  AjaxResult.success("Xác thực OTP thành công");
+					ajaxResult.put("processId", processOrder.getId());
+					return ajaxResult;
+				} else {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
-				
-				ajaxResult =  AjaxResult.success("Xác thực OTP thành công");
-				ajaxResult.put("processId", processOrder.getId());
-				return ajaxResult;
-			} else {
-				return error("Có lỗi xảy ra trong quá trình xác thực!");
 			}
 		}
+		
 		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 	}
 
