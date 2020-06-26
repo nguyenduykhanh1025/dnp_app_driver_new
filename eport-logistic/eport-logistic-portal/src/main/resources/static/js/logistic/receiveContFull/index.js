@@ -353,7 +353,7 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
   config = {
     stretchH: "all",
-    height: document.documentElement.clientHeight - 105,
+    height: document.documentElement.clientHeight - 125,
     minRows: rowAmount,
     maxRows: rowAmount,
     width: "100%",
@@ -611,13 +611,13 @@ function updateLayout() {
     $("#deleteBtn").prop("disabled", true);
     status = 1;
   }
-
   switch (status) {
     case 1:
       setLayoutRegisterStatus();
       break;
     case 2:
       setLayoutCustomStatus();
+      break;
     case 3:
       setLayoutVerifyUserStatus();
       if (verify) {
