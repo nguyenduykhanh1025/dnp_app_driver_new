@@ -17,4 +17,5 @@ ALTER TABLE `process_bill`
 	ADD COLUMN `logistic_group_id` BIGINT(20) NOT NULL COMMENT 'Mã logistic' AFTER `shipment_id`;
 	
 ALTER TABLE `process_order`
-	ADD COLUMN `logistic_group_id` BIGINT(20) NOT NULL COMMENT 'Mã logistic' AFTER `shipment_id`;
+	ADD COLUMN `logistic_group_id` BIGINT(20) NOT NULL COMMENT 'Mã logistic' AFTER `shipment_id`,
+	CHANGE COLUMN `id` `id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT 'ID' FIRST;

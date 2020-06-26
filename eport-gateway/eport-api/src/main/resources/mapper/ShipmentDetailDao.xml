@@ -59,7 +59,10 @@
                 M.CONSIGNEE AS consignee,
                 M.VGM AS vgm,
                 M.user_voy AS voyNo,
-                M.chold_chk AS customStatus,
+                CASE
+                	WHEN M.chold_chk = 'N' then 'R'
+                	WHEN M.chold_chk = 'Y' then 'N'
+                END AS customStatus,
                 M.POD AS dischargePort,
                 M.POL AS loadingPort,
                 CASE
@@ -86,7 +89,9 @@
                 END AS containerStatus
             FROM TB_INVENTORY M
 		WHERE CNTR_NO = #{containerNo}
-        ORDER BY CNTR_NO ASC
+				AND TRUCK_NO2 IS NULL 
+				AND JOB_ODR_NO2 IS NULL
+				AND IX_CD = 'I'
     </select>
     
     <select id="selectCoordinateOfContainers" parameterType="ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
