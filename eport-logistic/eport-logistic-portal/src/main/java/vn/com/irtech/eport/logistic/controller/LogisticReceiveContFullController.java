@@ -197,6 +197,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setCreateTime(new Date());
 					shipmentDetail.setFe("F");
 					shipmentDetail.setPaymentStatus("N");
+					shipmentDetail.setUserVerifyStatus("N");
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setDoStatus("N");
 					shipmentDetail.setPreorderPickup("N");

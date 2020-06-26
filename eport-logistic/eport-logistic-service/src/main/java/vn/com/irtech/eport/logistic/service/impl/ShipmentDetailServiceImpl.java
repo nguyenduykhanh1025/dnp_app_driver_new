@@ -440,10 +440,18 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     @Transactional
-    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status, String invoiceNo) {
+    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status, String invoiceNo, ProcessOrder processOrder) {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessStatus(status);
             if ("Y".equalsIgnoreCase(status)) {
+                if ("Credit".equalsIgnoreCase(processOrder.getPayType())) {
+                    shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+                    shipmentDetail.setPaymentStatus("Y");
+                    if (4 == processOrder.getServiceType() && "VN".equals(shipmentDetail.getDischargePort().substring(0, 2))) {
+                        shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+                        shipmentDetail.setCustomStatus("R");
+                    }
+                }
                 shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
                 shipmentDetail.setRegisterNo(invoiceNo);
             }

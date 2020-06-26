@@ -194,6 +194,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setCreateTime(new Date());
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setPaymentStatus("N");
+					shipmentDetail.setUserVerifyStatus("N");
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setCustomStatus("N");
 					shipmentDetail.setFe("F");
