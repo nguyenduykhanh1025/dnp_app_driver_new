@@ -108,12 +108,4 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
         return true;
     }
 
-    @Override
-    @Transactional
-    public boolean insertProcessOrderReceiveContFull(List<ServiceSendFullRobotReq> serviceRobotReqs) {
-        for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
-            processOrderMapper.insertProcessOrder(serviceRobotReq.processOrder);
-        }
-        return true;
-    }
 }

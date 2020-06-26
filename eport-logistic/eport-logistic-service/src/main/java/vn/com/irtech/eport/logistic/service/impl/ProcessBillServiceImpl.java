@@ -124,7 +124,8 @@ public class ProcessBillServiceImpl implements IProcessBillService
         			processBill.setProcessOrderId(processOrder.getId());
         			processBill.setServiceType(processOrder.getServiceType());
         			processBill.setShipmentId(processOrder.getShipmentId());
-        			processBill.setCreateTime(new Date());
+                    processBill.setCreateTime(new Date());
+                    processBill.setLogisticGroupId(processBill.getLogisticGroupId());
         			processBillMapper.insertProcessBill(processBill);
         		}
         	}
@@ -135,6 +136,6 @@ public class ProcessBillServiceImpl implements IProcessBillService
 
     @Override
     public List<ProcessBill> selectProcessBillListByProcessOrderIds(String processOrderIds) {
-        return processBillMapper.selectProcessBillListByProcessOrderIds(processOrderIds);
+        return processBillMapper.selectProcessBillListByProcessOrderIds(Convert.toStrArray(processOrderIds));
     }
 }

@@ -121,7 +121,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectProcessBillListByProcessOrderIds" parameterType="String" resultMap="ProcessBillResult">
         <include refid="selectProcessBillVo"/>
-        where processOrderId in 
+        where process_order_id in 
         <foreach item="processOrderId" collection="array" open="(" separator="," close=")">
             #{processOrderId}
         </foreach>
