@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -56,6 +57,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@Autowired
 	private MqttService mqttService;
+	
+	@Autowired
+	private CustomQueueService customQueueService;
 
     @GetMapping()
 	public String sendContEmpty() {
@@ -356,5 +360,11 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		ajaxResult.put("opeCodeList", opeCodeList);
 		
 		return ajaxResult;
+	}
+	
+	@GetMapping("/test")
+	@ResponseBody
+	public ShipmentDetail test() {
+		return customQueueService.getShipmentDetail();
 	}
 }

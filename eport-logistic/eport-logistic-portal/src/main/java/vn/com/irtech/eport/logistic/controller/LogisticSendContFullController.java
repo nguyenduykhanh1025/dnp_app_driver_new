@@ -22,6 +22,7 @@ import org.springframework.web.client.RestTemplate;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -58,6 +59,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	
 	@Autowired
 	private IProcessBillService processBillService;
+	
+	@Autowired
+	private CustomQueueService customQueueService;
 
     @GetMapping()
 	public String sendContEmpty() {
@@ -232,36 +236,19 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@PostMapping("/checkCustomStatus")
 	@ResponseBody
-	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
-			String shipmentDetailIds) throws IOException {
+	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList, String shipmentDetailIds) {
 		if (declareNoList != null) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService
-					.selectShipmentDetailByIds(shipmentDetailIds);
-			if (shipmentDetails.size() > 0) {
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails != null && shipmentDetails.size() > 0) {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
-						try {
-							Thread.sleep(500);
-							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
-							{
-								shipmentDetail.setStatus(4);
-								shipmentDetail.setCustomStatus("R");
-								shipmentDetailService.updateShipmentDetail(shipmentDetail);
-								// push notification with socketIO 
-							}else {
-								// push notification with socketIO 
-							};
-						
-						} catch(Exception e) {
-							e.printStackTrace(); 
-						}
-						
+						customQueueService.offerShipmentDetail(shipmentDetail);
 					}
-					return shipmentDetails;
+					return success();
 				}
 			}
 		}
-		return null;
+		return error();
 	}
 
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
@@ -420,5 +407,4 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		
 		return ajaxResult;
 	}
-
 }
