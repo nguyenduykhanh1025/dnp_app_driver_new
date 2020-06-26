@@ -855,7 +855,7 @@ function finishVerifyForm(result) {
     if (result.code == 0 || result.code == 301){
         $.modal.loading("Đang xử lý, vui lòng chờ..");
         let processId = result.processId;
-        $.websocket.subscribe('/eportTopic/' + processId + '/response', onMessageReceived);
+        $.websocket.subscribe(processId + '/response', onMessageReceived);
     } else {
         $.modal.msgError(result.msg);
         reloadShipmentDetail();
