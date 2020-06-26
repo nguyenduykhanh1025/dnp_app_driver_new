@@ -53,22 +53,7 @@ function checkCustomStatus() {
                             declareNoList: declareNoList,
                             shipmentDetailIds: shipmentDetailIds.substring(0, shipmentDetailIds.length - 1)
                         },
-                        success: function (data) {
-                        //     $(".loaderbox").css('display','none');
-                        //     $.modal.closeLoading();
-                        //     if (data != null) {
-                        //         $("#contTable").datagrid({
-                        //             loadMsg: " Đang xử lý...",
-                        //             loader: function (param, success, error) {
-                        //                 success(data);
-                        //             },
-                        //         });
-                        //     } else {
-                        //         $.modal.msgError("Có lỗi xảy ra trong quá trình khai hải quan.");
-                        //     }
-                           
-                        //    // loadData() 
-                        //     $("#checkBtn").html("Kết thúc");
+                            success: function (data) {
                         },
                         error: function (result) {
                             $("#checkBtn").html("Kết thúc");
@@ -157,7 +142,7 @@ function onMessageReceived(payload) {
     if (message.code == 0) {
         contResult.push(message.shipmentDetail);
         contAmount--;
-        $.modal.closeLoading();
+        //$.modal.closeLoading();
         $.modal.loading("Đang kiểm tra trạng thái thông quan: "+(contList.length-contAmount)+"/"+contList.length);
         if (contAmount == 0) {
             $.modal.closeLoading();

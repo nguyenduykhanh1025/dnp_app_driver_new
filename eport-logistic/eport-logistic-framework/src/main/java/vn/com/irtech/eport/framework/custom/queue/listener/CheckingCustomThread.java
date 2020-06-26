@@ -51,6 +51,7 @@ public class CheckingCustomThread {
         				ajaxResult = AjaxResult.success();
         				ajaxResult.put("shipmentDetail", shipmentDetail);
         				webSocketService.sendMessage("/" + shipmentDetail.getContainerNo() + "/response", ajaxResult);
+        				Thread.sleep(1000);
         			} catch (Exception e) {
         				e.printStackTrace();
         			}
