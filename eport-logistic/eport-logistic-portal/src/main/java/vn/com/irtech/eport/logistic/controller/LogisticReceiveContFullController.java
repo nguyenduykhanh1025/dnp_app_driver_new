@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -318,12 +319,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 		String content = "TEST SMS   " + rD;
 		String response = "";
-		// try {
-		// 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
-		// 	System.out.println(response);
-		// } catch (IOException ex) {
-		// 	// process the exception
-		// }
+		 try {
+		 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
+		 	System.out.println(response);
+		 } catch (IOException ex) {
+		 	// process the exception
+		 }
 		return AjaxResult.success("response.toString()");
 	}
 
