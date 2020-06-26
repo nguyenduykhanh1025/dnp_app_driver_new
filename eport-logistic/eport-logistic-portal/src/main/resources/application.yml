@@ -87,12 +87,8 @@ mqtt:
   username: admin             
   password: public            
   host-url: tcp://localhost:1883                # The address and port of your own server need to be changed 
-  clientID: minhdd                               # This change is not optional, but different clients must not be the same
-  default-topic: order_result                   # Default theme
-  timeout: 200                 
-  keepalive: 200
 
 websocket:
-   endpoint: /eport_websocket
-   app-destination-prefix: /eportApp
-   message-broker: /eportTopic
+   endpoint: /eport_logistic
+   app-destination-prefix: /eport_logistic
+   message-broker: /eport_logistic
