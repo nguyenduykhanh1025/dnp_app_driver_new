@@ -848,7 +848,7 @@ function verifyOtp(shipmentDtIds, creditFlag) {
 function pay() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds + "/" + processOrderIds, 700, 300);
+        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds + "/" + "1"/*processOrderIds*/, 800, 400);
     }
 }
    

@@ -209,6 +209,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setStatus(1);
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setCustomStatus("N");
 					shipmentDetail.setFe("F");
 					if (shipmentDetail.getLoadingPort() == null || shipmentDetail.getLoadingPort().equals("")) {
 						shipmentDetail.setLoadingPort(" ");
@@ -380,7 +381,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 
 
-	@GetMapping("paymentForm/{shipmentDetailIds}{processOrderIds}")
+	@GetMapping("paymentForm/{shipmentDetailIds}/{processOrderIds}")
 	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
@@ -400,7 +401,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setStatus(3);
 				shipmentDetail.setPaymentStatus("Y");
-				if ("VN".equals(shipmentDetail.getLoadingPort().substring(0,2))) {
+				if ("VN".equals(shipmentDetail.getDischargePort().substring(0,2))) {
 					shipmentDetail.setStatus(4);
 					shipmentDetail.setCustomStatus("Y");
 				}
@@ -439,15 +440,4 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return ajaxResult;
 	}
 
-	@PostMapping("/test")
-	@ResponseBody
-	public boolean test() {
-		ProcessOrder processOrder = new ProcessOrder();
-		processOrder.setReferenceNo("");
-		processOrder.setId(1l);
-		processOrder.setServiceType(4);
-		processOrder.setShipmentId(1l);
-		processBillService.saveProcessBillByInvoiceNo(processOrder);
-		return true;
-	}
 }
