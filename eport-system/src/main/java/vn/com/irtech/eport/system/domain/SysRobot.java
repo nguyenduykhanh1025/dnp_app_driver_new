@@ -40,6 +40,9 @@ public class SysRobot extends BaseEntity {
 	@Excel(name = "Is Send Cont Full Order")
 	private Boolean isSendContEmptyOrder;
 
+	@Excel(name = "Is Gate in Order")
+	private Boolean isGateInOrder;
+	
 	/** ip address */
 	@Excel(name = "ip address")
 	private String ipAddress;
@@ -48,8 +51,8 @@ public class SysRobot extends BaseEntity {
 		return id;
 	}
 
-	public void setId(Long robotId) {
-		this.id = robotId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUuId() {
@@ -107,15 +110,27 @@ public class SysRobot extends BaseEntity {
 	public void setIsSendContFullOrder(Boolean isSendContFullOrder) {
 		this.isSendContFullOrder = isSendContFullOrder;
 	}
+	
+	
+
+	public Boolean getIsGateInOrder() {
+		return isGateInOrder;
+	}
+
+	public void setIsGateInOrder(Boolean isGateInOrder) {
+		this.isGateInOrder = isGateInOrder;
+	}
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("robotId", getId())
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
 				.append("uuId", getUuId()).append("status", getStatus())
 				.append("isReceiveContFullOrder", getIsReceiveContFullOrder())
 				.append("isReceiveContEmptyOrder", getIsReceiveContEmptyOrder())
 				.append("isSendContFullOrder", getIsSendContFullOrder())
-				.append("isSendContEmptyOrder", getIsSendContEmptyOrder()).append("ipAddress", getIpAddress())
+				.append("isSendContEmptyOrder", getIsSendContEmptyOrder())
+				.append("isGateInOrder", getIsGateInOrder())
+				.append("ipAddress", getIpAddress())
 				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
 				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("remark", getRemark())
 				.toString();

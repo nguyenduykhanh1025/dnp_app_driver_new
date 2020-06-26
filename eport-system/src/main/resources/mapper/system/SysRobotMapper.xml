@@ -12,6 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="isReceiveContEmptyOrder"    column="is_receive_cont_empty_order"    />
         <result property="isSendContFullOrder"    column="is_send_cont_full_order"    />
         <result property="isSendContEmptyOrder"    column="is_send_cont_empty_order"    />
+        <result property="isGateInOrder"    column="is_gate_in_order"    />
         <result property="ipAddress"    column="ip_address"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -21,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectRobotVo">
-        select id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, ip_address, create_by, create_time, update_by, update_time, remark from sys_robot
+        select id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark from sys_robot
     </sql>
 
     <select id="selectRobotList" parameterType="SysRobot" resultMap="RobotResult">
@@ -33,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isReceiveContEmptyOrder != null"> and is_receive_cont_empty_order = #{isReceiveContEmptyOrder}</if>
             <if test="isSendContFullOrder != null"> and is_send_cont_full_order = #{isSendContFullOrder}</if>
             <if test="isSendContEmptyOrder != null"> and is_send_cont_empty_order = #{isSendContEmptyOrder}</if>
+            <if test="isGateInOrder != null"> and is_gate_in_order = #{isGateInOrder}</if>
             <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
         </where>
     </select>
@@ -57,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isReceiveContEmptyOrder != null"> and is_receive_cont_empty_order = #{isReceiveContEmptyOrder}</if>
             <if test="isSendContFullOrder != null"> and is_send_cont_full_order = #{isSendContFullOrder}</if>
             <if test="isSendContEmptyOrder != null"> and is_send_cont_empty_order = #{isSendContEmptyOrder}</if>
+            <if test="isGateInOrder != null"> and is_gate_in_order = #{isGateInOrder}</if>
             <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
         </where>
         limit 1
@@ -71,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isReceiveContEmptyOrder != null">is_receive_cont_empty_order,</if>
             <if test="isSendContFullOrder != null">is_send_cont_full_order,</if>
             <if test="isSendContEmptyOrder != null">is_send_cont_empty_order,</if>
+            <if test="isGateInOrder != null">is_gate_in_order,</if>
             <if test="ipAddress != null  and ipAddress != ''">ip_address,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
@@ -85,6 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isReceiveContEmptyOrder != null">#{isReceiveContEmptyOrder},</if>
             <if test="isSendContFullOrder != null">#{isSendContFullOrder},</if>
             <if test="isSendContEmptyOrder != null">#{isSendContEmptyOrder},</if>
+            <if test="isGateInOrder != null">#{isGateInOrder},</if>
             <if test="ipAddress != null  and ipAddress != ''">#{ipAddress},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
@@ -103,6 +108,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isReceiveContEmptyOrder != null">is_receive_cont_empty_order = #{isReceiveContEmptyOrder},</if>
             <if test="isSendContFullOrder != null">is_send_cont_full_order = #{isSendContFullOrder},</if>
             <if test="isSendContEmptyOrder != null">is_send_cont_empty_order = #{isSendContEmptyOrder},</if>
+            <if test="isGateInOrder != null">is_gate_in_order = #{isGateInOrder},</if>
             <if test="ipAddress != null  and ipAddress != ''">ip_address = #{ipAddress},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
@@ -144,6 +150,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isReceiveContEmptyOrder != null">is_receive_cont_empty_order = #{isReceiveContEmptyOrder},</if>
             <if test="isSendContFullOrder != null">is_send_cont_full_order = #{isSendContFullOrder},</if>
             <if test="isSendContEmptyOrder != null">is_send_cont_empty_order = #{isSendContEmptyOrder},</if>
+            <if test="isGateInOrder != null">is_gate_in_order = #{isGateInOrder},</if>
             <if test="ipAddress != null  and ipAddress != ''">ip_address = #{ipAddress},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
