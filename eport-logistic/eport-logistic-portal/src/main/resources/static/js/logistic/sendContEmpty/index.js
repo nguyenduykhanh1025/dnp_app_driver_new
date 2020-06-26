@@ -668,9 +668,9 @@ function getDataFromTable(isValidate) {
         shipmentDetail.expiredDem = expiredDem.getTime();
         shipmentDetail.vslNm = object["vslNm"];
         shipmentDetail.voyNo = object["voyNo"];
-        shipmentDetail.sztp = object["sztp"];
+        shipmentDetail.sztp = object["sztp"].split(":")[0];
         shipmentDetail.wgt = object["wgt"];
-        shipmentDetail.dischargePort = object["dischargePort"];
+        shipmentDetail.dischargePort = object["dischargePort"].split(":")[0];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];

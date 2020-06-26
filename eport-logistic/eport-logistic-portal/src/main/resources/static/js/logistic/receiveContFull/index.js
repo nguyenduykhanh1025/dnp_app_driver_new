@@ -1037,24 +1037,24 @@ function onMessageReceived(payload) {
   if (message.code != 0) {
     $.modal.alertError(message.msg);
 
-    // Close websocket connection 
-    $.websocket.disconnect(onDisconnected);
-
     // Close loading
     $.modal.closeLoading();
+
+    // Close websocket connection 
+    $.websocket.disconnect(onDisconnected);
 
     reloadShipmentDetail();
   } else {
     orderNumber--;
     if (orderNumber == 0) {
       $.modal.alertSuccess(message.msg);
-      
-      // Close websocket connection 
-      $.websocket.disconnect(onDisconnected);
 
       // Close loading
       $.modal.closeLoading();
-      
+
+      // Close websocket connection 
+      $.websocket.disconnect(onDisconnected);
+
       reloadShipmentDetail();
     }
   }
