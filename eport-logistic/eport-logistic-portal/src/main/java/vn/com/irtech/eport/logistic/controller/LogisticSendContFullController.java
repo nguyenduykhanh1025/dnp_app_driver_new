@@ -71,8 +71,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		//String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
-		String groupName = "Công ty abc";
+		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {

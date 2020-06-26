@@ -24,4 +24,5 @@ $("#contTable").datagrid({
 
 if ('0' == creditFlag) {
     $('#credit').hide();
+    $('#creditLabel').hide();
 }

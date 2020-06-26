@@ -453,7 +453,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                     }
                 }
                 shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
-                shipmentDetail.setRegisterNo(invoiceNo);
             }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
