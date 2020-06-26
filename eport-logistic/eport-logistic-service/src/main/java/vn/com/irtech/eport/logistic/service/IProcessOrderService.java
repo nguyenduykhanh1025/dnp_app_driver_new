@@ -63,5 +63,4 @@ public interface IProcessOrderService
 
     public boolean insertProcessOrderList(List<ProcessOrder> processOrders);
 
-    public boolean insertProcessOrderReceiveContFull(List<ServiceSendFullRobotReq> serviceRobotReqs);
 }

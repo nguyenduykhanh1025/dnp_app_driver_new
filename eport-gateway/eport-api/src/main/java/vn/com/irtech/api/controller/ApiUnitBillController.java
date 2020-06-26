@@ -19,9 +19,8 @@ public class ApiUnitBillController {
 	public UnitBillDao unitBillDao;
 	
 	@GetMapping("/unitBill/list/{invNo}")
-	public R getUnitBillList(@PathVariable String invNo) {
-		List<UnitBillEntity> list = unitBillDao.selectUnitBillByInvNo(invNo);
-		return R.ok().put("data", list);
+	public List<UnitBillEntity> getUnitBillList(@PathVariable String invNo) {
+		return unitBillDao.selectUnitBillByInvNo(invNo);
 	}
 
 }

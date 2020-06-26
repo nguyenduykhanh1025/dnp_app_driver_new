@@ -5,58 +5,48 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class UnitBillEntity {
 
-	private String invNo;
+	private String referenceNo;
+
+	private Long exchangeFee;
 	
-	private Double netAmount;
+	private Integer vatRate;
 	
-	private Double vatRate;
-	
-	private Double vatAmount;
-	
-	private Double amount;
+	private Long vatAfterFee;
 	
 	private String containerNo;
 	
 	private String sztp;
-
-	public String getInvNo() {
-		return invNo;
+	
+	public String getReferenceNo() {
+		return referenceNo;
 	}
 
-	public void setInvNo(String invNo) {
-		this.invNo = invNo;
+	public void setReferenceNo(String referenceNo) {
+		this.referenceNo = referenceNo;
 	}
 
-	public Double getNetAmount() {
-		return netAmount;
+	public Long getExchangeFee() {
+		return exchangeFee;
 	}
 
-	public void setNetAmount(Double netAmount) {
-		this.netAmount = netAmount;
+	public void setExchangeFee(Long exchangeFee) {
+		this.exchangeFee = exchangeFee;
 	}
 
-	public Double getVatRate() {
+	public Integer getVatRate() {
 		return vatRate;
 	}
 
-	public void setVatRate(Double vatRate) {
+	public void setVatRate(Integer vatRate) {
 		this.vatRate = vatRate;
 	}
 
-	public Double getVatAmount() {
-		return vatAmount;
+	public Long getVatAfterFee() {
+		return vatAfterFee;
 	}
 
-	public void setVatAmount(Double vatAmount) {
-		this.vatAmount = vatAmount;
-	}
-
-	public Double getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Double amount) {
-		this.amount = amount;
+	public void setVatAfterFee(Long amount) {
+		this.vatAfterFee = amount;
 	}
 
 	public String getContainerNo() {
@@ -78,11 +68,10 @@ public class UnitBillEntity {
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-	            .append("invNo", getInvNo())
-	            .append("netAmount", getNetAmount())
+				.append("referenceNo", getReferenceNo())
+	            .append("exchangeFee", getExchangeFee())
 	            .append("vatRate", getVatRate())
-	            .append("vatAmount", getVatAmount())
-	            .append("amount", getAmount())
+	            .append("vatAfterFee", getVatAfterFee())
 	            .append("containerNo", getContainerNo())
 	            .append("sztp", getSztp())
 	            .toString();

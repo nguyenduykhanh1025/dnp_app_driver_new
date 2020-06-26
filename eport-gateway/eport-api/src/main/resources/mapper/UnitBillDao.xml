@@ -3,14 +3,13 @@
 <mapper namespace="vn.com.irtech.api.dao.UnitBillDao">
 	<select id="selectUnitBillByInvNo" parameterType="String" resultType="vn.com.irtech.api.entity.UnitBillEntity">
 		SELECT 
-		    INV_NO AS INV_NO,
-		    NET_AMT AS NET_AMOUNT,
+		    INV_NO AS REFERENCE_NO,
+		    NET_AMT AS EXCHANGE_FEE,
 		    VAT_RATE AS VAT_RATE,
-		    VAT_AMT AS VAT_AMOUNT,
-		    AMT AS AMOUNT,
+		    AMT AS VAT_AFTER_FEE,
 		    CNTR_NO AS CONTAINER_NO,
 		    SZTP2 AS SZTP
 		FROM TB_INVOICE_UNIT
-		WHERE INV_NO = #{invNo}
+		WHERE INV_NO = #{referenceNo}
 	</select>
 </mapper>

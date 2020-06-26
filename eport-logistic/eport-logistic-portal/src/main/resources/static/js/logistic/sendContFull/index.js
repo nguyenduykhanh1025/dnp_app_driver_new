@@ -1,6 +1,6 @@
 var prefix = ctx + "logistic/sendContFull";
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData;
+var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
 var contList = [];
 var conts = '';
 var allChecked = false;
@@ -28,7 +28,7 @@ var sizeList = [
     "L4T0: Cont 45 feet tank - cont bồn",
     "L4U0: Cont 45 feet open top"
 ];
-var consigneeList, opeCodeList, dischargePortList, vslNmList;
+var consigneeList, opeCodeList, dischargePortList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({
     url: prefix + "/getField",
@@ -55,8 +55,15 @@ $(document).ready(function () {
         handleCollapse(false);
     });
 
-    // CONNECT WEB SOCKET
-    connectToWebsocketServer();
+    // Handle add
+    $(function () {
+        let options = {
+            createUrl: prefix + "/addShipmentForm",
+            updateUrl: "0",
+            modalName: " Lô"
+        };
+        $.table.init(options);
+    });
 });
 
 function handleCollapse(status) {
@@ -135,16 +142,6 @@ function formatDate(value) {
 function formatRemark(value) {
     return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null ? (value.substring(0, 5) + "...") : "...") + '</span></div>';
 }
-
-// Handle add
-$(function () {
-    let options = {
-        createUrl: prefix + "/addShipmentForm",
-        updateUrl: "0",
-        modalName: " Lô"
-    };
-    $.table.init(options);
-});
 
 function handleRefresh() {
     loadTable();
@@ -624,6 +621,8 @@ function getDataSelectedFromTable(isValidate) {
     }
     shipmentDetailIds = "";
     shipmentDetails = [];
+    processOrderIds = '';
+    let temProcessOrderIds = [];
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
@@ -636,8 +635,16 @@ function getDataSelectedFromTable(isValidate) {
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
+        if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"])) {
+            temProcessOrderIds.push(object["processOrderId"]);
+            processOrderIds += object["processOrderId"] + ',';
+        }
         shipmentDetailIds += object["id"] + ",";
     });
+
+    if (processOrderIds != '') {
+        processOrderIds.substring(0, processOrderIds.length-1);
+    }
 
     // Get result in "selectedList" letiable
     if (shipmentDetails.length == 0 && isValidate) {
@@ -703,7 +710,7 @@ function getDataFromTable(isValidate) {
         }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
-        if (object["status"] == 1) {
+        if (object["status"] == 1 || object["status"] == null) {
             conts += object["containerNo"] + ',';
         }
         contList.push(object["containerNo"]);
@@ -836,9 +843,12 @@ function verifyOtp(shipmentDtIds, creditFlag) {
 }
 
 function pay() {
-    $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds, 700, 300);
+    getDataSelectedFromTable(true);
+    if (shipmentDetails.length > 0) {
+        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + processOrderIds, 800, 400);
+    }
 }
-
+   
 function checkCustomStatus() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
@@ -925,9 +935,11 @@ function finishForm(result) {
 
 function finishVerifyForm(result) {
     if (result.code == 0 || result.code == 301){
-        $.modal.loading("Đang xử lý, vui lòng chờ..");
-        let processId = result.processId;
-        $.websocket.subscribe('/eportTopic/' + processId + '/response', onMessageReceived);
+        $.modal.loading(result.msg);
+        currentProcessId = result.processId;
+        // CONNECT WEB SOCKET
+        connectToWebsocketServer();
+       
     } else {
         $.modal.msgError(result.msg);
         reloadShipmentDetail();
@@ -938,6 +950,22 @@ function napasPaymentForm() {
     $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/napasPaymentForm");
 }
 
+function connectToWebsocketServer(){
+    // Connect to WebSocket Server.
+    $.websocket.connect({}, onConnected, onError);
+}
+
+function onConnected() {
+    console.log('Connect socket.')
+    currentSubscription = $.websocket.subscribe(currentProcessId + '/response', onMessageReceived);
+}
+
+function onError(error) {
+    console.log(error);
+    $.modal.alertError('Could not connect to WebSocket server. Please refresh this page to try again!');
+    $.modal.closeLoading();
+}
+
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
     if (message.code == 0){
@@ -945,19 +973,21 @@ function onMessageReceived(payload) {
     }else{
         $.modal.alertError(message.msg);
     }
+
+    // Close loading
     $.modal.closeLoading();
+
+    // Unsubscribe destination
+    if (currentSubscription){
+        currentSubscription.unsubscribe();
+    }
+
+    // Close websocket connection 
+    $.websocket.disconnect(onDisconnected);
+
     reloadShipmentDetail();
 }
 
-function connectToWebsocketServer(){
-    // Connect to WebSocket Server.
-    $.websocket.connect({}, onConnected, onError);
+function onDisconnected(){
+    console.log('Disconnected socket.');
 }
-
-function onConnected() {
-}
-
-function onError(error) {
-    console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
-}
-  
