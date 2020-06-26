@@ -188,6 +188,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setFe("E");
+					shipmentDetail.setCargoType("MT");
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
