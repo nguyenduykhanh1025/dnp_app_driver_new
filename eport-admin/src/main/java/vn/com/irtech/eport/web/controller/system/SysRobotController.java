@@ -77,8 +77,8 @@ public class SysRobotController extends BaseController {
 		return toAjax(robotService.deleteRobotByIds(ids));
 	}
 
-	@GetMapping("/edit/{robotId}")
-	public String edit(@PathVariable("robotId") Long robotId, ModelMap mmap) {
+	@GetMapping("/edit/{id}")
+	public String edit(@PathVariable("id") Long robotId, ModelMap mmap) {
 		mmap.put("robot", robotService.selectRobotById(robotId));
 		return PREFIX + "/edit";
 	}

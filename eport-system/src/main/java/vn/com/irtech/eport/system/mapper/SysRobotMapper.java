@@ -17,10 +17,10 @@ public interface SysRobotMapper
     /**
      * Get Robot by id
      * 
-     * @param robotId
+     * @param id
      * @return robot
      */
-    public SysRobot selectRobotById(Long robotId);
+    public SysRobot selectRobotById(Long id);
     
     /**
      * Get Robot by uuId
@@ -57,18 +57,18 @@ public interface SysRobotMapper
     /**
      * Delete robot by id
      * 
-     * @param robotId
+     * @param id
      * @return result
      */
-    public int deleteRobotById(Long robotId);
+    public int deleteRobotById(Long id);
 
     /**
      * Delete robots by ids
      * 
-     * @param robotIds
+     * @param ids
      * @return result
      */
-    public int deleteRobotByIds(String[] robotIds);
+    public int deleteRobotByIds(String[] ids);
     
     /**
 	 * Check uuid robot unique
