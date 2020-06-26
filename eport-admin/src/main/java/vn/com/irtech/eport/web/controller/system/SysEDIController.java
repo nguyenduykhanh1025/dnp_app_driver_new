@@ -142,7 +142,8 @@ public class SysEDIController extends BaseController
 			obj = this.ReadEDI(text);
 			rs.addAll(obj);
 			//Move file to distination folder
-			//fileEntry.renameTo(new File(destinationFolder + fileEntry.getName()));
+			fileEntry.renameTo(new File(destinationFolder + fileEntry.getName()));
+			fileEntry.delete();
 			}
 		return rs;
 	}  
