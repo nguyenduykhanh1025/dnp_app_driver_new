@@ -715,12 +715,12 @@ function getDataFromTable(isValidate) {
         }
         contList.push(object["containerNo"]);
         shipmentDetail.opeCode = object["opeCode"];
-        shipmentDetail.sztp = object["sztp"];
+        shipmentDetail.sztp = object["sztp"].split(":")[0];
         shipmentDetail.consignee = object["consignee"];
         shipmentDetail.wgt = object["wgt"];
         shipmentDetail.vslNm = object["vslNm"];
         shipmentDetail.voyNo = object["voyNo"];
-        shipmentDetail.dischargePort = object["dischargePort"];
+        shipmentDetail.dischargePort = object["dischargePort"].split(":")[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
