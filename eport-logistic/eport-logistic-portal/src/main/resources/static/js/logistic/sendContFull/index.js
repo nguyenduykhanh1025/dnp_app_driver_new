@@ -28,7 +28,7 @@ var sizeList = [
     "L4T0: Cont 45 feet tank - cont bồn",
     "L4U0: Cont 45 feet open top"
 ];
-var consigneeList, opeCodeList, dischargePortList, vslNmList;
+var consigneeList, opeCodeList, dischargePortList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({
     url: prefix + "/getField",
@@ -54,9 +54,6 @@ $(document).ready(function () {
     $("#btn-uncollapse").click(function () {
         handleCollapse(false);
     });
-
-    // CONNECT WEB SOCKET
-    connectToWebsocketServer();
 });
 
 function handleCollapse(status) {
@@ -940,8 +937,10 @@ function finishForm(result) {
 function finishVerifyForm(result) {
     if (result.code == 0 || result.code == 301){
         $.modal.loading("Đang xử lý, vui lòng chờ..");
-        let processId = result.processId;
-        $.websocket.subscribe('/eportTopic/' + processId + '/response', onMessageReceived);
+        currentProcessId = result.processId;
+        // CONNECT WEB SOCKET
+        connectToWebsocketServer();
+       
     } else {
         $.modal.msgError(result.msg);
         reloadShipmentDetail();
@@ -952,6 +951,22 @@ function napasPaymentForm() {
     $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/napasPaymentForm");
 }
 
+function connectToWebsocketServer(){
+    // Connect to WebSocket Server.
+    $.websocket.connect({}, onConnected, onError);
+}
+
+function onConnected() {
+    console.log('Connect socket.')
+    currentSubscription = $.websocket.subscribe(currentProcessId + '/response', onMessageReceived);
+}
+
+function onError(error) {
+    console.log(error);
+    $.modal.alertError('Could not connect to WebSocket server. Please refresh this page to try again!');
+    $.modal.closeLoading();
+}
+
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
     if (message.code == 0){
@@ -959,19 +974,21 @@ function onMessageReceived(payload) {
     }else{
         $.modal.alertError(message.msg);
     }
+
+    // Close loading
     $.modal.closeLoading();
+
+    // Unsubscribe destination
+    if (currentSubscription){
+        currentSubscription.unsubscribe();
+    }
+
+    // Close websocket connection 
+    $.websocket.disconnect(onDisconnected);
+
     reloadShipmentDetail();
 }
 
-function connectToWebsocketServer(){
-    // Connect to WebSocket Server.
-    $.websocket.connect({}, onConnected, onError);
+function onDisconnected(){
+    console.log('Disconnected socket.');
 }
-
-function onConnected() {
-}
-
-function onError(error) {
-    console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
-}
-  

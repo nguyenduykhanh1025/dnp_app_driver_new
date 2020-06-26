@@ -1,24 +1,27 @@
 var stompClient = null;
-const ENDPOINT = '/eport_websocket';
+const ENDPOINT = '/eport_logistic';
+const DESTINATION_PREFIX = '/eport_logistic/';
 
 (function ($) {
   $.extend({
     websocket: {
-      // Connect to websocket server
       connect: function(headers = {}, connectCallback, errorCallback){
-        var socket = new SockJS(ENDPOINT);
+        let socket = new SockJS(ENDPOINT);
         stompClient = Stomp.over(socket);
       
         stompClient.connect(headers, connectCallback, errorCallback);
       },
-
-      // Subcribe message from websocket server
+      disconnect: function(disconnectCallback, headers = {}){
+        if (stompClient != null){
+          stompClient.disconnect(disconnectCallback, headers);
+        }
+      },
       subscribe: function(destination, callback, headers = {}){
         if (stompClient == null){
           console.error("Please connect to websocket server before subcribe!");
           return;
         }
-        stompClient.subscribe(destination, callback, headers);
+        return stompClient.subscribe(DESTINATION_PREFIX + destination, callback, headers);
       },
       client: stompClient
     }

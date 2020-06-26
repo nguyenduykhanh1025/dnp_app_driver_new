@@ -1029,7 +1029,7 @@ function finishVerifyForm(result) {
     $.modal.loading("Đang xử lý, vui lòng chờ..");
     orderNumber = result.orderNumber;
     for (let i = 0; i < result.processIds.length; i++) {
-      $.websocket.subscribe('/eportTopic/' + result.processIds[i] + '/response', onMessageReceived);
+      $.websocket.subscribe(result.processIds[i] + '/response', onMessageReceived);
     }
   }
 }
