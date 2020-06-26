@@ -78,4 +78,6 @@ public interface ShipmentDetailMapper
      * @return Shipment Details List
      */
     public List<ShipmentWaitExec> selectListShipmentWaitExec();
+
+    public List<ShipmentDetail> selectShipmentDetailByProcessIds(String[] processOrderIds);
 }

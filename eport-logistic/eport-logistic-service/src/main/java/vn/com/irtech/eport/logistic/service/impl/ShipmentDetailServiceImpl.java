@@ -321,6 +321,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setMode("Truck Out");
         }
         processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
+        processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
             processOrder.setTruckCo(shipment.getTaxCode()+" : "+getGroupNameByTaxCode(shipment.getTaxCode()));
         } catch (Exception e) {
@@ -348,8 +349,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setShipmentId(shipment.getId());
         processOrder.setServiceType(1);
+        processOrderService.insertProcessOrder(processOrder);
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
-            shipmentDetail.setProcessOrderId(shipmentDetails.get(0).getId());
+            shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(registerNo.toString());
             shipmentDetail.setUserVerifyStatus("Y");
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
@@ -359,9 +361,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     private boolean checkMakeOrderByBl(String blNo, int size, boolean edoFlag) {
         if (edoFlag) {
-
+            if (getCountContByBlNo(blNo) == size) {
+                return true;
+            }
         } else {
-
+            if (getCountContByBlNo(blNo) == size) {
+                return true;
+            }
         }
         return false;
     }
@@ -402,12 +408,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setVessel(shipmentDetails.get(0).getVslNm());
         processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+        processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
         if (tempProcessOrder != null) {
             processOrder.setYear(tempProcessOrder.getYear());
             processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
         } else {
-            processOrder.setYear("2020");
+            processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
         processOrder.setShipmentId(shipment.getId());
@@ -534,7 +541,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(url, Integer.class);
 	}
-	
-	
+    
+    @Override
+    public List<ShipmentDetail> selectShipmentDetailByProcessIds (String processOrderIds) {
+        return shipmentDetailMapper.selectShipmentDetailByProcessIds(Convert.toStrArray(processOrderIds));
+    }
     
 }

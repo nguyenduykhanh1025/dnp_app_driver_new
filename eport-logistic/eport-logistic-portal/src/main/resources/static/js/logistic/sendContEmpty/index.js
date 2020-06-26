@@ -28,7 +28,7 @@ var sizeList = [
     "L4T0: Cont 45 feet tank - cont bồn",
     "L4U0: Cont 45 feet open top"
 ];
-var consigneeList, opeCodeList, dischargePortList, vslNmList;
+var consigneeList, opeCodeList, dischargePortList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({
     url: prefix + "/getField",
@@ -801,7 +801,7 @@ function verifyOtp(shipmentDtIds, creditFlag) {
 function pay() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds + "/" + processOrderIds, 800, 400);
+        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + processOrderIds, 800, 400);
     }
 }
 

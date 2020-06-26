@@ -354,8 +354,16 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
 
-	@GetMapping("paymentForm/{shipmentDetailIds}/{processOrderIds}")
-	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
+	@GetMapping("paymentForm/{processOrderIds}")
+	public String paymentForm(@PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
+		String shipmentDetailIds = "";
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderIds);
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetailIds += shipmentDetail.getId() + ",";
+		}
+		if (!"".equalsIgnoreCase(shipmentDetailIds)) {
+			shipmentDetailIds.substring(0, shipmentDetailIds.length()-1);
+		}
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
@@ -370,7 +378,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult payment(String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+		if (shipmentDetails != null && shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setStatus(3);
 				shipmentDetail.setPaymentStatus("Y");

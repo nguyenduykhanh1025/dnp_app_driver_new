@@ -106,4 +106,6 @@ public interface IShipmentDetailService
     public List<String> checkContainerReserved(String containerNos);
     
     public Integer getCountContByBlNo(String blNo);
+
+    public List<ShipmentDetail> selectShipmentDetailByProcessIds (String processOrderIds);
 }

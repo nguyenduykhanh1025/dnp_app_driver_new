@@ -329,4 +329,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			AND (process_status = "E" or process_status = "N")
 		ORDER BY process_status
     </select>
+
+    <select id="selectShipmentDetailByProcessIds" resultMap="ShipmentDetailResult">
+        <include refid="selectShipmentDetailVo"/>
+        where process_order_id in
+        <foreach item="processOrderId" collection="array" open="(" separator="," close=")">
+            #{processOrderId}
+        </foreach>
+    </select>
 </mapper>

@@ -1,7 +1,7 @@
 var prefix = ctx + "logistic/receiveContFull";
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0, isChange;
-var contList = [];
+var contList = [], orders = [], processOrderIds;
 var conts = '';
 var allChecked = false;
 var checkList = [];
@@ -29,8 +29,15 @@ $(document).ready(function () {
     handleCollapse(false);
   });
 
-  // CONNECT WEB SOCKET
-  connectToWebsocketServer();
+  // Handle add
+  $(function () {
+    let options = {
+      createUrl: prefix + "/addShipmentForm",
+      updateUrl: "0",
+      modalName: " Lô"
+    };
+    $.table.init(options);
+  });
 });
 function handleCollapse(status) {
   if (status) {
@@ -109,16 +116,6 @@ function formatDate(value) {
 function formatRemark(value) {
   return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null ? (value.substring(0, 5) + "...") : "...") + '</span></div>';
 }
-
-// Handle add
-$(function () {
-  let options = {
-    createUrl: prefix + "/addShipmentForm",
-    updateUrl: "0",
-    modalName: " Lô"
-  };
-  $.table.init(options);
-});
 
 function handleRefresh() {
   loadTable();
@@ -697,6 +694,8 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   }
   shipmentDetailIds = "";
   shipmentDetails = [];
+  processOrderIds = '';
+  let temProcessOrderIds = [];
   $.each(cleanedGridData, function (index, object) {
     let shipmentDetail = new Object();
     if (object["containerNo"] != null && object["containerNo"] != "" && !/^[A-Z]{4}[0-9]{7}$/g.test(object["containerNo"]) && isValidate) {
@@ -713,8 +712,16 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
     shipmentDetail.shipmentId = shipmentSelected.id;
     shipmentDetail.id = object["id"];
     shipmentDetails.push(shipmentDetail);
+    if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"])) {
+      temProcessOrderIds.push(object["processOrderId"]);
+      processOrderIds += object["processOrderId"] + ',';
+    }
     shipmentDetailIds += object["id"] + ",";
   });
+
+  if (processOrderIds != '') {
+    processOrderIds.substring(0, processOrderIds.length - 1);
+  }
 
   // Get result in "selectedList" letiable
   if (shipmentDetails.length == 0 && isValidate) {
@@ -885,31 +892,6 @@ function deleteShipmentDetail() {
   });
 }
 
-// TRIGGER CHECK ALL SHIPMENT DETAIL
-function checkAll() {
-  getDataFromTable(false);
-  isIterate = true;
-  if (checked) {
-    for (var i = 0; i < shipmentDetails.length; i++) {
-      hot.setDataAtCell(i, 0, false);
-      if (i == shipmentDetails.length - 2) {
-        isIterate = false;
-      }
-    }
-    $(".checker").prop("checked", false);
-    checked = false;
-  } else {
-    for (var i = 0; i < shipmentDetails.length; i++) {
-      hot.setDataAtCell(i, 0, true);
-      if (i == shipmentDetails.length - 2) {
-        isIterate = false;
-      }
-    }
-    $(".checker").prop("checked", true);
-    checked = true;
-  }
-}
-
 // Handling logic
 function checkCustomStatus() {
   getDataSelectedFromTable(true, false);
@@ -933,11 +915,10 @@ function verifyOtp(shipmentDtIds, creditFlag) {
 }
 
 function pay() {
-  $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds, 700, 300);
-}
-
-function pickTruck() {
-  $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + "0");
+  getDataSelectedFromTable(true, true);
+  if (shipmentDetails.length > 0) {
+    $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + processOrderIds, 800, 400);
+  }
 }
 
 function pickContOnDemand() {
@@ -948,7 +929,6 @@ function pickContOnDemand() {
 function exportBill() {
 
 }
-
 
 // Handling UI STATUS
 function setLayoutRegisterStatus() {
@@ -1023,35 +1003,22 @@ function finishForm(result) {
 }
 
 function finishVerifyForm(result) {
-  if (result.code == 301) {
-    $.modal.alertError("Các container của các khách đang được đợi làm lệnh. Quý vui lòng liện hệ với bộ phận OM để biết thêm thông tin chi tiết.");
-  } else {
-    $.modal.loading("Đang xử lý, vui lòng chờ..");
+  if (result.code == 0 || result.code == 301) {
+    $.modal.loading(result.msg);
+    orders = result.processIds;
     orderNumber = result.orderNumber;
-    for (let i = 0; i < result.processIds.length; i++) {
-      $.websocket.subscribe(result.processIds[i] + '/response', onMessageReceived);
-    }
+    // CONNECT WEB SOCKET
+    connectToWebsocketServer();
+
+  } else {
+    $.modal.msgError(result.msg);
+    reloadShipmentDetail();
   }
 }
+
 
 function napasPaymentForm() {
   $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/napasPaymentForm");
-}
-
-function onMessageReceived(payload) {
-  let message = JSON.parse(payload.body);
-  if (message.code == 0) {
-    orderNumber--;
-    if (orderNumber == 0) {
-      $.modal.alertSuccess(message.msg);
-      $.modal.closeLoading();
-      reloadShipmentDetail();
-    }
-  } else {
-    $.modal.alertError(message.msg);
-    $.modal.closeLoading();
-    reloadShipmentDetail();
-  }
 }
 
 function connectToWebsocketServer() {
@@ -1060,6 +1027,37 @@ function connectToWebsocketServer() {
 }
 
 function onConnected() {
+  for (let i=0; i<orders.length; i++) {
+    $.websocket.subscribe(orders[i] + '/response', onMessageReceived);
+  }
+}
+
+function onMessageReceived(payload) {
+  let message = JSON.parse(payload.body);
+  if (message.code != 0) {
+    $.modal.alertError(message.msg);
+
+    // Close websocket connection 
+    $.websocket.disconnect(onDisconnected);
+
+    // Close loading
+    $.modal.closeLoading();
+
+    reloadShipmentDetail();
+  } else {
+    orderNumber--;
+    if (orderNumber == 0) {
+      $.modal.alertSuccess(message.msg);
+      
+      // Close websocket connection 
+      $.websocket.disconnect(onDisconnected);
+
+      // Close loading
+      $.modal.closeLoading();
+      
+      reloadShipmentDetail();
+    }
+  }
 }
 
 function onError(error) {

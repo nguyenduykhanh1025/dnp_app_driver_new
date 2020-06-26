@@ -845,11 +845,10 @@ function verifyOtp(shipmentDtIds, creditFlag) {
 function pay() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds + "/" + processOrderIds, 800, 400);
+        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + processOrderIds, 800, 400);
     }
 }
    
-
 function checkCustomStatus() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {

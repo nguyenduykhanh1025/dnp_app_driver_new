@@ -33,13 +33,11 @@ import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
-import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.utils.R;
@@ -62,7 +60,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	private IOtpCodeService otpCodeService;
 
 	@Autowired
-	private IProcessOrderService processOrderService;
+	private IProcessBillService processBillService;
 
 	@GetMapping()
 	public String receiveContFull() {
@@ -354,41 +352,43 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		cal.add(Calendar.MINUTE, -5);
 		otpCode.setCreateTime(cal.getTime());
 		otpCode.setOtpCode(otp);
-		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				AjaxResult ajaxResult = null;
-				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-				List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService
-						.makeOrderReceiveContFull(shipmentDetails, shipment, creditFlag);
-				if (serviceRobotReqs != null) {
-					processOrderService.insertProcessOrderReceiveContFull(serviceRobotReqs);
-					//
-					List<Long> processIds = new ArrayList<>();
+		if (otpCodeService.verifyOtpCodeAvailable(otpCode) != 1) {
+			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
+
+		}
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			AjaxResult ajaxResult = null;
+			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, creditFlag);
+			if (serviceRobotReqs != null) {
+				List<Long> processIds = new ArrayList<>();
+				boolean robotBusy = false;
+				try {
 					for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
 						processIds.add(serviceRobotReq.processOrder.getId());
-					}
-					try {
-						if (!mqttService.publishMessageToRobot(serviceRobotReqs.get(0),
-								EServiceRobot.RECEIVE_CONT_FULL)) {
-							ajaxResult = AjaxResult
-									.warn("Yêu cầu đang được xử lý. Hệ thống sẽ thông báo khi có kết quả!");
-							return ajaxResult;
+						if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_FULL)) {
+							robotBusy = true;
+							
 						}
-					} catch (Exception e) {
-						return error("Có lỗi xảy ra trong quá trình xác thực!");
 					}
-
-					ajaxResult = AjaxResult.success("Xác thực OTP thành công");
-					ajaxResult.put("processIds", processIds);
-					ajaxResult.put("orderNumber", serviceRobotReqs.size());
-					return ajaxResult;
-				} else {
+					if (robotBusy) {
+						ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
+						ajaxResult.put("processIds", processIds);
+						ajaxResult.put("orderNumber", serviceRobotReqs.size());
+						return ajaxResult;
+					}
+				} catch (Exception e) {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
+
+				ajaxResult = AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
+				ajaxResult.put("processIds", processIds);
+				ajaxResult.put("orderNumber", serviceRobotReqs.size());
+				return ajaxResult;
 			}
 		}
-		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
+		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
 
 	@GetMapping("pickContOnDemandForm/{blNo}")
@@ -428,10 +428,24 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình bốc container chỉ định!");
 	}
 
-	@GetMapping("paymentForm/{shipmentDetailIds}")
-	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+	@GetMapping("paymentForm/{processOrderIds}")
+	public String paymentForm(@PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
+		String shipmentDetailIds = "";
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderIds);
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetailIds += shipmentDetail.getId() + ",";
+		}
+		if (!"".equalsIgnoreCase(shipmentDetailIds)) {
+			shipmentDetailIds.substring(0, shipmentDetailIds.length()-1);
+		}
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
+		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
+	}
+
+	@GetMapping("/napasPaymentForm")
+	public String napasPaymentForm() {
+		return PREFIX + "/napasPaymentForm";
 	}
 
 	@PostMapping("/payment")

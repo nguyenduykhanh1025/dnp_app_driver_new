@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="ProcessOrder" id="ProcessOrderResult">
         <result property="id"    column="id"    />
         <result property="shipmentId"    column="shipment_id"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="serviceType"    column="service_type"    />
         <result property="referenceNo"    column="reference_no"    />
         <result property="payType"    column="pay_type"    />
@@ -33,13 +34,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectProcessOrderVo">
-        select id, shipment_id, service_type, reference_no, pay_type, sztp, mode, consignee, truck_co, tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, result, data, create_by, create_time, update_by, update_time from process_order
+        select id, shipment_id, logistic_group_id, service_type, reference_no, pay_type, sztp, mode, consignee, truck_co, tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, result, data, create_by, create_time, update_by, update_time from process_order
     </sql>
 
     <select id="selectProcessOrderList" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
         <include refid="selectProcessOrderVo"/>
         <where>  
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
@@ -72,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null ">id,</if>
             <if test="shipmentId != null ">shipment_id,</if>
+            <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="serviceType != null ">service_type,</if>
             <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
             <if test="payType != null  and payType != ''">pay_type,</if>
@@ -99,6 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null ">#{id},</if>
             <if test="shipmentId != null ">#{shipmentId},</if>
+            <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="serviceType != null ">#{serviceType},</if>
             <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
             <if test="payType != null  and payType != ''">#{payType},</if>
@@ -129,6 +133,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update process_order
         <trim prefix="SET" suffixOverrides=",">
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
+            <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="serviceType != null ">service_type = #{serviceType},</if>
             <if test="referenceNo != null  and referenceNo != ''">reference_no = #{referenceNo},</if>
             <if test="payType != null  and payType != ''">pay_type = #{payType},</if>
