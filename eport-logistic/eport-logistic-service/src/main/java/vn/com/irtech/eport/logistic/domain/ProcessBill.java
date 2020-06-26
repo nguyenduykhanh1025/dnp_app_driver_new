@@ -21,6 +21,10 @@ public class ProcessBill extends BaseEntity
     /** Mã Lô */
     @Excel(name = "Mã Lô")
     private Long shipmentId;
+    
+    /** Mã logistic */
+    @Excel(name = "Mã logistic")
+    private Long logisticGroupId;
 
     /** Process Order ID */
     @Excel(name = "Process Order ID")
@@ -72,6 +76,17 @@ public class ProcessBill extends BaseEntity
     {
         return shipmentId;
     }
+    
+    public void setLogisticGroupId(Long logisticGroupId) 
+    {
+        this.logisticGroupId = logisticGroupId;
+    }
+
+    public Long getLogisticGroupId() 
+    {
+        return logisticGroupId;
+    }
+    
     public void setProcessOrderId(Long processOrderId) 
     {
         this.processOrderId = processOrderId;
@@ -150,6 +165,7 @@ public class ProcessBill extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("shipmentId", getShipmentId())
+            .append("logisticGroupId", getLogisticGroupId())
             .append("processOrderId", getProcessOrderId())
             .append("serviceType", getServiceType())
             .append("referenceNo", getReferenceNo())
