@@ -53,9 +53,6 @@ function closeForm() {
     $.modal.close();
 }
 
-function tesst() {
-    console.log("ok")
-}
 
 
 

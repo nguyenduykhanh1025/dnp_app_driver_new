@@ -54,6 +54,16 @@ $(document).ready(function () {
     $("#btn-uncollapse").click(function () {
         handleCollapse(false);
     });
+
+    // Handle add
+    $(function () {
+        let options = {
+            createUrl: prefix + "/addShipmentForm",
+            updateUrl: "0",
+            modalName: " Lô"
+        };
+        $.table.init(options);
+    });
 });
 
 function handleCollapse(status) {
@@ -132,16 +142,6 @@ function formatDate(value) {
 function formatRemark(value) {
     return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null ? (value.substring(0, 5) + "...") : "...") + '</span></div>';
 }
-
-// Handle add
-$(function () {
-    let options = {
-        createUrl: prefix + "/addShipmentForm",
-        updateUrl: "0",
-        modalName: " Lô"
-    };
-    $.table.init(options);
-});
 
 function handleRefresh() {
     loadTable();
@@ -845,7 +845,7 @@ function verifyOtp(shipmentDtIds, creditFlag) {
 function pay() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds + "/" + "1"/*processOrderIds*/, 800, 400);
+        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + shipmentDetailIds + "/" + processOrderIds, 800, 400);
     }
 }
    
@@ -936,7 +936,7 @@ function finishForm(result) {
 
 function finishVerifyForm(result) {
     if (result.code == 0 || result.code == 301){
-        $.modal.loading("Đang xử lý, vui lòng chờ..");
+        $.modal.loading(result.msg);
         currentProcessId = result.processId;
         // CONNECT WEB SOCKET
         connectToWebsocketServer();

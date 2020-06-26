@@ -124,7 +124,8 @@ public class ProcessBillServiceImpl implements IProcessBillService
         			processBill.setProcessOrderId(processOrder.getId());
         			processBill.setServiceType(processOrder.getServiceType());
         			processBill.setShipmentId(processOrder.getShipmentId());
-        			processBill.setCreateTime(new Date());
+                    processBill.setCreateTime(new Date());
+                    
         			processBillMapper.insertProcessBill(processBill);
         		}
         	}

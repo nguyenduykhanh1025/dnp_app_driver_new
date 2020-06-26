@@ -3,16 +3,10 @@ package vn.com.irtech.eport.logistic.controller;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
@@ -25,18 +19,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
-import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -44,7 +34,6 @@ import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
-import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.utils.R;
@@ -63,9 +52,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@Autowired
 	private IOtpCodeService otpCodeService;
-
-	@Autowired
-	private IProcessOrderService processOrderService;
 
 	@Autowired
 	private MqttService mqttService;
@@ -211,12 +197,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setCustomStatus("N");
 					shipmentDetail.setFe("F");
-					if (shipmentDetail.getLoadingPort() == null || shipmentDetail.getLoadingPort().equals("")) {
-						shipmentDetail.setLoadingPort(" ");
-					}
-					if (shipmentDetail.getDischargePort() == null || shipmentDetail.getDischargePort().equals("")) {
-						shipmentDetail.setDischargePort(" ");
-					}
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
@@ -249,7 +229,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		}
 		return PREFIX + "/checkCustomStatus";
 	}
-
 
 	@PostMapping("/checkCustomStatus")
 	@ResponseBody
@@ -302,7 +281,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		return PREFIX + "/verifyOtp";
 	}
 
-
 	@PostMapping("sendOTP")
 	@ResponseBody
 	public AjaxResult sendOTP(String shipmentDetailIds) {
@@ -348,38 +326,33 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		cal.add(Calendar.MINUTE, -5);
 		otpCode.setCreateTime(cal.getTime());
 		otpCode.setOtpCode(otp);
-		if (otpCodeService.verifyOtpCodeAvailable(otpCode) == 1) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				AjaxResult ajaxResult = null;
-				Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-				ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
-				if (processOrder != null) {
-					processOrderService.insertProcessOrder(processOrder);
-					//
-					ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
-					try {
-						if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL)) {
-							ajaxResult = AjaxResult.warn("Yêu cầu đang được xử lý. Hệ thống sẽ thông báo khi có kết quả!");
-							ajaxResult.put("processId", processOrder.getId());
-							return ajaxResult;
-						}
-					} catch (Exception e) {
-						return error("Có lỗi xảy ra trong quá trình xác thực!");
+		if (otpCodeService.verifyOtpCodeAvailable(otpCode) != 1) {
+			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
+		}
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		if (shipmentDetails != null && shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			AjaxResult ajaxResult = null;
+			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+			ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
+			if (processOrder != null) {
+				ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+				try {
+					if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_FULL)) {
+						ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
+						ajaxResult.put("processId", processOrder.getId());
+						return ajaxResult;
 					}
-					
-					ajaxResult =  AjaxResult.success("Xác thực OTP thành công");
-					ajaxResult.put("processId", processOrder.getId());
-					return ajaxResult;
-				} else {
+				} catch (Exception e) {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
+				
+				ajaxResult =  AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
+				ajaxResult.put("processId", processOrder.getId());
+				return ajaxResult;
 			}
 		}
-		return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
+		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
-
-
 
 	@GetMapping("paymentForm/{shipmentDetailIds}/{processOrderIds}")
 	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {

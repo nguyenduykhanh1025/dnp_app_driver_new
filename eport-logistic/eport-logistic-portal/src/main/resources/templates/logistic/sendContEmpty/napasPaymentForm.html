@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:include="include :: header('NAPAS PAYMENT GATEWAY')" />
+</head>
+<style>
+    .content {
+        text-align: center;
+        color: #3c8dbc;
+        font-size: xx-large;
+        font-weight: bolder;
+    }
+
+    .payment-button {
+        font-size: large;
+        font-weight: bolder;
+        padding: 10px;
+    }
+</style>
+
+<body>
+    <div class="content">
+        <h>NAPAS PAYMENT GATEWAY</h>
+    </div>
+    <div style="text-align: center;">
+        <button class="payment-button" onclick="closeNapas()">Thanh Toán</button>
+    </div>
+</body>
+<th:block th:include="include :: footer" />
+<script type="text/javascript" th:inline="javascript">
+    function closeNapas() {
+        $.modal.closeTab();
+    }
+</script>
+</html>

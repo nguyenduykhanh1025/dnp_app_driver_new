@@ -46,32 +46,29 @@
   }
 
 </style>
-
 <body>
   <div class="container">
     <div class="content">
-        <div class="unloadContCosts">
-          <b style="font-size: large;">Phí bốc dỡ container</b>
-          <div class="table-content customTable">
-            <table id="billDatagrid" style="width: 100%;" fitColumns="true">
-              <thead>
-                <tr>
-                  <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">Invoice No.</th>
-                  <th data-options="field:'containerNo', halign:'center', resizable:true, fixed:true" width="120">Container No.</th>
-                  <th data-options="field:'sztp', halign:'center', resizable:true, fixed:true" width="120">Kích Thước</th>
-                  <th data-options="field:'exchangeFee', align:'right', halign:'center', resizable:true, fixed:true, formatter: formatMoney" width="120">Đơn Giá(VND)</th>
-                  <th data-options="field:'vatRate', align:'right', halign:'center', resizable:true, fixed:true" width="80">Thuế(%)</th>
-                  <th data-options="field:'vatAfterFee', align:'right', halign:'center', resizable:true, formatter: formatMoney" width="120">Tổng Tiền(VND)</th>
-                </tr>
-              </thead>
-            </table>
-          </div>
+      <div class="unloadContCosts">
+        <b style="font-size: large;">Phí bốc dỡ container</b>
+        <div class="table-content customTable">
+          <table id="billDatagrid" style="width: 100%;" fitColumns="true">
+            <thead>
+              <tr>
+                <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">Invoice No.</th>
+                <th data-options="field:'containerNo', halign:'center', resizable:true, fixed:true" width="120">Container No.</th>
+                <th data-options="field:'sztp', halign:'center', resizable:true, fixed:true" width="120">Kích Thước</th>
+                <th data-options="field:'exchangeFee', align:'right', halign:'center', resizable:true, fixed:true, formatter: formatMoney" width="120">Đơn Giá(VND)</th>
+                <th data-options="field:'vatRate', align:'right', halign:'center', resizable:true, fixed:true" width="80">Thuế(%)</th>
+                <th data-options="field:'vatAfterFee', align:'right', halign:'center', resizable:true, formatter: formatMoney" width="120">Tổng Tiền(VND)</th>
+              </tr>
+            </thead>
+          </table>
         </div>
-        
-        <div class="total">
-          <b>Tổng cộng: <span id="total"></span><span> đồng.</span></b>
-        </div>
-        
+      </div>
+      <div class="total">
+        <b>Tổng cộng: <span id="total"></span><span> đồng.</span></b>
+      </div>
     </div>
     <div class="layui-layer-btn footer">
       <a class="layui-layer-btn0" onclick="confirm()">Thanh toán</a>

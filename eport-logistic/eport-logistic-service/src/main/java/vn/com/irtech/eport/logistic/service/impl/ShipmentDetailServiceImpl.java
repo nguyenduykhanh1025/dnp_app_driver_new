@@ -1,30 +1,16 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.Cookie;
-
-import com.alibaba.fastjson.JSONException;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import org.apache.shiro.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -37,15 +23,14 @@ import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.text.Convert;
-import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 
 /**
@@ -58,6 +43,9 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Autowired
     private ShipmentDetailMapper shipmentDetailMapper;
+
+    @Autowired
+    private IProcessOrderService processOrderService;
 
     class BayComparator implements Comparator<ShipmentDetail> {
         public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
@@ -349,7 +337,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(tempProcessOrder.getYear());
             processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
         } else {
-            processOrder.setYear("2020");
+            processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
         processOrder.setBlNo(shipmentDetails.get(0).getBlNo());
@@ -358,7 +346,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
         processOrder.setSztp(shipmentDetails.get(0).getSztp());
         processOrder.setContNumber(shipmentDetails.size());
-        processOrder.setId(shipmentDetails.get(0).getId());
         processOrder.setShipmentId(shipment.getId());
         processOrder.setServiceType(1);
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
@@ -410,40 +397,38 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
-        if (shipmentDetails.size() > 0) {
-            ProcessOrder processOrder = new ProcessOrder();
-            processOrder.setTaxCode(shipment.getTaxCode());
-            processOrder.setContNumber(shipmentDetails.size());
-            processOrder.setVessel(shipmentDetails.get(0).getVslNm());
-            processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-            ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
-            if (tempProcessOrder != null) {
-                processOrder.setYear(tempProcessOrder.getYear());
-                processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
-            } else {
-                processOrder.setYear("2020");
-                processOrder.setBeforeAfter("Before");
-            }
-            processOrder.setId(shipmentDetails.get(0).getId());
-            processOrder.setShipmentId(shipment.getId());
-            if ("F".equalsIgnoreCase(shipmentDetails.get(0).getFe())) {
-                processOrder.setServiceType(4);
-            } else {
-                processOrder.setServiceType(2);
-            }
-            if (creditFlag) {
-                processOrder.setPayType("Credit");
-            } else {
-                processOrder.setPayType("Cash");
-            }
-            for (ShipmentDetail shipmentDetail : shipmentDetails) {
-                shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
-                shipmentDetail.setUserVerifyStatus("Y");
-                shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
-            }
-            return processOrder;
+        ProcessOrder processOrder = new ProcessOrder();
+        processOrder.setTaxCode(shipment.getTaxCode());
+        processOrder.setContNumber(shipmentDetails.size());
+        processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+        processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+        ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+        if (tempProcessOrder != null) {
+            processOrder.setYear(tempProcessOrder.getYear());
+            processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
+        } else {
+            processOrder.setYear("2020");
+            processOrder.setBeforeAfter("Before");
         }
-        return null;
+        processOrder.setShipmentId(shipment.getId());
+        if ("F".equalsIgnoreCase(shipmentDetails.get(0).getFe())) {
+            processOrder.setServiceType(4);
+        } else {
+            processOrder.setServiceType(2);
+        }
+        if (creditFlag) {
+            processOrder.setPayType("Credit");
+        } else {
+            processOrder.setPayType("Cash");
+        }
+        processOrderService.insertProcessOrder(processOrder);
+        for (ShipmentDetail shipmentDetail : shipmentDetails) {
+            shipmentDetail.setProcessOrderId(processOrder.getId());
+            shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
+            shipmentDetail.setUserVerifyStatus("Y");
+            shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+        }
+        return processOrder;
     }
 
     @Override
