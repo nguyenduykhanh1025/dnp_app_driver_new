@@ -94,8 +94,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	private void updateShipmentDetail(String result, String receiptId, String invoiceNo) {
 		// TODO: update shipment detail
 		Long id = Long.parseLong(receiptId);
-		ProcessOrder processOrder = new ProcessOrder();
-		processOrder.setId(id);
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
 		processOrder.setReferenceNo(invoiceNo);
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessOrderId(Long.parseLong(receiptId));
@@ -106,7 +105,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				processOrder.setResult("S");
 				processOrderService.updateProcessOrder(processOrder);
 				processBillService.saveProcessBillByInvoiceNo(processOrder);
-				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo);
+				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo, processOrder);
 			} else {
 				processOrder.setStatus(0);
 				processOrder.setResult("F");

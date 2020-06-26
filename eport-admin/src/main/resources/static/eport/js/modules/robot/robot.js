@@ -17,7 +17,7 @@ function loadListRobot() {
         checkbox: true,
       },
       {
-        field: 'robotId',
+        field: 'id',
         title: "Id",
         visible: false,
       },
@@ -71,18 +71,26 @@ function loadListRobot() {
         },
       },
       {
+        field: "isGateInOrder",
+        title: "Gate in",
+        align: "center",
+        formatter: function (value, row, index) {
+          return isGateInFormater(value, row, index);
+        },
+      },
+      {
         title: "Hành động",
         align: "center",
         formatter: function (value, row, index) {
           var actions = [];
           actions.push(
             '<a class="btn btn-success btn-xs" href="javascript:void(0)" onclick="$.operate.edit(\'' +
-              row.robotId +
+              row.id +
               '\')"><i class="fa fa-edit"  ></i></a> '
           );
           actions.push(
             '<a class="btn btn-danger btn-xs" href="javascript:void(0)" onclick="$.operate.remove(\'' +
-              row.robotId +
+              row.id +
               '\')"><i class="fa fa-remove"></i></a> '
           );
           return actions.join("");
@@ -134,6 +142,15 @@ function isSendContFullOrderFormater(value, row, index) {
 /* formatter for SendContEmptyOrder column */
 function isSendContEmptyOrderFormater(value, row, index) {
   if (row.isSendContEmptyOrder == true) {
+    return '<span class="badge badge-primary">Yes</span>';
+  } else {
+    return '<span class="badge badge-danger">No</span>';
+  }
+}
+
+/* formatter for Gate In column */
+function isGateInFormater(value, row, index) {
+  if (row.isGateInOrder == true) {
     return '<span class="badge badge-primary">Yes</span>';
   } else {
     return '<span class="badge badge-danger">No</span>';

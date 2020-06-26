@@ -8,7 +8,7 @@
 <body class="white-bg">
   <div class="wrapper wrapper-content animated fadeInRight ibox-content">
     <form class="form-horizontal m" id="formEditRobot" name="formEditRobot" th:object="${robot}">
-      <input class="form-control" type="text" name="robotId" id="robotId" readonly="true" style="display: none;" th:field="*{robotId}">
+      <input class="form-control" type="text" name="id" id="id" readonly="true" style="display: none;" th:field="*{id}">
       <div class="form-group">
         <label class="col-sm-3 control-label is-required">UUID</label>
         <div class="col-sm-8">
@@ -44,6 +44,9 @@
           <div class="checkbox">
             <label><input type="checkbox" name="isSendContEmptyOrder"  th:checked="${robot.isSendContEmptyOrder}">Gửi container rỗng</label>
           </div>
+          <div class="checkbox">
+            <label><input type="checkbox" name="isGateInOrder"  th:checked="${robot.isGateInOrder}">Gate in</label>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -55,7 +58,8 @@
     </form>
   </div>
   <th:block th:include="include :: footer" />
-  <script type="text/javascript"  th:inline="javascript">
+  <script type="text/javascript" th:inline="javascript">
+    var robot = /*[[${robot}]]*/;
   </script>
   <script th:src="@{/eport/js/modules/robot/edit.js}"></script>
 </body>
