@@ -476,6 +476,5 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
 	}
-	
 }
 
