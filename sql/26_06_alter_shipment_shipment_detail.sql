@@ -15,3 +15,6 @@ ALTER TABLE `logistic_truck`
 	CHANGE COLUMN `type` `type` CHAR(1) NOT NULL COMMENT '0: đầu kéo, 1: rơ mooc' COLLATE 'utf8_bin' AFTER `plate_number`;
 ALTER TABLE `process_bill`
 	ADD COLUMN `logistic_group_id` BIGINT(20) NOT NULL COMMENT 'Mã logistic' AFTER `shipment_id`;
+	
+ALTER TABLE `process_order`
+	ADD COLUMN `logistic_group_id` BIGINT(20) NOT NULL COMMENT 'Mã logistic' AFTER `shipment_id`;
