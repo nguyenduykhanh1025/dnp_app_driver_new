@@ -38,7 +38,6 @@ public class EdoCommon {
 					business = businessUnit[2];
 				}
 			}
-			// //buildNo
 			if(s.contains("UNH+"+num))
 			{
 				edi = new Edo();

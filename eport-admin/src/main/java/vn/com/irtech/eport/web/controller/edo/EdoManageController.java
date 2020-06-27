@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.domain.EdoHistory;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 
 
 @Controller
@@ -38,7 +38,25 @@ public class EdoManageController extends BaseController {
         startPage();
         Edo edo = new Edo();
         List<Edo> Edo = edoService.selectEdoList(edo);
-        TableDataInfo dataList = getDataTable(Edo);
-        return dataList;
+        TableDataInfo dataInfo = getDataTable(Edo);
+        return dataInfo;
     }
+
+    @GetMapping("/history")
+    public String history()
+    {
+        return PREFIX + "/history";
+    }
+
+    @GetMapping("/getHistory")
+    @ResponseBody
+    public TableDataInfo getHistory()
+    {
+        startPage();
+        EdoHistory edoHistory = new EdoHistory();
+        List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
+        TableDataInfo dataInfo = getDataTable(edoHistories);
+        return dataInfo;
+    }
+
 }

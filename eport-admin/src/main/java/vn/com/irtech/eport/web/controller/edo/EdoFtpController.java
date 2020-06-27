@@ -54,14 +54,7 @@ public class EdoFtpController extends BaseController{
 			String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
             String[] text = content.split("'");
             EdoHistory edoHistory = new EdoHistory();
-            edoHistory.setBillOfLading("billOfLading");
-            edoHistory.setCarrierCode("CND");
-            edoHistory.setCarrierId((long) 1);
-            edoHistory.setEdoId((long) 1);
-            edoHistory.setContainerNumber("ABCD1234567");
-            edoHistory.setAction("add");
-            edoHistory.setEdiContent(content);
-            edoHistoryService.insertEdoHistory(edoHistory);
+           
             EdoCommon common = new EdoCommon();
             edo = common.readEdi(text);
             for(Edo Edo : edo)
@@ -73,8 +66,24 @@ public class EdoFtpController extends BaseController{
                 if(edoService.checkContainerAvailable(Edo.getContainerNumber(),Edo.getBillOfLading()) != null)
                 {
                     edoService.updateEdo(Edo);
+                    edoHistory.setBillOfLading(Edo.getBillOfLading());
+                    edoHistory.setCarrierCode(Edo.getCarrierCode());
+                    edoHistory.setCarrierId((long) 1);
+                    edoHistory.setEdoId((long) 1);
+                    edoHistory.setContainerNumber(Edo.getContainerNumber());
+                    edoHistory.setAction("update");
+                    edoHistory.setEdiContent(content);
+                    edoHistoryService.insertEdoHistory(edoHistory);
                 }else {
                     edoService.insertEdo(Edo);
+                    edoHistory.setBillOfLading(Edo.getBillOfLading());
+                    edoHistory.setCarrierCode(Edo.getCarrierCode());
+                    edoHistory.setCarrierId((long) 1);
+                    edoHistory.setEdoId((long) 1);
+                    edoHistory.setContainerNumber(Edo.getContainerNumber());
+                    edoHistory.setAction("add");
+                    edoHistory.setEdiContent(content);
+                    edoHistoryService.insertEdoHistory(edoHistory);
                 }
                 
             }

@@ -6,25 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>File Upload</title>
-  <script th:src="@{/js/jquery.min.js}"></script>
+  <!-- <script th:src="@{/js/jquery.min.js}"></script>
   <script th:src="@{/js/bootstrap.min.js}"></script>
   <script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
   <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
   <link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet" />
   <script th:src="@{/ajax/libs/handsontable/handsontable.full.min.js}"></script>
-  <link th:href="@{/ajax/libs/handsontable/handsontable.full.min.css}" rel="stylesheet" media="screen" />
-
+  <link th:href="@{/ajax/libs/handsontable/handsontable.full.min.css}" rel="stylesheet" media="screen" /> -->
 </head>
-
 <body>
-  
-  
-  <div id="viewEdi"></div>
   <span id="noFile" style="display: none;"> Không có file EDI nào trong thư mục</span>
   <script>
-    var hot;
-    var statusTable = false;
-    var dataObj;
     const prefix = "/edo/ftp"
     $.ajax({
         url : prefix + "/loadFileFromDisk",
@@ -37,67 +29,9 @@
             $("#noFile").css("display","block");
             
         }else {
-          dataObj = data;
-          loadView()
+          $.modal.loading("Đang đọc file");
+          $.modal.msgSuccess("Đã import xong");
         }
         
     });
   </script>
-  <script>
-    function loadView()
-    {
-         var container = document.getElementById('viewEdi');
-            hot = new Handsontable(container, {
-            data: dataObj,
-            columns: [{
-                data: 'containerNumber',
-                type: 'text'
-              },
-              {
-                data: 'billOfLading',
-                type: 'text'
-              },
-              {
-                data: 'businessUnit',
-                type: 'text'
-              },
-              {
-                data: 'orderNumber',
-                type: 'text'
-              },
-              {
-                data: 'consignee',
-                type: 'text'
-              },
-              {
-                data: 'expiredDem',
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY'
-              },
-              {
-                data: 'emptyContDepot',
-                type: 'text'
-              },
-              {
-                data: 'detFreeTime',
-                type: 'numeric',
-              }
-            ],
-            rowHeaders: true,
-            colHeaders: [
-              'Số Cont',
-              'Số Bill',
-              'Chủ khai thác',
-              'Order Number',
-              'Người nhận hàng',
-              'Ngày hết hạn lưu cont',
-              'Nơi hạ rỗng',
-              'Số ngày miễn lưu vỏ'
-            ],
-          });
-          statusTable = true;
-        }
-  </script>
-</body>
-
-</html>
