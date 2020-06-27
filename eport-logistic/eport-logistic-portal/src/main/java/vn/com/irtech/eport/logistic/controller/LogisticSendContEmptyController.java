@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
@@ -339,25 +340,43 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult getField() {
 		AjaxResult ajaxResult = success();
-		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
+		String url;
 		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class);
-		List<String> listPOD = (List<String>) r.get("data");
+		R r;
+		List<String> listPOD = (List<String>) CacheUtils.get("dischargePortList");
+		if (listPOD == null) {
+			url = Global.getApiUrl() + "/shipmentDetail/getPODList";
+			r = restTemplate.getForObject(url, R.class);
+			listPOD = (List<String>) r.get("data");
+			CacheUtils.put("dischargePortList", listPOD);
+		}
 		ajaxResult.put("dischargePortList", listPOD);
-
-		url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
-		r = restTemplate.getForObject(url, R.class);
-		List<String> listConsignee = (List<String>) r.get("data");
+		
+		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
+		if (listConsignee == null) {
+			url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+			r = restTemplate.getForObject(url, R.class);
+			listConsignee = (List<String>) r.get("data");
+			CacheUtils.put("consigneeList", listConsignee);
+		}
 		ajaxResult.put("consigneeList", listConsignee);
-
-		url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
-		r = restTemplate.getForObject(url, R.class);
-		List<String> listVessel = (List<String>) r.get("data");
+		
+		List<String> listVessel = (List<String>) CacheUtils.get("vslNmList");
+		if (listVessel == null) {
+			url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
+			r = restTemplate.getForObject(url, R.class);
+			listVessel = (List<String>) r.get("data");
+			CacheUtils.put("vslNmList", listVessel);
+		}
 		ajaxResult.put("vslNmList", listVessel);
-
-		url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
-		r = restTemplate.getForObject(url, R.class);
-		List<String> opeCodeList = (List<String>) r.get("data");
+		
+		List<String> opeCodeList = (List<String>) CacheUtils.get("opeCodeList");
+		if (opeCodeList == null) {
+			url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
+			r = restTemplate.getForObject(url, R.class);
+			opeCodeList = (List<String>) r.get("data");
+			CacheUtils.put("opeCodeList", opeCodeList);
+		}
 		ajaxResult.put("opeCodeList", opeCodeList);
 		
 		return ajaxResult;
