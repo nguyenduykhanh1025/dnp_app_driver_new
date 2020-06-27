@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
@@ -455,10 +456,16 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult getField() {
 		AjaxResult ajaxResult = success();
-		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+		String url;
 		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class);
-		List<String> listConsignee = (List<String>) r.get("data");
+		R r;
+		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
+		if (listConsignee == null) {
+			url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+			r = restTemplate.getForObject(url, R.class);
+			listConsignee = (List<String>) r.get("data");
+			CacheUtils.put("consigneeList", listConsignee);
+		}
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
 	}
