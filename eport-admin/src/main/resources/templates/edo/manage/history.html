@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+  <head>
+    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <link th:href="@{/css/om/updateDO.css}" rel="stylesheet" />
+    <th:block th:include="include :: easyui-css" />
+  </head>
+  <body class="gray-bg">
+    <div class="container-div">
+      <div class="p-background">
+        <div class="p-header">
+          <h2>Danh sách DO</h2>
+          <div class="row c-search container">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+              <select class="c-search-box"> 
+                <option selected="selected"></option>
+              </select>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+              
+            </div>
+          </div>
+        </div>
+        <div class="p-body">
+          <table id="dg" style="width: 50%;float: left;display: inline-block;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'carrierCode',halign:'center',resizable:true">Mã hãng tàu</th>
+  
+                <th data-options="field:'billOfLading',halign:'center'" sortable="true">Bill Of Lading</th>             
+                <th data-options="field:'action',halign:'center'">Hành động</th>
+                <th data-options="field:'containerNumber',align:'center'" width="200">
+                  Số container
+                </th>
+                <th data-options="field:'id',align:'center',formatter: formatAction" width="100">
+                  Action
+                </th>
+                
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="col-md-5"  style="float: right;">
+              <span>SomeThing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+  </body>
+  <script th:src="@{/eport/js/modules/edo/manage/history.js}"></script>
+</html>
