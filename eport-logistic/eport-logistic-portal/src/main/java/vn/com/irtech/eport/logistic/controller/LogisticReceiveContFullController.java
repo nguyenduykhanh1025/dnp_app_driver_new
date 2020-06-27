@@ -3,14 +3,10 @@ package vn.com.irtech.eport.logistic.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Random;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,9 +21,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.utils.CacheUtils;
+import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -61,6 +61,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired
 	private IProcessBillService processBillService;
+	
+	@Autowired
+	private CustomQueueService customQueueService;
 
 	@GetMapping()
 	public String receiveContFull() {
@@ -259,35 +262,19 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@PostMapping("/checkCustomStatus")
 	@ResponseBody
-	public List<ShipmentDetail> checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList,
-			String shipmentDetailIds) throws IOException {
+	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList, String shipmentDetailIds) {
 		if (declareNoList != null) {
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService
-					.selectShipmentDetailByIds(shipmentDetailIds);
-			if (shipmentDetails.size() > 0) {
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+			if (shipmentDetails != null && shipmentDetails.size() > 0) {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
-						try {
-							Thread.sleep(500);
-							if(shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo()) == true)
-							{
-								shipmentDetail.setStatus(4);
-								shipmentDetail.setCustomStatus("R");
-								shipmentDetailService.updateShipmentDetail(shipmentDetail);
-								// push notification with socketIO 
-							}else {
-								// push notification with socketIO 
-							};
-						
-						} catch(Exception e) {
-							e.printStackTrace(); 
-						}
+						customQueueService.offerShipmentDetail(shipmentDetail);
 					}
-					return shipmentDetails;
+					return success();
 				}
 			}
 		}
-		return null;
+		return error();
 	}
 
 	@GetMapping("checkContListBeforeVerify/{shipmentDetailIds}")
@@ -333,12 +320,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 		String content = "TEST SMS   " + rD;
 		String response = "";
-		// try {
-		// 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
-		// 	System.out.println(response);
-		// } catch (IOException ex) {
-		// 	// process the exception
-		// }
+		 try {
+		 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
+		 	System.out.println(response);
+		 } catch (IOException ex) {
+		 	// process the exception
+		 }
 		return AjaxResult.success("response.toString()");
 	}
 
@@ -469,10 +456,16 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult getField() {
 		AjaxResult ajaxResult = success();
-		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+		String url;
 		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.getForObject(url, R.class);
-		List<String> listConsignee = (List<String>) r.get("data");
+		R r;
+		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
+		if (listConsignee == null) {
+			url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+			r = restTemplate.getForObject(url, R.class);
+			listConsignee = (List<String>) r.get("data");
+			CacheUtils.put("consigneeList", listConsignee);
+		}
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
 	}

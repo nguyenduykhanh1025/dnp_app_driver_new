@@ -2,6 +2,8 @@ var prefix = ctx + "logistic/receiveContFull";
 var number = 0;
 var shipmentDetailIds;
 var asked = false;
+var contAmount = 0;
+var contResult = [];
 
 if (contList == null) {
     var result = new Object();
@@ -15,6 +17,7 @@ function checkCustomStatus() {
         parent.reloadShipmentDetail();
         $.modal.close();
     } else {
+
         if (number == 0) {
             $.modal.alertError("Bạn chưa nhập số lượng tờ khai!");
         } else {
@@ -39,8 +42,10 @@ function checkCustomStatus() {
                     }
                 }
                 if (completeInput) {
+                    contAmount = contList.length;
+                    connectToWebsocketServer();
+                    $.modal.loading("Đang kiểm tra trạng thái thông quan: 0/"+contList.length);
                     asked = true;
-                    $.modal.loading("Đang xử lý...");
                     $.ajax({
                         url: prefix + "/checkCustomStatus",
                         method: "post",
@@ -48,19 +53,7 @@ function checkCustomStatus() {
                             declareNoList: declareNoList,
                             shipmentDetailIds: shipmentDetailIds.substring(0, shipmentDetailIds.length - 1)
                         },
-                        success: function (data) {
-                            $.modal.closeLoading();
-                            if (data != null) {
-                                $("#contTable").datagrid({
-                                    loadMsg: " Đang xử lý...",
-                                    loader: function (param, success, error) {
-                                        success(data);
-                                    },
-                                });
-                            } else {
-                                $.modal.msgError("Có lỗi xảy ra trong quá trình khai hải quan.");
-                            }
-                            $("#checkBtn").html("Kết thúc");
+                            success: function (data) {
                         },
                         error: function (result) {
                             $("#checkBtn").html("Kết thúc");
@@ -76,23 +69,27 @@ function checkCustomStatus() {
     }
 }
 
+loadData() 
 function closeForm() {
     $.modal.close();
 }
+function loadData() 
+{
+    $("#contTable").datagrid({
+        singleSelect: true,
+        loadMsg: " Đang xử lý...",
+        loader: function (param, success, error) {
+            shipmentDetailIds = "";
+            var index = 0;
+            contList.forEach(function (cont) {
+                shipmentDetailIds += cont.id + ",";
+                cont.id = ++index;
+            });
+            success(contList);
+        },
+    });
+}
 
-$("#contTable").datagrid({
-    singleSelect: true,
-    loadMsg: " Đang xử lý...",
-    loader: function (param, success, error) {
-        shipmentDetailIds = "";
-        var index = 0;
-        contList.forEach(function (cont) {
-            shipmentDetailIds += cont.id + ",";
-            cont.id = ++index;
-        });
-        success(contList);
-    },
-});
 
 $("#declareNoAmount").keypress(function (event) {
     var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -113,9 +110,63 @@ function formatStatus(value) {
             return "Đã thông quan";
         case "N":
             return "Chưa thông quan";
+        default :
+            return' <span class="label label-success">Đang chờ</span>';
     }
 }
 
 function onFocus(element) {
     element.classList.remove("errorInput");
+}
+
+function connectToWebsocketServer(){
+    // Connect to WebSocket Server.
+    $.websocket.connect({}, onConnected, onError);
+}
+
+function onConnected() {
+    console.log('Connect socket.')
+    for (let i=0; i<contList.length; i++) {
+        $.websocket.subscribe(contList[i].containerNo + '/response', onMessageReceived);
+    }
+}
+
+function onError(error) {
+    console.log(error);
+    $.modal.alertError('Could not connect to WebSocket server. Please refresh this page to try again!');
+    $.modal.closeLoading();
+}
+
+function onMessageReceived(payload) {
+    let message = JSON.parse(payload.body);
+    if (message.code == 0) {
+        contResult.push(message.shipmentDetail);
+        contAmount--;
+        //$.modal.closeLoading();
+        $.modal.loading("Đang kiểm tra trạng thái thông quan: "+(contList.length-contAmount)+"/"+contList.length);
+        if (contAmount == 0) {
+            $.modal.closeLoading();
+            $("#contTable").datagrid({
+                loadMsg: " Đang xử lý...",
+                loader: function (param, success, error) {
+                    success(contResult);
+                },
+            });
+            $.modal.alertSuccess(message.msg);
+            
+            // loadData() 
+            $("#checkBtn").html("Kết thúc");
+
+            // Close websocket connection 
+            $.websocket.disconnect(onDisconnected);
+        }
+    } else{
+        $.modal.alertError(message.msg);
+    }
+
+    
+}
+
+function onDisconnected(){
+    console.log('Disconnected socket.');
 }
