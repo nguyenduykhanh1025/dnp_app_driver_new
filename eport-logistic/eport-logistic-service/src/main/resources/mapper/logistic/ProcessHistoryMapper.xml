@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.ProcessHistoryMapper">
+    
+    <resultMap type="ProcessHistory" id="ProcessHistoryResult">
+        <result property="id"    column="id"    />
+        <result property="processOrderId"    column="process_order_id"    />
+        <result property="sysUserId"    column="sys_user_id"    />
+        <result property="robotUuid"    column="robot_uuid"    />
+        <result property="result"    column="result"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectProcessHistoryVo">
+        select id, process_order_id, sys_user_id, robot_uuid, result, remark, create_by, create_time, update_by, update_time from process_history
+    </sql>
+
+    <select id="selectProcessHistoryList" parameterType="ProcessHistory" resultMap="ProcessHistoryResult">
+        <include refid="selectProcessHistoryVo"/>
+        <where>  
+            <if test="processOrderId != null "> and process_order_id = #{processOrderId}</if>
+            <if test="sysUserId != null "> and sys_user_id = #{sysUserId}</if>
+            <if test="robotUuid != null  and robotUuid != ''"> and robot_uuid = #{robotUuid}</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+        </where>
+    </select>
+    
+    <select id="selectProcessHistoryById" parameterType="Long" resultMap="ProcessHistoryResult">
+        <include refid="selectProcessHistoryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertProcessHistory" parameterType="ProcessHistory" useGeneratedKeys="true" keyProperty="id">
+        insert into process_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="processOrderId != null ">process_order_id,</if>
+            <if test="sysUserId != null ">sys_user_id,</if>
+            <if test="robotUuid != null  and robotUuid != ''">robot_uuid,</if>
+            <if test="result != null  and result != ''">result,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="processOrderId != null ">#{processOrderId},</if>
+            <if test="sysUserId != null ">#{sysUserId},</if>
+            <if test="robotUuid != null  and robotUuid != ''">#{robotUuid},</if>
+            <if test="result != null  and result != ''">#{result},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateProcessHistory" parameterType="ProcessHistory">
+        update process_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="processOrderId != null ">process_order_id = #{processOrderId},</if>
+            <if test="sysUserId != null ">sys_user_id = #{sysUserId},</if>
+            <if test="robotUuid != null  and robotUuid != ''">robot_uuid = #{robotUuid},</if>
+            <if test="result != null  and result != ''">result = #{result},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteProcessHistoryById" parameterType="Long">
+        delete from process_history where id = #{id}
+    </delete>
+
+    <delete id="deleteProcessHistoryByIds" parameterType="String">
+        delete from process_history where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

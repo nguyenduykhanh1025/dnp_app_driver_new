@@ -8,12 +8,6 @@ import vn.com.irtech.eport.system.domain.SysEdi;
 import vn.com.irtech.eport.system.service.ISysEdiService;
 import vn.com.irtech.eport.common.core.text.Convert;
 
-/**
- * 【请填写功能名称】Service Business Processing
- * 
- * @author ruoyi
- * @date 2020-04-03
- */
 @Service
 public class SysEdiServiceImpl implements ISysEdiService 
 {
@@ -21,10 +15,10 @@ public class SysEdiServiceImpl implements ISysEdiService
     private SysEdiMapper sysEdiMapper;
 
     /**
-     * Get 【请填写功能名称】
-     * 
-     * @param ediId 【请填写功能名称】ID
-     * @return 【请填写功能名称】
+     * Get SysEdi
+     *
+     * @param ediId
+     * @return SysEdi
      */
     @Override
     public SysEdi selectSysEdiById(Long ediId)
@@ -33,10 +27,10 @@ public class SysEdiServiceImpl implements ISysEdiService
     }
 
     /**
-     * Get 【请填写功能名称】 List
-     * 
-     * @param sysEdi 【请填写功能名称】
-     * @return 【请填写功能名称】
+     * Get SysEdi List
+     *
+     * @param sysEdi 
+     * @return SysEdi list
      */
     @Override
     public List<SysEdi> selectSysEdiList(SysEdi sysEdi)
@@ -45,9 +39,9 @@ public class SysEdiServiceImpl implements ISysEdiService
     }
 
     /**
-     * Add 【请填写功能名称】
-     * 
-     * @param sysEdi 【请填写功能名称】
+     * Add SysEdi
+     *
+     * @param sysEdi 
      * @return result
      */
     @Override
@@ -57,9 +51,9 @@ public class SysEdiServiceImpl implements ISysEdiService
     }
 
     /**
-     * Update 【请填写功能名称】
-     * 
-     * @param sysEdi 【请填写功能名称】
+     * Update SysEdi
+     *
+     * @param sysEdi
      * @return result
      */
     @Override
@@ -69,8 +63,8 @@ public class SysEdiServiceImpl implements ISysEdiService
     }
 
     /**
-     * Delete 【请填写功能名称】 By ID
-     * 
+     * Delete SysEdi By ID
+     *
      * @param ids Entity ID
      * @return result
      */
@@ -81,9 +75,9 @@ public class SysEdiServiceImpl implements ISysEdiService
     }
 
     /**
-     * Delete 【请填写功能名称】
-     * 
-     * @param ediId 【请填写功能名称】ID
+     * Delete SysEdi
+     *
+     * @param ediId 
      * @return result
      */
     @Override

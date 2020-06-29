@@ -95,9 +95,4 @@ public class EdoFtpController extends BaseController{
 			}
 		return edo;
     } 
-    
-
-
-
-
 }

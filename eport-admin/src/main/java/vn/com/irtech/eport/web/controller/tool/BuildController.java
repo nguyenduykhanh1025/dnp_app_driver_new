@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 
 /**
- * build 表单构建
+ * Build Controller
  * 
  * @author admin
  */

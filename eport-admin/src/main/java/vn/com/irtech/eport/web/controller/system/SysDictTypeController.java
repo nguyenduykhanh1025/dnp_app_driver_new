@@ -24,8 +24,8 @@ import vn.com.irtech.eport.system.domain.SysDictType;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
 
 /**
- * 数据字典信息
- * 
+ * Data dictionary type controller
+ *
  * @author admin
  */
 @Controller
@@ -54,7 +54,7 @@ public class SysDictTypeController extends BaseController
         return getDataTable(list);
     }
 
-    @Log(title = "字典类型", businessType = BusinessType.EXPORT)
+    @Log(title = "Dictionary Type", businessType = BusinessType.EXPORT)
     @RequiresPermissions("system:dict:export")
     @PostMapping("/export")
     @ResponseBody
@@ -63,11 +63,11 @@ public class SysDictTypeController extends BaseController
 
         List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
         ExcelUtil<SysDictType> util = new ExcelUtil<SysDictType>(SysDictType.class);
-        return util.exportExcel(list, "字典类型");
+        return util.exportExcel(list, "Dictionary type");
     }
 
     /**
-     * 新增字典类型
+     * New dictionary type
      */
     @GetMapping("/add")
     public String add()
@@ -76,9 +76,9 @@ public class SysDictTypeController extends BaseController
     }
 
     /**
-     * 新增保存字典类型
+     * Added save dictionary type
      */
-    @Log(title = "字典类型", businessType = BusinessType.INSERT)
+    @Log(title = "Dictionary Type", businessType = BusinessType.INSERT)
     @RequiresPermissions("system:dict:add")
     @PostMapping("/add")
     @ResponseBody
@@ -86,14 +86,14 @@ public class SysDictTypeController extends BaseController
     {
         if (UserConstants.DICT_TYPE_NOT_UNIQUE.equals(dictTypeService.checkDictTypeUnique(dict)))
         {
-            return error("新增字典'" + dict.getDictName() + "'失败，字典类型已存在");
+            return error("Thêm từ điển mới " + dict.getDictName() +" thất bại, loại từ điển đã tồn tại!");
         }
         dict.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(dictTypeService.insertDictType(dict));
     }
 
     /**
-     * 修改字典类型
+     * Modify dictionary type
      */
     @GetMapping("/edit/{dictId}")
     public String edit(@PathVariable("dictId") Long dictId, ModelMap mmap)
@@ -103,9 +103,9 @@ public class SysDictTypeController extends BaseController
     }
 
     /**
-     * 修改保存字典类型
+     * Modify save dictionary type
      */
-    @Log(title = "字典类型", businessType = BusinessType.UPDATE)
+    @Log(title = "Dictionary Type", businessType = BusinessType.UPDATE)
     @RequiresPermissions("system:dict:edit")
     @PostMapping("/edit")
     @ResponseBody
@@ -113,13 +113,13 @@ public class SysDictTypeController extends BaseController
     {
         if (UserConstants.DICT_TYPE_NOT_UNIQUE.equals(dictTypeService.checkDictTypeUnique(dict)))
         {
-            return error("修改字典'" + dict.getDictName() + "'失败，字典类型已存在");
+            return error("Cập nhật từ điển " + dict.getDictName() + " thất bại, loại từ điển đã tồn tại!");
         }
         dict.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(dictTypeService.updateDictType(dict));
     }
 
-    @Log(title = "字典类型", businessType = BusinessType.DELETE)
+    @Log(title = "Dictionary Type", businessType = BusinessType.DELETE)
     @RequiresPermissions("system:dict:remove")
     @PostMapping("/remove")
     @ResponseBody
@@ -129,10 +129,10 @@ public class SysDictTypeController extends BaseController
     }
 
     /**
-     * Clear缓存
+     * Clear cache
      */
     @RequiresPermissions("system:dict:remove")
-    @Log(title = "字典类型", businessType = BusinessType.CLEAN)
+    @Log(title = "Dictionary Type", businessType = BusinessType.CLEAN)
     @GetMapping("/clearCache")
     @ResponseBody
     public AjaxResult clearCache()
@@ -142,7 +142,7 @@ public class SysDictTypeController extends BaseController
     }
 
     /**
-     * 查询字典详细
+     * Look up dictionary details
      */
     @RequiresPermissions("system:dict:list")
     @GetMapping("/detail/{dictId}")
@@ -154,7 +154,7 @@ public class SysDictTypeController extends BaseController
     }
 
     /**
-     * 校验字典类型
+     * Check dictionary type
      */
     @PostMapping("/checkDictTypeUnique")
     @ResponseBody
@@ -164,7 +164,7 @@ public class SysDictTypeController extends BaseController
     }
 
     /**
-     * 选择字典树
+     * Select dictionary tree
      */
     @GetMapping("/selectDictTree/{columnId}/{dictType}")
     public String selectDeptTree(@PathVariable("columnId") Long columnId, @PathVariable("dictType") String dictType,
@@ -176,7 +176,7 @@ public class SysDictTypeController extends BaseController
     }
 
     /**
-     * 加载字典列表树
+     * Load dictionary list tree
      */
     @GetMapping("/treeData")
     @ResponseBody

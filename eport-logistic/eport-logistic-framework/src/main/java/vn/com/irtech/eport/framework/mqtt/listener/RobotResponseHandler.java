@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.framework.mqtt.listener;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +18,11 @@ import com.google.gson.Gson;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
+import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
+import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysRobot;
@@ -44,6 +47,9 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	
 	@Autowired
 	private WebSocketService webSocketService;
+	
+	@Autowired
+	private IProcessHistoryService processHistoryService;
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -79,7 +85,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		robotService.updateRobotStatusByUuId(uuId, status);
 
 		if (receiptId != null && status != null) {
-			this.updateShipmentDetail(result, receiptId, invoiceNo);
+			this.updateShipmentDetail(result, receiptId, invoiceNo, uuId);
 			this.sendMessageWebsocket(result, receiptId);
 		}
 		
@@ -91,7 +97,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 * @param result:   "success/error"
 	 * @param receiptId
 	 */
-	private void updateShipmentDetail(String result, String receiptId, String invoiceNo) {
+	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String uuId) {
 		// TODO: update shipment detail
 		Long id = Long.parseLong(receiptId);
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
@@ -99,8 +105,13 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setProcessOrderId(Long.parseLong(receiptId));
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		ProcessHistory processHistory = new ProcessHistory();
+		processHistory.setProcessOrderId(processOrder.getId());
+		processHistory.setRobotUuid(uuId);
+		processHistory.setCreateTime(new Date());
 		if (processOrder != null) {
 			if ("success".equalsIgnoreCase(result)) {
+				processHistory.setResult("S");
 				processOrder.setStatus(2);
 				processOrder.setResult("S");
 				processOrderService.updateProcessOrder(processOrder);
@@ -109,6 +120,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			} else {
 				processOrder.setStatus(0);
 				processOrder.setResult("F");
+				processHistory.setResult("F");
 				processOrderService.updateProcessOrder(processOrder);
 			}
 		}
