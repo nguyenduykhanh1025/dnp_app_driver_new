@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+  <head>
+    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <link th:href="@{/css/om/updateDO.css}" rel="stylesheet" />
+    <th:block th:include="include :: easyui-css" />
+  </head>
+  <body class="gray-bg">
+    <div class="container-div">
+      <div class="p-background">
+        <div class="p-header">
+          <h2>Danh sách DO</h2>
+          <div class="row c-search container">
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+              <select class="c-search-box"> 
+                <option selected="selected"></option>
+              </select>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+              
+            </div>
+          </div>
+        </div>
+        <div class="p-body">
+          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th data-options="field:'carrierCode',halign:'center',resizable:true">Mã hãng tàu</th>
+                <th data-options="field:'orderNumber',halign:'center',align:'center'" sortable="true">Order No</th>
+                <th data-options="field:'billOfLading',halign:'center'" sortable="true">Bill Of Lading</th>
+                <th data-options="field:'sztp',align:'center'," sortable="true">
+                  Size Type
+                </th>
+                <th data-options="field:'FE',halign:'center'">F/E</th>
+                <th data-options="field:'businessUnit',halign:'center',align:'center'" sortable="true">Đơn vị khai thác</th>                
+                <th data-options="field:'consignee',halign:'center'">Chủ hàng</th>
+                <th data-options="field:'containerNumber',align:'center'">
+                  Số container
+                </th>
+                <th data-options="field:'expiredDem',halign:'center',align:'center'"
+                  sortable="true" width="100">
+                  Hạn lệnh
+                </th>
+                <th data-options="field:'detFreeTime',align:'center'">
+                    Số ngày miễn lưu vỏ
+                </th>
+                <th data-options="field:'vessel',align:'center'">
+                    Tàu
+                </th>
+                <th data-options="field:'voyNo',align:'center'">
+                    Chuyến
+                </th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+  </body>
+  <script th:src="@{/eport/js/modules/edo/manage/manage.js}"></script>
+</html>
