@@ -37,10 +37,18 @@ public class Shipment extends BaseEntity
     /** Booking No */
     @Excel(name = "Booking No")
     private String bookingNo;
+    
+    /** Mã hãng tàu */
+    @Excel(name = "Mã hãng tàu")
+    private String opeCode;
 
     /** MST */
     @Excel(name = "MST")
     private String taxCode;
+    
+    /** Tên cty theo MST */
+    @Excel(name = "Tên công ty")
+    private String groupName;
 
     /** So Luong Container */
     @Excel(name = "So Luong Container")
@@ -112,6 +120,16 @@ public class Shipment extends BaseEntity
     public String getBookingNo() {
         return bookingNo;
     }
+    
+    public void setOpeCode(String opeCode) 
+    {
+        this.opeCode = opeCode;
+    }
+
+    public String getOpeCode() 
+    {
+        return opeCode;
+    }
 
     public void setTaxCode(String taxCode) 
     {
@@ -122,6 +140,17 @@ public class Shipment extends BaseEntity
     {
         return taxCode;
     }
+    
+    public void setGroupName(String groupName) 
+    {
+        this.groupName = groupName;
+    }
+
+    public String getGroupName() 
+    {
+        return groupName;
+    }
+    
     public void setContainerAmount(Long containerAmount) 
     {
         this.containerAmount = containerAmount;
@@ -169,7 +198,9 @@ public class Shipment extends BaseEntity
             .append("serviceType", getServiceType())
             .append("blNo", getBlNo())
             .append("bookingNo", getBookingNo())
+            .append("opeCode", getOpeCode())
             .append("taxCode", getTaxCode())
+            .append("groupName", getGroupName())
             .append("containerAmount", getContainerAmount())
             .append("edoFlg", getEdoFlg())
             .append("referenceNo", getReferenceNo())
