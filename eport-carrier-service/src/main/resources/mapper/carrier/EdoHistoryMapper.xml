@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.carrier.mapper.EdoHistoryMapper">
+    
+    <resultMap type="EdoHistory" id="EdoHistoryResult">
+        <result property="id"    column="id"    />
+        <result property="carrierId"    column="carrier_id"    />
+        <result property="carrierCode"    column="carrier_code"    />
+        <result property="edoId"    column="edo_id"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="billOfLading"    column="bill_of_lading"    />
+        <result property="containerNumber"    column="container_number"    />
+        <result property="action"    column="action"    />
+        <result property="ediContent"    column="edi_content"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectEdoHistoryVo">
+        select id, carrier_id, carrier_code, edo_id, order_number, bill_of_lading, container_number, action, edi_content, create_by, create_time, update_by, update_time from edo_history
+    </sql>
+
+    <select id="selectEdoHistoryList" parameterType="EdoHistory" resultMap="EdoHistoryResult">
+        <include refid="selectEdoHistoryVo"/>
+        <where>  
+            <if test="carrierId != null "> and carrier_id = #{carrierId}</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
+            <if test="edoId != null "> and edo_id = #{edoId}</if>
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
+            <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
+            <if test="action != null  and action != ''"> and action = #{action}</if>
+            <if test="ediContent != null  and ediContent != ''"> and edi_content = #{ediContent}</if>
+        </where>
+    </select>
+    
+    <select id="selectEdoHistoryById" parameterType="Long" resultMap="EdoHistoryResult">
+        <include refid="selectEdoHistoryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEdoHistory" parameterType="EdoHistory" useGeneratedKeys="true" keyProperty="id">
+        insert into edo_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="carrierId != null ">carrier_id,</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
+            <if test="edoId != null ">edo_id,</if>
+            <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
+            <if test="billOfLading != null  and billOfLading != ''">bill_of_lading,</if>
+            <if test="containerNumber != null  and containerNumber != ''">container_number,</if>
+            <if test="action != null  and action != ''">action,</if>
+            <if test="ediContent != null  and ediContent != ''">edi_content,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="carrierId != null ">#{carrierId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
+            <if test="edoId != null ">#{edoId},</if>
+            <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
+            <if test="billOfLading != null  and billOfLading != ''">#{billOfLading},</if>
+            <if test="containerNumber != null  and containerNumber != ''">#{containerNumber},</if>
+            <if test="action != null  and action != ''">#{action},</if>
+            <if test="ediContent != null  and ediContent != ''">#{ediContent},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEdoHistory" parameterType="EdoHistory">
+        update edo_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="carrierId != null ">carrier_id = #{carrierId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code = #{carrierCode},</if>
+            <if test="edoId != null ">edo_id = #{edoId},</if>
+            <if test="orderNumber != null  and orderNumber != ''">order_number = #{orderNumber},</if>
+            <if test="billOfLading != null  and billOfLading != ''">bill_of_lading = #{billOfLading},</if>
+            <if test="containerNumber != null  and containerNumber != ''">container_number = #{containerNumber},</if>
+            <if test="action != null  and action != ''">action = #{action},</if>
+            <if test="ediContent != null  and ediContent != ''">edi_content = #{ediContent},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEdoHistoryById" parameterType="Long">
+        delete from edo_history where id = #{id}
+    </delete>
+
+    <delete id="deleteEdoHistoryByIds" parameterType="String">
+        delete from edo_history where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

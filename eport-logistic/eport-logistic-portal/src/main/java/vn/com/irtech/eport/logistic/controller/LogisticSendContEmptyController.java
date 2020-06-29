@@ -336,55 +336,39 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
+	@SuppressWarnings("unchecked")
 	@GetMapping("/getField")
 	@ResponseBody
 	public AjaxResult getField() {
 		AjaxResult ajaxResult = success();
-		String url;
-		RestTemplate restTemplate = new RestTemplate();
-		R r;
 		List<String> listPOD = (List<String>) CacheUtils.get("dischargePortList");
 		if (listPOD == null) {
-			url = Global.getApiUrl() + "/shipmentDetail/getPODList";
-			r = restTemplate.getForObject(url, R.class);
-			listPOD = (List<String>) r.get("data");
+			listPOD = shipmentDetailService.getPODList();
 			CacheUtils.put("dischargePortList", listPOD);
 		}
 		ajaxResult.put("dischargePortList", listPOD);
 		
 		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
 		if (listConsignee == null) {
-			url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
-			r = restTemplate.getForObject(url, R.class);
-			listConsignee = (List<String>) r.get("data");
+			listConsignee = shipmentDetailService.getConsigneeList();
 			CacheUtils.put("consigneeList", listConsignee);
 		}
 		ajaxResult.put("consigneeList", listConsignee);
 		
 		List<String> listVessel = (List<String>) CacheUtils.get("vslNmList");
 		if (listVessel == null) {
-			url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
-			r = restTemplate.getForObject(url, R.class);
-			listVessel = (List<String>) r.get("data");
+			listVessel = shipmentDetailService.getVesselCodeList();
 			CacheUtils.put("vslNmList", listVessel);
 		}
 		ajaxResult.put("vslNmList", listVessel);
 		
 		List<String> opeCodeList = (List<String>) CacheUtils.get("opeCodeList");
 		if (opeCodeList == null) {
-			url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
-			r = restTemplate.getForObject(url, R.class);
-			opeCodeList = (List<String>) r.get("data");
+			opeCodeList = shipmentDetailService.getOpeCodeList();
 			CacheUtils.put("opeCodeList", opeCodeList);
 		}
 		ajaxResult.put("opeCodeList", opeCodeList);
 		
 		return ajaxResult;
-	}
-	
-	@GetMapping("/test")
-	@ResponseBody
-	public ShipmentDetail test() {
-		return customQueueService.getShipmentDetail();
 	}
 }

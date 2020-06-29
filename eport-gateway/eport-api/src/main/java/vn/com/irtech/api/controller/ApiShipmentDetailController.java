@@ -41,33 +41,28 @@ public class ApiShipmentDetailController {
 	}
 	
 	@GetMapping("/shipmentDetail/getPODList")
-	public R getPODList() {
-		List<String> list = shipmentDetailDao.selectPODList();
-		return R.ok().put("data", list);
+	public List<String> getPODList() {
+		return shipmentDetailDao.selectPODList();
 	}
 	
 	@GetMapping("/shipmentDetail/getVesselCodeList")
-	public R getVesselCodeList() {
-		List<String> list = shipmentDetailDao.selectVesselCodeList();
-		return R.ok().put("data", list);
+	public List<String> getVesselCodeList() {
+		return shipmentDetailDao.selectVesselCodeList();
 	}
 	
 	@GetMapping("/shipmentDetail/getConsigneeList")
-	public R getConsigneeList() {
-		List<String> list = shipmentDetailDao.selectConsigneeList();
-		return R.ok().put("data", list);
+	public List<String> getConsigneeList() {
+		return shipmentDetailDao.selectConsigneeList();
 	}
 	
 	@GetMapping("/shipmentDetail/getVoyageNoList/{vesselCode}")
-	public R getVoyageNoList(@PathVariable String vesselCode){
-		List<String> list = shipmentDetailDao.selectVoyageNoListByVesselCode(vesselCode);
-		return R.ok().put("data", list);
+	public List<String> getVoyageNoList(@PathVariable String vesselCode){
+		return shipmentDetailDao.selectVoyageNoListByVesselCode(vesselCode);
 	}
 	
 	@GetMapping("/shipmentDetail/getOpeCodeList")
-	public R getOpeCodeList() {
-		List<String> list = shipmentDetailDao.selectOpeCodeList();
-		return R.ok().put("data", list);
+	public List<String> getOpeCodeList() {
+		return shipmentDetailDao.selectOpeCodeList();
 	}
 	
 	@GetMapping("/shipmentDetail/getGroupNameByTaxCode/{taxCode}")
