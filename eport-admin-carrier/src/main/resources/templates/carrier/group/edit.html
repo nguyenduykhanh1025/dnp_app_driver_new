@@ -38,18 +38,45 @@
                     <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleDoFlag()"></i>
                 </div>
             </div>
+            <div class="form-group">
+                <input type="hidden" name="edoFlag" th:field="*{edoFlag}" id="edoFlag">
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Sử dụng eDO</label>
+                <div id="edoToggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleEdoFlag()"></i>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Path nhận File : </label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input id="pathEdiReceive" name="pathEdiReceive" th:field="*{pathEdiReceive}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Path backup File : </label>
+                <div class="col-sm-9 col-xs-8 col-md-10">
+                    <input id="pathEdiBackup" name="pathEdiBackup" th:field="*{pathEdiBackup}" class="form-control" type="text">
+                </div>
+            </div>
         </form>
     </div>
     <th:block th:include="include :: footer" />
     <script type="text/javascript">
         var prefix = ctx + "carrier/group";
-
         setTimeout(() => {
             if ($("#doFlag").val() == 1) {
                 document.getElementById("doToggle").innerHTML = '<i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleDoFlag()"></i>';
             } else {
                 document.getElementById("doToggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleDoFlag()"></i>';
-            }          
+            }
+            if ($("#edoFlag").val() == 1) {
+                $("#pathEdiReceive").prop("disabled",false)
+                $("#pathEdiBackup").prop("disabled",false)
+                document.getElementById("edoToggle").innerHTML = '<i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleEdoFlag()"></i>';
+            } else {
+                $("#pathEdiReceive").prop("disabled",true)
+                $("#pathEdiBackup").prop("disabled",true)
+                document.getElementById("edoToggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleEdoFlag()"></i>';
+            }      
         }, 200);
 
         $("#form-account-edit").validate({
@@ -71,6 +98,21 @@
                 $("#doFlag").val(1);
             }
         }
+        function clickToggleEdoFlag() {
+           
+            if ($("#edoFlag").val() == 1) { 
+                $("#pathEdiReceive").prop("disabled",true)
+                $("#pathEdiBackup").prop("disabled",true)
+                document.getElementById("edoToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleEdoFlag()"></span>';
+                $("#edoFlag").val(0);
+            } else {
+                $("#pathEdiReceive").prop("disabled",false)
+                $("#pathEdiBackup").prop("disabled",false)
+                document.getElementById("edoToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleEdoFlag()"></span>';
+                $("#edoFlag").val(1);
+            }
+        }
+        
     </script>
 </body>
 </html>

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoHistory;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
@@ -42,7 +43,9 @@ public class EdoFtpController extends BaseController{
 	public Object loadFileFromDisk() throws IOException {
 
         //Define folder receiver and folder moving file Edo before save
-		final File folder = new File("D:/testReadFile2");
+
+
+		final File folder = new File("D:/testReadFile");
         final String destinationFolder = "D:/moveFileToThisFolder/";
         
 		List<Edo> edo = new ArrayList<>();
@@ -54,9 +57,7 @@ public class EdoFtpController extends BaseController{
 			String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
             String[] text = content.split("'");
             EdoHistory edoHistory = new EdoHistory();
-           
-            EdoCommon common = new EdoCommon();
-            edo = common.readEdi(text);
+            edo = edoService.readEdi(text);
             for(Edo Edo : edo)
             {
 

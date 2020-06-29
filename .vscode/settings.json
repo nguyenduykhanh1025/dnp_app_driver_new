@@ -4,6 +4,8 @@
         "Autowired",
         "Catos",
         "Gson",
-        "Viewex"
+        "Viewex",
+        "datetimepicker",
+        "eport"
     ]
 }

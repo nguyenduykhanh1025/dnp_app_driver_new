@@ -64,5 +64,7 @@ public interface IEdoService
 
     public Edo checkContainerAvailable(@Param("container") String cont,@Param("billNo") String billNo);
 
+    
+    public  List<Edo> readEdi(String[] text);
 
 }

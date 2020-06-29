@@ -3,7 +3,6 @@ package vn.com.irtech.eport.carrier.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.constant.UserConstants;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;

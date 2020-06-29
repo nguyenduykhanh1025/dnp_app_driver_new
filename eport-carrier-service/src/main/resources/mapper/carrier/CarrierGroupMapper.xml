@@ -16,10 +16,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="doFlag"    column="do_flag"    />
         <result property="edoFlag"    column="edo_flag"    />
+        <result property="pathEdiReceive"    column="path_edi_receive"    />    
+        <result property="pathEdiBackup"    column="path_edi_backup"    />   
     </resultMap>
 
     <sql id="selectCarrierGroupVo">
-        select id, group_code, group_name, operate_code, main_email, create_by, create_time, update_by, update_time, do_flag, edo_flag from carrier_group
+        select id, group_code, group_name, operate_code, main_email, create_by, create_time, update_by, update_time, do_flag, edo_flag, path_edi_receive, path_edi_backup from carrier_group
     </sql>
 
     <select id="selectCarrierGroupList" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
@@ -92,6 +94,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="doFlag != null  and doFlag != ''">do_flag = #{doFlag},</if>
             <if test="edoFlag != null  and edoFlag != ''">edo_flag = #{edoFlag},</if>
+            <if test="pathEdiReceive != null  and pathEdiReceive != ''">path_edi_receive = #{pathEdiReceive},</if>
+            <if test="pathEdiBackup != null  and pathEdiBackup != ''">path_edi_backup = #{pathEdiBackup},</if>
         </trim>
         where id = #{id}
     </update>
