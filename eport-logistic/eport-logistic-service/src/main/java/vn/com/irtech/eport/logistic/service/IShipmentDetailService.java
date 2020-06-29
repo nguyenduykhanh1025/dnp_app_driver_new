@@ -105,6 +105,16 @@ public interface IShipmentDetailService
     
     public List<String> checkContainerReserved(String containerNos);
     
+    public List<String> getPODList();
+    
+    public List<String> getVesselCodeList();
+    
+    public List<String> getConsigneeList();
+    
+    public List<String> getVoyageNoList(String vesselCode);
+    
+    public List<String> getOpeCodeList();
+    
     public int getCountContByBlNo(String blNo);
 
     public List<ShipmentDetail> selectShipmentDetailByProcessIds (String processOrderIds);

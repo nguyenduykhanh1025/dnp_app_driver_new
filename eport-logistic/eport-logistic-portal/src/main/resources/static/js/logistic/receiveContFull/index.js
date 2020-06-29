@@ -39,6 +39,7 @@ $(document).ready(function () {
     $.table.init(options);
   });
 });
+
 function handleCollapse(status) {
   if (status) {
     $(".left-side").css("width", "0.5%");
@@ -694,8 +695,7 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   }
   shipmentDetailIds = "";
   shipmentDetails = [];
-  processOrderIds = '';
-  let temProcessOrderIds = [];
+  let regiterNos = [];
   $.each(cleanedGridData, function (index, object) {
     let shipmentDetail = new Object();
     if (object["containerNo"] != null && object["containerNo"] != "" && !/^[A-Z]{4}[0-9]{7}$/g.test(object["containerNo"]) && isValidate) {
@@ -712,12 +712,22 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
     shipmentDetail.shipmentId = shipmentSelected.id;
     shipmentDetail.id = object["id"];
     shipmentDetails.push(shipmentDetail);
-    if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"])) {
-      temProcessOrderIds.push(object["processOrderId"]);
-      processOrderIds += object["processOrderId"] + ',';
+    if (object["registerNo"] != null && !regiterNos.includes(object["registerNo"])) {
+      regiterNos.push(object["registerNo"]);
     }
     shipmentDetailIds += object["id"] + ",";
   });
+
+  let temProcessOrderIds = [];
+  processOrderIds = '';
+  for (let i = 0; i < checkList.length; i++) {
+    if (Object.keys(myTableData[i]).length > 0) {
+      if (myTableData[i].processOrderId != null && !temProcessOrderIds.includes(myTableData[i].processOrderId)) {
+        temProcessOrderIds.push(object["processOrderId"]);
+        processOrderIds += object["processOrderId"] + ',';
+      }
+    }
+  }
 
   if (processOrderIds != '') {
     processOrderIds.substring(0, processOrderIds.length - 1);
