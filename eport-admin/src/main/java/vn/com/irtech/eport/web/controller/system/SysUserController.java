@@ -28,7 +28,7 @@ import vn.com.irtech.eport.system.service.ISysRoleService;
 import vn.com.irtech.eport.system.service.ISysUserService;
 
 /**
- * 用户信息
+ * User controller
  * 
  * @author admin
  */
@@ -101,7 +101,7 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 新增用户
+     * Add new user
      */
     @GetMapping("/add")
     public String add(ModelMap mmap)
@@ -112,7 +112,7 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 新增保存用户
+     * Add save new user
      */
     @RequiresPermissions("system:user:add")
     @Log(title = "User Management", businessType = BusinessType.INSERT)
@@ -122,16 +122,16 @@ public class SysUserController extends BaseController
     {
         if (UserConstants.USER_NAME_NOT_UNIQUE.equals(userService.checkLoginNameUnique(user.getLoginName())))
         {
-            return error("Add user '" + user.getLoginName() + "' failed, username already exist");
+            return error("Thêm người dùng " + user.getLoginName() + " thất bại, tên người dùng đã tồn tại!");
         }
         else if (!user.getPhonenumber().equals("")) {
             if (UserConstants.USER_PHONE_NOT_UNIQUE.equals(userService.checkPhoneUnique(user))) {
-                return error("Add user '" + user.getLoginName() + "' failed, phone number already exist");
+                return error("Thêm người dùng " + user.getLoginName() + " thất bại, số điện thoại đã tồn tại!");
             }
         }
         else if (UserConstants.USER_EMAIL_NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
         {
-            return error("Add user '" + user.getLoginName() + "' failed, email already exist");
+            return error("Thêm người dùng " + user.getLoginName() + " thất bại, email đã tồn tại!");
         }
         user.setSalt(ShiroUtils.randomSalt());
         user.setPassword(passwordService.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
@@ -140,7 +140,7 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 修改用户
+     * Modify user
      */
     @GetMapping("/edit/{userId}")
     public String edit(@PathVariable("userId") Long userId, ModelMap mmap)
@@ -152,7 +152,7 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 修改保存用户
+     * Modify save user
      */
     @RequiresPermissions("system:user:edit")
     @Log(title = "User Management", businessType = BusinessType.UPDATE)
@@ -163,11 +163,11 @@ public class SysUserController extends BaseController
         userService.checkUserAllowed(user);
         if (UserConstants.USER_PHONE_NOT_UNIQUE.equals(userService.checkPhoneUnique(user)))
         {
-            return error("Update user'" + user.getLoginName() + "' failed, phone number already exist");
+            return error("Cập nhật người dùng " + user.getLoginName() + " thất bại, số điện thoại đã tồn tại!");
         }
         else if (UserConstants.USER_EMAIL_NOT_UNIQUE.equals(userService.checkEmailUnique(user)))
         {
-            return error("Update user '" + user.getLoginName() + "' failed, email already exist");
+            return error("Cập nhật người dùng " + user.getLoginName() + " thất bại, email đã tồn tại!");
         }
         user.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(userService.updateUser(user));
@@ -203,13 +203,13 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 进入授权角色页
+     * Redirect to Authorization role page
      */
     @GetMapping("/authRole/{userId}")
     public String authRole(@PathVariable("userId") Long userId, ModelMap mmap)
     {
         SysUser user = userService.selectUserById(userId);
-        // 获取用户所属的角色列表
+        // Get the list of roles the user belongs to
         List<SysUserRole> userRoles = userService.selectUserRoleByUserId(userId);
         mmap.put("user", user);
         mmap.put("userRoles", userRoles);
@@ -217,7 +217,7 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 用户授权角色
+     * Add Auth role
      */
     @RequiresPermissions("system:user:add")
     @Log(title = "User Management", businessType = BusinessType.GRANT)
@@ -246,7 +246,7 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 校验用户名
+     * Check LoginName is unique
      */
     @PostMapping("/checkLoginNameUnique")
     @ResponseBody
@@ -256,7 +256,7 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 校验手机号码
+     * Check phone is unique
      */
     @PostMapping("/checkPhoneUnique")
     @ResponseBody
@@ -266,7 +266,7 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 校验email邮箱
+     * Verify email address
      */
     @PostMapping("/checkEmailUnique")
     @ResponseBody
@@ -276,7 +276,7 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 用户状态修改
+     * Modify user status
      */
     @Log(title = "User Management", businessType = BusinessType.UPDATE)
     @RequiresPermissions("system:user:edit")

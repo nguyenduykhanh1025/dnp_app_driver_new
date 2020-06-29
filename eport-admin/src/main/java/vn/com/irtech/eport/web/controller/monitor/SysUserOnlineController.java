@@ -22,7 +22,7 @@ import vn.com.irtech.eport.system.domain.SysUserOnline;
 import vn.com.irtech.eport.system.service.ISysUserOnlineService;
 
 /**
- * 在线用户监控
+ * Online user controller
  * 
  * @author admin
  */
@@ -56,7 +56,7 @@ public class SysUserOnlineController extends BaseController
     }
 
     @RequiresPermissions("monitor:online:batchForceLogout")
-    @Log(title = "在线用户", businessType = BusinessType.FORCE)
+    @Log(title = "online user", businessType = BusinessType.FORCE)
     @PostMapping("/batchForceLogout")
     @ResponseBody
     public AjaxResult batchForceLogout(@RequestParam("ids[]") String[] ids)
@@ -66,16 +66,16 @@ public class SysUserOnlineController extends BaseController
             SysUserOnline online = userOnlineService.selectOnlineById(sessionId);
             if (online == null)
             {
-                return error("用户已下线");
+                return error("Người dùng đang ngoại tuyến!");
             }
             OnlineSession onlineSession = (OnlineSession) onlineSessionDAO.readSession(online.getSessionId());
             if (onlineSession == null)
             {
-                return error("用户已下线");
+                return error("Người dùng đang ngoại tuyến!");
             }
             if (sessionId.equals(ShiroUtils.getSessionId()))
             {
-                return error("当前登陆用户无法强退");
+                return error("Người dùng đang đăng nhập hiện tại không thể tự động đăng xuất!");
             }
             onlineSession.setStatus(OnlineStatus.off_line);
             onlineSessionDAO.update(onlineSession);
@@ -86,7 +86,7 @@ public class SysUserOnlineController extends BaseController
     }
 
     @RequiresPermissions("monitor:online:forceLogout")
-    @Log(title = "在线用户", businessType = BusinessType.FORCE)
+    @Log(title = "online user", businessType = BusinessType.FORCE)
     @PostMapping("/forceLogout")
     @ResponseBody
     public AjaxResult forceLogout(String sessionId)
@@ -94,16 +94,16 @@ public class SysUserOnlineController extends BaseController
         SysUserOnline online = userOnlineService.selectOnlineById(sessionId);
         if (sessionId.equals(ShiroUtils.getSessionId()))
         {
-            return error("当前登陆用户无法强退");
+            return error("Người dùng đang đăng nhập hiện tại không thể tự động đăng xuất!");
         }
         if (online == null)
         {
-            return error("用户已下线");
+            return error("Người dùng đang ngoại tuyến!");
         }
         OnlineSession onlineSession = (OnlineSession) onlineSessionDAO.readSession(online.getSessionId());
         if (onlineSession == null)
         {
-            return error("用户已下线");
+            return error("Người dùng đang ngoại tuyến!");
         }
         onlineSession.setStatus(OnlineStatus.off_line);
         onlineSessionDAO.update(onlineSession);

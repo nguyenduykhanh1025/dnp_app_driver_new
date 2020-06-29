@@ -22,7 +22,7 @@ import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
 
 /**
- * 数据字典信息
+ * DataDict Controller
  * 
  * @author admin
  */
@@ -52,7 +52,7 @@ public class SysDictDataController extends BaseController
         return getDataTable(list);
     }
 
-    @Log(title = "字典数据", businessType = BusinessType.EXPORT)
+    @Log(title = "Dictionary data", businessType = BusinessType.EXPORT)
     @RequiresPermissions("system:dict:export")
     @PostMapping("/export")
     @ResponseBody
@@ -60,11 +60,11 @@ public class SysDictDataController extends BaseController
     {
         List<SysDictData> list = dictDataService.selectDictDataList(dictData);
         ExcelUtil<SysDictData> util = new ExcelUtil<SysDictData>(SysDictData.class);
-        return util.exportExcel(list, "字典数据");
+        return util.exportExcel(list, "Dictionary data");
     }
 
     /**
-     * 新增字典类型
+     * New dictionary type
      */
     @GetMapping("/add/{dictType}")
     public String add(@PathVariable("dictType") String dictType, ModelMap mmap)
@@ -74,9 +74,9 @@ public class SysDictDataController extends BaseController
     }
 
     /**
-     * 新增保存字典类型
+     * Save new dictionary type
      */
-    @Log(title = "字典数据", businessType = BusinessType.INSERT)
+    @Log(title = "Dictionary data", businessType = BusinessType.INSERT)
     @RequiresPermissions("system:dict:add")
     @PostMapping("/add")
     @ResponseBody
@@ -87,7 +87,7 @@ public class SysDictDataController extends BaseController
     }
 
     /**
-     * 修改字典类型
+     * Modify dictionary type
      */
     @GetMapping("/edit/{dictCode}")
     public String edit(@PathVariable("dictCode") Long dictCode, ModelMap mmap)
@@ -97,9 +97,9 @@ public class SysDictDataController extends BaseController
     }
 
     /**
-     * 修改保存字典类型
+     * Modify save dictionary type
      */
-    @Log(title = "字典数据", businessType = BusinessType.UPDATE)
+    @Log(title = "Dictionary data", businessType = BusinessType.UPDATE)
     @RequiresPermissions("system:dict:edit")
     @PostMapping("/edit")
     @ResponseBody
@@ -109,7 +109,7 @@ public class SysDictDataController extends BaseController
         return toAjax(dictDataService.updateDictData(dict));
     }
 
-    @Log(title = "字典数据", businessType = BusinessType.DELETE)
+    @Log(title = "Dictionary data", businessType = BusinessType.DELETE)
     @RequiresPermissions("system:dict:remove")
     @PostMapping("/remove")
     @ResponseBody

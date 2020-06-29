@@ -20,7 +20,7 @@ import vn.com.irtech.eport.system.domain.SysNotice;
 import vn.com.irtech.eport.system.service.ISysNoticeService;
 
 /**
- * 公告 信息操作处理
+ * Notice Controller
  * 
  * @author admin
  */
@@ -41,7 +41,7 @@ public class SysNoticeController extends BaseController
     }
 
     /**
-     * 查询公告列表
+     * Check the announcement list
      */
     @RequiresPermissions("system:notice:list")
     @PostMapping("/list")
@@ -54,7 +54,7 @@ public class SysNoticeController extends BaseController
     }
 
     /**
-     * 新增公告
+     * New announcement
      */
     @GetMapping("/add")
     public String add()
@@ -63,10 +63,10 @@ public class SysNoticeController extends BaseController
     }
 
     /**
-     * 新增保存公告
+     * Added save announcement
      */
     @RequiresPermissions("system:notice:add")
-    @Log(title = "通知公告", businessType = BusinessType.INSERT)
+    @Log(title = "Notice Announcement", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(SysNotice notice)
@@ -76,7 +76,7 @@ public class SysNoticeController extends BaseController
     }
 
     /**
-     * 修改公告
+     * Amendment announcement
      */
     @GetMapping("/edit/{noticeId}")
     public String edit(@PathVariable("noticeId") Long noticeId, ModelMap mmap)
@@ -86,10 +86,10 @@ public class SysNoticeController extends BaseController
     }
 
     /**
-     * 修改保存公告
+     * Modify and save announcement
      */
     @RequiresPermissions("system:notice:edit")
-    @Log(title = "通知公告", businessType = BusinessType.UPDATE)
+    @Log(title = "Notice Announcement", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(SysNotice notice)
@@ -99,10 +99,10 @@ public class SysNoticeController extends BaseController
     }
 
     /**
-     * 删除公告
+     * Delete announcement
      */
     @RequiresPermissions("system:notice:remove")
-    @Log(title = "通知公告", businessType = BusinessType.DELETE)
+    @Log(title = "Announcement", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String ids)

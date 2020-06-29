@@ -9,12 +9,6 @@ import vn.com.irtech.eport.system.domain.SysEdiHistory;
 import vn.com.irtech.eport.system.service.ISysEdiHistoryService;
 import vn.com.irtech.eport.common.core.text.Convert;
 
-/**
- * 【请填写功能名称】Service Business Processing
- * 
- * @author ruoyi
- * @date 2020-04-03
- */
 @Service
 public class SysEdiHistoryServiceImpl implements ISysEdiHistoryService 
 {
@@ -22,10 +16,10 @@ public class SysEdiHistoryServiceImpl implements ISysEdiHistoryService
     private SysEdiHistoryMapper sysEdiHistoryMapper;
 
     /**
-     * Get 【请填写功能名称】
-     * 
-     * @param ediId 【请填写功能名称】ID
-     * @return 【请填写功能名称】
+     * Get SysEdi history by id
+     *
+     * @param ediId 
+     * @return SysEdi history
      */
     @Override
     public SysEdiHistory selectSysEdiHistoryById(Long ediId)
@@ -34,10 +28,10 @@ public class SysEdiHistoryServiceImpl implements ISysEdiHistoryService
     }
 
     /**
-     * Get 【请填写功能名称】 List
-     * 
-     * @param sysEdiHistory 【请填写功能名称】
-     * @return 【请填写功能名称】
+     * Get SysEdi history List
+     *
+     * @param sysEdiHistory
+     * @return SysEdi history list
      */
     @Override
     public List<SysEdiHistory> selectSysEdiHistoryList(SysEdiHistory sysEdiHistory)
@@ -46,10 +40,10 @@ public class SysEdiHistoryServiceImpl implements ISysEdiHistoryService
     }
 
     /**
-     * Add 【请填写功能名称】
-     * 
-     * @param sysEdiHistory 【请填写功能名称】
-     * @return result
+     * Add SysEdi history
+     *
+     * @param sysEdiHistory
+     * @return Result
      */
     @Override
     public int insertSysEdiHistory(SysEdiHistory sysEdiHistory)
@@ -58,9 +52,9 @@ public class SysEdiHistoryServiceImpl implements ISysEdiHistoryService
     }
 
     /**
-     * Update 【请填写功能名称】
-     * 
-     * @param sysEdiHistory 【请填写功能名称】
+     * Update SysEdi history
+     *
+     * @param sysEdiHistory 
      * @return result
      */
     @Override
@@ -71,8 +65,8 @@ public class SysEdiHistoryServiceImpl implements ISysEdiHistoryService
     }
 
     /**
-     * Delete 【请填写功能名称】 By ID
-     * 
+     * Delete SysEdi history By ID
+     *
      * @param ids Entity ID
      * @return result
      */
@@ -83,9 +77,9 @@ public class SysEdiHistoryServiceImpl implements ISysEdiHistoryService
     }
 
     /**
-     * Delete 【请填写功能名称】
-     * 
-     * @param ediId 【请填写功能名称】ID
+     * Delete SysEdi history
+     *
+     * @param ediId 
      * @return result
      */
     @Override

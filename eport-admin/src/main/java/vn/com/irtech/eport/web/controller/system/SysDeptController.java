@@ -24,7 +24,7 @@ import vn.com.irtech.eport.system.domain.SysRole;
 import vn.com.irtech.eport.system.service.ISysDeptService;
 
 /**
- * 部门信息
+ * Department Controller
  * 
  * @author admin
  */
@@ -54,7 +54,7 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 新增部门
+     * New department
      */
     @GetMapping("/add/{parentId}")
     public String add(@PathVariable("parentId") Long parentId, ModelMap mmap)
@@ -64,9 +64,9 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 新增保存部门
+     * New preservation department
      */
-    @Log(title = "部门管理", businessType = BusinessType.INSERT)
+    @Log(title = "Department management", businessType = BusinessType.INSERT)
     @RequiresPermissions("system:dept:add")
     @PostMapping("/add")
     @ResponseBody
@@ -74,14 +74,14 @@ public class SysDeptController extends BaseController
     {
         if (UserConstants.DEPT_NAME_NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept)))
         {
-            return error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+            return error("Thêm bộ phận mới " + dept.getDeptName() + " thất bại, tên bộ phận đã tồn tại!");
         }
         dept.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(deptService.insertDept(dept));
     }
 
     /**
-     * 修改
+     * Edit
      */
     @GetMapping("/edit/{deptId}")
     public String edit(@PathVariable("deptId") Long deptId, ModelMap mmap)
@@ -96,9 +96,9 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 保存
+     * Edit
      */
-    @Log(title = "部门管理", businessType = BusinessType.UPDATE)
+    @Log(title = "Department management", businessType = BusinessType.UPDATE)
     @RequiresPermissions("system:dept:edit")
     @PostMapping("/edit")
     @ResponseBody
@@ -106,20 +106,20 @@ public class SysDeptController extends BaseController
     {
         if (UserConstants.DEPT_NAME_NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept)))
         {
-            return error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+            return error("Cập nhật bộ phận " + dept.getDeptName() + " thất bại, tên bộ phận đã tồn tại!");
         }
         else if (dept.getParentId().equals(dept.getDeptId()))
         {
-            return error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
+            return error("Cập nhật bộ phận " + dept.getDeptName() + " thất bại，bộ phận cấp trên không thể là chính nó!");
         }
         dept.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(deptService.updateDept(dept));
     }
 
     /**
-     * 删除
+     * Delete
      */
-    @Log(title = "部门管理", businessType = BusinessType.DELETE)
+    @Log(title = "Department management", businessType = BusinessType.DELETE)
     @RequiresPermissions("system:dept:remove")
     @GetMapping("/remove/{deptId}")
     @ResponseBody
@@ -127,17 +127,17 @@ public class SysDeptController extends BaseController
     {
         if (deptService.selectDeptCount(deptId) > 0)
         {
-            return AjaxResult.warn("存在下级部门,不允许删除");
+            return AjaxResult.warn("Có một bộ phận trực thuộc và nó không được phép xóa");
         }
         if (deptService.checkDeptExistUser(deptId))
         {
-            return AjaxResult.warn("部门存在用户,不允许删除");
+            return AjaxResult.warn("Có một người dùng trong bộ phận và nó không được phép xóa");
         }
         return toAjax(deptService.deleteDeptById(deptId));
     }
 
     /**
-     * 校验部门名称
+     * Check department name is unique
      */
     @PostMapping("/checkDeptNameUnique")
     @ResponseBody
@@ -147,7 +147,7 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 选择部门树
+     * Select department tree
      */
     @GetMapping("/selectDeptTree/{deptId}")
     public String selectDeptTree(@PathVariable("deptId") Long deptId, ModelMap mmap)
@@ -157,7 +157,7 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 加载部门列表树
+     * Load the department list tree
      */
     @GetMapping("/treeData")
     @ResponseBody
@@ -168,7 +168,7 @@ public class SysDeptController extends BaseController
     }
 
     /**
-     * 加载角色部门（数据权限）列表树
+     * Load the role department (data permission) list tree
      */
     @GetMapping("/roleDeptTreeData")
     @ResponseBody

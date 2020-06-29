@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 
 /**
- * swagger 接口
+ * Swagger controller
  * 
  * @author admin
  */
