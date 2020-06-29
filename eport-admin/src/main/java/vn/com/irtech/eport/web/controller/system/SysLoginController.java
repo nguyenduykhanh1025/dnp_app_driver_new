@@ -16,7 +16,7 @@ import vn.com.irtech.eport.common.utils.ServletUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 登录验证
+ * Login controller
  * 
  * @author admin
  */
@@ -26,7 +26,7 @@ public class SysLoginController extends BaseController
     @GetMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response)
     {
-        // 如果是Ajax请求，返回Json字符串。
+        // If it is an Ajax request, return the Json string。
         if (ServletUtils.isAjaxRequest(request))
         {
             return ServletUtils.renderString(response, "{\"code\":\"1\",\"msg\":\"Không đăng nhập hoặc hết thời gian. Xin vui lòng đăng nhập lại.\"}");
@@ -63,6 +63,4 @@ public class SysLoginController extends BaseController
     {
         return "error/unauth";
     }
-
-
 }

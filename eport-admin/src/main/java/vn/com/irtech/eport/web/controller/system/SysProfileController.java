@@ -24,7 +24,7 @@ import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.service.ISysUserService;
 
 /**
- * 个人信息 业务处理
+ * Profile Controller
  * 
  * @author admin
  */
@@ -43,7 +43,7 @@ public class SysProfileController extends BaseController
     private SysPasswordService passwordService;
 
     /**
-     * 个人信息
+     * Profile
      */
     @GetMapping()
     public String profile(ModelMap mmap)
@@ -94,12 +94,12 @@ public class SysProfileController extends BaseController
         }
         else
         {
-            return error("Failed to change password, old password is wrong");
+            return error("Thay đổi mật khẩu thất bại, mật khẩu cũ sai!");
         }
     }
 
     /**
-     * 修改用户
+     * Modify
      */
     @GetMapping("/edit")
     public String edit(ModelMap mmap)
@@ -110,7 +110,7 @@ public class SysProfileController extends BaseController
     }
 
     /**
-     * 修改头像
+     * Modify avatar
      */
     @GetMapping("/avatar")
     public String avatar(ModelMap mmap)
@@ -121,7 +121,7 @@ public class SysProfileController extends BaseController
     }
 
     /**
-     * 修改用户
+     * Modify user
      */
     @Log(title = "Profile", businessType = BusinessType.UPDATE)
     @PostMapping("/update")
@@ -142,7 +142,7 @@ public class SysProfileController extends BaseController
     }
 
     /**
-     * 保存头像
+     * Save avatar
      */
     @Log(title = "Profile", businessType = BusinessType.UPDATE)
     @PostMapping("/updateAvatar")
@@ -166,7 +166,7 @@ public class SysProfileController extends BaseController
         }
         catch (Exception e)
         {
-            log.error("Failed to modify avatar!", e);
+            log.error("Cập nhật avatar thất bại!", e);
             return error(e.getMessage());
         }
     }

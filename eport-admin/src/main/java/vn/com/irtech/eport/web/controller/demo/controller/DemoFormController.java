@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 
 /**
- * 表单相关
- * 
+ * Form related
+ *
  * @author admin
  */
 @Controller
@@ -21,15 +21,15 @@ public class DemoFormController
 
     private final static List<UserFormModel> users = new ArrayList<UserFormModel>();
     {
-        users.add(new UserFormModel(1, "1000001", "测试1", "15888888888"));
-        users.add(new UserFormModel(2, "1000002", "测试2", "15666666666"));
-        users.add(new UserFormModel(3, "1000003", "测试3", "15666666666"));
-        users.add(new UserFormModel(4, "1000004", "测试4", "15666666666"));
-        users.add(new UserFormModel(5, "1000005", "测试5", "15666666666"));
+        users.add(new UserFormModel(1, "1000001", "Test 1", "15888888888"));
+        users.add(new UserFormModel(2, "1000002", "Test 2", "15666666666"));
+        users.add(new UserFormModel(3, "1000003", "Test 3", "15666666666"));
+        users.add(new UserFormModel(4, "1000004", "Test 4", "15666666666"));
+        users.add(new UserFormModel(5, "1000005", "Test 5", "15666666666"));
     }
 
     /**
-     * 按钮页
+     * Button page
      */
     @GetMapping("/button")
     public String button()
@@ -38,7 +38,7 @@ public class DemoFormController
     }
 
     /**
-     * 下拉框
+     * Drop-down box
      */
     @GetMapping("/select")
     public String select()
@@ -47,7 +47,7 @@ public class DemoFormController
     }
 
     /**
-     * 时间轴
+     * Timeline
      */
     @GetMapping("/timeline")
     public String timeline()
@@ -56,7 +56,7 @@ public class DemoFormController
     }
 
     /**
-     * 表单校验
+     * Form verification
      */
     @GetMapping("/validate")
     public String validate()
@@ -65,7 +65,7 @@ public class DemoFormController
     }
 
     /**
-     * 功能扩展（包含文件上传）
+     * Function extension (including file upload)
      */
     @GetMapping("/jasny")
     public String jasny()
@@ -74,7 +74,7 @@ public class DemoFormController
     }
 
     /**
-     * 拖动排序
+     * Drag sort
      */
     @GetMapping("/sortable")
     public String sortable()
@@ -83,7 +83,7 @@ public class DemoFormController
     }
 
     /**
-     * 选项卡 & 面板
+     * Tabs & panels
      */
     @GetMapping("/tabs_panels")
     public String tabs_panels()
@@ -92,7 +92,7 @@ public class DemoFormController
     }
 
     /**
-     * 栅格
+     * Grid
      */
     @GetMapping("/grid")
     public String grid()
@@ -101,7 +101,7 @@ public class DemoFormController
     }
 
     /**
-     * 表单向导
+     * Form Wizard
      */
     @GetMapping("/wizard")
     public String wizard()
@@ -110,7 +110,7 @@ public class DemoFormController
     }
 
     /**
-     * 文件上传
+     * File Upload
      */
     @GetMapping("/upload")
     public String upload()
@@ -119,7 +119,7 @@ public class DemoFormController
     }
 
     /**
-     * 日期和时间页
+     * Date and time page
      */
     @GetMapping("/datetime")
     public String datetime()
@@ -128,7 +128,7 @@ public class DemoFormController
     }
 
     /**
-     * 左右互选组件
+     * Left and right selection components
      */
     @GetMapping("/duallistbox")
     public String duallistbox()
@@ -137,7 +137,7 @@ public class DemoFormController
     }
 
     /**
-     * 基本表单
+     * Basic form
      */
     @GetMapping("/basic")
     public String basic()
@@ -146,7 +146,7 @@ public class DemoFormController
     }
 
     /**
-     * 卡片列表
+     * Card list
      */
     @GetMapping("/cards")
     public String cards()
@@ -155,7 +155,7 @@ public class DemoFormController
     }
 
     /**
-     * summernote 富文本编辑器
+     * summernote rich text editor
      */
     @GetMapping("/summernote")
     public String summernote()
@@ -164,7 +164,7 @@ public class DemoFormController
     }
 
     /**
-     * 搜索自动补全
+     * Search auto-complete
      */
     @GetMapping("/autocomplete")
     public String autocomplete()
@@ -173,7 +173,7 @@ public class DemoFormController
     }
 
     /**
-     * 获取用户数据
+     * Get user data
      */
     @GetMapping("/userModel")
     @ResponseBody
@@ -187,13 +187,13 @@ public class DemoFormController
     }
 
     /**
-     * 获取数据集合
+     * Get data collection
      */
     @GetMapping("/collection")
     @ResponseBody
     public AjaxResult collection()
     {
-        String[] array = { "ruoyi 1", "ruoyi 2", "ruoyi 3", "ruoyi 4", "ruoyi 5" };
+        String[] array = {"ruoyi 1", "ruoyi 2", "ruoyi 3", "ruoyi 4", "ruoyi 5" };
         AjaxResult ajax = new AjaxResult();
         ajax.put("value", array);
         return ajax;
@@ -202,16 +202,16 @@ public class DemoFormController
 
 class UserFormModel
 {
-    /** 用户ID */
+    /** User ID */
     private int userId;
 
-    /** 用户编号 */
+    /** user ID */
     private String userCode;
 
-    /** 用户姓名 */
+    /** username */
     private String userName;
 
-    /** 用户手机 */
+    /** User phone */
     private String userPhone;
 
     public UserFormModel()

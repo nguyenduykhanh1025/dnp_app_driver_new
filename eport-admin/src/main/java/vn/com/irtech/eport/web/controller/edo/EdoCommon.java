@@ -10,11 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import vn.com.irtech.eport.carrier.domain.Edo;
 
 
-
-
 public class EdoCommon {
-	 
-	
 	
     public  List<Edo> readEdi(String[] text)
     {

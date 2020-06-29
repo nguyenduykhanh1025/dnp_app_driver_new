@@ -19,7 +19,7 @@ import vn.com.irtech.eport.system.domain.SysLogininfor;
 import vn.com.irtech.eport.system.service.ISysLogininforService;
 
 /**
- * 系统访问记录
+ * SysLoginin for Controller
  * 
  * @author admin
  */
@@ -52,7 +52,7 @@ public class SysLogininforController extends BaseController
         return getDataTable(list);
     }
 
-    @Log(title = "登陆日志", businessType = BusinessType.EXPORT)
+    @Log(title = "Log in", businessType = BusinessType.EXPORT)
     @RequiresPermissions("monitor:logininfor:export")
     @PostMapping("/export")
     @ResponseBody
@@ -60,11 +60,11 @@ public class SysLogininforController extends BaseController
     {
         List<SysLogininfor> list = logininforService.selectLogininforList(logininfor);
         ExcelUtil<SysLogininfor> util = new ExcelUtil<SysLogininfor>(SysLogininfor.class);
-        return util.exportExcel(list, "登陆日志");
+        return util.exportExcel(list, "Log in");
     }
 
     @RequiresPermissions("monitor:logininfor:remove")
-    @Log(title = "登陆日志", businessType = BusinessType.DELETE)
+    @Log(title = "Log in", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String ids)
@@ -73,7 +73,7 @@ public class SysLogininforController extends BaseController
     }
     
     @RequiresPermissions("monitor:logininfor:remove")
-    @Log(title = "登陆日志", businessType = BusinessType.CLEAN)
+    @Log(title = "Log in", businessType = BusinessType.CLEAN)
     @PostMapping("/clean")
     @ResponseBody
     public AjaxResult clean()
@@ -83,7 +83,7 @@ public class SysLogininforController extends BaseController
     }
 
     @RequiresPermissions("monitor:logininfor:unlock")
-    @Log(title = "账户解锁", businessType = BusinessType.OTHER)
+    @Log(title = "Unlock account", businessType = BusinessType.OTHER)
     @PostMapping("/unlock")
     @ResponseBody
     public AjaxResult unlock(String loginName)

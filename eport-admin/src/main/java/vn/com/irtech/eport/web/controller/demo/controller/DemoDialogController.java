@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * 模态窗口
- * 
+ * Modal window
+ *
  * @author admin
  */
 @Controller
@@ -16,7 +16,7 @@ public class DemoDialogController
     private String prefix = "demo/modal";
 
     /**
-     * 模态窗口
+     * Modal window
      */
     @GetMapping("/dialog")
     public String dialog()
@@ -25,7 +25,7 @@ public class DemoDialogController
     }
 
     /**
-     * 弹层组件
+     * Bounce component
      */
     @GetMapping("/layer")
     public String layer()
@@ -34,7 +34,7 @@ public class DemoDialogController
     }
 
     /**
-     * 表单
+     * Form
      */
     @GetMapping("/form")
     public String form()
@@ -43,7 +43,7 @@ public class DemoDialogController
     }
 
     /**
-     * 表格
+     * Form
      */
     @GetMapping("/table")
     public String table()
@@ -52,7 +52,7 @@ public class DemoDialogController
     }
 
     /**
-     * 表格check
+     * Form check
      */
     @GetMapping("/check")
     public String check()
@@ -61,7 +61,7 @@ public class DemoDialogController
     }
 
     /**
-     * 表格radio
+     * Form radio
      */
     @GetMapping("/radio")
     public String radio()
@@ -70,7 +70,7 @@ public class DemoDialogController
     }
 
     /**
-     * 表格回传父窗体
+     * The form returns the parent form
      */
     @GetMapping("/parent")
     public String parent()

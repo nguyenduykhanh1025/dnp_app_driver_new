@@ -20,7 +20,7 @@ import vn.com.irtech.eport.system.domain.SysOperLog;
 import vn.com.irtech.eport.system.service.ISysOperLogService;
 
 /**
- * 操作日志记录
+ * Operation logging controller
  * 
  * @author admin
  */
@@ -50,7 +50,7 @@ public class SysOperlogController extends BaseController
         return getDataTable(list);
     }
 
-    @Log(title = "操作日志", businessType = BusinessType.EXPORT)
+    @Log(title = "Operation log", businessType = BusinessType.EXPORT)
     @RequiresPermissions("monitor:operlog:export")
     @PostMapping("/export")
     @ResponseBody
@@ -58,7 +58,7 @@ public class SysOperlogController extends BaseController
     {
         List<SysOperLog> list = operLogService.selectOperLogList(operLog);
         ExcelUtil<SysOperLog> util = new ExcelUtil<SysOperLog>(SysOperLog.class);
-        return util.exportExcel(list, "操作日志");
+        return util.exportExcel(list, "Operation log");
     }
 
     @RequiresPermissions("monitor:operlog:remove")
@@ -77,7 +77,7 @@ public class SysOperlogController extends BaseController
         return prefix + "/detail";
     }
     
-    @Log(title = "操作日志", businessType = BusinessType.CLEAN)
+    @Log(title = "Operation log", businessType = BusinessType.CLEAN)
     @RequiresPermissions("monitor:operlog:remove")
     @PostMapping("/clean")
     @ResponseBody
