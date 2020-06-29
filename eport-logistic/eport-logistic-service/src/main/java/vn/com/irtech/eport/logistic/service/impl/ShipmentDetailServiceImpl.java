@@ -379,7 +379,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             String sztp = shipmentDetails.get(0).getSztp();
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
             List<ProcessOrder> processOrders = new ArrayList<>();
-            ProcessOrder processOrder = new ProcessOrder();
+            //ProcessOrder processOrder = new ProcessOrder();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (sztp.equals(shipmentDetail.getSztp())) {
                     shipmentOrderList.add(shipmentDetail);
@@ -535,9 +535,52 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<String> checkContainerReserved(String containerNos) {
 		String url = Global.getApiUrl() + "/shipmentDetail/checkContReserved/" + containerNos;
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<String>> response = restTemplate
-				.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {
-				});
+		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+		List<String> listCont = response.getBody();
+		return listCont;
+	}
+	
+	@Override
+	public List<String> getPODList() {
+		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+		List<String> listCont = response.getBody();
+		return listCont;
+	}
+	
+	@Override
+	public List<String> getVesselCodeList() {
+		String url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+		List<String> listCont = response.getBody();
+		return listCont;
+	}
+	
+	@Override
+	public List<String> getConsigneeList() {
+		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+		List<String> listCont = response.getBody();
+		return listCont;
+	}
+	
+	@Override
+	public List<String> getOpeCodeList() {
+		String url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+		List<String> listCont = response.getBody();
+		return listCont;
+	}
+	
+	@Override
+	public List<String> getVoyageNoList(String vesselCode) {
+		String url = Global.getApiUrl() + "/shipmentDetail/getVoyageNoList/" + vesselCode;
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 		List<String> listCont = response.getBody();
 		return listCont;
 	}
@@ -554,5 +597,4 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     public List<ShipmentDetail> selectShipmentDetailByProcessIds (String processOrderIds) {
         return shipmentDetailMapper.selectShipmentDetailByProcessIds(Convert.toStrArray(processOrderIds));
     }
-    
 }

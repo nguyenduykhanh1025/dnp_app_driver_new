@@ -100,6 +100,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return getDataTable(shipments);
 	}
 
+	@SuppressWarnings("unchecked")
 	@GetMapping("/listShipmentDetail")
 	@ResponseBody
 	public AjaxResult listShipmentDetail(Long shipmentId) {
@@ -452,18 +453,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
+	@SuppressWarnings("unchecked")
 	@GetMapping("/getField")
 	@ResponseBody
 	public AjaxResult getField() {
 		AjaxResult ajaxResult = success();
-		String url;
-		RestTemplate restTemplate = new RestTemplate();
-		R r;
 		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
 		if (listConsignee == null) {
-			url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
-			r = restTemplate.getForObject(url, R.class);
-			listConsignee = (List<String>) r.get("data");
+			listConsignee = shipmentDetailService.getConsigneeList();
 			CacheUtils.put("consigneeList", listConsignee);
 		}
 		ajaxResult.put("consigneeList", listConsignee);
