@@ -42,7 +42,7 @@ public class EdoFtpController extends BaseController{
 	public Object loadFileFromDisk() throws IOException {
 
         //Define folder receiver and folder moving file Edo before save
-		final File folder = new File("D:/testReadFile");
+		final File folder = new File("D:/testReadFile2");
         final String destinationFolder = "D:/moveFileToThisFolder/";
         
 		List<Edo> edo = new ArrayList<>();
