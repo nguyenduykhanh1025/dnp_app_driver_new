@@ -19,11 +19,11 @@ var myAvatarzone = new Dropzone("#bannarzone", {
     dictInvalidFileType: "Invalid EDI file. Please upload txt file only.",
     // dictFallbackMessage: "Browser not support",
     dictFileTooBig: "File max size!",
-    init: function () {
-        this.on("addedfile", function (file) {
+    init: function() {
+        this.on("addedfile", function(file) {
 
         });
-        this.on("success", function (data) {
+        this.on("success", function(data) {
             if (data != "") {
                 let rs = JSON.parse(data.xhr.response);
                 if (dataObj == null) {
@@ -46,11 +46,11 @@ var myAvatarzone = new Dropzone("#bannarzone", {
             }
             loadView();
         });
-        this.on("error", function (file, data) {
+        this.on("error", function(file, data) {
 
 
         });
-        this.on("removedfile", function (file) {
+        this.on("removedfile", function(file) {
             let fileId = file.upload.uuid;
 
             let i = 0;
