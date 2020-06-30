@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -597,4 +598,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     public List<ShipmentDetail> selectShipmentDetailByProcessIds (String processOrderIds) {
         return shipmentDetailMapper.selectShipmentDetailByProcessIds(Convert.toStrArray(processOrderIds));
     }
+
+    // @Override
+    // public List<ShipmentDetail> selectSendEmptyShipmentDetailByListCont(@Param("conts") String conts, @Param("shipmentId") Long shipmentId) {
+    //     return shipmentDetailMapper.selectSendEmptyShipmentDetailByListCont(Convert.toStrArray(conts), shipmentId);
+    // }
 }

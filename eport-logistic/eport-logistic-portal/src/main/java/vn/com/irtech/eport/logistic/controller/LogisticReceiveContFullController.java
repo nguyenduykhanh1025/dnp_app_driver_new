@@ -33,8 +33,10 @@ import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
@@ -182,18 +184,32 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@Transactional
 	@ResponseBody
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
-		if (shipmentDetails != null) {
+		if (shipmentDetails != null && shipmentDetails.size() > 0){
 			LogisticAccount user = getUser();
+			ShipmentDetail shipmentDt = shipmentDetails.get(0);
+			Shipment shipment = new Shipment();
+			boolean isCreated = true;
+			if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && shipmentDt.getVgmChk()) {
+				shipment.setBlNo(shipmentDt.getBlNo());
+				shipment.setServiceType(2);
+				List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+				if (shipments == null || shipments.size() == 0) {
+					shipment.setContainerAmount(Long.valueOf(shipmentDt.getTier()));
+					shipment.setTaxCode(shipmentDt.getProcessStatus());
+					shipment.setLogisticAccountId(user.getId());
+					shipment.setLogisticGroupId(user.getGroupId());
+					shipment.setCreateTime(new Date());
+					shipmentService.insertShipment(shipment);
+					isCreated = false;
+				}
+			}
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				if (shipmentDetail.getId() != null) {
-					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
-						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
-					} else if ("N".equals(shipmentDetail.getUserVerifyStatus())) {
-						shipmentDetail.setUpdateBy(user.getFullName());
-						shipmentDetail.setUpdateTime(new Date());
-						if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
-							return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
-						}
+				shipmentDetail.setProcessStatus(null);
+				if (shipmentDetail.getId() != null && "N".equals(shipmentDetail.getUserVerifyStatus())) {
+					shipmentDetail.setUpdateBy(user.getFullName());
+					shipmentDetail.setUpdateTime(new Date());
+					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 				} else {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
@@ -214,6 +230,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					}
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+					}
+					if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && !isCreated && shipmentDt.getVgmChk()) {
+						shipmentDetail.setShipmentId(shipment.getId());
+						shipmentDetail.setCustomStatus("N");
+						shipmentDetail.setStatus(1);
+						shipmentDetailService.insertShipmentDetail(shipmentDetail);
 					}
 				}
 			}
@@ -282,17 +304,23 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		mmap.put("creditFlag", getGroup().getCreditFlag());
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+		if (shipmentDetails != null && shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+			if (("Cảng Tiên Sa").equals(shipmentDetails.get(0).getEmptyDepot())) {
+				mmap.put("sendContEmpty", true);
+			}
 			mmap.put("shipmentDetails", shipmentDetails);
+		} else {
+			mmap.put("sendContEmpty", false);
 		}
 		return PREFIX + "/checkContListBeforeVerify";
 	}
 
-	@GetMapping("verifyOtpForm/{shipmentDetailIds}/{creditFlag}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("creditFlag") boolean creditFlag, ModelMap mmap) {
+	@GetMapping("verifyOtpForm/{shipmentDetailIds}/{creditFlag}/{isSendContEmpty}")
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("creditFlag") boolean creditFlag, @PathVariable("isSendContEmpty") boolean isSendContEmpty, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
 		mmap.put("creditFlag", creditFlag);
+		mmap.put("isSendContEmpty", isSendContEmpty);
 		return PREFIX + "/verifyOtp";
 	}
 
@@ -332,7 +360,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@PostMapping("/verifyOtp")
 	@ResponseBody
-	public AjaxResult verifyOtp(String shipmentDetailIds, String otp, boolean creditFlag) {
+	public AjaxResult verifyOtp(String shipmentDetailIds, String otp, boolean creditFlag, boolean isSendContEmpty) {
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
@@ -343,7 +371,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		otpCode.setOtpCode(otp);
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) != 1) {
 			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
-
 		}
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
@@ -353,12 +380,34 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			if (serviceRobotReqs != null) {
 				List<Long> processIds = new ArrayList<>();
 				boolean robotBusy = false;
+
+				// MAKE ORDER SEND CONT EMPTY
+				// if (isSendContEmpty) {
+				// 	shipment.setId(null);
+				// 	List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+				// 	if (shipments != null && shipments.size() > 0) {
+				// 		String conts = "";
+				// 		for (ShipmentDetail shipmentDt: shipmentDetails) {
+				// 			conts += shipmentDt.getContainerNo() + ",";
+				// 		}
+				// 		conts = conts.substring(0, conts.length()-1);
+				// 		List<ShipmentDetail> shipmentDetails2 = shipmentDetailService.selectSendEmptyShipmentDetailByListCont(conts, shipments.get(0).getId());
+				// 		ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails2, shipments.get(0), creditFlag);
+				// 		ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails2);
+				// 		try {
+				// 			mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.SEND_CONT_EMPTY);
+				// 		} catch (Exception e) {
+				// 			e.printStackTrace();
+				// 		}
+				// 	}
+				// }
+
+				// MAKE ORDER RECEIVE CONT FULL
 				try {
 					for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
 						processIds.add(serviceRobotReq.processOrder.getId());
 						if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_FULL)) {
 							robotBusy = true;
-							
 						}
 					}
 					if (robotBusy) {
@@ -370,7 +419,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				} catch (Exception e) {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
-
 				ajaxResult = AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
 				ajaxResult.put("processIds", processIds);
 				ajaxResult.put("orderNumber", serviceRobotReqs.size());
