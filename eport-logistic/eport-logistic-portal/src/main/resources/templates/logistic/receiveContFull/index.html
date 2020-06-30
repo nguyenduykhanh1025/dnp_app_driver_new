@@ -93,6 +93,9 @@
     <th:block th:include="include :: handsontable-js" />
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: websocket" />
+    <script type="text/javascript" th:inline="javascript">
+      var emptyDepots = /*[[${emptyDepots}]]*/;
+    </script>
     <script th:src="@{/js/logistic/receiveContFull/index.js}"></script>
   </body>
 </html>

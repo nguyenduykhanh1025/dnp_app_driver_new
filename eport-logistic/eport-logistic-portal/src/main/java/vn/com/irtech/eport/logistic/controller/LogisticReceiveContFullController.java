@@ -43,6 +43,7 @@ import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.utils.R;
+import vn.com.irtech.eport.system.service.ISysConfigService;
 
 
 
@@ -67,8 +68,18 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@Autowired
 	private CustomQueueService customQueueService;
 
+	@Autowired
+    private ISysConfigService configService;
+
 	@GetMapping()
-	public String receiveContFull() {
+	public String receiveContFull(ModelMap mmap) {
+		List<String> emptyDepots = new ArrayList<>();
+		String danangPortName = configService.selectConfigByKey("danang.port.name");
+		if (danangPortName != null) {
+			emptyDepots.add(danangPortName);
+		}
+		emptyDepots.add("Cảng Khác");
+		mmap.put("emptyDepots", emptyDepots);
 		return PREFIX + "/index";
 	}
 
