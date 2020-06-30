@@ -62,6 +62,10 @@ public class Shipment extends BaseEntity
     @Excel(name = "Reference No")
     private String referenceNo;
 
+    /** Shipment Status */
+    @Excel(name = "Shipment Status")
+    private String status;
+    
     /** Ghi chu */
     @Excel(name = "Ghi chu")
     private String remak;
@@ -177,6 +181,16 @@ public class Shipment extends BaseEntity
     public String getReferenceNo() {
         return referenceNo;
     }
+    
+    public void setStatus(String status) 
+    {
+        this.status = status;
+    }
+
+    public String getStatus() 
+    {
+        return status;
+    }
 
     public void setLogisticGroup(LogisticGroup logisticGroup) {
         this.logisticGroup = logisticGroup;
@@ -204,6 +218,7 @@ public class Shipment extends BaseEntity
             .append("containerAmount", getContainerAmount())
             .append("edoFlg", getEdoFlg())
             .append("referenceNo", getReferenceNo())
+            .append("status", getStatus())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
