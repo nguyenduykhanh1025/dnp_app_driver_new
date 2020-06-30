@@ -466,5 +466,35 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ajaxResult.put("consigneeList", listConsignee);
 		return ajaxResult;
 	}
+	
+	@PostMapping("/checkShipmentInforByBlNo")
+	@ResponseBody
+	public AjaxResult checkShipmentInforByBlNo(String blNo) {
+		AjaxResult ajaxResult = new AjaxResult();
+		Shipment shipment = new Shipment();
+		shipment.setBlNo(blNo);
+		String opeCode = shipmentService.getOpeCodeByBlNo(blNo);
+		Long containerAmount = shipmentService.getCountContainerAmountByBlNo(blNo);
+		if(opeCode != null) {
+			ajaxResult = success();
+			shipment.setEdoFlg("1");
+			shipment.setOpeCode(opeCode);
+			shipment.setContainerAmount(containerAmount);
+			ajaxResult.put("shipment", shipment);
+			return ajaxResult;
+		} else {
+			Shipment shipCatos = shipmentService.getOpeCodeCatosByBlNo(blNo);
+			if (shipCatos != null) {
+				ajaxResult = success();
+				shipment.setEdoFlg("0");
+				shipment.setOpeCode(shipCatos.getOpeCode());
+				shipment.setContainerAmount(shipCatos.getContainerAmount());
+				ajaxResult.put("shipment", shipment);
+				return ajaxResult;
+			}
+		}
+		ajaxResult = error();
+		return ajaxResult;
+	}
 }
 

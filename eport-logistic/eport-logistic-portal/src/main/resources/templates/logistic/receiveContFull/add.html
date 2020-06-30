@@ -52,7 +52,7 @@
       <div class="form-group row">
         <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Mã Hãng Tàu</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="opeCode" id="opeCode" type="text" class="form-control" required/>
+          <input name="opeCode" id="opeCode" type="text" class="form-control" disabled required/>
         </div>
       </div>
       <div class="form-group row"  style="margin-bottom: 0;">
@@ -135,6 +135,28 @@
           $("#blNo").addClass("error-input");
         }
       });
+      //check opeCode,edoFlag, containerAmount trong db edo, catos
+      $.ajax({
+          url: prefix + "/checkShipmentInforByBlNo",
+          method: "post",
+          data: {
+            blNo: $("#blNo").val()
+          }
+        }).done(function (result) {
+          console.log(result)
+          if(result.code == 500){
+        	  $.modal.msgError("Số bill không tồn tại!");
+        	  $("#blNo").addClass("error-input");
+            $('#opeCode').val("");
+            $('#containerAmount').val("");
+            $('#edoFlg').val(null).text("");
+          }else{
+            $('#opeCode').val(result.shipment.opeCode);
+            $('#containerAmount').val(result.shipment.containerAmount);
+            result.shipment.edoFlg == "1" ? $('#edoFlg').val(result.shipment.edoFlg).text("Lệnh giao hàng điện tử (eDO)") 
+                    :$('#edoFlg').val(result.shipment.edoFlg).text("Lệnh giao hàng (DO)");
+          }
+        });
     }
   }
 
