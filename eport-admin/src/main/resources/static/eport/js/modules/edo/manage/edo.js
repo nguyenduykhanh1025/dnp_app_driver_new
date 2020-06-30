@@ -1,23 +1,12 @@
-var prefix = "/edo"
+var prefix = "/edo/manage"
 $(function() {
-    $.ajax({
-        type: "GET",
-        url: prefix + "/carrierCode",
-        success(data) {
-            data.forEach(element => {
-                $('#carrierCode').append(`<option value="${element}"> 
-                                                  ${element} 
-                                                </option>`);
-            });
 
-        }
-    })
     loadTable();
 });
 
 function loadTable(containerNumber, billOfLading, fromDate, toDate) {
     $("#dg").datagrid({
-        url: prefix + "/edo",
+        url: prefix + "/getEdo",
         method: "GET",
         singleSelect: true,
         clientPaging: true,

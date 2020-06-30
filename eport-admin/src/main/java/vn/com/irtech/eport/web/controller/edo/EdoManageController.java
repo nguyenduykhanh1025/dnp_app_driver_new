@@ -1,10 +1,14 @@
 package vn.com.irtech.eport.web.controller.edo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -41,21 +45,39 @@ public class EdoManageController extends BaseController {
         return dataInfo;
     }
 
-    @GetMapping("/history")
+    @GetMapping("/edo")
     public String history()
     {
-        return PREFIX + "/history";
+        return PREFIX + "/edo";
     }
+
+    @GetMapping("/getEdo")
+	@ResponseBody
+	public TableDataInfo edo(Edo edo,String fromDate,String toDate)
+	{
+		startPage();
+		Map<String, Object> searchDate = new HashMap<>();
+		searchDate.put("fromDate", fromDate);
+		searchDate.put("toDate", toDate);
+		edo.setParams(searchDate);
+		List<Edo> dataList = edoService.selectEdoList(edo);
+		return getDataTable(dataList);
+	}
+
+    @GetMapping("/history/{containerNumber}")
+	public String getHistory(@PathVariable("containerNumber") String containerNumber,ModelMap map) {
+		map.put("containerNumber",containerNumber);
+		return PREFIX + "/history";
+	}
 
     @GetMapping("/getHistory")
     @ResponseBody
-    public TableDataInfo getHistory()
+    public TableDataInfo getHistory(EdoHistory edoHistory,String containerNumber)
     {
         startPage();
-        EdoHistory edoHistory = new EdoHistory();
+        edoHistory.setContainerNumber(containerNumber);
         List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
-        TableDataInfo dataInfo = getDataTable(edoHistories);
-        return dataInfo;
+        return getDataTable(edoHistories);
     }
 
 }
