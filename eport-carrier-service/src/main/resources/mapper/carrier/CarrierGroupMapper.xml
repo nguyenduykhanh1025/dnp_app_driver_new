@@ -22,11 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectCarrierGroupVo">
-<<<<<<< HEAD
         select id, group_code, group_name, operate_code, main_email, create_by, create_time, update_by, update_time, do_flag, edo_flag, path_edi_receive, path_edi_backup from carrier_group
-=======
-        select id, group_code, group_name, operate_code, main_email, do_type, create_by, create_time, update_by, update_time, do_flag, edo_flag from carrier_group
->>>>>>> 8f8caac49813531bf5f6888022caab86bd5ffe07
     </sql>
 
     <select id="selectCarrierGroupList" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
