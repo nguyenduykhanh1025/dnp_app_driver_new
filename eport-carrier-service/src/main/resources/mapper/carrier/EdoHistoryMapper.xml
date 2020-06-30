@@ -36,6 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="action != null  and action != ''"> and action = #{action}</if>
             <if test="ediContent != null  and ediContent != ''"> and edi_content = #{ediContent}</if>
         </where>
+            ORDER BY id ASC 
     </select>
     
     <select id="selectEdoHistoryById" parameterType="Long" resultMap="EdoHistoryResult">

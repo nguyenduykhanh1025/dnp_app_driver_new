@@ -45,7 +45,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
-            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
             <if test="secureCode != null  and secureCode != ''"> and secure_code = #{secureCode}</if>
@@ -56,7 +55,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="delFlg != null  and delFlg != ''"> and del_flg = #{delFlg}</if>
+            <if test="params.toDate != null and params.toDate != ''">
+				and date_format(expired_dem,'%y%m%d') &lt;= date_format(#{params.toDate},'%y%m%d')
+			</if>
+             <if test="params.fromDate != null and params.fromDate != ''">
+				and date_format(expired_dem,'%y%m%d') &gt;= date_format(#{params.fromDate},'%y%m%d')
+			</if>
         </where>
+
     </select>
     
     <select id="selectEdoById" parameterType="Long" resultMap="EdoResult">

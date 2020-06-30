@@ -41,8 +41,34 @@ public class CarrierGroup extends BaseEntity
     /** Do Permission */
     private String doFlag;
 
-    /** Edo Permisison */
+    /** Edo Permission */
+
     private String edoFlag;
+
+    private String pathEdiBackup;
+
+    private String pathEdiReceive;
+
+    public void setPathEdiReceive(String pathEdiReceive) 
+    {
+        this.pathEdiReceive = pathEdiReceive;
+    }
+
+    public String getPathEdiReceive() 
+    {
+        return pathEdiReceive;
+    }
+
+    public void setPathEdiBackup(String pathEdiBackup) 
+    {
+        this.pathEdiBackup = pathEdiBackup;
+    }
+
+    public String getPathEdiBackup() 
+    {
+        return pathEdiBackup;
+    }
+
 
     public void setId(Long id) 
     {
@@ -131,6 +157,7 @@ public class CarrierGroup extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("doFlag", getDoFlag())
             .append("edoFlag", getEdoFlag())
+            .append("pathEdiFile", getPathEdiBackup())
             .toString();
     }
 }

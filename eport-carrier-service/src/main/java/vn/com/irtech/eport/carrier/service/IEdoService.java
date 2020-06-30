@@ -66,5 +66,8 @@ public interface IEdoService
     
     public String getOpeCodeByBlNo(String blNo);
 
+    
+    public  List<Edo> readEdi(String[] text);
+
     public Long getCountContainerAmountByBlNo(String blNo);
 }
