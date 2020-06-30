@@ -75,7 +75,7 @@
               <ul class="dropdown-menu">
                 <li><a class="menuItem" th:href="@{/logistic/transport}">Quản lý Tài xế</a></li>
                 <li><a class="menuItem" th:href="@{/logistic/logisticTruck}">Quản lý Xe</a></li>
-                <li><a class="menuItem" th:href="@{/logistic/history/truck}">Lịch Sử</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/truck/history}">Lịch Sử</a></li>
               </ul>
             </li>
             <li class="dropdown user-menu">
@@ -89,8 +89,9 @@
             <li class="dropdown user-menu">
               <a title="Báo Cáo"  class="menuItem"><i class="fa fa-signal"></i>&nbsp; Báo Cáo</a>
               <ul class="dropdown-menu">
+                <li><a class="menuItem" th:href="@{/logistic/report/container}">Báo Cáo Nâng/Hạ container</a></li>
                 <li><a class="menuItem" th:href="@{/logistic/report/order}">Báo Cáo Đơn Hàng</a></li>
-                <li><a class="menuItem" th:href="@{/logistic/report/order/cost}">Báo Cáo Cước Phí</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/report/costs}">Báo Cáo Cước Phí</a></li>
               </ul>
             </li>
           </ul>
