@@ -68,4 +68,6 @@ public interface IShipmentService
     public Long getCountContainerAmountByBlNo(String blNo);
     
     public Shipment getOpeCodeCatosByBlNo(String blNo);
+    
+    public String getEdoFlgByOpeCode(String opeCode);
 }

@@ -118,4 +118,6 @@ public interface IShipmentDetailService
     public int getCountContByBlNo(String blNo);
 
     public List<ShipmentDetail> selectShipmentDetailByProcessIds (String processOrderIds);
+    
+    public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo);
 }

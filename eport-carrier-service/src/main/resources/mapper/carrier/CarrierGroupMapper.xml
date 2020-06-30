@@ -118,5 +118,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="checkMainEmailUnique" parameterType="String" resultType="int">
 		select count(1) from carrier_group where lower(main_email)=#{mainEmail}
 	</select>
+	<select id="getDoTypeByOpeCode" parameterType="String" resultType="String">
+		select do_type from carrier_group where operate_code like concat('%', #{opeCode}, '%')
+	</select>
 
 </mapper>

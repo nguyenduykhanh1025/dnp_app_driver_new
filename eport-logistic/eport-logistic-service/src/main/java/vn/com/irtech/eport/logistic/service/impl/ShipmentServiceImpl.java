@@ -9,7 +9,9 @@ import org.springframework.web.client.RestTemplate;
 import vn.com.irtech.eport.logistic.mapper.ShipmentMapper;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.carrier.mapper.CarrierGroupMapper;
 import vn.com.irtech.eport.carrier.mapper.EdoMapper;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.text.Convert;
 
@@ -27,6 +29,9 @@ public class ShipmentServiceImpl implements IShipmentService
     
     @Autowired
     private EdoMapper edoMapper;
+    
+    @Autowired
+    private CarrierGroupMapper carrierGroupMapper;
     /**
      * Get Shipment
      * 
@@ -126,6 +131,11 @@ public class ShipmentServiceImpl implements IShipmentService
 		String url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeCatosByBlNo/" + blNo;
         RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(url, Shipment.class);
+	}
+
+	@Override
+	public String getEdoFlgByOpeCode(String opeCode) {
+		return carrierGroupMapper.getDoTypeByOpeCode(opeCode);
 	}
 	
 }

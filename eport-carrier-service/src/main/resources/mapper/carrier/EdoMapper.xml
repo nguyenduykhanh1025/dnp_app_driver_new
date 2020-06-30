@@ -175,4 +175,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	where bill_of_lading = #{blNo}
     	group by bill_of_lading
     </select>
+    <select id="selectEdoListByBlNo" parameterType="String" resultMap="EdoResult">
+		<include refid="selectEdoVo"/>
+	    where bill_of_lading = #{blNo}
+    </select>
 </mapper>

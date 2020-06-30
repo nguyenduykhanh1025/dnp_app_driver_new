@@ -67,4 +67,6 @@ public interface EdoMapper
     public String getOpeCodeByBlNo(String blNo);
     
     public Long getCountContainerAmountByBlNo(String blNo);
+    
+    public List<Edo> selectEdoListByBlNo(String blNo);
 }

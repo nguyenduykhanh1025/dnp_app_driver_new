@@ -144,9 +144,8 @@
             blNo: $("#blNo").val()
           }
         }).done(function (result) {
-          console.log(result)
           if(result.code == 500){
-        	  $.modal.msgError("Số bill không tồn tại!");
+        	  $.modal.msgError(result.msg);
         	  $("#blNo").addClass("error-input");
             $('#opeCode').val("");
             $('#containerAmount').val("");

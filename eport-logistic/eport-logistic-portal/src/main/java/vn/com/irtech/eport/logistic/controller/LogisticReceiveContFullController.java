@@ -112,12 +112,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) {
 				shipmentDetails = new ArrayList<>();
-				String url = Global.getApiUrl() + "/shipmentDetail/list";
-				ShipmentDetail shipDetail = new ShipmentDetail();
-				shipDetail.setBlNo(shipment.getBlNo());
-				RestTemplate restTemplate = new RestTemplate();
-				R r = restTemplate.postForObject( url, shipDetail, R.class);
-				shipmentDetails = (List<ShipmentDetail>) r.get("data");
+				//get infor from edi
+				shipmentDetails = shipmentDetailService.getShipmentDetailsFromEDIByBlNo(shipment.getBlNo());
+				//get infor from catos
+				if (shipmentDetails.size() == 0 ){
+					String url = Global.getApiUrl() + "/shipmentDetail/list";
+					ShipmentDetail shipDetail = new ShipmentDetail();
+					shipDetail.setBlNo(shipment.getBlNo());
+					RestTemplate restTemplate = new RestTemplate();
+					R r = restTemplate.postForObject( url, shipDetail, R.class);
+					shipmentDetails = (List<ShipmentDetail>) r.get("data");
+				}
 			}
 			ajaxResult.put("shipmentDetails", shipmentDetails);
 		}
@@ -476,8 +481,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		String opeCode = shipmentService.getOpeCodeByBlNo(blNo);
 		Long containerAmount = shipmentService.getCountContainerAmountByBlNo(blNo);
 		if(opeCode != null) {
-			ajaxResult = success();
+			// String edoFlg = shipmentService.getEdoFlgByOpeCode(opeCode);
+			// if(edoFlg == null){
+			// 	return error("Mã hãng tàu:"+ opeCode +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
+			// }
 			shipment.setEdoFlg("1");
+			ajaxResult = success();
 			shipment.setOpeCode(opeCode);
 			shipment.setContainerAmount(containerAmount);
 			ajaxResult.put("shipment", shipment);
@@ -485,15 +494,19 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		} else {
 			Shipment shipCatos = shipmentService.getOpeCodeCatosByBlNo(blNo);
 			if (shipCatos != null) {
+				String edoFlg = shipmentService.getEdoFlgByOpeCode(shipCatos.getOpeCode());
+				if(edoFlg == null){
+					return error("Mã hãng tàu:"+ shipCatos.getOpeCode() +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
+				}
+				shipment.setEdoFlg(edoFlg);
 				ajaxResult = success();
-				shipment.setEdoFlg("0");
 				shipment.setOpeCode(shipCatos.getOpeCode());
 				shipment.setContainerAmount(shipCatos.getContainerAmount());
 				ajaxResult.put("shipment", shipment);
 				return ajaxResult;
 			}
 		}
-		ajaxResult = error();
+		ajaxResult = error("Billing No không tồn tại!");
 		return ajaxResult;
 	}
 }
