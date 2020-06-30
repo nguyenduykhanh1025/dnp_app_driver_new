@@ -8,32 +8,41 @@
         <form class="form-horizontal m" id="form-account-edit" th:object="${carrierGroup}">
             <input name="id" th:field="*{id}" type="hidden">
             <div class="form-group">    
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mã hãng tàu</label>
+                <label class="col-sm-2 col-xs-3 col-md-1 control-label is-required">Mã hãng tàu</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="groupCode" th:field="*{groupCode}" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Tên hãng tàu</label>
+                <label class="col-sm-2 col-xs-3 col-md-1 control-label is-required">Tên hãng tàu</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="groupName" th:field="*{groupName}" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label is-required">Mã vận hành</label>
+                <label class="col-sm-2 col-xs-3 col-md-1 control-label is-required">Mã vận hành</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="operateCode" th:field="*{operateCode}" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group">    
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Email</label>
+                <label class="col-sm-2 col-xs-3 col-md-1 control-label">Email</label>
                 <div class="col-sm-9 col-xs-8 col-md-10">
                     <input name="mainEmail" th:field="*{mainEmail}" class="form-control" type="text">
                 </div>
             </div>
             <div class="form-group">
+	            <label class="col-sm-2 col-xs-3 col-md-1 control-label">Loại DO:</label>
+	            <div class="col-sm-9 col-xs-8 col-md-10">
+	                <input style="margin-top: 6px;" type="radio" name="doType" id="do" value="0"/>
+	                <label style="margin-right: 5px;">Lệnh giao hàng (DO)</label>
+	                <input style="margin-top: 6px;" type="radio" name="doType" id="edo" value="1"/>
+	                <label>Lệnh giao hàng điện tử (eDO)</label>
+	            </div>
+            </div>
+            <div class="form-group">
                 <input type="hidden" name="doFlag" th:field="*{doFlag}" id="doFlag">
-                <label class="col-sm-3 col-xs-4 col-md-2 control-label">Quyền quản lý DO</label>
+                <label class="col-sm-2 col-xs-3 col-md-1 control-label">Quyền quản lý DO</label>
                 <div id="doToggle" class="col-sm-9 col-xs-8 col-md-10">
                     <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleDoFlag()"></i>
                 </div>
@@ -41,9 +50,16 @@
         </form>
     </div>
     <th:block th:include="include :: footer" />
-    <script type="text/javascript">
+    <script type="text/javascript" th:inline="javascript">
+        var carrierGroup = /*[[${carrierGroup}]]*/;
         var prefix = ctx + "carrier/group";
-
+        if(carrierGroup != null){
+        	if(carrierGroup.doType == "0"){
+        		$('#do').prop("checked", true);
+        	} else{
+        		$('#edo').prop("checked", true);
+        	}
+        }
         setTimeout(() => {
             if ($("#doFlag").val() == 1) {
                 document.getElementById("doToggle").innerHTML = '<i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleDoFlag()"></i>';
