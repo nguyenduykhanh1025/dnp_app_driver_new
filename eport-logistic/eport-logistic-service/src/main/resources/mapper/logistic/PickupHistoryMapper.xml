@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="vn.com.irtech.eport.logistic.mapper.PickupHistoryMapper">
+
+	<resultMap type="PickupHistory" id="PickupHistoryResult">
+		<result property="id" column="id" />
+		<result property="logisticGroupId" column="logistic_group_id" />
+		<result property="shipmentId" column="shipment_id" />
+		<result property="shipmentDetailId1"
+			column="shipment_detail_id_1" />
+		<result property="shipmentDetailId2"
+			column="shipment_detail_id_2" />
+		<result property="driverId" column="driver_id" />
+		<result property="pickupAssignId" column="pickup_assign_id" />
+		<result property="containerNo1" column="container_no_1" />
+		<result property="containerNo2" column="container_no_2" />
+		<result property="truckNo" column="truck_no" />
+		<result property="chassisNo" column="chassis_no" />
+		<result property="yardPosition1" column="yard_position_1" />
+		<result property="yardPosition2" column="yard_position_2" />
+		<result property="status" column="status" />
+		<result property="receiptDate" column="receipt_date" />
+		<result property="gateinDate" column="gatein_date" />
+		<result property="gateoutDate" column="gateout_date" />
+		<result property="cancelDeceiptDate"
+			column="cancel_receipt_date" />
+		<association property="shipment" column="shipment_id"
+			javaType="Shipment" select="selectShipment" />
+		<association property="shipmentDetail1"
+			column="shipment_detail_id_1" javaType="ShipmentDetail"
+			select="selectShipmentDetail" />
+		<association property="shipmentDetail2"
+			column="shipment_detail_id_2" javaType="ShipmentDetail"
+			select="selectShipmentDetail" />
+		<association property="logisticGroup"
+			column="logistic_group_id" javaType="LogisticGroup"
+			select="selectLogisticGroup" />
+		<association property="driver" column="driver_id"
+			javaType="DriverAccount" select="selectDriverAccount" />
+	</resultMap>
+
+	<sql id="selectPickupHistoryVo">
+		select id, logistic_group_id, shipment_id,
+		shipment_detail_id_1, shipment_detail_id_2, driver_id,
+		pickup_assign_id, container_no_1, container_no_2,
+		truck_no, chassis_no, yard_position_1, yard_position_2,
+		status, receipt_date, gatein_date,
+		gateout_date, cancel_receipt_date
+		from pickup_history
+	</sql>
+
+	<select id="selectPickupHistoryList"
+		parameterType="PickupHistory" resultMap="PickupHistoryResult">
+		<include refid="selectPickupHistoryVo" />
+		<where>
+			<if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+			<if test="shipmentId != null "> and shipment_id like concat('%', #{shipmentId}, '%')</if>
+			<if test="shipmentDetailId1 != null "> and shipment_detail_id_1 = #{shipmentDetailId1}</if>
+			<if test="shipmentDetailId2 != null "> and shipment_detail_id_2 = #{shipmentDetailId2}</if>
+			<if test="driverId != null "> and driver_id = #{driverId}</if>
+			<if test="pickupAssignId != null "> and pickup_assign_id = #{pickupAssignId}</if>
+			<if test="containerNo1 != null  and containerNo1 != ''"> and container_no_1 = #{containerNo1}</if>
+			<if test="containerNo2 != null  and containerNo2 != ''"> and container_no_2 = #{containerNo2}</if>
+			<if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
+			<if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+			<if test="yardPosition1 != null  and yardPosition1 != ''"> and yard_position_1 = #{yardPosition1}</if>
+			<if test="yardPosition2 != null  and yardPosition2 != ''"> and yard_position_2 = #{yardPosition2}</if>
+			<if test="status != null "> and status = #{status}</if>
+			<if test="receiptDate != null "> and receipt_date = #{receiptDate}</if>
+			<if test="gateinDate != null "> and gatein_date = #{gateinDate}</if>
+			<if test="gateoutDate != null "> and gateout_date = #{gateoutDate}</if>
+			<if test="cancelDeceiptDate != null "> and cancel_receipt_date = #{cancelDeceiptDate}</if>
+		</where>
+	</select>
+
+	<select id="selectPickupHistoryWithoutYardPostion"
+		resultMap="PickupHistoryResult">
+		SELECT
+		p.*
+		FROM
+		pickup_history as p left join shipment s
+		on
+		p.shipment_id = s.id
+		WHERE s.service_type in (2, 4) and (p.yard_position_1
+		is null OR
+		p.yard_position_2 is null)
+	</select>
+
+	<select id="selectPickupHistoryById" parameterType="Long"
+		resultMap="PickupHistoryResult">
+		<include refid="selectPickupHistoryVo" />
+		where id = #{id}
+	</select>
+
+	<insert id="insertPickupHistory" parameterType="PickupHistory"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into pickup_history
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="logisticGroupId != null ">logistic_group_id,</if>
+			<if test="shipmentId != null ">shipment_id,</if>
+			<if test="shipmentDetailId1 != null ">shipment_detail_id_1,</if>
+			<if test="shipmentDetailId2 != null ">shipment_detail_id_2,</if>
+			<if test="driverId != null ">driver_id,</if>
+			<if test="pickupAssignId != null ">pickup_assign_id,</if>
+			<if test="containerNo1 != null  and containerNo1 != ''">container_no_1,</if>
+			<if test="containerNo2 != null  and containerNo2 != ''">container_no_2,</if>
+			<if test="truckNo != null  and truckNo != ''">truck_no,</if>
+			<if test="chassisNo != null  and chassisNo != ''">chassis_no,</if>
+			<if test="yardPosition1 != null  and yardPosition1 != ''">yard_position_1,</if>
+			<if test="yardPosition2 != null  and yardPosition2 != ''">yard_position_2,</if>
+			<if test="status != null ">status,</if>
+			<if test="receiptDate != null ">receipt_date,</if>
+			<if test="gateinDate != null ">gatein_date,</if>
+			<if test="gateoutDate != null ">gateout_date,</if>
+			<if test="cancelDeceiptDate != null ">cancel_receipt_date,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="logisticGroupId != null ">#{logisticGroupId},</if>
+			<if test="shipmentId != null ">#{shipmentId},</if>
+			<if test="shipmentDetailId1 != null ">#{shipmentDetailId1},</if>
+			<if test="shipmentDetailId2 != null ">#{shipmentDetailId2},</if>
+			<if test="driverId != null ">#{driverId},</if>
+			<if test="pickupAssignId != null ">#{pickupAssignId},</if>
+			<if test="containerNo1 != null  and containerNo1 != ''">#{containerNo1},</if>
+			<if test="containerNo2 != null  and containerNo2 != ''">#{containerNo2},</if>
+			<if test="truckNo != null  and truckNo != ''">#{truckNo},</if>
+			<if test="chassisNo != null  and chassisNo != ''">#{chassisNo},</if>
+			<if test="yardPosition1 != null  and yardPosition1 != ''">#{yardPosition1},</if>
+			<if test="yardPosition2 != null  and yardPosition2 != ''">#{yardPosition2},</if>
+			<if test="status != null ">#{status},</if>
+			<if test="receiptDate != null ">#{receiptDate},</if>
+			<if test="gateinDate != null ">#{gateinDate},</if>
+			<if test="gateoutDate != null ">#{gateoutDate},</if>
+			<if test="cancelDeceiptDate != null ">#{cancelDeceiptDate},</if>
+		</trim>
+	</insert>
+
+	<update id="updatePickupHistory" parameterType="PickupHistory">
+		update pickup_history
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
+			<if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
+			<if test="shipmentDetailId1 != null ">shipment_detail_id_1 = #{shipmentDetailId1},</if>
+			<if test="shipmentDetailId2 != null ">shipment_detail_id_2 = #{shipmentDetailId2},</if>
+			<if test="driverId != null ">driver_id = #{driverId},</if>
+			<if test="pickupAssignId != null ">pickup_assign_id = #{pickupAssignId},</if>
+			<if test="containerNo1 != null  and containerNo1 != ''">container_no_1 = #{containerNo1},</if>
+			<if test="containerNo2 != null  and containerNo2 != ''">container_no_2 = #{containerNo2},</if>
+			<if test="truckNo != null  and truckNo != ''">truck_no = #{truckNo},</if>
+			<if test="chassisNo != null  and chassisNo != ''">chassis_no = #{chassisNo},</if>
+			<if test="yardPosition1 != null  and yardPosition1 != ''">yard_position_1 = #{yardPosition1},</if>
+			<if test="yardPosition2 != null  and yardPosition2 != ''">yard_position_2 = #{yardPosition2},</if>
+			<if test="status != null ">status = #{status},</if>
+			<if test="receiptDate != null ">receipt_date = #{receiptDate},</if>
+			<if test="gateinDate != null ">gatein_date = #{gateinDate},</if>
+			<if test="gateoutDate != null ">gateout_date = #{gateoutDate},</if>
+			<if test="cancelDeceiptDate != null ">cancel_receipt_date = #{cancelDeceiptDate},</if>
+		</trim>
+		where id = #{id}
+	</update>
+
+	<delete id="deletePickupHistoryById" parameterType="Long">
+		delete from
+		pickup_history where id = #{id}
+	</delete>
+
+	<delete id="deletePickupHistoryByIds" parameterType="String">
+		delete from pickup_history where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="selectShipmentDetail"
+		resultMap="ShipmentDetailResult">
+		select * from shipment_detail where id = #{id}
+	</select>
+
+	<resultMap type="ShipmentDetail" id="ShipmentDetailResult">
+		<result property="id" column="id" />
+		<result property="shipmentId" column="shipment_id" />
+		<result property="logisticGroupId" column="logistic_group_id" />
+		<result property="processOrderId" column="process_order_id" />
+		<result property="registerNo" column="register_no" />
+		<result property="containerNo" column="container_no" />
+		<result property="containerStatus" column="container_status" />
+		<result property="sztp" column="sztp" />
+		<result property="fe" column="fe" />
+		<result property="bookingNo" column="booking_no" />
+		<result property="blNo" column="bl_no" />
+		<result property="sealNo" column="seal_no" />
+		<result property="consignee" column="consignee" />
+		<result property="expiredDem" column="expired_dem" />
+		<result property="wgt" column="wgt" />
+		<result property="vslNm" column="vsl_nm" />
+		<result property="voyNo" column="voy_no" />
+		<result property="opeCode" column="ope_code" />
+		<result property="loadingPort" column="loading_port" />
+		<result property="dischargePort" column="discharge_port" />
+		<result property="transportType" column="transport_type" />
+		<result property="emptyDepot" column="empty_depot" />
+		<result property="cargoType" column="cargo_type" />
+		<result property="vgmChk" column="vgm_chk" />
+		<result property="vgm" column="vgm" />
+		<result property="vgmPersonInfo" column="vgm_person_info" />
+		<result property="preorderPickup" column="preorder_pickup" />
+		<result property="shiftingContNumber"
+			column="shifting_cont_number" />
+		<result property="customStatus" column="custom_status" />
+		<result property="paymentStatus" column="payment_status" />
+		<result property="processStatus" column="process_status" />
+		<result property="doStatus" column="do_status" />
+		<result property="doReceivedTime" column="do_received_time" />
+		<result property="userVerifyStatus" column="user_verify_status" />
+		<result property="status" column="status" />
+		<result property="remark" column="remark" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+
+	<select id="selectShipment" resultMap="ShipmentResult">
+		select * from shipment
+		where id = #{id}
+	</select>
+
+	<resultMap type="Shipment" id="ShipmentResult">
+		<result property="id" column="id" />
+		<result property="serviceType" column="service_type" />
+		<result property="blNo" column="bl_no" />
+		<result property="bookingNo" column="booking_no" />
+		<result property="taxCode" column="tax_code" />
+	</resultMap>
+
+	<select id="selectLogisticGroup" resultMap="LogisticGroupResult">
+		select * from
+		logistic_group where id = #{id}
+	</select>
+
+	<resultMap type="LogisticGroup" id="LogisticGroupResult">
+		<result property="id" column="id" />
+		<result property="groupName" column="group_name" />
+		<result property="emailAddress" column="email_address" />
+		<result property="address" column="address" />
+		<result property="mst" column="mst" />
+		<result property="phone" column="phone" />
+		<result property="mobilePhone" column="mobile_phone" />
+		<result property="creditFlag" column="credit_flag" />
+		<result property="email" column="email" />
+	</resultMap>
+
+	<select id="selectDriverAccount" resultMap="DriverAccountResult">
+		select * from
+		driver_account where id = #{id}
+	</select>
+
+	<resultMap type="DriverAccount" id="DriverAccountResult">
+		<result property="id" column="id" />
+		<result property="mobileNumber" column="mobile_number" />
+		<result property="fullName" column="full_name" />
+	</resultMap>
+</mapper>
