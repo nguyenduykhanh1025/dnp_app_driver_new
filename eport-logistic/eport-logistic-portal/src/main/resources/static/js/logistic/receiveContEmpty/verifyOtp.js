@@ -36,7 +36,7 @@ function closeForm() {
 function getOtp() {
     if (minutes < 4 || (minutes == 4 && seconds < 30)) {
         $.ajax({
-            url: prefix + "/sendOTP",
+            url: "/logistic/sendOTP",
             method: "post",
             data: {
                 shipmentDetailIds: shipmentDetailIds
