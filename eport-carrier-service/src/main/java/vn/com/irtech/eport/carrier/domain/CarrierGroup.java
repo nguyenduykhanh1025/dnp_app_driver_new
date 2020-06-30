@@ -33,6 +33,10 @@ public class CarrierGroup extends BaseEntity
     /** Main Email */
     @Excel(name = "Main Email")
     private String mainEmail;
+    
+    /** 0: DO, 1:eDO */
+    @Excel(name = "Type DO")
+    private String doType;
 
     /** Do Permission */
     private String doFlag;
@@ -111,6 +115,16 @@ public class CarrierGroup extends BaseEntity
     {
         return mainEmail;
     }
+    
+    public void setDoType(String doType) 
+    {
+        this.doType = doType;
+    }
+
+    public String getDoType() 
+    {
+        return doType;
+    }
 
     public void setDoFlag(String doFlag) {
         this.doFlag = doFlag;
@@ -136,6 +150,7 @@ public class CarrierGroup extends BaseEntity
             .append("groupName", getGroupName())
             .append("operateCode", getOperateCode())
             .append("mainEmail", getMainEmail())
+            .append("doType", getDoType())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

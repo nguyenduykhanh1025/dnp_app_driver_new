@@ -33,6 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="registryExpiryDate != null "> and registry_expiry_date = #{registryExpiryDate}</if>
         </where>
+        ORDER BY create_Time DESC
     </select>
     
     <select id="selectLogisticTruckById" parameterType="Long" resultMap="LogisticTruckResult">

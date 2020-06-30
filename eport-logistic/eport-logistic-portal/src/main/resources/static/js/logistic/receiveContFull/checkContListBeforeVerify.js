@@ -1,7 +1,12 @@
 var prefix = ctx + "logistic/receiveContFull";
 var shipmentDetailIds = "";
+
 function confirm() {
-    parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $('#credit').prop('checked'));
+    let isSendContEmpty = false;
+    if (sendContEmpty && $('#yes').prop('checked')) {
+        isSendContEmpty = true;
+    }
+    parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $('#credit').prop('checked'), isSendContEmpty);
     $.modal.close();
 }
 
@@ -26,3 +31,9 @@ if ('0' == creditFlag) {
     $('#credit').hide();
     $('#creditLabel').hide();
 }
+
+$('.confirm-send-empty').hide();
+// if (!sendContEmpty) {
+//     $('.confirm-send-empty').hide();
+// }
+

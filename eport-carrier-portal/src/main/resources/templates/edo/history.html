@@ -1,64 +1,67 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-  <head>
+
+<head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
     <style type="text/css">
-      .datagrid-header-row>td {
-        color: #1C84C6;
-        font-weight: bold;
-      }
+        .datagrid-header-row>td {
+            color: #1C84C6;
+            font-weight: bold;
+        }
     </style>
-  </head>
-    <body class="gray-bg">
-      <div id="wrapper">
+</head>
+
+<body class="gray-bg">
+    <div id="wrapper">
         <div class="row">
-          <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
-            <!-- Table toolbar -->
-            <div class="col-sm-12 fixed-table-toolbar" style="height: 44px;">
-              <div class="bs-bars pull-left" style="margin-bottom: 5px;margin-top:0px">
-                <!-- <div class="btn-group-sm" id="toolbar" role="group">
+            <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
+                <!-- Table toolbar -->
+                <div class="col-sm-12 fixed-table-toolbar" style="height: 44px;">
+                    <div class="bs-bars pull-left" style="margin-bottom: 5px;margin-top:0px">
+                        <!-- <div class="btn-group-sm" id="toolbar" role="group">
                   <a class="btn btn-success" onclick="exportExcel()">
                     <i class="fa fa-download"></i> Xuất excel
                   </a>
                 </div> -->
-              </div>
-              <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:0px">
-              </div>
+                    </div>
+                    <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:0px">
+                    </div>
+                </div>
+                <div class="col-sm-12 table-container">
+                    <table id="dg" style="width:auto;">
+                        <thead>
+                            <tr>
+
+                                <!-- <th data-options="field:'id',checkbox:true"></th> -->
+                                <th data-options="field:'containerNumber',align:'left'" sortable="true" width="125">
+                                    CONTAINER NO
+                                </th>
+                                <th data-options="field:'billOfLading',align:'left'" width="120">
+                                    BILL OF LADING
+                                </th>
+                                <th data-options="field:'orderNumber',align:'left'" width="120">
+                                    ORDER NO
+                                </th>
+                                <th id="contentHover" data-options="field:'ediContent',align:'left',formatter: contentFormat" width="250">
+                                    CONTENT
+                                </th>
+                                <th data-options="field:'action',align:'left',formatter: statusFormat" width="120">
+                                    STATUS
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
-            <div class="col-sm-12 table-container">
-              <table id="dg" style="width:auto;">
-                <thead>
-                  <tr>
-    
-                    <!-- <th data-options="field:'id',checkbox:true"></th> -->
-                    <th data-options="field:'containerNumber',align:'left'" sortable="true" width="125">
-                      CONTAINER NO
-                    </th>
-                    <th data-options="field:'billOfLading',align:'left'" width="120">
-                        BILL OF LADING
-                      </th>
-                    <th data-options="field:'orderNumber',align:'left'" width="120">
-                        ORDER NO
-                      </th>
-                      <th id="contentHover" data-options="field:'ediContent',align:'left',formatter: contentFormat" width="250">
-                        CONTENT
-                      </th>
-                      <th data-options="field:'action',align:'left',formatter: statusFormat" width="120">
-                        STATUS
-                    </th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
-          </div>
         </div>
         <th:block th:include="include :: footer" />
         <th:block th:include="include :: easyui-js" />
         <th:block th:include="include :: datetimepicker-js" />
         <script type="text/javascript" th:inline="javascript">
-            var containerNumber = /*[[${containerNumber}]]*/;
+            var containerNumber = /*[[${containerNumber}]]*/ ;
         </script>
-  </body>
-  <script th:src="@{/eport/js/modules/edo/history.js}"></script>
+</body>
+<script th:src="@{/eport/js/modules/edo/history.js}"></script>
+
 </html>

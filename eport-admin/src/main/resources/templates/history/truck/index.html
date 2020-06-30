@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Truck History')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/history/truck/style.css}" rel="stylesheet" />
+  </head>
+  <body class="container-fluid white-bg">
+    <section class="filter">
+      <div class="row section-header">
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for field..."
+          />
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for field..."
+          />
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for field..."
+          />
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for field..."
+          />
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for field..."
+          />
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for field..."
+          />
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for field..."
+          />
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search for field..."
+          />
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <button class="btn btn-primary">
+            <i class="fa fa-search"></i>&nbsp;Tìm kiếm
+          </button>
+        </div>
+      </div>
+      <div class="row section-content">
+        <div class="col-md-12">
+          <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th
+                  data-options="
+                    field: 'carrierCode',
+                    halign: 'center',
+                    resizable: true"> 
+                  Mã hãng tàu
+                </th>
+                <th
+                  data-options="
+                    field:'orderNumber',
+                    halign:'center',
+                    align:'center'"
+                  sortable="true">
+                  Order No
+                </th>
+                <th
+                  data-options="
+                    field:'billOfLading',halign:'center'"
+                  sortable="true">
+                  Bill Of Lading
+                </th>
+                <th data-options="field:'sztp',align:'center'," sortable="true">
+                  Size Type
+                </th>
+                <th data-options="field:'FE',halign:'center'">F/E</th>
+                <th
+                  data-options="field:'businessUnit',halign:'center',align:'center'"
+                  sortable="true">
+                  Đơn vị khai thác
+                </th>
+                <th data-options="field:'consignee',halign:'center'">
+                  Chủ hàng
+                </th>
+                <th data-options="field:'containerNumber',align:'center'">
+                  Số container
+                </th>
+                <th
+                  data-options="field:'expiredDem',halign:'center',align:'center'"
+                  sortable="true"
+                  width="100">
+                  Hạn lệnh
+                </th>
+                <th data-options="field:'detFreeTime',align:'center'">
+                  Số ngày miễn lưu vỏ
+                </th>
+                <th data-options="field:'vessel',align:'center'">
+                  Tàu
+                </th>
+                <th data-options="field:'voyNo',align:'center'">
+                  Chuyến
+                </th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script type="text/javascript">
+      $(function () {
+        loadTable();
+      });
+
+      var prefix = "/edo/manage/";
+      function loadTable() {
+        $("#dg").datagrid({
+          url: prefix + "/list",
+          method: "GET",
+          singleSelect: true,
+          height: document.documentElement.clientHeight - 70,
+          clientPaging: false,
+          pagination: true,
+          rownumbers: true,
+          pageSize: 50,
+          nowrap: false,
+          striped: true,
+          loadMsg: " Đang xử lý...",
+          loader: function (param, success, error) {
+            var opts = $(this).datagrid("options");
+            if (!opts.url) return false;
+            $.ajax({
+              type: opts.method,
+              url: opts.url,
+              data: {},
+              dataType: "json",
+              success: function (data) {
+                success(data);
+              },
+              error: function () {
+                error.apply(this, arguments);
+              },
+            });
+          },
+        });
+      }
+    </script>
+  </body>
+</html>

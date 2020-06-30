@@ -169,4 +169,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectEdoVo"/>
         where container_number = #{container} and bill_of_lading = #{billNo}
     </select>
+    <select id="getOpeCodeByBlNo" parameterType="String" resultType="String">
+    	select carrier_code
+    	from edo
+    	where bill_of_lading = #{blNo}
+    	group by carrier_code
+    </select>
+    <select id="getCountContainerAmountByBlNo" parameterType="String" resultType="Long">
+    	select count(*)
+    	from edo
+    	where bill_of_lading = #{blNo}
+    	group by bill_of_lading
+    </select>
+    <select id="selectEdoListByBlNo" parameterType="String" resultMap="EdoResult">
+		<include refid="selectEdoVo"/>
+	    where bill_of_lading = #{blNo}
+    </select>
 </mapper>
