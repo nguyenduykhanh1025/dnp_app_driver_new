@@ -3,79 +3,97 @@
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
+    <style type="text/css">
+      .datagrid-header-row>td {
+        color: #1C84C6;
+        font-weight: bold;
+      }
+    </style>
   </head>
-  <body class="gray-bg">
-    <div class="wrapper">
-      <div class="col-sm-12 select-table table-striped">
-        <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:0px">
-            <div class="select-list">
-              <ul>
-                <li>
-                  <select class="form-group" id="carrierCode">
-                    <option value="">Tất cả</option>
-                  </select>
-                </li>
-                <li>
-                  <input type="text" name="containerNumber" id="containerNumber" placeholder="Số container" />
-                </li>
-                <li>
-                  <input type="text" name="billOfLading" id="billOfLading" placeholder="Vận đơn/BL No" />
-                </li>
-                <li>
-                    <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
-                  </li>
-                  <li>
-                    <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
-                  </li>
-                <li>
-                  <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchBtn"><i
-                      class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
-                </li>
-                <li>
-                  <a class="btn btn-info btn-rounded btn-sm" onclick="reset()" id="resethBtn"><i
-                      class="glyphicon glyphicon-refresh"></i> </a>
-                </li>
-              </ul>
+    <body class="gray-bg">
+      <div id="wrapper">
+        <div class="row">
+          <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
+            <!-- Table toolbar -->
+            <div class="col-sm-12 fixed-table-toolbar" style="height: 44px;">
+              <div class="bs-bars pull-left" style="margin-bottom: 5px;margin-top:0px">
+                <!-- <div class="btn-group-sm" id="toolbar" role="group">
+                  <a class="btn btn-success" onclick="exportExcel()">
+                    <i class="fa fa-download"></i> Xuất excel
+                  </a>
+                </div> -->
+              </div>
+              <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:0px">
+    
+                <div class="select-list">
+                  <ul>
+                    <li>
+                      <div class="form-group">
+                        <select class="form-control" id="carrierCode">
+                          <option value="">Tất cả</option>
+                        </select>
+                      </div>
+                    </li>
+                    <li>
+                      <input class="form-control" type="text" name="cntrNo" id="cntrNo" placeholder="Container No" />
+                    </li>
+                    <li>
+                      <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
+                    </li>
+                    <li>
+                      <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
+                    </li>
+                    <a class="btn btn-primary btn-rounded btn-sm" onclick="searchContainer()" id="searchBtn"><i
+                        class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 table-container">
+              <table id="dg" style="width:auto;">
+                <thead>
+                  <tr>
+    
+                    <!-- <th data-options="field:'id',checkbox:true"></th> -->
+                    <th data-options="field:'containerNumber',align:'left'" sortable="true" width="125">
+                      CONTAINER NO
+                    </th>
+                    <th data-options="field:'billOfLading',align:'left'" width="120">
+                      BILL OF LADING
+                    </th>
+                    <th data-options="field:'consignee',align:'center'" sortable="true" width="300">
+                      CONSIGNEE
+                    </th>
+                    <th data-options="field:'businessUnit',align:'center'" width="90">
+                      BUSINESS <br> UNIT
+                    </th>
+                    <th data-options="field:'expiredDem',align:'center'" width="200">
+                     EXPIRE <br> DEM
+                    </th>
+                    <th data-options="field:'detFreeTime',align:'center'" width="110">
+                      DET FREE <br> TIME
+                    </th>
+                    <th data-options="field:'orderNumber',align:'left'" width="120">
+                      ORDER NO
+                    </th>
+                    <th data-options="field:'vessel',align:'left'" width="80">
+                      VESSEL
+                    </th>
+                    <th data-options="field:'voyNo',align:'left'" width="80">
+                      VOY NO
+                    </th> <th data-options="field:'id',align:'center',formatter: formatAction" width="110">
+                      ACTION
+                    </th>
+                  </tr>
+                </thead>
+              </table>
             </div>
           </div>
-        <div class="p-body">
-          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
-            <thead>
-              <tr>
-                <th data-options="field:'carrierCode',halign:'center',resizable:true">Mã hãng tàu</th>
-                <th data-options="field:'orderNumber',halign:'center',align:'center'" sortable="true">Order No</th>
-                <th data-options="field:'billOfLading',halign:'center'" sortable="true">Bill Of Lading</th>
-                <th data-options="field:'sztp',align:'center'," sortable="true">
-                  Size Type
-                </th>
-                <th data-options="field:'FE',halign:'center'">F/E</th>
-                <th data-options="field:'businessUnit',halign:'center',align:'center'" sortable="true">Đơn vị khai thác</th>                
-                <th data-options="field:'consignee',halign:'center'">Chủ hàng</th>
-                <th data-options="field:'containerNumber',align:'center'">
-                  Số container
-                </th>
-                <th data-options="field:'expiredDem',halign:'center',align:'center'"
-                  sortable="true" width="100">
-                  Hạn lệnh
-                </th>
-                <th data-options="field:'detFreeTime',align:'center'">
-                    Số ngày miễn lưu vỏ
-                </th>
-                <th data-options="field:'vessel',align:'center'">
-                    Tàu
-                </th>
-                <th data-options="field:'voyNo',align:'center'">
-                    Chuyến
-                </th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
         </div>
-      </div>
-    </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: easyui-js" />
+        <th:block th:include="include :: footer" />
+        <th:block th:include="include :: easyui-js" />
+        <th:block th:include="include :: datetimepicker-js" />
   </body>
   <script th:src="@{/eport/js/modules/edo/edo.js}"></script>
 </html>

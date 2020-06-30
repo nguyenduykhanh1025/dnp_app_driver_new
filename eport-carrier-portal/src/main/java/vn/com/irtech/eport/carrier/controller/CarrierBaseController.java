@@ -45,4 +45,10 @@ public abstract class CarrierBaseController extends BaseController {
 		}
 		return false;
 	}
+
+	public String folderUpLoad() {
+		CarrierGroup userGroup = getUserGroup();
+		return userGroup.getPathEdiBackup();
+	}
+
 }

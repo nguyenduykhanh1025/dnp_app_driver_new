@@ -3,9 +3,8 @@ var prefix = "/edo"
 $(function () {
   $.ajax({
     type: "GET",
-    url: prefix + "/listCarrierCode",
+    url: prefix + "/carrierCode",
     success(data) {
-      console.log(data);
       data.forEach(element => {
         $('#carrierCode').append(`<option value="${element}"> 
                                                   ${element} 
@@ -21,14 +20,11 @@ function loadTable(containerNumber, billOfLading,fromDate, toDate) {
     url: prefix + "/edo",
     method: "GET",
     singleSelect: true,
-    height: document.documentElement.clientHeight - 70,
-    clientPaging: false,
+    clientPaging: true,
     pagination: true,
-    rownumbers: true,
-    pageSize: 50,
+    pageSize: 20,
     nowrap: false,
     striped: true,
-    loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
       if (!opts.url) return false;
@@ -54,9 +50,26 @@ function loadTable(containerNumber, billOfLading,fromDate, toDate) {
 }
 
 function searchDo() {
+  setTimeout($.modal.loading("Đang xử lý"),100); 
+  $.modal.closeLoading()
   let containerNumber = $("#containerNumber").val() == null ? "" : $("#containerNumber").val();
   let billOfLading = $("#billOfLading").val() == null ? "" : $("#billOfLading").val();
-  let fromDate = $("#fromDate").val() == null ? "" : $("#fromDate").val();
-  let toDate = $("#toDate").val() == null ? "" : $("#toDate").val();
+  let fromDate = formatToYDM($("#fromDate").val() == null ? "" : $("#fromDate").val());
+  let toDate = formatToYDM($("#toDate").val() == null ? "" : $("#toDate").val());
   loadTable(containerNumber, billOfLading, fromDate, toDate);
+}
+
+function formatToYDM(date) {
+    return date.split("/").reverse().join("/");
+}
+
+function formatAction(value, row, index) {
+  var actions = [];
+    actions.push('<a class="btn btn-success btn-xs" onclick="viewHistoryEdiFile(\'' + row.containerNumber + '\')"><i class="fa fa-view"></i>History</a> ');
+    return actions.join('');
+}
+
+function viewHistoryEdiFile(containerNumber)
+{
+  $.modal.open("History File", prefix + "/history/"+containerNumber, 800, 500);
 }

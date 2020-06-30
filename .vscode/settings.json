@@ -4,6 +4,7 @@
         "Autowired",
         "Catos",
         "Gson",
+        "Shiro",
         "Viewex",
         "datetimepicker",
         "eport"

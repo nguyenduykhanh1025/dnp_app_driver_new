@@ -139,11 +139,12 @@ public class EdoServiceImpl implements IEdoService
 				edi = new Edo();
 				edi.setBusinessUnit(business);
 			}
+			//Bill Of Lading
 			if(s.contains("RFF+BM"))
 			{
 				if(!s.isEmpty())
 				{
-					s = s.substring(9,s.length());
+					s = s.substring(7,s.length());
 					obj.put("buildNo", s);
 					edi.setBillOfLading(s);
 				}
@@ -168,7 +169,7 @@ public class EdoServiceImpl implements IEdoService
 			{
 				if(!s.isEmpty())
 				{
-					s = s.substring(10,s.length());
+					s = s.substring(8,s.length());
 					obj.put("orderNo", s);
 					edi.setOrderNumber(s);
 				}
@@ -179,7 +180,7 @@ public class EdoServiceImpl implements IEdoService
 				String[] releaseTo = s.split("\\+");
 				if(!releaseTo[3].isEmpty())
 				{
-					releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length() - 1);
+					releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length());
 					obj.put("releaseTo", releaseTo[3]);
 					edi.setConsignee(releaseTo[3]);
 				}
