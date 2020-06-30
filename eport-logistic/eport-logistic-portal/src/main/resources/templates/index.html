@@ -61,23 +61,40 @@
             <li class="dropdown user-menu">
               <a title="Tra cứu Container" class="menuItem"><i class="fa fa-calendar-check-o"></i>&nbsp; Đăng Ký Làm Lệnh</a>
               <ul class="dropdown-menu">
-                <li><a class="menuItem " th:href="@{/logistic/receiveContFull}">Nhận Cont Hàng Từ Cảng</a></li>
-                <li><a class="menuItem " th:href="@{/logistic/sendContEmpty}">Giao Cont Rỗng Cho Cảng</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/receiveContFull}">Nhận Cont Hàng Từ Cảng</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/sendContEmpty}">Giao Cont Rỗng Cho Cảng</a></li>
                 <li><a class="menuItem" th:href="@{/logistic/receiveContEmpty}">Nhận Cont Rỗng Từ Cảng</a></li>
-                <li><a class="menuItem " th:href="@{/logistic/sendContFull}">Giao Cont Hàng Cho Cảng</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/sendContFull}">Giao Cont Hàng Cho Cảng</a></li>
+                <div style="background-color: #3c8dbc; height: 1px;"></div>
+                <li><a class="menuItem" >Giao Hàng Tại Cảng</a></li>
+                <li><a class="menuItem" >Rút Hàng Tại Cảng</a></li>
               </ul>
             </li>
             <li class="dropdown user-menu">
-              <a title="Quản lý đội xe"  class="menuItem"><i class="fa fa-truck"></i>&nbsp; Quản lý Đội Xe</a>
+              <a title="Quản Lý Đội Xe"  class="menuItem"><i class="fa fa-truck"></i>&nbsp; Quản Lý Đội Xe</a>
               <ul class="dropdown-menu">
-                <li><a class="menuItem " th:href="@{/logistic/transport}">Quản lý Tài xế</a></li>
-                <li><a class="menuItem " th:href="@{/logistic/logisticTruck}">Quản lý Xe</a></li>
-                <li><a class="menuItem " th:href="@{/logistic/transportMonitor/}">Giám sát</a></li>
-                <li><a class="menuItem " th:href="@{/logistic/assignTruck}">Điều xe</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/transport}">Quản lý Tài xế</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/logisticTruck}">Quản lý Xe</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/truck/history}">Lịch Sử</a></li>
+              </ul>
+            </li>
+            <li class="dropdown user-menu">
+              <a title="Điều hành"  class="menuItem"><i class="fa fa-users"></i>&nbsp; Điều hành</a>
+              <ul class="dropdown-menu">
+                <li><a class="menuItem" th:href="@{/logistic/assignTruck}">Điều xe</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/transportMonitor/}">Giám Sát</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/container/status}">Tình Trạng Container</a></li>
+              </ul>
+            </li>
+            <li class="dropdown user-menu">
+              <a title="Báo Cáo"  class="menuItem"><i class="fa fa-signal"></i>&nbsp; Báo Cáo</a>
+              <ul class="dropdown-menu">
+                <li><a class="menuItem" th:href="@{/logistic/report/container}">Báo Cáo Nâng/Hạ container</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/report/order}">Báo Cáo Đơn Hàng</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/report/costs}">Báo Cáo Cước Phí</a></li>
               </ul>
             </li>
           </ul>
-
           <ul class="nav navbar-top-links navbar-right welcome-message">
             <li class="dropdown user-menu">
               <a title="Tra cứu Container" class="menuItem"><i class="fa fa-search"></i>&nbsp; Tra cứu Container</a>
@@ -85,7 +102,7 @@
                 <li><a title="Container GET-IN/OUT" class="menuItem " th:href="@{/carrier/cont}">Container
                     GATE-IN/OUT</a></li>
                 <li><a class="menuItem" th:href="@{/carrier/cont/contFull}">DS Container lưu có hàng</a></li>
-                <li><a class="menuItem " th:href="@{/carrier/cont/contEmpty}">DS Container lưu rỗng</a></li>
+                <li><a class="menuItem" th:href="@{/carrier/cont/contEmpty}">DS Container lưu rỗng</a></li>
               </ul>
             </li>
             <li>

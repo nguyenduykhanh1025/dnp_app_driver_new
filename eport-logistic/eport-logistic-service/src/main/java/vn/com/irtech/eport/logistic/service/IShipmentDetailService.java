@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -120,4 +122,6 @@ public interface IShipmentDetailService
     public List<ShipmentDetail> selectShipmentDetailByProcessIds (String processOrderIds);
     
     public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo);
+
+    // public List<ShipmentDetail> selectSendEmptyShipmentDetailByListCont(@Param("conts") String conts, @Param("shipmentId") Long shipmentId);
 }

@@ -10,7 +10,8 @@ function confirm() {
             data: {
                 otp: $("#otpInput").val(),
                 shipmentDetailIds: shipmentDetailIds,
-                creditFlag: creditFlag
+                creditFlag: creditFlag,
+                isSendContEmpty: isSendContEmpty
             },
             success: function (data) {
                 if (data.code != 0 && data.code != 301) {

@@ -31,13 +31,18 @@
     }
 
     .customTable {
-        height: calc(100% - 75px);
+        height: calc(100% - 105px);
         overflow-y: scroll;
         display: inline-block;
         width: 100%;
     }
     
     .payment-type-form {
+        display: flex;
+        margin-bottom: 10px;
+    }
+
+    .confirm-send-empty {
         display: flex;
         margin-bottom: 10px;
     }
@@ -53,6 +58,13 @@
                 <label>Cash</label>
                 <input style="margin: 3px 10px 0 20px;" type="radio" name="paymentType" id="credit" value="1"/>
                 <label id="creditLabel">Credit</label>
+            </div>
+            <div class="confirm-send-empty">
+                <label></span>Xác nhận làm lệnh hạ container rỗng </label>
+                <input style="margin: 3px 10px 0 20px;" type="radio" name="sendContEmpty" id="yes" value="1" checked/>
+                <label>Có</label>
+                <input style="margin: 3px 10px 0 20px;" type="radio" name="sendContEmpty" id="no" value="0"/>
+                <label>Không</label>
             </div>
             <div class="table-content customTable">
                 <table id="contTable" style="width: 100%; height: 100%;">
@@ -77,6 +89,7 @@
 <script type="text/javascript" th:inline="javascript">
     var shipmentDetails = /*[[${shipmentDetails}]]*/;
     var creditFlag = /*[[${creditFlag}]]*/;
+    var sendContEmpty = /*[[${sendContEmpty}]]*/;
 </script>
 <script th:src="@{/js/logistic/receiveContFull/checkContListBeforeVerify.js}"></script>
 

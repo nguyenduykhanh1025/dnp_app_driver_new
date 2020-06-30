@@ -1,3 +1,4 @@
+
 ALTER TABLE `shipment` 
     CHANGE `bl_no` `bl_no` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL;
 ALTER TABLE `shipment_detail` 

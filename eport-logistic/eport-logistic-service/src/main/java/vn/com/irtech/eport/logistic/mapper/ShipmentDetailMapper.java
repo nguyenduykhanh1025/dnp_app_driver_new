@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 
@@ -80,4 +83,7 @@ public interface ShipmentDetailMapper
     public List<ShipmentWaitExec> selectListShipmentWaitExec();
 
     public List<ShipmentDetail> selectShipmentDetailByProcessIds(String[] processOrderIds);
+
+    // public List<ShipmentDetail> selectSendEmptyShipmentDetailByListCont(@Param("conts") String[] conts, @Param("shipmentId") Long shipmentId);
+
 }
