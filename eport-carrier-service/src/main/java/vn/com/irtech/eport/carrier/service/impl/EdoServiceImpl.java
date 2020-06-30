@@ -104,6 +104,16 @@ public class EdoServiceImpl implements IEdoService
         return edoMapper.checkContainerAvailable(cont,billNo);
     }
 
+	@Override
+	public String getOpeCodeByBlNo(String blNo) {
+		return edoMapper.getOpeCodeByBlNo(blNo);
+	}
+
+	@Override
+	public Long getCountContainerAmountByBlNo(String blNo) {
+		return edoMapper.getCountContainerAmountByBlNo(blNo);
+	}
+
     
 
 }

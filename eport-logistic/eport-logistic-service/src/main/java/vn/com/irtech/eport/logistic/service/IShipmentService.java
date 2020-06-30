@@ -62,4 +62,12 @@ public interface IShipmentService
     public Shipment selectShipmentWithGroupById(Long  id);
 
     public int checkBillBookingNoUnique(Shipment shipment);
+    
+    public String getOpeCodeByBlNo(String blNo);
+    
+    public Long getCountContainerAmountByBlNo(String blNo);
+    
+    public Shipment getOpeCodeCatosByBlNo(String blNo);
+    
+    public String getEdoFlgByOpeCode(String opeCode);
 }

@@ -64,4 +64,9 @@ public interface EdoMapper
 
     public Edo checkContainerAvailable(@Param("container") String cont,@Param("billNo") String billNo);
     
+    public String getOpeCodeByBlNo(String blNo);
+    
+    public Long getCountContainerAmountByBlNo(String blNo);
+    
+    public List<Edo> selectEdoListByBlNo(String blNo);
 }

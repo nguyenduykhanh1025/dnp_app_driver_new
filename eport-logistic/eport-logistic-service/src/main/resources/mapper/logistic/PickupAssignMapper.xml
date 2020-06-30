@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.PickupAssignMapper">
+    
+    <resultMap type="PickupAssign" id="PickupAssignResult">
+        <result property="id"    column="id"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
+        <result property="shipmentId"    column="shipment_id"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="shipmentDetailId"    column="shipment_detail_id"    />
+        <result property="externalFlg"    column="external_flg"    />
+        <result property="externalSecretCode"    column="external_secret_code"    />
+        <result property="truckNo"    column="truck_no"    />
+        <result property="chassisNo"    column="chassis_no"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+    <sql id="selectPickupAssignVo">
+        select id, logistic_group_id, shipment_id, driver_id, shipment_detail_id, external_flg, external_secret_code, truck_no, chassis_no, remark, create_by, create_time, update_by, update_time from pickup_assign
+    </sql>
+
+    <select id="selectPickupAssignList" parameterType="PickupAssign" resultMap="PickupAssignResult">
+        <include refid="selectPickupAssignVo"/>
+        <where>  
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="driverId != null "> and driver_id = #{driverId}</if>
+            <if test="shipmentDetailId != null "> and shipment_detail_id = #{shipmentDetailId}</if>
+            <if test="externalFlg != null "> and external_flg = #{externalFlg}</if>
+            <if test="externalSecretCode != null  and externalSecretCode != ''"> and external_secret_code = #{externalSecretCode}</if>
+            <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
+            <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
+        </where>
+    </select>
+    
+    <select id="selectPickupAssignById" parameterType="Long" resultMap="PickupAssignResult">
+        <include refid="selectPickupAssignVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPickupAssign" parameterType="PickupAssign" useGeneratedKeys="true" keyProperty="id">
+        insert into pickup_assign
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="logisticGroupId != null ">logistic_group_id,</if>
+            <if test="shipmentId != null ">shipment_id,</if>
+            <if test="driverId != null ">driver_id,</if>
+            <if test="shipmentDetailId != null ">shipment_detail_id,</if>
+            <if test="externalFlg != null ">external_flg,</if>
+            <if test="externalSecretCode != null  and externalSecretCode != ''">external_secret_code,</if>
+            <if test="truckNo != null  and truckNo != ''">truck_no,</if>
+            <if test="chassisNo != null  and chassisNo != ''">chassis_no,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="logisticGroupId != null ">#{logisticGroupId},</if>
+            <if test="shipmentId != null ">#{shipmentId},</if>
+            <if test="driverId != null ">#{driverId},</if>
+            <if test="shipmentDetailId != null ">#{shipmentDetailId},</if>
+            <if test="externalFlg != null ">#{externalFlg},</if>
+            <if test="externalSecretCode != null  and externalSecretCode != ''">#{externalSecretCode},</if>
+            <if test="truckNo != null  and truckNo != ''">#{truckNo},</if>
+            <if test="chassisNo != null  and chassisNo != ''">#{chassisNo},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePickupAssign" parameterType="PickupAssign">
+        update pickup_assign
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
+            <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
+            <if test="driverId != null ">driver_id = #{driverId},</if>
+            <if test="shipmentDetailId != null ">shipment_detail_id = #{shipmentDetailId},</if>
+            <if test="externalFlg != null ">external_flg = #{externalFlg},</if>
+            <if test="externalSecretCode != null  and externalSecretCode != ''">external_secret_code = #{externalSecretCode},</if>
+            <if test="truckNo != null  and truckNo != ''">truck_no = #{truckNo},</if>
+            <if test="chassisNo != null  and chassisNo != ''">chassis_no = #{chassisNo},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePickupAssignById" parameterType="Long">
+        delete from pickup_assign where id = #{id}
+    </delete>
+
+    <delete id="deletePickupAssignByIds" parameterType="String">
+        delete from pickup_assign where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

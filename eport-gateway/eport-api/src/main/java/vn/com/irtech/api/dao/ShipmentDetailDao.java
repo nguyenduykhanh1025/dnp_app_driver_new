@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import vn.com.irtech.api.entity.ProcessOrderEntity;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
+import vn.com.irtech.api.entity.ShipmentEntity;
 @Mapper
 public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
     public List<ShipmentDetailEntity> selectShipmentDetailsByBLNo(ShipmentDetailEntity shipmentDetailEntity);
@@ -32,4 +33,6 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public List<String> checkContReservedByContainerNos(String[] containerNos);
 	
 	public Integer getCountContByBlNo(String blNo);
+	
+	public ShipmentEntity getOpeCodeCatosByBlNo(String blNo);
 }

@@ -21,6 +21,10 @@
             <groupId>vn.com.irtech.eport</groupId>
             <artifactId>eport-system</artifactId>
         </dependency>
+        <dependency>
+            <groupId>vn.com.irtech.eport</groupId>
+            <artifactId>eport-carrier-service</artifactId>
+        </dependency>
         
     </dependencies>
 	

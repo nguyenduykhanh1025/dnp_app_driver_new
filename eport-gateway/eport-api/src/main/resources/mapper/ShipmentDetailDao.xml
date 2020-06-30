@@ -160,4 +160,10 @@
 		FROM TB_INVENTORY
 		WHERE BL_NO = #{blNo}
     </select>
+    <select id="getOpeCodeCatosByBlNo" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentEntity">
+    	SELECT PTNR_CODE AS opeCode, COUNT(*) AS containerAmount
+    	FROM TB_INVENTORY
+    	WHERE BL_NO = #{blNo}
+    	GROUP BY PTNR_CODE
+    </select>
 </mapper>
