@@ -91,7 +91,7 @@ function handleCollapse(status) {
 // LOAD SHIPMENT LIST
 function loadTable() {
     $("#dg").datagrid({
-        url: prefix + "/listShipment",
+        url: '/logistic/shipments/4',
         height: window.innerHeight - 70,
         singleSelect: true,
         collapsible: true,

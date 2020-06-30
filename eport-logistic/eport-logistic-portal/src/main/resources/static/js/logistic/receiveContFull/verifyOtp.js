@@ -5,7 +5,7 @@ var minutes = 0, seconds = 0;
 function confirm() {
     if ($("#otpInput").val() !=null && $("#otpInput").val() != "") {
         $.ajax({
-            url: prefix + "/verifyOtp",
+            url: "/logistic/sendOTP",
             method: "post",
             data: {
                 otp: $("#otpInput").val(),
