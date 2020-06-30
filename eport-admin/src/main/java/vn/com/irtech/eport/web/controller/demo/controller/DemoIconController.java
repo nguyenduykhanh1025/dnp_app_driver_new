@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * 图标相关
- * 
- * @author admin
- */
+ * Icon related
+*
+* @author admin
+*/
 @Controller
 @RequestMapping("/demo/icon")
 public class DemoIconController
@@ -16,8 +16,8 @@ public class DemoIconController
     private String prefix = "demo/icon";
 
     /**
-     * FontAwesome图标
-     */
+    * FontAwesome icon
+    */
     @GetMapping("/fontawesome")
     public String fontAwesome()
     {
@@ -25,7 +25,7 @@ public class DemoIconController
     }
 
     /**
-     * Glyphicons图标
+    * Glyphicons icon
      */
     @GetMapping("/glyphicons")
     public String glyphicons()

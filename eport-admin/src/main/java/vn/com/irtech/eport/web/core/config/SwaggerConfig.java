@@ -14,8 +14,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * Swagger2的接口配置
- * 
+ * Swagger2 interface configuration
+ *
  * @author admin
  */
 @Configuration
@@ -23,39 +23,39 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfig
 {
     /**
-     * 创建API
+     * Create API
      */
     @Bean
     public Docket createRestApi()
     {
         return new Docket(DocumentationType.SWAGGER_2)
-                // 用来创建该API的基本信息，展示在文档的页面中（自定义展示的信息）
+                // The basic information used to create the API is displayed on the document page (custom display information)
                 .apiInfo(apiInfo())
-                // 设置哪些接口暴露给Swagger展示
+                // Set which interfaces are exposed to Swagger
                 .select()
-                // 扫描所有有注解的api，用这种方式更灵活
+                // Scan all annotated APIs, this way is more flexible
                 .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                // 扫描指定包中的swagger注解
+                // Scan swagger annotations in the specified package
                 //.apis(RequestHandlerSelectors.basePackage("vn.com.irtech.eport.project.tool.swagger"))
-                // 扫描所有 .apis(RequestHandlerSelectors.any())
+                // Scan all .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build();
     }
 
     /**
-     * 添加摘要信息
+     * Add summary information
      */
     private ApiInfo apiInfo()
     {
-        // 用ApiInfoBuilder进行定制
+        // Customize with ApiInfoBuilder
         return new ApiInfoBuilder()
-                // 设置标题
+                // Set the title
                 .title("Title: ePort API Document")
-                // 描述
+                // description
                 .description("Description: Api documents")
-                // 作者信息
+                // author information
                 .contact(new Contact(Global.getName(), null, null))
-                // 版本
+                // version
                 .version("Version: " + Global.getVersion())
                 .build();
     }

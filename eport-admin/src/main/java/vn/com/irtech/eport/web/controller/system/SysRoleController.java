@@ -26,7 +26,7 @@ import vn.com.irtech.eport.system.service.ISysRoleService;
 import vn.com.irtech.eport.system.service.ISysUserService;
 
 /**
- * 角色信息
+ * Role controller
  * 
  * @author admin
  */
@@ -71,7 +71,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 新增角色
+     * New role
      */
     @GetMapping("/add")
     public String add()
@@ -80,7 +80,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 新增保存角色
+     * Add save new role
      */
     @RequiresPermissions("system:role:add")
     @Log(title = "Role Management", businessType = BusinessType.INSERT)
@@ -90,11 +90,11 @@ public class SysRoleController extends BaseController
     {
         if (UserConstants.ROLE_NAME_NOT_UNIQUE.equals(roleService.checkRoleNameUnique(role)))
         {
-            return error("新增角色'" + role.getRoleName() + "'失败，角色名称已存在");
+            return error("Thêm vai trò " + role.getRoleName() + " thất bại, tên vai trò đã tồn tại!");
         }
         else if (UserConstants.ROLE_KEY_NOT_UNIQUE.equals(roleService.checkRoleKeyUnique(role)))
         {
-            return error("新增角色'" + role.getRoleName() + "'失败，角色权限已存在");
+            return error("Thêm vai trò " + role.getRoleName() + " thất bại, quyền hạn của vai trò đã tồn tại!");
         }
         role.setCreateBy(ShiroUtils.getLoginName());
         ShiroUtils.clearCachedAuthorizationInfo();
@@ -103,7 +103,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 修改角色
+     * Modify role
      */
     @GetMapping("/edit/{roleId}")
     public String edit(@PathVariable("roleId") Long roleId, ModelMap mmap)
@@ -113,7 +113,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 修改保存角色
+     * Modify save role
      */
     @RequiresPermissions("system:role:edit")
     @Log(title = "Role Management", businessType = BusinessType.UPDATE)
@@ -124,11 +124,11 @@ public class SysRoleController extends BaseController
         roleService.checkRoleAllowed(role);
         if (UserConstants.ROLE_NAME_NOT_UNIQUE.equals(roleService.checkRoleNameUnique(role)))
         {
-            return error("Update Role '" + role.getRoleName() + "' failed, Role name already exists");
+            return error("Cập nhật vai trò " + role.getRoleName() + " thất bại, tên vai trò đã thất bại!");
         }
         else if (UserConstants.ROLE_KEY_NOT_UNIQUE.equals(roleService.checkRoleKeyUnique(role)))
         {
-            return error("Update Role '" + role.getRoleName() + "' failed, Role permissions already exist");
+            return error("Cập nhật vai trò " + role.getRoleName() + " thất bại, quyền hạn của vai trò đã tồn tại!");
         }
         role.setUpdateBy(ShiroUtils.getLoginName());
         ShiroUtils.clearCachedAuthorizationInfo();
@@ -136,7 +136,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 角色分配数据权限
+     * Role permissions
      */
     @GetMapping("/authDataScope/{roleId}")
     public String authDataScope(@PathVariable("roleId") Long roleId, ModelMap mmap)
@@ -146,7 +146,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 保存角色分配数据权限
+     * Save role permissions
      */
     @RequiresPermissions("system:role:edit")
     @Log(title = "Role Management", businessType = BusinessType.UPDATE)
@@ -181,7 +181,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 校验角色名称
+     * Verify role name
      */
     @PostMapping("/checkRoleNameUnique")
     @ResponseBody
@@ -191,7 +191,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 校验角色权限
+     * Verify role permissions
      */
     @PostMapping("/checkRoleKeyUnique")
     @ResponseBody
@@ -201,7 +201,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 选择菜单树
+     * Select the menu tree
      */
     @GetMapping("/selectMenuTree")
     public String selectMenuTree()
@@ -210,7 +210,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 角色状态修改
+     * Modify status
      */
     @Log(title = "Role Management", businessType = BusinessType.UPDATE)
     @RequiresPermissions("system:role:edit")
@@ -223,7 +223,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 分配用户
+     * Assign user
      */
     @RequiresPermissions("system:role:edit")
     @GetMapping("/authUser/{roleId}")
@@ -234,7 +234,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 查询已分配用户角色列表
+     * Query the list of assigned user roles
      */
     @RequiresPermissions("system:role:list")
     @PostMapping("/authUser/allocatedList")
@@ -247,7 +247,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 取消授权
+     * Cancel auth user
      */
     @Log(title = "Role Management", businessType = BusinessType.GRANT)
     @PostMapping("/authUser/cancel")
@@ -258,7 +258,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 批量取消授权
+     * Cancel auth user
      */
     @Log(title = "Role Management", businessType = BusinessType.GRANT)
     @PostMapping("/authUser/cancelAll")
@@ -269,7 +269,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 选择用户
+     * Select user
      */
     @GetMapping("/authUser/selectUser/{roleId}")
     public String selectUser(@PathVariable("roleId") Long roleId, ModelMap mmap)
@@ -279,7 +279,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 查询未分配用户角色列表
+     * Query the list of unassigned user roles
      */
     @RequiresPermissions("system:role:list")
     @PostMapping("/authUser/unallocatedList")
@@ -292,7 +292,7 @@ public class SysRoleController extends BaseController
     }
 
     /**
-     * 批量选择用户授权
+     * Select user authorization in bulk
      */
     @Log(title = "Role Management", businessType = BusinessType.GRANT)
     @PostMapping("/authUser/selectAll")

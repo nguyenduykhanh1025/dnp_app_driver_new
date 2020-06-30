@@ -6,12 +6,6 @@ import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
-/**
- * 【请填写功能名称】 Object sys_edi
- * 
- * @author ruoyi
- * @date 2020-04-03
- */
 public class SysEdi extends BaseEntity
 {
     private static final long serialVersionUID = 1L;

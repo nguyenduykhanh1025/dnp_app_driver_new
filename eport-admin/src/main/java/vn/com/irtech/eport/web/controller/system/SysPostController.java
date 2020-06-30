@@ -23,7 +23,7 @@ import vn.com.irtech.eport.system.domain.SysPost;
 import vn.com.irtech.eport.system.service.ISysPostService;
 
 /**
- * 岗位信息操作处理
+ * Post controller
  * 
  * @author admin
  */
@@ -53,7 +53,7 @@ public class SysPostController extends BaseController
         return getDataTable(list);
     }
 
-    @Log(title = "岗位管理", businessType = BusinessType.EXPORT)
+    @Log(title = "Post management", businessType = BusinessType.EXPORT)
     @RequiresPermissions("system:post:export")
     @PostMapping("/export")
     @ResponseBody
@@ -61,11 +61,11 @@ public class SysPostController extends BaseController
     {
         List<SysPost> list = postService.selectPostList(post);
         ExcelUtil<SysPost> util = new ExcelUtil<SysPost>(SysPost.class);
-        return util.exportExcel(list, "岗位数据");
+        return util.exportExcel(list, "Post data");
     }
 
     @RequiresPermissions("system:post:remove")
-    @Log(title = "岗位管理", businessType = BusinessType.DELETE)
+    @Log(title = "Post management", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String ids)
@@ -81,7 +81,7 @@ public class SysPostController extends BaseController
     }
 
     /**
-     * 新增岗位
+     * New post
      */
     @GetMapping("/add")
     public String add()
@@ -90,28 +90,28 @@ public class SysPostController extends BaseController
     }
 
     /**
-     * 新增保存岗位
+     * Add save new post
      */
     @RequiresPermissions("system:post:add")
-    @Log(title = "岗位管理", businessType = BusinessType.INSERT)
+    @Log(title = "Post management", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(@Validated SysPost post)
     {
         if (UserConstants.POST_NAME_NOT_UNIQUE.equals(postService.checkPostNameUnique(post)))
         {
-            return error("新增岗位'" + post.getPostName() + "'失败，岗位名称已存在");
+            return error("Thêm bài viết " + post.getPostName() + " thất bại，tên bài viết đã tồn tại!");
         }
         else if (UserConstants.POST_CODE_NOT_UNIQUE.equals(postService.checkPostCodeUnique(post)))
         {
-            return error("新增岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+            return error("Thêm bài viết " + post.getPostName() + " thất bại，mã bài viết đã tồn tại!");
         }
         post.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(postService.insertPost(post));
     }
 
     /**
-     * 修改岗位
+     * Modify post
      */
     @GetMapping("/edit/{postId}")
     public String edit(@PathVariable("postId") Long postId, ModelMap mmap)
@@ -121,28 +121,28 @@ public class SysPostController extends BaseController
     }
 
     /**
-     * 修改保存岗位
+     * Modify save post
      */
     @RequiresPermissions("system:post:edit")
-    @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
+    @Log(title = "Post management", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(@Validated SysPost post)
     {
         if (UserConstants.POST_NAME_NOT_UNIQUE.equals(postService.checkPostNameUnique(post)))
         {
-            return error("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
+            return error("Cập nhật bài viết " + post.getPostName() + " thất bại，tên bài viết đã tồn tại!");
         }
         else if (UserConstants.POST_CODE_NOT_UNIQUE.equals(postService.checkPostCodeUnique(post)))
         {
-            return error("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+            return error("Cập nhật bài viết " + post.getPostName() + " thất bại，mã bài viết đã tồn tại!");
         }
         post.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(postService.updatePost(post));
     }
 
     /**
-     * 校验岗位名称
+     * Check post name is unique
      */
     @PostMapping("/checkPostNameUnique")
     @ResponseBody
@@ -152,7 +152,7 @@ public class SysPostController extends BaseController
     }
 
     /**
-     * 校验岗位编码
+     * Check post code is unique
      */
     @PostMapping("/checkPostCodeUnique")
     @ResponseBody

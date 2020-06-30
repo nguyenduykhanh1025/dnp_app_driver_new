@@ -23,7 +23,7 @@ import vn.com.irtech.eport.system.domain.SysRole;
 import vn.com.irtech.eport.system.service.ISysMenuService;
 
 /**
- * 菜单信息
+ * Menu Controller
  * 
  * @author admin
  */
@@ -54,28 +54,28 @@ public class SysMenuController extends BaseController
     }
 
     /**
-     * 删除菜单
-     */
-    @Log(title = "菜单管理", businessType = BusinessType.DELETE)
+     * Delete menu
+    */
+    @Log(title = "Menu Management", businessType = BusinessType.DELETE)
     @RequiresPermissions("system:menu:remove")
     @GetMapping("/remove/{menuId}")
     @ResponseBody
     public AjaxResult remove(@PathVariable("menuId") Long menuId)
     {
-        if (menuService.selectCountMenuByParentId(menuId) > 0)
+        if (menuService.selectCountMenuByParentId(menuId)> 0)
         {
-            return AjaxResult.warn("存在子菜单,不允许删除");
+            return AjaxResult.warn("Menu con đã tồn tại, không được phép xóa!");
         }
-        if (menuService.selectCountRoleMenuByMenuId(menuId) > 0)
+        if (menuService.selectCountRoleMenuByMenuId(menuId)> 0)
         {
-            return AjaxResult.warn("菜单已分配,不允许删除");
+            return AjaxResult.warn("Menu đã được chỉ định, không được phép xóa!");
         }
         ShiroUtils.clearCachedAuthorizationInfo();
         return toAjax(menuService.deleteMenuById(menuId));
     }
 
     /**
-     * 新增
+     * New
      */
     @GetMapping("/add/{parentId}")
     public String add(@PathVariable("parentId") Long parentId, ModelMap mmap)
@@ -96,9 +96,9 @@ public class SysMenuController extends BaseController
     }
 
     /**
-     * 新增保存菜单
+     * Added save menu
      */
-    @Log(title = "菜单管理", businessType = BusinessType.INSERT)
+    @Log(title = "Menu Management", businessType = BusinessType.INSERT)
     @RequiresPermissions("system:menu:add")
     @PostMapping("/add")
     @ResponseBody
@@ -106,7 +106,7 @@ public class SysMenuController extends BaseController
     {
         if (UserConstants.MENU_NAME_NOT_UNIQUE.equals(menuService.checkMenuNameUnique(menu)))
         {
-            return error("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
+            return error("Thêm menu " + menu.getMenuName() + " thất bại, tên menu đã tồn tại!");
         }
         menu.setCreateBy(ShiroUtils.getLoginName());
         ShiroUtils.clearCachedAuthorizationInfo();
@@ -114,7 +114,7 @@ public class SysMenuController extends BaseController
     }
 
     /**
-     * 修改菜单
+     * Modify menu
      */
     @GetMapping("/edit/{menuId}")
     public String edit(@PathVariable("menuId") Long menuId, ModelMap mmap)
@@ -124,9 +124,9 @@ public class SysMenuController extends BaseController
     }
 
     /**
-     * 修改保存菜单
+     * Modify save menu
      */
-    @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
+    @Log(title = "Menu Management", businessType = BusinessType.UPDATE)
     @RequiresPermissions("system:menu:edit")
     @PostMapping("/edit")
     @ResponseBody
@@ -134,7 +134,7 @@ public class SysMenuController extends BaseController
     {
         if (UserConstants.MENU_NAME_NOT_UNIQUE.equals(menuService.checkMenuNameUnique(menu)))
         {
-            return error("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
+            return error("Cập nhật menu " + menu.getMenuName() + " thất bại, tên menu đã tồn tại!");
         }
         menu.setUpdateBy(ShiroUtils.getLoginName());
         ShiroUtils.clearCachedAuthorizationInfo();
@@ -142,7 +142,7 @@ public class SysMenuController extends BaseController
     }
 
     /**
-     * 选择菜单图标
+     * Select the menu icon
      */
     @GetMapping("/icon")
     public String icon()
@@ -151,7 +151,7 @@ public class SysMenuController extends BaseController
     }
 
     /**
-     * 校验菜单名称
+     * Check menu name
      */
     @PostMapping("/checkMenuNameUnique")
     @ResponseBody
@@ -161,7 +161,7 @@ public class SysMenuController extends BaseController
     }
 
     /**
-     * 加载角色菜单列表树
+     * Load character menu list tree
      */
     @GetMapping("/roleMenuTreeData")
     @ResponseBody
@@ -173,7 +173,7 @@ public class SysMenuController extends BaseController
     }
 
     /**
-     * 加载所有菜单列表树
+     * Load all menu list trees
      */
     @GetMapping("/menuTreeData")
     @ResponseBody
@@ -185,7 +185,7 @@ public class SysMenuController extends BaseController
     }
 
     /**
-     * 选择菜单树
+     * Select the menu tree
      */
     @GetMapping("/selectMenuTree/{menuId}")
     public String selectMenuTree(@PathVariable("menuId") Long menuId, ModelMap mmap)

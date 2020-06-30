@@ -18,7 +18,7 @@ import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.system.service.ISysMenuService;
 
 /**
- * 首页 业务处理
+ * Index controller
  * 
  * @author admin
  */
@@ -34,13 +34,13 @@ public class SysIndexController extends BaseController
     @Autowired
     private IEquipmentDoService doService;
 
-    // 系统首页
+    // System Home
     @GetMapping("/index")
     public String index(ModelMap mmap)
     {
-        // 取身份信息
+        // Get identity information
         SysUser user = ShiroUtils.getSysUser();
-        // 根据用户id取出菜单
+        // Take out the menu based on the user id
         List<SysMenu> menus = menuService.selectMenusByUser(user);
         mmap.put("menus", menus);
         mmap.put("user", user);
@@ -51,14 +51,14 @@ public class SysIndexController extends BaseController
         return "index";
     }
 
-    // 切换主题
+    // switch theme
     @GetMapping("/system/switchSkin")
     public String switchSkin(ModelMap mmap)
     {
         return "skin";
     }
 
-    // 系统介绍
+    // system introduction
     @GetMapping("/system/main")
     public String main(ModelMap mmap)
     {
