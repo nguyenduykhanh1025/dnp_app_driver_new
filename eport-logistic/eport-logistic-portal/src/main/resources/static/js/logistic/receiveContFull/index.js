@@ -6,7 +6,6 @@ var conts = '';
 var allChecked = false, dnDepot = false;
 var checkList = [];
 var rowAmount = 0;
-var emptyDepotList = ["Cảng Tiên Sa", "Cảng khác"];
 var consigneeList;
 $.ajax({
   url: prefix + "/getField",
@@ -115,7 +114,7 @@ function formatDate(value) {
 
 // FORMAT REMARK FOR SHIPMENT LIST
 function formatRemark(value) {
-  return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null && value != '' ? value : "...") + '</span></div>';
+  return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null && value != '' ? value : "") + '</span></div>';
 }
 
 function handleRefresh() {
@@ -440,7 +439,7 @@ function configHandson() {
       {
         data: "emptyDepot",
         type: "autocomplete",
-        source: emptyDepotList,
+        source: emptyDepots,
         strict: true,
         renderer: emptyDepotRenderer
       },
