@@ -20,10 +20,7 @@ import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 /**
- * 【请填写功能名称】Controller
- * 
- * @author ruoyi
- * @date 2020-04-03
+ * SysEdiHistoryController
  */
 @Controller
 @RequestMapping("/system/history")
@@ -42,7 +39,7 @@ public class SysEdiHistoryController extends BaseController
     }
 
     /**
-     * Get 【请填写功能名称】 List
+     * Get data table List
      */
     @RequiresPermissions("system:history:list")
     @PostMapping("/list")
@@ -55,10 +52,10 @@ public class SysEdiHistoryController extends BaseController
     }
 
     /**
-     * Export 【请填写功能名称】 List
+     * Export SysEdiHistoryList
      */
     @RequiresPermissions("system:history:export")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.EXPORT)
+    @Log(title = "Export SysEdiHistoryList", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(SysEdiHistory sysEdiHistory)
@@ -69,7 +66,7 @@ public class SysEdiHistoryController extends BaseController
     }
 
     /**
-     * Add 【请填写功能名称】
+     * Return prefix + /add
      */
     @GetMapping("/add")
     public String add()
@@ -78,10 +75,10 @@ public class SysEdiHistoryController extends BaseController
     }
 
     /**
-     * Add or Update 【请填写功能名称】
+     * Add SysEdiHistory
      */
     @RequiresPermissions("system:history:add")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.INSERT)
+    @Log(title = "Add SysEdiHistory", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(SysEdiHistory sysEdiHistory)
@@ -90,7 +87,7 @@ public class SysEdiHistoryController extends BaseController
     }
 
     /**
-     * Update 【请填写功能名称】
+     * Update SysEdiHistory
      */
     @GetMapping("/edit/{ediId}")
     public String edit(@PathVariable("ediId") Long ediId, ModelMap mmap)
@@ -101,10 +98,10 @@ public class SysEdiHistoryController extends BaseController
     }
 
     /**
-     * Update Save 【请填写功能名称】
+     * Update Save SysEdiHistory
      */
     @RequiresPermissions("system:history:edit")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.UPDATE)
+    @Log(title = "Update Save SysEdiHistory", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(SysEdiHistory sysEdiHistory)
@@ -113,10 +110,10 @@ public class SysEdiHistoryController extends BaseController
     }
 
     /**
-     * Delete 【请填写功能名称】
+     * Delete SysEdiHistory
      */
     @RequiresPermissions("system:history:remove")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.DELETE)
+    @Log(title = "Delete SysEdiHistory", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
     public AjaxResult remove(String ids)

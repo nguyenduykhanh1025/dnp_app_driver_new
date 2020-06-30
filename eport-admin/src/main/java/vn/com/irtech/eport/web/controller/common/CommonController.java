@@ -60,9 +60,9 @@ public class CommonController
     {
         try
         {
-            // 上传文件路径
+            // Upload file path
             String filePath = Global.getUploadPath();
-            // 上传并返回新文件名称
+            // Upload and return the new file name
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = serverConfig.getUrl() + fileName;
             AjaxResult ajax = AjaxResult.success();
@@ -80,11 +80,11 @@ public class CommonController
     public void resourceDownload(String resource, HttpServletRequest request, HttpServletResponse response)
             throws Exception
     {
-        // 本地资源路径
+        // Local resource path
         String localPath = Global.getProfile();
-        // 数据库资源地址
+        // Database resource address
         String downloadPath = localPath + StringUtils.substringAfter(resource, Constants.RESOURCE_PREFIX);
-        // 下载名称
+        // download name
         String downloadName = StringUtils.substringAfterLast(downloadPath, "/");
         response.setCharacterEncoding("utf-8");
         response.setContentType("multipart/form-data");

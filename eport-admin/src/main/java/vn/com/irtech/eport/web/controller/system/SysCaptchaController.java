@@ -17,10 +17,10 @@ import com.google.code.kaptcha.Producer;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 
 /**
- * 图片验证码（支持算术形式）
- * 
- * @author admin
- */
+* Picture verification code (supports arithmetic form)
+*
+* @author admin
+*/
 @Controller
 @RequestMapping("/captcha")
 public class SysCaptchaController extends BaseController
@@ -32,8 +32,8 @@ public class SysCaptchaController extends BaseController
     private Producer captchaProducerMath;
 
     /**
-     * 验证码生成
-     */
+    * Verification code generation
+    */
     @GetMapping(value = "/captchaImage")
     public ModelAndView getKaptchaImage(HttpServletRequest request, HttpServletResponse response)
     {

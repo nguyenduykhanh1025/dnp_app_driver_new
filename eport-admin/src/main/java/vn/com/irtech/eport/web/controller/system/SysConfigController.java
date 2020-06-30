@@ -23,7 +23,7 @@ import vn.com.irtech.eport.system.domain.SysConfig;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 /**
- * 参数配置 信息操作处理
+ * SysConfig Controller
  * 
  * @author admin
  */
@@ -44,7 +44,7 @@ public class SysConfigController extends BaseController
     }
 
     /**
-     * 查询参数配置列表
+     * Query parameter configuration list
      */
     @RequiresPermissions("system:config:list")
     @PostMapping("/list")
@@ -56,7 +56,7 @@ public class SysConfigController extends BaseController
         return getDataTable(list);
     }
 
-    @Log(title = "参数管理", businessType = BusinessType.EXPORT)
+    @Log(title = "Parameter management", businessType = BusinessType.EXPORT)
     @RequiresPermissions("system:config:export")
     @PostMapping("/export")
     @ResponseBody
@@ -64,11 +64,11 @@ public class SysConfigController extends BaseController
     {
         List<SysConfig> list = configService.selectConfigList(config);
         ExcelUtil<SysConfig> util = new ExcelUtil<SysConfig>(SysConfig.class);
-        return util.exportExcel(list, "参数数据");
+        return util.exportExcel(list, "Parameter data");
     }
 
     /**
-     * 新增参数配置
+     * New parameter configuration
      */
     @GetMapping("/add")
     public String add()
@@ -77,24 +77,24 @@ public class SysConfigController extends BaseController
     }
 
     /**
-     * 新增保存参数配置
+     * Added save parameter configuration
      */
     @RequiresPermissions("system:config:add")
-    @Log(title = "参数管理", businessType = BusinessType.INSERT)
+    @Log(title = "Parameter management", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(@Validated SysConfig config)
     {
         if (UserConstants.CONFIG_KEY_NOT_UNIQUE.equals(configService.checkConfigKeyUnique(config)))
         {
-            return error("新增参数'" + config.getConfigName() + "'失败，参数键名已存在");
+            return error("Thêm tham số mới " + config.getConfigName() + " không thành công，tên tham số đã tồn tại!");
         }
         config.setCreateBy(ShiroUtils.getLoginName());
         return toAjax(configService.insertConfig(config));
     }
 
     /**
-     * 修改参数配置
+     * Modify parameter configuration
      */
     @GetMapping("/edit/{configId}")
     public String edit(@PathVariable("configId") Long configId, ModelMap mmap)
@@ -104,27 +104,27 @@ public class SysConfigController extends BaseController
     }
 
     /**
-     * 修改保存参数配置
+     * Modify save parameter configuration
      */
     @RequiresPermissions("system:config:edit")
-    @Log(title = "参数管理", businessType = BusinessType.UPDATE)
+    @Log(title = "Parameter management", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(@Validated SysConfig config)
     {
         if (UserConstants.CONFIG_KEY_NOT_UNIQUE.equals(configService.checkConfigKeyUnique(config)))
         {
-            return error("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
+            return error("Thay đổi tham số " + config.getConfigName() + " không thành công，tên tham số đã tồn tại!");
         }
         config.setUpdateBy(ShiroUtils.getLoginName());
         return toAjax(configService.updateConfig(config));
     }
 
     /**
-     * 删除参数配置
+     * Delete parameter configuration
      */
     @RequiresPermissions("system:config:remove")
-    @Log(title = "参数管理", businessType = BusinessType.DELETE)
+    @Log(title = "Parameter management", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String ids)
@@ -133,10 +133,10 @@ public class SysConfigController extends BaseController
     }
 
     /**
-     * Clear缓存
+     * Clear cache
      */
     @RequiresPermissions("system:config:remove")
-    @Log(title = "参数管理", businessType = BusinessType.CLEAN)
+    @Log(title = "Parameter management", businessType = BusinessType.CLEAN)
     @GetMapping("/clearCache")
     @ResponseBody
     public AjaxResult clearCache()
@@ -146,7 +146,7 @@ public class SysConfigController extends BaseController
     }
 
     /**
-     * 校验参数键名
+     * Verify parameter key name
      */
     @PostMapping("/checkConfigKeyUnique")
     @ResponseBody

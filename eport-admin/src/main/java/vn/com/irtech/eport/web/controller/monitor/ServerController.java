@@ -9,7 +9,7 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.framework.web.domain.Server;
 
 /**
- * 服务器监控
+ * Server Controller
  * 
  * @author admin
  */

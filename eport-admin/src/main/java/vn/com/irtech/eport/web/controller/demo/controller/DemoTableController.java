@@ -19,8 +19,8 @@ import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 表格相关
- * 
+ * Table related
+ *
  * @author admin
  */
 @Controller
@@ -31,36 +31,36 @@ public class DemoTableController extends BaseController
 
     private final static List<UserTableModel> users = new ArrayList<UserTableModel>();
     {
-        users.add(new UserTableModel(1, "1000001", "测试1", "0", "15888888888", "ry@qq.com", 150.0, "0"));
-        users.add(new UserTableModel(2, "1000002", "测试2", "1", "15666666666", "ry@qq.com", 180.0, "1"));
-        users.add(new UserTableModel(3, "1000003", "测试3", "0", "15666666666", "ry@qq.com", 110.0, "1"));
-        users.add(new UserTableModel(4, "1000004", "测试4", "1", "15666666666", "ry@qq.com", 220.0, "1"));
-        users.add(new UserTableModel(5, "1000005", "测试5", "0", "15666666666", "ry@qq.com", 140.0, "1"));
-        users.add(new UserTableModel(6, "1000006", "测试6", "1", "15666666666", "ry@qq.com", 330.0, "1"));
-        users.add(new UserTableModel(7, "1000007", "测试7", "0", "15666666666", "ry@qq.com", 160.0, "1"));
-        users.add(new UserTableModel(8, "1000008", "测试8", "1", "15666666666", "ry@qq.com", 170.0, "1"));
-        users.add(new UserTableModel(9, "1000009", "测试9", "0", "15666666666", "ry@qq.com", 180.0, "1"));
-        users.add(new UserTableModel(10, "1000010", "测试10", "0", "15666666666", "ry@qq.com", 210.0, "1"));
-        users.add(new UserTableModel(11, "1000011", "测试11", "1", "15666666666", "ry@qq.com", 110.0, "1"));
-        users.add(new UserTableModel(12, "1000012", "测试12", "0", "15666666666", "ry@qq.com", 120.0, "1"));
-        users.add(new UserTableModel(13, "1000013", "测试13", "1", "15666666666", "ry@qq.com", 380.0, "1"));
-        users.add(new UserTableModel(14, "1000014", "测试14", "0", "15666666666", "ry@qq.com", 280.0, "1"));
-        users.add(new UserTableModel(15, "1000015", "测试15", "0", "15666666666", "ry@qq.com", 570.0, "1"));
-        users.add(new UserTableModel(16, "1000016", "测试16", "1", "15666666666", "ry@qq.com", 260.0, "1"));
-        users.add(new UserTableModel(17, "1000017", "测试17", "1", "15666666666", "ry@qq.com", 210.0, "1"));
-        users.add(new UserTableModel(18, "1000018", "测试18", "1", "15666666666", "ry@qq.com", 340.0, "1"));
-        users.add(new UserTableModel(19, "1000019", "测试19", "1", "15666666666", "ry@qq.com", 160.0, "1"));
-        users.add(new UserTableModel(20, "1000020", "测试20", "1", "15666666666", "ry@qq.com", 220.0, "1"));
-        users.add(new UserTableModel(21, "1000021", "测试21", "1", "15666666666", "ry@qq.com", 120.0, "1"));
-        users.add(new UserTableModel(22, "1000022", "测试22", "1", "15666666666", "ry@qq.com", 130.0, "1"));
-        users.add(new UserTableModel(23, "1000023", "测试23", "1", "15666666666", "ry@qq.com", 490.0, "1"));
-        users.add(new UserTableModel(24, "1000024", "测试24", "1", "15666666666", "ry@qq.com", 570.0, "1"));
-        users.add(new UserTableModel(25, "1000025", "测试25", "1", "15666666666", "ry@qq.com", 250.0, "1"));
-        users.add(new UserTableModel(26, "1000026", "测试26", "1", "15666666666", "ry@qq.com", 250.0, "1"));
+        users.add(new UserTableModel(1, "1000001", "Test 1", "0", "15888888888", "ry@qq.com", 150.0, "0"));
+        users.add(new UserTableModel(2, "1000002", "Test 2", "1", "15666666666", "ry@qq.com", 180.0, "1"));
+        users.add(new UserTableModel(3, "1000003", "Test 3", "0", "15666666666", "ry@qq.com", 110.0, "1"));
+        users.add(new UserTableModel(4, "1000004", "Test 4", "1", "15666666666", "ry@qq.com", 220.0, "1"));
+        users.add(new UserTableModel(5, "1000005", "Test 5", "0", "15666666666", "ry@qq.com", 140.0, "1"));
+        users.add(new UserTableModel(6, "1000006", "Test 6", "1", "15666666666", "ry@qq.com", 330.0, "1"));
+        users.add(new UserTableModel(7, "1000007", "Test 7", "0", "15666666666", "ry@qq.com", 160.0, "1"));
+        users.add(new UserTableModel(8, "1000008", "Test 8", "1", "15666666666", "ry@qq.com", 170.0, "1"));
+        users.add(new UserTableModel(9, "1000009", "Test 9", "0", "15666666666", "ry@qq.com", 180.0, "1"));
+        users.add(new UserTableModel(10, "1000010", "Test 10", "0", "15666666666", "ry@qq.com", 210.0, "1"));
+        users.add(new UserTableModel(11, "1000011", "Test 11", "1", "15666666666", "ry@qq.com", 110.0, "1"));
+        users.add(new UserTableModel(12, "1000012", "Test 12", "0", "15666666666", "ry@qq.com", 120.0, "1"));
+        users.add(new UserTableModel(13, "1000013", "Test 13", "1", "15666666666", "ry@qq.com", 380.0, "1"));
+        users.add(new UserTableModel(14, "1000014", "Test 14", "0", "15666666666", "ry@qq.com", 280.0, "1"));
+        users.add(new UserTableModel(15, "1000015", "Test 15", "0", "15666666666", "ry@qq.com", 570.0, "1"));
+        users.add(new UserTableModel(16, "1000016", "Test 16", "1", "15666666666", "ry@qq.com", 260.0, "1"));
+        users.add(new UserTableModel(17, "1000017", "Test 17", "1", "15666666666", "ry@qq.com", 210.0, "1"));
+        users.add(new UserTableModel(18, "1000018", "Test 18", "1", "15666666666", "ry@qq.com", 340.0, "1"));
+        users.add(new UserTableModel(19, "1000019", "Test 19", "1", "15666666666", "ry@qq.com", 160.0, "1"));
+        users.add(new UserTableModel(20, "1000020", "Test 20", "1", "15666666666", "ry@qq.com", 220.0, "1"));
+        users.add(new UserTableModel(21, "1000021", "Test 21", "1", "15666666666", "ry@qq.com", 120.0, "1"));
+        users.add(new UserTableModel(22, "1000022", "Test 22", "1", "15666666666", "ry@qq.com", 130.0, "1"));
+        users.add(new UserTableModel(23, "1000023", "Test 23", "1", "15666666666", "ry@qq.com", 490.0, "1"));
+        users.add(new UserTableModel(24, "1000024", "Test 24", "1", "15666666666", "ry@qq.com", 570.0, "1"));
+        users.add(new UserTableModel(25, "1000025", "Test 25", "1", "15666666666", "ry@qq.com", 250.0, "1"));
+        users.add(new UserTableModel(26, "1000026", "Test 26", "1", "15666666666", "ry@qq.com", 250.0, "1"));
     }
 
     /**
-     * 搜索相关
+     * Search related
      */
     @GetMapping("/search")
     public String search()
@@ -69,7 +69,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 数据汇总
+     * Data summary
      */
     @GetMapping("/footer")
     public String footer()
@@ -78,7 +78,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 组合表头
+     * Combination header
      */
     @GetMapping("/groupHeader")
     public String groupHeader()
@@ -87,7 +87,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 表格导出
+     * Table export
      */
     @GetMapping("/export")
     public String export()
@@ -96,7 +96,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 翻页记住选择
+     * Turn page to remember choice
      */
     @GetMapping("/remember")
     public String remember()
@@ -105,7 +105,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 跳转至指定页
+     * Jump to the specified page
      */
     @GetMapping("/pageGo")
     public String pageGo()
@@ -114,7 +114,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 自定义查询参数
+     * Custom query parameters
      */
     @GetMapping("/params")
     public String params()
@@ -123,7 +123,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 多表格
+     * Multiple forms
      */
     @GetMapping("/multi")
     public String multi()
@@ -132,7 +132,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 点击按钮加载表格
+     * Click the button to load the form
      */
     @GetMapping("/button")
     public String button()
@@ -141,7 +141,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 表格冻结列
+     * Table freeze column
      */
     @GetMapping("/fixedColumns")
     public String fixedColumns()
@@ -150,7 +150,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 自定义触发事件
+     * Custom trigger event
      */
     @GetMapping("/event")
     public String event()
@@ -159,7 +159,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 表格细节视图
+     * Form detail view
      */
     @GetMapping("/detail")
     public String detail()
@@ -168,7 +168,7 @@ public class DemoTableController extends BaseController
     }
     
     /**
-     * 表格父子视图
+     * Table parent-child view
      */
     @GetMapping("/child")
     public String child()
@@ -177,7 +177,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 表格图片预览
+     * Table picture preview
      */
     @GetMapping("/image")
     public String image()
@@ -186,7 +186,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 动态增删改查
+     * Dynamic addition, deletion and modification
      */
     @GetMapping("/curd")
     public String curd()
@@ -195,7 +195,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 表格拖拽操作
+     * Table drag and drop operation
      */
     @GetMapping("/reorder")
     public String reorder()
@@ -204,7 +204,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 表格行内编辑操作
+     * Edit operation in table row
      */
     @GetMapping("/editable")
     public String editable()
@@ -213,7 +213,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 表格其他操作
+     * Other operations
      */
     @GetMapping("/other")
     public String other()
@@ -222,7 +222,7 @@ public class DemoTableController extends BaseController
     }
 
     /**
-     * 查询数据
+     * Query data
      */
     @PostMapping("/list")
     @ResponseBody
@@ -231,7 +231,7 @@ public class DemoTableController extends BaseController
         TableDataInfo rspData = new TableDataInfo();
         List<UserTableModel> userList = new ArrayList<UserTableModel>(Arrays.asList(new UserTableModel[users.size()]));
         Collections.copy(userList, users);
-        // 查询条件过滤
+        // Query filter
         if (StringUtils.isNotEmpty(userModel.getUserName()))
         {
             userList.clear();
@@ -264,31 +264,31 @@ public class DemoTableController extends BaseController
 
 class UserTableModel
 {
-    /** 用户ID */
+    /** User ID */
     private int userId;
 
-    /** 用户编号 */
+    /** user ID */
     private String userCode;
 
-    /** 用户姓名 */
+    /** username */
     private String userName;
 
-    /** 用户性别 */
+    /** User gender */
     private String userSex;
 
-    /** 用户手机 */
+    /** User phone */
     private String userPhone;
 
-    /** 用户邮箱 */
+    /** User email */
     private String userEmail;
 
-    /** 用户余额 */
+    /** User balance */
     private double userBalance;
 
-    /** 用户状态（0正常 1停用） */
+    /** User status (0 normal 1 disabled) */
     private String status;
 
-    /** 创建时间 */
+    /** Creation time */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 

@@ -13,7 +13,7 @@ import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 /**
- * 注册验证
+ * Register Controller
  * 
  * @author admin
  */
@@ -38,7 +38,7 @@ public class SysRegisterController extends BaseController
     {
         if (!("true".equals(configService.selectConfigByKey("sys.account.registerUser"))))
         {
-            return error("当前系统没有开启注册功能！");
+            return error("Chức năng đăng ký không được kích hoạt trong hệ thống hiện tại!");
         }
         String msg = registerService.register(user);
         return StringUtils.isEmpty(msg) ? success() : error(msg);

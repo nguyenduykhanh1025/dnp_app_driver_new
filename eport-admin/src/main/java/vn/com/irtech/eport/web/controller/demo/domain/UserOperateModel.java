@@ -12,28 +12,28 @@ public class UserOperateModel extends BaseEntity
 
     private int userId;
 
-    @Excel(name = "用户编号")
+    @Excel(name = "User ID")
     private String userCode;
 
-    @Excel(name = "用户姓名")
+    @Excel(name = "User Name")
     private String userName;
 
-    @Excel(name = "用户性别", readConverterExp = "0=男,1=女,2=未知")
-    private String userSex;
+    @Excel(name = "User Gender", readConverterExp = "0=Male, 1=Female, 2=Unknown")
+     private String userSex;
 
-    @Excel(name = "用户手机")
+    @Excel(name = "User Phone")
     private String userPhone;
 
-    @Excel(name = "用户邮箱")
+    @Excel(name = "User Mailbox")
     private String userEmail;
 
-    @Excel(name = "用户余额")
+    @Excel(name = "User Balance")
     private double userBalance;
 
-    @Excel(name = "用户状态", readConverterExp = "0=正常,1=停用")
+    @Excel(name = "User Status", readConverterExp = "0=normal, 1=disabled")
     private String status;
 
-    @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Type.EXPORT)
+    @Excel(name = "Creation time", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss", type = Type.EXPORT)
     private Date createTime;
 
     public UserOperateModel()

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 
 /**
- * druid 监控
+ * druid controller
  * 
  * @author admin
  */

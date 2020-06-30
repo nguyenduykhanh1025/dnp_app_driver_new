@@ -3,56 +3,50 @@ package vn.com.irtech.eport.system.mapper;
 import java.util.List;
 import vn.com.irtech.eport.system.domain.SysEdiHistory;
 
-/**
- * 【请填写功能名称】Mapper Interface
- * 
- * @author ruoyi
- * @date 2020-04-03
- */
 public interface SysEdiHistoryMapper 
 {
     /**
-     * Get 【请填写功能名称】
+     * Get SysEdi history by ediId
      * 
-     * @param ediId 【请填写功能名称】ID
-     * @return 【请填写功能名称】
+     * @param ediId 
+     * @return Result
      */
     public SysEdiHistory selectSysEdiHistoryById(Long ediId);
 
     /**
-     * Get 【请填写功能名称】 List
+     * Get SysEdi history List
      * 
-     * @param sysEdiHistory 【请填写功能名称】
-     * @return 【请填写功能名称】 List
+     * @param sysEdiHistory 
+     * @return Result
      */
     public List<SysEdiHistory> selectSysEdiHistoryList(SysEdiHistory sysEdiHistory);
 
     /**
-     * Add 【请填写功能名称】
+     * Add SysEdi history
      * 
-     * @param sysEdiHistory 【请填写功能名称】
+     * @param sysEdiHistory 
      * @return Result
      */
     public int insertSysEdiHistory(SysEdiHistory sysEdiHistory);
 
     /**
-     * Update 【请填写功能名称】
-     * 
-     * @param sysEdiHistory 【请填写功能名称】
+     * Update SysEdi history
+     *
+     * @param sysEdiHistory 
      * @return Result
      */
     public int updateSysEdiHistory(SysEdiHistory sysEdiHistory);
 
     /**
-     * Delete 【请填写功能名称】
-     * 
-     * @param ediId 【请填写功能名称】ID
-     * @return result
+     * Delete SysEdi
+     *
+     * @param ediId 
+     * @return Result
      */
     public int deleteSysEdiHistoryById(Long ediId);
 
     /**
-     * Batch Delete 【请填写功能名称】
+     * Batch Delete SysEdi history by ids
      * 
      * @param ediIds IDs
      * @return result
