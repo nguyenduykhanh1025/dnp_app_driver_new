@@ -89,4 +89,9 @@ public class ShiroUtils
         String hex = secureRandom.nextBytes(3).toHex();
         return hex;
     }
+
+    public static Long getGroupId()
+    {
+        return getSysUser().getGroupId();
+    }
 }

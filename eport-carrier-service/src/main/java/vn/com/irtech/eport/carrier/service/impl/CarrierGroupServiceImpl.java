@@ -146,4 +146,10 @@ public class CarrierGroupServiceImpl implements ICarrierGroupService
         }
         return "0";
     }
+
+	@Override
+	public String getDoTypeByOpeCode(String opeCode) {
+		return carrierGroupMapper.getDoTypeByOpeCode(opeCode);
+	}
+	
 }

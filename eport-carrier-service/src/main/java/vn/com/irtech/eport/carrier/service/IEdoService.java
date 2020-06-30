@@ -63,6 +63,11 @@ public interface IEdoService
     public int deleteEdoById(Long id);
 
     public Edo checkContainerAvailable(@Param("container") String cont,@Param("billNo") String billNo);
+    
+    public String getOpeCodeByBlNo(String blNo);
 
+    
+    public  List<Edo> readEdi(String[] text);
 
+    public Long getCountContainerAmountByBlNo(String blNo);
 }

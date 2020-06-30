@@ -33,12 +33,42 @@ public class CarrierGroup extends BaseEntity
     /** Main Email */
     @Excel(name = "Main Email")
     private String mainEmail;
+    
+    /** 0: DO, 1:eDO */
+    @Excel(name = "Type DO")
+    private String doType;
 
     /** Do Permission */
     private String doFlag;
 
-    /** Edo Permisison */
+    /** Edo Permission */
+
     private String edoFlag;
+
+    private String pathEdiBackup;
+
+    private String pathEdiReceive;
+
+    public void setPathEdiReceive(String pathEdiReceive) 
+    {
+        this.pathEdiReceive = pathEdiReceive;
+    }
+
+    public String getPathEdiReceive() 
+    {
+        return pathEdiReceive;
+    }
+
+    public void setPathEdiBackup(String pathEdiBackup) 
+    {
+        this.pathEdiBackup = pathEdiBackup;
+    }
+
+    public String getPathEdiBackup() 
+    {
+        return pathEdiBackup;
+    }
+
 
     public void setId(Long id) 
     {
@@ -85,6 +115,16 @@ public class CarrierGroup extends BaseEntity
     {
         return mainEmail;
     }
+    
+    public void setDoType(String doType) 
+    {
+        this.doType = doType;
+    }
+
+    public String getDoType() 
+    {
+        return doType;
+    }
 
     public void setDoFlag(String doFlag) {
         this.doFlag = doFlag;
@@ -110,12 +150,14 @@ public class CarrierGroup extends BaseEntity
             .append("groupName", getGroupName())
             .append("operateCode", getOperateCode())
             .append("mainEmail", getMainEmail())
+            .append("doType", getDoType())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("doFlag", getDoFlag())
             .append("edoFlag", getEdoFlag())
+            .append("pathEdiFile", getPathEdiBackup())
             .toString();
     }
 }

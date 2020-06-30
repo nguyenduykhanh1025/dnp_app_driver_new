@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.mapper.EdoMapper;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
@@ -44,6 +46,9 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Autowired
     private ShipmentDetailMapper shipmentDetailMapper;
+    
+    @Autowired
+    private EdoMapper edoMapper;
 
     @Autowired
     private IProcessOrderService processOrderService;
@@ -599,6 +604,28 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         return shipmentDetailMapper.selectShipmentDetailByProcessIds(Convert.toStrArray(processOrderIds));
     }
 
+	@Override
+	public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo) {
+		List<Edo> listEdo = edoMapper.selectEdoListByBlNo(blNo);
+		List<ShipmentDetail> listShip = new ArrayList<ShipmentDetail>();
+		if(listEdo != null) {
+			for(Edo i : listEdo) {
+				ShipmentDetail ship = new ShipmentDetail();
+				ship.setContainerNo(i.getContainerNumber());
+				ship.setExpiredDem(i.getExpiredDem());
+				ship.setConsignee(i.getConsignee());
+				ship.setEmptyDepot(i.getEmptyContainerDepot());
+				ship.setOpeCode(i.getCarrierCode());
+				ship.setVslNm(i.getVessel());
+				ship.setVoyNo(i.getVoyNo());
+				listShip.add(ship);
+			}
+			return listShip;
+		}
+		return null;
+	}
+    
+    
     // @Override
     // public List<ShipmentDetail> selectSendEmptyShipmentDetailByListCont(@Param("conts") String conts, @Param("shipmentId") Long shipmentId) {
     //     return shipmentDetailMapper.selectSendEmptyShipmentDetailByListCont(Convert.toStrArray(conts), shipmentId);

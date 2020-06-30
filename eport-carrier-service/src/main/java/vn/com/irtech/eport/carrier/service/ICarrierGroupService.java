@@ -90,5 +90,7 @@ public interface ICarrierGroupService
 	 * @return
 	 */
     public String checkMainEmailUnique(String mainEmail);
+    
+    public String getDoTypeByOpeCode(String opeCode);
 
 }

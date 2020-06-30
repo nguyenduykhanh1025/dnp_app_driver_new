@@ -10,16 +10,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="groupName"    column="group_name"    />
         <result property="operateCode"    column="operate_code"    />
         <result property="mainEmail"    column="main_email"    />
+        <result property="doType"    column="do_type"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="doFlag"    column="do_flag"    />
         <result property="edoFlag"    column="edo_flag"    />
+        <result property="pathEdiReceive"    column="path_edi_receive"    />    
+        <result property="pathEdiBackup"    column="path_edi_backup"    />   
     </resultMap>
 
     <sql id="selectCarrierGroupVo">
-        select id, group_code, group_name, operate_code, main_email, create_by, create_time, update_by, update_time, do_flag, edo_flag from carrier_group
+<<<<<<< HEAD
+        select id, group_code, group_name, operate_code, main_email, create_by, create_time, update_by, update_time, do_flag, edo_flag, path_edi_receive, path_edi_backup from carrier_group
+=======
+        select id, group_code, group_name, operate_code, main_email, do_type, create_by, create_time, update_by, update_time, do_flag, edo_flag from carrier_group
+>>>>>>> 8f8caac49813531bf5f6888022caab86bd5ffe07
     </sql>
 
     <select id="selectCarrierGroupList" parameterType="CarrierGroup" resultMap="CarrierGroupResult">
@@ -58,6 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupName != null  and groupName != ''">group_name,</if>
             <if test="operateCode != null  and operateCode != ''">operate_code,</if>
             <if test="mainEmail != null  and mainEmail != ''">main_email,</if>
+            <if test="doType != null  and doType != ''">do_type,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
@@ -70,6 +78,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupName != null  and groupName != ''">#{groupName},</if>
             <if test="operateCode != null  and operateCode != ''">#{operateCode},</if>
             <if test="mainEmail != null  and mainEmail != ''">#{mainEmail},</if>
+            <if test="doType != null  and doType != ''">#{doType},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
@@ -86,12 +95,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupName != null  and groupName != ''">group_name = #{groupName},</if>
             <if test="operateCode != null  and operateCode != ''">operate_code = #{operateCode},</if>
             <if test="mainEmail != null  and mainEmail != ''">main_email = #{mainEmail},</if>
+            <if test="doType != null  and doType != ''">do_type = #{doType},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="doFlag != null  and doFlag != ''">do_flag = #{doFlag},</if>
             <if test="edoFlag != null  and edoFlag != ''">edo_flag = #{edoFlag},</if>
+            <if test="pathEdiReceive != null  and pathEdiReceive != ''">path_edi_receive = #{pathEdiReceive},</if>
+            <if test="pathEdiBackup != null  and pathEdiBackup != ''">path_edi_backup = #{pathEdiBackup},</if>
         </trim>
         where id = #{id}
     </update>
@@ -113,6 +125,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="checkMainEmailUnique" parameterType="String" resultType="int">
 		select count(1) from carrier_group where lower(main_email)=#{mainEmail}
+	</select>
+	<select id="getDoTypeByOpeCode" parameterType="String" resultType="String">
+		select do_type from carrier_group where operate_code like concat('%', #{opeCode}, '%')
 	</select>
 
 </mapper>

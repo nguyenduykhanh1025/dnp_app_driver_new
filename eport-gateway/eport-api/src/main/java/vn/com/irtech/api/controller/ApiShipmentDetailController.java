@@ -14,6 +14,7 @@ import vn.com.irtech.api.common.utils.Convert;
 import vn.com.irtech.api.common.utils.R;
 import vn.com.irtech.api.dao.ShipmentDetailDao;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
+import vn.com.irtech.api.entity.ShipmentEntity;
 
 @RestController
 @RequestMapping("/api")
@@ -78,5 +79,10 @@ public class ApiShipmentDetailController {
 	@GetMapping("/shipmentDetail/getCountContByBlNo/{blNo}")
 	public Integer getCountContByBlNo(@PathVariable String blNo) {
 		return shipmentDetailDao.getCountContByBlNo(blNo);
+	}
+	
+	@GetMapping("shipmentDetail/getOpeCodeCatosByBlNo/{blNo}")
+	public ShipmentEntity getOpeCodeCatosByBlNo(@PathVariable String blNo) {
+		return shipmentDetailDao.getOpeCodeCatosByBlNo(blNo);
 	}
 }

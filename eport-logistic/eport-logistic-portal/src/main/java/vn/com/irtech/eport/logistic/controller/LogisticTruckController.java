@@ -74,6 +74,7 @@ public class LogisticTruckController extends LogisticBaseController
     	if(logisticTruckService.checkPlateNumberUnique(logisticTruck.getPlateNumber()) > 0) {
     		error("Biển số xe này đã tồn tại!");
     	}
+    	logisticTruck.setCreateBy(getUser().getFullName());
         return toAjax(logisticTruckService.insertLogisticTruck(logisticTruck));
     }
 

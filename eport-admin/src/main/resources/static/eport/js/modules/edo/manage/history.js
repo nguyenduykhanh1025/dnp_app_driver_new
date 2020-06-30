@@ -1,53 +1,47 @@
-$(function () {
-    loadTable();
-  });
+var prefix = "/edo/manage";
+$(function() {
+    loadTable(containerNumber);
+});
 
-  var prefix = "/edo/manage"
-  function loadTable() {
+function loadTable(containerNumber) {
     $("#dg").datagrid({
-      url: prefix + "/getHistory",
-      method: "GET",
-      singleSelect: true,
-      height: document.documentElement.clientHeight - 70,
-      clientPaging: false,
-      pagination: true,
-      rownumbers: true,
-      pageSize: 50,
-      nowrap: false,
-      striped: true,
-      loadMsg: " Đang xử lý...",
-      loader: function (param, success, error) {
-        var opts = $(this).datagrid("options");
-        if (!opts.url) return false;
-        $.ajax({
-          type: opts.method,
-          url: opts.url,
-          data: {
-            
-          },
-          dataType: "json",
-          success: function (data) {
-            success(data);
-          },
-          error: function () {
-            error.apply(this, arguments);
-          },
-        });
-      },
+        url: prefix + "/getHistory",
+        method: "GET",
+        singleSelect: true,
+        clientPaging: true,
+        pagination: true,
+        pageSize: 20,
+        nowrap: true,
+        striped: true,
+        loader: function(param, success, error) {
+            var opts = $(this).datagrid("options");
+            if (!opts.url) return false;
+            $.ajax({
+                type: opts.method,
+                url: opts.url,
+                data: {
+                    containerNumber: containerNumber
+                },
+                dataType: "json",
+                success: function(data) {
+                    success(data);
+                },
+                error: function() {
+                    error.apply(this, arguments);
+                },
+            });
+        },
     });
-  }
-  function formatAction(value, row, index) {
-    var actions = [];
-      actions.push('<a class="btn btn-success btn-xs" onclick="viewEdiFile(\'' + row.id + '\')"><i class="fa fa-view"></i>Xem file</a> ');
-      return actions.join('');
-  }
-  function viewEdiFile(id)
-  {
-     alert("OK  "+id);
-  }
+}
 
-  function showViewEdi()
-  {
-      
-  }
-  
+function statusFormat(value) {
+    if (value == "add") {
+        return '<span class="badge badge-primary">Add</span>';
+    }
+    return '<span class="badge badge-info">Update</span>';
+
+}
+
+function contentFormat(value) {
+    return value;
+}
