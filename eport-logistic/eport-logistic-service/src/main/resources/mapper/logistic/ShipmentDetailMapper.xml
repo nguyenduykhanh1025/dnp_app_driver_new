@@ -337,4 +337,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{processOrderId}
         </foreach>
     </select>
+
+    <!-- <select id="selectSendEmptyShipmentDetailByListCont" resultMap="ShipmentDetailResult">
+        <include refid="selectShipmentDetailVo"/>
+        where container_no in
+        <foreach item="containerNo" collection="array" open="(" separator="," close=")">
+            #{containerNo}
+        </foreach>
+    </select> -->
 </mapper>

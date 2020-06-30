@@ -3,7 +3,7 @@ var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0, isChange;
 var contList = [], orders = [], processOrderIds;
 var conts = '';
-var allChecked = false;
+var allChecked = false, dnDepot = false;
 var checkList = [];
 var rowAmount = 0;
 var emptyDepotList = ["Cảng Tiên Sa", "Cảng khác"];
@@ -75,7 +75,7 @@ function loadTable() {
       getSelected();
     },
     pageSize: 50,
-    nowrap: false,
+    nowrap: true,
     striped: true,
     loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
@@ -115,11 +115,11 @@ function formatDate(value) {
 
 // FORMAT REMARK FOR SHIPMENT LIST
 function formatRemark(value) {
-  return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null ? (value.substring(0, 5) + "...") : "...") + '</span></div>';
+  return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null && value != '' ? value : "...") + '</span></div>';
 }
 
 function handleRefresh() {
-  loadTable();
+  loadTable();  
 }
 
 // HANDLE WHEN SELECT A SHIPMENT
@@ -245,7 +245,7 @@ function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties)
   $(td).attr('id', 'emptyDepot' + row).addClass("htMiddle");
   $(td).html(value);
   if (value != null && value != '') {
-    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
+    if (hot.getDataAtCell(row, 1) != null) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -461,27 +461,22 @@ function configHandson() {
       },
       {
         data: "sztp",
-        readOnly: true,
         renderer: sizeRenderer
       },
       {
         data: "sealNo",
-        readOnly: true,
         renderer: sealNoRenderer
       },
       {
         data: "wgt",
-        readOnly: true,
         renderer: wgtRenderer
       },
       {
         data: "loadingPort",
-        readOnly: true,
         renderer: loadingPortRenderer
       },
       {
         data: "dischargePort",
-        readOnly: true,
         renderer: dischargePortRenderer
       },
       {
@@ -514,9 +509,7 @@ function configHandson() {
               }
             }).done(function (shipmentDetail) {
               if (shipmentDetail != null) {
-                hot.setDataAtCell(row[0], 3, shipmentDetail.expiredDem); //expiredem
                 hot.setDataAtCell(row[0], 4, shipmentDetail.consignee); //consignee
-                hot.setDataAtCell(row[0], 5, shipmentDetail.emptyDepot); //emptyDepot
                 hot.setDataAtCell(row[0], 6, shipmentDetail.opeCode); //opeCode
                 hot.setDataAtCell(row[0], 7, shipmentDetail.vslNm); //vslNm
                 hot.setDataAtCell(row[0], 8, shipmentDetail.voyNo); //voyNo
@@ -760,6 +753,9 @@ function getDataFromTable(isValidate) {
     billNo = cleanedGridData[0]["blNo"];
   }
   contList = [];
+  dnDepot = false;
+  let isSaved = false;
+  let currentEmptyDepot = '';
   $.each(cleanedGridData, function (index, object) {
     let shipmentDetail = new Object();
     if (isValidate && object["delFlag"] == null) {
@@ -800,18 +796,31 @@ function getDataFromTable(isValidate) {
     shipmentDetail.remark = object["remark"];
     shipmentDetail.shipmentId = shipmentSelected.id;
     shipmentDetail.id = object["id"];
+    shipmentDetail.processStatus = shipmentSelected.taxCode;
+    shipmentDetail.tier = shipmentSelected.containerAmount;
     shipmentDetails.push(shipmentDetail);
+    if (object["id"] != null) {
+      isSaved = true;
+    }
     let now = new Date();
     now.setHours(0, 0, 0);
     expiredDem.setHours(23, 59, 59);
-    if (expiredDem.getTime() < now.getTime() && isValidate && object["delFlag"] == null) {
+    if (expiredDem.getTime() < now.getTime() && isValidate && !errorFlg) {
       errorFlg = true;
       $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được trong quá khứ!")
       return false;
     }
+
+    if (currentEmptyDepot != '' && currentEmptyDepot != object["emptyDepot"] && !errorFlg) {
+      errorFlg = true;
+      $.modal.alertError("Nơi hạ vỏ không được khác nhau!");
+      return false;
+    }
+
+    currentEmptyDepot = object["emptyDepot"];
   });
 
-  if (isValidate) {
+  if (isValidate && !errorFlg) {
     contList.sort();
     let contTemp = "";
     $.each(contList, function (index, cont) {
@@ -830,6 +839,10 @@ function getDataFromTable(isValidate) {
     errorFlg = true;
   }
 
+  if (currentEmptyDepot == 'Cảng Tiên Sa' && !isSaved) {
+    dnDepot = true;
+  }
+
   if (errorFlg) {
     return false;
   } else {
@@ -845,29 +858,20 @@ function saveShipmentDetail() {
   } else {
     if (getDataFromTable(true)) {
       if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
-        $.modal.loading("Đang xử lý...");
-        $.ajax({
-          url: prefix + "/saveShipmentDetail",
-          method: "post",
-          contentType: "application/json",
-          accept: 'text/plain',
-          data: JSON.stringify(shipmentDetails),
-          dataType: 'text',
-          success: function (data) {
-            var result = JSON.parse(data);
-            if (result.code == 0) {
-              $.modal.msgSuccess(result.msg);
-              loadShipmentDetail(shipmentSelected.id);
-            } else {
-              $.modal.msgError(result.msg);
-            }
-            $.modal.closeLoading();
-          },
-          error: function (result) {
-            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-            $.modal.closeLoading();
-          },
-        });
+        if (dnDepot) {
+          layer.confirm("Quý khách đã chọn nơi hạ container ở cảng Tiên Sa, hệ thống sẽ tự động tạo lô và thông tin giao container rỗng.", {
+            icon: 3,
+            title: "Xác Nhận",
+            btn: ['Đồng Ý', 'Hủy Bỏ']
+          }, function () {
+            save(true);
+            layer.close(layer.index);
+          }, function () {
+            save(false);
+          });
+        } else {
+          save(false);
+        }
       } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
         $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
       } else {
@@ -876,17 +880,20 @@ function saveShipmentDetail() {
     }
   }
 }
-
-// DELETE SHIPMENT DETAIL
-function deleteShipmentDetail() {
+function save(isSendEmpty) {
+  if (shipmentDetails.length > 0) {
+    shipmentDetails[0].vgmChk = isSendEmpty;
+  } 
   $.modal.loading("Đang xử lý...");
   $.ajax({
-    url: prefix + "/deleteShipmentDetail",
+    url: prefix + "/saveShipmentDetail",
     method: "post",
-    data: {
-      shipmentDetailIds: shipmentDetailIds
-    },
-    success: function (result) {
+    contentType: "application/json",
+    accept: 'text/plain',
+    data: JSON.stringify(shipmentDetails),
+    dataType: 'text',
+    success: function (data) {
+      var result = JSON.parse(data);
       if (result.code == 0) {
         $.modal.msgSuccess(result.msg);
         loadShipmentDetail(shipmentSelected.id);
@@ -900,6 +907,34 @@ function deleteShipmentDetail() {
       $.modal.closeLoading();
     },
   });
+}
+
+// DELETE SHIPMENT DETAIL
+function deleteShipmentDetail() {
+  getDataSelectedFromTable(true, false);
+  if (shipmentDetails.length > 0) {
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: prefix + "/deleteShipmentDetail",
+      method: "post",
+      data: {
+        shipmentDetailIds: shipmentDetailIds
+      },
+      success: function (result) {
+        if (result.code == 0) {
+          $.modal.msgSuccess(result.msg);
+          loadShipmentDetail(shipmentSelected.id);
+        } else {
+          $.modal.msgError(result.msg);
+        }
+        $.modal.closeLoading();
+      },
+      error: function (result) {
+        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+        $.modal.closeLoading();
+      },
+    });
+  }
 }
 
 // Handling logic
@@ -917,10 +952,10 @@ function verify() {
   }
 }
 
-function verifyOtp(shipmentDtIds, creditFlag) {
+function verifyOtp(shipmentDtIds, creditFlag, isSendContEmpty) {
   getDataSelectedFromTable(true, false);
   if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds + "/" + creditFlag, 600, 350);
+    $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds + "/" + creditFlag + "/" + isSendContEmpty, 600, 350);
   }
 }
 

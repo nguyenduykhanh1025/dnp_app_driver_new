@@ -68,16 +68,29 @@
               </ul>
             </li>
             <li class="dropdown user-menu">
-              <a title="Quản lý đội xe"  class="menuItem"><i class="fa fa-truck"></i>&nbsp; Quản lý Đội Xe</a>
+              <a title="Quản Lý Đội Xe"  class="menuItem"><i class="fa fa-truck"></i>&nbsp; Quản Lý Đội Xe</a>
               <ul class="dropdown-menu">
                 <li><a class="menuItem " th:href="@{/logistic/transport}">Quản lý Tài xế</a></li>
                 <li><a class="menuItem " th:href="@{/logistic/logisticTruck}">Quản lý Xe</a></li>
-                <li><a class="menuItem " th:href="@{/logistic/transportMonitor/}">Giám sát</a></li>
+                <li><a class="menuItem " th:href="@{/logistic/history/truck}">Lịch Sử</a></li>
+              </ul>
+            </li>
+            <li class="dropdown user-menu">
+              <a title="Điều hành"  class="menuItem"><i class="bi bi-person-check"></i>&nbsp; Điều hành</a>
+              <ul class="dropdown-menu">
                 <li><a class="menuItem " th:href="@{/logistic/assignTruck}">Điều xe</a></li>
+                <li><a class="menuItem " th:href="@{/logistic/transportMonitor/}">Giám Sát</a></li>
+                <li><a class="menuItem " th:href="@{/logistic/container/status}">Tình Trạng Container</a></li>
+              </ul>
+            </li>
+            <li class="dropdown user-menu">
+              <a title="Báo Cáo"  class="menuItem"><i class="bi bi-card-list"></i>&nbsp; Báo Cáo</a>
+              <ul class="dropdown-menu">
+                <li><a class="menuItem " th:href="@{/logistic/report/order}">Báo Cáo Đơn Hàng</a></li>
+                <li><a class="menuItem " th:href="@{/logistic/report/order/cost}">Báo Cáo Cước Phí</a></li>
               </ul>
             </li>
           </ul>
-
           <ul class="nav navbar-top-links navbar-right welcome-message">
             <li class="dropdown user-menu">
               <a title="Tra cứu Container" class="menuItem"><i class="fa fa-search"></i>&nbsp; Tra cứu Container</a>

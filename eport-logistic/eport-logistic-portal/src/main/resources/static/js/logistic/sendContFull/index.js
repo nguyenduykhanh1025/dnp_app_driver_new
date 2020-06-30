@@ -101,7 +101,7 @@ function loadTable() {
             getSelected();
         },
         pageSize: 50,
-        nowrap: false,
+        nowrap: true,
         striped: true,
         loadMsg: " Đang xử lý...",
         loader: function (param, success, error) {
@@ -140,7 +140,7 @@ function formatDate(value) {
 
 // FORMAT REMARK FOR SHIPMENT LIST
 function formatRemark(value) {
-    return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null ? (value.substring(0, 5) + "...") : "...") + '</span></div>';
+    return '<div class="easyui-tooltip" title="' + ((value != null && value != "") ? value : "không có ghi chú") + '" style="width: 80; text-align: center;"><span>' + (value != null && value != '' ? value : "...") + '</span></div>';
 }
 
 function handleRefresh() {
