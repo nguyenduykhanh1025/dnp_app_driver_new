@@ -133,11 +133,13 @@ public class EdoServiceImpl implements IEdoService
 					obj.put("businessUnit", businessUnit[2]);
 					business = businessUnit[2];
 				}
+				continue;
 			}
 			if(s.contains("UNH+"+num))
 			{
 				edi = new Edo();
 				edi.setBusinessUnit(business);
+				edi.setCarrierCode(business);
 			}
 			//Bill Of Lading
 			if(s.contains("RFF+BM"))
