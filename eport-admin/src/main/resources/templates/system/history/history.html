@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
 <head>
     <th:block th:include="include :: header('List 【请填写功能名称】')" />
 </head>
+
 <body class="gray-bg">
-     <div class="container-div">
+    <div class="container-div">
         <div class="row">
             <div class="col-sm-12 search-collapse">
                 <form id="formId">
@@ -12,21 +14,21 @@
                         <ul>
                             <li>
                                 <label>${comment}：</label>
-                                <input type="text" name="ediId"/>
+                                <input type="text" name="ediId" />
                             </li>
                             <li class="select-time">
                                 <label>${comment}：</label>
-                                <input type="text" class="time-input" id="startTime" placeholder="Start Time" name="params[beginValidtoDay]"/>
+                                <input type="text" class="time-input" id="startTime" placeholder="Start Time" name="params[beginValidtoDay]" />
                                 <span>-</span>
-                                <input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endValidtoDay]"/>
+                                <input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endValidtoDay]" />
                             </li>
                             <li>
                                 <label>${comment}：</label>
-                                <input type="text" name="emptycontDepot"/>
+                                <input type="text" name="emptycontDepot" />
                             </li>
                             <li>
                                 <label>${comment}：</label>
-                                <input type="text" name="haulage"/>
+                                <input type="text" name="haulage" />
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
@@ -58,8 +60,10 @@
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('system:history:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('system:history:remove')}]];
+        var editFlag = [
+            [$ {@permission.hasPermi('system:history:edit')}]];
+        var removeFlag = [
+            [$ {@permission.hasPermi('system:history:remove')}]];
         var prefix = ctx + "system/history";
 
         $(function() {
@@ -72,24 +76,19 @@
                 modalName: "【请填写功能名称】",
                 columns: [{
                     checkbox: true
-                },
-                {
-                    field: 'ediId', 
+                }, {
+                    field: 'ediId',
                     title: '${comment}'
-                },
-                {
-                    field: 'validtoDay', 
+                }, {
+                    field: 'validtoDay',
                     title: '${comment}'
-                },
-                {
-                    field: 'emptycontDepot', 
+                }, {
+                    field: 'emptycontDepot',
                     title: '${comment}'
-                },
-                {
-                    field: 'haulage', 
+                }, {
+                    field: 'haulage',
                     title: '${comment}'
-                },
-                {
+                }, {
                     title: 'Action',
                     align: 'center',
                     formatter: function(value, row, index) {
@@ -104,4 +103,5 @@
         });
     </script>
 </body>
+
 </html>

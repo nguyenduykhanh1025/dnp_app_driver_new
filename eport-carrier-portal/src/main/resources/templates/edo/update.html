@@ -10,8 +10,7 @@
     <th:block th:include="include :: handsontable-css" />
     <script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
     <link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet" />
-
-
+    <link th:href="@{/eport/css/uploadFile.css}" rel="stylesheet" />
 </head>
 
 <body class="gray-bg">
@@ -24,17 +23,17 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div id="bannarzone" class="dropzone" style="min-height: 120px"></div>
-
+                                    <button id="submitFile" type="submit" class="btn btn-primary">Gửi file </button>
+                                    <div id="viewEdi"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="viewEdi"></div>
+               
             </div>
         </div>
-    </div>           
-   
+    </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: handsontable-js" />

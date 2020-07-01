@@ -43,11 +43,17 @@
                                 <th data-options="field:'orderNumber',align:'left'" width="120">
                                     ORDER NO
                                 </th>
-                                <th id="contentHover" data-options="field:'ediContent',align:'left',formatter: contentFormat" width="250">
+                                <th data-options="field:'ediContent',align:'left',formatter: contentFormat" width="120">
                                     CONTENT
                                 </th>
                                 <th data-options="field:'action',align:'left',formatter: statusFormat" width="120">
                                     STATUS
+                                </th>
+                                <th data-options="field:'createBy',align:'left'" width="120">
+                                    CREATE BY
+                                </th>
+                                <th data-options="field:'createTime',align:'left'" width="120">
+                                    CREATE TIME
                                 </th>
                             </tr>
                         </thead>
@@ -59,7 +65,7 @@
         <th:block th:include="include :: easyui-js" />
         <th:block th:include="include :: datetimepicker-js" />
         <script type="text/javascript" th:inline="javascript">
-            var containerNumber = /*[[${containerNumber}]]*/ ;
+            var id = /*[[${id}]]*/ ;
         </script>
 </body>
 <script th:src="@{/eport/js/modules/edo/history.js}"></script>
