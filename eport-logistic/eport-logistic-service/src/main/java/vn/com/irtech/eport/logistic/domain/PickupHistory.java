@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.domain;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -97,6 +99,14 @@ public class PickupHistory extends BaseEntity {
 	private LogisticGroup logisticGroup;
 
 	private DriverAccount driver;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date fromDate;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date toDate;
+	
+	private Integer serviceType;
 
 	public void setId(Long id) {
 		this.id = id;
@@ -282,6 +292,30 @@ public class PickupHistory extends BaseEntity {
 		this.driver = driver;
 	}
 
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public Date getToDate() {
+        return toDate;
+	}
+	
+	public void setServiceType(Integer serviceType) {
+		this.serviceType = serviceType;
+	}
+
+	public Integer getServiceType() {
+		return serviceType;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -293,6 +327,8 @@ public class PickupHistory extends BaseEntity {
 				.append("yardPosition1", getYardPosition1()).append("yardPosition2", getYardPosition2())
 				.append("status", getStatus()).append("receiptDate", getReceiptDate())
 				.append("gateinDate", getGateinDate()).append("gateoutDate", getGateoutDate())
-				.append("cancelDeceiptDate", getCancelDeceiptDate()).toString();
+				.append("cancelDeceiptDate", getCancelDeceiptDate())
+				.append("fromDate", getFromDate()).append("toDate", getToDate()).append("serviceType", getServiceType())
+				.toString();
 	}
 }

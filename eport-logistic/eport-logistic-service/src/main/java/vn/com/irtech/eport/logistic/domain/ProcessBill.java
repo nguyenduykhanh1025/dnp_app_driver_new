@@ -76,8 +76,10 @@ public class ProcessBill extends BaseEntity
     @Excel(name = "số container")
     private String containerNo;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date fromDate;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date toDate;
 
     public void setId(Long id) 
@@ -227,12 +229,10 @@ public class ProcessBill extends BaseEntity
         return fromDate;
     }
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public void setToDate(Date toDate) {
         this.toDate = toDate;
     }
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     public Date getToDate() {
         return toDate;
     }

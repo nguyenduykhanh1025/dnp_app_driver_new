@@ -103,4 +103,9 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     {
         return pickupHistoryMapper.deletePickupHistoryById(id);
     }
+
+    @Override
+    public List<PickupHistory> selectPickupHistoryListForReport(PickupHistory pickupHistory) {
+        return pickupHistoryMapper.selectPickupHistoryListForReport(pickupHistory);
+    }
 }
