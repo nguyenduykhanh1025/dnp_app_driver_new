@@ -1,15 +1,36 @@
 const PREFIX = "/logistic/report/costs";
+var processBill = new Object();
+//var fromDate, toDate;
 
-$(function () {
+$(document).ready(function() {
     loadTable();
+
+    $('.from-date').datetimepicker({
+        language: 'en',
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        pickTime: false,
+        minView: 2
+    });
+    $('.to-date').datetimepicker({
+        language: 'en',
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        pickTime: false,
+        minView: 2
+    });
 });
 
 function loadTable() {
     $("#dg").datagrid({
         url: PREFIX + "/list",
-        method: "GET",
+        method: "POST",
         singleSelect: true,
-        height: document.documentElement.clientHeight - 70,
+        height: document.documentElement.clientHeight - 110,
         clientPaging: false,
         pagination: true,
         rownumbers: true,
@@ -23,15 +44,105 @@ function loadTable() {
             $.ajax({
                 type: opts.method,
                 url: opts.url,
-                data: {},
-                dataType: "json",
+                contentType: "application/json",
+                accept: 'text/plain',
+                data: JSON.stringify(processBill),
+                dataType: 'text',
                 success: function (data) {
-                    success(data);
+                    success(JSON.parse(data));
                 },
                 error: function () {
                     error.apply(this, arguments);
                 },
             });
+            $("#dg").datagrid("hideColumn", "id");
         },
     });
+}
+
+function formatBlNo(value, row) {
+    return row.processOrder.blNo;
+}
+
+function formatBookingNo(value, row) {
+    return row.processOrder.bookingNo;
+}
+
+function formatTaxCode(value, row) {
+    return row.processOrder.taxCode;
+}
+
+function formatPaymentStatus(value) {
+    if ('Y' == value) {
+        return 'Đã Thanh Toán';
+    }
+    return 'Chưa Thanh Toán';
+}
+
+function formatServiceType(value) {
+    switch (value) {
+        case 1:
+            return 'Bốc Hàng';
+        case 2:
+            return 'Hạ Rỗng';
+        case 3:
+            return 'Bốc Rỗng';
+        case 4:
+            return 'Hạ Hàng';
+    }
+}
+
+function formatDate(value) {
+    if (value != null && value != '') {
+        return value.substring(8, 10)+'/'+value.substring(5, 7)+'/'+value.substring(0, 4)+value.substring(10, 19);
+    }
+    return value;
+}
+
+function formatMoney(value) {
+    return value.format(2, 3, ',', '.');
+}
+
+Number.prototype.format = function(n, x, s, c) {
+    var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+        num = this.toFixed(Math.max(0, ~~n));
+
+    return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+};
+
+function changeServiceType() {
+    processBill.serviceType = $('#seviceTypeSelect').val();
+    loadTable();
+}
+
+function changePaymentType() {
+    processBill.payType = $('#paymentTypeSelect').val();
+    loadTable();
+}
+
+function changePaymentStatus() {
+    processBill.paymentStatus = $('#paymentStatusSelect').val();
+    loadTable();
+}
+
+function changeFromDate() {
+    processBill.fromDate = stringToDate($('.from-date').val()).getTime();
+    loadTable();
+}
+
+function changeToDate() {
+    let toDate = stringToDate($('.to-date').val());
+    if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
+        $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
+        $('.to-date').val('');
+    } else {
+        toDate.setHours(23, 59, 59);
+        processBill.toDate = toDate.getTime();
+        loadTable();
+    }
+}
+
+function stringToDate(dateStr) {
+    let dateParts = dateStr.split('/');
+    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 }
