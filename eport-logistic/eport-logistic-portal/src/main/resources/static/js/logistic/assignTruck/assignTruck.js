@@ -20,8 +20,11 @@ function handleCollapse(status) {
         $("#btn-collapse").hide();
         $("#btn-uncollapse").show();
         $(".right-side").css("width", "99%");
+
         setTimeout(function () {
             $("#dgShipmentDetail").datagrid('resize');
+            $("#driverTable").datagrid('resize');
+            $("#pickedDriverTable").datagrid('resize');
         }, 500);
         return;
     }
@@ -32,6 +35,8 @@ function handleCollapse(status) {
     $(".right-side").css("width", "67%");
     setTimeout(function () {
         $("#dgShipmentDetail").datagrid('resize');
+        $("#driverTable").datagrid('resize');
+        $("#pickedDriverTable").datagrid('resize');
     }, 500);
 }
 function assignFollowBatchTab() {
@@ -39,10 +44,10 @@ function assignFollowBatchTab() {
     $("#batchBtn").css({"background-color": "#6c9dc7"});
     $(".assignFollowContainer").hide();
     $("#containerBtn").css({"background-color": "#c7c1c1"});
-    let row = $("#dg").datagrid("getSelected");
-    if(row){
-        loadDriver(row.id);
-    }
+    // let row = $("#dg").datagrid("getSelected");
+    // if(row){
+    //     loadDriver(row.id);
+    // }
 
 }
 
@@ -133,7 +138,7 @@ function getSelectedShipment() {
         $("#blNo").text(row.blNo);
         $("#bookingNo").text(row.bookingNo);
         $("#edoFlg").text(row.edoFlg == 1 ? "eDO" : "DO");
-        loadShipmentDetail(row.id);
+        //loadShipmentDetail(row.id);
         loadDriver(row.id);
     }
 }
@@ -141,8 +146,10 @@ function getSelectedShipment() {
 function loadShipmentDetail(id) {
     $("#dgShipmentDetail").datagrid({
         url: prefix + "/getShipmentDetail",
-        height: window.innerHeight - 70,
+        height: window.innerHeight - 110,
+        singleSelect: true,
         collapsible: true,
+        rownumbers:true,
         clientPaging: false,
         nowrap: false,
         striped: true,
@@ -175,9 +182,9 @@ function loadShipmentDetail(id) {
     });
 }
 
-// HANDLE WHEN SELECT A SHIPMENT
+// HANDLE WHEN SELECT A SHIPMENTDETAIL
 // function getSelectedShipmentDetail() {
-//     let row = $("#dg").datagrid("getSelected");
+//     let row = $("#dgShipmentDetail").datagrid("getSelected");
 //     if (row) {
 //         shipmentSelected = row;
 //         $("#batchCode").text(row.id);
@@ -189,10 +196,11 @@ function loadShipmentDetail(id) {
 // }
 
 function formatPickup(value) {
-    if (value != "Y") {
+    if (value == "Y") {
         return "<span class='label label-success'>Có</span>"
+    } else{
+        return "<span class='label label-default'>Không</span>"
     }
-    return "<span class='label label-default'>Không</span>"
 }
 
 // function pickTruckForAll() {
@@ -218,7 +226,6 @@ function loadDriver(shipmentId){
     $("#pickedDriverTable").datagrid({
         url: prefix + "/assignedDriverAccountList",
         height: window.innerHeight - 170,
-        singleSelect: true,
         collapsible: true,
         clientPaging: false,
         nowrap: false,
@@ -236,6 +243,41 @@ function loadDriver(shipmentId){
                 dataType: "json",
                 success: function (data) {
                     success(data);
+                    //driverList
+                    let records =  $('#pickedDriverTable').datagrid('getRows');
+                    if(records){
+                        for(let i = 0; i < records.length; i++){
+                            pickedIds.push(records[i].id);
+                        }
+                    }
+                    $("#driverTable").datagrid({
+                        url: prefix + "/listDriverAccount",
+                        height: window.innerHeight - 170,
+                        collapsible: true,
+                        clientPaging: false,
+                        nowrap: false,
+                        striped: true,
+                        loadMsg: " Đang xử lý...",
+                        loader: function (param, success, error) {
+                            let opts = $(this).datagrid("options");
+                            if (!opts.url) return false;
+                            $.ajax({
+                                type: opts.method,
+                                url: opts.url,
+                                data: {
+                                    shipmentId: shipmentId,
+                                    pickedIds: pickedIds
+                                },
+                                dataType: "json",
+                                success: function (data) {
+                                    success(data);
+                                },
+                                error: function () {
+                                    error.apply(this, arguments);
+                                },
+                            });
+                        },
+                    });
                 },
                 error: function () {
                     error.apply(this, arguments);
@@ -243,46 +285,7 @@ function loadDriver(shipmentId){
             });
         },
     });
-    $('#pickedDriverTable').datagrid({singleSelect:(this.value==1)})
-    //driverList
-    setTimeout(() => {
-        let records =  $('#pickedDriverTable').datagrid('getRows');
-        if(records){
-            for(let i = 0; i < records.length; i++){
-                pickedIds.push(records[i].id);
-            }
-        }
-        $("#driverTable").datagrid({
-            url: prefix + "/listDriverAccount",
-            height: window.innerHeight - 170,
-            singleSelect: true,
-            collapsible: true,
-            clientPaging: false,
-            nowrap: false,
-            striped: true,
-            loadMsg: " Đang xử lý...",
-            loader: function (param, success, error) {
-                let opts = $(this).datagrid("options");
-                if (!opts.url) return false;
-                $.ajax({
-                    type: opts.method,
-                    url: opts.url,
-                    data: {
-                        shipmentId: shipmentId,
-                        pickedIds: pickedIds
-                    },
-                    dataType: "json",
-                    success: function (data) {
-                        success(data);
-                    },
-                    error: function () {
-                        error.apply(this, arguments);
-                    },
-                });
-            },
-        });
-        $('#driverTable').datagrid({singleSelect:(this.value==1)})
-    }, 100);
+
 }
 function transferInToOut() {
     let rows = $('#driverTable').datagrid('getSelections');
@@ -334,10 +337,22 @@ function save(){
     }
 }
 function formatAction(value, row, index) {
-	var actions = [];
-    actions.push('<a class="btn btn-success btn-xs" onclick="editDriver(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
+	let actions = [];
+    actions.push('<a class="btn btn-primary btn-xs" onclick="editDriver(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
     return actions.join('');
 }
+function formatActionAssign(value, row, index) {
+    let button = '';
+    if(row.preorderPickup == "Y"){
+        button += '<button class="btn btn-primary btn-xs" onclick="assignFollowContainer(\'' + row.id + '\')"><i class="fa fa-edit"></i>Điều xe</button> ';
+    }else{
+        button += '<button class="btn btn-primary btn-xs" onclick="assignFollowContainer(\'' + row.id + '\')" disabled><i class="fa fa-edit"></i>Điều xe</button> ';
+    }
+    return button;
+}
 function editDriver(id){
-    $.modal.open("Chỉnh Sửa Tài xế ", "transport/edit/"+id);
+    $.modal.open("Chỉnh Sửa Tài xế ", prefix +"/edit/driver/"+id);
+}
+function assignFollowContainer(id){
+    $.modal.openFullPickTruck("Điều xe theo Container", prefix + "/preoderPickupAssign/" + id);
 }

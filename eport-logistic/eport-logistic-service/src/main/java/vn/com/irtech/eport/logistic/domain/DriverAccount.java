@@ -34,6 +34,10 @@ public class DriverAccount extends BaseEntity
     @Excel(name = "Ho va Ten")
     private String fullName;
 
+    /** CMND */
+    @Excel(name = "CMND")
+    private String identifyCardNo;
+    
     /** Mat Khau */
     @Excel(name = "Mat Khau")
     @JsonIgnore
@@ -104,6 +108,16 @@ public class DriverAccount extends BaseEntity
     {
         return fullName;
     }
+    
+    public void setIdentifyCardNo(String identifyCardNo) 
+    {
+        this.identifyCardNo = identifyCardNo;
+    }
+
+    public String getIdentifyCardNo() 
+    {
+        return identifyCardNo;
+    }
     public void setPassword(String password) 
     {
         this.password = password;
@@ -157,6 +171,7 @@ public class DriverAccount extends BaseEntity
             .append("logisticGroupId", getLogisticGroupId())
             .append("mobileNumber", getMobileNumber())
             .append("fullName", getFullName())
+            .append("identifyCardNo", getIdentifyCardNo())
             .append("password", getPassword())
             .append("salt", getSalt())
             .append("status", getStatus())

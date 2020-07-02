@@ -44,35 +44,35 @@
             <button id="containerBtn" style="width: 250px;; color: black; font-weight: bold"
               onclick="assignFollowContainerTab()">Điều Xe Theo Container</button>
           </div>
-          <div class="assignFollowBatch">
-            <div class="title-top">
-              <div class="left-info">
-                <div>
-                  <span class="label-title">Mã Lô: </span>
-                  <span id="batchCode"></span>
-                </div>
-                <div>
-                  <span class="label-title">Mã Số Thuế: </span>
-                  <span id="taxCode"></span>
-                </div>
-                <div id="blNoDiv">
-                  <span class="label-title">B/L No: </span>
-                  <span id="blNo"></span>
-                </div>
-                <div id="bookingNoDiv">
-                  <span class="label-title">Booking No: </span>
-                  <span id="bookingNo"></span>
-                </div>
-                <div>
-                  <span class="label-title">DO: </span>
-                  <span id="edoFlg"></span>
-                </div>
-                <div>
-                  <span class="label-title">Số Lượng: </span>
-                  <span id="quantity"></span>
-                </div>
+          <div class="title-top">
+            <div class="left-info">
+              <div>
+                <span class="label-title">Mã Lô: </span>
+                <span id="batchCode"></span>
+              </div>
+              <div>
+                <span class="label-title">Mã Số Thuế: </span>
+                <span id="taxCode"></span>
+              </div>
+              <div id="blNoDiv">
+                <span class="label-title">B/L No: </span>
+                <span id="blNo"></span>
+              </div>
+              <div id="bookingNoDiv">
+                <span class="label-title">Booking No: </span>
+                <span id="bookingNo"></span>
+              </div>
+              <div>
+                <span class="label-title">DO: </span>
+                <span id="edoFlg"></span>
+              </div>
+              <div>
+                <span class="label-title">Số Lượng: </span>
+                <span id="quantity"></span>
               </div>
             </div>
+          </div>
+          <div class="assignFollowBatch">
             <div class="content">
               <div class="left-button-bar">
                 <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">+ Xe</button>
@@ -88,10 +88,10 @@
                 <div style="display: flex; flex: 1 1 auto;">
                   <div class="table-content">
                     <div style="display: flex; justify-content: center;">
-                      <b style="margin: 0 auto;">Danh sách Đội xe</b>
+                      <b style="margin: 0 auto;">Danh sách tài xế</b>
                     </div>
-                    <table id="driverTable" class="table" style="width:100%;height:auto" fitColumns="true" 
-                    data-options="rownumbers:true,iconCls: 'icon-edit',singleSelect: true,toolbar: '#tb',url: 'datagrid_data1.json',method: 'get'">
+                    <table id="driverTable" class="table" style="width:100%;" fitColumns="true" 
+                    data-options="rownumbers:true,iconCls: 'icon-edit', toolbar: '#tb',url: 'datagrid_data1.json',method: 'get'">
                       <thead>
                         <tr>
                           <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
@@ -108,15 +108,15 @@
                   </div>
                   <div class="table-content">
                     <div style="display: flex; justify-content: center;">
-                      <b style="margin: 0 auto;">Danh sách Xe điều</b>
+                      <b style="margin: 0 auto;">Danh sách điều</b>
                     </div>
-                    <table id="pickedDriverTable" class="table" style="width:100%;height:auto" fitColumns="true"
-                    data-options="rownumbers:true,iconCls: 'icon-edit',singleSelect: true,toolbar: '#tb',url: 'datagrid_data1.json',method: 'get'">
+                    <table id="pickedDriverTable" class="table" style="width:100%;" fitColumns="true"
+                    data-options="rownumbers:true,iconCls: 'icon-edit', toolbar: '#tb',url: 'datagrid_data1.json',method: 'get'">
                       <thead>
                         <tr>
                           <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
-                          <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
-                          <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
+                          <th data-options="field:'mobileNumber', align:'right'" width="120">Số điện thoại</th>
+                          <th data-options="field:'fullName', editor:'textbox'" width="150">Họ và Tên</th>
                           <th data-options="field:'action', formatter: formatAction,align:'center',fixed:true" width="80">Hành động</th>
                       </tr>
                       </thead>
@@ -127,7 +127,7 @@
           </div>
           </div>
           <div class="assignFollowContainer">
-            <div class="title-top">
+            <!-- <div class="title-top">
               <div class="left-info">
                 <div>
                   <span class="label-title">Mã Lô: </span>
@@ -157,17 +157,17 @@
               <div class="left-button-bar">
                 <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">Điều Xe Theo Container</button>
               </div>
-            </div>
+            </div> -->
             <div class="content">
               <table id="dgShipmentDetail" style="width: 100%;" fitColumns="true">
                 <thead>
                   <tr>
                     <th data-options="field:'id', fixed:true">Id</th>
-                    <th field="ck" checkbox="true" data-options="halign:'center', fixed:true" width="5%"></th>
-                    <th data-options="field:'containerNo',halign:'center', fixed:true" width="30%">Container No</th>
-                    <th data-options="field:'sztp',halign:'center', fixed:true" width="30%">Kích Thước</th>
-                    <th data-options="field:'preorderPickup',align:'center', fixed:true, formatter: formatPickup" width="25%">Bốc Chỉ Định</th>
-                    <th data-options="field:'wgt',halign:'center'" width="1">Trọng Tải</th>
+                    <th data-options="field:'containerNo', align:'center',halign:'center'" width="200">Container No</th>
+                    <th data-options="field:'sztp',halign:'center', fixed:true" width="100">Kích Thước</th>
+                    <th data-options="field:'preorderPickup', align:'center', fixed:true, formatter: formatPickup" width="100">Bốc Chỉ Định</th>
+                    <th data-options="field:'wgt',halign:'center'" width="100">Trọng Tải</th>
+                    <th data-options="field:'action', formatter: formatActionAssign, align:'center', halign:'center'" width="100">Hành động</th>
                   </tr>
                 </thead>
               </table>

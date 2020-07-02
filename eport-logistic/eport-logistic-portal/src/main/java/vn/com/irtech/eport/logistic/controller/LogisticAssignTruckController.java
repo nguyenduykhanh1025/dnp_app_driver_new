@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,14 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
+import vn.com.irtech.eport.logistic.domain.DriverTruck;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
+import vn.com.irtech.eport.logistic.service.IDriverTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -43,6 +48,9 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	
 	@Autowired
 	private IPickupAssignService pickupAssignService;
+
+	@Autowired
+	private IDriverTruckService driverTruckService;
 
 	@GetMapping
     public String assignTruck() {
@@ -70,46 +78,46 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		return getDataTable(shipmentDetails);
 	}
 
-	@GetMapping("pickTruckForm/{shipmentId}/{pickCont}/{shipmentDetailId}")
-	public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, @PathVariable("pickCont") boolean pickCont,@PathVariable("shipmentDetailId") Integer shipmentDetailId, ModelMap mmap) {
-//		mmap.put("shipmentId", shipmentId);
-//		mmap.put("pickCont", pickCont);
-//		mmap.put("shipmentDetailId", shipmentDetailId);
-//		String transportId = "";
-//		String shipmentIds = "";
-//		if (!pickCont) {
-//			ShipmentDetail shipmentDetail = new ShipmentDetail();
-//			shipmentDetail.setShipmentId(shipmentId);
-//			shipmentDetail.setLogisticGroupId(getUser().getGroupId());
-//			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-//			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
-//				if (shipmentDetail2.getPreorderPickup() == null || !shipmentDetail2.getPreorderPickup().equals("Y")) {
-//					shipmentIds += shipmentDetail2.getId() + ",";
-//					if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
-//						transportId = shipmentDetail2.getTransportIds();
-//					}
-//				}
-//			}
-//		}
-//		mmap.put("transportIds", transportId);
-//		mmap.put("shipmentDetailIds", shipmentIds);
-		return PREFIX + "/pickTruckForm";
-	}
+	// @GetMapping("pickTruckForm/{shipmentId}/{pickCont}/{shipmentDetailId}")
+	// public String pickTruckForm(@PathVariable("shipmentId") long shipmentId, @PathVariable("pickCont") boolean pickCont,@PathVariable("shipmentDetailId") Integer shipmentDetailId, ModelMap mmap) {
+	// 	mmap.put("shipmentId", shipmentId);
+	// 	mmap.put("pickCont", pickCont);
+	// 	mmap.put("shipmentDetailId", shipmentDetailId);
+	// 	String transportId = "";
+	// 	String shipmentIds = "";
+	// 	if (!pickCont) {
+	// 		ShipmentDetail shipmentDetail = new ShipmentDetail();
+	// 		shipmentDetail.setShipmentId(shipmentId);
+	// 		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
+	// 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+	// 		for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+	// 			if (shipmentDetail2.getPreorderPickup() == null || !shipmentDetail2.getPreorderPickup().equals("Y")) {
+	// 				shipmentIds += shipmentDetail2.getId() + ",";
+	// 				if (shipmentDetail2.getTransportIds() != null && transportId.length() == 0) {
+	// 					transportId = shipmentDetail2.getTransportIds();
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// 	mmap.put("transportIds", transportId);
+	// 	mmap.put("shipmentDetailIds", shipmentIds);
+	// 	return PREFIX + "/pickTruckForm";
+	// }
 
-	@PostMapping("/pickTruck")
-	@Transactional
-	@ResponseBody
-	public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				//shipmentDetail.setTransportIds(driverIds);
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
-			}
-			return success("Điều xe thành công");
-		}
-		return error("Xảy ra lỗi trong quá trình điều xe.");
-	}
+	// @PostMapping("/pickTruck")
+	// @Transactional
+	// @ResponseBody
+	// public AjaxResult pickTruck(String shipmentDetailIds, String driverIds) {
+	// 	List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+	// 	if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+	// 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+	// 			//shipmentDetail.setTransportIds(driverIds);
+	// 			shipmentDetailService.updateShipmentDetail(shipmentDetail);
+	// 		}
+	// 		return success("Điều xe thành công");
+	// 	}
+	// 	return error("Xảy ra lỗi trong quá trình điều xe.");
+	// }
 	
     @GetMapping("/listDriverAccount")
     @ResponseBody
@@ -132,7 +140,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
     }
     @GetMapping("/assignedDriverAccountList")
     @ResponseBody
-    public List<DriverAccount> listDriverAccount(Long shipmentId)
+    public List<DriverAccount> assignedDriverAccountList(Long shipmentId)
     {
 		List<DriverAccount> driverList = new ArrayList<DriverAccount>();
 		DriverAccount driverAccount = new DriverAccount();
@@ -147,8 +155,10 @@ public class LogisticAssignTruckController extends LogisticBaseController{
         		if(i.getDriverId() == null) {
         			return driverAccountService.selectDriverAccountList(driverAccount);
         		}
-        		//TH: con lai
-        		driverList.add(driverAccountService.selectDriverAccountById(i.getDriverId()));
+				//TH: custom theo batch
+				if(i.getShipmentDetailId() == null){
+					driverList.add(driverAccountService.selectDriverAccountById(i.getDriverId()));
+				}
         	}
         }
         return driverList;
@@ -164,7 +174,6 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			return ajaxResult;
 		}
 		Shipment shipment  = shipmentService.selectShipmentById(shipmentId);
-		System.out.println(getUser().getId() + "XXXXX");
 		//check shipment of current user
 		if(shipment.getLogisticAccountId().equals(getUser().getId())){
 			//delete default assign follow batch or last assign
@@ -190,5 +199,149 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		}
 		ajaxResult = success();
 		return ajaxResult;
+	}
+
+	@GetMapping("preoderPickupAssign/{shipmentDetailId}")
+	public String preoderPickupAssign(@PathVariable("shipmentDetailId") Long shipmentDetailId, ModelMap mmap){
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(shipmentDetailId);
+		Shipment shipment = shipmentService.selectShipmentById(shipmentDetail.getShipmentId());
+		mmap.put("shipment", shipment);
+		mmap.put("shipmentDetail", shipmentDetail);
+		return PREFIX + "/preoderPickupAssign";
+	}
+	@GetMapping("/assignedDriverAccountListForPreoderPickup")
+	@ResponseBody
+    public List<DriverAccount> assignedDriverAccountListForPreoderPickup(PickupAssign pickupAssign)
+    {
+		List<DriverAccount> driverList = new ArrayList<DriverAccount>();
+		//check preoderPickup of ShipmentDetail
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(pickupAssign.getShipmentDetailId());
+		if(shipmentDetail.getPreorderPickup().equals("N")){
+			return driverList;
+		}
+        // PickupAssign pickupAssign = new PickupAssign();
+        // pickupAssign.setShipmentId(shipmentId);
+        List<PickupAssign> assignList = pickupAssignService.selectPickupAssignList(pickupAssign);
+        if(assignList.size() != 0) {
+        	for(PickupAssign i : assignList) {
+        		//TH: default assign ca doi xe
+        		if(i.getDriverId() == null) {
+					DriverAccount driverAccount = new DriverAccount();
+					driverAccount.setLogisticGroupId(getUser().getGroupId());
+					driverAccount.setDelFlag(false);
+        			return driverAccountService.selectDriverAccountList(driverAccount);
+        		}
+				//TH: assign theo container
+				if(i.getShipmentDetailId() != null){
+					driverList.add(driverAccountService.selectDriverAccountById(i.getDriverId()));
+				}
+        	}
+        }
+        return driverList;
+	}
+	@GetMapping("/listDriverAccountPreorderPickup")
+    @ResponseBody
+    public List<DriverAccount> listDriverAccountPreorderPickup(PickupAssign pickupAssign, @RequestParam(value = "pickedIds[]", required = false)  Long[] pickedIds)
+    {
+		DriverAccount driverAccount = new DriverAccount();
+    	driverAccount.setLogisticGroupId(getUser().getGroupId());
+        driverAccount.setDelFlag(false);
+		List<DriverAccount> driverList = driverAccountService.selectDriverAccountList(driverAccount);
+		if(pickedIds != null){
+			for(Long i :pickedIds) {
+				for(int j = 0; j < driverList.size(); j++){
+					if(driverList.get(j).getId() == i){
+						driverList.remove(j);
+					}
+				}
+			}
+		}
+        return driverList;
+	}
+	
+	@PostMapping("/savePickupAssignFollowContainer")
+	@Transactional
+	@ResponseBody
+	public AjaxResult savePickupAssignFollowContainer(@RequestParam( value = "pickedIdDriverArray[]", required = false) Long[] pickedIdDriverArray, PickupAssign pickupAssign){
+		AjaxResult ajaxResult = new AjaxResult();
+		if(pickupAssign == null && pickedIdDriverArray == null){
+			ajaxResult = error();
+			return ajaxResult;
+		}
+		Shipment shipment  = shipmentService.selectShipmentById(pickupAssign.getShipmentId());
+		//check shipment of current user
+		if(shipment.getLogisticAccountId().equals(getUser().getId())){
+			//delete last assign follow container (preoderPickup)
+			PickupAssign assignContainer = new PickupAssign();
+			assignContainer.setShipmentId(pickupAssign.getShipmentId());
+			assignContainer.setShipmentDetailId(pickupAssign.getShipmentDetailId());
+			List<PickupAssign> assignlist = pickupAssignService.selectPickupAssignList(assignContainer);
+			if(assignlist.size() != 0 ){
+				for(PickupAssign i : assignlist){
+						pickupAssignService.deletePickupAssignById(i.getId());
+				}
+			}
+			// add  assign follow container (preoderPickup)
+			for(Long i : pickedIdDriverArray){
+				PickupAssign assign = new PickupAssign();
+				assign.setDriverId(i);
+				assign.setLogisticGroupId(shipment.getLogisticGroupId());
+				assign.setShipmentId(pickupAssign.getShipmentId());
+				assign.setShipmentDetailId(pickupAssign.getShipmentDetailId());
+				assign.setExternalFlg(0L);
+				pickupAssignService.insertPickupAssign(assign);
+			}
+		}
+		ajaxResult = success();
+		return ajaxResult;
+	}
+
+	@GetMapping("edit/driver/{id}")
+	public String editDriver(@PathVariable("id") Long id, ModelMap mmap)
+    {
+        DriverAccount driverAccount = driverAccountService.selectDriverAccountById(id);
+        mmap.put("driverAccount", driverAccount);
+        return PREFIX + "/driverInfor";
+	}
+	/**
+     * Update Save Driver login info
+     */
+    @Log(title = "Driver login info", businessType = BusinessType.UPDATE)
+    @PostMapping("/edit/driver")
+    @ResponseBody
+    public AjaxResult editSave(DriverAccount driverAccount)
+    {
+        if(driverAccountService.checkPhoneUnique(driverAccount.getMobileNumber()) > 1) {
+        	return error("PhoneNumber này đã tồn tại!");
+        }
+        if(!Pattern.matches(PHONE_PATTERN, driverAccount.getMobileNumber())){
+        	return error("PhoneNumber này phải từ 10 đến 11 số!");
+        }
+        return toAjax(driverAccountService.updateDriverAccount(driverAccount));
+	}
+	/**
+	 * Load table driverTruck
+	*/
+	@RequestMapping("/driver/truck/list")
+	@ResponseBody
+	public List<DriverTruck> getDriverTruckList(DriverTruck driverTruck){
+		List<DriverTruck> driverTrucks  = new ArrayList<DriverTruck>();
+		DriverAccount driverAccount = driverAccountService.selectDriverAccountById(driverTruck.getDriverId());
+		//check driver of current logisticGroup
+		if(driverAccount.getLogisticGroupId().equals(getUser().getGroupId())){
+			List<DriverTruck> tractors = driverTruckService.selectTractorByDriverId(driverTruck.getDriverId());
+			List<DriverTruck> trailers = driverTruckService.selectTrailerByDriverId(driverTruck.getDriverId());
+			if(tractors.size() != 0){
+				for(DriverTruck i : tractors){
+					driverTrucks.add(i);
+				}
+			}
+			if(trailers.size() != 0){
+				for(DriverTruck i :trailers){
+					driverTrucks.add(i);
+				}
+			}
+		}
+		return driverTrucks;
 	}
 }

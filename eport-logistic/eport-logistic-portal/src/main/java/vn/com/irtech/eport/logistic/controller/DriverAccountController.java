@@ -46,7 +46,6 @@ import vn.com.irtech.eport.common.core.text.Convert;
 public class DriverAccountController extends LogisticBaseController
 {
     private String prefix = "logistic/transport";
-	public static final String PHONE_PATTERN = "^[0-9]{10,11}$";
 
     @Autowired
     private IDriverAccountService driverAccountService;
