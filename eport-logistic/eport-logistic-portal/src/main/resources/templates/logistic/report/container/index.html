@@ -6,12 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <th:block th:include="include :: header('Container Report')" />
     <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/report/report.css}" rel="stylesheet" />
 </head>
-<style>
-    .white-bg {
-        padding-top: 10px;
-    }
-</style>
 <body class="container-fluid white-bg">
     <section class="filter">
         <div class="row section-header">
@@ -50,48 +46,19 @@
                 <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
                     <thead>
                         <tr>
-                            <th data-options="
-                    field: 'carrierCode',
-                    halign: 'center',
-                    resizable: true">
-                                Mã hãng tàu
-                            </th>
-                            <th data-options="
-                    field:'orderNumber',
-                    halign:'center',
-                    align:'center'" sortable="true">
-                                Order No
-                            </th>
-                            <th data-options="
-                    field:'billOfLading',halign:'center'" sortable="true">
-                                Bill Of Lading
-                            </th>
-                            <th data-options="field:'sztp',align:'center'," sortable="true">
-                                Size Type
-                            </th>
-                            <th data-options="field:'FE',halign:'center'">F/E</th>
-                            <th data-options="field:'businessUnit',halign:'center',align:'center'" sortable="true">
-                                Đơn vị khai thác
-                            </th>
-                            <th data-options="field:'consignee',halign:'center'">
-                                Chủ hàng
-                            </th>
-                            <th data-options="field:'containerNumber',align:'center'">
-                                Số container
-                            </th>
-                            <th data-options="field:'expiredDem',halign:'center',align:'center'" sortable="true"
-                                width="100">
-                                Hạn lệnh
-                            </th>
-                            <th data-options="field:'detFreeTime',align:'center'">
-                                Số ngày miễn lưu vỏ
-                            </th>
-                            <th data-options="field:'vessel',align:'center'">
-                                Tàu
-                            </th>
-                            <th data-options="field:'voyNo',align:'center'">
-                                Chuyến
-                            </th>
+                            <th data-options="field:'id', fixed:true" width="1"></th>
+                            <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">B/L No.</th>
+                            <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">Booking No.</th>
+                            <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">Mã Số Thuế</th>
+                            <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">Container No.</th>
+                            <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">Kích Thước</th>
+                            <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">Hình Thức</th>
+                            <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">PT Thanh Toán</th>
+                            <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">TT Thanh Toán</th>
+                            <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" width="190">Invoice No.</th>
+                            <th data-options="field:'exchangeFee', align:'right', halign:'center', resizable:true, fixed:true, formatter: formatMoney" width="120">Đơn Giá(VND)</th>
+                            <th data-options="field:'vatRate', align:'right', halign:'center', resizable:true, fixed:true" width="80">Thuế(%)</th>
+                            <th data-options="field:'vatAfterFee', align:'right', halign:'center', resizable:true, formatter: formatMoney" width="120">Tổng Tiền(VND)</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
