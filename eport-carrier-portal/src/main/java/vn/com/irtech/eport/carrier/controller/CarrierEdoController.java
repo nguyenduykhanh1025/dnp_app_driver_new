@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,12 +12,16 @@ import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.druid.sql.visitor.functions.Now;
+import com.google.gson.JsonObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +32,7 @@ import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoHistory;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 
@@ -51,10 +57,10 @@ public class CarrierEdoController extends CarrierBaseController {
 		return PREFIX + "/edo";
 	}
 
-
+    //List
 	@GetMapping("/edo")
 	@ResponseBody
-	public TableDataInfo edo(Edo edo,String fromDate,String toDate)
+	public TableDataInfo edo(Edo edo, String fromDate, String toDate)
 	{
 		startPage();
 		edo.setCarrierId(ShiroUtils.getGroupId());
@@ -81,10 +87,7 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@RequestMapping(value = "/file",method = { RequestMethod.POST })
 	@ResponseBody
-	public  Object upload(@RequestParam("file") MultipartFile file,HttpServletRequest request) throws IOException {
-		if (file.isEmpty()) {
-			System.out.println("File empty");
-        }
+	public Object upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
 		String content = "";
 		List<Edo> edo = new ArrayList<>();
 		try {
@@ -100,39 +103,39 @@ public class CarrierEdoController extends CarrierBaseController {
 			  String[] text = content.split("'");
 			  edo = edoService.readEdi(text);
 			  EdoHistory edoHistory = new EdoHistory();
+			  Date timeNow = new Date();
 			  for(Edo Edo : edo)
             	{
-                Edo.setCarrierCode("MCA");
-				Edo.setCarrierId((long) 1);
-				Edo.setSecureCode("web");
-				Edo edoCheck = new Edo();
-				edoCheck = edoService.checkContainerAvailable(Edo.getContainerNumber(),Edo.getBillOfLading());
+				Edo.setCarrierId(super.getUser().getGroupId());
+				Edo.setCreateSource("web");
+				edoHistory.setBillOfLading(Edo.getBillOfLading());
+				edoHistory.setOrderNumber(Edo.getOrderNumber());
+				edoHistory.setCarrierCode(Edo.getCarrierCode());
+				edoHistory.setCarrierId(super.getUserId());
+				edoHistory.setEdiContent(content);
+				edoHistory.setContainerNumber(Edo.getContainerNumber());
+				edoHistory.setCreateBy(super.getUser().getFullName());
+				Edo edoCheck = edoService.checkContainerAvailable(Edo.getContainerNumber(),Edo.getBillOfLading());
                 if(edoCheck != null)
                 {
 					Edo.setId(edoCheck.getId());
-                    edoService.updateEdo(Edo);
-                    edoHistory.setBillOfLading(Edo.getBillOfLading());
-                    edoHistory.setCarrierCode(Edo.getCarrierCode());
-                    edoHistory.setCarrierId(ShiroUtils.getGroupId());
-                    edoHistory.setEdoId(edoCheck.getId());
-                    edoHistory.setContainerNumber(Edo.getContainerNumber());
+					Edo.setUpdateTime(timeNow);
+					Edo.setUpdateBy(super.getUser().getFullName());
+                    edoService.updateEdo(Edo); //TODO
+                    edoHistory.setEdoId(Edo.getId());
                     edoHistory.setAction("update");
-                    edoHistory.setEdiContent(content);
                     edoHistoryService.insertEdoHistory(edoHistory);
                 }else {
+					Edo.setCreateTime(timeNow);
+					Edo.setCreateBy(super.getUser().getFullName());
                     edoService.insertEdo(Edo);
-                    edoHistory.setBillOfLading(Edo.getBillOfLading());
-                    edoHistory.setCarrierCode(Edo.getCarrierCode());
-                    edoHistory.setCarrierId(ShiroUtils.getGroupId());
                     edoHistory.setEdoId(Edo.getId());
-                    edoHistory.setContainerNumber(Edo.getContainerNumber());
                     edoHistory.setAction("add");
-                    edoHistory.setEdiContent(content);
                     edoHistoryService.insertEdoHistory(edoHistory);
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // transaction rollback?
 		}
 		return  edo;
     }
@@ -148,19 +151,30 @@ public class CarrierEdoController extends CarrierBaseController {
         return folderUpload;
 	}
 
-	@GetMapping("/history/{containerNumber}")
-	public String getHistory(@PathVariable("containerNumber") String containerNumber,ModelMap map) {
-		map.put("containerNumber",containerNumber);
+	@GetMapping("/history/{id}")
+	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
+		map.put("id",id);
 		return PREFIX + "/history";
 	}
 
 	@GetMapping("/getHistory")
 	@ResponseBody
-	public TableDataInfo getHistory(EdoHistory edoHistory,String containerNumber)
+	public TableDataInfo getHistory(EdoHistory edoHistory,Long id)
 	{
-		edoHistory.setContainerNumber(containerNumber);
+		edoHistory.setEdoId(id);
+		//checkCarrier code 
 		List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
 		return getDataTable(edoHistories);
+	}
+
+	@PostMapping("/readEdiOnly")
+	@ResponseBody
+	public Object readEdi(String fileContent)
+	{
+		List<Edo> edo = new ArrayList<>();
+		String[] text = fileContent.split("'");
+		edo = edoService.readEdi(text);
+		return edo;
 	}
 	
 
