@@ -6,39 +6,7 @@
     <th:block th:include="include :: header('Điều Xe')" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
-    <style>
-      .container {
-        position: relative;
-        padding: 0;
-        width: 100%;
-      }
-    
-      .right-side {
-        display: flex;
-        flex-flow: column;
-      }
-      .content {
-        padding: 0 15px 12px 15px;
-        text-align: center;
-        flex: 1 1 auto;
-        flex-flow: column;
-        display: flex;
-      }
-
-      .shipment-type {
-        height: 35px;
-        line-height: 35px;
-        font-size: medium;
-      }
-
-      .title-top {
-        margin: 5px 0 5px 0;
-      }
-      
-      .left-info {
-        width: 60%;
-      }
-    </style>
+    <link th:href="@{/css/logistic/assignTruck/assignTruck.css}" rel="stylesheet" />
   </head>
   <body>
     <div id="wrapper">
@@ -69,48 +37,144 @@
         </div>
       </div>
       <div class="right-side">
-        <div class="title-top">
-          <div class="left-info">
-            <div>
-              <span class="label-title">Mã Lô: </span>
-              <span id="batchCode"></span>
-            </div>
-            <div>
-              <span class="label-title">Mã Số Thuế: </span>
-              <span id="taxCode"></span>
-            </div>
-            <div id="blNoDiv">
-              <span class="label-title">B/L No: </span>
-              <span id="blNo"></span>
-            </div>
-            <div id="bookingNoDiv">
-              <span class="label-title">Booking No: </span>
-              <span id="bookingNo"></span>
-            </div>
-            <div>
-              <span class="label-title">Số Lượng: </span>
-              <span id="quantity"></span>
-            </div>
-          </div>
-          <div class="left-button-bar">
-            <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">Điều Xe Theo Container</button>
-            <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForAll()">Điều Xe Theo Lô</button>
-          </div>
-        </div>
         <div class="content">
-          <table id="dgShipmentDetail" style="width: 100%;" fitColumns="true">
-            <thead>
-              <tr>
-                <th data-options="field:'id', fixed:true">Id</th>
-                <th field="ck" checkbox="true" data-options="halign:'center', fixed:true" width="5%"></th>
-                <th data-options="field:'containerNo',halign:'center', fixed:true" width="30%">Container No</th>
-                <th data-options="field:'sztp',halign:'center', fixed:true" width="30%">Kích Thước</th>
-                <th data-options="field:'preorderPickup',align:'center', fixed:true, formatter: formatPickup" width="25%">Bốc Chỉ Định</th>
-                <th data-options="field:'wgt',halign:'center'" width="1">Trọng Tải</th>
-              </tr>
-            </thead>
-          </table>
+          <div class="headerBar">
+            <button id="batchBtn" style="width: 250px; color: black; background-color: #6c9dc7; font-weight: bold"
+              onclick="assignFollowBatchTab()">Điều Xe Theo Lô</button>
+            <button id="containerBtn" style="width: 250px;; color: black; font-weight: bold"
+              onclick="assignFollowContainerTab()">Điều Xe Theo Container</button>
+          </div>
+          <div class="assignFollowBatch">
+            <div class="title-top">
+              <div class="left-info">
+                <div>
+                  <span class="label-title">Mã Lô: </span>
+                  <span id="batchCode"></span>
+                </div>
+                <div>
+                  <span class="label-title">Mã Số Thuế: </span>
+                  <span id="taxCode"></span>
+                </div>
+                <div id="blNoDiv">
+                  <span class="label-title">B/L No: </span>
+                  <span id="blNo"></span>
+                </div>
+                <div id="bookingNoDiv">
+                  <span class="label-title">Booking No: </span>
+                  <span id="bookingNo"></span>
+                </div>
+                <div>
+                  <span class="label-title">DO: </span>
+                  <span id="edoFlg"></span>
+                </div>
+                <div>
+                  <span class="label-title">Số Lượng: </span>
+                  <span id="quantity"></span>
+                </div>
+              </div>
+            </div>
+            <div class="content">
+              <div class="left-button-bar">
+                <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">+ Xe</button>
+                <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">+ Tài xế</button>
+                <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">Thuê Ngoài</button>
+                <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="save()">Lưu</button>
+              </div>
+              <div class="assignFollowBatch">
+                <!-- <div style="display: flex; justify-content: center;">
+                  <b style="margin-right: 150px;">Danh sách Đội xe</b>
+                  <b style="margin-left: 150px;">Danh sách Xe điều</b>
+                </div> -->
+                <div style="display: flex; flex: 1 1 auto;">
+                  <div class="table-content">
+                    <div style="display: flex; justify-content: center;">
+                      <b style="margin: 0 auto;">Danh sách Đội xe</b>
+                    </div>
+                    <table id="driverTable" class="table" style="width:100%;height:auto" fitColumns="true" 
+                    data-options="rownumbers:true,iconCls: 'icon-edit',singleSelect: true,toolbar: '#tb',url: 'datagrid_data1.json',method: 'get'">
+                      <thead>
+                        <tr>
+                          <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
+                          <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
+                          <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
+                          <th data-options="field:'action', formatter: formatAction,align:'center',fixed:true" width="80">Hành động</th>
+                        </tr>
+                      </thead>
+                    </table>
+                  </div>
+                  <div style="padding: 70px 0; text-align: center;">
+                    <button style="margin-bottom: 10px;" onclick="transferInToOut()">>>>>></button>
+                    <button style="margin-top: 10px;" onclick="transferOutToIn()"><<<<<</button>
+                  </div>
+                  <div class="table-content">
+                    <div style="display: flex; justify-content: center;">
+                      <b style="margin: 0 auto;">Danh sách Xe điều</b>
+                    </div>
+                    <table id="pickedDriverTable" class="table" style="width:100%;height:auto" fitColumns="true"
+                    data-options="rownumbers:true,iconCls: 'icon-edit',singleSelect: true,toolbar: '#tb',url: 'datagrid_data1.json',method: 'get'">
+                      <thead>
+                        <tr>
+                          <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
+                          <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
+                          <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
+                          <th data-options="field:'action', formatter: formatAction,align:'center',fixed:true" width="80">Hành động</th>
+                      </tr>
+                      </thead>
+                    </table>
+                  </div>
+                </div>
+              </div>
+          </div>
+          </div>
+          <div class="assignFollowContainer">
+            <div class="title-top">
+              <div class="left-info">
+                <div>
+                  <span class="label-title">Mã Lô: </span>
+                  <span id="batchCode"></span>
+                </div>
+                <div>
+                  <span class="label-title">Mã Số Thuế: </span>
+                  <span id="taxCode"></span>
+                </div>
+                <div id="blNoDiv">
+                  <span class="label-title">B/L No: </span>
+                  <span id="blNo"></span>
+                </div>
+                <div id="bookingNoDiv">
+                  <span class="label-title">Booking No: </span>
+                  <span id="bookingNo"></span>
+                </div>
+                <div>
+                  <span class="label-title">DO: </span>
+                  <span id="edoFlg"></span>
+                </div>
+                <div>
+                  <span class="label-title">Số Lượng: </span>
+                  <span id="quantity"></span>
+                </div>
+              </div>
+              <div class="left-button-bar">
+                <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">Điều Xe Theo Container</button>
+              </div>
+            </div>
+            <div class="content">
+              <table id="dgShipmentDetail" style="width: 100%;" fitColumns="true">
+                <thead>
+                  <tr>
+                    <th data-options="field:'id', fixed:true">Id</th>
+                    <th field="ck" checkbox="true" data-options="halign:'center', fixed:true" width="5%"></th>
+                    <th data-options="field:'containerNo',halign:'center', fixed:true" width="30%">Container No</th>
+                    <th data-options="field:'sztp',halign:'center', fixed:true" width="30%">Kích Thước</th>
+                    <th data-options="field:'preorderPickup',align:'center', fixed:true, formatter: formatPickup" width="25%">Bốc Chỉ Định</th>
+                    <th data-options="field:'wgt',halign:'center'" width="1">Trọng Tải</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
     <th:block th:include="include :: footer" />

@@ -34,9 +34,31 @@ function handleCollapse(status) {
         $("#dgShipmentDetail").datagrid('resize');
     }, 500);
 }
+function assignFollowBatchTab() {
+    $(".assignFollowBatch").show();
+    $("#batchBtn").css({"background-color": "#6c9dc7"});
+    $(".assignFollowContainer").hide();
+    $("#containerBtn").css({"background-color": "#c7c1c1"});
+    let row = $("#dg").datagrid("getSelected");
+    if(row){
+        loadDriver(row.id);
+    }
 
+}
+
+function assignFollowContainerTab() {
+    $(".assignFollowContainer").css("display","flex");;
+    $("#containerBtn").css({"background-color": "#6c9dc7"});
+    $(".assignFollowBatch").hide();
+    $("#batchBtn").css({"background-color": "#c7c1c1"});
+    let row = $("#dg").datagrid("getSelected");
+    if(row){
+        loadShipmentDetail(row.id);
+    }
+}
 // LOAD SHIPMENT LIST
 function loadTable() {
+	//shipment
     $("#dg").datagrid({
         url: prefix + "/listShipment",
         height: window.innerHeight - 70,
@@ -110,7 +132,9 @@ function getSelectedShipment() {
         $("#taxCode").text(row.taxCode);
         $("#blNo").text(row.blNo);
         $("#bookingNo").text(row.bookingNo);
+        $("#edoFlg").text(row.edoFlg == 1 ? "eDO" : "DO");
         loadShipmentDetail(row.id);
+        loadDriver(row.id);
     }
 }
 
@@ -122,9 +146,6 @@ function loadShipmentDetail(id) {
         clientPaging: false,
         nowrap: false,
         striped: true,
-        onClickRows: function () {
-            getSelectedShipment();
-        },
         loadMsg: " Đang xử lý...",
         loader: function (param, success, error) {
             let opts = $(this).datagrid("options");
@@ -155,17 +176,17 @@ function loadShipmentDetail(id) {
 }
 
 // HANDLE WHEN SELECT A SHIPMENT
-function getSelectedShipmentDetail() {
-    let row = $("#dg").datagrid("getSelected");
-    if (row) {
-        shipmentSelected = row;
-        $("#batchCode").text(row.id);
-        $("#taxCode").text(row.taxCode);
-        $("#blNo").text(row.blNo);
-        $("#bookingNo").text(row.bookingNo);
-        loadShipmentDetail(row.id);
-    }
-}
+// function getSelectedShipmentDetail() {
+//     let row = $("#dg").datagrid("getSelected");
+//     if (row) {
+//         shipmentSelected = row;
+//         $("#batchCode").text(row.id);
+//         $("#taxCode").text(row.taxCode);
+//         $("#blNo").text(row.blNo);
+//         $("#bookingNo").text(row.bookingNo);
+//         loadShipmentDetail(row.id);
+//     }
+// }
 
 function formatPickup(value) {
     if (value != "Y") {
@@ -174,20 +195,149 @@ function formatPickup(value) {
     return "<span class='label label-default'>Không</span>"
 }
 
-function pickTruckForAll() {
-    if ($("#quantity").text() != "0") {
-        $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + "0");
-    } else {
-        $.modal.alertError("Lô này hiện đang trống!");
+// function pickTruckForAll() {
+//     if ($("#quantity").text() != "0") {
+//         $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + "0");
+//     } else {
+//         $.modal.alertError("Lô này hiện đang trống!");
+//     }
+// }
+
+// function pickTruckForChosenList() {
+//     if ($("#quantity").text() != "0") {
+//         $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + "0");
+//     } else {
+//         $.modal.alertError("Quý khách chưa chọn container!");
+//     }
+// }
+///////////////////////ASSIGN TRUCK ////////////////////////////////////
+var pickedIds = [];
+function loadDriver(shipmentId){
+    pickedIds = [];
+    //pickedDriverList
+    $("#pickedDriverTable").datagrid({
+        url: prefix + "/assignedDriverAccountList",
+        height: window.innerHeight - 170,
+        singleSelect: true,
+        collapsible: true,
+        clientPaging: false,
+        nowrap: false,
+        striped: true,
+        loadMsg: " Đang xử lý...",
+        loader: function (param, success, error) {
+            let opts = $(this).datagrid("options");
+            if (!opts.url) return false;
+            $.ajax({
+                type: opts.method,
+                url: opts.url,
+                data: {
+                    shipmentId:shipmentId
+                },
+                dataType: "json",
+                success: function (data) {
+                    success(data);
+                },
+                error: function () {
+                    error.apply(this, arguments);
+                },
+            });
+        },
+    });
+    $('#pickedDriverTable').datagrid({singleSelect:(this.value==1)})
+    //driverList
+    setTimeout(() => {
+        let records =  $('#pickedDriverTable').datagrid('getRows');
+        if(records){
+            for(let i = 0; i < records.length; i++){
+                pickedIds.push(records[i].id);
+            }
+        }
+        $("#driverTable").datagrid({
+            url: prefix + "/listDriverAccount",
+            height: window.innerHeight - 170,
+            singleSelect: true,
+            collapsible: true,
+            clientPaging: false,
+            nowrap: false,
+            striped: true,
+            loadMsg: " Đang xử lý...",
+            loader: function (param, success, error) {
+                let opts = $(this).datagrid("options");
+                if (!opts.url) return false;
+                $.ajax({
+                    type: opts.method,
+                    url: opts.url,
+                    data: {
+                        shipmentId: shipmentId,
+                        pickedIds: pickedIds
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        success(data);
+                    },
+                    error: function () {
+                        error.apply(this, arguments);
+                    },
+                });
+            },
+        });
+        $('#driverTable').datagrid({singleSelect:(this.value==1)})
+    }, 100);
+}
+function transferInToOut() {
+    let rows = $('#driverTable').datagrid('getSelections');
+    if(rows){
+        for(let i=0; i< rows.length;i++){
+            let index = $('#driverTable').datagrid('getRowIndex', rows[i]);
+            $('#driverTable').datagrid('deleteRow', index);
+            $('#pickedDriverTable').datagrid('appendRow', rows[i]);
+        }
     }
 }
-
-function pickTruckForChosenList() {
-    if ($("#quantity").text() != "0") {
-        $.modal.openFullPickTruck("Điều xe", prefix + "/pickTruckForm/" + shipmentSelected.id + "/" + false + "/" + "0");
-    } else {
-        $.modal.alertError("Quý khách chưa chọn container!");
+function transferOutToIn() {
+    let rows = $('#pickedDriverTable').datagrid('getSelections');
+    if(rows){
+        for(let i=0; i< rows.length;i++){
+            let index = $('#pickedDriverTable').datagrid('getRowIndex', rows[i]);
+            $('#pickedDriverTable').datagrid('deleteRow', index);
+            $('#driverTable').datagrid('appendRow', rows[i]);
+        }
     }
 }
-
-
+function save(){
+    let pickedIdDriverArray = [];
+    let shipmentId;
+    let rows = $('#pickedDriverTable').datagrid('getRows');
+    let shipmentRow = $("#dg").datagrid("getSelected");
+    if(shipmentRow){
+        shipmentId = shipmentRow.id;
+    }
+    if(rows){
+        for(let i=0; i< rows.length;i++){
+            pickedIdDriverArray.push(rows[i].id);
+        }
+        $.ajax({
+            url: prefix + "/savePickupAssignFollowBatch",
+            method: "post",
+            data:{
+                pickedIdDriverArray:pickedIdDriverArray,
+                shipmentId: shipmentId
+            },
+            success: function(result){
+                if(result.code == 0){
+                    $.modal.msgSuccess(result.msg);
+                }else{
+                    $.modal.msgError(result.msg);
+                }
+            }
+        })
+    }
+}
+function formatAction(value, row, index) {
+	var actions = [];
+    actions.push('<a class="btn btn-success btn-xs" onclick="editDriver(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
+    return actions.join('');
+}
+function editDriver(id){
+    $.modal.open("Chỉnh Sửa Tài xế ", "transport/edit/"+id);
+}
