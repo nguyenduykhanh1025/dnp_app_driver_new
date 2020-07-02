@@ -19,13 +19,13 @@ public class TruckHistoryController extends BaseController {
 	private final static String PREFIX = "history/truck";
 
 	@Autowired
-	private IPickupHistoryService pickupHistoryService;
+	private IPickupHistoryService pickupHistoryService; 
 	
 	@GetMapping("/")
 	public String getTruckHistory() {
 		return PREFIX + "/index";
 	}
-
+ 
 	@GetMapping("/list")
 	@ResponseBody
 	public TableDataInfo getListTruckHistor(PickupHistory pickupHistory) {
