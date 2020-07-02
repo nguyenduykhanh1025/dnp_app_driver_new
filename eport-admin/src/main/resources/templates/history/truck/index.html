@@ -14,56 +14,38 @@
           <input
             type="text"
             class="form-control"
-            placeholder="Search for field..."
+            placeholder="Số cont..."
+            name="containerNo"
           />
         </div>
         <div class="form-group col-md-2 col-sm-2 col-xs-2">
           <input
             type="text"
             class="form-control"
-            placeholder="Search for field..."
+            placeholder="Giờ vào cổng..."
+            name="gatein"
           />
         </div>
         <div class="form-group col-md-2 col-sm-2 col-xs-2">
           <input
             type="text"
             class="form-control"
-            placeholder="Search for field..."
+            placeholder="Giờ ra cổng..."
+            name="gateout"
           />
         </div>
         <div class="form-group col-md-2 col-sm-2 col-xs-2">
           <input
             type="text"
             class="form-control"
-            placeholder="Search for field..."
+            placeholder="Bill No..."
           />
         </div>
         <div class="form-group col-md-2 col-sm-2 col-xs-2">
           <input
             type="text"
             class="form-control"
-            placeholder="Search for field..."
-          />
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Search for field..."
-          />
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Search for field..."
-          />
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Search for field..."
+            placeholder="Booking No..."
           />
         </div>
         <div class="form-group col-md-2 col-sm-2 col-xs-2">
@@ -79,54 +61,103 @@
               <tr>
                 <th
                   data-options="
-                    field: 'carrierCode',
+                    field: 'driver',
                     halign: 'center',
-                    resizable: true"> 
-                  Mã hãng tàu
+                    resizable: true,
+                    formatter: function(value,row){return row.driver.fullName}"> 
+                  Tên tài xế
                 </th>
                 <th
                   data-options="
-                    field:'orderNumber',
+                    field: 'driverPhone',
+                    halign: 'center',
+                    resizable: true,
+                    formatter: function(value,row){return row.driver.mobileNumber}"
+                    > 
+                  Số điện thoại
+                </th>
+                <th
+                  data-options="
+                    field:'shipmentDetail1',
                     halign:'center',
-                    align:'center'"
+                    align:'center',
+                    formatter: function(value,row){return row.shipmentDetail1.containerNo}"
                   sortable="true">
-                  Order No
+                  Container 1
                 </th>
                 <th
                   data-options="
-                    field:'billOfLading',halign:'center'"
+                    field:'yardPosition1',
+                    halign:'center',
+                    align:'center',
+                    formatter: function(value,row){return row.yardPosition1}"
                   sortable="true">
-                  Bill Of Lading
-                </th>
-                <th data-options="field:'sztp',align:'center'," sortable="true">
-                  Size Type
-                </th>
-                <th data-options="field:'FE',halign:'center'">F/E</th>
-                <th
-                  data-options="field:'businessUnit',halign:'center',align:'center'"
-                  sortable="true">
-                  Đơn vị khai thác
-                </th>
-                <th data-options="field:'consignee',halign:'center'">
-                  Chủ hàng
-                </th>
-                <th data-options="field:'containerNumber',align:'center'">
-                  Số container
+                  Vị trí Container 1
                 </th>
                 <th
-                  data-options="field:'expiredDem',halign:'center',align:'center'"
-                  sortable="true"
-                  width="100">
-                  Hạn lệnh
+                  data-options="
+                    field:'shipmentDetail2',
+                    halign:'center',
+                    formatter:function(value, row) {return row.shipmentDetail2.containerNo}"
+                  sortable="true">
+                  Container 2
                 </th>
-                <th data-options="field:'detFreeTime',align:'center'">
-                  Số ngày miễn lưu vỏ
+                <th
+                  data-options="
+                    field:'yardPosition2',
+                    halign:'center',
+                    align:'center',
+                    formatter: function(value,row){return row.yardPosition2}"
+                  sortable="true">
+                  Vị trí Container 2
                 </th>
-                <th data-options="field:'vessel',align:'center'">
-                  Tàu
+                <th data-options="
+                    field:'gateinDate',
+                    align:'center',
+                    formatter: formatDate" 
+                  sortable="true">
+                  Giờ vào cổng
                 </th>
-                <th data-options="field:'voyNo',align:'center'">
-                  Chuyến
+                <th data-options="
+                    field:'gateinDate',
+                    align:'center',
+                    formatter: formatDate" 
+                  sortable="true">
+                  Giờ ra cổng
+                </th>
+                <th data-options="
+                    field:'receiptDate',
+                    halign:'center', 
+                    align:'center', 
+                    formatter: formatDate"
+                    sortable="true">
+                    Ngày nhận lệnh</th>
+                <th
+                  data-options="field:'blNo',
+                    halign:'center',
+                    align:'center',
+                    formatter: function(value, row) { return row.shipment.blNo }"
+                  sortable="true">
+                  Bill No 
+                </th>
+                <th
+                  data-options="field:'bookingNo',
+                    halign:'center',
+                    align:'center',
+                    formatter: function(value, row) { return row.shipment.bookingNo }"
+                  sortable="true">
+                  Booking No
+                </th>
+                <th data-options="field:'truckNo',halign:'center'">
+                  Biển số xe đầu kéo
+                </th>
+                <th data-options="field:'chassisNo',halign:'center'">
+                  Biển số xe rơ móc
+                </th>
+                <th data-options="field:'logisticName',
+                      halign:'center',
+                      formatter: function(value, row) { return row.logisticGroup.groupName }">
+                  Logistic Name 
                 </th>
               </tr>
             </thead>
@@ -137,43 +168,6 @@
     </section>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
-    <script type="text/javascript">
-      $(function () {
-        loadTable();
-      });
-
-      var prefix = "/edo/manage/";
-      function loadTable() {
-        $("#dg").datagrid({
-          url: prefix + "/list",
-          method: "GET",
-          singleSelect: true,
-          height: document.documentElement.clientHeight - 70,
-          clientPaging: false,
-          pagination: true,
-          rownumbers: true,
-          pageSize: 50,
-          nowrap: false,
-          striped: true,
-          loadMsg: " Đang xử lý...",
-          loader: function (param, success, error) {
-            var opts = $(this).datagrid("options");
-            if (!opts.url) return false;
-            $.ajax({
-              type: opts.method,
-              url: opts.url,
-              data: {},
-              dataType: "json",
-              success: function (data) {
-                success(data);
-              },
-              error: function () {
-                error.apply(this, arguments);
-              },
-            });
-          },
-        });
-      }
-    </script>
+    <script th:src="@{/eport/js/modules/history/truck-history.js}"></script>
   </body>
 </html>

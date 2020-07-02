@@ -9,10 +9,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="id" column="id" />
 		<result property="logisticGroupId" column="logistic_group_id" />
 		<result property="shipmentId" column="shipment_id" />
-		<result property="shipmentDetailId1"
-			column="shipment_detail_id_1" />
-		<result property="shipmentDetailId2"
-			column="shipment_detail_id_2" />
+		<result property="shipmentDetailId1" column="shipment_detail_id_1" />
+		<result property="shipmentDetailId2" column="shipment_detail_id_2" />
 		<result property="driverId" column="driver_id" />
 		<result property="pickupAssignId" column="pickup_assign_id" />
 		<result property="containerNo1" column="container_no_1" />
@@ -25,21 +23,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="receiptDate" column="receipt_date" />
 		<result property="gateinDate" column="gatein_date" />
 		<result property="gateoutDate" column="gateout_date" />
-		<result property="cancelDeceiptDate"
-			column="cancel_receipt_date" />
-		<association property="shipment" column="shipment_id"
-			javaType="Shipment" select="selectShipment" />
-		<association property="shipmentDetail1"
-			column="shipment_detail_id_1" javaType="ShipmentDetail"
-			select="selectShipmentDetail" />
-		<association property="shipmentDetail2"
-			column="shipment_detail_id_2" javaType="ShipmentDetail"
-			select="selectShipmentDetail" />
-		<association property="logisticGroup"
-			column="logistic_group_id" javaType="LogisticGroup"
-			select="selectLogisticGroup" />
-		<association property="driver" column="driver_id"
-			javaType="DriverAccount" select="selectDriverAccount" />
+		<result property="cancelDeceiptDate" column="cancel_receipt_date" />
+		<association property="shipment" column="shipment_id" javaType="Shipment" select="selectShipment" />
+		<association property="shipmentDetail1" column="shipment_detail_id_1" javaType="ShipmentDetail" select="selectShipmentDetail" />
+		<association property="shipmentDetail2" column="shipment_detail_id_2" javaType="ShipmentDetail" select="selectShipmentDetail" />
+		<association property="logisticGroup" column="logistic_group_id" javaType="LogisticGroup" select="selectLogisticGroup" />
+		<association property="driver" column="driver_id" javaType="DriverAccount" select="selectDriverAccount" />
 	</resultMap>
 
 	<sql id="selectPickupHistoryVo">
@@ -52,8 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from pickup_history
 	</sql>
 
-	<select id="selectPickupHistoryList"
-		parameterType="PickupHistory" resultMap="PickupHistoryResult">
+	<select id="selectPickupHistoryList" parameterType="PickupHistory" resultMap="PickupHistoryResult">
 		<include refid="selectPickupHistoryVo" />
 		<where>
 			<if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
@@ -73,6 +61,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="gateinDate != null "> and gatein_date = #{gateinDate}</if>
 			<if test="gateoutDate != null "> and gateout_date = #{gateoutDate}</if>
 			<if test="cancelDeceiptDate != null "> and cancel_receipt_date = #{cancelDeceiptDate}</if>
+            <if test="fromDate != null ">and (gatein_date = #{fromDate} OR gatein_date > #{fromDate})</if>
+            <if test="toDate != null ">and (gatein_date = #{toDate} OR gatein_date &lt; #{toDate})</if>
 		</where>
 	</select>
 
@@ -208,8 +198,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="vgm" column="vgm" />
 		<result property="vgmPersonInfo" column="vgm_person_info" />
 		<result property="preorderPickup" column="preorder_pickup" />
-		<result property="shiftingContNumber"
-			column="shifting_cont_number" />
+		<result property="shiftingContNumber" column="shifting_cont_number" />
 		<result property="customStatus" column="custom_status" />
 		<result property="paymentStatus" column="payment_status" />
 		<result property="processStatus" column="process_status" />
@@ -264,4 +253,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="mobileNumber" column="mobile_number" />
 		<result property="fullName" column="full_name" />
 	</resultMap>
+
+	<select id="selectPickupHistoryListForReport" resultMap="PickupHistoryResult">
+		SELECT *
+		FROM pickup_history as p 
+		left join shipment s on p.shipment_id = s.id
+		left join shipment_detail sh on p.shipment_detail_id_1 = sh.id
+		<where>
+			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
+			<if test="shipmentId != null "> and p.shipment_id like concat('%', #{shipmentId}, '%')</if>
+			<if test="shipmentDetailId1 != null "> and p.shipment_detail_id_1 = #{shipmentDetailId1}</if>
+			<if test="shipmentDetailId2 != null "> and p.shipment_detail_id_2 = #{shipmentDetailId2}</if>
+			<if test="driverId != null "> and p.driver_id = #{driverId}</if>
+			<if test="pickupAssignId != null "> and p.pickup_assign_id = #{pickupAssignId}</if>
+			<if test="containerNo1 != null  and containerNo1 != ''"> and p.container_no_1 = #{containerNo1}</if>
+			<if test="containerNo2 != null  and containerNo2 != ''"> and p.container_no_2 = #{containerNo2}</if>
+			<if test="truckNo != null  and truckNo != ''"> and p.truck_no = #{truckNo}</if>
+			<if test="chassisNo != null  and chassisNo != ''"> and p.chassis_no = #{chassisNo}</if>
+			<if test="yardPosition1 != null  and yardPosition1 != ''"> and p.yard_position_1 = #{yardPosition1}</if>
+			<if test="yardPosition2 != null  and yardPosition2 != ''"> and p.yard_position_2 = #{yardPosition2}</if>
+			<if test="status != null "> and p.status = #{status}</if>
+			<if test="receiptDate != null "> and p.receipt_date = #{receiptDate}</if>
+			<if test="gateinDate != null "> and p.gatein_date = #{gateinDate}</if>
+			<if test="gateoutDate != null "> and p.gateout_date = #{gateoutDate}</if>
+			<if test="cancelDeceiptDate != null "> and p.cancel_receipt_date = #{cancelDeceiptDate}</if>
+            <if test="fromDate != null ">and (p.gatein_date = #{fromDate} OR p.gatein_date > #{fromDate})</if>
+            <if test="toDate != null ">and (p.gatein_date = #{toDate} OR p.gatein_date &lt; #{toDate})</if>
+			<if test="serviceType != null "> and s.service_type = #{serviceType}</if>
+		</where>
+	</select>
 </mapper>

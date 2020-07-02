@@ -1,9 +1,9 @@
 var prefix = "/edo";
 $(function() {
-    loadTable(containerNumber);
+    loadTable(id);
 });
 
-function loadTable(containerNumber) {
+function loadTable(id) {
     $("#dg").datagrid({
         url: prefix + "/getHistory",
         method: "GET",
@@ -20,7 +20,7 @@ function loadTable(containerNumber) {
                 type: opts.method,
                 url: opts.url,
                 data: {
-                    containerNumber: containerNumber
+                    id: id
                 },
                 dataType: "json",
                 success: function(data) {
@@ -43,5 +43,23 @@ function statusFormat(value) {
 }
 
 function contentFormat(value) {
-    return value;
+    var actions = [];
+    var formBlob = new Blob([value], { type: 'text/plain' });
+    actions.push(' <a class="btn btn-warning btn-xs "  onclick="viewHistoryFileContent(\'' + value + '\')"><i class="fa fa-search"></i> Content File</a> ');
+    return actions.join('');
+}
+
+function viewHistoryFileContent(formBlob) {
+
+    // someLink.href = window.URL.createObjectURL(formBlob);
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(formBlob));
+    element.setAttribute('download', "filename");
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
 }

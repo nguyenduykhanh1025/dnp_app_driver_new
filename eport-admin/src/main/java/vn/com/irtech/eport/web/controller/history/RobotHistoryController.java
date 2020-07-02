@@ -10,27 +10,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.logistic.domain.PickupHistory;
-import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
+import vn.com.irtech.eport.logistic.domain.ProcessHistory;
+import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
 
 @Controller
-@RequestMapping("/history/truck")
-public class TruckHistoryController extends BaseController {
-	private final static String PREFIX = "history/truck";
+@RequestMapping("/history/robot")
+public class RobotHistoryController extends BaseController {
+    private final static String PREFIX = "history/robot";
 
-	@Autowired
-	private IPickupHistoryService pickupHistoryService; 
-	
-	@GetMapping("/")
+    @Autowired
+    private IProcessHistoryService processHistoryService;
+    
+    @GetMapping("/")
 	public String getTruckHistory() {
 		return PREFIX + "/index";
-	}
- 
-	@GetMapping("/list")
+    }
+    
+    @GetMapping("/list")
 	@ResponseBody
-	public TableDataInfo getListTruckHistor(PickupHistory pickupHistory) {
+	public TableDataInfo getListTruckRobot(ProcessHistory processHistory) {
 		startPage();
-		List<PickupHistory> pickupHistorys = pickupHistoryService.selectPickupHistoryList(pickupHistory);
+		List<ProcessHistory> pickupHistorys = processHistoryService.selectProcessHistoryList(processHistory);
 		return getDataTable(pickupHistorys);
 	}
 }

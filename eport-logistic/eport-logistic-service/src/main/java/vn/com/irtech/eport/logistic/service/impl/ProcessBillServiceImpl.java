@@ -138,4 +138,9 @@ public class ProcessBillServiceImpl implements IProcessBillService
     public List<ProcessBill> selectProcessBillListByProcessOrderIds(String processOrderIds) {
         return processBillMapper.selectProcessBillListByProcessOrderIds(Convert.toStrArray(processOrderIds));
     }
+
+    @Override
+    public List<ProcessBill> selectBillReportList(ProcessBill processBill) {
+        return processBillMapper.selectBillReportList(processBill);
+    }
 }

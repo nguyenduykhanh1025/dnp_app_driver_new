@@ -50,8 +50,8 @@ function loadTable(containerNumber, billOfLading, fromDate, toDate) {
 }
 
 function searchDo() {
-    setTimeout($.modal.loading("Đang xử lý"), 100);
-    $.modal.closeLoading()
+    // setTimeout($.modal.loading("Đang xử lý"), 100);
+    // $.modal.closeLoading()
     let containerNumber = $("#containerNumber").val() == null ? "" : $("#containerNumber").val();
     let billOfLading = $("#billOfLading").val() == null ? "" : $("#billOfLading").val();
     let fromDate = formatToYDM($("#fromDate").val() == null ? "" : $("#fromDate").val());
@@ -65,10 +65,10 @@ function formatToYDM(date) {
 
 function formatAction(value, row, index) {
     var actions = [];
-    actions.push('<a class="btn btn-success btn-xs" onclick="viewHistoryEdiFile(\'' + row.containerNumber + '\')"><i class="fa fa-view"></i>History</a> ');
+    actions.push('<a class="btn btn-success btn-xs" onclick="viewHistoryEdiFile(\'' + row.id + '\')"><i class="fa fa-view"></i>History</a> ');
     return actions.join('');
 }
 
-function viewHistoryEdiFile(containerNumber) {
-    $.modal.open("History File", prefix + "/history/" + containerNumber, 800, 500);
+function viewHistoryEdiFile(id) {
+    $.modal.open("History File", prefix + "/history/" + id, 800, 500);
 }
