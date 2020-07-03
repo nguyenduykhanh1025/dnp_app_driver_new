@@ -1,5 +1,5 @@
 const PREFIX = "/logistic/report/container";
-var pickupStory = new Object();
+var pickupHistory = new Object();
 
 $(document).ready(function() {
     loadTable();
@@ -21,6 +21,23 @@ $(document).ready(function() {
         todayHighlight: true,
         pickTime: false,
         minView: 2
+    });
+
+    $('#searchAllInput').keyup(function(event) {
+        if (event.keyCode == 13) {
+            pickupHistory.blNo = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.bookingNo = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.containerNo1 = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.containerNo2 = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.truckNo = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.chassisNo = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.yardPosition1 = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.yardPosition2 = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.sztp = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.vslNm = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.voyNo = $('#searchAllInput').val().toUpperCase();
+            loadTable();
+        }
     });
 });
 
@@ -45,7 +62,7 @@ function loadTable() {
                 url: opts.url,
                 contentType: "application/json",
                 accept: 'text/plain',
-                data: JSON.stringify(pickupStory),
+                data: JSON.stringify(pickupHistory),
                 dataType: 'text',
                 success: function (data) {
                     success(JSON.parse(data));
@@ -57,6 +74,15 @@ function loadTable() {
             $("#dg").datagrid("hideColumn", "id");
         },
     });
+}
+
+function refresh() {
+    $('#searchAllInput').val('');
+    $('#seviceTypeSelect').val('');
+    $('#fromDate').val('');
+    $('#toDate').val('');
+    pickupStory = new Object();
+    loadTable();
 }
 
 function formatBlNo(value, row) {
@@ -72,7 +98,6 @@ function formatSztp(value, row) {
 }
 
 function formatServiceType(value, row) {
-    console.log(row)
     switch (row.shipment.serviceType) {
         case 1:
             return 'Bốc Hàng';
@@ -101,12 +126,12 @@ function formatDate(value) {
 }
 
 function changeServiceType() {
-    pickupStory.serviceType = $('#seviceTypeSelect').val();
+    pickupHistory.serviceType = $('#seviceTypeSelect').val();
     loadTable();
 }
 
 function changeFromDate() {
-    pickupStory.fromDate = stringToDate($('.from-date').val()).getTime();
+    pickupHistory.fromDate = stringToDate($('.from-date').val()).getTime();
     loadTable();
 }
 
@@ -117,7 +142,7 @@ function changeToDate() {
         $('.to-date').val('');
     } else {
         toDate.setHours(23, 59, 59);
-        pickupStory.toDate = toDate.getTime();
+        pickupHistory.toDate = toDate.getTime();
         loadTable();
     }
 }

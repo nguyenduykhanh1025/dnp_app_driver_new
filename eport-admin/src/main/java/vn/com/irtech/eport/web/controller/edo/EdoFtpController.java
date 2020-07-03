@@ -44,7 +44,7 @@ public class EdoFtpController extends BaseController{
 
         //Define folder receiver and folder moving file Edo before save
 
-
+    	
 		final File folder = new File("D:/testReadFile");
         final String destinationFolder = "D:/moveFileToThisFolder/";
         

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +10,14 @@
   .container {
     padding-top: 10px;
   }
-  .form-group > label {
+
+  .form-group>label {
     text-align: right;
   }
 
   .form-control:focus {
     border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
   }
 
   .error-input {
@@ -24,20 +26,21 @@
     color: #c00;
   }
 </style>
+
 <body>
   <div class="container">
     <form id="form-edit-shipment">
       <div class="form-group row">
         <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Mã Lô</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="id" id="id" type="text" class="form-control" style="display: none;"/>
-          <input name="shipmentCode" id="shipmentCode" type="text" class="form-control" disabled/>
+          <input name="id" id="id" type="text" class="form-control" style="display: none;" />
+          <input name="shipmentCode" id="shipmentCode" type="text" class="form-control" disabled />
         </div>
       </div>
       <div class="form-group row" style="margin-bottom: 0;">
         <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Mã Số Thuế</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="taxCode" id="taxCode" type="text" class="form-control" onfocusout="loadGroupName()" required/>
+          <input name="taxCode" id="taxCode" type="text" class="form-control" onfocusout="loadGroupName()" required />
         </div>
       </div>
       <div class="form-group row">
@@ -47,7 +50,7 @@
       <div class="form-group row">
         <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Số Lượng Container</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="containerAmount" id="containerAmount" type="number" class="form-control" required/>
+          <input name="containerAmount" id="containerAmount" type="number" class="form-control" required />
         </div>
       </div>
       <div class="form-group row">
@@ -64,59 +67,11 @@
       </div>
     </form>
   </div>
+  <th:block th:include="include :: footer" />
+  <script type="text/javascript" th:inline="javascript">
+    var shipment = /*[[${shipment}]]*/;
+  </script>
+  <script th:src="@{/js/logistic/sendContEmpty/edit.js}"></script>
 </body>
-<th:block th:include="include :: footer" />
-<script type="text/javascript" th:inline="javascript">
-  var shipment = /*[[${shipment}]]*/ ;
-  var prefix = ctx + "logistic/sendContEmpty";
 
-  function loadGroupName() {
-    if ($("#taxCode").val() != null && $("#taxCode").val() != '') {
-      $.ajax({
-        url: prefix + "/getGroupNameByTaxCode",
-        method: "get",
-        data: {
-          taxCode: $("#taxCode").val()
-        }
-      }).done(function (result) {
-        if (result.code == 0) {
-          $("#groupName").val(result.groupName);
-          $("#taxCode").removeClass("error-input");
-        } else {
-          $.modal.msgError("Không tìm ra mã số thuế!");
-          $("#taxCode").addClass("error-input");
-          $("#groupName").val('');
-        }
-      });
-    } else {
-      $("#groupName").val('');
-    }
-  }
-
-  // Map data to form
-  if (shipment != null) {
-    $("#id").val(shipment.id);
-    $("#shipmentCode").val(shipment.id);
-    $("#taxCode").val(shipment.taxCode);
-    $("#containerAmount").val(shipment.containerAmount);
-    $("#remark").val(shipment.remark);
-    loadGroupName();
-  }
-
-  $("#form-edit-shipment").validate({
-      focusCleanup: true
-  });
-
-  function submitHandler() {
-    if ($.validate.form()) {
-      if ($("#groupName").val() != null && $("#groupName").val() != '') {
-        $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
-        parent.loadTable();
-      }
-    } else {
-      $.modal.msgError("Không tìm thấy mã số thuế!");
-    }
-  }
-
-</script>
 </html>

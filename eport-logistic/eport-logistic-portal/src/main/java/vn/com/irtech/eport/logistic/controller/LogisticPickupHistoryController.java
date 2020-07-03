@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -26,13 +28,12 @@ public class LogisticPickupHistoryController extends LogisticBaseController {
 		return PREFIX + "/index";
 	}
 	
-	@GetMapping("/list")
+	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(PickupHistory pickupHistory) {
-    startPage();
-    Long groupId = super.getUser().getLogisticGroup().getId();
-    pickupHistory.setLogisticGroupId(groupId);
-    List<PickupHistory> pickupHistorys = pickupHistoryService.selectPickupHistoryList(pickupHistory);
+	public TableDataInfo list(@RequestBody PickupHistory pickupHistory) {
+		startPage();
+		pickupHistory.setLogisticGroupId(getUser().getLogisticGroup().getId());
+		List<PickupHistory> pickupHistorys = pickupHistoryService.selectPickupHistoryListForHistory(pickupHistory);
 		return getDataTable(pickupHistorys);
 	}
 }

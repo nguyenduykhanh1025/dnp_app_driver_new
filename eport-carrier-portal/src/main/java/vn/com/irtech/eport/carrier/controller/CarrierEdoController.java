@@ -89,83 +89,68 @@ public class CarrierEdoController extends CarrierBaseController {
 	@ResponseBody
 	public Object upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
 		String content = "";
-		List<Edo> edo = new ArrayList<>();
+		List<Edo> listEdo = new ArrayList<>();
 		try {
 			  String fileName = file.getOriginalFilename();
-		      File fileNew = new File(this.getFolderUpload(), fileName);
+		      File fileNew = new File(edoService.getFolderUploadByTime(super.folderUpLoad()), fileName);
 		      file.transferTo(fileNew);
-		      File myObj = new File(this.getFolderUpload()+"/"+fileName);
+		      File myObj = new File(edoService.getFolderUploadByTime(super.folderUpLoad())+File.separator+fileName);
 		      Scanner myReader = new Scanner(myObj);
 		      while (myReader.hasNextLine()) {
 				content += myReader.nextLine();
 		      }
               myReader.close();
 			  String[] text = content.split("'");
-			  edo = edoService.readEdi(text);
+			  listEdo = edoService.readEdi(text);
 			  EdoHistory edoHistory = new EdoHistory();
+			  edoHistory.setFileName(fileName);
+			  edoHistory.setCreateSource("websiteDaNangPort");
 			  Date timeNow = new Date();
-			  for(Edo Edo : edo)
+			  for(Edo edo : listEdo)
             	{
-				Edo.setCarrierId(super.getUser().getGroupId());
-				Edo.setCreateSource("web");
-				edoHistory.setBillOfLading(Edo.getBillOfLading());
-				edoHistory.setOrderNumber(Edo.getOrderNumber());
-				edoHistory.setCarrierCode(Edo.getCarrierCode());
-				edoHistory.setCarrierId(super.getUserId());
-				edoHistory.setEdiContent(content);
-				edoHistory.setContainerNumber(Edo.getContainerNumber());
-				edoHistory.setCreateBy(super.getUser().getFullName());
-				Edo edoCheck = edoService.checkContainerAvailable(Edo.getContainerNumber(),Edo.getBillOfLading());
+					edo.setCarrierId(super.getUser().getGroupId());
+					edo.setCreateSource("web");
+					edoHistory.setBillOfLading(edo.getBillOfLading());
+					edoHistory.setOrderNumber(edo.getOrderNumber());
+					edoHistory.setCarrierCode(edo.getCarrierCode());
+					edoHistory.setCarrierId(super.getUserId());
+					edoHistory.setEdiContent(content);
+					edoHistory.setContainerNumber(edo.getContainerNumber());
+					edoHistory.setCreateBy(super.getUser().getFullName());
+					Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(),edo.getBillOfLading());
                 if(edoCheck != null)
                 {
-					Edo.setId(edoCheck.getId());
-					Edo.setUpdateTime(timeNow);
-					Edo.setUpdateBy(super.getUser().getFullName());
-                    edoService.updateEdo(Edo); //TODO
-                    edoHistory.setEdoId(Edo.getId());
+					edo.setId(edoCheck.getId());
+					edo.setUpdateTime(timeNow);
+					edo.setUpdateBy(super.getUser().getFullName());
+                    edoService.updateEdo(edo); //TODO
+                    edoHistory.setEdoId(edo.getId());
                     edoHistory.setAction("update");
                     edoHistoryService.insertEdoHistory(edoHistory);
                 }else {
-					Edo.setCreateTime(timeNow);
-					Edo.setCreateBy(super.getUser().getFullName());
-                    edoService.insertEdo(Edo);
-                    edoHistory.setEdoId(Edo.getId());
+					edo.setCreateTime(timeNow);
+					edo.setCreateBy(super.getUser().getFullName());
+                    edoService.insertEdo(edo);
+                    edoHistory.setEdoId(edo.getId());
                     edoHistory.setAction("add");
                     edoHistoryService.insertEdoHistory(edoHistory);
 				}
-			}
+				}
 		} catch (IOException e) {
 			e.printStackTrace(); // transaction rollback?
 		}
-		return  edo;
+		return  listEdo;
     }
-    public File getFolderUpload() {
-		LocalDate toDay = LocalDate.now();
-		String year = Integer.toString(toDay.getYear());
-		String month = Integer.toString(toDay.getMonthValue());
-		String day = Integer.toString(toDay.getDayOfMonth());
-        File folderUpload = new File(super.folderUpLoad()  + "/" +  year + "/" +  month + "/" +  day);
-        if (!folderUpload.exists()) {
-          folderUpload.mkdirs();
-        }
-        return folderUpload;
-	}
 
 	@GetMapping("/history/{id}")
 	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
-		map.put("id",id);
+		EdoHistory edoHistory = new EdoHistory();
+		edoHistory.setEdoId(id);
+		List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
+		map.put("edoHistories", edoHistories);
 		return PREFIX + "/history";
 	}
 
-	@GetMapping("/getHistory")
-	@ResponseBody
-	public TableDataInfo getHistory(EdoHistory edoHistory,Long id)
-	{
-		edoHistory.setEdoId(id);
-		//checkCarrier code 
-		List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
-		return getDataTable(edoHistories);
-	}
 
 	@PostMapping("/readEdiOnly")
 	@ResponseBody

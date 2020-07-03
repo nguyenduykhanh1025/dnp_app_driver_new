@@ -1,3 +1,4 @@
+"use strict";
 var notiContent = CKEDITOR.replace("content");
 
 $("input[type=checkbox]").change(function () {
@@ -19,12 +20,40 @@ $("input[type=checkbox]").change(function () {
   }
 });
 
-$(".btn-send").click(function (){
-    let receivers = [];
-    let title = $(":text[name=title]").val();
-    let content = notiContent.getData();
-    $(":checkbox:checked").each(function() {
-        receivers.push($(this).val());
-    })
-    console.log(content);
-})
+$(".btn-send").click(function () {
+  let receivers = [];
+  let title = $(":text[name=title]");
+  let content = notiContent.getData();
+
+  //Validate data 
+  let success = true;
+  hideErrorLabel();
+  if ($(":checkbox:checked").length == 0) {
+    $(".receiver-error").show();
+    success = false;
+  }
+  if (title.val().trim() === "") {
+    $(".title-error").show();
+    title.focus();
+    success = false;
+  }
+  if (content.trim() === "") {
+    $(".content-error").show();
+    success = false;
+  }
+  if (!success) {
+    $.modal.msgError("Có lỗi xảy ra, vui lòng thử lại");
+    return;
+  }
+
+  $(":checkbox:checked").each(function () {
+    receivers.push($(this).val());
+  });
+  //TODO submit form here
+});
+
+function hideErrorLabel() {
+  $(".content-error").hide();
+  $(".title-error").hide();
+  $(".receiver-error").hide();
+}

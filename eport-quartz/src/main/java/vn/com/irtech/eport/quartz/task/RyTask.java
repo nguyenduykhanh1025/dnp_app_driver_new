@@ -25,4 +25,9 @@ public class RyTask
     {
         System.out.println("Perform a parameterless method");
     }
+
+    public void readEdiFromFolder()
+    {
+        System.out.print("Đang đọc File");
+    }
 }

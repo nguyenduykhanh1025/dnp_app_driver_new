@@ -1,5 +1,7 @@
 package vn.com.irtech.eport.carrier.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import vn.com.irtech.eport.common.annotation.Excel;
@@ -49,6 +51,61 @@ public class EdoHistory extends BaseEntity
     /** $column.columnComment */
     @Excel(name = "Action(insert,update, delete)")
     private String ediContent;
+
+   /**  0: chua send mail, 1 : da send mail */
+   @Excel(name = " 0: chua send mail, 1 : da send mail")
+   private String sendMailFlag;
+
+     /** Ten file EDI */
+    @Excel(name = "Ten file EDI")
+    private String fileName;
+    
+
+    @Excel(name = "Thời gian tạo", dateFormat = "yyyy-MM-dd")
+    private Date createTime;
+
+    /** Nguon Tao: web, edi, api */
+    @Excel(name = "Nguon Tao: web, edi, api")
+    private String createSource;
+
+    public void setCreateSource(String createSource) 
+    {
+        this.createSource = createSource;
+    }
+
+    public String getCreateSource() 
+    {
+        return createSource;
+    }
+
+    public void setCreateTime(Date createTime) 
+    {
+        this.createTime = createTime;
+    }
+
+    public Date getCreateTime() 
+    {
+        return createTime;
+    }
+   public void setSendMailFlag(String sendMailFlag) 
+   {
+       this.sendMailFlag = sendMailFlag;
+   }
+
+   public String getSendMailFlag() 
+   {
+       return sendMailFlag;
+   }
+
+   public void setFileName(String fileName) 
+   {
+       this.fileName = fileName;
+   }
+
+   public String getFileName() 
+   {
+       return fileName;
+   }
 
     public void setId(Long id) 
     {
@@ -144,6 +201,8 @@ public class EdoHistory extends BaseEntity
             .append("containerNumber", getContainerNumber())
             .append("action", getAction())
             .append("ediContent", getEdiContent())
+            .append("fileName", getFileName())
+            .append("sendMailFlag", getSendMailFlag())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

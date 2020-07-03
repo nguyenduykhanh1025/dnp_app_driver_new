@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/receiveContEmpty";
+var prefix = ctx + "logistic/receive-cont-empty";
 
 function confirm() {
     $.ajax({

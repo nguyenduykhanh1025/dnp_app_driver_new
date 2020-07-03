@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <th:block th:include="include :: header('Truck History')" />
     <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
+    <th:block th:include="include :: datetimepicker-css" />
     <link th:href="@{/css/logistic/truck/style.css}" rel="stylesheet" />
   </head>
   <body class="container-fluid white-bg">
@@ -14,43 +16,26 @@
           <input
             type="text"
             class="form-control"
-            placeholder="Số cont..."
-            name="containerNo"
-          />
+            placeholder="Tìm kiếm..." 
+            id="searchAllInput"
+            name="keyword"/>
+        </div>
+        <div class="form-group col-md-8 col-sm-8 col-xs-8">
+          <span>
+              <label>Đã vào cổng từ:</label>
+              <input type="text" class="from-date date-input" id="fromDate" onchange="changeFromDate()" placeholder="dd/mm/yyyy" readonly>
+          </span>
+          <span>
+              <label>đến:</label>
+              <input type="text" class="to-date date-input" id="toDate" onchange="changeToDate()" placeholder="dd/mm/yyyy" readonly>
+          </span>
         </div>
         <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Giờ vào cổng..."
-            name="gatein"
-          />
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Giờ ra cổng..."
-            name="gateout"
-          />
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Bill No..."
-          />
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Booking No..."
-          />
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <button class="btn btn-primary">
-            <i class="fa fa-search"></i>&nbsp;Tìm kiếm
+          <button class="btn btn-warning pull-right ml5" onclick="refresh()">
+            <i class="fa fa-refresh"></i>
+          </button>
+          <button class="btn btn-primary pull-right" onclick="loadTable()">
+            <i class="fa fa-search"></i>
           </button>
         </div>
       </div>
@@ -154,11 +139,6 @@
                 <th data-options="field:'chassisNo',halign:'center'">
                   Biển số xe rơ móc
                 </th>
-                <th data-options="field:'logisticName',
-                      halign:'center',
-                      formatter: function(value, row) { return row.logisticGroup.groupName }">
-                  Logistic Name 
-                </th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -168,6 +148,7 @@
     </section>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
     <script th:src="@{/eport/js/modules/logisticTruck/history.js}"></script>
   </body>
 </html>

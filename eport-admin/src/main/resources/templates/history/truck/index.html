@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <th:block th:include="include :: header('Truck History')" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/history/truck/style.css}" rel="stylesheet" />
@@ -14,43 +12,26 @@
           <input
             type="text"
             class="form-control"
-            placeholder="Số cont..."
-            name="containerNo"
+            placeholder="Tìm kiếm..."
+            name="keyword"
           />
         </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Giờ vào cổng..."
-            name="gatein"
-          />
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Giờ ra cổng..."
-            name="gateout"
-          />
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Bill No..."
-          />
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Booking No..."
-          />
+        <div class="form-group col-md-8 col-sm-8 col-xs-8">
+          <span>
+              <label>Đã vào cổng từ:</label>
+              <input type="text" class="from-date date-input" onchange="changeFromDate()" placeholder="dd/mm/yyyy" readonly>
+          </span>
+          <span>
+              <label>đến:</label>
+              <input type="text" class="to-date date-input" onchange="changeToDate()" placeholder="dd/mm/yyyy" readonly>
+          </span>
         </div>
         <div class="form-group col-md-2 col-sm-2 col-xs-2">
           <button class="btn btn-primary">
-            <i class="fa fa-search"></i>&nbsp;Tìm kiếm
+            <i class="fa fa-search">
+          </button>
+          <button class="btn btn-warning">
+            <i class="fa fa-refresh">
           </button>
         </div>
       </div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-	<th:block th:include="include :: header('服务器监控')" />
+	<th:block th:include="include :: header('Giám sát máy chủ')" />
 </head>
 <body class="gray-bg">
     <div class="wrapper wrapper-content">
@@ -21,25 +21,25 @@
                             <table class="table table-hover no-margins">
                                 <thead>
                                     <tr>
-                                        <th>属性</th>
-                                        <th>值</th>
+                                        <th>Thuộc tính</th>
+                                        <th>Giá trị</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>核心数</td>
+                                        <td>Số lượng lõi</td>
                                         <td th:text="${server.cpu.cpuNum}">0个</td>
                                     </tr>
                                     <tr>
-                                        <td>用户使用率</td>
+                                        <td>User usage</td>
                                         <td th:text="${server.cpu.used + '%'}">0%</td>
                                     </tr>
                                     <tr>
-                                        <td>系统使用率</td>
+                                        <td>System usage</td>
                                         <td th:text="${server.cpu.sys + '%'}">0%</td>
                                     </tr>
                                     <tr>
-                                        <td>当前空闲率</td>
+                                        <td>Tỷ lệ nhàn rỗi hiện tại</td>
                                         <td th:text="${server.cpu.free + '%'}">0%</td>
                                     </tr>
                                 </tbody>
@@ -51,7 +51,7 @@
                 <div class="col-sm-6">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>内存</h5>
+                            <h5>RAM</h5>
                             <div class="ibox-tools">
                                 <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                                 <a class="close-link"><i class="fa fa-times"></i></a>
@@ -61,29 +61,29 @@
                             <table class="table table-hover no-margins">
                                 <thead>
                                     <tr>
-                                        <th>属性</th>
-                                        <th>内存</th>
+                                        <th>Thuộc tính</th>
+                                        <th>RAM</th>
                                         <th>JVM</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>总内存</td>
+                                        <td>Tổng bộ nhớ</td>
                                         <td th:text="${server.mem.total + 'G'}">0GB</td>
                                         <td th:text="${server.jvm.total + 'M'}">0MB</td>
                                     </tr>
                                     <tr>
-                                        <td>已用内存</td>
+                                        <td>Bộ nhớ đã sử dụng</td>
                                         <td th:text="${server.mem.used + 'G'}">0GB</td>
                                         <td th:text="${server.jvm.used + 'M'}">0MB</td>
                                     </tr>
                                     <tr>
-                                        <td>剩余内存</td>
+                                        <td>Bộ nhớ còn lại</td>
                                         <td th:text="${server.mem.free + 'G'}">0GB</td>
                                         <td th:text="${server.jvm.free + 'M'}">0MB</td>
                                     </tr>
                                     <tr>
-                                        <td>使用率</td>
+                                        <td>Tỷ lệ sử dụng</td>
                                         <td th:class="${server.mem.usage gt 80} ? 'text-danger'">[[${server.mem.usage}]]%</td>
                                         <td th:class="${server.jvm.usage gt 80} ? 'text-danger'">[[${server.jvm.usage}]]%</td>
                                     </tr>
@@ -98,7 +98,7 @@
                 <div class="col-sm-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>服务器信息</h5>
+                            <h5>Thông tin máy chủ</h5>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -114,15 +114,15 @@
                                     <table class="table table-hover margin bottom">
                                         <tbody>
                                             <tr>
-                                                <td>服务器名称</td>
+                                                <td>Tên máy chủ</td>
                                                 <td th:text="${server.sys.computerName}">RuoYi</td>
-                                                <td>操作系统</td>
+                                                <td>Hệ điều hành</td>
                                                 <td th:text="${server.sys.osName}">Linux</td>
                                             </tr>
                                             <tr>
-                                                <td>服务器IP</td>
+                                                <td>IP máy chủ</td>
                                                 <td th:text="${server.sys.computerIp}">127.0.0.1</td>
-                                                <td>系统架构</td>
+                                                <td>Cấu trúc hệ thống</td>
                                                 <td th:text="${server.sys.osArch}">amd64</td>
                                             </tr>
                                         </tbody>
@@ -138,7 +138,7 @@
                 <div class="col-sm-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>Java虚拟机信息</h5>
+                            <h5>Thông tin máy ảo Java</h5>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -155,23 +155,23 @@
                                     <table class="table table-hover margin bottom">
                                         <tbody>
                                             <tr>
-                                                <td>Java名称</td>
+                                                <td>Tên Java</td>
                                                 <td th:text="${server.jvm.name}">Java</td>
-                                                <td>Java版本</td>
+                                                <td>Phiên bản Java</td>
                                                 <td th:text="${server.jvm.version}">1.8.0</td>
                                             </tr>
                                             <tr>
-                                                <td>启动时间</td>
+                                                <td>Thời gian bắt đầu</td>
                                                 <td th:text="${server.jvm.startTime}">2018-12-31 00:00:00</td>
-                                                <td>运行时长</td>
-                                                <td th:text="${server.jvm.runTime}">0天0时0分0秒</td>
+                                                <td>Thời gian chạy</td>
+                                                <td th:text="${server.jvm.runTime}">0 ngày 0 giờ 0 phút 0 giây</td>
                                             </tr>
                                             <tr>
-                                                <td colspan="1">安装路径</td>
+                                                <td colspan="1">Đường dẫn cài đặt</td>
                                                 <td colspan="3" th:text="${server.jvm.home}"></td>
                                             </tr>
                                              <tr>
-                                                <td colspan="1">项目路径</td>
+                                                <td colspan="1">Đường dẫn dự án</td>
                                                 <td colspan="3" th:text="${server.sys.userDir}"></td>
                                             </tr>
                                         </tbody>
@@ -187,7 +187,7 @@
                 <div class="col-sm-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
-                            <h5>磁盘状态</h5>
+                            <h5>Tình trạng đĩa</h5>
                             <div class="ibox-tools">
                                 <a class="collapse-link">
                                     <i class="fa fa-chevron-up"></i>
@@ -204,13 +204,13 @@
                                     <table class="table table-hover margin bottom">
                                         <thead>
                                             <tr>
-                                                <th>盘符路径</th>
-                                                <th>文件系统</th>
-                                                <th>盘符类型</th>
-                                                <th>总大小</th>
-                                                <th>可用大小</th>
-                                                <th>已用大小</th>
-                                                <th>已用百分比</th>
+                                                <th> Đường dẫn thư </th>
+                                                <th> Hệ thống tệp </th>
+                                                <th> Loại ký tự ổ đĩa </th>
+                                                <th> Tổng kích thước </th>
+                                                <th> Kích thước khả dụng </th>
+                                                <th> Kích thước được sử dụng </th>
+                                                <th> Phần trăm được sử dụng </th>
                                             </tr>
                                         </thead>
                                         <tbody>

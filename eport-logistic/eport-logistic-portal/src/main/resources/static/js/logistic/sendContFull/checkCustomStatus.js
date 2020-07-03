@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/sendContFull";
+var prefix = ctx + "logistic/send-cont-full";
 var number = 0;
 var shipmentDetailIds;
 var asked = false;
@@ -47,11 +47,10 @@ function checkCustomStatus() {
                     $.modal.loading("Đang kiểm tra trạng thái thông quan: 0/"+contList.length);
                     asked = true;
                     $.ajax({
-                        url: prefix + "/checkCustomStatus",
+                        url: prefix + "/custom-status/shipment-detail/" + shipmentDetailIds.substring(0, shipmentDetailIds.length - 1),
                         method: "post",
                         data: {
-                            declareNoList: declareNoList,
-                            shipmentDetailIds: shipmentDetailIds.substring(0, shipmentDetailIds.length - 1)
+                            declareNoList: declareNoList
                         },
                             success: function (data) {
                         },
@@ -73,6 +72,7 @@ loadData()
 function closeForm() {
     $.modal.close();
 }
+
 function loadData() 
 {
     $("#contTable").datagrid({

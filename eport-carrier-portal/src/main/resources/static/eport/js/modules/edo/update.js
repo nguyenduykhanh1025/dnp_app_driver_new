@@ -4,7 +4,10 @@ var statusTable = false;
 var dataObj = null;
 var countFile = 0;
 var temp = 0;
-
+var checkFileInDropZone = 0;
+$(function(){
+    
+});
 var myAvatarzone = new Dropzone("#bannarzone", {
     url: PREFIX + "/file",
     method: "post",
@@ -15,16 +18,13 @@ var myAvatarzone = new Dropzone("#bannarzone", {
     //acceptedFiles: ".edi",
     parallelUploads: 10,
     addRemoveLinks: true,
-    //previewsContainer:"#viewEdi",// previews Content
-    dictDefaultMessage: 'KÉO THẢ FILE, HOẶC NHẤP VÀO ĐÂY ĐỂ NHẬP EDI',
-    // dictMaxFilesExceeded: "You can upload only one!",
+    dictDefaultMessage: 'Choose a file EDI, or drag it here !',
     dictResponseError: 'Upload error!',
     dictInvalidFileType: "Invalid EDI file. Please upload txt file only.",
-    // dictFallbackMessage: "Browser not support",
     dictFileTooBig: "File max size!",
     init: function() {
         this.on("addedfile", function(file) {
-            countFile += 1;
+            checkFileInDropZone += 1;
             const reader = new FileReader();
             reader.onload = () => {
                 const fileAsBinaryString = reader.result;
@@ -37,7 +37,6 @@ var myAvatarzone = new Dropzone("#bannarzone", {
                     }
                 }).done(function( data ) { 
                     if (data != "") {
-                        // let rs = JSON.parse(data.xhr.response);
                         if (dataObj == null) {
                             dataObj = data;
                             dataObj.forEach(element => {
@@ -67,21 +66,30 @@ var myAvatarzone = new Dropzone("#bannarzone", {
            
        
         });
+        this.on("maxfilesexceeded", function(file){
+            $.modal.alertWarning("Bạn chỉ được nhập 10 file mỗi lần upload!");
+            this.removeFile(file);
+        });
+        this.on('sending',function(data){
+            countFile += 1;
+            console.log("countFile" + countFile);
+        })
         this.on("success", function(data) {
             temp += 1;
             if(temp >= countFile)
             {
                 $.modal.alertSuccess("Import thành công");
-                $.modal.reload();
+                setTimeout(function(){
+                    $.modal.reload();
+                },1000);
             }  
-        });
+        })
         this.on("error", function(file, data) {
 
 
         });
         this.on("removedfile", function(file) {
             let fileId = file.upload.uuid;
-            console.log(fileId);
             let i = 0;
             for (i; i < dataObj.length; i++) {
                 if (dataObj[i].file == fileId) {
@@ -159,7 +167,13 @@ function loadView() {
 }
 
 $("#submitFile").click( function (e) {
+    console.log("OOOO",checkFileInDropZone)
+    if(checkFileInDropZone == 0)
+    {
+        $.modal.alertWarning("Bạn chưa nhập file nào lên hệ thống! ");
+        return;
+    }
     e.preventDefault();
     myAvatarzone.processQueue();
-    $.modal.loading("Đang xử lý");
+    //$.modal.loading("Đang xử lý");
 });

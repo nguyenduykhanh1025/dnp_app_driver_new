@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.carrier.service.impl;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -146,7 +147,7 @@ public class EdoServiceImpl implements IEdoService
 			{
 				if(!s.isEmpty())
 				{
-					s = s.substring(7,s.length());
+					s = s.substring(9,s.length());
 					obj.put("buildNo", s);
 					edi.setBillOfLading(s);
 				}
@@ -171,7 +172,7 @@ public class EdoServiceImpl implements IEdoService
 			{
 				if(!s.isEmpty())
 				{
-					s = s.substring(8,s.length());
+					s = s.substring(10,s.length());
 					obj.put("orderNo", s);
 					edi.setOrderNumber(s);
 				}
@@ -241,6 +242,20 @@ public class EdoServiceImpl implements IEdoService
 	@Override
 	public Long getCountContainerAmountByBlNo(String blNo) {
 		return edoMapper.getCountContainerAmountByBlNo(blNo);
+	}
+
+
+	@Override
+	public File getFolderUploadByTime(String folderLoad) {
+		LocalDate toDay = LocalDate.now();
+		String year = Integer.toString(toDay.getYear());
+		String month = Integer.toString(toDay.getMonthValue());
+		String day = Integer.toString(toDay.getDayOfMonth());
+        File folderUpload = new File(folderLoad  + File.separator +  year + File.separator +  month + File.separator +  day + File.separator);
+        if (!folderUpload.exists()) {
+          folderUpload.mkdirs();
+        }
+        return folderUpload;
 	}
 
     

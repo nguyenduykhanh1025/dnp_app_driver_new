@@ -64,11 +64,10 @@
             <artifactId>eport-admin-logistic</artifactId>
         </dependency>
 
-<!--         <dependency> -->
-<!--             <groupId>vn.com.irtech.eport</groupId> -->
-<!--             <artifactId>eport-quartz</artifactId> -->
-<!--         </dependency> -->
-        
+        <dependency> 
+            <groupId>vn.com.irtech.eport</groupId> 
+           <artifactId>eport-quartz</artifactId> 
+        </dependency>
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>
             <artifactId>eport-generator</artifactId>

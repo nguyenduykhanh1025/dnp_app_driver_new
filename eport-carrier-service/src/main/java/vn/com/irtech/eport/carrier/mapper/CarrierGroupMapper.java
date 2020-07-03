@@ -91,4 +91,6 @@ public interface CarrierGroupMapper
 	 */
     public int checkMainEmailUnique(String mainEmail);
     public String getDoTypeByOpeCode(String opeCode);
+
+    public CarrierGroup selectCarrierGroupByGroupCode(String groupCode);
 }
