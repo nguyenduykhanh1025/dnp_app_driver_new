@@ -14,6 +14,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="containerNumber"    column="container_number"    />
         <result property="action"    column="action"    />
         <result property="ediContent"    column="edi_content"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="sendMailFlag"    column="send_mail_flag"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -21,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectEdoHistoryVo">
-        select id, carrier_id, carrier_code, edo_id, order_number, bill_of_lading, container_number, action, edi_content, create_by, create_time, update_by, update_time from edo_history
+        select id, carrier_id, carrier_code, edo_id, order_number, bill_of_lading, container_number, action, edi_content, file_name, send_mail_flag, create_by, create_time, update_by, update_time from edo_history
     </sql>
 
     <select id="selectEdoHistoryList" parameterType="EdoHistory" resultMap="EdoHistoryResult">
@@ -35,6 +37,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
             <if test="action != null  and action != ''"> and action = #{action}</if>
             <if test="ediContent != null  and ediContent != ''"> and edi_content = #{ediContent}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="sendMailFlag != null  and sendMailFlag != ''"> and send_mail_flag = #{sendMailFlag}</if>
         </where>
             ORDER BY id ASC 
     </select>
@@ -55,6 +59,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNumber != null  and containerNumber != ''">container_number,</if>
             <if test="action != null  and action != ''">action,</if>
             <if test="ediContent != null  and ediContent != ''">edi_content,</if>
+            <if test="fileName != null  and fileName != ''">file_name,</if>
+            <if test="sendMailFlag != null  and sendMailFlag != ''">send_mail_flag,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
             <if test="updateBy != null  and updateBy != ''">update_by,</if>
@@ -69,6 +75,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNumber != null  and containerNumber != ''">#{containerNumber},</if>
             <if test="action != null  and action != ''">#{action},</if>
             <if test="ediContent != null  and ediContent != ''">#{ediContent},</if>
+            <if test="fileName != null  and fileName != ''">#{fileName},</if>
+            <if test="sendMailFlag != null  and sendMailFlag != ''">#{sendMailFlag},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
@@ -87,6 +95,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNumber != null  and containerNumber != ''">container_number = #{containerNumber},</if>
             <if test="action != null  and action != ''">action = #{action},</if>
             <if test="ediContent != null  and ediContent != ''">edi_content = #{ediContent},</if>
+            <if test="fileName != null  and fileName != ''">file_name = #{fileName},</if>
+            <if test="sendMailFlag != null  and sendMailFlag != ''">send_mail_flag = #{sendMailFlag},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>

@@ -1,8 +1,5 @@
 package vn.com.irtech.eport.equipment.controller;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.utils.AppToolUtils;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 import vn.com.irtech.eport.equipment.domain.EquipmentDoPaging;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
