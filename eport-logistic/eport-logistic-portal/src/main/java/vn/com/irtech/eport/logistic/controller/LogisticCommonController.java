@@ -66,23 +66,9 @@ public class LogisticCommonController extends LogisticBaseController {
 		return getDataTable(shipments);
 	}
 	
-	@PostMapping("/Shipment/add")
+	@GetMapping("/otp/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult addShipment(Shipment shipment) {
-		LogisticAccount user = getUser();
-		shipment.setLogisticAccountId(user.getId());
-		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setCreateTime(new Date());
-		shipment.setCreateBy(user.getFullName());
-		if (shipmentService.insertShipment(shipment) == 1) {
-			return success("Thêm lô thành công");
-		}
-		return error("Thêm lô thất bại");
-	}
-	
-	@PostMapping("sendOTP")
-	@ResponseBody
-	public AjaxResult sendOTP(String shipmentDetailIds) {
+	public AjaxResult sendOTP(@PathVariable String shipmentDetailIds) {
 		LogisticGroup lGroup = getGroup();
 
 		OtpCode otpCode = new OtpCode();

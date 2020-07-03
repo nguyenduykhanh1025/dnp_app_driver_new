@@ -5,3 +5,19 @@
 .section-header {
     padding-left: 15px;
 }
+
+.no-border {
+    border: none !important;
+    color: black !important;
+}
+
+.date-input {
+    background: #FFFFFF none;
+    border: 1px solid #e5e6e7;
+    border-radius: 1px;
+    color: inherit;
+    padding: 6px 12px;
+    -webkit-transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    font-size: 14px;
+}

@@ -12,41 +12,48 @@
 <body class="container-fluid white-bg">
     <section class="filter">
         <div class="row section-header">
+            <div class="form-group col-md-3 col-sm-3 col-xs-3">
+                <input class="form-control" type="text" placeholder="Tìm kiếm" />
+            </div>
             <div class="form-group col-md-3 col-sm-3 col-xs-3 opt-select">
-                <span class="service-type-title">Hình thức:</span>
                 <select class="form-control" onchange="changeServiceType()" name="seviceTypeSelect" id="seviceTypeSelect">
-                    <option value='' selected>Tất Cả</option>
+                    <option value='' selected disabled>Chọn loại lệnh</option>
+                    <option value='0'>Tất cả</option>
                     <option value='1'>Nhận container hàng</option>
                     <option value='2'>Giao container rỗng</option>
                     <option value='3'>Nhận container rỗng</option>
                     <option value='4'>Giao container hàng</option>
                 </select>
             </div>
-            <div class="form-group col-md-2 col-sm-2 col-xs-2">
-                <span class="payment-type-title">PT thanh toán:</span>
+            <div class="form-group col-md-3 col-sm-3 col-xs-3">
                 <select class="form-control" onchange="changePaymentType()" name="paymentTypeSelect" id="paymentTypeSelect">
-                    <option value='' selected>Tất cả</option>
-                    <option>Cash</option>
-                    <option>Credit</option>
+                    <option value='' selected disabled>PT Thanh toán</option>
+                    <option value="0">Tất cả</option>
+                    <option value="1">Cash</option>
+                    <option value="2">Credit</option>
                 </select>
             </div>
-            <div class="form-group col-md-2 col-sm-2 col-xs-2">
-                <span class="payment-status-title">TT thanh toán:</span>
+            <div class="form-group col-md-3 col-sm-3 col-xs-3">
                 <select class="form-control" onchange="changePaymentStatus()" name="paymentStatusSelect" id="paymentStatusSelect">
-                    <option value='' selected>Tất cả</option>
+                    <option value='' selected disabled>TT Thanh toán</option>
+                    <option value='0'>Tất cả</option>
                     <option value='Y'>Đã thanh toán</option>
                     <option value='N'>Chưa thanh toán</option>
                 </select>
             </div>
-            <div class="form-group col-md-2 col-sm-2 col-xs-2">
-                <span>Đã thanh toán từ:</span>
-                <input type="text" class="from-date" onchange="changeFromDate()" readonly>
-                <span>đến </span>
-                <input type="text" class="to-date" onchange="changeToDate()" readonly>
+            <div class="form-group col-md-3 col-sm-3 col-xs-3">
+                <input type="text" class="form-control from-date date" onchange="changeFromDate()" placeholder="Từ ngày" readonly>
+                
+            </div>
+            <div class="form-group col-md-3 col-sm-3 col-xs-3">
+                <input type="text" class="form-control to-date date" onchange="changeToDate()" placeholder="Đến ngày" readonly>
             </div>
             <div class="form-group col-md-2 col-sm-2 col-xs-2">
                 <button class="btn btn-primary" onclick="loadTable()">
-                    <i class="fa fa-search"></i>&nbsp;Tìm kiếm
+                    <i class="fa fa-search"></i>
+                </button>
+                <button class="btn btn-warning">
+                    <i class="fa fa-refresh"></i>
                 </button>
             </div>
         </div>          
