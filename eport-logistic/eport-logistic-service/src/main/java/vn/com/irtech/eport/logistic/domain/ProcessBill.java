@@ -82,6 +82,12 @@ public class ProcessBill extends BaseEntity
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date toDate;
 
+    private String blNo;
+
+    private String bookingNo;
+
+    private String taxCode;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -237,6 +243,30 @@ public class ProcessBill extends BaseEntity
         return toDate;
     }
 
+    public void setBlNo(String blNo) {
+        this.blNo = blNo;
+    }
+
+    public String getBlNo() {
+        return blNo;
+    }
+
+    public void setBookingNo(String bookingNo) {
+        this.bookingNo = bookingNo;
+    }
+
+    public String getBookingNo() {
+        return bookingNo;
+    }
+
+    public void setTaxCode(String taxCode) {
+        this.taxCode = taxCode;
+    }
+
+    public String getTaxCode() {
+        return taxCode;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -261,6 +291,9 @@ public class ProcessBill extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("fromDate", getFromDate())
             .append("toDate", getToDate())
+            .append("blNo", getBlNo())
+            .append("bookingNo", getBookingNo())
+            .append("taxCode", getTaxCode())
             .toString();
     }
 }
