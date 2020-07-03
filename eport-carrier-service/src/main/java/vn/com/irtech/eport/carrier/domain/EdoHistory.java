@@ -50,6 +50,34 @@ public class EdoHistory extends BaseEntity
     @Excel(name = "Action(insert,update, delete)")
     private String ediContent;
 
+   /**  0: chua send mail, 1 : da send mail */
+   @Excel(name = " 0: chua send mail, 1 : da send mail")
+   private String sendMailFlag;
+
+     /** Ten file EDI */
+    @Excel(name = "Ten file EDI")
+    private String fileName;
+
+   public void setSendMailFlag(String sendMailFlag) 
+   {
+       this.sendMailFlag = sendMailFlag;
+   }
+
+   public String getSendMailFlag() 
+   {
+       return sendMailFlag;
+   }
+
+   public void setFileName(String fileName) 
+   {
+       this.fileName = fileName;
+   }
+
+   public String getFileName() 
+   {
+       return fileName;
+   }
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -144,6 +172,8 @@ public class EdoHistory extends BaseEntity
             .append("containerNumber", getContainerNumber())
             .append("action", getAction())
             .append("ediContent", getEdiContent())
+            .append("fileName", getFileName())
+            .append("sendMailFlag", getSendMailFlag())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

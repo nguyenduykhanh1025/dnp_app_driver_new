@@ -4,7 +4,9 @@ var statusTable = false;
 var dataObj = null;
 var countFile = 0;
 var temp = 0;
-
+$(function(){
+    
+});
 var myAvatarzone = new Dropzone("#bannarzone", {
     url: PREFIX + "/file",
     method: "post",
@@ -72,7 +74,9 @@ var myAvatarzone = new Dropzone("#bannarzone", {
             if(temp >= countFile)
             {
                 $.modal.alertSuccess("Import thành công");
-                $.modal.reload();
+                setTimeout(function(){
+                    $.modal.reload();
+                },3000);
             }  
         });
         this.on("error", function(file, data) {
@@ -159,6 +163,12 @@ function loadView() {
 }
 
 $("#submitFile").click( function (e) {
+    console.log("OOOO")
+    if(countFile == 0)
+    {
+        $.modal.alertWarning("Bạn chưa nhập file nào lên hệ thống! ");
+        return;
+    }
     e.preventDefault();
     myAvatarzone.processQueue();
     $.modal.loading("Đang xử lý");
