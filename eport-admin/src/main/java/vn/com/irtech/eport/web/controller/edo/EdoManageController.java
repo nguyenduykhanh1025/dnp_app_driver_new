@@ -44,7 +44,7 @@ public class EdoManageController extends BaseController {
         TableDataInfo dataInfo = getDataTable(Edo);
         return dataInfo;
     }
-
+    
     @GetMapping("/edo")
     public String history()
     {

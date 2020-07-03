@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <th:block th:include="include :: header('Robot History')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/history/truck/style.css}" rel="stylesheet" />
+  </head>
+  <body class="container-fluid white-bg">
+    <section class="filter">
+      <div class="row section-header">
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Tìm kiếm"
+            name="keyword"
+          />
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <select class="form-control">
+            <option value="" disabled selected>Chọn loại lệnh</option>
+            <option value="0">Tất cả</option>
+            <option value="1">Nhận container hàng</option>
+            <option value="2">Giao container rỗng</option>
+            <option value="3">Nhận container rỗng</option>
+            <option value="4">Giao container hàng</option>
+          </select>
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <select class="form-control">
+            <option value="" disabled selected>Kết quả</option>
+            <option value="1">Thành công</option>
+            <option value="0">Thất bại</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4 col-sm-4 col-xs-4">
+          <input class="date-input" type="text" name="from-date" placeholder="Từ ngày" readOnly/>
+          <input class="date-input" type="text" name="to-date" placeholder="Đến ngày" readOnly/>
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <button class="btn btn-primary" title="Tìm kiếm">
+            <i class="fa fa-search"></i>
+          </button>
+          <button class="btn btn-warning" title="Làm mới">
+            <i class="fa fa-refresh"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row section-content">
+        <div class="col-md-12">
+          <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
+            <thead>
+              <tr>
+                <th
+                  data-options="
+                    field: 'robotUuid',
+                    halign: 'center',
+                    resizable: true,
+                    "
+                >
+                  Tên robot
+                </th>
+                <th
+                  data-options="
+                    field: 'sysUserId',
+                    halign: 'center',
+                    resizable: true,
+                    "
+                >
+                  Loại lệnh
+                </th>
+                <th
+                  data-options="
+                    field:'result',
+                    halign:'center',
+                    align:'center',
+                    formatter: formatResult
+                    "
+                  sortable="true"
+                >
+                  Kết quả
+                </th>
+                <th
+                  data-options="
+                  field: 'createTime',
+                  halign: 'center',
+                  align: 'center',
+                  "
+                >
+                  Trạng thái
+                </th>
+
+                <th
+                  data-options="
+                    field:'createTime',
+                    halign:'center',
+                    formatter: formatDate"
+                  sortable="true"
+                >
+                  Thời gian
+                </th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script th:src="@{/eport/js/modules/history/robot-history.js}"></script>
+  </body>
+</html>

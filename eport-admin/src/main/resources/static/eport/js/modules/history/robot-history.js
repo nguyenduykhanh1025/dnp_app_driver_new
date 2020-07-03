@@ -1,4 +1,4 @@
-const PREFIX = "/history/truck";
+const PREFIX = "/history/robot";
 $(function () {
   loadTable();
 });
@@ -15,6 +15,10 @@ function formatDate(value) {
 
 function formatNumber(number) {
     return number < 10 ? "0" + number : number;
+}
+
+function formatResult(value) {
+    return value == "S" ? "<span class='label label-success'>Thành công</span>" : "<span class='label label-danger'>Thất bại</span>";
 }
 
 function loadTable() {
@@ -39,6 +43,7 @@ function loadTable() {
         data: {},
         dataType: "json",
         success: function (data) {
+          console.log(data);
           success(data);
         },
         error: function () {

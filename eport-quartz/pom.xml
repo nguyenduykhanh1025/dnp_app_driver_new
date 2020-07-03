@@ -34,7 +34,16 @@
             <groupId>vn.com.irtech.eport</groupId>
             <artifactId>eport-common</artifactId>
         </dependency>
-
+        <!-- Carrier service -->
+        <dependency>
+				<groupId>vn.com.irtech.eport</groupId>
+				<artifactId>eport-carrier-service</artifactId>
+		</dependency>
+        <!-- Framework -->
+        <dependency>
+            <groupId>vn.com.irtech.eport</groupId>
+            <artifactId>eport-admin-framework</artifactId>
+        </dependency>
     </dependencies>
 	
 </project>

@@ -1,4 +1,4 @@
-const PREFIX = "/history/truck";
+const PREFIX = "/logistic/truck/history";
 $(function () {
   loadTable();
 });

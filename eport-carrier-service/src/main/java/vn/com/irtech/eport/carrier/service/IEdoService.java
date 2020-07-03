@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.carrier.service;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -70,4 +71,6 @@ public interface IEdoService
     public  List<Edo> readEdi(String[] text);
 
     public Long getCountContainerAmountByBlNo(String blNo);
+
+    public File getFolderUploadByTime(String folderLoad);
 }

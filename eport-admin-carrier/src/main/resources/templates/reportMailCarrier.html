@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:remove="all">Lịch sử nhận file EDI</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+    #customers {
+      font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    #customers td, #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+    
+    #customers tr:nth-child(even){background-color: #f2f2f2;}
+    
+    #customers tr:hover {background-color: #ddd;}
+    
+    #customers th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #3C8DBC;
+      color: white;
+    }
+    </style>
+</head>
+<body>
+<table border="0" cellspacing="0" cellpadding="0" width="100%" align="left">
+   <tbody>
+   <tr>
+    <td>
+     <table cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tbody><tr>
+       <td style="width:45px">
+        <br>
+       </td>
+       <td>
+        <div>
+         <div style="font-weight:bold;font-family:Tahoma;font-size:10pt">Kính gửi ,</div><br/>
+         <div style="padding-bottom:5px;font-family:Tahoma;font-size:10pt">
+          Cảng Đà Nẵng trân trọng thông báo<br>
+            Lịch sử nhận file EDI từ ngày <span th:text="${startDay}"> </span>  đến ngày <span th:text="${endDay}"> </span>  
+         </div>
+         <br>
+         <div style="padding-bottom:5px">
+            <table id="customers">
+                <tr>
+                    <td>Bill No</td>
+                    <td>Container No</td>
+                    <td>File Name</td>
+                    <td>Action</td>
+                </tr>
+                <tr th:each="prod: ${edoHistory}">
+                    <td th:text="${prod.billOfLading}"></td>
+                    <td th:text="${prod.containerNumber}"></td>
+                    <td th:text="${prod.fileName}"></td>
+                    <td th:text="${prod.action}"></td>
+                </tr>
+              </table>
+         </div>
+         <br>
+         <div style="color:#646567;font-family:Tahoma;font-size:10pt">Trân trọng cảm ơn,</div>
+         <div style="color:#646567;font-weight:bold;font-family:Tahoma;font-size:10pt">Cảng Đà Nẵng</div>
+         <div>
+          <hr style="color:#015198;border:0;height:2px;background-color:#015198">
+         </div>
+        </div>
+       </td>
+       <td style="width:45px">
+        <br>
+       </td>
+      </tr>
+     </tbody></table>
+    </td>
+   </tr>
+  </tbody></table>
+</body>
