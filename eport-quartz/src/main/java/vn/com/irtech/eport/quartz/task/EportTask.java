@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class EportTask {
         if(carrierGroup == null)
         {
             return;
+            //TODO Return error 
         }
         final File receiveFolder = new File(carrierGroup.getPathEdiReceive());
         if (!receiveFolder.exists()) {
@@ -105,22 +107,38 @@ public class EportTask {
         if(carrierGroup == null)
         {
             return;
+            //TODO Return error 
         }
         //set time scan EDI file not yet
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Instant now = Instant.now();
         Instant yesterday = now.minus(1, ChronoUnit.DAYS);
+        Date toDate = Date.from(now);
+        Date fromDate = Date.from(yesterday);
         EdoHistory edoHistory = new EdoHistory();
         edoHistory.setCarrierCode(groupCode);
         Map<String, Object> timeDefine = new HashMap<>();
-        timeDefine.put("startDay", yesterday);
-        timeDefine.put("endDay", now);
+        timeDefine.put("toDate", formatter.format(toDate).toString());
+        timeDefine.put("fromDate", formatter.format(fromDate).toString());
         edoHistory.setParams(timeDefine);
+        edoHistory.setSendMailFlag("0");
         List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
+
+        if(edoHistories.size() == 0)
+        {
+            return;
+        }
         Map<String, Object> variables = new HashMap<>();
         variables.put("edoHistory", edoHistories);
-        variables.put("startDay", yesterday);
-        variables.put("endDay", now);
+        variables.put("startDay", formatter.format(toDate));
+        variables.put("endDay", formatter.format(fromDate));
         mailService.prepareAndSend("Lịch sử truy vấn file EDI",carrierGroup.getMainEmail(), variables, "reportMailCarrier"); 
+        for(EdoHistory edoHistory2 : edoHistories)
+        {
+            edoHistory2.setSendMailFlag("1");
+            edoHistoryService.updateEdoHistory(edoHistory2);
+        }
+
     }
 
 
