@@ -251,7 +251,7 @@ public class EdoServiceImpl implements IEdoService
 		String year = Integer.toString(toDay.getYear());
 		String month = Integer.toString(toDay.getMonthValue());
 		String day = Integer.toString(toDay.getDayOfMonth());
-        File folderUpload = new File(folderLoad  + "/" +  year + "/" +  month + "/" +  day + "/");
+        File folderUpload = new File(folderLoad  + File.separator +  year + File.separator +  month + File.separator +  day + File.separator);
         if (!folderUpload.exists()) {
           folderUpload.mkdirs();
         }

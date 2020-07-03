@@ -70,6 +70,7 @@ public class EportTask {
                 edoHistory.setCarrierId(carrierGroup.getId());
                 edoHistory.setEdiContent(content);
                 edoHistory.setFileName(fileName);
+                edoHistory.setCreateSource("serverFSTP");
                 edoHistory.setContainerNumber(edo.getContainerNumber());
                 edoHistory.setCreateBy(carrierGroup.getGroupCode());
                 Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(), edo.getBillOfLading());
@@ -138,6 +139,7 @@ public class EportTask {
             edoHistory2.setSendMailFlag("1");
             edoHistoryService.updateEdoHistory(edoHistory2);
         }
+        return;
 
     }
 
