@@ -15,6 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="action"    column="action"    />
         <result property="ediContent"    column="edi_content"    />
         <result property="fileName"    column="file_name"    />
+        <result property="createSource"    column="create_source"    />
         <result property="sendMailFlag"    column="send_mail_flag"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -23,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectEdoHistoryVo">
-        select id, carrier_id, carrier_code, edo_id, order_number, bill_of_lading, container_number, action, edi_content, file_name, send_mail_flag, create_by, create_time, update_by, update_time from edo_history
+        select id, carrier_id, carrier_code, edo_id, order_number, bill_of_lading, container_number, action, edi_content, file_name, create_source, send_mail_flag, create_by, create_time, update_by, update_time from edo_history
     </sql>
 
     <select id="selectEdoHistoryList" parameterType="EdoHistory" resultMap="EdoHistoryResult">
@@ -38,7 +39,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="action != null  and action != ''"> and action = #{action}</if>
             <if test="ediContent != null  and ediContent != ''"> and edi_content = #{ediContent}</if>
             <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="sendMailFlag != null  and sendMailFlag != ''"> and send_mail_flag = #{sendMailFlag}</if>
+              <if test="params.toDate != null and params.toDate != ''">
+				and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.toDate},'%y%m%d')
+			</if>
+             <if test="params.fromDate != null and params.fromDate != ''">
+				and date_format(create_time,'%y%m%d') &gt;= date_format(#{params.fromDate},'%y%m%d')
+			</if>
         </where>
             ORDER BY id ASC 
     </select>
@@ -60,6 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="action != null  and action != ''">action,</if>
             <if test="ediContent != null  and ediContent != ''">edi_content,</if>
             <if test="fileName != null  and fileName != ''">file_name,</if>
+             <if test="createSource != null  and createSource != ''">create_source,</if>
             <if test="sendMailFlag != null  and sendMailFlag != ''">send_mail_flag,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
@@ -76,6 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="action != null  and action != ''">#{action},</if>
             <if test="ediContent != null  and ediContent != ''">#{ediContent},</if>
             <if test="fileName != null  and fileName != ''">#{fileName},</if>
+            <if test="createSource != null  and createSource != ''">#{createSource},</if>
             <if test="sendMailFlag != null  and sendMailFlag != ''">#{sendMailFlag},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
@@ -96,6 +106,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="action != null  and action != ''">action = #{action},</if>
             <if test="ediContent != null  and ediContent != ''">edi_content = #{ediContent},</if>
             <if test="fileName != null  and fileName != ''">file_name = #{fileName},</if>
+            <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>
             <if test="sendMailFlag != null  and sendMailFlag != ''">send_mail_flag = #{sendMailFlag},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>

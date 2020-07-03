@@ -103,6 +103,8 @@ public class CarrierEdoController extends CarrierBaseController {
 			  String[] text = content.split("'");
 			  listEdo = edoService.readEdi(text);
 			  EdoHistory edoHistory = new EdoHistory();
+			  edoHistory.setFileName(fileName);
+			  edoHistory.setCreateSource("web");
 			  Date timeNow = new Date();
 			  for(Edo edo : listEdo)
             	{
@@ -153,19 +155,13 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@GetMapping("/history/{id}")
 	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
-		map.put("id",id);
+		EdoHistory edoHistory = new EdoHistory();
+		edoHistory.setEdoId(id);
+		List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
+		map.put("edoHistories", edoHistories);
 		return PREFIX + "/history";
 	}
 
-	@GetMapping("/getHistory")
-	@ResponseBody
-	public TableDataInfo getHistory(EdoHistory edoHistory,Long id)
-	{
-		edoHistory.setEdoId(id);
-		//checkCarrier code 
-		List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
-		return getDataTable(edoHistories);
-	}
 
 	@PostMapping("/readEdiOnly")
 	@ResponseBody

@@ -37,4 +37,7 @@ public class LogisticReportContController extends LogisticBaseController {
 		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryListForReport(pickupHistory);
 		return getDataTable(pickupHistories);
 	}
+	
+	
+	
 }
