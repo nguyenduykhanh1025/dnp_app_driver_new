@@ -13,12 +13,12 @@
     <section class="filter">
         <div class="row section-header">
             <div class="form-group col-md-2 col-sm-2 col-xs-2">
-                <input class="form-control" type="text" name="keyword" placeholder="Tìm kiếm...">
+                <input class="form-control" type="text" name="keyword" id="searchAllInput" placeholder="Tìm kiếm...">
             </div>
             <div class="form-group col-md-2 col-sm-2 col-xs-2 opt-select">
                 <select class="form-control" onchange="changeServiceType()" name="seviceTypeSelect" id="seviceTypeSelect">
                     <option value='' selected disabled>Chọn hình thức</option>
-                    <option value='0'>Tất cả</option>
+                    <option value=''>Tất cả</option>
                     <option value='1'>Nhận container hàng</option>
                     <option value='2'>Giao container rỗng</option>
                     <option value='3'>Nhận container rỗng</option>
@@ -28,11 +28,11 @@
             <div class="form-group col-md-6 col-sm-6 col-xs-6">
                 <span>
                     <label>Đã vào cổng từ:</label>
-                    <input type="text" class="from-date date-input" onchange="changeFromDate()" placeholder="dd/mm/yyyy" readonly>
+                    <input type="text" id="fromDate" class="from-date date-input" onchange="changeFromDate()" placeholder="dd/mm/yyyy" readonly>
                 </span>
                 <span>
                     <label>đến:</label>
-                    <input type="text" class="to-date date-input" onchange="changeToDate()" placeholder="dd/mm/yyyy" readonly>
+                    <input type="text" id="toDate" class="to-date date-input" onchange="changeToDate()" placeholder="dd/mm/yyyy" readonly>
                 </span>
             </div>
             
@@ -40,7 +40,7 @@
                 <button class="btn btn-primary" onclick="loadTable()">
                     <i class="fa fa-search"></i>
                 </button>
-                <button class="btn btn-warning">
+                <button class="btn btn-warning" onclick="refresh()">
                     <i class="fa fa-refresh"></i>
                 </button>
             </div>

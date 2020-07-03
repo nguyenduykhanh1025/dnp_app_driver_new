@@ -39,5 +39,4 @@ public class LogisticReportContController extends LogisticBaseController {
 	}
 	
 	
-	
 }

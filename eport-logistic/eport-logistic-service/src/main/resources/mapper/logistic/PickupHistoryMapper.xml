@@ -261,25 +261,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		left join shipment_detail sh on p.shipment_detail_id_1 = sh.id
 		<where>
 			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
-			<if test="shipmentId != null "> and p.shipment_id like concat('%', #{shipmentId}, '%')</if>
-			<if test="shipmentDetailId1 != null "> and p.shipment_detail_id_1 = #{shipmentDetailId1}</if>
-			<if test="shipmentDetailId2 != null "> and p.shipment_detail_id_2 = #{shipmentDetailId2}</if>
-			<if test="driverId != null "> and p.driver_id = #{driverId}</if>
-			<if test="pickupAssignId != null "> and p.pickup_assign_id = #{pickupAssignId}</if>
-			<if test="containerNo1 != null  and containerNo1 != ''"> and p.container_no_1 = #{containerNo1}</if>
-			<if test="containerNo2 != null  and containerNo2 != ''"> and p.container_no_2 = #{containerNo2}</if>
-			<if test="truckNo != null  and truckNo != ''"> and p.truck_no = #{truckNo}</if>
-			<if test="chassisNo != null  and chassisNo != ''"> and p.chassis_no = #{chassisNo}</if>
-			<if test="yardPosition1 != null  and yardPosition1 != ''"> and p.yard_position_1 = #{yardPosition1}</if>
-			<if test="yardPosition2 != null  and yardPosition2 != ''"> and p.yard_position_2 = #{yardPosition2}</if>
 			<if test="status != null "> and p.status = #{status}</if>
-			<if test="receiptDate != null "> and p.receipt_date = #{receiptDate}</if>
-			<if test="gateinDate != null "> and p.gatein_date = #{gateinDate}</if>
-			<if test="gateoutDate != null "> and p.gateout_date = #{gateoutDate}</if>
-			<if test="cancelDeceiptDate != null "> and p.cancel_receipt_date = #{cancelDeceiptDate}</if>
+			<if test="serviceType != null "> and s.service_type = #{serviceType}</if>
             <if test="fromDate != null ">and (p.gatein_date = #{fromDate} OR p.gatein_date > #{fromDate})</if>
             <if test="toDate != null ">and (p.gatein_date = #{toDate} OR p.gatein_date &lt; #{toDate})</if>
-			<if test="serviceType != null "> and s.service_type = #{serviceType}</if>
+			<if test="containerNo1 != null  and containerNo1 != ''"> and ( upper(p.container_no_1) like concat('%', #{containerNo1}, '%')</if>
+			<if test="containerNo2 != null  and containerNo2 != ''"> or upper(p.container_no_2) like concat('%', #{containerNo2}, '%')</if>
+			<if test="truckNo != null  and truckNo != ''"> or upper(p.truck_no) like concat('%', #{truckNo}, '%')</if>
+			<if test="chassisNo != null  and chassisNo != ''"> or upper(p.chassis_no) like concat('%', #{chassisNo}, '%')</if>
+			<if test="yardPosition1 != null  and yardPosition1 != ''"> or upper(p.yard_position_1) like concat('%', #{yardPosition1}, '%')</if>
+			<if test="yardPosition2 != null  and yardPosition2 != ''"> or upper(p.yard_position_2) like concat('%', #{yardPosition2}, '%')</if>
+			<if test="blNo != null  and blNo != ''"> or upper(sh.bl_no) like concat ('%', #{blNo}, '%')</if>
+			<if test="bookingNo != null  and bookingNo != ''"> or upper(sh.booking_no) like concat('%', #{bookingNo}, '%')</if>
+			<if test="sztp != null  and sztp != ''"> or upper(sh.sztp) like concat('%', #{sztp}, '%')</if>
+			<if test="vslNm != null  and vslNm != ''"> or upper(sh.vsl_nm) like concat('%', #{vslNm}, '%')</if>
+			<if test="voyNo != null  and voyNo != ''"> or upper(sh.voy_no) like concat('%', #{voyNo}, '%'))</if>
 		</where>
 	</select>
 </mapper>
