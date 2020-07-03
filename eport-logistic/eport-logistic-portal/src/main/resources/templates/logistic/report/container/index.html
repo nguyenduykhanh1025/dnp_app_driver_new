@@ -12,30 +12,36 @@
 <body class="container-fluid white-bg">
     <section class="filter">
         <div class="row section-header">
-            <div class="form-group col-md-4 col-sm-4 col-xs-4 opt-select">
-                <span class="service-type-title">Hình thức:</span>
+            <div class="form-group col-md-2 col-sm-2 col-xs-2">
+                <input class="form-control" type="text" name="keyword" placeholder="Tìm kiếm...">
+            </div>
+            <div class="form-group col-md-2 col-sm-2 col-xs-2 opt-select">
                 <select class="form-control" onchange="changeServiceType()" name="seviceTypeSelect" id="seviceTypeSelect">
-                    <option value='' selected>Tất Cả</option>
+                    <option value='' selected disabled>Chọn hình thức</option>
+                    <option value='0'>Tất cả</option>
                     <option value='1'>Nhận container hàng</option>
                     <option value='2'>Giao container rỗng</option>
                     <option value='3'>Nhận container rỗng</option>
                     <option value='4'>Giao container hàng</option>
                 </select>
             </div>
-            <div class="form-group col-md-7 col-sm-7 col-xs-7">
+            <div class="form-group col-md-6 col-sm-6 col-xs-6">
                 <span>
                     <label>Đã vào cổng từ:</label>
-                    <input type="text" class="from-date date-input" onchange="changeFromDate()" readonly>
+                    <input type="text" class="from-date date-input" onchange="changeFromDate()" placeholder="dd/mm/yyyy" readonly>
                 </span>
                 <span>
                     <label>đến:</label>
-                    <input type="text" class="to-date date-input" onchange="changeToDate()" readonly>
+                    <input type="text" class="to-date date-input" onchange="changeToDate()" placeholder="dd/mm/yyyy" readonly>
                 </span>
             </div>
             
-            <div class="form-group col-md-1 col-sm-1 col-xs-1">
+            <div class="form-group col-md-2 col-sm-2 col-xs-2">
                 <button class="btn btn-primary" onclick="loadTable()">
-                    <i class="fa fa-search"></i>&nbsp;Tìm
+                    <i class="fa fa-search"></i>
+                </button>
+                <button class="btn btn-warning">
+                    <i class="fa fa-refresh"></i>
                 </button>
             </div>
         </div>         
