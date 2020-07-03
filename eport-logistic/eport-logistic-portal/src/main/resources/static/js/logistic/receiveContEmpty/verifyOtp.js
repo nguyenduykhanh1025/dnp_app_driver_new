@@ -1,11 +1,11 @@
-var prefix = ctx + "logistic/receiveContEmpty";
+var prefix = ctx + "logistic/receive-cont-empty";
 var interval;
 var minutes = 0, seconds = 0;
 
 function confirm() {
     if ($("#otpInput").val() !=null && $("#otpInput").val() != "") {
         $.ajax({
-            url: prefix + "/verifyOtp",
+            url: prefix + "/otp/verify",
             method: "post",
             data: {
                 otp: $("#otpInput").val(),
@@ -36,7 +36,7 @@ function closeForm() {
 function getOtp() {
     if (minutes < 4 || (minutes == 4 && seconds < 30)) {
         $.ajax({
-            url: "/logistic/sendOTP",
+            url: "/logistic/otp",
             method: "post",
             data: {
                 shipmentDetailIds: shipmentDetailIds

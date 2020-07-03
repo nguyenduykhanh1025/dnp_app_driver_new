@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/sendContEmpty";
+var prefix = ctx + "logistic/send-cont-empty";
 
 $(document).ready(function () {
     $("#billDatagrid").datagrid({
@@ -30,11 +30,8 @@ Number.prototype.format = function(n, x, s, c) {
 function confirm() {
     parent.napasPaymentForm();
     $.ajax({
-        url: prefix + "/payment",
+        url: prefix + "/payment/" + shipmentDetailIds,
         method: "post",
-        data: {
-            shipmentDetailIds: shipmentDetailIds
-        },
         success: function (data) {
             if (data.code != 0) {
                 $.modal.msgError(data.msg);

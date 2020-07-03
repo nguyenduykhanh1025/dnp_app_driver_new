@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/receiveContEmpty";
+var prefix = ctx + "logistic/receive-cont-empty";
 var shipmentDetailIds = "";
 function confirm() {
     parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1));

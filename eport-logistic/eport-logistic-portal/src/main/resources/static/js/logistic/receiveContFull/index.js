@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/receiveContFull";
+var prefix = ctx + "logistic/receive-cont-full";
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0, isChange;
 var contList = [], orders = [], processOrderIds;
@@ -7,8 +7,9 @@ var allChecked = false, dnDepot = false;
 var checkList = [];
 var rowAmount = 0;
 var consigneeList;
+
 $.ajax({
-  url: prefix + "/getField",
+  url: prefix + "/consignees",
   method: "GET",
   success: function (data) {
     if (data.code == 0) {
@@ -31,7 +32,7 @@ $(document).ready(function () {
   // Handle add
   $(function () {
     let options = {
-      createUrl: prefix + "/addShipmentForm",
+      createUrl: prefix + "/shipment/add",
       updateUrl: "0",
       modalName: " Lô"
     };
@@ -129,8 +130,8 @@ function getSelected() {
     shipmentSelected = row;
     $(function () {
       let options = {
-        createUrl: prefix + "/addShipmentForm",
-        updateUrl: prefix + "/editShipmentForm/" + shipmentSelected.id,
+        createUrl: prefix + "/shipment/add",
+        updateUrl: prefix + "/shipment/" + shipmentSelected.id,
         modalName: " Lô"
       };
       $.table.init(options);
@@ -501,12 +502,8 @@ function configHandson() {
           if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
             // Call data to auto-fill
             $.ajax({
-              url: prefix + "/getContInfo",
-              type: "post",
-              data: {
-                containerNo: containerNo,
-                blNo: shipmentSelected.blNo
-              }
+              url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
+              type: "GET"
             }).done(function (shipmentDetail) {
               if (shipmentDetail != null) {
                 hot.setDataAtCell(row[0], 4, shipmentDetail.consignee); //consignee
@@ -633,11 +630,8 @@ function updateLayout() {
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
   $.ajax({
-    url: prefix + "/listShipmentDetail",
+    url: prefix + "/shipment/" + id + "/shipment-detail",
     method: "GET",
-    data: {
-      shipmentId: id
-    },
     success: function (data) {
       if (data.code == 0) {
         sourceData = data.shipmentDetails;
@@ -886,8 +880,8 @@ function save(isSendEmpty) {
   } 
   $.modal.loading("Đang xử lý...");
   $.ajax({
-    url: prefix + "/saveShipmentDetail",
-    method: "post",
+    url: prefix + "/shipment-detail",
+    method: "POST",
     contentType: "application/json",
     accept: 'text/plain',
     data: JSON.stringify(shipmentDetails),
@@ -915,11 +909,8 @@ function deleteShipmentDetail() {
   if (shipmentDetails.length > 0) {
     $.modal.loading("Đang xử lý...");
     $.ajax({
-      url: prefix + "/deleteShipmentDetail",
-      method: "post",
-      data: {
-        shipmentDetailIds: shipmentDetailIds
-      },
+      url: prefix + "/shipment-detail/" + shipmentDetailIds,
+      method: "POST",
       success: function (result) {
         if (result.code == 0) {
           $.modal.msgSuccess(result.msg);
@@ -941,34 +932,34 @@ function deleteShipmentDetail() {
 function checkCustomStatus() {
   getDataSelectedFromTable(true, false);
   if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatusForm/" + shipmentDetailIds, 720, 500);
+    $.modal.openCustomForm("Khai báo hải quan", prefix + "/custom-status/" + shipmentDetailIds, 720, 500);
   }
 }
 
 function verify() {
   getDataSelectedFromTable(true, true);
   if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
+    $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 500);
   }
 }
 
 function verifyOtp(shipmentDtIds, creditFlag, isSendContEmpty) {
   getDataSelectedFromTable(true, false);
   if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds + "/" + creditFlag + "/" + isSendContEmpty, 600, 350);
+    $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + isSendContEmpty, 600, 350);
   }
 }
 
 function pay() {
   getDataSelectedFromTable(true, true);
   if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + processOrderIds, 800, 400);
+    $.modal.openCustomForm("Thanh toán", prefix + "/payment/" + processOrderIds, 800, 400);
   }
 }
 
 function pickContOnDemand() {
   getDataFromTable(false);
-  $.modal.openCustomForm("Bốc container chỉ định", prefix + "/pickContOnDemandForm/" + billNo, 710, 565);
+  $.modal.openCustomForm("Bốc container chỉ định", prefix + "/cont-list/yard-position/" + billNo, 710, 565);
 }
 
 function exportBill() {
@@ -1061,9 +1052,8 @@ function finishVerifyForm(result) {
   }
 }
 
-
 function napasPaymentForm() {
-  $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/napasPaymentForm");
+  $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/payment/napas");
 }
 
 function connectToWebsocketServer() {

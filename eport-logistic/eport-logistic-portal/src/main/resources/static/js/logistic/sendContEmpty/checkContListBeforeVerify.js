@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/sendContEmpty";
+var prefix = ctx + "logistic/send-cont-empty";
 var shipmentDetailIds = "";
 function confirm() {
     parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $('#credit').prop('checked'));

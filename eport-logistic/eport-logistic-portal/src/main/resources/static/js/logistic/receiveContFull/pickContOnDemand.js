@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/receiveContFull";
+var prefix = ctx + "logistic/receive-cont-full";
 var moveContAmount = 0;
 var preorderPickupConts = [];
 var currentPickedBay, currentPickedRow, currentPickedTier, currentPickedId;
@@ -10,7 +10,7 @@ function confirm() {
     if (preorderPickupConts.length > 0) {
         $.modal.confirm("Xác nhận bốc container chỉ định (Quý khách<br>không thể hủy chỉ định cho container đã được chỉ định).", function() {
             $.ajax({
-                url: prefix + "/pickContOnDemand",
+                url: prefix + "/shipment-detail/pickup-cont",
                 method: "post",
                 contentType: "application/json",
                 accept: 'text/plain',

@@ -1,15 +1,13 @@
-var prefix = ctx + "logistic/sendContFull";
+var prefix = ctx + "logistic/send-cont-full";
 var interval;
 var minutes = 0, seconds = 0;
 
 function confirm() {
     if ($("#otpInput").val() !=null && $("#otpInput").val() != "") {
         $.ajax({
-            url: "/logistic/sendOTP",
+            url: prefix + "/otp/" + $("#otpInput").val() + "/verification/shipment-detail/" + shipmentDetailIds,
             method: "post",
             data: {
-                otp: $("#otpInput").val(),
-                shipmentDetailIds: shipmentDetailIds,
                 creditFlag: creditFlag
             },
             success: function (data) {
@@ -37,11 +35,8 @@ function closeForm() {
 function getOtp() {
     if (minutes < 4 || (minutes == 4 && seconds < 30)) {
         $.ajax({
-            url: prefix + "/sendOTP",
-            method: "post",
-            data: {
-                shipmentDetailIds: shipmentDetailIds,
-            },
+            url: "/otp/" + shipmentDetailIds,
+            method: "GET",
             success: function (data) {
                 if (data.code != 0) {
                     $.modal.msgSuccess("Đã gửi OTP.");
