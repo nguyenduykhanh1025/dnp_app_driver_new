@@ -93,6 +93,7 @@ function loadTable() {
     $("#dg").datagrid({
         url: '/logistic/shipments/4',
         height: window.innerHeight - 70,
+        method: 'get',
         singleSelect: true,
         collapsible: true,
         clientPaging: false,
