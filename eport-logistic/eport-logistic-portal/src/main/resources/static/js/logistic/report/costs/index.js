@@ -23,6 +23,18 @@ $(document).ready(function() {
         pickTime: false,
         minView: 2
     });
+
+    $('#searchAllInput').keyup(function(event) {
+        if (event.keyCode == 13) {
+            processBill.blNo = $('#searchAllInput').val().toUpperCase();
+            processBill.bookingNo = $('#searchAllInput').val().toUpperCase();
+            processBill.taxCode = $('#searchAllInput').val().toUpperCase();
+            processBill.containerNo = $('#searchAllInput').val().toUpperCase();
+            processBill.sztp = $('#searchAllInput').val().toUpperCase();
+            processBill.referenceNo = $('#searchAllInput').val().toUpperCase();
+            loadTable();
+        }
+    });
 });
 
 function loadTable() {
@@ -58,6 +70,17 @@ function loadTable() {
             $("#dg").datagrid("hideColumn", "id");
         },
     });
+}
+
+function refresh() {
+    $('#searchAllInput').val('');
+    $('#seviceTypeSelect').val('');
+    $('#paymentTypeSelect').val('');
+    $('#paymentStatusSelect').val('');
+    $('#fromDate').val('');
+    $('#toDate').val('');
+    processBill = new Object();
+    loadTable();
 }
 
 function formatBlNo(value, row) {

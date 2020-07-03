@@ -68,4 +68,6 @@ public interface PickupHistoryMapper
     public int deletePickupHistoryByIds(String[] ids);
 
     public List<PickupHistory> selectPickupHistoryListForReport(PickupHistory pickupHistory);
+
+    public List<PickupHistory> selectPickupHistoryListForHistory(PickupHistory pickupHistory);
 }
