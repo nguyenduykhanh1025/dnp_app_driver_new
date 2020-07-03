@@ -66,4 +66,6 @@ public interface IPickupHistoryService
      * @return result
      */
     public int deletePickupHistoryById(Long id);
+
+    public List<PickupHistory> selectPickupHistoryListForReport(PickupHistory pickupHistory);
 }

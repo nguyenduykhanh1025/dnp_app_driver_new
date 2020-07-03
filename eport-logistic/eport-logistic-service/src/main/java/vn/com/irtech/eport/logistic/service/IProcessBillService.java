@@ -65,4 +65,6 @@ public interface IProcessBillService
     public boolean saveProcessBillByInvoiceNo(ProcessOrder processOrder);
 
     public List<ProcessBill> selectProcessBillListByProcessOrderIds(String processOrderIds);
+
+    public List<ProcessBill> selectBillReportList(ProcessBill processBill);
 }

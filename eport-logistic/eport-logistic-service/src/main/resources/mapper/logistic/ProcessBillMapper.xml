@@ -10,6 +10,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="processOrderId"    column="process_order_id"    />
         <result property="serviceType"    column="service_type"    />
+        <result property="payType"    column="pay_type"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="paymentTime"    column="payment_time"    />
         <result property="referenceNo"    column="reference_no"    />
         <result property="sztp"    column="sztp"    />
         <result property="exchangeFee"    column="exchange_fee"    />
@@ -21,10 +24,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <association property="processOrder"    column="process_order_id" javaType="ProcessOrder" resultMap="processOrderResult" />
+    </resultMap>
+
+    <resultMap type="ProcessOrder" id="processOrderResult">
+        <result property="id"    column="id"    />
+        <result property="taxCode"    column="tax_code"    />
+        <result property="blNo"    column="bl_no"    />
+        <result property="bookingNo"    column="booking_no"    />
     </resultMap>
 
     <sql id="selectProcessBillVo">
-        select id, shipment_id, logistic_group_id, process_order_id, service_type, reference_no, sztp, exchange_fee, vat_rate, vat_after_fee, container_no, remark, create_by, create_time, update_by, update_time from process_bill
+        select id, shipment_id, logistic_group_id, process_order_id, service_type, pay_type, payment_status, payment_time, reference_no, sztp, exchange_fee, vat_rate, vat_after_fee, container_no, remark, create_by, create_time, update_by, update_time from process_bill
+    </sql>
+
+    <sql id="selectBillReport">
+        select b.id, b.shipment_id, b.logistic_group_id, b.process_order_id, b.service_type, b.pay_type, b.payment_status, b.payment_time, b.reference_no, b.sztp, b.exchange_fee, b.vat_rate, b.vat_after_fee, b.container_no, b.remark, b.create_by, b.create_time, b.update_by, b.update_time, o.tax_code, o.bl_no, o.booking_no
+        from process_bill b left join process_order o on b.process_order_id = o.id
     </sql>
 
     <select id="selectProcessBillList" parameterType="ProcessBill" resultMap="ProcessBillResult">
@@ -34,6 +50,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="processOrderId != null "> and process_order_id = #{processOrderId}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
+            <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
+            <if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
             <if test="exchangeFee != null "> and exchange_fee = #{exchangeFee}</if>
@@ -55,6 +73,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="processOrderId != null ">process_order_id,</if>
             <if test="serviceType != null ">service_type,</if>
+            <if test="payType != null  and payType != ''">pay_type,</if>
+            <if test="paymentStatus != null  and paymentStatus != ''">payment_status,</if>
             <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
             <if test="sztp != null  and sztp != ''">sztp,</if>
             <if test="exchangeFee != null ">exchange_fee,</if>
@@ -72,6 +92,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="processOrderId != null ">#{processOrderId},</if>
             <if test="serviceType != null ">#{serviceType},</if>
+            <if test="payType != null  and payType != ''">#{payType},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''">#{paymentStatus},</if>
             <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
             <if test="sztp != null  and sztp != ''">#{sztp},</if>
             <if test="exchangeFee != null ">#{exchangeFee},</if>
@@ -93,6 +115,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="processOrderId != null ">process_order_id = #{processOrderId},</if>
             <if test="serviceType != null ">service_type = #{serviceType},</if>
+            <if test="payType != null  and payType != ''">pay_type = #{payType},</if>
+            <if test="paymentStatus != null  and paymentStatus != ''">payment_status = #{paymentStatus},</if>
             <if test="referenceNo != null  and referenceNo != ''">reference_no = #{referenceNo},</if>
             <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
             <if test="exchangeFee != null ">exchange_fee = #{exchangeFee},</if>
@@ -125,6 +149,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="processOrderId" collection="array" open="(" separator="," close=")">
             #{processOrderId}
         </foreach>
+    </select>
+
+    <select id="selectBillReportList" parameterType="ProcessBill" resultMap="ProcessBillResult">
+        <include refid="selectBillReport"/>
+        <where>  
+            <if test="shipmentId != null "> and b.shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and b.logistic_group_id = #{logisticGroupId}</if>
+            <if test="processOrderId != null "> and b.process_order_id = #{processOrderId}</if>
+            <if test="processOrder.taxCode != null  and processOrder.taxCode != ''"> and o.tax_code = #{processOrder.taxCode}</if>
+            <if test="processOrder.blNo != null  and processOrder.blNo != ''"> and o.bl_no = #{processOrder.blNo}</if>
+            <if test="processOrder.bookingNo != null  and processOrder.bookingNo != ''"> and o.booking_no = #{processOrder.bookingNo}</if>
+            <if test="serviceType != null "> and b.service_type = #{serviceType}</if>
+            <if test="payType != null  and payType != ''"> and b.pay_type = #{payType}</if>
+            <if test="paymentStatus != null  and paymentStatus != ''"> and b.payment_status = #{paymentStatus}</if>
+            <if test="paymentTime != null ">and b.payment_time = #{paymentTime}</if>
+            <if test="referenceNo != null  and referenceNo != ''"> and b.reference_no = #{referenceNo}</if>
+            <if test="sztp != null  and sztp != ''"> and b.sztp = #{sztp}</if>
+            <if test="exchangeFee != null "> and b.exchange_fee = #{exchangeFee}</if>
+            <if test="vatRate != null "> and b.vat_rate = #{vatRate}</if>
+            <if test="vatAfterFee != null "> and b.vat_after_fee = #{vatAfterFee}</if>
+            <if test="containerNo != null  and containerNo != ''"> and b.container_no = #{containerNo}</if>
+            <if test="createTime != null ">and b.create_time = #{createTime}</if>
+            <if test="fromDate != null ">and (b.payment_time = #{fromDate} OR b.payment_time > #{fromDate})</if>
+            <if test="toDate != null ">and (b.payment_time = #{toDate} OR b.payment_time &lt; #{toDate})</if>
+        </where>
     </select>
     
 </mapper>

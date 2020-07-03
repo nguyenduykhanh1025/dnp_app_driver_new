@@ -1,0 +1,22 @@
+.white-bg {
+    padding-top: 10px;
+    overflow-y: hidden;
+}
+
+.service-type-title {
+    font-size: medium;
+    margin-right: 2px;
+}
+
+.opt-select {
+    display: flex;
+}
+
+.opt-select span {
+    height: 28px;
+    line-height: 28px;
+}
+
+.opt-select select {
+    width: 55%;
+}
