@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/sendContFull";
+var prefix = ctx + "logistic/send-cont-full";
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
 var contList = [];
@@ -31,7 +31,7 @@ var sizeList = [
 var consigneeList, opeCodeList, dischargePortList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({
-    url: prefix + "/getField",
+    url: "/logistic/source/option",
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
@@ -58,7 +58,7 @@ $(document).ready(function () {
     // Handle add
     $(function () {
         let options = {
-            createUrl: prefix + "/addShipmentForm",
+            createUrl: prefix + "/shipment/add",
             updateUrl: "0",
             modalName: " Lô"
         };
@@ -154,8 +154,8 @@ function getSelected() {
         shipmentSelected = row;
         $(function () {
             let options = {
-                createUrl: prefix + "/addShipmentForm",
-                updateUrl: prefix + "/editShipmentForm/" + shipmentSelected.id,
+                createUrl: prefix + "/shipment/add",
+                updateUrl: prefix + "/shipment/" + shipmentSelected.id,
                 modalName: " Lô"
             };
             $.table.init(options);
@@ -578,11 +578,8 @@ function updateLayout() {
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
     $.ajax({
-        url: prefix + "/listShipmentDetail",
+        url: prefix + "/shipment/" + id + "/shipment-detail",
         method: "GET",
-        data: {
-            shipmentId: id
-        },
         success: function (data) {
             if (data.code == 0) {
                 sourceData = data.shipmentDetails;
@@ -767,7 +764,7 @@ function saveShipmentDetail() {
                 shipmentDetails[0].processStatus = conts;
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
-                    url: prefix + "/saveShipmentDetail",
+                    url: prefix + "/shipment-detail",
                     method: "post",
                     contentType: "application/json",
                     accept: 'text/plain',
@@ -806,11 +803,8 @@ function deleteShipmentDetail() {
     getDataSelectedFromTable(true);
     $.modal.loading("Đang xử lý...");
     $.ajax({
-        url: prefix + "/deleteShipmentDetail",
+        url: prefix + "/shipment-detail/" + shipmentDetailIds,
         method: "post",
-        data: {
-            shipmentDetailIds: shipmentDetailIds
-        },
         success: function (result) {
             if (result.code == 0) {
                 $.modal.msgSuccess(result.msg);
@@ -831,28 +825,28 @@ function deleteShipmentDetail() {
 function verify() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 500);
+        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 500);
     }
 }
 
 function verifyOtp(shipmentDtIds, creditFlag) {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác thực OTP", prefix + "/verifyOtpForm/" + shipmentDtIds + "/" + creditFlag, 600, 350);
+        $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag, 600, 350);
     }
 }
 
 function pay() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Thanh toán", prefix + "/paymentForm/" + processOrderIds, 800, 400);
+        $.modal.openCustomForm("Thanh toán", prefix + "/payment/" + processOrderIds, 800, 400);
     }
 }
    
 function checkCustomStatus() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Khai báo hải quan", prefix + "/checkCustomStatusForm/" + shipmentDetailIds, 720, 500);
+        $.modal.openCustomForm("Khai báo hải quan", prefix + "/custom-status/" + shipmentDetailIds, 720, 500);
     }
 }
 
@@ -947,7 +941,7 @@ function finishVerifyForm(result) {
 }
 
 function napasPaymentForm() {
-    $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/napasPaymentForm");
+    $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/payment/napas");
 }
 
 function connectToWebsocketServer(){

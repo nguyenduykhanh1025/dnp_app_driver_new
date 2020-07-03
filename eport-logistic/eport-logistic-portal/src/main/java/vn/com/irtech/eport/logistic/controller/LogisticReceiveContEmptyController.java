@@ -3,9 +3,7 @@ package vn.com.irtech.eport.logistic.controller;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
-import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
@@ -33,7 +29,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 @Controller
-@RequestMapping("/logistic/receiveContEmpty")
+@RequestMapping("/logistic/receive-cont-empty")
 public class LogisticReceiveContEmptyController extends LogisticBaseController {
     
     private final String PREFIX = "logistic/receiveContEmpty";
@@ -55,41 +51,17 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return PREFIX + "/index";
 	}
 
-	@GetMapping("/getGroupNameByTaxCode")
-	@ResponseBody
-	public AjaxResult getGroupNameByTaxCode(String taxCode) throws Exception {
-		AjaxResult ajaxResult = AjaxResult.success();
-		if (taxCode == null || "".equals(taxCode)) {
-			return error();
-		}
-		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
-		if (groupName != null) {
-			ajaxResult.put("groupName", groupName);
-		} else {
-			ajaxResult = AjaxResult.error();
-		}
-		return ajaxResult;
-	}
-	
-    @RequestMapping("/listShipment")
-	@ResponseBody
-	public TableDataInfo listShipment(Shipment shipment) {
-		startPage();
-		LogisticAccount user = getUser();
-		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setServiceType(3);
-		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
-		return getDataTable(shipments);
-	}
-
 	@GetMapping("/addShipmentForm")
 	public String add(ModelMap mmap) {
 		return PREFIX + "/add";
 	}
 
-	@PostMapping("/checkBookingNoUnique")
+	@GetMapping("/unique/booking-no/{bookingNo}")
 	@ResponseBody
-	public AjaxResult checkBookingNoUnique(Shipment shipment) {
+	public AjaxResult checkBookingNoUnique(@PathVariable String bookingNo) {
+		Shipment shipment = new Shipment();
+		shipment.setLogisticGroupId(getUser().getGroupId());
+		shipment.setBookingNo(bookingNo);
 		shipment.setServiceType(3);
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();

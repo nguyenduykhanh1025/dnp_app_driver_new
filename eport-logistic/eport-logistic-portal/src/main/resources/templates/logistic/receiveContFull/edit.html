@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,13 +10,14 @@
   .container {
     padding-top: 10px;
   }
-  .form-group > label {
+
+  .form-group>label {
     text-align: right;
   }
 
   .form-control:focus {
     border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
   }
 
   .error-input {
@@ -24,26 +26,29 @@
     color: #c00;
   }
 </style>
+
 <body>
   <div class="container">
     <form id="form-edit-shipment">
       <div class="form-group row">
         <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Mã Lô</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="id" id="id" type="text" class="form-control" style="display: none;"/>
-          <input name="shipmentCode" id="shipmentCode" type="text" class="form-control" disabled/>
+          <input name="id" id="id" type="text" class="form-control" style="display: none;" />
+          <input name="shipmentCode" id="shipmentCode" type="text" class="form-control" disabled />
         </div>
       </div>
       <div class="form-group row">
-        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>B/L No</label>
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>B/L
+          No</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="blNo" id="blNo" type="text" class="form-control" onfocusout="checkBlNoUnique()" required/>
+          <input name="blNo" id="blNo" type="text" class="form-control" onfocusout="checkBlNoUnique()" required />
         </div>
       </div>
       <div class="form-group row">
-        <label style="margin-top: 4px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Loại lệnh</label>
+        <label style="margin-top: 4px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Loại
+          lệnh</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-<!--           <input style="margin-top: 6px;" type="radio" name="edoFlg" id="do" value="0" checked/>
+          <!--           <input style="margin-top: 6px;" type="radio" name="edoFlg" id="do" value="0" checked/>
           <label style="margin-right: 30px;">Lệnh giao hàng (DO)</label>
           <input style="margin-top: 6px;" type="radio" name="edoFlg" id="edo" value="1"/>
           <label>Lệnh giao hàng điện tử (eDO)</label> -->
@@ -52,15 +57,17 @@
         </div>
       </div>
       <div class="form-group row">
-        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Mã Hãng Tàu</label>
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Mã
+          Hãng Tàu</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="opeCode" id="opeCode" type="text" class="form-control" readonly required/>
+          <input name="opeCode" id="opeCode" type="text" class="form-control" readonly required />
         </div>
       </div>
-      <div class="form-group row"  style="margin-bottom: 0;">
-        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Mã Số Thuế</label>
+      <div class="form-group row" style="margin-bottom: 0;">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Mã
+          Số Thuế</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="taxCode" id="taxCode" type="text" class="form-control" onfocusout="loadGroupName()" required/>
+          <input name="taxCode" id="taxCode" type="text" class="form-control" onfocusout="loadGroupName()" required />
         </div>
       </div>
       <div class="form-group row">
@@ -70,7 +77,7 @@
       <div class="form-group row">
         <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Số Lượng Container</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="containerAmount" id="containerAmount" type="number" class="form-control" readonly required/>
+          <input name="containerAmount" id="containerAmount" type="number" class="form-control" readonly required />
         </div>
       </div>
       <div class="form-group row">
@@ -87,132 +94,11 @@
       </div>
     </form>
   </div>
+  <th:block th:include="include :: footer" />
+  <script type="text/javascript" th:inline="javascript">
+    var shipment = /*[[${shipment}]]*/ ;
+  </script>
+  <script th:src="@{/js/logistic/receiveContFull/edit.js}"></script>
 </body>
-<th:block th:include="include :: footer" />
-<script type="text/javascript" th:inline="javascript">
-  var shipment = /*[[${shipment}]]*/ ;
-  var prefix = ctx + "logistic/receiveContFull";
-  var currentBill = shipment.blNo;
 
-  function loadGroupName() {
-    if ($("#taxCode").val() != null && $("#taxCode").val() != '') {
-      $.ajax({
-        url: prefix + "/getGroupNameByTaxCode",
-        method: "get",
-        data: {
-          taxCode: $("#taxCode").val()
-        }
-      }).done(function(result) {
-        if (result.code == 0) {
-          $("#groupName").val(result.groupName);
-          $("#taxCode").removeClass("error-input");
-        } else {
-          $.modal.msgError("Không tìm ra mã số thuế!");
-          $("#taxCode").addClass("error-input");
-          $("#groupName").val('');
-        }
-      });
-    } else {
-      $("#groupName").val('');
-    }
-  }
-
-  // Map data to form
-  if (shipment != null) {
-    $("#id").val(shipment.id);
-    $("#shipmentCode").val(shipment.id);
-    $("#taxCode").val(shipment.taxCode);
-    $("#containerAmount").val(shipment.containerAmount);
-    $("#remark").val(shipment.remark);
-    if (shipment.edoFlg == "0") {
-      $('#edoFlg').val("0").text("Lệnh giao hàng (DO)");
-      $('#edoFlgInput').val(shipment.edoFlg);
-    } else {
-      $('#edoFlg').val("1").text("Lệnh giao hàng điện tử (eDO)");
-      $('#edoFlgInput').val(shipment.edoFlg);
-    }
-    $('#opeCode').val(shipment.opeCode);
-    $("#blNo").val(shipment.blNo);
-    loadGroupName();
-  }
-  
-  $("#form-edit-shipment").validate({
-      focusCleanup: true
-  });
-
-  function submitHandler() {
-    if ($.validate.form()) {
-      if ($("#groupName").val() != null && $("#groupName").val() != '') {
-        if ($("#blNo").val() != currentBill) {
-          $.ajax({
-            url: prefix + "/checkBlNoUnique",
-            method: "post",
-            data: {
-              blNo: $("#blNo").val()
-            }
-          }).done(function (result) {
-            if (result.code == 0) {
-              $("#blNo").removeClass("error-input");
-              $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
-              parent.loadTable();
-            } else {
-              $.modal.msgError("Số bill đã tồn tại!");
-              $("#blNo").addClass("error-input");
-            }
-          });
-        } else {
-          $.operate.save(prefix + "/editShipment", $('#form-edit-shipment').serialize());
-          parent.loadTable();
-        }
-      } else {
-        $.modal.msgError("Không tìm thấy mã số thuế!");
-      }
-    }
-  }
-
-  function checkBlNoUnique() {
-    if ($("#blNo").val() != null && $("#blNo").val() != '' && $("#blNo").val() != currentBill) {
-      $.ajax({
-        url: prefix + "/checkBlNoUnique",
-        method: "post",
-        data: {
-          blNo: $("#blNo").val()
-        }
-      }).done(function(result) {
-        if (result.code == 0) {
-          $("#blNo").removeClass("error-input");
-        } else {
-          $.modal.msgError("Số bill đã tồn tại!");
-          $("#blNo").addClass("error-input");
-        }
-      });
-      //check opeCode,edoFlag, containerAmount trong db edo, catos
-      $.ajax({
-          url: prefix + "/checkShipmentInforByBlNo",
-          method: "post",
-          data: {
-            blNo: $("#blNo").val()
-          }
-        }).done(function (result) {
-          if(result.code == 500){
-        	  $.modal.msgError(result.msg);
-        	  $("#blNo").addClass("error-input");
-            $('#opeCode').val("");
-            $('#containerAmount').val("");
-            $('#edoFlg').val(null).text("");
-          }else{
-            $('#opeCode').val(result.shipment.opeCode);
-            $('#containerAmount').val(result.shipment.containerAmount);
-            if (result.shipment.edoFlg == "1") {
-              $('#edoFlg').val(result.shipment.edoFlg).text("Lệnh giao hàng điện tử (eDO)");
-              $('#edoFlgInput').val(result.shipment.edoFlg);
-            }else{
-              $('#edoFlg').val(result.shipment.edoFlg).text("Lệnh giao hàng (DO)");
-              $('#edoFlgInput').val(result.shipment.edoFlg);
-            }
-          }
-        });
-    }
-  }
-</script>
 </html>

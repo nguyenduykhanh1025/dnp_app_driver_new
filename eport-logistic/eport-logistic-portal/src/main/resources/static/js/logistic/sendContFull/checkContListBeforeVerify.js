@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/sendContFull";
+var prefix = ctx + "logistic/send-cont-full";
 var shipmentDetailIds = "";
 
 function confirm() {

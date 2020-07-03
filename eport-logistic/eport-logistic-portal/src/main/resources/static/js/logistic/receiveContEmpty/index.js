@@ -1,5 +1,5 @@
 var isChange = true;
-var prefix = ctx + "logistic/receiveContEmpty";
+var prefix = ctx + "logistic/receive-cont-empty";
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected;
 var shipmentDetails;
