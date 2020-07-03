@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <th:block th:include="include :: notification-header('Notification')" />
     <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/notification/notification.css}" rel="stylesheet" />
   </head>
   <body class="white-bg container-fluid pl-2 pr-2 mb-5">
     <section class="header mt-3">
-      <div class="section-header font-weight-bold">
-        <span>Chọn nhóm người gửi: </span>
+      <div class="section-header container">
+        <span class="font-weight-bold">Chọn nhóm người gửi: </span>
+        <span class="error-text text-danger receiver-error">(*) Vui lòng chọn người nhận</span>
       </div>
       <div class="section-content row text-center border pt-3">
         <div class="form-group col-md-3 col-sm-3 col-xs-3">
@@ -58,10 +58,12 @@
       <div class="section-header container mt-5">
         <div class="form-group">
           <label for="title">Nhập tiêu đề thông báo</label>
+          <span class="error-text text-danger title-error">(*) Tiêu đề không được trống</span>
           <input type="text" class="form-control" name="title" autocomplete="none">
         </div>
         <div class="form-group">
           <label for="content">Nội dung</label>
+          <span class="error-text text-danger content-error">(*) Nội dung không được trống</span>
           <textarea name="content" class="noti-content"></textarea>
         </div>
       </div>
