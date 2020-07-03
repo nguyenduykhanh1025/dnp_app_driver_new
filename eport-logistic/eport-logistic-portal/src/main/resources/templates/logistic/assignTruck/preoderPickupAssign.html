@@ -10,42 +10,43 @@
   </head>
   <body>
       <div class="container">
-        <div class="title-top">
-            <div class="left-info">
-              <div>
-                <span class="label-title">Mã Lô: </span>
+        <div class="content">
+          <div class="title-top">
+            <div class="left-info-col-sm-12-row" style="width: 100%;">
+              <div  class="col-sm-1">
+                <label class="label-title">Mã Lô: </label>
                 <span id="batchCode"></span>
               </div>
-              <div>
-                <span class="label-title">Mã Số Thuế: </span>
+              <div class="col-sm-2">
+                <label class="label-title">Mã Số Thuế: </label>
                 <span id="taxCode"></span>
               </div>
-              <div id="blNoDiv">
-                <span class="label-title">B/L No: </span>
+              <div class="col-sm-2" id="blNoDiv">
+                <label class="label-title">B/L No: </label>
                 <span id="blNo"></span>
               </div>
-              <div id="bookingNoDiv">
-                <span class="label-title">Booking No: </span>
+              <div class="col-sm-2" id="bookingNoDiv">
+                <label class="label-title">Booking No: </label>
                 <span id="bookingNo"></span>
               </div>
-              <div>
-                <span class="label-title">DO: </span>
+              <div class="col-sm-1">
+                <label class="label-title">DO: </label>
                 <span id="edoFlg"></span>
               </div>
-              <div>
-                  <span class="label-title">Container No: </span>
+              <div class="col-sm-2">
+                  <label class="label-title">Container No: </label>
                   <span id="containerNo"></span>
                 </div>
             </div>
-        </div>
-        <div class="content">
+          </div>
+          <div class="content">
+            <div class="left-button-bar">
+              <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="addTruck()">+ Xe</button>
+              <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="addDriver()">+ Tài xế</button>
+              <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">Thuê Ngoài</button>
+            </div>
             <div class="assignFollowContainer">
               <div class="content">
-                <div class="left-button-bar">
-                  <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">+ Xe</button>
-                  <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">+ Tài xế</button>
-                  <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">Thuê Ngoài</button>
-                </div>
                 <div class="assignFollowContainer">
                   <!-- <div style="display: flex; justify-content: center;">
                     <b style="margin-right: 150px;">Danh sách Đội xe</b>
@@ -68,9 +69,19 @@
                         </thead>
                       </table>
                     </div>
-                    <div style="padding: 70px 0; text-align: center;">
-                      <button style="margin-bottom: 10px;" onclick="transferInToOut()">>>>>></button>
-                      <button style="margin-top: 10px;" onclick="transferOutToIn()"><<<<<</button>
+                    <div style="padding: 130px 0; text-align: center;">
+                      <div>
+                        <button style="margin-bottom: 10px; width: 60px;" onclick="transferAllToOut()">>>|</button>
+                      </div>
+                      <div>
+                        <button style="margin-bottom: 10px; width: 60px;" onclick="transferInToOut()">>|</button>
+                      </div>
+                      <div>
+                        <button style="margin-top: 10px; width: 60px;" onclick="transferOutToIn()">|<</button>
+                      </div>
+                      <div>
+                        <button style="margin-top: 10px; width: 60px;" onclick="transferAllToIn()">|<<</button>
+                      </div>
                     </div>
                     <div class="table-content">
                       <div style="display: flex; justify-content: center;">
@@ -97,6 +108,7 @@
                 <a class="layui-layer-btn1" onclick="closeForm()">Hủy bỏ</a>
             </div>
           </div>
+        </div>
       </div>
       <th:block th:include="include :: footer" />
       <th:block th:include="include :: easyui-js" />

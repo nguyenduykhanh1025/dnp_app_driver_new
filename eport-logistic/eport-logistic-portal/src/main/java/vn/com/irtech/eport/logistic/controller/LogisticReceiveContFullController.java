@@ -186,6 +186,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public AjaxResult editShipment(Shipment shipment) {
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
+		//check if current user own shipment
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
 			shipment.setUpdateTime(new Date());
 			shipment.setUpdateBy(user.getFullName());
@@ -534,7 +535,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@PostMapping("/checkShipmentInforByBlNo")
 	@ResponseBody
 	public AjaxResult checkShipmentInforByBlNo(String blNo) {
-		AjaxResult ajaxResult = new AjaxResult();
+		AjaxResult ajaxResult = null;
 		Shipment shipment = new Shipment();
 		shipment.setBlNo(blNo);
 		String opeCode = shipmentService.getOpeCodeByBlNo(blNo);

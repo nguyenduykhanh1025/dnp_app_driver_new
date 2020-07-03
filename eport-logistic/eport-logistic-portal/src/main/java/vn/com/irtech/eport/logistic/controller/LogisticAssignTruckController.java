@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +23,13 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.DriverTruck;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IDriverTruckService;
+import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -51,6 +54,9 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 
 	@Autowired
 	private IDriverTruckService driverTruckService;
+	
+	@Autowired
+	private ILogisticTruckService logisticTruckService;
 
 	@GetMapping
     public String assignTruck() {
@@ -168,14 +174,12 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	@Transactional
 	@ResponseBody
 	public AjaxResult savePickupAssignFollowBatch(@RequestParam( value = "pickedIdDriverArray[]", required = false) Long[] pickedIdDriverArray, Long shipmentId){
-		AjaxResult ajaxResult = new AjaxResult();
 		if(shipmentId == null || pickedIdDriverArray == null){
-			ajaxResult = error();
-			return ajaxResult;
+			return error();
 		}
 		Shipment shipment  = shipmentService.selectShipmentById(shipmentId);
 		//check shipment of current user
-		if(shipment.getLogisticAccountId().equals(getUser().getId())){
+		if(shipment != null && shipment.getLogisticAccountId().equals(getUser().getId())){
 			//delete default assign follow batch or last assign
 			PickupAssign assignBatch = new PickupAssign();
 			assignBatch.setShipmentId(shipmentId);
@@ -193,12 +197,12 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 				pickupAssign.setDriverId(i);
 				pickupAssign.setLogisticGroupId(shipment.getLogisticGroupId());
 				pickupAssign.setShipmentId(shipmentId);
-				pickupAssign.setExternalFlg(0L);
+				pickupAssign.setExternalFlg(0L);//TODO
 				pickupAssignService.insertPickupAssign(pickupAssign);
 			}
+			return success();
 		}
-		ajaxResult = success();
-		return ajaxResult;
+		return error();
 	}
 
 	@GetMapping("preoderPickupAssign/{shipmentDetailId}")
@@ -320,28 +324,97 @@ public class LogisticAssignTruckController extends LogisticBaseController{
         return toAjax(driverAccountService.updateDriverAccount(driverAccount));
 	}
 	/**
-	 * Load table driverTruck
+	 * Load table truck assigned follow driver
 	*/
 	@RequestMapping("/driver/truck/list")
 	@ResponseBody
-	public List<DriverTruck> getDriverTruckList(DriverTruck driverTruck){
-		List<DriverTruck> driverTrucks  = new ArrayList<DriverTruck>();
+	public List<LogisticTruck> getDriverTruckList(DriverTruck driverTruck){
+		List<LogisticTruck> logisticTrucks  = new ArrayList<LogisticTruck>();
 		DriverAccount driverAccount = driverAccountService.selectDriverAccountById(driverTruck.getDriverId());
 		//check driver of current logisticGroup
 		if(driverAccount.getLogisticGroupId().equals(getUser().getGroupId())){
+			//get ds xe theo driverId (table mapping)
 			List<DriverTruck> tractors = driverTruckService.selectTractorByDriverId(driverTruck.getDriverId());
 			List<DriverTruck> trailers = driverTruckService.selectTrailerByDriverId(driverTruck.getDriverId());
 			if(tractors.size() != 0){
 				for(DriverTruck i : tractors){
-					driverTrucks.add(i);
+					logisticTrucks.add(logisticTruckService.selectLogisticTruckById(i.getTruckId()));
 				}
 			}
 			if(trailers.size() != 0){
 				for(DriverTruck i :trailers){
-					driverTrucks.add(i);
+					logisticTrucks.add(logisticTruckService.selectLogisticTruckById(i.getTruckId()));
 				}
 			}
 		}
-		return driverTrucks;
+		return logisticTrucks;
+	}
+	/**
+	 * Load table truck not assigned follow driver
+	*/
+	@GetMapping("/trucks/not-picked")
+	@ResponseBody
+	public List<LogisticTruck> getTrucks(@RequestParam (value = "truckIds[]", required = false) Long[] truckIds){
+		LogisticTruck logisticTruck = new LogisticTruck();
+		logisticTruck.setLogisticGroupId(getUser().getGroupId());
+		List<LogisticTruck> trucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
+		if(truckIds != null && trucks.size() > 0){
+			for(Long i : truckIds){
+				for(int j=0; j< trucks.size(); j++){
+					if(trucks.get(j).getId() == i){
+						trucks.remove(j);
+					}
+				}
+			}
+		}
+		return trucks;
+	}
+
+	/**
+	 * Save assign truck for driver
+	 * @param truckIds
+	 * @param driverId
+	 * @return
+	 */
+	@PostMapping("/truck/assign/add")
+	@ResponseBody
+	@Transactional
+	public AjaxResult saveAssignTruck(@RequestParam(value = "truckIds[]", required = false)  Long[] truckIds, Long driverId){
+		//check this driver is of current logisticGoup
+		DriverAccount driverAccount = driverAccountService.selectDriverAccountById(driverId);
+		if(! driverAccount.getLogisticGroupId().equals(getUser().getGroupId())){
+			return error();
+		}
+        if(truckIds != null){
+			//truckIds is of current logisticGroup
+			LogisticTruck logisticTruck = new LogisticTruck();
+			logisticTruck.setLogisticGroupId(getUser().getGroupId());
+			List<LogisticTruck> logisticTrucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
+			if(logisticTrucks.size() > 0 ){
+				int count = 0;
+				for(Long i : truckIds){
+					for(int j = 0; j< logisticTrucks.size(); j++){
+						if(logisticTrucks.get(j).getId().equals(i)){
+							count++;
+						}
+					}
+				}
+				if(count != truckIds.length){
+					//TH: a truckId isn't of current logisticGroup
+					return error();
+				}
+			}else{
+				//TH:current logisticGroup hasn't truck
+				return error();
+			}
+			driverTruckService.deleteDriverTruckById(driverId);
+            for (Long i : truckIds) {
+                DriverTruck driverTruck = new DriverTruck();
+                driverTruck.setDriverId(driverId);
+                driverTruck.setTruckId(i);
+                driverTruckService.insertDriverTruck(driverTruck);
+            }
+        }
+        return success();
 	}
 }

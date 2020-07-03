@@ -49,7 +49,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">    
                             <label class="col-sm-2 control-label">Khóa tài khoản:</label>
@@ -61,19 +61,44 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </form>
-            <div style="display: flex; justify-content: left;">
-                <b>DANH SÁCH XE ĐIỀU</b>
-              </div>
+            <div class="col-sm-6-row" style="position: absolute; top: 130px; width: 100%;">
+                <div style="display: flex; justify-content: left;">
+                    <b>DANH SÁCH XE ĐIỀU</b>
+                </div>
+                <div style="display: inline;">
+                    <button class="btn btn-sm btn-primary" onclick="addTruck()">Add</button>
+                </div>
+                <select id="addTruckAssignTable" class="easyui-combogrid" name="dept" style="width:250px;"
+                data-options="
+                    panelWidth:350,
+                    panelHeight:250,
+                    idField:'id',
+                    textField:'plateNumber',
+                    columns:[[
+                        {field:'id',title:'ID', fixed:true,formatter: formatId , width:50},
+                        {field:'plateNumber',title:'Biển số xe',formatter: formatPlateNumber, width:100},
+                        {field:'type',title:'Loại xe',formatter: formatType,  fixed:true, width:100},
+                        {field:'wgt',title:'Trọng tải',formatter: formatWgt,  fixed:true, width:70},
+                    ]],
+                    fitColumns: true,
+                    labelPosition: 'top'
+                "></select>
+                <div style="display: inline;">
+                    <button class="btn btn-sm btn-danger" onclick="removeTruck()">Delete</button>
+                </div>
+            </div>
             <div class="table-content" style="flex: 1 1 auto;">
                 <table id="pickedTruckTable" class="table" style="width:100%;" fitColumns="true">
                   <thead>
                     <tr>
+                      <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
+                      <th data-options="field:'id', align:'center', fixed:true, formatter: formatId" width="50">ID</th>
                       <th data-options="field:'plateNumber', align:'center', formatter: formatPlateNumber" width="150">Biển số xe</th>
                       <th data-options="field:'type', editor:'textbox', formatter: formatType" width="100">Loại xe</th>
                       <th data-options="field:'wgt', editor:'textbox', formatter: formatWgt" width="100">Trọng tải</th>
-                      <th data-options="field:'action', formatter: formatAction, align:'center', fixed:true" width="80">Hành động</th>
+                      <!-- <th data-options="field:'action', formatter: formatAction, align:'center', fixed:true" width="80">Hành động</th> -->
                   </tr>
                   </thead>
                 </table>

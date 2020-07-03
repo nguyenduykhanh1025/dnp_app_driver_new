@@ -44,10 +44,10 @@ function assignFollowBatchTab() {
     $("#batchBtn").css({"background-color": "#6c9dc7"});
     $(".assignFollowContainer").hide();
     $("#containerBtn").css({"background-color": "#c7c1c1"});
-    // let row = $("#dg").datagrid("getSelected");
-    // if(row){
-    //     loadDriver(row.id);
-    // }
+    let row = $("#dg").datagrid("getSelected");
+    if(row){
+        loadDriver(row.id);
+    }
 
 }
 
@@ -138,7 +138,7 @@ function getSelectedShipment() {
         $("#blNo").text(row.blNo);
         $("#bookingNo").text(row.bookingNo);
         $("#edoFlg").text(row.edoFlg == 1 ? "eDO" : "DO");
-        //loadShipmentDetail(row.id);
+        loadShipmentDetail(row.id);
         loadDriver(row.id);
     }
 }
@@ -307,6 +307,27 @@ function transferOutToIn() {
         }
     }
 }
+
+function transferAllToOut(){
+    let rows =  $('#driverTable').datagrid('getRows');
+    if(rows){
+        for(let i=0; i< rows.length;i++){
+            $('#pickedDriverTable').datagrid('appendRow', rows[i]);
+        }
+        $('#driverTable').datagrid('loadData', {"total":0,"rows":[]});
+    }
+}
+
+function transferAllToIn(){
+    let rows =  $('#pickedDriverTable').datagrid('getRows');
+    if(rows){
+        for(let i=0; i< rows.length;i++){
+            $('#driverTable').datagrid('appendRow', rows[i]);
+        }
+        $('#pickedDriverTable').datagrid('loadData', {"total":0,"rows":[]});
+    }
+}
+
 function save(){
     let pickedIdDriverArray = [];
     let shipmentId;
@@ -336,11 +357,13 @@ function save(){
         })
     }
 }
+
 function formatAction(value, row, index) {
 	let actions = [];
     actions.push('<a class="btn btn-primary btn-xs" onclick="editDriver(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
     return actions.join('');
 }
+
 function formatActionAssign(value, row, index) {
     let button = '';
     if(row.preorderPickup == "Y"){
@@ -350,9 +373,18 @@ function formatActionAssign(value, row, index) {
     }
     return button;
 }
+
 function editDriver(id){
     $.modal.open("Chỉnh Sửa Tài xế ", prefix +"/edit/driver/"+id);
 }
+
 function assignFollowContainer(id){
-    $.modal.openFullPickTruck("Điều xe theo Container", prefix + "/preoderPickupAssign/" + id);
+    $.modal.openTab("Điều xe theo Container", prefix + "/preoderPickupAssign/" + id);
+}
+
+function addTruck(){
+    $.modal.open("Thêm xe mới", "/logistic/logisticTruck/add");
+}
+function addDriver(){
+    $.modal.open("Thêm xe mới", "/logistic/transport/add");
 }

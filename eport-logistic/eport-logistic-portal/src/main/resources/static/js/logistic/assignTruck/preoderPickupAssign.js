@@ -100,9 +100,31 @@ function transferOutToIn() {
         }
     }
 }
-function closeForm() {
-    $.modal.close();
+
+function transferAllToOut(){
+    let rows =  $('#driverTable').datagrid('getRows');
+    if(rows){
+        for(let i=0; i< rows.length;i++){
+            $('#pickedDriverTable').datagrid('appendRow', rows[i]);
+        }
+        $('#driverTable').datagrid('loadData', {"total":0,"rows":[]});
+    }
 }
+
+function transferAllToIn(){
+    let rows =  $('#pickedDriverTable').datagrid('getRows');
+    if(rows){
+        for(let i=0; i< rows.length;i++){
+            $('#driverTable').datagrid('appendRow', rows[i]);
+        }
+        $('#pickedDriverTable').datagrid('loadData', {"total":0,"rows":[]});
+    }
+}
+
+function closeForm() {
+    $.modal.closeTab();
+}
+
 function saveAssignPreorderPickup(){
     let pickedIdDriverArray = [];
     let rows = $('#pickedDriverTable').datagrid('getRows');
@@ -121,11 +143,21 @@ function saveAssignPreorderPickup(){
             success: function(result){
                 if(result.code == 0){
                     $.modal.msgSuccess(result.msg);
-                    $.modal.close();
+                    setTimeout(() => {
+                        $.modal.closeTab();
+                    }, 500);
                 }else{
                     $.modal.msgError(result.msg);
                 }
             }
         })
     }
+}
+
+function addTruck(){
+    $.modal.open("Thêm xe mới", "/logistic/logisticTruck/add");
+}
+
+function addDriver(){
+    $.modal.open("Thêm xe mới", "/logistic/transport/add");
 }

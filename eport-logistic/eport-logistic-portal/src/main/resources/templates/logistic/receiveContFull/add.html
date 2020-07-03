@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <th:block th:include="include :: header('Thêm lô')" />
 </head>
 <style type="text/css">
@@ -147,9 +145,9 @@
           if(result.code == 500){
         	  $.modal.msgError(result.msg);
         	  $("#blNo").addClass("error-input");
-            $('#opeCode').val("");
-            $('#containerAmount').val("");
-            $('#edoFlg').val(null).text("");
+              $('#opeCode').val("");
+              $('#containerAmount').val("");
+              $('#edoFlg').val(null).text("");
           }else{
             $('#opeCode').val(result.shipment.opeCode);
             $('#containerAmount').val(result.shipment.containerAmount);

@@ -26,13 +26,13 @@
   }
   
   .left-info {
-    width: 60%;
+    width: 100%;
     margin-left: 20px;
   }
   .left-button-bar{
     position: absolute;
-    right: 30px;
-    top: 25px;
+    right: 45px;
+    top: 55px;
   }
   
   .assignFollowContainer {
