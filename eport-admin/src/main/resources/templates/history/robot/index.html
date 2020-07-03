@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <th:block th:include="include :: header('Robot History')" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/history/truck/style.css}" rel="stylesheet" />
@@ -10,33 +8,40 @@
   <body class="container-fluid white-bg">
     <section class="filter">
       <div class="row section-header">
-        <div class="form-group col-md-3 col-sm-3 col-xs-6">
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
           <input
             type="text"
             class="form-control"
-            placeholder="Tên robot"
-            name="containerNo"
+            placeholder="Tìm kiếm"
+            name="keyword"
           />
         </div>
-        <div class="form-group col-md-3 col-sm-3 col-xs-6">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Thời gian"
-            name="gatein"
-          />
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <select class="form-control">
+            <option value="" disabled selected>Chọn loại lệnh</option>
+            <option value="1">Nhận container hàng</option>
+            <option value="2">Giao container rỗng</option>
+            <option value="3">Nhận container rỗng</option>
+            <option value="4">Giao container hàng</option>
+          </select>
         </div>
-        <div class="form-group col-md-3 col-sm-3 col-xs-6">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Kết quả"
-            name="gateout"
-          />
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <select class="form-control">
+            <option value="" disabled selected>Kết quả</option>
+            <option value="1">Thành công</option>
+            <option value="0">Thất bại</option>
+          </select>
         </div>
-        <div class="form-group col-md-3 col-sm-3 col-xs-6">
-          <button class="btn btn-primary">
-            <i class="fa fa-search"></i>&nbsp;Tìm kiếm
+        <div class="form-group col-md-4 col-sm-4 col-xs-4">
+          <input class="date-input" type="text" name="from-date" placeholder="Từ ngày" readOnly/>
+          <input class="date-input" type="text" name="to-date" placeholder="Đến ngày" readOnly/>
+        </div>
+        <div class="form-group col-md-2 col-sm-2 col-xs-2">
+          <button class="btn btn-primary" title="Tìm kiếm">
+            <i class="fa fa-search"></i>
+          </button>
+          <button class="btn btn-warning" title="Làm mới">
+            <i class="fa fa-refresh"></i>
           </button>
         </div>
       </div>
@@ -47,44 +52,50 @@
               <tr>
                 <th
                   data-options="
-                    field: 'processOrderId',
+                    field: 'robotUuid',
                     halign: 'center',
                     resizable: true,
-                    "> 
-                  Process Order ID
+                    "
+                >
+                  Tên robot
                 </th>
                 <th
                   data-options="
                     field: 'sysUserId',
                     halign: 'center',
                     resizable: true,
-                    "> 
-                  OM Id
-                </th>
-                <th
-                  data-options="
-                    field:'robotUuid',
-                    halign:'center',
-                    align:'center',
                     "
-                  sortable="true">
-                  Tên Robot
+                >
+                  Loại lệnh
                 </th>
                 <th
                   data-options="
                     field:'result',
                     halign:'center',
                     align:'center',
-                    formatter: formatResult"
-                  sortable="true">
+                    formatter: formatResult
+                    "
+                  sortable="true"
+                >
                   Kết quả
                 </th>
+                <th
+                  data-options="
+                  field: 'createTime',
+                  halign: 'center',
+                  align: 'center',
+                  "
+                >
+                  Trạng thái
+                </th>
+
                 <th
                   data-options="
                     field:'createTime',
                     halign:'center',
                     formatter: formatDate"
-                  sortable="true">
+                  sortable="true"
+                >
                   Thời gian
                 </th>
               </tr>
