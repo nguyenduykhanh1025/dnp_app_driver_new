@@ -22,6 +22,23 @@ $(document).ready(function() {
         pickTime: false,
         minView: 2
     });
+
+    $('#searchAllInput').keyup(function(event) {
+        if (event.keyCode == 13) {
+            pickupStory.blNo = $('#searchAllInput').val().toUpperCase();
+            pickupStory.bookingNo = $('#searchAllInput').val().toUpperCase();
+            pickupStory.containerNo1 = $('#searchAllInput').val().toUpperCase();
+            pickupStory.containerNo2 = $('#searchAllInput').val().toUpperCase();
+            pickupStory.truckNo = $('#searchAllInput').val().toUpperCase();
+            pickupStory.chassisNo = $('#searchAllInput').val().toUpperCase();
+            pickupStory.yardPosition1 = $('#searchAllInput').val().toUpperCase();
+            pickupStory.yardPosition2 = $('#searchAllInput').val().toUpperCase();
+            pickupStory.sztp = $('#searchAllInput').val().toUpperCase();
+            pickupStory.vslNm = $('#searchAllInput').val().toUpperCase();
+            pickupStory.voyNo = $('#searchAllInput').val().toUpperCase();
+            loadTable();
+        }
+    });
 });
 
 function loadTable() {
@@ -57,6 +74,15 @@ function loadTable() {
             $("#dg").datagrid("hideColumn", "id");
         },
     });
+}
+
+function refresh() {
+    $('#searchAllInput').val('');
+    $('#seviceTypeSelect').val('');
+    $('#fromDate').val('');
+    $('#toDate').val('');
+    pickupStory = new Object();
+    loadTable();
 }
 
 function formatBlNo(value, row) {

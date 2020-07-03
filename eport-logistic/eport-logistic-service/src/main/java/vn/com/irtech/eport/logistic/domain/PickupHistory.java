@@ -108,6 +108,17 @@ public class PickupHistory extends BaseEntity {
 	
 	private Integer serviceType;
 
+	private String blNo;
+
+	private String bookingNo;
+
+	private String sztp;
+
+	private String vslNm;
+
+	private String voyNo;
+
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -316,6 +327,46 @@ public class PickupHistory extends BaseEntity {
 		return serviceType;
 	}
 
+	public void setBlNo(String blNo) {
+		this.blNo = blNo;
+	} 
+
+	public String getBlNo() {
+		return blNo;
+	}
+
+	public void setBookingNo(String bookingNo) {
+		this.bookingNo = bookingNo;
+	}
+
+	public String getBookingNo() {
+		return bookingNo;
+	}
+
+	public void setSztp(String sztp) {
+		this.sztp = sztp;
+	}
+
+	public String getSztp() {
+		return sztp;
+	}
+
+	public void setVslNm(String vslNm) {
+		this.vslNm = vslNm;
+	}
+
+	public String getVslNm() {
+		return vslNm;
+	}
+
+	public void setVoyNo(String voyNo) {
+		this.voyNo = voyNo;
+	}
+
+	public String getVoyNo() {
+		return voyNo;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -329,6 +380,8 @@ public class PickupHistory extends BaseEntity {
 				.append("gateinDate", getGateinDate()).append("gateoutDate", getGateoutDate())
 				.append("cancelDeceiptDate", getCancelDeceiptDate())
 				.append("fromDate", getFromDate()).append("toDate", getToDate()).append("serviceType", getServiceType())
+				.append("blNo", getBlNo()).append("bookingNo", getBookingNo())
+				.append("sztp", getSztp()).append("vslNm", getVslNm()).append("voyNo", getVoyNo())
 				.toString();
 	}
 }
