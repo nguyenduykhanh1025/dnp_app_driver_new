@@ -35,7 +35,7 @@ function closeForm() {
 function getOtp() {
     if (minutes < 4 || (minutes == 4 && seconds < 30)) {
         $.ajax({
-            url: "/otp/" + shipmentDetailIds,
+            url: "/logistic/otp/" + shipmentDetailIds,
             method: "GET",
             success: function (data) {
                 if (data.code != 0) {
