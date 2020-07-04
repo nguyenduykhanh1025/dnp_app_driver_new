@@ -81,7 +81,7 @@ function loadTable() {
         data: JSON.stringify(pickupHistory),
         dataType: 'text',
         success: function (data) {
-          success(data);
+          success(JSON.parse(data));
         },
         error: function () {
           error.apply(this, arguments);
