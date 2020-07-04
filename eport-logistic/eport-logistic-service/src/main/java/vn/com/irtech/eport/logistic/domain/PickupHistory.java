@@ -122,6 +122,8 @@ public class PickupHistory extends BaseEntity {
 
 	private String driverPhoneNumber;
 
+	private String logisticGroupName;
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -386,6 +388,14 @@ public class PickupHistory extends BaseEntity {
 		return driverPhoneNumber;
 	}
 
+	public void setLogisticGroupName(String logisticGroupName) {
+		this.logisticGroupName = logisticGroupName;
+	}
+
+	public String getLogisticGroupName() {
+		return logisticGroupName;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -403,6 +413,7 @@ public class PickupHistory extends BaseEntity {
 				.append("sztp", getSztp()).append("vslNm", getVslNm()).append("voyNo", getVoyNo())
 				.append("driverName", getDriverName())
 				.append("driverPhoneNumber", getDriverPhoneNumber())
+				.append("logisticGroupName", getLogisticGroupName())
 				.toString();
 	}
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -26,11 +28,11 @@ public class TruckHistoryController extends BaseController {
 		return PREFIX + "/index";
 	}
  
-	@GetMapping("/list")
+	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo getListTruckHistor(PickupHistory pickupHistory) {
+	public TableDataInfo getListTruckHistor(@RequestBody PickupHistory pickupHistory) {
 		startPage();
-		List<PickupHistory> pickupHistorys = pickupHistoryService.selectPickupHistoryList(pickupHistory);
+		List<PickupHistory> pickupHistorys = pickupHistoryService.selectPickupHistoryListForHistory(pickupHistory);
 		return getDataTable(pickupHistorys);
 	}
 }

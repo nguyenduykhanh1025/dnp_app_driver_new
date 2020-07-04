@@ -1,4 +1,36 @@
-const PREFIX = "/history/robot";
+const PREFIX = ctx + "history/robot";
+var processHistory = new Object();
+
+$(document).ready(function () {
+  loadTable();
+
+  $('#fromDate').datetimepicker({
+    language: 'en',
+    format: 'dd/mm/yyyy',
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    pickTime: false,
+    minView: 2
+  });
+  $('#toDate').datetimepicker({
+    language: 'en',
+    format: 'dd/mm/yyyy',
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    pickTime: false,
+    minView: 2
+  });
+
+  $('#searchAllInput').keyup(function (event) {
+    if (event.keyCode == 13) {
+      processHistory.uuid = $('#searchAllInput').val().toUpperCase();
+      loadTable();
+    }
+  });
+});
+
 $(function () {
   loadTable();
 });
@@ -24,7 +56,7 @@ function formatResult(value) {
 function loadTable() {
   $("#dg").datagrid({
     url: PREFIX + "/list",
-    method: "GET",
+    method: "POST",
     singleSelect: true,
     height: document.documentElement.clientHeight - 70,
     clientPaging: false,
@@ -40,11 +72,12 @@ function loadTable() {
       $.ajax({
         type: opts.method,
         url: opts.url,
-        data: {},
-        dataType: "json",
+        contentType: "application/json",
+        accept: 'text/plain',
+        data: JSON.stringify(processHistory),
+        dataType: 'text',
         success: function (data) {
-          console.log(data);
-          success(data);
+          success(JSON.parse(data));
         },
         error: function () {
           error.apply(this, arguments);
@@ -52,4 +85,36 @@ function loadTable() {
       });
     },
   });
+}
+
+function refresh() {
+  $('#searchAllInput').val('');
+  $('#serviceTypeSelect').val('');
+  $('#resultSelect').val('');
+  $('#fromDate').val('');
+  $('#toDate').val('');
+  pickupHistory = new Object();
+  loadTable();
+}
+
+function changeFromDate() {
+  pickupHistory.fromDate = stringToDate($('.from-date').val()).getTime();
+  loadTable();
+}
+
+function changeToDate() {
+  let toDate = stringToDate($('.to-date').val());
+  if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
+    $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
+    $('.to-date').val('');
+  } else {
+    toDate.setHours(23, 59, 59);
+    pickupHistory.toDate = toDate.getTime();
+    loadTable();
+  }
+}
+
+function stringToDate(dateStr) {
+  let dateParts = dateStr.split('/');
+  return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 }
