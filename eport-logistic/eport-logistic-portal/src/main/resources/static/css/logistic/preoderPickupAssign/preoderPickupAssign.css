@@ -1,0 +1,43 @@
+.container {
+    position: relative;
+    padding: 0;
+    width: 100%;
+  }
+  
+  .right-side {
+    display: flex;
+    flex-flow: column;
+  }
+  .content {
+    padding: 0 15px 12px 15px;
+    flex: 1 1 auto;
+    flex-flow: column;
+    display: flex;
+  }
+  
+  .shipment-type {
+    height: 35px;
+    line-height: 35px;
+    font-size: medium;
+  }
+  
+  .title-top {
+    margin: 5px 0 5px 0;
+  }
+  
+  .left-info {
+    width: 100%;
+    margin-left: 20px;
+  }
+  .left-button-bar{
+    position: absolute;
+    right: 45px;
+    top: 55px;
+  }
+  
+  .assignFollowContainer {
+    flex: 1 1 auto;
+    margin-top: 25px;
+    flex-flow: column;
+    display: flex;
+  }

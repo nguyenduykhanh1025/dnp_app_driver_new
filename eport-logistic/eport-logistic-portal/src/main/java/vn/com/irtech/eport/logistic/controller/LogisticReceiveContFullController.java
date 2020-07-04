@@ -201,6 +201,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
+		//check if current user own shipment
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
 			shipment.setUpdateTime(new Date());
 			shipment.setUpdateBy(user.getFullName());
