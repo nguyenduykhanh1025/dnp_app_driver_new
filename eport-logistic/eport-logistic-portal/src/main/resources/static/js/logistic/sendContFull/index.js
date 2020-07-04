@@ -805,7 +805,7 @@ function deleteShipmentDetail() {
     $.modal.loading("Đang xử lý...");
     $.ajax({
         url: prefix + "/shipment-detail/" + shipmentDetailIds,
-        method: "post",
+        method: "delete",
         success: function (result) {
             if (result.code == 0) {
                 $.modal.msgSuccess(result.msg);

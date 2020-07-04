@@ -5,42 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:include="include :: header('Xac Thuc OTP')" />
+  <link th:href="@{/css/logistic/verify-otp.css}" rel="stylesheet" />
 </head>
-<style type="text/css">
-    .container {
-        text-align: center;
-        height: 303px;
-        padding: 12px 15px 12px 15px;
-        width: 100%;
-    }
-
-    .btn {
-        width: 300px;
-        margin-top: 20px;
-    }
-
-    .otpInputForm {
-        margin-top: 30px;
-        display: inline-block;
-        width: 400px;
-    }
-
-    .createOtpBtn {
-        border-radius: 5%;
-        border-color: #1e9fff;
-        color: #1e9fff;
-    }
-
-    .confirmBtn {
-        margin-right: 20px;
-    }
-
-    .closeBtn {
-        margin-left: 20px;
-    }
-
-</style>
-
 <body>
     <div class="container">
         <p>Nhập mã OTP để thực hiện làm lệnh.</p>

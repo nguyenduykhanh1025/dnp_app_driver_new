@@ -5,28 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <th:block th:include="include :: header('Thêm lô')" />
+  <link th:href="@{/css/logistic/edit-shipment.css}" rel="stylesheet" />
 </head>
-<style type="text/css">
-  .container {
-    padding-top: 10px;
-  }
-
-  .form-group>label {
-    text-align: right;
-  }
-
-  .form-control:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
-  }
-
-  .error-input {
-    background-color: #fbe2e2;
-    border-color: #c66161;
-    color: #c00;
-  }
-</style>
-
 <body>
   <div class="container">
     <form id="form-edit-shipment">

@@ -219,3 +219,11 @@ span {
 .colHeader > input {
   margin-top: 10px;
 }
+
+.finish-color {
+  color: #3498db;
+}
+
+.ongoing-color {
+  color: rgb(5, 148, 148);
+}
