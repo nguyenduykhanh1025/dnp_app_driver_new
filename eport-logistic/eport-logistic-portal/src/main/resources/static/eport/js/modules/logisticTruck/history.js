@@ -1,4 +1,4 @@
-const PREFIX = "/logistic/truck/history";
+const PREFIX = ctx + "logistic/truck/history";
 var pickupHistory = new Object();
 
 $(document).ready(function () {

@@ -285,6 +285,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		left join shipment s on p.shipment_id = s.id
 		left join shipment_detail sh on p.shipment_detail_id_1 = sh.id
 		left join driver_account d on p.driver_id = d.id
+		left join logistic_group g on p.logistic_group_id = g.id
 		<where>
 			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
 			<if test="status != null "> and p.status = #{status}</if>
@@ -297,6 +298,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="chassisNo != null  and chassisNo != ''"> or upper(p.chassis_no) like concat('%', #{chassisNo}, '%')</if>
 			<if test="driverName != null  and driverName != ''"> or upper(d.full_name) like concat('%', #{driverName}, '%')</if>
 			<if test="driverPhoneNumber != null  and driverPhoneNumber != ''"> or upper(d.mobile_number) like concat('%', #{driverPhoneNumber}, '%')</if>
+			<if test="logisticGroupName != null  and logisticGroupName != ''"> or upper(g.group_name) like concat('%', #{logisticGroupName}, '%')</if>
 			<if test="yardPosition1 != null  and yardPosition1 != ''"> or upper(p.yard_position_1) like concat('%', #{yardPosition1}, '%')</if>
 			<if test="yardPosition2 != null  and yardPosition2 != ''"> or upper(p.yard_position_2) like concat('%', #{yardPosition2}, '%')</if>
 			<if test="blNo != null  and blNo != ''"> or upper(sh.bl_no) like concat ('%', #{blNo}, '%')</if>
