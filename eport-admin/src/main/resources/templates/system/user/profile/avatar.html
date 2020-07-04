@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" >
 <head>
-	<th:block th:include="include :: header('修改用户头像')" />
+	<th:block th:include="include :: header('Modify user avatar')" />
 	<th:block th:include="include :: cropbox-css" />
 </head>
 <body class="white-bg">
@@ -37,9 +37,9 @@ $(window).load(function() {
         var reader = new FileReader();
         reader.onload = function(e) {
             options.imgSrc = e.target.result;
-            //根据MIME判断上传的文件是不是图片类型
+            //Determine whether the uploaded file is a picture type based on MIME
             if((options.imgSrc).indexOf("image/")==-1){
-                $.modal.alertWarning("文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。");
+                $.modal.alertWarning("The file format is wrong, please upload the image type, such as: JPG, PNG file extension.");
             } else {
                 cropper = $('.imageBox').cropbox(options);
             }

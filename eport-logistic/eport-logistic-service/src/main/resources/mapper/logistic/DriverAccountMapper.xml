@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="mobileNumber"    column="mobile_number"    />
         <result property="fullName"    column="full_name"    />
+        <result property="identifyCardNo"    column="identify_card_no"    />
         <result property="password"    column="password"    />
         <result property="salt"    column="salt"    />
         <result property="status"    column="status"    />
@@ -26,16 +27,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="groupName"    column="group_name"    />
     </resultMap>
     <sql id="selectDriverAccountVo">
-        select id, logistic_group_id, mobile_number, full_name, password, salt, status, del_flag, valid_date, remark, create_by, create_time, update_by, update_time from driver_account
+        select id, logistic_group_id, mobile_number, full_name, identify_card_no, password, salt, status, del_flag, valid_date, remark, create_by, create_time, update_by, update_time from driver_account
     </sql>
 
     <select id="selectDriverAccountList" parameterType="DriverAccount" resultMap="DriverAccountResult">
-        select c.id, c.logistic_group_id, c.mobile_number, c.full_name, c.password, c.salt, c.status, c.del_flag, c.valid_date, c.remark, c.create_by, c.create_time, c.update_by, c.update_time, g.group_name 
+        select c.id, c.logistic_group_id, c.mobile_number, c.full_name, c.identify_card_no, c.password, c.salt, c.status, c.del_flag, c.valid_date, c.remark, c.create_by, c.create_time, c.update_by, c.update_time, g.group_name 
         from driver_account c left join logistic_group g on c.logistic_group_id = g.id
         <where>  
             <if test="logisticGroup.groupName != null and logisticGroup.groupName !=''"> <bind name="groupNamePattern" value="'%' + logisticGroup.groupName + '%'"/> and lower(g.group_name) like #{groupNamePattern}</if>
             <if test="mobileNumber != null  and mobileNumber != ''"> and c.mobile_number like concat('%', #{mobileNumber}, '%')</if>
             <if test="fullName != null  and fullName != ''"> and lower(c.full_name) like concat('%', #{fullName}, '%')</if>
+            <if test="identifyCardNo != null  and identifyCardNo != ''"> and identify_card_no = #{identifyCardNo}</if>
             <if test="validDate != null ">and c.valid_date &lt;= #{validDate}</if>
             <if test="delFlag != null"> and c.del_flag = #{delFlag}</if>
             <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
@@ -58,6 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="mobileNumber != null  and mobileNumber != ''">mobile_number,</if>
             <if test="fullName != null  and fullName != ''">full_name,</if>
+            <if test="identifyCardNo != null  and identifyCardNo != ''">identify_card_no,</if>
             <if test="password != null  and password != ''">password,</if>
             <if test="salt != null  and salt != ''">salt,</if>
             <if test="status != null  and status != ''">status,</if>
@@ -73,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="mobileNumber != null  and mobileNumber != ''">#{mobileNumber},</if>
             <if test="fullName != null  and fullName != ''">#{fullName},</if>
+            <if test="identifyCardNo != null  and identifyCardNo != ''">#{identifyCardNo},</if>
             <if test="password != null  and password != ''">#{password},</if>
             <if test="salt != null  and salt != ''">#{salt},</if>
             <if test="status != null  and status != ''">#{status},</if>
@@ -92,6 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="mobileNumber != null  and mobileNumber != ''">mobile_number = #{mobileNumber},</if>
             <if test="fullName != null  and fullName != ''">full_name = #{fullName},</if>
+            <if test="identifyCardNo != null  and identifyCardNo != ''">identify_card_no = #{identifyCardNo},</if>
             <if test="password != null  and password != ''">password = #{password},</if>
             <if test="salt != null  and salt != ''">salt = #{salt},</if>
             <if test="status != null  and status != ''">status = #{status},</if>

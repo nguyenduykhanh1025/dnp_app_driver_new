@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="zh">
+
 <head>
-	<th:block th:include="include :: header('选项卡 & 面板')" />
+    <th:block th:include="include :: header('Tabs & panels')" />
 </head>
+
 <body class="gray-bg">
     <div class="wrapper wrapper-content animated fadeIn">
         <div class="row">
             <div class="col-sm-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>基本面板 <small class="m-l-sm">这是一个自定义面板</small></h5>
+                        <h5>Basic panel <small class="m-l-sm">This is a custom panel</small></h5>
                         <div class="ibox-tools">
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
                             </a>
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="tabs_panels.html#">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i class="fa fa-wrench"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-user">
-                                <li><a href="tabs_panels.html#">选项1</a>
+                                <li><a href="#">Option 1</a>
                                 </li>
-                                <li><a href="tabs_panels.html#">选项2</a>
+                                <li><a href="#">Option 2</a>
                                 </li>
                             </ul>
                             <a class="close-link">
@@ -33,7 +35,7 @@
                             Bootstrap<br/>
                         </h2>
                         <p>
-                            简洁、直观、强悍的前端开发框架，让web开发更迅速、简单。</p>
+                            The simple, intuitive and powerful front-end development framework makes web development faster and simpler. </p>
                     </div>
                 </div>
             </div>
@@ -42,22 +44,24 @@
             <div class="col-sm-6">
                 <div class="tabs-container">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true"> 第一 tùy chọn卡</a>
+                        <li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true"> First tab</a>
                         </li>
-                        <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">第二 tùy chọn卡</a>
+                        <li class=""><a data-toggle="tab" href="#tab-2" aria-expanded="false">Second tab</a>
                         </li>
                     </ul>
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane active">
                             <div class="panel-body">
-                                <strong>HTML5 文档类型</strong>
-                                <p>Bootstrap 使用到的某些 HTML 元素和 CSS 属性需要将页面设置为 HTML5 文档类型。在你项目中的每个页面都要参照下面的格式进行设置。</p>
+                                <strong>HTML5 document type</strong>
+                                <p>Some HTML elements and CSS attributes used by Bootstrap need to set the page to HTML5 document type. Each page in your project should be set according to the following format. </p>
                             </div>
                         </div>
                         <div id="tab-2" class="tab-pane">
                             <div class="panel-body">
-                                <strong>移动设备优先</strong>
-                                <p>在 Bootstrap 2 中，我们对框架中的某些关键部分增加了对移动设备友好的样式。而在 Bootstrap 3 中，我们重写了整个框架，使其一开始就是对移动设备友好的。这次不是简单的增加一些可选的针对移动设备的样式，而是直接融合进了框架的内核中。也就是说，Bootstrap 是移动设备优先的。针对移动设备的样式融合进了框架的每个角落，而不是增加一个额外的文件。</p>
+                                <strong>Mobile first</strong>
+                                <p>In Bootstrap 2, we added mobile-friendly styles to some key parts of the framework. In Bootstrap 3, we rewrote the entire framework to make it mobile friendly from the beginning. This time, it is not simply adding some
+                                    optional styles for mobile devices, but directly integrated into the core of the framework. In other words, Bootstrap is mobile-first. Instead of adding an extra file, the style for mobile devices is integrated into
+                                    every corner of the frame. </p>
                             </div>
                         </div>
                     </div>
@@ -71,18 +75,18 @@
 
                     <div class="panel-heading">
                         <div class="panel-title m-b-md">
-                            <h4>图标选项卡</h4>
+                            <h4>Icon tab</h4>
                         </div>
                         <div class="panel-options">
 
                             <ul class="nav nav-tabs">
-                                <li class="active"><a data-toggle="tab" href="tabs_panels.html#tab-4"><i class="fa fa-laptop"></i></a>
+                                <li class="active"><a data-toggle="tab" href="#tab-4"><i class="fa fa-laptop"></i></a>
                                 </li>
-                                <li class=""><a data-toggle="tab" href="tabs_panels.html#tab-5"><i class="fa fa-desktop"></i></a>
+                                <li class=""><a data-toggle="tab" href="#tab-5"><i class="fa fa-desktop"></i></a>
                                 </li>
-                                <li class=""><a data-toggle="tab" href="tabs_panels.html#tab-6"><i class="fa fa-signal"></i></a>
+                                <li class=""><a data-toggle="tab" href="#tab-6"><i class="fa fa-signal"></i></a>
                                 </li>
-                                <li class=""><a data-toggle="tab" href="tabs_panels.html#tab-7"><i class="fa fa-bar-chart-o"></i></a>
+                                <li class=""><a data-toggle="tab" href="#tab-7"><i class="fa fa-bar-chart-o"></i></a>
                                 </li>
                             </ul>
                         </div>
@@ -91,25 +95,27 @@
                     <div class="panel-body">
                         <div class="tab-content">
                             <div id="tab-4" class="tab-pane active">
-                                <strong>排版与链接</strong>
+                                <strong>Composition and link</strong>
 
-                                <p>Bootstrap 排版、链接样式设置了基本的全局样式。分别是： 为 body 元素设置 background-color: #fff; 使用 @font-family-base、@font-size-base 和 @line-height-base a变量作为排版的基本参数 为所有链接设置了基本颜色 @link-color ，并且当链接处于 :hover 状态时才添加下划线 这些样式都能在 scaffolding.less 文件中找到对应的源码。</p>
+                                <p>Bootstrap typography and link styles set basic global styles. They are: Set the background-color for the body element: #fff; Use the @font-family-base, @font-size-base and @line-height-base a variables as the basic parameters
+                                    of typography. Set the basic color for all links @ link-color, and only add underscores when the link is in the :hover state. These styles can be found in the scaffolding.less file. </p>
                             </div>
-
                             <div id="tab-5" class="tab-pane">
                                 <strong>Normalize.css</strong>
 
-                                <p>为了增强跨浏览器表现的一致性，我们使用了 Normalize.css，这是由 Nicolas Gallagher 和 Jonathan Neal 维护的一个CSS 重置样式库。</p>
+                                <p>To enhance the consistency of performance across browsers, we used Normalize.css, a CSS reset style library maintained by Nicolas Gallagher and Jonathan Neal. </p>
                             </div>
                             <div id="tab-6" class="tab-pane">
-                                <strong>布局容器</strong>
+                                <strong>Layout container</strong>
 
-                                <p>Bootstrap 需要为页面内容和栅格系统包裹一个 .container 容器。我们提供了两个作此用处的类。注意，由于 padding 等属性的原因，这两种 容器类不能互相嵌套。</p>
+                                <p>Bootstrap needs to wrap a .container container for the page content and grid system. We provide two classes for this purpose. Note that these two container classes cannot be nested with each other due to attributes such
+                                    as padding. </p>
                             </div>
                             <div id="tab-7" class="tab-pane">
-                                <strong>栅格系统</strong>
+                                <strong>Grid system</strong>
 
-                                <p>Bootstrap 提供了一套响应式、移动设备优先的流式栅格系统，随着屏幕或视口（viewport）尺寸的增加，系统会自动分为最多12列。它包含了易于使用的预定义类，还有强大的mixin 用于生成更具语义的布局。</p>
+                                <p>Bootstrap provides a responsive, mobile device-first streaming grid system. As the size of the screen or viewport increases, the system will automatically be divided into a maximum of 12 columns. It contains easy-to-use
+                                    predefined classes and a powerful mixin for generating more semantic layouts. </p>
                             </div>
                         </div>
 
@@ -124,24 +130,27 @@
 
                     <div class="tabs-left">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#tab-8"> 第一 tùy chọn卡</a>
+                            <li class="active"><a data-toggle="tab" href="#tab-8"> First tab</a>
                             </li>
-                            <li class=""><a data-toggle="tab" href="#tab-9"> 第二 tùy chọn卡</a>
+                            <li class=""><a data-toggle="tab" href="#tab-9"> Second tab</a>
                             </li>
                         </ul>
                         <div class="tab-content ">
                             <div id="tab-8" class="tab-pane active">
                                 <div class="panel-body">
-                                    <strong>排版与链接</strong>
+                                    <strong>Composition and link</strong>
 
-                                    <p>Bootstrap 排版、链接样式设置了基本的全局样式。分别是： 为 body 元素设置 background-color: #fff; 使用 @font-family-base、@font-size-base 和 @line-height-base a变量作为排版的基本参数 为所有链接设置了基本颜色 @link-color ，并且当链接处于 :hover 状态时才添加下划线 这些样式都能在 scaffolding.less 文件中找到对应的源码。</p>
+                                    <p>Bootstrap typography and link styles set basic global styles. They are: Set the background-color for the body element: #fff; Use the @font-family-base, @font-size-base and @line-height-base a variables as the basic
+                                        parameters of typography. Set the basic color for all links @ link-color, and only add underscores when the link is in :hover state. These styles can all be in scaffolding.less Find the corresponding source code
+                                        in the file. </p>
                                 </div>
                             </div>
                             <div id="tab-9" class="tab-pane">
                                 <div class="panel-body">
-                                    <strong>栅格系统</strong>
+                                    <strong>Grid system</strong>
 
-                                    <p>Bootstrap 提供了一套响应式、移动设备优先的流式栅格系统，随着屏幕或视口（viewport）尺寸的增加，系统会自动分为最多12列。它包含了易于使用的预定义类，还有强大的mixin 用于生成更具语义的布局。</p>
+                                    <p>Bootstrap provides a responsive, mobile device-first streaming grid system. As the size of the screen or viewport increases, the system will automatically be divided into a maximum of 12 columns. It contains easy-to-use
+                                        predefined classes and a powerful mixin for generating more semantic layouts. </p>
                                 </div>
                             </div>
                         </div>
@@ -154,24 +163,27 @@
                 <div class="tabs-container">
                     <div class="tabs-right">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#tab-10">第一 tùy chọn卡</a>
+                            <li class="active"><a data-toggle="tab" href="#tab-10">First tab</a>
                             </li>
-                            <li class=""><a data-toggle="tab" href="#tab-11"> 第二 tùy chọn卡</a>
+                            <li class=""><a data-toggle="tab" href="#tab-11"> Second tab</a>
                             </li>
                         </ul>
                         <div class="tab-content ">
                             <div id="tab-10" class="tab-pane active">
                                 <div class="panel-body">
-                                    <strong>排版与链接</strong>
+                                    <strong>Composition and link</strong>
 
-                                    <p>Bootstrap 排版、链接样式设置了基本的全局样式。分别是： 为 body 元素设置 background-color: #fff; 使用 @font-family-base、@font-size-base 和 @line-height-base a变量作为排版的基本参数 为所有链接设置了基本颜色 @link-color ，并且当链接处于 :hover 状态时才添加下划线 这些样式都能在 scaffolding.less 文件中找到对应的源码。</p>
+                                    <p>Bootstrap typography and link styles set basic global styles. They are: Set the background-color for the body element: #fff; Use the @font-family-base, @font-size-base and @line-height-base a variables as the basic
+                                        parameters of typography. Set the basic color for all links @ link-color, and only add underscores when the link is in :hover state. These styles can all be in scaffolding.less Find the corresponding source code
+                                        in the file. </p>
                                 </div>
                             </div>
                             <div id="tab-11" class="tab-pane">
                                 <div class="panel-body">
-                                    <strong>栅格系统</strong>
+                                    <strong>Grid system</strong>
 
-                                    <p>Bootstrap 提供了一套响应式、移动设备优先的流式栅格系统，随着屏幕或视口（viewport）尺寸的增加，系统会自动分为最多12列。它包含了易于使用的预定义类，还有强大的mixin 用于生成更具语义的布局。</p>
+                                    <p>Bootstrap provides a responsive, mobile device-first streaming grid system. As the size of the screen or viewport increases, the system will automatically be divided into a maximum of 12 columns. It contains easy-to-use
+                                        predefined classes and a powerful mixin for generating more semantic layouts. </p>
                                 </div>
                             </div>
                         </div>
@@ -185,7 +197,7 @@
             <div class="col-sm-12">
                 <div class="ibox">
                     <div class="ibox-title">
-                        <h5>Bootstrap面板 <small>自定义背景</small></h5>
+                        <h5>Bootstrap panel <small>Custom background</small></h5>
                     </div>
                     <div class="ibox-content">
 
@@ -193,10 +205,11 @@
                             <div class="col-sm-4">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        默认面板
+                                        Default panel
                                     </div>
                                     <div class="panel-body">
-                                        <p>通过 .panel-heading 可以很简单地为面板加入一个标题容器。你也可以通过添加设置了 .panel-title 类的标签，添加一个预定义样式的标题。 为了给链接设置合适的颜色，务必将链接放到带有 .panel-title 类的标题标签内。</p>
+                                        <p>With .panel-heading, you can easily add a header container to the panel. You can also add a title with a predefined style by adding a tag with the .panel-title class set. In order to set the appropriate color for
+                                            the link, be sure to put the link in the title tag with the .panel-title class. </p>
                                     </div>
 
                                 </div>
@@ -204,20 +217,22 @@
                             <div class="col-sm-4">
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">
-                                        主要
+                                        main
                                     </div>
                                     <div class="panel-body">
-                                        <p>通过 .panel-heading 可以很简单地为面板加入一个标题容器。你也可以通过添加设置了 .panel-title 类的标签，添加一个预定义样式的标题。 为了给链接设置合适的颜色，务必将链接放到带有 .panel-title 类的标题标签内。</p>
+                                        <p>With .panel-heading, you can easily add a header container to the panel. You can also add a title with a predefined style by adding a tag with the .panel-title class set. In order to set the appropriate color for
+                                            the link, be sure to put the link in the title tag with the .panel-title class. </p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="panel panel-success">
                                     <div class="panel-heading">
-                                        成功
+                                        success
                                     </div>
                                     <div class="panel-body">
-                                        <p>通过 .panel-heading 可以很简单地为面板加入一个标题容器。你也可以通过添加设置了 .panel-title 类的标签，添加一个预定义样式的标题。 为了给链接设置合适的颜色，务必将链接放到带有 .panel-title 类的标题标签内。</p>
+                                        <p>With .panel-heading, you can easily add a header container to the panel. You can also add a title with a predefined style by adding a tag with the .panel-title class set. In order to set the appropriate color for
+                                            the link, be sure to put the link in the title tag with the .panel-title class. </p>
                                     </div>
                                 </div>
                             </div>
@@ -226,10 +241,11 @@
                             <div class="col-sm-4">
                                 <div class="panel panel-info">
                                     <div class="panel-heading">
-                                        <i class="fa fa-info-circle"></i> 信息
+                                        <i class="fa fa-info-circle"></i> information
                                     </div>
                                     <div class="panel-body">
-                                        <p>通过 .panel-heading 可以很简单地为面板加入一个标题容器。你也可以通过添加设置了 .panel-title 类的标签，添加一个预定义样式的标题。 为了给链接设置合适的颜色，务必将链接放到带有 .panel-title 类的标题标签内。</p>
+                                        <p>With .panel-heading, you can easily add a header container to the panel. You can also add a title with a predefined style by adding a tag with the .panel-title class set. In order to set the appropriate color for
+                                            the link, be sure to put the link in the title tag with the .panel-title class. </p>
                                     </div>
 
                                 </div>
@@ -237,23 +253,25 @@
                             <div class="col-sm-4">
                                 <div class="panel panel-warning">
                                     <div class="panel-heading">
-                                        <i class="fa fa-warning"></i> 警告
+                                        <i class="fa fa-warning"></i> warning
                                     </div>
                                     <div class="panel-body">
-                                        <p>通过 .panel-heading 可以很简单地为面板加入一个标题容器。你也可以通过添加设置了 .panel-title 类的标签，添加一个预定义样式的标题。 为了给链接设置合适的颜色，务必将链接放到带有 .panel-title 类的标题标签内。</p>
+                                        <p>With .panel-heading, you can easily add a header container to the panel. You can also add a title with a predefined style by adding a tag with the .panel-title class set. In order to set the appropriate color for
+                                            the link, be sure to put the link in the title tag with the .panel-title class. </p>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="panel panel-danger">
                                     <div class="panel-heading">
-                                        危险
+                                        Danger
                                     </div>
                                     <div class="panel-body">
-                                        <p>通过 .panel-heading 可以很简单地为面板加入一个标题容器。你也可以通过添加设置了 .panel-title 类的标签，添加一个预定义样式的标题。 为了给链接设置合适的颜色，务必将链接放到带有 .panel-title 类的标题标签内。</p>
+                                        <p>With .panel-heading, you can easily add a header container to the panel. You can also add a title with a predefined style by adding a tag with the .panel-title class set. In order to set the appropriate color for
+                                            the link, be sure to put the link in the title tag with the .panel-title class. </p>
                                     </div>
                                     <div class="panel-footer">
-                                        面板Footer
+                                        Footer
                                     </div>
                                 </div>
                             </div>
@@ -268,18 +286,18 @@
             <div class="col-sm-6">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h5>折叠面板</h5>
+                        <h5>Folding the panel</h5>
                         <div class="ibox-tools">
                             <a class="collapse-link">
                                 <i class="fa fa-chevron-up"></i>
                             </a>
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="tabs_panels.html#">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i class="fa fa-wrench"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-user">
-                                <li><a href="tabs_panels.html#">选项1</a>
+                                <li><a href="#">Option 1</a>
                                 </li>
-                                <li><a href="tabs_panels.html#">选项2</a>
+                                <li><a href="#">Option 2</a>
                                 </li>
                             </ul>
                             <a class="close-link">
@@ -293,36 +311,36 @@
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h5 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseOne">标题 #1</a>
-                                            </h5>
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Title #1</a>
+                                        </h5>
                                     </div>
                                     <div id="collapseOne" class="panel-collapse collapse in">
                                         <div class="panel-body">
-                                            Bootstrap相关优质项目推荐 这些项目或者是对Bootstrap进行了有益的补充，或者是基于Bootstrap开发的
+                                            Recommended high-quality projects related to Bootstrap These projects are either a useful supplement to Bootstrap or developed based on Bootstrap
                                         </div>
                                     </div>
                                 </div>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseTwo">标题 #2</a>
-                                            </h4>
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Title #2</a>
+                                        </h4>
                                     </div>
                                     <div id="collapseTwo" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                            Bootstrap相关优质项目推荐 这些项目或者是对Bootstrap进行了有益的补充，或者是基于Bootstrap开发的
+                                            Recommended high-quality projects related to Bootstrap These projects are either a useful supplement to Bootstrap or developed based on Bootstrap
                                         </div>
                                     </div>
                                 </div>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion" href="tabs_panels.html#collapseThree">标题 #3</a>
-                                            </h4>
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">Title #3</a>
+                                        </h4>
                                     </div>
                                     <div id="collapseThree" class="panel-collapse collapse">
                                         <div class="panel-body">
-                                            Bootstrap相关优质项目推荐 这些项目或者是对Bootstrap进行了有益的补充，或者是基于Bootstrap开发的
+                                            Recommended high-quality projects related to Bootstrap These projects are either a useful supplement to Bootstrap or developed based on Bootstrap
                                         </div>
                                     </div>
                                 </div>
@@ -333,16 +351,16 @@
             </div>
             <div class="col-sm-6">
                 <div class="jumbotron">
-                    <h1>超大屏幕</h1>
-                    <p>Bootstrap 支持的另一个特性，超大屏幕（Jumbotron）。顾名思义该组件可以增加标题的大小，并为登陆页面内容添加更多的外边距（margin）。使用超大屏幕（Jumbotron）的步骤如下：</p>
+                    <h1>Large screen</h1>
+                    <p>Another feature supported by Bootstrap, Jumbotron. As the name suggests, this component can increase the size of the title and add more margin to the landing page content. The steps to use Jumbotron are as follows:</p>
                     <div class="alert alert-warning">
                         <ol>
-                            <li>创建一个带有 class .jumbotron. 的容器</li>
-                            <li>除了更大的 &lt;h1&gt;，字体粗细 font-weight 被减为 200px。</li>
+                            <li>Create a class .jumbotron. Container</li>
+                            <li>Except bigger &lt;h1&gt;，Font-weight is reduced to 200px。</li>
                         </ol>
                     </div>
 
-                    <p><a role="button" class="btn btn-primary btn-lg">了解更多</a>
+                    <p><a role="button" class="btn btn-primary btn-lg">understand more</a>
                     </p>
                 </div>
             </div>
@@ -350,4 +368,5 @@
     </div>
     <th:block th:include="include :: footer" />
 </body>
+
 </html>

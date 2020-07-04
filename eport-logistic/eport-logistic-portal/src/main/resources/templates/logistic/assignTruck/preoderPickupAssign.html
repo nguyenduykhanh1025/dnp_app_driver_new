@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Điều Xe Container chỉ định')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/preoderPickupAssign/preoderPickupAssign.css}" rel="stylesheet" />
+    <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+  </head>
+  <body>
+      <div class="container">
+        <div class="content">
+          <div class="title-top">
+            <div class="left-info-col-sm-12-row" style="width: 100%;">
+              <div  class="col-sm-1">
+                <label class="label-title">Mã Lô: </label>
+                <span id="batchCode"></span>
+              </div>
+              <div class="col-sm-2">
+                <label class="label-title">Mã Số Thuế: </label>
+                <span id="taxCode"></span>
+              </div>
+              <div class="col-sm-2" id="blNoDiv">
+                <label class="label-title">B/L No: </label>
+                <span id="blNo"></span>
+              </div>
+              <div class="col-sm-2" id="bookingNoDiv">
+                <label class="label-title">Booking No: </label>
+                <span id="bookingNo"></span>
+              </div>
+              <div class="col-sm-1">
+                <label class="label-title">DO: </label>
+                <span id="edoFlg"></span>
+              </div>
+              <div class="col-sm-2">
+                  <label class="label-title">Container No: </label>
+                  <span id="containerNo"></span>
+                </div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="left-button-bar">
+              <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="addTruck()">+ Xe</button>
+              <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="addDriver()">+ Tài xế</button>
+              <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="pickTruckForChosenList()">Thuê Ngoài</button>
+            </div>
+            <div class="assignFollowContainer">
+              <div class="content">
+                <div class="assignFollowContainer">
+                  <!-- <div style="display: flex; justify-content: center;">
+                    <b style="margin-right: 150px;">Danh sách Đội xe</b>
+                    <b style="margin-left: 150px;">Danh sách Xe điều</b>
+                  </div> -->
+                  <div style="display: flex; flex: 1 1 auto;">
+                    <div class="table-content">
+                      <div style="display: flex; justify-content: center;">
+                        <b style="margin: 0 auto;">Danh sách Đội xe</b>
+                      </div>
+                      <table id="driverTable" class="table" style="width:100%;" fitColumns="true" 
+                      data-options="rownumbers:true,iconCls: 'icon-edit', toolbar: '#tb',url: 'datagrid_data1.json',method: 'get'">
+                        <thead>
+                          <tr>
+                            <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
+                            <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
+                            <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
+                            <th data-options="field:'action', formatter: formatAction,align:'center',fixed:true" width="80">Hành động</th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                    <div style="padding: 130px 0; text-align: center;">
+                      <div>
+                        <button style="margin-bottom: 10px; width: 60px;" onclick="transferAllToOut()">>>|</button>
+                      </div>
+                      <div>
+                        <button style="margin-bottom: 10px; width: 60px;" onclick="transferInToOut()">>|</button>
+                      </div>
+                      <div>
+                        <button style="margin-top: 10px; width: 60px;" onclick="transferOutToIn()">|<</button>
+                      </div>
+                      <div>
+                        <button style="margin-top: 10px; width: 60px;" onclick="transferAllToIn()">|<<</button>
+                      </div>
+                    </div>
+                    <div class="table-content">
+                      <div style="display: flex; justify-content: center;">
+                        <b style="margin: 0 auto;">Danh sách Xe điều</b>
+                      </div>
+                      <table id="pickedDriverTable" class="table" style="width:100%;" fitColumns="true"
+                      data-options="rownumbers:true,iconCls: 'icon-edit', toolbar: '#tb',url: 'datagrid_data1.json',method: 'get'">
+                        <thead>
+                          <tr>
+                            <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
+                            <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
+                            <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
+                            <th data-options="field:'action', formatter: formatAction,align:'center',fixed:true" width="80">Hành động</th>
+                        </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="layui-layer-btn footer">
+                <a class="layui-layer-btn0" onclick="saveAssignPreorderPickup()">Xác nhận</a>
+                <a class="layui-layer-btn1" onclick="closeForm()">Hủy bỏ</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <th:block th:include="include :: footer" />
+      <th:block th:include="include :: easyui-js" />
+      <script th:src="@{/js/logistic/assignTruck/preoderPickupAssign.js}"></script>
+      <script type="text/javascript" th:inline="javascript">
+        var shipmentDetail = /*[[${shipmentDetail}]]*/;
+        var shipment = /*[[${shipment}]]*/;
+    </script>
+  </body>
+</html>
