@@ -128,7 +128,7 @@ function submitHandler() {
             }
         }
         $.ajax({
-            url: prefix + "/truck/assign/add",
+            url: prefix + "/truck/assign/save",
             method: "post",
             data:{
                 truckIds: truckIds,

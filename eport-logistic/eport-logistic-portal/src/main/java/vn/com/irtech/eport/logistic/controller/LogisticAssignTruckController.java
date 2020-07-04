@@ -376,7 +376,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	 * @param driverId
 	 * @return
 	 */
-	@PostMapping("/truck/assign/add")
+	@PostMapping("/truck/assign/save")
 	@ResponseBody
 	@Transactional
 	public AjaxResult saveAssignTruck(@RequestParam(value = "truckIds[]", required = false)  Long[] truckIds, Long driverId){
