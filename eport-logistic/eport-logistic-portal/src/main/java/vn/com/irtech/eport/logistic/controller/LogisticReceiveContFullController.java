@@ -41,8 +41,6 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.logistic.utils.R;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
-
-
 @Controller
 @RequestMapping("/logistic/receive-cont-full")
 public class LogisticReceiveContFullController extends LogisticBaseController {

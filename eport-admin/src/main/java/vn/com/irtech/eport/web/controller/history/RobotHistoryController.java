@@ -32,7 +32,7 @@ public class RobotHistoryController extends BaseController {
 	@ResponseBody
 	public TableDataInfo getListTruckRobot(@RequestBody ProcessHistory processHistory) {
 		startPage();
-		List<ProcessHistory> pickupHistorys = processHistoryService.selectProcessHistoryList(processHistory);
+		List<ProcessHistory> pickupHistorys = processHistoryService.selectRobotHistory(processHistory);
 		return getDataTable(pickupHistorys);
 	}
 }
