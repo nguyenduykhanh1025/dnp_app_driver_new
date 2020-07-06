@@ -23,11 +23,11 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">Họ và Tên</label>
                             <div class="col-sm-4">
-                                <input name="fullName" th:field="*{fullName}" class="form-control" type="text">
+                                <input name="fullName" th:field="*{fullName}" disabled class="form-control" type="text">
                             </div>
                             <label class="col-sm-2 control-label is-required">Số điện thoại</label>
                             <div class="col-sm-4">
-                                <input name="mobileNumber" th:field="*{mobileNumber}" class="form-control" type="text" required>
+                                <input name="mobileNumber" th:field="*{mobileNumber}" disabled class="form-control" type="text" required>
                             </div>
                         </div>
                     </div>
@@ -37,13 +37,13 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">CMND:</label>
                             <div class="col-sm-4">
-                                <input name="identifyCardNo" th:field="*{identifyCardNo}" class="form-control" type="text">
+                                <input name="identifyCardNo" th:field="*{identifyCardNo}" disabled class="form-control" type="text">
                             </div>
                             <label class="col-sm-2 control-label">Hiệu lực đến:</label>
                             <div class="col-sm-4">
                                 <div class="input-group date">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input name="validDate" th:value="${#dates.format(driverAccount.validDate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text" >
+                                    <input name="validDate" th:value="${#dates.format(driverAccount.validDate, 'yyyy-MM-dd')}" disabled class="form-control" placeholder="yyyy-MM-dd" type="text" >
                                 </div>
                             </div>
                         </div>
@@ -63,12 +63,9 @@
                     </div>
                 </div> -->
             </form>
-            <div class="col-sm-6-row" style="position: absolute; top: 130px; width: 100%;">
+            <div class="col-sm-6-row" style="padding-bottom: 10px;">
                 <div style="display: flex; justify-content: left;">
-                    <b>DANH SÁCH XE ĐIỀU</b>
-                </div>
-                <div style="display: inline;">
-                    <button class="btn btn-sm btn-primary" onclick="addTruck()">Add</button>
+                    <b>DANH SÁCH XE</b>
                 </div>
                 <select id="addTruckAssignTable" class="easyui-combogrid" name="dept" style="width:250px;"
                 data-options="
@@ -86,19 +83,22 @@
                     labelPosition: 'top'
                 "></select>
                 <div style="display: inline;">
-                    <button class="btn btn-sm btn-danger" onclick="removeTruck()">Delete</button>
+                    <button class="btn btn-sm btn-primary" onclick="addTruck()">Add</button>
                 </div>
+                <!-- <div style="display: inline;">
+                    <button class="btn btn-sm btn-danger" onclick="removeTruck()">Delete</button>
+                </div> -->
             </div>
-            <div class="table-content" style="flex: 1 1 auto;">
+            <div class="table-content" style="flex: 1 1 auto; height: calc(100% - 200px);">
                 <table id="pickedTruckTable" class="table" style="width:100%;" fitColumns="true">
                   <thead>
                     <tr>
-                      <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
+                      <!-- <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th> -->
                       <th data-options="field:'id', align:'center', fixed:true, formatter: formatId" width="50">ID</th>
                       <th data-options="field:'plateNumber', align:'center', formatter: formatPlateNumber" width="150">Biển số xe</th>
                       <th data-options="field:'type', editor:'textbox', formatter: formatType" width="100">Loại xe</th>
                       <th data-options="field:'wgt', editor:'textbox', formatter: formatWgt" width="100">Trọng tải</th>
-                      <!-- <th data-options="field:'action', formatter: formatAction, align:'center', fixed:true" width="80">Hành động</th> -->
+                      <th data-options="field:'action', formatter: formatAction, align:'center', fixed:true" width="80">Hành động</th>
                   </tr>
                   </thead>
                 </table>

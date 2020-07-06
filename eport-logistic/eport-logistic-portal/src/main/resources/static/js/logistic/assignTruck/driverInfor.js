@@ -7,7 +7,8 @@ function loadPickedTruckTable(driverId){
     truckIds = [];
     $("#pickedTruckTable").datagrid({
         url: prefix + "/driver/truck/list",
-        height: 270,
+        singleSelect: true,
+        height: 220,
         rownumbers:true,
         loadMsg: " Đang xử lý...",
         loader: function (param, success, error) {
@@ -82,25 +83,36 @@ function formatWgt(value, row, index){
     return row.wgt;
 }
 
-// function formatAction(value, row, index){
-//     let button = '';
-//         button += '<button class="btn btn-danger btn-xs " onclick="removeTruck()"><i class="fa fa-remove"></i>Xóa</button>'
-//     return button;
-// }
+function formatAction(value, row, index){
+    let button = '';
+        button += '<button class="btn btn-danger btn-xs " onclick="removeTruck('+ index +')"><i class="fa fa-remove"></i>Xóa</button>'
+    return button;
+}
 // function formatTruckType(value, row, index){
 //     return row.type  == 0 ? "Đầu kéo" : "Rơ mooc";
 // }
 
-function removeTruck(){
-    let rows = $('#pickedTruckTable').datagrid('getSelections');
-    if(rows){
-        for(let i=0; i< rows.length;i++){
-            let index = $('#pickedTruckTable').datagrid('getRowIndex', rows[i]);
-            $('#pickedTruckTable').datagrid('deleteRow', index);
-            let g = $('#addTruckAssignTable').combogrid('grid');
-            g.datagrid('appendRow', rows[i]);
-        }
-    }
+function removeTruck(index){
+    // let rows = $('#pickedTruckTable').datagrid('getSelections');
+    // if(rows){
+    //     for(let i=0; i< rows.length;i++){
+    //         let index = $('#pickedTruckTable').datagrid('getRowIndex', rows[i]);
+    //         $('#pickedTruckTable').datagrid('deleteRow', index);
+    //         let g = $('#addTruckAssignTable').combogrid('grid');
+    //         g.datagrid('appendRow', rows[i]);
+    //     }
+    // }
+
+    //delete row in pickedTruckTable
+    let row = $('#pickedTruckTable').datagrid('getRows')[index];
+    $('#pickedTruckTable').datagrid('deleteRow', index);
+    //append combogrid
+    let g = $('#addTruckAssignTable').combogrid('grid');
+    g.datagrid('appendRow', row);
+    //reload data
+    let table_data = $('#pickedTruckTable').datagrid('getRows');
+    $('#pickedTruckTable').datagrid('loadData', table_data);
+
 }
 
 function addTruck(){
@@ -117,7 +129,7 @@ function addTruck(){
 
 function submitHandler() {
     if ($.validate.form()) {
-        $.operate.save("/logistic/transport/edit", $('#form-account-edit').serialize());
+        //$.operate.save("/logistic/transport/edit", $('#form-account-edit').serialize());
 
         // save assign truck for driver
         truckIds = [];
@@ -133,18 +145,17 @@ function submitHandler() {
             data:{
                 truckIds: truckIds,
                 driverId: driverAccount.id
-            },
-            done: function(rs){
+            }
+        }).done(function(rs){
                 if(rs.code == 0 ){
-                    $.modal.msgSuccess(rs.msg);
+                    parent.finishAssignTruck(rs.msg);
                     $.modal.close();
                 }else{
                     $.modal.msgError(rs.msg);
                 }
-            }
-        })
+            })
         //reload 
-        parent.getSelectedShipment()
+        //parent.getSelectedShipment()
 
     }
 }

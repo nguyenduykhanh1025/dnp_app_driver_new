@@ -80,6 +80,11 @@ function formatAction(value, row, index) {
     actions.push('<a class="btn btn-primary btn-xs" onclick="editDriver(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
     return actions.join('');
 }
+
+function editDriver(id){
+    $.modal.open("Chỉnh Sửa Tài xế ", prefix +"/edit/driver/"+id);
+}
+
 function transferInToOut() {
     let rows = $('#driverTable').datagrid('getSelections');
     if(rows){

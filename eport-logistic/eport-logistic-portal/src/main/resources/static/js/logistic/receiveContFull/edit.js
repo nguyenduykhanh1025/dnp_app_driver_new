@@ -27,6 +27,7 @@ if (shipment != null) {
     $("#shipmentCode").val(shipment.id);
     $("#taxCode").val(shipment.taxCode);
     $("#containerAmount").val(shipment.containerAmount);
+    $("#groupName").val(shipment.groupName);
     $("#remark").val(shipment.remark);
     if (shipment.edoFlg == "0") {
         $('#edoFlg').val("0").text("Lệnh giao hàng (DO)");
@@ -37,7 +38,7 @@ if (shipment != null) {
     }
     $('#opeCode').val(shipment.opeCode);
     $("#blNo").val(shipment.blNo);
-    loadGroupName();
+    //loadGroupName();
 }
 
 $("#form-edit-shipment").validate({
@@ -73,18 +74,18 @@ function submitHandler() {
 
 function checkBlNoUnique() {
     if ($("#blNo").val() != null && $("#blNo").val() != '' && $("#blNo").val() != currentBill) {
-        $.ajax({
-            url: prefix + "/unique/bl-no/" + $("#blNo").val(),
-            method: "GET",
-        }).done(function (result) {
-            if (result.code == 0) {
-                $("#blNo").removeClass("error-input");
-            } else {
-                $.modal.msgError("Số bill đã tồn tại!");
-                $("#blNo").addClass("error-input");
-            }
-        });
-        //check opeCode,edoFlag, containerAmount trong db edo, catos
+        // $.ajax({
+        //     url: prefix + "/unique/bl-no/" + $("#blNo").val(),
+        //     method: "GET",
+        // }).done(function (result) {
+        //     if (result.code == 0) {
+        //         $("#blNo").removeClass("error-input");
+        //     } else {
+        //         $.modal.msgError("Số bill đã tồn tại!");
+        //         $("#blNo").addClass("error-input");
+        //     }
+        // });
+        //check bill unique, opeCode,edoFlag, containerAmount trong db edo, catos
         $.ajax({
             url: prefix + "/shipment/bl-no/" + $("#blNo").val(),
             method: "GET",

@@ -375,7 +375,7 @@ function formatActionAssign(value, row, index) {
 }
 
 function editDriver(id){
-    $.modal.open("Chỉnh Sửa Tài xế ", prefix +"/edit/driver/"+id);
+    $.modal.open("Thông tin Tài xế ", prefix +"/edit/driver/"+id);
 }
 
 function assignFollowContainer(id){
@@ -387,4 +387,8 @@ function addTruck(){
 }
 function addDriver(){
     $.modal.open("Thêm xe mới", "/logistic/transport/add");
+}
+
+function finishAssignTruck(msg) {
+    $.modal.msgSuccess(msg);
 }
