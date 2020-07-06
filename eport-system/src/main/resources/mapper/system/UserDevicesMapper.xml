@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.system.mapper.UserDevicesMapper">
+    
+    <resultMap type="UserDevices" id="UserDevicesResult">
+        <result property="id"    column="id"    />
+        <result property="userToken"    column="user_token"    />
+        <result property="deviceToken"    column="device_token"    />
+        <result property="userType"    column="user_type"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectUserDevicesVo">
+        select id, user_token, device_token, user_type, create_time, create_by, update_time, update_by from user_devices
+    </sql>
+
+    <select id="selectUserDevicesList" parameterType="UserDevices" resultMap="UserDevicesResult">
+        <include refid="selectUserDevicesVo"/>
+        <where>  
+            <if test="userToken != null  and userToken != ''"> and user_token = #{userToken}</if>
+            <if test="deviceToken != null  and deviceToken != ''"> and device_token = #{deviceToken}</if>
+            <if test="userType != null "> and user_type = #{userType}</if>
+        </where>
+    </select>
+    
+    <select id="selectUserDevicesById" parameterType="Long" resultMap="UserDevicesResult">
+        <include refid="selectUserDevicesVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertUserDevices" parameterType="UserDevices" useGeneratedKeys="true" keyProperty="id">
+        insert into user_devices
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userToken != null  and userToken != ''">user_token,</if>
+            <if test="deviceToken != null  and deviceToken != ''">device_token,</if>
+            <if test="userType != null ">user_type,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userToken != null  and userToken != ''">#{userToken},</if>
+            <if test="deviceToken != null  and deviceToken != ''">#{deviceToken},</if>
+            <if test="userType != null ">#{userType},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateUserDevices" parameterType="UserDevices">
+        update user_devices
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userToken != null  and userToken != ''">user_token = #{userToken},</if>
+            <if test="deviceToken != null  and deviceToken != ''">device_token = #{deviceToken},</if>
+            <if test="userType != null ">user_type = #{userType},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUserDevicesById" parameterType="Long">
+        delete from user_devices where id = #{id}
+    </delete>
+
+    <delete id="deleteUserDevicesByIds" parameterType="String">
+        delete from user_devices where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
