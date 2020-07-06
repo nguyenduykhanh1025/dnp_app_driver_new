@@ -9,47 +9,45 @@
 </head>
 
 <body class="white-bg">
-    <div class="wrapper wrapper-content animated fadeInRight ibox-content ">
-        <th:block th:each="edoHistories: ${edoHistories}">
-        <form class="form-horizontal m-t box-content" >
-            <div class="form-group" >
-                <label class="col-sm-3 control-label title-table">Container Number：</label>
-                <div class="form-control-static" th:text="${edoHistories.containerNumber}">
+    <div id="wrapper">
+        <div class="row">
+                <div class="col-sm-12 select-table title-table">
+                <div class="col-sm-12 table-container">
+                    <h1 class="title-content-history">Lịch sử thay đổi</h1>
+                    <table id="dg" style="width:auto;">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'id',align:'center'" width="90">
+                                    SEG
+                                </th>
+                                <th data-options="field:'id',align:'left'" width="200">
+                                    CHANGE DATE
+                                </th>
+                                <th data-options="field:'id',align:'center'" width="110">
+                                    DATA FIELD
+                                </th>
+                                <th data-options="field:'id',align:'center'" width="110">
+                                    OLD VALUE
+                                </th>
+                                <th data-options="field:'id',align:'center'" width="110">
+                                    NEW VALUE
+                                </th>
+                                <th data-options="field:'id',align:'center'" width="120">
+                                    SAFF NAME
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label title-table">Bill Of Landing：</label>
-                <div class="form-control-static" th:text="${edoHistories.billOfLading}">
-                </div>       
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label title-table">Action:</label>
-                <div class="form-control-static" th:text="${edoHistories.action}">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label title-table">Create Source：</label>
-                <div class="form-control-static" th:text="${edoHistories.createSource}">
-                </div>       
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label title-table">File name：</label>
-                <div class="form-control-static" th:text="${edoHistories.fileName}">
-                </div>       
-            </div>
-            <div class="form-group">
-                <label class="col-sm-3 control-label title-table">File Content:</label>
-                <div class="form-control-static pre-content"><pre th:text="${edoHistories.ediContent}"></pre>
-                </div>
-            </div>
-            </form>
-        </th:block>
         </div>
         <th:block th:include="include :: footer" />
         <th:block th:include="include :: easyui-js" />
         <th:block th:include="include :: datetimepicker-js" />
-        <script>
+        <script type="text/javascript" th:inline="javascript">
+            var id = /*[[${id}]]*/ ;
         </script>
+        <script th:src="@{/eport/js/modules/edo/history.js}"></script>
 </body>
 
 

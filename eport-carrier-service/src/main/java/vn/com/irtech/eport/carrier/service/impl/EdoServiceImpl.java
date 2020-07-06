@@ -111,7 +111,14 @@ public class EdoServiceImpl implements IEdoService
     public Edo checkContainerAvailable(@Param("container") String cont,@Param("billNo") String billNo)
     {
         return edoMapper.checkContainerAvailable(cont,billNo);
-    }
+	}
+	
+	@Override
+	public List<Edo> selectEdoListByBillNo(Edo edo)
+	{
+		return edoMapper.selectEdoListByBillNo(edo);
+	}
+
     @Override
     public  List<Edo> readEdi(String[] text)
     {

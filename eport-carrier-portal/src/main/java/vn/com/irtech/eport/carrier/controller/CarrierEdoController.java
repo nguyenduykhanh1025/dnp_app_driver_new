@@ -2,7 +2,6 @@ package vn.com.irtech.eport.carrier.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,11 +11,7 @@ import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.alibaba.druid.sql.visitor.functions.Now;
-import com.google.gson.JsonObject;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +27,6 @@ import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoHistory;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
-import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 
@@ -58,6 +52,21 @@ public class CarrierEdoController extends CarrierBaseController {
 	}
 
     //List
+	@GetMapping("/billNo")
+	@ResponseBody
+	public TableDataInfo billNo(Edo edo, String fromDate, String toDate)
+	{
+		startPage();
+		edo.setCarrierId(ShiroUtils.getGroupId());
+		Map<String, Object> searchDate = new HashMap<>();
+		searchDate.put("fromDate", fromDate);
+		searchDate.put("toDate", toDate);
+		edo.setParams(searchDate);
+		List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
+		return getDataTable(dataList);
+	}
+
+	//List
 	@GetMapping("/edo")
 	@ResponseBody
 	public TableDataInfo edo(Edo edo, String fromDate, String toDate)
@@ -144,11 +153,14 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@GetMapping("/history/{id}")
 	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
-		EdoHistory edoHistory = new EdoHistory();
-		edoHistory.setEdoId(id);
-		List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
-		map.put("edoHistories", edoHistories);
+		map.put("id", id);
 		return PREFIX + "/history";
+	}
+
+	@GetMapping("/update/{id}")
+	public String getUpdate(@PathVariable("id") Long id,ModelMap map) {
+		map.put("id", id);
+		return PREFIX + "/update";
 	}
 
 

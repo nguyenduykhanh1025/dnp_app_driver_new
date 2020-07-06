@@ -1,4 +1,4 @@
-/* CSS STYLE HISTORY EDI AUTHOR MINHTC */
+/* CSS STYLE UPDATE EDI AUTHOR MINHTC */
 .title-table {
     color: black;
 }
@@ -15,4 +15,7 @@
 .title-content-history {
     display: flex;
     justify-content: center;
+}
+#wrapper {
+    background-color: white !important;
 }
