@@ -22,6 +22,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
@@ -70,6 +72,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired
 	private ICatosApiService catosApiService;
+
+	@Autowired
+	private IEdoService edoService;
+
+	@Autowired
+	private ICarrierGroupService carrierGroupService;
 
 	@GetMapping()
 	public String receiveContFull(ModelMap mmap) {
@@ -500,8 +508,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			return error("Số bill đã tồn tại");
 		}
 		//check opeCode
-		String opeCode = shipmentService.getOpeCodeByBlNo(blNo);
-		Long containerAmount = shipmentService.getCountContainerAmountByBlNo(blNo);
+		String opeCode = edoService.getOpeCodeByBlNo(blNo);
+		Long containerAmount = edoService.getCountContainerAmountByBlNo(blNo);
 		if(opeCode != null) {
 			shipment.setEdoFlg("1");
 			ajaxResult = success();
@@ -512,7 +520,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		} else {
 			Shipment shipCatos = shipmentService.getOpeCodeCatosByBlNo(blNo);
 			if (shipCatos != null) {
-				String edoFlg = shipmentService.getEdoFlgByOpeCode(shipCatos.getOpeCode());
+				String edoFlg = carrierGroupService.getDoTypeByOpeCode(shipCatos.getOpeCode());
 				if(edoFlg == null){
 					return error("Mã hãng tàu:"+ shipCatos.getOpeCode() +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
 				}
