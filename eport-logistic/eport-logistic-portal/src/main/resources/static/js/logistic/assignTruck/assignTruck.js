@@ -89,7 +89,7 @@ function loadTable() {
                     pageSize: param.rows,
                     orderByColumn: param.sort,
                     isAsc: param.order,
-                    serviceId: $('#shipmentType').val()
+                    serviceType: $('#shipmentType').val()
                 },
                 dataType: "json",
                 success: function (data) {
