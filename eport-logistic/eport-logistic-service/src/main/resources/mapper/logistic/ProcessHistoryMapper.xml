@@ -10,15 +10,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sysUserId"    column="sys_user_id"    />
         <result property="robotUuid"    column="robot_uuid"    />
         <result property="result"    column="result"    />
+        <result property="status"    column="status"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <association property="processOrder"    column="process_order_id" javaType="ProcessOrder" resultMap="processOrderResult" />
     </resultMap>
 
+    <resultMap type="ProcessOrder" id="processOrderResult">
+		<result property="id" column="id" />
+		<result property="serviceType" column="service_type" />
+	</resultMap>
+
     <sql id="selectProcessHistoryVo">
-        select id, process_order_id, sys_user_id, robot_uuid, result, remark, create_by, create_time, update_by, update_time from process_history
+        select id, process_order_id, sys_user_id, robot_uuid, result, status, remark, create_by, create_time, update_by, update_time from process_history
     </sql>
 
     <select id="selectProcessHistoryList" parameterType="ProcessHistory" resultMap="ProcessHistoryResult">
@@ -88,5 +95,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <sql id="selectRobotHistoryVo">
+        select h.id, h.process_order_id, h.robot_uuid, h.result, h.status, h.remark, h.create_by, h.create_time, h.update_by, h.update_time, p.id, p.service_type 
+        from process_history as h 
+        left join process_order as p on h.process_order_id = p.id
+    </sql>
+
+    <select id="selectRobotHistory" parameterType="ProcessHistory" resultMap="ProcessHistoryResult">
+        <include refid="selectRobotHistoryVo"/>
+        <where>
+            <if test="robotUuid == null  or robotUuid == ''"> and h.robot_uuid is not null</if>
+            <if test="serviceType != null  and serviceType != ''"> and p.service_type = #{serviceType}</if>
+            <if test="result != null  and result != ''"> and h.result = #{result}</if>
+            <if test="fromDate != null ">and (h.create_time = #{fromDate} OR h.create_time > #{fromDate})</if>
+            <if test="toDate != null ">and (h.create_time = #{toDate} OR h.create_time &lt; #{toDate})</if>
+            <if test="robotUuid != null  and robotUuid != ''"> and upper(h.robot_uuid) like concat('%', #{robotUuid}, '%')</if>
+        </where>
+    </select>
     
 </mapper>
