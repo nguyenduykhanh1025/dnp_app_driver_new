@@ -35,7 +35,10 @@
             <groupId>vn.com.irtech.eport</groupId>
             <artifactId>eport-logistic-framework</artifactId>
         </dependency>
-        
+        <dependency>
+            <groupId>vn.com.irtech.eport</groupId>
+            <artifactId>eport-common</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
@@ -182,7 +183,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult checkBlNoUnique(@PathVariable String blNo) {
 		Shipment shipment = new Shipment();
-		shipment.setServiceType(1);
+		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBlNo(blNo);
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
@@ -206,7 +207,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceType(1);
+		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
 		}
@@ -276,7 +277,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			boolean isCreated = true;
 			if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && shipmentDt.getVgmChk()) {
 				shipment.setBlNo(shipmentDt.getBlNo());
-				shipment.setServiceType(2);
+				shipment.setServiceType(Constants.SEND_CONT_EMPTY);
 				List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 				if (shipments == null || shipments.size() == 0) {
 					shipment.setContainerAmount(Long.valueOf(shipmentDt.getTier()));
@@ -501,7 +502,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		AjaxResult ajaxResult = new AjaxResult();
 		Shipment shipment = new Shipment();
 		//check bill unique
-		shipment.setServiceType(1);
+		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBlNo(blNo);
 		if (shipmentService.checkBillBookingNoUnique(shipment) != 0) {

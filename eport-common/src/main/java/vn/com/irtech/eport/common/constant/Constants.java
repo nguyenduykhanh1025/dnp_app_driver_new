@@ -39,4 +39,12 @@ public class Constants
     public static final String RESOURCE_PREFIX = "/profile";
 
     public static final String DOCUMENT_PREFIX = "/docs";
+    
+	public static final Integer RECEIVE_CONT_FULL = 1;
+
+	public static final Integer SEND_CONT_EMPTY = 2;
+
+	public static final Integer RECEIVE_CONT_EMPTY = 3;
+
+	public static final Integer SEND_CONT_FULL = 4;
 }
