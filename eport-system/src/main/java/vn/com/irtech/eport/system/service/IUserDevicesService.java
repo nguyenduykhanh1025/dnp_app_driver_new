@@ -58,4 +58,6 @@ public interface IUserDevicesService
      * @return result
      */
     public int deleteUserDevicesById(Long id);
+
+    public List<UserDevices> selectDeviceTokenList(String userTypeList);
 }
