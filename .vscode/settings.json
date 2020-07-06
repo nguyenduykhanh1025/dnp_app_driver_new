@@ -1,15 +1,10 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
-    "cSpell.words": [
-        "Autowired",
-        "Catos",
-        "Gson",
-        "Shiro",
-        "Viewex",
-        "datetimepicker",
-        "eport",
-        "kho",
-        "khoản",
-        "n"
+    "liveSassCompile.settings.formats": [
+        {
+            "format": "compressed",
+            "extensionName": ".css",
+            "savePath": "/css"
+        }
     ]
 }
