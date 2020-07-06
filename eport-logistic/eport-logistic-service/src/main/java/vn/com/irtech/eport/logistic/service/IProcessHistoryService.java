@@ -58,4 +58,6 @@ public interface IProcessHistoryService
      * @return result
      */
     public int deleteProcessHistoryById(Long id);
+
+    public List<ProcessHistory> selectRobotHistory(ProcessHistory processHistory);
 }

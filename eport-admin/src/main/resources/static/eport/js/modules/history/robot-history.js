@@ -13,6 +13,7 @@ $(document).ready(function () {
     pickTime: false,
     minView: 2
   });
+
   $('#toDate').datetimepicker({
     language: 'en',
     format: 'dd/mm/yyyy',
@@ -25,28 +26,47 @@ $(document).ready(function () {
 
   $('#searchAllInput').keyup(function (event) {
     if (event.keyCode == 13) {
-      processHistory.uuid = $('#searchAllInput').val().toUpperCase();
+      processHistory.robotUuid = $('#searchAllInput').val().toUpperCase();
       loadTable();
     }
   });
 });
 
-$(function () {
-  loadTable();
-});
-
 function formatDate(value) {
-    if (value == null) return "";
-    var date = new Date(value);
-    return formatNumber(date.getDate()) 
-            + "/" + formatNumber(date.getMonth() + 1) 
-            + "/" + date.getFullYear()
-            + " " + formatNumber(date.getHours())
-            + ":" + formatNumber(date.getMinutes());
+  if (value == null) return "";
+  var date = new Date(value);
+  return formatNumber(date.getDate())
+    + "/" + formatNumber(date.getMonth() + 1)
+    + "/" + date.getFullYear()
+    + " " + formatNumber(date.getHours())
+    + ":" + formatNumber(date.getMinutes());
 }
 
 function formatNumber(number) {
     return number < 10 ? "0" + number : number;
+}
+
+function formatServiceType(value, row) {
+  console.log(row);
+  switch (row.processOrder.serviceType) {
+    case 1:
+      return 'Bốc Hàng';
+    case 2:
+      return 'Hạ Rỗng';
+    case 3:
+      return 'Bốc Rỗng';
+    case 4:
+      return 'Hạ Hàng';
+  }
+}
+
+function formatStatus(value, row) {
+  switch(row.status) {
+    case 1:
+      return 'Bắt đầu';
+    case 2:
+      return 'Kết thúc';
+  }
 }
 
 function formatResult(value) {
@@ -89,16 +109,26 @@ function loadTable() {
 
 function refresh() {
   $('#searchAllInput').val('');
-  $('#serviceTypeSelect').val('');
+  $('#seviceTypeSelect').val('');
   $('#resultSelect').val('');
   $('#fromDate').val('');
   $('#toDate').val('');
-  pickupHistory = new Object();
+  processHistory = new Object();
+  loadTable();
+}
+
+function changeServiceType() {
+  processHistory.serviceType = $('#seviceTypeSelect').val();
+  loadTable();
+}
+
+function changeResult() {
+  processHistory.result = $('#resultSelect').val();
   loadTable();
 }
 
 function changeFromDate() {
-  pickupHistory.fromDate = stringToDate($('.from-date').val()).getTime();
+  processHistory.fromDate = stringToDate($('.from-date').val()).getTime();
   loadTable();
 }
 
@@ -109,7 +139,7 @@ function changeToDate() {
     $('.to-date').val('');
   } else {
     toDate.setHours(23, 59, 59);
-    pickupHistory.toDate = toDate.getTime();
+    processHistory.toDate = toDate.getTime();
     loadTable();
   }
 }
