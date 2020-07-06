@@ -169,17 +169,18 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return PREFIX + "/napasPaymentForm";
 	}
 
-	@GetMapping("/unique/bl-no/{blNo}")
-	@ResponseBody
-	public AjaxResult checkBlNoUnique(@PathVariable String blNo) {
-		Shipment shipment = new Shipment();
-		shipment.setServiceType(1);
-		shipment.setLogisticGroupId(getUser().getGroupId());
-		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
-			return success();
-		}
-		return error();
-	}
+	// @GetMapping("/unique/bl-no/{blNo}")
+	// @ResponseBody
+	// public AjaxResult checkBlNoUnique(@PathVariable String blNo) {
+	// 	Shipment shipment = new Shipment();
+	// 	shipment.setServiceType(1);
+	// 	shipment.setLogisticGroupId(getUser().getGroupId());
+	// 	shipment.setBlNo(blNo);
+	// 	if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
+	// 		return success();
+	// 	}
+	// 	return error();
+	// }
 
 	@PostMapping("/shipment")
 	@ResponseBody
@@ -476,14 +477,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public AjaxResult checkShipmentInforByBlNo(@PathVariable String blNo) {
 		AjaxResult ajaxResult = new AjaxResult();
 		Shipment shipment = new Shipment();
+		//check bill unique
+		shipment.setServiceType(1);
+		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBlNo(blNo);
+		if (shipmentService.checkBillBookingNoUnique(shipment) != 0) {
+			return error("Số bill đã tồn tại");
+		}
+		//check opeCode
 		String opeCode = shipmentService.getOpeCodeByBlNo(blNo);
 		Long containerAmount = shipmentService.getCountContainerAmountByBlNo(blNo);
 		if(opeCode != null) {
-			// String edoFlg = shipmentService.getEdoFlgByOpeCode(opeCode);
-			// if(edoFlg == null){
-			// 	return error("Mã hãng tàu:"+ opeCode +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
-			// }
 			shipment.setEdoFlg("1");
 			ajaxResult = success();
 			shipment.setOpeCode(opeCode);
@@ -497,6 +501,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				if(edoFlg == null){
 					return error("Mã hãng tàu:"+ shipCatos.getOpeCode() +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
 				}
+				if(edoFlg == "1"){
+					return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng liên hệ Cảng!");
+				}
 				shipment.setEdoFlg(edoFlg);
 				ajaxResult = success();
 				shipment.setOpeCode(shipCatos.getOpeCode());
@@ -505,7 +512,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				return ajaxResult;
 			}
 		}
-		ajaxResult = error("Billing No không tồn tại!");
+		ajaxResult = error("Số bill không tồn tại!");
 		return ajaxResult;
 	}
 }
