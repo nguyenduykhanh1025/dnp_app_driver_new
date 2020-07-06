@@ -68,4 +68,6 @@ public interface IPickupHistoryService
     public int deletePickupHistoryById(Long id);
 
     public List<PickupHistory> selectPickupHistoryListForReport(PickupHistory pickupHistory);
+
+    public List<PickupHistory> selectPickupHistoryListForHistory(PickupHistory pickupHistory);
 }

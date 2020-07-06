@@ -1,156 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <th:block th:include="include :: header('Truck History')" />
-    <th:block th:include="include :: easyui-css" />
-    <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
-    <link th:href="@{/css/logistic/truck/style.css}" rel="stylesheet" />
-  </head>
-  <body class="container-fluid white-bg">
-    <section class="filter">
-      <div class="row section-header">
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Tìm kiếm..."
-            name="keyword"/>
-        </div>
-        <div class="form-group col-md-8 col-sm-8 col-xs-8">
-          <span>
-              <label>Đã vào cổng từ:</label>
-              <input type="text" class="from-date date-input" onchange="changeFromDate()" placeholder="dd/mm/yyyy" readonly>
-          </span>
-          <span>
-              <label>đến:</label>
-              <input type="text" class="to-date date-input" onchange="changeToDate()" placeholder="dd/mm/yyyy" readonly>
-          </span>
-        </div>
-        <div class="form-group col-md-2 col-sm-2 col-xs-2">
-          <button class="btn btn-warning pull-right ml5">
-            <i class="fa fa-refresh"></i>
-          </button>
-          <button class="btn btn-primary pull-right">
-            <i class="fa fa-search"></i>
-          </button>
-        </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <th:block th:include="include :: header('Truck History')" />
+  <th:block th:include="include :: easyui-css" />
+  <th:block th:include="include :: datetimepicker-css" />
+  <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
+  <link th:href="@{/css/logistic/truck/style.css}" rel="stylesheet" />
+</head>
+
+<body class="container-fluid white-bg">
+  <section class="filter">
+    <div class="row section-header">
+      <div class="form-group col-md-2 col-sm-2 col-xs-2">
+        <input type="text" class="form-control" placeholder="Tìm kiếm..." id="searchAllInput" name="keyword" />
       </div>
-      <div class="row section-content">
-        <div class="col-md-12">
-          <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
-            <thead>
-              <tr>
-                <th
-                  data-options="
-                    field: 'driver',
-                    halign: 'center',
-                    resizable: true,
-                    formatter: function(value,row){return row.driver.fullName}"> 
-                  Tên tài xế
-                </th>
-                <th
-                  data-options="
-                    field: 'driverPhone',
-                    halign: 'center',
-                    resizable: true,
-                    formatter: function(value,row){return row.driver.mobileNumber}"
-                    > 
-                  Số điện thoại
-                </th>
-                <th
-                  data-options="
-                    field:'shipmentDetail1',
-                    halign:'center',
-                    align:'center',
-                    formatter: function(value,row){return row.shipmentDetail1.containerNo}"
-                  sortable="true">
-                  Container 1
-                </th>
-                <th
-                  data-options="
-                    field:'yardPosition1',
-                    halign:'center',
-                    align:'center',
-                    formatter: function(value,row){return row.yardPosition1}"
-                  sortable="true">
-                  Vị trí Container 1
-                </th>
-                <th
-                  data-options="
-                    field:'shipmentDetail2',
-                    halign:'center',
-                    formatter:function(value, row) {return row.shipmentDetail2.containerNo}"
-                  sortable="true">
-                  Container 2
-                </th>
-                <th
-                  data-options="
+      <div class="form-group col-md-8 col-sm-8 col-xs-8">
+        <span>
+          <label>Đã vào cổng từ:</label>
+          <input type="text" class="from-date date-input" id="fromDate" onchange="changeFromDate()" placeholder="dd/mm/yyyy" readonly>
+        </span>
+        <span>
+          <label>đến:</label>
+          <input type="text" class="to-date date-input" id="toDate" onchange="changeToDate()" placeholder="dd/mm/yyyy" readonly>
+        </span>
+      </div>
+      <div class="form-group col-md-2 col-sm-2 col-xs-2">
+        <button class="btn btn-warning pull-right ml5" onclick="refresh()">
+          <i class="fa fa-refresh"></i>
+        </button>
+        <button class="btn btn-primary pull-right" onclick="loadTable()">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <div class="row section-content">
+      <div class="col-md-12">
+        <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
+          <thead>
+            <tr>
+              <th data-options="field: 'driver', halign: 'center', resizable: true, formatter: function(value,row){return row.driver.fullName}">Tên tài xế</th>
+              <th data-options="field: 'driverPhone', halign: 'center', resizable: true, formatter: function(value,row){return row.driver.mobileNumber}">Số điện thoại</th>
+              <th data-options="field:'shipmentDetail1', halign:'center', align:'center', formatter: function(value,row){return row.shipmentDetail1.containerNo}" sortable="true">Container 1</th>
+              <th data-options="field:'yardPosition1', halign:'center', align:'center', formatter: function(value,row){return row.yardPosition1}" sortable="true">Vị trí Container 1</th>
+              <th data-options="field:'shipmentDetail2', halign:'center', formatter:function(value, row) {return row.shipmentDetail2.containerNo}" sortable="true">Container 2</th>
+              <th data-options="
                     field:'yardPosition2',
                     halign:'center',
                     align:'center',
-                    formatter: function(value,row){return row.yardPosition2}"
-                  sortable="true">
-                  Vị trí Container 2
-                </th>
-                <th data-options="
+                    formatter: function(value,row){return row.yardPosition2}" sortable="true">
+                Vị trí Container 2
+              </th>
+              <th data-options="
                     field:'gateinDate',
                     align:'center',
-                    formatter: formatDate" 
-                  sortable="true">
-                  Giờ vào cổng
-                </th>
-                <th data-options="
+                    formatter: formatDate" sortable="true">
+                Giờ vào cổng
+              </th>
+              <th data-options="
                     field:'gateinDate',
                     align:'center',
-                    formatter: formatDate" 
-                  sortable="true">
-                  Giờ ra cổng
-                </th>
-                <th data-options="
+                    formatter: formatDate" sortable="true">
+                Giờ ra cổng
+              </th>
+              <th data-options="
                     field:'receiptDate',
                     halign:'center', 
                     align:'center', 
-                    formatter: formatDate"
-                    sortable="true">
-                    Ngày nhận lệnh</th>
-                <th
-                  data-options="field:'blNo',
+                    formatter: formatDate" sortable="true">
+                Ngày nhận lệnh</th>
+              <th data-options="field:'blNo',
                     halign:'center',
                     align:'center',
-                    formatter: function(value, row) { return row.shipment.blNo }"
-                  sortable="true">
-                  Bill No 
-                </th>
-                <th
-                  data-options="field:'bookingNo',
+                    formatter: function(value, row) { return row.shipment.blNo }" sortable="true">
+                Bill No
+              </th>
+              <th data-options="field:'bookingNo',
                     halign:'center',
                     align:'center',
-                    formatter: function(value, row) { return row.shipment.bookingNo }"
-                  sortable="true">
-                  Booking No
-                </th>
-                <th data-options="field:'truckNo',halign:'center'">
-                  Biển số xe đầu kéo
-                </th>
-                <th data-options="field:'chassisNo',halign:'center'">
-                  Biển số xe rơ móc
-                </th>
-                <th data-options="field:'logisticName',
-                      halign:'center',
-                      formatter: function(value, row) { return row.logisticGroup.groupName }">
-                  Logistic Name 
-                </th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+                    formatter: function(value, row) { return row.shipment.bookingNo }" sortable="true">
+                Booking No
+              </th>
+              <th data-options="field:'truckNo',halign:'center'">
+                Biển số xe đầu kéo
+              </th>
+              <th data-options="field:'chassisNo',halign:'center'">
+                Biển số xe rơ móc
+              </th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
       </div>
-    </section>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: easyui-js" />
-    <script th:src="@{/eport/js/modules/logisticTruck/history.js}"></script>
-  </body>
+    </div>
+  </section>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: datetimepicker-js" />
+  <script th:src="@{/eport/js/modules/logisticTruck/history.js}"></script>
+</body>
+
 </html>

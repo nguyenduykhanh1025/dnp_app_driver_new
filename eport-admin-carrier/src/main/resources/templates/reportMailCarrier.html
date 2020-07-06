@@ -53,12 +53,16 @@
                     <td>Container No</td>
                     <td>File Name</td>
                     <td>Action</td>
+                    <td>Created Source</td>
+                    <td>Created Time</td>
                 </tr>
                 <tr th:each="prod: ${edoHistory}">
                     <td th:text="${prod.billOfLading}"></td>
                     <td th:text="${prod.containerNumber}"></td>
                     <td th:text="${prod.fileName}"></td>
                     <td th:text="${prod.action}"></td>
+                    <td th:text="${prod.createSource}"></td>
+                    <td th:text="${prod.createTime}"></td>
                 </tr>
               </table>
          </div>

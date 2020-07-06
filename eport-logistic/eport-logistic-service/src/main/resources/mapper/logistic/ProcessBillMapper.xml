@@ -154,25 +154,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectBillReportList" parameterType="ProcessBill" resultMap="ProcessBillResult">
         <include refid="selectBillReport"/>
         <where>  
-            <if test="shipmentId != null "> and b.shipment_id = #{shipmentId}</if>
             <if test="logisticGroupId != null "> and b.logistic_group_id = #{logisticGroupId}</if>
-            <if test="processOrderId != null "> and b.process_order_id = #{processOrderId}</if>
-            <if test="processOrder.taxCode != null  and processOrder.taxCode != ''"> and o.tax_code = #{processOrder.taxCode}</if>
-            <if test="processOrder.blNo != null  and processOrder.blNo != ''"> and o.bl_no = #{processOrder.blNo}</if>
-            <if test="processOrder.bookingNo != null  and processOrder.bookingNo != ''"> and o.booking_no = #{processOrder.bookingNo}</if>
             <if test="serviceType != null "> and b.service_type = #{serviceType}</if>
             <if test="payType != null  and payType != ''"> and b.pay_type = #{payType}</if>
             <if test="paymentStatus != null  and paymentStatus != ''"> and b.payment_status = #{paymentStatus}</if>
-            <if test="paymentTime != null ">and b.payment_time = #{paymentTime}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and b.reference_no = #{referenceNo}</if>
-            <if test="sztp != null  and sztp != ''"> and b.sztp = #{sztp}</if>
-            <if test="exchangeFee != null "> and b.exchange_fee = #{exchangeFee}</if>
-            <if test="vatRate != null "> and b.vat_rate = #{vatRate}</if>
-            <if test="vatAfterFee != null "> and b.vat_after_fee = #{vatAfterFee}</if>
-            <if test="containerNo != null  and containerNo != ''"> and b.container_no = #{containerNo}</if>
-            <if test="createTime != null ">and b.create_time = #{createTime}</if>
             <if test="fromDate != null ">and (b.payment_time = #{fromDate} OR b.payment_time > #{fromDate})</if>
             <if test="toDate != null ">and (b.payment_time = #{toDate} OR b.payment_time &lt; #{toDate})</if>
+            <if test="taxCode != null  and taxCode != ''"> and ( upper(o.tax_code) like concat('%', #{taxCode}, '%')</if>
+            <if test="blNo != null  and blNo != ''"> or upper(o.bl_no) like concat('%', #{blNo}, '%')</if>
+            <if test="bookingNo != null  and bookingNo != ''"> or upper(o.booking_no) like concat('%', #{bookingNo}, '%')</if>
+            <if test="referenceNo != null  and referenceNo != ''"> or upper(b.reference_no) like concat('%', #{referenceNo}, '%')</if>
+            <if test="sztp != null  and sztp != ''"> or upper(b.sztp) like concat('%', #{sztp}, '%')</if>
+            <if test="containerNo != null  and containerNo != ''"> or upper(b.container_no) like concat('%', #{containerNo}, '%'))</if>
         </where>
     </select>
     

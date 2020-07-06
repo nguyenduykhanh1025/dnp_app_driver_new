@@ -46,7 +46,6 @@ import vn.com.irtech.eport.common.core.text.Convert;
 public class DriverAccountController extends LogisticBaseController
 {
     private String prefix = "logistic/transport";
-	public static final String PHONE_PATTERN = "^[0-9]{10,11}$";
 
     @Autowired
     private IDriverAccountService driverAccountService;
@@ -76,7 +75,7 @@ public class DriverAccountController extends LogisticBaseController
     public TableDataInfo list(DriverAccount driverAccount, String groupName)
     {
         startPage();
-        LogisticAccount currentUser = ShiroUtils.getSysUser();
+        LogisticAccount currentUser = getUser();
         driverAccount.setDelFlag(false);
         LogisticGroup logisticGroup = new LogisticGroup();
         logisticGroup.setGroupName(groupName.toLowerCase());
@@ -119,7 +118,7 @@ public class DriverAccountController extends LogisticBaseController
     @ResponseBody
     public AjaxResult addSave(DriverAccount driverAccount)
     {
-        driverAccount.setLogisticGroupId(DriverAccountController.this.getUser().getGroupId());
+        driverAccount.setLogisticGroupId(getUser().getGroupId());
         if (driverAccount.getPassword().length() < 6) {
             return error("Mật khẩu không được ít hơn 6 ký tự!");
         }
@@ -132,7 +131,7 @@ public class DriverAccountController extends LogisticBaseController
         driverAccount.setSalt(ShiroUtils.randomSalt());
         driverAccount.setPassword(passwordService.encryptPassword(driverAccount.getMobileNumber()
         , driverAccount.getPassword(), driverAccount.getSalt()));
-        driverAccount.setCreateBy(ShiroUtils.getSysUser().getFullName());
+        driverAccount.setCreateBy(getUser().getFullName());
         return toAjax(driverAccountService.insertDriverAccount(driverAccount));
     }
 
@@ -186,7 +185,7 @@ public class DriverAccountController extends LogisticBaseController
     @ResponseBody
     public AjaxResult resetPwdSave(DriverAccount driverAccount)
     {
-    	driverAccount.setUpdateBy(ShiroUtils.getSysUser().getFullName());
+    	driverAccount.setUpdateBy(getUser().getFullName());
     	driverAccount.setSalt(ShiroUtils.randomSalt());
     	driverAccount.setPassword(passwordService.encryptPassword(driverAccount.getMobileNumber(), driverAccount.getPassword(), driverAccount.getSalt()));
         if(driverAccountService.updateDriverAccount(driverAccount) == 1)

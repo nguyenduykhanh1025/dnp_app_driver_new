@@ -35,3 +35,27 @@ function loadTable() {
         },
     });
 }
+
+
+function formatStatus(value)
+{
+    console.log(value);
+    switch(value)
+    {
+        case 1:
+            return "<span class='label label-success'>Trạng thái 1</span>";
+            break;
+        case 2:
+            return "<span class='label label-success'>Trạng thái 2</span>";
+            break;
+        case 3:
+            return "<span class='label label-success'>Trạng thái 2</span>";
+            break;
+        case 4:
+            return "<span class='label label-success'>Trạng thái 2</span>";
+            break;
+        default:
+            return "<span class='label label-warning'>Không xác định</span>";
+
+    }
+}

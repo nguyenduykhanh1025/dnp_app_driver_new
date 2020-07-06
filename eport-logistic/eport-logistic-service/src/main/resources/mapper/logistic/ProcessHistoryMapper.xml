@@ -17,6 +17,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
 
+    <resultMap type="ProcessOrder" id="ProcessOrderResul">
+		<result property="id" column="id" />
+		<result property="serviceType" column="service_type" />
+	</resultMap>
+
     <sql id="selectProcessHistoryVo">
         select id, process_order_id, sys_user_id, robot_uuid, result, remark, create_by, create_time, update_by, update_time from process_history
     </sql>
@@ -88,5 +93,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <sql id="selectProcessHistoryJoinWithProcessOrder">
+        select h.id, h.process_order_id, h.sys_user_id, h.robot_uuid, h.result, h.remark, h.create_by, h.create_time, h.update_by, h.update_time, p.id, p.service_type 
+        from process_history as h 
+        left join process_order as p on h.id = p.id
+    </sql>
     
 </mapper>

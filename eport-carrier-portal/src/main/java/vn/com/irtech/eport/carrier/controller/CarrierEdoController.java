@@ -92,9 +92,9 @@ public class CarrierEdoController extends CarrierBaseController {
 		List<Edo> listEdo = new ArrayList<>();
 		try {
 			  String fileName = file.getOriginalFilename();
-		      File fileNew = new File(this.getFolderUpload(), fileName);
+		      File fileNew = new File(edoService.getFolderUploadByTime(super.folderUpLoad()), fileName);
 		      file.transferTo(fileNew);
-		      File myObj = new File(this.getFolderUpload()+"/"+fileName);
+		      File myObj = new File(edoService.getFolderUploadByTime(super.folderUpLoad())+File.separator+fileName);
 		      Scanner myReader = new Scanner(myObj);
 		      while (myReader.hasNextLine()) {
 				content += myReader.nextLine();
@@ -103,6 +103,8 @@ public class CarrierEdoController extends CarrierBaseController {
 			  String[] text = content.split("'");
 			  listEdo = edoService.readEdi(text);
 			  EdoHistory edoHistory = new EdoHistory();
+			  edoHistory.setFileName(fileName);
+			  edoHistory.setCreateSource("websiteDaNangPort");
 			  Date timeNow = new Date();
 			  for(Edo edo : listEdo)
             	{
@@ -139,33 +141,16 @@ public class CarrierEdoController extends CarrierBaseController {
 		}
 		return  listEdo;
     }
-    public File getFolderUpload() {
-		LocalDate toDay = LocalDate.now();
-		String year = Integer.toString(toDay.getYear());
-		String month = Integer.toString(toDay.getMonthValue());
-		String day = Integer.toString(toDay.getDayOfMonth());
-        File folderUpload = new File(super.folderUpLoad()  + "/" +  year + "/" +  month + "/" +  day + "/");
-        if (!folderUpload.exists()) {
-          folderUpload.mkdirs();
-        }
-        return folderUpload;
-	}
 
 	@GetMapping("/history/{id}")
 	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
-		map.put("id",id);
+		EdoHistory edoHistory = new EdoHistory();
+		edoHistory.setEdoId(id);
+		List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
+		map.put("edoHistories", edoHistories);
 		return PREFIX + "/history";
 	}
 
-	@GetMapping("/getHistory")
-	@ResponseBody
-	public TableDataInfo getHistory(EdoHistory edoHistory,Long id)
-	{
-		edoHistory.setEdoId(id);
-		//checkCarrier code 
-		List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
-		return getDataTable(edoHistories);
-	}
 
 	@PostMapping("/readEdiOnly")
 	@ResponseBody

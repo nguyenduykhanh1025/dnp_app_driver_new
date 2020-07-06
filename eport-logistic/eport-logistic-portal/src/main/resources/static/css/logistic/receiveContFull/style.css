@@ -51,6 +51,7 @@ span {
 
 .table-content {
   border: 1px solid grey;
+  width: 100%
   /* height: 600px; */
 }
 
@@ -217,4 +218,12 @@ span {
 
 .colHeader > input {
   margin-top: 10px;
+}
+
+.finish-color {
+  color: #3498db;
+}
+
+.ongoing-color {
+  color: rgb(5, 148, 148);
 }
