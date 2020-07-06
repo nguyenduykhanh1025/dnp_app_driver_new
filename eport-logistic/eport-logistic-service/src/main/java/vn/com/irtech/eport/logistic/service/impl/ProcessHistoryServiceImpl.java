@@ -94,4 +94,9 @@ public class ProcessHistoryServiceImpl implements IProcessHistoryService
     {
         return processHistoryMapper.deleteProcessHistoryById(id);
     }
+
+    @Override
+    public List<ProcessHistory> selectRobotHistory(ProcessHistory processHistory) {
+        return processHistoryMapper.selectRobotHistory(processHistory);
+    }
 }

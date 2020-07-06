@@ -58,4 +58,6 @@ public interface ProcessHistoryMapper
      * @return result
      */
     public int deleteProcessHistoryByIds(String[] ids);
+
+    public List<ProcessHistory> selectRobotHistory(ProcessHistory processHistory);
 }
