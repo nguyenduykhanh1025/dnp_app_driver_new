@@ -16,6 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="groupName"    column="group_name"    />
         <result property="containerAmount"    column="container_amount"    />
         <result property="edoFlg"    column="edo_flg"    />
+        <result property="specificContFlg"    column="specific_cont_flg"    />
         <result property="referenceNo"    column="reference_no"    />
         <result property="status"    column="status"    />
         <result property="remark"    column="remark"    />
@@ -32,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentVo">
-        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, container_amount, edo_flg, reference_no, status, remark, create_by, create_time, update_by, update_time from shipment
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, container_amount, edo_flg, specific_cont_flg, reference_no, status, remark, create_by, create_time, update_by, update_time from shipment
     </sql>
 
     <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
@@ -48,6 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
             <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
@@ -73,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupName != null  and groupName != ''">group_name,</if>
             <if test="containerAmount != null ">container_amount,</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg,</if>
+            <if test="specificContFlg != null">specific_cont_flg,</if>
             <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
             <if test="status != null  and status != ''">status,</if>
             <if test="remark != null  and remark != ''">remark,</if>
@@ -92,6 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupName != null  and groupName != ''">#{groupName},</if>
             <if test="containerAmount != null ">#{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">#{edoFlg},</if>
+            <if test="specificContFlg != null">#{specificContFlg},</if>
             <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
             <if test="status != null  and status != ''">#{status},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
@@ -115,6 +119,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="groupName != null  and groupName != ''">group_name = #{groupName},</if>
             <if test="containerAmount != null ">container_amount = #{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg = #{edoFlg},</if>
+            <if test="specificContFlg != null  and specificContFlg != ''">specific_cont_flg = #{specificContFlg},</if>
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo},</if>
             <if test="status != null  and status != ''">status = #{status},</if>
             <if test="remark != null">remark = #{remark},</if>
@@ -138,7 +143,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
     
     <select id="selectShipmentWithGroupById" parameterType="Long" resultMap="ShipmentResult">
-        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no , s.ope_code, s.tax_code, s.group_name, s.container_amount, s.edo_flg, s.reference_no, s.status, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
+        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no , s.ope_code, s.tax_code, s.group_name, s.container_amount, s.edo_flg, s.specific_cont_flg, s.reference_no, s.status, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
         from shipment s left join logistic_group g on s.logistic_group_id = g.id
         where s.id = #{id}
     </select>
