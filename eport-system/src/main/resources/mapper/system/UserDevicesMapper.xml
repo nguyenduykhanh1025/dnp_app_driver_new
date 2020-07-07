@@ -80,4 +80,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="selectDeviceTokenList" parameterType="String" resultMap="UserDevicesResult">
+        select * from user_devices
+        where user_type in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>
