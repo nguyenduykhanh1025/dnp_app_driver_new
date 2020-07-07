@@ -61,7 +61,7 @@ public interface EdoAuditLogMapper
 
     public long getSeqNo(Long id);
 
-    public EdoAuditLog selectEdoAuditLogByEdoId(EdoAuditLog edoAuditLog);
+    public EdoAuditLog selectEdoAuditLogByEdo(EdoAuditLog edoAuditLog);
 
     public int insertEdoAuditLogExpiredDem(EdoAuditLog edoAuditLog);
 

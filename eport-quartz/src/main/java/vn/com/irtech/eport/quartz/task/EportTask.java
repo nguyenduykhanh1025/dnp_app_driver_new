@@ -177,7 +177,7 @@ public class EportTask {
     private boolean addAuditLog(Edo edo) 
     {
         Date timeNow = new Date();
-        int SeqNo = 1;
+        int segNo = 1;
         EdoAuditLog edoAuditLog = new EdoAuditLog();
         edoAuditLog.setCarrierId(edo.getId());
         edoAuditLog.setCarrierCode(edo.getCarrierCode());
@@ -186,23 +186,23 @@ public class EportTask {
         edoAuditLog.setEdoId(edo.getId());
         edoAuditLog.setCreateTime(timeNow);
         
-        
+        EdoAuditLog edoAuditLogCheckSegNo = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
         if(edo.getExpiredDem() != null)
         {
             edoAuditLog.setFieldName("Expired Dem");
-            EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdoId(edoAuditLog);
-            edoAuditLog.setSeqNo(edoAuditLogCheck.getSeqNo() + SeqNo + 1);
+            EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+            edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
             edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
             edoAuditLog.setNewValue(edo.getExpiredDem().toString());
             edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
-            SeqNo +=1;
+            segNo += 1;
         }
         if(edo.getDetFreeTime() != null)
         {
             edoAuditLog.setFieldName("Det Free Time");
-            EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdoId(edoAuditLog);
-            edoAuditLog.setSeqNo(edoAuditLogCheck.getSeqNo() + SeqNo);
+            EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
             edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+            edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
             edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
             edoAuditLogService.insertEdoAuditLogDetFreeTime(edoAuditLog);
             

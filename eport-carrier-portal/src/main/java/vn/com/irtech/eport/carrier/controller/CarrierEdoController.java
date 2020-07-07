@@ -178,28 +178,31 @@ public class CarrierEdoController extends CarrierBaseController {
 	@ResponseBody 
 	public AjaxResult updateEdo(Edo edo)
 	{
+		Date timeNow = new Date();
+		int segNo = 1;
 		edoService.updateEdo(edo);
 		EdoAuditLog edoAuditLog = new EdoAuditLog();
 		edoAuditLog.setCarrierId(super.getUser().getGroupId());
 		edoAuditLog.setCarrierCode(super.getUserGroup().getGroupCode());
+		edoAuditLog.setCreateTime(timeNow);
+		edoAuditLog.setEdoId(edo.getId());
+		EdoAuditLog edoAuditLogCheckSegNo = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
 		if(edo.getExpiredDem() != null)
 		{
 			edoAuditLog.setFieldName("Expired Dem");
-			edoAuditLog.setEdoId(edo.getId());
-			EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdoId(edoAuditLog);
-			edoAuditLog.setEdoId(edo.getId());
-			edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-			edoAuditLog.setSeqNo(edoAuditLogCheck.getSeqNo() + 1);
+			EdoAuditLog edoAuditLogCheckValue = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+			edoAuditLog.setOldValue(edoAuditLogCheckValue.getNewValue());
+			edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
 			edoAuditLog.setNewValue(edo.getExpiredDem().toString());
 			edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+			segNo += 1;
 		}
-		if(edo.getExpiredDem() != null)
+		if(edo.getDetFreeTime() != null)
 		{
 			edoAuditLog.setFieldName("Det Free Time");
-			EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdoId(edoAuditLog);
-			edoAuditLog.setEdoId(edo.getId());
+			EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
 			edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-			edoAuditLog.setSeqNo(edoAuditLogCheck.getSeqNo() + 1);
+			edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
 			edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
 			edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 		}
