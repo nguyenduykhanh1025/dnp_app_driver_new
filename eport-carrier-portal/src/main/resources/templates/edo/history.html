@@ -17,22 +17,22 @@
                     <table id="dg" style="width:auto;">
                         <thead>
                             <tr>
-                                <th data-options="field:'id',align:'center'" width="90">
+                                <th data-options="field:'seqNo',align:'center'" width="90">
                                     SEG
                                 </th>
-                                <th data-options="field:'id',align:'left'" width="200">
+                                <th data-options="field:'createTime',align:'left'" width="200">
                                     CHANGE DATE
                                 </th>
-                                <th data-options="field:'id',align:'center'" width="110">
+                                <th data-options="field:'fieldName',align:'center'" width="110">
                                     DATA FIELD
                                 </th>
-                                <th data-options="field:'id',align:'center'" width="110">
+                                <th data-options="field:'oldValue',align:'center'" width="110">
                                     OLD VALUE
                                 </th>
-                                <th data-options="field:'id',align:'center'" width="110">
+                                <th data-options="field:'newValue',align:'center'" width="110">
                                     NEW VALUE
                                 </th>
-                                <th data-options="field:'id',align:'center'" width="120">
+                                <th data-options="field:'carrierCode',align:'center'" width="120">
                                     SAFF NAME
                                 </th>
                             </tr>
@@ -45,10 +45,8 @@
         <th:block th:include="include :: easyui-js" />
         <th:block th:include="include :: datetimepicker-js" />
         <script type="text/javascript" th:inline="javascript">
-            var id = /*[[${id}]]*/ ;
+            var edoId = /*[[${edoId}]]*/ ;
         </script>
         <script th:src="@{/eport/js/modules/edo/history.js}"></script>
 </body>
-
-
 </html>

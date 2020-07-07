@@ -68,7 +68,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@GetMapping("/shipment/{id}")
     public String edit(@PathVariable("id") Long id, ModelMap mmap) {
-		Shipment shipment = shipmentService.selectShipmentWithGroupById(id);
+		Shipment shipment = shipmentService.selectShipmentById(id);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
 		}
@@ -133,7 +133,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(4);
-		shipment.setBlNo("null");
+		shipment.setStatus("1");
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
 		}
@@ -191,6 +191,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
+			Shipment shipment = new Shipment();
+			shipment.setId(shipmentDetails.get(0).getShipmentId());
+			boolean updateShipment = true;
 			List<String> contReservedList = shipmentDetailService.checkContainerReserved(shipmentDetails.get(0).getProcessStatus());
 			if (contReservedList.size() > 0) {
 				AjaxResult ajaxResult = AjaxResult.error();
@@ -200,14 +203,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus(null);
 				if (shipmentDetail.getId() != null) {
-					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
-						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
-					} else {
-						shipmentDetail.setUpdateBy(user.getFullName());
-						shipmentDetail.setUpdateTime(new Date());
-						if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
-							return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
-						}
+					updateShipment = false;
+					shipmentDetail.setUpdateBy(user.getFullName());
+					shipmentDetail.setUpdateTime(new Date());
+					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 				} else {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
@@ -223,6 +223,12 @@ public class LogisticSendContFullController extends LogisticBaseController {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 				}
+			}
+			if (updateShipment) {
+				shipment.setUpdateTime(new Date());
+				shipment.setUpdateBy(getUser().getFullName());
+				shipment.setStatus("2");
+				shipmentService.updateShipment(shipment);
 			}
 			return success("Lưu khai báo thành công");
 		}
@@ -257,6 +263,12 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (shipmentDetails != null && shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+			if (!"3".equals(shipment.getStatus())) {
+				shipment.setStatus("3");
+				shipment.setUpdateTime(new Date());
+				shipment.setUpdateBy(getUser().getFullName());
+				shipmentService.updateShipment(shipment);
+			}
 			ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
 			if (processOrder != null) {
 				ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);

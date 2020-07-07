@@ -24,9 +24,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 import vn.com.irtech.eport.carrier.domain.EdoHistory;
+import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 
@@ -42,6 +45,10 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@Autowired
 	private IEdoHistoryService edoHistoryService;
+
+	
+	@Autowired
+	private IEdoAuditLogService edoAuditLogService;
 
     @GetMapping("/index")
 	public String EquipmentDo() {
@@ -80,7 +87,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}
-
+ 
 	@GetMapping("/carrierCode")
 	@ResponseBody
     public List<String> carrierCode()
@@ -153,16 +160,54 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@GetMapping("/history/{id}")
 	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
-		map.put("id", id);
+		map.put("edoId", id);
 		return PREFIX + "/history";
 	}
 
 	@GetMapping("/update/{id}")
 	public String getUpdate(@PathVariable("id") Long id,ModelMap map) {
 		map.put("id", id);
+		Edo edo = edoService.selectEdoById(id);
+		map.put("containerNumber", edo.getContainerNumber());
+		map.put("expiredDem", edo.getExpiredDem());
+		map.put("detFreeTime", edo.getDetFreeTime());
 		return PREFIX + "/update";
 	}
 
+	@PostMapping("/updateEdo")
+	@ResponseBody 
+	public AjaxResult updateEdo(Edo edo)
+	{
+		Date timeNow = new Date();
+		int segNo = 1;
+		edoService.updateEdo(edo);
+		EdoAuditLog edoAuditLog = new EdoAuditLog();
+		edoAuditLog.setCarrierId(super.getUser().getGroupId());
+		edoAuditLog.setCarrierCode(super.getUserGroup().getGroupCode());
+		edoAuditLog.setCreateTime(timeNow);
+		edoAuditLog.setEdoId(edo.getId());
+		EdoAuditLog edoAuditLogCheckSegNo = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+		if(edo.getExpiredDem() != null)
+		{
+			edoAuditLog.setFieldName("Expired Dem");
+			EdoAuditLog edoAuditLogCheckValue = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+			edoAuditLog.setOldValue(edoAuditLogCheckValue.getNewValue());
+			edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+			edoAuditLog.setNewValue(edo.getExpiredDem().toString());
+			edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+			segNo += 1;
+		}
+		if(edo.getDetFreeTime() != null)
+		{
+			edoAuditLog.setFieldName("Det Free Time");
+			EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+			edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+			edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+			edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
+			edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+		}
+		return AjaxResult.success("Update thành công");
+	}
 
 	@PostMapping("/readEdiOnly")
 	@ResponseBody
@@ -172,6 +217,15 @@ public class CarrierEdoController extends CarrierBaseController {
 		String[] text = fileContent.split("'");
 		edo = edoService.readEdi(text);
 		return edo;
+	}
+
+	@GetMapping("/auditLog/{edoId}")
+	@ResponseBody
+	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EdoAuditLog edoAuditLog)
+	{
+		edoAuditLog.setEdoId(edoId);
+		List<EdoAuditLog> edoAuditLogsList = edoAuditLogService.selectEdoAuditLogList(edoAuditLog);
+		return getDataTable(edoAuditLogsList);
 	}
 
 	

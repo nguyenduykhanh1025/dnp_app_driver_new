@@ -1,5 +1,7 @@
 package vn.com.irtech.eport.carrier.domain;
 
+import java.util.Date;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import vn.com.irtech.eport.common.annotation.Excel;
@@ -45,6 +47,19 @@ public class EdoAuditLog extends BaseEntity
     /** New Value */
     @Excel(name = "New Value")
     private String newValue;
+
+    @Excel(name = "Thời gian tạo", dateFormat = "yyyy-MM-dd")
+    private Date createTime;
+
+    public void setCreateTime(Date createTime) 
+    {
+        this.createTime = createTime;
+    }
+
+    public Date getCreateTime() 
+    {
+        return createTime;
+    }
 
     public void setId(Long id) 
     {

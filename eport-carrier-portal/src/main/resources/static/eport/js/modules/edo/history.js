@@ -4,9 +4,9 @@ $(function() {
 });
 
 
-function loadTable(containerNumber, billOfLading, fromDate, toDate) {
+function loadTable() {
     $("#dg").datagrid({
-        url: prefix + "/billNo",
+        url: prefix + "/auditLog/" + edoId,
         method: "GET",
         singleSelect: true,
         clientPaging: true,
@@ -23,12 +23,6 @@ function loadTable(containerNumber, billOfLading, fromDate, toDate) {
             $.ajax({
                 type: opts.method,
                 url: opts.url,
-                data: {
-                    containerNumber: containerNumber,
-                    billOfLading: billOfLading,
-                    fromDate: fromDate,
-                    toDate: toDate
-                },
                 dataType: "json",
                 success: function(data) {
                     success(data);

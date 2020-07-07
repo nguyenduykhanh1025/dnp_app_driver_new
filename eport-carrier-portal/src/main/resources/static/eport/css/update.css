@@ -1,21 +1,30 @@
-/* CSS STYLE UPDATE EDI AUTHOR MINHTC */
-.title-table {
-    color: black;
-}
-.box-content {
-    border: 2px solid black;
-}
-.pre-content {
-    width: 90%;
-}
-.title-table {
-    margin-top: 0px;
-    padding-bottom:5px
-}
-.title-content-history {
+.container {
+    padding: 0 0 0 0;
+    width: 100%;
     display: flex;
-    justify-content: center;
+    height: 100%;
+    flex-flow: column;
 }
-#wrapper {
-    background-color: white !important;
+
+.footer {
+    background-color: #f0f4f7;
+    height: 55px;
+    padding: 10px 15px 12px 15px !important;
+    position: absolute; 
+    bottom: 0;
+    width: 100%;
+}
+
+.content {
+    text-align: center;
+    height: calc(100% - 55px);
+    padding: 12px 15px 12px 15px;
+    flex: 1 1 auto;
+}
+
+.customTable {
+    height: calc(100% - 55px);
+    overflow-y: scroll;
+    display: inline-block;
+    width: 100%;
 }

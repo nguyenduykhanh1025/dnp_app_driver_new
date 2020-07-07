@@ -58,4 +58,13 @@ public interface IEdoAuditLogService
      * @return result
      */
     public int deleteEdoAuditLogById(Long id);
+
+    public long getSeqNo(Long id);
+
+    public EdoAuditLog selectEdoAuditLogByEdo(EdoAuditLog edoAuditLog);
+
+    public int insertEdoAuditLogExpiredDem(EdoAuditLog edoAuditLog);
+
+    public int insertEdoAuditLogDetFreeTime(EdoAuditLog edoAuditLog);
+
 }

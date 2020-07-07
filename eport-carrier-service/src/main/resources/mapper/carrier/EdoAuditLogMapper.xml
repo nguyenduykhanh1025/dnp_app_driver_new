@@ -99,5 +99,78 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+    <select id="getSeqNo" parameterType="Long" resultType="java.lang.Long">
+        select seq_no from edo_audit_log
+        where edo_id = #{id} 
+    </select>
+    <select id="selectEdoAuditLogByEdo" parameterType="EdoAuditLog" resultMap="EdoAuditLogResult">
+        <include refid="selectEdoAuditLogVo"/>
+        <where>  
+            <if test="edoId != null "> and edo_id = #{edoId}</if>
+            <if test="fieldName != null  and fieldName != ''"> and field_name like concat('%', #{fieldName}, '%')</if>
+        </where>
+        ORDER BY seq_no DESC LIMIT 1
+    </select>
+
+
+    <insert id="insertEdoAuditLogExpiredDem" parameterType="EdoAuditLog" useGeneratedKeys="true" keyProperty="id">
+        insert into edo_audit_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="carrierId != null ">carrier_id,</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
+            <if test="edoId != null ">edo_id,</if>
+            <if test="seqNo != null ">seq_no,</if>
+            <if test="fieldName != null  and fieldName != ''">field_name,</if>
+            <if test="oldValue != null  and oldValue != ''">old_value,</if>
+            <if test="newValue != null  and newValue != ''">new_value,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="carrierId != null ">#{carrierId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
+            <if test="edoId != null ">#{edoId},</if>
+            <if test="seqNo != null ">#{seqNo},</if>
+            <if test="fieldName != null  and fieldName != ''">#{fieldName},</if>
+            <if test="oldValue != null  and oldValue != ''">#{oldValue},</if>
+            <if test="newValue != null  and newValue != ''">#{newValue},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+     <insert id="insertEdoAuditLogDetFreeTime" parameterType="EdoAuditLog" useGeneratedKeys="true" keyProperty="id">
+        insert into edo_audit_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="carrierId != null ">carrier_id,</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
+            <if test="edoId != null ">edo_id,</if>
+            <if test="seqNo != null ">seq_no,</if>
+            <if test="fieldName != null  and fieldName != ''">field_name,</if>
+            <if test="oldValue != null  and oldValue != ''">old_value,</if>
+            <if test="newValue != null  and newValue != ''">new_value,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="carrierId != null ">#{carrierId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
+            <if test="edoId != null ">#{edoId},</if>
+            <if test="seqNo != null ">#{seqNo},</if>
+            <if test="fieldName != null  and fieldName != ''">#{fieldName},</if>
+            <if test="oldValue != null  and oldValue != ''">#{oldValue},</if>
+            <if test="newValue != null  and newValue != ''">#{newValue},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
     
 </mapper>

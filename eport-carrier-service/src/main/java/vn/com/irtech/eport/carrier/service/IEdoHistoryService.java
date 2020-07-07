@@ -1,6 +1,8 @@
 package vn.com.irtech.eport.carrier.service;
 
 import java.util.List;
+
+
 import vn.com.irtech.eport.carrier.domain.EdoHistory;
 
 /**
@@ -58,4 +60,6 @@ public interface IEdoHistoryService
      * @return result
      */
     public int deleteEdoHistoryById(Long id);
+
+    
 }
