@@ -628,7 +628,7 @@ function getDataFromTable(isValidate) {
     contList = [];
     $.each(cleanedGridData, function (index, object) {
         var shipmentDetail = new Object();
-        if (isValidate && object["delFlag"] == null) {
+        if (isValidate) {
             if((object["containerNo"] == null || object["containerNo"] == "") && shipmentSelected.specificContFlg == 1) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
                 errorFlg = true;
