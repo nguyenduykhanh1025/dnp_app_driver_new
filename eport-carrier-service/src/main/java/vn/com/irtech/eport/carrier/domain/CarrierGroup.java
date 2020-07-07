@@ -11,153 +11,150 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
  * @author irtech
  * @date 2020-04-06
  */
-public class CarrierGroup extends BaseEntity
-{
-    private static final long serialVersionUID = 1L;
+public class CarrierGroup extends BaseEntity {
+	private static final long serialVersionUID = 1L;
 
-    /** ID */
-    private Long id;
+	/** ID */
+	private Long id;
 
-    /** Group Code */
-    @Excel(name = "Group Code")
-    private String groupCode;
+	/** Group Code */
+	@Excel(name = "Group Code")
+	private String groupCode;
 
-    /** Group Name */
-    @Excel(name = "Group Name")
-    private String groupName;
+	/** Group Name */
+	@Excel(name = "Group Name")
+	private String groupName;
 
-    /** Operate Codes */
-    @Excel(name = "Operate Codes")
-    private String operateCode;
+	/** Operate Codes */
+	@Excel(name = "Operate Codes")
+	private String operateCode;
 
-    /** Main Email */
-    @Excel(name = "Main Email")
-    private String mainEmail;
-    
-    /** 0: DO, 1:eDO */
-    @Excel(name = "Type DO")
-    private String doType;
+	/** Main Email */
+	@Excel(name = "Main Email")
+	private String mainEmail;
 
-    /** Do Permission */
-    private String doFlag;
+	/** 0: DO, 1:eDO */
+	@Excel(name = "Type DO")
+	private String doType;
 
-    /** Edo Permission */
+	/** Do Permission */
+	private String doFlag;
 
-    private String edoFlag;
+	/** Edo Permission */
 
-    private String pathEdiBackup;
+	private String edoFlag;
 
-    private String pathEdiReceive;
+	private String pathEdiBackup;
 
-    public void setPathEdiReceive(String pathEdiReceive) 
-    {
-        this.pathEdiReceive = pathEdiReceive;
-    }
+	private String pathEdiReceive;
 
-    public String getPathEdiReceive() 
-    {
-        return pathEdiReceive;
-    }
+	private String apiPrivateKey;
 
-    public void setPathEdiBackup(String pathEdiBackup) 
-    {
-        this.pathEdiBackup = pathEdiBackup;
-    }
+	private String apiPublicKey;
 
-    public String getPathEdiBackup() 
-    {
-        return pathEdiBackup;
-    }
+	public void setPathEdiReceive(String pathEdiReceive) {
+		this.pathEdiReceive = pathEdiReceive;
+	}
 
+	public String getPathEdiReceive() {
+		return pathEdiReceive;
+	}
 
-    public void setId(Long id) 
-    {
-        this.id = id;
-    }
+	public void setPathEdiBackup(String pathEdiBackup) {
+		this.pathEdiBackup = pathEdiBackup;
+	}
 
-    public Long getId() 
-    {
-        return id;
-    }
-    public void setGroupCode(String groupCode) 
-    {
-        this.groupCode = groupCode;
-    }
+	public String getPathEdiBackup() {
+		return pathEdiBackup;
+	}
 
-    public String getGroupCode() 
-    {
-        return groupCode;
-    }
-    public void setGroupName(String groupName) 
-    {
-        this.groupName = groupName;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getGroupName() 
-    {
-        return groupName;
-    }
-    public void setOperateCode(String operateCode) 
-    {
-        this.operateCode = operateCode;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getOperateCode() 
-    {
-        return operateCode;
-    }
-    public void setMainEmail(String mainEmail) 
-    {
-        this.mainEmail = mainEmail;
-    }
+	public void setGroupCode(String groupCode) {
+		this.groupCode = groupCode;
+	}
 
-    public String getMainEmail() 
-    {
-        return mainEmail;
-    }
-    
-    public void setDoType(String doType) 
-    {
-        this.doType = doType;
-    }
+	public String getGroupCode() {
+		return groupCode;
+	}
 
-    public String getDoType() 
-    {
-        return doType;
-    }
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
 
-    public void setDoFlag(String doFlag) {
-        this.doFlag = doFlag;
-    }
+	public String getGroupName() {
+		return groupName;
+	}
 
-    public String getDoFlag() {
-        return doFlag;
-    }
+	public void setOperateCode(String operateCode) {
+		this.operateCode = operateCode;
+	}
 
-    public void setEdoFlag(String edoFlag) {
-        this.edoFlag = edoFlag;
-    }
+	public String getOperateCode() {
+		return operateCode;
+	}
 
-    public String getEdoFlag() {
-        return edoFlag;
-    }
+	public void setMainEmail(String mainEmail) {
+		this.mainEmail = mainEmail;
+	}
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("groupCode", getGroupCode())
-            .append("groupName", getGroupName())
-            .append("operateCode", getOperateCode())
-            .append("mainEmail", getMainEmail())
-            .append("doType", getDoType())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("doFlag", getDoFlag())
-            .append("edoFlag", getEdoFlag())
-            .append("pathEdiFile", getPathEdiBackup())
-            .toString();
-    }
+	public String getMainEmail() {
+		return mainEmail;
+	}
+
+	public void setDoType(String doType) {
+		this.doType = doType;
+	}
+
+	public String getDoType() {
+		return doType;
+	}
+
+	public void setDoFlag(String doFlag) {
+		this.doFlag = doFlag;
+	}
+
+	public String getDoFlag() {
+		return doFlag;
+	}
+
+	public void setEdoFlag(String edoFlag) {
+		this.edoFlag = edoFlag;
+	}
+
+	public String getEdoFlag() {
+		return edoFlag;
+	}
+
+	public String getApiPrivateKey() {
+		return apiPrivateKey;
+	}
+
+	public void setApiPrivateKey(String apiPrivateKey) {
+		this.apiPrivateKey = apiPrivateKey;
+	}
+
+	public String getApiPublicKey() {
+		return apiPublicKey;
+	}
+
+	public void setApiPublicKey(String apiPublicKey) {
+		this.apiPublicKey = apiPublicKey;
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
+				.append("groupCode", getGroupCode()).append("groupName", getGroupName())
+				.append("operateCode", getOperateCode()).append("mainEmail", getMainEmail())
+				.append("doType", getDoType()).append("createBy", getCreateBy()).append("createTime", getCreateTime())
+				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("doFlag", getDoFlag())
+				.append("edoFlag", getEdoFlag()).append("pathEdiFile", getPathEdiBackup()).toString();
+	}
 }
