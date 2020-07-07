@@ -1,29 +1,30 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
-    <style type="text/css">
-      .datagrid-header-row > td {
-        color: #1c84c6;
-        font-weight: bold;
-      }
-    </style>
+    <link rel="stylesheet" th:href="@{/eport/css/eport.css}"/>
   </head>
-
-  <body class="white-bg">
+  <body class="gray-bg container-fluid">
     <div id="wrapper">
       <div class="row">
-        <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom: 5px;">
-          <div class="col-sm-12 fixed-table-toolbar" style="height: 44px;">
-            <div class="bs-bars pull-left" style="margin-bottom: 5px; margin-top: 0px;"></div>
-            <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px; margin-top: 0px;">
+        <div class="col-sm-12 select-table mt0 pr5">
+          <div class="col-sm-12 fixed-table-toolbar">
+            <div class="bs-bars pull-left mb5 mt0"></div>
+            <div class="columns columns-right btn-group pull-right mb0 mt0">
               <div class="select-list">
                 <ul>
                   <li>
                     <div class="form-group">
                       <select class="form-control" id="carrierCode">
-                        <option value="">Tất cả</option>
+                        <option value="" selected disabled>Chọn Hãng tàu</option>
+                      </select>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="form-group">
+                      <select class="form-control" id="carrierCode">
+                        <option value="" selected disabled>Chọn Carrier Code</option>
                       </select>
                     </div>
                   </li>
@@ -36,16 +37,16 @@
                   <li>
                     <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
                   </li>
-                  <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchBtn"><i class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
+                  <a class="btn btn-primary btn-sm" onclick="searchDo()" id="searchBtn"><i class="glyphicon glyphicon-search"></i></a>
                 </ul>
               </div>
             </div>
           </div>
-          <div class="col-sm-3 table-container">
-            <table id="dg" style="width: auto;">
+          <div class="col-sm-3 table-container table-left">
+            <table id="dg">
               <thead>
                 <tr>
-                  <th data-options="field:'billOfLading',align:'left'" width="150">
+                  <th data-options="field:'billOfLading',align:'left'">
                     BILL OF LADING
                   </th>
                   <th data-options="field:'businessUnit',align:'center'" width="90">
@@ -60,7 +61,7 @@
             </table>
           </div>
           <div class="col-sm-9 table-container">
-            <table id="dgContainer" style="height: 450px;">
+            <table id="dgContainer">
               <thead>
                 <tr>
                   <th data-options="field:'containerNumber',align:'left'" width="120">
@@ -105,7 +106,6 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <script th:src="@{/eport/js/modules/edo/edo.js}"></script>
   </body>
+  <script th:src="@{/eport/js/modules/edo/manage/manage.js}"></script>
 </html>

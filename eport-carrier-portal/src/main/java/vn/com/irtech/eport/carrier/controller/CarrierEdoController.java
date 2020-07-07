@@ -87,7 +87,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}
-
+ 
 	@GetMapping("/carrierCode")
 	@ResponseBody
     public List<String> carrierCode()
