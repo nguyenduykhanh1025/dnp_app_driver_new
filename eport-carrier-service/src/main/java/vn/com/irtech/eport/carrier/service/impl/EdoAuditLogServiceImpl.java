@@ -102,9 +102,9 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
     }
 
     @Override
-    public EdoAuditLog selectEdoAuditLogByEdoId(EdoAuditLog edoAuditLog)
+    public EdoAuditLog selectEdoAuditLogByEdo(EdoAuditLog edoAuditLog)
     {
-        return edoAuditLogMapper.selectEdoAuditLogByEdoId(edoAuditLog);
+        return edoAuditLogMapper.selectEdoAuditLogByEdo(edoAuditLog);
     }
 
     @Override

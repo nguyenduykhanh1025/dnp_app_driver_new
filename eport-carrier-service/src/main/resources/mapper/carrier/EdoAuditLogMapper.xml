@@ -103,10 +103,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select seq_no from edo_audit_log
         where edo_id = #{id} 
     </select>
-    <select id="selectEdoAuditLogByEdoId" parameterType="EdoAuditLog" resultMap="EdoAuditLogResult">
+    <select id="selectEdoAuditLogByEdo" parameterType="EdoAuditLog" resultMap="EdoAuditLogResult">
         <include refid="selectEdoAuditLogVo"/>
-        where edo_id = #{edoId} and field_name = #{fieldName} ORDER BY seq_no DESC LIMIT 1
+        <where>  
+            <if test="edoId != null "> and edo_id = #{edoId}</if>
+            <if test="fieldName != null  and fieldName != ''"> and field_name like concat('%', #{fieldName}, '%')</if>
+        </where>
+        ORDER BY seq_no DESC LIMIT 1
     </select>
+
 
     <insert id="insertEdoAuditLogExpiredDem" parameterType="EdoAuditLog" useGeneratedKeys="true" keyProperty="id">
         insert into edo_audit_log

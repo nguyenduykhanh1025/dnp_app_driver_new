@@ -23,8 +23,6 @@ function closeForm()
 
 function confirm()
 {
-    let checkDate = validateDateSearch(formatDate(expiredDem),formatDate($("#expiredDem").val()));
-    console.log("checkDate",checkDate);
     $.modal.confirm(
         "Bạn có chắc chắn muốn cập nhật DO không?",
         function () {
@@ -35,8 +33,7 @@ function confirm()
             data : {
                 id : id,
                 expiredDem : formatDateForSubmit($("#expiredDem").val()),
-                detFreeTime : $("#detFreeTime").val()
-                // $("#toDate").val() == null ? "" : $("#toDate").val()
+                detFreeTime : $("#detFreeTime").val() == detFreeTime ? "" :  $("#detFreeTime").val()
             },
             success: function (data) {
               console.log(data);
@@ -45,7 +42,6 @@ function confirm()
                   title: "Thông báo",
                   btn: ["Đồng Ý"],
                 })
-                $.modal.reload();
               } else {
                 $.modal.alertError(data.msg)
               }
@@ -62,6 +58,12 @@ function confirm()
 }
 
 function formatDateForSubmit(value) {
+    let checkDate = validateUpdateDate(formatDate(expiredDem),$("#expiredDem").val());
+    if(checkDate == 1)
+    {
+      console.log("OK");
+      return;
+    }
     if (value == null) {
       return;
     }
@@ -74,22 +76,13 @@ function formatDateForSubmit(value) {
   }
 
 
-  function validateDateSearch(fromDate, toDate) {
-
-    if (fromDate == "" || toDate == "") {
-      return 1;
-    }
-    var formatDate1 = new Date(fromDate);
-    var toDate1 = new Date(toDate);
-    var offset = toDate1.getTime() - formatDate1.getTime();
-    var totalDays = Math.round(offset / 1000 / 60 / 60 / 24);
-    console.log(fromDate,toDate)
-    if (totalDays < 0) {
-      return -1;
-    } else if (totalDays <= 40) {
+  function validateUpdateDate(fromDate, toDate) {
+    console.log(fromDate + "/" + toDate)
+    if (fromDate == toDate) {
       return 1;
     }
     return 0;
 
   }
+
 
