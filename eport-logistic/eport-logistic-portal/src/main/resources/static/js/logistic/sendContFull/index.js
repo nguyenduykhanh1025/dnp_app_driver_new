@@ -497,20 +497,24 @@ function checkAll() {
             $('#check'+i).prop('checked', false);
         }
     }
+    let tempCheck = allChecked;
     updateLayout();
     hot.render();
+    allChecked = tempCheck;
     $('.checker').prop('checked', allChecked);
 }
 function check(id) {
-    if (checkList[id] == 0) {
-        $('#check'+id).prop('checked', true);
-        checkList[id] = 1;
-    } else {
-        $('#check'+id).prop('checked', false);
-        checkList[id] = 0;
+    if (sourceData[id].id != null) {
+        if (checkList[id] == 0) {
+            $('#check'+id).prop('checked', true);
+            checkList[id] = 1;
+        } else {
+            $('#check'+id).prop('checked', false);
+            checkList[id] = 0;
+        }
+        hot.render();
+        updateLayout();
     }
-    hot.render();
-    updateLayout();
 }
 function updateLayout() {
     let disposable = true, status = 1, diff = false, check = false, verify = false;
