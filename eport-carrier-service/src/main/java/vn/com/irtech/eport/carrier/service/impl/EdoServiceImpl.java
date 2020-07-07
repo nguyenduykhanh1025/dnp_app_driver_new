@@ -264,6 +264,11 @@ public class EdoServiceImpl implements IEdoService
         return folderUpload;
 	}
 
+	@Override
+	public Edo selectEdoByOrderNumber(String orderNumber) {
+		return edoMapper.selectEdoByOrderNumber(orderNumber);
+	}
+
     
 
 }

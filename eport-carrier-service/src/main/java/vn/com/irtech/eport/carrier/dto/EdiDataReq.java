@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.carrier.dto;
 
 import java.io.Serializable;
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class EdiDataReq implements Serializable {
 
@@ -16,9 +19,10 @@ public class EdiDataReq implements Serializable {
 
 	private String releaseNo;
 
-	private String detFreeDays;
+	private Integer detFreeDays;
 
-	private String expiryTs;
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
+	private Date expiryTs;
 
 	private String terOfMtReturn;
 
@@ -70,19 +74,19 @@ public class EdiDataReq implements Serializable {
 		this.releaseNo = releaseNo;
 	}
 
-	public String getDetFreeDays() {
+	public Integer getDetFreeDays() {
 		return detFreeDays;
 	}
 
-	public void setDetFreeDays(String detFreeDays) {
+	public void setDetFreeDays(Integer detFreeDays) {
 		this.detFreeDays = detFreeDays;
 	}
 
-	public String getExpiryTs() {
+	public Date getExpiryTs() {
 		return expiryTs;
 	}
 
-	public void setExpiryTs(String expiryTs) {
+	public void setExpiryTs(Date expiryTs) {
 		this.expiryTs = expiryTs;
 	}
 
