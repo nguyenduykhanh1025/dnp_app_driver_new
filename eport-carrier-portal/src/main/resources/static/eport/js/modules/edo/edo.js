@@ -79,7 +79,7 @@ function viewHistoryCont(id) {
 }
 
 function viewUpdateCont(id) {
-    $.modal.open("Update Container", prefix + "/update/" + id, 800, 500);
+    $.modal.openOption('Update Container', prefix + '/update/' + id, 800, 500);
 }
 
 

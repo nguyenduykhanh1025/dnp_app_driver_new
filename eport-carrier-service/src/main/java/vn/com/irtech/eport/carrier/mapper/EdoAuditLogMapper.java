@@ -58,4 +58,12 @@ public interface EdoAuditLogMapper
      * @return result
      */
     public int deleteEdoAuditLogByIds(String[] ids);
+
+    public long getSeqNo(Long id);
+
+    public EdoAuditLog selectEdoAuditLogByEdoId(EdoAuditLog edoAuditLog);
+
+    public int insertEdoAuditLogExpiredDem(EdoAuditLog edoAuditLog);
+
+    public int insertEdoAuditLogDetFreeTime(EdoAuditLog edoAuditLog);
 }

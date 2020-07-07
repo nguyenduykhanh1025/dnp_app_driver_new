@@ -94,4 +94,30 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
     {
         return edoAuditLogMapper.deleteEdoAuditLogById(id);
     }
+
+    @Override
+    public long getSeqNo(Long id)
+    {
+        return edoAuditLogMapper.getSeqNo(id);
+    }
+
+    @Override
+    public EdoAuditLog selectEdoAuditLogByEdoId(EdoAuditLog edoAuditLog)
+    {
+        return edoAuditLogMapper.selectEdoAuditLogByEdoId(edoAuditLog);
+    }
+
+    @Override
+    public int insertEdoAuditLogExpiredDem(EdoAuditLog edoAuditLog)
+    {
+        return edoAuditLogMapper.insertEdoAuditLogExpiredDem(edoAuditLog);
+    }
+
+    @Override
+    public int insertEdoAuditLogDetFreeTime(EdoAuditLog edoAuditLog)
+    {
+        return edoAuditLogMapper.insertEdoAuditLogDetFreeTime(edoAuditLog);
+    }
+
+
 }
