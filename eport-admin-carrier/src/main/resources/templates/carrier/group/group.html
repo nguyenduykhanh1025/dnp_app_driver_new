@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
 <head>
     <th:block th:include="include :: header('List Carrier Group')" />
 </head>
+
 <body class="gray-bg">
-     <div class="container-div">
+    <div class="container-div">
         <div class="row">
             <div class="btn-group-sm" id="toolbar" role="group">
                 <form id="formId">
@@ -12,18 +14,19 @@
                         <ul>
                             <li style="margin-top: 0;">
                                 <!-- <label>Group Code：</label> -->
-                                <input type="text" name="groupCode" id="groupCode" placeholder="Mã hãng tàu"/>
+                                <input type="text" name="groupCode" id="groupCode" placeholder="Mã hãng tàu" />
                             </li>
                             <li style="margin-top: 0;">
                                 <!-- <label>Group Name：</label> -->
-                                <input type="text" name="groupName" id="groupName" placeholder="Tên hãng tàu"/>
+                                <input type="text" name="groupName" id="groupName" placeholder="Tên hãng tàu" />
                             </li>
                             <li style="margin-top: 0;">
                                 <!-- <label>Operate Codes：</label> -->
-                                <input type="text" name="operateCode" id="operateCode" placeholder="Mã vận hành"/>
+                                <input type="text" name="operateCode" id="operateCode" placeholder="Mã vận hành" />
                             </li>
                             <li style="margin-top: 0;">
-                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()" id="searchBtn"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</a>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"
+                                    id="searchBtn"><i class="fa fa-search"></i>&nbsp;Tìm kiếm</a>
                                 <!-- <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a> -->
                             </li>
                         </ul>
@@ -32,10 +35,12 @@
                 <a class="btn btn-success" onclick="$.operate.addGroup()" shiro:hasPermission="carrier:account:add">
                     <i class="fa fa-plus"></i> Thêm
                 </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.editGroup()" shiro:hasPermission="carrier:account:edit">
+                <a class="btn btn-primary single disabled" onclick="$.operate.editGroup()"
+                    shiro:hasPermission="carrier:account:edit">
                     <i class="fa fa-edit"></i> Sửa
                 </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="carrier:account:remove">
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
+                    shiro:hasPermission="carrier:account:remove">
                     <i class="fa fa-remove"></i> Xóa
                 </a>
                 <!-- <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="carrier:account:export">
@@ -49,11 +54,21 @@
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('carrier:account:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('carrier:account:remove')}]];
+        var editFlag = [[${@permission.hasPermi('carrier:account:edit') }]];
+        var removeFlag = [[${@permission.hasPermi('carrier:account:remove') }]];
         var prefix = ctx + "carrier/group";
 
-        $(function() {
+        function copyPublicKey(key) {
+            const el = document.createElement('textarea');
+            el.value = key;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            $.modal.msgSuccess('Đã copy');
+        }
+
+        $(function () {
             var options = {
                 url: prefix + "/list",
                 createUrl: prefix + "/add",
@@ -65,33 +80,34 @@
                     checkbox: true
                 },
                 {
-                    field: 'id', 
+                    field: 'id',
                     title: 'ID',
                     visible: false
                 },
                 {
-                    field: 'groupCode', 
+                    field: 'groupCode',
                     title: 'Mã hãng tàu',//'Group Code'
                 },
                 {
-                    field: 'groupName', 
+                    field: 'groupName',
                     title: 'Tên hãng tàu',//'Group Name'
                 },
                 {
-                    field: 'operateCode', 
+                    field: 'operateCode',
                     title: 'Mã vận hành'
                 },
                 {
-                    field: 'mainEmail', 
+                    field: 'mainEmail',
                     title: 'Email'//'Main Email'
                 },
                 {
                     title: 'Hành động',//'Action',
                     align: 'center',
-                    formatter: function(value, row, index) {
+                    formatter: function (value, row, index) {
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editGroup(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
-                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a> ');
+                        actions.push('<a class="btn btn-warning btn-xs" href="javascript:void(0)" onclick="copyPublicKey(\'' + row.apiPublicKey + '\')"><i class="fa fa-copy"></i>Copy public key</a>');
                         return actions.join('');
                     }
                 }]
@@ -99,21 +115,21 @@
             $.table.init(options);
         });
 
-        document.getElementById("groupCode").addEventListener("keyup", function(event) {
+        document.getElementById("groupCode").addEventListener("keyup", function (event) {
             event.preventDefault();
             if (event.keyCode === 13) {
                 $("#searchBtn").click();
             }
         });
 
-        document.getElementById("groupName").addEventListener("keyup", function(event) {
+        document.getElementById("groupName").addEventListener("keyup", function (event) {
             event.preventDefault();
             if (event.keyCode === 13) {
                 $("#searchBtn").click();
             }
         });
 
-        document.getElementById("operateCode").addEventListener("keyup", function(event) {
+        document.getElementById("operateCode").addEventListener("keyup", function (event) {
             event.preventDefault();
             if (event.keyCode === 13) {
                 $("#searchBtn").click();
@@ -121,4 +137,5 @@
         });
     </script>
 </body>
+
 </html>
