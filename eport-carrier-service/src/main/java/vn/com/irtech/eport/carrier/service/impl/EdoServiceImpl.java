@@ -128,7 +128,6 @@ public class EdoServiceImpl implements IEdoService
 		List<Edo> listEdi = new ArrayList<>();
 		System.out.print(text.toString());
 		String business = "";
-		int num = 1;
 		for(String s : text)
 		{
 			
@@ -142,12 +141,6 @@ public class EdoServiceImpl implements IEdoService
 					business = businessUnit[2];
 				}
 				continue;
-			}
-			if(s.contains("UNH+"+num))
-			{
-				edi = new Edo();
-				edi.setBusinessUnit(business);
-				edi.setCarrierCode(business);
 			}
 			//Bill Of Lading
 			if(s.contains("RFF+BM"))
@@ -171,7 +164,9 @@ public class EdoServiceImpl implements IEdoService
 					obj.put("contNo",contNo[2]);
                 	edi.setContainerNumber(contNo[2]);
 				}
-				
+				edi = new Edo();
+				edi.setBusinessUnit(business);
+				edi.setCarrierCode(business);
 				
 			}
 			//orderNo
@@ -230,12 +225,6 @@ public class EdoServiceImpl implements IEdoService
 					edi.setDetFreeTime(i);
 					obj.put("haulage", haulage[4]);
 				} 
-			}
-
-			if(s.contains("UNT+20+"+num))
-			{
-				listEdi.add(edi);
-				num++;
 			}
 			
 		}
