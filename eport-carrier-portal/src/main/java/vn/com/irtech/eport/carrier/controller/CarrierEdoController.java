@@ -17,6 +17,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +31,7 @@ import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 
@@ -74,16 +76,16 @@ public class CarrierEdoController extends CarrierBaseController {
 	}
 
 	//List
-	@GetMapping("/edo")
+	@PostMapping("/edo")
 	@ResponseBody
-	public TableDataInfo edo(Edo edo, String fromDate, String toDate)
+	public TableDataInfo edo(@RequestBody PageAble<Edo> param)
 	{
-		startPage();
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		Edo edo = param.getData();
+		if (edo == null) {
+			edo = new Edo();
+		}
 		edo.setCarrierId(ShiroUtils.getGroupId());
-		Map<String, Object> searchDate = new HashMap<>();
-		searchDate.put("fromDate", fromDate);
-		searchDate.put("toDate", toDate);
-		edo.setParams(searchDate);
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}
