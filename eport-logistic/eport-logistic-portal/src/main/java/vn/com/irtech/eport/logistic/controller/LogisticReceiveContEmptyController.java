@@ -121,6 +121,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(3);
 		shipment.setStatus("1");
+		shipment.setContSupplyStatus(0);
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
 		}
