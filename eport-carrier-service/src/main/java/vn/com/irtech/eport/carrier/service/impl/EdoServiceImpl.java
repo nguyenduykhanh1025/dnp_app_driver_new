@@ -143,7 +143,7 @@ public class EdoServiceImpl implements IEdoService
 				}
 				continue;
 			}
-			if(s.contains("UNH+"+num))
+			if(s.contains("UNH"))
 			{
 				edi = new Edo();
 				edi.setBusinessUnit(business);
@@ -211,7 +211,7 @@ public class EdoServiceImpl implements IEdoService
 			if(s.contains("LOC+99"))
 			{
 				String[] emptyContDepotA = s.split("\\+");
-				if(emptyContDepotA.length > 4){
+				if(emptyContDepotA.length >= 4){
 					String[] emptyContDepot = emptyContDepotA[3].split(":");
 					obj.put("emptyContDepot", emptyContDepot[0]);
 					edi.setEmptyContainerDepot(emptyContDepot[0]);
@@ -230,7 +230,7 @@ public class EdoServiceImpl implements IEdoService
 					obj.put("haulage", haulage[4]);
 				} 
 			}
-			if(s.contains("UNT+20+"+num))
+			if(s.contains("UNT"))
 			{
 				listEdi.add(edi);
 				num++;
