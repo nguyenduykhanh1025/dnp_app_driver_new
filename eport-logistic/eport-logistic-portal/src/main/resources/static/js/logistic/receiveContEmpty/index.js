@@ -1,6 +1,6 @@
 var prefix = ctx + "logistic/receive-cont-empty";
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0;
+var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0, currentVslNm;
 var contList = [], orders = [], processOrderIds;
 var conts = '';
 var allChecked = false;
@@ -219,7 +219,6 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
-    console.log(shipmentSelected.specificContFlg);
     if (shipmentSelected.specificContFlg == 0) {
         cellProperties.readOnly = 'true';
         $(td).css("background-color", "rgb(232, 232, 232)");
@@ -438,20 +437,24 @@ function checkAll() {
             $('#check'+i).prop('checked', false);
         }
     }
+    let tempCheck = allChecked;
     updateLayout();
     hot.render();
-    $('.checker').prop('checked', allChecked);
+    allChecked = tempCheck;
+    $('.checker').prop('checked', tempCheck);
 }
 function check(id) {
-    if (checkList[id] == 0) {
-        $('#check'+id).prop('checked', true);
-        checkList[id] = 1;
-    } else {
-        $('#check'+id).prop('checked', false);
-        checkList[id] = 0;
+    if (sourceData[id].id != null) {
+        if (checkList[id] == 0) {
+            $('#check'+id).prop('checked', true);
+            checkList[id] = 1;
+        } else {
+            $('#check'+id).prop('checked', false);
+            checkList[id] = 0;
+        }
+        hot.render();
+        updateLayout();
     }
-    hot.render();
-    updateLayout();
 }
 function updateLayout() {
     let disposable = true, status = 1, diff = false, check = false, verify = false;
@@ -460,6 +463,10 @@ function updateLayout() {
         let cellStatus = hot.getDataAtCell(i, 1);
         if (cellStatus != null) {
             if (checkList[i] == 1) {
+                if (sourceData[i].containerNo == null || sourceData[i].containerNo == '') {
+                    diff = true;
+                    break;
+                }
                 if(cellStatus == 1 && 'Y' == sourceData[i].userVerifyStatus) {
                     verify = true;
                 }
@@ -900,7 +907,4 @@ function onMessageReceived(payload) {
 
 function onError(error) {
     console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
-}
-
-
-
+}      
