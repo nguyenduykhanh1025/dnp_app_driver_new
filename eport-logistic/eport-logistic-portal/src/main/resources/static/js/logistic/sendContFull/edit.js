@@ -28,9 +28,15 @@ if (shipment != null) {
     $("#bookingNo").val(shipment.bookingNo);
     $("#taxCode").val(shipment.taxCode);
     $("#containerAmount").val(shipment.containerAmount);
-    $("#groupName").val(shipment.logisticGroup.groupName);
+    $("#groupName").val(shipment.groupName);
     $("#remark").val(shipment.remark);
-    loadGroupName();
+    if (shipment.status > 1) {
+        $("#bookingNo").prop('disabled', true);
+    }
+    if (shipment.status > 2) {
+        $("#taxCode").prop('disabled', true);
+        $("#containerAmount").prop('disabled', true);
+    }
 }
 
 $("#form-edit-shipment").validate({

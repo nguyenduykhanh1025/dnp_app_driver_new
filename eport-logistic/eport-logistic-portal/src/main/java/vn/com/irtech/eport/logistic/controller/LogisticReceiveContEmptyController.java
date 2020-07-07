@@ -176,14 +176,10 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				if (shipmentDetail.getId() != null) {
 					updateShipment = false;
-					if (shipmentDetail.getVslNm() == null || shipmentDetail.getVslNm().equals("")) {
-						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
-					} else {
-						shipmentDetail.setUpdateBy(user.getFullName());
-						shipmentDetail.setUpdateTime(new Date());
-						if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
-							return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
-						}
+					shipmentDetail.setUpdateBy(user.getFullName());
+					shipmentDetail.setUpdateTime(new Date());
+					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 				} else {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
