@@ -130,7 +130,8 @@ public class LogisticAssignTruckController extends LogisticBaseController{
     {
 		DriverAccount driverAccount = new DriverAccount();
     	driverAccount.setLogisticGroupId(getUser().getGroupId());
-        driverAccount.setDelFlag(false);
+		driverAccount.setDelFlag(false);
+		driverAccount.setStatus("0");//khóa
 		List<DriverAccount> driverList = driverAccountService.selectDriverAccountList(driverAccount);
 		if(pickedIds != null){
 			for(Long i :pickedIds) {
@@ -150,22 +151,25 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		List<DriverAccount> driverList = new ArrayList<DriverAccount>();
 		DriverAccount driverAccount = new DriverAccount();
         driverAccount.setLogisticGroupId(getUser().getGroupId());
-        driverAccount.setDelFlag(false);
+		driverAccount.setDelFlag(false);
+		driverAccount.setStatus("0");
         PickupAssign pickupAssign = new PickupAssign();
         pickupAssign.setShipmentId(shipmentId);
         List<PickupAssign> assignList = pickupAssignService.selectPickupAssignList(pickupAssign);
         if(assignList.size() != 0) {
         	for(PickupAssign i : assignList) {
-        		//TH: default assign ca doi xe
-        		if(i.getDriverId() == null) {
-        			return driverAccountService.selectDriverAccountList(driverAccount);
-        		}
 				//TH: custom theo batch
 				if(i.getShipmentDetailId() == null){
 					driverList.add(driverAccountService.selectDriverAccountById(i.getDriverId()));
 				}
-        	}
-        }
+			}
+			//TH:default assign ca doi xe ma co cont chi dinh
+			if(driverList.size() == 0 ){
+				return driverAccountService.selectDriverAccountList(driverAccount);
+			}
+        } else {//TH:default assign ca doi xe , ko co cont chi dinh
+			return driverAccountService.selectDriverAccountList(driverAccount);
+		}
         return driverList;
 	}
 	
@@ -185,7 +189,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			List<PickupAssign> assignlist = pickupAssignService.selectPickupAssignList(assignBatch);
 			if(assignlist.size() != 0 ){
 				for(PickupAssign i : assignlist){
-					if(i.getDriverId() == null || i.getShipmentDetailId() == null){
+					if(i.getShipmentDetailId() == null){
 						pickupAssignService.deletePickupAssignById(i.getId());
 					}
 				}
@@ -223,23 +227,27 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			return driverList;
 		}
         // PickupAssign pickupAssign = new PickupAssign();
-        // pickupAssign.setShipmentId(shipmentId);
+		// pickupAssign.setShipmentId(shipmentId);
+		DriverAccount driverAccount = new DriverAccount();
+		driverAccount.setLogisticGroupId(getUser().getGroupId());
+		driverAccount.setDelFlag(false);
+		driverAccount.setStatus("0");
         List<PickupAssign> assignList = pickupAssignService.selectPickupAssignList(pickupAssign);
         if(assignList.size() != 0) {
         	for(PickupAssign i : assignList) {
-        		//TH: default assign ca doi xe
-        		if(i.getDriverId() == null) {
-					DriverAccount driverAccount = new DriverAccount();
-					driverAccount.setLogisticGroupId(getUser().getGroupId());
-					driverAccount.setDelFlag(false);
-        			return driverAccountService.selectDriverAccountList(driverAccount);
-        		}
 				//TH: assign theo container
 				if(i.getShipmentDetailId() != null){
 					driverList.add(driverAccountService.selectDriverAccountById(i.getDriverId()));
 				}
-        	}
-        }
+			}
+			if(driverList.size() == 0){
+				//TH: default assign ca doi xe, chi dinh ko phai tat ca cac cont trong lo
+					return driverAccountService.selectDriverAccountList(driverAccount);
+			}
+        } else {
+			//TH: default assign ca doi xe, chi dinh tat ca cac cont trong lo
+			return driverAccountService.selectDriverAccountList(driverAccount);
+		}
         return driverList;
 	}
 	@GetMapping("/listDriverAccountPreorderPickup")
@@ -248,7 +256,8 @@ public class LogisticAssignTruckController extends LogisticBaseController{
     {
 		DriverAccount driverAccount = new DriverAccount();
     	driverAccount.setLogisticGroupId(getUser().getGroupId());
-        driverAccount.setDelFlag(false);
+		driverAccount.setDelFlag(false);
+		driverAccount.setStatus("0");
 		List<DriverAccount> driverList = driverAccountService.selectDriverAccountList(driverAccount);
 		if(pickedIds != null){
 			for(Long i :pickedIds) {
@@ -291,7 +300,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 				assign.setLogisticGroupId(shipment.getLogisticGroupId());
 				assign.setShipmentId(pickupAssign.getShipmentId());
 				assign.setShipmentDetailId(pickupAssign.getShipmentDetailId());
-				assign.setExternalFlg(0L);
+				assign.setExternalFlg(0L);//TODO
 				pickupAssignService.insertPickupAssign(assign);
 			}
 		}
