@@ -140,7 +140,7 @@ function loadView() {
                 editor: false
             },
             {
-                data: 'emptyContDepot',
+                data: 'emptyContainerDepot',
                 type: 'text',
                 editor: false
             },

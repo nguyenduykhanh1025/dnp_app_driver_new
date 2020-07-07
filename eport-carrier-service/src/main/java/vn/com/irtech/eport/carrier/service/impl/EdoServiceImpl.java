@@ -155,7 +155,7 @@ public class EdoServiceImpl implements IEdoService
 			{
 				if(!s.isEmpty())
 				{
-					s = s.substring(9,s.length());
+					s = s.substring(7,s.length());
 					obj.put("buildNo", s);
 					edi.setBillOfLading(s);
 				}
@@ -178,7 +178,7 @@ public class EdoServiceImpl implements IEdoService
 			{
 				if(!s.isEmpty())
 				{
-					s = s.substring(10,s.length());
+					s = s.substring(8,s.length());
 					obj.put("orderNo", s);
 					edi.setOrderNumber(s);
 				}
