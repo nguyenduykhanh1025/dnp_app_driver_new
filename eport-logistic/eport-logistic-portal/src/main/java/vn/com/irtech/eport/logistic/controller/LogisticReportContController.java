@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
@@ -30,8 +31,12 @@ public class LogisticReportContController extends LogisticBaseController {
 	
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo listShipment(@RequestBody PickupHistory pickupHistory) {
-		startPage();
+	public TableDataInfo listShipment(@RequestBody PageAble<PickupHistory> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		PickupHistory pickupHistory = param.getData();
+		if (pickupHistory == null) {
+			pickupHistory = new PickupHistory();
+		}
 		pickupHistory.setLogisticGroupId(getUser().getGroupId());
 		pickupHistory.setStatus(2);
 		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryListForReport(pickupHistory);
