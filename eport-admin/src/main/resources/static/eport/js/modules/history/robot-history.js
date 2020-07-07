@@ -94,8 +94,14 @@ function loadTable() {
         url: opts.url,
         contentType: "application/json",
         accept: 'text/plain',
-        data: JSON.stringify(processHistory),
         dataType: 'text',
+        data: JSON.stringify({
+          pageNum: param.page,
+          pageSize: param.rows,
+          orderByColumn: param.sort,
+          isAsc: param.order,
+          data: processHistory
+        }),
         success: function (data) {
           success(JSON.parse(data));
         },

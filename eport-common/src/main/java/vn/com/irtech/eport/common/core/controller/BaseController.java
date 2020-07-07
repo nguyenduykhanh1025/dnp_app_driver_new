@@ -63,6 +63,13 @@ public class BaseController
         }
     }
 
+    protected void startPage(int pageNum,int pageSize,String orderBy)
+    {
+        if (StringUtils.isNotNull(pageNum) && StringUtils.isNotNull(pageSize)) {
+            PageHelper.startPage(pageNum, pageSize, orderBy);
+        }
+    }
+
     /**
      * 设置请求排序数据
      */

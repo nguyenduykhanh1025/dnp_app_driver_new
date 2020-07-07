@@ -86,7 +86,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@GetMapping("/shipment/{id}")
 	public String edit(@PathVariable("id") Long id, ModelMap mmap) {
-		Shipment shipment = shipmentService.selectShipmentWithGroupById(id);
+		Shipment shipment = shipmentService.selectShipmentById(id);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
 		}
@@ -188,6 +188,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(1);
+		shipment.setStatus("1");
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
 		}
@@ -246,25 +247,29 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (shipmentDetails != null && shipmentDetails.size() > 0){
 			LogisticAccount user = getUser();
 			ShipmentDetail shipmentDt = shipmentDetails.get(0);
-			Shipment shipment = new Shipment();
+			Shipment shipmentSendCont = new Shipment();
 			boolean isCreated = true;
+			Shipment shipment = new Shipment();
+			shipment.setId(shipmentDetails.get(0).getShipmentId());
+			boolean updateShipment = true;
 			if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && shipmentDt.getVgmChk()) {
-				shipment.setBlNo(shipmentDt.getBlNo());
-				shipment.setServiceType(2);
-				List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+				shipmentSendCont.setBlNo(shipmentDt.getBlNo());
+				shipmentSendCont.setServiceType(2);
+				List<Shipment> shipments = shipmentService.selectShipmentList(shipmentSendCont);
 				if (shipments == null || shipments.size() == 0) {
-					shipment.setContainerAmount(Long.valueOf(shipmentDt.getTier()));
-					shipment.setTaxCode(shipmentDt.getProcessStatus());
-					shipment.setLogisticAccountId(user.getId());
-					shipment.setLogisticGroupId(user.getGroupId());
-					shipment.setCreateTime(new Date());
-					shipmentService.insertShipment(shipment);
+					shipmentSendCont.setContainerAmount(Long.valueOf(shipmentDt.getTier()));
+					shipmentSendCont.setTaxCode(shipmentDt.getProcessStatus());
+					shipmentSendCont.setLogisticAccountId(user.getId());
+					shipmentSendCont.setLogisticGroupId(user.getGroupId());
+					shipmentSendCont.setCreateTime(new Date());
+					shipmentService.insertShipment(shipmentSendCont);
 					isCreated = false;
 				}
 			}
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus(null);
 				if (shipmentDetail.getId() != null && "N".equals(shipmentDetail.getUserVerifyStatus())) {
+					updateShipment = false;
 					shipmentDetail.setUpdateBy(user.getFullName());
 					shipmentDetail.setUpdateTime(new Date());
 					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
@@ -291,12 +296,18 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 					if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && !isCreated && shipmentDt.getVgmChk()) {
-						shipmentDetail.setShipmentId(shipment.getId());
+						shipmentDetail.setShipmentId(shipmentSendCont.getId());
 						shipmentDetail.setCustomStatus("N");
 						shipmentDetail.setStatus(1);
 						shipmentDetailService.insertShipmentDetail(shipmentDetail);
 					}
 				}
+			}
+			if (updateShipment) {
+				shipment.setUpdateTime(new Date());
+				shipment.setUpdateBy(getUser().getFullName());
+				shipment.setStatus("2");
+				shipmentService.updateShipment(shipment);
 			}
 			return success("Lưu khai báo thành công");
 		}
@@ -367,6 +378,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+			if (!"3".equals(shipment.getStatus())) {
+				shipment.setStatus("3");
+				shipment.setUpdateTime(new Date());
+				shipment.setUpdateBy(getUser().getFullName());
+				shipmentService.updateShipment(shipment);
+			}
 			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, creditFlag);
 			if (serviceRobotReqs != null) {
 				List<Long> processIds = new ArrayList<>();
