@@ -214,10 +214,15 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
     $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
-        if ((hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) || shipmentSelected.specificContFlg == 0) {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
+    }
+    console.log(shipmentSelected.specificContFlg);
+    if (shipmentSelected.specificContFlg == 0) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     return td;
 }
@@ -346,7 +351,8 @@ function configHandson() {
             {
                 data: "active",
                 type: "checkbox",
-                className: "htCenter",
+                className: "htCenter",  
+                renderer: checkBoxRenderer
             },
             {
                 data: "status",

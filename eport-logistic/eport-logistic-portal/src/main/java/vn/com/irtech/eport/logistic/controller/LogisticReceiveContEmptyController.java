@@ -130,7 +130,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	// EDIT SHIPMENT WITH SHIPMENT ID
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
-    public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
+    public AjaxResult editShipment(Shipment shipment, @PathVariable("shipmentId") Long shipmentId) {
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
@@ -146,7 +146,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	// GET SHIPMENT DETAIL FROM SHIPMENT ID
 	@GetMapping("/shipment/{shipmentId}/shipment-detail")
 	@ResponseBody
-	public AjaxResult listShipmentDetail(Long shipmentId) {
+	public AjaxResult listShipmentDetail(@PathVariable("shipmentId") Long shipmentId) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
