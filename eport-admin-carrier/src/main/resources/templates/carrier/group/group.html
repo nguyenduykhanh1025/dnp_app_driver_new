@@ -58,7 +58,7 @@
         var removeFlag = [[${@permission.hasPermi('carrier:account:remove') }]];
         var prefix = ctx + "carrier/group";
 
-        function copyPublicKey(key) {
+        function copyPrivateKey(key) {
             const el = document.createElement('textarea');
             el.value = key;
             document.body.appendChild(el);
@@ -107,7 +107,7 @@
                         var actions = [];
                         actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editGroup(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
                         actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a> ');
-                        actions.push('<a class="btn btn-warning btn-xs" href="javascript:void(0)" onclick="copyPublicKey(\'' + row.apiPublicKey + '\')"><i class="fa fa-copy"></i>Copy public key</a>');
+                        actions.push('<a class="btn btn-warning btn-xs" href="javascript:void(0)" onclick="copyPrivateKey(\'' + row.apiPrivateKey + '\')"><i class="fa fa-copy"></i>Copy private key</a>');
                         return actions.join('');
                     }
                 }]

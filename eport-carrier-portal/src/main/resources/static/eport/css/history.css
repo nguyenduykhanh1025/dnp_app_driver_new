@@ -1,4 +1,4 @@
-/* CSS STYLE UPLOAD FILE  */
+/* CSS STYLE HISTORY EDI AUTHOR MINHTC */
 .title-table {
     color: black;
 }
@@ -7,4 +7,12 @@
 }
 .pre-content {
     width: 90%;
+}
+.title-table {
+    margin-top: 0px;
+    padding-bottom:5px
+}
+.title-content-history {
+    display: flex;
+    justify-content: center;
 }

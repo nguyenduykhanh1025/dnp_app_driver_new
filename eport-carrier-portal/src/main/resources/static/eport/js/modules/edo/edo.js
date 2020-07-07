@@ -13,16 +13,20 @@ $(function() {
         }
     })
     loadTable();
+    loadTableByContainer();
 });
 
 function loadTable(containerNumber, billOfLading, fromDate, toDate) {
     $("#dg").datagrid({
-        url: prefix + "/edo",
+        url: prefix + "/billNo",
         method: "GET",
         singleSelect: true,
         clientPaging: true,
         pagination: true,
         pageSize: 20,
+        onClickRow: function () {
+            getSelectedRow();
+        },
         nowrap: false,
         striped: true,
         loader: function(param, success, error) {
@@ -65,10 +69,63 @@ function formatToYDM(date) {
 
 function formatAction(value, row, index) {
     var actions = [];
-    actions.push('<a class="btn btn-success btn-xs" onclick="viewHistoryEdiFile(\'' + row.id + '\')"><i class="fa fa-view"></i>History</a> ');
+    actions.push('<a class="btn btn-success btn-xs" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Cập nhật</a> ');
+    actions.push('<a class="btn btn-success btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Xem lịch sử</a> ');
     return actions.join('');
 }
 
-function viewHistoryEdiFile(id) {
-    $.modal.open("History File", prefix + "/history/" + id, 800, 500);
+function viewHistoryCont(id) {
+    $.modal.open("History Container", prefix + "/history/" + id, 800, 500);
 }
+
+function viewUpdateCont(id) {
+    $.modal.openOption('Update Container', prefix + '/update/' + id, 800, 500);
+}
+
+
+function loadTableByContainer( billOfLading) {
+    
+    $("#dgContainer").datagrid({
+        url: prefix + "/edo",
+        method: "GET",
+        singleSelect: true,
+        clientPaging: true,
+        pagination: true,
+        pageSize: 20,
+        nowrap: false,
+        striped: true,
+        loader: function(param, success, error) {
+            var opts = $(this).datagrid("options");
+            if(billOfLading == null)
+            {
+                return false;
+            }
+            if (!opts.url) return false;
+            $.ajax({
+                type: opts.method,
+                url: opts.url,
+                data: {
+                    billOfLading: billOfLading
+                },
+                dataType: "json",
+                success: function(data) {
+                    success(data);
+                },
+                error: function() {
+                    error.apply(this, arguments);
+                },
+            });
+        },
+    });
+}
+
+
+function getSelectedRow()
+{
+    var row = $('#dg').datagrid('getSelected');
+    if (row){
+        console.log(row.billOfLading);
+        loadTableByContainer(row.billOfLading);
+    }
+}
+

@@ -195,6 +195,8 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/captcha/captchaImage**", "anon");
         filterChainDefinitionMap.put("/page/**", "anon");
         filterChainDefinitionMap.put("/logout", "logout");
+        filterChainDefinitionMap.put("/edi/sendarrayedidata", "anon");
+        filterChainDefinitionMap.put("/edi/gethashcode", "anon");
 //        filterChainDefinitionMap.put("/login", "anon,captchaValidate");
 //        filterChainDefinitionMap.put("/register", "anon,captchaValidate");
 

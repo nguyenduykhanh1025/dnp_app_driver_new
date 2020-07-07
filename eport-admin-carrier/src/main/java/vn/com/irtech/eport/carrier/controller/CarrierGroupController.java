@@ -1,12 +1,9 @@
 package vn.com.irtech.eport.carrier.controller;
 
 import java.security.KeyPair;
-import java.security.spec.RSAKeyGenParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import com.alibaba.fastjson.JSONObject;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +15,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.enums.BusinessType;
+
+import com.alibaba.fastjson.JSONObject;
+
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.SignatureUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 /**
  * Carrier GroupController
@@ -114,8 +114,8 @@ public class CarrierGroupController extends BaseController
         // Gerenate private key and public key
         KeyPair keyPair = SignatureUtils.generateKeyPair();
         if (keyPair != null) {
-        	carrierGroup.setApiPrivateKey(SignatureUtils.getKeyString(keyPair.getPrivate()));
-        	carrierGroup.setApiPublicKey(SignatureUtils.getKeyString(keyPair.getPublic()));
+        	carrierGroup.setApiPrivateKey(SignatureUtils.encodeToString(keyPair.getPrivate()));
+        	carrierGroup.setApiPublicKey(SignatureUtils.encodeToString(keyPair.getPublic()));
         }
         
         carrierGroup.setCreateBy(ShiroUtils.getSysUser().getUserName());

@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="doFlag" column="do_flag" />
 		<result property="edoFlag" column="edo_flag" />
 		<result property="apiPrivateKey" column="api_private_key" />
-		<result property="apiPublicKey" column="api_private_key" />
+		<result property="apiPublicKey" column="api_public_key" />
 		<result property="pathEdiReceive" column="path_edi_receive" />
 		<result property="pathEdiBackup" column="path_edi_backup" />
 	</resultMap>
