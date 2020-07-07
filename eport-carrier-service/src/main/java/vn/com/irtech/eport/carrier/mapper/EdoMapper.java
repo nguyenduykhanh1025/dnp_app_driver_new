@@ -21,6 +21,13 @@ public interface EdoMapper
      * @return Exchange Delivery Order
      */
     public Edo selectEdoById(Long id);
+    
+    /**
+     * Get Exchange Delivery Order by order number
+     * @param orderNumber
+     * @return
+     */
+    public Edo selectEdoByOrderNumber(String orderNumber);
 
     /**
      * Get Exchange Delivery Order List
