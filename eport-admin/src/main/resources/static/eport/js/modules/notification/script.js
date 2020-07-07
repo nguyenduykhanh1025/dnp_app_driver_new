@@ -1,11 +1,12 @@
 "use strict";
 var notiContent = CKEDITOR.replace("content");
+const PREFIX = ctx + "notifications";
 
 $("input[type=checkbox]").change(function () {
   let selected = $(this).val();
   if (selected == 0) {
     //Select total checkbox
-    $(":checkbox[value=1], :checkbox[value=2], :checkbox[value=3]").prop("checked",$(this).prop("checked"));
+    $(":checkbox[value=1], :checkbox[value=2], :checkbox[value=3]").prop("checked", $(this).prop("checked"));
     return;
   }
   let checkedCheckbox = $(":checkbox:checked").length;
@@ -47,9 +48,22 @@ $(".btn-send").click(function () {
   }
 
   $(":checkbox:checked").each(function () {
-    receivers.push($(this).val());
+    receivers += "," + $(this).val();
   });
-  //TODO submit form here
+  
+  receivers = receivers.substr(1);
+  $.ajax({
+    method: "POST",
+    url: PREFIX,
+    data: {
+      title: title.val(),
+      content: content,
+      receiverGroups: receivers
+    },
+    success: function(result){
+      console.log(result);
+    }
+  });
 });
 
 function hideErrorLabel() {

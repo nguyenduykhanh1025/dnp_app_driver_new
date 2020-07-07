@@ -94,4 +94,9 @@ public class UserDevicesServiceImpl implements IUserDevicesService
     {
         return userDevicesMapper.deleteUserDevicesById(id);
     }
+
+    @Override
+    public List<UserDevices> selectDeviceTokenList(String userTypeList) {
+        return userDevicesMapper.selectDeviceTokenList(Convert.toStrArray(userTypeList));
+    }
 }
