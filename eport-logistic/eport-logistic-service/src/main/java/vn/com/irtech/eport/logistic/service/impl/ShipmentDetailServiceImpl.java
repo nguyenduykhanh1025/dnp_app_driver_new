@@ -328,11 +328,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         }
         processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
-        try {
-            processOrder.setTruckCo(shipment.getTaxCode()+" : "+getGroupNameByTaxCode(shipment.getTaxCode()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        processOrder.setTruckCo(shipment.getTaxCode()+" : "+shipment.getGroupName());
         processOrder.setTaxCode(shipment.getTaxCode());
         if (creditFlag) {
             processOrder.setPayType("Credit");
@@ -379,32 +375,70 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Transactional
-    public List<ProcessOrder> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails) {
+    public List<ServiceSendFullRobotReq> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
-            Collections.sort(shipmentDetails, new SztpComparator());
-            String sztp = shipmentDetails.get(0).getSztp();
-            List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-            List<ProcessOrder> processOrders = new ArrayList<>();
-            //ProcessOrder processOrder = new ProcessOrder();
-            for (ShipmentDetail shipmentDetail : shipmentDetails) {
-                if (sztp.equals(shipmentDetail.getSztp())) {
-                    shipmentOrderList.add(shipmentDetail);
-                } else {
-                    for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
-                        shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
-                        shipmentDetail2.setUserVerifyStatus("Y");
-                        shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
+            List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
+            if (shipmentDetails.size() == shipment.getContainerAmount()) {
+                serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentDetails, shipment, creditFlag, true));
+            } else {
+                Collections.sort(shipmentDetails, new SztpComparator());
+                String sztp = shipmentDetails.get(0).getSztp();
+                List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
+                for (ShipmentDetail shipmentDetail : shipmentDetails) {
+                    if (!sztp.equals(shipmentDetail.getSztp())) {
+                        serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag, false));
+                        shipmentOrderList = new ArrayList<>();
                     }
+                    shipmentOrderList.add(shipmentDetail);
                 }
+                serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag, false));
             }
-            for (ShipmentDetail shipmentDetail2 : shipmentOrderList) {
-                shipmentDetail2.setRegisterNo(shipmentOrderList.get(0).getId().toString());
-                shipmentDetail2.setUserVerifyStatus("Y");
-                shipmentDetailMapper.updateShipmentDetail(shipmentDetail2);
-            }
-            return processOrders;
+            return serviceRobotReq;
         }
         return null;
+    }
+
+    @Transactional
+    private ServiceSendFullRobotReq groupShipmentDetailByReceiveContEmptyOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag, boolean orderByBooking) {
+        ProcessOrder processOrder = new ProcessOrder();
+        if (orderByBooking) {
+            processOrder.setMode("Pickup By Booking");
+        } else {
+            processOrder.setMode("Truck Out");
+        }
+        processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
+        processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
+        processOrder.setTruckCo(shipment.getTaxCode()+" : "+shipment.getGroupName());
+        processOrder.setTaxCode(shipment.getTaxCode());
+        if (creditFlag) {
+            processOrder.setPayType("Credit");
+        } else {
+            processOrder.setPayType("Cash");
+        }
+        ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+        if (tempProcessOrder != null) {
+            processOrder.setYear(tempProcessOrder.getYear());
+            processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
+        } else {
+            processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
+            processOrder.setBeforeAfter("Before");
+        }
+        processOrder.setBookingNo(shipmentDetails.get(0).getBookingNo());
+        processOrder.setPickupDate(shipmentDetails.get(0).getExpiredDem());
+        processOrder.setVessel(shipmentDetails.get(0).getVslNm());
+        processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+        processOrder.setSztp(shipmentDetails.get(0).getSztp());
+        processOrder.setContNumber(shipmentDetails.size());
+        processOrder.setShipmentId(shipment.getId());
+        processOrder.setServiceType(3);
+        processOrderService.insertProcessOrder(processOrder);
+        for (ShipmentDetail shipmentDetail : shipmentDetails) {
+            shipmentDetail.setProcessOrderId(processOrder.getId());
+            shipmentDetail.setRegisterNo(registerNo.toString());
+            shipmentDetail.setUserVerifyStatus("Y");
+            shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+        }
+        return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
     }
 
     @Override
