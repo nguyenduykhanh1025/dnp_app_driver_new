@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -133,15 +134,17 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		driverAccount.setDelFlag(false);
 		driverAccount.setStatus("0");//khóa
 		List<DriverAccount> driverList = driverAccountService.selectDriverAccountList(driverAccount);
-		if(pickedIds != null){
-			for(Long i :pickedIds) {
-				for(int j = 0; j < driverList.size(); j++){
-					if(driverList.get(j).getId() == i){
-						driverList.remove(j);
-					}
-				}
-			}
-		}
+		List<DriverAccount> assignedDriverList = driverAccountService.getAssignedDrivers(pickedIds);
+		driverList.removeAll(assignedDriverList);
+		// if(pickedIds != null){
+		// 	for(Long i :pickedIds) {
+		// 		for(int j = 0; j < driverList.size(); j++){
+		// 			if(driverList.get(j).getId() == i){
+		// 				driverList.remove(j);
+		// 			}
+		// 		}
+		// 	}
+		// }
         return driverList;
     }
     @GetMapping("/assignedDriverAccountList")
