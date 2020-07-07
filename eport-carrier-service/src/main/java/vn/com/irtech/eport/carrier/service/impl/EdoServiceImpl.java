@@ -128,7 +128,6 @@ public class EdoServiceImpl implements IEdoService
 		List<Edo> listEdi = new ArrayList<>();
 		System.out.print(text.toString());
 		String business = "";
-		int num = 1;
 		for(String s : text)
 		{
 			
@@ -148,17 +147,19 @@ public class EdoServiceImpl implements IEdoService
 				edi = new Edo();
 				edi.setBusinessUnit(business);
 				edi.setCarrierCode(business);
+				continue;
 			}
 
 			//Bill Of Lading
 			if(s.contains("RFF+BM"))
 			{
-				if(!s.isEmpty())
+				if(!s.isEmpty() && s.length() > 7)
 				{
 					s = s.substring(7,s.length());
 					obj.put("buildNo", s);
 					edi.setBillOfLading(s);
 				}
+				continue;
 				
 			}
 		
@@ -172,16 +173,18 @@ public class EdoServiceImpl implements IEdoService
 					obj.put("contNo",contNo[2]);
                 	edi.setContainerNumber(contNo[2]);
 				}
+				continue;
 			}
 			//orderNo
 			if(s.contains("RFF+AAJ"))	
 			{
-				if(!s.isEmpty())
+				if(!s.isEmpty() && s.length() > 8)
 				{
 					s = s.substring(8,s.length());
 					obj.put("orderNo", s);
 					edi.setOrderNumber(s);
 				}
+				continue;
 			}
 			//releaseTo
 			if(s.contains("NAD+BJ"))
@@ -193,6 +196,7 @@ public class EdoServiceImpl implements IEdoService
 					obj.put("releaseTo", releaseTo[3]);
 					edi.setConsignee(releaseTo[3]);
 				}
+				continue;
 			}
 			//validToDay
 			if(s.contains("DTM+400"))
@@ -203,9 +207,13 @@ public class EdoServiceImpl implements IEdoService
 					validToDay[1] = validToDay[1].substring(0, validToDay[1].length() - 4);
 					LocalDate date = LocalDate.parse(validToDay[1], DateTimeFormatter.BASIC_ISO_DATE);
 					Date releaseDate = Date.from(date.atStartOfDay(defaultZoneId).toInstant());
+					releaseDate.setHours(23);
+					releaseDate.setMinutes(59);
+					releaseDate.setSeconds(59);
 					obj.put("validToDay", releaseDate);
 					edi.setExpiredDem(releaseDate);
 				}
+				continue;
 			}                                                                                                                                                                                                                                                                                                                                                                                           
 			//emptyContDepot
 			if(s.contains("LOC+99"))
@@ -216,6 +224,7 @@ public class EdoServiceImpl implements IEdoService
 					obj.put("emptyContDepot", emptyContDepot[0]);
 					edi.setEmptyContainerDepot(emptyContDepot[0]);
 				}
+				continue;
 						
 			}
 			//haulage
@@ -228,12 +237,13 @@ public class EdoServiceImpl implements IEdoService
                     int i = Integer.parseInt(haulage[4]);
 					edi.setDetFreeTime(i);
 					obj.put("haulage", haulage[4]);
-				} 
+				}
+				continue; 
 			}
+
 			if(s.contains("UNT"))
 			{
 				listEdi.add(edi);
-				num++;
 			}
 
 			

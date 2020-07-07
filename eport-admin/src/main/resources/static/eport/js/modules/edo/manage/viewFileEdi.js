@@ -12,11 +12,11 @@ var myAvatarzone = new Dropzone("#bannarzone", {
     url: PREFIX + "/file",
     method: "post",
     paramName: "file",
-    maxFiles: 10,
+    maxFiles: 100,
     maxFilesize: 10, //MB
     autoProcessQueue: false,
-    //acceptedFiles: ".edi",
-    parallelUploads: 10,
+    acceptedFiles: ".edi,.TO_VN",
+    parallelUploads: 100,
     addRemoveLinks: true,
     dictDefaultMessage: 'Choose a file EDI, or drag it here !',
     dictResponseError: 'Upload error!',
@@ -106,7 +106,11 @@ function loadView() {
     var container = document.getElementById('viewEdi');
     hot = new Handsontable(container, {
         data: dataObj,
-
+        width: '100%',
+        height: 320,
+        rowHeights: 23,
+        rowHeaders: true,
+        colHeaders: true,
 
         columns: [{
                 data: 'containerNumber',
