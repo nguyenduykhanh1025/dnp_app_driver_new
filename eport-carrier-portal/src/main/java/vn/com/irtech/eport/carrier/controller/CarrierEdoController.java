@@ -180,7 +180,8 @@ public class CarrierEdoController extends CarrierBaseController {
 	@ResponseBody 
 	public AjaxResult updateEdo(Edo edo)
 	{
-		Date timeNow = new Date();
+		try { 
+			Date timeNow = new Date();
 		int segNo = 1;
 		edoService.updateEdo(edo);
 		EdoAuditLog edoAuditLog = new EdoAuditLog();
@@ -209,6 +210,11 @@ public class CarrierEdoController extends CarrierBaseController {
 			edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 		}
 		return AjaxResult.success("Update thành công");
+			
+		} catch(Exception e) {
+			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
+		} 
+		
 	}
 
 	@PostMapping("/readEdiOnly")

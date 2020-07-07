@@ -49,12 +49,12 @@ function formatToYDM(date) {
   return date.split("/").reverse().join("/");
 }
 
-function formatAction(value, row, index) {
+function formatAction(row) {
   var actions = [];
-  actions.push('<a class="btn btn-success btn-xs" onclick="viewHistoryEdiFile(\'' + row.containerNumber + '\')"><i class="fa fa-view"></i>History</a> ');
+  actions.push('<a class="btn btn-success btn-xs" onclick="viewHistoryEdiFile(\'' + row.id + '\')"><i class="fa fa-view"></i>History</a> ');
   return actions.join("");
 }
 
-function viewHistoryEdiFile(containerNumber) {
-  $.modal.open("History File", prefix + "/history/" + containerNumber, 800, 500);
+function viewHistoryEdiFile(id) {
+  $.modal.open("History File", prefix + "/auditLog/" + id, 800, 500);
 }
