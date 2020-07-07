@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
+    <link rel="stylesheet" th:href="@{/eport/css/eport.css}"/>
     <style type="text/css">
       .datagrid-header-row > td {
         color: #1c84c6;
@@ -10,8 +11,7 @@
       }
     </style>
   </head>
-
-  <body class="white-bg">
+  <body class="gray-bg">
     <div id="wrapper">
       <div class="row">
         <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom: 5px;">
@@ -106,6 +106,6 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: datetimepicker-js" />
-    <script th:src="@{/eport/js/modules/edo/edo.js}"></script>
   </body>
+  <script th:src="@{/eport/js/modules/edo/manage/edo.js}"></script>
 </html>
