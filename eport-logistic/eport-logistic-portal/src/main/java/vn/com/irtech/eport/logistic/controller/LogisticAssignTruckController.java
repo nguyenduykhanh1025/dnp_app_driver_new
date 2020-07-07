@@ -79,7 +79,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		LogisticAccount user = getUser();
 		shipmentDetail.setLogisticGroupId(user.getGroupId());
 		shipmentDetail.setProcessStatus("Y");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailListForAssign(shipmentDetail);
 		return getDataTable(shipmentDetails);
 	}
 

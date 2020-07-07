@@ -46,7 +46,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Autowired
     private ShipmentDetailMapper shipmentDetailMapper;
-    
+
     @Autowired
     private EdoMapper edoMapper;
 
@@ -295,23 +295,28 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         }
     }
 
-    public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
+    public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails,
+            Shipment shipment, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
             List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
-            if (checkMakeOrderByBl(shipment.getBlNo(), shipmentDetails.size() , "1".equalsIgnoreCase(shipment.getEdoFlg()))) {
-                serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(), shipmentDetails, shipment, creditFlag, true));
+            if (checkMakeOrderByBl(shipment.getBlNo(), shipmentDetails.size(),
+                    "1".equalsIgnoreCase(shipment.getEdoFlg()))) {
+                serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
+                        shipmentDetails, shipment, creditFlag, true));
             } else {
                 Collections.sort(shipmentDetails, new SztpComparator());
                 String sztp = shipmentDetails.get(0).getSztp();
                 List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
                 for (ShipmentDetail shipmentDetail : shipmentDetails) {
                     if (!sztp.equals(shipmentDetail.getSztp())) {
-                        serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag, false));
+                        serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
+                                shipmentOrderList, shipment, creditFlag, false));
                         shipmentOrderList = new ArrayList<>();
                     }
                     shipmentOrderList.add(shipmentDetail);
                 }
-                serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag, false));
+                serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
+                        shipmentOrderList, shipment, creditFlag, false));
             }
             return serviceRobotReq;
         }
@@ -319,7 +324,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Transactional
-    private ServiceSendFullRobotReq groupShipmentDetailByReceiveContFullOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag, boolean orderByBl) {
+    private ServiceSendFullRobotReq groupShipmentDetailByReceiveContFullOrder(Long registerNo,
+            List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag, boolean orderByBl) {
         ProcessOrder processOrder = new ProcessOrder();
         if (orderByBl) {
             processOrder.setMode("Pickup Order by BL");
@@ -329,7 +335,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
-            processOrder.setTruckCo(shipment.getTaxCode()+" : "+getGroupNameByTaxCode(shipment.getTaxCode()));
+            processOrder.setTruckCo(shipment.getTaxCode() + " : " + getGroupNameByTaxCode(shipment.getTaxCode()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -385,7 +391,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             String sztp = shipmentDetails.get(0).getSztp();
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
             List<ProcessOrder> processOrders = new ArrayList<>();
-            //ProcessOrder processOrder = new ProcessOrder();
+            // ProcessOrder processOrder = new ProcessOrder();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (sztp.equals(shipmentDetail.getSztp())) {
                     shipmentOrderList.add(shipmentDetail);
@@ -446,19 +452,21 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     @Transactional
-    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status, String invoiceNo, ProcessOrder processOrder) {
+    public void updateProcessStatus(List<ShipmentDetail> shipmentDetails, String status, String invoiceNo,
+            ProcessOrder processOrder) {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessStatus(status);
             if ("Y".equalsIgnoreCase(status)) {
                 if ("Credit".equalsIgnoreCase(processOrder.getPayType())) {
-                    shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+                    shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);
                     shipmentDetail.setPaymentStatus("Y");
-                    if (4 == processOrder.getServiceType() && "VN".equals(shipmentDetail.getDischargePort().substring(0, 2))) {
-                        shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+                    if (4 == processOrder.getServiceType()
+                            && "VN".equals(shipmentDetail.getDischargePort().substring(0, 2))) {
+                        shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);
                         shipmentDetail.setCustomStatus("R");
                     }
                 }
-                shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+                shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);
             }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
@@ -469,9 +477,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
         String uri = "http://192.168.0.36:8060/ACCIS-Web/rest/v1/eportcontroller/getCustomsStatus/";
         // URI uri = new URI(uri);
-        
-    
-        String requestJson = "{\"RequestCntrStatus\": {\"UserVoy\": \""+userVoy+"\",\"CntrNo\": \""+cntrNo+"\"}}";
+
+        String requestJson = "{\"RequestCntrStatus\": {\"UserVoy\": \"" + userVoy + "\",\"CntrNo\": \"" + cntrNo
+                + "\"}}";
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
         headers.set("Authorization", "Basic RVBPUlQ6MTEx");
@@ -490,7 +498,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             System.out.print(rs);
             if ("TQ".equals(rs.substring(1, rs.length() - 1))) {
                 return true;
-            }else {
+            } else {
                 return false;
             }
         }
@@ -499,131 +507,152 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     public String getGroupNameByTaxCode(String taxCode) throws Exception {
-//        String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
-//        String methodName = "GET";
-//        String readLine = null;
-//        HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl + "/" + taxCode).openConnection();
-//        connection.setRequestMethod(methodName);
-//        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-//
-//        int responseCode = connection.getResponseCode();
-//        StringBuffer response = new StringBuffer();
-//        if (responseCode == HttpURLConnection.HTTP_OK) {
-//            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//            while ((readLine = in.readLine()) != null) {
-//                response.append(readLine);
-//            };
-//            in.close();
-//        } else {
-//        	String error = responseCode + " : " + methodName + " NOT WORKED";
-//            return error;
-//        }
-//        String str = response.toString();
-//        JsonObject convertedObject = new Gson().fromJson(str, JsonObject.class);
-//        if(convertedObject.get("Title").toString().equals("null"))
-//        {
-//            return null;
-//        }
-//        return convertedObject.get("Title").toString().replace("\"", "");
-    	String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/"+taxCode;
-		RestTemplate restTemplate = new RestTemplate();
-		return restTemplate.getForObject(url, String.class);
+        // String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
+        // String methodName = "GET";
+        // String readLine = null;
+        // HttpURLConnection connection = (HttpURLConnection) new URL(apiUrl + "/" +
+        // taxCode).openConnection();
+        // connection.setRequestMethod(methodName);
+        // connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1;
+        // WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95
+        // Safari/537.11");
+        //
+        // int responseCode = connection.getResponseCode();
+        // StringBuffer response = new StringBuffer();
+        // if (responseCode == HttpURLConnection.HTTP_OK) {
+        // BufferedReader in = new BufferedReader(new
+        // InputStreamReader(connection.getInputStream()));
+        // while ((readLine = in.readLine()) != null) {
+        // response.append(readLine);
+        // };
+        // in.close();
+        // } else {
+        // String error = responseCode + " : " + methodName + " NOT WORKED";
+        // return error;
+        // }
+        // String str = response.toString();
+        // JsonObject convertedObject = new Gson().fromJson(str, JsonObject.class);
+        // if(convertedObject.get("Title").toString().equals("null"))
+        // {
+        // return null;
+        // }
+        // return convertedObject.get("Title").toString().replace("\"", "");
+        String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/" + taxCode;
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(url, String.class);
     }
 
     @Override
     public ProcessOrder getYearBeforeAfter(String vessel, String voyage) {
-        String url = Global.getApiUrl() + "/processOrder/getYearBeforeAfter/"+vessel+"/"+voyage;
-		RestTemplate restTemplate = new RestTemplate();
-		return restTemplate.getForObject(url, ProcessOrder.class);
+        String url = Global.getApiUrl() + "/processOrder/getYearBeforeAfter/" + vessel + "/" + voyage;
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(url, ProcessOrder.class);
     }
 
-	@Override
-	public List<String> checkContainerReserved(String containerNos) {
-		String url = Global.getApiUrl() + "/shipmentDetail/checkContReserved/" + containerNos;
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
-		List<String> listCont = response.getBody();
-		return listCont;
-	}
-	
-	@Override
-	public List<String> getPODList() {
-		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
-		List<String> listCont = response.getBody();
-		return listCont;
-	}
-	
-	@Override
-	public List<String> getVesselCodeList() {
-		String url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
-		List<String> listCont = response.getBody();
-		return listCont;
-	}
-	
-	@Override
-	public List<String> getConsigneeList() {
-		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
-		List<String> listCont = response.getBody();
-		return listCont;
-	}
-	
-	@Override
-	public List<String> getOpeCodeList() {
-		String url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
-		List<String> listCont = response.getBody();
-		return listCont;
-	}
-	
-	@Override
-	public List<String> getVoyageNoList(String vesselCode) {
-		String url = Global.getApiUrl() + "/shipmentDetail/getVoyageNoList/" + vesselCode;
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
-		List<String> listCont = response.getBody();
-		return listCont;
-	}
-
-	@Override
-	public int getCountContByBlNo(String blNo) {
-		String url = Global.getApiUrl() + "/shipmentDetail/getCountContByBlNo/" + blNo;
-		RestTemplate restTemplate = new RestTemplate();
-		Integer count = restTemplate.getForObject(url, Integer.class);
-		return count.intValue();
-	}
-    
     @Override
-    public List<ShipmentDetail> selectShipmentDetailByProcessIds (String processOrderIds) {
+    public List<String> checkContainerReserved(String containerNos) {
+        String url = Global.getApiUrl() + "/shipmentDetail/checkContReserved/" + containerNos;
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<String>>() {
+                });
+        List<String> listCont = response.getBody();
+        return listCont;
+    }
+
+    @Override
+    public List<String> getPODList() {
+        String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<String>>() {
+                });
+        List<String> listCont = response.getBody();
+        return listCont;
+    }
+
+    @Override
+    public List<String> getVesselCodeList() {
+        String url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<String>>() {
+                });
+        List<String> listCont = response.getBody();
+        return listCont;
+    }
+
+    @Override
+    public List<String> getConsigneeList() {
+        String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<String>>() {
+                });
+        List<String> listCont = response.getBody();
+        return listCont;
+    }
+
+    @Override
+    public List<String> getOpeCodeList() {
+        String url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<String>>() {
+                });
+        List<String> listCont = response.getBody();
+        return listCont;
+    }
+
+    @Override
+    public List<String> getVoyageNoList(String vesselCode) {
+        String url = Global.getApiUrl() + "/shipmentDetail/getVoyageNoList/" + vesselCode;
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<String>>() {
+                });
+        List<String> listCont = response.getBody();
+        return listCont;
+    }
+
+    @Override
+    public int getCountContByBlNo(String blNo) {
+        String url = Global.getApiUrl() + "/shipmentDetail/getCountContByBlNo/" + blNo;
+        RestTemplate restTemplate = new RestTemplate();
+        Integer count = restTemplate.getForObject(url, Integer.class);
+        return count.intValue();
+    }
+
+    @Override
+    public List<ShipmentDetail> selectShipmentDetailByProcessIds(String processOrderIds) {
         return shipmentDetailMapper.selectShipmentDetailByProcessIds(Convert.toStrArray(processOrderIds));
     }
 
-	@Override
-	public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo) {
-		List<Edo> listEdo = edoMapper.selectEdoListByBlNo(blNo);
-		List<ShipmentDetail> listShip = new ArrayList<ShipmentDetail>();
-		if(listEdo != null) {
-			for(Edo i : listEdo) {
-				ShipmentDetail ship = new ShipmentDetail();
-				ship.setContainerNo(i.getContainerNumber());
-				ship.setExpiredDem(i.getExpiredDem());
-				ship.setConsignee(i.getConsignee());
-				ship.setEmptyDepot(i.getEmptyContainerDepot());
-				ship.setOpeCode(i.getCarrierCode());
-				ship.setVslNm(i.getVessel());
-				ship.setVoyNo(i.getVoyNo());
-				listShip.add(ship);
-			}
-			return listShip;
-		}
-		return null;
-	}
+    @Override
+    public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo) {
+        List<Edo> listEdo = edoMapper.selectEdoListByBlNo(blNo);
+        List<ShipmentDetail> listShip = new ArrayList<ShipmentDetail>();
+        if (listEdo != null) {
+            for (Edo i : listEdo) {
+                ShipmentDetail ship = new ShipmentDetail();
+                ship.setContainerNo(i.getContainerNumber());
+                ship.setExpiredDem(i.getExpiredDem());
+                ship.setConsignee(i.getConsignee());
+                ship.setEmptyDepot(i.getEmptyContainerDepot());
+                ship.setOpeCode(i.getCarrierCode());
+                ship.setVslNm(i.getVessel());
+                ship.setVoyNo(i.getVoyNo());
+                listShip.add(ship);
+            }
+            return listShip;
+        }
+        return null;
+    }
+
+    @Override
+    public List<ShipmentDetail> getShipmentDetailListForAssign(ShipmentDetail shipmentDetail) {
+        return shipmentDetailMapper.getShipmentDetailListForAssign(shipmentDetail);
+    }
     
     
     // @Override

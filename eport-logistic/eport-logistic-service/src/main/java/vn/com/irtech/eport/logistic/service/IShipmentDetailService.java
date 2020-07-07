@@ -123,5 +123,6 @@ public interface IShipmentDetailService
     
     public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo);
 
+    public List<ShipmentDetail> getShipmentDetailListForAssign(ShipmentDetail shipmentDetail);
     // public List<ShipmentDetail> selectSendEmptyShipmentDetailByListCont(@Param("conts") String conts, @Param("shipmentId") Long shipmentId);
 }
