@@ -1,5 +1,7 @@
 package vn.com.irtech.eport.carrier.controller;
 
+import java.security.KeyPair;
+import java.security.spec.RSAKeyGenParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,7 @@ import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.utils.SignatureUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -107,6 +110,14 @@ public class CarrierGroupController extends BaseController
         if (carrierGroup.getGroupCode().length() > 3) {
           return error("Mã hãng tàu không được quá 3 ký tự");
         }
+        
+        // Gerenate private key and public key
+        KeyPair keyPair = SignatureUtils.generateKeyPair();
+        if (keyPair != null) {
+        	carrierGroup.setApiPrivateKey(SignatureUtils.getKeyString(keyPair.getPrivate()));
+        	carrierGroup.setApiPublicKey(SignatureUtils.getKeyString(keyPair.getPublic()));
+        }
+        
         carrierGroup.setCreateBy(ShiroUtils.getSysUser().getUserName());
         return toAjax(carrierGroupService.insertCarrierGroup(carrierGroup));
     }

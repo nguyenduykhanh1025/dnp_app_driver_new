@@ -22,7 +22,7 @@ public class FirebaseConfig {
 	@PostConstruct
     public void initialize() {
         try {
-        	String firebaseKey = configService.selectConfigByKey("firebase.credental");
+        	String firebaseKey = configService.selectConfigByKey("firebase.credential");
         	if (firebaseKey == null) throw new Exception("Firebase key null!");
         	
         	InputStream inputStream = new ByteArrayInputStream(firebaseKey.getBytes("UTF-8"));

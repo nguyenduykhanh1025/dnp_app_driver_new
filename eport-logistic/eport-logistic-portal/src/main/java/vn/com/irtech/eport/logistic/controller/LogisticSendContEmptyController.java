@@ -129,7 +129,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
-    public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
+    public AjaxResult editShipment(Shipment shipment, @PathVariable("shipmentId") Long shipmentId) {
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
@@ -144,7 +144,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@GetMapping("/shipment/{shipmentId}/shipment-detail")
 	@ResponseBody
-	public AjaxResult listShipmentDetail(@PathVariable Long shipmentId) {
+	public AjaxResult listShipmentDetail(@PathVariable("shipmentId") Long shipmentId) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
@@ -205,7 +205,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@DeleteMapping("/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult deleteShipmentDetail(@PathVariable String shipmentDetailIds) {
+	public AjaxResult deleteShipmentDetail(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
 			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
 			return success("Lưu khai báo thành công");
@@ -215,7 +215,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult verifyOtp(@PathVariable String otp, @PathVariable String shipmentDetailIds, boolean creditFlag) {
+	public AjaxResult verifyOtp(@PathVariable("otp") String otp, @PathVariable("shipmentDetailIds") String shipmentDetailIds, boolean creditFlag) {
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
@@ -254,7 +254,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@PostMapping("/payment/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult payment(@PathVariable String shipmentDetailIds) {
+	public AjaxResult payment(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails != null && shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
