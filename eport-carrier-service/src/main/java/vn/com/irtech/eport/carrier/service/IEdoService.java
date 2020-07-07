@@ -73,4 +73,7 @@ public interface IEdoService
     public Long getCountContainerAmountByBlNo(String blNo);
 
     public File getFolderUploadByTime(String folderLoad);
+
+    //Get Bill No DISTINCT 
+    public List<Edo> selectEdoListByBillNo(Edo edo);
 }

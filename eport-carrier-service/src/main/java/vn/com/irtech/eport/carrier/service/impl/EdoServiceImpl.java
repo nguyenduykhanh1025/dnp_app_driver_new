@@ -111,7 +111,14 @@ public class EdoServiceImpl implements IEdoService
     public Edo checkContainerAvailable(@Param("container") String cont,@Param("billNo") String billNo)
     {
         return edoMapper.checkContainerAvailable(cont,billNo);
-    }
+	}
+	
+	@Override
+	public List<Edo> selectEdoListByBillNo(Edo edo)
+	{
+		return edoMapper.selectEdoListByBillNo(edo);
+	}
+
     @Override
     public  List<Edo> readEdi(String[] text)
     {
@@ -142,6 +149,7 @@ public class EdoServiceImpl implements IEdoService
 				edi.setBusinessUnit(business);
 				edi.setCarrierCode(business);
 			}
+
 			//Bill Of Lading
 			if(s.contains("RFF+BM"))
 			{
@@ -164,8 +172,6 @@ public class EdoServiceImpl implements IEdoService
 					obj.put("contNo",contNo[2]);
                 	edi.setContainerNumber(contNo[2]);
 				}
-				
-				
 			}
 			//orderNo
 			if(s.contains("RFF+AAJ"))	
@@ -224,12 +230,12 @@ public class EdoServiceImpl implements IEdoService
 					obj.put("haulage", haulage[4]);
 				} 
 			}
-
 			if(s.contains("UNT+20+"+num))
 			{
 				listEdi.add(edi);
 				num++;
 			}
+
 			
 		}
 		return listEdi;

@@ -1,179 +1,95 @@
-const PREFIX = "/edo";
-var hot;
-var statusTable = false;
-var dataObj = null;
-var countFile = 0;
-var temp = 0;
-var checkFileInDropZone = 0;
-$(function(){
-    
-});
-var myAvatarzone = new Dropzone("#bannarzone", {
-    url: PREFIX + "/file",
-    method: "post",
-    paramName: "file",
-    maxFiles: 10,
-    maxFilesize: 10, //MB
-    autoProcessQueue: false,
-    //acceptedFiles: ".edi",
-    parallelUploads: 10,
-    addRemoveLinks: true,
-    dictDefaultMessage: 'Choose a file EDI, or drag it here !',
-    dictResponseError: 'Upload error!',
-    dictInvalidFileType: "Invalid EDI file. Please upload txt file only.",
-    dictFileTooBig: "File max size!",
-    init: function() {
-        this.on("addedfile", function(file) {
-            checkFileInDropZone += 1;
-            const reader = new FileReader();
-            reader.onload = () => {
-                const fileAsBinaryString = reader.result;
-                $.ajax({ 
-                    type: "POST", 
-                    async: false, 
-                    url: PREFIX + "/readEdiOnly", 
-                    data: { 
-                        fileContent : fileAsBinaryString,
-                    }
-                }).done(function( data ) { 
-                    if (data != "") {
-                        if (dataObj == null) {
-                            dataObj = data;
-                            dataObj.forEach(element => {
-                                element["file"] = file.upload.uuid;
-                            });
-        
-                        } else {
-                            data.forEach(element => {
-                                element["file"] = file.upload.uuid;
-                                dataObj.push(element);
-        
-                            });
-                        }
-                    }
-                    if (statusTable == true) {
-                        hot.render();
-                        return;
-                    }
-                    loadView();
-                });
-            };
-            reader.onabort = () => console.log('file reading was aborted');
-            reader.onerror = () => console.log('file reading has failed');
-    
-            reader.readAsBinaryString(file);
-           
-           
-       
-        });
-        this.on("maxfilesexceeded", function(file){
-            $.modal.alertWarning("Bạn chỉ được nhập 10 file mỗi lần upload!");
-            this.removeFile(file);
-        });
-        this.on('sending',function(data){
-            countFile += 1;
-            console.log("countFile" + countFile);
-        })
-        this.on("success", function(data) {
-            temp += 1;
-            if(temp >= countFile)
-            {
-                $.modal.alertSuccess("Import thành công");
-                setTimeout(function(){
-                    $.modal.reload();
-                },1000);
-            }  
-        })
-        this.on("error", function(file, data) {
+var prefix = "/edo"
+$(function() {
+    $("#containerNumber").text(containerNumber);
+    $("#expiredDem").val(formatDate(expiredDem));
+    $("#detFreeTime").val(detFreeTime);
+})
 
-
-        });
-        this.on("removedfile", function(file) {
-            let fileId = file.upload.uuid;
-            let i = 0;
-            for (i; i < dataObj.length; i++) {
-                if (dataObj[i].file == fileId) {
-                    dataObj.splice(i, 1);
-                    i--;
-                }
-            }
-            hot.render();
-        });
+function formatDate(value) {
+    if (value == null) {
+      return;
     }
-});
+    var date = new Date(value)
+    var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    var month = date.getMonth() + 1;
+    var monthText = month < 10 ? "0" + month : month;
+    return day + "/" + monthText + "/" + date.getFullYear();
+  }
 
-function loadView() {
-    var container = document.getElementById('viewEdi');
-    hot = new Handsontable(container, {
-        data: dataObj,
-
-
-        columns: [{
-                data: 'containerNumber',
-                type: 'text',
-                editor: false
-            },
-            {
-                data: 'billOfLading',
-                type: 'text',
-                editor: false
-            },
-            {
-                data: 'businessUnit',
-                type: 'text',
-                editor: false
-            },
-            {
-                data: 'orderNumber',
-                type: 'text',
-                editor: false
-            },
-            {
-                data: 'consignee',
-                type: 'text',
-                editor: false
-            },
-            {
-                data: 'expiredDem',
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
-                editor: false
-            },
-            {
-                data: 'emptyContDepot',
-                type: 'text',
-                editor: false
-            },
-            {
-                data: 'detFreeTime',
-                type: 'numeric',
-                editor: false
-            }
-        ],
-        rowHeaders: true,
-        colHeaders: [
-            'Số Cont',
-            'Số Bill',
-            'Chủ khai thác',
-            'Order Number',
-            'Người nhận hàng',
-            'Ngày hết hạn lưu cont',
-            'Nơi hạ rỗng',
-            'Số ngày miễn lưu vỏ'
-        ],
-
-    });
-    statusTable = true;
+function closeForm()
+{
+    $.modal.close();
 }
 
-$("#submitFile").click( function (e) {
-    console.log("OOOO",checkFileInDropZone)
-    if(checkFileInDropZone == 0)
-    {
-        $.modal.alertWarning("Bạn chưa nhập file nào lên hệ thống! ");
-        return;
+function confirm()
+{
+    let checkDate = validateDateSearch(formatDate(expiredDem),formatDate($("#expiredDem").val()));
+    console.log("checkDate",checkDate);
+    $.modal.confirm(
+        "Bạn có chắc chắn muốn cập nhật DO không?",
+        function () {
+          $.ajax({
+            url: prefix + "/updateEdo",
+            method: "post",
+            dataType: "json",
+            data : {
+                id : id,
+                expiredDem : formatDateForSubmit($("#expiredDem").val()),
+                detFreeTime : $("#detFreeTime").val()
+                // $("#toDate").val() == null ? "" : $("#toDate").val()
+            },
+            success: function (data) {
+              console.log(data);
+              if (data.code == 0) {
+                $.modal.confirm("Cập nhật DO thành công!", function () {}, {
+                  title: "Thông báo",
+                  btn: ["Đồng Ý"],
+                })
+                $.modal.reload();
+              } else {
+                $.modal.alertError(data.msg)
+              }
+            },
+            error: function (data) {
+              $.modal.alertError(
+                "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin."
+              )
+            },
+          })
+        },
+        { title: "Xác nhận cập nhật DO", btn: ["Đồng Ý", "Hủy Bỏ"] }
+      )
+}
+
+function formatDateForSubmit(value) {
+    if (value == null) {
+      return;
     }
-    e.preventDefault();
-    myAvatarzone.processQueue();
-    //$.modal.loading("Đang xử lý");
-});
+    var newdate = value.split("/").reverse();
+    var date = new Date(newdate)
+    var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    var month = date.getMonth() + 1;
+    var monthText = month < 10 ? "0" + month : month;
+    return date.getFullYear() + "-" + monthText + "-" + day;
+  }
+
+
+  function validateDateSearch(fromDate, toDate) {
+
+    if (fromDate == "" || toDate == "") {
+      return 1;
+    }
+    var formatDate1 = new Date(fromDate);
+    var toDate1 = new Date(toDate);
+    var offset = toDate1.getTime() - formatDate1.getTime();
+    var totalDays = Math.round(offset / 1000 / 60 / 60 / 24);
+    console.log(fromDate,toDate)
+    if (totalDays < 0) {
+      return -1;
+    } else if (totalDays <= 40) {
+      return 1;
+    }
+    return 0;
+
+  }
+

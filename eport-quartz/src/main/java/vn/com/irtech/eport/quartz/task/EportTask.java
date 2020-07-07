@@ -2,8 +2,10 @@ package vn.com.irtech.eport.quartz.task;
 
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 import vn.com.irtech.eport.carrier.domain.EdoHistory;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.framework.mail.service.MailService;
@@ -35,6 +37,8 @@ public class EportTask {
     @Autowired
     private IEdoHistoryService edoHistoryService;
     @Autowired
+    private IEdoAuditLogService edoAuditLogService;
+    @Autowired
     private ICarrierGroupService carrierGroupService;
     @Autowired
     private MailService mailService;
@@ -59,6 +63,7 @@ public class EportTask {
             String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
             String[] text = content.split("'");
             EdoHistory edoHistory = new EdoHistory();
+            EdoAuditLog edoAuditLog = new EdoAuditLog();
             Date timeNow = new Date();
             listEdo = edoService.readEdi(text);
             for (Edo edo : listEdo) {
@@ -73,6 +78,7 @@ public class EportTask {
                 edoHistory.setCreateSource("serverFSTP");
                 edoHistory.setContainerNumber(edo.getContainerNumber());
                 edoHistory.setCreateBy(carrierGroup.getGroupCode());
+               
                 Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(), edo.getBillOfLading());
                 if (edoCheck != null) {
                     edo.setId(edoCheck.getId());
@@ -82,6 +88,8 @@ public class EportTask {
                     edoHistory.setEdoId(edo.getId());
                     edoHistory.setAction("update");
                     edoHistoryService.insertEdoHistory(edoHistory);
+                    edoAuditLog.setEdoId(edo.getId());
+                    addAuditLog(edo);
                 } else {
                     edo.setCreateTime(timeNow);
                     edo.setCreateBy(carrierGroup.getGroupCode());
@@ -89,6 +97,8 @@ public class EportTask {
                     edoHistory.setEdoId(edo.getId());
                     edoHistory.setAction("add");
                     edoHistoryService.insertEdoHistory(edoHistory);
+                    edoAuditLog.setEdoId(edo.getId());
+                    addAuditLogFirst(edo);
                 }
             }
 
@@ -143,7 +153,62 @@ public class EportTask {
 
     }
 
+    private boolean addAuditLogFirst(Edo edo)
+    {
+        Date timeNow = new Date();
+        EdoAuditLog edoAuditLog = new EdoAuditLog();
+        edoAuditLog.setCarrierId(edo.getId());
+        edoAuditLog.setCarrierCode(edo.getCarrierCode());
+        edoAuditLog.setCreateBy(edo.getCarrierCode());
+        edoAuditLog.setEdoId(edo.getId());
+        edoAuditLog.setSeqNo((long) 1);
+        edoAuditLog.setCreateTime(timeNow);
+        edoAuditLog.setFieldName("Expired Dem");
+        edoAuditLog.setNewValue(edo.getExpiredDem().toString());
+        edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+        edoAuditLog.setSeqNo((long) 2);
+        edoAuditLog.setFieldName("Det Free Time");
+        edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
+        edoAuditLogService.insertEdoAuditLogDetFreeTime(edoAuditLog);
+        return true;
 
+    }
+
+    private boolean addAuditLog(Edo edo) 
+    {
+        Date timeNow = new Date();
+        int SeqNo = 1;
+        EdoAuditLog edoAuditLog = new EdoAuditLog();
+        edoAuditLog.setCarrierId(edo.getId());
+        edoAuditLog.setCarrierCode(edo.getCarrierCode());
+        edoAuditLog.setCreateBy(edo.getCarrierCode());
+        edoAuditLog.setNewValue(edo.getExpiredDem().toString());
+        edoAuditLog.setEdoId(edo.getId());
+        edoAuditLog.setCreateTime(timeNow);
+        
+        
+        if(edo.getExpiredDem() != null)
+        {
+            edoAuditLog.setFieldName("Expired Dem");
+            EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdoId(edoAuditLog);
+            edoAuditLog.setSeqNo(edoAuditLogCheck.getSeqNo() + SeqNo + 1);
+            edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+            edoAuditLog.setNewValue(edo.getExpiredDem().toString());
+            edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+            SeqNo +=1;
+        }
+        if(edo.getDetFreeTime() != null)
+        {
+            edoAuditLog.setFieldName("Det Free Time");
+            EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdoId(edoAuditLog);
+            edoAuditLog.setSeqNo(edoAuditLogCheck.getSeqNo() + SeqNo);
+            edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+            edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
+            edoAuditLogService.insertEdoAuditLogDetFreeTime(edoAuditLog);
+            
+        }
+        return true;
+    }
 
 
    
