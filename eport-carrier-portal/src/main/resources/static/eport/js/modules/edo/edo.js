@@ -1,23 +1,24 @@
-var prefix = ctx + "edo"
+const PREFIX = ctx + "edo"
 var bill;
 var edo = new Object();
-$(function() {
+$(function () {
+    $("#dg").height($(document).height() - 100);
+    $("#dgContainer").height($(document).height() - 100);
+    currentLeftTableWidth = $(".left-table").width();
+    currentRightTableWidth = $(".right-table").width();
     $.ajax({
         type: "GET",
-        url: prefix + "/carrierCode",
+        url: PREFIX + "/carrierCode",
         success(data) {
-            data.forEach(element => {
-                $('#carrierCode').append(`<option value="${element}"> 
-                                                  ${element} 
-                                                </option>`);
+            data.forEach((element) => {
+                $("#carrierCode").append(`<option value="${element}"> ${element}</option>`);
             });
-
-        }
-    })
+        },
+    });
     loadTable();
     loadTableByContainer();
 
-    $('#searchAll').keyup(function(event) {
+    $('#searchAll').keyup(function (event) {
         if (event.keyCode == 13) {
             edo.containerNumber = $('#searchAll').val().toUpperCase();
             edo.consignee = $('#searchAll').val().toUpperCase();
@@ -30,7 +31,7 @@ $(function() {
 
 function loadTable(containerNumber, billOfLading, fromDate, toDate) {
     $("#dg").datagrid({
-        url: prefix + "/billNo",
+        url: PREFIX + "/billNo",
         method: "GET",
         singleSelect: true,
         clientPaging: true,
@@ -41,7 +42,7 @@ function loadTable(containerNumber, billOfLading, fromDate, toDate) {
         },
         nowrap: false,
         striped: true,
-        loader: function(param, success, error) {
+        loader: function (param, success, error) {
             var opts = $(this).datagrid("options");
             if (!opts.url) return false;
             $.ajax({
@@ -51,13 +52,13 @@ function loadTable(containerNumber, billOfLading, fromDate, toDate) {
                     containerNumber: containerNumber,
                     billOfLading: billOfLading,
                     fromDate: fromDate,
-                    toDate: toDate
+                    toDate: toDate,
                 },
                 dataType: "json",
-                success: function(data) {
+                success: function (data) {
                     success(data);
                 },
-                error: function() {
+                error: function () {
                     error.apply(this, arguments);
                 },
             });
@@ -66,8 +67,6 @@ function loadTable(containerNumber, billOfLading, fromDate, toDate) {
 }
 
 function searchDo() {
-    // setTimeout($.modal.loading("Đang xử lý"), 100);
-    // $.modal.closeLoading()
     let containerNumber = $("#containerNumber").val() == null ? "" : $("#containerNumber").val();
     let billOfLading = $("#billOfLading").val() == null ? "" : $("#billOfLading").val();
     let fromDate = formatToYDM($("#fromDate").val() == null ? "" : $("#fromDate").val());
@@ -81,24 +80,24 @@ function formatToYDM(date) {
 
 function formatAction(value, row, index) {
     var actions = [];
-    actions.push('<a class="btn btn-success btn-xs" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Cập nhật</a> ');
-    actions.push('<a class="btn btn-success btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Xem lịch sử</a> ');
-    return actions.join('');
+    actions.push('<a class="btn btn-success btn-xs btn-action mt5" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Cập nhật</a> ');
+    actions.push('<a class="btn btn-success btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Xem lịch sử</a> ');
+    return actions.join("");
 }
 
 function viewHistoryCont(id) {
-    $.modal.open("History Container", prefix + "/history/" + id, 800, 500);
+  $.modal.open("History Container", PREFIX + "/history/" + id, 800, 500);
 }
 
 function viewUpdateCont(id) {
-    $.modal.openOption('Update Container', prefix + '/update/' + id, 800, 500);
+  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 500);
 }
 
 
-function loadTableByContainer( billOfLading) {
+function loadTableByContainer(billOfLading) {
     edo.billOfLading = billOfLading
     $("#dgContainer").datagrid({
-        url: prefix + "/edo",
+        url: PREFIX + "/edo",
         method: "POST",
         singleSelect: true,
         clientPaging: true,
@@ -106,10 +105,9 @@ function loadTableByContainer( billOfLading) {
         pageSize: 20,
         nowrap: false,
         striped: true,
-        loader: function(param, success, error) {
+        loader: function (param, success, error) {
             var opts = $(this).datagrid("options");
-            if(billOfLading == null)
-            {
+            if (billOfLading == null) {
                 return false;
             }
             if (!opts.url) return false;
@@ -126,10 +124,11 @@ function loadTableByContainer( billOfLading) {
                     isAsc: param.order,
                     data: edo
                 }),
-                success: function(data) {
+                success: function (data) {
                     success(JSON.parse(data));
                 },
-                error: function() {
+
+                error: function () {
                     error.apply(this, arguments);
                 },
             });
@@ -193,3 +192,16 @@ $("#toDate").on("inputchange", function () {
     }
 });
 
+$(".btn-collapse").click(function () {
+    if ($(".left-table").width() == 0) {
+        $(".left-table").width("0%");
+        $(".right-table").width("78%");
+        $(".left-table").css("border-color", "#a9a9a9");
+        $(this).css({ transform: "rotate(360deg)" });
+        return;
+    }
+    $(".left-table").width(0);
+    $(".right-table").width("98%");
+    $(".left-table").css("border-color", "transparent");
+    $(this).css({ transform: "rotate(180deg)" });
+});
