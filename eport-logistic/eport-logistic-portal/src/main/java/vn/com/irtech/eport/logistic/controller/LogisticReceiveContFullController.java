@@ -305,7 +305,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@DeleteMapping("/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult deleteShipmentDetail(@PathVariable String shipmentDetailIds) {
+	public AjaxResult deleteShipmentDetail(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
 			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
 			return success("Lưu khai báo thành công");
@@ -315,7 +315,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@GetMapping("/shipment-detail/bl-no/{blNo}/cont/{containerNo}")
 	@ResponseBody
-	public ShipmentDetail getContInfo(@PathVariable String blNo, @PathVariable String containerNo) {
+	public ShipmentDetail getContInfo(@PathVariable("blNo") String blNo, @PathVariable("containerNo") String containerNo) {
 		if (blNo != null && containerNo != null) {
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setBlNo(blNo);
@@ -334,7 +334,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@PostMapping("/custom-status/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList, @PathVariable String shipmentDetailIds) {
+	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (declareNoList != null) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 			if (shipmentDetails != null && shipmentDetails.size() > 0) {
@@ -351,7 +351,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult verifyOtp(@PathVariable String shipmentDetailIds, @PathVariable String otp, boolean creditFlag, boolean isSendContEmpty) {
+	public AjaxResult verifyOtp(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("otp") String otp, boolean creditFlag, boolean isSendContEmpty) {
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
@@ -442,7 +442,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@PostMapping("/payment/{shipmentDetailIds}")
 	@Transactional
 	@ResponseBody
-	public AjaxResult payment(@PathVariable String shipmentDetailIds) {
+	public AjaxResult payment(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {

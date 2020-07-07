@@ -21,3 +21,8 @@ $("#contTable").datagrid({
         success(shipmentDetails);
     },
 });
+
+if ('0' == creditFlag) {
+    $('#credit').hide();
+    $('#creditLabel').hide();
+}
