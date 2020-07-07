@@ -1,0 +1,40 @@
+$darkgrey: #a9a9a9;
+
+@mixin transition {
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  transition: all 1s ease-in-out;
+}
+
+.btn-action {
+  width: 76px;
+}
+
+.content-section {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  .left-table {
+    border-right: 1px solid $darkgrey;
+    padding-right: 20px;
+    position: relative;
+    width: 20%;
+    @include transition;
+    .btn-collapse {
+      display: block;
+      position: absolute;
+      color: $darkgrey;
+      font-size: 3em;
+      right: 0;
+      top: 45%;
+    }
+  }
+  
+  .right-table {
+    width: 78%;
+    @include transition;
+  }
+}
+
+
