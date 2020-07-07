@@ -26,12 +26,19 @@ if (shipment != null) {
     $("#id").val(shipment.id);
     $("#shipmentCode").val(shipment.id);
     $("#bookingNo").val(shipment.bookingNo);
-    $("#specificContFlg").val(shipment.specificContFlg);
     $("#taxCode").val(shipment.taxCode);
     $("input[name='specificContFlg'][value='"+shipment.specificContFlg+"']").prop('checked', true);
     $("#containerAmount").val(shipment.containerAmount);
     $("#groupName").val(shipment.groupName);
     $("#remark").val(shipment.remark);
+    if (shipment.status > 1) {
+        $("#bookingNo").prop('disabled', true);
+        $("input[name='specificContFlg']").prop('disabled', true);
+    }
+    if (shipment.status > 2) {
+        $("#taxCode").prop('disabled', true);
+        $("#containerAmount").prop('disabled', true);
+    }
 }
 
 $("#form-edit-shipment").validate({
