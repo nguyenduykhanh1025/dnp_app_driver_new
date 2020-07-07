@@ -6,6 +6,8 @@ import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Exchange Delivery Order Object edo
  * 
@@ -90,6 +92,12 @@ public class Edo extends BaseEntity
     /** Delete Flag */
     @Excel(name = "Delete Flag")
     private int delFlg;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date fromDate;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date toDate;
 
     public void setId(Long id) 
     {
@@ -263,6 +271,22 @@ public class Edo extends BaseEntity
         return delFlg;
     }
 
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public Date getToDate() {
+        return toDate;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -290,6 +314,8 @@ public class Edo extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("fromDate", getFromDate())
+            .append("toDate", getToDate())
             .toString();
     }
 }

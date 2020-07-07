@@ -47,24 +47,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
-            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
-            <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
             <if test="secureCode != null  and secureCode != ''"> and secure_code = #{secureCode}</if>
             <if test="releaseDate != null "> and release_date = #{releaseDate}</if>
-            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
-            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="delFlg != null  and delFlg != ''"> and del_flg = #{delFlg}</if>
-            <if test="params.toDate != null and params.toDate != ''">
-				and date_format(expired_dem,'%y%m%d') &lt;= date_format(#{params.toDate},'%y%m%d')
-			</if>
-             <if test="params.fromDate != null and params.fromDate != ''">
-				and date_format(expired_dem,'%y%m%d') &gt;= date_format(#{params.fromDate},'%y%m%d')
-			</if>
+            <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
+            <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
+            <if test="consignee != null  and consignee != ''"> and (upper(consignee) like concat('%', #{consignee}, '%')</if>
+            <if test="containerNumber != null  and containerNumber != ''"> or upper(container_number) like concat('%', #{containerNumber}, '%')</if>
+            <if test="vessel != null  and vessel != ''"> or upper(vessel) like concat('%', #{vessel}, '%')</if>
+            <if test="voyNo != null  and voyNo != ''"> or upper(voy_no) like concat('%', #{voyNo}, '%'))</if>
         </where>
 
     </select>
