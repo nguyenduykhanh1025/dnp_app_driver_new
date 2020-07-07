@@ -1,14 +1,18 @@
 package vn.com.irtech.eport.framework.web.exception;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
+
+import vn.com.irtech.eport.carrier.dto.EdiRes;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.exception.DemoModeException;
@@ -113,4 +117,13 @@ public class GlobalExceptionHandler
     {
         return AjaxResult.error("Demo mode, no operation allowed");
     }
+    
+	/**
+	 * edi api exception
+	 */
+	@ExceptionHandler(EdiApiException.class)
+	public ResponseEntity<EdiRes> ediException(HttpServletRequest request, EdiApiException e) {
+		log.warn(e.getEdiRes().getMessage(), e);
+		return ResponseEntity.status(e.getEdiRes().getErrorCode()).body(e.getEdiRes());
+	}
 }
