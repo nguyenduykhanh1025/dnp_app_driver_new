@@ -38,7 +38,13 @@ if (shipment != null) {
     }
     $('#opeCode').val(shipment.opeCode);
     $("#blNo").val(shipment.blNo);
-    //loadGroupName();
+    if (shipment.status > 1) {
+        $("#blNo").prop('disabled', true);
+    }
+    if (shipment.status > 2) {
+        $("#taxCode").prop('disabled', true);
+        $("#containerAmount").prop('disabled', true);
+    }
 }
 
 $("#form-edit-shipment").validate({
