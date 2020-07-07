@@ -2,9 +2,12 @@ package vn.com.irtech.eport.carrier.controller;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +19,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
+import vn.com.irtech.eport.carrier.domain.CarrierAccount;
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
-import vn.com.irtech.eport.carrier.dto.EdiDataRes;
+import vn.com.irtech.eport.carrier.dto.EdiDataReq;
 import vn.com.irtech.eport.carrier.dto.EdiHashcodeReq;
 import vn.com.irtech.eport.carrier.dto.EdiReq;
 import vn.com.irtech.eport.carrier.dto.EdiRes;
+import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.carrier.service.IEdiService;
 import vn.com.irtech.eport.common.utils.SignatureUtils;
 import vn.com.irtech.eport.framework.web.exception.EdiApiException;
 
@@ -32,26 +38,36 @@ public class CarrierEdiController {
 	@Autowired
 	private ICarrierGroupService carrierGroupService;
 
+	@Autowired
+	private ICarrierAccountService carrierAccountService;
+
+	@Autowired
+	private IEdiService ediService;
+
 	@PostMapping("/sendarrayedidata")
 	@ResponseBody
 	public ResponseEntity<EdiRes> sendArrayEdiData(@RequestBody EdiReq ediReq) {
-		String transactionId = null;
+		String transactionId = RandomStringUtils.randomAlphabetic(10);
 
 		// Validate
 		if (ediReq.getSiteId() == null) {
-			throw new EdiApiException(EdiRes.error(412, "SiteId must not be null.", transactionId));
+			throw new EdiApiException(EdiRes.error(HttpServletResponse.SC_PRECONDITION_FAILED,
+					"SiteId must not be null.", transactionId));
 		}
 
 		if (ediReq.getPartnerCode() == null) {
-			throw new EdiApiException(EdiRes.error(412, "Partner code must not be null.", transactionId));
+			throw new EdiApiException(EdiRes.error(HttpServletResponse.SC_PRECONDITION_FAILED,
+					"Partner code must not be null.", transactionId));
 		}
 
 		if (ediReq.getHashCode() == null) {
-			throw new EdiApiException(EdiRes.error(412, "Hash code must not be null.", transactionId));
+			throw new EdiApiException(EdiRes.error(HttpServletResponse.SC_PRECONDITION_FAILED,
+					"Hash code must not be null.", transactionId));
 		}
 
-		if (ediReq.getData() == null) {
-			throw new EdiApiException(EdiRes.error(412, "Data must not be null.", transactionId));
+		if (CollectionUtils.isEmpty(ediReq.getData())) {
+			throw new EdiApiException(
+					EdiRes.error(HttpServletResponse.SC_PRECONDITION_FAILED, "Data must not be null.", transactionId));
 		}
 
 		// Get carrier group by site id
@@ -59,6 +75,13 @@ public class CarrierEdiController {
 
 		if (carrierGroup == null) {
 			throw new EdiApiException(EdiRes.error(5002, "Site not found.", transactionId));
+		}
+
+		// Get carrier account by partner code
+		CarrierAccount carrierAccount = carrierAccountService.selectByEmail(ediReq.getPartnerCode());
+
+		if (carrierAccount == null) {
+			throw new EdiApiException(EdiRes.error(5002, "Partner not found.", transactionId));
 		}
 
 		// Authentication
@@ -70,12 +93,11 @@ public class CarrierEdiController {
 			throw new EdiApiException(EdiRes.error(5001, "The Edi secure key is wrong", transactionId));
 		}
 
-		List<EdiDataRes> data = new ArrayList<EdiDataRes>();
+		List<EdiDataReq> ediDataReqsSuccess = ediService.executeListEdi(ediReq.getData(), carrierAccount,
+				transactionId);
 
-		// TODO:
-		data.add(new EdiDataRes());
-
-		EdiRes ediRes = EdiRes.success("", transactionId, data);
+		EdiRes ediRes = EdiRes.success("", transactionId, ediReq.getData());
+		ediRes.setData(ediDataReqsSuccess);
 		return ResponseEntity.status(HttpStatus.OK).body(ediRes);
 	}
 

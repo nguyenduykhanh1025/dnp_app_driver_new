@@ -15,7 +15,7 @@ public class EdiRes implements Serializable {
 
 	private String transactionId;
 
-	private List<EdiDataRes> data;
+	private List<EdiDataReq> data;
 
 	public Boolean getIsError() {
 		return isError;
@@ -49,17 +49,18 @@ public class EdiRes implements Serializable {
 		this.transactionId = transactionId;
 	}
 
-	public List<EdiDataRes> getData() {
+	public List<EdiDataReq> getData() {
 		return data;
 	}
 
-	public void setData(List<EdiDataRes> data) {
+	public void setData(List<EdiDataReq> data) {
 		this.data = data;
 	}
 
-	public static EdiRes success(String message, String transactionId, List<EdiDataRes> data) {
+	public static EdiRes success(String message, String transactionId, List<EdiDataReq> data) {
 		EdiRes ediRes = new EdiRes();
 		ediRes.setIsError(false);
+		ediRes.setMessage(message);
 		ediRes.setTransactionId(transactionId);
 		ediRes.setData(data);
 		return ediRes;
