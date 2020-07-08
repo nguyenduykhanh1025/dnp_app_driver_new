@@ -127,7 +127,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			processOrderService.updateProcessOrder(processOrder);
 
 			// SAVE BILL TO PROCESS BILL BY INVOICE NO
-			if (invoiceNo != null && invoiceNo.equals("")) {
+			if (invoiceNo != null && !invoiceNo.equals("")) {
 				processBillService.saveProcessBillByInvoiceNo(processOrder);
 			} else {
 				processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
