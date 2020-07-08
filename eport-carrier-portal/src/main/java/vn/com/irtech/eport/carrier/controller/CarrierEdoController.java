@@ -64,13 +64,9 @@ public class CarrierEdoController extends CarrierBaseController {
     //List
 	@GetMapping("/billNo")
 	@ResponseBody
-	public TableDataInfo billNo(Edo edo, String fromDate, String toDate)
+	public TableDataInfo billNo(Edo edo)
 	{
 		startPage();
-		Map<String, Object> searchDate = new HashMap<>();
-		searchDate.put("fromDate", fromDate);
-		searchDate.put("toDate", toDate);
-		edo.setParams(searchDate);
 		edo.setCarrierCode(super.getUserGroup().getGroupCode());
 		List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
 		return getDataTable(dataList);
