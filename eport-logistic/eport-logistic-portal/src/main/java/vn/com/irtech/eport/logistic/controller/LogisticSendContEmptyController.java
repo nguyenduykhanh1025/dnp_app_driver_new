@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -228,11 +229,20 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
-	@DeleteMapping("/shipment-detail/{shipmentDetailIds}")
+	@DeleteMapping("/shipment/{shipmentId}/shipment-detail/{shipmentDetailIds}")
+	@Transactional
 	@ResponseBody
-	public AjaxResult deleteShipmentDetail(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
+	public AjaxResult deleteShipmentDetail(@PathVariable Long shipmentId, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
 			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(shipmentId);
+			if (shipmentDetailService.countShipmentDetailList(shipmentDetail) == 0) {
+				Shipment shipment = new Shipment();
+				shipment.setId(shipmentId);
+				shipment.setStatus("1");
+				shipmentService.updateShipment(shipment);
+			}
 			return success("Lưu khai báo thành công");
 		}
 		return error("Lưu khai báo thất bại");

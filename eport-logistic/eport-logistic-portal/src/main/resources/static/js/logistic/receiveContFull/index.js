@@ -894,7 +894,7 @@ function save(isSendEmpty) {
       var result = JSON.parse(data);
       if (result.code == 0) {
         $.modal.msgSuccess(result.msg);
-        loadShipmentDetail(shipmentSelected.id);
+        reloadShipmentDetail();
       } else {
         $.modal.msgError(result.msg);
       }
@@ -913,12 +913,12 @@ function deleteShipmentDetail() {
   if (shipmentDetails.length > 0) {
     $.modal.loading("Đang xử lý...");
     $.ajax({
-      url: prefix + "/shipment-detail/" + shipmentDetailIds,
+      url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
       method: "delete",
       success: function (result) {
         if (result.code == 0) {
           $.modal.msgSuccess(result.msg);
-          loadShipmentDetail(shipmentSelected.id);
+          reloadShipmentDetail();
         } else {
           $.modal.msgError(result.msg);
         }

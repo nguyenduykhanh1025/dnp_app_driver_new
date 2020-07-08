@@ -326,7 +326,7 @@ function saveInput() {
     if (getDataFromTable()) {
         $.modal.loading("Đang xử lý...");
         $.ajax({
-            url: PREFIX + "/shipment-detail",
+            url: PREFIX + "/shipment/" + shipmentSelected.id + "/shipment-detail",
             method: "post",
             contentType: "application/json",
             accept: 'text/plain',
