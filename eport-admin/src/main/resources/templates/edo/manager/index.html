@@ -4,6 +4,7 @@
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}"/>
+    <link th:href="@{/eport/css/edo/manage/index.css}" rel="stylesheet" />
   </head>
   <body class="gray-bg container-fluid">
     <div id="wrapper">
@@ -14,7 +15,17 @@
             <div class="columns columns-right btn-group pull-right mb0 mt0">
               <div class="select-list">
                 <ul>
+                  
                   <li>
+                    <input class="form-control" type="text" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" />
+                  </li>
+                  <li>
+                    <span class="textTitle" id="showBillNo"></span>
+                  </li>
+                  <li>
+                      <span class="textTitle" id="countContainer"></span>
+                  </li>
+                  <!-- <li>
                     <div class="form-group">
                       <select class="form-control" id="carrierCode">
                         <option value="" selected disabled>Chọn Hãng tàu</option>
@@ -27,7 +38,7 @@
                         <option value="" selected disabled>Chọn Carrier Code</option>
                       </select>
                     </div>
-                  </li>
+                  </li> -->
                   <li>
                     <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
                   </li>
@@ -37,7 +48,6 @@
                   <li>
                     <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
                   </li>
-                  <a class="btn btn-primary btn-sm" onclick="searchDo()" id="searchBtn"><i class="glyphicon glyphicon-search"></i></a>
                 </ul>
               </div>
             </div>
@@ -74,7 +84,7 @@
                   <th data-options="field:'consignee',align:'left'" width="300">
                     CONSIGNEE
                   </th>
-                  <th data-options="field:'expiredDem',align:'left'" width="110">
+                  <th data-options="field:'expiredDem',align:'left',formatter:formatToYDMHMS" width="110">
                     EXPIRE <br />
                     DEM
                   </th>
@@ -91,7 +101,7 @@
                   <th data-options="field:'status',align:'left'" width="60">
                     STATUS
                   </th>
-                  <th data-options="field:'createTime',align:'center'" width="110">
+                  <th data-options="field:'createTime',align:'center',formatter:formatToYDMHMS" width="110">
                     CREATE TIME
                   </th>
                   <th data-options="field:'id',align:'center',formatter: formatAction" width="110">

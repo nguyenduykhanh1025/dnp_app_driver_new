@@ -30,6 +30,10 @@ $(function () {
     $('#searchBillNo').keyup(function (event) {
         if (event.keyCode == 13) {
             billOfLading = $('#searchBillNo').val().toUpperCase();
+            if(billOfLading == "")
+            {
+               return;
+            }
             loadTable(billOfLading);
         }
     });
