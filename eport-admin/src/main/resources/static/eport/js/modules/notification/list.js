@@ -36,7 +36,6 @@ function loadTable() {
           data: notification,
         }),
         success: function (data) {
-            console.log(JSON.parse(data));
           success(JSON.parse(data));
         },
         error: function () {
