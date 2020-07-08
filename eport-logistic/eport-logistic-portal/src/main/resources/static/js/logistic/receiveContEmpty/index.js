@@ -386,6 +386,7 @@ function configHandson() {
             },
             {
                 data: "voyNo",
+                type: "autocomplete",
                 strict: true,
                 renderer: voyNoRenderer
             },
@@ -410,10 +411,29 @@ function configHandson() {
         ],
         beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
             if(coords.col == 0) event.stopImmediatePropagation();
-        }
+        },
+        afterChange: onChange
     };
 }
 configHandson();
+
+function onChange(changes, source) {
+    if (!changes) {
+        return;
+    }
+    var instance = this;
+    changes.forEach(function (change) {
+        var row = change[0];
+        var col = change[1];
+        var newValue = change[3];
+        var cellProperties, options;
+        if (col == 2) {
+            // cellProperties = instance.getCellMeta(row, 1);
+            // setAutocompleteSource.call(instance, row, newValue);
+            // instance.render();
+        }
+    });
+}
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
