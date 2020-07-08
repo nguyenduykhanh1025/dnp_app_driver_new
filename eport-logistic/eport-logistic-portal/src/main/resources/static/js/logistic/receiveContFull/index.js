@@ -714,8 +714,8 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   for (let i = 0; i < checkList.length; i++) {
     if (Object.keys(myTableData[i]).length > 0) {
       if (myTableData[i].processOrderId != null && !temProcessOrderIds.includes(myTableData[i].processOrderId)) {
-        temProcessOrderIds.push(object["processOrderId"]);
-        processOrderIds += object["processOrderId"] + ',';
+        temProcessOrderIds.push(myTableData[i].processOrderId);
+        processOrderIds += myTableData[i].processOrderId + ',';
       }
     }
   }
