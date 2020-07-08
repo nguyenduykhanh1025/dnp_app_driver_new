@@ -1,7 +1,9 @@
 var prefix = ctx + "logistic/assignTruck";
 var shipmentType = 1;
 var shipmentSelected;
-
+var dataAssignedDriver = [];
+var dataDriver = [];
+var dataContainerList = [];
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
     loadTable();
@@ -20,11 +22,8 @@ function handleCollapse(status) {
         $("#btn-collapse").hide();
         $("#btn-uncollapse").show();
         $(".right-side").css("width", "99%");
-
-        setTimeout(function () {
-            $("#dgShipmentDetail").datagrid('resize');
-            $("#driverTable").datagrid('resize');
-            $("#pickedDriverTable").datagrid('resize');
+        setTimeout(() => {
+            checkForChanges();
         }, 500);
         return;
     }
@@ -33,10 +32,8 @@ function handleCollapse(status) {
     $("#btn-collapse").show();
     $("#btn-uncollapse").hide();
     $(".right-side").css("width", "67%");
-    setTimeout(function () {
-        $("#dgShipmentDetail").datagrid('resize');
-        $("#driverTable").datagrid('resize');
-        $("#pickedDriverTable").datagrid('resize');
+    setTimeout(() => {
+        checkForChanges();
     }, 500);
 }
 function assignFollowBatchTab() {
@@ -44,11 +41,13 @@ function assignFollowBatchTab() {
     $("#batchBtn").css({"background-color": "#6c9dc7"});
     $(".assignFollowContainer").hide();
     $("#containerBtn").css({"background-color": "#c7c1c1"});
-    let row = $("#dg").datagrid("getSelected");
-    if(row){
-        loadDriver(row.id);
-    }
-
+    // let row = $("#dg").datagrid("getSelected");
+    // if(row){
+    //     loadDriver(row.id);
+    // }
+    dataAssignedDriver ? $("#pickedDriverTable").datagrid('loadData', dataAssignedDriver):[]
+    dataDriver ? $("#driverTable").datagrid('loadData', dataDriver):[]
+    checkForChanges();
 }
 
 function assignFollowContainerTab() {
@@ -56,10 +55,12 @@ function assignFollowContainerTab() {
     $("#containerBtn").css({"background-color": "#6c9dc7"});
     $(".assignFollowBatch").hide();
     $("#batchBtn").css({"background-color": "#c7c1c1"});
-    let row = $("#dg").datagrid("getSelected");
-    if(row){
-        loadShipmentDetail(row.id);
-    }
+    // let row = $("#dg").datagrid("getSelected");
+    // if(row){
+    //     loadShipmentDetail(row.id);
+    // }
+    dataContainerList ? $("#dgShipmentDetail").datagrid('loadData', dataContainerList):[]
+    checkForChanges();
 }
 // LOAD SHIPMENT LIST
 function loadTable() {
@@ -89,7 +90,7 @@ function loadTable() {
                     pageSize: param.rows,
                     orderByColumn: param.sort,
                     isAsc: param.order,
-                    serviceId: $('#shipmentType').val()
+                    serviceType: $('#shipmentType').val()
                 },
                 dataType: "json",
                 success: function (data) {
@@ -144,6 +145,8 @@ function getSelectedShipment() {
 }
 
 function loadShipmentDetail(id) {
+    //reset dataContainerList
+    dataContainerList = []
     $("#dgShipmentDetail").datagrid({
         url: prefix + "/getShipmentDetail",
         height: window.innerHeight - 110,
@@ -165,6 +168,7 @@ function loadShipmentDetail(id) {
                 },
                 dataType: "json",
                 success: function (data) {
+                    dataContainerList = data.rows;
                     success(data);
                     $("#dgShipmentDetail").datagrid("hideColumn", "id");
                     $("#quantity").text(data.total);
@@ -218,9 +222,12 @@ function formatPickup(value) {
 //         $.modal.alertError("Quý khách chưa chọn container!");
 //     }
 // }
-///////////////////////ASSIGN TRUCK ////////////////////////////////////
+///////////////////////ASSIGN DRIVER ////////////////////////////////////
 var pickedIds = [];
 function loadDriver(shipmentId){
+    //reset dataDriver, dataAssignedDriver
+    dataDriver = [];
+    dataAssignedDriver = [];
     pickedIds = [];
     //pickedDriverList
     $("#pickedDriverTable").datagrid({
@@ -242,6 +249,7 @@ function loadDriver(shipmentId){
                 },
                 dataType: "json",
                 success: function (data) {
+                    dataAssignedDriver = data;
                     success(data);
                     //driverList
                     let records =  $('#pickedDriverTable').datagrid('getRows');
@@ -270,6 +278,7 @@ function loadDriver(shipmentId){
                                 },
                                 dataType: "json",
                                 success: function (data) {
+                                    dataDriver = data;
                                     success(data);
                                 },
                                 error: function () {
@@ -392,3 +401,11 @@ function addDriver(){
 function finishAssignTruck(msg) {
     $.modal.msgSuccess(msg);
 }
+
+function checkForChanges(){		
+    $('#driverTable').datagrid('resize');
+
+    $('#pickedDriverTable').datagrid('resize');
+
+    $('#dgShipmentDetail').datagrid('resize');
+ }

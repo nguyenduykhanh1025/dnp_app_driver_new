@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
@@ -24,6 +25,7 @@ import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -47,6 +49,8 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@Autowired
 	private MqttService mqttService;
 
+	@Autowired
+	private ICatosApiService catosApiService;
 	// VIEW SEND CONT EMPTY
     @GetMapping()
 	public String sendContEmpty() {
@@ -103,7 +107,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		Shipment shipment = new Shipment();
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
-		shipment.setServiceType(3);
+		shipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
@@ -114,12 +118,20 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@PostMapping("/shipment")
     @ResponseBody
     public AjaxResult addShipment(Shipment shipment) {
+		//check MST 
+		if(shipment.getTaxCode() != null){
+			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode());
+			if(groupName == null){
+				error("Mã số thuế không tồn tại");
+			}
+		}
 		LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceType(3);
+		shipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
+		shipment.setBlNo("null");
 		shipment.setStatus("1");
 		shipment.setContSupplyStatus(0);
 		if (shipmentService.insertShipment(shipment) == 1) {
@@ -131,7 +143,14 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	// EDIT SHIPMENT WITH SHIPMENT ID
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
-    public AjaxResult editShipment(Shipment shipment, @PathVariable("shipmentId") Long shipmentId) {
+    public AjaxResult editShipment(Shipment shipment) {
+		//check MST 
+		if(shipment.getTaxCode() != null){
+			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode());
+			if(groupName == null){
+				return error("Mã số thuế không tồn tại");
+			}
+		}
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
