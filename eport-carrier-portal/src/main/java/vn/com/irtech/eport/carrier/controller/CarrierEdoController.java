@@ -2,6 +2,8 @@ package vn.com.irtech.eport.carrier.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,7 +35,6 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.framework.util.ShiroUtils;
 
 @Controller
 @RequestMapping("/edo")
@@ -63,14 +64,10 @@ public class CarrierEdoController extends CarrierBaseController {
     //List
 	@GetMapping("/billNo")
 	@ResponseBody
-	public TableDataInfo billNo(Edo edo, String fromDate, String toDate)
+	public TableDataInfo billNo(Edo edo)
 	{
 		startPage();
-		edo.setCarrierId(ShiroUtils.getGroupId());
-		Map<String, Object> searchDate = new HashMap<>();
-		searchDate.put("fromDate", fromDate);
-		searchDate.put("toDate", toDate);
-		edo.setParams(searchDate);
+		edo.setCarrierCode(super.getUserGroup().getGroupCode());
 		List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
 		return getDataTable(dataList);
 	}
@@ -85,7 +82,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		if (edo == null) {
 			edo = new Edo();
 		}
-		edo.setCarrierId(ShiroUtils.getGroupId());
+		edo.setCarrierCode(super.getUserGroup().getGroupCode());
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}
@@ -180,36 +177,43 @@ public class CarrierEdoController extends CarrierBaseController {
 	@ResponseBody 
 	public AjaxResult updateEdo(Edo edo)
 	{
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		try { 
 			Date timeNow = new Date();
-		int segNo = 1;
-		edoService.updateEdo(edo);
-		EdoAuditLog edoAuditLog = new EdoAuditLog();
-		edoAuditLog.setCarrierId(super.getUser().getGroupId());
-		edoAuditLog.setCarrierCode(super.getUserGroup().getGroupCode());
-		edoAuditLog.setCreateTime(timeNow);
-		edoAuditLog.setEdoId(edo.getId());
-		EdoAuditLog edoAuditLogCheckSegNo = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-		if(edo.getExpiredDem() != null)
-		{
-			edoAuditLog.setFieldName("Expired Dem");
-			EdoAuditLog edoAuditLogCheckValue = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-			edoAuditLog.setOldValue(edoAuditLogCheckValue.getNewValue());
-			edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
-			edoAuditLog.setNewValue(edo.getExpiredDem().toString());
-			edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
-			segNo += 1;
-		}
-		if(edo.getDetFreeTime() != null)
-		{
-			edoAuditLog.setFieldName("Det Free Time");
-			EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-			edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-			edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
-			edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
-			edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
-		}
-		return AjaxResult.success("Update thành công");
+			int segNo = 1;
+			Date setTimeUpdatExpicedDem = edo.getExpiredDem();
+			setTimeUpdatExpicedDem.setHours(23);
+			setTimeUpdatExpicedDem.setMinutes(59);
+			setTimeUpdatExpicedDem.setSeconds(59);
+			edo.setExpiredDem(setTimeUpdatExpicedDem);
+			EdoAuditLog edoAuditLog = new EdoAuditLog();
+			edoAuditLog.setCarrierId(super.getUser().getGroupId());
+			edoAuditLog.setCarrierCode(super.getUserGroup().getGroupCode());
+			edoAuditLog.setCreateTime(timeNow);
+			edoAuditLog.setEdoId(edo.getId());
+			EdoAuditLog edoAuditLogCheckSegNo = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+			if(edo.getExpiredDem() != null)
+			{
+				
+				edoAuditLog.setFieldName("Expired Dem");
+				EdoAuditLog edoAuditLogCheckValue = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+				edoAuditLog.setOldValue(edoAuditLogCheckValue.getNewValue());
+				edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+				edoAuditLog.setNewValue(formatter.format(setTimeUpdatExpicedDem).toString()); 
+				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+				segNo += 1;
+			}
+			if(edo.getDetFreeTime() != null)
+			{
+				edoAuditLog.setFieldName("Det Free Time");
+				EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+				edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+				edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+				edoAuditLog.setNewValue(setTimeUpdatExpicedDem.toString());
+				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+			}
+			edoService.updateEdo(edo);
+			return AjaxResult.success("Update thành công");
 			
 		} catch(Exception e) {
 			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");

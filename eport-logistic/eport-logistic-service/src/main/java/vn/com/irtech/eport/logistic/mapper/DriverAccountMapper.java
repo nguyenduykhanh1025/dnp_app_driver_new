@@ -66,5 +66,8 @@ public interface DriverAccountMapper
      * @return result
      */
     public int deleteDriverAccountByIds(String[] ids);
-	public int checkPhoneUnique(String phoneNumber);
+
+    public int checkPhoneUnique(String phoneNumber);
+    
+    public List<DriverAccount> getAssignedDrivers(Long[] ids);
 }

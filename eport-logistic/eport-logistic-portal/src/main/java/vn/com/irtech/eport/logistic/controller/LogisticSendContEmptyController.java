@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
@@ -25,6 +27,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -50,6 +53,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@Autowired
 	private MqttService mqttService;
+
+	@Autowired
+	private ICatosApiService catosApiService;
 	
 	// @Autowired
 	// private CustomQueueService customQueueService;
@@ -114,12 +120,19 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@PostMapping("/shipment")
     @ResponseBody
     public AjaxResult addShipment(Shipment shipment) {
+		//check MST 
+		if(shipment.getTaxCode() != null){
+			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode());
+			if(groupName == null){
+				error("Mã số thuế không tồn tại");
+			}
+		}
 		LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceType(2);
+		shipment.setServiceType(Constants.SEND_CONT_EMPTY);
 		shipment.setStatus("1");
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
@@ -129,7 +142,14 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	
 	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
-    public AjaxResult editShipment(Shipment shipment, @PathVariable("shipmentId") Long shipmentId) {
+    public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
+		//check MST 
+		if(shipment.getTaxCode() != null){
+			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode());
+			if(groupName == null){
+				error("Mã số thuế không tồn tại");
+			}
+		}
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		if (verifyPermission(referenceShipment.getLogisticGroupId())) {
@@ -209,11 +229,20 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
-	@DeleteMapping("/shipment-detail/{shipmentDetailIds}")
+	@DeleteMapping("/shipment/{shipmentId}/shipment-detail/{shipmentDetailIds}")
+	@Transactional
 	@ResponseBody
-	public AjaxResult deleteShipmentDetail(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
+	public AjaxResult deleteShipmentDetail(@PathVariable Long shipmentId, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
 			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(shipmentId);
+			if (shipmentDetailService.countShipmentDetailList(shipmentDetail) == 0) {
+				Shipment shipment = new Shipment();
+				shipment.setId(shipmentId);
+				shipment.setStatus("1");
+				shipmentService.updateShipment(shipment);
+			}
 			return success("Lưu khai báo thành công");
 		}
 		return error("Lưu khai báo thất bại");

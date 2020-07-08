@@ -2,61 +2,75 @@ const PREFIX = ctx + "edo";
 var bill;
 var edo = new Object();
 $(function () {
-  $("#dg").height($(document).height() - 100);
-  $("#dgContainer").height($(document).height() - 100);
-  currentLeftTableWidth = $(".left-table").width();
-  currentRightTableWidth = $(".right-table").width();
-  $.ajax({
-    type: "GET",
-    url: PREFIX + "/carrierCode",
-    success(data) {
-      data.forEach((element) => {
-        $("#carrierCode").append(`<option value="${element}"> ${element}</option>`);
-      });
-    },
-  });
-  loadTable();
-  loadTableByContainer();
+    $("#dg").height($(document).height() - 100);
+    $("#dgContainer").height($(document).height() - 100);
+    currentLeftTableWidth = $(".left-table").width();
+    currentRightTableWidth = $(".right-table").width();
+    $.ajax({
+        type: "GET",
+        url: PREFIX + "/carrierCode",
+        success(data) {
+            data.forEach((element) => {
+                $("#carrierCode").append(`<option value="${element}"> ${element}</option>`);
+            });
+        },
+    });
+    loadTable();
+    loadTableByContainer();
 
-  $("#searchAll").keyup(function (event) {
-    if (event.keyCode == 13) {
-      edo.containerNumber = $("#searchAll").val().toUpperCase();
-      edo.consignee = $("#searchAll").val().toUpperCase();
-      edo.vessel = $("#searchAll").val().toUpperCase();
-      edo.voyNo = $("#searchAll").val().toUpperCase();
-      loadTableByContainer(bill);
-    }
-  });
+    $('#searchAll').keyup(function (event) {
+        if (event.keyCode == 13) {
+            edo.containerNumber = $('#searchAll').val().toUpperCase();
+            edo.consignee = $('#searchAll').val().toUpperCase();
+            edo.vessel = $('#searchAll').val().toUpperCase();
+            edo.voyNo = $('#searchAll').val().toUpperCase();
+            loadTableByContainer(bill);
+        }
+    });
+    $('#searchBillNo').keyup(function (event) {
+        if (event.keyCode == 13) {
+            billOfLading = $('#searchBillNo').val().toUpperCase();
+            if(billOfLading == "")
+            {
+               return;
+            }
+            loadTable(billOfLading);
+        }
+    });
 });
 
-function loadTable(containerNumber, billOfLading, fromDate, toDate) {
-  $("#dg").datagrid({
-    url: PREFIX + "/billNo",
-    method: "GET",
-    singleSelect: true,
-    clientPaging: true,
-    pagination: true,
-    pageSize: 20,
-    onClickRow: function () {
-      getSelectedRow();
-    },
-    nowrap: false,
-    striped: true,
-    loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
-      if (!opts.url) return false;
-      $.ajax({
-        type: opts.method,
-        url: opts.url,
-        data: {
-          containerNumber: containerNumber,
-          billOfLading: billOfLading,
-          fromDate: fromDate,
-          toDate: toDate,
+function loadTable(billOfLading) {
+    $("#dg").datagrid({
+        url: PREFIX + "/billNo",
+        method: "GET",
+        singleSelect: true,
+        clientPaging: true,
+        pagination: true,
+        pageSize: 20,
+        onClickRow: function () {
+            getSelectedRow();
         },
-        dataType: "json",
-        success: function (data) {
-          success(data);
+        nowrap: false,
+        striped: true,
+        loader: function (param, success, error) {
+            var opts = $(this).datagrid("options");
+            if (!opts.url) return false;
+            $.ajax({
+                type: opts.method,
+                url: opts.url,
+                data: {
+                    billOfLading: billOfLading,
+                },
+                dataType: "json",
+                success: function (data) {
+                    success(data);
+                    loadTableByContainer(billOfLading);
+
+                },
+                error: function () {
+                    error.apply(this, arguments);
+                },
+            });
         },
         error: function () {
           error.apply(this, arguments);
@@ -78,6 +92,11 @@ function formatToYDM(date) {
   return date.split("/").reverse().join("/");
 }
 
+function formatToYDMHMS(date) {
+    let temp = date.substring(0,10);
+    return temp.split("-").reverse().join("/") + date.substring(10,19);
+}
+
 function formatAction(value, row, index) {
   var actions = [];
   actions.push('<a class="btn btn-success btn-xs btn-action mt5" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Cập nhật</a> ');
@@ -94,38 +113,41 @@ function viewUpdateCont(id) {
 }
 
 function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading;
-  $("#dgContainer").datagrid({
-    url: PREFIX + "/edo",
-    method: "POST",
-    singleSelect: true,
-    clientPaging: true,
-    pagination: true,
-    pageSize: 20,
-    nowrap: false,
-    striped: true,
-    loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
-      if (billOfLading == null) {
-        return false;
-      }
-      if (!opts.url) return false;
-      $.ajax({
-        type: opts.method,
-        url: opts.url,
-        contentType: "application/json",
-        accept: "text/plain",
-        dataType: "text",
-        data: JSON.stringify({
-          pageNum: param.page,
-          pageSize: param.rows,
-          orderByColumn: param.sort,
-          isAsc: param.order,
-          data: edo,
-        }),
-        success: function (data) {
-          success(JSON.parse(data));
-        },
+    edo.billOfLading = billOfLading
+    $("#dgContainer").datagrid({
+        url: PREFIX + "/edo",
+        method: "POST",
+        singleSelect: true,
+        clientPaging: true,
+        pagination: true,
+        pageSize: 20,
+        nowrap: false,
+        striped: true,
+        loader: function (param, success, error) {
+            var opts = $(this).datagrid("options");
+            if (billOfLading == null) {
+                return false;
+            }
+            if (!opts.url) return false;
+            $.ajax({
+                type: opts.method,
+                url: opts.url,
+                contentType: "application/json",
+                accept: 'text/plain',
+                dataType: 'text',
+                data: JSON.stringify({
+                    pageNum: param.page,
+                    pageSize: param.rows,
+                    orderByColumn: param.sort,
+                    isAsc: param.order,
+                    data: edo
+                }),
+                success: function (data) {
+                    success(JSON.parse(data));
+                    let dataTotal = JSON.parse(data);
+                    $("#countContainer").text("Số lượng container : " + dataTotal.total);
+                    $("#showBillNo").text("Bill No : " + bill);
+                },
 
         error: function () {
           error.apply(this, arguments);

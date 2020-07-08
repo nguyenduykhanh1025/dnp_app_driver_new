@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.web.controller.container.supplier;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -68,15 +70,27 @@ public class ContainerSupplierController extends BaseController {
 		return ajaxResult;
 	}
 
-	@PostMapping("/shipment-detail")
+	@PostMapping("/shipment/{shipmentId}/shipment-detail")
 	@Transactional
 	@ResponseBody
-	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
+	public AjaxResult saveShipmentDetail(@PathVariable Long shipmentId, @RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
+			boolean allUpdate = false;
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				if (shipmentDetail.getContainerNo() == null || "".equals(shipmentDetail.getContainerNo())) {
+					allUpdate = true;
+				}
 				if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
 					return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 				}
+			}
+			if (!allUpdate) {
+				Shipment shipment = new Shipment();
+				shipment.setId(shipmentId);
+				shipment.setContSupplyStatus(1);
+				shipment.setUpdateTime(new Date());
+				shipment.setUpdateBy(ShiroUtils.getSysUser().getUserName());
+				shipmentService.updateShipment(shipment);
 			}
 			return success("Lưu khai báo thành công");
 		}

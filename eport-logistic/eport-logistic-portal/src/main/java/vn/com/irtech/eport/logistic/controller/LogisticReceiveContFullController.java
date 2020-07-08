@@ -22,7 +22,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
@@ -33,6 +36,7 @@ import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -66,6 +70,15 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	
 	@Autowired
 	private MqttService mqttService;
+
+	@Autowired
+	private ICatosApiService catosApiService;
+
+	@Autowired
+	private IEdoService edoService;
+
+	@Autowired
+	private ICarrierGroupService carrierGroupService;
 
 	@GetMapping()
 	public String receiveContFull(ModelMap mmap) {
@@ -170,7 +183,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult checkBlNoUnique(@PathVariable String blNo) {
 		Shipment shipment = new Shipment();
-		shipment.setServiceType(1);
+		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBlNo(blNo);
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
@@ -182,12 +195,19 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@PostMapping("/shipment")
 	@ResponseBody
 	public AjaxResult addShipment(Shipment shipment) {
+		//check MST 
+		if(shipment.getTaxCode() != null){
+			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode());
+			if(groupName == null){
+				error("Mã số thuế không tồn tại");
+			}
+		}
 		LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceType(1);
+		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		shipment.setStatus("1");
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
@@ -198,6 +218,13 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@PostMapping("/shipment/{shipmentId}")
 	@ResponseBody
 	public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
+		//check MST 
+		if(shipment.getTaxCode() != null){
+			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode());
+			if(groupName == null){
+				error("Mã số thuế không tồn tại");
+			}
+		}
 		LogisticAccount user = getUser();
 		Shipment referenceShipment = shipmentService.selectShipmentById(shipment.getId());
 		//check if current user own shipment
@@ -254,7 +281,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			boolean updateShipment = true;
 			if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && shipmentDt.getVgmChk()) {
 				shipmentSendCont.setBlNo(shipmentDt.getBlNo());
-				shipmentSendCont.setServiceType(2);
+				shipmentSendCont.setServiceType(Constants.SEND_CONT_EMPTY);
 				List<Shipment> shipments = shipmentService.selectShipmentList(shipmentSendCont);
 				if (shipments == null || shipments.size() == 0) {
 					shipmentSendCont.setContainerAmount(Long.valueOf(shipmentDt.getTier()));
@@ -314,11 +341,20 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
-	@DeleteMapping("/shipment-detail/{shipmentDetailIds}")
+	@DeleteMapping("/shipment/{shipmentId}/shipment-detail/{shipmentDetailIds}")
+	@Transactional
 	@ResponseBody
-	public AjaxResult deleteShipmentDetail(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
+	public AjaxResult deleteShipmentDetail(@PathVariable Long shipmentId, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
 			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(shipmentId);
+			if (shipmentDetailService.countShipmentDetailList(shipmentDetail) == 0) {
+				Shipment shipment = new Shipment();
+				shipment.setId(shipmentId);
+				shipment.setStatus("1");
+				shipmentService.updateShipment(shipment);
+			}
 			return success("Lưu khai báo thành công");
 		}
 		return error("Lưu khai báo thất bại");
@@ -492,15 +528,15 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		AjaxResult ajaxResult = new AjaxResult();
 		Shipment shipment = new Shipment();
 		//check bill unique
-		shipment.setServiceType(1);
+		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBlNo(blNo);
 		if (shipmentService.checkBillBookingNoUnique(shipment) != 0) {
 			return error("Số bill đã tồn tại");
 		}
 		//check opeCode
-		String opeCode = shipmentService.getOpeCodeByBlNo(blNo);
-		Long containerAmount = shipmentService.getCountContainerAmountByBlNo(blNo);
+		String opeCode = edoService.getOpeCodeByBlNo(blNo);
+		Long containerAmount = edoService.getCountContainerAmountByBlNo(blNo);
 		if(opeCode != null) {
 			shipment.setEdoFlg("1");
 			ajaxResult = success();
@@ -511,11 +547,11 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		} else {
 			Shipment shipCatos = shipmentService.getOpeCodeCatosByBlNo(blNo);
 			if (shipCatos != null) {
-				String edoFlg = shipmentService.getEdoFlgByOpeCode(shipCatos.getOpeCode());
+				String edoFlg = carrierGroupService.getDoTypeByOpeCode(shipCatos.getOpeCode());
 				if(edoFlg == null){
 					return error("Mã hãng tàu:"+ shipCatos.getOpeCode() +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
 				}
-				if(edoFlg == "1"){
+				if(edoFlg.equals("1")){
 					return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng liên hệ Cảng!");
 				}
 				shipment.setEdoFlg(edoFlg);

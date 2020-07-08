@@ -15,8 +15,7 @@ import java.util.Date;
  * @author ruoyi
  * @date 2020-05-19
  */
-public class DriverAccount extends BaseEntity
-{
+public class DriverAccount extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /** ID */
@@ -37,7 +36,7 @@ public class DriverAccount extends BaseEntity
     /** CMND */
     @Excel(name = "CMND")
     private String identifyCardNo;
-    
+
     /** Mat Khau */
     @Excel(name = "Mat Khau")
     @JsonIgnore
@@ -54,134 +53,131 @@ public class DriverAccount extends BaseEntity
 
     /** Delete Flag */
     private boolean delFlag;
-    
+
     /** Hieu Luc Den */
     @Excel(name = "Hieu Luc Den", width = 30, dateFormat = "yyyy-MM-dd")
     private Date validDate;
-    
+
     private LogisticGroup logisticGroup;
 
     public LogisticGroup getLogisticGroup() {
-    	if(logisticGroup == null) {
-    		logisticGroup = new LogisticGroup();
-    	}
-		return logisticGroup;
-	}
+        if (logisticGroup == null) {
+            logisticGroup = new LogisticGroup();
+        }
+        return logisticGroup;
+    }
 
-	public void setLogisticGroup(LogisticGroup logisticGroup) {
-		this.logisticGroup = logisticGroup;
-	}
+    public void setLogisticGroup(LogisticGroup logisticGroup) {
+        this.logisticGroup = logisticGroup;
+    }
 
-	public void setId(Long id) 
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() 
-    {
+    public Long getId() {
         return id;
     }
-    public void setLogisticGroupId(Long logisticGroupId) 
-    {
+
+    public void setLogisticGroupId(Long logisticGroupId) {
         this.logisticGroupId = logisticGroupId;
     }
 
-    public Long getLogisticGroupId() 
-    {
+    public Long getLogisticGroupId() {
         return logisticGroupId;
     }
-    public void setMobileNumber(String mobileNumber) 
-    {
+
+    public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
     }
 
-    public String getMobileNumber() 
-    {
+    public String getMobileNumber() {
         return mobileNumber;
     }
-    public void setFullName(String fullName) 
-    {
+
+    public void setFullName(String fullName) {
         this.fullName = fullName;
     }
 
-    public String getFullName() 
-    {
+    public String getFullName() {
         return fullName;
     }
-    
-    public void setIdentifyCardNo(String identifyCardNo) 
-    {
+
+    public void setIdentifyCardNo(String identifyCardNo) {
         this.identifyCardNo = identifyCardNo;
     }
 
-    public String getIdentifyCardNo() 
-    {
+    public String getIdentifyCardNo() {
         return identifyCardNo;
     }
-    public void setPassword(String password) 
-    {
+
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getPassword() 
-    {
+    public String getPassword() {
         return password;
     }
-    public void setSalt(String salt) 
-    {
+
+    public void setSalt(String salt) {
         this.salt = salt;
     }
 
-    public String getSalt() 
-    {
+    public String getSalt() {
         return salt;
     }
-    public void setStatus(String status) 
-    {
+
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public String getStatus() 
-    {
+    public String getStatus() {
         return status;
     }
-    public void setDelFlag(boolean delFlag) 
-    {
+
+    public void setDelFlag(boolean delFlag) {
         this.delFlag = delFlag;
     }
 
-    public boolean getDelFlag() 
-    {
+    public boolean getDelFlag() {
         return delFlag;
     }
-    public void setValidDate(Date validDate) 
-    {
+
+    public void setValidDate(Date validDate) {
         this.validDate = validDate;
     }
 
-    public Date getValidDate() 
-    {
+    public Date getValidDate() {
         return validDate;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("id", getId())
-            .append("logisticGroupId", getLogisticGroupId())
-            .append("mobileNumber", getMobileNumber())
-            .append("fullName", getFullName())
-            .append("identifyCardNo", getIdentifyCardNo())
-            .append("password", getPassword())
-            .append("salt", getSalt())
-            .append("status", getStatus())
-            .append("delFlag", getDelFlag())
-            .append("validDate", getValidDate())
-            .append("remark", getRemark())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .toString();
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
+                .append("logisticGroupId", getLogisticGroupId()).append("mobileNumber", getMobileNumber())
+                .append("fullName", getFullName()).append("identifyCardNo", getIdentifyCardNo())
+                .append("password", getPassword()).append("salt", getSalt()).append("status", getStatus())
+                .append("delFlag", getDelFlag()).append("validDate", getValidDate()).append("remark", getRemark())
+                .append("createBy", getCreateBy()).append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) { 
+            return true; 
+        }
+        if(obj == null || !(obj instanceof DriverAccount)) {
+            return false;
+        }
+        DriverAccount that = (DriverAccount) obj;
+        return that.getId().longValue() == this.getId().longValue();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + id.hashCode();
+        return result;
     }
 }
