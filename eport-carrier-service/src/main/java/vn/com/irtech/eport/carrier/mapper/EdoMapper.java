@@ -21,6 +21,13 @@ public interface EdoMapper
      * @return Exchange Delivery Order
      */
     public Edo selectEdoById(Long id);
+    
+    /**
+     * Get Exchange Delivery Order by order number
+     * @param orderNumber
+     * @return
+     */
+    public Edo selectEdoByOrderNumber(String orderNumber);
 
     /**
      * Get Exchange Delivery Order List
@@ -69,4 +76,6 @@ public interface EdoMapper
     public Long getCountContainerAmountByBlNo(String blNo);
     
     public List<Edo> selectEdoListByBlNo(String blNo);
+
+    public List<Edo> selectEdoListByBillNo(Edo edo);
 }

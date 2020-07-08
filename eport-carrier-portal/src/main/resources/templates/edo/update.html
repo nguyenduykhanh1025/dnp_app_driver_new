@@ -1,43 +1,55 @@
+ 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Update DO</title>
-    <th:block th:include="include :: header('Xem Thông Tin DO')" />
-    <th:block th:include="include :: handsontable-css" />
-    <script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
-    <link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet" />
-    <link th:href="@{/eport/css/uploadFile.css}" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:include="include :: header('Xac Nhan Lam Lenh')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/eport/css/update.css}" rel="stylesheet" />
 </head>
-
-<body class="gray-bg">
-    <div id="wrapper">
-        <div class="row">
-          <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
-                <div class="container-fluid">
-                    <div class="panel panel-default" id="fileupload_main_panel">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div id="bannarzone" class="dropzone" style="min-height: 120px"></div>
-                                    <button id="submitFile" type="submit" class="btn btn-primary">Gửi file </button>
-                                    <div id="viewEdi"></div>
-                                </div>
+<body>
+    <div class="container">
+            <div class="content">
+                <div class="col-sm-12 table-container">
+                    <h3 class="title-content-history">Cập nhật Container  <span id="containerNumber"></span></h3>
+                    
+                </div>
+                
+                    <form class="form-horizontal m">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 col-md-1">Hạn lệnh</label>
+                            <div class="col-sm-9 col-xs-8 col-md-10">
+                                <input class="form-control time-input" id="expiredDem" name="fromDate" />
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 col-md-1">Ngày miễn lưu vỏ</label>
+                            <div class="col-sm-9 col-xs-8 col-md-10">
+                                <input name="groupCode"  id="detFreeTime" class="form-control" type="text" >
+                            </div>
+                        </div>
+                    </form>
+                    <div class="layui-layer-btn footer">
+                        <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+                        <a class="layui-layer-btn1" onclick="closeForm()">Hủy</a>
                     </div>
-                </div>
-               
             </div>
-        </div>
+       
     </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: handsontable-js" />
-    <script th:src="@{/eport/js/modules/edo/update.js}"></script>
+    
 </body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: easyui-js" />
+<script th:src="@{/eport/js/modules/edo/update.js}"></script>
+<th:block th:include="include :: datetimepicker-js" />
+<script type="text/javascript" th:inline="javascript"></script>
+<script type="text/javascript" th:inline="javascript">
+     var id = /*[[${id}]]*/ ;
+     var containerNumber = /*[[${containerNumber}]]*/ ;
+     var expiredDem = /*[[${expiredDem}]]*/ ;
+     var detFreeTime = /*[[${detFreeTime}]]*/ ;
+</script>
 
 </html>

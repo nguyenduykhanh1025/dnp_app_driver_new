@@ -58,6 +58,13 @@ public class Shipment extends BaseEntity
     @Excel(name = "EDO Flag (1,0)")
     private String edoFlg;
 
+    /** Specific Cont Flag (1, 0) */
+    @Excel(name = "Specific Cont Flag (1, 0)")
+    private Integer specificContFlg;
+
+    /** Cont Supply Status (0, 1) */
+    private Integer contSupplyStatus;
+
     /** So tham chieu CATOS */
     @Excel(name = "Reference No")
     private String referenceNo;
@@ -174,6 +181,22 @@ public class Shipment extends BaseEntity
         return edoFlg;
     }
 
+    public void setSpecificContFlg(Integer specificContFlg) {
+        this.specificContFlg = specificContFlg;
+    }
+
+    public Integer getSpecificContFlg() {
+        return specificContFlg;
+    }
+
+    public void setContSupplyStatus(Integer contSupplyStatus) {
+        this.contSupplyStatus = contSupplyStatus;
+    }
+
+    public Integer getContSupplyStatus() {
+        return contSupplyStatus;
+    }
+
     public void setReferenceNo(String referenceNo) {
         this.referenceNo = referenceNo;
     }
@@ -217,6 +240,8 @@ public class Shipment extends BaseEntity
             .append("groupName", getGroupName())
             .append("containerAmount", getContainerAmount())
             .append("edoFlg", getEdoFlg())
+            .append("specificContFlg", getSpecificContFlg())
+            .append("contSupplyStatus", getContSupplyStatus())
             .append("referenceNo", getReferenceNo())
             .append("status", getStatus())
             .append("remark", getRemark())

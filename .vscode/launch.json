@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - EportCarrierApplication",
+            "request": "launch",
+            "mainClass": "vn.com.irtech.eport.EportCarrierApplication",
+            "projectName": "eport-carrier-portal"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-EportLogisticApplication<eport-logistic-portal>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "vn.com.irtech.eport.EportLogisticApplication",
+            "projectName": "eport-logistic-portal",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-EportApplication<eport-admin>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "vn.com.irtech.eport.EportApplication",
+            "projectName": "eport-admin",
+            "args": ""
+        }
+    ]
+}

@@ -71,7 +71,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@GetMapping("/shipment/{id}")
     public String edit(@PathVariable("id") Long id, ModelMap mmap) {
-		Shipment shipment = shipmentService.selectShipmentWithGroupById(id);
+		Shipment shipment = shipmentService.selectShipmentById(id);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
 		}
@@ -132,7 +132,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(Constants.SEND_CONT_EMPTY);
-		shipment.setBlNo("null");
+		shipment.setStatus("1");
 		if (shipmentService.insertShipment(shipment) == 1) {
 			return success("Thêm lô thành công");
 		}
@@ -163,7 +163,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@GetMapping("/shipment/{shipmentId}/shipment-detail")
 	@ResponseBody
-	public AjaxResult listShipmentDetail(@PathVariable Long shipmentId) {
+	public AjaxResult listShipmentDetail(@PathVariable("shipmentId") Long shipmentId) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
@@ -184,6 +184,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
 			LogisticAccount user = getUser();
+			Shipment shipment = new Shipment();
+			shipment.setId(shipmentDetails.get(0).getShipmentId());
+			boolean updateShipment = true;
 			List<String> contReservedList = shipmentDetailService.checkContainerReserved(shipmentDetails.get(0).getProcessStatus());
 			if (contReservedList.size() > 0) {
 				AjaxResult ajaxResult = AjaxResult.error();
@@ -193,14 +196,11 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus(null);
 				if (shipmentDetail.getId() != null) {
-					if (shipmentDetail.getContainerNo() == null || shipmentDetail.getContainerNo().equals("")) {
-						shipmentDetailService.deleteShipmentDetailById(shipmentDetail.getId());
-					} else {
-						shipmentDetail.setUpdateBy(user.getFullName());
-						shipmentDetail.setUpdateTime(new Date());
-						if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
-							return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
-						}
+					updateShipment = false;
+					shipmentDetail.setUpdateBy(user.getFullName());
+					shipmentDetail.setUpdateTime(new Date());
+					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 				} else {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
@@ -217,6 +217,12 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 					}
 				}
 			}
+			if (updateShipment) {
+				shipment.setUpdateTime(new Date());
+				shipment.setUpdateBy(getUser().getFullName());
+				shipment.setStatus("2");
+				shipmentService.updateShipment(shipment);
+			}
 			return success("Lưu khai báo thành công");
 		}
 		return error("Lưu khai báo thất bại");
@@ -224,7 +230,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@DeleteMapping("/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult deleteShipmentDetail(@PathVariable String shipmentDetailIds) {
+	public AjaxResult deleteShipmentDetail(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
 			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
 			return success("Lưu khai báo thành công");
@@ -234,7 +240,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult verifyOtp(@PathVariable String otp, @PathVariable String shipmentDetailIds, boolean creditFlag) {
+	public AjaxResult verifyOtp(@PathVariable("otp") String otp, @PathVariable("shipmentDetailIds") String shipmentDetailIds, boolean creditFlag) {
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
@@ -250,6 +256,12 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		if (shipmentDetails != null && shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+			if (!"3".equals(shipment.getStatus())) {
+				shipment.setStatus("3");
+				shipment.setUpdateTime(new Date());
+				shipment.setUpdateBy(getUser().getFullName());
+				shipmentService.updateShipment(shipment);
+			}
 			ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
 			if (processOrder != null) {
 				ServiceRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
@@ -273,7 +285,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@PostMapping("/payment/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult payment(@PathVariable String shipmentDetailIds) {
+	public AjaxResult payment(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
 		if (shipmentDetails != null && shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {

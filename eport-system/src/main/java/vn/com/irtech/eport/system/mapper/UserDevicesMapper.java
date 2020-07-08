@@ -58,4 +58,6 @@ public interface UserDevicesMapper
      * @return result
      */
     public int deleteUserDevicesByIds(String[] ids);
+
+    public List<UserDevices> selectDeviceTokenList(String[] userTypeList);
 }

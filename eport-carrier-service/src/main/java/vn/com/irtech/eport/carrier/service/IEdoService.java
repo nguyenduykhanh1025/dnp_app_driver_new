@@ -13,64 +13,74 @@ import vn.com.irtech.eport.carrier.domain.Edo;
  * @author ruoyi
  * @date 2020-06-26
  */
-public interface IEdoService 
-{
-    /**
-     * Get Exchange Delivery Order
-     * 
-     * @param id Exchange Delivery OrderID
-     * @return Exchange Delivery Order
-     */
-    public Edo selectEdoById(Long id);
+public interface IEdoService {
+	/**
+	 * Get Exchange Delivery Order
+	 * 
+	 * @param id Exchange Delivery OrderID
+	 * @return Exchange Delivery Order
+	 */
+	public Edo selectEdoById(Long id);
 
-    /**
-     * Get Exchange Delivery Order List
-     * 
-     * @param edo Exchange Delivery Order
-     * @return Exchange Delivery Order List
-     */
-    public List<Edo> selectEdoList(Edo edo);
+	/**
+	 * Get Exchange Delivery Order by order number
+	 * 
+	 * @param orderNumber
+	 * @return
+	 */
+	public Edo selectEdoByOrderNumber(String orderNumber);
 
-    /**
-     * Add Exchange Delivery Order
-     * 
-     * @param edo Exchange Delivery Order
-     * @return result
-     */
-    public int insertEdo(Edo edo);
+	/**
+	 * Get Exchange Delivery Order List
+	 * 
+	 * @param edo Exchange Delivery Order
+	 * @return Exchange Delivery Order List
+	 */
+	public List<Edo> selectEdoList(Edo edo);
 
-    /**
-     * Update Exchange Delivery Order
-     * 
-     * @param edo Exchange Delivery Order
-     * @return result
-     */
-    public int updateEdo(Edo edo);
+	/**
+	 * Add Exchange Delivery Order
+	 * 
+	 * @param edo Exchange Delivery Order
+	 * @return result
+	 */
+	public int insertEdo(Edo edo);
 
-    /**
-     * Batch Delete Exchange Delivery Order
-     * 
-     * @param ids Entity Ids
-     * @return result
-     */
-    public int deleteEdoByIds(String ids);
+	/**
+	 * Update Exchange Delivery Order
+	 * 
+	 * @param edo Exchange Delivery Order
+	 * @return result
+	 */
+	public int updateEdo(Edo edo);
 
-    /**
-     * Delete Exchange Delivery Order
-     * 
-     * @param id Exchange Delivery OrderID
-     * @return result
-     */
-    public int deleteEdoById(Long id);
+	/**
+	 * Batch Delete Exchange Delivery Order
+	 * 
+	 * @param ids Entity Ids
+	 * @return result
+	 */
+	public int deleteEdoByIds(String ids);
 
-    public Edo checkContainerAvailable(@Param("container") String cont,@Param("billNo") String billNo);
-    
-    public String getOpeCodeByBlNo(String blNo);
+	/**
+	 * Delete Exchange Delivery Order
+	 * 
+	 * @param id Exchange Delivery OrderID
+	 * @return result
+	 */
+	public int deleteEdoById(Long id);
 
-    
-    public  List<Edo> readEdi(String[] text);
+	public Edo checkContainerAvailable(@Param("container") String cont, @Param("billNo") String billNo);
 
-    public Long getCountContainerAmountByBlNo(String blNo);
+	public String getOpeCodeByBlNo(String blNo);
 
-    public File getFolderUploadByTime(String folderLoad);
+	public List<Edo> readEdi(String[] text);
+
+	public Long getCountContainerAmountByBlNo(String blNo);
+
+	public File getFolderUploadByTime(String folderLoad);
+
+	// Get Bill No DISTINCT
+	public List<Edo> selectEdoListByBillNo(Edo edo);
+
 }

@@ -5,11 +5,10 @@ var minutes = 0, seconds = 0;
 function confirm() {
     if ($("#otpInput").val() !=null && $("#otpInput").val() != "") {
         $.ajax({
-            url: prefix + "/otp/verify",
+            url: prefix + "/otp/" + $("#otpInput").val() + "/verification/shipment-detail/" + shipmentDetailIds,
             method: "post",
             data: {
-                otp: $("#otpInput").val(),
-                shipmentDetailIds: shipmentDetailIds
+                creditFlag: creditFlag,
             },
             success: function (data) {
                 if (data.code != 0) {
@@ -26,7 +25,6 @@ function confirm() {
     } else {
         $.modal.alertError("Quý khách chưa nhập mã OTP!");
     }
-    
 }
 
 function closeForm() {
@@ -36,11 +34,8 @@ function closeForm() {
 function getOtp() {
     if (minutes < 4 || (minutes == 4 && seconds < 30)) {
         $.ajax({
-            url: "/logistic/otp",
-            method: "post",
-            data: {
-                shipmentDetailIds: shipmentDetailIds
-            },
+            url: "/logistic/otp/" + shipmentDetailIds,
+            method: "GET",
             success: function (data) {
                 if (data.code != 0) {
                     $.modal.msgSuccess("Đã gửi OTP.");

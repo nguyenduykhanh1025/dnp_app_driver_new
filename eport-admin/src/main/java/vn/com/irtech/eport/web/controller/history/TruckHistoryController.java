@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.controller.BaseController;
+import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
@@ -30,8 +31,12 @@ public class TruckHistoryController extends BaseController {
  
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo getListTruckHistor(@RequestBody PickupHistory pickupHistory) {
-		startPage();
+	public TableDataInfo getListTruckHistor(@RequestBody PageAble<PickupHistory> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		PickupHistory pickupHistory = param.getData();
+		if (pickupHistory == null) {
+			pickupHistory = new PickupHistory();
+		}
 		List<PickupHistory> pickupHistorys = pickupHistoryService.selectPickupHistoryListForHistory(pickupHistory);
 		return getDataTable(pickupHistorys);
 	}

@@ -23,6 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="status"    column="status"    />
         <result property="releaseStatus"    column="release_status"    />
         <result property="createSource"    column="create_source"    />
+        <result property="transactionId"    column="transaction_id"    />
         <result property="remark"    column="remark"    />
         <result property="delFlg"    column="del_flg"    />
         <result property="createBy"    column="create_by"    />
@@ -32,7 +33,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectEdoVo">
-        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, status, release_status, create_source, remark, del_flg, create_by, create_time, update_by, update_time from edo
+        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, status, release_status, create_source, remark, del_flg, create_by, create_time, update_by, update_time, transaction_id from edo
+    </sql>
+
+    <sql id="selectEdoVoByBillNo">
+        select DISTINCT bill_of_lading, business_unit, vessel, voy_no,  create_time from edo
     </sql>
 
     <select id="selectEdoList" parameterType="Edo" resultMap="EdoResult">
@@ -43,24 +48,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
-            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
-            <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
             <if test="secureCode != null  and secureCode != ''"> and secure_code = #{secureCode}</if>
             <if test="releaseDate != null "> and release_date = #{releaseDate}</if>
-            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
-            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="delFlg != null  and delFlg != ''"> and del_flg = #{delFlg}</if>
-            <if test="params.toDate != null and params.toDate != ''">
-				and date_format(expired_dem,'%y%m%d') &lt;= date_format(#{params.toDate},'%y%m%d')
-			</if>
-             <if test="params.fromDate != null and params.fromDate != ''">
-				and date_format(expired_dem,'%y%m%d') &gt;= date_format(#{params.fromDate},'%y%m%d')
-			</if>
+            <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
+            <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
+            <if test="consignee != null  and consignee != ''"> and (upper(consignee) like concat('%', #{consignee}, '%')</if>
+            <if test="containerNumber != null  and containerNumber != ''"> or upper(container_number) like concat('%', #{containerNumber}, '%')</if>
+            <if test="vessel != null  and vessel != ''"> or upper(vessel) like concat('%', #{vessel}, '%')</if>
+            <if test="voyNo != null  and voyNo != ''"> or upper(voy_no) like concat('%', #{voyNo}, '%'))</if>
         </where>
 
     </select>
@@ -68,6 +69,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectEdoById" parameterType="Long" resultMap="EdoResult">
         <include refid="selectEdoVo"/>
         where id = #{id}
+    </select>
+    
+     <select id="selectEdoByOrderNumber" parameterType="String" resultMap="EdoResult">
+        <include refid="selectEdoVo"/>
+        where order_number = #{orderNumber}
+        limit 1
     </select>
         
     <insert id="insertEdo" parameterType="Edo" useGeneratedKeys="true" keyProperty="id">
@@ -90,12 +97,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''">status,</if>
             <if test="releaseStatus != null  and releaseStatus != ''">release_status,</if>
             <if test="createSource != null  and createSource != ''">create_source,</if>
+            <if test="transactionId != null  and transactionId != ''">transaction_id,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="delFlg != null ">del_flg,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="carrierId != null ">#{carrierId},</if>
@@ -115,12 +121,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''">#{status},</if>
             <if test="releaseStatus != null  and releaseStatus != ''">#{releaseStatus},</if>
             <if test="createSource != null  and createSource != ''">#{createSource},</if>
+            <if test="transactionId != null  and transactionId != ''">#{transactionId},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="delFlg != null ">#{delFlg},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
+            sysdate()
          </trim>
     </insert>
 
@@ -144,12 +149,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''">status = #{status},</if>
             <if test="releaseStatus != null  and releaseStatus != ''">release_status = #{releaseStatus},</if>
             <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>
+            <if test="transactionId != null  and transactionId != ''">transaction_id = #{transactionId},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="delFlg != null ">del_flg = #{delFlg},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate()
         </trim>
         where id = #{id}
     </update>
@@ -185,4 +189,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectEdoVo"/>
 	    where bill_of_lading = #{blNo}
     </select>
+
+    <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
+        <include refid="selectEdoVoByBillNo"/>
+        <where>  
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
+            <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
+            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
+            <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="secureCode != null  and secureCode != ''"> and secure_code = #{secureCode}</if>
+            <if test="releaseDate != null "> and release_date = #{releaseDate}</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
+            <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
+            <if test="params.toDate != null and params.toDate != ''">
+				and date_format(expired_dem,'%y%m%d') &lt;= date_format(#{params.toDate},'%y%m%d')
+			</if>
+             <if test="params.fromDate != null and params.fromDate != ''">
+				and date_format(expired_dem,'%y%m%d') &gt;= date_format(#{params.fromDate},'%y%m%d')
+			</if>
+        </where>
+
+    </select>
+     
 </mapper>
