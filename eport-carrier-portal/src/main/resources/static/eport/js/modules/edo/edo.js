@@ -78,6 +78,11 @@ function formatToYDM(date) {
     return date.split("/").reverse().join("/");
 }
 
+function formatToYDMHMS(date) {
+    let temp = date.substring(0,10);
+    return temp.split("-").reverse().join("/") + date.substring(10,19);
+}
+
 function formatAction(value, row, index) {
     var actions = [];
     actions.push('<a class="btn btn-success btn-xs btn-action mt5" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Cập nhật</a> ');
@@ -126,6 +131,10 @@ function loadTableByContainer(billOfLading) {
                 }),
                 success: function (data) {
                     success(JSON.parse(data));
+                    let dataTotal = JSON.parse(data);
+                    $("#countContainer").text("Số lượng container : " + dataTotal.total);
+                    $("#showBillNo").text("Bill No : " + bill);
+                    
                 },
 
                 error: function () {

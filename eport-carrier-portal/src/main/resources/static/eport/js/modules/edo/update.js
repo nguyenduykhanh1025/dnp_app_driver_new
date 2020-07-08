@@ -61,7 +61,6 @@ function formatDateForSubmit(value) {
     let checkDate = validateUpdateDate(formatDate(expiredDem),$("#expiredDem").val());
     if(checkDate == 1)
     {
-      console.log("OK");
       return;
     }
     if (value == null) {

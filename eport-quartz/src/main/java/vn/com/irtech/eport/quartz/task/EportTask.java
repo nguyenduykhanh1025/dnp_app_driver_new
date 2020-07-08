@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -121,7 +122,7 @@ public class EportTask {
             //TODO Return error 
         }
         //set time scan EDI file not yet
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Instant now = Instant.now();
         Instant yesterday = now.minus(1, ChronoUnit.DAYS);
         Date toDate = Date.from(now);
@@ -155,6 +156,7 @@ public class EportTask {
 
     private boolean addAuditLogFirst(Edo edo)
     {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date timeNow = new Date();
         EdoAuditLog edoAuditLog = new EdoAuditLog();
         edoAuditLog.setCarrierId(edo.getId());
@@ -164,7 +166,7 @@ public class EportTask {
         edoAuditLog.setSeqNo((long) 1);
         edoAuditLog.setCreateTime(timeNow);
         edoAuditLog.setFieldName("Expired Dem");
-        edoAuditLog.setNewValue(edo.getExpiredDem().toString());
+        edoAuditLog.setNewValue(formatter.format(edo.getExpiredDem()).toString());
         edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
         edoAuditLog.setSeqNo((long) 2);
         edoAuditLog.setFieldName("Det Free Time");
@@ -176,6 +178,7 @@ public class EportTask {
 
     private boolean addAuditLog(Edo edo) 
     {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date timeNow = new Date();
         int segNo = 1;
         EdoAuditLog edoAuditLog = new EdoAuditLog();
@@ -193,7 +196,7 @@ public class EportTask {
             EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
             edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
             edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-            edoAuditLog.setNewValue(edo.getExpiredDem().toString());
+            edoAuditLog.setNewValue(formatter.format(edo.getExpiredDem()).toString());
             edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
             segNo += 1;
         }

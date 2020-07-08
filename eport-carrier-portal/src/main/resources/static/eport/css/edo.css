@@ -1,0 +1,10 @@
+.datagrid-header-row > td {
+    color: #1c84c6;
+    font-weight: bold;
+}
+.textTitle {
+    text-align: center;
+    text-transform: uppercase;
+    color: #F7A54A;
+  }
+
