@@ -187,14 +187,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="selectEdoListByBlNo" parameterType="String" resultMap="EdoResult">
 		<include refid="selectEdoVo"/>
-	    where bill_of_lading = #{blNo}
+	    where bill_of_lading = #{blNo} 
     </select>
 
     <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
         <include refid="selectEdoVoByBillNo"/>
         <where>  
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
-            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
+            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>

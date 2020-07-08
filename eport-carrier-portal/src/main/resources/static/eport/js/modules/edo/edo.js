@@ -27,9 +27,15 @@ $(function () {
             loadTableByContainer(bill);
         }
     });
+    $('#searchBillNo').keyup(function (event) {
+        if (event.keyCode == 13) {
+            billOfLading = $('#searchBillNo').val().toUpperCase();
+            loadTable(billOfLading);
+        }
+    });
 });
 
-function loadTable(containerNumber, billOfLading, fromDate, toDate) {
+function loadTable(billOfLading) {
     $("#dg").datagrid({
         url: PREFIX + "/billNo",
         method: "GET",
@@ -49,14 +55,13 @@ function loadTable(containerNumber, billOfLading, fromDate, toDate) {
                 type: opts.method,
                 url: opts.url,
                 data: {
-                    containerNumber: containerNumber,
                     billOfLading: billOfLading,
-                    fromDate: fromDate,
-                    toDate: toDate,
                 },
                 dataType: "json",
                 success: function (data) {
                     success(data);
+                    loadTableByContainer(billOfLading);
+
                 },
                 error: function () {
                     error.apply(this, arguments);
@@ -76,6 +81,11 @@ function searchDo() {
 
 function formatToYDM(date) {
     return date.split("/").reverse().join("/");
+}
+
+function formatToYDMHMS(date) {
+    let temp = date.substring(0,10);
+    return temp.split("-").reverse().join("/") + date.substring(10,19);
 }
 
 function formatAction(value, row, index) {
@@ -126,6 +136,9 @@ function loadTableByContainer(billOfLading) {
                 }),
                 success: function (data) {
                     success(JSON.parse(data));
+                    let dataTotal = JSON.parse(data);
+                    $("#countContainer").text("Số lượng container : " + dataTotal.total);
+                    $("#showBillNo").text("Bill No : " + bill);
                 },
 
                 error: function () {
