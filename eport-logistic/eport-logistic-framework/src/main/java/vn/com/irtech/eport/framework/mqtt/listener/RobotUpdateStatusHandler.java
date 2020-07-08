@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.framework.mqtt.listener;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
@@ -11,6 +12,10 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import vn.com.irtech.eport.logistic.domain.ProcessHistory;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
@@ -21,6 +26,12 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 	@Autowired
 	private ISysRobotService robotService;
+
+	@Autowired
+	private IProcessHistoryService processHistoryService;
+	
+	@Autowired
+	private IProcessOrderService processOrderService;
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -85,6 +96,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 				String receiptIdStr = map.get("receiptId") == null ? null : map.get("receiptId").toString();
 				Long receiptId = Long.parseLong(receiptIdStr);
 				this.updateReceiptId(receiptId);
+				this.updateHistory(receiptId.toString(), uuId);
 			} catch (Exception ex) {
 			}
 		}
@@ -96,7 +108,20 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 	 * @param receiptId
 	 */
 	private void updateReceiptId(Long receiptId) {
-		// TODO: update receiptId
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setId(receiptId);
+		processOrder.setStatus(1); // STATUS ON PROGRESS
+		processOrderService.updateProcessOrder(processOrder);
 	}
 
+	private void updateHistory(String receiptId, String uuId) {
+		Long id = Long.parseLong(receiptId);
+		ProcessHistory processHistory = new ProcessHistory();
+		processHistory.setProcessOrderId(id);
+		processHistory.setRobotUuid(uuId);
+		processHistory.setStatus(1); // START
+		processHistory.setResult("S"); // RESULT SUCCESS
+		processHistory.setCreateTime(new Date());
+		processHistoryService.insertProcessHistory(processHistory);
+	}
 }

@@ -735,7 +735,7 @@ function saveShipmentDetail() {
                         var result = JSON.parse(data);
                         if (result.code == 0) {
                             $.modal.msgSuccess(result.msg);
-                            loadShipmentDetail(shipmentSelected.id);
+                            reloadShipmentDetail();
                         } else {
                             if (result.conts != null) {
                                 $.modal.alertError("Không thể làm lệnh đối với các container: "+result.conts);
@@ -764,12 +764,12 @@ function deleteShipmentDetail() {
     getDataSelectedFromTable(true);
     $.modal.loading("Đang xử lý...");
     $.ajax({
-        url: prefix + "/shipment-detail/" + shipmentDetailIds,
+        url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
         method: "delete",
         success: function (result) {
             if (result.code == 0) {
                 $.modal.msgSuccess(result.msg);
-                loadShipmentDetail(shipmentSelected.id);
+                reloadShipmentDetail();
             } else {
                 $.modal.msgError(result.msg);
             }

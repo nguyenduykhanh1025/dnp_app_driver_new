@@ -35,6 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysUserId != null "> and sys_user_id = #{sysUserId}</if>
             <if test="robotUuid != null  and robotUuid != ''"> and robot_uuid = #{robotUuid}</if>
             <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="status != null"> and status = #{status}</if>
         </where>
     </select>
     
@@ -50,6 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysUserId != null ">sys_user_id,</if>
             <if test="robotUuid != null  and robotUuid != ''">robot_uuid,</if>
             <if test="result != null  and result != ''">result,</if>
+            <if test="status != null">status,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="createTime != null ">create_time,</if>
@@ -61,6 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysUserId != null ">#{sysUserId},</if>
             <if test="robotUuid != null  and robotUuid != ''">#{robotUuid},</if>
             <if test="result != null  and result != ''">#{result},</if>
+            <if test="status != null">#{status},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="createTime != null ">#{createTime},</if>
@@ -76,6 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysUserId != null ">sys_user_id = #{sysUserId},</if>
             <if test="robotUuid != null  and robotUuid != ''">robot_uuid = #{robotUuid},</if>
             <if test="result != null  and result != ''">result = #{result},</if>
+            <if test="status != null">status = #{status},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
             <if test="createTime != null ">create_time = #{createTime},</if>

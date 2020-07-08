@@ -12,6 +12,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -84,11 +85,15 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		
 		robotService.updateRobotStatusByUuId(uuId, status);
 
-		if (receiptId != null && status != null) {
-			this.updateShipmentDetail(result, receiptId, invoiceNo, uuId);
-			this.sendMessageWebsocket(result, receiptId);
+		if (receiptId != null) {
+			if ("0".equals(status)) {
+				this.updateShipmentDetail(result, receiptId, invoiceNo, uuId);
+				this.sendMessageWebsocket(result, receiptId);
+			} else if ("1".equals(status)) {
+				// SAVE HISTORY ROBOT START MAKE-ORDER
+				this.updateHistory(receiptId, uuId);
+			}
 		}
-		
 	}
 	
 	/**
@@ -97,33 +102,66 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 * @param result:   "success/error"
 	 * @param receiptId
 	 */
+	@Transactional
 	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String uuId) {
-		// TODO: update shipment detail
+		// INIT PROCESS HISTORY
 		Long id = Long.parseLong(receiptId);
-		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
-		processOrder.setReferenceNo(invoiceNo);
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setProcessOrderId(Long.parseLong(receiptId));
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 		ProcessHistory processHistory = new ProcessHistory();
-		processHistory.setProcessOrderId(processOrder.getId());
+		processHistory.setProcessOrderId(id);
 		processHistory.setRobotUuid(uuId);
-		processHistory.setCreateTime(new Date());
-		if (processOrder != null) {
-			if ("success".equalsIgnoreCase(result)) {
-				processHistory.setResult("S");
-				processOrder.setStatus(2);
-				processOrder.setResult("S");
-				processOrderService.updateProcessOrder(processOrder);
+		processHistory.setStatus(2); // FINISH
+
+		ProcessOrder processOrder;
+
+		if ("success".equalsIgnoreCase(result)) {
+			// GET LIST SHIPMENT DETAIL BY PROCESS ORDER ID
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setProcessOrderId(Long.parseLong(receiptId));
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			
+			// GET PROCESS ORDER AND SET NEW STATUS TO UPDATE
+			processOrder = processOrderService.selectProcessOrderById(id);
+			processOrder.setReferenceNo(invoiceNo);
+			processOrder.setStatus(2); // FINISH		
+			processOrder.setResult("S"); // RESULT SUCESS	
+			processOrderService.updateProcessOrder(processOrder);
+
+			// SAVE BILL TO PROCESS BILL BY INVOICE NO
+			if (invoiceNo != null && invoiceNo.equals("")) {
 				processBillService.saveProcessBillByInvoiceNo(processOrder);
-				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo, processOrder);
 			} else {
-				processOrder.setStatus(0);
-				processOrder.setResult("F");
-				processHistory.setResult("F");
-				processOrderService.updateProcessOrder(processOrder);
+				processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
 			}
+
+			// UPDATE STATUS OF SHIPMENT DETAIL AFTER MAKE ORDER SUCCESS
+			shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo, processOrder);
+
+			// SET RESULT FOR HISTORY SUCCESS
+			processHistory.setResult("S");
+		} else {
+			// INIT PROCESS ORDER TO UPDATE
+			processOrder = new ProcessOrder();
+			processOrder.setId(id);
+			processOrder.setResult("F"); // RESULT FAILED
+			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrderService.updateProcessOrder(processOrder);
+
+			// SET RESULT FOR HISTORY FAILED
+			processHistory.setResult("F");
 		}
+		processHistory.setCreateTime(new Date());
+		processHistoryService.insertProcessHistory(processHistory);
+	}
+
+	private void updateHistory(String receiptId, String uuId) {
+		Long id = Long.parseLong(receiptId);
+		ProcessHistory processHistory = new ProcessHistory();
+		processHistory.setProcessOrderId(id);
+		processHistory.setRobotUuid(uuId);
+		processHistory.setStatus(1); // START
+		processHistory.setResult("S"); // RESULT SUCCESS
+		processHistory.setCreateTime(new Date());
+		processHistoryService.insertProcessHistory(processHistory);
 	}
 	
 	private void sendMessageWebsocket(String result, String receiptId) {
