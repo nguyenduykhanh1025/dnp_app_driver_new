@@ -305,7 +305,7 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
     config = {
         stretchH: "all",
-        height: document.documentElement.clientHeight - 100,
+        height: document.documentElement.clientHeight - 110,
         minRows: rowAmount,
         maxRows: rowAmount,
         width: "100%",
@@ -457,15 +457,14 @@ function check(id) {
     }
 }
 function updateLayout() {
-    let disposable = true, status = 1, diff = false, check = false, verify = false;
+    let disposable = true, status = 1, diff = false, check = false, verify = false, contNull = false;
     allChecked = true;
     for (let i=0; i<checkList.length; i++) {
         let cellStatus = hot.getDataAtCell(i, 1);
         if (cellStatus != null) {
             if (checkList[i] == 1) {
                 if (sourceData[i].containerNo == null || sourceData[i].containerNo == '') {
-                    diff = true;
-                    break;
+                    contNull = true;
                 }
                 if(cellStatus == 1 && 'Y' == sourceData[i].userVerifyStatus) {
                     verify = true;
@@ -490,7 +489,7 @@ function updateLayout() {
     } else {
         $("#deleteBtn").prop("disabled", true);
     }
-    if (diff) {
+    if (diff || contNull) {
         status = 1;
     } else {
         status++;
@@ -659,16 +658,14 @@ function getDataFromTable(isValidate) {
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
-        shipmentDetail.sztp = object["sztp"];
+        shipmentDetail.sztp = object["sztp"].split(":")[0];
         shipmentDetail.opeCode = object["opeCode"];
         shipmentDetail.expiredDem = expiredDem.getTime();
-        shipmentDetail.dischargePort = object["dischargePort"];
-        shipmentDetail.remark = object["sztp"];
+        shipmentDetail.dischargePort = object["dischargePort"].split(":")[0];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.voyNo = object["voyNo"];
         shipmentDetail.vslNm = object["vslNm"];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
-        shipmentDetail.registerNo = object["registerNo"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
@@ -727,7 +724,7 @@ function saveShipmentDetail() {
                         var result = JSON.parse(data);
                         if (result.code == 0) {
                             $.modal.msgSuccess(result.msg);
-                            loadShipmentDetail(shipmentSelected.id);
+                            reloadShipmentDetail();
                         } else {
                             $.modal.msgError(result.msg);
                         }
@@ -757,7 +754,7 @@ function deleteShipmentDetail() {
         success: function (result) {
             if (result.code == 0) {
                 $.modal.msgSuccess(result.msg);
-                loadShipmentDetail(shipmentSelected.id);
+                reloadShipmentDetail();
             } else {
                 $.modal.msgError(result.msg);
             }
@@ -774,7 +771,7 @@ function deleteShipmentDetail() {
 function verify() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/checkContListBeforeVerify/" + shipmentDetailIds, 600, 400);
+        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 400);
     }
 }
 
