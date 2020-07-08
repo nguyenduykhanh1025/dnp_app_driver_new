@@ -41,6 +41,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validDate != null ">and c.valid_date &lt;= #{validDate}</if>
             <if test="delFlag != null"> and c.del_flag = #{delFlag}</if>
             <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="status != null"> and c.status = #{status}</if>
         </where>
     </select>
     
@@ -124,5 +125,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="checkPhoneUnique" parameterType="String" resultType="int">
 		select count(1) from driver_account where lower(mobile_number)=#{mobile_number}
 	</select>
-    
+    <select id="getAssignedDrivers" parameterType="Long"  resultMap="DriverAccountResult">
+        <include refid="selectDriverAccountVo"/>
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+                #{id}
+        </foreach>
+    </select>
 </mapper>

@@ -159,6 +159,8 @@ public class ShipmentDetail extends BaseEntity
 
     private int tier;
 
+    private Integer driverAmount;
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -459,6 +461,13 @@ public class ShipmentDetail extends BaseEntity
     public int getTier() {
         return tier;
     }
+    public Integer getDriverAmount() {
+        return driverAmount;
+    }
+
+    public void setDriverAmount(Integer driverAmount) {
+        this.driverAmount = driverAmount;
+    }
 
     @Override
     public String toString() {
@@ -506,6 +515,7 @@ public class ShipmentDetail extends BaseEntity
             .append("bay", getBay())
             .append("roww", getRow())
             .append("tier", getTier())
+            .append("driverAmount", getDriverAmount())
             .toString();
     }
 }

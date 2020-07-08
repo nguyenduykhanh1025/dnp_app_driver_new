@@ -58,5 +58,8 @@ public interface IDriverAccountService
      * @return result
      */
     public int deleteDriverAccountById(Long id);
-	public int checkPhoneUnique(String phoneNumber);
+
+    public int checkPhoneUnique(String phoneNumber);
+    
+    public List<DriverAccount> getAssignedDrivers(Long[] ids);
 }

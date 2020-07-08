@@ -16,19 +16,17 @@ import vn.com.irtech.eport.common.core.text.Convert;
  * @date 2020-05-19
  */
 @Service
-public class DriverAccountServiceImpl implements IDriverAccountService 
-{
+public class DriverAccountServiceImpl implements IDriverAccountService {
     @Override
-	public int checkPhoneUnique(String phoneNumber) {
+    public int checkPhoneUnique(String phoneNumber) {
         int count = driverAccountMapper.checkPhoneUnique(phoneNumber);
-        if (count > 0)
-        {
+        if (count > 0) {
             return count;
         }
         return 0;
-	}
+    }
 
-	@Autowired
+    @Autowired
     private DriverAccountMapper driverAccountMapper;
 
     /**
@@ -38,8 +36,7 @@ public class DriverAccountServiceImpl implements IDriverAccountService
      * @return Driver login info
      */
     @Override
-    public DriverAccount selectDriverAccountById(Long id)
-    {
+    public DriverAccount selectDriverAccountById(Long id) {
         return driverAccountMapper.selectDriverAccountById(id);
     }
 
@@ -50,8 +47,7 @@ public class DriverAccountServiceImpl implements IDriverAccountService
      * @return Driver login info
      */
     @Override
-    public List<DriverAccount> selectDriverAccountList(DriverAccount driverAccount)
-    {
+    public List<DriverAccount> selectDriverAccountList(DriverAccount driverAccount) {
         return driverAccountMapper.selectDriverAccountList(driverAccount);
     }
 
@@ -62,8 +58,7 @@ public class DriverAccountServiceImpl implements IDriverAccountService
      * @return result
      */
     @Override
-    public int insertDriverAccount(DriverAccount driverAccount)
-    {
+    public int insertDriverAccount(DriverAccount driverAccount) {
         driverAccount.setCreateTime(DateUtils.getNowDate());
         return driverAccountMapper.insertDriverAccount(driverAccount);
     }
@@ -75,8 +70,7 @@ public class DriverAccountServiceImpl implements IDriverAccountService
      * @return result
      */
     @Override
-    public int updateDriverAccount(DriverAccount driverAccount)
-    {
+    public int updateDriverAccount(DriverAccount driverAccount) {
         driverAccount.setUpdateTime(DateUtils.getNowDate());
         return driverAccountMapper.updateDriverAccount(driverAccount);
     }
@@ -88,8 +82,7 @@ public class DriverAccountServiceImpl implements IDriverAccountService
      * @return result
      */
     @Override
-    public int deleteDriverAccountByIds(String ids)
-    {
+    public int deleteDriverAccountByIds(String ids) {
         return driverAccountMapper.deleteDriverAccountByIds(Convert.toStrArray(ids));
     }
 
@@ -100,8 +93,12 @@ public class DriverAccountServiceImpl implements IDriverAccountService
      * @return result
      */
     @Override
-    public int deleteDriverAccountById(Long id)
-    {
+    public int deleteDriverAccountById(Long id) {
         return driverAccountMapper.deleteDriverAccountById(id);
+    }
+
+    @Override
+    public List<DriverAccount> getAssignedDrivers(Long[] ids) {
+        return driverAccountMapper.getAssignedDrivers(ids);
     }
 }
