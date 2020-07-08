@@ -551,7 +551,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				if(edoFlg == null){
 					return error("Mã hãng tàu:"+ shipCatos.getOpeCode() +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
 				}
-				if(edoFlg == "1"){
+				if(edoFlg.equals("1")){
 					return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng liên hệ Cảng!");
 				}
 				shipment.setEdoFlg(edoFlg);

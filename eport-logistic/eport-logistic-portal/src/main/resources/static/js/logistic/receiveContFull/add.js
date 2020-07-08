@@ -52,6 +52,7 @@ function checkBlNoUnique() {
                 $('#containerAmount').val("");
                 $('#edoFlg').val(null).text("");
             } else {
+            	$("#blNo").removeClass("error-input");
                 $('#opeCode').val(result.shipment.opeCode);
                 $('#containerAmount').val(result.shipment.containerAmount);
                 if (result.shipment.edoFlg == "1") {
