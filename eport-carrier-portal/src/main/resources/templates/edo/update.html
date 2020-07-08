@@ -1,55 +1,49 @@
- 
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <th:block th:include="include :: header('Xac Nhan Lam Lenh')" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/eport/css/update.css}" rel="stylesheet" />
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-            <div class="content">
-                <div class="col-sm-12 table-container">
-                    <h3 class="title-content-history">Cập nhật Container  <span id="containerNumber"></span></h3>
-                    
-                </div>
-                
-                    <form class="form-horizontal m">
-                        <div class="form-group">
-                            <label class="col-sm-2 col-xs-3 col-md-1">Hạn lệnh</label>
-                            <div class="col-sm-9 col-xs-8 col-md-10">
-                                <input class="form-control time-input" id="expiredDem" name="fromDate" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-2 col-xs-3 col-md-1">Ngày miễn lưu vỏ</label>
-                            <div class="col-sm-9 col-xs-8 col-md-10">
-                                <input name="groupCode"  id="detFreeTime" class="form-control" type="text" >
-                            </div>
-                        </div>
-                    </form>
-                    <div class="layui-layer-btn footer">
-                        <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
-                        <a class="layui-layer-btn1" onclick="closeForm()">Hủy</a>
-                    </div>
-            </div>
-       
-    </div>
-    
-</body>
-<th:block th:include="include :: footer" />
-<th:block th:include="include :: easyui-js" />
-<script th:src="@{/eport/js/modules/edo/update.js}"></script>
-<th:block th:include="include :: datetimepicker-js" />
-<script type="text/javascript" th:inline="javascript"></script>
-<script type="text/javascript" th:inline="javascript">
-     var id = /*[[${id}]]*/ ;
-     var containerNumber = /*[[${containerNumber}]]*/ ;
-     var expiredDem = /*[[${expiredDem}]]*/ ;
-     var detFreeTime = /*[[${detFreeTime}]]*/ ;
-</script>
+      <div class="content">
+        <div class="col-sm-12 table-container">
+          <h3 class="title-content-history">Cập nhật Container <span id="containerNumber"></span></h3>
+        </div>
 
+        <form class="form-horizontal m">
+          <div class="form-group">
+            <label class="col-sm-2 col-xs-3 col-md-1">Hạn lệnh</label>
+            <div class="col-sm-9 col-xs-8 col-md-10">
+              <input class="form-control time-input" id="expiredDem" name="fromDate" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 col-xs-3 col-md-1">Ngày miễn lưu vỏ</label>
+            <div class="col-sm-9 col-xs-8 col-md-10">
+              <input name="groupCode" id="detFreeTime" class="form-control" type="text" />
+            </div>
+          </div>
+        </form>
+        <div class="layui-layer-btn footer">
+          <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+          <a class="layui-layer-btn1" onclick="closeForm()">Hủy</a>
+        </div>
+      </div>
+    </div>
+  </body>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <script th:src="@{/eport/js/modules/edo/update.js}"></script>
+  <th:block th:include="include :: datetimepicker-js" />
+  <script type="text/javascript" th:inline="javascript"></script>
+  <script type="text/javascript" th:inline="javascript">
+    var id = /*[[${id}]]*/ ;
+    var containerNumber = /*[[${containerNumber}]]*/ ;
+    var expiredDem = /*[[${expiredDem}]]*/ ;
+    var detFreeTime = /*[[${detFreeTime}]]*/ ;
+  </script>
 </html>

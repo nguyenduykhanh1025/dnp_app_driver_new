@@ -78,7 +78,8 @@ public class NotificationController extends BaseController {
 
 		List<UserDevices> receivers = userDevicesService.selectDeviceTokenList(receiverGroups);
 		List<String> receiverTokens = new ArrayList<>();
-		for (UserDevices userDevices : receivers) {
+    
+    for (UserDevices userDevices : receivers) {
 			NotificationReceiver receiverDetail = new NotificationReceiver();
 			receiverDetail.setUserDeviceId(userDevices.getId());
 			receiverDetail.setNotificationId(noti.getId());
@@ -86,15 +87,15 @@ public class NotificationController extends BaseController {
 			receiverTokens.add(userDevices.getDeviceToken());
 		}
 
-		new Thread() {
-			public void run() {
-				try {
-					firebaseService.sendNotification(title, content, receiverTokens);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}.start();
+		// new Thread() {
+		// 	public void run() {
+		// 		try {
+		// 			firebaseService.sendNotification(title, content, receiverTokens);
+		// 		} catch (Exception e) {
+		// 			e.printStackTrace();
+		// 		}
+		// 	}
+		// }.start();
 
 		return AjaxResult.success(receiverTokens);
 	}
