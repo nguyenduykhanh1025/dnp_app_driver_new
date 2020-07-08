@@ -12,10 +12,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createBy"    column="create_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="updateBy"    column="update_by"    />
+        <result property="seenAmount" column="seen_amount"  />
+        <result property="totalReceiver" column="total_receiver"  />
+        <association property="notificationReceiver"    column="id" javaType="NotificationReceiver" resultMap="notificationReceiverResult" />
+    </resultMap>
+
+    <resultMap type="NotificationReceiver" id="notificationReceiverResult">
+        <result property="id"    column="id"    />
+        <result property="notificationId"    column="notification_id"    />
+        <result property="userDeviceId"    column="user_device_id"    />
+        <result property="seenFlg"         column="seen_flg" />
+
     </resultMap>
 
     <sql id="selectNotificationsVo">
         select id, title, content, create_time, create_by, update_time, update_by from notifications
+    </sql>
+
+    <sql id="selectNotificationsDetailVo">
+        select n.*, 
+            count(d.notification_id) as total_receiver, 
+            count(case when d.seen_flg = 1 then 1 else null end) as seen_amount 
+        from notifications n 
+        left join notification_receiver d 
+            on n.id = d.notification_id 
+        GROUP BY n.title, n.content, n.id
     </sql>
 
     <select id="selectNotificationsList" parameterType="Notifications" resultMap="NotificationsResult">
@@ -75,4 +96,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="selectNotificationsDetailList" parameterType="Notifications" resultMap="NotificationsResult">
+        <include refid="selectNotificationsDetailVo"/>
+        <where> 
+            <if test="title != null  and title != ''"> and n.title = #{title}</if>
+            <if test="content != null  and content != ''"> and n.content = #{content}</if>
+        </where>
+    </select>
+
 </mapper>

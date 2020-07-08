@@ -26,6 +26,8 @@ public class NotificationReceiver extends BaseEntity
     @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
     private Long userDeviceId;
 
+    private Long seenFlg;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -54,12 +56,23 @@ public class NotificationReceiver extends BaseEntity
         return userDeviceId;
     }
 
+    public Long getSeenFlg()
+    {
+        return seenFlg;
+    }
+
+    public void setSeenFlg(Long seenFlg)
+    {
+        this.seenFlg = seenFlg;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("notificationId", getNotificationId())
             .append("userDeviceId", getUserDeviceId())
+            .append("seenFlg", getSeenFlg())
             .append("createTime", getCreateTime())
             .append("createBy", getCreateBy())
             .append("updateTime", getUpdateTime())

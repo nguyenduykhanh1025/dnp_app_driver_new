@@ -94,4 +94,9 @@ public class NotificationsServiceImpl implements INotificationsService
     {
         return notificationsMapper.deleteNotificationsById(id);
     }
+
+    @Override
+    public List<Notifications> selectNotificationsDetailList(Notifications notifications) {
+        return notificationsMapper.selectNotificationsDetailList(notifications);
+    }
 }

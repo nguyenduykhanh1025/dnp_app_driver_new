@@ -34,3 +34,9 @@ function loadTable() {
         },
     });
 }
+
+
+function formatToYDMHMS(date) {
+    let temp = date.substring(0,10);
+    return temp.split("-").reverse().join("/") + date.substring(10,19);
+  }
