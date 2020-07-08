@@ -62,6 +62,7 @@ $(".btn-send").click(function () {
     },
     success: function(result){
       console.log(result);
+      $.modal.msgSuccess("Gửi thông báo thành công !!!");
     }
   });
 });

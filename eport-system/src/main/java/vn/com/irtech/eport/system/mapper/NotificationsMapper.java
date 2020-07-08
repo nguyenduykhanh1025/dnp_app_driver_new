@@ -58,4 +58,6 @@ public interface NotificationsMapper
      * @return result
      */
     public int deleteNotificationsByIds(String[] ids);
+
+    public List<Notifications> selectNotificationsDetailList(Notifications notifications);
 }

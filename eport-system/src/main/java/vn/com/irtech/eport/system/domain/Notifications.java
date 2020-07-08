@@ -26,6 +26,12 @@ public class Notifications extends BaseEntity
     @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
     private String content;
 
+    private Integer seenAmount;
+
+    private Integer totalReceiver;
+
+    NotificationReceiver notificationReceiver;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -54,6 +60,30 @@ public class Notifications extends BaseEntity
         return content;
     }
 
+    public void setNotificationReceiver(NotificationReceiver notificationReceiver) {
+        this.notificationReceiver = notificationReceiver;
+    }
+
+    public NotificationReceiver getNotificationReceiver() {
+        return notificationReceiver;
+    }
+
+    public void setSeenAmount(Integer seenAmount) {
+        this.seenAmount = seenAmount;
+    }
+
+    public Integer getSeenAmount() {
+        return seenAmount;
+    }
+
+    public void setTotalReceiver(Integer totalReceiver) {
+        this.totalReceiver = totalReceiver;
+    }
+
+    public Integer getTotalReceiver() {
+        return totalReceiver;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -64,6 +94,9 @@ public class Notifications extends BaseEntity
             .append("createBy", getCreateBy())
             .append("updateTime", getUpdateTime())
             .append("updateBy", getUpdateBy())
+            .append("notificationReceiver", getNotificationReceiver())
+            .append("seenAmount", getSeenAmount())
+            .append("totalReceiver", getTotalReceiver())
             .toString();
     }
 }
