@@ -89,7 +89,7 @@
                 END AS containerStatus
             FROM TB_INVENTORY M
 		WHERE CNTR_NO = #{containerNo}
-				AND TRUCK_NO2 IS NULL 
+				AND OPR_EXPIRE_DATE IS NULL
 				AND JOB_ODR_NO2 IS NULL
 				AND IX_CD = 'I'
     </select>
