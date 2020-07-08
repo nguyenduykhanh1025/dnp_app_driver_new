@@ -3,6 +3,7 @@ package vn.com.irtech.eport.logistic.service;
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 
 /**
  * Process billingService Interface
@@ -67,4 +68,6 @@ public interface IProcessBillService
     public List<ProcessBill> selectProcessBillListByProcessOrderIds(String processOrderIds);
 
     public List<ProcessBill> selectBillReportList(ProcessBill processBill);
+
+    public boolean saveProcessBillWithCredit(List<ShipmentDetail> shipmentDetails, ProcessOrder processOrder);
 }

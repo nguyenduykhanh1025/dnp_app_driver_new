@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 import vn.com.irtech.eport.logistic.mapper.ProcessBillMapper;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.text.Convert;
@@ -126,12 +127,36 @@ public class ProcessBillServiceImpl implements IProcessBillService
         			processBill.setShipmentId(processOrder.getShipmentId());
                     processBill.setCreateTime(new Date());
                     processBill.setLogisticGroupId(processOrder.getLogisticGroupId());
+                    processBill.setPaymentStatus("N");
+                    processBill.setPayType("Cash");
         			processBillMapper.insertProcessBill(processBill);
         		}
         	}
         	return true;
     	}
     	return false;
+    }
+
+    @Override
+    @Transactional
+    public boolean saveProcessBillWithCredit(List<ShipmentDetail> shipmentDetails, ProcessOrder processOrder) {
+        if (shipmentDetails != null && shipmentDetails.size() > 0) {
+            for (ShipmentDetail shipmentDetail: shipmentDetails) {
+                ProcessBill processBill = new ProcessBill();
+                processBill.setProcessOrderId(shipmentDetail.getProcessOrderId());
+                processBill.setLogisticGroupId(shipmentDetail.getLogisticGroupId());
+                processBill.setShipmentId(shipmentDetail.getShipmentId());
+                processBill.setSztp(shipmentDetail.getSztp());
+                processBill.setContainerNo(shipmentDetail.getContainerNo());
+                processBill.setServiceType(processOrder.getServiceType());
+                processBill.setPayType("Credit");
+                processBill.setPaymentStatus("Y");
+                processBill.setPaymentTime(new Date());
+                processBill.setCreateTime(new Date());
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
