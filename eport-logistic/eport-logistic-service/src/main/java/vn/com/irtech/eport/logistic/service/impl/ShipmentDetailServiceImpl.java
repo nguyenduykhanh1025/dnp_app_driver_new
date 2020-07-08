@@ -378,34 +378,26 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     public List<ServiceSendFullRobotReq> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
             List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
-            if (shipmentDetails.size() == shipment.getContainerAmount()) {
-                serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentDetails, shipment, creditFlag, true));
-            } else {
-                Collections.sort(shipmentDetails, new SztpComparator());
-                String sztp = shipmentDetails.get(0).getSztp();
-                List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-                for (ShipmentDetail shipmentDetail : shipmentDetails) {
-                    if (!sztp.equals(shipmentDetail.getSztp())) {
-                        serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag, false));
-                        shipmentOrderList = new ArrayList<>();
-                    }
-                    shipmentOrderList.add(shipmentDetail);
+            Collections.sort(shipmentDetails, new SztpComparator());
+            String sztp = shipmentDetails.get(0).getSztp();
+            List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
+            for (ShipmentDetail shipmentDetail : shipmentDetails) {
+                if (!sztp.equals(shipmentDetail.getSztp())) {
+                    serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag));
+                    shipmentOrderList = new ArrayList<>();
                 }
-                serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag, false));
+                shipmentOrderList.add(shipmentDetail);
             }
+            serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag));
             return serviceRobotReq;
         }
         return null;
     }
 
     @Transactional
-    private ServiceSendFullRobotReq groupShipmentDetailByReceiveContEmptyOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag, boolean orderByBooking) {
+    private ServiceSendFullRobotReq groupShipmentDetailByReceiveContEmptyOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
         ProcessOrder processOrder = new ProcessOrder();
-        if (orderByBooking) {
-            processOrder.setMode("Pickup By Booking");
-        } else {
-            processOrder.setMode("Truck Out");
-        }
+        processOrder.setMode("Pickup By Booking");
         processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         processOrder.setTruckCo(shipment.getTaxCode()+" : "+shipment.getGroupName());
