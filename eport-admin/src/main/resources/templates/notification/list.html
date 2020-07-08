@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <th:block th:include="include :: notification-header('Notification List')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/notification/notification.css}" rel="stylesheet" />
+  </head>
+  <body class="white-bg container-fluid pl-2 pr-2 mb-5">
+    <section class="filter">
+      <div class="section-content">
+        <div class="form-row">
+          <div class="col-2 mt-1">
+            <input class="form-control" type="text" placeholder="Tìm kiếm" name="keyword">
+          </div>
+          <div class="col-2 pull-right">
+            <button class="btn btn-primary btn-sm"><i class="fa fa-search"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="content">
+      <div class="col-md-12">
+        <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
+          <thead>
+            <tr>
+              <th data-options=" field: 'title', halign: 'center', align:'center', resizable: true">Tiêu đề thông báo</th>
+              <th data-options=" field: 'content', halign: 'center', align:'center', resizable: true">Nội dung thông báo</th>
+              <th data-options=" field: 'totalReceiver', halign:'center', align:'center'" sortable="true">Số lượng người nhận</th>
+              <th data-options=" field: 'seenAmount', halign:'center', align:'center'" sortable="true">Số lượng đã xem</th>
+              <th data-options=" field:'createTime', halign:'center'" sortable="true">Giờ gửi</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </body>
+  <th:block th:include="include :: notification-footer" />
+  <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: select2-js" />
+  <script th:src="@{/eport/js/modules/notification/list.js}"></script>
+</html>

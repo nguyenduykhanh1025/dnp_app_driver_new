@@ -9,11 +9,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.PageAble;
+import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.framework.firebase.service.FirebaseService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.system.domain.NotificationReceiver;
@@ -41,8 +44,25 @@ public class NotificationController extends BaseController {
 	private FirebaseService firebaseService;
 
 	@GetMapping()
+	private String getList() {
+		return PREFIX + "/list";
+	}
+
+	@PostMapping("/list")
+	@ResponseBody
+	private TableDataInfo getALl(@RequestBody PageAble<Notifications> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		Notifications notifications = param.getData();
+		if (notifications == null) {
+			notifications = new Notifications();
+		}
+		List<Notifications> notificationsList = notificationService.selectNotificationsDetailList(notifications);
+		return getDataTable(notificationsList);
+	}
+
+	@GetMapping("/add")
 	private String getNotification() {
-		return PREFIX + "/index";
+		return PREFIX + "/add";
 	}
 
 	@PostMapping()
@@ -76,6 +96,6 @@ public class NotificationController extends BaseController {
 			}
 		}.start();
 
-		return AjaxResult.success(receiverGroups);
+		return AjaxResult.success(receiverTokens);
 	}
 }
