@@ -1,17 +1,21 @@
-var prefix = "/edo/manage";
+var PREFIX = "/edo/manager"
 $(function() {
-    loadTable(containerNumber);
+    loadTable();
 });
 
-function loadTable(containerNumber) {
+
+function loadTable() {
     $("#dg").datagrid({
-        url: prefix + "/getHistory",
+        url: PREFIX + "/auditLog/" + edoId,
         method: "GET",
         singleSelect: true,
         clientPaging: true,
         pagination: true,
         pageSize: 20,
-        nowrap: true,
+        onClickRow: function () {
+            getSelectedRow();
+        },
+        nowrap: false,
         striped: true,
         loader: function(param, success, error) {
             var opts = $(this).datagrid("options");
@@ -19,9 +23,6 @@ function loadTable(containerNumber) {
             $.ajax({
                 type: opts.method,
                 url: opts.url,
-                data: {
-                    containerNumber: containerNumber
-                },
                 dataType: "json",
                 success: function(data) {
                     success(data);
@@ -32,16 +33,4 @@ function loadTable(containerNumber) {
             });
         },
     });
-}
-
-function statusFormat(value) {
-    if (value == "add") {
-        return '<span class="badge badge-primary">Add</span>';
-    }
-    return '<span class="badge badge-info">Update</span>';
-
-}
-
-function contentFormat(value) {
-    return value;
 }

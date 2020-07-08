@@ -30,13 +30,13 @@
                     </div>
                   </li>
                   <li>
-                    <input class="form-control" type="text" name="cntrNo" id="cntrNo" placeholder="Container No" />
+                    <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
                   </li>
                   <li>
-                    <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
+                    <input class="time-input" id="fromDate" name="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" />
                   </li>
                   <li>
-                    <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
+                    <input class="time-input" id="toDate" name="toDate" onchange="changeToDate()" placeholder="Đến ngày" />
                   </li>
                   <a class="btn btn-primary btn-sm" onclick="searchDo()" id="searchBtn"><i class="glyphicon glyphicon-search"></i> </a>
                 </ul>

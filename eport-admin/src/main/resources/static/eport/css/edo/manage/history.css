@@ -1,0 +1,18 @@
+/* CSS STYLE HISTORY EDI AUTHOR MINHTC */
+.title-table {
+    color: black;
+}
+.box-content {
+    border: 2px solid black;
+}
+.pre-content {
+    width: 90%;
+}
+.title-table {
+    margin-top: 0px;
+    padding-bottom:5px
+}
+.title-content-history {
+    display: flex;
+    justify-content: center;
+}
