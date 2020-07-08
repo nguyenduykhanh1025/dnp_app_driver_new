@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-<head>
+  <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/eport/css/history.css}" rel="stylesheet" />
-    
-</head>
+  </head>
 
-<body class="white-bg">
+  <body class="white-bg">
     <div id="wrapper">
         <div class="row">
                 <div class="col-sm-12 select-table title-table">
                 <div class="col-sm-12 table-container">
-                    <h1 class="title-content-history">Lịch sử thay đổi</h1>
+                    <h2 class="title-content-history">Lịch sử thay đổi thông tin</h2>
                     <table id="dg" style="width:auto;">
                         <thead>
                             <tr>
@@ -41,12 +39,14 @@
                 </div>
             </div>
         </div>
-        <th:block th:include="include :: footer" />
-        <th:block th:include="include :: easyui-js" />
-        <th:block th:include="include :: datetimepicker-js" />
-        <script type="text/javascript" th:inline="javascript">
-            var edoId = /*[[${edoId}]]*/ ;
-        </script>
-        <script th:src="@{/eport/js/modules/edo/history.js}"></script>
-</body>
+      </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript" th:inline="javascript">
+      var edoId = /*[[${edoId}]]*/ ;
+    </script>
+    <script th:src="@{/eport/js/modules/edo/history.js}"></script>
+  </body>
 </html>

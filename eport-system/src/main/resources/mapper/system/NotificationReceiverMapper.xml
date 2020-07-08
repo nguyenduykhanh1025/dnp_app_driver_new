@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="notificationId"    column="notification_id"    />
         <result property="userDeviceId"    column="user_device_id"    />
+        <result property="seenFlg"         column="seen_flg" />
         <result property="createTime"    column="create_time"    />
         <result property="createBy"    column="create_by"    />
         <result property="updateTime"    column="update_time"    />
@@ -15,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectNotificationReceiverVo">
-        select id, notification_id, user_device_id, create_time, create_by, update_time, update_by from notification_receiver
+        select id, notification_id, user_device_id, seen_flg, create_time, create_by, update_time, update_by from notification_receiver
     </sql>
 
     <select id="selectNotificationReceiverList" parameterType="NotificationReceiver" resultMap="NotificationReceiverResult">
@@ -36,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="notificationId != null ">notification_id,</if>
             <if test="userDeviceId != null ">user_device_id,</if>
+            <if test="seenFlg != null">seen_flg,</if>
             <if test="createTime != null ">create_time,</if>
             <if test="createBy != null ">create_by,</if>
             <if test="updateTime != null ">update_time,</if>
@@ -44,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="notificationId != null ">#{notificationId},</if>
             <if test="userDeviceId != null ">#{userDeviceId},</if>
+            <if test="seenFlg != null">seen_flg</if>
             <if test="createTime != null ">#{createTime},</if>
             <if test="createBy != null ">#{createBy},</if>
             <if test="updateTime != null ">#{updateTime},</if>
@@ -56,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="notificationId != null ">notification_id = #{notificationId},</if>
             <if test="userDeviceId != null ">user_device_id = #{userDeviceId},</if>
+            <if test="seenFlg != null">seen_flg = #{seenFlg}</if>
             <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="createBy != null ">create_by = #{createBy},</if>
             <if test="updateTime != null ">update_time = #{updateTime},</if>

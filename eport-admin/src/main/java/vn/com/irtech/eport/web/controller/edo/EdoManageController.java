@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -19,6 +21,7 @@ import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
+import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 @Controller
@@ -39,24 +42,20 @@ public class EdoManageController extends BaseController {
 
   @GetMapping("/billNo")
   @ResponseBody
-  public TableDataInfo billNo(Edo edo, String fromDate, String toDate) {
+  public TableDataInfo billNo(Edo edo) {
     startPage();
-    Map<String, Object> searchDate = new HashMap<>();
-    searchDate.put("fromDate", fromDate);
-    searchDate.put("toDate", toDate);
-    edo.setParams(searchDate);
     List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
     return getDataTable(dataList);
   }
 
-  @GetMapping("/edo")
+  @PostMapping("/edo")
   @ResponseBody
-  public TableDataInfo edo(Edo edo, String fromDate, String toDate) {
-    startPage();
-    Map<String, Object> searchDate = new HashMap<>();
-    searchDate.put("fromDate", fromDate);
-    searchDate.put("toDate", toDate);
-    edo.setParams(searchDate);
+  public TableDataInfo edo(@RequestBody PageAble<Edo> param) {
+    startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+    Edo edo = param.getData();
+    if (edo == null) {
+      edo = new Edo();
+    }
     List<Edo> dataList = edoService.selectEdoList(edo);
     return getDataTable(dataList);
   }
