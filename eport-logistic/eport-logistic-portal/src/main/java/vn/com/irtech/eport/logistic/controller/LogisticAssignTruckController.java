@@ -174,6 +174,15 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		if(shipmentId == null || pickedIdDriverArray == null){
 			return error();
 		}
+		//check pickedIdDriverArray of current logistic 
+		List<DriverAccount> driverList = driverAccountService.getAssignedDrivers(pickedIdDriverArray);
+		if(driverList.size() !=0){
+			for(DriverAccount i : driverList){
+				if(!i.getLogisticGroupId().equals(getUser().getGroupId())){
+					return error();
+				}
+			}
+		}
 		Shipment shipment  = shipmentService.selectShipmentById(shipmentId);
 		//check shipment of current user
 		if(shipment != null && shipment.getLogisticAccountId().equals(getUser().getId())){
@@ -267,6 +276,15 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			ajaxResult = error();
 			return ajaxResult;
 		}
+		//check pickedIdDriverArray of current logistic 
+		List<DriverAccount> driverList = driverAccountService.getAssignedDrivers(pickedIdDriverArray);
+		if(driverList.size() !=0){
+			for(DriverAccount i : driverList){
+				if(!i.getLogisticGroupId().equals(getUser().getGroupId())){
+					return error();
+				}
+			}
+		}
 		Shipment shipment  = shipmentService.selectShipmentById(pickupAssign.getShipmentId());
 		//check shipment of current user
 		if(shipment.getLogisticAccountId().equals(getUser().getId())){
@@ -290,9 +308,9 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 				assign.setExternalFlg(0L);//TODO
 				pickupAssignService.insertPickupAssign(assign);
 			}
+			return success();
 		}
-		ajaxResult = success();
-		return ajaxResult;
+		return error();
 	}
 
 	@GetMapping("edit/driver/{id}")
