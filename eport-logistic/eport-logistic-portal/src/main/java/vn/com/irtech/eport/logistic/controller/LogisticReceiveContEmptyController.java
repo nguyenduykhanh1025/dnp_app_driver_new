@@ -207,11 +207,21 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// DELETE SHIPMENT DETAIL
-	@DeleteMapping("/shipment-detail/{shipmentDetailIds}")
+	@DeleteMapping("/shipment/{shipmentId}/shipment-detail/{shipmentDetailIds}")
+	@Transactional
 	@ResponseBody
-	public AjaxResult deleteShipmentDetail(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
+	public AjaxResult deleteShipmentDetail(@PathVariable Long shipmentId, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		if (shipmentDetailIds != null) {
 			shipmentDetailService.deleteShipmentDetailByIds(shipmentDetailIds);
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(shipmentId);
+			if (shipmentDetailService.countShipmentDetailList(shipmentDetail) == 0) {
+				Shipment shipment = new Shipment();
+				shipment.setId(shipmentId);
+				shipment.setStatus("1");
+				shipment.setContSupplyStatus(0);
+				shipmentService.updateShipment(shipment);
+			}
 			return success("Lưu khai báo thành công");
 		}
 		return error("Lưu khai báo thất bại");

@@ -749,7 +749,7 @@ function deleteShipmentDetail() {
     getDataSelectedFromTable(true);
     $.modal.loading("Đang xử lý...");
     $.ajax({
-        url: prefix + "/shipment-detail/" + shipmentDetailIds,
+        url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
         method: "delete",
         success: function (result) {
             if (result.code == 0) {
