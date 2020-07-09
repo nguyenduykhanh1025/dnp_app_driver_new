@@ -592,6 +592,7 @@ function reloadShipmentDetail() {
     for (let i=0; i<checkList.length; i++) {
         $('#check'+i).prop('checked', false);
     }
+    setLayoutRegisterStatus();
     loadShipmentDetail(shipmentSelected.id);
 }
 
@@ -944,6 +945,8 @@ function onMessageReceived(payload) {
     // Close loading
     $.modal.closeLoading();
 
+    reloadShipmentDetail();
+
     // Unsubscribe destination
     if (currentSubscription){
         currentSubscription.unsubscribe();
@@ -951,8 +954,6 @@ function onMessageReceived(payload) {
 
     // Close websocket connection 
     $.websocket.disconnect(onDisconnected);
-
-    reloadShipmentDetail();
 }
 
 function onDisconnected() {
