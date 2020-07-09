@@ -436,4 +436,32 @@ public class LogisticAssignTruckController extends LogisticBaseController{
         }
         return success();
 	}
+
+	@GetMapping("/out-source/batch/{shipmentId}")
+	@ResponseBody
+	public AjaxResult getOutSourcListForBatch(@PathVariable Long shipmentId){
+		AjaxResult ajaxResult = success();
+		PickupAssign pickupAssign = new PickupAssign();
+		pickupAssign.setExternalFlg(1L);
+		pickupAssign.setLogisticGroupId(getUser().getGroupId());
+		pickupAssign.setShipmentId(shipmentId);
+		List<PickupAssign> pickupAssigns = pickupAssignService.selectPickupAssignList(pickupAssign);
+		if(pickupAssigns.size() > 0){
+			for(PickupAssign i: pickupAssigns){
+				if(!i.getShipmentDetailId().equals(null)){
+					//remove assigned follow cont
+					pickupAssigns.remove(i);
+				}
+			}
+			//assigned follow batch list
+			if(pickupAssigns.size() >0){
+				ajaxResult.put("outSourceList", pickupAssigns);
+				return ajaxResult;
+			}
+		}else{
+			//TH: not assign batch,cont yet
+			return error();
+		}
+		return error();
+	}
 }

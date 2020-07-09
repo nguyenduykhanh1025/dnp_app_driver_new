@@ -24,6 +24,7 @@ function handleCollapse(status) {
         $(".right-side").css("width", "99%");
         setTimeout(() => {
             checkForChanges();
+            hot.render();
         }, 500);
         return;
     }
@@ -34,6 +35,7 @@ function handleCollapse(status) {
     $(".right-side").css("width", "67%");
     setTimeout(() => {
         checkForChanges();
+        hot.render();
     }, 500);
 }
 function assignFollowBatchTab() {
@@ -232,7 +234,7 @@ function loadDriver(shipmentId){
     //pickedDriverList
     $("#pickedDriverTable").datagrid({
         url: prefix + "/assignedDriverAccountList",
-        height: window.innerHeight - 170,
+        height: window.innerHeight/2 - 170,
         collapsible: true,
         clientPaging: false,
         nowrap: false,
@@ -260,7 +262,7 @@ function loadDriver(shipmentId){
                     }
                     $("#driverTable").datagrid({
                         url: prefix + "/listDriverAccount",
-                        height: window.innerHeight - 170,
+                        height: window.innerHeight/2 - 170,
                         collapsible: true,
                         clientPaging: false,
                         nowrap: false,
@@ -414,3 +416,102 @@ function checkForChanges(){
 
     $('#dgShipmentDetail').datagrid('resize');
  }
+
+ //---------------------------------THUE NGOAI------------------------------------------------
+ var dogrid = document.getElementById("container-grid"), hot;
+ var config;
+ function loadOutSource(shipmentId) {
+    $.ajax({
+        url: prefix + "/out-source/batch" + shipmentId,
+        method: "GET",
+        success: function (data) {
+            if (data.code == 0) {
+                hot.destroy();
+                hot = new Handsontable(dogrid, config);
+                hot.loadData(data.outSourceList);
+                hot.render();
+            }
+        }
+    });
+}
+// CONFIGURATE HANDSONTABLE
+config = {
+    stretchH: "all",
+    height: "100%",
+    minRows: 2,
+    maxRows: 20,
+    width: "100%",
+    minSpareRows: 1,
+    rowHeights: 30,
+    fixedColumnsLeft: 0,
+    manualColumnResize: true,
+    manualRowResize: true,
+    renderAllRows: true,
+    rowHeaders: true,
+    className: "htMiddle",
+    colHeaders: function (col) {
+        switch (col) {
+            case 0:
+                return "Đơn vị chủ quản";
+            case 1:
+                return '<span>Số điện thoại</span><span style="color: red;">(*)</span>';
+            case 2:
+                return "Họ và tên";
+            case 3:
+                return '<span>Xe đầu kéo</span><span style="color: red;">(*)</span>';
+            case 4:
+                return '<span>Xe rơ mooc</span><span style="color: red;">(*)</span>';
+        }
+    },
+    colWidths: [200, 100, 150, 100, 100],
+    filter: "true",
+    columns: [
+        {
+            data: "driverOwner",
+        },
+        {
+            data: "phoneNumber",
+            type: "autocomplete",
+            strict: true,
+        },
+        {
+            data: "fullName",
+        },
+        {
+            data: "truckNo",
+        },
+        {
+            data: "chassisNo",
+        },
+    ],
+    afterChange: onChange
+};
+
+function onChange(changes, source) {
+    if (!changes) {
+        return;
+    }
+    // changes.forEach(function (change) {
+    //     if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+    //         $.ajax({
+    //             url: "/logistic/vessel/" + change[3] + "/voyages",
+    //             method: "GET",
+    //             success: function (data) {
+    //                 if (data.code == 0) {
+    //                     hot.updateSettings({
+    //                         cells: function (row, col, prop) {
+    //                             if (row == change[0] && col == 6) {
+    //                                 let cellProperties = {};
+    //                                 cellProperties.source = data.voyages;
+    //                                 return cellProperties;
+    //                             }
+    //                         }
+    //                     });
+    //                 }
+    //             }
+    //         });
+    //     }
+    // });
+}
+// RENDER HANSONTABLE FIRST TIME
+hot = new Handsontable(dogrid, config);
