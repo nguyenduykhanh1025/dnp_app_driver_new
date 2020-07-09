@@ -421,16 +421,25 @@ function onChange(changes, source) {
     if (!changes) {
         return;
     }
-    var instance = this;
     changes.forEach(function (change) {
-        var row = change[0];
-        var col = change[1];
-        var newValue = change[3];
-        var cellProperties, options;
-        if (col == 2) {
-            // cellProperties = instance.getCellMeta(row, 1);
-            // setAutocompleteSource.call(instance, row, newValue);
-            // instance.render();
+        if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+            $.ajax({
+                url: "/logistic/vessel/" + change[3] + "/voyages",
+                method: "GET",
+                success: function (data) {
+                    if (data.code == 0) {
+                        hot.updateSettings({
+                            cells: function (row, col, prop) {
+                                if (row == change[0] && col == 6) {
+                                    let cellProperties = {};
+                                    cellProperties.source = data.voyages;
+                                    return cellProperties;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
         }
     });
 }

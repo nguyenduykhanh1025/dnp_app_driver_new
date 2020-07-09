@@ -398,6 +398,7 @@ function configHandson() {
             },
             {
                 data: "voyNo",
+                type: "autocomplete",
                 strict: true,
                 renderer: voyNoRenderer
             },
@@ -428,10 +429,38 @@ function configHandson() {
         ],
         beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
             if(coords.col == 0) event.stopImmediatePropagation();
-        }
+        },
+        afterChange: onChange
     };
 }
 configHandson();
+
+function onChange(changes, source) {
+    if (!changes) {
+        return;
+    }
+    changes.forEach(function (change) {
+        if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+            $.ajax({
+                url: "/logistic/vessel/" + change[3] + "/voyages",
+                method: "GET",
+                success: function (data) {
+                    if (data.code == 0) {
+                        hot.updateSettings({
+                            cells: function (row, col, prop) {
+                                if (row == change[0] && col == 6) {
+                                    let cellProperties = {};
+                                    cellProperties.source = data.voyages;
+                                    return cellProperties;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    });
+}
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
