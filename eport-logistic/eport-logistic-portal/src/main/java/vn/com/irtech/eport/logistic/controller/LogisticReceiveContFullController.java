@@ -289,6 +289,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentSendCont.setLogisticAccountId(user.getId());
 					shipmentSendCont.setLogisticGroupId(user.getGroupId());
 					shipmentSendCont.setCreateTime(new Date());
+					shipmentSendCont.setStatus("1");
 					shipmentService.insertShipment(shipmentSendCont);
 					isCreated = false;
 				}
@@ -325,6 +326,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && !isCreated && shipmentDt.getVgmChk()) {
 						shipmentDetail.setShipmentId(shipmentSendCont.getId());
 						shipmentDetail.setCustomStatus("N");
+						shipmentDetail.setFe("E");
+						shipmentDetail.setCargoType("MT");
 						shipmentDetail.setStatus(1);
 						shipmentDetailService.insertShipmentDetail(shipmentDetail);
 					}
