@@ -2,46 +2,19 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-    />
-    <title> Da Nang Port - DO Web Portal: Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <title>Da Nang Port - DO Web Portal: Login</title>
     <meta name="description" content="ePort" />
-    <link
-      href="../static/css/bootstrap.min.css"
-      th:href="@{/css/bootstrap.min.css}"
-      rel="stylesheet"
-    />
-    <link
-      href="../static/css/font-awesome.min.css"
-      th:href="@{/css/font-awesome.min.css}"
-      rel="stylesheet"
-    />
-    <link
-      href="../static/css/style.css"
-      th:href="@{/css/style.css}"
-      rel="stylesheet"
-    />
-    <link
-      href="../static/css/login.min.css"
-      th:href="@{/css/login.min.css}"
-      rel="stylesheet"
-    />
-    <link
-      href="../static/eport/css/eport.css"
-      th:href="@{/eport/css/eport.css?v=4.2.0}"
-      rel="stylesheet"
-    />
+    <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
+    <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet" />
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet" />
+    <link href="../static/css/login.min.css" th:href="@{/css/login.min.css}" rel="stylesheet" />
+    <link href="../static/eport/css/eport.css" th:href="@{/eport/css/eport.css?v=4.2.0}" rel="stylesheet" />
     <!-- 360 Browser Quick Mode -->
     <meta name="renderer" content="webkit" />
     <!-- Avoid IE using compatibility mode-->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link
-      rel="shortcut icon"
-      href="../static/favicon.ico"
-      th:href="@{favicon.ico}"
-    />
+    <link rel="shortcut icon" href="../static/favicon.ico" th:href="@{favicon.ico}" />
     <style type="text/css">
       label.error {
         position: inherit;
@@ -57,7 +30,7 @@
         }
 
         #signupForm {
-          width: 80% !important; 
+          width: 80% !important;
         }
       }
     </style>
@@ -72,14 +45,9 @@
   <body class="signin">
     <div class="signinpanel">
       <div class="container">
-        <div class="logo-top" style="text-align: center">
+        <div class="logo-top" style="text-align: center;">
           <h1>
-            <img
-              alt="cdn"
-              src="../static/img/CDN.png"
-              th:src="@{/img/CDN.png}"
-              style="width: 25%; height: 25%;"
-            />
+            <img alt="cdn" src="../static/img/CDN.png" th:src="@{/img/CDN.png}" style="width: 25%; height: 25%;" />
           </h1>
           <h4 id="cdn-text" style="font-size: 300%; font-family: Arial, sans-serif;">
             <strong>CẢNG ĐÀ NẴNG</strong>
@@ -87,85 +55,37 @@
         </div>
         <div class="login-form">
           <form id="signupForm" autocomplete="off" style="width: 50%; margin: 0 auto; margin-top: 20px;">
-            <p
-              class="m-t-md"
-              style="
-                font-size: x-large;
-                margin: auto;
-                text-align: center;
-                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial,
-                  sans-serif;
-              "
-            >
+            <p class="m-t-md" style="font-size: x-large; margin: auto; text-align: center; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">
               <b>ĐĂNG NHẬP</b>
             </p>
-            <input
-              type="text"
-              name="username"
-              class="form-control uname"
-              placeholder="Tên đăng nhập"
-            />
-            <input
-              type="password"
-              name="password"
-              class="form-control pword"
-              placeholder="Mật khẩu"
-            />
-            <div
-              class="checkbox-custom"
-              th:classappend="${captchaEnabled==false} ? 'm-t'"
-            >
-              <input type="checkbox" id="rememberme" name="rememberme"/>
+            <input type="text" name="username" class="form-control uname" placeholder="Tên đăng nhập" />
+            <input type="password" name="password" class="form-control pword" placeholder="Mật khẩu" />
+            <div class="checkbox-custom" th:classappend="${captchaEnabled==false} ? 'm-t'">
+              <input type="checkbox" id="rememberme" name="rememberme" />
               <label for="rememberme">Ghi nhớ mật khẩu</label>
             </div>
-            <button
-              class="btn btn-success btn-block"
-              id="btnSubmit"
-              data-loading="Đang đăng nhập..."
-            >
+            <button class="btn btn-success btn-block" id="btnSubmit" data-loading="Đang đăng nhập...">
               Đăng nhập
             </button>
           </form>
         </div>
       </div>
-      <!-- <div class="row">
-                
-            <div class="col-sm-3" style="position: absolute;transform: translate(50%,140px);">
-                
-            </div>
-        </div> -->
-      <!--         <div class="signup-footer">
-                <div class="pull-left">Copyright &copy; 2020 All Rights Reserved <br></div>
-            </div> -->
+      <div class="row">
+        <div class="col-sm-3" style="position: absolute; transform: translate(50%, 140px);"></div>
+      </div>
+      <div class="signup-footer">
+        <div class="pull-left">Copyright &copy; 2020 All Rights Reserved <br /></div>
+      </div>
     </div>
     <script th:inline="javascript">
       var ctx = [[@{/}]];
     </script>
-    <script
-      src="../static/js/jquery.min.js"
-      th:src="@{/js/jquery.min.js}"
-    ></script>
-    <script
-      src="../static/js/bootstrap.min.js"
-      th:src="@{/js/bootstrap.min.js}"
-    ></script>
-    <script
-      src="../static/ajax/libs/validate/jquery.validate.min.js"
-      th:src="@{/ajax/libs/validate/jquery.validate.min.js}"
-    ></script>
-    <!-- <script src="../static/ajax/libs/validate/messages_zh.min.js" th:src="@{/ajax/libs/validate/messages_zh.min.js}"></script> -->
-    <script
-      src="../static/ajax/libs/layer/layer.min.js"
-      th:src="@{/ajax/libs/layer/layer.min.js}"
-    ></script>
-    <script
-      src="../static/ajax/libs/blockUI/jquery.blockUI.js"
-      th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"
-    ></script>
-    <script
-      src="../static/eport/js/eport.js"
-      th:src="@{/eport/js/eport.js?v=4.2.0}"
-    ></script>
+    <script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src="../static/ajax/libs/validate/jquery.validate.min.js" th:src="@{/ajax/libs/validate/jquery.validate.min.js}"></script>
+    <script src="../static/ajax/libs/layer/layer.min.js" th:src="@{/ajax/libs/layer/layer.min.js}"></script>
+    <script src="../static/ajax/libs/blockUI/jquery.blockUI.js" th:src="@{/ajax/libs/blockUI/jquery.blockUI.js}"></script>
+    <script src="../static/eport/js/eport.js" th:src="@{/eport/js/eport.js?v=4.2.0}"></script>
     <script src="../static/eport/login.js" th:src="@{/eport/login.js}"></script>
   </body>
 </html>
