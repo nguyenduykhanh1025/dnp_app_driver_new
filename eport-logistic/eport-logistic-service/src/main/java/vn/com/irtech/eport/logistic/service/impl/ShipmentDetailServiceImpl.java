@@ -599,8 +599,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<String>>() {
                 });
-        List<String> listCont = response.getBody();
-        return listCont;
+        List<String> pods = response.getBody();
+        return pods;
     }
 
     @Override
@@ -610,8 +610,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<String>>() {
                 });
-        List<String> listCont = response.getBody();
-        return listCont;
+        List<String> vslNms = response.getBody();
+        return vslNms;
     }
 
     @Override
@@ -621,8 +621,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<String>>() {
                 });
-        List<String> listCont = response.getBody();
-        return listCont;
+        List<String> consignees = response.getBody();
+        return consignees;
     }
 
     @Override
@@ -632,8 +632,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<String>>() {
                 });
-        List<String> listCont = response.getBody();
-        return listCont;
+        List<String> opeCodes = response.getBody();
+        return opeCodes;
     }
 
     @Override
@@ -643,8 +643,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<String>>() {
                 });
-        List<String> listCont = response.getBody();
-        return listCont;
+        List<String> voyages = response.getBody();
+        return voyages;
     }
 
     @Override

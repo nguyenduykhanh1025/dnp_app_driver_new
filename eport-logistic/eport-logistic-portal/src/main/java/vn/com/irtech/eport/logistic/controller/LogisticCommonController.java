@@ -91,12 +91,12 @@ public class LogisticCommonController extends LogisticBaseController {
 
 		String content = "TEST SMS   " + rD;
 		String response = "";
-		//  try {
-		//  	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
-		//  	System.out.println(response);
-		//  } catch (IOException ex) {
-		//  	// process the exception
-		//  }
+		 try {
+		 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
+		 	System.out.println(response);
+		 } catch (IOException ex) {
+		 	// process the exception
+		 }
 		return AjaxResult.success("response.toString()");
 	}
 	
@@ -133,6 +133,15 @@ public class LogisticCommonController extends LogisticBaseController {
 		}
 		ajaxResult.put("opeCodeList", opeCodeList);
 		
+		return ajaxResult;
+	}
+
+	@GetMapping("/vessel/{vslNm}/voyages")
+	@ResponseBody
+	public AjaxResult getVoyages(@PathVariable String vslNm) {
+		AjaxResult ajaxResult = success();
+		List<String> voyages = shipmentDetailService.getVoyageNoList(vslNm);
+		ajaxResult.put("voyages", voyages);
 		return ajaxResult;
 	}
 }
