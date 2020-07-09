@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <th:block th:include="include :: header('Verification Support')" />
+  <head>
+    <th:block th:include="include :: header('Custom Support')" />
+    <th:block th:include="include :: easyui-css" />
+    <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
     <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
-</head>
+  </head>
 
-<body>
-    
+  <body class="container-fluid white-bg page-verification">
+    <section class="content clearfix">
+      <table id="dg" pageList="[20, 50, 100, 150, 200]">
+        <thead>
+          <tr>
+            <th data-options="field:'id', halign:'center', resizable:true, fixed:true" width="40" sortable="true">STT</th>
+            <th data-options="field:'Số Container', halign:'center', align:'center'" width="200" sortable="true">Số Container</th>
+            <th data-options="field:'OPE', halign:'center', fixed:'true'" width="70" sortable="true">OPE</th>
+            <th data-options="field:'Tàu', halign:'center'" width="150" sortable="true">Tàu</th>
+            <th data-options="field:'Chuyến', halign:'center'" width="150" sortable="true">Chuyến</th>
+            <th data-options="field:'Trạng thái', align:'center', fixed:'true', formatter: formatResult" width="150" sortable="true">Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
     <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
     <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/verificationSupport.js}"></script>
-</body>
-
+  </body>
 </html>
