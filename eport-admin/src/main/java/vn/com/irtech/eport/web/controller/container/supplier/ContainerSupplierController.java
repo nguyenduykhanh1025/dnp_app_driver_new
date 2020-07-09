@@ -50,7 +50,6 @@ public class ContainerSupplierController extends BaseController {
 			shipment = new Shipment();
 		}
 		shipment.setServiceType(3);
-		shipment.setSpecificContFlg(0);
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}

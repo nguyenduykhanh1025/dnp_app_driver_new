@@ -131,7 +131,6 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		shipment.setCreateTime(new Date());
 		shipment.setCreateBy(user.getFullName());
 		shipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
-		shipment.setBlNo("null");
 		shipment.setStatus("1");
 		shipment.setContSupplyStatus(0);
 		if (shipmentService.insertShipment(shipment) == 1) {

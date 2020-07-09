@@ -492,7 +492,7 @@ function updateLayout() {
         let cellStatus = hot.getDataAtCell(i, 1);
         if (cellStatus != null) {
             if (checkList[i] == 1) {
-                if (sourceData[i].containerNo == null || sourceData[i].containerNo == '') {
+                if (shipmentSelected.contSupplyStatus == 0) {
                     contNull = true;
                 }
                 if(cellStatus == 1 && 'Y' == sourceData[i].userVerifyStatus) {
@@ -618,14 +618,14 @@ function getDataSelectedFromTable(isValidate) {
 
     let temProcessOrderIds = [];
     processOrderIds = '';
-    for (let i = 0; i < checkList.length; i++) {
-        if (Object.keys(myTableData[i]).length > 0) {
-            if (myTableData[i].processOrderId != null && !temProcessOrderIds.includes(myTableData[i].processOrderId)) {
-                temProcessOrderIds.push(myTableData[i].processOrderId);
-                processOrderIds += myTableData[i].processOrderId + ',';
+    $.each(cleanedGridData, function (index, object) {
+        for (let i=0; i<regiterNos.length; i++) {
+            if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"]) && regiterNos[i] == object["registerNo"]) {
+                temProcessOrderIds.push(object["processOrderId"]);
+                processOrderIds += object["processOrderId"] + ',';
             }
         }
-    }
+    });
 
     if (processOrderIds != '') {
         processOrderIds.substring(0, processOrderIds.length - 1);
@@ -741,7 +741,7 @@ function saveShipmentDetail() {
         return;
     } else {
         if (getDataFromTable(true)) {
-            if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
+            if (shipmentDetails.length > 0 && shipmentDetails.length == shipmentSelected.containerAmount) {
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
                     url: prefix + "/shipment-detail",
@@ -765,8 +765,8 @@ function saveShipmentDetail() {
                         $.modal.closeLoading();
                     },
                 });
-            } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
-                $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
+            } else if (shipmentDetails.length < shipmentSelected.containerAmount) {
+                $.modal.alertError("Quý khách chưa nhập đủ số lượng container.");
             } else {
                 $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
             }
