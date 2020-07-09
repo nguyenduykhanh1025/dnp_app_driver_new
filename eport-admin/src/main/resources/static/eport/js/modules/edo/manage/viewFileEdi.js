@@ -1,4 +1,4 @@
-const PREFIX = ctx + "/edo/manage";
+const PREFIX = ctx + "edo/manage";
 var hot;
 var statusTable = false;
 var dataObj = null;
