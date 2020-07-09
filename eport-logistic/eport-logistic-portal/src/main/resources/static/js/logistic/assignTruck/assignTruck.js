@@ -375,10 +375,15 @@ function formatAction(value, row, index) {
 
 function formatActionAssign(value, row, index) {
     let button = '';
-    if(row.preorderPickup == "Y"){
+    let shipment = $("#dg").datagrid("getSelected");
+    if(shipment.serviceType == 1){ //receiveContFull
+        if(row.preorderPickup == "Y"){
+            button += '<button class="btn btn-primary btn-xs" onclick="assignFollowContainer(\'' + row.id + '\')"><i class="fa fa-edit"></i>Điều xe</button> ';
+        }else{
+            button += '<button class="btn btn-primary btn-xs" onclick="assignFollowContainer(\'' + row.id + '\')" disabled><i class="fa fa-edit"></i>Điều xe</button> ';
+        }
+    }else {//3 serviecType con lai
         button += '<button class="btn btn-primary btn-xs" onclick="assignFollowContainer(\'' + row.id + '\')"><i class="fa fa-edit"></i>Điều xe</button> ';
-    }else{
-        button += '<button class="btn btn-primary btn-xs" onclick="assignFollowContainer(\'' + row.id + '\')" disabled><i class="fa fa-edit"></i>Điều xe</button> ';
     }
     return button;
 }
