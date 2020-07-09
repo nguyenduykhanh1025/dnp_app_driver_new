@@ -13,7 +13,7 @@ function submitHandler() {
             }).done(function (result) {
                 if (result.code == 0) {
                     $("#bookingNo").removeClass("error-input");
-                    $.operate.save(prefix + "/addShipment", $('#form-add-shipment').serialize());
+                    $.operate.save(prefix + "/shipment", $('#form-add-shipment').serialize());
                     parent.loadTable();
                 } else {
                     $.modal.msgError("Số book đã tồn tại!");

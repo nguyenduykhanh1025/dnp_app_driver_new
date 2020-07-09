@@ -558,7 +558,7 @@ function getDataSelectedFromTable(isValidate) {
     let cleanedGridData = [];
     for (let i = 0; i < checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
-        if (checkList[i] == 1 || (isNeedPickedCont && myTableData[i].userVerifyStatus == "N" && myTableData[i].preorderPickup == "Y")) {
+        if (checkList[i] == 1) {
             cleanedGridData.push(myTableData[i]);
         }
         }
@@ -678,7 +678,7 @@ function getDataFromTable(isValidate) {
         }
     });
 
-    if (isValidate && !errorFlg) {
+    if (isValidate && !errorFlg && shipmentSelected.specificContFlg == 1) {
         contList.sort();
         let contTemp = "";
         $.each(contList, function (index, cont) {

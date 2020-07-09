@@ -58,4 +58,6 @@ public interface INotificationsService
      * @return result
      */
     public int deleteNotificationsById(Long id);
+
+    public List<Notifications> selectNotificationsDetailList(Notifications notifications);
 }
