@@ -3,6 +3,7 @@ $(function() {
     $("#containerNumber").text(containerNumber);
     $("#expiredDem").val(formatDate(expiredDem));
     $("#detFreeTime").val(detFreeTime);
+    $("#emptyContainerDepot").val(emptyContainerDepot);
 })
 
 function formatDate(value) {
@@ -33,7 +34,8 @@ function confirm()
             data : {
                 id : id,
                 expiredDem : formatDateForSubmit($("#expiredDem").val()),
-                detFreeTime : $("#detFreeTime").val() == detFreeTime ? "" :  $("#detFreeTime").val()
+                detFreeTime : $("#detFreeTime").val() == detFreeTime ? "" :  $("#detFreeTime").val(),
+                emptyContainerDepot : $("#emptyContainerDepot").val() == emptyContainerDepot ? "" :  $("#emptyContainerDepot").val()
             },
             success: function (data) {
               console.log(data);
@@ -45,6 +47,10 @@ function confirm()
               } else {
                 $.modal.alertError(data.msg)
               }
+              setTimeout(function(){
+                $.modal.close();
+              },600)
+              
             },
             error: function (data) {
               $.modal.alertError(
@@ -83,5 +89,6 @@ function formatDateForSubmit(value) {
     return 0;
 
   }
+
 
 

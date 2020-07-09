@@ -167,9 +167,7 @@ public class CarrierEdoController extends CarrierBaseController {
 	public String getUpdate(@PathVariable("id") Long id,ModelMap map) {
 		map.put("id", id);
 		Edo edo = edoService.selectEdoById(id);
-		map.put("containerNumber", edo.getContainerNumber());
-		map.put("expiredDem", edo.getExpiredDem());
-		map.put("detFreeTime", edo.getDetFreeTime());
+		map.put("edo", edo);
 		return PREFIX + "/update";
 	}
 
@@ -209,6 +207,16 @@ public class CarrierEdoController extends CarrierBaseController {
 				edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
 				edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
 				edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
+				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+				segNo += 1;
+			}
+			if(edo.getEmptyContainerDepot() != null)
+			{
+				edoAuditLog.setFieldName("Empty Container Depot");
+				EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+				edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+				edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+				edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
 				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 			}
 			edoService.updateEdo(edo);

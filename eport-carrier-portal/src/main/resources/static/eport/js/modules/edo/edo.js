@@ -103,11 +103,11 @@ function formatAction(value, row, index) {
 }
 
 function viewHistoryCont(id) {
-  $.modal.open("History Container", PREFIX + "/history/" + id, 800, 500);
+  $.modal.open("History Container", PREFIX + "/history/" + id, 1000, 400);
 }
 
 function viewUpdateCont(id) {
-  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 500);
+  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 400);
 }
 
 function loadTableByContainer(billOfLading) {

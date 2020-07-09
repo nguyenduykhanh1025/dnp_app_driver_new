@@ -34,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="oldValue != null  and oldValue != ''"> and old_value = #{oldValue}</if>
             <if test="newValue != null  and newValue != ''"> and new_value = #{newValue}</if>
         </where>
+            ORDER BY seq_no DESC
     </select>
     
     <select id="selectEdoAuditLogById" parameterType="Long" resultMap="EdoAuditLogResult">
