@@ -51,14 +51,14 @@
                 M.SZTP2 AS sztp,
                 M.FE AS fe,
                 M.PTNR_CODE AS opeCode,
-                (SELECT VSL_NM FROM TB_VSL WHERE VSL_CD = M.VSL_CD) AS vslNm,
+                M.VSL_CD AS vslNm,
                 M.BOOKING_NO AS bookingNo,
                 M.BL_NO AS blNo,
                 M.SEAL_NO1 AS sealNo,
                 M.WGT AS wgt,
                 M.CONSIGNEE AS consignee,
                 M.VGM AS vgm,
-                M.user_voy AS voyNo,
+                M.CALL_SEQ AS voyNo,
                 CASE
                 	WHEN M.chold_chk = 'N' then 'R'
                 	WHEN M.chold_chk = 'Y' then 'N'
