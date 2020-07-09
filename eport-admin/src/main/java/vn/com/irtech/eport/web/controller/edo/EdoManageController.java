@@ -25,17 +25,17 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 @Controller
-@RequestMapping("/edo/manager")
+@RequestMapping("/edo/manage")
 public class EdoManageController extends BaseController {
 
-  final String PREFIX = "/edo/manager";
+  final String PREFIX = "edo/manage";
   @Autowired
   private IEdoService edoService;
 
   @Autowired
 	private IEdoAuditLogService edoAuditLogService;
 
-  @GetMapping()
+  @GetMapping("/index")
   public String index() {
     return PREFIX + "/edo";
   }

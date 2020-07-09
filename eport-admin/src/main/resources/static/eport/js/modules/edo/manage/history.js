@@ -1,4 +1,4 @@
-var PREFIX = "/edo/manager"
+const PREFIX = ctx + "edo/manage";
 $(function() {
     loadTable();
 });
@@ -39,4 +39,9 @@ function loadTable() {
 function formatToYDMHMS(date) {
     let temp = date.substring(0,10);
     return temp.split("-").reverse().join("/") + date.substring(10,19);
-  }
+}
+
+function formatField(value)
+{
+  return "<span class='label label-success'>"+value+"</span>";
+}

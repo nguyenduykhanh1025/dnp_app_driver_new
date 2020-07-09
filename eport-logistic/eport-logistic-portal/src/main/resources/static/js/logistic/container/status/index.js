@@ -39,7 +39,6 @@ function loadTable() {
 
 function formatStatus(value)
 {
-    console.log(value);
     switch(value)
     {
         case 1:

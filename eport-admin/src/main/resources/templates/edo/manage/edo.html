@@ -81,7 +81,7 @@
                     OPE <br />
                     CODE
                   </th>
-                  <th data-options="field:'consignee',align:'left'" width="300">
+                  <th data-options="field:'consignee',align:'left'" width="250">
                     CONSIGNEE
                   </th>
                   <th data-options="field:'expiredDem',align:'left',formatter:formatToYDMHMS" width="110">
@@ -92,13 +92,11 @@
                     DET FREE <br />
                     TIME
                   </th>
-                  <th data-options="field:'vessel',align:'left'" width="80">
-                    VESSEL
+                  <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
+                    EMPTY CONTAINER <br>
+                    DEPOT
                   </th>
-                  <th data-options="field:'voyNo',align:'left'" width="80">
-                    VOY NO
-                  </th>
-                  <th data-options="field:'status',align:'left'" width="60">
+                  <th data-options="field:'status',align:'left',formatter:formatStatus" width="90">
                     STATUS
                   </th>
                   <th data-options="field:'createTime',align:'center',formatter:formatToYDMHMS" width="110">

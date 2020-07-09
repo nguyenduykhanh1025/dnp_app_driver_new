@@ -1,4 +1,4 @@
-const PREFIX = ctx + "edo/manager";
+const PREFIX = ctx + "edo/manage";
 var bill;
 var edo = new Object();
 
@@ -193,3 +193,30 @@ function formatToYDMHMS(date) {
   let temp = date.substring(0,10);
   return temp.split("-").reverse().join("/") + date.substring(10,19);
 }
+
+function formatStatus(value)
+{
+    switch(value)
+    {
+        case 0:
+            return "<span class='label label-success'>Trạng thái 0</span>";
+            break;
+        case 1:
+            return "<span class='label label-success'>Trạng thái 1</span>";
+            break;
+        case 2:
+            return "<span class='label label-success'>Trạng thái 2</span>";
+            break;
+        case 3:
+            return "<span class='label label-success'>Trạng thái 2</span>";
+            break;
+        case 4:
+            return "<span class='label label-success'>Trạng thái 2</span>";
+            break;
+        default:
+            return "<span class='label label-warning'>Đang chờ</span>";
+
+    }
+}
+
+
