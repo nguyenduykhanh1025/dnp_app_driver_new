@@ -135,4 +135,13 @@ public class LogisticCommonController extends LogisticBaseController {
 		
 		return ajaxResult;
 	}
+
+	@GetMapping("/vessel/{vslNm}/voyages")
+	@ResponseBody
+	public AjaxResult getVoyages(@PathVariable String vslNm) {
+		AjaxResult ajaxResult = success();
+		List<String> voyages = shipmentDetailService.getVoyageNoList(vslNm);
+		ajaxResult.put("voyages", voyages);
+		return ajaxResult;
+	}
 }

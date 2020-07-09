@@ -11,10 +11,10 @@ function confirm() {
                 creditFlag: creditFlag,
             },
             success: function (data) {
-                if (data.code != 0) {
-                    $.modal.msgError(data.msg);
+                if (data.code != 0 && data.code != 301) {
+                    $.modal.alertError(data.msg);
                 } else {
-                    parent.finishForm(data);
+                    parent.finishVerifyForm(data);
                     $.modal.close();
                 }
             },
