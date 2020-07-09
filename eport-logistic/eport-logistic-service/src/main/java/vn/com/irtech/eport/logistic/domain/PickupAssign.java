@@ -41,7 +41,19 @@ public class PickupAssign extends BaseEntity
     /** Mã nhận lệnh thuê ngoài */
     @Excel(name = "Mã nhận lệnh thuê ngoài")
     private String externalSecretCode;
+    
+    /** Đơn vị chủ quản ( thuê ngoài) */
+    @Excel(name = "Đơn vị chủ quản")
+    private String driverOwner;
 
+    /** Số điện thoại (thuê ngoài) */
+    @Excel(name = "Số điện thoại")
+    private String phoneNumber;
+
+    /** Họ và tên (thuê ngoài) */
+    @Excel(name = "Họ và tên")
+    private String fullName;
+    
     /** Biển số xe đầu kéo (thuê ngoài) */
     @Excel(name = "Biển số xe đầu kéo (thuê ngoài)")
     private String truckNo;
@@ -113,6 +125,35 @@ public class PickupAssign extends BaseEntity
     {
         return externalSecretCode;
     }
+    
+    public void setDriverOwner(String driverOwner) 
+    {
+        this.driverOwner = driverOwner;
+    }
+
+    public String getDriverOwner() 
+    {
+        return driverOwner;
+    }
+    public void setPhoneNumber(String phoneNumber) 
+    {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getPhoneNumber() 
+    {
+        return phoneNumber;
+    }
+    public void setFullName(String fullName) 
+    {
+        this.fullName = fullName;
+    }
+
+    public String getFullName() 
+    {
+        return fullName;
+    }
+    
     public void setTruckNo(String truckNo) 
     {
         this.truckNo = truckNo;
@@ -142,6 +183,9 @@ public class PickupAssign extends BaseEntity
             .append("shipmentDetailId", getShipmentDetailId())
             .append("externalFlg", getExternalFlg())
             .append("externalSecretCode", getExternalSecretCode())
+            .append("driverOwner", getDriverOwner())
+            .append("phoneNumber", getPhoneNumber())
+            .append("fullName", getFullName())
             .append("truckNo", getTruckNo())
             .append("chassisNo", getChassisNo())
             .append("remark", getRemark())

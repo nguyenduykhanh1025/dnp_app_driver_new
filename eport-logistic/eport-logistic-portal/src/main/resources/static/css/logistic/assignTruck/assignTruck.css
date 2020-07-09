@@ -41,3 +41,7 @@
     display: none;
     flex-flow: column;
 }
+.assignFollowBatch-table {
+  flex-flow: column;
+  display: flex;
+}

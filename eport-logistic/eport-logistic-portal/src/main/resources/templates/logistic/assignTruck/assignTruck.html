@@ -4,6 +4,7 @@
     <th:block th:include="include :: header('Điều Xe')" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+    <th:block th:include="include :: handsontable-css" />
     <link th:href="@{/css/logistic/assignTruck/assignTruck.css}" rel="stylesheet" />
   </head>
   <body>
@@ -81,7 +82,7 @@
               <div class="right-button-bar" style="position: absolute; right: 40px;">
                 <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="thueNgoai()">Thuê Ngoài</button>
               </div>
-              <div class="assignFollowBatch">
+              <div class="assignFollowBatch-table">
                 <div style="display: flex; flex: 1 1 auto;">
                   <div class="table-content">
                     <div style="display: flex; justify-content: center;">
@@ -130,6 +131,12 @@
                     </table>
                   </div>
                 </div>
+                <div>
+                  <div>
+                    <div class="title"> Thuê ngoài</div>
+                  </div>
+                  <div id="container-grid" style="height: 150px;" class="hot handsontable htColumnHeaders"></div>
+                </div>
               </div>
           </div>
           </div>
@@ -151,11 +158,11 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: handsontable-js" />
     <script th:src="@{/js/logistic/assignTruck/assignTruck.js}"></script>
     <!-- <script th:src="@{/js/logistic/assignTruck/pickTruckForm.js}"></script> -->
   </body>
