@@ -91,12 +91,12 @@ public class LogisticCommonController extends LogisticBaseController {
 
 		String content = "TEST SMS   " + rD;
 		String response = "";
-		//  try {
-		//  	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
-		//  	System.out.println(response);
-		//  } catch (IOException ex) {
-		//  	// process the exception
-		//  }
+		 try {
+		 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
+		 	System.out.println(response);
+		 } catch (IOException ex) {
+		 	// process the exception
+		 }
 		return AjaxResult.success("response.toString()");
 	}
 	
