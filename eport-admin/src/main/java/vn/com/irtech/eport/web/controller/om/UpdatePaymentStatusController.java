@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/updatePayment")
 public class UpdatePaymentStatusController extends BaseController{
 
-    private String prefix = "/om/updatePayment";
+    private String prefix = "om/updatePayment";
 
     @Autowired
     private IShipmentDetailService shipmentDetailService;

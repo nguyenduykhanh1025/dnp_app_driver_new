@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/updateDO")
 public class UpdateDoController extends BaseController{
 
-    private String prefix = "/om/updateDO";
+    private String prefix = "om/updateDO";
 
     @Autowired
     private IShipmentDetailService shipmentDetailService;
