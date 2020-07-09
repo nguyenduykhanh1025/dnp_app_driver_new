@@ -2,10 +2,10 @@
 -- version 5.0.1
 -- https://www.phpmyadmin.net/
 --
--- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th6 09, 2020 lúc 08:49 AM
--- Phiên bản máy phục vụ: 10.4.11-MariaDB
--- Phiên bản PHP: 7.4.3
+-- Host: 127.0.0.1
+-- Generation Time: Jul 09, 2020 at 06:56 AM
+-- Server version: 10.4.11-MariaDB
+-- PHP Version: 7.4.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,18 +19,17 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Cơ sở dữ liệu: `eport`
+-- Database: `eport`
 --
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `carrier_account`
+-- Table structure for table `carrier_account`
 --
 
-DROP TABLE IF EXISTS `carrier_account`;
-CREATE TABLE IF NOT EXISTS `carrier_account` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+CREATE TABLE `carrier_account` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
   `group_id` bigint(20) NOT NULL COMMENT 'Master Account',
   `carrier_code` varchar(50) COLLATE utf8_bin NOT NULL COMMENT 'Shipping Line Code',
   `email` varchar(50) COLLATE utf8_bin NOT NULL COMMENT 'Email',
@@ -45,63 +44,191 @@ CREATE TABLE IF NOT EXISTS `carrier_account` (
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Creator',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
-  `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Carrier account';
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Carrier account';
 
 --
--- Đang đổ dữ liệu cho bảng `carrier_account`
+-- Dumping data for table `carrier_account`
 --
 
 INSERT INTO `carrier_account` (`id`, `group_id`, `carrier_code`, `email`, `password`, `salt`, `full_name`, `status`, `del_flag`, `login_ip`, `login_date`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
-(1, 1, 'CNC,CMA', 'minhtc@admin.com', '1bde5aa6afd5f5bdc36c5df02594d5fe', 'ef6c96', 'Trần Minh', '0', '0', '192.168.1.68', '2020-06-09 09:14:08', NULL, '', '2020-04-07 11:18:40', 'DNG', '2020-06-09 09:14:08'),
-(2, 1, 'CNC,CMA', 'nqat2003@gmail.com', '88cd9c095318aa5d9f84d589f437760f', '0d78ae', 'Anh Taif', '0', '0', '', NULL, NULL, 'DNG', '2020-04-08 10:20:33', 'DNG', '2020-04-08 10:21:33'),
-(3, 2, 'CNC,CMA', 'huydp@irtech.com.vn', '00c8790aeeff0eaece5a571ee0dd41ee', '807d42', 'Huy Do', '0', '0', '42.118.93.19', '2020-04-28 13:17:07', NULL, 'DNG', '2020-04-14 11:06:16', '', '2020-04-28 13:17:07'),
-(6, 5, 'CNC,CMA', 'han@gmail.com', '84db890c87b32ee0564d56983a89d7e0', '5d4101', 'Han', '0', '0', '113.176.195.221', '2020-04-15 15:54:11', NULL, 'DNG', '2020-04-15 14:42:12', '', '2020-04-15 15:54:11'),
-(7, 3, 'CNC,CMA,WHL', 'minhtc@gmail.com', '072c5ea8b19f57d68bb5e7567d687cd4', 'c769b1', 'admin123', '0', '0', '192.168.1.68', '2020-06-09 13:42:37', NULL, 'DNG', '2020-04-24 13:48:32', '', '2020-06-09 13:42:37');
+(1, 1, 'CNC,CMA,APL', 'tai@gmail.com', 'a8073909b5853562442cb342386d8a76', '0f1722', 'Anh Tài', '0', '0', '127.0.0.1', '2020-05-07 12:53:08', NULL, '', '2020-04-07 11:18:40', 'DNG', '2020-05-07 12:53:08'),
+(2, 1, 'CNC,CMA,APL', 'nqat2003@gmail.com', '88cd9c095318aa5d9f84d589f437760f', '0d78ae', 'Anh Taif', '0', '0', '', NULL, NULL, 'DNG', '2020-04-08 10:20:33', 'DNG', '2020-04-08 10:21:33'),
+(3, 1, '1', 'tronghieu8531@gmail.com', '8a00639deeeda4efc9b7f0056a541c71', 'dccc02', 'Nguyễn Trọng Hiếu', '0', '0', '127.0.0.1', '2020-07-08 16:09:23', NULL, 'DNG', '2020-04-14 11:49:30', 'DNG', '2020-07-08 16:09:23');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `carrier_group`
+-- Table structure for table `carrier_group`
 --
 
-DROP TABLE IF EXISTS `carrier_group`;
-CREATE TABLE IF NOT EXISTS `carrier_group` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+CREATE TABLE `carrier_group` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
   `group_code` varchar(5) COLLATE utf8_bin NOT NULL COMMENT 'Group Code',
   `group_name` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Group Name',
   `operate_code` varchar(50) COLLATE utf8_bin NOT NULL COMMENT 'Operate Codes',
   `main_email` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Main Emails',
+  `do_type` char(1) COLLATE utf8_bin NOT NULL DEFAULT '0' COMMENT '0: DO, 1:eDO',
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Creator',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
   `do_flag` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'DO Permission',
   `edo_flag` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'EDO Permission',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Carrier Group';
+  `api_private_key` text COLLATE utf8_bin DEFAULT NULL COMMENT 'API private key',
+  `api_public_key` text COLLATE utf8_bin DEFAULT NULL COMMENT 'API public key',
+  `path_edi_receive` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Path edi file',
+  `path_edi_backup` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Path_edi_moving'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Carrier Group';
 
 --
--- Đang đổ dữ liệu cho bảng `carrier_group`
+-- Dumping data for table `carrier_group`
 --
 
-INSERT INTO `carrier_group` (`id`, `group_code`, `group_name`, `operate_code`, `main_email`, `create_by`, `create_time`, `update_by`, `update_time`, `do_flag`, `edo_flag`) VALUES
-(1, '1', 'WWHA', 'ABC BAC', 'hello@gmail.com', '123123', NULL, 'DNG', '2020-05-27 10:48:14', '1', '0'),
-(2, 'SITC', 'SITC', 'S', 'sitc@abc.com', 'DNG', '2020-04-14 11:05:54', 'DNG', '2020-05-27 10:47:59', '0', '0'),
-(3, 'CMA', 'CMA', 'ABC.ABC', 'abc@gmail.com', 'DNG', '2020-04-14 12:41:43', 'DNG', '2020-05-27 10:48:07', '0', '0'),
-(4, 'ABC', 'ABC', 'A1, A2, A3', 'abc@abc.com', 'DNG', '2020-04-15 08:59:43', '', NULL, '0', '0'),
-(5, '123', 'Wanhai', 'ABC,ABC', 'tai@gmail.com', 'DNG', '2020-04-15 14:34:40', 'DNG', '2020-05-27 10:48:23', '0', '0');
+INSERT INTO `carrier_group` (`id`, `group_code`, `group_name`, `operate_code`, `main_email`, `do_type`, `create_by`, `create_time`, `update_by`, `update_time`, `do_flag`, `edo_flag`, `api_private_key`, `api_public_key`, `path_edi_receive`, `path_edi_backup`) VALUES
+(1, 'CMA', 'WWHA', 'CNC,CMA,APL', 'hello@gmail.com', '0', '123123', NULL, 'DNG', '2020-06-30 13:53:01', '1', '1', NULL, NULL, 'D:\\testReadFile', 'D:\\DaNangPort\\eDO'),
+(2, 'CMA', 'asdfasdf', 'wdfs', 'asdfsd@asdfa.com', '0', 'DNG', '2020-05-07 13:10:46', 'DNG', '2020-06-30 13:53:07', '0', '1', NULL, NULL, 'D:\\testReadFile', 'D:\\testReadFile'),
+(3, 'CMA', '1asd', 'asd', 'asdfa@asdf.com', '0', 'DNG', '2020-05-07 13:11:30', 'DNG', '2020-06-30 13:53:15', '0', '1', NULL, NULL, 'D:\\testReadFile', 'D:\\testReadFile');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `equipment_do`
+-- Table structure for table `driver_account`
 --
 
-DROP TABLE IF EXISTS `equipment_do`;
-CREATE TABLE IF NOT EXISTS `equipment_do` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+CREATE TABLE `driver_account` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `logistic_group_id` bigint(20) DEFAULT NULL COMMENT 'Logistic Group',
+  `mobile_number` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'So DT',
+  `full_name` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ho va Ten',
+  `identify_card_no` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'CMND',
+  `password` varchar(64) COLLATE utf8_bin NOT NULL COMMENT 'Mat Khau',
+  `salt` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'Salt',
+  `status` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Trạng thái khóa (default 0)',
+  `del_flag` bit(1) NOT NULL DEFAULT b'0' COMMENT 'Delete Flag',
+  `valid_date` datetime DEFAULT NULL COMMENT 'Hieu Luc Den',
+  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ghi chu',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Driver login info';
+
+--
+-- Dumping data for table `driver_account`
+--
+
+INSERT INTO `driver_account` (`id`, `logistic_group_id`, `mobile_number`, `full_name`, `identify_card_no`, `password`, `salt`, `status`, `del_flag`, `valid_date`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
+(1, 2, '1231231231', 'Nguyễn Trọng Hiếu', NULL, '4b45af63306e999b4a999e304ac27fac', '413b85', '1', b'0', '2020-11-13 00:00:00', NULL, 'Nguyễn Trọng Hiếu', '2020-05-22 23:19:25', NULL, NULL),
+(2, 2, '1231231235', 'asdfasdfsadf', NULL, 'c0749c0de9886b4bc8d09e3f52b23a28', '7da3b7', '1', b'0', '2020-10-08 00:00:00', NULL, 'Nguyễn Trọng Hiếu', '2020-05-22 23:19:52', NULL, NULL),
+(3, 2, '1231231236', 'afasfasfsadf', NULL, '59b27d5fb719688d1a52b2436fd632af', '8342ee', '1', b'0', '2020-12-25 00:00:00', NULL, 'Nguyễn Trọng Hiếu', '2020-05-22 23:20:14', NULL, NULL),
+(4, 2, '4344343412', 'Nguyễn Trọng Hiếu', NULL, 'dba14101442756b7c0dd7363fe06ac95', '648b38', '1', b'0', '2020-08-22 00:00:00', NULL, 'Nguyễn Trọng Hiếu', '2020-05-22 23:20:35', NULL, NULL),
+(5, 2, '43423412312', 'Nguyễn Trọng Hiếu', NULL, '893e5085fcc574779cd549c16fa1b251', 'd68cba', '1', b'0', '2020-07-31 00:00:00', NULL, 'Nguyễn Trọng Hiếu', '2020-05-22 23:20:56', NULL, NULL),
+(9, 1, '12123123123', 'asfasdf', NULL, '08ffe2f36b2a2442641e895fccca49fe', '3b6b7e', '1', b'0', '2020-06-05 19:00:14', NULL, 'nguyen trong hieu', '2020-05-29 19:00:14', NULL, NULL),
+(10, 1, '1231231223', 'adsfasdf', NULL, 'c613a521ef633d5b038ce837515c4c13', 'e6fb6c', '1', b'0', '2020-06-05 19:00:14', NULL, 'nguyen trong hieu', '2020-05-29 19:00:14', NULL, NULL),
+(11, 1, '1231231231', 'sadfasf', NULL, '1db6a189f3d6a823370ac14d9dec9d2d', '3cf305', '1', b'0', '2020-06-06 07:01:35', NULL, 'nguyen trong hieu', '2020-05-30 07:01:35', NULL, NULL),
+(12, 1, '1231231231', 'asdfasdf', NULL, 'dd183823ae510665d9abad93c493ca5a', '8ac0fc', '1', b'0', '2020-06-06 07:01:35', NULL, 'nguyen trong hieu', '2020-05-30 07:01:35', NULL, NULL),
+(13, 1, '1231231231', 'ádà', NULL, 'df9e24ec0c86fa75f1eb87b2bb8d0a6f', '4e23c1', '1', b'0', '2020-06-06 07:20:35', NULL, 'nguyen trong hieu', '2020-05-30 07:20:35', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `driver_truck`
+--
+
+CREATE TABLE `driver_truck` (
+  `driver_id` bigint(20) NOT NULL COMMENT 'ID tài xế',
+  `truck_id` bigint(20) NOT NULL COMMENT 'truck_id'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='driver_truck';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `edo`
+--
+
+CREATE TABLE `edo` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `carrier_id` bigint(20) NOT NULL COMMENT 'ID Nhan Vien Hang Tau',
+  `carrier_code` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'Ma Hang Tau',
+  `order_number` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'So Lenh (Optional)',
+  `bill_of_lading` varchar(20) COLLATE utf8_bin NOT NULL COMMENT 'So B/L',
+  `business_unit` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Don Vi Khai Thac (Optional)',
+  `consignee` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Chu Hang',
+  `container_number` varchar(11) COLLATE utf8_bin NOT NULL COMMENT 'So Cont',
+  `expired_dem` datetime NOT NULL COMMENT 'Han Lenh',
+  `empty_container_depot` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Noi Ha Rong',
+  `det_free_time` tinyint(4) DEFAULT NULL COMMENT 'So Ngay Mien Luu Vo Cont',
+  `secure_code` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ma Bao Mat (optional)',
+  `release_date` datetime DEFAULT NULL COMMENT 'Ngay Release',
+  `vessel` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Tau',
+  `voy_no` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Chuyen',
+  `status` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'eDO Status (new, đã khai báo, đã làm lệnh, gatein, gateout)',
+  `release_status` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Release Status (0:tren bai cang, 1: released)',
+  `create_source` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Nguon Tao: web, edi, api',
+  `transaction_id` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Transaction id',
+  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ghi chu',
+  `del_flg` bit(1) DEFAULT NULL COMMENT 'Delete Flag',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Exchange Delivery Order' ROW_FORMAT=DYNAMIC;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `edo_audit_log`
+--
+
+CREATE TABLE `edo_audit_log` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `carrier_id` bigint(20) NOT NULL COMMENT 'ID Nhan Vien Hang Tau',
+  `carrier_code` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'Ma Hang Tau',
+  `edo_id` bigint(20) NOT NULL COMMENT 'EDO ID',
+  `seq_no` int(11) NOT NULL COMMENT 'Sequence Number 1->n',
+  `field_name` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Data Field Name',
+  `old_value` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Old Value',
+  `new_value` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'New Value',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='eDO Audit Trail Log' ROW_FORMAT=DYNAMIC;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `edo_history`
+--
+
+CREATE TABLE `edo_history` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `carrier_id` bigint(20) NOT NULL COMMENT 'ID Nhan Vien Hang Tau',
+  `carrier_code` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'Ma Hang Tau',
+  `edo_id` bigint(20) NOT NULL COMMENT 'EDO ID',
+  `order_number` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'So Lenh (Optional)',
+  `bill_of_lading` varchar(20) COLLATE utf8_bin NOT NULL COMMENT 'So B/L',
+  `container_number` varchar(11) COLLATE utf8_bin NOT NULL COMMENT 'So Cont',
+  `action` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Action(insert,update, delete)',
+  `edi_content` text COLLATE utf8_bin DEFAULT NULL,
+  `file_name` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ten file EDI',
+  `create_source` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Nguồi File EDI',
+  `send_mail_flag` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT ' 0: chua send mail, 1 : da send mail',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='eDO Action History' ROW_FORMAT=DYNAMIC;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equipment_do`
+--
+
+CREATE TABLE `equipment_do` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
   `carrier_id` bigint(20) NOT NULL COMMENT 'ID Nhan Vien Hang Tau',
   `carrier_code` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'Ma Hang Tau',
   `order_number` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'So Lenh (Optional)',
@@ -128,123 +255,17 @@ CREATE TABLE IF NOT EXISTS `equipment_do` (
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
-  `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Exchange Delivery Order';
-
---
--- Đang đổ dữ liệu cho bảng `equipment_do`
---
-
-INSERT INTO `equipment_do` (`id`, `carrier_id`, `carrier_code`, `order_number`, `bill_of_lading`, `business_unit`, `consignee`, `container_number`, `expired_dem`, `empty_container_depot`, `det_free_time`, `secure_code`, `release_date`, `vessel`, `voy_no`, `do_type`, `status`, `process_status`, `document_status`, `document_receipt_date`, `release_status`, `create_source`, `remark`, `process_remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
-(2, 1, 'WHA', NULL, '1', NULL, '1', '1', '2020-04-07 13:07:54', '1', 1, NULL, NULL, '', '', NULL, '0', '0', '0', NULL, '0', NULL, 'null', NULL, 'Anh Tai', '2020-04-07 13:07:54', NULL, NULL),
-(3, 1, 'WHA', NULL, '1', NULL, '1', '1', '2020-04-07 13:09:24', '1', 1, NULL, NULL, '', '', NULL, '0', '0', '0', NULL, '0', NULL, 'null', NULL, 'Anh Tai', '2020-04-07 13:09:24', NULL, NULL),
-(4, 1, 'WHA', NULL, '123', NULL, '3', '2131', '2020-04-07 13:09:24', 'null', NULL, NULL, NULL, '', NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null', NULL, 'Anh Tai', '2020-04-07 13:09:24', 'admin', '2020-04-14 13:42:03'),
-(5, 1, 'WHA', NULL, '123', NULL, '3123', '1231', '2020-04-07 13:33:30', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null', NULL, 'Anh Tài', '2020-04-07 13:33:30', 'admin', '2020-04-14 13:42:03'),
-(6, 1, 'WHA', NULL, '123', NULL, '123', '123', '2020-04-07 13:33:30', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null', NULL, 'Anh Tài', '2020-04-07 13:33:30', 'admin', '2020-04-14 13:42:03'),
-(7, 1, 'WHA', NULL, '123', NULL, '3123', '1231', '2020-04-07 13:35:05', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 13:35:05', 'admin', '2020-04-14 13:42:03'),
-(8, 1, 'WHA', NULL, '123', NULL, '123', '123', '2020-04-07 13:35:05', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 13:35:05', 'admin', '2020-04-14 13:42:03'),
-(9, 1, 'WHA', NULL, '123', NULL, '3123', '1231', '2010-12-25 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 13:39:19', 'admin', '2020-04-14 13:42:03'),
-(10, 1, 'WHA', NULL, '123', NULL, '123', '123', '2010-12-25 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 13:39:19', 'admin', '2020-04-14 13:42:03'),
-(11, 1, 'WHA', NULL, '123', NULL, '3123', '1231', '2020-03-12 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 13:40:58', 'admin', '2020-04-14 13:42:03'),
-(12, 1, 'WHA', NULL, '123', NULL, '123', '123', '2020-04-07 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 13:40:58', 'admin', '2020-04-14 13:42:03'),
-(13, 1, 'WHA', NULL, '3123', NULL, '23', '21', '2020-04-07 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 14:15:36', NULL, NULL),
-(14, 1, 'WHA', NULL, '123', NULL, '231', '123', '2020-04-07 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 14:15:36', 'admin', '2020-04-14 13:42:03'),
-(15, 1, 'WHA', NULL, '3123', NULL, '23', '21', '2020-04-05 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 14:15:56', NULL, NULL),
-(16, 1, 'WHA', NULL, '123', NULL, '231', '123', '2020-04-07 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 14:15:56', 'admin', '2020-04-14 13:42:03'),
-(17, 1, 'WHA', NULL, '23123', NULL, '231', '1', '2020-04-07 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '1', '2020-04-14 11:29:40', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 14:29:05', 'admin', NULL),
-(18, 1, 'WHA', NULL, '1231', NULL, '123123', '23123', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 14:29:05', NULL, NULL),
-(19, 1, '123', NULL, '231', NULL, '07/04/2020', '23123', '2020-04-07 16:44:18', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 11:13:43', '0', NULL, '\"1\":[nul', NULL, 'Anh Tài', '2020-04-07 16:44:18', 'admin', '2020-04-14 11:13:43'),
-(20, 1, 'ádfads', NULL, '1231', NULL, '23123', '23123', '2020-04-23 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 16:49:46', NULL, NULL),
-(21, 1, '1234', NULL, '123', NULL, '1231', '123', '2020-04-16 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 17:09:54', 'admin', '2020-04-14 13:42:03'),
-(22, 1, '1234', NULL, '123', NULL, '123', '123', '2020-04-25 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 17:13:26', 'admin', '2020-04-14 13:42:03'),
-(23, 1, '1234', NULL, '123', NULL, '123', '123', '2020-04-25 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-07 17:18:23', 'admin', '2020-04-14 13:42:03'),
-(28, 1, '1234', NULL, '123', NULL, '123', '23', '2020-04-07 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-07 19:24:10', 'admin', '2020-04-14 13:42:03'),
-(29, 1, '1234', NULL, '1231', NULL, '123123', '1231', '2020-04-17 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-07 19:33:34', NULL, NULL),
-(30, 1, '1234', NULL, '21312', NULL, '1231', '12312', '2020-04-15 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-07 19:33:48', NULL, NULL),
-(31, 1, '1234', NULL, '123', NULL, '23123', '123', '2020-04-07 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-07 19:35:32', 'admin', '2020-04-14 13:42:03'),
-(32, 1, '1234', NULL, '123', NULL, '123', '123123', '2020-04-07 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-07 19:35:58', 'admin', '2020-04-14 13:42:03'),
-(33, 1, '1234', NULL, '123', NULL, '23123', '2312', '2020-04-07 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-07 19:39:23', 'admin', '2020-04-14 13:42:03'),
-(34, 1, '1234', NULL, '12312', NULL, '123123', '12312', '2020-04-07 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-07 19:40:10', NULL, NULL),
-(35, 1, '1234', NULL, '123123', NULL, '123123', '12312', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 08:16:03', NULL, NULL),
-(36, 1, '1234', NULL, '123123', NULL, '123123123', '123123', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 08:18:48', NULL, NULL),
-(37, 1, '1234', NULL, '123123', NULL, '123123', '123123', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 08:23:01', NULL, NULL),
-(38, 1, '1234', NULL, '1231', NULL, '123123', '23123', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 08:23:23', NULL, NULL),
-(39, 1, '1234', NULL, '123123', NULL, '3123', '1231', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 08:23:43', NULL, NULL),
-(40, 1, '1234', NULL, '213123', NULL, '231231', '123', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 08:24:05', NULL, NULL),
-(41, 1, '1234', NULL, '12312', NULL, '231231', '31231', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 08:25:20', NULL, NULL),
-(42, 1, '1234', NULL, '1232', NULL, '2312', '31231', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 08:25:20', NULL, NULL),
-(43, 1, '1234', NULL, '31231', NULL, '3123123', '2312', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '1', '2020-04-14 11:29:17', '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 08:25:48', 'admin', NULL),
-(44, 1, '1234', NULL, '1231', NULL, '12312', '231', '2020-04-15 00:00:00', '123', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 08:28:25', NULL, NULL),
-(45, 1, '1234', NULL, '312', NULL, '1231231', '1231', '2020-04-16 00:00:00', '2312', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 08:28:25', NULL, NULL),
-(46, 1, '1234', NULL, '12312', NULL, '123', '12312', '2020-04-10 00:00:00', '1231231', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 08:28:26', NULL, NULL),
-(47, 1, '1234', NULL, '3123', NULL, '1231231', '312', '2020-04-14 00:00:00', '3123123', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 08:28:26', NULL, NULL),
-(48, 1, '1234', NULL, '2312', NULL, '31', '123', '2020-04-23 00:00:00', '3123', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 08:28:26', NULL, NULL),
-(49, 1, '\"WWHA\"', NULL, '123', NULL, '123', '23', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 09:29:21', 'admin', '2020-04-14 13:42:03'),
-(50, 1, '\"WWHA\"', NULL, '123', NULL, '23', '3', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 09:29:21', 'admin', '2020-04-14 13:42:03'),
-(51, 1, '\"WWHA\"', NULL, '123', NULL, '23', '123', '2020-04-08 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 09:29:57', 'admin', '2020-04-14 13:42:03'),
-(52, 1, 'WWHA', NULL, '123', NULL, '08/04/2020', '123', '2020-04-08 09:36:16', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 09:36:16', 'admin', '2020-04-14 13:42:03'),
-(54, 1, 'WWHA', NULL, '123', NULL, '08/04/2020', '123', '2020-04-08 09:40:46', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, 'null]', NULL, 'Anh Tài', '2020-04-08 09:41:04', 'admin', '2020-04-14 13:42:03'),
-(70, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1234', '2020-04-08 00:00:00', 'dsfasdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:51:35', NULL, NULL),
-(71, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1235', '2020-04-09 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:51:36', NULL, NULL),
-(72, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1236', '2020-04-10 00:00:00', 'sadf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:51:36', NULL, NULL),
-(73, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1237', '2020-04-11 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:51:37', NULL, NULL),
-(74, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1238', '2020-04-12 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:51:37', NULL, NULL),
-(75, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1234', '2020-04-08 00:00:00', 'dsfasdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, '\"Hello\"', NULL, 'Anh Tài', '2020-04-08 10:55:05', NULL, NULL),
-(76, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1235', '2020-04-09 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:55:05', NULL, NULL),
-(77, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1236', '2020-04-10 00:00:00', 'sadf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:55:06', NULL, NULL),
-(78, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1237', '2020-04-11 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:55:06', NULL, NULL),
-(79, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1238', '2020-04-12 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:55:06', NULL, NULL),
-(80, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1234', '2020-04-08 00:00:00', 'dsfasdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:57:09', NULL, NULL),
-(81, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1235', '2020-04-09 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:57:12', NULL, NULL),
-(82, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1236', '2020-04-10 00:00:00', 'sadf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:57:13', NULL, NULL),
-(83, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1237', '2020-04-11 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 10:57:20', NULL, NULL),
-(84, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1238', '2020-04-12 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, '\"hrahra\"', NULL, 'Anh Tài', '2020-04-08 10:57:23', NULL, NULL),
-(85, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1234', '2020-04-08 00:00:00', 'dsfasdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:07:00', NULL, NULL),
-(86, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1235', '2020-04-09 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:07:02', NULL, NULL),
-(87, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1236', '2020-04-10 00:00:00', 'sadf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:07:03', NULL, NULL),
-(88, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1237', '2020-04-11 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:07:04', NULL, NULL),
-(89, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1238', '2020-04-12 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, 'fadsfkjnjadsf', NULL, 'Anh Tài', '2020-04-08 11:07:06', NULL, NULL),
-(91, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1235', '2020-04-09 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, '2131231', NULL, 'Anh Tài', '2020-04-08 11:21:58', NULL, NULL),
-(92, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1236', '2020-04-10 00:00:00', 'sadf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:22:03', NULL, NULL),
-(94, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1235', '2020-04-09 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, '2131231', NULL, 'Anh Tài', '2020-04-08 11:25:59', NULL, NULL),
-(95, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1236', '2020-04-10 00:00:00', 'sadf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:25:59', NULL, NULL),
-(96, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1237', '2020-04-11 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:26:00', NULL, NULL),
-(97, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1238', '2020-04-12 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:26:01', NULL, NULL),
-(98, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1234', '2020-04-08 00:00:00', 'dsfasdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, '213', NULL, 'Anh Tài', '2020-04-08 11:37:13', NULL, NULL),
-(99, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1235', '2020-04-09 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, '2131231', NULL, 'Anh Tài', '2020-04-08 11:37:22', NULL, NULL),
-(100, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1236', '2020-04-10 00:00:00', 'sadf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:37:25', NULL, NULL),
-(101, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1237', '2020-04-11 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:37:26', NULL, NULL),
-(102, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1234', '2020-04-08 00:00:00', 'dsfasdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, '213', NULL, 'Anh Tài', '2020-04-08 11:38:47', NULL, NULL),
-(103, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1235', '2020-04-09 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, '2131231', NULL, 'Anh Tài', '2020-04-08 11:38:48', NULL, NULL),
-(104, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1236', '2020-04-10 00:00:00', 'sadf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:38:50', NULL, NULL),
-(105, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1237', '2020-04-11 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:38:51', NULL, NULL),
-(106, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1234', '2020-04-15 00:00:00', 'dsfasdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, '213', NULL, 'Anh Tài', '2020-04-08 11:39:48', NULL, '2020-04-09 16:01:15'),
-(107, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1235', '2020-04-10 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, '2131231', NULL, 'Anh Tài', '2020-04-08 11:39:48', NULL, '2020-04-09 16:01:39'),
-(108, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1236', '2020-04-10 00:00:00', 'sadf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:39:48', NULL, '2020-04-09 16:02:02'),
-(109, 1, 'WWHA', NULL, '12315', NULL, 'Anh Taif', 'CON1237', '2020-04-10 00:00:00', 'asdf', NULL, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-08 11:39:49', NULL, '2020-04-09 16:02:02'),
-(110, 1, 'WWHA', NULL, '123', NULL, '123', '123', '2020-04-16 00:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-09 09:19:19', 'admin', '2020-04-14 13:42:03'),
-(113, 1, 'WWHA', NULL, '123123', NULL, '123123', 'qưeqưe', '2020-04-09 00:00:00', NULL, 1, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-09 17:34:37', NULL, NULL),
-(114, 1, 'WWHA', NULL, '12312', NULL, '12312312', '123123', '2020-04-23 00:00:00', NULL, 2, NULL, NULL, NULL, NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-09 17:34:37', NULL, NULL),
-(115, 1, 'WWHA', NULL, '123', NULL, '21323', '123', '2020-04-10 00:00:00', '123', 123, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 13:41:51', '0', NULL, NULL, NULL, 'Anh Tài', '2020-04-10 09:25:12', 'admin', '2020-04-14 13:42:03'),
-(116, 1, '123546', NULL, 'BillNo 89889', NULL, 'An hTài', 'ZZZZ8888888', '2020-04-14 23:59:59', '1231231', 5, NULL, NULL, 'Không biết', NULL, NULL, '1', '0', '1', '2020-04-14 11:12:05', '0', NULL, NULL, 'Đã klàm lệnh', NULL, '2020-04-14 11:10:37', 'admin', '2020-04-14 11:12:05'),
-(117, 1, '123546', NULL, 'BillNo 89889', NULL, 'An hTài', 'ZZZZ8888887', '2020-04-15 23:59:59', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '0', '1', '2020-04-14 11:12:05', '0', NULL, NULL, 'Đã klàm lệnh', NULL, '2020-04-14 11:11:54', 'admin', '2020-04-14 11:12:05'),
-(118, 1, '123546', NULL, 'fkjadnfkldnà', NULL, 'dkjándkjn', 'uuuu8888888', '2020-04-14 23:59:59', 'sdfklsbdnf', 3, NULL, NULL, 'kjdsnfád', NULL, NULL, '1', '0', '1', '2020-04-14 11:19:02', '0', NULL, NULL, 'Ghi thím', NULL, '2020-04-14 11:13:22', 'admin', '2020-04-14 11:19:12'),
-(119, 4, 'SITC1', NULL, '12345', NULL, 'Gỗ Quảng Nam', 'MSKU1111111', '2020-04-15 23:59:59', 'Tiên Sa', 3, NULL, NULL, 'ABC', NULL, NULL, '1', '0', '1', '2020-04-14 11:18:24', '0', NULL, NULL, 'Ghi thím', NULL, '2020-04-14 11:14:07', 'admin', '2020-04-14 11:18:24'),
-(120, 4, 'SITC1', NULL, '12345', NULL, 'Gỗ Quảng Nam', 'MSKU1111112', '2020-04-15 23:59:59', 'Tiên Sa', 3, NULL, NULL, 'ABC', NULL, NULL, '1', '0', '1', '2020-04-14 11:18:24', '0', NULL, NULL, 'Ghi thím', NULL, '2020-04-14 11:14:07', 'admin', '2020-04-14 11:18:24'),
-(121, 4, 'SITC1', NULL, '123456', NULL, 'Bia Huda', 'PONU1234567', '2020-04-29 23:59:59', 'Chân Thật', 3, NULL, NULL, 'XYZ', NULL, NULL, '0', '0', '0', NULL, '0', NULL, NULL, NULL, NULL, '2020-04-14 11:29:34', 'Anh Dũng', '2020-04-15 21:29:26'),
-(122, 3, 'SITC1', NULL, 'vsl<>/?@#', NULL, '1', 'ABCD1234567', '2020-04-14 23:59:59', '1', 0, NULL, NULL, 'vsl<>/?@#', 'vsl<>/?@#', NULL, '0', '0', '0', NULL, '0', NULL, 'vsl<>/?@#', NULL, NULL, '2020-04-14 12:37:02', NULL, NULL),
-(123, 3, 'SITC1', NULL, '01', NULL, '1', 'abcd1111111', '2020-04-14 23:59:59', '1', 1, NULL, NULL, '1', '1', NULL, '1', '0', '1', '2020-04-14 13:08:44', '0', NULL, '1', '!@#$%^&*()', NULL, '2020-04-14 13:00:01', 'admin', '2020-04-14 13:05:47');
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Exchange Delivery Order';
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `gen_table`
+-- Table structure for table `gen_table`
 --
 
-DROP TABLE IF EXISTS `gen_table`;
-CREATE TABLE IF NOT EXISTS `gen_table` (
-  `table_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号',
+CREATE TABLE `gen_table` (
+  `table_id` bigint(20) NOT NULL COMMENT '编号',
   `table_name` varchar(200) COLLATE utf8_bin DEFAULT '' COMMENT '表名称',
   `table_comment` varchar(500) COLLATE utf8_bin DEFAULT '' COMMENT '表描述',
   `class_name` varchar(100) COLLATE utf8_bin DEFAULT '' COMMENT '实体类名称',
@@ -259,26 +280,31 @@ CREATE TABLE IF NOT EXISTS `gen_table` (
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark',
-  PRIMARY KEY (`table_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='代码生成业务表';
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='代码生成业务表';
 
 --
--- Đang đổ dữ liệu cho bảng `gen_table`
+-- Dumping data for table `gen_table`
 --
 
 INSERT INTO `gen_table` (`table_id`, `table_name`, `table_comment`, `class_name`, `tpl_category`, `package_name`, `module_name`, `business_name`, `function_name`, `function_author`, `options`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
-(2, 'sys_post', 'Job Information Sheet', 'SysPost', 'crud', 'vn.com.irtech.eport.system', 'system', 'post', 'Job Information Sheet', 'ruoyi', NULL, 'admin', '2020-03-30 00:54:19', '', NULL, NULL);
+(2, 'sys_post', 'Job Information Sheet', 'SysPost', 'crud', 'vn.com.irtech.eport.system', 'system', 'post', 'Job Information Sheet', 'ruoyi', NULL, 'admin', '2020-03-30 00:54:19', '', NULL, NULL),
+(3, 'process_order', 'Process order', 'ProcessOrder', 'crud', 'vn.com.irtech.eport.system', 'system', 'order', 'Process order', 'ruoyi', NULL, 'admin', '2020-06-23 10:57:21', '', NULL, NULL),
+(4, 'process_history', 'Process order history', 'ProcessHistory', 'crud', 'vn.com.irtech.eport.logistic', 'logistic', 'history', 'Process order history', 'ruoyi', '{\"treeName\":\"\",\"treeParentCode\":\"\",\"treeCode\":\"\"}', 'admin', '2020-06-27 10:23:52', '', '2020-06-27 10:28:04', ''),
+(5, 'pickup_assign', 'Pickup Assign', 'PickupAssign', 'crud', 'vn.com.irtech.eport.logistic', 'logistic', 'assign', 'Pickup Assign', 'ruoyi', '{\"treeName\":\"\",\"treeParentCode\":\"\",\"treeCode\":\"\"}', 'admin', '2020-06-30 13:41:24', '', '2020-06-30 13:42:16', ''),
+(6, 'pickup_hisory', 'Pickup history', 'PickupHisory', 'crud', 'vn.com.irtech.eport.logistic', 'logistic', 'hisory', 'Pickup history', 'ruoyi', '{\"treeName\":\"\",\"treeParentCode\":\"\",\"treeCode\":\"\"}', 'admin', '2020-06-30 13:41:24', '', '2020-06-30 13:42:53', ''),
+(7, 'notifications', '', 'Notifications', 'crud', 'vn.com.irtech.eport.system', 'system', 'notifications', NULL, 'ruoyi', NULL, 'admin', '2020-07-06 14:08:49', '', NULL, NULL),
+(8, 'notification_receiver', '', 'NotificationReceiver', 'crud', 'vn.com.irtech.eport.system', 'system', 'receiver', NULL, 'ruoyi', NULL, 'admin', '2020-07-06 14:08:49', '', NULL, NULL),
+(9, 'user_devices', '', 'UserDevices', 'crud', 'vn.com.irtech.eport.system', 'system', 'devices', NULL, 'ruoyi', NULL, 'admin', '2020-07-06 14:08:49', '', NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `gen_table_column`
+-- Table structure for table `gen_table_column`
 --
 
-DROP TABLE IF EXISTS `gen_table_column`;
-CREATE TABLE IF NOT EXISTS `gen_table_column` (
-  `column_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号',
+CREATE TABLE `gen_table_column` (
+  `column_id` bigint(20) NOT NULL COMMENT '编号',
   `table_id` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT '归属表编号',
   `column_name` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '列名称',
   `column_comment` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT '列描述',
@@ -299,12 +325,11 @@ CREATE TABLE IF NOT EXISTS `gen_table_column` (
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Creator',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
-  `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  PRIMARY KEY (`column_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='代码生成业务表字段';
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='代码生成业务表字段';
 
 --
--- Đang đổ dữ liệu cho bảng `gen_table_column`
+-- Dumping data for table `gen_table_column`
 --
 
 INSERT INTO `gen_table_column` (`column_id`, `table_id`, `column_name`, `column_comment`, `column_type`, `java_type`, `java_field`, `is_pk`, `is_increment`, `is_required`, `is_insert`, `is_edit`, `is_list`, `is_query`, `query_type`, `html_type`, `dict_type`, `sort`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
@@ -317,17 +342,106 @@ INSERT INTO `gen_table_column` (`column_id`, `table_id`, `column_name`, `column_
 (9, '2', 'create_time', 'Create Time', 'datetime', 'Date', 'createTime', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'datetime', '', 7, 'admin', '2020-03-30 00:54:19', '', NULL),
 (10, '2', 'update_by', 'Updater', 'varchar(64)', 'String', 'updateBy', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'input', '', 8, 'admin', '2020-03-30 00:54:19', '', NULL),
 (11, '2', 'update_time', 'Update Time', 'datetime', 'Date', 'updateTime', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'datetime', '', 9, 'admin', '2020-03-30 00:54:19', '', NULL),
-(12, '2', 'remark', 'Remark', 'varchar(500)', 'String', 'remark', '0', '0', NULL, '1', '1', '1', NULL, 'EQ', 'textarea', '', 10, 'admin', '2020-03-30 00:54:19', '', NULL);
+(12, '2', 'remark', 'Remark', 'varchar(500)', 'String', 'remark', '0', '0', NULL, '1', '1', '1', NULL, 'EQ', 'textarea', '', 10, 'admin', '2020-03-30 00:54:19', '', NULL),
+(13, '3', 'id', 'ID', 'bigint(20)', 'Long', 'id', '1', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2020-06-23 10:57:22', '', NULL),
+(14, '3', 'shipment_id', 'Mã Lô', 'bigint(20)', 'Long', 'shipmentId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2020-06-23 10:57:22', '', NULL),
+(15, '3', 'service_type', 'Loại dịch vụ (bốc, hạ, gate)', 'tinyint(1)', 'Integer', 'serviceType', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'select', '', 3, 'admin', '2020-06-23 10:57:22', '', NULL),
+(16, '3', 'reference_no', 'Mã Tham Chiếu', 'varchar(64)', 'String', 'referenceNo', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 4, 'admin', '2020-06-23 10:57:22', '', NULL),
+(17, '3', 'pay_type', 'PT thanh toán', 'varchar(10)', 'String', 'payType', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'select', '', 5, 'admin', '2020-06-23 10:57:22', '', NULL),
+(18, '3', 'sztp', 'Kích thước cont', 'varchar(10)', 'String', 'sztp', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 6, 'admin', '2020-06-23 10:57:22', '', NULL),
+(19, '3', 'mode', 'Loại lệnh', 'varchar(50)', 'String', 'mode', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 7, 'admin', '2020-06-23 10:57:22', '', NULL),
+(20, '3', 'consignee', 'Chủ hàng', 'varchar(255)', 'String', 'consignee', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 8, 'admin', '2020-06-23 10:57:22', '', NULL),
+(21, '3', 'truck_co', 'MST-Tên cty', 'varchar(255)', 'String', 'truckCo', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 9, 'admin', '2020-06-23 10:57:22', '', NULL),
+(22, '3', 'tax_code', 'MST', 'varchar(15)', 'String', 'taxCode', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 10, 'admin', '2020-06-23 10:57:22', '', NULL),
+(23, '3', 'bl_no', 'Billing No', 'varchar(20)', 'String', 'blNo', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 11, 'admin', '2020-06-23 10:57:22', '', NULL),
+(24, '3', 'booking_no', 'Booking no', 'varchar(20)', 'String', 'bookingNo', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 12, 'admin', '2020-06-23 10:57:22', '', NULL),
+(25, '3', 'pickup_date', 'Ngày bốc', 'datetime', 'Date', 'pickupDate', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'datetime', '', 13, 'admin', '2020-06-23 10:57:22', '', NULL),
+(26, '3', 'vessel', 'Tàu', 'varchar(10)', 'String', 'vessel', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 14, 'admin', '2020-06-23 10:57:22', '', NULL),
+(27, '3', 'voyage', 'Chuyến', 'varchar(10)', 'String', 'voyage', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 15, 'admin', '2020-06-23 10:57:22', '', NULL),
+(28, '3', 'before_after', 'Trước-Sau', 'varchar(10)', 'String', 'beforeAfter', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 16, 'admin', '2020-06-23 10:57:22', '', NULL),
+(29, '3', 'year', 'Năm', 'varchar(10)', 'String', 'year', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 17, 'admin', '2020-06-23 10:57:22', '', NULL),
+(30, '3', 'cont_number', 'Số lượng container', 'int(10)', 'Integer', 'contNumber', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 18, 'admin', '2020-06-23 10:57:22', '', NULL),
+(31, '3', 'status', 'Trạng thái: 0 waiting, 1: processing, 2:done', 'tinyint(1)', 'Integer', 'status', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'radio', '', 19, 'admin', '2020-06-23 10:57:22', '', NULL),
+(32, '3', 'result', 'Kết quả (F:Failed,S:Success)', 'char(1)', 'String', 'result', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 20, 'admin', '2020-06-23 10:57:22', '', NULL),
+(33, '3', 'data', 'Detail Data (Json)', 'varchar(1024)', 'String', 'data', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'textarea', '', 21, 'admin', '2020-06-23 10:57:22', '', NULL),
+(34, '3', 'create_by', 'Create By', 'varchar(64)', 'String', 'createBy', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 22, 'admin', '2020-06-23 10:57:22', '', NULL),
+(35, '3', 'create_time', 'Create Time', 'datetime', 'Date', 'createTime', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'datetime', '', 23, 'admin', '2020-06-23 10:57:22', '', NULL),
+(36, '3', 'update_by', 'Update By', 'varchar(64)', 'String', 'updateBy', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'input', '', 24, 'admin', '2020-06-23 10:57:22', '', NULL),
+(37, '3', 'update_time', 'Update Time', 'datetime', 'Date', 'updateTime', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'datetime', '', 25, 'admin', '2020-06-23 10:57:22', '', NULL),
+(38, '4', 'id', 'ID', 'bigint(20)', 'Long', 'id', '1', '1', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2020-06-27 10:23:52', NULL, '2020-06-27 10:28:05'),
+(39, '4', 'process_order_id', 'Process Order ID', 'bigint(20)', 'Long', 'processOrderId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2020-06-27 10:23:52', NULL, '2020-06-27 10:28:05'),
+(40, '4', 'sys_user_id', 'User ID (OM)', 'bigint(20)', 'Long', 'sysUserId', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 3, 'admin', '2020-06-27 10:23:52', NULL, '2020-06-27 10:28:05'),
+(41, '4', 'robot_uuid', 'Robot UUID', 'varchar(64)', 'String', 'robotUuid', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 4, 'admin', '2020-06-27 10:23:52', NULL, '2020-06-27 10:28:05'),
+(42, '4', 'result', 'Kết Quả (S:Success, F:Failed)', 'char(1)', 'String', 'result', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 5, 'admin', '2020-06-27 10:23:52', NULL, '2020-06-27 10:28:05'),
+(43, '4', 'remark', 'Ghi chu', 'varchar(255)', 'String', 'remark', '0', '0', NULL, '1', '1', '1', NULL, 'EQ', 'input', '', 6, 'admin', '2020-06-27 10:23:52', NULL, '2020-06-27 10:28:05'),
+(44, '4', 'create_by', 'Create By', 'varchar(64)', 'String', 'createBy', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 7, 'admin', '2020-06-27 10:23:52', NULL, '2020-06-27 10:28:05'),
+(45, '4', 'create_time', 'Create Time', 'datetime', 'Date', 'createTime', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'datetime', '', 8, 'admin', '2020-06-27 10:23:52', NULL, '2020-06-27 10:28:05'),
+(46, '4', 'update_by', 'Update By', 'varchar(64)', 'String', 'updateBy', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'input', '', 9, 'admin', '2020-06-27 10:23:52', NULL, '2020-06-27 10:28:05'),
+(47, '4', 'update_time', 'Update Time', 'datetime', 'Date', 'updateTime', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'datetime', '', 10, 'admin', '2020-06-27 10:23:52', NULL, '2020-06-27 10:28:05'),
+(48, '5', 'id', 'ID', 'bigint(20)', 'Long', 'id', '1', '1', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(49, '5', 'logistic_group_id', 'Logistic Group', 'bigint(20)', 'Long', 'logisticGroupId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(50, '5', 'shipment_id', 'Ma Lo', 'bigint(20)', 'Long', 'shipmentId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 3, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(51, '5', 'driver_id', 'ID tài xế', 'bigint(20)', 'Long', 'driverId', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 4, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(52, '5', 'shipment_detail_id', 'Shipment Detail Id', 'bigint(20)', 'Long', 'shipmentDetailId', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 5, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(53, '5', 'external_flg', 'Thue ngoai (0,1)', 'bit(1)', 'Long', 'externalFlg', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 6, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(54, '5', 'external_secret_code', 'Mã nhận lệnh thuê ngoài', 'varchar(15)', 'String', 'externalSecretCode', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 7, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(55, '5', 'truck_no', 'Biển số xe đầu kéo (thuê ngoài)', 'varchar(10)', 'String', 'truckNo', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 8, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(56, '5', 'chassis_no', 'Biển số xe rơ mooc (thuê ngoài)', 'varchar(10)', 'String', 'chassisNo', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 9, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(57, '5', 'remark', 'Ghi chu', 'varchar(255)', 'String', 'remark', '0', '0', NULL, '1', '1', '1', NULL, 'EQ', 'input', '', 10, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(58, '5', 'create_by', 'Create By', 'varchar(64)', 'String', 'createBy', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 11, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(59, '5', 'create_time', 'Create Time', 'datetime', 'Date', 'createTime', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'datetime', '', 12, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(60, '5', 'update_by', 'Update By', 'varchar(64)', 'String', 'updateBy', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'input', '', 13, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(61, '5', 'update_time', 'Update Time', 'datetime', 'Date', 'updateTime', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'datetime', '', 14, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:16'),
+(62, '6', 'id', 'ID', 'bigint(20)', 'Long', 'id', '1', '1', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(63, '6', 'logistic_group_id', 'Logistic Group', 'bigint(20)', 'Long', 'logisticGroupId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(64, '6', 'shipment_id', 'Mã Lô', 'bigint(20)', 'Long', 'shipmentId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 3, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(65, '6', 'driver_id', 'ID Tài xế', 'bigint(20)', 'Long', 'driverId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 4, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(66, '6', 'pickup_assign_id', 'Assign ID', 'bigint(20)', 'Long', 'pickupAssignId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 5, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(67, '6', 'container_no', 'Số container', 'varchar(12)', 'String', 'containerNo', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 6, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(68, '6', 'truck_no', 'Biển số xe đầu kéo', 'varchar(15)', 'String', 'truckNo', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 7, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(69, '6', 'chassis_no', 'Biển số xe rơ mooc', 'varchar(15)', 'String', 'chassisNo', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 8, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(70, '6', 'yard_position', 'Tọa độ cont trên bãi', 'varchar(20)', 'String', 'yardPosition', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'input', '', 9, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(71, '6', 'status', 'Trạng thái (0:received, 1:planned, 2:gate-in, 3: gate-out)', 'tinyint(3)', 'Integer', 'status', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'radio', '', 10, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(72, '6', 'receipt_date', 'Ngày nhận lệnh', 'datetime', 'Date', 'receiptDate', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'datetime', '', 11, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(73, '6', 'gatein_date', 'Ngày vào cổng', 'datetime', 'Date', 'gateinDate', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'datetime', '', 12, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(74, '6', 'gateout_date', 'Ngày ra cổng', 'datetime', 'Date', 'gateoutDate', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'datetime', '', 13, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(75, '6', 'cancel_receipt_date', 'Ngày hủy lệnh', 'datetime', 'Date', 'cancelReceiptDate', '0', '0', NULL, '1', '1', '1', '1', 'EQ', 'datetime', '', 14, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(76, '6', 'remark', 'Ghi chu', 'varchar(255)', 'String', 'remark', '0', '0', NULL, '1', '1', '1', NULL, 'EQ', 'input', '', 15, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(77, '6', 'create_by', 'Create By', 'varchar(64)', 'String', 'createBy', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 16, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(78, '6', 'create_time', 'Create Time', 'datetime', 'Date', 'createTime', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'datetime', '', 17, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(79, '6', 'update_by', 'Update By', 'varchar(64)', 'String', 'updateBy', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'input', '', 18, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(80, '6', 'update_time', 'Update Time', 'datetime', 'Date', 'updateTime', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'datetime', '', 19, 'admin', '2020-06-30 13:41:24', NULL, '2020-06-30 13:42:53'),
+(81, '7', 'id', NULL, 'int(11)', 'Long', 'id', '1', '1', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2020-07-06 14:08:49', '', NULL),
+(82, '7', 'title', NULL, 'varchar(255)', 'String', 'title', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2020-07-06 14:08:49', '', NULL),
+(83, '7', 'content', NULL, 'text', 'String', 'content', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 3, 'admin', '2020-07-06 14:08:49', '', NULL),
+(84, '7', 'create_time', NULL, 'datetime', 'Date', 'createTime', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'datetime', '', 4, 'admin', '2020-07-06 14:08:49', '', NULL),
+(85, '7', 'create_by', NULL, 'varchar(50)', 'String', 'createBy', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 5, 'admin', '2020-07-06 14:08:49', '', NULL),
+(86, '7', 'update_time', NULL, 'datetime', 'Date', 'updateTime', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'datetime', '', 6, 'admin', '2020-07-06 14:08:49', '', NULL),
+(87, '7', 'update_by', NULL, 'varchar(50)', 'String', 'updateBy', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'input', '', 7, 'admin', '2020-07-06 14:08:49', '', NULL),
+(88, '8', 'id', NULL, 'int(11)', 'Long', 'id', '1', '1', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2020-07-06 14:08:49', '', NULL),
+(89, '8', 'notification_id', NULL, 'int(11)', 'Long', 'notificationId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2020-07-06 14:08:49', '', NULL),
+(90, '8', 'user_device_id', NULL, 'int(11)', 'Long', 'userDeviceId', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 3, 'admin', '2020-07-06 14:08:49', '', NULL),
+(91, '8', 'create_time', NULL, 'datetime', 'Date', 'createTime', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'datetime', '', 4, 'admin', '2020-07-06 14:08:49', '', NULL),
+(92, '8', 'create_by', NULL, 'datetime', 'Date', 'createBy', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'datetime', '', 5, 'admin', '2020-07-06 14:08:49', '', NULL),
+(93, '8', 'update_time', NULL, 'datetime', 'Date', 'updateTime', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'datetime', '', 6, 'admin', '2020-07-06 14:08:49', '', NULL),
+(94, '8', 'update_by', NULL, 'datetime', 'Date', 'updateBy', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'datetime', '', 7, 'admin', '2020-07-06 14:08:49', '', NULL),
+(95, '9', 'id', NULL, 'int(11)', 'Long', 'id', '1', '1', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 1, 'admin', '2020-07-06 14:08:49', '', NULL),
+(96, '9', 'user_token', NULL, 'varchar(100)', 'String', 'userToken', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 2, 'admin', '2020-07-06 14:08:49', '', NULL),
+(97, '9', 'device_token', NULL, 'varchar(100)', 'String', 'deviceToken', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'input', '', 3, 'admin', '2020-07-06 14:08:49', '', NULL),
+(98, '9', 'user_type', '1: Logistic, 2: Driver, 3: Staff', 'int(11)', 'Long', 'userType', '0', '0', '1', '1', '1', '1', '1', 'EQ', 'select', '', 4, 'admin', '2020-07-06 14:08:49', '', NULL),
+(99, '9', 'create_time', NULL, 'datetime', 'Date', 'createTime', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'datetime', '', 5, 'admin', '2020-07-06 14:08:49', '', NULL),
+(100, '9', 'create_by', NULL, 'varchar(50)', 'String', 'createBy', '0', '0', NULL, '1', NULL, NULL, NULL, 'EQ', 'input', '', 6, 'admin', '2020-07-06 14:08:49', '', NULL),
+(101, '9', 'update_time', NULL, 'datetime', 'Date', 'updateTime', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'datetime', '', 7, 'admin', '2020-07-06 14:08:49', '', NULL),
+(102, '9', 'update_by', NULL, 'varchar(50)', 'String', 'updateBy', '0', '0', NULL, '1', '1', NULL, NULL, 'EQ', 'input', '', 8, 'admin', '2020-07-06 14:08:49', '', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `logistic_account`
+-- Table structure for table `logistic_account`
 --
 
-DROP TABLE IF EXISTS `logistic_account`;
-CREATE TABLE IF NOT EXISTS `logistic_account` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+CREATE TABLE `logistic_account` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
   `group_id` bigint(20) NOT NULL COMMENT 'Master Account',
   `user_name` varchar(20) COLLATE utf8_bin NOT NULL COMMENT 'Username',
   `email` varchar(50) COLLATE utf8_bin NOT NULL COMMENT 'Email',
@@ -342,34 +456,32 @@ CREATE TABLE IF NOT EXISTS `logistic_account` (
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Creator',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
-  `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Logistic account';
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Logistic account';
 
 --
--- Đang đổ dữ liệu cho bảng `logistic_account`
+-- Dumping data for table `logistic_account`
 --
 
 INSERT INTO `logistic_account` (`id`, `group_id`, `user_name`, `email`, `password`, `salt`, `full_name`, `status`, `del_flag`, `login_ip`, `login_date`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
-(1, 1, 'mst123', 'vinconship@vincon.com', '5f56efbdf7c9ec57bdb67ffb41d8672e', 'ed8c3b', 'tester 1', '0', '0', '171.255.162.174', '2020-06-08 15:14:04', NULL, 'DNG', '2020-05-30 08:15:22', '', '2020-06-08 15:14:04'),
-(2, 1, '0123456789', 'vinco@vinco.com', 'd7ace825281871c5a784469f4fa1eca2', '3ef513', 'Nguyen Nguyen', '0', '0', '192.168.1.76', '2020-06-09 11:18:21', NULL, 'DNG', '2020-05-30 08:15:45', '', '2020-06-09 11:18:21'),
-(3, 1, 'nganle', 'nganle@gmail.com', 'e7817077cf50bd1f57f6a4374790ea92', '99773a', 'lê thị thúy ngân', '0', '0', '', NULL, NULL, 'DNG', '2020-06-09 11:50:35', '', NULL);
+(1, 1, 'mst123123', 'asdfasd@sadfs.com', '054d07e1dee07d685e989fbede83d06b', '0e440a', 'nguyen trong hieu', '0', '0', '127.0.0.1', '2020-07-09 10:23:49', NULL, 'DNG', '2020-05-28 13:50:26', '', '2020-07-09 10:23:49'),
+(2, 1, 'hieu123', 'tronghieu8531@gmail.com', '7ca885ab49c72cd10992eff49acbfd45', '7373e1', 'sdfas', '0', '0', '', NULL, NULL, 'DNG', '2020-06-26 18:45:54', '', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `logistic_group`
+-- Table structure for table `logistic_group`
 --
 
-DROP TABLE IF EXISTS `logistic_group`;
-CREATE TABLE IF NOT EXISTS `logistic_group` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+CREATE TABLE `logistic_group` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
   `group_name` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Tên doanh nghiệp',
   `email_address` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Địa chỉ thư điện tử',
   `address` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Địa chỉ liên hệ',
   `mst` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'Mã số thuế doanh nghiệp',
   `phone` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'Điện thoại cố định',
   `mobile_phone` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'Điện thoại di động',
+  `credit_flag` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Credit Card (1:có,0:không(default)))',
   `fax` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'Fax',
   `del_flag` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Delete Flag (0 nomal 1 deleted)',
   `business_registration_certificate` varchar(100) COLLATE utf8_bin NOT NULL COMMENT 'Giấy đăng ký kinh doanh',
@@ -387,99 +499,263 @@ CREATE TABLE IF NOT EXISTS `logistic_group` (
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Creator',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
-  `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Logistic Group';
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Logistic Group';
 
 --
--- Đang đổ dữ liệu cho bảng `logistic_group`
+-- Dumping data for table `logistic_group`
 --
 
-INSERT INTO `logistic_group` (`id`, `group_name`, `email_address`, `address`, `mst`, `phone`, `mobile_phone`, `fax`, `del_flag`, `business_registration_certificate`, `date_of_issue_registration`, `place_of_issue_registration`, `authorized_representative`, `representative_position`, `following_authorization_form_no`, `sign_date`, `owned`, `identify_card_no`, `date_of_issue_identify`, `place_of_issue_identify`, `email`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
-(1, 'VINCOSHIP', 'vinco@vinco.com', '40 Hoàng sa, Đà Nẵng', '0123456789', '023645066', '076 455 555', '123123123123', '0', 'Cty cổ phần VINCOSHIP', '2020-05-28 00:00:00', 'Đà Nẵng', 'Nguyễn Văn A', 'Giám đốc', '13', '2020-05-30 00:00:00', 'abc', '201734555', '2020-05-08 00:00:00', 'Đà Nẵng', 'vinco@vinco.com', '', '2020-05-29 20:24:54', '', NULL),
-(2, 'dsfds', 'ds', 'đà nẵng', '1233431231321', '0981974393', '0156415631', '201561021', '1', 'sđ', '2020-06-10 00:00:00', 'dsfds', 'dsfds', 'dsfds', 'sdf', '2020-06-09 00:00:00', 'dsfd', '2123154651', '2020-06-11 00:00:00', 'dsfd', 'ngan123@gmail.com', '', '2020-06-09 11:32:21', '', NULL);
+INSERT INTO `logistic_group` (`id`, `group_name`, `email_address`, `address`, `mst`, `phone`, `mobile_phone`, `credit_flag`, `fax`, `del_flag`, `business_registration_certificate`, `date_of_issue_registration`, `place_of_issue_registration`, `authorized_representative`, `representative_position`, `following_authorization_form_no`, `sign_date`, `owned`, `identify_card_no`, `date_of_issue_identify`, `place_of_issue_identify`, `email`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
+(1, 'Vinconship', 'email@email.com', '35 Cao Thang', '123123123123', '0541123412341', '0935802290', '1', '1234234', '0', 'asdfsadf', '2020-05-28 00:00:00', 'asdfsadf', 'asdfsdaf', 'asdfsadf', 'asdfas', '2020-05-29 00:00:00', 'asdfasdf', '12341231231', '2020-05-14 00:00:00', 'asdfasdf', 'tronghieu8531@gmail.com', '', '2020-05-28 13:49:52', '', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `otp_code`
+-- Table structure for table `logistic_truck`
 --
 
-DROP TABLE IF EXISTS `otp_code`;
-CREATE TABLE IF NOT EXISTS `otp_code` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `shipment_detailIds` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'Shipment detailIds',
-  `phone_number` varchar(13) COLLATE utf8_bin NOT NULL COMMENT 'Phone number',
-  `opt_code` int(11) NOT NULL COMMENT 'OTP CODE',
-  `msg_status` char(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Status send mess',
-  `verify_status` char(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Verify send mess',
+CREATE TABLE `logistic_truck` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `logistic_group_id` bigint(20) DEFAULT NULL COMMENT 'Logistic Group',
+  `plate_number` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'Bien So Xe',
+  `type` char(1) COLLATE utf8_bin NOT NULL COMMENT '0: đầu kéo, 1: rơ mooc',
+  `wgt` int(11) NOT NULL COMMENT 'Tải trọng',
+  `registry_expiry_date` datetime DEFAULT NULL COMMENT 'Hạn đăng kiểm',
+  `del_flag` bit(1) NOT NULL DEFAULT b'0' COMMENT 'Delete Flag(default 0)',
+  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ghi chu',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='otp Code';
-
---
--- Đang đổ dữ liệu cho bảng `otp_code`
---
-
-INSERT INTO `otp_code` (`id`, `shipment_detailIds`, `phone_number`, `opt_code`, `msg_status`, `verify_status`, `create_time`) VALUES
-(1, '36,37', '076 455 555', 761436, NULL, NULL, '2020-06-08 14:20:04'),
-(2, '1,2,3,4,5,6,7', '076 455 555', 371737, NULL, NULL, '2020-06-08 15:22:58'),
-(3, '1,2,3,4,5,6,7', '076 455 555', 42115, NULL, NULL, '2020-06-08 15:23:53'),
-(4, '1,2,3,4,5,6,7', '076 455 555', 372069, NULL, NULL, '2020-06-08 15:24:55');
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Logistics Truck';
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_blob_triggers`
+-- Table structure for table `notifications`
 --
 
-DROP TABLE IF EXISTS `qrtz_blob_triggers`;
-CREATE TABLE IF NOT EXISTS `qrtz_blob_triggers` (
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) COLLATE utf8_bin NOT NULL,
+  `content` text COLLATE utf8_bin NOT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `create_by` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `update_by` varchar(50) COLLATE utf8_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notification_receiver`
+--
+
+CREATE TABLE `notification_receiver` (
+  `id` int(11) NOT NULL,
+  `notification_id` int(11) NOT NULL,
+  `user_device_id` int(11) NOT NULL,
+  `seen_flg` tinyint(1) DEFAULT 0 COMMENT 'Trạng thái: 0 unseen, 1 seen',
+  `create_time` datetime DEFAULT NULL,
+  `create_by` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `update_by` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pickup_assign`
+--
+
+CREATE TABLE `pickup_assign` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `logistic_group_id` bigint(20) NOT NULL COMMENT 'Logistic Group',
+  `shipment_id` bigint(20) NOT NULL COMMENT 'Ma Lo',
+  `driver_id` bigint(20) DEFAULT NULL COMMENT 'ID tài xế',
+  `shipment_detail_id` bigint(20) DEFAULT NULL COMMENT 'Shipment Detail Id',
+  `external_flg` bit(1) DEFAULT b'0' COMMENT 'Thue ngoai (0,1)',
+  `external_secret_code` varchar(15) COLLATE utf8_bin DEFAULT NULL COMMENT 'Mã nhận lệnh thuê ngoài',
+  `truck_no` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Biển số xe đầu kéo (thuê ngoài)',
+  `chassis_no` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Biển số xe rơ mooc (thuê ngoài)',
+  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ghi chu',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Pickup Assign';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pickup_history`
+--
+
+CREATE TABLE `pickup_history` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `logistic_group_id` bigint(20) NOT NULL COMMENT 'Logistic Group',
+  `shipment_id` bigint(20) NOT NULL COMMENT 'Mã Lô',
+  `shipment_detail_id_1` bigint(20) DEFAULT NULL COMMENT 'Shipment Detail Id 1',
+  `shipment_detail_id_2` bigint(20) DEFAULT NULL COMMENT 'Shipment Detail Id 2',
+  `driver_id` bigint(20) NOT NULL COMMENT 'ID Tài xế',
+  `pickup_assign_id` bigint(20) NOT NULL COMMENT 'Assign ID',
+  `container_no_1` varchar(12) COLLATE utf8_bin DEFAULT NULL COMMENT 'Số container 1',
+  `container_no_2` varchar(12) COLLATE utf8_bin DEFAULT NULL COMMENT 'Số container 2',
+  `truck_no` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'Biển số xe đầu kéo',
+  `chassis_no` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'Biển số xe rơ mooc',
+  `yard_position_1` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Tọa độ cont 1 trên bãi',
+  `yard_position_2` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Tọa độ cont 2 trên bãi',
+  `status` tinyint(4) DEFAULT 0 COMMENT 'Trạng thái (0:received, 1:planned, 2:gate-in, 3: gate-out)',
+  `receipt_date` datetime DEFAULT NULL COMMENT 'Ngày nhận lệnh',
+  `gatein_date` datetime DEFAULT NULL COMMENT 'Ngày vào cổng',
+  `gateout_date` datetime DEFAULT NULL COMMENT 'Ngày ra cổng',
+  `cancel_receipt_date` datetime DEFAULT NULL COMMENT 'Ngày hủy lệnh',
+  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ghi chu',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Pickup history';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `process_bill`
+--
+
+CREATE TABLE `process_bill` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `shipment_id` bigint(20) NOT NULL COMMENT 'Mã Lô',
+  `logistic_group_id` bigint(20) NOT NULL COMMENT 'Mã logistic',
+  `process_order_id` bigint(20) NOT NULL COMMENT 'Process Order ID',
+  `service_type` tinyint(1) NOT NULL COMMENT 'Loại dịch vụ (bốc, hạ, gate)',
+  `pay_type` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'PT thanh toán',
+  `payment_status` varchar(1) COLLATE utf8_bin NOT NULL COMMENT 'Payment Status (Y,N)',
+  `payment_time` datetime DEFAULT NULL COMMENT 'Payment Time',
+  `reference_no` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Mã tham chiếu',
+  `sztp` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'Size Type',
+  `exchange_fee` bigint(20) DEFAULT NULL COMMENT 'Phí giao nhận',
+  `vat_rate` int(5) DEFAULT NULL COMMENT 'tỉ lệ % thuế vat',
+  `vat_after_fee` bigint(20) DEFAULT NULL COMMENT 'phí sau thuế vat',
+  `container_no` varchar(12) COLLATE utf8_bin DEFAULT NULL COMMENT 'số container',
+  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ghi chu',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Process billing';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `process_history`
+--
+
+CREATE TABLE `process_history` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `process_order_id` bigint(20) NOT NULL COMMENT 'Process Order ID',
+  `sys_user_id` bigint(20) DEFAULT NULL COMMENT 'User ID (OM)',
+  `robot_uuid` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Robot UUID',
+  `result` char(1) COLLATE utf8_bin NOT NULL COMMENT 'Kết Quả (S:Success, F:Failed)',
+  `status` tinyint(1) DEFAULT NULL COMMENT 'Trạng thái: 1 start, 2 finish',
+  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ghi chu',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Process order history';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `process_order`
+--
+
+CREATE TABLE `process_order` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `shipment_id` bigint(20) NOT NULL COMMENT 'Mã Lô',
+  `logistic_group_id` bigint(20) NOT NULL COMMENT 'Mã logistic',
+  `service_type` tinyint(1) NOT NULL COMMENT 'Loại dịch vụ (bốc, hạ, gate)',
+  `reference_no` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Mã Tham Chiếu',
+  `pay_type` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'PT thanh toán',
+  `sztp` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Kích thước cont',
+  `mode` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Loại lệnh',
+  `consignee` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Chủ hàng',
+  `truck_co` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'MST-Tên cty',
+  `tax_code` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'MST',
+  `bl_no` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Billing No',
+  `booking_no` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Booking no',
+  `pickup_date` datetime DEFAULT NULL COMMENT 'Ngày bốc',
+  `vessel` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Tàu',
+  `voyage` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Chuyến',
+  `before_after` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Trước-Sau',
+  `year` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Năm',
+  `cont_number` int(10) NOT NULL COMMENT 'Số lượng container',
+  `status` tinyint(1) DEFAULT 0 COMMENT 'Trạng thái: 0 waiting, 1: processing, 2:done',
+  `result` char(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Kết quả (F:Failed,S:Success)',
+  `data` varchar(1024) COLLATE utf8_bin DEFAULT NULL COMMENT 'Detail Data (Json)',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Process order';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `qrtz_blob_triggers`
+--
+
+CREATE TABLE `qrtz_blob_triggers` (
   `sched_name` varchar(120) NOT NULL,
   `trigger_name` varchar(200) NOT NULL,
   `trigger_group` varchar(200) NOT NULL,
-  `blob_data` blob DEFAULT NULL,
-  PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`)
+  `blob_data` blob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_calendars`
+-- Table structure for table `qrtz_calendars`
 --
 
-DROP TABLE IF EXISTS `qrtz_calendars`;
-CREATE TABLE IF NOT EXISTS `qrtz_calendars` (
+CREATE TABLE `qrtz_calendars` (
   `sched_name` varchar(120) NOT NULL,
   `calendar_name` varchar(200) NOT NULL,
-  `calendar` blob NOT NULL,
-  PRIMARY KEY (`sched_name`,`calendar_name`)
+  `calendar` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_cron_triggers`
+-- Table structure for table `qrtz_cron_triggers`
 --
 
-DROP TABLE IF EXISTS `qrtz_cron_triggers`;
-CREATE TABLE IF NOT EXISTS `qrtz_cron_triggers` (
+CREATE TABLE `qrtz_cron_triggers` (
   `sched_name` varchar(120) NOT NULL,
   `trigger_name` varchar(200) NOT NULL,
   `trigger_group` varchar(200) NOT NULL,
   `cron_expression` varchar(200) NOT NULL,
-  `time_zone_id` varchar(80) DEFAULT NULL,
-  PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`)
+  `time_zone_id` varchar(80) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `qrtz_cron_triggers`
+--
+
+INSERT INTO `qrtz_cron_triggers` (`sched_name`, `trigger_name`, `trigger_group`, `cron_expression`, `time_zone_id`) VALUES
+('RuoyiScheduler', 'TASK_CLASS_NAME1', 'DEFAULT', '0/10 * * * * ?', 'Asia/Barnaul'),
+('RuoyiScheduler', 'TASK_CLASS_NAME2', 'DEFAULT', '0/15 * * * * ?', 'Asia/Barnaul'),
+('RuoyiScheduler', 'TASK_CLASS_NAME3', 'DEFAULT', '0/20 * * * * ?', 'Asia/Barnaul');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_fired_triggers`
+-- Table structure for table `qrtz_fired_triggers`
 --
 
-DROP TABLE IF EXISTS `qrtz_fired_triggers`;
-CREATE TABLE IF NOT EXISTS `qrtz_fired_triggers` (
+CREATE TABLE `qrtz_fired_triggers` (
   `sched_name` varchar(120) NOT NULL,
   `entry_id` varchar(95) NOT NULL,
   `trigger_name` varchar(200) NOT NULL,
@@ -492,18 +768,16 @@ CREATE TABLE IF NOT EXISTS `qrtz_fired_triggers` (
   `job_name` varchar(200) DEFAULT NULL,
   `job_group` varchar(200) DEFAULT NULL,
   `is_nonconcurrent` varchar(1) DEFAULT NULL,
-  `requests_recovery` varchar(1) DEFAULT NULL,
-  PRIMARY KEY (`sched_name`,`entry_id`)
+  `requests_recovery` varchar(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_job_details`
+-- Table structure for table `qrtz_job_details`
 --
 
-DROP TABLE IF EXISTS `qrtz_job_details`;
-CREATE TABLE IF NOT EXISTS `qrtz_job_details` (
+CREATE TABLE `qrtz_job_details` (
   `sched_name` varchar(120) NOT NULL,
   `job_name` varchar(200) NOT NULL,
   `job_group` varchar(200) NOT NULL,
@@ -513,76 +787,90 @@ CREATE TABLE IF NOT EXISTS `qrtz_job_details` (
   `is_nonconcurrent` varchar(1) NOT NULL,
   `is_update_data` varchar(1) NOT NULL,
   `requests_recovery` varchar(1) NOT NULL,
-  `job_data` blob DEFAULT NULL,
-  PRIMARY KEY (`sched_name`,`job_name`,`job_group`)
+  `job_data` blob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `qrtz_job_details`
+--
+
+INSERT INTO `qrtz_job_details` (`sched_name`, `job_name`, `job_group`, `description`, `job_class_name`, `is_durable`, `is_nonconcurrent`, `is_update_data`, `requests_recovery`, `job_data`) VALUES
+('RuoyiScheduler', 'TASK_CLASS_NAME1', 'DEFAULT', NULL, 'vn.com.irtech.eport.quartz.util.QuartzDisallowConcurrentExecution', '0', '1', '0', '0', 0xaced0005737200156f72672e71756172747a2e4a6f62446174614d61709fb083e8bfa9b0cb020000787200266f72672e71756172747a2e7574696c732e537472696e674b65794469727479466c61674d61708208e8c3fbc55d280200015a0013616c6c6f77735472616e7369656e74446174617872001d6f72672e71756172747a2e7574696c732e4469727479466c61674d617013e62ead28760ace0200025a000564697274794c00036d617074000f4c6a6176612f7574696c2f4d61703b787001737200116a6176612e7574696c2e486173684d61700507dac1c31660d103000246000a6c6f6164466163746f724900097468726573686f6c6478703f4000000000000c7708000000100000000174000f5441534b5f50524f5045525449455373720028766e2e636f6d2e6972746563682e65706f72742e71756172747a2e646f6d61696e2e5379734a6f6200000000000000010200084c000a636f6e63757272656e747400124c6a6176612f6c616e672f537472696e673b4c000e63726f6e45787072657373696f6e71007e00094c000c696e766f6b6554617267657471007e00094c00086a6f6247726f757071007e00094c00056a6f6249647400104c6a6176612f6c616e672f4c6f6e673b4c00076a6f624e616d6571007e00094c000d6d697366697265506f6c69637971007e00094c000673746174757371007e000978720031766e2e636f6d2e6972746563682e65706f72742e636f6d6d6f6e2e636f72652e646f6d61696e2e42617365456e7469747900000000000000010200074c0008637265617465427971007e00094c000a63726561746554696d657400104c6a6176612f7574696c2f446174653b4c0006706172616d7371007e00034c000672656d61726b71007e00094c000b73656172636856616c756571007e00094c0008757064617465427971007e00094c000a75706461746554696d6571007e000c787074000561646d696e7372000e6a6176612e7574696c2e44617465686a81014b59741903000078707708000001622d15186078707400007070707400013174000e302f3130202a202a202a202a203f74001172795461736b2e72794e6f506172616d7374000744454641554c547372000e6a6176612e6c616e672e4c6f6e673b8be490cc8f23df0200014a000576616c7565787200106a6176612e6c616e672e4e756d62657286ac951d0b94e08b02000078700000000000000001740018e7b3bbe7bb9fe9bb98e8aea4efbc88e697a0e58f82efbc8974000133740001317800),
+('RuoyiScheduler', 'TASK_CLASS_NAME2', 'DEFAULT', NULL, 'vn.com.irtech.eport.quartz.util.QuartzDisallowConcurrentExecution', '0', '1', '0', '0', 0xaced0005737200156f72672e71756172747a2e4a6f62446174614d61709fb083e8bfa9b0cb020000787200266f72672e71756172747a2e7574696c732e537472696e674b65794469727479466c61674d61708208e8c3fbc55d280200015a0013616c6c6f77735472616e7369656e74446174617872001d6f72672e71756172747a2e7574696c732e4469727479466c61674d617013e62ead28760ace0200025a000564697274794c00036d617074000f4c6a6176612f7574696c2f4d61703b787001737200116a6176612e7574696c2e486173684d61700507dac1c31660d103000246000a6c6f6164466163746f724900097468726573686f6c6478703f4000000000000c7708000000100000000174000f5441534b5f50524f5045525449455373720028766e2e636f6d2e6972746563682e65706f72742e71756172747a2e646f6d61696e2e5379734a6f6200000000000000010200084c000a636f6e63757272656e747400124c6a6176612f6c616e672f537472696e673b4c000e63726f6e45787072657373696f6e71007e00094c000c696e766f6b6554617267657471007e00094c00086a6f6247726f757071007e00094c00056a6f6249647400104c6a6176612f6c616e672f4c6f6e673b4c00076a6f624e616d6571007e00094c000d6d697366697265506f6c69637971007e00094c000673746174757371007e000978720031766e2e636f6d2e6972746563682e65706f72742e636f6d6d6f6e2e636f72652e646f6d61696e2e42617365456e7469747900000000000000010200074c0008637265617465427971007e00094c000a63726561746554696d657400104c6a6176612f7574696c2f446174653b4c0006706172616d7371007e00034c000672656d61726b71007e00094c000b73656172636856616c756571007e00094c0008757064617465427971007e00094c000a75706461746554696d6571007e000c787074000561646d696e7372000e6a6176612e7574696c2e44617465686a81014b59741903000078707708000001622d15186078707400007070707400013174000e302f3135202a202a202a202a203f74001572795461736b2e7279506172616d7328277279272974000744454641554c547372000e6a6176612e6c616e672e4c6f6e673b8be490cc8f23df0200014a000576616c7565787200106a6176612e6c616e672e4e756d62657286ac951d0b94e08b02000078700000000000000002740018e7b3bbe7bb9fe9bb98e8aea4efbc88e69c89e58f82efbc8974000133740001317800),
+('RuoyiScheduler', 'TASK_CLASS_NAME3', 'DEFAULT', NULL, 'vn.com.irtech.eport.quartz.util.QuartzDisallowConcurrentExecution', '0', '1', '0', '0', 0xaced0005737200156f72672e71756172747a2e4a6f62446174614d61709fb083e8bfa9b0cb020000787200266f72672e71756172747a2e7574696c732e537472696e674b65794469727479466c61674d61708208e8c3fbc55d280200015a0013616c6c6f77735472616e7369656e74446174617872001d6f72672e71756172747a2e7574696c732e4469727479466c61674d617013e62ead28760ace0200025a000564697274794c00036d617074000f4c6a6176612f7574696c2f4d61703b787001737200116a6176612e7574696c2e486173684d61700507dac1c31660d103000246000a6c6f6164466163746f724900097468726573686f6c6478703f4000000000000c7708000000100000000174000f5441534b5f50524f5045525449455373720028766e2e636f6d2e6972746563682e65706f72742e71756172747a2e646f6d61696e2e5379734a6f6200000000000000010200084c000a636f6e63757272656e747400124c6a6176612f6c616e672f537472696e673b4c000e63726f6e45787072657373696f6e71007e00094c000c696e766f6b6554617267657471007e00094c00086a6f6247726f757071007e00094c00056a6f6249647400104c6a6176612f6c616e672f4c6f6e673b4c00076a6f624e616d6571007e00094c000d6d697366697265506f6c69637971007e00094c000673746174757371007e000978720031766e2e636f6d2e6972746563682e65706f72742e636f6d6d6f6e2e636f72652e646f6d61696e2e42617365456e7469747900000000000000010200074c0008637265617465427971007e00094c000a63726561746554696d657400104c6a6176612f7574696c2f446174653b4c0006706172616d7371007e00034c000672656d61726b71007e00094c000b73656172636856616c756571007e00094c0008757064617465427971007e00094c000a75706461746554696d6571007e000c787074000561646d696e7372000e6a6176612e7574696c2e44617465686a81014b59741903000078707708000001622d15186078707400007070707400013174000e302f3230202a202a202a202a203f74003872795461736b2e72794d756c7469706c65506172616d7328277279272c20747275652c20323030304c2c203331362e3530442c203130302974000744454641554c547372000e6a6176612e6c616e672e4c6f6e673b8be490cc8f23df0200014a000576616c7565787200106a6176612e6c616e672e4e756d62657286ac951d0b94e08b02000078700000000000000003740018e7b3bbe7bb9fe9bb98e8aea4efbc88e5a49ae58f82efbc8974000133740001317800);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_locks`
+-- Table structure for table `qrtz_locks`
 --
 
-DROP TABLE IF EXISTS `qrtz_locks`;
-CREATE TABLE IF NOT EXISTS `qrtz_locks` (
+CREATE TABLE `qrtz_locks` (
   `sched_name` varchar(120) NOT NULL,
-  `lock_name` varchar(40) NOT NULL,
-  PRIMARY KEY (`sched_name`,`lock_name`)
+  `lock_name` varchar(40) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `qrtz_locks`
+--
+
+INSERT INTO `qrtz_locks` (`sched_name`, `lock_name`) VALUES
+('RuoyiScheduler', 'STATE_ACCESS'),
+('RuoyiScheduler', 'TRIGGER_ACCESS');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_paused_trigger_grps`
+-- Table structure for table `qrtz_paused_trigger_grps`
 --
 
-DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
-CREATE TABLE IF NOT EXISTS `qrtz_paused_trigger_grps` (
+CREATE TABLE `qrtz_paused_trigger_grps` (
   `sched_name` varchar(120) NOT NULL,
-  `trigger_group` varchar(200) NOT NULL,
-  PRIMARY KEY (`sched_name`,`trigger_group`)
+  `trigger_group` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_scheduler_state`
+-- Table structure for table `qrtz_scheduler_state`
 --
 
-DROP TABLE IF EXISTS `qrtz_scheduler_state`;
-CREATE TABLE IF NOT EXISTS `qrtz_scheduler_state` (
+CREATE TABLE `qrtz_scheduler_state` (
   `sched_name` varchar(120) NOT NULL,
   `instance_name` varchar(200) NOT NULL,
   `last_checkin_time` bigint(13) NOT NULL,
-  `checkin_interval` bigint(13) NOT NULL,
-  PRIMARY KEY (`sched_name`,`instance_name`)
+  `checkin_interval` bigint(13) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `qrtz_scheduler_state`
+--
+
+INSERT INTO `qrtz_scheduler_state` (`sched_name`, `instance_name`, `last_checkin_time`, `checkin_interval`) VALUES
+('RuoyiScheduler', 'DESKTOP-0U94TFA1594267487348', 1594270582462, 15000);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_simple_triggers`
+-- Table structure for table `qrtz_simple_triggers`
 --
 
-DROP TABLE IF EXISTS `qrtz_simple_triggers`;
-CREATE TABLE IF NOT EXISTS `qrtz_simple_triggers` (
+CREATE TABLE `qrtz_simple_triggers` (
   `sched_name` varchar(120) NOT NULL,
   `trigger_name` varchar(200) NOT NULL,
   `trigger_group` varchar(200) NOT NULL,
   `repeat_count` bigint(7) NOT NULL,
   `repeat_interval` bigint(12) NOT NULL,
-  `times_triggered` bigint(10) NOT NULL,
-  PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`)
+  `times_triggered` bigint(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_simprop_triggers`
+-- Table structure for table `qrtz_simprop_triggers`
 --
 
-DROP TABLE IF EXISTS `qrtz_simprop_triggers`;
-CREATE TABLE IF NOT EXISTS `qrtz_simprop_triggers` (
+CREATE TABLE `qrtz_simprop_triggers` (
   `sched_name` varchar(120) NOT NULL,
   `trigger_name` varchar(200) NOT NULL,
   `trigger_group` varchar(200) NOT NULL,
@@ -596,18 +884,16 @@ CREATE TABLE IF NOT EXISTS `qrtz_simprop_triggers` (
   `dec_prop_1` decimal(13,4) DEFAULT NULL,
   `dec_prop_2` decimal(13,4) DEFAULT NULL,
   `bool_prop_1` varchar(1) DEFAULT NULL,
-  `bool_prop_2` varchar(1) DEFAULT NULL,
-  PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`)
+  `bool_prop_2` varchar(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `qrtz_triggers`
+-- Table structure for table `qrtz_triggers`
 --
 
-DROP TABLE IF EXISTS `qrtz_triggers`;
-CREATE TABLE IF NOT EXISTS `qrtz_triggers` (
+CREATE TABLE `qrtz_triggers` (
   `sched_name` varchar(120) NOT NULL,
   `trigger_name` varchar(200) NOT NULL,
   `trigger_group` varchar(200) NOT NULL,
@@ -623,164 +909,152 @@ CREATE TABLE IF NOT EXISTS `qrtz_triggers` (
   `end_time` bigint(13) DEFAULT NULL,
   `calendar_name` varchar(200) DEFAULT NULL,
   `misfire_instr` smallint(2) DEFAULT NULL,
-  `job_data` blob DEFAULT NULL,
-  PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`),
-  KEY `sched_name` (`sched_name`,`job_name`,`job_group`)
+  `job_data` blob DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `qrtz_triggers`
+--
+
+INSERT INTO `qrtz_triggers` (`sched_name`, `trigger_name`, `trigger_group`, `job_name`, `job_group`, `description`, `next_fire_time`, `prev_fire_time`, `priority`, `trigger_state`, `trigger_type`, `start_time`, `end_time`, `calendar_name`, `misfire_instr`, `job_data`) VALUES
+('RuoyiScheduler', 'TASK_CLASS_NAME1', 'DEFAULT', 'TASK_CLASS_NAME1', 'DEFAULT', NULL, 1594267490000, -1, 5, 'PAUSED', 'CRON', 1594267487000, 0, NULL, 2, ''),
+('RuoyiScheduler', 'TASK_CLASS_NAME2', 'DEFAULT', 'TASK_CLASS_NAME2', 'DEFAULT', NULL, 1594267500000, -1, 5, 'PAUSED', 'CRON', 1594267488000, 0, NULL, 2, ''),
+('RuoyiScheduler', 'TASK_CLASS_NAME3', 'DEFAULT', 'TASK_CLASS_NAME3', 'DEFAULT', NULL, 1594267500000, -1, 5, 'PAUSED', 'CRON', 1594267488000, 0, NULL, 2, '');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `shipment`
+-- Table structure for table `shipment`
 --
 
-DROP TABLE IF EXISTS `shipment`;
-CREATE TABLE IF NOT EXISTS `shipment` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `shipment` (
+  `id` bigint(20) NOT NULL,
   `logistic_account_id` bigint(20) NOT NULL,
   `logistic_group_id` bigint(20) NOT NULL,
-  `service_id` tinyint(4) NOT NULL COMMENT 'Dich Vu',
-  `bl_no` varchar(20) COLLATE utf8_bin NOT NULL,
+  `service_type` tinyint(1) NOT NULL COMMENT 'Dich Vu',
+  `bl_no` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `booking_no` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Booking Number',
+  `ope_code` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Mã hãng tàu',
   `tax_code` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'MST',
+  `group_name` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Tên cty theo MST',
   `container_amount` int(11) NOT NULL COMMENT 'So Luong Container',
   `edo_flg` varchar(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'EDO Flag (1,0)',
+  `specific_cont_flg` tinyint(1) DEFAULT NULL COMMENT 'Trạng thái: 0 ko chỉ định cont, 1 có chỉ định cont',
+  `cont_supply_status` tinyint(1) DEFAULT NULL COMMENT 'Trạng thái: 0 chưa chỉ định cont, đã chỉ định cont',
   `reference_no` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'So Tham Chieu CATOS',
+  `status` char(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Shipment Status',
   `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ghi chu',
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Creator',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
-  `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Shipment';
-
---
--- Đang đổ dữ liệu cho bảng `shipment`
---
-
-INSERT INTO `shipment` (`id`, `logistic_account_id`, `logistic_group_id`, `service_id`, `bl_no`, `tax_code`, `container_amount`, `edo_flg`, `reference_no`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
-(1, 1, 1, 1, 'SMJ2014SDA701', '123123123', 8, '0', NULL, 'demo lam lenh', 'tester 1', '2020-06-08 15:16:50', '', NULL),
-(2, 1, 1, 1, 'SMJ2014SDA701', '123456', 8, '0', NULL, NULL, 'tester 1', '2020-06-08 15:46:47', '', NULL);
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Shipment';
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `shipment_detail`
+-- Table structure for table `shipment_custom`
 --
 
-DROP TABLE IF EXISTS `shipment_detail`;
-CREATE TABLE IF NOT EXISTS `shipment_detail` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `shipment_id` bigint(20) NOT NULL COMMENT 'Ma Lo',
+CREATE TABLE `shipment_custom` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `shipment_id` bigint(20) NOT NULL COMMENT 'Shipment ID',
+  `custom_declare_no` varchar(12) COLLATE utf8_bin NOT NULL COMMENT 'Số Tờ Khai HQ',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Creator',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Shipment custom: Hai quan';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `shipment_detail`
+--
+
+CREATE TABLE `shipment_detail` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
   `logistic_group_id` bigint(20) NOT NULL,
-  `register_no` varchar(6) COLLATE utf8_bin NOT NULL COMMENT 'Ma DK',
-  `container_no` varchar(12) COLLATE utf8_bin NOT NULL COMMENT 'Container Number',
+  `shipment_id` bigint(20) NOT NULL COMMENT 'Ma Lo',
+  `process_order_id` bigint(20) DEFAULT NULL COMMENT 'Ma Lenh',
+  `register_no` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ma DK',
+  `container_no` varchar(12) COLLATE utf8_bin DEFAULT NULL COMMENT 'Container Number',
   `container_status` varchar(3) COLLATE utf8_bin DEFAULT NULL COMMENT 'Container Status (S,D)',
   `sztp` varchar(4) COLLATE utf8_bin NOT NULL COMMENT 'Size Type',
-  `fe` varchar(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'FE',
-  `booking_no` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Booking Number',
+  `fe` varchar(1) COLLATE utf8_bin NOT NULL COMMENT 'FE',
   `bl_no` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'BL number',
+  `booking_no` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Booking Number',
   `seal_no` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Seal Number',
   `consignee` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Shipper/consignee',
   `expired_dem` datetime DEFAULT NULL COMMENT 'Han Lenh',
-  `wgt` int(11) NOT NULL COMMENT 'Weight ',
+  `wgt` int(11) DEFAULT NULL COMMENT 'Weight ',
   `vsl_nm` varchar(20) COLLATE utf8_bin NOT NULL COMMENT 'Vessel name',
   `voy_no` varchar(20) COLLATE utf8_bin NOT NULL COMMENT 'Voyage',
   `ope_code` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'Operator Code',
-  `loading_port` varchar(50) COLLATE utf8_bin NOT NULL COMMENT 'Cang Chuyen Tai',
-  `discharge_port` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Cang Dich',
+  `loading_port` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Cang Xep Hang',
+  `discharge_port` varchar(50) COLLATE utf8_bin NOT NULL COMMENT 'Cang Do Hang',
   `transport_type` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'Phuong Tien',
   `empty_depot` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Noi Ha Vo',
+  `cargo_type` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Cargo Type',
   `vgm_chk` bit(1) DEFAULT NULL COMMENT 'VGM Check',
   `vgm` varchar(10) COLLATE utf8_bin DEFAULT NULL COMMENT 'VGM',
   `vgm_person_info` varchar(100) COLLATE utf8_bin DEFAULT NULL COMMENT 'VGM Person Info',
-  `custom_declare_no` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT 'Custom Declare Number',
+  `preorder_pickup` varchar(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Boc Chi Dinh (Y,N)',
+  `shifting_cont_number` int(5) DEFAULT NULL COMMENT 'Số lượng dịch chuyển',
   `custom_status` varchar(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Custom Status (N,C,H,R)',
-  `payment_status` varchar(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Payment Status (Y,N,W,E)',
-  `process_status` varchar(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Process Status(Y,N,E)',
+  `payment_status` varchar(1) COLLATE utf8_bin NOT NULL COMMENT 'Payment Status (Y,N,W,E)',
+  `process_status` varchar(1) COLLATE utf8_bin NOT NULL COMMENT 'Process Status(Y,N,E)',
   `do_status` varchar(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'T.T DO Goc',
   `do_received_time` datetime DEFAULT NULL COMMENT 'Ngay Nhan DO Goc',
-  `user_verify_status` varchar(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Xac Thuc (Y,N)',
-  `preorder_pickup` varchar(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Boc Chi Dinh (Y,N)',
-  `moving_cont_amount` int(5) DEFAULT NULL,
-  `transport_ids` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `status` tinyint(4) DEFAULT NULL COMMENT 'Status',
+  `user_verify_status` varchar(1) COLLATE utf8_bin NOT NULL COMMENT 'Xac Thuc (Y,N)',
+  `status` tinyint(4) NOT NULL COMMENT 'Status',
   `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ghi chu',
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
-  `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Shipment Details';
-
---
--- Đang đổ dữ liệu cho bảng `shipment_detail`
---
-
-INSERT INTO `shipment_detail` (`id`, `shipment_id`, `logistic_group_id`, `register_no`, `container_no`, `container_status`, `sztp`, `fe`, `booking_no`, `bl_no`, `seal_no`, `consignee`, `expired_dem`, `wgt`, `vsl_nm`, `voy_no`, `ope_code`, `loading_port`, `discharge_port`, `transport_type`, `empty_depot`, `vgm_chk`, `vgm`, `vgm_person_info`, `custom_declare_no`, `custom_status`, `payment_status`, `process_status`, `do_status`, `do_received_time`, `user_verify_status`, `preorder_pickup`, `moving_cont_amount`, `transport_ids`, `status`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
-(1, 1, 1, '11', 'AMFU2005474', NULL, '22U0', 'F', NULL, 'SMJ2014SDA701', 'HLAG0150753', 'VINAL', '2020-06-15 00:00:00', 10200, 'HAIAN MIND', 'HAL0270', 'HAG', 'SGSIN', 'VNDAD', 'Vessel', NULL, NULL, NULL, NULL, NULL, 'R', 'N', 'Y', 'N', NULL, NULL, 'N', NULL, NULL, 2, NULL, 'tester 1', '2020-06-08 15:19:57', NULL, '2020-06-08 15:20:54'),
-(2, 1, 1, '12', 'BSIU2261628', NULL, '22G0', 'F', NULL, 'SMJ2014SDA701', 'HLAG0150754', 'VINAL', '2020-06-15 00:00:00', 7200, 'HAIAN MIND', 'HAL0270', 'HAG', 'SGSIN', 'VNDAD', 'Vessel', NULL, NULL, NULL, NULL, NULL, 'R', 'N', 'Y', 'N', NULL, NULL, 'N', NULL, NULL, 2, NULL, 'tester 1', '2020-06-08 15:19:57', NULL, '2020-06-08 15:20:54'),
-(3, 1, 1, '13', 'GATU1331949', NULL, '22G0', 'F', NULL, 'SMJ2014SDA701', 'HLAG0150787', 'VINAL', '2020-06-15 00:00:00', 5800, 'HAIAN MIND', 'HAL0270', 'HAG', 'SGSIN', 'VNDAD', 'Vessel', NULL, NULL, NULL, NULL, NULL, 'R', 'N', 'Y', 'N', NULL, NULL, 'Y', 2, NULL, 2, NULL, 'tester 1', '2020-06-08 08:19:57', NULL, '2020-06-08 15:22:04'),
-(4, 1, 1, '14', 'GLDU5617640', NULL, '22G0', 'F', NULL, 'SMJ2014SDA701', 'HLAG0150788', 'VINAL', '2020-06-15 00:00:00', 5900, 'HAIAN MIND', 'HAL0270', 'HAG', 'SGSIN', 'VNDAD', 'Vessel', NULL, NULL, NULL, NULL, NULL, 'R', 'N', 'Y', 'N', NULL, NULL, 'N', NULL, NULL, 2, NULL, 'tester 1', '2020-06-08 15:19:57', NULL, '2020-06-08 15:20:54'),
-(5, 1, 1, '15', 'HLXU3610040', NULL, '22U0', 'F', NULL, 'SMJ2014SDA701', 'HLAGO150766', 'VINAL', '2020-06-15 00:00:00', 10500, 'HAIAN MIND', 'HAL0270', 'HAG', 'SGSIN', 'VNDAD', 'Vessel', NULL, NULL, NULL, NULL, NULL, 'R', 'N', 'Y', 'N', NULL, NULL, 'N', NULL, NULL, 2, NULL, 'tester 1', '2020-06-08 15:19:58', NULL, '2020-06-08 15:20:54'),
-(6, 1, 1, '16', 'HLXU3688347', NULL, '22P0', 'F', NULL, 'SMJ2014SDA701', 'YOK', 'VINAL', '2020-06-15 00:00:00', 31400, 'HAIAN MIND', 'HAL0270', 'HAG', 'SGSIN', 'VNDAD', 'Vessel', NULL, NULL, NULL, NULL, NULL, 'R', 'N', 'Y', 'N', NULL, NULL, 'N', NULL, NULL, 2, NULL, 'tester 1', '2020-06-08 15:19:58', NULL, '2020-06-08 15:20:54'),
-(7, 1, 1, '17', 'TCKU3619957', NULL, '22G0', 'F', NULL, 'SMJ2014SDA701', 'HLAG0150760', 'VINAL', '2020-06-15 00:00:00', 6100, 'HAIAN MIND', 'HAL0270', 'HAG', 'SGSIN', 'VNDAD', 'Vessel', NULL, NULL, NULL, NULL, NULL, 'R', 'N', 'Y', 'N', NULL, NULL, 'N', NULL, NULL, 2, NULL, 'tester 1', '2020-06-08 15:19:58', NULL, '2020-06-08 15:20:54');
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Shipment Details';
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `shipment_transport`
+-- Table structure for table `sys_config`
 --
 
-DROP TABLE IF EXISTS `shipment_transport`;
-CREATE TABLE IF NOT EXISTS `shipment_transport` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `logistic_group_id` bigint(20) NOT NULL,
-  `shipment_id` bigint(20) NOT NULL,
-  `container_no` varchar(12) COLLATE utf8_bin DEFAULT NULL,
-  `transport_ids` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Thong tin dieu xe';
-
--- --------------------------------------------------------
-
---
--- Cấu trúc bảng cho bảng `sys_config`
---
-
-DROP TABLE IF EXISTS `sys_config`;
-CREATE TABLE IF NOT EXISTS `sys_config` (
-  `config_id` int(5) NOT NULL AUTO_INCREMENT COMMENT '参数主键',
+CREATE TABLE `sys_config` (
+  `config_id` int(5) NOT NULL COMMENT '参数主键',
   `config_name` varchar(100) COLLATE utf8_bin DEFAULT '' COMMENT '参数名称',
   `config_key` varchar(100) COLLATE utf8_bin DEFAULT '' COMMENT '参数键名',
-  `config_value` varchar(500) COLLATE utf8_bin DEFAULT '' COMMENT '参数键值',
+  `config_value` text COLLATE utf8_bin DEFAULT NULL,
   `config_type` char(1) COLLATE utf8_bin DEFAULT 'N' COMMENT '系统内置（Y是 N否）',
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Creator',
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark',
-  PRIMARY KEY (`config_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='参数配置表';
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='参数配置表';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_config`
+-- Dumping data for table `sys_config`
 --
 
 INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 (1, 'Main Frame Page', 'sys.index.skinName', 'skin-blue', 'Y', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
 (2, 'User Init password', 'sys.user.initPassword', '123456', 'Y', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
 (3, 'Main Frame Page-Sidebar Theme', 'sys.index.sideTheme', 'theme-dark', 'Y', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
-(4, 'Enable User Register', 'sys.account.registerUser', 'false', 'Y', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+(4, 'Enable User Register', 'sys.account.registerUser', 'false', 'Y', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
+(100, 'Da Nang Port Name', 'danang.port.name', 'Cảng Tiên Sa', 'Y', 'admin', '2020-06-30 11:22:55', 'admin', '2020-06-30 19:53:02', 'Tên cảng Đà Nãng'),
+(101, 'Firebase Credential', 'firebase.credential', '{\r\n  \"type\": \"service_account\",\r\n  \"project_id\": \"eport-89c50\",\r\n  \"private_key_id\": \"bd327b559b106bd8b2480ed0b4c1f5d8f27de17b\",\r\n  \"private_key\": \"-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQD02alcYTopCglu\\nIoNAQ+Y+zos1BDIBtEH8sv3rSEDPUQeEke+HwOhEgB0sB+M2j55wAVtqgptYpLwj\\nDruoo/UDAeRqGhX4bkDTXl42zXiXoJmVmUIciZ/k4HzqJ40DT6DR7MtkfAdmiaCG\\n8E3U8OzUM4FLMIJfrp00RceNnInlw9OzJez2rbPSvHKIiAr9jtl9Hfpfx9piAcra\\nak3FCuQ+lMEjHibiVLFczHAnlDQKGJfTPpPQWZ2/UTBvLnXGl2HiACEVWrO6MZG/\\n3ig96G4NjOiIzQjeCeVrvWvXnwe3RkZxuC+RH4Hf+IyyZBoGAQ2NrGMAwD5b+69C\\nsrnCYDYDAgMBAAECggEAaR00ZvNai5nCeKSaYjGEG/yBqK33ZeHj3j9dYO+w2w+3\\nQYOBKG95h0bUvz1XnunDI+SBQVV2qXR3TDmb+IcCvVrHm4E9Y1y5ucQugCpvlfCd\\nXqrfxe6TVSfGmKOIFx7NNLIKk0Xny25UGvn4/+y6T1MZM5VMsxT8ah92zuWgEaHM\\nNnOSJNh42RXEa8DAwBcw0dDJ8ayb7chZEmYC1LUjMZubmtAcg8kJs2DIdX7U6ZNp\\nA05qin0qFSc/JoRC7geh9KmB1q2h3n0wzg93+0u6rfWbJyLbQr+kVpXkjhcqjmLK\\nHn3I2YeV6lGHQCREWry4+ss68gdqJluMnYcy3eOxIQKBgQD+sMIouSD2fmcBcDcg\\n0EIBaGJHogtjFTGNDe9ic+0cT3Pe5ybPUxwUu82/vhl8vjuPrC0P8ltaxy/1xcBe\\ndghdhSWpKH2Hv1KthcSLwxJAJU8c29wliQvyIwBvH6iJWjfv7/ZzKbtYixjiEPm+\\n0osUh0T3K94ZEfAkOY0XWXSicQKBgQD2G/NjfweR0CEElbd7qX4m/MLML9LHxJcJ\\nkqfEGlA8W6K7woifYPKgiaR5YPpvTSu0lxBeudh6NyV5waEthc0CMcie6/x1Tr6d\\nXvB5bsPRWunPmXy8X6zSri5ErsHZnw6R5LWKSvryIPy7jG2w6dcZESON4wBxk8SP\\n6X5KlesxswKBgFxCM1MFHMetqip/N7kPN5nC8jb4oB9YQgbSkXCchbvHnDWWjhx0\\nAqwQC8v1VM43KuQ0fm5UYHtVxC3HYJPXNdiKrsXEART3XT+2QShPlYDfAvV1Px3p\\nswYXX8ThNu/qWnDz/9Zfu5mraWwash1Jr0/UYEsY/O8f7Fly74URxopBAoGBAOhe\\nX6FTsRv1fRdNHN6/m4LIKEyN4uAHN+wr8gbwKU2z36ST+lcxPCRjkU2hSROJs3hh\\nIW2u3zwVkWaycbH/oR8vThLvEYDZBpSjrT2aXXzv7865RtK9KvoIx1rF/fWxfho1\\n7UpTnTi7+KRD5NWjFBpw2jb/W83hDTgr57gYcOaNAoGAEMnwVH+opj8pPkNnCeqR\\nBT0ur/NefDZ1XfJ9nscKAToQVQxSJjPc+4/KEhOMogWOUfUUjvB06SZ3yhjoT5gh\\nr7oNsd35OpiXEJtXSfAo6Kx7XSO61MgEaz4pj4fWuBVuPQzrdX4ZWrP209XrLKyK\\nWWK9bvx/QcpsU6V/YmTCY+E=\\n-----END PRIVATE KEY-----\\n\",\r\n  \"client_email\": \"firebase-adminsdk-mwrl6@eport-89c50.iam.gserviceaccount.com\",\r\n  \"client_id\": \"110980307582234542256\",\r\n  \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\",\r\n  \"token_uri\": \"https://oauth2.googleapis.com/token\",\r\n  \"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\",\r\n  \"client_x509_cert_url\": \"https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-mwrl6%40eport-89c50.iam.gserviceaccount.com\"\r\n}\r\n', 'Y', 'admin', '2020-07-07 11:45:05', NULL, NULL, NULL),
+(102, 'Firebase URL', 'firebase.url', 'https://eport-89c50.firebaseio.com', 'Y', 'admin', '2020-07-07 11:45:05', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_dept`
+-- Table structure for table `sys_dept`
 --
 
-DROP TABLE IF EXISTS `sys_dept`;
-CREATE TABLE IF NOT EXISTS `sys_dept` (
-  `dept_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Department id',
+CREATE TABLE `sys_dept` (
+  `dept_id` bigint(20) NOT NULL COMMENT 'Department id',
   `parent_id` bigint(20) DEFAULT 0 COMMENT 'Parent department id',
   `ancestors` varchar(50) COLLATE utf8_bin DEFAULT '' COMMENT 'Ancestor list',
   `dept_name` varchar(30) COLLATE utf8_bin DEFAULT '' COMMENT 'Department name',
@@ -793,12 +1067,11 @@ CREATE TABLE IF NOT EXISTS `sys_dept` (
   `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'creator',
   `create_time` datetime DEFAULT NULL COMMENT 'Creation time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'updater',
-  `update_time` datetime DEFAULT NULL COMMENT 'Update time',
-  PRIMARY KEY (`dept_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=200 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='部门表';
+  `update_time` datetime DEFAULT NULL COMMENT 'Update time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='部门表';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_dept`
+-- Dumping data for table `sys_dept`
 --
 
 INSERT INTO `sys_dept` (`dept_id`, `parent_id`, `ancestors`, `dept_name`, `order_num`, `leader`, `phone`, `email`, `status`, `del_flag`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
@@ -816,12 +1089,11 @@ INSERT INTO `sys_dept` (`dept_id`, `parent_id`, `ancestors`, `dept_name`, `order
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_dict_data`
+-- Table structure for table `sys_dict_data`
 --
 
-DROP TABLE IF EXISTS `sys_dict_data`;
-CREATE TABLE IF NOT EXISTS `sys_dict_data` (
-  `dict_code` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '字典编码',
+CREATE TABLE `sys_dict_data` (
+  `dict_code` bigint(20) NOT NULL COMMENT '字典编码',
   `dict_sort` int(4) DEFAULT 0 COMMENT '字典排序',
   `dict_label` varchar(100) COLLATE utf8_bin DEFAULT '' COMMENT '字典标签',
   `dict_value` varchar(100) COLLATE utf8_bin DEFAULT '' COMMENT '字典键值',
@@ -834,12 +1106,11 @@ CREATE TABLE IF NOT EXISTS `sys_dict_data` (
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark',
-  PRIMARY KEY (`dict_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='字典数据表';
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='字典数据表';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_dict_data`
+-- Dumping data for table `sys_dict_data`
 --
 
 INSERT INTO `sys_dict_data` (`dict_code`, `dict_sort`, `dict_label`, `dict_value`, `dict_type`, `css_class`, `list_class`, `is_default`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
@@ -876,12 +1147,11 @@ INSERT INTO `sys_dict_data` (`dict_code`, `dict_sort`, `dict_label`, `dict_value
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_dict_type`
+-- Table structure for table `sys_dict_type`
 --
 
-DROP TABLE IF EXISTS `sys_dict_type`;
-CREATE TABLE IF NOT EXISTS `sys_dict_type` (
-  `dict_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Dictionary ID',
+CREATE TABLE `sys_dict_type` (
+  `dict_id` bigint(20) NOT NULL COMMENT 'Dictionary ID',
   `dict_name` varchar(100) COLLATE utf8_bin DEFAULT '' COMMENT 'Dictionary Name',
   `dict_type` varchar(100) COLLATE utf8_bin DEFAULT '' COMMENT 'Dictionary Type',
   `status` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Statiu（0 Nomal, 1 Disabled）',
@@ -889,13 +1159,11 @@ CREATE TABLE IF NOT EXISTS `sys_dict_type` (
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark',
-  PRIMARY KEY (`dict_id`),
-  UNIQUE KEY `dict_type` (`dict_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Dictionary type';
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Dictionary type';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_dict_type`
+-- Dumping data for table `sys_dict_type`
 --
 
 INSERT INTO `sys_dict_type` (`dict_id`, `dict_name`, `dict_type`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
@@ -913,12 +1181,11 @@ INSERT INTO `sys_dict_type` (`dict_id`, `dict_name`, `dict_type`, `status`, `cre
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_job`
+-- Table structure for table `sys_job`
 --
 
-DROP TABLE IF EXISTS `sys_job`;
-CREATE TABLE IF NOT EXISTS `sys_job` (
-  `job_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务ID',
+CREATE TABLE `sys_job` (
+  `job_id` bigint(20) NOT NULL COMMENT '任务ID',
   `job_name` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '任务名称',
   `job_group` varchar(64) COLLATE utf8_bin NOT NULL DEFAULT 'DEFAULT' COMMENT '任务组名',
   `invoke_target` varchar(500) COLLATE utf8_bin NOT NULL COMMENT '调用目标字符串',
@@ -930,12 +1197,11 @@ CREATE TABLE IF NOT EXISTS `sys_job` (
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  `remark` varchar(500) COLLATE utf8_bin DEFAULT '' COMMENT 'Remark信息',
-  PRIMARY KEY (`job_id`,`job_name`,`job_group`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='定时任务调度表';
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT '' COMMENT 'Remark信息'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='定时任务调度表';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_job`
+-- Dumping data for table `sys_job`
 --
 
 INSERT INTO `sys_job` (`job_id`, `job_name`, `job_group`, `invoke_target`, `cron_expression`, `misfire_policy`, `concurrent`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
@@ -946,31 +1212,28 @@ INSERT INTO `sys_job` (`job_id`, `job_name`, `job_group`, `invoke_target`, `cron
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_job_log`
+-- Table structure for table `sys_job_log`
 --
 
-DROP TABLE IF EXISTS `sys_job_log`;
-CREATE TABLE IF NOT EXISTS `sys_job_log` (
-  `job_log_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务日志ID',
+CREATE TABLE `sys_job_log` (
+  `job_log_id` bigint(20) NOT NULL COMMENT '任务日志ID',
   `job_name` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '任务名称',
   `job_group` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '任务组名',
   `invoke_target` varchar(500) COLLATE utf8_bin NOT NULL COMMENT '调用目标字符串',
   `job_message` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT '日志信息',
   `status` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT '执行状态（0正常 1失败）',
   `exception_info` varchar(2000) COLLATE utf8_bin DEFAULT '' COMMENT '异常信息',
-  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
-  PRIMARY KEY (`job_log_id`)
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='定时任务调度日志表';
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_logininfor`
+-- Table structure for table `sys_logininfor`
 --
 
-DROP TABLE IF EXISTS `sys_logininfor`;
-CREATE TABLE IF NOT EXISTS `sys_logininfor` (
-  `info_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '访问ID',
+CREATE TABLE `sys_logininfor` (
+  `info_id` bigint(20) NOT NULL COMMENT '访问ID',
   `login_name` varchar(50) COLLATE utf8_bin DEFAULT '' COMMENT '登录账号',
   `ipaddr` varchar(50) COLLATE utf8_bin DEFAULT '' COMMENT '登录IP地址',
   `login_location` varchar(255) COLLATE utf8_bin DEFAULT '' COMMENT '登录地点',
@@ -978,12 +1241,11 @@ CREATE TABLE IF NOT EXISTS `sys_logininfor` (
   `os` varchar(50) COLLATE utf8_bin DEFAULT '' COMMENT '操作系统',
   `status` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT '登录状态（0成功 1失败）',
   `msg` varchar(255) COLLATE utf8_bin DEFAULT '' COMMENT '提示消息',
-  `login_time` datetime DEFAULT NULL COMMENT '访问时间',
-  PRIMARY KEY (`info_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=525 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='系统访问记录';
+  `login_time` datetime DEFAULT NULL COMMENT '访问时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='系统访问记录';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_logininfor`
+-- Dumping data for table `sys_logininfor`
 --
 
 INSERT INTO `sys_logininfor` (`info_id`, `login_name`, `ipaddr`, `login_location`, `browser`, `os`, `status`, `msg`, `login_time`) VALUES
@@ -1064,365 +1326,577 @@ INSERT INTO `sys_logininfor` (`info_id`, `login_name`, `ipaddr`, `login_location
 (174, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-10 08:45:21'),
 (175, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-10 09:24:29'),
 (176, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome Mobile', 'Android 6.x', '0', 'Đăng nhập thành công', '2020-04-10 09:38:03'),
-(177, 'admin', '192.168.1.16', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 10:29:15'),
-(178, 'admin', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 10:33:44'),
-(179, 'admin', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 10:33:50'),
-(180, 'Carrier: huydp@irtech.com.vn', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 10:36:15'),
-(181, 'Carrier: huydp@irtech.com.vn', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 10:36:22'),
-(182, 'Carrier: huydp@irtech.com.vn', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 10:37:14'),
-(183, 'Carrier: admin', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 10:37:25'),
-(184, 'Carrier: lehanam@danangport.com', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 10:37:36'),
-(185, 'Carrier: tai@gmail.com', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-14 10:38:08'),
-(186, 'Carrier: huydp@irtech.com.vn', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 10:53:39'),
-(187, 'Carrier: huydp@irtech.com.vn', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 10:53:44'),
-(188, 'Carrier: huydp@irtech.com.vn', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 10:53:55'),
-(189, 'Carrier: huydp@irtech.com.vn', '113.160.224.2', 'XX XX', 'Firefox 7', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 11:03:22'),
-(190, 'Carrier: dunglv@danangport.com', '113.160.224.2', 'XX XX', 'Firefox 7', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 11:03:39'),
-(191, 'dunglv@danangport', '113.160.224.2', 'XX XX', 'Firefox 7', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 11:05:03'),
-(192, 'dunglv@danangport', '113.160.224.2', 'XX XX', 'Firefox 7', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 11:05:09'),
-(193, 'admin', '113.160.224.2', 'XX XX', 'Firefox 7', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-14 11:05:14'),
-(194, 'admin', '113.160.224.2', 'XX XX', 'Firefox 7', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:05:16'),
-(195, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:05:16'),
-(196, 'admin', '113.160.224.2', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 11:06:29'),
-(197, 'admin', '113.160.224.2', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:06:34'),
-(198, 'admin', '113.160.224.2', 'XX XX', 'Firefox 7', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 11:06:47'),
-(199, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-14 11:09:53'),
-(200, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:09:55'),
-(201, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:10:56'),
-(202, 'Carrier: dunglv@danangport.com', '113.160.224.2', 'XX XX', 'Firefox 7', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:11:06'),
-(203, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 11:14:46'),
-(204, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:14:49'),
-(205, 'Carrier: tai@gmail.com', '171.255.163.95', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-14 12:14:25'),
-(206, 'Carrier: tai@gmail.com', '171.255.163.95', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-04-14 12:14:28'),
-(207, 'Carrier: 123456', '171.255.163.95', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 12:14:31'),
-(208, 'Carrier: huydp@irtech.com.vn', '171.255.163.95', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 12:14:41'),
-(209, 'Carrier: huydp@irtech.com.vn', '171.255.163.95', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 12:16:11'),
-(210, 'admin', '171.255.163.95', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 12:16:18'),
-(211, 'admin', '192.168.1.16', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 12:19:22'),
-(212, 'admin', '192.168.1.16', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 12:20:12'),
-(213, 'abc', '192.168.1.16', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 12:20:17'),
-(214, 'abc', '192.168.1.16', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 12:20:20'),
-(215, 'lehanam@danangport.com', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 12:32:17'),
-(216, 'admin', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 12:32:29'),
-(217, 'Carrier: lehanam@danangport.com', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 12:33:12'),
-(218, 'Carrier: lehanam@danangport.com', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 12:33:29'),
-(219, 'Carrier: huydp@irtech.com.vn', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 12:33:36'),
-(220, 'Carrier: huydp@irtech.com.vn', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 12:49:23'),
-(221, 'Carrier: lehanam@danangport.com', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 12:49:37'),
-(222, 'Carrier: lehanam@danangport.com', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 12:52:04'),
-(223, 'Carrier: lehanam@danangport.com', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-14 12:52:06'),
-(224, 'Carrier: huydp@irtech.com.vn', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 12:53:16'),
-(225, 'admin', '59.153.224.169', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 12:53:34'),
-(226, 'Carrier: dunglv@danangport.com', '113.160.224.2', 'XX XX', 'Firefox 7', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 14:56:11'),
-(227, 'admin', '192.168.1.11', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 08:24:27'),
-(228, 'admin', '192.168.1.11', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 08:25:20'),
-(229, 'nhanvien1', '192.168.1.11', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 08:25:25'),
-(230, 'nhanvien1', '192.168.1.11', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 08:25:37'),
-(231, 'admin', '192.168.1.11', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 08:25:46'),
-(232, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 08:51:45'),
-(233, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 08:55:49'),
-(234, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 09:00:14'),
-(235, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 09:00:48'),
-(236, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 09:01:40'),
-(237, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 09:03:02'),
-(238, 'Carrier: huydp@irtech.com.vn', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 09:03:11'),
-(239, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 09:03:58'),
-(240, 'admin', '192.168.1.11', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 09:04:29'),
-(241, 'admin', '192.168.1.11', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 09:06:11'),
-(242, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 09:14:48'),
-(243, 'admin', '192.168.1.11', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 10:02:45'),
-(244, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-15 10:08:02'),
-(245, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 10:08:08'),
-(246, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 10:09:26'),
-(247, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-15 13:52:34'),
-(248, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-15 13:52:40'),
-(249, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 13:52:54'),
-(250, 'Carrier: ry@163.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 14:35:13'),
-(251, 'Carrier: tai@Gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-15 14:35:29'),
-(252, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 14:35:37'),
-(253, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 14:38:31'),
-(254, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 14:42:18'),
-(255, 'Carrier: han@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 14:42:34'),
-(256, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 14:43:14'),
-(257, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 15:12:44'),
-(258, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:12:55'),
-(259, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 15:13:05'),
-(260, 'ry', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-15 15:13:10'),
-(261, 'ry', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-04-15 15:13:15'),
-(262, 'ry', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 3', '2020-04-15 15:13:20'),
-(263, 'ry', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:13:24'),
-(264, 'ry', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 15:13:34'),
-(265, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:13:37'),
-(266, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 15:14:04'),
-(267, 'ry', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:14:08'),
-(268, 'Carrier: han@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:34:57'),
-(269, 'ry', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 15:35:43'),
-(270, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:35:46'),
-(271, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 15:38:30'),
-(272, 'abc', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:38:35'),
-(273, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:39:05'),
-(274, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 15:39:35'),
-(275, 'abc', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:39:39'),
-(276, 'abc', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 15:40:03'),
-(277, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-15 15:40:07'),
-(278, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:40:10'),
-(279, 'Carrier: han@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:44:58'),
-(280, 'abc', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-15 15:45:22'),
-(281, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:45:34'),
-(282, 'Carrier: han@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 15:54:11'),
-(283, 'Carrier: tai@gmail.com', '192.168.1.11', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-22 13:37:09'),
-(284, 'admin', '192.168.1.11', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-22 13:38:04'),
-(285, 'Carrier: admin@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-23 18:42:54'),
-(286, 'Carrier: admin@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-23 18:42:57'),
-(287, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-23 18:43:04'),
-(288, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-23 19:32:11'),
-(289, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-23 19:47:07'),
-(290, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-23 19:47:11'),
-(291, 'tai@gmail.com', '59.153.233.173', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-23 22:07:55'),
-(292, 'tai@gmail.com', '59.153.233.173', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-23 22:08:03'),
-(293, 'huydp@irtech.com.vn', '59.153.233.173', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-23 22:08:18'),
-(294, 'Carrier: huydp@irtech.com.vn', '59.153.233.173', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-23 22:09:05'),
-(295, 'Carrier: tai@gmail.com', '171.254.133.56', 'XX XX', 'Chrome Mobile', 'Mac OS X (iPhone)', '0', 'Đăng nhập thành công', '2020-04-23 22:09:20'),
-(296, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 10:03:30'),
-(297, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 10:08:00'),
-(298, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-24 13:46:35'),
-(299, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-04-24 13:46:39'),
-(300, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 3', '2020-04-24 13:46:46'),
-(301, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 4', '2020-04-24 13:46:56'),
-(302, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 5', '2020-04-24 13:47:00'),
-(303, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 13:47:54'),
-(304, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 13:48:41'),
-(305, 'Carrier: huydp@irtech.com.vn', '113.160.224.2', 'XX XX', 'Microsoft Edge', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-24 13:50:56'),
-(306, 'Carrier: minhtc@gmail.com', '113.160.224.2', 'XX XX', 'Microsoft Edge', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 13:51:22'),
-(307, 'nqat2003@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-24 14:05:06'),
-(308, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 14:27:31'),
-(309, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-24 14:35:26'),
-(310, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-24 14:35:31'),
-(311, 'Carrier: tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-24 14:35:34'),
-(312, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-24 14:35:39'),
-(313, 'Carrier: mintc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-24 14:36:01'),
-(314, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 14:36:04'),
-(315, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-24 14:41:39'),
-(316, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 14:41:46'),
-(317, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome Mobile', 'Android 6.x', '0', 'Đăng nhập thành công', '2020-04-24 14:45:41'),
-(318, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 14:47:46'),
-(319, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 14:51:39'),
-(320, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 14:52:48'),
-(321, 'Carrier: huydp@irtech.com.vn', '113.160.225.15', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 15:19:28'),
-(322, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-24 16:22:08'),
-(323, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 16:22:11'),
-(324, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 16:41:08'),
-(325, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 16:42:09'),
-(326, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 16:43:33'),
-(327, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 16:45:38'),
-(328, 'Carrier: minhtc@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 16:46:22'),
-(329, 'Carrier: huydp@irtech.com.vn', '113.160.225.15', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 17:02:17'),
-(330, 'Carrier: huydp@irtech.com.vn', '113.160.225.15', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 18:18:33'),
-(331, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 18:24:33'),
-(332, 'Carrier: huydp@irtech.com.vn', '113.160.225.15', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 18:25:34'),
-(333, 'Carrier: trunghieu@danangport.com', '59.153.224.154', 'XX XX', 'Apple WebKit', 'Mac OS X (iPhone)', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-24 19:04:42'),
-(334, 'Carrier: trunghieu@danangport.com', '59.153.224.154', 'XX XX', 'Apple WebKit', 'Mac OS X (iPhone)', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-24 19:04:57'),
-(335, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-24 19:46:42'),
-(336, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-04-24 19:46:45'),
-(337, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 19:46:49'),
-(338, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-25 08:41:18'),
-(339, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-25 08:41:23'),
-(340, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-25 12:58:21'),
-(341, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-25 13:50:05'),
-(342, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-25 13:50:08'),
-(343, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-25 16:14:48'),
-(344, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-25 16:17:26'),
-(345, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-25 16:17:30'),
-(346, 'Carrier: huydp@irtech.com.vn', '113.160.225.15', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-25 16:27:55'),
-(347, 'Carrier: minhtc@gmail.com', '123.19.56.179', 'XX XX', 'Apple WebKit', 'Mac OS X (iPhone)', '0', 'Đăng nhập thành công', '2020-04-25 16:33:41'),
-(348, 'Carrier: minhtc@gmail.com', '14.167.73.192', 'XX XX', 'Chrome Mobile', 'Android Mobile', '0', 'Đăng nhập thành công', '2020-04-25 16:36:25'),
-(349, 'Carrier: minhtc@gmail.com', '117.2.164.66', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-26 12:42:39'),
-(350, 'Carrier: minhtc@gmail,com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 08:14:30'),
-(351, 'Carrier: minhtc@gmail,com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 08:14:34'),
-(352, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-27 14:23:35'),
-(353, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 14:23:38'),
-(354, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 18:40:04'),
-(355, 'Carrier: admin@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 18:40:11'),
-(356, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-27 18:40:18'),
-(357, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 18:40:25'),
-(358, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 18:42:54'),
-(359, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 18:47:30'),
-(360, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 18:48:52'),
-(361, 'admin@admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 18:57:16'),
-(362, 'admin@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 18:57:20'),
-(363, 'admin@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 18:57:25'),
-(364, 'tai@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 18:57:33'),
-(365, 'abc', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-27 18:57:55'),
-(366, 'nhanvien1', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-27 18:58:07'),
-(367, 'hieunt@irtech.com.vn', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 18:58:09'),
-(368, 'nhanvien1', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-04-27 18:58:13'),
-(369, 'nhanvien1', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 3', '2020-04-27 18:58:16'),
-(370, 'nhanvien1', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 4', '2020-04-27 18:58:20'),
-(371, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 18:58:35'),
-(372, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 18:59:51'),
-(373, 'Carrier: huydp@irtech.com.vn', '113.160.225.15', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 19:24:35'),
-(374, 'minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 19:58:15'),
-(375, 'minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 19:58:18'),
-(376, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 19:58:29'),
-(377, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-28 10:11:13'),
-(378, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-28 10:55:06'),
-(379, 'Carrier: tai@gmail.com', '42.118.93.19', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-28 13:03:13'),
-(380, 'Carrier: tai@gmail.com', '42.118.93.19', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-28 13:03:20'),
-(381, 'admin', '42.118.93.19', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-28 13:03:30'),
-(382, 'admin', '42.118.93.19', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-28 13:03:32'),
-(383, 'admin', '42.118.93.19', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-28 13:16:56'),
-(384, 'Carrier: huydp@irtech.com.vn', '42.118.93.19', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-28 13:17:07'),
-(385, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-28 13:34:36'),
-(386, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-28 13:36:02'),
-(387, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-28 13:38:44'),
-(388, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-28 14:27:29'),
-(389, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-28 14:27:36'),
-(390, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-28 14:29:18'),
-(391, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-28 15:13:25'),
-(392, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-29 10:15:52'),
-(393, 'Carrier: mnhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-29 10:16:06'),
-(394, 'Carrier: mnhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-29 10:16:09'),
-(395, 'Carrier: mnhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-29 10:16:12'),
-(396, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-29 10:16:16'),
-(397, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-29 14:16:24'),
-(398, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-29 14:17:23'),
-(399, 'Admin', '171.255.138.210', 'XX XX', 'Chrome Mobile', 'Mac OS X (iPhone)', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-29 17:22:39'),
-(400, 'admin', '171.255.138.210', 'XX XX', 'Chrome Mobile', 'Mac OS X (iPhone)', '0', 'Đăng nhập thành công', '2020-04-29 17:22:52'),
-(401, 'admin@admin.com', '171.255.138.210', 'XX XX', 'Chrome Mobile', 'Mac OS X (iPhone)', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-29 18:35:34'),
-(402, 'admin@admin.com', '171.255.138.210', 'XX XX', 'Chrome Mobile', 'Mac OS X (iPhone)', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-29 18:35:35'),
-(403, 'admin@admin.com', '171.255.138.210', 'XX XX', 'Chrome Mobile', 'Mac OS X (iPhone)', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-29 18:35:41'),
-(404, 'admin', '171.255.138.210', 'XX XX', 'Chrome Mobile', 'Mac OS X (iPhone)', '0', 'Đăng nhập thành công', '2020-04-29 18:35:45'),
-(405, 'admin', '171.227.17.69', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 05:27:10'),
-(406, 'Carrier: tai@gmail.com', '171.227.17.69', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-04 05:27:34'),
-(407, 'Carrier: minhtc@gmail.com', '171.227.17.69', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 05:27:43'),
-(408, 'Carrier: minhtc@gmail.com', '171.227.17.69', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-04 05:29:01'),
-(409, 'Carrier: minhtc@gmail.com', '116.110.245.48', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 05:29:07'),
-(410, 'admin', '116.110.245.48', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 05:29:28'),
-(411, 'Carrier: minhtc@gmail.com', '116.110.245.48', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-04 05:33:17'),
-(412, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 09:47:40'),
-(413, 'Carrier: minhtc@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-07 11:13:38'),
-(414, 'Carrier: tai@gmail.com', '171.252.131.58', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-11 16:46:34'),
-(415, 'Carrier: minhtc@gmail.com', '171.252.131.58', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-11 16:46:44'),
-(416, 'admin', '171.252.131.58', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-11 16:46:51'),
-(417, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-23 08:19:07'),
-(418, 'Carrier: ope@danangport.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-23 08:20:55'),
-(419, 'Carrier: admin', '192.168.1.2', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-23 08:22:53'),
-(420, 'admin', '192.168.1.2', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-23 08:23:06'),
-(421, 'Carrier: mst@dnp.com', '192.168.1.2', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-23 08:57:55'),
-(422, 'Carrier: mst@dnp.com', '192.168.1.2', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-23 11:42:22'),
-(423, 'admin', '171.227.17.69', 'XX XX', 'Chrome Mobile', 'Android Mobile', '0', 'Đăng nhập thành công', '2020-05-25 21:28:55'),
-(424, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-26 10:43:51'),
-(425, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-26 10:43:54'),
-(426, 'Carrier: admin@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-26 10:43:59'),
-(427, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-05-26 10:58:49'),
-(428, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 10:58:52'),
-(429, 'mst@dnp.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-26 11:01:28'),
-(430, 'Carrier: mst@dnp.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 11:01:41'),
-(431, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 10:40:52'),
-(432, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-27 13:19:13'),
-(433, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-27 13:19:16'),
-(434, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 13:19:27'),
-(435, 'Carrier: admin@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-27 14:14:24'),
-(436, 'Carrier: admin@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-27 14:14:27'),
-(437, 'Carrier: admin@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-27 14:15:23'),
-(438, 'Carrier: mst@dnp.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 14:15:44'),
-(439, 'Carrier: mst@dnp.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-27 14:16:09'),
-(440, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 14:16:21'),
-(441, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-27 14:16:32'),
-(442, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-27 14:16:45'),
-(443, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-27 14:16:53'),
-(444, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-27 14:17:24'),
-(445, 'Carrier: minhtc@admin.com', '192.168.1.4', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 14:25:55'),
-(446, 'Carrier: mst@dnp.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 14:38:42'),
-(447, 'Carrier: mst@dnp.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 15:20:46'),
-(448, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 15:01:22'),
-(449, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 15:55:56'),
-(450, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 15:23:50'),
-(451, 'Carrier: mst@dnp.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 16:58:59'),
-(452, 'Carrier: admin', '192.168.1.4', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-29 17:00:56'),
-(453, 'Carrier: admin', '192.168.1.4', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-29 17:01:00'),
-(454, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 17:01:15'),
-(455, 'Carrier: minhtc@admin.com', '192.168.1.4', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 17:01:26'),
-(456, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 17:08:36'),
-(457, 'admin', '171.227.17.4', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 19:17:16'),
-(458, 'admin', '171.252.130.143', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 19:45:52'),
-(459, 'admin', '116.110.102.253', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 20:09:34'),
-(460, 'admin', '171.252.129.197', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 20:28:46'),
-(461, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:03:22'),
-(462, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:14:05'),
-(463, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:14:45'),
-(464, 'Carrier: mst123', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:15:32'),
-(465, 'Carrier: 0123456789', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:16:21');
+(177, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 08:13:04'),
+(178, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 08:13:13'),
+(179, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 08:23:02'),
+(180, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 08:27:10'),
+(181, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 08:28:55'),
+(182, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 09:09:29'),
+(183, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 10:39:43'),
+(184, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 10:42:34'),
+(185, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 11:06:36'),
+(186, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:11:48'),
+(187, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:15:58'),
+(188, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 11:47:32'),
+(189, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-04-14 11:47:41'),
+(190, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-04-14 11:47:46'),
+(191, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:48:55'),
+(192, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-14 11:49:34'),
+(193, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 11:50:12'),
+(194, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 12:48:19'),
+(195, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-14 13:45:57'),
+(196, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-15 09:46:26'),
+(197, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-17 11:07:40'),
+(198, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-17 11:23:58'),
+(199, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-22 11:40:12'),
+(200, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-24 09:31:21'),
+(201, 'tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 08:13:06'),
+(202, 'tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 08:13:09'),
+(203, 'tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 08:19:35'),
+(204, 'tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 08:19:50'),
+(205, 'tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-04-27 08:19:54'),
+(206, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 08:32:21'),
+(207, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 09:13:45'),
+(208, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 09:32:37'),
+(209, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 10:07:20'),
+(210, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-27 10:24:18'),
+(211, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 10:24:26'),
+(212, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 10:33:29'),
+(213, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 10:37:06'),
+(214, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 11:07:48'),
+(215, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-27 11:28:34'),
+(216, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 11:28:40'),
+(217, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-27 11:29:37'),
+(218, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 11:29:41'),
+(219, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 14:18:18'),
+(220, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-04-27 14:33:44'),
+(221, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-04-27 14:34:01'),
+(222, 'tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-04 05:13:50'),
+(223, 'tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-04 05:15:02'),
+(224, 'tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-04 05:15:06'),
+(225, 'tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-04 05:15:09'),
+(226, 'tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-04 05:18:39'),
+(227, 'tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-04 05:18:42'),
+(228, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 05:42:08'),
+(229, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-04 05:42:39'),
+(230, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 05:42:48'),
+(231, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-04 05:42:58'),
+(232, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 05:43:07'),
+(233, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 05:44:14'),
+(234, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-04 05:58:11'),
+(235, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 05:58:18'),
+(236, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 12:12:16'),
+(237, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-04 12:25:46'),
+(238, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-07 12:53:09'),
+(239, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-07 13:08:17'),
+(240, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-14 13:54:10'),
+(241, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 14:00:59'),
+(242, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-14 14:16:53'),
+(243, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 14:17:03'),
+(244, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-14 14:17:23'),
+(245, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-05-14 14:17:36'),
+(246, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 14:17:39'),
+(247, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 14:55:04'),
+(248, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 15:35:54'),
+(249, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 16:19:54'),
+(250, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 17:47:09'),
+(251, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 18:15:53'),
+(252, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 18:32:12'),
+(253, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 18:41:32'),
+(254, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-14 18:48:19'),
+(255, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-05-15 04:34:28'),
+(256, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-15 04:34:34'),
+(257, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-15 04:38:14'),
+(258, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-15 04:57:21'),
+(259, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-15 05:00:57'),
+(260, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-05-15 05:18:50'),
+(261, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-05-15 05:18:55'),
+(262, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-15 05:18:59'),
+(263, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-15 06:07:45'),
+(264, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-15 06:57:14'),
+(265, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-15 08:03:34'),
+(266, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-16 08:17:32'),
+(267, 'Carrier: tai@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-16 08:18:35'),
+(268, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-16 13:25:22'),
+(269, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-16 13:25:32'),
+(270, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-19 08:46:24'),
+(271, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-19 08:50:51'),
+(272, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-19 08:51:03'),
+(273, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-19 11:31:57'),
+(274, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-19 11:55:39'),
+(275, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-19 13:25:59'),
+(276, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-19 13:32:58'),
+(277, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-19 13:35:21'),
+(278, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-19 13:53:30'),
+(279, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-19 21:24:30'),
+(280, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-20 11:37:25'),
+(281, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-05-20 13:27:40'),
+(282, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-05-20 13:27:45'),
+(283, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 3', '2020-05-20 13:27:58'),
+(284, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 4', '2020-05-20 13:28:44'),
+(285, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 5', '2020-05-20 13:28:59'),
+(286, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu quá lần 5，tài khoản bị khóa 10 phút', '2020-05-20 13:30:04'),
+(287, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-20 13:31:28'),
+(288, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-20 14:19:07'),
+(289, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-20 14:20:32'),
+(290, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-20 15:06:41'),
+(291, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-20 17:13:40'),
+(292, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-20 18:39:51'),
+(293, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-20 19:54:22'),
+(294, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-20 20:06:09'),
+(295, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-20 21:43:09'),
+(296, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-21 13:19:48'),
+(297, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-21 13:44:30'),
+(298, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-21 13:56:55'),
+(299, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-21 14:15:11'),
+(300, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-21 15:21:16'),
+(301, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-21 16:17:57'),
+(302, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-21 16:24:49'),
+(303, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-21 16:26:22'),
+(304, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-21 21:04:22'),
+(305, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 05:30:18'),
+(306, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 06:14:53'),
+(307, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 08:57:54'),
+(308, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 09:46:06'),
+(309, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 13:05:40'),
+(310, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 13:17:30'),
+(311, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 13:29:06'),
+(312, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 17:28:30'),
+(313, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-05-22 17:32:56'),
+(314, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 17:33:11'),
+(315, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 17:35:39'),
+(316, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 18:34:01'),
+(317, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 18:42:18'),
+(318, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 21:20:31'),
+(319, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 21:29:48'),
+(320, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 22:04:54'),
+(321, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-22 22:54:52'),
+(322, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-23 06:34:00'),
+(323, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-23 06:50:02'),
+(324, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-23 07:07:48'),
+(325, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-23 07:16:56'),
+(326, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-24 15:40:39'),
+(327, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-24 15:49:14'),
+(328, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-25 09:16:12'),
+(329, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-25 09:52:22'),
+(330, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-25 11:09:30'),
+(331, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-25 11:48:06'),
+(332, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 07:59:48'),
+(333, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 08:07:26'),
+(334, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 08:47:38'),
+(335, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 08:55:14'),
+(336, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 08:56:59'),
+(337, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 09:17:11'),
+(338, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 09:35:28'),
+(339, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 09:41:25'),
+(340, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 09:42:49'),
+(341, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 11:35:33'),
+(342, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 11:39:59'),
+(343, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 14:16:04'),
+(344, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 14:23:07'),
+(345, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-26 15:20:28'),
+(346, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 05:22:56'),
+(347, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 05:47:23'),
+(348, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 05:56:02'),
+(349, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 06:16:59'),
+(350, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 09:17:06'),
+(351, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 09:24:33'),
+(352, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 10:46:20'),
+(353, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 10:48:21'),
+(354, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 11:41:49'),
+(355, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 11:48:36'),
+(356, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 13:01:57'),
+(357, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 13:33:28'),
+(358, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-05-27 13:56:10'),
+(359, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 13:56:14'),
+(360, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 14:12:19'),
+(361, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 14:24:30'),
+(362, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-05-27 16:36:34'),
+(363, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 16:36:40'),
+(364, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 16:42:34'),
+(365, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 22:09:07'),
+(366, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 22:22:16'),
+(367, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-27 22:35:11'),
+(368, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 09:34:38'),
+(369, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 09:42:13'),
+(370, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 11:53:51'),
+(371, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 13:04:40'),
+(372, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-28 13:38:02'),
+(373, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-28 13:38:07'),
+(374, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-28 13:38:11'),
+(375, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-28 13:38:20'),
+(376, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-28 13:38:29'),
+(377, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-28 13:38:46'),
+(378, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-28 13:39:09'),
+(379, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-05-28 13:43:15'),
+(380, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 13:43:18'),
+(381, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 13:50:34'),
+(382, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-28 13:55:34'),
+(383, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 13:55:40'),
+(384, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 14:02:27'),
+(385, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 14:15:53'),
+(386, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 14:53:25'),
+(387, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 15:30:08'),
+(388, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 20:58:17'),
+(389, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 21:08:47'),
+(390, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 21:53:59'),
+(391, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-28 21:59:28'),
+(392, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 06:39:41'),
+(393, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-05-29 06:53:58'),
+(394, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 06:54:01'),
+(395, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 07:01:51'),
+(396, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 07:15:57'),
+(397, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 08:25:39'),
+(398, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 10:48:07'),
+(399, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 11:57:19'),
+(400, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 16:09:08'),
+(401, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 16:12:31'),
+(402, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 16:29:29'),
+(403, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 18:40:14'),
+(404, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 19:09:59'),
+(405, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 19:26:58'),
+(406, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 19:45:00'),
+(407, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 20:50:10'),
+(408, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 21:24:47'),
+(409, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 21:25:54'),
+(410, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 21:29:14'),
+(411, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 21:32:12'),
+(412, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-29 21:36:25'),
+(413, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 06:51:06'),
+(414, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 06:54:30'),
+(415, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 07:08:01'),
+(416, 'Carrier: mst123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-30 08:38:39'),
+(417, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:38:42'),
+(418, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:55:41'),
+(419, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 16:36:20'),
+(420, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-02 09:45:13'),
+(421, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 05:27:44'),
+(422, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 05:39:39'),
+(423, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 06:45:34'),
+(424, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 08:01:30'),
+(425, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 09:34:03'),
+(426, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 12:44:49'),
+(427, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 13:02:52'),
+(428, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 13:54:04'),
+(429, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 15:00:10'),
+(430, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 15:45:03'),
+(431, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 16:47:36'),
+(432, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-03 16:48:29'),
+(433, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-04 13:17:25'),
+(434, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-04 13:29:36'),
+(435, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-05 08:19:42'),
+(436, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-05 08:27:34'),
+(437, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-05 11:04:25'),
+(438, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-05 13:07:41'),
+(439, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-05 14:02:37'),
+(440, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-05 15:08:29'),
+(441, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-05 16:19:26'),
+(442, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-05 16:48:51'),
+(443, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-06 08:17:44'),
+(444, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-06 08:23:55'),
+(445, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-06 09:51:03'),
+(446, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-06-06 10:45:39'),
+(447, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-06 10:45:47'),
+(448, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-06 11:44:24'),
+(449, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-06 13:32:08'),
+(450, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-06 14:03:59'),
+(451, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 08:01:56'),
+(452, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 08:35:41'),
+(453, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 09:19:42'),
+(454, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 09:28:39'),
+(455, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 10:03:28'),
+(456, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 10:20:42'),
+(457, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 11:13:13'),
+(458, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 13:12:46'),
+(459, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 08:48:16'),
+(460, 'Carrier: mst123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-11 10:03:27');
 INSERT INTO `sys_logininfor` (`info_id`, `login_name`, `ipaddr`, `login_location`, `browser`, `os`, `status`, `msg`, `login_time`) VALUES
-(466, 'Carrier: 0123456789', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:17:00'),
-(467, 'Carrier: mst123', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:17:25'),
-(468, 'Carrier: mst123', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:58:50'),
-(469, 'Carrier: mst123', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 08:59:17'),
-(470, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-30 09:25:12'),
-(471, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 09:25:20'),
-(472, 'Carrier: mst123', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 09:27:15'),
-(473, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-30 11:32:12'),
-(474, 'Carrier: mst123', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 11:32:21'),
-(475, 'Carrier: mst123123', '117.2.142.16', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-05-30 14:32:46'),
-(476, 'Carrier: mst123', '117.2.142.16', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-05-30 14:32:58'),
-(477, 'Admin', '171.255.172.231', 'XX XX', 'Chrome Mobile', 'Mac OS X (iPhone)', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-02 12:33:08'),
-(478, 'admin', '171.255.172.231', 'XX XX', 'Chrome Mobile', 'Mac OS X (iPhone)', '0', 'Đăng nhập thành công', '2020-06-02 12:33:12'),
-(479, 'Carrier: mst123', '171.255.172.231', 'XX XX', 'Chrome Mobile', 'Mac OS X (iPhone)', '0', 'Đăng nhập thành công', '2020-06-02 12:34:38'),
-(480, 'Carrier: mst123', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-04 17:16:28'),
-(481, 'Carrier: mst123', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-06 10:04:18'),
-(482, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-08 10:33:38'),
-(483, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-06-08 10:33:49'),
-(484, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-06-08 10:33:52'),
-(485, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 10:33:57'),
-(486, 'Carrier: mst123', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 10:47:33'),
-(487, 'admin', '192.168.1.94', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:05:02'),
-(488, 'admin', '192.168.1.66', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:05:14'),
-(489, 'Carrier: 0123456789', '192.168.1.94', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:05:31'),
-(490, 'admin', '192.168.1.66', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-06-08 14:05:47'),
-(491, 'Carrier: 0123456789', '192.168.1.66', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:06:02'),
-(492, 'Carrier: 0123456789', '192.168.1.66', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:11:34'),
-(493, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-08 14:12:01'),
-(494, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-08 14:12:07'),
-(495, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:12:16'),
-(496, 'admin', '192.168.1.68', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:15:28'),
-(497, 'Carrier: 0123456789', '192.168.1.68', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:15:42'),
-(498, 'Carrier: mst123', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:20:42'),
-(499, 'Carrier: 0123456789', '192.168.1.66', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:28:19'),
-(500, 'Carrier: 0123456789', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:29:32'),
-(501, 'Carrier: 0123456789', '59.153.233.46', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 14:48:59'),
-(502, 'admin', '171.255.162.174', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 15:10:10'),
-(503, 'admin', '171.255.162.174', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-06-08 15:10:26'),
-(504, 'admin', '171.255.162.174', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 15:10:31'),
-(505, 'Carrier: mst123', '171.255.162.174', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 15:14:04'),
-(506, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-08 19:03:32'),
-(507, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 09:02:07'),
-(508, 'Carrier: minh@gmail.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 09:02:17'),
-(509, 'admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-09 09:02:33'),
-(510, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 09:02:55'),
-(511, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 09:02:57'),
-(512, 'Carrier: minhtc@admin.com', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 09:03:13'),
-(513, 'Carrier: admin', '192.168.1.68', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 09:13:42'),
-(514, 'Carrier: admin', '113.176.195.221', 'XX XX', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 09:13:53'),
-(515, 'Carrier: minhtc@admin.com', '192.168.1.68', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-09 09:14:09'),
-(516, 'Carrier: admin', '192.168.1.76', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 11:09:01'),
-(517, 'Carrier: admin', '192.168.1.76', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 11:09:53'),
-(518, '0123456789', '192.168.1.76', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 11:10:48'),
-(519, 'Carrier: admin', '192.168.1.76', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 11:11:14'),
-(520, 'admin', '192.168.1.76', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-09 11:17:54'),
-(521, 'Carrier: 123456789', '192.168.1.76', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-09 11:18:08'),
-(522, 'Carrier: 0123456789', '192.168.1.76', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-09 11:18:21'),
-(523, 'admin', '192.168.1.71', 'Intranet IP', 'Chrome Mobile', 'Android 6.x', '1', 'Nhập sai mật khẩu lần 1', '2020-06-09 13:33:09'),
-(524, 'Carrier: minhtc@gmail.com', '192.168.1.68', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-09 13:42:37');
+(461, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 10:03:31'),
+(462, 'Carrier: mst123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-11 10:56:02'),
+(463, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 10:56:04'),
+(464, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 11:14:07'),
+(465, 'Carrier: MST123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-11 13:04:39'),
+(466, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 13:04:49'),
+(467, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 17:12:50'),
+(468, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 17:14:21'),
+(469, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 18:03:58'),
+(470, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 19:23:33'),
+(471, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 20:39:32'),
+(472, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-11 20:45:41'),
+(473, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-12 10:54:09'),
+(474, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-12 12:01:54'),
+(475, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-12 20:52:22'),
+(476, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-13 06:09:43'),
+(477, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-13 07:15:32'),
+(478, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-13 09:14:22'),
+(479, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-15 09:41:23'),
+(480, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-15 10:15:02'),
+(481, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-15 11:39:39'),
+(482, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-15 11:58:28'),
+(483, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-15 12:32:55'),
+(484, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-15 13:20:02'),
+(485, 'Carrier: mst123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-15 15:27:05'),
+(486, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-15 15:27:08'),
+(487, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-15 16:41:34'),
+(488, 'Carrier: mst123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-15 20:50:05'),
+(489, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-15 20:50:08'),
+(490, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-16 09:51:13'),
+(491, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-16 13:27:19'),
+(492, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-16 15:22:22'),
+(493, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-16 16:02:05'),
+(494, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-16 17:28:25'),
+(495, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-16 19:19:03'),
+(496, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-16 20:13:45'),
+(497, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-17 15:02:25'),
+(498, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-17 15:39:32'),
+(499, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-17 18:45:32'),
+(500, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-18 12:41:32'),
+(501, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-18 13:21:37'),
+(502, 'Carrier: mst123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-18 14:51:59'),
+(503, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-18 14:52:02'),
+(504, 'Carrier: mst123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-18 15:03:14'),
+(505, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-18 15:03:17'),
+(506, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-18 15:20:20'),
+(507, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-18 16:37:18'),
+(508, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-18 19:00:22'),
+(509, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-18 21:05:00'),
+(510, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 08:26:13'),
+(511, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 10:33:17'),
+(512, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 11:06:28'),
+(513, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 12:33:44'),
+(514, 'Carrier: asdfasd@sadfs.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-06-19 12:46:58'),
+(515, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 12:47:02'),
+(516, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 13:02:21'),
+(517, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 15:09:05'),
+(518, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 16:50:42'),
+(519, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 18:27:59'),
+(520, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 20:18:20'),
+(521, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 20:26:27'),
+(522, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 20:28:17'),
+(523, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 20:59:35'),
+(524, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 22:34:30'),
+(525, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-19 22:54:39'),
+(526, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 10:56:39'),
+(527, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 13:37:50'),
+(528, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 14:10:13'),
+(529, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 14:21:58'),
+(530, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 14:23:13'),
+(531, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 14:24:36'),
+(532, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 14:29:33'),
+(533, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 14:54:59'),
+(534, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 14:57:06'),
+(535, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 16:24:39'),
+(536, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 16:32:45'),
+(537, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 16:39:36'),
+(538, 'mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-23 16:46:38'),
+(539, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 16:46:42'),
+(540, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 16:48:54'),
+(541, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 18:50:27'),
+(542, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 18:57:59'),
+(543, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 19:46:05'),
+(544, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-23 19:47:57'),
+(545, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 08:40:43'),
+(546, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-06-24 09:37:17'),
+(547, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 09:37:20'),
+(548, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 10:44:11'),
+(549, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 12:29:14'),
+(550, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 15:38:49'),
+(551, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 16:25:43'),
+(552, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 17:24:41'),
+(553, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 18:07:05'),
+(554, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 18:13:06'),
+(555, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 18:13:10'),
+(556, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 20:07:39'),
+(557, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-24 20:58:45'),
+(558, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 08:18:02'),
+(559, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 09:23:20'),
+(560, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 11:20:09'),
+(561, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 11:54:53'),
+(562, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 13:05:26'),
+(563, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 15:33:06'),
+(564, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 15:36:26'),
+(565, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 15:57:57'),
+(566, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 16:45:01'),
+(567, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 16:46:30'),
+(568, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 16:59:43'),
+(569, 'Carrier: ry@163.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-06-25 17:22:03'),
+(570, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-06-25 17:22:08'),
+(571, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 17:22:10'),
+(572, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-06-25 17:23:25'),
+(573, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 17:23:29'),
+(574, 'Carrier: asdfasd@sadfs.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-06-25 17:26:23'),
+(575, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 17:26:28'),
+(576, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 18:29:23'),
+(577, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 18:37:29'),
+(578, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-25 20:02:56'),
+(579, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 09:23:34'),
+(580, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 09:31:28'),
+(581, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 09:45:15'),
+(582, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 09:50:46'),
+(583, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 09:54:45'),
+(584, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 09:57:12'),
+(585, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 10:49:22'),
+(586, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 11:23:31'),
+(587, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-06-26 15:33:43'),
+(588, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 15:33:47'),
+(589, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 16:29:45'),
+(590, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 16:29:49'),
+(591, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 16:55:36'),
+(592, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 16:57:24'),
+(593, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 18:42:09'),
+(594, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 18:42:23'),
+(595, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 18:42:49'),
+(596, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 18:45:35'),
+(597, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 18:46:20'),
+(598, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 18:46:35'),
+(599, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 18:47:07'),
+(600, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 18:47:22'),
+(601, 'Carrier: admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-26 20:41:33'),
+(602, 'Carrier: admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-26 20:41:38'),
+(603, 'Carrier: admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-26 20:41:43'),
+(604, 'Carrier: admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-26 20:41:50'),
+(605, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 20:41:56'),
+(606, 'Carrier: asdfasd@sadfs.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng xuất thành công', '2020-06-26 20:44:04'),
+(607, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 20:44:22'),
+(608, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 20:57:35'),
+(609, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 21:03:29'),
+(610, 'Carrier: mst123123', '192.168.1.93', 'Intranet IP', 'Unknown', 'Unknown', '0', 'Đăng nhập thành công', '2020-06-26 21:04:00'),
+(611, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 22:22:14'),
+(612, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-26 22:59:30'),
+(613, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-27 09:30:10'),
+(614, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-27 09:46:07'),
+(615, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-27 10:11:50'),
+(616, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-27 10:21:53'),
+(617, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-27 11:25:54'),
+(618, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-27 12:03:51'),
+(619, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-27 12:53:44'),
+(620, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-29 13:41:17'),
+(621, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-29 15:51:39'),
+(622, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-29 16:07:05'),
+(623, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-29 16:23:53'),
+(624, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-29 18:08:35'),
+(625, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-06-29 18:45:00'),
+(626, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-29 18:45:03'),
+(627, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-29 20:16:51'),
+(628, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 08:50:19'),
+(629, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 10:29:27'),
+(630, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 10:40:16'),
+(631, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 11:43:59'),
+(632, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 11:46:44'),
+(633, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 11:48:10'),
+(634, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 13:26:25'),
+(635, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 13:37:01'),
+(636, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 14:01:42'),
+(637, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 17:01:24'),
+(638, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 18:19:43'),
+(639, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 18:53:33'),
+(640, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 19:31:45'),
+(641, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-06-30 19:52:39'),
+(642, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-01 09:05:05'),
+(643, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-01 10:35:39'),
+(644, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-01 10:41:13'),
+(645, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-07-01 11:27:35'),
+(646, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-07-01 11:27:37'),
+(647, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-01 11:27:40'),
+(648, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-01 14:30:25'),
+(649, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-07-01 15:04:09'),
+(650, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 2', '2020-07-01 15:04:11'),
+(651, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-01 15:04:13'),
+(652, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-01 16:13:11'),
+(653, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-01 17:18:13'),
+(654, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-01 18:32:11'),
+(655, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 08:04:39'),
+(656, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 08:26:36'),
+(657, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 09:00:40'),
+(658, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 09:40:01'),
+(659, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 10:14:27'),
+(660, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 13:33:28'),
+(661, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 14:01:32'),
+(662, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 15:08:25'),
+(663, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 16:58:20'),
+(664, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 19:13:44'),
+(665, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-02 19:52:31'),
+(666, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 11:32:17'),
+(667, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 14:33:35'),
+(668, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 14:37:31'),
+(669, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 14:43:53'),
+(670, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 14:48:49'),
+(671, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 17:49:17'),
+(672, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 18:50:38'),
+(673, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 19:18:49'),
+(674, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 19:58:10'),
+(675, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 20:29:41'),
+(676, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 21:19:56'),
+(677, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 21:51:02'),
+(678, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 21:58:23'),
+(679, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 22:13:01'),
+(680, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 22:13:41'),
+(681, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 22:16:25'),
+(682, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-03 22:20:54'),
+(683, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-04 10:26:18'),
+(684, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-04 10:31:09'),
+(685, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-04 11:04:43'),
+(686, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-04 19:27:19'),
+(687, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-06 08:01:24'),
+(688, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-06 09:38:36'),
+(689, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-06 11:41:07'),
+(690, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-06 13:32:43'),
+(691, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-06 14:08:12'),
+(692, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-06 15:15:21'),
+(693, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-06 17:00:54'),
+(694, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-06 18:07:41'),
+(695, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-06 20:17:00'),
+(696, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 08:23:35'),
+(697, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 08:31:53'),
+(698, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 10:40:29'),
+(699, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 11:34:58'),
+(700, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 13:20:58'),
+(701, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 14:14:31'),
+(702, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 15:20:04'),
+(703, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Nhập sai mật khẩu lần 1', '2020-07-07 15:20:21'),
+(704, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 15:20:36'),
+(705, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 16:18:52'),
+(706, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 18:58:47'),
+(707, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 20:00:45'),
+(708, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 21:17:52'),
+(709, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 21:55:40'),
+(710, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 23:15:42'),
+(711, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-07 23:40:32'),
+(712, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 08:20:57'),
+(713, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 08:24:50'),
+(714, 'tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-07-08 09:10:59'),
+(715, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 09:11:06'),
+(716, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 09:11:39'),
+(717, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 09:14:40'),
+(718, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 09:46:15'),
+(719, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 10:10:02'),
+(720, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 10:14:02'),
+(721, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 11:44:38'),
+(722, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 15:24:59'),
+(723, 'Carrier: tronghieu@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-07-08 16:09:12'),
+(724, 'Carrier: tronghieu853@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-07-08 16:09:18'),
+(725, 'Carrier: tronghieu8531@gmail.com', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 16:09:23'),
+(726, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 20:07:09'),
+(727, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 20:09:43'),
+(728, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 20:15:08'),
+(729, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 20:38:45'),
+(730, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 20:42:02'),
+(731, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 20:47:58'),
+(732, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-08 20:50:56'),
+(733, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-09 08:09:17'),
+(734, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '1', 'Tên đăng nhập hoặc mật khẩu không đúng', '2020-07-09 08:16:20'),
+(735, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-09 08:16:24'),
+(736, 'Carrier: mst123123', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-09 10:23:49'),
+(737, 'admin', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', '0', 'Đăng nhập thành công', '2020-07-09 10:57:29');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_menu`
+-- Table structure for table `sys_menu`
 --
 
-DROP TABLE IF EXISTS `sys_menu`;
-CREATE TABLE IF NOT EXISTS `sys_menu` (
-  `menu_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Menu ID',
+CREATE TABLE `sys_menu` (
+  `menu_id` bigint(20) NOT NULL COMMENT 'Menu ID',
   `menu_name` varchar(50) COLLATE utf8_bin NOT NULL COMMENT 'Menu Name',
   `parent_id` bigint(20) DEFAULT 0 COMMENT 'Parent ID',
   `order_num` int(4) DEFAULT 0 COMMENT 'Display Order',
@@ -1436,33 +1910,32 @@ CREATE TABLE IF NOT EXISTS `sys_menu` (
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  `remark` varchar(500) COLLATE utf8_bin DEFAULT '' COMMENT 'Remark',
-  PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2023 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Menu permission';
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT '' COMMENT 'Remark'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Menu permission';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_menu`
+-- Dumping data for table `sys_menu`
 --
 
 INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `url`, `target`, `menu_type`, `visible`, `perms`, `icon`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
 (1, 'Quản Lý Hệ Thống', 0, 1, '#', '', 'M', '0', '', 'fa fa-gear', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', 'System Management'),
-(2, 'Theo Dõi Hệ Thống', 0, 2, '#', 'menuItem', 'M', '1', '', 'fa fa-video-camera', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-08 14:15:28', 'System Monitoring'),
-(3, 'Quản Lý Hãng Tàu', 0, 3, '#', '', 'M', '0', '', 'fa fa-bars', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', 'System Tools目录'),
-(100, 'Quản lý người dùng', 1, 1, '/system/user', '', 'C', '0', 'system:user:view', 'fa fa-address-book-o', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', 'User Management'),
-(101, 'Quản lý vai trò', 1, 2, '/system/role', '', 'C', '0', 'system:role:view', 'fa fa-users', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', 'Role Management'),
-(102, 'Danh mục', 1, 3, '/system/menu', '', 'C', '0', 'system:menu:view', 'fa fa-bars', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
-(103, 'Phòng Ban', 1, 4, '/system/dept', 'menuItem', 'C', '0', 'system:dept:view', '#', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-08 14:16:57', ''),
+(2, 'System Monitoring', 0, 3, '#', 'menuItem', 'M', '1', '', 'fa fa-video-camera', 'admin', '2018-03-16 11:33:00', 'admin', '2020-07-09 11:47:11', 'System Monitoring'),
+(3, 'Hỗ Trợ Kỹ Thuật', 0, 2, '#', 'menuItem', 'M', '1', '', 'fa fa-bars', 'admin', '2018-03-16 11:33:00', 'admin', '2020-07-09 11:47:06', 'System Tools目录'),
+(100, 'Quản Lý Người Dùng', 1, 1, '/system/user', 'menuItem', 'C', '0', 'system:user:view', 'fa fa-address-book-o', 'admin', '2018-03-16 11:33:00', 'admin', '2020-07-09 11:32:35', 'User Management'),
+(101, 'Quản Lý Vai Trò', 1, 2, '/system/role', 'menuItem', 'C', '0', 'system:role:view', 'fa fa-users', 'admin', '2018-03-16 11:33:00', 'admin', '2020-07-09 11:32:51', 'Role Management'),
+(102, 'Danh Mục', 1, 3, '/system/menu', 'menuItem', 'C', '0', 'system:menu:view', 'fa fa-bars', 'admin', '2018-03-16 11:33:00', 'admin', '2020-07-09 11:33:05', ''),
+(103, 'Department', 1, 4, '/system/dept', '', 'C', '1', 'system:dept:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
 (104, 'Post', 1, 5, '/system/post', '', 'C', '1', 'system:post:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
-(105, 'Dictionary', 1, 6, '/system/dict', '', 'C', '1', 'system:dict:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
-(106, 'Cấu Hình Hệ Thống', 1, 7, '/system/config', 'menuItem', 'C', '0', 'system:config:view', '#', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-08 14:17:32', ''),
-(107, 'Notification', 1, 8, '/system/notice', 'menuItem', 'C', '0', 'system:notice:view', '#', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-08 14:13:16', ''),
+(105, 'Dictionary', 1, 6, '/system/dict', 'menuItem', 'C', '0', 'system:dict:view', '#', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-30 11:18:47', ''),
+(106, 'Config', 1, 7, '/system/config', 'menuItem', 'C', '0', 'system:config:view', '#', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-30 11:18:36', ''),
+(107, 'Notification', 1, 8, '/system/notice', '', 'C', '1', 'system:notice:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
 (108, 'Lịch sử', 1, 9, '#', '', 'M', '0', '', 'fa fa-hourglass-1', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
-(109, 'Online User', 2, 1, '/monitor/online', 'menuItem', 'C', '0', 'monitor:online:view', '#', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-08 14:14:57', ''),
-(110, 'Job', 2, 2, '/monitor/job', 'menuItem', 'C', '0', 'monitor:job:view', '#', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-08 14:15:06', ''),
-(111, 'Data Monitor', 2, 3, '/monitor/data', 'menuItem', 'C', '1', 'monitor:data:view', '#', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-08 14:14:47', ''),
+(109, 'Online User', 2, 1, '/monitor/online', 'menuItem', 'C', '0', 'monitor:online:view', '#', 'admin', '2018-03-16 11:33:00', 'admin', '2020-07-09 11:30:52', ''),
+(110, 'Job', 2, 2, '/monitor/job', '', 'C', '1', 'monitor:job:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
+(111, 'Data Monitor', 2, 3, '/monitor/data', '', 'C', '1', 'monitor:data:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
 (112, 'Server Monitor', 2, 3, '/monitor/server', '', 'C', '1', 'monitor:server:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
 (113, 'Form Building', 3, 1, '/tool/build', '', 'C', '1', 'tool:build:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
-(114, 'Code Gen', 3, 2, '/tool/gen', '', 'C', '1', 'tool:gen:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
+(114, 'Code Gen', 3, 2, '/tool/gen', 'menuItem', 'C', '0', 'tool:gen:view', '#', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-19 18:28:26', ''),
 (115, 'API', 3, 3, '/tool/swagger', '', 'C', '1', 'tool:swagger:view', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
 (500, 'Lịch sử hoạt động', 108, 1, '/monitor/operlog', '', 'C', '0', 'monitor:operlog:view', 'fa fa-low-vision', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
 (501, 'Lịch sử đăng nhập', 108, 2, '/monitor/logininfor', '', 'C', '0', 'monitor:logininfor:view', 'fa fa-exchange', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
@@ -1528,41 +2001,51 @@ INSERT INTO `sys_menu` (`menu_id`, `menu_name`, `parent_id`, `order_num`, `url`,
 (1059, 'Delete Gen', 114, 3, '#', '', 'F', '0', 'tool:gen:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
 (1060, 'Preview Gen', 114, 4, '#', '', 'F', '0', 'tool:gen:preview', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
 (1061, 'Code Gen', 114, 5, '#', '', 'F', '0', 'tool:gen:code', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', ''),
-(2000, 'Nhóm Hãng Tàu', 3, 1, '/carrier/group', '', 'C', '0', 'carrier:group:view', 'fa fa-anchor', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', 'Carrier Group Menu'),
+(2000, 'Nhóm Hãng Tàu', 2034, 1, '/carrier/group', 'menuItem', 'C', '0', 'carrier:group:view', 'fa fa-anchor', 'admin', '2018-03-01 00:00:00', 'admin', '2020-07-09 11:08:20', 'Carrier Group Menu'),
 (2001, 'Get Carrier Group', 2000, 1, '#', '', 'F', '0', 'carrier:group:list', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2002, 'Add Carrier Group', 2000, 2, '#', '', 'F', '0', 'carrier:group:add', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2003, 'Edit Carrier Group', 2000, 3, '#', '', 'F', '0', 'carrier:group:edit', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2004, 'Delete Carrier Group', 2000, 4, '#', '', 'F', '0', 'carrier:group:remove', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2005, 'Export Carrier Group', 2000, 5, '#', '', 'F', '0', 'carrier:group:export', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
-(2006, 'Tài Khoản Hãng Tàu', 3, 1, '/carrier/account', '', 'C', '0', 'carrier:account:view', 'fa fa-user-circle', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', 'Carrier Account Menu'),
+(2006, 'Tài Khoản Hãng Tàu', 2034, 1, '/carrier/account', 'menuItem', 'C', '0', 'carrier:account:view', 'fa fa-user-circle', 'admin', '2018-03-01 00:00:00', 'admin', '2020-07-09 11:09:28', 'Carrier Account Menu'),
 (2007, 'Carrier Account List', 2006, 1, '#', '', 'F', '0', 'carrier:account:list', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2008, 'Add Carrier Account', 2006, 2, '#', '', 'F', '0', 'carrier:account:add', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2009, 'Edit Carrier Account', 2006, 3, '#', '', 'F', '0', 'carrier:account:edit', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2010, 'Delete Carrier Account', 2006, 4, '#', '', 'F', '0', 'carrier:account:remove', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2011, 'Export Carrier Account', 2006, 5, '#', '', 'F', '0', 'carrier:account:export', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
-(2012, 'Danh Sách Vận Đơn', 2021, 1, '/carrier/admin/do/getViewDo', 'menuItem', 'C', '0', 'carrier:admin:do:getViewDo:view', 'fa fa-file-excel-o', 'admin', '2018-03-01 00:00:00', 'admin', '2020-06-08 14:19:37', 'Exchange Delivery Order Menu'),
+(2012, 'Vận Đơn', 3, 1, '/carrier/admin/do/getViewDo', 'menuItem', 'C', '1', 'carrier:admin:do:getViewDo:view', 'fa fa-file-excel-o', 'admin', '2018-03-01 00:00:00', 'admin', '2020-07-09 11:12:34', 'Exchange Delivery Order Menu'),
 (2013, 'Delivery Order List', 2012, 1, '#', '', 'F', '0', 'equipment:do:list', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2014, 'Add DO', 2012, 2, '#', '', 'F', '0', 'equipment:do:add', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2015, 'Edit DO', 2012, 3, '#', '', 'F', '0', 'equipment:do:edit', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2016, 'Delete DO', 2012, 4, '#', '', 'F', '0', 'equipment:do:remove', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
 (2017, 'Export DO', 2012, 5, '#', '', 'F', '0', 'equipment:do:export', '#', 'admin', '2018-03-01 00:00:00', 'admin', '2018-03-01 00:00:00', ''),
-(2018, 'Quản lý Logistic', 0, 4, '#', 'menuItem', 'M', '0', NULL, 'fa fa-bars', 'admin', '2020-05-14 17:56:22', '', NULL, ''),
-(2019, 'Nhóm Logistic', 2018, 1, '/logistic/group', 'menuItem', 'C', '0', 'logistic:group:view', 'fa fa-truck', 'admin', '2020-05-14 18:03:26', '', NULL, ''),
-(2020, 'Tài khoản Logistic', 2018, 1, '/logistic/account', 'menuItem', 'C', '0', 'logistic:account:view', 'fa fa-address-book-o', 'admin', '2020-05-14 18:04:20', 'admin', '2020-05-14 18:24:13', ''),
-(2021, 'Quản Lý Vận Đơn', 0, 4, '#', 'menuItem', 'M', '0', NULL, 'fa fa-address-book-o', 'admin', '2020-06-08 14:19:16', '', NULL, ''),
-(2022, 'Kế Hoạch Bãi Cảng', 0, 5, '#', 'menuItem', 'M', '0', NULL, 'fa fa-anchor', 'admin', '2020-06-08 14:20:16', '', NULL, ''),
-(2023,'Bộ phận làm thủ tục',0,6,'#','menuItem','M','0',NULL,'fa fa-cog','admin','2020-06-09 20:23:58','',NULL,''),
-(2024,'Hỗ trợ Robot làm lệnh',2023,1,'/om/executeCatos/index','menuItem','C','0','','fa fa-navicon','admin','2020-06-09 20:56:31','admin',NULL,'');
+(2019, 'Nhóm Logistic', 2034, 1, '/logistic/group', 'menuItem', 'C', '0', 'logistic:group:view', 'fa fa-truck', 'admin', '2020-05-14 18:03:26', 'admin', '2020-07-09 11:16:33', ''),
+(2020, 'Tài khoản Logistic', 2034, 1, '/logistic/account', 'menuItem', 'C', '0', 'logistic:account:view', 'fa fa-address-book-o', 'admin', '2020-05-14 18:04:20', 'admin', '2020-07-09 11:17:20', ''),
+(2021, 'Bộ Phận OM', 0, 5, '#', 'menuItem', 'M', '0', '', 'fa fa-address-book-o', 'admin', '2020-06-08 14:19:16', 'admin', '2020-07-09 11:47:20', ''),
+(2022, 'Kế Hoạch Bãi Cảng', 0, 6, '#', 'menuItem', 'M', '0', '', 'fa fa-anchor', 'admin', '2020-06-08 14:20:16', 'admin', '2020-07-09 11:47:27', ''),
+(2024, 'Hỗ trợ Robot làm lệnh', 2036, 2, '/om/executeCatos/index', 'menuItem', 'C', '0', '', 'fa fa-navicon', 'admin', '2020-06-09 20:56:31', 'admin', '2020-07-09 11:38:51', ''),
+(2026, 'Giám Sát Robot', 2036, 1, 'system/robot/index', 'menuItem', 'C', '0', '', 'fa fa-cogs', 'admin', '2020-06-18 15:17:24', 'admin', '2020-07-09 11:37:46', ''),
+(2028, 'Hoạt động của xe và nhật ký giao nhận', 2043, 1, '/history/truck/', 'menuItem', 'C', '0', '', 'fa fa-bus', 'admin', '2020-06-30 10:37:51', 'admin', '2020-07-09 11:44:54', ''),
+(2030, 'Lịch sử robot', 2043, 2, '/history/robot/', 'menuItem', 'C', '0', '', 'fa fa-cogs', 'admin', '2020-07-01 18:41:32', 'admin', '2020-07-09 11:45:31', ''),
+(2031, 'Bộ phận cấp container', 0, 7, '/container/supplier', 'menuItem', 'C', '0', '', 'fa fa-cubes', 'admin', '2020-07-07 16:21:19', 'admin', '2020-07-09 11:47:32', ''),
+(2032, 'Đọc file EDI', 2035, 2, '/edo/manage/viewFileEdi', 'menuItem', 'C', '0', '', 'fa fa-check-square', 'admin', '2020-06-26 10:32:57', 'admin', '2020-07-09 11:26:43', ''),
+(2033, 'Danh Sách eDO', 2035, 3, '/edo/manage/index', 'menuItem', 'C', '0', '', 'fa fa-handshake-o', 'admin', '2020-06-26 18:53:09', 'admin', '2020-07-09 11:27:42', ''),
+(2034, 'Quản Lý Tài Khoản', 0, 4, '#', 'menuItem', 'M', '0', '', 'fa fa-bars', 'admin', '2020-07-09 11:07:40', 'admin', '2020-07-09 11:47:15', ''),
+(2035, 'Quản Lý eDO', 2021, 1, '#', 'menuItem', 'M', '0', NULL, 'fa fa-bars', 'admin', '2020-07-09 11:25:18', '', NULL, ''),
+(2036, 'Kiểm Soát Luồng Công VIệc', 2021, 2, '#', 'menuItem', 'M', '0', NULL, 'fa fa-bars', 'admin', '2020-07-09 11:29:27', '', NULL, ''),
+(2037, 'Thông Báo', 2021, 3, '#', 'menuItem', 'M', '0', NULL, 'fa fa-bell', 'admin', '2020-07-09 11:35:31', '', NULL, ''),
+(2039, 'Quản Lý Thông Báo', 2037, 1, '/notifications', 'menuItem', 'C', '0', '', '#', 'admin', '2020-07-09 11:37:00', 'admin', '2020-07-09 11:39:53', ''),
+(2041, 'Gửi Thông Báo', 2037, 2, '/notifications/add', 'menuItem', 'C', '0', '', 'fa fa-commenting-o', 'admin', '2020-07-09 11:42:02', 'admin', '2020-07-09 11:42:27', ''),
+(2043, 'Lịch Sử', 2021, 4, '#', 'menuItem', 'M', '0', NULL, 'fa fa-book', 'admin', '2020-07-09 11:44:27', '', NULL, '');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_notice`
+-- Table structure for table `sys_notice`
 --
 
-DROP TABLE IF EXISTS `sys_notice`;
-CREATE TABLE IF NOT EXISTS `sys_notice` (
-  `notice_id` int(4) NOT NULL AUTO_INCREMENT COMMENT '公告ID',
+CREATE TABLE `sys_notice` (
+  `notice_id` int(4) NOT NULL COMMENT '公告ID',
   `notice_title` varchar(50) COLLATE utf8_bin NOT NULL COMMENT '公告标题',
   `notice_type` char(1) COLLATE utf8_bin NOT NULL COMMENT '公告类型（1通知 2公告）',
   `notice_content` varchar(2000) COLLATE utf8_bin DEFAULT NULL COMMENT '公告内容',
@@ -1571,12 +2054,11 @@ CREATE TABLE IF NOT EXISTS `sys_notice` (
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark',
-  PRIMARY KEY (`notice_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='通知公告表';
+  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='通知公告表';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_notice`
+-- Dumping data for table `sys_notice`
 --
 
 INSERT INTO `sys_notice` (`notice_id`, `notice_title`, `notice_type`, `notice_content`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
@@ -1586,12 +2068,11 @@ INSERT INTO `sys_notice` (`notice_id`, `notice_title`, `notice_type`, `notice_co
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_oper_log`
+-- Table structure for table `sys_oper_log`
 --
 
-DROP TABLE IF EXISTS `sys_oper_log`;
-CREATE TABLE IF NOT EXISTS `sys_oper_log` (
-  `oper_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Log PK',
+CREATE TABLE `sys_oper_log` (
+  `oper_id` bigint(20) NOT NULL COMMENT 'Log PK',
   `title` varchar(50) COLLATE utf8_bin DEFAULT '' COMMENT 'Module title',
   `business_type` int(2) DEFAULT 0 COMMENT 'Business type (0 other 1 new 2 modified 3 deleted)',
   `method` varchar(100) COLLATE utf8_bin DEFAULT '' COMMENT 'Method name',
@@ -1606,12 +2087,11 @@ CREATE TABLE IF NOT EXISTS `sys_oper_log` (
   `json_result` varchar(2000) COLLATE utf8_bin DEFAULT '' COMMENT 'Return parameter',
   `status` int(1) DEFAULT 0 COMMENT 'Operation status (0 normal 1 abnormal)',
   `error_msg` varchar(2000) COLLATE utf8_bin DEFAULT '' COMMENT 'Error message',
-  `oper_time` datetime DEFAULT NULL COMMENT 'Operating time',
-  PRIMARY KEY (`oper_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=202 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Operational logging';
+  `oper_time` datetime DEFAULT NULL COMMENT 'Operating time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Operational logging';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_oper_log`
+-- Dumping data for table `sys_oper_log`
 --
 
 INSERT INTO `sys_oper_log` (`oper_id`, `title`, `business_type`, `method`, `request_method`, `operator_type`, `oper_name`, `dept_name`, `oper_url`, `oper_ip`, `oper_location`, `oper_param`, `json_result`, `status`, `error_msg`, `oper_time`) VALUES
@@ -1622,95 +2102,143 @@ INSERT INTO `sys_oper_log` (`oper_id`, `title`, `business_type`, `method`, `requ
 (113, 'Carrier Account', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.changeStatus()', 'POST', 1, 'admin', 'R&D', '/carrier/account/changeStatus', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"status\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Success\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-08 10:22:41'),
 (114, 'Carrier Account', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.changeStatus()', 'POST', 1, 'admin', 'R&D', '/carrier/account/changeStatus', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Success\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-08 10:22:48'),
 (115, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/carrier/account/resetPwd/1', '127.0.0.1', 'Intranet IP', '{ }', '\"carrier/account/resetPwd\"', 0, NULL, '2020-04-10 08:45:29'),
-(116, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupCode\" : [ \"SITC\" ],\r\n  \"groupName\" : [ \"SITC\" ],\r\n  \"operateCode\" : [ \"SITC1, SITC2, SITC3\" ],\r\n  \"mainEmail\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"Invalid Email!\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-04-14 11:05:44'),
-(117, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupCode\" : [ \"SITC\" ],\r\n  \"groupName\" : [ \"SITC\" ],\r\n  \"operateCode\" : [ \"SITC1, SITC2, SITC3\" ],\r\n  \"mainEmail\" : [ \"sitc@abc.com\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-14 11:05:54'),
-(118, 'Carrier Account', 1, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupId\" : [ \"2\" ],\r\n  \"carrierCode\" : [ \"SITC1, SITC3\" ],\r\n  \"email\" : [ \"huydp@irtech.com.vn\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"Huy Do\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"isSendEmail\" : [ \"on\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-14 11:06:16'),
-(119, 'Carrier Account', 1, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupId\" : [ \"2\" ],\r\n  \"carrierCode\" : [ \"SITC1, SITC3\" ],\r\n  \"email\" : [ \"dunglv@danangport.com\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"Anh Dũng\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"isSendEmail\" : [ \"on\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-14 11:07:03'),
-(120, 'User Management', 1, 'vn.com.irtech.eport.web.controller.system.SysUserController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/user/add', '192.168.1.16', 'Intranet IP', '{\r\n  \"deptId\" : [ \"103\" ],\r\n  \"userName\" : [ \"Nguyen v\" ],\r\n  \"deptName\" : [ \"R&D\" ],\r\n  \"phonenumber\" : [ \"09034567891\" ],\r\n  \"email\" : [ \"abc@gmail.com\" ],\r\n  \"loginName\" : [ \"abc\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"sex\" : [ \"0\" ],\r\n  \"role\" : [ \"1\" ],\r\n  \"remark\" : [ \"\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"roleIds\" : [ \"1\" ],\r\n  \"postIds\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-14 12:20:08'),
-(121, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '59.153.224.169', 'XX XX', '{\r\n  \"groupCode\" : [ \"CMA\" ],\r\n  \"groupName\" : [ \"CMA\" ],\r\n  \"operateCode\" : [ \"CNC, APL, ANL\" ],\r\n  \"mainEmail\" : [ \"lehanm21790@gmail.com\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-14 12:41:43'),
-(122, 'Carrier Account', 1, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/add', '59.153.224.169', 'XX XX', '{\r\n  \"groupId\" : [ \"3\" ],\r\n  \"carrierCode\" : [ \"CNC\" ],\r\n  \"email\" : [ \"lehanam21790@gmail.com\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"nam\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"isSendEmail\" : [ \"on\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-14 12:46:53'),
-(123, 'Carrier Account', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/edit', '59.153.224.169', 'XX XX', '{\r\n  \"id\" : [ \"5\" ],\r\n  \"groupId\" : [ \"3\" ],\r\n  \"carrierCode\" : [ \"CNC\" ],\r\n  \"email\" : [ \"huydp@irtech.com.vn\" ],\r\n  \"fullName\" : [ \"nam\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-14 12:53:56'),
-(124, 'User Management', 1, 'vn.com.irtech.eport.web.controller.system.SysUserController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/user/add', '192.168.1.11', 'Intranet IP', '{\r\n  \"deptId\" : [ \"104\" ],\r\n  \"userName\" : [ \"nhanvien1\" ],\r\n  \"deptName\" : [ \"Marketing\" ],\r\n  \"phonenumber\" : [ \"09234234233\" ],\r\n  \"email\" : [ \"hieunt@irtech.com.vn\" ],\r\n  \"loginName\" : [ \"nhanvien1\" ],\r\n  \"password\" : [ \"123123\" ],\r\n  \"sex\" : [ \"0\" ],\r\n  \"remark\" : [ \"\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"roleIds\" : [ \"\" ],\r\n  \"postIds\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 08:25:14'),
-(125, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupCode\" : [ \"ABC\" ],\r\n  \"groupName\" : [ \"ABC\" ],\r\n  \"operateCode\" : [ \"A1, A2, A3\" ],\r\n  \"mainEmail\" : [ \"abc@abc.com\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 08:59:43'),
-(126, 'Carrier Account', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"5\" ],\r\n  \"groupId\" : [ \"4\" ],\r\n  \"carrierCode\" : [ \"A1, A3\" ],\r\n  \"email\" : [ \"huydp@irtech.com.vn\" ],\r\n  \"fullName\" : [ \"nam\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 09:00:05'),
-(127, 'Carrier Account', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"5\" ],\r\n  \"groupId\" : [ \"4\" ],\r\n  \"carrierCode\" : [ \"A1, A3\" ],\r\n  \"email\" : [ \"huydp@irtech.com.vn\" ],\r\n  \"fullName\" : [ \"nam\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 09:01:02'),
-(128, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/carrier/account/resetPwd/5', '113.176.195.221', 'XX XX', '{ }', '\"carrier/account/resetPwd\"', 0, NULL, '2020-04-15 09:01:03'),
-(129, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwdSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/resetPwd', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"5\" ],\r\n  \"email\" : [ \"huydp@irtech.com.vn\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"isSendEmail\" : [ \"on\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 09:01:08'),
-(130, 'Carrier Account', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupId\" : [ \"1\" ],\r\n  \"carrierCode\" : [ \"123546,1\" ],\r\n  \"email\" : [ \"tai@gmail.com\" ],\r\n  \"fullName\" : [ \"Anh Tài\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 09:01:28'),
-(131, 'Carrier Account', 3, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.remove()', 'POST', 1, 'admin', 'R&D', '/carrier/account/remove', '113.176.195.221', 'XX XX', '{\r\n  \"ids\" : [ \"5\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 09:02:56'),
-(132, 'Carrier Account', 1, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupId\" : [ \"1\" ],\r\n  \"carrierCode\" : [ \"1\" ],\r\n  \"email\" : [ \"tai@gmail.com\" ],\r\n  \"password\" : [ \"123qwe123\" ],\r\n  \"fullName\" : [ \"Anh Tafi\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"isSendEmail\" : [ \"on\" ]\r\n}', '{\r\n  \"msg\" : \"Email đã tồn tại!\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-04-15 09:04:33'),
-(133, 'Carrier Account', 1, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/add', '192.168.1.11', 'Intranet IP', '{\r\n  \"groupId\" : [ \"2\" ],\r\n  \"carrierCode\" : [ \" SITC2\" ],\r\n  \"email\" : [ \"tai@gmail.com\" ],\r\n  \"password\" : [ \"123123\" ],\r\n  \"fullName\" : [ \"test\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Email đã tồn tại!\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-04-15 09:04:53'),
-(134, 'Carrier Account', 1, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/add', '192.168.1.11', 'Intranet IP', '{\r\n  \"groupId\" : [ \"2\" ],\r\n  \"carrierCode\" : [ \" SITC2\" ],\r\n  \"email\" : [ \"tai@gmail.com\" ],\r\n  \"password\" : [ \"123123\" ],\r\n  \"fullName\" : [ \"test\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Email đã tồn tại!\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-04-15 09:04:58'),
-(135, '账户解锁', 0, 'vn.com.irtech.eport.web.controller.monitor.SysLogininforController.unlock()', 'POST', 1, 'admin', 'R&D', '/monitor/logininfor/unlock', '113.176.195.221', 'XX XX', '{\r\n  \"loginName\" : [ \"Carrier: admin\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 14:11:01'),
-(136, '账户解锁', 0, 'vn.com.irtech.eport.web.controller.monitor.SysLogininforController.unlock()', 'POST', 1, 'admin', 'R&D', '/monitor/logininfor/unlock', '113.176.195.221', 'XX XX', '{\r\n  \"loginName\" : [ \"Carrier: admin\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 14:11:08'),
-(137, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupCode\" : [ \"ABC\" ],\r\n  \"groupName\" : [ \"Wanhai\" ],\r\n  \"operateCode\" : [ \"A1, A2, B1, B2, C1\" ],\r\n  \"mainEmail\" : [ \"abc@abc.com\" ]\r\n}', '{\r\n  \"msg\" : \"Group code already exist\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-04-15 14:24:53'),
-(138, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupCode\" : [ \"ABC123\" ],\r\n  \"groupName\" : [ \"Wanhai\" ],\r\n  \"operateCode\" : [ \"A1, A2, B1, B2, C1\" ],\r\n  \"mainEmail\" : [ \"abc@abc.com\" ]\r\n}', '{\r\n  \"msg\" : \"Email already exist\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-04-15 14:25:06'),
-(139, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupCode\" : [ \"ABC123\" ],\r\n  \"groupName\" : [ \"Wanhai\" ],\r\n  \"operateCode\" : [ \"A1, A2, B1, B2, C1\" ],\r\n  \"mainEmail\" : [ \"abc@abc.com.vn\" ]\r\n}', 'null', 1, '\r\n### Error updating database.  Cause: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column \'group_code\' at row 1\r\n### The error may involve vn.com.irtech.eport.carrier.mapper.CarrierGroupMapper.insertCarrierGroup-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into carrier_group          ( group_code,             group_name,             operate_code,             main_email,             create_by,             create_time )           values ( ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column \'group_code\' at row 1\n; Data truncation: Data too long for column \'group_code\' at row 1; nested exception is com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column \'group_code\' at row 1', '2020-04-15 14:25:16'),
-(140, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupCode\" : [ \"123abc\" ],\r\n  \"groupName\" : [ \"Wanhai\" ],\r\n  \"operateCode\" : [ \"A12, B13, C14\" ],\r\n  \"mainEmail\" : [ \"tai@gmail.com\" ]\r\n}', 'null', 1, '\r\n### Error updating database.  Cause: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column \'group_code\' at row 1\r\n### The error may involve vn.com.irtech.eport.carrier.mapper.CarrierGroupMapper.insertCarrierGroup-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into carrier_group          ( group_code,             group_name,             operate_code,             main_email,             create_by,             create_time )           values ( ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column \'group_code\' at row 1\n; Data truncation: Data too long for column \'group_code\' at row 1; nested exception is com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column \'group_code\' at row 1', '2020-04-15 14:31:56'),
-(141, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupCode\" : [ \"123abc\" ],\r\n  \"groupName\" : [ \"Wanhai\" ],\r\n  \"operateCode\" : [ \"A12, B13, C14\" ],\r\n  \"mainEmail\" : [ \"tai@gmail.com\" ]\r\n}', 'null', 1, '\r\n### Error updating database.  Cause: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column \'group_code\' at row 1\r\n### The error may involve vn.com.irtech.eport.carrier.mapper.CarrierGroupMapper.insertCarrierGroup-Inline\r\n### The error occurred while setting parameters\r\n### SQL: insert into carrier_group          ( group_code,             group_name,             operate_code,             main_email,             create_by,             create_time )           values ( ?,             ?,             ?,             ?,             ?,             ? )\r\n### Cause: com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column \'group_code\' at row 1\n; Data truncation: Data too long for column \'group_code\' at row 1; nested exception is com.mysql.cj.jdbc.exceptions.MysqlDataTruncation: Data truncation: Data too long for column \'group_code\' at row 1', '2020-04-15 14:32:02'),
-(142, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupCode\" : [ \"123\" ],\r\n  \"groupName\" : [ \"Wanhai\" ],\r\n  \"operateCode\" : [ \"A12, B13, C14\" ],\r\n  \"mainEmail\" : [ \"tai@gmail.com\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 14:34:40'),
-(143, 'Carrier Account', 1, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupId\" : [ \"5\" ],\r\n  \"carrierCode\" : [ \"A12, B13, C14\" ],\r\n  \"email\" : [ \"han@gmail.com\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"Han\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"isSendEmail\" : [ \"on\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 14:42:12'),
-(144, 'Reset password', 2, 'vn.com.irtech.eport.web.controller.system.SysUserController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/system/user/resetPwd/2', '113.176.195.221', 'XX XX', '{ }', '\"system/user/resetPwd\"', 0, NULL, '2020-04-15 15:13:01'),
-(145, 'User Management', 2, 'vn.com.irtech.eport.web.controller.system.SysUserController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/user/edit', '113.176.195.221', 'XX XX', '{\r\n  \"userId\" : [ \"2\" ],\r\n  \"deptId\" : [ \"105\" ],\r\n  \"userName\" : [ \"DNG\" ],\r\n  \"phonenumber\" : [ \"15666666666\" ],\r\n  \"loginName\" : [ \"ry\" ],\r\n  \"email\" : [ \"ry@qq.com\" ],\r\n  \"sex\" : [ \"1\" ],\r\n  \"role\" : [ \"2\" ],\r\n  \"remark\" : [ \"测试员\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"roleIds\" : [ \"2\" ],\r\n  \"postIds\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 15:13:49'),
-(146, 'User Management', 2, 'vn.com.irtech.eport.web.controller.system.SysUserController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/user/edit', '113.176.195.221', 'XX XX', '{\r\n  \"userId\" : [ \"100\" ],\r\n  \"deptId\" : [ \"103\" ],\r\n  \"userName\" : [ \"Nguyen\" ],\r\n  \"phonenumber\" : [ \"09034567891\" ],\r\n  \"loginName\" : [ \"abc\" ],\r\n  \"email\" : [ \"abc@gmail.com\" ],\r\n  \"sex\" : [ \"0\" ],\r\n  \"role\" : [ \"2\" ],\r\n  \"remark\" : [ \"\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"roleIds\" : [ \"2\" ],\r\n  \"postIds\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 15:38:08'),
-(147, 'Reset password', 2, 'vn.com.irtech.eport.web.controller.system.SysUserController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/system/user/resetPwd/100', '113.176.195.221', 'XX XX', '{ }', '\"system/user/resetPwd\"', 0, NULL, '2020-04-15 15:38:17'),
-(148, 'Reset password', 2, 'vn.com.irtech.eport.web.controller.system.SysUserController.resetPwdSave()', 'POST', 1, 'admin', 'R&D', '/system/user/resetPwd', '113.176.195.221', 'XX XX', '{\r\n  \"userId\" : [ \"100\" ],\r\n  \"loginName\" : [ \"abc\" ],\r\n  \"password\" : [ \"123456\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-15 15:38:23'),
-(149, 'Carrier Account', 1, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupId\" : [ \"3\" ],\r\n  \"carrierCode\" : [ \"CNC,CMA\" ],\r\n  \"email\" : [ \"minhtc@gmail.com\" ],\r\n  \"password\" : [ \"admin123\" ],\r\n  \"fullName\" : [ \"admin123\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"isSendEmail\" : [ \"on\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-24 13:48:32'),
-(150, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-27 19:04:16'),
-(151, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-27 19:04:21'),
-(152, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"3\" ],\r\n  \"groupCode\" : [ \"CMA\" ],\r\n  \"groupName\" : [ \"CMA\" ],\r\n  \"operateCode\" : [ \"CNC,CMA\" ],\r\n  \"mainEmail\" : [ \"lehanm21790@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-27 19:04:42'),
-(153, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"3\" ],\r\n  \"groupCode\" : [ \"CMA\" ],\r\n  \"groupName\" : [ \"CMA\" ],\r\n  \"operateCode\" : [ \"CNC,CMA\" ],\r\n  \"mainEmail\" : [ \"lehanm21790@gmail.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-27 19:04:50'),
-(154, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '171.227.17.69', 'XX XX', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-04 05:28:57'),
-(155, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"groupName\" : [ \"VINCOSHIP\" ],\r\n  \"mainEmail\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-23 08:19:34'),
-(156, 'Logistic account', 1, 'vn.com.irtech.eport.logistic.controller.LogisticAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/account/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"groupId\" : [ \"2\" ],\r\n  \"email\" : [ \"ope@danangport.com\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"Operator 1\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-23 08:20:19'),
-(157, 'Logistic Group', 2, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"2\" ],\r\n  \"groupName\" : [ \"DaNang Port\" ],\r\n  \"mainEmail\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-23 08:20:36'),
-(158, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '192.168.1.2', 'Intranet IP', '{\r\n  \"groupName\" : [ \"VINCOSHIP\" ],\r\n  \"mainEmail\" : [ \"admin@_vincoship.com\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-23 08:40:36'),
-(159, 'Logistic account', 1, 'vn.com.irtech.eport.logistic.controller.LogisticAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/account/add', '192.168.1.2', 'Intranet IP', '{\r\n  \"groupId\" : [ \"3\" ],\r\n  \"email\" : [ \"MST123456\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"Nguyen Van A\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Email không hợp lệ!\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-05-23 08:57:23'),
-(160, 'Logistic account', 1, 'vn.com.irtech.eport.logistic.controller.LogisticAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/account/add', '192.168.1.2', 'Intranet IP', '{\r\n  \"groupId\" : [ \"3\" ],\r\n  \"email\" : [ \"mst@dnp.com\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"Nguyen Van A\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-23 08:57:43'),
-(161, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"3\" ],\r\n  \"groupCode\" : [ \"CMA\" ],\r\n  \"groupName\" : [ \"CMA\" ],\r\n  \"operateCode\" : [ \"CNC,CMA\" ],\r\n  \"mainEmail\" : [ \"abc@gmail.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-27 10:47:50'),
-(162, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"2\" ],\r\n  \"groupCode\" : [ \"SITC\" ],\r\n  \"groupName\" : [ \"SITC\" ],\r\n  \"operateCode\" : [ \"S\" ],\r\n  \"mainEmail\" : [ \"sitc@abc.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-27 10:47:59'),
-(163, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"3\" ],\r\n  \"groupCode\" : [ \"CMA\" ],\r\n  \"groupName\" : [ \"CMA\" ],\r\n  \"operateCode\" : [ \"ABC.ABC\" ],\r\n  \"mainEmail\" : [ \"abc@gmail.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-27 10:48:07'),
-(164, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"ABC BAC\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-27 10:48:14'),
-(165, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"5\" ],\r\n  \"groupCode\" : [ \"123\" ],\r\n  \"groupName\" : [ \"Wanhai\" ],\r\n  \"operateCode\" : [ \"ABC,ABC\" ],\r\n  \"mainEmail\" : [ \"tai@gmail.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-27 10:48:23'),
-(166, 'Carrier Account', 3, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.remove()', 'POST', 1, 'admin', 'R&D', '/carrier/account/remove', '113.176.195.221', 'XX XX', '{\r\n  \"ids\" : [ \"4\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-27 10:49:45'),
-(167, 'Logistic Group', 2, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"2\" ],\r\n  \"groupName\" : [ \"MTShip\" ],\r\n  \"mainEmail\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-27 11:17:17'),
-(168, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/carrier/account/resetPwd/1', '113.176.195.221', 'XX XX', '{ }', '\"carrier/account/resetPwd\"', 0, NULL, '2020-05-27 14:16:36'),
-(169, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwdSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/resetPwd', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"email\" : [ \"minhtc@admin.com\" ],\r\n  \"password\" : [ \"admin123\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-27 14:16:42'),
-(170, 'Carrier Account', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/edit', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupId\" : [ \"1\" ],\r\n  \"carrierCode\" : [ \"CNC,CMA\" ],\r\n  \"fullName\" : [ \"Trần Minh\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-27 14:17:38'),
-(171, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/carrier/account/resetPwd/1', '113.176.195.221', 'XX XX', '{ }', '\"carrier/account/resetPwd\"', 0, NULL, '2020-05-27 14:17:39'),
-(172, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/carrier/account/resetPwd/1', '113.176.195.221', 'XX XX', '{ }', '\"carrier/account/resetPwd\"', 0, NULL, '2020-05-27 14:17:43'),
-(173, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwdSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/resetPwd', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"email\" : [ \"minhtc@admin.com\" ],\r\n  \"password\" : [ \"admin123\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-27 14:18:45'),
-(174, 'Reset password', 2, 'vn.com.irtech.eport.web.controller.system.SysUserController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/system/user/resetPwd/101', '113.176.195.221', 'XX XX', '{ }', '\"system/user/resetPwd\"', 0, NULL, '2020-05-28 15:57:46'),
-(175, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '171.227.17.4', 'XX XX', '{\r\n  \"groupName\" : [ \"Vinconship\" ],\r\n  \"address\" : [ \"35 Cao Thang\" ],\r\n  \"mst\" : [ \"123123123\" ],\r\n  \"phone\" : [ \"123123123\" ],\r\n  \"fax\" : [ \"123123123123\" ],\r\n  \"emailAddress\" : [ \"dientu@dientu.com\" ],\r\n  \"businessRegistrationCertificate\" : [ \"giay dk doanh nghiep\" ],\r\n  \"dateOfIssueRegistration\" : [ \"2020-05-29\" ],\r\n  \"placeOfIssueRegistration\" : [ \"Da Nang\" ],\r\n  \"authorizedRepresentative\" : [ \"khong biet\" ],\r\n  \"representativePosition\" : [ \"khong biet\" ],\r\n  \"followingAuthorizationFormNo\" : [ \"1231\" ],\r\n  \"signDate\" : [ \"2020-05-29\" ],\r\n  \"owned\" : [ \"khong biet\" ],\r\n  \"identifyCardNo\" : [ \"12312312311\" ],\r\n  \"dateOfIssueIdentify\" : [ \"2020-05-29\" ],\r\n  \"placeOfIssueIdentify\" : [ \"khong biet\" ],\r\n  \"mobilePhone\" : [ \"09213231223\" ],\r\n  \"email\" : [ \"email@email.com\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-29 19:19:57'),
-(176, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '116.110.102.253', 'XX XX', '{\r\n  \"groupName\" : [ \"VINCOSHIP\" ],\r\n  \"address\" : [ \"40 Hoàng sa, Đà Nẵng\" ],\r\n  \"mst\" : [ \"0123456789\" ],\r\n  \"phone\" : [ \"023645066\" ],\r\n  \"fax\" : [ \"123123123123\" ],\r\n  \"emailAddress\" : [ \"vinco@vinco.com\" ],\r\n  \"businessRegistrationCertificate\" : [ \"Cty cổ phần VINCOSHIP\" ],\r\n  \"dateOfIssueRegistration\" : [ \"2020-05-28\" ],\r\n  \"placeOfIssueRegistration\" : [ \"Đà Nẵng\" ],\r\n  \"authorizedRepresentative\" : [ \"Nguyễn Văn A\" ],\r\n  \"representativePosition\" : [ \"Giám đốc\" ],\r\n  \"followingAuthorizationFormNo\" : [ \"13\" ],\r\n  \"signDate\" : [ \"2020-05-30\" ],\r\n  \"owned\" : [ \"abc\" ],\r\n  \"identifyCardNo\" : [ \"201734555\" ],\r\n  \"dateOfIssueIdentify\" : [ \"2020-05-08\" ],\r\n  \"placeOfIssueIdentify\" : [ \"Đà Nẵng\" ],\r\n  \"mobilePhone\" : [ \"076 455 555\" ],\r\n  \"email\" : [ \"vinco@vinco.com\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-29 20:24:54'),
-(177, 'Logistic account', 1, 'vn.com.irtech.eport.logistic.controller.LogisticAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/account/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupId\" : [ \"1\" ],\r\n  \"email\" : [ \"vinconship@vincon.com\" ],\r\n  \"userName\" : [ \"mst123\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"tester 1\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-30 08:15:22'),
-(178, 'Logistic account', 1, 'vn.com.irtech.eport.logistic.controller.LogisticAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/account/add', '113.176.195.221', 'XX XX', '{\r\n  \"groupId\" : [ \"1\" ],\r\n  \"email\" : [ \"vinco@vinco.com\" ],\r\n  \"userName\" : [ \"0123456789\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"Nguyen Nguyen\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-30 08:15:45'),
-(186, '菜单管理', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '113.176.195.221', 'XX XX', '{\r\n  \"menuId\" : [ \"103\" ],\r\n  \"parentId\" : [ \"1\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Phòng Ban\" ],\r\n  \"url\" : [ \"/system/dept\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"system:dept:view\" ],\r\n  \"orderNum\" : [ \"4\" ],\r\n  \"icon\" : [ \"#\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-08 14:16:57'),
-(187, '菜单管理', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '113.176.195.221', 'XX XX', '{\r\n  \"menuId\" : [ \"106\" ],\r\n  \"parentId\" : [ \"1\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Cấu Hình Hệ Thống\" ],\r\n  \"url\" : [ \"/system/config\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"system:config:view\" ],\r\n  \"orderNum\" : [ \"7\" ],\r\n  \"icon\" : [ \"#\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-08 14:17:32'),
-(188, '菜单管理', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '113.176.195.221', 'XX XX', '{\r\n  \"menuId\" : [ \"2012\" ],\r\n  \"parentId\" : [ \"1\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Quản Lý Vận Đơn\" ],\r\n  \"url\" : [ \"/carrier/admin/do/getViewDo\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"carrier:admin:do:getViewDo:view\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-file-excel-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-08 14:18:15'),
-(189, '菜单管理', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '113.176.195.221', 'XX XX', '{\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý Vận Đơn\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"4\" ],\r\n  \"icon\" : [ \"fa fa-address-book-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-08 14:19:16'),
-(190, '菜单管理', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '113.176.195.221', 'XX XX', '{\r\n  \"menuId\" : [ \"2012\" ],\r\n  \"parentId\" : [ \"2021\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Danh Sách Vận Đơn\" ],\r\n  \"url\" : [ \"/carrier/admin/do/getViewDo\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"carrier:admin:do:getViewDo:view\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-file-excel-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-08 14:19:37'),
-(191, '菜单管理', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '113.176.195.221', 'XX XX', '{\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Kế Hoạch Bãi Cảng\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"5\" ],\r\n  \"icon\" : [ \"fa fa-anchor\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-08 14:20:16'),
-(192, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/carrier/account/resetPwd/1', '113.176.195.221', 'XX XX', '{ }', '\"carrier/account/resetPwd\"', 0, NULL, '2020-06-09 09:03:05'),
-(193, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwdSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/resetPwd', '113.176.195.221', 'XX XX', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"email\" : [ \"minhtc@admin.com\" ],\r\n  \"password\" : [ \"admin123\" ],\r\n  \"isSendEmail\" : [ \"on\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-09 09:03:09'),
-(194, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '192.168.1.76', 'Intranet IP', '{\r\n  \"groupName\" : [ \"dsfds\" ],\r\n  \"address\" : [ \"đà nẵng\" ],\r\n  \"mst\" : [ \"dsfds\" ],\r\n  \"phone\" : [ \"0981974393\" ],\r\n  \"fax\" : [ \"dsf\" ],\r\n  \"emailAddress\" : [ \"ds\" ],\r\n  \"businessRegistrationCertificate\" : [ \"sđ\" ],\r\n  \"dateOfIssueRegistration\" : [ \"2020-06-10\" ],\r\n  \"placeOfIssueRegistration\" : [ \"dsfds\" ],\r\n  \"authorizedRepresentative\" : [ \"dsfds\" ],\r\n  \"representativePosition\" : [ \"dsfds\" ],\r\n  \"followingAuthorizationFormNo\" : [ \"sdf\" ],\r\n  \"signDate\" : [ \"2020-06-09\" ],\r\n  \"owned\" : [ \"dsfd\" ],\r\n  \"identifyCardNo\" : [ \"dsf\" ],\r\n  \"dateOfIssueIdentify\" : [ \"2020-06-11\" ],\r\n  \"placeOfIssueIdentify\" : [ \"dsfd\" ],\r\n  \"mobilePhone\" : [ \"dsfds\" ],\r\n  \"email\" : [ \"daily001\" ]\r\n}', '{\r\n  \"msg\" : \"Email không hợp lệ!\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-06-09 11:31:33'),
-(195, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '192.168.1.76', 'Intranet IP', '{\r\n  \"groupName\" : [ \"dsfds\" ],\r\n  \"address\" : [ \"đà nẵng\" ],\r\n  \"mst\" : [ \"dsfds\" ],\r\n  \"phone\" : [ \"0981974393\" ],\r\n  \"fax\" : [ \"dsf\" ],\r\n  \"emailAddress\" : [ \"ds\" ],\r\n  \"businessRegistrationCertificate\" : [ \"sđ\" ],\r\n  \"dateOfIssueRegistration\" : [ \"2020-06-10\" ],\r\n  \"placeOfIssueRegistration\" : [ \"dsfds\" ],\r\n  \"authorizedRepresentative\" : [ \"dsfds\" ],\r\n  \"representativePosition\" : [ \"dsfds\" ],\r\n  \"followingAuthorizationFormNo\" : [ \"sdf\" ],\r\n  \"signDate\" : [ \"2020-06-09\" ],\r\n  \"owned\" : [ \"dsfd\" ],\r\n  \"identifyCardNo\" : [ \"dsf\" ],\r\n  \"dateOfIssueIdentify\" : [ \"2020-06-11\" ],\r\n  \"placeOfIssueIdentify\" : [ \"dsfd\" ],\r\n  \"mobilePhone\" : [ \"dsfds\" ],\r\n  \"email\" : [ \"ngan123@gmail.com\" ]\r\n}', '{\r\n  \"msg\" : \"MST không hợp lệ. Từ 10 -> 15 số\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-06-09 11:31:47'),
-(196, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '192.168.1.76', 'Intranet IP', '{\r\n  \"groupName\" : [ \"dsfds\" ],\r\n  \"address\" : [ \"đà nẵng\" ],\r\n  \"mst\" : [ \"12334\" ],\r\n  \"phone\" : [ \"0981974393\" ],\r\n  \"fax\" : [ \"dsf\" ],\r\n  \"emailAddress\" : [ \"ds\" ],\r\n  \"businessRegistrationCertificate\" : [ \"sđ\" ],\r\n  \"dateOfIssueRegistration\" : [ \"2020-06-10\" ],\r\n  \"placeOfIssueRegistration\" : [ \"dsfds\" ],\r\n  \"authorizedRepresentative\" : [ \"dsfds\" ],\r\n  \"representativePosition\" : [ \"dsfds\" ],\r\n  \"followingAuthorizationFormNo\" : [ \"sdf\" ],\r\n  \"signDate\" : [ \"2020-06-09\" ],\r\n  \"owned\" : [ \"dsfd\" ],\r\n  \"identifyCardNo\" : [ \"dsf\" ],\r\n  \"dateOfIssueIdentify\" : [ \"2020-06-11\" ],\r\n  \"placeOfIssueIdentify\" : [ \"dsfd\" ],\r\n  \"mobilePhone\" : [ \"dsfds\" ],\r\n  \"email\" : [ \"ngan123@gmail.com\" ]\r\n}', '{\r\n  \"msg\" : \"MST không hợp lệ. Từ 10 -> 15 số\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-06-09 11:31:54'),
-(197, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '192.168.1.76', 'Intranet IP', '{\r\n  \"groupName\" : [ \"dsfds\" ],\r\n  \"address\" : [ \"đà nẵng\" ],\r\n  \"mst\" : [ \"1233431231321\" ],\r\n  \"phone\" : [ \"0981974393\" ],\r\n  \"fax\" : [ \"dsf\" ],\r\n  \"emailAddress\" : [ \"ds\" ],\r\n  \"businessRegistrationCertificate\" : [ \"sđ\" ],\r\n  \"dateOfIssueRegistration\" : [ \"2020-06-10\" ],\r\n  \"placeOfIssueRegistration\" : [ \"dsfds\" ],\r\n  \"authorizedRepresentative\" : [ \"dsfds\" ],\r\n  \"representativePosition\" : [ \"dsfds\" ],\r\n  \"followingAuthorizationFormNo\" : [ \"sdf\" ],\r\n  \"signDate\" : [ \"2020-06-09\" ],\r\n  \"owned\" : [ \"dsfd\" ],\r\n  \"identifyCardNo\" : [ \"dsf\" ],\r\n  \"dateOfIssueIdentify\" : [ \"2020-06-11\" ],\r\n  \"placeOfIssueIdentify\" : [ \"dsfd\" ],\r\n  \"mobilePhone\" : [ \"dsfds\" ],\r\n  \"email\" : [ \"ngan123@gmail.com\" ]\r\n}', '{\r\n  \"msg\" : \"Chứng minh thư không hợp lệ. Từ 9->15 số\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-06-09 11:32:02'),
-(198, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '192.168.1.76', 'Intranet IP', '{\r\n  \"groupName\" : [ \"dsfds\" ],\r\n  \"address\" : [ \"đà nẵng\" ],\r\n  \"mst\" : [ \"1233431231321\" ],\r\n  \"phone\" : [ \"0981974393\" ],\r\n  \"fax\" : [ \"dsf\" ],\r\n  \"emailAddress\" : [ \"ds\" ],\r\n  \"businessRegistrationCertificate\" : [ \"sđ\" ],\r\n  \"dateOfIssueRegistration\" : [ \"2020-06-10\" ],\r\n  \"placeOfIssueRegistration\" : [ \"dsfds\" ],\r\n  \"authorizedRepresentative\" : [ \"dsfds\" ],\r\n  \"representativePosition\" : [ \"dsfds\" ],\r\n  \"followingAuthorizationFormNo\" : [ \"sdf\" ],\r\n  \"signDate\" : [ \"2020-06-09\" ],\r\n  \"owned\" : [ \"dsfd\" ],\r\n  \"identifyCardNo\" : [ \"2123154651\" ],\r\n  \"dateOfIssueIdentify\" : [ \"2020-06-11\" ],\r\n  \"placeOfIssueIdentify\" : [ \"dsfd\" ],\r\n  \"mobilePhone\" : [ \"0156415631\" ],\r\n  \"email\" : [ \"ngan123@gmail.com\" ]\r\n}', '{\r\n  \"msg\" : \"Fax phải là số\",\r\n  \"code\" : 500\r\n}', 0, NULL, '2020-06-09 11:32:14'),
-(199, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '192.168.1.76', 'Intranet IP', '{\r\n  \"groupName\" : [ \"dsfds\" ],\r\n  \"address\" : [ \"đà nẵng\" ],\r\n  \"mst\" : [ \"1233431231321\" ],\r\n  \"phone\" : [ \"0981974393\" ],\r\n  \"fax\" : [ \"201561021\" ],\r\n  \"emailAddress\" : [ \"ds\" ],\r\n  \"businessRegistrationCertificate\" : [ \"sđ\" ],\r\n  \"dateOfIssueRegistration\" : [ \"2020-06-10\" ],\r\n  \"placeOfIssueRegistration\" : [ \"dsfds\" ],\r\n  \"authorizedRepresentative\" : [ \"dsfds\" ],\r\n  \"representativePosition\" : [ \"dsfds\" ],\r\n  \"followingAuthorizationFormNo\" : [ \"sdf\" ],\r\n  \"signDate\" : [ \"2020-06-09\" ],\r\n  \"owned\" : [ \"dsfd\" ],\r\n  \"identifyCardNo\" : [ \"2123154651\" ],\r\n  \"dateOfIssueIdentify\" : [ \"2020-06-11\" ],\r\n  \"placeOfIssueIdentify\" : [ \"dsfd\" ],\r\n  \"mobilePhone\" : [ \"0156415631\" ],\r\n  \"email\" : [ \"ngan123@gmail.com\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-09 11:32:21'),
-(200, 'Logistic Group', 3, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.remove()', 'POST', 1, 'admin', 'R&D', '/logistic/group/remove', '192.168.1.76', 'Intranet IP', '{\r\n  \"ids\" : [ \"2\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-09 11:32:25'),
-(201, 'Logistic account', 1, 'vn.com.irtech.eport.logistic.controller.LogisticAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/account/add', '192.168.1.76', 'Intranet IP', '{\r\n  \"groupId\" : [ \"1\" ],\r\n  \"email\" : [ \"nganle@gmail.com\" ],\r\n  \"userName\" : [ \"nganle\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"lê thị thúy ngân\" ],\r\n  \"status\" : [ \"0\" ],\r\n  \"isSendEmail\" : [ \"on\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-09 11:50:35');
+(116, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/carrier/account/resetPwd/1', '127.0.0.1', 'Intranet IP', '{ }', '\"carrier/account/resetPwd\"', 0, NULL, '2020-04-14 08:19:17'),
+(117, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/carrier/account/resetPwd/1', '127.0.0.1', 'Intranet IP', '{ }', '\"carrier/account/resetPwd\"', 0, NULL, '2020-04-14 08:29:43'),
+(118, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/carrier/account/resetPwd/1', '127.0.0.1', 'Intranet IP', '{ }', '\"carrier/account/resetPwd\"', 0, NULL, '2020-04-14 11:49:10'),
+(119, 'Carrier Account', 1, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"groupId\" : [ \"1\" ],\r\n  \"carrierCode\" : [ \"1\" ],\r\n  \"email\" : [ \"tronghieu8531@gmail.com\" ],\r\n  \"password\" : [ \"123123\" ],\r\n  \"fullName\" : [ \"Nguyễn Trọng Hiếu\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-14 11:49:31'),
+(120, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-27 09:36:45'),
+(121, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-27 09:37:33'),
+(122, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-27 09:38:27'),
+(123, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-27 09:46:20'),
+(124, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-27 09:46:26'),
+(125, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-04-27 09:46:32'),
+(126, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-04 05:44:22'),
+(127, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-04 05:44:29'),
+(128, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-04 05:57:00'),
+(129, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-04 05:57:19'),
+(130, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-04 05:58:01'),
+(131, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"1\" ],\r\n  \"groupCode\" : [ \"1\" ],\r\n  \"groupName\" : [ \"WWHA\" ],\r\n  \"operateCode\" : [ \"1\" ],\r\n  \"mainEmail\" : [ \"hello@gmail.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-07 13:10:22'),
+(132, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"groupCode\" : [ \"sfa\" ],\r\n  \"groupName\" : [ \"asdfasdf\" ],\r\n  \"operateCode\" : [ \"wdfs\" ],\r\n  \"mainEmail\" : [ \"asdfsd@asdfa.com\" ],\r\n  \"doFlag\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-07 13:10:46'),
+(133, 'Carrier Group', 1, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"groupCode\" : [ \"sdf\" ],\r\n  \"groupName\" : [ \"1asd\" ],\r\n  \"operateCode\" : [ \"asd\" ],\r\n  \"mainEmail\" : [ \"asdfa@asdf.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-07 13:11:30'),
+(134, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"3\" ],\r\n  \"groupCode\" : [ \"sdf\" ],\r\n  \"groupName\" : [ \"1asd\" ],\r\n  \"operateCode\" : [ \"asd\" ],\r\n  \"mainEmail\" : [ \"asdfa@asdf.com\" ],\r\n  \"doFlag\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-07 13:11:55'),
+(135, 'Carrier Group', 2, 'vn.com.irtech.eport.carrier.controller.CarrierGroupController.editSave()', 'POST', 1, 'admin', 'R&D', '/carrier/group/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"2\" ],\r\n  \"groupCode\" : [ \"sfa\" ],\r\n  \"groupName\" : [ \"asdfasdf\" ],\r\n  \"operateCode\" : [ \"wdfs\" ],\r\n  \"mainEmail\" : [ \"asdfsd@asdfa.com\" ],\r\n  \"doFlag\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-07 13:12:02'),
+(136, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"groupName\" : [ \"Công ty abc\" ],\r\n  \"mainEmail\" : [ \"abc@abc.com\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-19 08:49:52'),
+(137, 'Logistic account', 1, 'vn.com.irtech.eport.logistic.controller.LogisticAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/account/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"groupId\" : [ \"2\" ],\r\n  \"email\" : [ \"tronghieu8531@gmail.com\" ],\r\n  \"password\" : [ \"hieu123\" ],\r\n  \"fullName\" : [ \"Nguyễn Trọng Hiếu\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-19 08:50:47'),
+(138, 'Logistic Group', 1, 'vn.com.irtech.eport.logistic.controller.LogisticGroupController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/group/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"groupName\" : [ \"Vinconship\" ],\r\n  \"address\" : [ \"35 Cao Thang\" ],\r\n  \"mst\" : [ \"123123123123\" ],\r\n  \"phone\" : [ \"0541123412341\" ],\r\n  \"fax\" : [ \"1234234\" ],\r\n  \"emailAddress\" : [ \"email@email.com\" ],\r\n  \"businessRegistrationCertificate\" : [ \"asdfsadf\" ],\r\n  \"dateOfIssueRegistration\" : [ \"2020-05-28\" ],\r\n  \"placeOfIssueRegistration\" : [ \"asdfsadf\" ],\r\n  \"authorizedRepresentative\" : [ \"asdfsdaf\" ],\r\n  \"representativePosition\" : [ \"asdfsadf\" ],\r\n  \"followingAuthorizationFormNo\" : [ \"asdfas\" ],\r\n  \"signDate\" : [ \"2020-05-29\" ],\r\n  \"owned\" : [ \"asdfasdf\" ],\r\n  \"identifyCardNo\" : [ \"12341231231\" ],\r\n  \"dateOfIssueIdentify\" : [ \"2020-05-14\" ],\r\n  \"placeOfIssueIdentify\" : [ \"asdfasdf\" ],\r\n  \"mobilePhone\" : [ \"0935802290\" ],\r\n  \"email\" : [ \"tronghieu8531@gmail.com\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-28 13:49:54'),
+(139, 'Logistic account', 1, 'vn.com.irtech.eport.logistic.controller.LogisticAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/account/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"groupId\" : [ \"1\" ],\r\n  \"email\" : [ \"asdfasd@sadfs.com\" ],\r\n  \"userName\" : [ \"mst123123\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"nguyen trong hieu\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-05-28 13:50:26'),
+(140, '菜单管理', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"114\" ],\r\n  \"parentId\" : [ \"3\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Code Gen\" ],\r\n  \"url\" : [ \"/tool/gen\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"tool:gen:view\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"#\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-19 18:28:26'),
+(141, '代码生成', 6, 'vn.com.irtech.eport.generator.controller.GenController.importTableSave()', 'POST', 1, 'admin', 'R&D', '/tool/gen/importTable', '127.0.0.1', 'Intranet IP', '{\r\n  \"tables\" : [ \"process_order\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-23 10:57:22'),
+(142, '代码生成', 8, 'vn.com.irtech.eport.generator.controller.GenController.batchGenCode()', 'GET', 1, 'admin', 'R&D', '/tool/gen/batchGenCode', '127.0.0.1', 'Intranet IP', '{\r\n  \"tables\" : [ \"process_order\" ]\r\n}', 'null', 0, NULL, '2020-06-23 10:58:49'),
+(143, '菜单管理', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"System Monitoring\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-video-camera\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-23 16:33:48'),
+(144, 'Logistic account', 1, 'vn.com.irtech.eport.logistic.controller.LogisticAccountController.addSave()', 'POST', 1, 'admin', 'R&D', '/logistic/account/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"groupId\" : [ \"1\" ],\r\n  \"email\" : [ \"tronghieu8531@gmail.com\" ],\r\n  \"userName\" : [ \"hieu123\" ],\r\n  \"password\" : [ \"123456\" ],\r\n  \"fullName\" : [ \"sdfas\" ],\r\n  \"status\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-26 18:45:54'),
+(145, '代码生成', 6, 'vn.com.irtech.eport.generator.controller.GenController.importTableSave()', 'POST', 1, 'admin', 'R&D', '/tool/gen/importTable', '127.0.0.1', 'Intranet IP', '{\r\n  \"tables\" : [ \"process_history\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-27 10:23:53'),
+(146, '代码生成', 8, 'vn.com.irtech.eport.generator.controller.GenController.genCode()', 'GET', 1, 'admin', 'R&D', '/tool/gen/genCode/process_history', '127.0.0.1', 'Intranet IP', '{ }', 'null', 0, NULL, '2020-06-27 10:24:15'),
+(147, '代码生成', 2, 'vn.com.irtech.eport.generator.controller.GenController.editSave()', 'POST', 1, 'admin', 'R&D', '/tool/gen/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"tableId\" : [ \"4\" ],\r\n  \"tableName\" : [ \"process_history\" ],\r\n  \"tableComment\" : [ \"Process order history\" ],\r\n  \"className\" : [ \"ProcessHistory\" ],\r\n  \"functionAuthor\" : [ \"ruoyi\" ],\r\n  \"remark\" : [ \"\" ],\r\n  \"columns[0].columnId\" : [ \"38\" ],\r\n  \"columns[0].sort\" : [ \"1\" ],\r\n  \"columns[0].columnComment\" : [ \"ID\" ],\r\n  \"columns[0].javaType\" : [ \"Long\" ],\r\n  \"columns[0].javaField\" : [ \"id\" ],\r\n  \"columns[0].isInsert\" : [ \"1\" ],\r\n  \"columns[0].queryType\" : [ \"EQ\" ],\r\n  \"columns[0].htmlType\" : [ \"input\" ],\r\n  \"columns[0].dictType\" : [ \"\" ],\r\n  \"columns[1].columnId\" : [ \"39\" ],\r\n  \"columns[1].sort\" : [ \"2\" ],\r\n  \"columns[1].columnComment\" : [ \"Process Order ID\" ],\r\n  \"columns[1].javaType\" : [ \"Long\" ],\r\n  \"columns[1].javaField\" : [ \"processOrderId\" ],\r\n  \"columns[1].isInsert\" : [ \"1\" ],\r\n  \"columns[1].isEdit\" : [ \"1\" ],\r\n  \"columns[1].isList\" : [ \"1\" ],\r\n  \"columns[1].isQuery\" : [ \"1\" ],\r\n  \"columns[1].queryType\" : [ \"EQ\" ],\r\n  \"columns[1].isRequired\" : [ \"1\" ],\r\n  \"columns[1].htmlType\" : [ \"input\" ],\r\n  \"columns[1].dictType\" : [ \"\" ],\r\n  \"columns[2].columnId\" : [ \"40\" ],\r\n  \"columns[2].sort\" : [ \"3\" ],\r\n  \"columns[2].columnComment\" : [ \"User ID (OM)\" ],\r\n  \"columns[2].javaType\" : [ \"Long\" ],\r\n  \"columns[2].javaField\" : [ \"sysUserId\" ],\r\n  \"columns[2].isInsert\" : [ \"1\" ],\r\n  \"columns[2].isEdit\" : [ \"1\" ],\r\n  \"columns[2].isList\" : [ \"1\" ],\r\n  \"columns[2].isQuery\" : [ \"1\" ],\r\n  \"columns[2].queryType\" : [ \"EQ\" ],\r\n  \"columns[2].htmlType\" : [ \"input\" ],\r\n  \"columns[2].dictType\" : [ \"\" ],\r\n  \"columns[3].columnId\" : [ \"41\" ],\r\n  \"columns[3].sort\" : [ \"4\" ],\r\n  \"columns[3].columnComment\" : [ \"Robot UUID\" ],\r\n  \"columns[3].javaType\" : [ \"String\" ],\r\n  \"columns[3].javaField\" : [ \"robotUuid\" ],\r\n  \"columns[3].isInsert\" : [ \"1\" ],\r\n  \"columns[3].isEdit\" : [ \"1\" ],\r\n  \"columns[3].isList\" : [ \"1\" ],\r\n  \"columns[3].isQuery\" : [ \"1\" ],\r\n  \"columns[3].queryType\" : [ \"EQ\" ],\r\n  \"columns[3].htmlType\" : [ \"input\" ],\r\n  \"columns[3].dictType\" : [ \"\" ],\r\n  \"columns[4].columnId\" : [ \"42\" ', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-27 10:28:05'),
+(148, '代码生成', 8, 'vn.com.irtech.eport.generator.controller.GenController.genCode()', 'GET', 1, 'admin', 'R&D', '/tool/gen/genCode/process_history', '127.0.0.1', 'Intranet IP', '{ }', 'null', 0, NULL, '2020-06-27 10:28:56'),
+(149, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"106\" ],\r\n  \"parentId\" : [ \"1\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Config\" ],\r\n  \"url\" : [ \"/system/config\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"system:config:view\" ],\r\n  \"orderNum\" : [ \"7\" ],\r\n  \"icon\" : [ \"#\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 11:18:36'),
+(150, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"105\" ],\r\n  \"parentId\" : [ \"1\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Dictionary\" ],\r\n  \"url\" : [ \"/system/dict\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"system:dict:view\" ],\r\n  \"orderNum\" : [ \"6\" ],\r\n  \"icon\" : [ \"#\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 11:18:47'),
+(151, 'Parameter management', 1, 'vn.com.irtech.eport.web.controller.system.SysConfigController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/config/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"configName\" : [ \"Da Nang Port Name\" ],\r\n  \"configKey\" : [ \"danangPortName\" ],\r\n  \"configValue\" : [ \"Cảng Tiên Sa\" ],\r\n  \"configType\" : [ \"Y\" ],\r\n  \"remark\" : [ \"Tên cảng Đà Nãng\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 11:22:55'),
+(152, 'Parameter management', 2, 'vn.com.irtech.eport.web.controller.system.SysConfigController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/config/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"configId\" : [ \"100\" ],\r\n  \"configName\" : [ \"Da Nang Port Name\" ],\r\n  \"configKey\" : [ \"danang.port.name\" ],\r\n  \"configValue\" : [ \"Cảng Tiên Sa\" ],\r\n  \"configType\" : [ \"Y\" ],\r\n  \"remark\" : [ \"Tên cảng Đà Nãng\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 11:30:19'),
+(153, 'Parameter management', 2, 'vn.com.irtech.eport.web.controller.system.SysConfigController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/config/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"configId\" : [ \"100\" ],\r\n  \"configName\" : [ \"Da Nang Port Name\" ],\r\n  \"configKey\" : [ \"danang.port.name\" ],\r\n  \"configValue\" : [ \"Cảng Tiên Sasaa\" ],\r\n  \"configType\" : [ \"Y\" ],\r\n  \"remark\" : [ \"Tên cảng Đà Nãng\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 11:43:24'),
+(154, 'Parameter management', 2, 'vn.com.irtech.eport.web.controller.system.SysConfigController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/config/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"configId\" : [ \"100\" ],\r\n  \"configName\" : [ \"Da Nang Port Name\" ],\r\n  \"configKey\" : [ \"danang.port.name\" ],\r\n  \"configValue\" : [ \"Cảng Tiên Sa\" ],\r\n  \"configType\" : [ \"Y\" ],\r\n  \"remark\" : [ \"Tên cảng Đà Nãng\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 11:48:44'),
+(155, 'Parameter management', 2, 'vn.com.irtech.eport.web.controller.system.SysConfigController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/config/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"configId\" : [ \"100\" ],\r\n  \"configName\" : [ \"Da Nang Port Name\" ],\r\n  \"configKey\" : [ \"danang.port.name\" ],\r\n  \"configValue\" : [ \"Cảng Tiên Saa\" ],\r\n  \"configType\" : [ \"Y\" ],\r\n  \"remark\" : [ \"Tên cảng Đà Nãng\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 11:50:48'),
+(156, 'Parameter management', 2, 'vn.com.irtech.eport.web.controller.system.SysConfigController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/config/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"configId\" : [ \"100\" ],\r\n  \"configName\" : [ \"Da Nang Port Name\" ],\r\n  \"configKey\" : [ \"danang.port.name\" ],\r\n  \"configValue\" : [ \"Cảng Tiên Saaa\" ],\r\n  \"configType\" : [ \"Y\" ],\r\n  \"remark\" : [ \"Tên cảng Đà Nãng\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 11:51:09'),
+(157, '代码生成', 6, 'vn.com.irtech.eport.generator.controller.GenController.importTableSave()', 'POST', 1, 'admin', 'R&D', '/tool/gen/importTable', '127.0.0.1', 'Intranet IP', '{\r\n  \"tables\" : [ \"pickup_hisory,pickup_assign\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 13:41:24'),
+(158, '代码生成', 2, 'vn.com.irtech.eport.generator.controller.GenController.editSave()', 'POST', 1, 'admin', 'R&D', '/tool/gen/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"tableId\" : [ \"5\" ],\r\n  \"tableName\" : [ \"pickup_assign\" ],\r\n  \"tableComment\" : [ \"Pickup Assign\" ],\r\n  \"className\" : [ \"PickupAssign\" ],\r\n  \"functionAuthor\" : [ \"ruoyi\" ],\r\n  \"remark\" : [ \"\" ],\r\n  \"columns[0].columnId\" : [ \"48\" ],\r\n  \"columns[0].sort\" : [ \"1\" ],\r\n  \"columns[0].columnComment\" : [ \"ID\" ],\r\n  \"columns[0].javaType\" : [ \"Long\" ],\r\n  \"columns[0].javaField\" : [ \"id\" ],\r\n  \"columns[0].isInsert\" : [ \"1\" ],\r\n  \"columns[0].queryType\" : [ \"EQ\" ],\r\n  \"columns[0].htmlType\" : [ \"input\" ],\r\n  \"columns[0].dictType\" : [ \"\" ],\r\n  \"columns[1].columnId\" : [ \"49\" ],\r\n  \"columns[1].sort\" : [ \"2\" ],\r\n  \"columns[1].columnComment\" : [ \"Logistic Group\" ],\r\n  \"columns[1].javaType\" : [ \"Long\" ],\r\n  \"columns[1].javaField\" : [ \"logisticGroupId\" ],\r\n  \"columns[1].isInsert\" : [ \"1\" ],\r\n  \"columns[1].isEdit\" : [ \"1\" ],\r\n  \"columns[1].isList\" : [ \"1\" ],\r\n  \"columns[1].isQuery\" : [ \"1\" ],\r\n  \"columns[1].queryType\" : [ \"EQ\" ],\r\n  \"columns[1].isRequired\" : [ \"1\" ],\r\n  \"columns[1].htmlType\" : [ \"input\" ],\r\n  \"columns[1].dictType\" : [ \"\" ],\r\n  \"columns[2].columnId\" : [ \"50\" ],\r\n  \"columns[2].sort\" : [ \"3\" ],\r\n  \"columns[2].columnComment\" : [ \"Ma Lo\" ],\r\n  \"columns[2].javaType\" : [ \"Long\" ],\r\n  \"columns[2].javaField\" : [ \"shipmentId\" ],\r\n  \"columns[2].isInsert\" : [ \"1\" ],\r\n  \"columns[2].isEdit\" : [ \"1\" ],\r\n  \"columns[2].isList\" : [ \"1\" ],\r\n  \"columns[2].isQuery\" : [ \"1\" ],\r\n  \"columns[2].queryType\" : [ \"EQ\" ],\r\n  \"columns[2].isRequired\" : [ \"1\" ],\r\n  \"columns[2].htmlType\" : [ \"input\" ],\r\n  \"columns[2].dictType\" : [ \"\" ],\r\n  \"columns[3].columnId\" : [ \"51\" ],\r\n  \"columns[3].sort\" : [ \"4\" ],\r\n  \"columns[3].columnComment\" : [ \"ID tài xế\" ],\r\n  \"columns[3].javaType\" : [ \"Long\" ],\r\n  \"columns[3].javaField\" : [ \"driverId\" ],\r\n  \"columns[3].isInsert\" : [ \"1\" ],\r\n  \"columns[3].isEdit\" : [ \"1\" ],\r\n  \"columns[3].isList\" : [ \"1\" ],\r\n  \"columns[3].isQuery\" : [ \"1\" ],\r\n  \"columns[3].queryType\" : [ \"EQ\" ],\r\n  \"columns[3].htmlType\" : [ \"input\" ],\r\n  \"columns[3].dictType\" : [ \"\" ],\r\n  \"columns[4].colu', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 13:42:16'),
+(159, '代码生成', 2, 'vn.com.irtech.eport.generator.controller.GenController.editSave()', 'POST', 1, 'admin', 'R&D', '/tool/gen/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"tableId\" : [ \"6\" ],\r\n  \"tableName\" : [ \"pickup_hisory\" ],\r\n  \"tableComment\" : [ \"Pickup history\" ],\r\n  \"className\" : [ \"PickupHisory\" ],\r\n  \"functionAuthor\" : [ \"ruoyi\" ],\r\n  \"remark\" : [ \"\" ],\r\n  \"columns[0].columnId\" : [ \"62\" ],\r\n  \"columns[0].sort\" : [ \"1\" ],\r\n  \"columns[0].columnComment\" : [ \"ID\" ],\r\n  \"columns[0].javaType\" : [ \"Long\" ],\r\n  \"columns[0].javaField\" : [ \"id\" ],\r\n  \"columns[0].isInsert\" : [ \"1\" ],\r\n  \"columns[0].queryType\" : [ \"EQ\" ],\r\n  \"columns[0].htmlType\" : [ \"input\" ],\r\n  \"columns[0].dictType\" : [ \"\" ],\r\n  \"columns[1].columnId\" : [ \"63\" ],\r\n  \"columns[1].sort\" : [ \"2\" ],\r\n  \"columns[1].columnComment\" : [ \"Logistic Group\" ],\r\n  \"columns[1].javaType\" : [ \"Long\" ],\r\n  \"columns[1].javaField\" : [ \"logisticGroupId\" ],\r\n  \"columns[1].isInsert\" : [ \"1\" ],\r\n  \"columns[1].isEdit\" : [ \"1\" ],\r\n  \"columns[1].isList\" : [ \"1\" ],\r\n  \"columns[1].isQuery\" : [ \"1\" ],\r\n  \"columns[1].queryType\" : [ \"EQ\" ],\r\n  \"columns[1].isRequired\" : [ \"1\" ],\r\n  \"columns[1].htmlType\" : [ \"input\" ],\r\n  \"columns[1].dictType\" : [ \"\" ],\r\n  \"columns[2].columnId\" : [ \"64\" ],\r\n  \"columns[2].sort\" : [ \"3\" ],\r\n  \"columns[2].columnComment\" : [ \"Mã Lô\" ],\r\n  \"columns[2].javaType\" : [ \"Long\" ],\r\n  \"columns[2].javaField\" : [ \"shipmentId\" ],\r\n  \"columns[2].isInsert\" : [ \"1\" ],\r\n  \"columns[2].isEdit\" : [ \"1\" ],\r\n  \"columns[2].isList\" : [ \"1\" ],\r\n  \"columns[2].isQuery\" : [ \"1\" ],\r\n  \"columns[2].queryType\" : [ \"EQ\" ],\r\n  \"columns[2].isRequired\" : [ \"1\" ],\r\n  \"columns[2].htmlType\" : [ \"input\" ],\r\n  \"columns[2].dictType\" : [ \"\" ],\r\n  \"columns[3].columnId\" : [ \"65\" ],\r\n  \"columns[3].sort\" : [ \"4\" ],\r\n  \"columns[3].columnComment\" : [ \"ID Tài xế\" ],\r\n  \"columns[3].javaType\" : [ \"Long\" ],\r\n  \"columns[3].javaField\" : [ \"driverId\" ],\r\n  \"columns[3].isInsert\" : [ \"1\" ],\r\n  \"columns[3].isEdit\" : [ \"1\" ],\r\n  \"columns[3].isList\" : [ \"1\" ],\r\n  \"columns[3].isQuery\" : [ \"1\" ],\r\n  \"columns[3].queryType\" : [ \"EQ\" ],\r\n  \"columns[3].isRequired\" : [ \"1\" ],\r\n  \"columns[3].htmlType\" : [ \"input\" ],\r\n  \"columns[3].', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 13:42:53'),
+(160, 'Parameter management', 2, 'vn.com.irtech.eport.web.controller.system.SysConfigController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/config/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"configId\" : [ \"100\" ],\r\n  \"configName\" : [ \"Da Nang Port Name\" ],\r\n  \"configKey\" : [ \"danang.port.name\" ],\r\n  \"configValue\" : [ \"Cảng Tiên Sa\" ],\r\n  \"configType\" : [ \"Y\" ],\r\n  \"remark\" : [ \"Tên cảng Đà Nãng\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 19:53:02'),
+(161, 'Parameter management', 9, 'vn.com.irtech.eport.web.controller.system.SysConfigController.clearCache()', 'GET', 1, 'admin', 'R&D', '/system/config/clearCache', '127.0.0.1', 'Intranet IP', '{ }', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 19:53:15'),
+(162, 'Parameter management', 9, 'vn.com.irtech.eport.web.controller.system.SysConfigController.clearCache()', 'GET', 1, 'admin', 'R&D', '/system/config/clearCache', '127.0.0.1', 'Intranet IP', '{ }', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 19:53:27'),
+(163, 'Parameter management', 9, 'vn.com.irtech.eport.web.controller.system.SysConfigController.clearCache()', 'GET', 1, 'admin', 'R&D', '/system/config/clearCache', '127.0.0.1', 'Intranet IP', '{ }', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-06-30 19:53:30'),
+(164, '代码生成', 6, 'vn.com.irtech.eport.generator.controller.GenController.importTableSave()', 'POST', 1, 'admin', 'R&D', '/tool/gen/importTable', '127.0.0.1', 'Intranet IP', '{\r\n  \"tables\" : [ \"notifications,notification_receiver,user_devices\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-06 14:08:50'),
+(165, '代码生成', 8, 'vn.com.irtech.eport.generator.controller.GenController.batchGenCode()', 'GET', 1, 'admin', 'R&D', '/tool/gen/batchGenCode', '127.0.0.1', 'Intranet IP', '{\r\n  \"tables\" : [ \"notifications,notification_receiver,user_devices\" ]\r\n}', 'null', 0, NULL, '2020-07-06 14:10:23'),
+(166, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwd()', 'GET', 1, 'admin', 'R&D', '/carrier/account/resetPwd/3', '127.0.0.1', 'Intranet IP', '{ }', '\"carrier/account/resetPwd\"', 0, NULL, '2020-07-07 15:20:28'),
+(167, 'Reset password', 2, 'vn.com.irtech.eport.carrier.controller.CarrierAccountController.resetPwdSave()', 'POST', 1, 'admin', 'R&D', '/carrier/account/resetPwd', '127.0.0.1', 'Intranet IP', '{\r\n  \"id\" : [ \"3\" ],\r\n  \"email\" : [ \"tronghieu8531@gmail.com\" ],\r\n  \"password\" : [ \"123456\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-07 15:20:33'),
+(168, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Bộ phận cấp container\" ],\r\n  \"url\" : [ \"/container/supplier\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-cubes\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-07 16:21:20'),
+(169, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2031\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Bộ phận cấp container\" ],\r\n  \"url\" : [ \"/container/supplier\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"6\" ],\r\n  \"icon\" : [ \"fa fa-cubes\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-07 16:21:43'),
+(170, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý Tài Khoản\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:07:40'),
+(171, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2000\" ],\r\n  \"parentId\" : [ \"2034\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Nhóm Hãng Tàu\" ],\r\n  \"url\" : [ \"/carrier/group\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"carrier:group:view\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-anchor\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:08:20'),
+(172, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2006\" ],\r\n  \"parentId\" : [ \"2034\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Tài Khoản Hãng Tàu\" ],\r\n  \"url\" : [ \"/carrier/account\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"carrier:account:view\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-user-circle\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:09:28'),
+(173, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2012\" ],\r\n  \"parentId\" : [ \"3\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Vận Đơn\" ],\r\n  \"url\" : [ \"/carrier/admin/do/getViewDo\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"carrier:admin:do:getViewDo:view\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-file-excel-o\" ],\r\n  \"visible\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:12:34'),
+(174, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"3\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Hỗ Trợ Kỹ Thuật\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"3\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:16:02'),
+(175, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2019\" ],\r\n  \"parentId\" : [ \"2034\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Nhóm Logistic\" ],\r\n  \"url\" : [ \"/logistic/group\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"logistic:group:view\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-truck\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:16:33'),
+(176, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2020\" ],\r\n  \"parentId\" : [ \"2034\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Tài khoản Logistic\" ],\r\n  \"url\" : [ \"/logistic/account\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"logistic:account:view\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-address-book-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:17:20'),
+(177, 'Menu Management', 3, 'vn.com.irtech.eport.web.controller.system.SysMenuController.remove()', 'GET', 1, 'admin', 'R&D', '/system/menu/remove/2018', '127.0.0.1', 'Intranet IP', '{ }', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:17:36'),
+(178, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2021\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Bộ Phận OM\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"4\" ],\r\n  \"icon\" : [ \"fa fa-address-book-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:24:06'),
+(179, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"2021\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý eDO\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:25:19'),
+(180, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2032\" ],\r\n  \"parentId\" : [ \"2035\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Đọc file EDI\" ],\r\n  \"url\" : [ \"/edo/manage/viewFileEdi\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-check-square\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:26:43'),
+(181, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2033\" ],\r\n  \"parentId\" : [ \"2035\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Danh Sách eDO\" ],\r\n  \"url\" : [ \"/edo/manage/index\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"3\" ],\r\n  \"icon\" : [ \"fa fa-handshake-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:27:42'),
+(182, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"2021\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Kiểm Soát Luồng Công VIệc\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:29:27'),
+(183, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"109\" ],\r\n  \"parentId\" : [ \"2\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Online User\" ],\r\n  \"url\" : [ \"/monitor/online\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"monitor:online:view\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"#\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:30:52'),
+(184, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2026\" ],\r\n  \"parentId\" : [ \"2036\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Quản lý robot\" ],\r\n  \"url\" : [ \"system/robot/index\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-cogs\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:31:18'),
+(185, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"System Monitoring\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-video-camera\" ],\r\n  \"visible\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:31:34'),
+(186, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"100\" ],\r\n  \"parentId\" : [ \"1\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Quản Lý Người Dùng\" ],\r\n  \"url\" : [ \"/system/user\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"system:user:view\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-address-book-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:32:35'),
+(187, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"101\" ],\r\n  \"parentId\" : [ \"1\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Quản Lý Vai Trò\" ],\r\n  \"url\" : [ \"/system/role\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"system:role:view\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-users\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:32:51'),
+(188, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"102\" ],\r\n  \"parentId\" : [ \"1\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Danh Mục\" ],\r\n  \"url\" : [ \"/system/menu\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"system:menu:view\" ],\r\n  \"orderNum\" : [ \"3\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:33:05'),
+(189, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"2021\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Thông Báo\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"3\" ],\r\n  \"icon\" : [ \"fa fa-bell\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:35:32'),
+(190, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Quản Lý Thông Báo\" ],\r\n  \"url\" : [ \"/notifications\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-bell\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:36:00'),
+(191, 'Menu Management', 3, 'vn.com.irtech.eport.web.controller.system.SysMenuController.remove()', 'GET', 1, 'admin', 'R&D', '/system/menu/remove/2038', '127.0.0.1', 'Intranet IP', '{ }', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:36:26'),
+(192, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"2037\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Quản Lý Thông Báo\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:37:00'),
+(193, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2026\" ],\r\n  \"parentId\" : [ \"2036\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Giám Sát Robot\" ],\r\n  \"url\" : [ \"system/robot/index\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-cogs\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:37:46'),
+(194, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2024\" ],\r\n  \"parentId\" : [ \"2036\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Hỗ trợ Robot làm lệnh\" ],\r\n  \"url\" : [ \"/om/executeCatos/index\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-navicon\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:38:51'),
+(195, 'Menu Management', 3, 'vn.com.irtech.eport.web.controller.system.SysMenuController.remove()', 'GET', 1, 'admin', 'R&D', '/system/menu/remove/2023', '127.0.0.1', 'Intranet IP', '{ }', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:38:58'),
+(196, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2039\" ],\r\n  \"parentId\" : [ \"2037\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Quản Lý Thông Báo\" ],\r\n  \"url\" : [ \"/notifications\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"#\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:39:53'),
+(197, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Gửi Thông Báo\" ],\r\n  \"url\" : [ \"/notification/add\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-bell-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:40:55');
+INSERT INTO `sys_oper_log` (`oper_id`, `title`, `business_type`, `method`, `request_method`, `operator_type`, `oper_name`, `dept_name`, `oper_url`, `oper_ip`, `oper_location`, `oper_param`, `json_result`, `status`, `error_msg`, `oper_time`) VALUES
+(198, 'Menu Management', 3, 'vn.com.irtech.eport.web.controller.system.SysMenuController.remove()', 'GET', 1, 'admin', 'R&D', '/system/menu/remove/2040', '127.0.0.1', 'Intranet IP', '{ }', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:41:07'),
+(199, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"2037\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Gửi Thông Báo\" ],\r\n  \"url\" : [ \"/notification/add\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-commenting-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:42:02'),
+(200, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2041\" ],\r\n  \"parentId\" : [ \"2037\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Gửi Thông Báo\" ],\r\n  \"url\" : [ \"/notifications/add\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-commenting-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:42:27'),
+(201, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Lịch Sử\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"4\" ],\r\n  \"icon\" : [ \"fa fa-book\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:43:07'),
+(202, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2028\" ],\r\n  \"parentId\" : [ \"2042\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Hoạt động của xe và nhật ký giao nhận\" ],\r\n  \"url\" : [ \"/history/truck/\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-bus\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:43:36'),
+(203, 'Menu Management', 1, 'vn.com.irtech.eport.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/add', '127.0.0.1', 'Intranet IP', '{\r\n  \"parentId\" : [ \"2021\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Lịch Sử\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"4\" ],\r\n  \"icon\" : [ \"fa fa-book\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:44:28'),
+(204, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2028\" ],\r\n  \"parentId\" : [ \"2043\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Hoạt động của xe và nhật ký giao nhận\" ],\r\n  \"url\" : [ \"/history/truck/\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"fa fa-bus\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:44:54'),
+(205, 'Menu Management', 3, 'vn.com.irtech.eport.web.controller.system.SysMenuController.remove()', 'GET', 1, 'admin', 'R&D', '/system/menu/remove/2042', '127.0.0.1', 'Intranet IP', '{ }', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:45:07'),
+(206, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2030\" ],\r\n  \"parentId\" : [ \"2043\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Lịch sử robot\" ],\r\n  \"url\" : [ \"/history/robot/\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-cogs\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:45:31'),
+(207, 'Menu Management', 3, 'vn.com.irtech.eport.web.controller.system.SysMenuController.remove()', 'GET', 1, 'admin', 'R&D', '/system/menu/remove/2027', '127.0.0.1', 'Intranet IP', '{ }', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:45:37'),
+(208, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2034\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý Tài Khoản\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"3\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:45:49'),
+(209, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2034\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý Tài Khoản\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"4\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:45:55'),
+(210, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2034\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý Tài Khoản\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"5\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:46:00'),
+(211, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2034\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý Tài Khoản\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"6\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:46:04'),
+(212, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2034\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý Tài Khoản\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"7\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:46:09'),
+(213, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2034\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý Tài Khoản\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:46:38'),
+(214, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2034\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý Tài Khoản\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"3\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:46:49'),
+(215, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"3\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Hỗ Trợ Kỹ Thuật\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"4\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:46:55'),
+(216, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"3\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Hỗ Trợ Kỹ Thuật\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:47:06'),
+(217, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"System Monitoring\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"3\" ],\r\n  \"icon\" : [ \"fa fa-video-camera\" ],\r\n  \"visible\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:47:11'),
+(218, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2034\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Quản Lý Tài Khoản\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"4\" ],\r\n  \"icon\" : [ \"fa fa-bars\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:47:15'),
+(219, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2021\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Bộ Phận OM\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"5\" ],\r\n  \"icon\" : [ \"fa fa-address-book-o\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:47:20'),
+(220, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2022\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"Kế Hoạch Bãi Cảng\" ],\r\n  \"url\" : [ \"#\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"6\" ],\r\n  \"icon\" : [ \"fa fa-anchor\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:47:27'),
+(221, 'Menu Management', 2, 'vn.com.irtech.eport.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', 'R&D', '/system/menu/edit', '127.0.0.1', 'Intranet IP', '{\r\n  \"menuId\" : [ \"2031\" ],\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"Bộ phận cấp container\" ],\r\n  \"url\" : [ \"/container/supplier\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"7\" ],\r\n  \"icon\" : [ \"fa fa-cubes\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"Thành công\",\r\n  \"code\" : 0\r\n}', 0, NULL, '2020-07-09 11:47:32');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_post`
+-- Table structure for table `sys_otp`
 --
 
-DROP TABLE IF EXISTS `sys_post`;
-CREATE TABLE IF NOT EXISTS `sys_post` (
-  `post_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Job ID',
+CREATE TABLE `sys_otp` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `opt_code` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'OTP CODE',
+  `transaction_id` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'transaction id',
+  `otp_type` char(1) COLLATE utf8_bin NOT NULL COMMENT 'Loai OTP (1 - lamlenh, 2 quen mat khau)',
+  `phone_number` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'Số điện thoại nhận',
+  `msg_status` char(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Status send mess',
+  `verify_status` char(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'Verify send mess',
+  `expired_time` datetime NOT NULL COMMENT 'Expired Time',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='otp Code';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sys_post`
+--
+
+CREATE TABLE `sys_post` (
+  `post_id` bigint(20) NOT NULL COMMENT 'Job ID',
   `post_code` varchar(64) COLLATE utf8_bin NOT NULL COMMENT 'Post code',
   `post_name` varchar(50) COLLATE utf8_bin NOT NULL COMMENT 'position Name',
   `post_sort` int(4) NOT NULL COMMENT 'display order',
@@ -1719,12 +2247,11 @@ CREATE TABLE IF NOT EXISTS `sys_post` (
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark',
-  PRIMARY KEY (`post_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Job Information Sheet';
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Job Information Sheet';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_post`
+-- Dumping data for table `sys_post`
 --
 
 INSERT INTO `sys_post` (`post_id`, `post_code`, `post_name`, `post_sort`, `status`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
@@ -1736,12 +2263,41 @@ INSERT INTO `sys_post` (`post_id`, `post_code`, `post_name`, `post_sort`, `statu
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_role`
+-- Table structure for table `sys_robot`
 --
 
-DROP TABLE IF EXISTS `sys_role`;
-CREATE TABLE IF NOT EXISTS `sys_role` (
-  `role_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Role ID',
+CREATE TABLE `sys_robot` (
+  `id` bigint(20) NOT NULL COMMENT 'ID',
+  `uuid` varchar(64) COLLATE utf8_bin NOT NULL COMMENT 'uuid',
+  `status` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Status（0 Available 1 BUSY 2 OFFLINE）',
+  `is_receive_cont_full_order` tinyint(1) DEFAULT 0 COMMENT 'Is support receive container full order',
+  `is_send_cont_empty_order` tinyint(1) DEFAULT 0 COMMENT 'Is support send container empty order',
+  `is_receive_cont_empty_order` tinyint(1) DEFAULT 0 COMMENT 'Is support receive container empty order',
+  `is_send_cont_full_order` tinyint(1) DEFAULT 0 COMMENT 'Is support send container full order',
+  `is_gate_in_order` tinyint(1) DEFAULT 0 COMMENT 'Is support gate in order',
+  `ip_address` varchar(16) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ip address',
+  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark',
+  `create_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Creator',
+  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
+  `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
+  `update_time` datetime DEFAULT NULL COMMENT 'Update Time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Robot';
+
+--
+-- Dumping data for table `sys_robot`
+--
+
+INSERT INTO `sys_robot` (`id`, `uuid`, `status`, `is_receive_cont_full_order`, `is_send_cont_empty_order`, `is_receive_cont_empty_order`, `is_send_cont_full_order`, `is_gate_in_order`, `ip_address`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
+(4, 'PC', '2', 1, 0, 1, 0, 0, NULL, NULL, '', '2020-07-08 20:15:27', '', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sys_role`
+--
+
+CREATE TABLE `sys_role` (
+  `role_id` bigint(20) NOT NULL COMMENT 'Role ID',
   `role_name` varchar(30) COLLATE utf8_bin NOT NULL COMMENT 'Role Name',
   `role_key` varchar(100) COLLATE utf8_bin NOT NULL COMMENT 'Role permission string',
   `role_sort` int(4) NOT NULL COMMENT 'display order',
@@ -1752,12 +2308,11 @@ CREATE TABLE IF NOT EXISTS `sys_role` (
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark',
-  PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Role Information';
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Role Information';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_role`
+-- Dumping data for table `sys_role`
 --
 
 INSERT INTO `sys_role` (`role_id`, `role_name`, `role_key`, `role_sort`, `data_scope`, `status`, `del_flag`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
@@ -1767,18 +2322,16 @@ INSERT INTO `sys_role` (`role_id`, `role_name`, `role_key`, `role_sort`, `data_s
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_role_dept`
+-- Table structure for table `sys_role_dept`
 --
 
-DROP TABLE IF EXISTS `sys_role_dept`;
-CREATE TABLE IF NOT EXISTS `sys_role_dept` (
+CREATE TABLE `sys_role_dept` (
   `role_id` bigint(20) NOT NULL COMMENT 'Role ID',
-  `dept_id` bigint(20) NOT NULL COMMENT 'Department ID',
-  PRIMARY KEY (`role_id`,`dept_id`)
+  `dept_id` bigint(20) NOT NULL COMMENT 'Department ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Role and department';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_role_dept`
+-- Dumping data for table `sys_role_dept`
 --
 
 INSERT INTO `sys_role_dept` (`role_id`, `dept_id`) VALUES
@@ -1789,18 +2342,16 @@ INSERT INTO `sys_role_dept` (`role_id`, `dept_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_role_menu`
+-- Table structure for table `sys_role_menu`
 --
 
-DROP TABLE IF EXISTS `sys_role_menu`;
-CREATE TABLE IF NOT EXISTS `sys_role_menu` (
+CREATE TABLE `sys_role_menu` (
   `role_id` bigint(20) NOT NULL COMMENT 'Role ID',
-  `menu_id` bigint(20) NOT NULL COMMENT 'Menu ID',
-  PRIMARY KEY (`role_id`,`menu_id`)
+  `menu_id` bigint(20) NOT NULL COMMENT 'Menu ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Role and menu association';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_role_menu`
+-- Dumping data for table `sys_role_menu`
 --
 
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES
@@ -1891,12 +2442,11 @@ INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_user`
+-- Table structure for table `sys_user`
 --
 
-DROP TABLE IF EXISTS `sys_user`;
-CREATE TABLE IF NOT EXISTS `sys_user` (
-  `user_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'User ID',
+CREATE TABLE `sys_user` (
+  `user_id` bigint(20) NOT NULL COMMENT 'User ID',
   `dept_id` bigint(20) DEFAULT NULL COMMENT 'Department ID',
   `login_name` varchar(30) COLLATE utf8_bin NOT NULL COMMENT 'Login Name',
   `user_name` varchar(30) COLLATE utf8_bin DEFAULT '' COMMENT 'User Name',
@@ -1915,28 +2465,24 @@ CREATE TABLE IF NOT EXISTS `sys_user` (
   `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
   `update_by` varchar(64) COLLATE utf8_bin DEFAULT '' COMMENT 'Updater',
   `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark',
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User Information';
+  `remark` varchar(500) COLLATE utf8_bin DEFAULT NULL COMMENT 'Remark'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User Information';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_user`
+-- Dumping data for table `sys_user`
 --
 
 INSERT INTO `sys_user` (`user_id`, `dept_id`, `login_name`, `user_name`, `user_type`, `email`, `phonenumber`, `sex`, `avatar`, `password`, `salt`, `status`, `del_flag`, `login_ip`, `login_date`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES
-(1, 103, 'admin', 'DNG', '00', 'ry@163.com', '15888888888', '1', '', '29c67a30398638269fe600f73a054934', '111111', '0', '0', '192.168.1.76', '2020-06-09 11:17:54', 'admin', '2018-03-16 11:33:00', 'ry', '2020-06-09 11:17:54', '管理员'),
-(2, 105, 'ry', 'DNG', '00', 'ry@qq.com', '15666666666', '1', '', '8e6d98b90472783cc73c17047ddccf36', '222222', '0', '0', '113.176.195.221', '2020-04-15 15:14:08', 'admin', '2018-03-16 11:33:00', 'admin', '2020-04-15 15:14:08', '测试员'),
-(100, 103, 'abc', 'Nguyen', '00', 'abc@gmail.com', '09034567891', '0', '', 'cb97df1154efc9cd0d76864f20787035', '684420', '0', '0', '113.176.195.221', '2020-04-15 15:39:39', 'admin', '2020-04-14 12:20:08', 'admin', '2020-04-15 15:39:39', ''),
-(101, 104, 'nhanvien1', 'nhanvien1', '00', 'hieunt@irtech.com.vn', '09234234233', '0', '', '3fd9c4d8e3d1ea20845ef00aa84e6359', '392d0b', '0', '0', '192.168.1.11', '2020-04-15 08:25:25', 'admin', '2020-04-15 08:25:14', '', '2020-04-15 08:25:25', NULL);
+(1, 103, 'admin', 'DNG', '00', 'ry@163.com', '15888888888', '1', '', '29c67a30398638269fe600f73a054934', '111111', '0', '0', '127.0.0.1', '2020-07-09 10:57:29', 'admin', '2018-03-16 11:33:00', 'ry', '2020-07-09 10:57:29', '管理员'),
+(2, 105, 'ry', 'DNG', '00', 'ry@qq.com', '15666666666', '1', '', '8e6d98b90472783cc73c17047ddccf36', '222222', '0', '0', '127.0.0.1', '2018-03-16 11:33:00', 'admin', '2018-03-16 11:33:00', 'ry', '2020-03-28 07:21:51', '测试员');
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_user_online`
+-- Table structure for table `sys_user_online`
 --
 
-DROP TABLE IF EXISTS `sys_user_online`;
-CREATE TABLE IF NOT EXISTS `sys_user_online` (
+CREATE TABLE `sys_user_online` (
   `sessionId` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT '' COMMENT '用户会话id',
   `login_name` varchar(50) COLLATE utf8_bin DEFAULT '' COMMENT '登录账号',
   `dept_name` varchar(50) COLLATE utf8_bin DEFAULT '' COMMENT '部门名称',
@@ -1947,125 +2493,670 @@ CREATE TABLE IF NOT EXISTS `sys_user_online` (
   `status` varchar(10) COLLATE utf8_bin DEFAULT '' COMMENT '在线状态on_line在线off_line离线',
   `start_timestamp` datetime DEFAULT NULL COMMENT 'sessionCreate Time',
   `last_access_time` datetime DEFAULT NULL COMMENT 'session最后访问时间',
-  `expire_time` int(5) DEFAULT 0 COMMENT '超时时间，单位为分钟',
-  PRIMARY KEY (`sessionId`)
+  `expire_time` int(5) DEFAULT 0 COMMENT '超时时间，单位为分钟'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='在线用户记录';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_user_online`
+-- Dumping data for table `sys_user_online`
 --
 
 INSERT INTO `sys_user_online` (`sessionId`, `login_name`, `dept_name`, `ipaddr`, `login_location`, `browser`, `os`, `status`, `start_timestamp`, `last_access_time`, `expire_time`) VALUES
-('89d2fcaa-9e69-4fc5-b3a2-b02c019eafe3', 'minhtc@gmail.com', 'Carrier', '192.168.1.68', 'Intranet IP', 'Chrome 8', 'Windows 10', 'on_line', '2020-06-09 13:42:29', '2020-06-09 13:42:37', NULL);
+('329058d8-8f9e-4f22-b40a-c44e39bbb6c7', 'admin', 'R&D', '127.0.0.1', 'Intranet IP', 'Chrome 8', 'Windows 10', 'on_line', '2020-07-09 10:23:43', '2020-07-09 11:48:03', 1800000);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_user_post`
+-- Table structure for table `sys_user_post`
 --
 
-DROP TABLE IF EXISTS `sys_user_post`;
-CREATE TABLE IF NOT EXISTS `sys_user_post` (
+CREATE TABLE `sys_user_post` (
   `user_id` bigint(20) NOT NULL COMMENT 'User ID',
-  `post_id` bigint(20) NOT NULL COMMENT 'Post ID',
-  PRIMARY KEY (`user_id`,`post_id`)
+  `post_id` bigint(20) NOT NULL COMMENT 'Post ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User and post';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_user_post`
+-- Dumping data for table `sys_user_post`
 --
 
 INSERT INTO `sys_user_post` (`user_id`, `post_id`) VALUES
-(1, 1);
+(1, 1),
+(2, 2);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `sys_user_role`
+-- Table structure for table `sys_user_role`
 --
 
-DROP TABLE IF EXISTS `sys_user_role`;
-CREATE TABLE IF NOT EXISTS `sys_user_role` (
+CREATE TABLE `sys_user_role` (
   `user_id` bigint(20) NOT NULL COMMENT 'User ID',
-  `role_id` bigint(20) NOT NULL COMMENT 'Role ID',
-  PRIMARY KEY (`user_id`,`role_id`)
+  `role_id` bigint(20) NOT NULL COMMENT 'Role ID'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='User and role association';
 
 --
--- Đang đổ dữ liệu cho bảng `sys_user_role`
+-- Dumping data for table `sys_user_role`
 --
 
 INSERT INTO `sys_user_role` (`user_id`, `role_id`) VALUES
 (1, 1),
-(2, 2),
-(100, 2);
+(2, 2);
 
 -- --------------------------------------------------------
 
 --
--- Cấu trúc bảng cho bảng `transport_account`
+-- Table structure for table `user_devices`
 --
 
-DROP TABLE IF EXISTS `transport_account`;
-CREATE TABLE IF NOT EXISTS `transport_account` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `logistic_group_id` bigint(20) NOT NULL COMMENT 'Logistic Group',
-  `plate_number` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'Bien So Xe',
-  `mobile_number` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'So DT',
-  `full_name` varchar(50) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ho va Ten',
-  `password` varchar(64) COLLATE utf8_bin NOT NULL COMMENT 'Mat Khau',
-  `salt` varchar(10) COLLATE utf8_bin NOT NULL COMMENT 'Salt',
-  `status` char(1) COLLATE utf8_bin NOT NULL COMMENT 'Trang Thai',
-  `del_flag` bit(1) NOT NULL DEFAULT b'0' COMMENT 'Delete Flag',
-  `external_rent_status` char(1) COLLATE utf8_bin DEFAULT '0' COMMENT 'Thuê ngoài (0 nomal 1 rent)',
-  `valid_date` datetime NOT NULL COMMENT 'Hieu Luc Den',
-  `remark` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT 'Ghi chu',
-  `create_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Create By',
-  `create_time` datetime DEFAULT NULL COMMENT 'Create Time',
-  `update_by` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'Update By',
-  `update_time` datetime DEFAULT NULL COMMENT 'Update Time',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Driver login info';
+CREATE TABLE `user_devices` (
+  `id` int(11) NOT NULL,
+  `user_token` varchar(100) COLLATE utf8_bin NOT NULL,
+  `device_token` varchar(100) COLLATE utf8_bin NOT NULL,
+  `user_type` int(11) NOT NULL COMMENT '1: Logistic, 2: Driver, 3: Staff',
+  `create_time` datetime DEFAULT NULL,
+  `create_by` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  `update_by` varchar(50) COLLATE utf8_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Đang đổ dữ liệu cho bảng `transport_account`
---
-
-INSERT INTO `transport_account` (`id`, `logistic_group_id`, `plate_number`, `mobile_number`, `full_name`, `password`, `salt`, `status`, `del_flag`, `external_rent_status`, `valid_date`, `remark`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
-(1, 3, '43A12345', '0905123456', 'Tai Xe A', '822b1fc410b7177ee3afcbe44e6f7f25', '972717', '1', b'0', '0', '2020-05-30 00:00:00', NULL, 'Nguyen Van A', '2020-05-23 10:46:13', NULL, '2020-05-23 11:46:23'),
-(2, 1, '43C1-224.44', '0764505555', 'test', '0dbba4c31fef655743b03b03aee72da7', '09b336', '0', b'0', '0', '2020-05-30 00:00:00', NULL, 'Nguyen Nguyen', '2020-05-30 08:17:59', NULL, '2020-05-30 08:18:59'),
-(3, 1, '43A 123.46', '0905123457', 'Nguyen Van A', '29559bb75f27e5e0ea97838b1d315d59', '6f87e6', '1', b'0', '0', '2020-07-31 00:00:00', NULL, 'tester 1', '2020-05-30 09:53:26', NULL, NULL);
-
---
--- Các ràng buộc cho các bảng đã đổ
+-- Indexes for dumped tables
 --
 
 --
--- Các ràng buộc cho bảng `qrtz_blob_triggers`
+-- Indexes for table `carrier_account`
+--
+ALTER TABLE `carrier_account`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `carrier_group`
+--
+ALTER TABLE `carrier_group`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `driver_account`
+--
+ALTER TABLE `driver_account`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `driver_truck`
+--
+ALTER TABLE `driver_truck`
+  ADD PRIMARY KEY (`driver_id`,`truck_id`);
+
+--
+-- Indexes for table `edo`
+--
+ALTER TABLE `edo`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `edo_audit_log`
+--
+ALTER TABLE `edo_audit_log`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `edo_history`
+--
+ALTER TABLE `edo_history`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `equipment_do`
+--
+ALTER TABLE `equipment_do`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `gen_table`
+--
+ALTER TABLE `gen_table`
+  ADD PRIMARY KEY (`table_id`);
+
+--
+-- Indexes for table `gen_table_column`
+--
+ALTER TABLE `gen_table_column`
+  ADD PRIMARY KEY (`column_id`);
+
+--
+-- Indexes for table `logistic_account`
+--
+ALTER TABLE `logistic_account`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `logistic_group`
+--
+ALTER TABLE `logistic_group`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `logistic_truck`
+--
+ALTER TABLE `logistic_truck`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `notification_receiver`
+--
+ALTER TABLE `notification_receiver`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pickup_assign`
+--
+ALTER TABLE `pickup_assign`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pickup_history`
+--
+ALTER TABLE `pickup_history`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `process_bill`
+--
+ALTER TABLE `process_bill`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `process_history`
+--
+ALTER TABLE `process_history`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `process_order`
+--
+ALTER TABLE `process_order`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `qrtz_blob_triggers`
+--
+ALTER TABLE `qrtz_blob_triggers`
+  ADD PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`);
+
+--
+-- Indexes for table `qrtz_calendars`
+--
+ALTER TABLE `qrtz_calendars`
+  ADD PRIMARY KEY (`sched_name`,`calendar_name`);
+
+--
+-- Indexes for table `qrtz_cron_triggers`
+--
+ALTER TABLE `qrtz_cron_triggers`
+  ADD PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`);
+
+--
+-- Indexes for table `qrtz_fired_triggers`
+--
+ALTER TABLE `qrtz_fired_triggers`
+  ADD PRIMARY KEY (`sched_name`,`entry_id`);
+
+--
+-- Indexes for table `qrtz_job_details`
+--
+ALTER TABLE `qrtz_job_details`
+  ADD PRIMARY KEY (`sched_name`,`job_name`,`job_group`);
+
+--
+-- Indexes for table `qrtz_locks`
+--
+ALTER TABLE `qrtz_locks`
+  ADD PRIMARY KEY (`sched_name`,`lock_name`);
+
+--
+-- Indexes for table `qrtz_paused_trigger_grps`
+--
+ALTER TABLE `qrtz_paused_trigger_grps`
+  ADD PRIMARY KEY (`sched_name`,`trigger_group`);
+
+--
+-- Indexes for table `qrtz_scheduler_state`
+--
+ALTER TABLE `qrtz_scheduler_state`
+  ADD PRIMARY KEY (`sched_name`,`instance_name`);
+
+--
+-- Indexes for table `qrtz_simple_triggers`
+--
+ALTER TABLE `qrtz_simple_triggers`
+  ADD PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`);
+
+--
+-- Indexes for table `qrtz_simprop_triggers`
+--
+ALTER TABLE `qrtz_simprop_triggers`
+  ADD PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`);
+
+--
+-- Indexes for table `qrtz_triggers`
+--
+ALTER TABLE `qrtz_triggers`
+  ADD PRIMARY KEY (`sched_name`,`trigger_name`,`trigger_group`),
+  ADD KEY `sched_name` (`sched_name`,`job_name`,`job_group`);
+
+--
+-- Indexes for table `shipment`
+--
+ALTER TABLE `shipment`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `shipment_custom`
+--
+ALTER TABLE `shipment_custom`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `shipment_detail`
+--
+ALTER TABLE `shipment_detail`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sys_config`
+--
+ALTER TABLE `sys_config`
+  ADD PRIMARY KEY (`config_id`);
+
+--
+-- Indexes for table `sys_dept`
+--
+ALTER TABLE `sys_dept`
+  ADD PRIMARY KEY (`dept_id`);
+
+--
+-- Indexes for table `sys_dict_data`
+--
+ALTER TABLE `sys_dict_data`
+  ADD PRIMARY KEY (`dict_code`);
+
+--
+-- Indexes for table `sys_dict_type`
+--
+ALTER TABLE `sys_dict_type`
+  ADD PRIMARY KEY (`dict_id`),
+  ADD UNIQUE KEY `dict_type` (`dict_type`);
+
+--
+-- Indexes for table `sys_job`
+--
+ALTER TABLE `sys_job`
+  ADD PRIMARY KEY (`job_id`,`job_name`,`job_group`);
+
+--
+-- Indexes for table `sys_job_log`
+--
+ALTER TABLE `sys_job_log`
+  ADD PRIMARY KEY (`job_log_id`);
+
+--
+-- Indexes for table `sys_logininfor`
+--
+ALTER TABLE `sys_logininfor`
+  ADD PRIMARY KEY (`info_id`);
+
+--
+-- Indexes for table `sys_menu`
+--
+ALTER TABLE `sys_menu`
+  ADD PRIMARY KEY (`menu_id`);
+
+--
+-- Indexes for table `sys_notice`
+--
+ALTER TABLE `sys_notice`
+  ADD PRIMARY KEY (`notice_id`);
+
+--
+-- Indexes for table `sys_oper_log`
+--
+ALTER TABLE `sys_oper_log`
+  ADD PRIMARY KEY (`oper_id`);
+
+--
+-- Indexes for table `sys_otp`
+--
+ALTER TABLE `sys_otp`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `sys_post`
+--
+ALTER TABLE `sys_post`
+  ADD PRIMARY KEY (`post_id`);
+
+--
+-- Indexes for table `sys_robot`
+--
+ALTER TABLE `sys_robot`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `UC_uuid` (`uuid`);
+
+--
+-- Indexes for table `sys_role`
+--
+ALTER TABLE `sys_role`
+  ADD PRIMARY KEY (`role_id`);
+
+--
+-- Indexes for table `sys_role_dept`
+--
+ALTER TABLE `sys_role_dept`
+  ADD PRIMARY KEY (`role_id`,`dept_id`);
+
+--
+-- Indexes for table `sys_role_menu`
+--
+ALTER TABLE `sys_role_menu`
+  ADD PRIMARY KEY (`role_id`,`menu_id`);
+
+--
+-- Indexes for table `sys_user`
+--
+ALTER TABLE `sys_user`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indexes for table `sys_user_online`
+--
+ALTER TABLE `sys_user_online`
+  ADD PRIMARY KEY (`sessionId`);
+
+--
+-- Indexes for table `sys_user_post`
+--
+ALTER TABLE `sys_user_post`
+  ADD PRIMARY KEY (`user_id`,`post_id`);
+
+--
+-- Indexes for table `sys_user_role`
+--
+ALTER TABLE `sys_user_role`
+  ADD PRIMARY KEY (`user_id`,`role_id`);
+
+--
+-- Indexes for table `user_devices`
+--
+ALTER TABLE `user_devices`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `carrier_account`
+--
+ALTER TABLE `carrier_account`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `carrier_group`
+--
+ALTER TABLE `carrier_group`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `driver_account`
+--
+ALTER TABLE `driver_account`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `edo`
+--
+ALTER TABLE `edo`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `edo_audit_log`
+--
+ALTER TABLE `edo_audit_log`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `edo_history`
+--
+ALTER TABLE `edo_history`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `equipment_do`
+--
+ALTER TABLE `equipment_do`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `gen_table`
+--
+ALTER TABLE `gen_table`
+  MODIFY `table_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号', AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `gen_table_column`
+--
+ALTER TABLE `gen_table_column`
+  MODIFY `column_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '编号', AUTO_INCREMENT=103;
+
+--
+-- AUTO_INCREMENT for table `logistic_account`
+--
+ALTER TABLE `logistic_account`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `logistic_group`
+--
+ALTER TABLE `logistic_group`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `logistic_truck`
+--
+ALTER TABLE `logistic_truck`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `notification_receiver`
+--
+ALTER TABLE `notification_receiver`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `pickup_assign`
+--
+ALTER TABLE `pickup_assign`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `pickup_history`
+--
+ALTER TABLE `pickup_history`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `process_bill`
+--
+ALTER TABLE `process_bill`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `process_history`
+--
+ALTER TABLE `process_history`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `process_order`
+--
+ALTER TABLE `process_order`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `shipment`
+--
+ALTER TABLE `shipment`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `shipment_custom`
+--
+ALTER TABLE `shipment_custom`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `shipment_detail`
+--
+ALTER TABLE `shipment_detail`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `sys_config`
+--
+ALTER TABLE `sys_config`
+  MODIFY `config_id` int(5) NOT NULL AUTO_INCREMENT COMMENT '参数主键', AUTO_INCREMENT=103;
+
+--
+-- AUTO_INCREMENT for table `sys_dept`
+--
+ALTER TABLE `sys_dept`
+  MODIFY `dept_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Department id', AUTO_INCREMENT=200;
+
+--
+-- AUTO_INCREMENT for table `sys_dict_data`
+--
+ALTER TABLE `sys_dict_data`
+  MODIFY `dict_code` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '字典编码', AUTO_INCREMENT=100;
+
+--
+-- AUTO_INCREMENT for table `sys_dict_type`
+--
+ALTER TABLE `sys_dict_type`
+  MODIFY `dict_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Dictionary ID', AUTO_INCREMENT=100;
+
+--
+-- AUTO_INCREMENT for table `sys_job`
+--
+ALTER TABLE `sys_job`
+  MODIFY `job_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务ID', AUTO_INCREMENT=100;
+
+--
+-- AUTO_INCREMENT for table `sys_job_log`
+--
+ALTER TABLE `sys_job_log`
+  MODIFY `job_log_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务日志ID';
+
+--
+-- AUTO_INCREMENT for table `sys_logininfor`
+--
+ALTER TABLE `sys_logininfor`
+  MODIFY `info_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '访问ID', AUTO_INCREMENT=738;
+
+--
+-- AUTO_INCREMENT for table `sys_menu`
+--
+ALTER TABLE `sys_menu`
+  MODIFY `menu_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Menu ID', AUTO_INCREMENT=2044;
+
+--
+-- AUTO_INCREMENT for table `sys_notice`
+--
+ALTER TABLE `sys_notice`
+  MODIFY `notice_id` int(4) NOT NULL AUTO_INCREMENT COMMENT '公告ID', AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT for table `sys_oper_log`
+--
+ALTER TABLE `sys_oper_log`
+  MODIFY `oper_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Log PK', AUTO_INCREMENT=222;
+
+--
+-- AUTO_INCREMENT for table `sys_otp`
+--
+ALTER TABLE `sys_otp`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+
+--
+-- AUTO_INCREMENT for table `sys_post`
+--
+ALTER TABLE `sys_post`
+  MODIFY `post_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Job ID', AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `sys_robot`
+--
+ALTER TABLE `sys_robot`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `sys_role`
+--
+ALTER TABLE `sys_role`
+  MODIFY `role_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Role ID', AUTO_INCREMENT=100;
+
+--
+-- AUTO_INCREMENT for table `sys_user`
+--
+ALTER TABLE `sys_user`
+  MODIFY `user_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'User ID', AUTO_INCREMENT=100;
+
+--
+-- AUTO_INCREMENT for table `user_devices`
+--
+ALTER TABLE `user_devices`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `qrtz_blob_triggers`
 --
 ALTER TABLE `qrtz_blob_triggers`
   ADD CONSTRAINT `qrtz_blob_triggers_ibfk_1` FOREIGN KEY (`sched_name`,`trigger_name`,`trigger_group`) REFERENCES `qrtz_triggers` (`sched_name`, `trigger_name`, `trigger_group`);
 
 --
--- Các ràng buộc cho bảng `qrtz_cron_triggers`
+-- Constraints for table `qrtz_cron_triggers`
 --
 ALTER TABLE `qrtz_cron_triggers`
   ADD CONSTRAINT `qrtz_cron_triggers_ibfk_1` FOREIGN KEY (`sched_name`,`trigger_name`,`trigger_group`) REFERENCES `qrtz_triggers` (`sched_name`, `trigger_name`, `trigger_group`);
 
 --
--- Các ràng buộc cho bảng `qrtz_simple_triggers`
+-- Constraints for table `qrtz_simple_triggers`
 --
 ALTER TABLE `qrtz_simple_triggers`
   ADD CONSTRAINT `qrtz_simple_triggers_ibfk_1` FOREIGN KEY (`sched_name`,`trigger_name`,`trigger_group`) REFERENCES `qrtz_triggers` (`sched_name`, `trigger_name`, `trigger_group`);
 
 --
--- Các ràng buộc cho bảng `qrtz_simprop_triggers`
+-- Constraints for table `qrtz_simprop_triggers`
 --
 ALTER TABLE `qrtz_simprop_triggers`
   ADD CONSTRAINT `qrtz_simprop_triggers_ibfk_1` FOREIGN KEY (`sched_name`,`trigger_name`,`trigger_group`) REFERENCES `qrtz_triggers` (`sched_name`, `trigger_name`, `trigger_group`);
 
 --
--- Các ràng buộc cho bảng `qrtz_triggers`
+-- Constraints for table `qrtz_triggers`
 --
 ALTER TABLE `qrtz_triggers`
   ADD CONSTRAINT `qrtz_triggers_ibfk_1` FOREIGN KEY (`sched_name`,`job_name`,`job_group`) REFERENCES `qrtz_job_details` (`sched_name`, `job_name`, `job_group`);

@@ -1,1 +1,0 @@
-ALTER TABLE `sys_otp` ADD `transaction_id` varchar(255) COLLATE utf8_bin NOT NULL COMMENT 'transaction id' AFTER `opt_code` , ADD `otp_type` char(1) COLLATE utf8_bin NOT NULL COMMENT 'Loai OTP (1 - lamlenh, 2 quen mat khau)' AFTER `transaction_id`,ADD `phone_number` varchar(15) COLLATE utf8_bin NOT NULL COMMENT 'Số điện thoại nhận' AFTER `otp_type`
