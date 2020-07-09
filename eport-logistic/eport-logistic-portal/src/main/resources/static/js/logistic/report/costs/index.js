@@ -155,8 +155,14 @@ function changePaymentStatus() {
 }
 
 function changeFromDate() {
-    processBill.fromDate = stringToDate($('.from-date').val()).getTime();
-    loadTable();
+    let fromDate = stringToDate($('.from-date').val());
+    if ($('.to-date').val() != '' && stringToDate($('.to-date').val()).getTime() < fromDate.getTime()) {
+        $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
+        $('.from-date').val('');
+    } else {
+        processBill.fromDate = fromDate.getTime();
+        loadTable();
+    }
 }
 
 function changeToDate() {

@@ -161,6 +161,12 @@ public class ShipmentDetail extends BaseEntity
 
     private Integer driverAmount;
 
+    private String payType;
+
+    private Integer assignNumber;
+
+    private Integer serviceType;
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -469,6 +475,30 @@ public class ShipmentDetail extends BaseEntity
         this.driverAmount = driverAmount;
     }
 
+    public void setPayType(String payType) {
+        this.payType = payType;
+    } 
+
+    public String getPayType() {
+        return payType;
+    }
+
+    public void setAssignNumber(Integer assignNumber) {
+        this.assignNumber = assignNumber;
+    }
+
+    public Integer getAssignNumber() {
+        return assignNumber;
+    }
+
+    public void setServiceType(Integer serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public Integer getServiceType() {
+        return serviceType;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -516,6 +546,9 @@ public class ShipmentDetail extends BaseEntity
             .append("roww", getRow())
             .append("tier", getTier())
             .append("driverAmount", getDriverAmount())
+            .append("payType", getPayType())
+            .append("assignNumber", getAssignNumber())
+            .append("serviceType", getServiceType())
             .toString();
     }
 }

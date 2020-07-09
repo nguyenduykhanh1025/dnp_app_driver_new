@@ -1,0 +1,35 @@
+.white-bg {
+    padding-top: 10px;
+    overflow-y: hidden;
+    font-size: 16px;
+}
+
+.opt-select {
+    display: flex;
+}
+
+.opt-select span {
+    height: 34px;
+    line-height: 34px;
+    display: inline-block;
+    min-width: 30%;
+}
+
+.opt-select select {
+    width: 100%;
+}
+
+.date-input {
+    background: #FFFFFF none;
+    border: 1px solid #e5e6e7;
+    border-radius: 1px;
+    color: inherit;
+    padding: 6px 12px;
+    -webkit-transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    font-size: 14px;
+}
+
+.date {
+    background: #FFFFFF none !important;
+}
