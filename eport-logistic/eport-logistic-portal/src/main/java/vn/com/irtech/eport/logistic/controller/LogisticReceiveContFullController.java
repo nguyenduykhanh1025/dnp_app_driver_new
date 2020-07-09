@@ -296,14 +296,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			}
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus(null);
-				if (shipmentDetail.getId() != null && "N".equals(shipmentDetail.getUserVerifyStatus())) {
-					updateShipment = false;
-					shipmentDetail.setUpdateBy(user.getFullName());
-					shipmentDetail.setUpdateTime(new Date());
-					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
-						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
-					}
-				} else {
+				if (shipmentDetail.getId() == null) {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
 					shipmentDetail.setCreateTime(new Date());
@@ -330,6 +323,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						shipmentDetail.setCargoType("MT");
 						shipmentDetail.setStatus(1);
 						shipmentDetailService.insertShipmentDetail(shipmentDetail);
+					}
+					
+				} else  if ("N".equals(shipmentDetail.getUserVerifyStatus())) {
+					updateShipment = false;
+					shipmentDetail.setUpdateBy(user.getFullName());
+					shipmentDetail.setUpdateTime(new Date());
+					if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
+						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
 				}
 			}
