@@ -1,4 +1,4 @@
-var PREFIX = "/edo/manage"
+var PREFIX = ctx + "/edo/manage"
 $(function() {
     loadTable();
 });

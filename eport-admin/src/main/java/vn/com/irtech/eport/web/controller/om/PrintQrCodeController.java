@@ -21,7 +21,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 @Controller
 @RequestMapping("/printQrCode")
 public class PrintQrCodeController extends BaseController{
-    private String prefix = "/om/printQrCode";
+    private String prefix = "om/printQrCode";
     @Autowired
     private IShipmentDetailService shipmentDetailService;
 
