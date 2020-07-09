@@ -34,3 +34,13 @@ function loadTable() {
         },
     });
 }
+
+function formatField(value)
+{
+  return "<span class='label label-success'>"+value+"</span>";
+}
+
+function formatToYDMHMS(date) {
+    let temp = date.substring(0,10);
+    return temp.split("-").reverse().join("/") +  "</br>" + date.substring(10,19);
+}
