@@ -37,7 +37,7 @@ public class EdoManageController extends BaseController {
 
   @GetMapping()
   public String index() {
-    return PREFIX + "/index";
+    return PREFIX + "/edo";
   }
 
   @GetMapping("/billNo")
