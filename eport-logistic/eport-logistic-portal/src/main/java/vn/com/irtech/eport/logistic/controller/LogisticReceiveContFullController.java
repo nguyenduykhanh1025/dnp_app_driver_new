@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +51,8 @@ import vn.com.irtech.eport.system.service.ISysConfigService;
 public class LogisticReceiveContFullController extends LogisticBaseController {
 	
 	private final String PREFIX = "logistic/receiveContFull";
+
+	private static final Logger logger = LoggerFactory.getLogger(LogisticReceiveContFullController.class);
 
 	@Autowired
 	private IShipmentService shipmentService;
@@ -152,8 +156,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		RestTemplate restTemplate = new RestTemplate();
 		R r = restTemplate.postForObject(url,shipmentDt , R.class);
 		List<LinkedHashMap> coordinateOfList = (List<LinkedHashMap>) r.get("data");
+		List<ShipmentDetail[][]> bayList = new ArrayList<>();
+		try {
+			bayList = shipmentDetailService.getContPosition(coordinateOfList, shipmentDetails);
+		} catch (Exception e) {
+			logger.warn("Can't get container yard position!");
+		}
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			mmap.put("bayList", shipmentDetailService.getContPosition(coordinateOfList, shipmentDetails));
+			mmap.put("bayList", bayList);
 			mmap.put("unitCosts", 20000);
 		}
 		return PREFIX + "/pickContOnDemand";
