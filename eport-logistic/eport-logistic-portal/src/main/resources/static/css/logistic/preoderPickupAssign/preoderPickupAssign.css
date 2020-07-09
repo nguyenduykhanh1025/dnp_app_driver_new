@@ -9,7 +9,7 @@
     flex-flow: column;
   }
   .content {
-    padding: 0 15px 12px 15px;
+    padding: 0 15px 8px 15px;
     flex: 1 1 auto;
     flex-flow: column;
     display: flex;
@@ -30,14 +30,12 @@
     margin-left: 20px;
   }
   .left-button-bar{
-    position: absolute;
-    right: 45px;
-    top: 55px;
+    margin-left: 15px;
+    margin-bottom: 10px;
   }
   
   .assignFollowContainer {
     flex: 1 1 auto;
-    margin-top: 25px;
     flex-flow: column;
     display: flex;
   }
