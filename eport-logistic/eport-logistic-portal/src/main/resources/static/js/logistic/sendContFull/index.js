@@ -703,6 +703,14 @@ function getDataFromTable(isValidate) {
     shipmentDetails = [];
     contList = [];
     conts = '';
+    let consignee, opecode, vessel, voyage, pod;
+    if (cleanedGridData.length > 0) {
+        consignee = cleanedGridData[0].consignee;
+        opecode = cleanedGridData[0].opeCode;
+        vessel = cleanedGridData[0].vslNm;
+        voyage = cleanedGridData[0].voyNo;
+        pod = cleanedGridData[0].dischargePort;
+    }
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
         if (isValidate) {
@@ -738,8 +746,33 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
                 errorFlg = true;
                 return false;
-            } 
+            } else if (consignee != object["consignee"]) {
+                $.modal.alertError("Tên chủ hàng không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (opecode != object["opeCode"]) {
+                $.modal.alertError("Hãng tàu không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (vessel != object["vslNm"]) {
+                $.modal.alertError("Tàu không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (voyage != object["voyNo"]) {
+                $.modal.alertError("Số chuyến không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (pod != object["dischargePort"]) {
+                $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
+                errorFlg = true;
+                return false;
+            }
         }
+        consignee = object["consignee"];
+        opecode = object["opeCode"];
+        vessel = object["vslNm"];
+        voyage = object["voyNo"];
+        pod = object["dischargePort"];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
         if (object["status"] == 1 || object["status"] == null) {
@@ -969,8 +1002,8 @@ function finishVerifyForm(result) {
         // CONNECT WEB SOCKET
         connectToWebsocketServer();
     } else {
-        $.modal.msgError(result.msg);
         reloadShipmentDetail();
+        $.modal.alertError(result.msg);
     }
 }
 
@@ -996,6 +1029,9 @@ function onError(error) {
 
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
+
+    reloadShipmentDetail();
+
     if (message.code == 0){
         $.modal.alertSuccess(message.msg);
     }else{
@@ -1004,8 +1040,6 @@ function onMessageReceived(payload) {
 
     // Close loading
     $.modal.closeLoading();
-
-    reloadShipmentDetail();
 
     // Unsubscribe destination
     if (currentSubscription){
