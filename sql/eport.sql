@@ -21,7 +21,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `eport`
 --
-
+DROP DATABASE IF EXISTS `eport`;
+CREATE DATABASE IF NOT EXISTS `eport` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+USE `eport`;
 -- --------------------------------------------------------
 
 --
