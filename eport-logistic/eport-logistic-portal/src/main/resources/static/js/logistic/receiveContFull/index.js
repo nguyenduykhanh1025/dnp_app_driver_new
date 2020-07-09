@@ -669,6 +669,7 @@ function reloadShipmentDetail() {
   for (let i = 0; i < checkList.length; i++) {
     $('#check' + i).prop('checked', false);
   }
+  setLayoutRegisterStatus();
   loadShipmentDetail(shipmentSelected.id);
 }
 

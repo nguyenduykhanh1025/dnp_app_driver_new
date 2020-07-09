@@ -577,6 +577,7 @@ function reloadShipmentDetail() {
     for (let i=0; i<checkList.length; i++) {
         $('#check'+i).prop('checked', false);
     }
+    setLayoutRegisterStatus();
     loadShipmentDetail(shipmentSelected.id);
 }
 
@@ -911,10 +912,10 @@ function onMessageReceived(payload) {
         // Close loading
         $.modal.closeLoading();
 
+        reloadShipmentDetail();
+
         // Close websocket connection 
         $.websocket.disconnect(onDisconnected);
-
-        reloadShipmentDetail();
     } else {
         orderNumber--;
         if (orderNumber == 0) {
@@ -923,10 +924,10 @@ function onMessageReceived(payload) {
             // Close loading
             $.modal.closeLoading();
 
+            reloadShipmentDetail();
+
             // Close websocket connection 
             $.websocket.disconnect(onDisconnected);
-
-            reloadShipmentDetail();
         }
     }
 }
