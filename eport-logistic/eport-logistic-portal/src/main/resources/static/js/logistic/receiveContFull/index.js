@@ -712,14 +712,14 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
 
   let temProcessOrderIds = [];
   processOrderIds = '';
-  for (let i = 0; i < checkList.length; i++) {
-    if (Object.keys(myTableData[i]).length > 0) {
-      if (myTableData[i].processOrderId != null && !temProcessOrderIds.includes(myTableData[i].processOrderId)) {
-        temProcessOrderIds.push(myTableData[i].processOrderId);
-        processOrderIds += myTableData[i].processOrderId + ',';
+  $.each(cleanedGridData, function (index, object) {
+    for (let i=0; i<regiterNos.length; i++) {
+      if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"]) && regiterNos[i] == object["registerNo"]) {
+        temProcessOrderIds.push(object["processOrderId"]);
+        processOrderIds += object["processOrderId"] + ',';
       }
     }
-  }
+  });
 
   if (processOrderIds != '') {
     processOrderIds.substring(0, processOrderIds.length - 1);
