@@ -1,4 +1,7 @@
-.error-text {
+body {
+  overflow-x: hidden;
+  .error-text {
     display: none;
     font-style: italic;
+  }
 }

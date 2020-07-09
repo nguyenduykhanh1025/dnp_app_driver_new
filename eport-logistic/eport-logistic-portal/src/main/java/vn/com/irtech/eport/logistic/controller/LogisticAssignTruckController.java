@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -226,11 +227,12 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		List<DriverAccount> driverList = new ArrayList<DriverAccount>();
 		//check preoderPickup of ShipmentDetail
 		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(pickupAssign.getShipmentDetailId());
-		if(shipmentDetail.getPreorderPickup().equals("N")){
-			return driverList;
+		Shipment shipment = shipmentService.selectShipmentById(pickupAssign.getShipmentId());
+		if(shipment.getServiceType().equals(Constants.RECEIVE_CONT_FULL)){
+			if(shipmentDetail.getPreorderPickup().equals("N")){
+				return driverList;
+			}
 		}
-        // PickupAssign pickupAssign = new PickupAssign();
-		// pickupAssign.setShipmentId(shipmentId);
 		DriverAccount driverAccount = new DriverAccount();
 		driverAccount.setLogisticGroupId(getUser().getGroupId());
 		driverAccount.setDelFlag(false);
@@ -244,12 +246,13 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 				}
 			}
 			if(driverList.size() == 0){
-				//TH: default assign ca doi xe, chi dinh ko phai tat ca cac cont trong lo
-					return driverAccountService.selectDriverAccountList(driverAccount);
+				//TH: chua assign
+					//return driverAccountService.selectDriverAccountList(driverAccount);
+					return driverList;
 			}
         } else {
-			//TH: default assign ca doi xe, chi dinh tat ca cac cont trong lo
-			return driverAccountService.selectDriverAccountList(driverAccount);
+			//TH: chua assign theo cont, batch
+			return driverList;
 		}
         return driverList;
 	}
@@ -262,6 +265,9 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		driverAccount.setDelFlag(false);
 		driverAccount.setStatus("0");
 		List<DriverAccount> driverList = driverAccountService.selectDriverAccountList(driverAccount);
+		if(pickedIds == null){
+			return driverList;
+		}
 		List<DriverAccount> assignedDriverList = driverAccountService.getAssignedDrivers(pickedIds);
 		driverList.removeAll(assignedDriverList);
         return driverList;

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,6 +27,12 @@
               <input name="groupCode" id="detFreeTime" class="form-control" type="text" />
             </div>
           </div>
+          <div class="form-group">
+            <label class="col-sm-2 col-xs-3 col-md-1">Empty Container Depot</label>
+            <div class="col-sm-9 col-xs-8 col-md-10">
+              <input class="form-control" id="emptyContainerDepot" name="fromDate" />
+            </div>
+          </div>
         </form>
         <div class="layui-layer-btn footer">
           <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
@@ -42,8 +48,9 @@
   <script type="text/javascript" th:inline="javascript"></script>
   <script type="text/javascript" th:inline="javascript">
     var id = /*[[${id}]]*/ ;
-    var containerNumber = /*[[${containerNumber}]]*/ ;
-    var expiredDem = /*[[${expiredDem}]]*/ ;
-    var detFreeTime = /*[[${detFreeTime}]]*/ ;
+    var containerNumber = /*[[${edo.containerNumber}]]*/ ;
+    var expiredDem = /*[[${edo.expiredDem}]]*/ ;
+    var detFreeTime = /*[[${edo.detFreeTime}]]*/ ;
+    var emptyContainerDepot = /*[[${edo.emptyContainerDepot}]]*/ ;
   </script>
 </html>
