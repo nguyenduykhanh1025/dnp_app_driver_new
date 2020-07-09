@@ -658,38 +658,74 @@ function getDataFromTable(isValidate) {
     shipmentDetails = [];
     contList = [];
     conts = '';
+    let opecode, vessel, voyage, pod;
+    if (cleanedGridData.length > 0) {
+        opecode = cleanedGridData[0].opeCode;
+        vessel = cleanedGridData[0].vslNm;
+        voyage = cleanedGridData[0].voyNo;
+        pod = cleanedGridData[0].dischargePort;
+    }
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
         if (isValidate) {
             if(object["containerNo"] == null || object["containerNo"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
                 errorFlg = true;
+                return false;
             } else if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"])) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
                 errorFlg = true;
+                return false;
             } else if (object["opeCode"] == null || object["opeCode"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ khai thác!");
                 errorFlg = true;
+                return false;
             } else if (object["expiredDem"] == null || object["expiredDem"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
                 errorFlg = true;
+                return false;
             } else if (object["vslNm"] == null || object["vslNm"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu!");
                 errorFlg = true;
+                return false;
             } else if (object["voyNo"] == null || object["voyNo"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chuyến!");
                 errorFlg = true;
+                return false;
             } else if (object["sztp"] == null || object["sztp"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
+                return false;
             } else if (object["wgt"] == null || object["wgt"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn trọng tải!");
                 errorFlg = true;
+                return false;
             } else if (object["dischargePort"] == null || object["dischargePort"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
                 errorFlg = true;
+                return false;
+            } else if (opecode != object["opeCode"]) {
+                $.modal.alertError("Hãng tàu không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (vessel != object["vslNm"]) {
+                $.modal.alertError("Tàu không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (voyage != object["voyNo"]) {
+                $.modal.alertError("Số chuyến không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (pod != object["dischargePort"]) {
+                $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
+                errorFlg = true;
+                return false;
             }
         }
+        opecode = object["opeCode"];
+        vessel = object["vslNm"];
+        voyage = object["voyNo"];
+        pod = object["dischargePort"];
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
@@ -898,24 +934,13 @@ function finishVerifyForm(result) {
         connectToWebsocketServer();
        
     } else {
-        $.modal.msgError(result.msg);
         reloadShipmentDetail();
+        $.modal.alertError(result.msg);
     }
 }
 
 function napasPaymentForm() {
     $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/payment/napas");
-}
-
-function onMessageReceived(payload) {
-    let message = JSON.parse(payload.body);
-    if (message.code == 0){
-        $.modal.alertSuccess(message.msg);
-    }else{
-        $.modal.alertError(message.msg);
-    }
-    $.modal.closeLoading();
-    reloadShipmentDetail();
 }
 
 function connectToWebsocketServer(){
@@ -936,6 +961,9 @@ function onError(error) {
 
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
+
+    reloadShipmentDetail();
+
     if (message.code == 0){
         $.modal.alertSuccess(message.msg);
     } else {
@@ -944,8 +972,6 @@ function onMessageReceived(payload) {
 
     // Close loading
     $.modal.closeLoading();
-
-    reloadShipmentDetail();
 
     // Unsubscribe destination
     if (currentSubscription){
