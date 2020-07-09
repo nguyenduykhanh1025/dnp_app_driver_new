@@ -38,10 +38,10 @@ $("#form-edit-shipment").validate({
     focusCleanup: true
 });
 
-function submitHandler() {
+async function submitHandler() {
     if ($.validate.form()) {
         if ($("#groupName").val() != null && $("#groupName").val() != '') {
-            $.operate.save(prefix + "/shipment/" + $('#id').val(), $('#form-edit-shipment').serialize());
+            await $.operate.save(prefix + "/shipment/" + $('#id').val(), $('#form-edit-shipment').serialize());
             parent.loadTable();
         }
     } else {

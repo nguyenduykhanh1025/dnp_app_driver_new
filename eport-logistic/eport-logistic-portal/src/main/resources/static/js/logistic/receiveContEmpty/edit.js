@@ -45,31 +45,30 @@ $("#form-edit-shipment").validate({
     focusCleanup: true
 });
 
-function submitHandler() {
+async function submitHandler() {
     if ($.validate.form()) {
         if ($("#groupName").val() != null && $("#groupName").val() != '') {
             if ($("#bookingNo").val() != currentBooking) {
-                $.ajax({
-                    url: prefix + "/unique/booking-no/" + $("#bookingNo").val(),
-                    method: "GET",
-                }).done(function (result) {
-                    if (result.code == 0) {
-                        $("#bookingNo").removeClass("error-input");
-                        $.operate.save(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
-                        parent.loadTable();
-                    } else {
-                        $.modal.msgError("Số book đã tồn tại!");
-                        $("#bookingNo").addClass("error-input");
-                    }
-                });
+                let res = await getBookingNoUnique();
+                if (res.code == 0) {
+                    await $.operate.save(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
+                    parent.loadTable();
+                }
             } else {
-                $.operate.save(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
+                await $.operate.save(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
                 parent.loadTable();
             }
         } else {
             $.modal.msgError("Không tìm thấy mã số thuế!");
         }
     }
+}
+
+function getBookingNoUnique() {
+    return $.ajax({
+        url: prefix + "/unique/booking-no/" + $("#bookingNo").val(),
+        method: "GET",
+    });
 }
 
 function checkBookingNoUnique() {
