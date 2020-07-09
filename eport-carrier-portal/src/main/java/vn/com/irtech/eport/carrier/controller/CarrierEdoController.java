@@ -181,11 +181,6 @@ public class CarrierEdoController extends CarrierBaseController {
 		try { 
 			Date timeNow = new Date();
 			int segNo = 1;
-			Date setTimeUpdatExpicedDem = edo.getExpiredDem();
-			setTimeUpdatExpicedDem.setHours(23);
-			setTimeUpdatExpicedDem.setMinutes(59);
-			setTimeUpdatExpicedDem.setSeconds(59);
-			edo.setExpiredDem(setTimeUpdatExpicedDem);
 			EdoAuditLog edoAuditLog = new EdoAuditLog();
 			edoAuditLog.setCarrierId(super.getUser().getGroupId());
 			edoAuditLog.setCarrierCode(super.getUserGroup().getGroupCode());
@@ -194,7 +189,11 @@ public class CarrierEdoController extends CarrierBaseController {
 			EdoAuditLog edoAuditLogCheckSegNo = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
 			if(edo.getExpiredDem() != null)
 			{
-				
+				Date setTimeUpdatExpicedDem = edo.getExpiredDem();
+				setTimeUpdatExpicedDem.setHours(23);
+				setTimeUpdatExpicedDem.setMinutes(59);
+				setTimeUpdatExpicedDem.setSeconds(59);
+				edo.setExpiredDem(setTimeUpdatExpicedDem);
 				edoAuditLog.setFieldName("Expired Dem");
 				EdoAuditLog edoAuditLogCheckValue = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
 				edoAuditLog.setOldValue(edoAuditLogCheckValue.getNewValue());
@@ -209,7 +208,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
 				edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
 				edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
-				edoAuditLog.setNewValue(setTimeUpdatExpicedDem.toString());
+				edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
 				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 			}
 			edoService.updateEdo(edo);
