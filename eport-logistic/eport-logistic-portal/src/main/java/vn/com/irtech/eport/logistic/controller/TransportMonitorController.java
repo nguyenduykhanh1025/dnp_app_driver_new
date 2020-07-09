@@ -10,9 +10,12 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 @Controller
 @RequestMapping("/logistic/transportMonitor")
 public class TransportMonitorController extends LogisticBaseController{
+  
+  private final String PREFIX = "logistic/transportMonitor";
+
   @GetMapping("/")
   public String index() {
-    return "/logistic/transportMonitor/index";
+    return PREFIX + "/index";
   }
 
   @GetMapping("/searchTruck")
