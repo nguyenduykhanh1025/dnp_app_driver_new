@@ -8,24 +8,23 @@ $(document).ready(function () {
   loadTable();
   loadTableByContainer();
 
-  $('#searchAll').keyup(function (event) {
+  $("#searchAll").keyup(function (event) {
     if (event.keyCode == 13) {
-      edo.containerNumber = $('#searchAll').val().toUpperCase();
-      edo.consignee = $('#searchAll').val().toUpperCase();
-      edo.vessel = $('#searchAll').val().toUpperCase();
-      edo.voyNo = $('#searchAll').val().toUpperCase();
+      edo.containerNumber = $("#searchAll").val().toUpperCase();
+      edo.consignee = $("#searchAll").val().toUpperCase();
+      edo.vessel = $("#searchAll").val().toUpperCase();
+      edo.voyNo = $("#searchAll").val().toUpperCase();
       loadTableByContainer(bill);
     }
-    });
-    $('#searchBillNo').keyup(function (event) {
-      if (event.keyCode == 13) {
-          billOfLading = $('#searchBillNo').val().toUpperCase();
-          if(billOfLading == "")
-          {
-             return;
-          }
-          loadTable(billOfLading);
+  });
+  $("#searchBillNo").keyup(function (event) {
+    if (event.keyCode == 13) {
+      billOfLading = $("#searchBillNo").val().toUpperCase();
+      if (billOfLading == "") {
+        return;
       }
+      loadTable(billOfLading);
+    }
   });
 });
 
@@ -65,7 +64,7 @@ function loadTable(billOfLading) {
 }
 
 function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading
+  edo.billOfLading = billOfLading;
   $("#dgContainer").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
@@ -85,14 +84,14 @@ function loadTableByContainer(billOfLading) {
         type: opts.method,
         url: opts.url,
         contentType: "application/json",
-        accept: 'text/plain',
-        dataType: 'text',
+        accept: "text/plain",
+        dataType: "text",
         data: JSON.stringify({
           pageNum: param.page,
           pageSize: param.rows,
           orderByColumn: param.sort,
           isAsc: param.order,
-          data: edo
+          data: edo,
         }),
         success: function (data) {
           success(JSON.parse(data));
@@ -143,7 +142,7 @@ function getSelectedRow() {
 }
 
 function stringToDate(dateStr) {
-  let dateParts = dateStr.split('/');
+  let dateParts = dateStr.split("/");
   return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 }
 
@@ -172,15 +171,15 @@ $.event.special.inputchange = {
 };
 
 $("#fromDate").on("inputchange", function () {
-  edo.fromDate = stringToDate($('#fromDate').val()).getTime();
+  edo.fromDate = stringToDate($("#fromDate").val()).getTime();
   loadTableByContainer(bill);
 });
 
 $("#toDate").on("inputchange", function () {
-  let toDate = stringToDate($('#toDate').val());
-  if ($('#fromDate').val() != '' && stringToDate($('#fromDate').val()).getTime() > toDate.getTime()) {
-    $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
-    $('#toDate').val('');
+  let toDate = stringToDate($("#toDate").val());
+  if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
+    $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
+    $("#toDate").val("");
   } else {
     toDate.setHours(23, 59, 59);
     edo.toDate = toDate.getTime();
@@ -188,35 +187,29 @@ $("#toDate").on("inputchange", function () {
   }
 });
 
-
 function formatToYDMHMS(date) {
-  let temp = date.substring(0,10);
-  return temp.split("-").reverse().join("/") + date.substring(10,19);
+  let temp = date.substring(0, 10);
+  return temp.split("-").reverse().join("/") + date.substring(10, 19);
 }
 
-function formatStatus(value)
-{
-    switch(value)
-    {
-        case 0:
-            return "<span class='label label-success'>Trạng thái 0</span>";
-            break;
-        case 1:
-            return "<span class='label label-success'>Trạng thái 1</span>";
-            break;
-        case 2:
-            return "<span class='label label-success'>Trạng thái 2</span>";
-            break;
-        case 3:
-            return "<span class='label label-success'>Trạng thái 2</span>";
-            break;
-        case 4:
-            return "<span class='label label-success'>Trạng thái 2</span>";
-            break;
-        default:
-            return "<span class='label label-warning'>Đang chờ</span>";
-
-    }
+function formatStatus(value) {
+  switch (value) {
+    case 0:
+      return "<span class='label label-success'>Trạng thái 0</span>";
+      break;
+    case 1:
+      return "<span class='label label-success'>Trạng thái 1</span>";
+      break;
+    case 2:
+      return "<span class='label label-success'>Trạng thái 2</span>";
+      break;
+    case 3:
+      return "<span class='label label-success'>Trạng thái 2</span>";
+      break;
+    case 4:
+      return "<span class='label label-success'>Trạng thái 2</span>";
+      break;
+    default:
+      return "<span class='label label-warning'>Đang chờ</span>";
+  }
 }
-
-

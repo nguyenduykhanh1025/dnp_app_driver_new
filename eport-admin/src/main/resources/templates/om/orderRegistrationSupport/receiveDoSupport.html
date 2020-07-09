@@ -1,15 +1,49 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <th:block th:include="include :: header('Receive Do Support')" />
+  <head>
+    <th:block th:include="include :: header('Custom Support')" />
+    <th:block th:include="include :: easyui-css" />
+    <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet" />
     <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
-</head>
+  </head>
 
-<body>
-    
+  <body class="container-fluid white-bg page-receiveDO">
+    <section class="header mb20">
+      <div class="row">
+        <div class="col-md-12">
+          <label class="checkbox-inline">
+            <h4><label>Trạng thái DO</label></h4>
+            <input
+              id="toggle-status"
+              type="checkbox"
+              data-on="Đã nhận DO"
+              data-off="Chưa nhận"
+              data-onstyle="success"
+              data-offstyle="default"
+            />
+          </label>
+        </div>
+      </div>
+    </section>
+    <section class="content clearfix">
+      <table id="dg" pageList="[20, 50, 100, 150, 200]">
+        <thead>
+          <tr>
+            <th data-options="field:'id', halign:'center', resizable:true, fixed:true" width="120">Số thứ tự</th>
+            <th data-options="field:'logisticGroup', halign:'center', align:'center'" width="200" sortable="true">Đơn vị logistic</th>
+            <th data-options="field:'blNo', halign:'center', fixed:'true'" width="150" sortable="true">Bill No</th>
+            <th data-options="field:'sampleField1', align:'center', fixed:'true'" width="150" sortable="true">Sample Data 1</th>
+            <th data-options="field:'sampleField2', align:'center', fixed:'true'" width="150" sortable="true">Sample Data 2</th>
+            <th data-options="field:'sampleField2', align:'center', fixed:'true'" width="150" sortable="true">Sample Data 3</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
     <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/receiveDoSupport.js}"></script>
-</body>
-
+  </body>
 </html>

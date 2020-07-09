@@ -1,15 +1,48 @@
-const PREFIX = "/logistic/container/status";
+const PREFIX = ctx + "logistic/container/status";
+var shipmentDetail = new Object();
 
-$(function () {
+$(document).ready(function() {
     loadTable();
+
+    $('.from-date').datetimepicker({
+        language: 'en',
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        pickTime: false,
+        minView: 2
+    });
+
+    $('.to-date').datetimepicker({
+        language: 'en',
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        pickTime: false,
+        minView: 2
+    });
+
+    $('#searchAllInput').keyup(function(event) {
+        if (event.keyCode == 13) {
+            shipmentDetail.blNo = $('#searchAllInput').val().toUpperCase();
+            shipmentDetail.bookingNo = $('#searchAllInput').val().toUpperCase();
+            shipmentDetail.containerNo = $('#searchAllInput').val().toUpperCase();
+            shipmentDetail.sztp = $('#searchAllInput').val().toUpperCase();
+            shipmentDetail.vslNm = $('#searchAllInput').val().toUpperCase();
+            shipmentDetail.voyNo = $('#searchAllInput').val().toUpperCase();
+            loadTable();
+        }
+    });
 });
 
 function loadTable() {
     $("#dg").datagrid({
         url: PREFIX + "/list",
-        method: "GET",
+        method: "POST",
         singleSelect: true,
-        height: document.documentElement.clientHeight - 70,
+        height: document.documentElement.clientHeight - 110,
         clientPaging: false,
         pagination: true,
         rownumbers: true,
@@ -23,38 +56,94 @@ function loadTable() {
             $.ajax({
                 type: opts.method,
                 url: opts.url,
-                data: {},
-                dataType: "json",
+                contentType: "application/json",
+                accept: 'text/plain',
+                dataType: 'text',
+                data: JSON.stringify({
+                    pageNum: param.page,
+                    pageSize: param.rows,
+                    orderByColumn: param.sort,
+                    isAsc: param.order,
+                    data: shipmentDetail
+                }),
                 success: function (data) {
-                    success(data);
+                    success(JSON.parse(data));
                 },
                 error: function () {
                     error.apply(this, arguments);
                 },
             });
+            $("#dg").datagrid("hideColumn", "id");
         },
     });
 }
 
+function refresh() {
+    $('#searchAllInput').val('');
+    $('#seviceTypeSelect').val('');
+    $('#paymentTypeSelect').val('');
+    $('#paymentStatusSelect').val('');
+    $('#fromDate').val('');
+    $('#toDate').val('');
+    shipmentDetail = new Object();
+    loadTable();
+}
 
-function formatStatus(value)
-{
-    switch(value)
-    {
+function formatServiceType(value) {
+    switch (value) {
         case 1:
-            return "<span class='label label-success'>Trạng thái 1</span>";
-            break;
+            return 'Bốc Hàng';
         case 2:
-            return "<span class='label label-success'>Trạng thái 2</span>";
-            break;
+            return 'Hạ Rỗng';
         case 3:
-            return "<span class='label label-success'>Trạng thái 2</span>";
-            break;
+            return 'Bốc Rỗng';
         case 4:
-            return "<span class='label label-success'>Trạng thái 2</span>";
-            break;
-        default:
-            return "<span class='label label-warning'>Không xác định</span>";
-
+            return 'Hạ Hàng';
     }
+}
+
+function formatDate(value) {
+    return value.substring(8, 10)+'/'+value.substring(5, 7)+'/'+value.substring(0, 4)+value.substring(10, 19);
+}
+function changeServiceType() {
+    shipmentDetail.serviceType = $('#seviceTypeSelect').val();
+    loadTable();
+}
+
+function changePaymentType() {
+    shipmentDetail.payType = $('#paymentTypeSelect').val();
+    loadTable();
+}
+
+function changePaymentStatus() {
+    shipmentDetail.paymentStatus = $('#paymentStatusSelect').val();
+    loadTable();
+}
+
+function changeFromDate() {
+    let fromDate = stringToDate($('.from-date').val());
+    if ($('.to-date').val() != '' && stringToDate($('.to-date').val()).getTime() < fromDate.getTime()) {
+        $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
+        $('.from-date').val('');
+    } else {
+        shipmentDetail.fromDate = fromDate.getTime();
+        loadTable();
+    }
+}
+
+function changeToDate() {
+    let toDate = stringToDate($('.to-date').val());
+    if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
+        $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
+        $('.to-date').val('');
+    } else {
+        toDate.setHours(23, 59, 59);
+        shipmentDetail.toDate = toDate.getTime();
+        loadTable();
+    }
+}
+
+function stringToDate(dateStr) {
+    let dateParts = dateStr.split('/');
+    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 }

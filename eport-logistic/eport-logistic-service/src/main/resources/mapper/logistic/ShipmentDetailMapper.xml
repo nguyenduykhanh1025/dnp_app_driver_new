@@ -45,6 +45,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="payType"    column="pay_type"   />
+        <result property="assignNumber"    column="assign_number"   />
+        <result property="serviceType"    column="service_type"   />
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
@@ -345,7 +348,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{containerNo}
         </foreach>
     </select> -->
-    <select id="getShipmentDetailListForAssign" parameterType="ShipmentDetail" resultType="ShipmentDetail" >
+    <select id="getShipmentDetailListForAssign" parameterType="ShipmentDetail" resultType="ShipmentDetail">
         select id,
         shipment_id as shipmentId,
         logistic_group_id as logisticGroupId,
@@ -389,40 +392,62 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (select count(*) from pickup_assign p where p.shipment_detail_id = s.id)as driverAmount
         from shipment_detail s
         <where>  
-        <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
-        <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
-        <if test="processOrderId != null  and processOrderId != ''"> and process_order_id = #{processOrderId}</if>
-        <if test="registerNo != null  and registerNo != ''"> and register_no = #{registerNo}</if>
-        <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
-        <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
-        <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
-        <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
-        <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
-        <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
-        <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
-        <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
-        <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
-        <if test="wgt != null "> and wgt = #{wgt}</if>
-        <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
-        <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
-        <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
-        <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
-        <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
-        <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
-        <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
-        <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
-        <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
-        <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
-        <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
-        <if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
-        <if test="shiftingContNumber != null"> and shifting_cont_number = #{shiftingContNumber}</if>
-        <if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
-        <if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
-        <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
-        <if test="doStatus != null  and doStatus != ''"> and do_status = #{doStatus}</if>
-        <if test="doReceivedTime != null  and doReceivedTime != ''"> and do_received_time = #{doReceivedTime}</if>
-        <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
-        <if test="status != null "> and status = #{status}</if>
-    </where>
-</select>
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="processOrderId != null  and processOrderId != ''"> and process_order_id = #{processOrderId}</if>
+            <if test="registerNo != null  and registerNo != ''"> and register_no = #{registerNo}</if>
+            <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
+            <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
+            <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
+            <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
+            <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
+            <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
+            <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
+            <if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
+            <if test="shiftingContNumber != null"> and shifting_cont_number = #{shiftingContNumber}</if>
+            <if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
+            <if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
+            <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
+            <if test="doStatus != null  and doStatus != ''"> and do_status = #{doStatus}</if>
+            <if test="doReceivedTime != null  and doReceivedTime != ''"> and do_received_time = #{doReceivedTime}</if>
+            <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectContainerStatusList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
+        select s.*, p.pay_type as pay_type, p.service_type as service_type, count(a.shipment_detail_id) as assign_number
+        from shipment_detail s
+        left join process_order p on s.process_order_id = p.id
+        left join pickup_assign a on s.id = a.shipment_detail_id
+        <where>  
+            <if test="customStatus != null  and customStatus != ''"> and s.custom_status = #{customStatus}</if>
+            <if test="paymentStatus != null  and paymentStatus != ''"> and s.payment_status = #{paymentStatus}</if>
+            <if test="processStatus != null  and processStatus != ''"> and s.process_status = #{processStatus}</if>
+            <if test="doStatus != null  and doStatus != ''"> and s.do_status = #{doStatus}</if>
+            <if test="serviceType != null"> and p.service_type = #{serviceType}</if>
+            <if test="payType != null  and payType != ''"> and p.pay_type = #{payType}</if>
+            <if test="containerNo != null  and containerNo != ''"> and (upper(s.container_no) like concat('%', #{containerNo}, '%')</if>
+            <if test="sztp != null  and sztp != ''"> or s.sztp like concat('%', #{sztp}, '%')</if>
+            <if test="fe != null  and fe != ''"> or s.fe like concat('%', #{fe}, '%')</if>
+            <if test="bookingNo != null  and bookingNo != ''"> or s.booking_no like concat('%', #{bookingNo}, '%')</if>
+            <if test="blNo != null  and blNo != ''"> or s.bl_no like concat('%', #{blNo}, '%')</if>
+            <if test="vslNm != null  and vslNm != ''"> or s.vsl_nm like concat('%', #{vslNm}, '%')</if>
+            <if test="voyNo != null  and voyNo != ''"> or s.voy_no like concat('%', #{voyNo}, '%'))</if>
+        </where>
+    </select>
 </mapper>

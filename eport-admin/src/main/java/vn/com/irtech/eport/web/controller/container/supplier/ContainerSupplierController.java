@@ -50,6 +50,7 @@ public class ContainerSupplierController extends BaseController {
 			shipment = new Shipment();
 		}
 		shipment.setServiceType(3);
+		shipment.setStatus("2");
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}
@@ -80,7 +81,7 @@ public class ContainerSupplierController extends BaseController {
 					allUpdate = true;
 				}
 				if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
-					return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
+					return error("Cấp container thất bại từ container: " + shipmentDetail.getContainerNo());
 				}
 			}
 			if (!allUpdate) {
@@ -91,8 +92,8 @@ public class ContainerSupplierController extends BaseController {
 				shipment.setUpdateBy(ShiroUtils.getSysUser().getUserName());
 				shipmentService.updateShipment(shipment);
 			}
-			return success("Lưu khai báo thành công");
+			return success("Cấp container thành công");
 		}
-		return error("Lưu khai báo thất bại");
+		return error("Cấp container thất bại");
 	}
 }

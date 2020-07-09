@@ -6,67 +6,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <th:block th:include="include :: header('Container Status')" />
     <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <link th:href="@{/css/logistic/container/status/style.css}" rel="stylesheet" />
 </head>
-<style>
-    .white-bg {
-        padding-top: 10px;
-    }
-</style>
 <body class="container-fluid white-bg">
     <section class="filter">
         <div class="row section-header">
             <div class="form-group col-md-2 col-sm-2 col-xs-2">
-                <input type="text" class="form-control" placeholder="Search for field..." />
+                <input class="form-control" type="text" name="keyword" id="searchAllInput" placeholder="Tìm kiếm...">
             </div>
-
+            <div class="form-group col-md-2 col-sm-2 col-xs-2 opt-select">
+                <select class="form-control" onchange="changeServiceType()" name="seviceTypeSelect" id="seviceTypeSelect">
+                    <option value='' selected disabled>Chọn hình thức</option>
+                    <option value=''>Tất cả</option>
+                    <option value='1'>Nhận container hàng</option>
+                    <option value='2'>Giao container rỗng</option>
+                    <option value='3'>Nhận container rỗng</option>
+                    <option value='4'>Giao container hàng</option>
+                </select>
+            </div>
             <div class="form-group col-md-2 col-sm-2 col-xs-2">
-                <button class="btn btn-primary">
-                    <i class="fa fa-search"></i>&nbsp;Tìm kiếm
+                <select class="form-control" onchange="changePaymentType()" name="paymentTypeSelect" id="paymentTypeSelect">
+                    <option value='' selected disabled>PT Thanh toán</option>
+                    <option value="">Tất cả</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Credit">Credit</option>
+                </select>
+            </div>
+            <div class="form-group col-md-2 col-sm-2 col-xs-2">
+                <select class="form-control" onchange="changePaymentStatus()" name="paymentStatusSelect" id="paymentStatusSelect">
+                    <option value='' selected disabled>TT Thanh toán</option>
+                    <option value=''>Tất cả</option>
+                    <option value='Y'>Đã thanh toán</option>
+                    <option value='N'>Chưa thanh toán</option>
+                </select>
+            </div>
+            <div class="form-group col-md-1 col-sm-1 col-xs-1">
+                <input type="text" class="form-control from-date date" id="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" readonly>
+            </div>
+            <div class="form-group col-md-1 col-sm-1 col-xs-1">
+                <input type="text" class="form-control to-date date" id="toDate" onchange="changeToDate()" placeholder="Đến ngày" readonly>
+            </div>
+            <div class="form-group col-md-2 col-sm-2 col-xs-2">
+                <button class="btn btn-primary" onclick="loadTable()">
+                    <i class="fa fa-search"></i>
+                </button>
+                <button class="btn btn-warning" onclick="refresh()">
+                    <i class="fa fa-refresh"></i>
                 </button>
             </div>
-        </div>
+        </div>    
         <div class="row section-content">
-            <div class="col-md-12">
-                <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
+            <div>
+                <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]" fitColumns="true">
                     <thead>
                         <tr>
-                            <th data-options="field:'containerNo',align:'center'">
-                                Số container
-                            </th>
-                            <th data-options="field:'containerStatus',align:'center'">
-                                Trạng thái Cont
-                            </th>
-                            <th data-options="field:'sztp',align:'center'">
-                                Size / Type
-                            </th>
-                            <th data-options="field:'fe',align:'center'">
-                                Full / Empty
-                            </th>
-                            <th data-options="field:'bookingNo',align:'center'">
-                                Booking No
-                            </th>
-                            <th data-options="field:'sealNo',align:'center'">
-                               Seal No
-                            </th>
-                            <th data-options="field:'consignee',align:'center'">
-                                Khách hàng
-                            </th>
-                            <th data-options="field:'expiredDem',align:'center'">
-                                Hạn Lệnh
-                            </th>
-                            <th data-options="field:'Weight',align:'center'">
-                                Trọng lượng
-                            </th>
-                            <th data-options="field:'vslNm',align:'center'">
-                                Tàu
-                            </th>
-                            <th data-options="field:'Voyage',align:'center'">
-                                Chuyến
-                            </th>
-                            <th data-options="field:'status',align:'center',formatter : formatStatus">
-                                Trạng thái
-                            </th>
-                           
+                            <th data-options="field:'id', fixed: true" width="1"></th>
+                            <th data-options="field:'blNo', halign:'center', resizable: true" width="130">B/L No.</th>
+                            <th data-options="field:'bookingNo', halign:'center', resizable: true" width="130">Booking No.</th>
+                            <th data-options="field:'containerNo', halign:'center', resizable: true, fixed: true" width="110">Container No.</th>
+                            <th data-options="field:'sztp', halign:'center', resizable: true, fixed: true" width="100">Kích Thước</th>
+                            <th data-options="field:'serviceType', halign:'center', resizable: true, fixed: true, formatter: formatServiceType" width="100">Hình Thức</th>
+                            <th data-options="field:'vslNm', halign:'center', resizable: true, fixed: true" width="120">Tàu</th>
+                            <th data-options="field:'voyNo', halign:'center', resizable: true, fixed: true" width="100">Chuyến</th>
+                            <th data-options="field:'payType', halign:'center', resizable: true, fixed: true" width="130">PT. Thanh Toán</th>
+                            <th data-options="field:'paymentStatus', halign:'center', resizable: true, fixed: true" width="130">TT. Thanh Toán</th>
+                            <th data-options="field:'doStatus', halign:'center', resizable: true, fixed: true" width="120">TT. DO Gốc</th>
+                            <th data-options="field:'assignNumber', halign:'right', resizable: true, fixed: true" width="120">Số Xe Đã Điều</th>
+                            <th data-options="field: 'createTime', halign: 'center', resizable: true, fixed: true, formatter: formatDate" width="150">Ngày Tạo</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -76,6 +83,7 @@
     </section>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
     <script th:src="@{/js/logistic/container/status/index.js}"></script>
 </body>
 

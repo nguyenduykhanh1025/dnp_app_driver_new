@@ -10,35 +10,35 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 @RequestMapping("/om/order/support")
 public class OrderRegistrationSupportController extends BaseController {
 
-    private final String PREFIX = "om/orderRegistrationSupport";
+  private final String PREFIX = "om/orderRegistrationSupport";
 
-    @GetMapping()
-	public String getMainView() {
-		return PREFIX + "/index";
-	}
-    
-    @GetMapping("/custom")
-	public String getCustomSupport() {
-		return PREFIX + "/customSupport";
-    }
-    
-    @GetMapping("/driver")
-	public String getdriverSupport() {
-		return PREFIX + "/driverSupport";
-    }
-    
-    @GetMapping("/payment")
-	public String getpaymentSupport() {
-		return PREFIX + "/paymentSupport";
-    }
+  @GetMapping()
+  public String getMainView() {
+    return PREFIX + "/index";
+  }
 
-    @GetMapping("/do")
-	public String getReceiveDoSupport() {
-		return PREFIX + "/receiveDoSupport";
-    }
+  @GetMapping("/custom")
+  public String getCustomSupport() {
+    return PREFIX + "/customSupport";
+  }
 
-    @GetMapping("/verification")
-	public String getVerificationsupport() {
-		return PREFIX + "/verificationSupport";
-	}
+  @GetMapping("/driver")
+  public String getdriverSupport() {
+    return PREFIX + "/driverSupport";
+  }
+
+  @GetMapping("/payment")
+  public String getpaymentSupport() {
+    return PREFIX + "/paymentSupport";
+  }
+
+  @GetMapping("/do")
+  public String getReceiveDoSupport() {
+    return PREFIX + "/receiveDoSupport";
+  }
+
+  @GetMapping("/verification")
+  public String getVerificationsupport() {
+    return PREFIX + "/verificationSupport";
+  }
 }
