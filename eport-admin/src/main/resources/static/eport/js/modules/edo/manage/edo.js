@@ -1,4 +1,4 @@
-const PREFIX = ctx + "edo/manager";
+const PREFIX = ctx + "edo/manage";
 var bill;
 var edo = new Object();
 

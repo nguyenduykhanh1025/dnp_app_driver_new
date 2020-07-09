@@ -1,4 +1,4 @@
-const PREFIX = "/edo/manager";
+const PREFIX = "/edo/manage";
 var hot;
 var statusTable = false;
 var dataObj = null;
