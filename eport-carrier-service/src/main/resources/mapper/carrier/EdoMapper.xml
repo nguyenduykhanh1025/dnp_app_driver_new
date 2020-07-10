@@ -37,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <sql id="selectEdoVoByBillNo">
-        select DISTINCT bill_of_lading, business_unit, vessel, voy_no,  create_time from edo
+        select DISTINCT bill_of_lading, business_unit from edo
     </sql>
 
     <select id="selectEdoList" parameterType="Edo" resultMap="EdoResult">
