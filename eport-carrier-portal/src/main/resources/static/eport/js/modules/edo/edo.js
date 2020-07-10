@@ -112,7 +112,7 @@ function viewHistoryCont(id) {
 }
 function closedPopUp()
 {
-  layer.close();
+  $.modal.closedPopUp();
 }
 function viewUpdateCont(id) {
   $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 400);
