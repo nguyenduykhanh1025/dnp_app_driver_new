@@ -3,15 +3,15 @@
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
-    <link rel="stylesheet" th:href="@{/css/edo/style.css}" />
+    <!-- <link rel="stylesheet" th:href="@{/css/edo/style.css}" /> -->
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
     <link rel="stylesheet" th:href="@{/eport/css/edo.css}" />
   </head>
 
-  <body class="white-bg container-fluid">
+  <body class="gray-bg container-fluid">
     <div id="wrapper">
       <div class="row">
-        <div class="col-sm-12 select-table mt0 pt5">
+        <div class="col-sm-12 select-table mt0 pr5">
           <div class="col-sm-12 fixed-table-toolbar">
             <div class="bs-bars pull-left mb5 mt0"><input class="form-control" type="text" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" /></div>
             <div class="columns columns-right btn-group pull-right mb0 mt0">
@@ -39,11 +39,9 @@
               </div>
             </div>
           </div>
-          <div class="content-section">
-            <div class="table-container left-table">
-              <a class="btn-collapse"><i class="fa fa-caret-left"></i></a>
-              <table id="dg">
-                <thead>
+          <div class="col-sm-3 table-container table-left">
+            <table id="dg">
+              <thead>
                   <tr>
                     <th data-options="field:'billOfLading',align:'left'">
                       BILL OF LADING
@@ -59,7 +57,7 @@
                 </thead>
               </table>
             </div>
-            <div class="table-container right-table">
+            <div class="col-sm-9 table-container">
               <table id="dgContainer">
                 <thead>
                   <tr>
