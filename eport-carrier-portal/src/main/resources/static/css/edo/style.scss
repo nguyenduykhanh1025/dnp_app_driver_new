@@ -16,19 +16,8 @@ $darkgrey: #a9a9a9;
   justify-content: space-between;
   width: 100%;
   .left-table {
-    border-right: 1px solid $darkgrey;
-    padding-right: 20px;
-    position: relative;
-    width: 20%;
+    width: 30%;
     @include transition;
-    .btn-collapse {
-      display: block;
-      position: absolute;
-      color: $darkgrey;
-      font-size: 3em;
-      right: 0;
-      top: 45%;
-    }
   }
   
   .right-table {

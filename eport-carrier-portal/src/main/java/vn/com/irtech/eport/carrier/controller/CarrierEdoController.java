@@ -2,13 +2,10 @@ package vn.com.irtech.eport.carrier.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
@@ -200,7 +197,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 				segNo += 1;
 			}
-			if(edo.getDetFreeTime() != null)
+			if(edo.getDetFreeTime() != null && !("").equals(edo.getDetFreeTime().toString()))
 			{
 				edoAuditLog.setFieldName("Det Free Time");
 				EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
@@ -210,7 +207,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 				segNo += 1;
 			}
-			if(edo.getEmptyContainerDepot() != null)
+			if(edo.getEmptyContainerDepot() != null && !("").equals(edo.getEmptyContainerDepot().toString()))
 			{
 				edoAuditLog.setFieldName("Empty Container Depot");
 				EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
