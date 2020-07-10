@@ -1,0 +1,17 @@
+
+.table-container{
+  padding: 0px;
+}
+
+.mb-1{
+  margin-bottom: 1em;
+}
+
+#search-form li {
+	width: 250px;
+}
+
+#search-form input, #search-form select{
+  width: 180px;
+  float: right;
+}

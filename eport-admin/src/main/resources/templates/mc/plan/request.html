@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+  <th:block th:include="include :: header('Hỗ trợ Robot làm lệnh')" />
+  <th:block th:include="include :: easyui-css" />
+  <link th:href="@{/css/mc/plan/request.css}" rel="stylesheet" />
+</head>
+
+<body class="white-bg">
+  <div class="ui-layout-center">
+    <div class="container-div">
+      <div class="row">
+        <!-- Search area -->
+        <div class="col-sm-12 search-collapse mb-1">
+          <form id="search-form">
+            <div class="select-list">
+              <ul class="row">
+                <li>
+                  <span class="font-bold">FE </span>
+                  <select name="params[serviceType]">
+                    <option value="">Tất cả</option>
+                    <option value="4">Full in</option>
+                    <option value="2">Empty in</option>
+                  </select>
+                </li>
+                <li>
+                  <span class="font-bold">Số cont </span><input type="text" name="params[contNo]" />
+                </li>
+
+                <li>
+                  <span class="font-bold">Size/type </span><input type="text" name="params[sztp]" />
+                </li>
+
+                <li>
+                  <span class="font-bold">Tàu </span><input type="text" name="params[vslNm]" />
+                </li>
+
+                <li>
+                  <span class="font-bold">Chuyến </span><input type="text" name="params[voyNo]" />
+                </li>
+
+                <li>
+                  <span class="font-bold">Cảng dỡ </span><input type="text" name="params[dischargePort]" />
+                </li>
+
+                <li>
+                  <span class="font-bold">Chủ hàng </span><input type="text" name="params[consignee]" />
+                </li>
+
+                <li>
+                  <span class="font-bold">OPR </span><input type="text" name="params[opeCode]" />
+                </li>
+
+                <li>
+                  <a class="btn btn-primary btn-rounded btn-sm" id="btnSearch"><i class="fa fa-search">
+                      Tìm
+                      kiếm</i>&nbsp;</a>
+                  <a class="btn btn-warning btn-rounded btn-sm" id="btnRefresh"><i class="fa fa-refresh"> Làm
+                      mới</i>&nbsp;</a>
+                </li>
+              </ul>
+            </div>
+        </div>
+        </form>
+      </div>
+
+      <div class="row">
+        <!-- /table toolbar -->
+        <div class="col-sm-12 table-container">
+          <table id="dg" pageList="[20,50,80,200]">
+            <thead>
+              <tr>
+                <th
+                  data-options="field: 'serviceType', halign:'left', align:'left', fixed:true, formatter: formatServiceType"
+                  width="100" sortable="true">
+                  FE
+                </th>
+                <th data-options="field: 'containerNo', halign:'left', align:'left', formatter: formatContNo"
+                  width="150" sortable="true">
+                  Số container
+                </th>
+                <th data-options="field: 'sztp', halign:'left', align:'left', formatter: formatSztp" width="150"
+                  sortable="true">
+                  Size/type
+                </th>
+                <th data-options="field: 'vslNm', halign:'left', align:'left', formatter: formatVslNm" width="150"
+                  sortable="true">
+                  Tàu
+                </th>
+                <th data-options="field: 'voyNo', halign:'left', align:'left', formatter: formatVoyNo" width="150"
+                  sortable="true">
+                  Chuyến
+                </th>
+                <th data-options="field: 'dischargePort', halign:'left', align:'left', formatter: formatDischargePort"
+                  width="150" sortable="true">
+                  Cảng dỡ
+                </th>
+                <th data-options="field: 'consignee', halign:'left', align:'left', formatter: formatConsignee"
+                  width="150" sortable="true">
+                  Chủ hàng
+                </th>
+                <th data-options="field: 'opeCode', halign:'left', align:'left', formatter: formatOpeCode" width="150"
+                  sortable="true">
+                  OPR
+                </th>
+                <th data-options="field: 'id', halign:'left', align:'left', fixed:true, formatter: formatAction"
+                  width="200">
+                  Action
+                </th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+
+  <audio id="alertAudio">
+    <source th:src="@{/mp3/alert.mp3}" type="audio/ogg">
+    <source th:src="@{/mp3/alert.mp3}" type="audio/mpeg">
+  </audio>
+
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <script th:src="@{/eport/js/notification.js}"></script>
+  <th:block th:include="include :: websocket" />
+  <script th:src="@{/eport/js/modules/mc/plan/request.js}"></script>
+</body>
+
+</html>

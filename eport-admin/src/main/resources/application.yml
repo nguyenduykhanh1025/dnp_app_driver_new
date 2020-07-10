@@ -82,3 +82,14 @@ xss:
   enabled: true
   excludes: /system/notice/*
   urlPatterns: /system/*,/monitor/*,/tool/*
+  
+mqtt:
+  username: admin             
+  password: public            
+  host-url: tcp://localhost:1883                # The address and port of your own server need to be changed 
+
+websocket:
+   endpoint: /eport_admin
+   app-destination-prefix: /eport_admin
+   message-broker: /eport_admin
+

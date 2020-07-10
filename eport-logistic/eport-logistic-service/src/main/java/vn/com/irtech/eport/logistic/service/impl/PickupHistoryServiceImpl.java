@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,27 +36,25 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     }
 
     /**
-     * Get Pickup history List
-     * 
-     * @param pickupHistory Pickup history
-     * @return Pickup history
-     */
-    @Override
-    public List<PickupHistory> selectPickupHistoryList(PickupHistory pickupHistory)
-    {
-        return pickupHistoryMapper.selectPickupHistoryList(pickupHistory);
-    }
-    
-    /**
-     * Get Pickup history without yard position List
+     * Get list Pickup history without yard position
      * 
      * @return Pickup history List
      */
     @Override
-    public List<PickupHistory> selectPickupHistoryWithoutYardPostion(){
-    	return pickupHistoryMapper.selectPickupHistoryWithoutYardPostion();
+    public List<PickupHistory> selectPickupHistoryWithoutYardPostion(Map<String, String> searchParams){
+    	return pickupHistoryMapper.selectPickupHistoryWithoutYardPostion(searchParams);
     }
-
+    
+    /**
+     * Get list Pickup history has yard position
+     * 
+     * @return Pickup history List
+     */
+    @Override
+    public List<PickupHistory> selectPickupHistoryHasYardPostion(Map<String, String> searchParams){
+    	return pickupHistoryMapper.selectPickupHistoryHasYardPostion(searchParams);
+    }
+    
     /**
      * Add Pickup history
      * 
