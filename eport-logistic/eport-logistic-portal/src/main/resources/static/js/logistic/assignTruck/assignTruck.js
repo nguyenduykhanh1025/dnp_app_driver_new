@@ -143,6 +143,7 @@ function getSelectedShipment() {
         $("#edoFlg").text(row.edoFlg == 1 ? "eDO" : "DO");
         loadShipmentDetail(row.id);
         loadDriver(row.id);
+        loadOutSource(row.id);
     }
 }
 
@@ -340,33 +341,45 @@ function transferAllToIn(){
 }
 
 function save(){
-    let pickedIdDriverArray = [];
-    let shipmentId;
     let rows = $('#pickedDriverTable').datagrid('getRows');
-    let shipmentRow = $("#dg").datagrid("getSelected");
-    if(shipmentRow){
-        shipmentId = shipmentRow.id;
-    }
+    let pickupAssigns = [];
+    
     if(rows){
         for(let i=0; i< rows.length;i++){
-            pickedIdDriverArray.push(rows[i].id);
+            let object = new Object();
+            object.driverId = rows[i].id;
+            object.shipmentId = shipmentSelected.id;
+            pickupAssigns.push(object);
         }
+    }
+    if (getDataFromOutSource(true)){
+        if(outsources.length > 0){
+            for(let i=0;i < outsources.length; i++){
+                pickupAssigns.push(outsources[i])
+            }
+        }
+        $.modal.loading("Đang xử lý...");
         $.ajax({
             url: prefix + "/savePickupAssignFollowBatch",
             method: "post",
-            data:{
-                pickedIdDriverArray:pickedIdDriverArray,
-                shipmentId: shipmentId
-            },
+            contentType: "application/json",
+            data: JSON.stringify(pickupAssigns),
             success: function(result){
                 if(result.code == 0){
                     $.modal.msgSuccess(result.msg);
+                    getSelectedShipment()
                 }else{
                     $.modal.msgError(result.msg);
                 }
-            }
+                $.modal.closeLoading();
+            },
+            error: function (result) {
+                $.modal.alertError("Có lỗi trong quá trình lưu dữ liệu, vui lòng liên hệ admin.");
+                $.modal.closeLoading();
+            },
         })
     }
+
 }
 
 function formatAction(value, row, index) {
@@ -420,9 +433,10 @@ function checkForChanges(){
  //---------------------------------THUE NGOAI------------------------------------------------
  var dogrid = document.getElementById("container-grid"), hot;
  var config;
+ var outsources = [];
  function loadOutSource(shipmentId) {
     $.ajax({
-        url: prefix + "/out-source/batch" + shipmentId,
+        url: prefix + "/out-source/batch/" + shipmentId,
         method: "GET",
         success: function (data) {
             if (data.code == 0) {
@@ -438,7 +452,7 @@ function checkForChanges(){
 config = {
     stretchH: "all",
     height: "100%",
-    minRows: 2,
+    minRows: 5,
     maxRows: 20,
     width: "100%",
     minSpareRows: 1,
@@ -456,7 +470,7 @@ config = {
             case 1:
                 return '<span>Số điện thoại</span><span style="color: red;">(*)</span>';
             case 2:
-                return "Họ và tên";
+                return '<span>Họ và tên</span><span style="color: red;">(*)</span>';
             case 3:
                 return '<span>Xe đầu kéo</span><span style="color: red;">(*)</span>';
             case 4:
@@ -515,3 +529,54 @@ function onChange(changes, source) {
 }
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
+
+//GET DATA FROM HANDSOME
+function getDataFromOutSource(){
+    outsources = [];
+    let myTableData = hot.getSourceData();
+    let cleanedGridData = [];
+    let errorFlg = false;
+    for (let i = 0; i < myTableData.length; i++) {
+        if (Object.keys(myTableData[i]).length > 0) {
+            if (myTableData[i].phoneNumber || myTableData[i].fullName || myTableData[i].truckNo || myTableData[i].chassisNo) {
+                cleanedGridData.push(myTableData[i]);
+            }
+        }
+    }
+    $.each(cleanedGridData, function(index, object){
+        let outsource = new Object();
+        if(!object["phoneNumber"]){
+            $.modal.alertError("Số điện thoại hàng:" + (index + 1) + " không được trống!");
+            errorFlg = true;
+            return false;
+        }
+        if(!object["fullName"]){
+            $.modal.alertError("Họ tên hàng:" + (index + 1) + " không được trống!");
+            errorFlg = true;
+            return false;
+        }
+        if(!object["truckNo"]){
+            $.modal.alertError("Biển số xe đầu kéo hàng:" + (index + 1) +" không được trống!");
+            errorFlg = true;
+            return false;
+        }
+        if(!object["chassisNo"]){
+            $.modal.alertError("Biển số xe rơ mooc hàng:" + (index + 1) +" không được trống!");
+            errorFlg = true;
+            return false;
+        }
+        outsource.phoneNumber = object["phoneNumber"].trim();
+        outsource.driverOwner = object["driverOwner"];
+        outsource.truckNo = object["truckNo"].trim().toUpperCase();
+        outsource.fullName = object["fullName"].trim();
+        outsource.chassisNo = object["chassisNo"].trim().toUpperCase();
+        outsource.shipmentId = shipmentSelected.id
+        outsource.externalFlg = 1;
+        outsources.push(outsource);
+    })
+    if (errorFlg) {
+        return false;
+    } else {
+        return true;
+    }
+}
