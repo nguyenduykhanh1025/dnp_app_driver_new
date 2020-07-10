@@ -32,7 +32,7 @@ $(function () {
             billOfLading = $('#searchBillNo').val().toUpperCase();
             if(billOfLading == "")
             {
-               return;
+                loadTable();
             }
             loadTable(billOfLading);
         }
@@ -64,8 +64,6 @@ function loadTable(billOfLading) {
                 dataType: "json",
                 success: function (data) {
                     success(data);
-                    loadTableByContainer(billOfLading);
-
                 },
                 error: function () {
                     error.apply(this, arguments);
@@ -103,9 +101,19 @@ function formatAction(value, row, index) {
 }
 
 function viewHistoryCont(id) {
-  $.modal.open("History Container", PREFIX + "/history/" + id, 1000, 400);
+  var options = {
+    title: 'Lịch sử thay đổi thông tin',
+    width: "1000",
+    height: "400",
+    url: PREFIX + "/history/" + id,
+    callBack: closedPopUp
+  };
+  $.modal.openOptions(options);
 }
-
+function closedPopUp()
+{
+  layer.close();
+}
 function viewUpdateCont(id) {
   $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 400);
 }
@@ -121,6 +129,7 @@ function loadTableByContainer(billOfLading) {
         pageSize: 20,
         nowrap: false,
         striped: true,
+        rownumbers:true,
         loader: function (param, success, error) {
             var opts = $(this).datagrid("options");
             if (billOfLading == null) {
@@ -159,6 +168,8 @@ function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
   if (row) {
     bill = row.billOfLading;
+    edo.fromDate = "";
+    edo.toDate = "";
     loadTableByContainer(row.billOfLading);
   }
 }
@@ -192,12 +203,18 @@ $.event.special.inputchange = {
   },
 };
 
-$("#fromDate").on("inputchange", function () {
-  edo.fromDate = stringToDate($("#fromDate").val()).getTime();
-  loadTableByContainer(bill);
+$('#searchAll').keyup(function (event) {
+  if (event.keyCode == 13) {
+      edo.containerNumber = $('#searchAll').val().toUpperCase();
+      edo.consignee = $('#searchAll').val().toUpperCase();
+      edo.vessel = $('#searchAll').val().toUpperCase();
+      edo.voyNo = $('#searchAll').val().toUpperCase();
+      loadTableByContainer(bill);
+  }
 });
 
-$("#toDate").on("inputchange", function () {
+function searchInfoEdo() {
+  edo.fromDate = stringToDate($("#fromDate").val()).getTime();
   let toDate = stringToDate($("#toDate").val());
   if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
     $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
@@ -206,22 +223,14 @@ $("#toDate").on("inputchange", function () {
     toDate.setHours(23, 59, 59);
     edo.toDate = toDate.getTime();
     loadTableByContainer(bill);
-  }
-});
+  };
+  edo.containerNumber = $('#searchAll').val().toUpperCase();
+  edo.consignee = $('#searchAll').val().toUpperCase();
+  edo.vessel = $('#searchAll').val().toUpperCase();
+  edo.voyNo = $('#searchAll').val().toUpperCase();
+  loadTableByContainer(bill);
+}
 
-$(".btn-collapse").click(function () {
-  if ($(".left-table").width() == 0) {
-    $(".left-table").width("0%");
-    $(".right-table").width("78%");
-    $(".left-table").css("border-color", "#a9a9a9");
-    $(this).css({ transform: "rotate(360deg)" });
-    return;
-  }
-  $(".left-table").width(0);
-  $(".right-table").width("98%");
-  $(".left-table").css("border-color", "transparent");
-  $(this).css({ transform: "rotate(180deg)" });
-});
 
 function formatStatus(value)
 {
@@ -229,21 +238,18 @@ function formatStatus(value)
     {
         case 0:
             return "<span class='label label-success'>Trạng thái 0</span>";
-            break;
         case 1:
             return "<span class='label label-success'>Trạng thái 1</span>";
-            break;
         case 2:
             return "<span class='label label-success'>Trạng thái 2</span>";
-            break;
         case 3:
             return "<span class='label label-success'>Trạng thái 2</span>";
-            break;
         case 4:
             return "<span class='label label-success'>Trạng thái 2</span>";
-            break;
         default:
             return "<span class='label label-warning'>Đang chờ</span>";
 
     }
 }
+
+

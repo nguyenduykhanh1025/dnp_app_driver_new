@@ -24,8 +24,18 @@ function closeForm()
 
 function confirm()
 {
+    if($("#detFreeTime").val() < detFreeTime)
+    {
+        $.modal.alertError("Số ngày miễn lưu vỏ mới phải lớn hơn " + '</br>' + " số ngày miễn lưu vỏ hiện tại !!!")
+        return;
+    }
+    if(formatDateForSubmit($("#expiredDem").val()) < expiredDem)
+    {
+      $.modal.alertError("Hạn lệnh mới phải lớn hơn " + '</br>' + " hạn lệnh hiện tại !!!")
+        return;
+    }
     $.modal.confirm(
-        "Bạn có chắc chắn muốn cập nhật DO không?",
+        "Bạn có chắc chắn muốn cập nhật DO không? Hành động này không thể hoàn tác",
         function () {
           $.ajax({
             url: prefix + "/updateEdo",
@@ -38,18 +48,11 @@ function confirm()
                 emptyContainerDepot : $("#emptyContainerDepot").val() == emptyContainerDepot ? "" :  $("#emptyContainerDepot").val()
             },
             success: function (data) {
-              console.log(data);
               if (data.code == 0) {
-                $.modal.confirm("Cập nhật DO thành công!", function () {}, {
-                  title: "Thông báo",
-                  btn: ["Đồng Ý"],
-                })
+                  $.modal.alertSuccess("Cập nhật thành công");
               } else {
                 $.modal.alertError(data.msg)
               }
-              setTimeout(function(){
-                $.modal.close();
-              },600)
               
             },
             error: function (data) {
@@ -82,12 +85,10 @@ function formatDateForSubmit(value) {
 
 
   function validateUpdateDate(fromDate, toDate) {
-    console.log(fromDate + "/" + toDate)
     if (fromDate == toDate) {
       return 1;
     }
     return 0;
-
   }
 
 

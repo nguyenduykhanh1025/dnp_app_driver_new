@@ -53,7 +53,6 @@ function loadTable(billOfLading) {
         dataType: "json",
         success: function (data) {
           success(data);
-          loadTableByContainer(billOfLading);
         },
         error: function () {
           error.apply(this, arguments);
@@ -170,12 +169,8 @@ $.event.special.inputchange = {
   },
 };
 
-$("#fromDate").on("inputchange", function () {
+function searchInfoEdo() {
   edo.fromDate = stringToDate($("#fromDate").val()).getTime();
-  loadTableByContainer(bill);
-});
-
-$("#toDate").on("inputchange", function () {
   let toDate = stringToDate($("#toDate").val());
   if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
     $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
@@ -184,9 +179,13 @@ $("#toDate").on("inputchange", function () {
     toDate.setHours(23, 59, 59);
     edo.toDate = toDate.getTime();
     loadTableByContainer(bill);
-  }
-});
-
+  };
+  edo.containerNumber = $('#searchAll').val().toUpperCase();
+  edo.consignee = $('#searchAll').val().toUpperCase();
+  edo.vessel = $('#searchAll').val().toUpperCase();
+  edo.voyNo = $('#searchAll').val().toUpperCase();
+  loadTableByContainer(bill);
+}
 function formatToYDMHMS(date) {
   let temp = date.substring(0, 10);
   return temp.split("-").reverse().join("/") + date.substring(10, 19);
