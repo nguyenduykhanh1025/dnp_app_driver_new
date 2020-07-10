@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -154,7 +156,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
         if(assignList.size() != 0) {
         	for(PickupAssign i : assignList) {
 				//TH: custom theo batch
-				if(i.getShipmentDetailId() == null){
+				if(i.getShipmentDetailId() == null && i.getDriverId() != null){
 					driverList.add(driverAccountService.selectDriverAccountById(i.getDriverId()));
 				}
 			}
@@ -171,25 +173,41 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	@PostMapping("/savePickupAssignFollowBatch")
 	@Transactional
 	@ResponseBody
-	public AjaxResult savePickupAssignFollowBatch(@RequestParam( value = "pickedIdDriverArray[]", required = false) Long[] pickedIdDriverArray, Long shipmentId){
-		if(shipmentId == null || pickedIdDriverArray == null){
+	public AjaxResult savePickupAssignFollowBatch(@RequestBody List<PickupAssign> pickupAssigns){
+		if(pickupAssigns == null){
 			return error();
 		}
-		//check pickedIdDriverArray of current logistic 
-		List<DriverAccount> driverList = driverAccountService.getAssignedDrivers(pickedIdDriverArray);
-		if(driverList.size() !=0){
-			for(DriverAccount i : driverList){
-				if(!i.getLogisticGroupId().equals(getUser().getGroupId())){
-					return error();
+		int accountNumber = 0;
+		for(PickupAssign i :pickupAssigns){
+			if (i.getDriverId() != null) {
+				accountNumber++;
+			} else {
+				if (i.getPhoneNumber() == null || "".equals(i.getPhoneNumber().trim())) {
+					return error("Số điện thoại không được trống");
+				}
+				if (i.getFullName() == null || "".equals(i.getFullName().trim())) {
+					return error("Họ tên không được trống");
+				}
+				if (i.getTruckNo() == null || "".equals(i.getTruckNo().trim())) {
+					return error("Biển số xe đầu kéo không được trống");
+				}
+				if (i.getChassisNo() == null || "".equals(i.getChassisNo().trim())) {
+					return error("Biển số xe đầu rơ mooc không được trống");
 				}
 			}
+			i.setLogisticGroupId(getUser().getGroupId());
 		}
-		Shipment shipment  = shipmentService.selectShipmentById(shipmentId);
-		//check shipment of current user
+		//check driverId of current logistic
+		int check = driverAccountService.checkDriverOfLogisticGroup(pickupAssigns);
+		if(check != accountNumber){
+			return error("Có tài xế không tồn tại.");
+		}
+		//check shipmentId of current logistic
+		Shipment shipment = shipmentService.selectShipmentById(pickupAssigns.get(0).getShipmentId());
 		if(shipment != null && shipment.getLogisticAccountId().equals(getUser().getId())){
-			//delete default assign follow batch or last assign
+			//delete last assign follow batch
 			PickupAssign assignBatch = new PickupAssign();
-			assignBatch.setShipmentId(shipmentId);
+			assignBatch.setShipmentId(shipment.getId());
 			List<PickupAssign> assignlist = pickupAssignService.selectPickupAssignList(assignBatch);
 			if(assignlist.size() != 0 ){
 				for(PickupAssign i : assignlist){
@@ -199,13 +217,10 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 				}
 			}
 			// add custom assign follow batch
-			for(Long i : pickedIdDriverArray){
-				PickupAssign pickupAssign = new PickupAssign();
-				pickupAssign.setDriverId(i);
-				pickupAssign.setLogisticGroupId(shipment.getLogisticGroupId());
-				pickupAssign.setShipmentId(shipmentId);
-				pickupAssign.setExternalFlg(0L);//TODO
-				pickupAssignService.insertPickupAssign(pickupAssign);
+			for(int i = 0 ; i< pickupAssigns.size(); i ++){
+				pickupAssigns.get(i).setCreateBy(getUser().getFullName());
+				pickupAssigns.get(i).setCreateTime(new Date());
+				pickupAssignService.insertPickupAssign(pickupAssigns.get(i));
 			}
 			return success();
 		}
@@ -241,7 +256,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
         if(assignList.size() != 0) {
         	for(PickupAssign i : assignList) {
 				//TH: assign theo container
-				if(i.getShipmentDetailId() != null){
+				if(i.getShipmentDetailId() != null && i.getDriverId() != null){
 					driverList.add(driverAccountService.selectDriverAccountById(i.getDriverId()));
 				}
 			}
@@ -276,47 +291,58 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	@PostMapping("/savePickupAssignFollowContainer")
 	@Transactional
 	@ResponseBody
-	public AjaxResult savePickupAssignFollowContainer(@RequestParam( value = "pickedIdDriverArray[]", required = false) Long[] pickedIdDriverArray, PickupAssign pickupAssign){
-		AjaxResult ajaxResult = new AjaxResult();
-		if(pickupAssign == null && pickedIdDriverArray == null){
-			ajaxResult = error();
-			return ajaxResult;
+	public AjaxResult savePickupAssignFollowContainer(@RequestBody List<PickupAssign> pickupAssigns){
+		if(pickupAssigns == null){
+			return error();
 		}
-		//check pickedIdDriverArray of current logistic 
-		List<DriverAccount> driverList = driverAccountService.getAssignedDrivers(pickedIdDriverArray);
-		if(driverList.size() !=0){
-			for(DriverAccount i : driverList){
-				if(!i.getLogisticGroupId().equals(getUser().getGroupId())){
-					return error();
+		int accountNumber = 0; // so driver trong cty
+		for(PickupAssign i :pickupAssigns){
+			if (i.getDriverId() != null) {
+				accountNumber++;
+			} else {
+				if (i.getPhoneNumber() == null || "".equals(i.getPhoneNumber().trim())) {
+					return error("Số điện thoại không được trống");
+				}
+				if (i.getFullName() == null || "".equals(i.getFullName().trim())) {
+					return error("Họ tên không được trống");
+				}
+				if (i.getTruckNo() == null || "".equals(i.getTruckNo().trim())) {
+					return error("Biển số xe đầu kéo không được trống");
+				}
+				if (i.getChassisNo() == null || "".equals(i.getChassisNo().trim())) {
+					return error("Biển số xe đầu rơ mooc không được trống");
 				}
 			}
+			i.setLogisticGroupId(getUser().getGroupId());
 		}
-		Shipment shipment  = shipmentService.selectShipmentById(pickupAssign.getShipmentId());
-		//check shipment of current user
-		if(shipment.getLogisticAccountId().equals(getUser().getId())){
-			//delete last assign follow container (preoderPickup)
+		//check driverId of current logistic
+		int check = driverAccountService.checkDriverOfLogisticGroup(pickupAssigns);
+		if(check != accountNumber){
+			return error("Có tài xế không tồn tại.");
+		}
+		//check shipmentId of current logistic
+		Shipment shipment  = shipmentService.selectShipmentById(pickupAssigns.get(0).getShipmentId());
+		if(shipment != null && shipment.getLogisticAccountId().equals(getUser().getId())){
+			//delete last assign follow container
 			PickupAssign assignContainer = new PickupAssign();
-			assignContainer.setShipmentId(pickupAssign.getShipmentId());
-			assignContainer.setShipmentDetailId(pickupAssign.getShipmentDetailId());
+			assignContainer.setShipmentId(shipment.getId());
+			assignContainer.setShipmentDetailId(pickupAssigns.get(0).getShipmentDetailId());
 			List<PickupAssign> assignlist = pickupAssignService.selectPickupAssignList(assignContainer);
 			if(assignlist.size() != 0 ){
 				for(PickupAssign i : assignlist){
 						pickupAssignService.deletePickupAssignById(i.getId());
 				}
 			}
-			// add  assign follow container (preoderPickup)
-			for(Long i : pickedIdDriverArray){
-				PickupAssign assign = new PickupAssign();
-				assign.setDriverId(i);
-				assign.setLogisticGroupId(shipment.getLogisticGroupId());
-				assign.setShipmentId(pickupAssign.getShipmentId());
-				assign.setShipmentDetailId(pickupAssign.getShipmentDetailId());
-				assign.setExternalFlg(0L);//TODO
-				pickupAssignService.insertPickupAssign(assign);
+			// add  assign follow container (preoderPickup: receiveContFull)
+			for(int i = 0; i < pickupAssigns.size(); i ++){
+				pickupAssigns.get(i).setCreateBy(getUser().getFullName());
+				pickupAssigns.get(i).setCreateTime(new Date());
+				pickupAssignService.insertPickupAssign(pickupAssigns.get(i));
 			}
 			return success();
 		}
 		return error();
+		
 	}
 
 	@GetMapping("edit/driver/{id}")
@@ -446,22 +472,36 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		pickupAssign.setLogisticGroupId(getUser().getGroupId());
 		pickupAssign.setShipmentId(shipmentId);
 		List<PickupAssign> pickupAssigns = pickupAssignService.selectPickupAssignList(pickupAssign);
+		List<PickupAssign> outSourceForBatch = new ArrayList<PickupAssign>();
 		if(pickupAssigns.size() > 0){
 			for(PickupAssign i: pickupAssigns){
-				if(!i.getShipmentDetailId().equals(null)){
-					//remove assigned follow cont
-					pickupAssigns.remove(i);
+				if(i.getShipmentDetailId() == null) {
+					outSourceForBatch.add(i);
 				}
 			}
-			//assigned follow batch list
-			if(pickupAssigns.size() >0){
-				ajaxResult.put("outSourceList", pickupAssigns);
-				return ajaxResult;
-			}
-		}else{
-			//TH: not assign batch,cont yet
-			return error();
 		}
-		return error();
+		ajaxResult.put("outSourceList", outSourceForBatch);
+		return ajaxResult;
+	}
+
+	@GetMapping("/out-source/container/{shipmentId}")
+	@ResponseBody
+	public AjaxResult getOutSourcListForContainer(@PathVariable Long shipmentId){
+		AjaxResult ajaxResult = success();
+		PickupAssign pickupAssign = new PickupAssign();
+		pickupAssign.setExternalFlg(1L);
+		pickupAssign.setLogisticGroupId(getUser().getGroupId());
+		pickupAssign.setShipmentId(shipmentId);
+		List<PickupAssign> pickupAssigns = pickupAssignService.selectPickupAssignList(pickupAssign);
+		List<PickupAssign> outSourceForContainer = new ArrayList<PickupAssign>();
+		if(pickupAssigns.size() > 0){
+			for(PickupAssign i: pickupAssigns){
+				if(i.getShipmentDetailId() != null) {
+					outSourceForContainer.add(i);
+				}
+			}
+		}
+		ajaxResult.put("outSourceList", outSourceForContainer);
+		return ajaxResult;
 	}
 }
