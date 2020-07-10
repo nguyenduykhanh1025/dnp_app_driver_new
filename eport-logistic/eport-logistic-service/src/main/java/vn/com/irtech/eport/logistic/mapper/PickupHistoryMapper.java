@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 
@@ -28,13 +31,22 @@ public interface PickupHistoryMapper
      */
     public List<PickupHistory> selectPickupHistoryList(PickupHistory pickupHistory);
     
-    /**
-     * Get Pickup history without yard position List
-     * 
-     * @return Pickup history List
-     */
-    public List<PickupHistory> selectPickupHistoryWithoutYardPostion();
+	/**
+	 * Get list Pickup history without yard position
+	 * 
+	 * @return Pickup history List
+	 */
+	public List<PickupHistory> selectPickupHistoryWithoutYardPostion(
+			@Param("searchParams") Map<String, String> searchParams);
 
+	/**
+	 * Get list Pickup history has yard position
+	 * 
+	 * @return Pickup history List
+	 */
+	public List<PickupHistory> selectPickupHistoryHasYardPostion(
+			@Param("searchParams") Map<String, String> searchParams);
+	
     /**
      * Add Pickup history
      * 

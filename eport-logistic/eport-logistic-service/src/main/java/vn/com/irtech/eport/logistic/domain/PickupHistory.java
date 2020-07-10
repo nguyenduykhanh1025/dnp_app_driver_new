@@ -31,12 +31,8 @@ public class PickupHistory extends BaseEntity {
 	private Long shipmentId;
 
 	/** Shipment detail id 1 */
-	@Excel(name = "Shipment detail id 1")
-	private Long shipmentDetailId1;
-
-	/** Shipment detail id 2 */
-	@Excel(name = "Shipment detail id 2")
-	private Long shipmentDetailId2;
+	@Excel(name = "Shipment detail id")
+	private Long shipmentDetailId;
 
 	/** Driver id */
 	@Excel(name = "Driver id")
@@ -46,13 +42,9 @@ public class PickupHistory extends BaseEntity {
 	@Excel(name = "Assign ID")
 	private Long pickupAssignId;
 
-	/** Container no 1 */
-	@Excel(name = "Container no 1")
-	private String containerNo1;
-
-	/** Container no 2 */
-	@Excel(name = "Container no 2")
-	private String containerNo2;
+	/** Container no */
+	@Excel(name = "Container no")
+	private String containerNo;
 
 	/** Truck no */
 	@Excel(name = "Truck no")
@@ -62,13 +54,25 @@ public class PickupHistory extends BaseEntity {
 	@Excel(name = "Chassis no")
 	private String chassisNo;
 
-	/** Yard position 1 */
-	@Excel(name = "Yard position 1")
-	private String yardPosition1;
+	/** Area */
+	@Excel(name = "Area")
+	private String area;
 
-	/** Yard position 2 */
-	@Excel(name = "Yard position 2")
-	private String yardPosition2;
+	/** Bay */
+	@Excel(name = "Bay")
+	private String bay;
+
+	/** Block */
+	@Excel(name = "Block")
+	private String block;
+
+	/** Line */
+	@Excel(name = "Line")
+	private String line;
+
+	/** Tier */
+	@Excel(name = "Tier")
+	private String tier;
 
 	/** Status */
 	@Excel(name = "Status")
@@ -90,22 +94,24 @@ public class PickupHistory extends BaseEntity {
 	@Excel(name = "cancel Receipt Date", width = 30, dateFormat = "yyyy-MM-dd")
 	private Date cancelDeceiptDate;
 
+	/** planning Date */
+	@Excel(name = "planning Date", width = 30, dateFormat = "yyyy-MM-dd")
+	private Date planningDate;
+
 	private Shipment shipment;
 
-	private ShipmentDetail shipmentDetail1;
-
-	private ShipmentDetail shipmentDetail2;
+	private ShipmentDetail shipmentDetail;
 
 	private LogisticGroup logisticGroup;
 
 	private DriverAccount driver;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-    private Date fromDate;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date fromDate;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date toDate;
-	
+
 	private Integer serviceType;
 
 	private String blNo;
@@ -148,22 +154,6 @@ public class PickupHistory extends BaseEntity {
 		return shipmentId;
 	}
 
-	public Long getShipmentDetailId1() {
-		return shipmentDetailId1;
-	}
-
-	public void setShipmentDetailId1(Long shipmentDetailId1) {
-		this.shipmentDetailId1 = shipmentDetailId1;
-	}
-
-	public Long getShipmentDetailId2() {
-		return shipmentDetailId2;
-	}
-
-	public void setShipmentDetailId2(Long shipmentDetailId2) {
-		this.shipmentDetailId2 = shipmentDetailId2;
-	}
-
 	public void setDriverId(Long driverId) {
 		this.driverId = driverId;
 	}
@@ -180,22 +170,6 @@ public class PickupHistory extends BaseEntity {
 		return pickupAssignId;
 	}
 
-	public String getContainerNo1() {
-		return containerNo1;
-	}
-
-	public void setContainerNo1(String containerNo1) {
-		this.containerNo1 = containerNo1;
-	}
-
-	public String getContainerNo2() {
-		return containerNo2;
-	}
-
-	public void setContainerNo2(String containerNo2) {
-		this.containerNo2 = containerNo2;
-	}
-
 	public void setTruckNo(String truckNo) {
 		this.truckNo = truckNo;
 	}
@@ -210,22 +184,6 @@ public class PickupHistory extends BaseEntity {
 
 	public String getChassisNo() {
 		return chassisNo;
-	}
-
-	public String getYardPosition1() {
-		return yardPosition1;
-	}
-
-	public void setYardPosition1(String yardPosition1) {
-		this.yardPosition1 = yardPosition1;
-	}
-
-	public String getYardPosition2() {
-		return yardPosition2;
-	}
-
-	public void setYardPosition2(String yardPosition2) {
-		this.yardPosition2 = yardPosition2;
 	}
 
 	public void setStatus(Integer status) {
@@ -276,20 +234,12 @@ public class PickupHistory extends BaseEntity {
 		this.shipment = shipment;
 	}
 
-	public ShipmentDetail getShipmentDetail1() {
-		return shipmentDetail1;
+	public ShipmentDetail getShipmentDetail() {
+		return shipmentDetail;
 	}
 
-	public void setShipmentDetail1(ShipmentDetail shipmentDetail1) {
-		this.shipmentDetail1 = shipmentDetail1;
-	}
-
-	public ShipmentDetail getShipmentDetail2() {
-		return shipmentDetail2;
-	}
-
-	public void setShipmentDetail2(ShipmentDetail shipmentDetail2) {
-		this.shipmentDetail2 = shipmentDetail2;
+	public void setShipmentDetail(ShipmentDetail shipmentDetail) {
+		this.shipmentDetail = shipmentDetail;
 	}
 
 	public LogisticGroup getLogisticGroup() {
@@ -308,22 +258,22 @@ public class PickupHistory extends BaseEntity {
 		this.driver = driver;
 	}
 
-    public void setFromDate(Date fromDate) {
-        this.fromDate = fromDate;
-    }
-
-    public Date getFromDate() {
-        return fromDate;
-    }
-
-    public void setToDate(Date toDate) {
-        this.toDate = toDate;
-    }
-
-    public Date getToDate() {
-        return toDate;
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
 	}
-	
+
+	public Date getFromDate() {
+		return fromDate;
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+
+	public Date getToDate() {
+		return toDate;
+	}
+
 	public void setServiceType(Integer serviceType) {
 		this.serviceType = serviceType;
 	}
@@ -334,7 +284,7 @@ public class PickupHistory extends BaseEntity {
 
 	public void setBlNo(String blNo) {
 		this.blNo = blNo;
-	} 
+	}
 
 	public String getBlNo() {
 		return blNo;
@@ -396,24 +346,84 @@ public class PickupHistory extends BaseEntity {
 		return logisticGroupName;
 	}
 
+	public Long getShipmentDetailId() {
+		return shipmentDetailId;
+	}
+
+	public void setShipmentDetailId(Long shipmentDetailId) {
+		this.shipmentDetailId = shipmentDetailId;
+	}
+
+	public String getContainerNo() {
+		return containerNo;
+	}
+
+	public void setContainerNo(String containerNo) {
+		this.containerNo = containerNo;
+	}
+
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
+	}
+
+	public String getBay() {
+		return bay;
+	}
+
+	public void setBay(String bay) {
+		this.bay = bay;
+	}
+
+	public String getBlock() {
+		return block;
+	}
+
+	public void setBlock(String block) {
+		this.block = block;
+	}
+
+	public String getLine() {
+		return line;
+	}
+
+	public void setLine(String line) {
+		this.line = line;
+	}
+
+	public String getTier() {
+		return tier;
+	}
+
+	public void setTier(String tier) {
+		this.tier = tier;
+	}
+
+	public Date getPlanningDate() {
+		return planningDate;
+	}
+
+	public void setPlanningDate(Date planningDate) {
+		this.planningDate = planningDate;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
 				.append("logisticGroupId", getLogisticGroupId()).append("shipmentId", getShipmentId())
-				.append("shipmentDetailId1", getShipmentDetailId1()).append("shipmentDetailId2", getShipmentDetailId2())
-				.append("driverId", getDriverId()).append("pickupAssignId", getPickupAssignId())
-				.append("containerNo1", getContainerNo1()).append("containerNo2", getContainerNo2())
-				.append("truckNo", getTruckNo()).append("chassisNo", getChassisNo())
-				.append("yardPosition1", getYardPosition1()).append("yardPosition2", getYardPosition2())
+				.append("shipmentDetailId", getShipmentDetailId()).append("driverId", getDriverId())
+				.append("pickupAssignId", getPickupAssignId()).append("containerNo1", getContainerNo())
+				.append("truckNo", getTruckNo()).append("chassisNo", getChassisNo()).append("area", getArea())
 				.append("status", getStatus()).append("receiptDate", getReceiptDate())
 				.append("gateinDate", getGateinDate()).append("gateoutDate", getGateoutDate())
-				.append("cancelDeceiptDate", getCancelDeceiptDate())
-				.append("fromDate", getFromDate()).append("toDate", getToDate()).append("serviceType", getServiceType())
-				.append("blNo", getBlNo()).append("bookingNo", getBookingNo())
-				.append("sztp", getSztp()).append("vslNm", getVslNm()).append("voyNo", getVoyNo())
-				.append("driverName", getDriverName())
-				.append("driverPhoneNumber", getDriverPhoneNumber())
-				.append("logisticGroupName", getLogisticGroupName())
+				.append("cancelDeceiptDate", getCancelDeceiptDate()).append("fromDate", getFromDate())
+				.append("toDate", getToDate()).append("serviceType", getServiceType()).append("blNo", getBlNo())
+				.append("bookingNo", getBookingNo()).append("sztp", getSztp()).append("vslNm", getVslNm())
+				.append("voyNo", getVoyNo()).append("driverName", getDriverName())
+				.append("driverPhoneNumber", getDriverPhoneNumber()).append("logisticGroupName", getLogisticGroupName())
 				.toString();
 	}
 }

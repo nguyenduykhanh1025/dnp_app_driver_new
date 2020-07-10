@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+
+<head>
+    <th:block th:include="include :: header('Tạo plan')" />
+    <link th:href="@{/css/mc/plan/edit.css}" rel="stylesheet" />
+</head>
+
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="formInputPosition" name="formInputPosition">
+
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <label class="control-label">Số container: <span class="font-bold"
+                            th:text="${pickupHistory.containerNo}"></span></label>
+                </div>
+                <div class="col-sm-4">
+                    <label class="control-label">Size/type: <span class="font-bold"
+                            th:text="${pickupHistory.shipmentDetail.sztp}"></span></label>
+                </div>
+                <div class="col-sm-4">
+                    <label class="control-label">Khối lượng:
+                        <span class="font-bold"
+                            th:if="${pickupHistory.shipmentDetail.wgt == null or pickupHistory.shipmentDetail.wgt == 0}">Rỗng</span>
+                        <span class="font-bold"
+                            th:if="${pickupHistory.shipmentDetail.wgt &gt; 0}">[[${pickupHistory.shipmentDetail.wgt}]]
+                            tấn</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <label class="control-label">Tên tàu: <span class="font-bold"
+                            th:text="${pickupHistory.shipmentDetail.vslNm}"></span></label>
+                </div>
+                <div class="col-sm-4">
+                    <label class="control-label">Chuyến: <span class="font-bold"
+                            th:text="${pickupHistory.shipmentDetail.voyNo}"></span></label>
+                </div>
+                <div class="col-sm-4">
+                    <label class="control-label">Cảng dỡ: <span class="font-bold"
+                            th:text="${pickupHistory.shipmentDetail.dischargePort}"></span></label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <label class="control-label">Chủ hàng: <span class="font-bold"
+                            th:text="${pickupHistory.shipmentDetail.consignee}"></span></label>
+                </div>
+                <div class="col-sm-4">
+                    <label class="control-label">Operator Code: <span class="font-bold"
+                            th:text="${pickupHistory.shipmentDetail.opeCode}"></span></label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-4">
+                    <label class="control-label">Biển số xe đầu kéo: <span class="font-bold"
+                            th:text="${pickupHistory.truckNo}"></span></label>
+                </div>
+                <div class="col-sm-4">
+                    <label class="control-label">Biển số romooc: <span class="font-bold"
+                            th:text="${pickupHistory.chassisNo}"></span></label>
+                </div>
+            </div>
+
+            <hr>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th style="width: 20%" class="text-center">Block</th>
+                            <th style="width: 20%" class="text-center">Bay</th>
+                            <th style="width: 20%" class="text-center">Row</th>
+                            <th style="width: 20%" class="text-center">Tier</th>
+                            <th style="width: 20%" class="text-center">Area</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input class="form-control border-custom input-sm text-center" type="text" th:disabled="${viewOnly} == true"
+                        name="block" id="block" required>
+                            </td>
+                            <td>
+                                <input class="form-control border-custom input-sm text-center" type="text" th:disabled="${viewOnly} == true"
+                        name="bay" id="bay" required>
+                            </td>
+                            <td>
+                                <input class="form-control border-custom input-sm text-center" type="text" th:disabled="${viewOnly} == true"
+                        name="row" id="row" required>
+                            </td>
+                            <td>
+                                <input class="form-control border-custom input-sm text-center" type="text" th:disabled="${viewOnly} == true"
+                        name="tier" id="tier" required>
+                            </td>
+                            <td>
+                                <input class="form-control border-custom input-sm text-center" type="text" th:disabled="${viewOnly} == true"
+                        name="area" id="area" required>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript" th:inline="javascript">
+        var pickupHistory = /*[[${pickupHistory}]]*/;
+        var viewOnly = /*[[${viewOnly}]]*/;
+    </script>
+    <script th:src="@{/eport/js/modules/mc/plan/edit.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+.table-container{
+  padding: 0px;
+}
+
+.mb-1{
+  margin-bottom: 1em;
+}
+
+.select-time span{
+  margin-left: 0px;
+}
+
+#search-form input, #search-form select{
+  width: 100px;
+}

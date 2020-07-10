@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
+import java.util.Map;
 
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 
@@ -21,19 +22,18 @@ public interface IPickupHistoryService
     public PickupHistory selectPickupHistoryById(Long id);
 
     /**
-     * Get Pickup history List
-     * 
-     * @param pickupHistory Pickup history
-     * @return Pickup history List
-     */
-    public List<PickupHistory> selectPickupHistoryList(PickupHistory pickupHistory);
-    
-    /**
      * Get Pickup history without yard position List
      * 
      * @return Pickup history List
      */
-    public List<PickupHistory> selectPickupHistoryWithoutYardPostion();
+    public List<PickupHistory> selectPickupHistoryWithoutYardPostion(Map<String, String> searchParams);
+    
+    /**
+     * Get Pickup history has yard position
+     * 
+     * @return Pickup history List
+     */
+    public List<PickupHistory> selectPickupHistoryHasYardPostion(Map<String, String> searchParams);
 
     /**
      * Add Pickup history
