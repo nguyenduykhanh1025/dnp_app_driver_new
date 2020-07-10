@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.logistic.mapper.DriverAccountMapper;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
+import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.common.core.text.Convert;
 
@@ -101,4 +102,10 @@ public class DriverAccountServiceImpl implements IDriverAccountService {
     public List<DriverAccount> getAssignedDrivers(Long[] ids) {
         return driverAccountMapper.getAssignedDrivers(ids);
     }
+
+    @Override
+    public int checkDriverOfLogisticGroup(List<PickupAssign> pickupAssigns) {
+        return driverAccountMapper.checkDriverOfLogisticGroup(pickupAssigns);
+    }
+    
 }

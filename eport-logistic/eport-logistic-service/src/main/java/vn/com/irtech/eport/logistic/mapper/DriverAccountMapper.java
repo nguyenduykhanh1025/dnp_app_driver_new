@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
+import vn.com.irtech.eport.logistic.domain.PickupAssign;
 
 /**
  * Driver login infoMapper Interface
@@ -70,4 +71,6 @@ public interface DriverAccountMapper
     public int checkPhoneUnique(String phoneNumber);
     
     public List<DriverAccount> getAssignedDrivers(Long[] ids);
+
+    public int checkDriverOfLogisticGroup(List<PickupAssign> pickupAssigns);
 }
