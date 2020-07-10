@@ -6,6 +6,7 @@
     <th:block th:include="include :: header('Điều Xe Container chỉ định')" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/logistic/preoderPickupAssign/preoderPickupAssign.css}" rel="stylesheet" />
+    <th:block th:include="include :: handsontable-css" />
     <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
   </head>
   <body>
@@ -69,7 +70,7 @@
                         </thead>
                       </table>
                     </div>
-                    <div style="padding: 130px 0; text-align: center;">
+                    <div style="padding-top: 75px; text-align: center;">
                       <div>
                         <button style="margin-bottom: 10px; width: 60px;" onclick="transferAllToOut()">>>|</button>
                       </div>
@@ -88,17 +89,23 @@
                         <b style="margin: 0 auto;">Danh sách Xe điều</b>
                       </div>
                       <table id="pickedDriverTable" class="table" style="width:100%;" fitColumns="true"
-                      data-options="rownumbers:true,iconCls: 'icon-edit', toolbar: '#tb',url: 'datagrid_data1.json',method: 'get'">
+                      data-options="rownumbers:true,iconCls: 'icon-edit', toolbar: '#tb', url: 'datagrid_data1.json',method: 'get'">
                         <thead>
                           <tr>
                             <th data-options="field:'ck',checkbox:true, fixed:true" width="50"></th>
                             <th data-options="field:'mobileNumber',align:'right'" width="120">Số điện thoại</th>
                             <th data-options="field:'fullName',editor:'textbox'" width="150">Họ và Tên</th>
-                            <th data-options="field:'action', formatter: formatAction,align:'center',fixed:true" width="80">Hành động</th>
+                            <th data-options="field:'action', formatter: formatAction, align:'center', fixed:true" width="80">Hành động</th>
                         </tr>
                         </thead>
                       </table>
                     </div>
+                  </div>
+                  <div>
+                    <div>
+                      <div class="title" style="margin-top: 5px; margin-bottom: 5px;"><b style="color: black;">Thuê ngoài</b> </div>
+                    </div>
+                    <div id="container-grid" style="height: 150px;" class="hot handsontable htColumnHeaders"></div>
                   </div>
                 </div>
               </div>
@@ -112,6 +119,7 @@
       </div>
       <th:block th:include="include :: footer" />
       <th:block th:include="include :: easyui-js" />
+      <th:block th:include="include :: handsontable-js" />
       <script th:src="@{/js/logistic/assignTruck/preoderPickupAssign.js}"></script>
       <script type="text/javascript" th:inline="javascript">
         var shipmentDetail = /*[[${shipmentDetail}]]*/;

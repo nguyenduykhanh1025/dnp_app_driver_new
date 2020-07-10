@@ -712,14 +712,14 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
 
   let temProcessOrderIds = [];
   processOrderIds = '';
-  for (let i = 0; i < checkList.length; i++) {
-    if (Object.keys(myTableData[i]).length > 0) {
-      if (myTableData[i].processOrderId != null && !temProcessOrderIds.includes(myTableData[i].processOrderId)) {
-        temProcessOrderIds.push(myTableData[i].processOrderId);
-        processOrderIds += myTableData[i].processOrderId + ',';
+  $.each(cleanedGridData, function (index, object) {
+    for (let i=0; i<regiterNos.length; i++) {
+      if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"]) && regiterNos[i] == object["registerNo"]) {
+        temProcessOrderIds.push(object["processOrderId"]);
+        processOrderIds += object["processOrderId"] + ',';
       }
     }
-  }
+  });
 
   if (processOrderIds != '') {
     processOrderIds.substring(0, processOrderIds.length - 1);
@@ -755,6 +755,11 @@ function getDataFromTable(isValidate) {
   dnDepot = false;
   let isSaved = false;
   let currentEmptyDepot = '';
+  let consignee, emptydepot;
+  if (cleanedGridData.length > 0) {
+    consignee = cleanedGridData[0].consignee;
+    emptydepot = cleanedGridData[0].emptyDepot;
+  }
   $.each(cleanedGridData, function (index, object) {
     let shipmentDetail = new Object();
     if (isValidate && object["delFlag"] == null) {
@@ -774,8 +779,18 @@ function getDataFromTable(isValidate) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn nơi hạ vỏ!");
         errorFlg = true;
         return false;
+      } else if (consignee != object["consignee"]) {
+        $.modal.alertError("Tên chủ hàng không được khác nhau!");
+        errorFlg = true;
+        return false;
+      } else if (emptydepot != object["emptyDepot"]) {
+        $.modal.alertError("Nơi hạ vỏ không được khác nhau!");
+        errorFlg = true;
+        return false;
       }
     }
+    consignee = object["consignee"];
+    emptydepot = object["emptyDepot"];
     let expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
     shipmentDetail.blNo = shipmentSelected.blNo;
     shipmentDetail.containerNo = object["containerNo"];
@@ -1052,8 +1067,8 @@ function finishVerifyForm(result) {
     connectToWebsocketServer();
 
   } else {
-    $.modal.msgError(result.msg);
     reloadShipmentDetail();
+    $.modal.alertError(result.msg);
   }
 }
 
@@ -1075,6 +1090,8 @@ function onConnected() {
 function onMessageReceived(payload) {
   let message = JSON.parse(payload.body);
   if (message.code != 0) {
+    reloadShipmentDetail();
+
     $.modal.alertError(message.msg);
 
     // Close loading
@@ -1082,11 +1099,11 @@ function onMessageReceived(payload) {
 
     // Close websocket connection 
     $.websocket.disconnect(onDisconnected);
-
-    reloadShipmentDetail();
   } else {
     orderNumber--;
     if (orderNumber == 0) {
+      reloadShipmentDetail();
+
       $.modal.alertSuccess(message.msg);
 
       // Close loading
@@ -1094,8 +1111,6 @@ function onMessageReceived(payload) {
 
       // Close websocket connection 
       $.websocket.disconnect(onDisconnected);
-
-      reloadShipmentDetail();
     }
   }
 }

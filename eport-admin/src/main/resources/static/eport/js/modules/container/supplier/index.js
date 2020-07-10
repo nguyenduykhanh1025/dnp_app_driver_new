@@ -324,29 +324,33 @@ function getDataFromTable() {
 
 function saveInput() {
     if (getDataFromTable()) {
-        $.modal.loading("Đang xử lý...");
-        $.ajax({
-            url: PREFIX + "/shipment/" + shipmentSelected.id + "/shipment-detail",
-            method: "post",
-            contentType: "application/json",
-            accept: 'text/plain',
-            data: JSON.stringify(shipmentDetails),
-            dataType: 'text',
-            success: function (data) {
-                var result = JSON.parse(data);
-                if (result.code == 0) {
-                    $.modal.msgSuccess(result.msg);
-                    loadShipmentDetail(shipmentSelected.id);
-                } else {
-                    $.modal.msgError(result.msg);
-                }
-                $.modal.closeLoading();
-            },
-            error: function (result) {
-                $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-                $.modal.closeLoading();
-            },
-        });
+        if (shipmentDetails.length == shipmentSelected.containerAmount) {
+            $.modal.loading("Đang xử lý...");
+            $.ajax({
+                url: PREFIX + "/shipment/" + shipmentSelected.id + "/shipment-detail",
+                method: "post",
+                contentType: "application/json",
+                accept: 'text/plain',
+                data: JSON.stringify(shipmentDetails),
+                dataType: 'text',
+                success: function (data) {
+                    var result = JSON.parse(data);
+                    if (result.code == 0) {
+                        $.modal.msgSuccess(result.msg);
+                        loadShipmentDetail(shipmentSelected.id);
+                    } else {
+                        $.modal.msgError(result.msg);
+                    }
+                    $.modal.closeLoading();
+                },
+                error: function (result) {
+                    $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+                    $.modal.closeLoading();
+                },
+            });
+        } else {
+            $.modal.alertError("Bạn chưa nhập đủ container yêu cầu.");
+        }
     }
 }
 

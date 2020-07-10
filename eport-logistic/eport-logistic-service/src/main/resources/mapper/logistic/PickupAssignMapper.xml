@@ -12,6 +12,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="shipmentDetailId"    column="shipment_detail_id"    />
         <result property="externalFlg"    column="external_flg"    />
         <result property="externalSecretCode"    column="external_secret_code"    />
+        <result property="driverOwner"    column="driver_owner"    />
+        <result property="phoneNumber"    column="phone_number"    />
+        <result property="fullName"    column="full_name"    />
         <result property="truckNo"    column="truck_no"    />
         <result property="chassisNo"    column="chassis_no"    />
         <result property="remark"    column="remark"    />
@@ -21,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
     <sql id="selectPickupAssignVo">
-        select id, logistic_group_id, shipment_id, driver_id, shipment_detail_id, external_flg, external_secret_code, truck_no, chassis_no, remark, create_by, create_time, update_by, update_time from pickup_assign
+        select id, logistic_group_id, shipment_id, driver_id, shipment_detail_id, external_flg, external_secret_code, driver_owner, phone_number, full_name, truck_no, chassis_no, remark, create_by, create_time, update_by, update_time from pickup_assign
     </sql>
 
     <select id="selectPickupAssignList" parameterType="PickupAssign" resultMap="PickupAssignResult">
@@ -33,6 +36,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="shipmentDetailId != null "> and shipment_detail_id = #{shipmentDetailId}</if>
             <if test="externalFlg != null "> and external_flg = #{externalFlg}</if>
             <if test="externalSecretCode != null  and externalSecretCode != ''"> and external_secret_code = #{externalSecretCode}</if>
+            <if test="driverOwner != null  and driverOwner != ''"> and driver_owner = #{driverOwner}</if>
+            <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
+            <if test="fullName != null  and fullName != ''"> and full_name like concat('%', #{fullName}, '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
         </where>
@@ -52,6 +58,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="shipmentDetailId != null ">shipment_detail_id,</if>
             <if test="externalFlg != null ">external_flg,</if>
             <if test="externalSecretCode != null  and externalSecretCode != ''">external_secret_code,</if>
+            <if test="driverOwner != null  and driverOwner != ''">driver_owner,</if>
+            <if test="phoneNumber != null  and phoneNumber != ''">phone_number,</if>
+            <if test="fullName != null  and fullName != ''">full_name,</if>
             <if test="truckNo != null  and truckNo != ''">truck_no,</if>
             <if test="chassisNo != null  and chassisNo != ''">chassis_no,</if>
             <if test="remark != null  and remark != ''">remark,</if>
@@ -67,6 +76,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="shipmentDetailId != null ">#{shipmentDetailId},</if>
             <if test="externalFlg != null ">#{externalFlg},</if>
             <if test="externalSecretCode != null  and externalSecretCode != ''">#{externalSecretCode},</if>
+            <if test="driverOwner != null  and driverOwner != ''">#{driverOwner},</if>
+            <if test="phoneNumber != null  and phoneNumber != ''">#{phoneNumber},</if>
+            <if test="fullName != null  and fullName != ''">#{fullName},</if>
             <if test="truckNo != null  and truckNo != ''">#{truckNo},</if>
             <if test="chassisNo != null  and chassisNo != ''">#{chassisNo},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
@@ -86,6 +98,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="shipmentDetailId != null ">shipment_detail_id = #{shipmentDetailId},</if>
             <if test="externalFlg != null ">external_flg = #{externalFlg},</if>
             <if test="externalSecretCode != null  and externalSecretCode != ''">external_secret_code = #{externalSecretCode},</if>
+            <if test="driverOwner != null  and driverOwner != ''">driver_owner = #{driverOwner},</if>
+            <if test="phoneNumber != null  and phoneNumber != ''">phone_number = #{phoneNumber},</if>
+            <if test="fullName != null  and fullName != ''">full_name = #{fullName},</if>
             <if test="truckNo != null  and truckNo != ''">truck_no = #{truckNo},</if>
             <if test="chassisNo != null  and chassisNo != ''">chassis_no = #{chassisNo},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>

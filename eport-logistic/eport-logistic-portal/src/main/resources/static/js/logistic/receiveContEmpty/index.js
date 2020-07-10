@@ -492,7 +492,7 @@ function updateLayout() {
         let cellStatus = hot.getDataAtCell(i, 1);
         if (cellStatus != null) {
             if (checkList[i] == 1) {
-                if (sourceData[i].containerNo == null || sourceData[i].containerNo == '') {
+                if (shipmentSelected.contSupplyStatus == 0) {
                     contNull = true;
                 }
                 if(cellStatus == 1 && 'Y' == sourceData[i].userVerifyStatus) {
@@ -618,14 +618,14 @@ function getDataSelectedFromTable(isValidate) {
 
     let temProcessOrderIds = [];
     processOrderIds = '';
-    for (let i = 0; i < checkList.length; i++) {
-        if (Object.keys(myTableData[i]).length > 0) {
-            if (myTableData[i].processOrderId != null && !temProcessOrderIds.includes(myTableData[i].processOrderId)) {
-                temProcessOrderIds.push(myTableData[i].processOrderId);
-                processOrderIds += myTableData[i].processOrderId + ',';
+    $.each(cleanedGridData, function (index, object) {
+        for (let i=0; i<regiterNos.length; i++) {
+            if (object["processOrderId"] != null && !temProcessOrderIds.includes(object["processOrderId"]) && regiterNos[i] == object["registerNo"]) {
+                temProcessOrderIds.push(object["processOrderId"]);
+                processOrderIds += object["processOrderId"] + ',';
             }
         }
-    }
+    });
 
     if (processOrderIds != '') {
         processOrderIds.substring(0, processOrderIds.length - 1);
@@ -655,35 +655,70 @@ function getDataFromTable(isValidate) {
     }
     shipmentDetails = [];
     contList = [];
+    let opecode, vessel, voyage, pod;
+    if (cleanedGridData.length > 0) {
+        opecode = cleanedGridData[0].opeCode;
+        vessel = cleanedGridData[0].vslNm;
+        voyage = cleanedGridData[0].voyNo;
+        pod = cleanedGridData[0].dischargePort;
+    }
     $.each(cleanedGridData, function (index, object) {
         var shipmentDetail = new Object();
         if (isValidate) {
             if((object["containerNo"] == null || object["containerNo"] == "") && shipmentSelected.specificContFlg == 1) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
                 errorFlg = true;
+                return false;
             } else if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && shipmentSelected.specificContFlg == 1) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
                 errorFlg = true;
+                return false;
             } else if (object["expiredDem"] == null || object["expiredDem"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
                 errorFlg = true;
+                return false;
             } else if (object["opeCode"] == null || object["opeCode"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ khai thác!");
                 errorFlg = true;
+                return false;
             } else if (object["vslNm"] == null || object["sztp"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
-            }  else if (object["voyNo"] == null || object["sztp"] == "") {
+                return false;
+            } else if (object["voyNo"] == null || object["sztp"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
-            }  else if (object["sztp"] == null || object["sztp"] == "") {
+                return false;
+            } else if (object["sztp"] == null || object["sztp"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
-            }  else if (object["dischargePort"] == null || object["sztp"] == "") {
+                return false;
+            } else if (object["dischargePort"] == null || object["sztp"] == "") {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
+                return false;
+            } else if (opecode != object["opeCode"]) {
+                $.modal.alertError("Hãng tàu không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (vessel != object["vslNm"]) {
+                $.modal.alertError("Tàu không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (voyage != object["voyNo"]) {
+                $.modal.alertError("Số chuyến không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (pod != object["dischargePort"]) {
+                $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
+                errorFlg = true;
+                return false;
             }
         }
+        opecode = object["opeCode"];
+        vessel = object["vslNm"];
+        voyage = object["voyNo"];
+        pod = object["dischargePort"];
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
@@ -741,7 +776,7 @@ function saveShipmentDetail() {
         return;
     } else {
         if (getDataFromTable(true)) {
-            if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
+            if (shipmentDetails.length > 0 && shipmentDetails.length == shipmentSelected.containerAmount) {
                 $.modal.loading("Đang xử lý...");
                 $.ajax({
                     url: prefix + "/shipment-detail",
@@ -765,8 +800,8 @@ function saveShipmentDetail() {
                         $.modal.closeLoading();
                     },
                 });
-            } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
-                $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
+            } else if (shipmentDetails.length < shipmentSelected.containerAmount) {
+                $.modal.alertError("Quý khách chưa nhập đủ số lượng container.");
             } else {
                 $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
             }
@@ -884,8 +919,8 @@ function finishVerifyForm(result) {
         connectToWebsocketServer();
 
     } else {
-        $.modal.msgError(result.msg);
         reloadShipmentDetail();
+        $.modal.alertError(result.msg);
     }
 }
 
@@ -907,24 +942,24 @@ function onConnected() {
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
     if (message.code != 0) {
+        reloadShipmentDetail();
+
         $.modal.alertError(message.msg);
 
         // Close loading
         $.modal.closeLoading();
-
-        reloadShipmentDetail();
 
         // Close websocket connection 
         $.websocket.disconnect(onDisconnected);
     } else {
         orderNumber--;
         if (orderNumber == 0) {
+            reloadShipmentDetail();
+
             $.modal.alertSuccess(message.msg);
 
             // Close loading
             $.modal.closeLoading();
-
-            reloadShipmentDetail();
 
             // Close websocket connection 
             $.websocket.disconnect(onDisconnected);

@@ -9,7 +9,7 @@
   flex-flow: column;
 }
 .content {
-  padding: 0 15px 12px 15px;
+  padding: 0 15px 8px 15px;
   flex: 1 1 auto;
   flex-flow: column;
   display: flex;
@@ -40,4 +40,12 @@
     margin-top: 10px;
     display: none;
     flex-flow: column;
+}
+.assignFollowBatch-table {
+  flex-flow: column;
+  display: flex;
+  flex: 1 1 auto;
+}
+.left-button-bar {
+  margin-bottom: 10px;
 }

@@ -172,6 +172,10 @@ public class EportTask {
         edoAuditLog.setFieldName("Det Free Time");
         edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
         edoAuditLogService.insertEdoAuditLogDetFreeTime(edoAuditLog);
+        edoAuditLog.setSeqNo((long) 3);
+        edoAuditLog.setFieldName("Empty Container Depot");
+        edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
+        edoAuditLogService.insertEdoAuditLogDetFreeTime(edoAuditLog);
         return true;
 
     }
@@ -208,7 +212,16 @@ public class EportTask {
             edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
             edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
             edoAuditLogService.insertEdoAuditLogDetFreeTime(edoAuditLog);
-            
+            segNo += 1;
+        }
+        if(edo.getEmptyContainerDepot() != null)
+        {
+            edoAuditLog.setFieldName("Empty Container Depot");
+            EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+            edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+            edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+            edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
+            edoAuditLogService.insertEdoAuditLogDetFreeTime(edoAuditLog);
         }
         return true;
     }

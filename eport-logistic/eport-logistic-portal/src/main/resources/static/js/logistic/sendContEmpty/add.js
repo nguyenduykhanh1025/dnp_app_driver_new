@@ -4,10 +4,10 @@ $("#form-add-shipment").validate({
     focusCleanup: true
 });
 
-function submitHandler() {
+async function submitHandler() {
     if ($.validate.form()) {
         if ($("#groupName").val() != null && $("#groupName").val() != '') {
-            $.operate.save(prefix + "/shipment", $('#form-add-shipment').serialize());
+            await $.operate.save(prefix + "/shipment", $('#form-add-shipment').serialize());
             parent.loadTable();
         } else {
             $.modal.msgError("Không tìm thấy mã số thuế!");

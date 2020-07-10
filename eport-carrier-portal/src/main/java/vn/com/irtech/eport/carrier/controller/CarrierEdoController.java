@@ -2,13 +2,10 @@ package vn.com.irtech.eport.carrier.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
@@ -167,9 +164,7 @@ public class CarrierEdoController extends CarrierBaseController {
 	public String getUpdate(@PathVariable("id") Long id,ModelMap map) {
 		map.put("id", id);
 		Edo edo = edoService.selectEdoById(id);
-		map.put("containerNumber", edo.getContainerNumber());
-		map.put("expiredDem", edo.getExpiredDem());
-		map.put("detFreeTime", edo.getDetFreeTime());
+		map.put("edo", edo);
 		return PREFIX + "/update";
 	}
 
@@ -202,13 +197,23 @@ public class CarrierEdoController extends CarrierBaseController {
 				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 				segNo += 1;
 			}
-			if(edo.getDetFreeTime() != null)
+			if(edo.getDetFreeTime() != null && !("").equals(edo.getDetFreeTime().toString()))
 			{
 				edoAuditLog.setFieldName("Det Free Time");
 				EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
 				edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
 				edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
 				edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
+				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+				segNo += 1;
+			}
+			if(edo.getEmptyContainerDepot() != null && !("").equals(edo.getEmptyContainerDepot().toString()))
+			{
+				edoAuditLog.setFieldName("Empty Container Depot");
+				EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+				edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+				edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+				edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
 				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 			}
 			edoService.updateEdo(edo);
