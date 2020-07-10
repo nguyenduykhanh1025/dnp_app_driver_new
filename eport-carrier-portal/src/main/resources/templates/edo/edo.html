@@ -13,23 +13,14 @@
       <div class="row">
         <div class="col-sm-12 select-table mt0 pt5">
           <div class="col-sm-12 fixed-table-toolbar">
-            <div class="bs-bars pull-left mb5 mt0"></div>
+            <div class="bs-bars pull-left mb5 mt0"><input class="form-control" type="text" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" /></div>
             <div class="columns columns-right btn-group pull-right mb0 mt0">
               <div class="select-list">
                 
-                <ul>
-                  <li>
-                    <input class="form-control" type="text" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" />
-                  </li>
-                  <li>
-                    <div class="form-group">
-                    </div>
-                  </li>
-                  <li>
-                    <span class="textTitle" id="showBillNo"></span>
-                  </li>
-                  <li>
-                      <span class="textTitle" id="countContainer"></span>
+                 <ul>
+                    <li>
+                      
+                    </li>
                   </li>
                   <li>
                     <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
@@ -39,6 +30,10 @@
                   </li>
                   <li>
                     <input class="time-input" id="toDate" name="toDate" onchange="changeToDate()" placeholder="Đến ngày" />
+                  </li>
+                  <li>
+                    <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
+                      class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
                   </li>
                 </ul>
               </div>
@@ -57,7 +52,7 @@
                       OPE <br />
                       CODE
                     </th>
-                    <th data-options="field:'id',align:'center'" width="110">
+                    <th data-options="field:'createTime',align:'center'" width="110">
                       CREATE TIME
                     </th>
                   </tr>
@@ -68,6 +63,7 @@
               <table id="dgContainer">
                 <thead>
                   <tr>
+                  
                     <th data-options="field:'containerNumber',align:'left'" width="120">
                       CONTAINER NO
                     </th>
