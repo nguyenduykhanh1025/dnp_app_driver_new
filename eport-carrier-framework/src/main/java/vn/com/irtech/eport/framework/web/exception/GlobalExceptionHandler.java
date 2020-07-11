@@ -123,7 +123,7 @@ public class GlobalExceptionHandler
 	 */
 	@ExceptionHandler(EdiApiException.class)
 	public ResponseEntity<EdiRes> ediException(HttpServletRequest request, EdiApiException e) {
-		log.warn(e.getEdiRes().getMessage(), e);
+		log.warn(e.getEdiRes().getMessage());
 		return ResponseEntity.status(e.getEdiRes().getErrorCode()).body(e.getEdiRes());
 	}
 }

@@ -3,35 +3,53 @@ package vn.com.irtech.eport.carrier.dto;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import vn.com.irtech.eport.carrier.validation.annotation.AcceptedValues;
 
 public class EdiDataReq implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@NotBlank
 	private String lineOper;
 
+	@NotBlank
 	private String consignee;
 
+	@NotBlank
 	private String secureCode;
 
+	@NotBlank
 	private String containerNo;
 
+	@NotBlank
 	private String releaseNo;
 
+	@NotNull
 	private Integer detFreeDays;
 
+	@NotNull
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
 	private Date expiryTs;
 
+	@NotBlank
 	private String terOfMtReturn;
 
+	@NotBlank
 	private String modTransName;
 
+	@NotBlank
 	private String modTransVoyage;
 
+	@NotBlank
 	private String billOfLading;
 
+	@NotBlank
+	@AcceptedValues(values = {"N", "U", "D"}, message = "must be any of {'N', 'U', 'D'}")
 	private String msgFunc;
 
 	public String getLineOper() {

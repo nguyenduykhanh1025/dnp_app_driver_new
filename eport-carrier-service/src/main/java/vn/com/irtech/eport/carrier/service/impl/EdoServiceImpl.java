@@ -8,17 +8,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.alibaba.fastjson.JSONObject;
-
-import vn.com.irtech.eport.common.utils.DateUtils;
-
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.com.irtech.eport.carrier.mapper.EdoMapper;
+
+import com.alibaba.fastjson.JSONObject;
+
 import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.mapper.EdoMapper;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.DateUtils;
 
 
 /**
@@ -275,8 +275,8 @@ public class EdoServiceImpl implements IEdoService
 	}
 
 	@Override
-	public Edo selectEdoByOrderNumber(String orderNumber) {
-		return edoMapper.selectEdoByOrderNumber(orderNumber);
+	public Edo selectFirstEdo(Edo edo) {
+		return edoMapper.selectFirstEdo(edo);
 	}
 
     
