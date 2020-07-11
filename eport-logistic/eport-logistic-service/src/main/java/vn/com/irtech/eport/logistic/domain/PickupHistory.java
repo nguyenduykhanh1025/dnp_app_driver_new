@@ -415,7 +415,7 @@ public class PickupHistory extends BaseEntity {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
 				.append("logisticGroupId", getLogisticGroupId()).append("shipmentId", getShipmentId())
 				.append("shipmentDetailId", getShipmentDetailId()).append("driverId", getDriverId())
-				.append("pickupAssignId", getPickupAssignId()).append("containerNo1", getContainerNo())
+				.append("pickupAssignId", getPickupAssignId()).append("containerNo", getContainerNo())
 				.append("truckNo", getTruckNo()).append("chassisNo", getChassisNo()).append("area", getArea())
 				.append("status", getStatus()).append("receiptDate", getReceiptDate())
 				.append("gateinDate", getGateinDate()).append("gateoutDate", getGateoutDate())
