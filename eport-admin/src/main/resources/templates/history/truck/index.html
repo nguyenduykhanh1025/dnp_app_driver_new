@@ -40,10 +40,7 @@
             <tr>
               <th data-options=" field: 'driver', halign: 'center', resizable: true, formatter: function(value,row){return row.driver.fullName}">Tên tài xế</th>
               <th data-options=" field: 'driverPhone', halign: 'center', resizable: true, formatter: function(value,row){return row.driver.mobileNumber}">Số điện thoại</th>
-              <th data-options=" field:'shipmentDetail1', halign:'center', align:'center', formatter: function(value,row){return row.shipmentDetail1.containerNo}" sortable="true">Container 1</th>
-              <th data-options=" field:'yardPosition1', halign:'center', align:'center', formatter: function(value,row){return row.yardPosition1}" sortable="true">Vị trí Container 1</th>
-              <th data-options=" field:'shipmentDetail2', halign:'center', formatter:function(value, row) {return row.shipmentDetail2.containerNo}" sortable="true">Container 2</th>
-              <th data-options=" field:'yardPosition2', halign:'center', align:'center', formatter: function(value,row){return row.yardPosition2}" sortable="true">Vị trí Container 2</th>
+              <th data-options=" field:'shipmentDetail', halign:'center', align:'center', formatter: function(value,row){return row.shipmentDetail.containerNo}" sortable="true">Container</th>
               <th data-options=" field:'gateinDate', align:'center', formatter: formatDate" sortable="true">Giờ vào cổng</th>
               <th data-options=" field:'gateinDate', align:'center', formatter: formatDate" sortable="true">Giờ ra cổng</th>
               <th data-options=" field:'receiptDate', halign:'center', align:'center', formatter: formatDate" sortable="true">Ngày nhận lệnh</th>

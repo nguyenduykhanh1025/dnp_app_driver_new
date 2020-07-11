@@ -31,6 +31,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <association property="shipmentDetail"    column="id" javaType="ShipmentDetail" resultMap="ShipmentDetailResult" />
+    </resultMap>
+
+    <resultMap type="ShipmentDetail" id="ShipmentDetailResult">
+        <result property="processOrderId"    column="process_order_id"    />
+        <result property="containerNo"    column="container_no"    />
+        <result property="sztp"    column="sztp"    />
+        <result property="fe"    column="fe"    />
+        <result property="wgt"    column="wgt"    />
+        <result property="opeCode"    column="ope_code"    />
+        <result property="dischargePort"    column="discharge_port"    />
+        <result property="cargoType"    column="cargo_type"    />
     </resultMap>
 
     <sql id="selectProcessOrderVo">
@@ -171,5 +183,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="selectOrderListForOmSupport" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
+        select p.id, p.shipment_id, p.logistic_group_id, p.service_type, p.pay_type, p.consignee, p.tax_code, p.bl_no, p.booking_no, p.pickup_date, 
+        p.vessel, p.voyage, p.cont_number, p.status, p.result, s.process_order_id, s.container_no, s.sztp, s.fe, s.cargo_type, s.discharge_port, s.ope_code, s.wgt
+        from process_order p
+        left join shipment_detail s on p.id = s.process_order_id
+        <where>
+            <if test="status != null "> or p.status = #{status}</if>
+            <if test="result != null  and result != ''"> or p.result = #{result}</if>
+        </where>
+
+    </select>
+
+    <update id="updateProcessOrderStatusForOm" parameterType="String">
+        update process_order
+        set status = 1
+        where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and status = 0
+    </update>
     
 </mapper>
