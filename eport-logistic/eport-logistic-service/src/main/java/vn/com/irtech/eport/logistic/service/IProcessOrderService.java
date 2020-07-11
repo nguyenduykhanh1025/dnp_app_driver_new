@@ -63,4 +63,8 @@ public interface IProcessOrderService
 
     public boolean insertProcessOrderList(List<ProcessOrder> processOrders);
 
+    public List<ProcessOrder> selectOrderListForOmSupport(ProcessOrder processOrder);
+
+    public int updateProcessOrderStatusForOm(String processOrderIds);
+
 }

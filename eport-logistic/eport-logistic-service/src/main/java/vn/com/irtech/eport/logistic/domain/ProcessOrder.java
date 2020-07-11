@@ -103,6 +103,8 @@ public class ProcessOrder extends BaseEntity
     @Excel(name = "Detail Data (Json)")
     private String data;
 
+    private ShipmentDetail shipmentDetail;
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -304,6 +306,14 @@ public class ProcessOrder extends BaseEntity
         return data;
     }
 
+    public void setShipmentDetail(ShipmentDetail shipmentDetail) {
+        this.shipmentDetail = shipmentDetail;
+    }
+
+    public ShipmentDetail getShipmentDetail() {
+        return shipmentDetail;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -333,6 +343,7 @@ public class ProcessOrder extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("shipmentDetail", getShipmentDetail())
             .toString();
     }
 }

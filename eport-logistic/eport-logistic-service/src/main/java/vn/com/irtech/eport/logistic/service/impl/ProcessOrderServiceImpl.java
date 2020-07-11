@@ -108,4 +108,13 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
         return true;
     }
 
+    @Override
+    public List<ProcessOrder> selectOrderListForOmSupport(ProcessOrder processOrder) {
+        return processOrderMapper.selectOrderListForOmSupport(processOrder);
+    }
+
+    @Override
+    public int updateProcessOrderStatusForOm(String processOrderIds) {
+        return processOrderMapper.updateProcessOrderStatusForOm(Convert.toStrArray(processOrderIds));
+    }
 }

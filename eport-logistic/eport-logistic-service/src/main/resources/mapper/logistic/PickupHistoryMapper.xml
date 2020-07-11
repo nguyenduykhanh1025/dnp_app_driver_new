@@ -290,8 +290,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
 			<if test="status != null "> and p.status = #{status}</if>
 			<if test="serviceType != null "> and s.service_type = #{serviceType}</if>
-            <if test="fromDate != null ">and (p.gatein_date = #{fromDate} OR p.gatein_date > #{fromDate})</if>
-            <if test="toDate != null ">and (p.gatein_date = #{toDate} OR p.gatein_date &lt; #{toDate})</if>
+            <if test="fromDate != null ">and p.gatein_date &gt;= #{fromDate}</if>
+            <if test="toDate != null ">and p.gatein_date &lt;= #{toDate}</if>
 			<if test="containerNo1 != null  and containerNo1 != ''"> and ( upper(p.container_no_1) like concat('%', #{containerNo1}, '%')</if>
 			<if test="containerNo2 != null  and containerNo2 != ''"> or upper(p.container_no_2) like concat('%', #{containerNo2}, '%')</if>
 			<if test="truckNo != null  and truckNo != ''"> or upper(p.truck_no) like concat('%', #{truckNo}, '%')</if>

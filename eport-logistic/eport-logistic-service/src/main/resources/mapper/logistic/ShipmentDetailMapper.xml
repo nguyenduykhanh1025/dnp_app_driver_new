@@ -435,6 +435,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join process_order p on s.process_order_id = p.id
         left join pickup_assign a on s.id = a.shipment_detail_id
         <where>  
+            <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
             <if test="customStatus != null  and customStatus != ''"> and s.custom_status = #{customStatus}</if>
             <if test="paymentStatus != null  and paymentStatus != ''"> and s.payment_status = #{paymentStatus}</if>
             <if test="processStatus != null  and processStatus != ''"> and s.process_status = #{processStatus}</if>

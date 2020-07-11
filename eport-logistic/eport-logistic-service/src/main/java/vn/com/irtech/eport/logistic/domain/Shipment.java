@@ -1,5 +1,9 @@
 package vn.com.irtech.eport.logistic.domain;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import vn.com.irtech.eport.common.annotation.Excel;
@@ -77,7 +81,17 @@ public class Shipment extends BaseEntity
     @Excel(name = "Ghi chu")
     private String remak;
 
-    private LogisticGroup logisticGroup;
+    private String logisticName;
+
+    private String vslNm;
+
+    private String voyNo;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date fromDate;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date toDate;
 
     public void setId(Long id) 
     {
@@ -215,15 +229,44 @@ public class Shipment extends BaseEntity
         return status;
     }
 
-    public void setLogisticGroup(LogisticGroup logisticGroup) {
-        this.logisticGroup = logisticGroup;
+    public void setLogisticName(String logisticName) {
+        this.logisticName = logisticName;
     }
 
-    public LogisticGroup getLogisticGroup() {
-        if (logisticGroup == null) {
-            logisticGroup = new LogisticGroup();
-        }
-        return logisticGroup;
+    public String getLogisticName() {
+        return logisticName;
+    }
+
+    public void setVslNm(String vslNm) {
+        this.vslNm = vslNm;
+    }
+
+    public String getVslNm() {
+        return vslNm;
+    }
+
+    public void setVoyNo(String voyNo) {
+        this.voyNo = voyNo;
+    }
+
+    public String getVoyNo() {
+        return voyNo;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public Date getToDate() {
+        return toDate;
     }
 
     @Override
@@ -249,7 +292,11 @@ public class Shipment extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
-            .append("logisticGroup", getLogisticGroup())
+            .append("logisticName", getLogisticName())
+            .append("vslNm", getVslNm())
+            .append("voyNo", getVoyNo())
+            .append("fromDate", getFromDate())
+            .append("toDate", getToDate())
             .toString();
     }
 }
