@@ -7,7 +7,15 @@ $(document).ready(function () {
   $("#dgContainer").height($(document).height() - 100);
   loadTable();
   loadTableByContainer();
-
+  $.ajax({
+    type: "GET",
+    url: PREFIX + "/carrierCode",
+    success(data) {
+        data.forEach((element) => {
+            $("#carrierCode").append(`<option value="${element}"> ${element}</option>`);
+        });
+    },
+});
   $("#searchAll").keyup(function (event) {
     if (event.keyCode == 13) {
       edo.containerNumber = $("#searchAll").val().toUpperCase();
