@@ -9,35 +9,44 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="id" column="id" />
 		<result property="logisticGroupId" column="logistic_group_id" />
 		<result property="shipmentId" column="shipment_id" />
-		<result property="shipmentDetailId1" column="shipment_detail_id_1" />
-		<result property="shipmentDetailId2" column="shipment_detail_id_2" />
+		<result property="shipmentDetailId"
+			column="shipment_detail_id" />
 		<result property="driverId" column="driver_id" />
 		<result property="pickupAssignId" column="pickup_assign_id" />
-		<result property="containerNo1" column="container_no_1" />
-		<result property="containerNo2" column="container_no_2" />
+		<result property="containerNo" column="container_no" />
 		<result property="truckNo" column="truck_no" />
 		<result property="chassisNo" column="chassis_no" />
-		<result property="yardPosition1" column="yard_position_1" />
-		<result property="yardPosition2" column="yard_position_2" />
+		<result property="area" column="area" />
+		<result property="bay" column="bay" />
+		<result property="block" column="block" />
+		<result property="line" column="line" />
+		<result property="tier" column="tier" />
 		<result property="status" column="status" />
 		<result property="receiptDate" column="receipt_date" />
 		<result property="gateinDate" column="gatein_date" />
 		<result property="gateoutDate" column="gateout_date" />
-		<result property="cancelDeceiptDate" column="cancel_receipt_date" />
-		<association property="shipment" column="shipment_id" javaType="Shipment" select="selectShipment" />
-		<association property="shipmentDetail1" column="shipment_detail_id_1" javaType="ShipmentDetail" select="selectShipmentDetail" />
-		<association property="shipmentDetail2" column="shipment_detail_id_2" javaType="ShipmentDetail" select="selectShipmentDetail" />
-		<association property="logisticGroup" column="logistic_group_id" javaType="LogisticGroup" select="selectLogisticGroup" />
-		<association property="driver" column="driver_id" javaType="DriverAccount" select="selectDriverAccount" />
+		<result property="cancelDeceiptDate"
+			column="cancel_receipt_date" />
+		<result property="planningDate" column="planning_date" />
+		<result property="remark" column="remark" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+		<association property="shipment" column="shipment_id"
+			javaType="Shipment" select="selectShipment" />
+		<association property="shipmentDetail"
+			column="shipment_detail_id" javaType="ShipmentDetail"
+			select="selectShipmentDetail" />
+		<association property="logisticGroup"
+			column="logistic_group_id" javaType="LogisticGroup"
+			select="selectLogisticGroup" />
+		<association property="driver" column="driver_id"
+			javaType="DriverAccount" select="selectDriverAccount" />
 	</resultMap>
 
 	<sql id="selectPickupHistoryVo">
-		select id, logistic_group_id, shipment_id,
-		shipment_detail_id_1, shipment_detail_id_2, driver_id,
-		pickup_assign_id, container_no_1, container_no_2,
-		truck_no, chassis_no, yard_position_1, yard_position_2,
-		status, receipt_date, gatein_date,
-		gateout_date, cancel_receipt_date
+		select *
 		from pickup_history
 	</sql>
 
@@ -45,39 +54,88 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectPickupHistoryVo" />
 		<where>
 			<if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
-			<if test="shipmentId != null "> and shipment_id like concat('%', #{shipmentId}, '%')</if>
-			<if test="shipmentDetailId1 != null "> and shipment_detail_id_1 = #{shipmentDetailId1}</if>
-			<if test="shipmentDetailId2 != null "> and shipment_detail_id_2 = #{shipmentDetailId2}</if>
+			<if test="shipmentId != null "> and shipment_id like concat('%', #{shipmentId}, '%')
+			</if>
+			<if test="shipmentDetailId != null "> and shipment_detail_id = #{shipmentDetailId}</if>
 			<if test="driverId != null "> and driver_id = #{driverId}</if>
 			<if test="pickupAssignId != null "> and pickup_assign_id = #{pickupAssignId}</if>
-			<if test="containerNo1 != null  and containerNo1 != ''"> and container_no_1 = #{containerNo1}</if>
-			<if test="containerNo2 != null  and containerNo2 != ''"> and container_no_2 = #{containerNo2}</if>
+			<if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
 			<if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
 			<if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
-			<if test="yardPosition1 != null  and yardPosition1 != ''"> and yard_position_1 = #{yardPosition1}</if>
-			<if test="yardPosition2 != null  and yardPosition2 != ''"> and yard_position_2 = #{yardPosition2}</if>
+			<if test="area != null  and area != ''"> and area = #{area}</if>
+			<if test="bay != null  and bay != ''"> and bay = #{bay}</if>
+			<if test="block != null  and block != ''"> and block = #{block}</if>
+			<if test="line != null  and line != ''"> and line = #{line}</if>
+			<if test="tier != null  and tier != ''"> and tier = #{tier}</if>
 			<if test="status != null "> and status = #{status}</if>
 			<if test="receiptDate != null "> and receipt_date = #{receiptDate}</if>
 			<if test="gateinDate != null "> and gatein_date = #{gateinDate}</if>
 			<if test="gateoutDate != null "> and gateout_date = #{gateoutDate}</if>
 			<if test="cancelDeceiptDate != null "> and cancel_receipt_date = #{cancelDeceiptDate}</if>
+			<if test="planningDate != null "> and planning_date = #{planningDate}</if>
             <if test="fromDate != null ">and (gatein_date = #{fromDate} OR gatein_date > #{fromDate})</if>
             <if test="toDate != null ">and (gatein_date = #{toDate} OR gatein_date &lt; #{toDate})</if>
 		</where>
 	</select>
+	
+		<sql id="search">
+		<if test="searchParams.beginTime != null  and searchParams.beginTime != ''"> and DATE_FORMAT(planning_date, "%Y-%m-%d") >= #{searchParams.beginTime}</if>
+		<if test="searchParams.endTime != null  and searchParams.endTime != ''"> and DATE_FORMAT(planning_date, "%Y-%m-%d") &lt;= #{searchParams.endTime}</if>
+		<if test="searchParams.serviceType == null  or searchParams.serviceType == ''"> and s.service_type in (2, 4)</if>
+		<if test="searchParams.serviceType != null  and searchParams.serviceType != ''"> and s.service_type = #{searchParams.serviceType}</if>
+		<if test="searchParams.contNo != null  and searchParams.contNo != ''">
+			<bind name="contNoPattern" value="'%' + searchParams.contNo + '%'"/> and p.container_no like #{contNoPattern}
+		</if>
+		<if test="searchParams.sztp != null  and searchParams.sztp != ''">
+		 	<bind name="sztpPattern" value="'%' + searchParams.sztp + '%'"/> and sd.sztp like #{sztpPattern}
+		 </if>
+		<if test="searchParams.vslNm != null  and searchParams.vslNm != ''">
+		 	<bind name="vslNmPattern" value="'%' + searchParams.vslNm + '%'"/> and sd.vsl_nm like #{vslNmPattern}
+		 </if>
+		<if test="searchParams.voyNo != null  and searchParams.voyNo != ''">
+		 	<bind name="voyNoPattern" value="'%' + searchParams.voyNo + '%'"/> and sd.voy_no like #{voyNoPattern}
+		 </if>
+		<if test="searchParams.dischargePort != null  and searchParams.dischargePort != ''"> 
+			<bind name="dischargePortPattern" value="'%' + searchParams.dischargePort + '%'"/> and sd.discharge_port like #{dischargePortPattern}
+		</if>
+		<if test="searchParams.consignee != null  and searchParams.consignee != ''"> 
+			<bind name="consigneePattern" value="'%' + searchParams.consignee + '%'"/> and sd.consignee like #{consigneePattern}
+		</if>
+		<if test="searchParams.opeCode != null  and searchParams.opeCode != ''">
+		 	<bind name="opeCodePattern" value="'%' + searchParams.opeCode + '%'"/> and sd.ope_code like #{opeCodePattern}
+		 </if>
+	</sql>
 
 	<select id="selectPickupHistoryWithoutYardPostion"
-		resultMap="PickupHistoryResult">
+		resultMap="PickupHistoryResult" parameterType="Map">
 		SELECT
 		p.*
 		FROM
 		pickup_history as p left join shipment s
 		on
 		p.shipment_id = s.id
-		WHERE s.service_type in (2, 4) and (p.yard_position_1
-		is null OR
-		p.yard_position_2 is null)
+		left join shipment_detail sd 
+		on p.shipment_detail_id = sd.id
+		WHERE 
+		p.status = 0
+		<include refid="search" />
 	</select>
+	
+	<select id="selectPickupHistoryHasYardPostion"
+		resultMap="PickupHistoryResult" parameterType="Map">
+		SELECT
+		p.*
+		FROM
+		pickup_history as p left join shipment s
+		on
+		p.shipment_id = s.id
+		left join shipment_detail sd 
+		on p.shipment_detail_id = sd.id
+		WHERE p.status &gt; 0
+		<include refid="search" />
+		ORDER BY planning_date desc
+	</select>
+	
 
 	<select id="selectPickupHistoryById" parameterType="Long"
 		resultMap="PickupHistoryResult">
@@ -91,40 +149,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="logisticGroupId != null ">logistic_group_id,</if>
 			<if test="shipmentId != null ">shipment_id,</if>
-			<if test="shipmentDetailId1 != null ">shipment_detail_id_1,</if>
-			<if test="shipmentDetailId2 != null ">shipment_detail_id_2,</if>
+			<if test="shipmentDetailId != null ">shipment_detail_id,</if>
 			<if test="driverId != null ">driver_id,</if>
 			<if test="pickupAssignId != null ">pickup_assign_id,</if>
-			<if test="containerNo1 != null  and containerNo1 != ''">container_no_1,</if>
-			<if test="containerNo2 != null  and containerNo2 != ''">container_no_2,</if>
+			<if test="containerNo != null  and containerNo != ''">container_no,</if>
 			<if test="truckNo != null  and truckNo != ''">truck_no,</if>
 			<if test="chassisNo != null  and chassisNo != ''">chassis_no,</if>
-			<if test="yardPosition1 != null  and yardPosition1 != ''">yard_position_1,</if>
-			<if test="yardPosition2 != null  and yardPosition2 != ''">yard_position_2,</if>
+			<if test="area != null  and area != ''">area,</if>
+			<if test="bay != null  and bay != ''">bay,</if>
+			<if test="block != null  and block != ''">block,</if>
+			<if test="line != null  and line != ''">line,</if>
+			<if test="tier != null  and tier != ''">tier,</if>
 			<if test="status != null ">status,</if>
 			<if test="receiptDate != null ">receipt_date,</if>
 			<if test="gateinDate != null ">gatein_date,</if>
 			<if test="gateoutDate != null ">gateout_date,</if>
 			<if test="cancelDeceiptDate != null ">cancel_receipt_date,</if>
+			<if test="planningDate != null ">planning_date,</if>
+			<if test="remark != null  and remark != ''">remark,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            create_time
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="logisticGroupId != null ">#{logisticGroupId},</if>
 			<if test="shipmentId != null ">#{shipmentId},</if>
-			<if test="shipmentDetailId1 != null ">#{shipmentDetailId1},</if>
-			<if test="shipmentDetailId2 != null ">#{shipmentDetailId2},</if>
+			<if test="shipmentDetailId != null ">#{shipmentDetailId},</if>
 			<if test="driverId != null ">#{driverId},</if>
 			<if test="pickupAssignId != null ">#{pickupAssignId},</if>
-			<if test="containerNo1 != null  and containerNo1 != ''">#{containerNo1},</if>
-			<if test="containerNo2 != null  and containerNo2 != ''">#{containerNo2},</if>
+			<if test="containerNo != null  and containerNo != ''">#{containerNo},</if>
 			<if test="truckNo != null  and truckNo != ''">#{truckNo},</if>
 			<if test="chassisNo != null  and chassisNo != ''">#{chassisNo},</if>
-			<if test="yardPosition1 != null  and yardPosition1 != ''">#{yardPosition1},</if>
-			<if test="yardPosition2 != null  and yardPosition2 != ''">#{yardPosition2},</if>
+			<if test="area != null  and area != ''">#{area},</if>
+			<if test="bay != null  and bay != ''">#{bay},</if>
+			<if test="block != null  and block != ''">#{block},</if>
+			<if test="line != null  and line != ''">#{line},</if>
+			<if test="tier != null  and tier != ''">#{tier},</if>
 			<if test="status != null ">#{status},</if>
 			<if test="receiptDate != null ">#{receiptDate},</if>
 			<if test="gateinDate != null ">#{gateinDate},</if>
 			<if test="gateoutDate != null ">#{gateoutDate},</if>
 			<if test="cancelDeceiptDate != null ">#{cancelDeceiptDate},</if>
+			<if test="planningDate != null ">#{planningDate},</if>
+			<if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            sysdate()
 		</trim>
 	</insert>
 
@@ -133,21 +201,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<trim prefix="SET" suffixOverrides=",">
 			<if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
 			<if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
-			<if test="shipmentDetailId1 != null ">shipment_detail_id_1 = #{shipmentDetailId1},</if>
-			<if test="shipmentDetailId2 != null ">shipment_detail_id_2 = #{shipmentDetailId2},</if>
+			<if test="shipmentDetailId != null ">shipment_detail_id = #{shipmentDetailId},</if>
 			<if test="driverId != null ">driver_id = #{driverId},</if>
 			<if test="pickupAssignId != null ">pickup_assign_id = #{pickupAssignId},</if>
-			<if test="containerNo1 != null  and containerNo1 != ''">container_no_1 = #{containerNo1},</if>
-			<if test="containerNo2 != null  and containerNo2 != ''">container_no_2 = #{containerNo2},</if>
+			<if test="containerNo != null  and containerNo != ''">container_no = #{containerNo},</if>
 			<if test="truckNo != null  and truckNo != ''">truck_no = #{truckNo},</if>
 			<if test="chassisNo != null  and chassisNo != ''">chassis_no = #{chassisNo},</if>
-			<if test="yardPosition1 != null  and yardPosition1 != ''">yard_position_1 = #{yardPosition1},</if>
-			<if test="yardPosition2 != null  and yardPosition2 != ''">yard_position_2 = #{yardPosition2},</if>
+			<if test="area != null  and area != ''">area = #{area},</if>
+			<if test="bay != null  and bay != ''">bay = #{bay},</if>
+			<if test="block != null  and block != ''">block = #{block},</if>
+			<if test="line != null  and line != ''">line = #{line},</if>
+			<if test="tier != null  and tier != ''">tier = #{tier},</if>
 			<if test="status != null ">status = #{status},</if>
 			<if test="receiptDate != null ">receipt_date = #{receiptDate},</if>
 			<if test="gateinDate != null ">gatein_date = #{gateinDate},</if>
 			<if test="gateoutDate != null ">gateout_date = #{gateoutDate},</if>
 			<if test="cancelDeceiptDate != null ">cancel_receipt_date = #{cancelDeceiptDate},</if>
+			<if test="planningDate != null ">planning_date = #{planningDate},</if>
+			<if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate()
 		</trim>
 		where id = #{id}
 	</update>
@@ -206,11 +279,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="doReceivedTime" column="do_received_time" />
 		<result property="userVerifyStatus" column="user_verify_status" />
 		<result property="status" column="status" />
-		<result property="remark" column="remark" />
-		<result property="createBy" column="create_by" />
-		<result property="createTime" column="create_time" />
-		<result property="updateBy" column="update_by" />
-		<result property="updateTime" column="update_time" />
 	</resultMap>
 
 	<select id="selectShipment" resultMap="ShipmentResult">

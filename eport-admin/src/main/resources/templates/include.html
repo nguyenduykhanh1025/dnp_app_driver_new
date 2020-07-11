@@ -46,6 +46,7 @@
 	<script th:src="@{/ajax/libs/layer/layer.min.js}"></script>
 	<script th:src="@{/ajax/libs/layui/layui.js}"></script>
 	<script th:src="@{/eport/js/common.js}"></script>
+	<script th:src="@{/eport/js/utils.js}"></script>
 	<script th:src="@{/eport/js/eport.js}"></script>
 	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
 </div>
@@ -252,4 +253,11 @@
 	<script th:src="@{/eport/js/common.js}"></script>
 	<script th:src="@{/eport/js/eport.js}"></script>
 	<script th:inline="javascript"> var ctx = [[@{/}]]; </script>
+</div>
+
+<!-- websocket -->
+<div th:fragment="websocket">
+	<script th:src="@{/js/plugins/websocket/sockjs.min.js}"></script>
+	<script th:src="@{/js/plugins/websocket/stomp.min.js}"></script>
+	<script th:src="@{/eport/js/websocket.js}"></script>
 </div>

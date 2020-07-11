@@ -132,4 +132,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 #{id}
         </foreach>
     </select>
+    <select id="checkDriverOfLogisticGroup" parameterType="PickupAssign" resultType="int">
+        select count(*)
+        from driver_account
+        <where> id in 
+            <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+                <if test="item.driverId != null">#{item.driverId}</if>
+            </foreach>
+            and logistic_group_id = #{list[0].logisticGroupId}
+        </where>
+    </select>
 </mapper>

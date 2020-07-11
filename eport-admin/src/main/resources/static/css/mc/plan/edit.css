@@ -1,0 +1,20 @@
+.title-group{
+  margin: 0px;
+}
+
+.m{
+  margin: 0px;
+}
+
+.border-custom{
+  border-color: #1c84c6;
+}
+
+.table{
+  margin-bottom: 0px;
+}
+
+
+label.error{
+  display: none!important;
+}
