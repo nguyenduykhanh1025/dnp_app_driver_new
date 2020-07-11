@@ -107,11 +107,6 @@ public class ShipmentServiceImpl implements IShipmentService
     }
 
     @Override
-    public Shipment selectShipmentWithGroupById(Long id) {
-        return shipmentMapper.selectShipmentWithGroupById(id);
-    }
-
-    @Override
     public int checkBillBookingNoUnique(Shipment shipment) {
         return shipmentMapper.checkBillBookingNoUnique(shipment);
     }
@@ -136,6 +131,11 @@ public class ShipmentServiceImpl implements IShipmentService
 	@Override
 	public String getEdoFlgByOpeCode(String opeCode) {
 		return carrierGroupMapper.getDoTypeByOpeCode(opeCode);
-	}
+    }
+    
+    @Override
+    public List<Shipment> selectShipmentListForOm(Shipment shipment) {
+        return shipmentMapper.selectShipmentListForOm(shipment);
+    }
 	
 }

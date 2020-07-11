@@ -7,7 +7,15 @@ $(document).ready(function () {
   $("#dgContainer").height($(document).height() - 100);
   loadTable();
   loadTableByContainer();
-
+  $.ajax({
+    type: "GET",
+    url: PREFIX + "/carrierCode",
+    success(data) {
+        data.forEach((element) => {
+            $("#carrierCode").append(`<option value="${element}"> ${element}</option>`);
+        });
+    },
+});
   $("#searchAll").keyup(function (event) {
     if (event.keyCode == 13) {
       edo.containerNumber = $("#searchAll").val().toUpperCase();
@@ -125,11 +133,11 @@ function formatAction(value, row, index) {
 }
 
 function viewHistoryCont(id) {
-  $.modal.open("History Container", PREFIX + "/history/" + id, 800, 500);
+  $.modal.open("History Container", PREFIX + "/history/" + id, 1000, 500);
 }
 
 function viewUpdateCont(id) {
-  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 500);
+  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 600);
 }
 
 function getSelectedRow() {

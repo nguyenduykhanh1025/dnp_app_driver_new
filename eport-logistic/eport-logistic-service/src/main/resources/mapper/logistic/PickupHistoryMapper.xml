@@ -9,8 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="id" column="id" />
 		<result property="logisticGroupId" column="logistic_group_id" />
 		<result property="shipmentId" column="shipment_id" />
-		<result property="shipmentDetailId"
-			column="shipment_detail_id" />
+		<result property="shipmentDetailId" column="shipment_detail_id" />
 		<result property="driverId" column="driver_id" />
 		<result property="pickupAssignId" column="pickup_assign_id" />
 		<result property="containerNo" column="container_no" />
@@ -25,24 +24,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="receiptDate" column="receipt_date" />
 		<result property="gateinDate" column="gatein_date" />
 		<result property="gateoutDate" column="gateout_date" />
-		<result property="cancelDeceiptDate"
-			column="cancel_receipt_date" />
+		<result property="cancelDeceiptDate" column="cancel_receipt_date" />
 		<result property="planningDate" column="planning_date" />
 		<result property="remark" column="remark" />
 		<result property="createBy" column="create_by" />
 		<result property="createTime" column="create_time" />
 		<result property="updateBy" column="update_by" />
 		<result property="updateTime" column="update_time" />
-		<association property="shipment" column="shipment_id"
-			javaType="Shipment" select="selectShipment" />
-		<association property="shipmentDetail"
-			column="shipment_detail_id" javaType="ShipmentDetail"
-			select="selectShipmentDetail" />
-		<association property="logisticGroup"
-			column="logistic_group_id" javaType="LogisticGroup"
-			select="selectLogisticGroup" />
-		<association property="driver" column="driver_id"
-			javaType="DriverAccount" select="selectDriverAccount" />
+		<association property="shipment" column="shipment_id" javaType="Shipment" select="selectShipment" />
+		<association property="shipmentDetail" column="shipment_detail_id" javaType="ShipmentDetail" select="selectShipmentDetail" />
+		<association property="logisticGroup" column="logistic_group_id" javaType="LogisticGroup" select="selectLogisticGroup" />
+		<association property="driver" column="driver_id" javaType="DriverAccount" select="selectDriverAccount" />
 	</resultMap>
 
 	<sql id="selectPickupHistoryVo">
@@ -326,19 +318,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT *
 		FROM pickup_history as p 
 		left join shipment s on p.shipment_id = s.id
-		left join shipment_detail sh on p.shipment_detail_id_1 = sh.id
+		left join shipment_detail sh on p.shipment_detail_id = sh.id
 		<where>
 			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
 			<if test="status != null "> and p.status = #{status}</if>
 			<if test="serviceType != null "> and s.service_type = #{serviceType}</if>
             <if test="fromDate != null ">and (p.gatein_date = #{fromDate} OR p.gatein_date > #{fromDate})</if>
             <if test="toDate != null ">and (p.gatein_date = #{toDate} OR p.gatein_date &lt; #{toDate})</if>
-			<if test="containerNo1 != null  and containerNo1 != ''"> and ( upper(p.container_no_1) like concat('%', #{containerNo1}, '%')</if>
-			<if test="containerNo2 != null  and containerNo2 != ''"> or upper(p.container_no_2) like concat('%', #{containerNo2}, '%')</if>
+			<if test="containerNo != null  and containerNo != ''"> and ( upper(p.container_no) like concat('%', #{containerNo}, '%')</if>
 			<if test="truckNo != null  and truckNo != ''"> or upper(p.truck_no) like concat('%', #{truckNo}, '%')</if>
 			<if test="chassisNo != null  and chassisNo != ''"> or upper(p.chassis_no) like concat('%', #{chassisNo}, '%')</if>
-			<if test="yardPosition1 != null  and yardPosition1 != ''"> or upper(p.yard_position_1) like concat('%', #{yardPosition1}, '%')</if>
-			<if test="yardPosition2 != null  and yardPosition2 != ''"> or upper(p.yard_position_2) like concat('%', #{yardPosition2}, '%')</if>
 			<if test="blNo != null  and blNo != ''"> or upper(sh.bl_no) like concat ('%', #{blNo}, '%')</if>
 			<if test="bookingNo != null  and bookingNo != ''"> or upper(sh.booking_no) like concat('%', #{bookingNo}, '%')</if>
 			<if test="sztp != null  and sztp != ''"> or upper(sh.sztp) like concat('%', #{sztp}, '%')</if>
@@ -351,24 +340,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT *
 		FROM pickup_history as p 
 		left join shipment s on p.shipment_id = s.id
-		left join shipment_detail sh on p.shipment_detail_id_1 = sh.id
+		left join shipment_detail sh on p.shipment_detail_id = sh.id
 		left join driver_account d on p.driver_id = d.id
 		left join logistic_group g on p.logistic_group_id = g.id
 		<where>
 			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
 			<if test="status != null "> and p.status = #{status}</if>
 			<if test="serviceType != null "> and s.service_type = #{serviceType}</if>
-            <if test="fromDate != null ">and (p.gatein_date = #{fromDate} OR p.gatein_date > #{fromDate})</if>
-            <if test="toDate != null ">and (p.gatein_date = #{toDate} OR p.gatein_date &lt; #{toDate})</if>
-			<if test="containerNo1 != null  and containerNo1 != ''"> and ( upper(p.container_no_1) like concat('%', #{containerNo1}, '%')</if>
-			<if test="containerNo2 != null  and containerNo2 != ''"> or upper(p.container_no_2) like concat('%', #{containerNo2}, '%')</if>
+            <if test="fromDate != null ">and p.gatein_date &gt;= #{fromDate}</if>
+            <if test="toDate != null ">and p.gatein_date &lt;= #{toDate}</if>
+			<if test="containerNo != null  and containerNo != ''"> and ( upper(p.container_no_) like concat('%', #{containerNo}, '%')</if>
 			<if test="truckNo != null  and truckNo != ''"> or upper(p.truck_no) like concat('%', #{truckNo}, '%')</if>
 			<if test="chassisNo != null  and chassisNo != ''"> or upper(p.chassis_no) like concat('%', #{chassisNo}, '%')</if>
 			<if test="driverName != null  and driverName != ''"> or upper(d.full_name) like concat('%', #{driverName}, '%')</if>
 			<if test="driverPhoneNumber != null  and driverPhoneNumber != ''"> or upper(d.mobile_number) like concat('%', #{driverPhoneNumber}, '%')</if>
 			<if test="logisticGroupName != null  and logisticGroupName != ''"> or upper(g.group_name) like concat('%', #{logisticGroupName}, '%')</if>
-			<if test="yardPosition1 != null  and yardPosition1 != ''"> or upper(p.yard_position_1) like concat('%', #{yardPosition1}, '%')</if>
-			<if test="yardPosition2 != null  and yardPosition2 != ''"> or upper(p.yard_position_2) like concat('%', #{yardPosition2}, '%')</if>
 			<if test="blNo != null  and blNo != ''"> or upper(sh.bl_no) like concat ('%', #{blNo}, '%')</if>
 			<if test="bookingNo != null  and bookingNo != ''"> or upper(sh.booking_no) like concat('%', #{bookingNo}, '%')</if>
 			<if test="sztp != null  and sztp != ''"> or upper(sh.sztp) like concat('%', #{sztp}, '%')</if>

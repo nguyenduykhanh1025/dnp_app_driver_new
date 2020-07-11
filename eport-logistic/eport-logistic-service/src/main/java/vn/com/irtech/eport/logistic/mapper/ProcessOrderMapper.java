@@ -58,4 +58,8 @@ public interface ProcessOrderMapper
      * @return result
      */
     public int deleteProcessOrderByIds(String[] ids);
+
+    public List<ProcessOrder> selectOrderListForOmSupport(ProcessOrder processOrder);
+
+    public int updateProcessOrderStatusForOm(String[] processOrderIds);
 }

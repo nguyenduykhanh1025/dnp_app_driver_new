@@ -59,8 +59,6 @@ public interface IShipmentService
      */
     public int deleteShipmentById(Long id);
 
-    public Shipment selectShipmentWithGroupById(Long  id);
-
     public int checkBillBookingNoUnique(Shipment shipment);
     
     public String getOpeCodeByBlNo(String blNo);
@@ -70,4 +68,6 @@ public interface IShipmentService
     public Shipment getOpeCodeCatosByBlNo(String blNo);
     
     public String getEdoFlgByOpeCode(String opeCode);
+
+    public List<Shipment> selectShipmentListForOm(Shipment shipment);
 }

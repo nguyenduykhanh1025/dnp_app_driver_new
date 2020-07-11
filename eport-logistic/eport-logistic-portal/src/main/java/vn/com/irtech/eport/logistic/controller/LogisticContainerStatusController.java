@@ -39,7 +39,7 @@ public class LogisticContainerStatusController extends LogisticBaseController {
 		}
 		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
 		shipmentDetail.setProcessStatus("Y");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectContainerStatusList(shipmentDetail);
 		return getDataTable(shipmentDetails);
 	}
 }

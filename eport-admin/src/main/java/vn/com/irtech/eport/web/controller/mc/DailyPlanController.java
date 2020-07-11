@@ -12,7 +12,7 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 @RequestMapping("/dailyPlan")
 public class DailyPlanController extends BaseController{
 
-    final String prefix = "mc/dailyPlan";
+    final String prefix = "/mc/dailyPlan";
     
     @Autowired
     
