@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
@@ -28,6 +29,9 @@ public class EdoManageController extends BaseController {
   final String PREFIX = "edo/manage";
   @Autowired
   private IEdoService edoService;
+
+  @Autowired
+  private ICarrierGroupService carrierGroupService;
 
   @Autowired
 	private IEdoAuditLogService edoAuditLogService;
@@ -87,5 +91,6 @@ public class EdoManageController extends BaseController {
 		String[] text = fileContent.split("'");
 		edo = edoService.readEdi(text);
 		return edo;
-	}
+  }
+  
 }
