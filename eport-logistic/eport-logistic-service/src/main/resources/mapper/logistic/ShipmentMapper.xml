@@ -25,12 +25,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
-        <association property="logisticGroup"    column="logistic_group_id" javaType="LogisticGroup" resultMap="logisticGroupResult" />
-    </resultMap>
-
-    <resultMap type="LogisticGroup" id="logisticGroupResult">
-        <result property="id"    column="id"    />
-        <result property="groupName"    column="group_name"    />
+        <result property="logisticName"    column="logistic_name"    />
+        <result property="vslNm"    column="vsl_nm"    />
+        <result property="voyNo"    column="voy_no"    />
     </resultMap>
 
     <sql id="selectShipmentVo">
@@ -146,12 +143,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
-    
-    <select id="selectShipmentWithGroupById" parameterType="Long" resultMap="ShipmentResult">
-        select s.id, s.logistic_account_id, s.logistic_group_id, s.service_type, s.bl_no, s.booking_no , s.ope_code, s.tax_code, s.group_name, s.container_amount, s.edo_flg, s.specific_cont_flg, s.cont_supply_status, s.reference_no, s.status, s.remark, s.create_by, s.create_time, s.update_by, s.update_time, g.group_name
-        from shipment s left join logistic_group g on s.logistic_group_id = g.id
-        where s.id = #{id}
-    </select>
 
     <select id="checkBillBookingNoUnique" parameterType="Shipment" resultType="int">
         select count(*) from shipment
@@ -160,5 +151,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="blNo != null and blNo != ''"> and bl_no = #{blNo}</if>
             <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
         </where>
+    </select>
+
+    <select id="selectShipmentListForOm" parameterType="Shipment" resultMap="ShipmentResult">
+        select s.*, l.group_name as logistic_name, sh.vsl_nm as vsl_nm, sh.voy_no as voy_no
+        from shipment s
+        left join logistic_group l on s.logistic_group_id = l.id
+        left join shipment_detail sh on s.id = sh.shipment_id
+        <where>
+            sh.shipment_id is not null
+            <if test="serviceType != null "> and service_type = #{serviceType}</if>
+            <if test="fromDate != null">and s.create_time &gt;= #{fromDate}</if>
+            <if test="toDate != null">and s.create_time &lt;= #{toDate}</if>
+            <if test="blNo != null and blNo != ''"> and (upper(s.bl_no) like concat('%', #{blNo}, '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> or upper(s.booking_no) like concat('%', #{bookingNo}, '%')</if>
+            <if test="vslNm != null and vslNm != ''"> or upper(sh.vsl_nm) like concat('%', #{vslNm}, '%')</if>
+            <if test="voyNo != null and voyNo != ''"> or upper(sh.voy_no) like concat('%', #{voyNo}, '%')</if>
+            <if test="taxCode != null and taxCode != ''"> or upper(s.tax_code) like concat('%', #{taxCode}, '%'))</if>
+        </where>
+        GROUP BY sh.shipment_id
     </select>
 </mapper>

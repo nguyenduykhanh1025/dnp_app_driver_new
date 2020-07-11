@@ -119,7 +119,7 @@ function loadTable() {
 
 // FORMAT REMARK FOR SHIPMENT LIST
 function formatRemark(value) {
-    return '<div class="easyui-tooltip" title="'+ ((value!=null&&value!="")?value:"không có ghi chú") +'" style="width: 80; text-align: center;"><span>'+ (value!=null?value:"") +'</span></div>';
+    return '<div class="easyui-tooltip" title="' + (value != null ? value : "Trống") + '" style="width: 80; text-align: center;"><span>' + (value != null ? value : "") + '</span></div>';
 }
 
 // FORMAT DATE FOR SHIPMENT LIST

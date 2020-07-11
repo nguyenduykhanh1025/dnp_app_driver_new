@@ -27,12 +27,9 @@ $(document).ready(function() {
         if (event.keyCode == 13) {
             pickupHistory.blNo = $('#searchAllInput').val().toUpperCase();
             pickupHistory.bookingNo = $('#searchAllInput').val().toUpperCase();
-            pickupHistory.containerNo1 = $('#searchAllInput').val().toUpperCase();
-            pickupHistory.containerNo2 = $('#searchAllInput').val().toUpperCase();
+            pickupHistory.containerNo = $('#searchAllInput').val().toUpperCase();
             pickupHistory.truckNo = $('#searchAllInput').val().toUpperCase();
             pickupHistory.chassisNo = $('#searchAllInput').val().toUpperCase();
-            pickupHistory.yardPosition1 = $('#searchAllInput').val().toUpperCase();
-            pickupHistory.yardPosition2 = $('#searchAllInput').val().toUpperCase();
             pickupHistory.sztp = $('#searchAllInput').val().toUpperCase();
             pickupHistory.vslNm = $('#searchAllInput').val().toUpperCase();
             pickupHistory.voyNo = $('#searchAllInput').val().toUpperCase();

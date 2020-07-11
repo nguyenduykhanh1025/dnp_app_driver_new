@@ -125,4 +125,6 @@ public interface IShipmentDetailService
 
     public List<ShipmentDetail> getShipmentDetailListForAssign(ShipmentDetail shipmentDetail);
     // public List<ShipmentDetail> selectSendEmptyShipmentDetailByListCont(@Param("conts") String conts, @Param("shipmentId") Long shipmentId);
+
+    public List <ShipmentDetail> selectContainerStatusList(ShipmentDetail shipmentDetail);
 }

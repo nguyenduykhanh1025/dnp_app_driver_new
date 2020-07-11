@@ -3,7 +3,6 @@ const PREFIX = ctx + "om/order/support";
 var notification = new Object();
 
 $(document).ready(function () {
-  $("#toggle-status").bootstrapToggle();
   loadTable();
 });
 
@@ -12,7 +11,7 @@ function loadTable() {
     url: "/notifications" + "/list",
     method: "POST",
     singleSelect: true,
-    height: 250,
+    height: $(document).height() - 50,
     clientPaging: false,
     pagination: true,
     rownumbers: true,
@@ -47,6 +46,9 @@ function loadTable() {
   });
 }
 
-$("#toggle-status").change(function(e) {
-  console.log($(this).prop('checked'));
-});
+function formatResult(value, row, index) {
+  if (value) {
+    return "<span class='label label-primary'>Đã thông quan</span>";
+  }
+  return "<span class='label label-danger'>Chưa thông quan</span>";
+}

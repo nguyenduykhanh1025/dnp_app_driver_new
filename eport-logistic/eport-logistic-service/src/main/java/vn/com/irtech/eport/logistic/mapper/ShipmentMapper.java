@@ -59,7 +59,7 @@ public interface ShipmentMapper
      */
     public int deleteShipmentByIds(String[] ids);
 
-    public Shipment selectShipmentWithGroupById(Long id);
-
     public int checkBillBookingNoUnique(Shipment shipment);
+
+    public List<Shipment> selectShipmentListForOm(Shipment shipment);
 }

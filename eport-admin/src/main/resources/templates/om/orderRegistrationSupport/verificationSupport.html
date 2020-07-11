@@ -1,30 +1,91 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <th:block th:include="include :: header('Custom Support')" />
+    <th:block th:include="include :: header('Order Support')" />
     <th:block th:include="include :: easyui-css" />
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
+    <th:block th:include="include :: handsontable-css" />
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet" />
     <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
   </head>
 
-  <body class="container-fluid white-bg page-verification">
+  <body class="container-fluid white-bg page-custom">
+    <section class="header">
+      <div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <b class="label-title">Loại Lệnh: </b>
+          <span id="serviceType"></span>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <b class="label-title">Chủ Hàng: </b>
+          <span id="consignee"></span>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <b class="label-title">Mã Số Thuế: </b>
+          <span id="taxCode"></span>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <b class="label-title">B/L No.: </b>
+          <span id="blNo"></span>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <b class="label-title">Booking No.: </b>
+          <span id="bookingNo"></span>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <b class="label-title">Phương Thức Thanh Toán: </b>
+          <span id="payType"></span>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <b class="label-title">Hạn Lệnh: </b>
+          <span id="pickupDate"></span>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <b class="label-title">Tàu: </b>
+          <span id="vessel"></span>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
+          <b class="label-title">Chuyến: </b>
+          <span id="voyage"></span>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <label class="checkbox-inline">
+            <h4><label>Trạng thái</label></h4>
+            <input
+              id="toggle-status"
+              type="checkbox"
+              data-on="<i class='fa fa-check'></i>&nbsp;Làm lệnh"
+              data-off="<i class='fa fa-spinner fa-spin fa-fw'></i>Đang chờ..."
+              data-onstyle="success"
+              data-offstyle="default"
+            />
+          </label>
+        </div>
+        <div class="col-md-12">
+          <h4>Danh sách Lệnh</h4>
+        </div>
+      </div>
+    </section>
     <section class="content clearfix">
-      <table id="dg" pageList="[20, 50, 100, 150, 200]">
-        <thead>
-          <tr>
-            <th data-options="field:'id', halign:'center', resizable:true, fixed:true" width="40" sortable="true">STT</th>
-            <th data-options="field:'Số Container', halign:'center', align:'center'" width="200" sortable="true">Số Container</th>
-            <th data-options="field:'OPE', halign:'center', fixed:'true'" width="70" sortable="true">OPE</th>
-            <th data-options="field:'Tàu', halign:'center'" width="150" sortable="true">Tàu</th>
-            <th data-options="field:'Chuyến', halign:'center'" width="150" sortable="true">Chuyến</th>
-            <th data-options="field:'Trạng thái', align:'center', fixed:'true', formatter: formatResult" width="150" sortable="true">Trạng thái</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+    </section>
+    <section class="content-bottom mt10">
+      <div class="panel panel-success">
+        <div class="panel-heading">Nhập Invoice No.</div>
+        <div class="panel-body" id="invoiceNoList">
+          
+        </div>
+      </div>
     </section>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: handsontable-js" />
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script type="text/javascript" th:inline="javascript">
+      var orderList = /*[[${orderList}]]*/;
+    </script>
     <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/verificationSupport.js}"></script>
   </body>
 </html>

@@ -16,41 +16,49 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="doType">Loại lệnh</label>
+          <label class="sr-only" for="serviceType">Loại lệnh</label>
           <div class="input-group">
-            <select class="form-control" id="doType">
-              <option value="0" selected disabled>Chọn loại lệnh</option>
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
+            <select class="form-control" id="serviceType" onchange="changeServiceType()">
+              <option value="" selected disabled>Chọn loại lệnh</option>
+              <option value="">Tất cả</option>
+              <option value="1">Bốc Hàng</option>
+              <option value="2">Hạ Rỗng</option>
+              <option value="3">Bốc Rỗng</option>
+              <option value="4">Hạ Hàng</option>
             </select>
           </div>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="status">Trạng thái</label>
+          <label class="sr-only" for="fromDate">Từ ngày</label>
           <div class="input-group">
-            <select class="form-control" id="status">
-              <option value="0" selected disabled>Chọn trạng thái</option>
-              <option value="1">Thành công</option>
-              <option value="2">Thất bại</option>
-            </select>
+            <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="toDate">Đến ngày</label>
+          <div class="input-group">
+            <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
           </div>
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
       </form>
     </section>
     <section class="content">
-      <table id="dg" pageList="[20, 50, 100, 150, 200]">
+      <table id="dg" style="width: 99%;" pageList="[20, 50, 100, 150, 200]">
         <thead>
           <tr>
-            <th data-options="field:'id', halign:'center', resizable:true, fixed:true" width="120">Số thứ tự</th>
-            <th data-options="field:'logisticGroup', halign:'center', align:'center'" width="200" sortable="true">Đơn vị logistic</th>
-            <th data-options="field:'blNo', halign:'center', fixed:'true'" width="150" sortable="true">Bill No</th>
-            <th data-options="field:'sampleField1', align:'center', fixed:'true'" width="150" sortable="true">Sample Data 1</th>
-            <th data-options="field:'sampleField2', align:'center', fixed:'true'" width="150" sortable="true">Sample Data 2</th>
-            <th data-options="field:'sampleField2', align:'center', fixed:'true'" width="150" sortable="true">Sample Data 3</th>
-            <th data-options="field:'action', align:'center', fixed:'true', formatter: formatAction">Hành động</th>
+            <th data-options="field: 'id', halign: 'center', align: 'left', resizable: true, fixed: 'true'" width="1" sortable="true"></th>
+            <th data-options="field: 'logisticName', halign: 'center', align: 'left', resizable: true, formatter: formatText" width="150" sortable="true">Logistics</th>
+            <th data-options="field: 'blNo', halign: 'center', align:'center', resizable:true" width="150" sortable="true">B/L No.</th>
+            <th data-options="field: 'bookingNo', halign: 'center', align:'center', resizable: true" width="150" sortable="true">Booking No.</th>
+            <th data-options="field: 'serviceType', halign: 'center', align:'left', resizable: true, fixed:'true', formatter: formatServiceType" width="100" sortable="true">Hình Thức</th>
+            <th data-options="field: 'taxCode', halign: 'center', align: 'center', resizable: true, fixed: 'true'" width="150" sortable="true">Mã Số Thuế</th>
+            <th data-options="field: 'containerAmount', halign: 'center', align: 'right', resizable: true, fixed: 'true'" width="110" sortable="true">Số Container</th>
+            <th data-options="field: 'vslNm', halign: 'center', align: 'left', resizable: true, fixed: 'true'" width="60" sortable="true">Tàu</th>
+            <th data-options="field: 'voyNo', halign: 'center', align: 'center', resizable: true, fixed: 'true'" width="80" sortable="true">Chuyến</th>
+            <th data-options="field: 'createTime', halign: 'center', align: 'center', resizable: true, fixed: 'true', formatter: formatDate" width="150" sortable="true">Ngày Tạo</th>
+            <th data-options="field: 'remark', halign: 'center', align: 'left', resizable: true, fixed: 'true', formatter: formatText" width="150" sortable="true">Ghi Chú</th>
+            <th data-options="field: 'action', halign: 'center', align: 'center', resizable: true, fixed: 'true', formatter: formatAction" width="400" sortable="true">Hành Động</th>
           </tr>
         </thead>
         <tbody></tbody>

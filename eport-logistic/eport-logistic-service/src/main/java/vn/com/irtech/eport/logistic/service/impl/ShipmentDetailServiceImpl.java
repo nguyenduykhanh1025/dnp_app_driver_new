@@ -691,4 +691,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     // public List<ShipmentDetail> selectSendEmptyShipmentDetailByListCont(@Param("conts") String conts, @Param("shipmentId") Long shipmentId) {
     //     return shipmentDetailMapper.selectSendEmptyShipmentDetailByListCont(Convert.toStrArray(conts), shipmentId);
     // }
+
+    @Override
+    public List <ShipmentDetail> selectContainerStatusList(ShipmentDetail shipmentDetail) {
+        return shipmentDetailMapper.selectContainerStatusList(shipmentDetail);
+    }
 }
