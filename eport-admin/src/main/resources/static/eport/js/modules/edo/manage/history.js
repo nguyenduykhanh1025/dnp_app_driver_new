@@ -10,8 +10,8 @@ function loadTable() {
         method: "GET",
         singleSelect: true,
         clientPaging: true,
-        pagination: true,
-        pageSize: 20,
+        // pagination: true,
+        // pageSize: 20,
         onClickRow: function () {
             getSelectedRow();
         },
