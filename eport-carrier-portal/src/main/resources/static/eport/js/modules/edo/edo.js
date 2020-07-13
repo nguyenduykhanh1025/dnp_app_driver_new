@@ -1,6 +1,8 @@
 const PREFIX = ctx + "edo";
 var bill;
 var edo = new Object();
+var currentLeftWidth = $(".table-left").width();
+var currentRightWidth = $(".table-right").width();
 $(function () {
     $("#dg").height($(document).height() - 100);
     $("#dgContainer").height($(document).height() - 100);
@@ -37,6 +39,24 @@ $(function () {
             }
             loadTable(billOfLading);
         }
+    });
+    $(".btn-collapse").click(function (event) {
+      let leftTable = $(".table-left");
+      let rightTable = $(".table-right");
+      let leftWidth = leftTable.width();
+      if (leftWidth !== 0) {
+        leftTable.width(0);
+        rightTable.width(currentRightWidth + currentLeftWidth);
+        loadTableByContainer();
+        leftTable.css("border-color","transparent");
+        $(this).css({'transform' : 'rotate('+ 180 +'deg)'});
+        return;
+      }
+      leftTable.width(currentLeftWidth);
+      rightTable.width(currentRightWidth);
+      leftTable.css("border-color","darkgrey");
+      $(this).css({'transform' : 'rotate('+ 360 +'deg)'});
+      return;
     });
 });
 

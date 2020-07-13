@@ -43,6 +43,7 @@ $(document).ready(function () {
     rightTable.width(currentRightWidth);
     leftTable.css("border-color","darkgrey");
     $(this).css({'transform' : 'rotate('+ 360 +'deg)'});
+    return;
   });
 });
 
