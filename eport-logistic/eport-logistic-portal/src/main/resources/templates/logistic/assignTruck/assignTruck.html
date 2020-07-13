@@ -25,11 +25,12 @@
           <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]" fitColumns="true">
             <thead>
               <tr>
-                <th data-options="field:'id', fixed:true" width="100">Mã Lô</th>
+                <th data-options="field:'id', fixed:true" width="60">Mã Lô</th>
                 <!-- <th data-options="field:'taxCode',halign:'center'" width="20%">MST</th> -->
                 <th data-options="field: 'blNo',halign: 'center', fixed:true" width="200">B/L No</th>
                 <th data-options="field: 'bookingNo',halign: 'center', fixed:true" width="200">Booking No</th>
-                <th data-options="field: 'opeCode',halign: 'center', fixed:true" width="70">OPR</th>
+                <th data-options="field: 'containerAmount',halign: 'center', fixed:true" width="70">Số lượng</th>
+                <th data-options="field: 'opeCode',halign: 'center', fixed:true" width="50">OPR</th>
                 <th data-options="field:'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="100">Ngày tạo</th>
               </tr>
             </thead>
@@ -44,7 +45,7 @@
             <button id="containerBtn" style="width: 250px;; color: black; font-weight: bold"
               onclick="assignFollowContainerTab()">Điều Xe Theo Container</button>
           </div>
-          <div class="title-top">
+          <!-- <div class="title-top">
             <div class="left-info">
               <div>
                 <span class="label-title">Mã Lô: </span>
@@ -71,7 +72,7 @@
                 <span id="quantity"></span>
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="assignFollowBatch">
             <div class="content">
               <div class="left-button-bar">
@@ -151,6 +152,7 @@
                     <th data-options="field:'preorderPickup', align:'center', fixed:true, formatter: formatPickup" width="100">Bốc Chỉ Định</th>
                     <th data-options="field:'wgt',halign:'center'" width="60">Trọng lượng</th>
                     <th data-options="field:'driverAmount',halign:'center', align:'center'" width="100">Số Lượng tài xế điều</th>
+                    <th data-options="field:'remark',halign:'center', align:'center'" width="100">Ghi chú</th>
                     <th data-options="field:'action', formatter: formatActionAssign, align:'center', halign:'center'" width="100">Hành động</th>
                   </tr>
                 </thead>

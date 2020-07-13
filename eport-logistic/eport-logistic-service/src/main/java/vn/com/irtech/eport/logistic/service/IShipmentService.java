@@ -70,4 +70,7 @@ public interface IShipmentService
     public String getEdoFlgByOpeCode(String opeCode);
 
     public List<Shipment> selectShipmentListForOm(Shipment shipment);
+
+    public List<Shipment> getShipmentListForAssign(Shipment shipment);
+
 }

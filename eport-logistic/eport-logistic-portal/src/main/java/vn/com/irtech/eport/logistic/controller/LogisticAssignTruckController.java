@@ -71,7 +71,8 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		startPage();
 		LogisticAccount user = getUser();
 		shipment.setLogisticGroupId(user.getGroupId());
-		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+		//List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+		List<Shipment> shipments = shipmentService.getShipmentListForAssign(shipment);
 		return getDataTable(shipments);
 	}
 
