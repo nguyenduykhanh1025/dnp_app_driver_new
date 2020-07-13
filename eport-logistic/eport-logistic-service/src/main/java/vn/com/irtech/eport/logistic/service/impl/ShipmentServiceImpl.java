@@ -22,16 +22,16 @@ import vn.com.irtech.eport.common.core.text.Convert;
  * @date 2020-05-07
  */
 @Service
-public class ShipmentServiceImpl implements IShipmentService 
-{
+public class ShipmentServiceImpl implements IShipmentService {
     @Autowired
     private ShipmentMapper shipmentMapper;
-    
+
     @Autowired
     private EdoMapper edoMapper;
-    
+
     @Autowired
     private CarrierGroupMapper carrierGroupMapper;
+
     /**
      * Get Shipment
      * 
@@ -39,8 +39,7 @@ public class ShipmentServiceImpl implements IShipmentService
      * @return Shipment
      */
     @Override
-    public Shipment selectShipmentById(Long id)
-    {
+    public Shipment selectShipmentById(Long id) {
         return shipmentMapper.selectShipmentById(id);
     }
 
@@ -51,8 +50,7 @@ public class ShipmentServiceImpl implements IShipmentService
      * @return Shipment
      */
     @Override
-    public List<Shipment> selectShipmentList(Shipment shipment)
-    {
+    public List<Shipment> selectShipmentList(Shipment shipment) {
         return shipmentMapper.selectShipmentList(shipment);
     }
 
@@ -63,8 +61,7 @@ public class ShipmentServiceImpl implements IShipmentService
      * @return result
      */
     @Override
-    public int insertShipment(Shipment shipment)
-    {
+    public int insertShipment(Shipment shipment) {
         shipment.setCreateTime(DateUtils.getNowDate());
         return shipmentMapper.insertShipment(shipment);
     }
@@ -76,8 +73,7 @@ public class ShipmentServiceImpl implements IShipmentService
      * @return result
      */
     @Override
-    public int updateShipment(Shipment shipment)
-    {
+    public int updateShipment(Shipment shipment) {
         shipment.setUpdateTime(DateUtils.getNowDate());
         return shipmentMapper.updateShipment(shipment);
     }
@@ -89,8 +85,7 @@ public class ShipmentServiceImpl implements IShipmentService
      * @return result
      */
     @Override
-    public int deleteShipmentByIds(String ids)
-    {
+    public int deleteShipmentByIds(String ids) {
         return shipmentMapper.deleteShipmentByIds(Convert.toStrArray(ids));
     }
 
@@ -101,8 +96,7 @@ public class ShipmentServiceImpl implements IShipmentService
      * @return result
      */
     @Override
-    public int deleteShipmentById(Long id)
-    {
+    public int deleteShipmentById(Long id) {
         return shipmentMapper.deleteShipmentById(id);
     }
 
@@ -111,31 +105,36 @@ public class ShipmentServiceImpl implements IShipmentService
         return shipmentMapper.checkBillBookingNoUnique(shipment);
     }
 
-	@Override
-	public String getOpeCodeByBlNo(String blNo) {
-		return  edoMapper.getOpeCodeByBlNo(blNo);
-	}
-
-	@Override
-	public Long getCountContainerAmountByBlNo(String blNo) {
-		return edoMapper.getCountContainerAmountByBlNo(blNo);
-	}
-
-	@Override
-	public Shipment getOpeCodeCatosByBlNo(String blNo) {
-		String url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeCatosByBlNo/" + blNo;
-        RestTemplate restTemplate = new RestTemplate();
-		return restTemplate.getForObject(url, Shipment.class);
-	}
-
-	@Override
-	public String getEdoFlgByOpeCode(String opeCode) {
-		return carrierGroupMapper.getDoTypeByOpeCode(opeCode);
+    @Override
+    public String getOpeCodeByBlNo(String blNo) {
+        return edoMapper.getOpeCodeByBlNo(blNo);
     }
-    
+
+    @Override
+    public Long getCountContainerAmountByBlNo(String blNo) {
+        return edoMapper.getCountContainerAmountByBlNo(blNo);
+    }
+
+    @Override
+    public Shipment getOpeCodeCatosByBlNo(String blNo) {
+        String url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeCatosByBlNo/" + blNo;
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(url, Shipment.class);
+    }
+
+    @Override
+    public String getEdoFlgByOpeCode(String opeCode) {
+        return carrierGroupMapper.getDoTypeByOpeCode(opeCode);
+    }
+
     @Override
     public List<Shipment> selectShipmentListForOm(Shipment shipment) {
         return shipmentMapper.selectShipmentListForOm(shipment);
+    }
+
+    @Override
+    public List<Shipment> getShipmentListForAssign(Shipment shipment) {
+        return shipmentMapper.getShipmentListForAssign(shipment);
     }
 	
 }

@@ -124,7 +124,10 @@ function loadTable() {
         },
     });
 }
-
+//FORMAT QUANTITY FOR SHIPMENT LIST
+function formatQuantity(){
+    
+}
 // FORMAT DATE FOR SHIPMENT LIST
 function formatDate(value) {
     let date = new Date(value);
@@ -238,7 +241,7 @@ function loadDriver(shipmentId){
     //pickedDriverList
     $("#pickedDriverTable").datagrid({
         url: prefix + "/assignedDriverAccountList",
-        height: window.innerHeight/2 - 45,
+        height: window.innerHeight/2 + 5,
         collapsible: true,
         clientPaging: false,
         nowrap: false,
@@ -266,7 +269,7 @@ function loadDriver(shipmentId){
                     }
                     $("#driverTable").datagrid({
                         url: prefix + "/listDriverAccount",
-                        height: window.innerHeight/2 -45,
+                        height: window.innerHeight/2 + 5,
                         collapsible: true,
                         clientPaging: false,
                         nowrap: false,

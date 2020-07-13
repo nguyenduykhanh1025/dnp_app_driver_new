@@ -15,13 +15,17 @@ function confirm()
                 detFreeTime : $("#detFreeTime").val(),
                 emptyContainerDepot : $("#emptyContainerDepot").val()
             },
+            beforeSend: function () {
+                $.modal.loading("Đang xử lý dữ liệu...");
+            },
             success: function (data) {
               if (data.code == 0) {
                   $.modal.alertSuccess("Cập nhật thành công");
+                  
               } else {
-                $.modal.alertError(data.msg)
+                $.modal.alertError(data.msg);
               }
-              
+              $.modal.closeLoading();
             },
             error: function (data) {
               $.modal.alertError(

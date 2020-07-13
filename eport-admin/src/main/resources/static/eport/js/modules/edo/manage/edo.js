@@ -92,6 +92,7 @@ function loadTableByContainer(billOfLading) {
     pageSize: 20,
     nowrap: false,
     striped: true,
+    rownumbers:true,
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
       if (billOfLading == null) {
@@ -134,7 +135,7 @@ function searchDo() {
 }
 
 function formatToYDM(date) {
-  return date.split("/").reverse().join("/");
+  return date.split("-").reverse().join("-");
 }
 
 function formatAction(value, row, index) {
@@ -144,17 +145,28 @@ function formatAction(value, row, index) {
 }
 
 function viewHistoryCont(id) {
-  $.modal.open("History Container", PREFIX + "/history/" + id, 1000, 500);
+  var options = {
+    title: 'Lịch sử thay đổi thông tin',
+    width: "1000",
+    height: "500",
+    url: PREFIX + "/history/" + id,
+    callBack: closedPopUp
+  };
+  $.modal.openOptions(options);
 }
-
-function viewUpdateCont(id) {
-  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 600);
+function closedPopUp()
+{
+  $.modal.reload();
 }
+// function viewUpdateCont(id) {
+//   $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 600);
+// }
 
 function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
   if (row) {
     bill = row.billOfLading;
+    edo = new Object();
     loadTableByContainer(row.billOfLading);
   }
 }
@@ -205,6 +217,8 @@ function searchInfoEdo() {
   edo.voyNo = $('#searchAll').val().toUpperCase();
   loadTableByContainer(bill);
 }
+
+
 function formatToYDMHMS(date) {
   let temp = date.substring(0, 10);
   return temp.split("-").reverse().join("/") + date.substring(10, 19);
@@ -231,3 +245,12 @@ function formatStatus(value) {
       return "<span class='label label-warning'>Đang chờ</span>";
   }
 }
+
+laydate.render({
+  elem: '#toDate',
+  format: 'dd/MM/yyyy'
+});
+laydate.render({
+  elem: '#fromDate',
+  format: 'dd/MM/yyyy'
+});
