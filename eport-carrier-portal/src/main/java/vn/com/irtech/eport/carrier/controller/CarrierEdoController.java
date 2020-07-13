@@ -225,6 +225,74 @@ public class CarrierEdoController extends CarrierBaseController {
 		
 	}
 
+
+	@GetMapping("/multiUpdate/{ids}")
+	public String multiUpdate(@PathVariable("ids") String ids,ModelMap map)
+	{
+		map.put("ids", ids);
+		return PREFIX + "/multiUpdate";
+	}
+
+	@PostMapping("/multiUpdate")
+	@ResponseBody 
+	public AjaxResult multiUpdate(String ids,Edo edo)
+	{
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		try {
+			EdoAuditLog edoAuditLog = new EdoAuditLog();
+			Date timeNow = new Date();
+			edoAuditLog.setCarrierId(super.getUser().getGroupId());
+			edoAuditLog.setCarrierCode(super.getUserGroup().getGroupCode());
+			edoAuditLog.setCreateTime(timeNow);
+			String[] idsList = ids.split(",");
+			for(String id : idsList)
+			{	
+				int segNo = 1;
+				edoAuditLog.setEdoId(Long.parseLong(id));
+				EdoAuditLog edoAuditLogCheckSegNo = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+				if(edo.getExpiredDem() != null)
+				{
+					Date setTimeUpdatExpicedDem = edo.getExpiredDem();
+					setTimeUpdatExpicedDem.setHours(23);
+					setTimeUpdatExpicedDem.setMinutes(59);
+					setTimeUpdatExpicedDem.setSeconds(59);
+					edo.setExpiredDem(setTimeUpdatExpicedDem);
+					edoAuditLog.setFieldName("Expired Dem");
+					EdoAuditLog edoAuditLogCheckValue = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+					edoAuditLog.setOldValue(edoAuditLogCheckValue.getNewValue());
+					edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+					edoAuditLog.setNewValue(formatter.format(setTimeUpdatExpicedDem).toString()); 
+					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+					segNo += 1;
+				}
+				if(edo.getDetFreeTime() != null && !("").equals(edo.getDetFreeTime().toString()))
+				{
+					edoAuditLog.setFieldName("Det Free Time");
+					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+					edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
+					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+					segNo += 1;
+				}
+				if(edo.getEmptyContainerDepot() != null && !("").equals(edo.getEmptyContainerDepot().toString()))
+				{
+					edoAuditLog.setFieldName("Empty Container Depot");
+					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+					edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
+					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
+				}
+				edo.setId(Long.parseLong(id));
+				edoService.updateEdo(edo);
+		}
+				return AjaxResult.success("Update thành công");
+		}catch(Exception e) {
+			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
+		} 
+		
+	}
 	@PostMapping("/readEdiOnly")
 	@ResponseBody
 	public Object readEdi(String fileContent)
