@@ -33,3 +33,17 @@
 .date {
     background: #FFFFFF none !important;
 }
+
+.total {
+    width: 100%;
+    text-align: right;
+    padding-right: 10px;
+}
+
+.action-button {
+    text-align: right;
+}
+
+.custom-dg {
+    padding-right: 30px;
+}

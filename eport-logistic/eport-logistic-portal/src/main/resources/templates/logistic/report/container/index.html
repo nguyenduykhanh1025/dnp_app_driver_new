@@ -36,7 +36,7 @@
                 </span>
             </div>
             
-            <div class="form-group col-md-2 col-sm-2 col-xs-2">
+            <div class="form-group col-md-2 col-sm-2 col-xs-2 action-button">
                 <button class="btn btn-primary" onclick="loadTable()">
                     <i class="fa fa-search"></i>
                 </button>
@@ -45,22 +45,22 @@
                 </button>
             </div>
         </div>         
-        <div class="row section-content">
+        <div class="row section-content custom-dg">
             <div>
-                <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]" fitColumns="true">
+                <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
                     <thead>
                         <tr>
                             <th data-options="field:'id', fixed:true" width="1"></th>
-                            <th data-options="field:'blNo', halign:'center', resizable:true, formatter: formatBlNo, fixed:true" width="130">B/L No.</th>
-                            <th data-options="field:'bookingNo', halign:'center', resizable:true, formatter: formatBookingNo, fixed:true" width="130">Booking No.</th>
-                            <th data-options="field:'containerNo', halign:'center', resizable:true, fixed:true" width="110">Container No.</th>
-                            <th data-options="field:'sztp', halign:'center', resizable:true, fixed:true, formatter: formatSztp" width="100">Kích Thước</th>
-                            <th data-options="field:'serviceType', halign:'center', resizable:true, fixed:true, formatter: formatServiceType" width="100">Hình Thức</th>
-                            <th data-options="field:'vslNm', halign:'center', resizable:true, fixed:true, formatter: formatVslNm" width="120">Tàu</th>
-                            <th data-options="field:'voyNo', halign:'center', resizable:true, fixed:true, formatter: formatVoyNo" width="100">Chuyến</th>
-                            <th data-options="field:'gateinDate', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" width="140">Ngày Vào Cổng</th>
-                            <th data-options="field:'truckNo', halign:'center', resizable:true, fixed:true" width="130">Biển Số Đầu Kéo</th>
-                            <th data-options="field:'chassisNo', halign:'center', resizable:true, fixed:true" width="130">Biển Số Rơ Mooc</th>
+                            <th data-options="field:'blNo', halign:'center', resizable:true, formatter: formatBlNo, fixed:true" sortable="true" width="150">B/L No.</th>
+                            <th data-options="field:'bookingNo', halign:'center', resizable:true, formatter: formatBookingNo, fixed:true" sortable="true" width="150">Booking No.</th>
+                            <th data-options="field:'containerNo', halign:'center', resizable:true, fixed:true" sortable="true" width="110">Container No.</th>
+                            <th data-options="field:'sztp', halign:'center', resizable:true, fixed:true, formatter: formatSztp" sortable="true" width="100">Kích Thước</th>
+                            <th data-options="field:'serviceType', halign:'center', resizable:true, fixed:true, formatter: formatServiceType" sortable="true" width="120">Hình Thức</th>
+                            <th data-options="field:'vslNm', halign:'center', resizable:true, fixed:true, formatter: formatVslNm" sortable="true" width="120">Tàu</th>
+                            <th data-options="field:'voyNo', halign:'center', resizable:true, fixed:true, formatter: formatVoyNo" sortable="true" width="100">Chuyến</th>
+                            <th data-options="field:'gateinDate', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" sortable="true" width="140">Ngày Vào Cổng</th>
+                            <th data-options="field:'truckNo', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Biển Số Đầu Kéo</th>
+                            <th data-options="field:'chassisNo', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Biển Số Rơ Mooc</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

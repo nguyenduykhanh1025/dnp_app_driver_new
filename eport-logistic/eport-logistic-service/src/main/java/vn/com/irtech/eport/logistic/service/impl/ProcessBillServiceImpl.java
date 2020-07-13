@@ -168,4 +168,9 @@ public class ProcessBillServiceImpl implements IProcessBillService
     public List<ProcessBill> selectBillReportList(ProcessBill processBill) {
         return processBillMapper.selectBillReportList(processBill);
     }
+
+    @Override
+    public long sumOfBillList(ProcessBill processBill) {
+        return processBillMapper.sumOfBillList(processBill);
+    }
 }

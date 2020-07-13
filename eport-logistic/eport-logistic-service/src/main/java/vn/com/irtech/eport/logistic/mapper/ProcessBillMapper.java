@@ -62,4 +62,7 @@ public interface ProcessBillMapper
     public List<ProcessBill> selectProcessBillListByProcessOrderIds(String[] processOrderIds);
 
     public List<ProcessBill> selectBillReportList(ProcessBill processBill);
+
+    public long sumOfBillList(ProcessBill processBill);
+
 }

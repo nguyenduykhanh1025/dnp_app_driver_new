@@ -30,6 +30,7 @@ public class LogisticIndexController extends LogisticBaseController
     {
         LogisticAccount user = ShiroUtils.getSysUser();
         mmap.put("user", user);
+        mmap.put("groupName", getGroup().getGroupName());
         mmap.put("sideTheme", configService.selectConfigByKey("sys.index.sideTheme"));
         mmap.put("skinName", configService.selectConfigByKey("sys.index.skinName"));
         mmap.put("copyrightYear", Global.getCopyrightYear());
@@ -44,7 +45,7 @@ public class LogisticIndexController extends LogisticBaseController
     @GetMapping("/main")
     public String main(ModelMap mmap)
     {
-    	LogisticAccount user = ShiroUtils.getSysUser();
+        LogisticAccount user = ShiroUtils.getSysUser();
         mmap.put("user", user);
         mmap.put("version", Global.getVersion());
         return "main";

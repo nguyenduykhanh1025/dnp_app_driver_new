@@ -60,6 +60,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	// FORM ADD NEW SHIPMENT
 	@GetMapping("/shipment/add")
 	public String add(ModelMap mmap) {
+		mmap.put("taxCode", getGroup().getMst());
 		return PREFIX + "/add";
 	}
 
@@ -69,6 +70,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		Shipment shipment = shipmentService.selectShipmentById(id);
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			mmap.put("shipment", shipment);
+			mmap.put("taxCode", getGroup().getMst());
 		}
         return PREFIX + "/edit";
 	}

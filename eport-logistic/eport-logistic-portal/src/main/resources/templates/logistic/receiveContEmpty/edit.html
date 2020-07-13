@@ -2,8 +2,6 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <th:block th:include="include :: header('Chỉnh sửa lô')" />
   <link th:href="@{/css/logistic/edit-shipment.css}" rel="stylesheet" />
 </head>
@@ -29,14 +27,24 @@
       <div class="form-group row">
         <label style="margin-top: 4px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Loại Lệnh</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input style="margin-top: 6px;" type="radio" name="specificContFlg" value="1" checked/>
-          <label style="margin-right: 30px;">Lệnh có số container</label>
-          <input style="margin-top: 6px;" type="radio" name="specificContFlg" value="0"/>
-          <label>Lệnh không có số container</label>
+          <input style="margin-top: 6px;" type="radio" name="specificContFlg" value="0" checked/>
+          <label>Lệnh không có số container (Cảng cấp)</label>
+          <input style="margin-top: 6px;" type="radio" name="specificContFlg" value="1"/>
+          <label style="margin-right: 30px;">Lệnh có số container (Hãng tàu cấp)</label>
         </div>
       </div>
       <div class="form-group row" style="margin-bottom: 0;">
-        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Mã Số Thuế</label>
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Mã
+          Số Thuế</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input style="margin-top: 6px;" type="radio" name="taxCodeDefault" id="taxCodeDefault" value="1" checked/>
+          <label style="margin-right: 30px;">Mặc đinh</label>
+          <input style="margin-top: 6px;" type="radio" name="taxCodeDefault" id="taxCodeNotDefault" value="0"/>
+          <label>Của khách hàng khác</label>
+        </div>
+      </div>
+      <div class="form-group row" style="margin-bottom: 0;">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"></label>
         <div class="col-md-10 col-sm-9 col-xs-7">
           <input name="taxCode" id="taxCode" type="text" class="form-control" onfocusout="loadGroupName()" required />
         </div>
@@ -68,6 +76,7 @@
   <th:block th:include="include :: footer" />
   <script type="text/javascript" th:inline="javascript">
     var shipment = /*[[${shipment}]]*/ ;
+    var taxCode = /*[[${taxCode}]]*/;
   </script>
   <script th:src="@{/js/logistic/receiveContEmpty/edit.js}"></script>
 </body>
