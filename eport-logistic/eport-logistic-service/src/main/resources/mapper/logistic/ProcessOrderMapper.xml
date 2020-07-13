@@ -196,7 +196,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     </select>
 
-    <update id="updateProcessOrderStatusForOm" parameterType="String">
+    <update id="updateDoingProcessOrder" parameterType="String">
         update process_order
         set status = 1
         where id in 
@@ -204,6 +204,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
         and status = 0
+    </update>
+
+    <update id="updateCancelingProcessOrder" parameterType="String">
+        update process_order
+        set status = 0
+        where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and status = 1
     </update>
     
 </mapper>
