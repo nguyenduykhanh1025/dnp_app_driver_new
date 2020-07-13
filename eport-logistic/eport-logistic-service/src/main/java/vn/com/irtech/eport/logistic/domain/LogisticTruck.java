@@ -82,6 +82,10 @@ public class LogisticTruck extends BaseEntity
     {
         return type;
     }
+    public void setSelfWgt(Integer selfWgt){
+        this.selfWgt = selfWgt;
+    }
+
     public Integer getSelfWgt() 
     {
         return selfWgt;
@@ -121,6 +125,7 @@ public class LogisticTruck extends BaseEntity
             .append("logisticGroupId", getLogisticGroupId())
             .append("plateNumber", getPlateNumber())
             .append("type", getType())
+            .append("selfWgt", getSelfWgt())
             .append("wgt", getWgt())
             .append("registryExpiryDate", getRegistryExpiryDate())
             .append("delFlag", getDelFlag())
