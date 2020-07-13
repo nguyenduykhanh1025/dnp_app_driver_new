@@ -100,16 +100,19 @@ function loadTable() {
                     if ($('#shipmentType').val() == 1) {
                         $("#dg").datagrid("hideColumn", "bookingNo");
                         $("#dg").datagrid("showColumn", "blNo");
+                        $("#dg").datagrid("showColumn", "opeCode");
                         $("#bookingNoDiv").hide();
                         $("#blNoDiv").show();
                     } else if ($('#shipmentType').val() == 3) {
                         $("#dg").datagrid("hideColumn", "blNo");
                         $("#dg").datagrid("showColumn", "bookingNo");
+                        $("#dg").datagrid("hideColumn", "opeCode");
                         $("#bookingNoDiv").show();
                         $("#blNoDiv").hide();
                     } else {
                         $("#dg").datagrid("hideColumn", "blNo");
                         $("#dg").datagrid("hideColumn", "bookingNo");
+                        $("#dg").datagrid("hideColumn", "opeCode");
                         $("#bookingNoDiv").hide();
                         $("#blNoDiv").hide();
                     }
@@ -235,7 +238,7 @@ function loadDriver(shipmentId){
     //pickedDriverList
     $("#pickedDriverTable").datagrid({
         url: prefix + "/assignedDriverAccountList",
-        height: window.innerHeight/2 - 25,
+        height: window.innerHeight/2 - 45,
         collapsible: true,
         clientPaging: false,
         nowrap: false,
@@ -263,7 +266,7 @@ function loadDriver(shipmentId){
                     }
                     $("#driverTable").datagrid({
                         url: prefix + "/listDriverAccount",
-                        height: window.innerHeight/2 -25,
+                        height: window.innerHeight/2 -45,
                         collapsible: true,
                         clientPaging: false,
                         nowrap: false,
