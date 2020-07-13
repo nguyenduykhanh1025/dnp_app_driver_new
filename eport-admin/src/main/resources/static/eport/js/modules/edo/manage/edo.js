@@ -166,6 +166,7 @@ function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
   if (row) {
     bill = row.billOfLading;
+    edo = new Object();
     loadTableByContainer(row.billOfLading);
   }
 }
