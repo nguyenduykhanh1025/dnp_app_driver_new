@@ -171,7 +171,7 @@ function getSelectedRow() {
 }
 
 function stringToDate(dateStr) {
-  let dateParts = dateStr.split("-");
+  let dateParts = dateStr.split("/");
   return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 }
 
@@ -244,3 +244,12 @@ function formatStatus(value) {
       return "<span class='label label-warning'>Đang chờ</span>";
   }
 }
+
+laydate.render({
+  elem: '#toDate',
+  format: 'dd/MM/yyyy'
+});
+laydate.render({
+  elem: '#fromDate',
+  format: 'dd/MM/yyyy'
+});
