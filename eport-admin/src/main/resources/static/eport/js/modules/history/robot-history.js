@@ -94,7 +94,6 @@ function loadTable() {
         url: opts.url,
         contentType: "application/json",
         accept: 'text/plain',
-        dataType: 'text',
         data: JSON.stringify({
           pageNum: param.page,
           pageSize: param.rows,

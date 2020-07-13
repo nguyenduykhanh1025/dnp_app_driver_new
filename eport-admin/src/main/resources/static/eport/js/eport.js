@@ -697,7 +697,7 @@ var table = {
             	    }
             	});
       },
-      openWithOneButton: function (title, url, width, height, callback, text) {
+      openWithOneButton: function (title, url, width, height/*, callback, text*/) {
         if ($.common.isMobile()) {
             width = 'auto';
             height = 'auto';
@@ -720,9 +720,9 @@ var table = {
           //         iframeWin.contentWindow.submitHandler(index, layero);
           //     }
           // }
-          if ($.common.isEmpty(text)) {
-            text = "OK";
-          }
+		//   if ($.common.isEmpty(text)) {
+		//     text = "OK";
+		//   }
         layer.open({
           type: 2,
           area: [width + 'px', height + 'px'],
@@ -731,9 +731,9 @@ var table = {
           shade: 0.3,
           title: title,
           content: url,
-          btn: [text],
+          //btn: [text],
           shadeClose: true,
-          yes: callback,
+          //yes: callback,
         });
 },
 			openQR: function (title, url, width, height, callback) {
