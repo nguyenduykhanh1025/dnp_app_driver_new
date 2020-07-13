@@ -58,4 +58,6 @@ public interface PickupAssignMapper
      * @return result
      */
     public int deletePickupAssignByIds(String[] ids);
+
+    public List<String> getDriverOwner(PickupAssign pickupAssign);
 }

@@ -16,8 +16,7 @@ import vn.com.irtech.eport.common.core.text.Convert;
  * @date 2020-06-27
  */
 @Service
-public class PickupAssignServiceImpl implements IPickupAssignService 
-{
+public class PickupAssignServiceImpl implements IPickupAssignService {
     @Autowired
     private PickupAssignMapper pickupAssignMapper;
 
@@ -28,8 +27,7 @@ public class PickupAssignServiceImpl implements IPickupAssignService
      * @return Pickup Assign
      */
     @Override
-    public PickupAssign selectPickupAssignById(Long id)
-    {
+    public PickupAssign selectPickupAssignById(Long id) {
         return pickupAssignMapper.selectPickupAssignById(id);
     }
 
@@ -40,8 +38,7 @@ public class PickupAssignServiceImpl implements IPickupAssignService
      * @return Pickup Assign
      */
     @Override
-    public List<PickupAssign> selectPickupAssignList(PickupAssign pickupAssign)
-    {
+    public List<PickupAssign> selectPickupAssignList(PickupAssign pickupAssign) {
         return pickupAssignMapper.selectPickupAssignList(pickupAssign);
     }
 
@@ -52,8 +49,7 @@ public class PickupAssignServiceImpl implements IPickupAssignService
      * @return result
      */
     @Override
-    public int insertPickupAssign(PickupAssign pickupAssign)
-    {
+    public int insertPickupAssign(PickupAssign pickupAssign) {
         pickupAssign.setCreateTime(DateUtils.getNowDate());
         return pickupAssignMapper.insertPickupAssign(pickupAssign);
     }
@@ -65,8 +61,7 @@ public class PickupAssignServiceImpl implements IPickupAssignService
      * @return result
      */
     @Override
-    public int updatePickupAssign(PickupAssign pickupAssign)
-    {
+    public int updatePickupAssign(PickupAssign pickupAssign) {
         pickupAssign.setUpdateTime(DateUtils.getNowDate());
         return pickupAssignMapper.updatePickupAssign(pickupAssign);
     }
@@ -78,8 +73,7 @@ public class PickupAssignServiceImpl implements IPickupAssignService
      * @return result
      */
     @Override
-    public int deletePickupAssignByIds(String ids)
-    {
+    public int deletePickupAssignByIds(String ids) {
         return pickupAssignMapper.deletePickupAssignByIds(Convert.toStrArray(ids));
     }
 
@@ -90,8 +84,12 @@ public class PickupAssignServiceImpl implements IPickupAssignService
      * @return result
      */
     @Override
-    public int deletePickupAssignById(Long id)
-    {
+    public int deletePickupAssignById(Long id) {
         return pickupAssignMapper.deletePickupAssignById(id);
+    }
+
+    @Override
+    public List<String> getDriverOwner(PickupAssign pickupAssign) {
+        return pickupAssignMapper.getDriverOwner(pickupAssign);
     }
 }

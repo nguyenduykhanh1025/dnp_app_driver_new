@@ -58,4 +58,6 @@ public interface IPickupAssignService
      * @return result
      */
     public int deletePickupAssignById(Long id);
+
+    public List<String> getDriverOwner(PickupAssign pickupAssign);
 }
