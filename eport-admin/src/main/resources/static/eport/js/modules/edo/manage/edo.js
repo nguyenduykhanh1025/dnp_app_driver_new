@@ -91,6 +91,7 @@ function loadTableByContainer(billOfLading) {
     pageSize: 20,
     nowrap: false,
     striped: true,
+    rownumbers:true,
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
       if (billOfLading == null) {
