@@ -17,19 +17,19 @@
         <form class="form-horizontal m">
           <div class="form-group">
             <label class="col-sm-4 col-xs-3 col-md-2">Hạn lệnh <br> (Expired Dem)</label>
-            <div class="col-sm-8 col-xs-8 col-md-10">
+            <div class="col-sm-9 col-xs-8 col-md-10">
               <input class="form-control time-input" id="expiredDem" name="fromDate" />
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 col-xs-3 col-md-2">Ngày miễn lưu vỏ <br> (Det Free Time)</label>
-            <div class="col-sm-8 col-xs-8 col-md-10">
-              <input type="number" name="detFreeTime" id="detFreeTime" class="form-control"/>
+            <div class="col-sm-9 col-xs-8 col-md-10">
+              <input type="number" name="detFreeTime" id="detFreeTime" class="form-control" minlength="0" />
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-4 col-xs-3 col-md-2">Nơi hạ rỗng <br> (Empty Container Depot)</label>
-            <div class="col-sm-8 col-xs-8 col-md-10">
+            <div class="col-sm-9 col-xs-8 col-md-10">
               <input class="form-control" id="emptyContainerDepot" name="fromDate" />
             </div>
           </div>
@@ -43,15 +43,11 @@
   </body>
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />
-  
   <th:block th:include="include :: datetimepicker-js" />
   <script type="text/javascript" th:inline="javascript"></script>
   <script type="text/javascript" th:inline="javascript">
-    var id = /*[[${id}]]*/ ;
-    var containerNumber = /*[[${edo.containerNumber}]]*/ ;
-    var expiredDem = /*[[${edo.expiredDem}]]*/ ;
-    var detFreeTime = /*[[${edo.detFreeTime}]]*/ ;
-    var emptyContainerDepot = /*[[${edo.emptyContainerDepot}]]*/ ;
+    var ids = /*[[${ids}]]*/ ;
+  
   </script>
-  <script th:src="@{/eport/js/modules/edo/update.js}"></script>
+   <script th:src="@{/eport/js/modules/edo/multiUpdate.js}"></script>
 </html>
