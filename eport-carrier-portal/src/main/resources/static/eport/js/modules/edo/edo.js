@@ -26,6 +26,7 @@ $(function () {
             edo.voyNo = $('#searchAll').val().toUpperCase();
             loadTableByContainer(bill);
         }
+   
     });
     $('#searchBillNo').keyup(function (event) {
         if (event.keyCode == 13) {
@@ -95,7 +96,7 @@ function formatToYDMHMS(date) {
 
 function formatAction(value, row, index) {
   var actions = [];
-  actions.push('<a class="btn btn-success btn-xs btn-action mt5" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Cập nhật</a> ');
+  actions.push('<a class="btn btn-success btn-xs btn-action mt5" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Cập nhật</a> '+'<br>');
   actions.push('<a class="btn btn-success btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Xem lịch sử</a> ');
   return actions.join("");
 }
@@ -123,7 +124,7 @@ function loadTableByContainer(billOfLading) {
     $("#dgContainer").datagrid({
         url: PREFIX + "/edo",
         method: "POST",
-        singleSelect: true,
+        singleSelect: false,
         clientPaging: true,
         pagination: true,
         pageSize: 20,
@@ -252,4 +253,16 @@ function formatStatus(value)
     }
 }
 
+
+
+function updateEdo()
+{
+  let ids = [];
+  let rows = $('#dgContainer').datagrid('getSelections');
+  for(let i=0; i<rows.length; i++){
+    let row = rows[i];
+       ids.push(row.id);
+  }
+  $.modal.openOption("Update Container", PREFIX + "/multiUpdate/" + ids, 1000, 400);
+}
 
