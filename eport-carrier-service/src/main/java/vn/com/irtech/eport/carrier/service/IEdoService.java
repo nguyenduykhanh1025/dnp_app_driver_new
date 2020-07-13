@@ -87,4 +87,5 @@ public interface IEdoService {
 
 	public List<String> selectCarrierCode();
 
+	public List<String> selectVoyNo();
 }

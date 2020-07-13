@@ -10,13 +10,22 @@ $(function () {
     currentRightTableWidth = $(".right-table").width();
     $.ajax({
         type: "GET",
-        url: PREFIX + "/carrierCode",
+        url: PREFIX + "/getVesselNo",
         success(data) {
             data.forEach((element) => {
-                $("#carrierCode").append(`<option value="${element}"> ${element}</option>`);
+                $("#vesselNo").append(`<option value="${element}"> ${element}</option>`);
             });
         },
     });
+    $.ajax({
+      type: "GET",
+      url: PREFIX + "/getVoyNo",
+      success(data) {
+          data.forEach((element) => {
+              $("#voyNo").append(`<option value="${element}"> ${element}</option>`);
+          });
+      },
+  });
     loadTable();
     loadTableByContainer();
 

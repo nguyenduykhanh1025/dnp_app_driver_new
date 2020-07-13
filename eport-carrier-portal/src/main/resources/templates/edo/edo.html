@@ -15,12 +15,12 @@
           <div class="col-sm-12 fixed-table-toolbar">
             <div class="bs-bars pull-left mb5 mt0 billNoView">
               <input class="form-control" type="text" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" />
-              <!-- <select class="form-control combobox-carrier" id="voyNo">
+              <select class="form-control combobox-carrier" id="voyNo">
                 <option value="" selected>Voy no</option>
               </select>
               <select class="form-control combobox-carrier" id="vesselNo">
                 <option value="" selected>Vessel no</option>
-              </select> -->
+              </select>
             </div>
             <div class="columns columns-right btn-group pull-right mb0 mt0">
               <div class="select-list">
@@ -56,11 +56,11 @@
                     OPR <br />
                     CODE
                   </th>
-                  <th data-options="field:'createTime',align:'left'" width="130">
-                    CREATE TIME
-                  </th>
                   <th data-options="field:'numberContainer',align:'center'" width="90">
                     NUMBER <br> CONTAINER
+                  </th>
+                  <th data-options="field:'createTime',align:'left'" width="130">
+                    CREATE TIME
                   </th>
                 </tr>
               </thead>
@@ -94,7 +94,7 @@
                     DET FREE <br />
                     TIME
                   </th>
-                  <th data-options="field:'vessel',align:'left'" width="110">
+                  <th data-options="field:'vesselNo',align:'left'" width="110">
                     VESSEL NO
                   </th>
                   <th data-options="field:'voyNo',align:'left'" width="110">
