@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="plateNumber"    column="plate_number"    />
         <result property="type"    column="type"    />
+        <result property="selfWgt"    column="self_wgt"    />
         <result property="wgt"    column="wgt"    />
         <result property="registryExpiryDate"    column="registry_expiry_date"    />
         <result property="delFlag"    column="del_flag"    />
@@ -20,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLogisticTruckVo">
-        select id, logistic_group_id, plate_number, type, wgt, registry_expiry_date, del_flag, remark, create_by, create_time, update_by, update_time from logistic_truck
+        select id, logistic_group_id, plate_number, type, self_wgt, wgt, registry_expiry_date, del_flag, remark, create_by, create_time, update_by, update_time from logistic_truck
     </sql>
 
     <select id="selectLogisticTruckList" parameterType="LogisticTruck" resultMap="LogisticTruckResult">
@@ -30,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null"> and del_flag = #{delFlag}</if>
             <if test="plateNumber != null  and plateNumber != ''"> and plate_number like concat('%', #{plateNumber}, '%')</if>
             <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="selfWgt != null "> and self_wgt = #{selfWgt}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="registryExpiryDate != null "> and registry_expiry_date = #{registryExpiryDate}</if>
         </where>
@@ -47,6 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="plateNumber != null  and plateNumber != ''">plate_number,</if>
             <if test="type != null  and type != ''">type,</if>
+            <if test="selfWgt != null ">self_wgt,</if>
             <if test="wgt != null ">wgt,</if>
             <if test="registryExpiryDate != null ">registry_expiry_date,</if>
             <if test="delFlag != null ">del_flag,</if>
@@ -60,6 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="plateNumber != null  and plateNumber != ''">#{plateNumber},</if>
             <if test="type != null  and type != ''">#{type},</if>
+            <if test="selfWgt != null ">#{selfWgt},</if>
             <if test="wgt != null ">#{wgt},</if>
             <if test="registryExpiryDate != null ">#{registryExpiryDate},</if>
             <if test="delFlag != null ">#{delFlag},</if>
@@ -77,6 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="plateNumber != null  and plateNumber != ''">plate_number = #{plateNumber},</if>
             <if test="type != null  and type != ''">type = #{type},</if>
+            <if test="selfWgt != null ">self_wgt = #{selfWgt},</if>
             <if test="wgt != null ">wgt = #{wgt},</if>
             <if test="registryExpiryDate != null ">registry_expiry_date = #{registryExpiryDate},</if>
             <if test="delFlag != null ">del_flag = #{delFlag},</if>

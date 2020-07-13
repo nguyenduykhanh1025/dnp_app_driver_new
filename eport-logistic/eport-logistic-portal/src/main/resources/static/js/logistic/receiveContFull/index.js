@@ -820,6 +820,7 @@ function getDataFromTable(isValidate) {
     shipmentDetail.shipmentId = shipmentSelected.id;
     shipmentDetail.id = object["id"];
     shipmentDetail.processStatus = shipmentSelected.taxCode;
+    shipmentDetail.customStatus = shipmentSelected.groupName;
     shipmentDetail.tier = shipmentSelected.containerAmount;
     shipmentDetails.push(shipmentDetail);
     if (object["id"] != null) {

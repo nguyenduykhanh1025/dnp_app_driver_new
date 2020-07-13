@@ -300,6 +300,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentSendCont.setTaxCode(shipmentDt.getProcessStatus());
 					shipmentSendCont.setLogisticAccountId(user.getId());
 					shipmentSendCont.setLogisticGroupId(user.getGroupId());
+					shipmentSendCont.setGroupName(shipmentDt.getCustomStatus());
 					shipmentSendCont.setCreateTime(new Date());
 					shipmentSendCont.setStatus("1");
 					shipmentService.insertShipment(shipmentSendCont);
@@ -308,6 +309,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			}
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus(null);
+				shipmentDetail.setCustomStatus(null);
 				if (shipmentDetail.getId() == null) {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
@@ -337,7 +339,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						shipmentDetailService.insertShipmentDetail(shipmentDetail);
 					}
 					
-				} else  if ("N".equals(shipmentDetail.getUserVerifyStatus())) {
+				} else {
 					updateShipment = false;
 					shipmentDetail.setUpdateBy(user.getFullName());
 					shipmentDetail.setUpdateTime(new Date());

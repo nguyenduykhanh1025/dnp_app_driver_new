@@ -31,9 +31,13 @@ public class LogisticTruck extends BaseEntity
     @Excel(name = "type")
     private String type;
 
-    /** Weight */
-    @Excel(name = "Weight")
-    private Long wgt;
+    /** Trọng tải bản thân */
+    @Excel(name = "Trọng tải bản thân")
+    private Integer selfWgt;
+
+    /** Tải trọng cho phép chở */
+    @Excel(name = "Tải trọng cho phép chở")
+    private Integer wgt;
 
     /** Hạn đăng kiểm */
     @Excel(name = "Hạn đăng kiểm", width = 30, dateFormat = "yyyy-MM-dd")
@@ -78,12 +82,20 @@ public class LogisticTruck extends BaseEntity
     {
         return type;
     }
-    public void setWgt(Long wgt) 
+    public void setSelfWgt(Integer selfWgt){
+        this.selfWgt = selfWgt;
+    }
+
+    public Integer getSelfWgt() 
+    {
+        return selfWgt;
+    }
+    public void setWgt(Integer wgt) 
     {
         this.wgt = wgt;
     }
 
-    public Long getWgt() 
+    public Integer getWgt() 
     {
         return wgt;
     }
@@ -113,6 +125,7 @@ public class LogisticTruck extends BaseEntity
             .append("logisticGroupId", getLogisticGroupId())
             .append("plateNumber", getPlateNumber())
             .append("type", getType())
+            .append("selfWgt", getSelfWgt())
             .append("wgt", getWgt())
             .append("registryExpiryDate", getRegistryExpiryDate())
             .append("delFlag", getDelFlag())
