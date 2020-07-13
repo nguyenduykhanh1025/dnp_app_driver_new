@@ -744,7 +744,12 @@ function getDataFromTable(isValidate) {
   let cleanedGridData = [];
   for (let i = 0; i < checkList.length; i++) {
     if (Object.keys(myTableData[i]).length > 0) {
-      cleanedGridData.push(myTableData[i]);
+      if (myTableData[i].containerNo || myTableData[i].expiredDem || myTableData[i].consignee || myTableData[i].emptyDepot ||
+        myTableData[i].opeCode || myTableData[i].vslNm || myTableData[i].voyNo || myTableData[i].sztp ||
+        myTableData[i].sealNo || myTableData[i].wgt || myTableData[i].loadingPort || myTableData[i].dischargePort ||
+        myTableData[i].remark) {
+        cleanedGridData.push(myTableData[i]);
+      }
     }
   }
   shipmentDetails = [];
@@ -762,20 +767,24 @@ function getDataFromTable(isValidate) {
   }
   $.each(cleanedGridData, function (index, object) {
     let shipmentDetail = new Object();
-    if (isValidate && object["delFlag"] == null) {
-      if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"])) {
+    if (isValidate) {
+      if(!object["containerNo"]) {
+        $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
+        errorFlg = true;
+        return false;
+      } else if (!/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"])) {
         $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
         errorFlg = true;
         return false;
-      } else if (object["expiredDem"] == null || object["expiredDem"] == "") {
+      } else if (!object["expiredDem"]) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
         errorFlg = true;
         return false;
-      } else if (object["consignee"] == null || object["consignee"] == "") {
+      } else if (!object["consignee"]) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
         errorFlg = true;
         return false;
-      } else if (object["emptyDepot"] == null || object["emptyDepot"] == "") {
+      } else if (!object["emptyDepot"]) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn nơi hạ vỏ!");
         errorFlg = true;
         return false;

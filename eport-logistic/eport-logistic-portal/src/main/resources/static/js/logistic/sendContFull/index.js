@@ -697,7 +697,11 @@ function getDataFromTable(isValidate) {
     let cleanedGridData = [];
     for (let i=0; i<checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
-            cleanedGridData.push(myTableData[i]);
+            if (myTableData[i].containerNo || myTableData[i].consignee || myTableData[i].opeCode || myTableData[i].vslNm ||
+                myTableData[i].voyNo || myTableData[i].sztp || myTableData[i].wgt || myTableData[i].cargoType ||
+                myTableData[i].dischargePort || myTableData[i].remark) {
+                    cleanedGridData.push(myTableData[i]);
+                }
         }
     }
     shipmentDetails = [];
@@ -714,35 +718,39 @@ function getDataFromTable(isValidate) {
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
         if (isValidate) {
-            if (object["containerNo"] != null && object["containerNo"] != "" && !/^[A-Z]{4}[0-9]{7}$/g.test(object["containerNo"])) {
+            if(!object["containerNo"]) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
+                errorFlg = true;
+                return false;
+            } else if (!/^[A-Z]{4}[0-9]{7}$/g.test(object["containerNo"])) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
                 errorFlg = true;
                 return false;
-            } else if (object["consignee"] == null || object["consignee"] == "") {
+            } else if (!object["consignee"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
                 errorFlg = true;
                 return false;
-            } else if (object["opeCode"] == null || object["opeCode"] == "") {
+            } else if (!object["opeCode"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn hãng tàu!");
                 errorFlg = true;
                 return false;
-            } else if (object["vslNm"] == null || object["vslNm"] == "") {
+            } else if (!object["vslNm"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu!");
                 errorFlg = true;
                 return false;
-            } else if (object["voyNo"] == null || object["voyNo"] == "") {
+            } else if (!object["voyNo"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chuyến!");
                 errorFlg = true;
                 return false;
-            } else if (object["sztp"] == null || object["sztp"] == "") {
+            } else if (!object["sztp"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
                 return false;
-            } else if (object["wgt"] == null || object["wgt"] == "") {
+            } else if (!object["wgt"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn trọng tải!");
                 errorFlg = true;
                 return false;
-            } else if (object["dischargePort"] == null || object["dischargePort"] == "") {
+            } else if (!object["dischargePort"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
                 errorFlg = true;
                 return false;

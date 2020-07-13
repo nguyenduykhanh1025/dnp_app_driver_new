@@ -57,7 +57,6 @@ function loadTable() {
                 type: opts.method,
                 url: opts.url,
                 contentType: "application/json",
-                accept: 'text/plain',
                 data: JSON.stringify({
                     pageNum: param.page,
                     pageSize: param.rows,
@@ -65,9 +64,9 @@ function loadTable() {
                     isAsc: param.order,
                     data: processBill
                 }),
-                dataType: 'text',
-                success: function (data) {
-                    success(JSON.parse(data));
+                success: function (res) {
+                    success(res.list);
+                    $('#total').text(res.total+" (VND)");
                 },
                 error: function () {
                     error.apply(this, arguments);

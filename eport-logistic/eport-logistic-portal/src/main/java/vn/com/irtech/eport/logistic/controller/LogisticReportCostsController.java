@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
@@ -32,7 +33,8 @@ public class LogisticReportCostsController extends LogisticBaseController {
 	
 	@PostMapping("/list")
 	@ResponseBody
-	public TableDataInfo listShipment(@RequestBody PageAble<ProcessBill> param) {
+	public AjaxResult listShipment(@RequestBody PageAble<ProcessBill> param) {
+		AjaxResult ajaxResult = AjaxResult.success();
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		ProcessBill processBill = param.getData();
 		if (processBill == null) {
@@ -40,6 +42,8 @@ public class LogisticReportCostsController extends LogisticBaseController {
 		}
 		processBill.setLogisticGroupId(getUser().getGroupId());
 		List<ProcessBill> processBills = processBillService.selectBillReportList(processBill);
-		return getDataTable(processBills);
+		ajaxResult.put("list", getDataTable(processBills));
+		ajaxResult.put("total", processBillService.sumOfBillList(processBill));
+		return ajaxResult;
 	}
 }
