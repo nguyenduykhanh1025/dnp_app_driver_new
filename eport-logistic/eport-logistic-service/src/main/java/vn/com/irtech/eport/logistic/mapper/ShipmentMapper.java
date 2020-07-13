@@ -62,4 +62,6 @@ public interface ShipmentMapper
     public int checkBillBookingNoUnique(Shipment shipment);
 
     public List<Shipment> selectShipmentListForOm(Shipment shipment);
+
+    public List<Shipment> getShipmentListForAssign(Shipment shipment);
 }

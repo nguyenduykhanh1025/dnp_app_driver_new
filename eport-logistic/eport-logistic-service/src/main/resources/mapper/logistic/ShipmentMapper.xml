@@ -29,7 +29,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="vslNm"    column="vsl_nm"    />
         <result property="voyNo"    column="voy_no"    />
     </resultMap>
-
     <sql id="selectShipmentVo">
         select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, container_amount, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, create_by, create_time, update_by, update_time from shipment
     </sql>
@@ -170,5 +169,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null and taxCode != ''"> or upper(s.tax_code) like concat('%', #{taxCode}, '%'))</if>
         </where>
         GROUP BY sh.shipment_id
+    </select>
+    <select id="getShipmentListForAssign" parameterType="Shipment" resultMap="ShipmentResult">
+        select  id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, create_by, create_time, update_by, update_time,
+                (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.process_status = 'Y') as container_amount
+        from shipment s
+        <where>
+            <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="serviceType != null "> and service_type = #{serviceType}</if>
+            <if test="blNo != null and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
+            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
+            <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
+            <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
+            <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>
+            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
+        </where>
     </select>
 </mapper>
