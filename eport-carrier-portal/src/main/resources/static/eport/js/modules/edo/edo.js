@@ -133,10 +133,10 @@ function viewHistoryCont(id) {
 }
 function closedPopUp()
 {
-  $.modal.closedPopUp();
+  $.modal.reload();
 }
 function viewUpdateCont(id) {
-  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 1000, 600);
+  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 1000, 400);
 }
 
 function loadTableByContainer(billOfLading) {
@@ -279,6 +279,11 @@ function updateEdo()
 {
   let ids = [];
   let rows = $('#dgContainer').datagrid('getSelections');
+  if(rows.length === 0)
+  {
+      $.modal.alertWarning("Bạn chưa chọn container để update, vui lòng kiểm tra lại !");
+      return;
+  }
   for(let i=0; i<rows.length; i++){
     let row = rows[i];
        ids.push(row.id);
