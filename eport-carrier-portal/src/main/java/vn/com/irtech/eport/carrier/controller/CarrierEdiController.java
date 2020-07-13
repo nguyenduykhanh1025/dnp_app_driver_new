@@ -56,7 +56,7 @@ public class CarrierEdiController {
 		CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupByGroupCode(ediReq.getPartnerCode());
 
 		if (carrierGroup == null) {
-			throw new EdiApiException(EdiRes.error(5002, "Partner code not found.", transactionId, ediReq.getData()));
+			throw new EdiApiException(EdiRes.error(HttpServletResponse.SC_PRECONDITION_FAILED, "Partner code is not exist", transactionId, ediReq.getData()));
 		}
 
 		// Authentication
@@ -66,7 +66,7 @@ public class CarrierEdiController {
 
 		if (publicKey == null || !SignatureUtils.verify(plainText, ediReq.getHashCode(), publicKey)) {
 			throw new EdiApiException(
-					EdiRes.error(5001, "The Edi secure key is wrong", transactionId, ediReq.getData()));
+					EdiRes.error(HttpServletResponse.SC_UNAUTHORIZED, "The Edi secure key is wrong", transactionId, ediReq.getData()));
 		}
 
 		try {
