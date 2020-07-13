@@ -135,7 +135,7 @@ function searchDo() {
 }
 
 function formatToYDM(date) {
-  return date.split("/").reverse().join("/");
+  return date.split("-").reverse().join("-");
 }
 
 function formatAction(value, row, index) {
@@ -171,7 +171,7 @@ function getSelectedRow() {
 }
 
 function stringToDate(dateStr) {
-  let dateParts = dateStr.split("/");
+  let dateParts = dateStr.split("-");
   return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 }
 
