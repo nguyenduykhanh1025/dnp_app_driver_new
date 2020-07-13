@@ -86,7 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
-            <if test="delFlg != null  and delFlg != ''"> and del_flg = #{delFlg}</if>
+            <if test="delFlg != null"> and del_flg = #{delFlg}</if>
             <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
             <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
             <if test="consignee != null  and consignee != ''"> and consignee  = #{consignee}</if>
