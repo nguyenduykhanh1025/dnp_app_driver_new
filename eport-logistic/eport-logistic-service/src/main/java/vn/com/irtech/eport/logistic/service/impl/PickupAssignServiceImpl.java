@@ -89,7 +89,18 @@ public class PickupAssignServiceImpl implements IPickupAssignService {
     }
 
     @Override
-    public List<String> getDriverOwner(PickupAssign pickupAssign) {
-        return pickupAssignMapper.getDriverOwner(pickupAssign);
+    public List<String> getDriverOwners(PickupAssign pickupAssign) {
+        return pickupAssignMapper.getDriverOwners(pickupAssign);
     }
+
+    @Override
+    public List<String> getPhoneNumbersByDriverOwner(PickupAssign pickupAssign) {
+        return pickupAssignMapper.getPhoneNumbersByDriverOwner(pickupAssign);
+    }
+
+    @Override
+    public PickupAssign getInforOutSourceByPhoneNumber(PickupAssign pickupAssign) {
+        return pickupAssignMapper.getInforOutSourceByPhoneNumber(pickupAssign);
+    }
+    
 }

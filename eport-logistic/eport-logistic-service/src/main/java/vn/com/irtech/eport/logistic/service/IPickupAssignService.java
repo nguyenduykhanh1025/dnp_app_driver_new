@@ -59,5 +59,9 @@ public interface IPickupAssignService
      */
     public int deletePickupAssignById(Long id);
 
-    public List<String> getDriverOwner(PickupAssign pickupAssign);
+    public List<String> getDriverOwners(PickupAssign pickupAssign);
+
+    public List<String> getPhoneNumbersByDriverOwner(PickupAssign pickupAssign);
+
+    public PickupAssign getInforOutSourceByPhoneNumber(PickupAssign pickupAssign);
 }

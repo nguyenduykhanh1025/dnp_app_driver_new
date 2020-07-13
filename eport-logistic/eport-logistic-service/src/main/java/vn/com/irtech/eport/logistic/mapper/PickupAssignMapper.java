@@ -59,5 +59,9 @@ public interface PickupAssignMapper
      */
     public int deletePickupAssignByIds(String[] ids);
 
-    public List<String> getDriverOwner(PickupAssign pickupAssign);
+    public List<String> getDriverOwners(PickupAssign pickupAssign);
+
+    public List<String> getPhoneNumbersByDriverOwner(PickupAssign pickupAssign);
+
+    public PickupAssign getInforOutSourceByPhoneNumber(PickupAssign pickupAssign);
 }
