@@ -189,8 +189,7 @@ function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
   if (row) {
     bill = row.billOfLading;
-    edo.fromDate = "";
-    edo.toDate = "";
+    edo = new Object();
     loadTableByContainer(row.billOfLading);
   }
 }
