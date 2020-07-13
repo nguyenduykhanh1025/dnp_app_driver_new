@@ -61,7 +61,11 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	private ILogisticTruckService logisticTruckService;
 
 	@GetMapping
-    public String assignTruck() {
+    public String assignTruck(ModelMap mmap) {
+		PickupAssign pickupAssign = new PickupAssign();
+		pickupAssign.setLogisticGroupId(getUser().getGroupId());
+		pickupAssign.setExternalFlg(1L);
+		mmap.put("driverOwnerList", pickupAssignService.getDriverOwners(pickupAssign));
     	return PREFIX + "/assignTruck";
 	}
 	
@@ -500,6 +504,30 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			}
 		}
 		ajaxResult.put("outSourceList", outSourceForContainer);
+		return ajaxResult;
+	}
+
+	@GetMapping("/owner/{owner}/driver-phone-list")
+	@ResponseBody
+	public AjaxResult getDriverPhoneByOwner(@PathVariable String owner) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		PickupAssign pickupAssign = new PickupAssign();
+		pickupAssign.setLogisticGroupId(getUser().getGroupId());
+		pickupAssign.setExternalFlg(1L);
+		pickupAssign.setDriverOwner(owner);
+		ajaxResult.put("driverPhoneList", pickupAssignService.getPhoneNumbersByDriverOwner(pickupAssign));
+		return ajaxResult;
+	}
+
+	@GetMapping("/driver-phone/{driverPhone}/infor")
+	@ResponseBody
+	public AjaxResult getInforByDriverPhone(@PathVariable String driverPhone) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		PickupAssign pickupAssign = new PickupAssign();
+		pickupAssign.setLogisticGroupId(getUser().getGroupId());
+		pickupAssign.setExternalFlg(1L);
+		pickupAssign.setPhoneNumber(driverPhone);
+		ajaxResult.put("pickupAssign", pickupAssignService.getInforOutSourceByPhoneNumber(pickupAssign));
 		return ajaxResult;
 	}
 }
