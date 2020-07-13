@@ -204,7 +204,7 @@ function dischargePortRenderer (instance, td, row, col, prop, value, cellPropert
 
 $("#toggle-status").change(function(e) {
   if ($("#toggle-status").prop('checked')) {
-    layer.confirm("Không có lệnh nào cần thực hiện trong lô này.", {
+    layer.confirm("Xác nhận làm lệnh cho lô này.", {
       icon: 3,
       title: "Xác Nhận",
       btn: ['Đồng Ý', 'Hủy Bỏ']
@@ -225,9 +225,50 @@ $("#toggle-status").change(function(e) {
     }, function () {
       $("#toggle-status").prop('checked', false).change();
     });
+  } else {
+    layer.confirm("Hủy làm lệnh cho lô này.", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Đồng Ý', 'Hủy Bỏ']
+    }, function () {
+      $.ajax({
+        url: PREFIX + "/process-order/canceling",
+        method: "Get",
+        data: {
+          processOrderIds: processOrderIds
+        }
+      }).done(function(res) {
+        if (res.code != 0) {
+          $("#toggle-status").prop('checked', true).change();
+          $.modal.alertError(res.msg);
+        }
+        layer.close(layer.index);
+      });
+    }, function () {
+      $("#toggle-status").prop('checked', true).change();
+    });
   }
 });
 
-
-
-
+function confirm() {
+  for (let i=0; i<orderList.length; i++) {
+    orderList[i].referenceNo = $('#invoiceNo'+orderList[i].id).val();
+  }
+  $.modal.loading("Đang xử lý...");
+  $.ajax({
+    url: PREFIX + "/invoice-no",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify(orderList),
+    success: function (res) {
+      if (res.code == 0) {
+        parent.finishForm(res);
+        $.modal.close();
+      }
+    },
+    error: function () {
+      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+      $.modal.closeLoading();
+    },
+  });
+}

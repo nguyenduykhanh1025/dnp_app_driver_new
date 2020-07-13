@@ -166,7 +166,7 @@ function openCustomSupport(id) {
 }
 
 function openVerificationSupport(id) {
-  $.modal.openWithOneButton("Làm lệnh", PREFIX + "/verification/" + id, null, null, null, "Xác nhận");
+  $.modal.openWithOneButton("Làm lệnh", PREFIX + "/verification/" + id, null, null);
 }
 
 function openPaymentSupport(id) {
@@ -199,4 +199,13 @@ function completeVerification(processOrders) {
       $.modal.closeLoading();
     },
   });
+}
+
+function finishForm(res) {
+  if (res.code == 0) {
+    $.modal.msgSuccess(res.msg);
+  } else {
+    $.modal.msgError(res.msg);
+  }
+  loadTable();
 }
