@@ -112,6 +112,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="detFreeTime != null ">det_free_time,</if>
             <if test="secureCode != null  and secureCode != ''">secure_code,</if>
             <if test="releaseDate != null ">release_date,</if>
+            <if test="vesselNo != null and vesselNo != ''">vessel_no,</if>
             <if test="vessel != null  and vessel != ''">vessel,</if>
             <if test="voyNo != null  and voyNo != ''">voy_no,</if>
             <if test="status != null  and status != ''">status,</if>
@@ -137,6 +138,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="secureCode != null  and secureCode != ''">#{secureCode},</if>
             <if test="releaseDate != null ">#{releaseDate},</if>
             <if test="vessel != null  and vessel != ''">#{vessel},</if>
+            <if test="vesselNo != null  and vesselNo != ''">#{vesselNo},</if>
             <if test="voyNo != null  and voyNo != ''">#{voyNo},</if>
             <if test="status != null  and status != ''">#{status},</if>
             <if test="releaseStatus != null  and releaseStatus != ''">#{releaseStatus},</if>
@@ -165,6 +167,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="secureCode != null  and secureCode != ''">secure_code = #{secureCode},</if>
             <if test="releaseDate != null ">release_date = #{releaseDate},</if>
             <if test="vessel != null  and vessel != ''">vessel = #{vessel},</if>
+            <if test="vesselNo != null  and vesselNo != ''">vesselNo = #{vessel_no},</if>
             <if test="voyNo != null  and voyNo != ''">voy_no = #{voyNo},</if>
             <if test="status != null  and status != ''">status = #{status},</if>
             <if test="releaseStatus != null  and releaseStatus != ''">release_status = #{releaseStatus},</if>
@@ -240,13 +243,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             ORDER BY create_time DESC
     </select>
 
-     <select id="selectVolNo" parameterType="String" resultType="String">
+     <select id="selectVoyNo" parameterType="String" resultType="String">
     	select distinct voy_no
     	from edo
      </select>
 
      <select id="selectCarrierCode" parameterType="String" resultType="String">
     	select distinct carrier_code
+    	from edo
+     </select>
+
+      <select id="selectVesselNo" parameterType="String" resultType="String">
+    	select distinct vessel_no
     	from edo
      </select>
      

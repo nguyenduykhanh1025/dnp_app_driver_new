@@ -250,7 +250,7 @@ public class EdoServiceImpl implements IEdoService
 					String [] voyNo = infoDTD20[0].split("\\+");
 					String [] vesselNo = infoDTD20[2].split("\\+");
 					edi.setVoyNo(voyNo[2]);
-					edi.setVessel(vesselNo[3]);
+					edi.setVesselNo(vesselNo[3]);
 					obj.put("voyNo", voyNo[2]);
 					obj.put("vesselNo", vesselNo[3]);
 				}
@@ -305,7 +305,12 @@ public class EdoServiceImpl implements IEdoService
 	public List<String> selectCarrierCode()
 	{
 		return edoMapper.selectCarrierCode();
-	}
+	} 
+
+	public List<String> selectVoyNo()
+	{
+		return edoMapper.selectVoyNo();
+	} 
     
 
 }

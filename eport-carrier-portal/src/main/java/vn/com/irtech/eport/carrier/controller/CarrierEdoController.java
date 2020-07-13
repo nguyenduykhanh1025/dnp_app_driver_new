@@ -312,7 +312,19 @@ public class CarrierEdoController extends CarrierBaseController {
 		return getDataTable(edoAuditLogsList);
 	}
 
-	
+	@GetMapping("/getVesselNo")
+	@ResponseBody
+	public List<String> lisVesselNo()
+	{
+		return edoService.selectVesselNo();
+	}
+
+	@GetMapping("/getVoyNo")
+	@ResponseBody
+	public List<String> listVoyNo()
+	{
+		return edoService.selectVoyNo();
+	}
 
 
 }
