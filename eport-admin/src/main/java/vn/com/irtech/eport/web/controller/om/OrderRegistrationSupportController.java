@@ -55,6 +55,9 @@ public class OrderRegistrationSupportController extends AdminBaseController {
 
   @GetMapping("/custom/{shipmentId}")
   public String getCustomSupport(@PathVariable Long shipmentId, ModelMap mmap) {
+    ShipmentDetail shipmentDetail = new ShipmentDetail();
+    shipmentDetail.setShipmentId(shipmentId);
+    mmap.put("shipmentDetails", shipmentDetailService.selectShipmentDetailList(shipmentDetail));
     return PREFIX + "/customSupport";
   }
 
@@ -65,6 +68,9 @@ public class OrderRegistrationSupportController extends AdminBaseController {
 
   @GetMapping("/payment/{shipmentId}")
   public String getpaymentSupport(@PathVariable Long shipmentId, ModelMap mmap) {
+    ProcessOrder processOrder = new ProcessOrder();
+    processOrder.setShipmentId(shipmentId);
+    mmap.put("orderList", processOrderService.selectOrderListForOmSupport(processOrder));
     return PREFIX + "/paymentSupport";
   }
 
@@ -76,8 +82,7 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @GetMapping("/verification/{shipmentId}")
   public String getVerificationsupport(@PathVariable Long shipmentId, ModelMap mmap) {
     ProcessOrder processOrder = new ProcessOrder();
-    processOrder.setResult("F");
-    processOrder.setStatus(0);
+    processOrder.setShipmentId(shipmentId);
     mmap.put("orderList", processOrderService.selectOrderListForOmSupport(processOrder));
     return PREFIX + "/verificationSupport";
   }

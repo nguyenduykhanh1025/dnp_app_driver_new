@@ -69,18 +69,30 @@ function loadTable() {
   });
 }
 
-function formatAction(value, row, index) {
-  var actions = [];
+function formatCustom(value, row, index) {
   if (row.serviceType == 1 || row.serviceType == 4) {
-    actions.push('<a class="btn btn-primary btn-xs" onclick="openCustomSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Hải quan</a> ');
+    return '<a class="btn btn-primary btn-xs" onclick="openCustomSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Hải quan</a> ';
   }
-  actions.push('<a class="btn btn-success btn-xs" onclick="openVerificationSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Làm lệnh</a> ');
-  actions.push('<a class="btn btn-default btn-xs" onclick="openPaymentSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Thanh toán</a> ');
+  return '';
+}
+
+function formatOrder(value, row, index) {
+  return '<a class="btn btn-success btn-xs" onclick="openVerificationSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Làm lệnh</a> ';
+}
+
+function formatPayment(value, row, index) {
+  return '<a class="btn btn-default btn-xs" onclick="openPaymentSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Thanh toán</a> ';
+}
+
+function formatDo(value, row, index) {
   if (row.serviceType == 1) {
-    actions.push('<a class="btn btn-danger btn-xs" onclick="openReceiverDOSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Nộp DO gốc</a> ');
+    return '<a class="btn btn-danger btn-xs" onclick="openReceiverDOSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Nộp DO gốc</a> ';
   }
-  actions.push('<a class="btn btn-warning btn-xs" onclick="openDriverSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Vận tải</a> ');
-  return actions.join("");
+  return '';
+}
+
+function formatDriver(value, row, index) {
+  return '<a class="btn btn-warning btn-xs" onclick="openDriverSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Vận tải</a> ';
 }
 
 function formatServiceType(value) {
@@ -162,7 +174,7 @@ $("#toDate").on("inputchange", function () {
 });
 
 function openCustomSupport(id) {
-  $.modal.openWithOneButton("Hải quan", PREFIX + "/custom/" + id);
+  $.modal.openWithOneButton("Hải quan", PREFIX + "/custom/" + id, null, null);
 }
 
 function openVerificationSupport(id) {

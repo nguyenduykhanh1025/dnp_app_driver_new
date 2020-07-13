@@ -7,10 +7,9 @@
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
     <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
 </head>
-
 <body class="container-fluid white-bg page-payment">
   <section class="content clearfix">
-    <table id="dg" pageList="[20, 50, 100, 150, 200]">
+    <table id="dgOrder">
       <thead>
         <tr>
           <th data-options="field:'id', halign:'center', resizable:true, fixed:true" width="40" sortable="true">STT</th>
@@ -24,9 +23,12 @@
       <tbody></tbody>
     </table>
   </section>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: easyui-js" />
-    <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/paymentSupport.js}"></script>
-</body>
-
-</html>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <script type="text/javascript" th:inline="javascript">
+    var orderList = /*[[${orderList}]]*/;
+  </script>
+  <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/paymentSupport.js}"></script>
+  </body>
+  
+  </html>
