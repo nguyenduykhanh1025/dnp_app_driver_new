@@ -158,7 +158,7 @@ function loadShipmentDetail(id) {
     dataContainerList = []
     $("#dgShipmentDetail").datagrid({
         url: prefix + "/getShipmentDetail",
-        height: window.innerHeight - 110,
+        height: window.innerHeight - 70,
         singleSelect: true,
         collapsible: true,
         rownumbers:true,
@@ -394,6 +394,14 @@ function formatAction(value, row, index) {
     return actions.join('');
 }
 
+function formatRemark(value) {
+    let remark = value;
+    if(value){
+        return '<div class="easyui-tooltip" title="' + value + '" style="width: 80; text-align: center;"><span>' + (remark.length < 15 ? value : "...") + '</span></div>';
+    }
+    return 
+  }
+
 function formatActionAssign(value, row, index) {
     let button = '';
     let shipment = $("#dg").datagrid("getSelected");
@@ -523,7 +531,7 @@ function onChange(changes, source) {
                     if (data.code == 0) {
                         hot.updateSettings({
                             cells: function (row, col, prop) {
-                                if (row == change[0] && col == 6) {
+                                if (row == change[0] && col == 1) {
                                     let cellProperties = {};
                                     cellProperties.source = data.driverPhoneList;
                                     return cellProperties;
@@ -559,7 +567,7 @@ function getDataFromOutSource(){
     let errorFlg = false;
     for (let i = 0; i < myTableData.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
-            if (myTableData[i].phoneNumber || myTableData[i].fullName || myTableData[i].truckNo || myTableData[i].chassisNo) {
+            if (myTableData[i].driverOwner || myTableData[i].phoneNumber || myTableData[i].fullName || myTableData[i].truckNo || myTableData[i].chassisNo) {
                 cleanedGridData.push(myTableData[i]);
             }
         }
