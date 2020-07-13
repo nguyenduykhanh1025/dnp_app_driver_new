@@ -1,4 +1,4 @@
-var prefix = "/edo"
+const PREFIX = ctx + "edo";
 $(function() {
     $("#containerNumber").text(containerNumber);
     $("#expiredDem").val(formatDate(expiredDem));
@@ -42,7 +42,7 @@ function confirm()
         "Bạn có chắc chắn muốn cập nhật DO không? Hành động này không thể hoàn tác",
         function () {
           $.ajax({
-            url: prefix + "/updateEdo",
+            url: PREFIX + "/updateEdo",
             method: "post",
             dataType: "json",
             data : {

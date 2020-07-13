@@ -1,0 +1,1 @@
+ALTER TABLE `eport`.`edo` MODIFY `carrier_id` bigint default null COMMENT 'ID Nhan Vien Hang Tau';

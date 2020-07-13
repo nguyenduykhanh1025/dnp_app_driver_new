@@ -1,10 +1,21 @@
 .datagrid-header-row > td {
-    color: #1c84c6;
-    font-weight: bold;
+  color: #1c84c6;
+  font-weight: bold;
 }
 .textTitle {
-    text-align: center;
-    text-transform: uppercase;
-    color: #1C84C6;
-  }
-
+  text-align: center;
+  text-transform: uppercase;
+  color: #1c84c6;
+}
+.table-left {
+  position: relative;
+  border-right: 1px solid darkgrey;
+  padding-right: 15px;
+}
+.table-left .btn-collapse {
+  position: absolute;
+  right: 0;
+  top: 45%;
+  font-size: 2.5em;
+  cursor: pointer;
+}

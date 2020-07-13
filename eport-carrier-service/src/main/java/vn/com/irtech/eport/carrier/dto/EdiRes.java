@@ -66,12 +66,13 @@ public class EdiRes implements Serializable {
 		return ediRes;
 	}
 	
-	public static EdiRes error(int errorCode, String message, String transactionId) {
+	public static EdiRes error(int errorCode, String message, String transactionId, List<EdiDataReq> data) {
 		EdiRes ediRes = new EdiRes();
 		ediRes.setIsError(true);
 		ediRes.setMessage(message);
 		ediRes.setTransactionId(transactionId);
 		ediRes.setErrorCode(errorCode);
+		ediRes.setData(data);
 		return ediRes;
 	}
 }

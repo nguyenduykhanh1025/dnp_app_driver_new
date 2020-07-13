@@ -114,7 +114,12 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
     }
 
     @Override
-    public int updateProcessOrderStatusForOm(String processOrderIds) {
-        return processOrderMapper.updateProcessOrderStatusForOm(Convert.toStrArray(processOrderIds));
+    public int updateDoingProcessOrder(String processOrderIds) {
+        return processOrderMapper.updateDoingProcessOrder(Convert.toStrArray(processOrderIds));
+    }
+
+    @Override
+    public int updateCancelingProcessOrder(String processOrderIds) {
+        return processOrderMapper.updateCancelingProcessOrder(Convert.toStrArray(processOrderIds));
     }
 }

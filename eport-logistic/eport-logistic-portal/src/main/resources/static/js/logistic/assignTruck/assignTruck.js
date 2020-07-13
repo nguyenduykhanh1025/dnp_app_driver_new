@@ -100,16 +100,19 @@ function loadTable() {
                     if ($('#shipmentType').val() == 1) {
                         $("#dg").datagrid("hideColumn", "bookingNo");
                         $("#dg").datagrid("showColumn", "blNo");
+                        $("#dg").datagrid("showColumn", "opeCode");
                         $("#bookingNoDiv").hide();
                         $("#blNoDiv").show();
                     } else if ($('#shipmentType').val() == 3) {
                         $("#dg").datagrid("hideColumn", "blNo");
                         $("#dg").datagrid("showColumn", "bookingNo");
+                        $("#dg").datagrid("hideColumn", "opeCode");
                         $("#bookingNoDiv").show();
                         $("#blNoDiv").hide();
                     } else {
                         $("#dg").datagrid("hideColumn", "blNo");
                         $("#dg").datagrid("hideColumn", "bookingNo");
+                        $("#dg").datagrid("hideColumn", "opeCode");
                         $("#bookingNoDiv").hide();
                         $("#blNoDiv").hide();
                     }
@@ -235,7 +238,7 @@ function loadDriver(shipmentId){
     //pickedDriverList
     $("#pickedDriverTable").datagrid({
         url: prefix + "/assignedDriverAccountList",
-        height: window.innerHeight/2 - 25,
+        height: window.innerHeight/2 - 45,
         collapsible: true,
         clientPaging: false,
         nowrap: false,
@@ -263,7 +266,7 @@ function loadDriver(shipmentId){
                     }
                     $("#driverTable").datagrid({
                         url: prefix + "/listDriverAccount",
-                        height: window.innerHeight/2 -25,
+                        height: window.innerHeight/2 -45,
                         collapsible: true,
                         clientPaging: false,
                         nowrap: false,
@@ -482,6 +485,9 @@ config = {
     columns: [
         {
             data: "driverOwner",
+            type: "autocomplete",
+            source: driverOwnerList,
+            strict: true
         },
         {
             data: "phoneNumber",
@@ -505,27 +511,39 @@ function onChange(changes, source) {
     if (!changes) {
         return;
     }
-    // changes.forEach(function (change) {
-    //     if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-    //         $.ajax({
-    //             url: "/logistic/vessel/" + change[3] + "/voyages",
-    //             method: "GET",
-    //             success: function (data) {
-    //                 if (data.code == 0) {
-    //                     hot.updateSettings({
-    //                         cells: function (row, col, prop) {
-    //                             if (row == change[0] && col == 6) {
-    //                                 let cellProperties = {};
-    //                                 cellProperties.source = data.voyages;
-    //                                 return cellProperties;
-    //                             }
-    //                         }
-    //                     });
-    //                 }
-    //             }
-    //         });
-    //     }
-    // });
+    changes.forEach(function (change) {
+        if (change[1] == "driverOwner" && change[3] != null && change[3] != '') {
+            $.ajax({
+                url: prefix + "/owner/"+ change[3] +"/driver-phone-list",
+                method: "GET",
+                success: function (data) {
+                    if (data.code == 0) {
+                        hot.updateSettings({
+                            cells: function (row, col, prop) {
+                                if (row == change[0] && col == 6) {
+                                    let cellProperties = {};
+                                    cellProperties.source = data.driverPhoneList;
+                                    return cellProperties;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        } else if (change[1] == "phoneNumber" && change[3] != null && change[3] != '') {
+            $.ajax({
+                url: prefix + "/driver-phone/" + change[3] + "/infor",
+                method: "GET",
+                success: function (data) {
+                    if (data.code == 0) {
+                        hot.setDataAtCell(change[0], 2, data.pickupAssign.fullName);
+                        hot.setDataAtCell(change[0], 3, data.pickupAssign.truckNo);
+                        hot.setDataAtCell(change[0], 4, data.pickupAssign.chassisNo);
+                    }
+                }
+            });
+        }
+    });
 }
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);

@@ -1,6 +1,8 @@
 const PREFIX = ctx + "edo";
 var bill;
 var edo = new Object();
+var currentLeftWidth = $(".table-left").width();
+var currentRightWidth = $(".table-right").width();
 $(function () {
     $("#dg").height($(document).height() - 100);
     $("#dgContainer").height($(document).height() - 100);
@@ -26,6 +28,7 @@ $(function () {
             edo.voyNo = $('#searchAll').val().toUpperCase();
             loadTableByContainer(bill);
         }
+   
     });
     $('#searchBillNo').keyup(function (event) {
         if (event.keyCode == 13) {
@@ -36,6 +39,24 @@ $(function () {
             }
             loadTable(billOfLading);
         }
+    });
+    $(".btn-collapse").click(function (event) {
+      let leftTable = $(".table-left");
+      let rightTable = $(".table-right");
+      let leftWidth = leftTable.width();
+      if (leftWidth !== 0) {
+        leftTable.width(0);
+        rightTable.width(currentRightWidth + currentLeftWidth);
+        loadTableByContainer();
+        leftTable.css("border-color","transparent");
+        $(this).css({'transform' : 'rotate('+ 180 +'deg)'});
+        return;
+      }
+      leftTable.width(currentLeftWidth);
+      rightTable.width(currentRightWidth);
+      leftTable.css("border-color","darkgrey");
+      $(this).css({'transform' : 'rotate('+ 360 +'deg)'});
+      return;
     });
 });
 
@@ -95,7 +116,7 @@ function formatToYDMHMS(date) {
 
 function formatAction(value, row, index) {
   var actions = [];
-  actions.push('<a class="btn btn-success btn-xs btn-action mt5" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Cập nhật</a> ');
+  actions.push('<a class="btn btn-success btn-xs btn-action mt5" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Cập nhật</a> '+'<br>');
   actions.push('<a class="btn btn-success btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Xem lịch sử</a> ');
   return actions.join("");
 }
@@ -112,10 +133,10 @@ function viewHistoryCont(id) {
 }
 function closedPopUp()
 {
-  $.modal.closedPopUp();
+  $.modal.reload();
 }
 function viewUpdateCont(id) {
-  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 1000, 600);
+  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 1000, 400);
 }
 
 function loadTableByContainer(billOfLading) {
@@ -123,7 +144,7 @@ function loadTableByContainer(billOfLading) {
     $("#dgContainer").datagrid({
         url: PREFIX + "/edo",
         method: "POST",
-        singleSelect: true,
+        singleSelect: false,
         clientPaging: true,
         pagination: true,
         pageSize: 20,
@@ -252,4 +273,21 @@ function formatStatus(value)
     }
 }
 
+
+
+function updateEdo()
+{
+  let ids = [];
+  let rows = $('#dgContainer').datagrid('getSelections');
+  if(rows.length === 0)
+  {
+      $.modal.alertWarning("Bạn chưa chọn container để update, vui lòng kiểm tra lại !");
+      return;
+  }
+  for(let i=0; i<rows.length; i++){
+    let row = rows[i];
+       ids.push(row.id);
+  }
+  $.modal.openOption("Update Container", PREFIX + "/multiUpdate/" + ids, 1000, 400);
+}
 
