@@ -22,15 +22,15 @@
           </select>
         </div>
         <div class="table-content">
-          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]" fitColumns="true">
             <thead>
               <tr>
-                <th data-options="field:'id'" width="13%">Mã Lô</th>
-                <th data-options="field:'taxCode',halign:'center'" width="20%">MST</th>
-                <th data-options="field: 'blNo',halign: 'center'" width="37%">B/L No</th>
-                <th data-options="field: 'bookingNo',halign: 'center'" width="37%">Booking No</th>
-                <th data-options="field: 'opeCode',halign: 'center'" width="10%">MHT</th>
-                <th data-options="field:'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="20%">Ngày tạo</th>
+                <th data-options="field:'id', fixed:true" width="100">Mã Lô</th>
+                <!-- <th data-options="field:'taxCode',halign:'center'" width="20%">MST</th> -->
+                <th data-options="field: 'blNo',halign: 'center', fixed:true" width="200">B/L No</th>
+                <th data-options="field: 'bookingNo',halign: 'center', fixed:true" width="200">Booking No</th>
+                <th data-options="field: 'opeCode',halign: 'center', fixed:true" width="70">OPR</th>
+                <th data-options="field:'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="100">Ngày tạo</th>
               </tr>
             </thead>
           </table>
@@ -75,8 +75,8 @@
           <div class="assignFollowBatch">
             <div class="content">
               <div class="left-button-bar">
-                <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="addTruck()">+ Xe</button>
-                <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="addDriver()">+ Tài xế</button>
+                <!-- <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="addTruck()">+ Xe</button>
+                <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="addDriver()">+ Tài xế</button> -->
                 <button id="pickTruckBtn" class="btn btn-sm btn-primary" onclick="save()">Lưu</button>
               </div>
               <!-- <div class="right-button-bar" style="position: absolute; right: 40px;">
