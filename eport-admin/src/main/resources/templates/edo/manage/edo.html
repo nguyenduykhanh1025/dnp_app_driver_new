@@ -33,10 +33,10 @@
                     <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
                   </li>
                   <li>
-                    <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
+                    <input class="time-input" id="fromDate" name="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" />
                   </li>
                   <li>
-                    <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
+                    <input class="time-input" id="toDate" name="toDate" onchange="changeToDate()" placeholder="Đến ngày" />
                   </li>
                   <li>
                     <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
@@ -55,7 +55,7 @@
                       BILL OF LADING
                     </th>
                     <th data-options="field:'businessUnit',align:'center'" width="100">
-                      OPE <br />
+                      OPR <br />
                       CODE
                     </th>
                   </tr>
@@ -71,7 +71,7 @@
                     CONTAINER NO
                   </th>
                   <th data-options="field:'businessUnit',align:'center'" width="90">
-                    OPE <br />
+                    OPR <br />
                     CODE
                   </th>
                   <th data-options="field:'consignee',align:'left'" width="250">

@@ -145,12 +145,22 @@ function formatAction(value, row, index) {
 }
 
 function viewHistoryCont(id) {
-  $.modal.open("History Container", PREFIX + "/history/" + id, 1000, 500);
+  var options = {
+    title: 'Lịch sử thay đổi thông tin',
+    width: "1000",
+    height: "500",
+    url: PREFIX + "/history/" + id,
+    callBack: closedPopUp
+  };
+  $.modal.openOptions(options);
 }
-
-function viewUpdateCont(id) {
-  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 600);
+function closedPopUp()
+{
+  $.modal.reload();
 }
+// function viewUpdateCont(id) {
+//   $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 600);
+// }
 
 function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
@@ -206,6 +216,8 @@ function searchInfoEdo() {
   edo.voyNo = $('#searchAll').val().toUpperCase();
   loadTableByContainer(bill);
 }
+
+
 function formatToYDMHMS(date) {
   let temp = date.substring(0, 10);
   return temp.split("-").reverse().join("/") + date.substring(10, 19);
