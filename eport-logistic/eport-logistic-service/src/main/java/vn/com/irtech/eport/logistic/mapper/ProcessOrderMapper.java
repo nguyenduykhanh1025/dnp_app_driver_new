@@ -61,5 +61,7 @@ public interface ProcessOrderMapper
 
     public List<ProcessOrder> selectOrderListForOmSupport(ProcessOrder processOrder);
 
-    public int updateProcessOrderStatusForOm(String[] processOrderIds);
+    public int updateDoingProcessOrder(String[] processOrderIds);
+
+    public int updateCancelingProcessOrder(String[] processOrderIds);
 }

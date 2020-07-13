@@ -23,12 +23,12 @@ public interface IEdoService {
 	public Edo selectEdoById(Long id);
 
 	/**
-	 * Get Exchange Delivery Order by order number
+	 * Get first Exchange Delivery Order
 	 * 
 	 * @param orderNumber
 	 * @return
 	 */
-	public Edo selectEdoByOrderNumber(String orderNumber);
+	public Edo selectFirstEdo(Edo edo);
 
 	/**
 	 * Get Exchange Delivery Order List

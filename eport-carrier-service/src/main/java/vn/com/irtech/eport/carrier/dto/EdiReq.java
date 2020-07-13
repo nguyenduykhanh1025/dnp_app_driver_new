@@ -3,17 +3,25 @@ package vn.com.irtech.eport.carrier.dto;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 public class EdiReq implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@NotBlank
 	private String siteId;
 
+	@NotBlank
 	private String partnerCode;
 
+	@NotBlank
 	private String hashCode;
 
-	private List<EdiDataReq> data;
+	@NotEmpty
+	private List<@Valid EdiDataReq> data;
 
 	public String getSiteId() {
 		return siteId;

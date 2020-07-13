@@ -1,7 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -465,7 +463,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 
 	@GetMapping("/out-source/batch/{shipmentId}")
 	@ResponseBody
-	public AjaxResult getOutSourcListForBatch(@PathVariable Long shipmentId){
+	public AjaxResult getOutSourceListForBatch(@PathVariable Long shipmentId){
 		AjaxResult ajaxResult = success();
 		PickupAssign pickupAssign = new PickupAssign();
 		pickupAssign.setExternalFlg(1L);
@@ -486,7 +484,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 
 	@GetMapping("/out-source/container/{shipmentId}")
 	@ResponseBody
-	public AjaxResult getOutSourcListForContainer(@PathVariable Long shipmentId){
+	public AjaxResult getOutSourceListForContainer(@PathVariable Long shipmentId){
 		AjaxResult ajaxResult = success();
 		PickupAssign pickupAssign = new PickupAssign();
 		pickupAssign.setExternalFlg(1L);
