@@ -1,47 +1,18 @@
 "use strict";
 const PREFIX = ctx + "om/order/support";
-var notification = new Object();
 
 $(document).ready(function () {
-  loadTable();
-});
-
-function loadTable() {
-  $("#dg").datagrid({
-    url: "/notifications" + "/list",
-    method: "POST",
+  $("#dgOrder").datagrid({
+    height: $(document).height()/2 - 70,
     singleSelect: true,
-    height: $(document).height() - 50,
     clientPaging: false,
-    pagination: true,
+    pagination: false,
     rownumbers: true,
-    pageSize: 50,
     nowrap: false,
     striped: true,
-    loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
-      if (!opts.url) return false;
-      $.ajax({
-        type: opts.method,
-        url: opts.url,
-        contentType: "application/json",
-        accept: "text/plain",
-        dataType: "text",
-        data: JSON.stringify({
-          pageNum: param.page,
-          pageSize: param.rows,
-          orderByColumn: param.sort,
-          isAsc: param.order,
-          data: notification,
-        }),
-        success: function (data) {
-          success(JSON.parse(data));
-        },
-        error: function () {
-          error.apply(this, arguments);
-        },
-      });
+      success(orderList);
     },
   });
-}
+});
+

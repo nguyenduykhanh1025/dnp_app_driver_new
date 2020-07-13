@@ -57,6 +57,87 @@ $(document).ready(function () {
     });
   }
 
+  function statusRenderer (instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).addClass("htMiddle");
+    switch (value) {
+      case 0:
+        $(td).html('Đang chờ');
+        break;
+      case 1:
+        $(td).html('Đang làm');
+        break;
+      case 2:
+        $(td).html('Đã làm');
+        break;
+    }
+    return td;
+  }
+  
+  function idRenderer (instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    if (orderList[row].id) {
+      $(td).addClass("htMiddle").html(orderList[row].id);
+    }
+    return td;
+  }
+  
+  function containerNoRenderer (instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    if (orderList[row].shipmentDetail.containerNo) {
+      $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.containerNo);
+    }
+    return td;
+  }
+  
+  function opeCodeRenderer (instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    if (orderList[row].shipmentDetail.opeCode) {
+      $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.opeCode);
+    }
+    return td;
+  }
+  
+  function sztpRenderer (instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    if (orderList[row].shipmentDetail.sztp) {
+      $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.sztp);
+    }
+    return td;
+  }
+  
+  function feRenderer (instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    if (orderList[row].shipmentDetail.fe) {
+      $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.fe);
+    }
+    return td;
+  }
+  
+  function wgtRenderer (instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    if (orderList[row].shipmentDetail.wgt) {
+      $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.wgt);
+    }
+    return td;
+  }
+  
+  function cargoTypeRenderer (instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    if (orderList[row].shipmentDetail.cargoType) {
+      $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.cargoType);
+    }
+    return td;
+  }
+  
+  function dischargePortRenderer (instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    if (orderList[row].shipmentDetail.dischargePort) {
+      $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.dischargePort);
+    }
+    return td;
+  }
+
   let config = {
     stretchH: "all",
     minRows: orderList.length,
@@ -73,25 +154,32 @@ $(document).ready(function () {
     colHeaders: function (col) {
       switch (col) {
         case 0:
-          return 'Mã Lệnh';
+          return 'Trạng Thái';
         case 1:
-          return "Container No.";
+          return 'Mã Lệnh';
         case 2:
-          return 'Hãng Tàu';
+          return "Container No.";
         case 3:
-          return 'Kích Thước';
+          return 'Hãng Tàu';
         case 4:
-          return 'FE';
+          return 'Kích Thước';
         case 5:
-          return 'Trọng Lượng';
+          return 'FE';
         case 6:
-          return 'Loại Hàng';
+          return 'Trọng Lượng';
         case 7:
+          return 'Loại Hàng';
+        case 8:
           return 'Cảng Dỡ Hàng';
       }
     },
-    colWidths: [90, 120, 100, 100, 50, 110, 100, 120],
+    colWidths: [100, 90, 120, 100, 100, 50, 110, 100, 120],
     columns: [
+      {
+        data: "status",
+        readOnly: true,
+        renderer: statusRenderer
+      },
       {
         data: "id",
         readOnly: true,
@@ -138,70 +226,6 @@ $(document).ready(function () {
   hot.loadData(orderList);
   hot.render();
 });
-
-function idRenderer (instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = 'true';
-  if (orderList[row].id) {
-    $(td).addClass("htMiddle").html(orderList[row].id);
-  }
-  return td;
-}
-
-function containerNoRenderer (instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.containerNo) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.containerNo);
-  }
-  return td;
-}
-
-function opeCodeRenderer (instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.opeCode) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.opeCode);
-  }
-  return td;
-}
-
-function sztpRenderer (instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.sztp) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.sztp);
-  }
-  return td;
-}
-
-function feRenderer (instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.fe) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.fe);
-  }
-  return td;
-}
-
-function wgtRenderer (instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.wgt) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.wgt);
-  }
-  return td;
-}
-
-function cargoTypeRenderer (instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.cargoType) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.cargoType);
-  }
-  return td;
-}
-
-function dischargePortRenderer (instance, td, row, col, prop, value, cellProperties) {
-  cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.dischargePort) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.dischargePort);
-  }
-  return td;
-}
 
 $("#toggle-status").change(function(e) {
   if (toggleTrigger && countEvent == 2) {
