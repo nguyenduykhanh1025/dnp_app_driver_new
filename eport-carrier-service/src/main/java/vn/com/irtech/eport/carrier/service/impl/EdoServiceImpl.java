@@ -241,6 +241,23 @@ public class EdoServiceImpl implements IEdoService
 				continue; 
 			}
 
+			//haulage
+			if(s.contains("TDT+20"))
+			{
+				String[] infoDTD20 = s.split("\\:");
+				if(infoDTD20.length > 5)
+				{
+					String [] voyNo = infoDTD20[0].split("\\+");
+					String [] vesselNo = infoDTD20[2].split("\\+");
+					edi.setVoyNo(voyNo[2]);
+					edi.setVessel(vesselNo[3]);
+					obj.put("voyNo", voyNo[2]);
+					obj.put("vesselNo", vesselNo[3]);
+				}
+				
+				continue; 
+			}
+
 			if(s.contains("UNT"))
 			{
 				listEdi.add(edi);
@@ -279,6 +296,16 @@ public class EdoServiceImpl implements IEdoService
 		return edoMapper.selectFirstEdo(edo);
 	}
 
+
+	public List<String> selectVesselNo()
+	{
+		return edoMapper.selectVesselNo();
+	}
+
+	public List<String> selectCarrierCode()
+	{
+		return edoMapper.selectCarrierCode();
+	}
     
 
 }

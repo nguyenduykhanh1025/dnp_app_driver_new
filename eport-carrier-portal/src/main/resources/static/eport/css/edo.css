@@ -26,3 +26,10 @@
   font-size: 2.5em;
   cursor: pointer;
 }
+.billNoView {
+  display: flex;
+}
+.combobox-carrier {
+  margin-left: 5px;
+}
+

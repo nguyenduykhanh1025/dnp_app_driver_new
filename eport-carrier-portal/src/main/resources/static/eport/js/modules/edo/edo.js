@@ -122,19 +122,9 @@ function formatAction(value, row, index) {
 }
 
 function viewHistoryCont(id) {
-  var options = {
-    title: 'Lịch sử thay đổi thông tin',
-    width: "1000",
-    height: "400",
-    url: PREFIX + "/history/" + id,
-    callBack: closedPopUp
-  };
-  $.modal.openOptions(options);
+  $.modal.openWithOneButton('Lịch sử thay đổi thông tin',PREFIX + "/history/" + id,1000,400);
 }
-function closedPopUp()
-{
-  $.modal.reload();
-}
+
 function viewUpdateCont(id) {
   $.modal.openOption("Update Container", PREFIX + "/update/" + id, 1000, 400);
 }
@@ -289,4 +279,5 @@ function updateEdo()
   }
   $.modal.openOption("Update Container", PREFIX + "/multiUpdate/" + ids, 1000, 400);
 }
+
 

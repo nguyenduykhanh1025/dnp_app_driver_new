@@ -122,7 +122,7 @@ public class EportTask {
             //TODO Return error 
         }
         //set time scan EDI file not yet
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Instant now = Instant.now();
         Instant yesterday = now.minus(1, ChronoUnit.DAYS);
         Date toDate = Date.from(now);
@@ -135,7 +135,6 @@ public class EportTask {
         edoHistory.setParams(timeDefine);
         edoHistory.setSendMailFlag("0");
         List<EdoHistory> edoHistories = edoHistoryService.selectEdoHistoryList(edoHistory);
-
         if(edoHistories.size() == 0)
         {
             return;
