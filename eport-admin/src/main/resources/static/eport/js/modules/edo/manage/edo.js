@@ -22,9 +22,11 @@ $(document).ready(function () {
     if (event.keyCode == 13) {
       billOfLading = $("#searchBillNo").val().toUpperCase();
       if (billOfLading == "") {
-        return;
+        loadTable(edo);
       }
-      loadTable(billOfLading);
+      edo = new Object();
+      edo.billOfLading = billOfLading;
+      loadTable(edo);
     }
   });
   $(".btn-collapse").click(function (event) {
@@ -45,12 +47,25 @@ $(document).ready(function () {
     $(this).css({'transform' : 'rotate('+ 360 +'deg)'});
     return;
   });
+
+  $.ajax({
+    type: "GET",
+    url: PREFIX + "/getCarrierCode",
+    success(data) {
+      data.forEach(element => {
+        $('#carrierCode').append(`<option value="${element}"> 
+                                                  ${element} 
+                                                </option>`);
+      });
+
+    }
+  })
 });
 
-function loadTable(billOfLading) {
+function loadTable(edo) {
   $("#dg").datagrid({
     url: PREFIX + "/billNo",
-    method: "GET",
+    method: "POST",
     singleSelect: true,
     clientPaging: true,
     pagination: true,
@@ -66,9 +81,12 @@ function loadTable(billOfLading) {
       $.ajax({
         type: opts.method,
         url: opts.url,
-        data: {
-          billOfLading: billOfLading,
-        },
+        contentType: "application/json",
+        accept: "text/plain",
+        dataType: "text",
+        data: JSON.stringify({
+          data: edo,
+        }),
         dataType: "json",
         success: function (data) {
           success(data);
@@ -158,9 +176,6 @@ function closedPopUp()
 {
   $.modal.reload();
 }
-// function viewUpdateCont(id) {
-//   $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 600);
-// }
 
 function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
@@ -253,4 +268,11 @@ laydate.render({
 laydate.render({
   elem: '#fromDate',
   format: 'dd/MM/yyyy'
+});
+
+
+$("#carrierCode").change(function() {
+   let edo = new Object();
+   edo.carrierCode = this.value;
+   loadTable(edo);
 });

@@ -960,7 +960,47 @@ var table = {
             	    }
             	});
                 layer.full(index);
-            },
+			},
+			openWithOneButton: function (title, url, width, height/*, callback, text*/) {
+				if ($.common.isMobile()) {
+					width = 'auto';
+					height = 'auto';
+				}
+				if ($.common.isEmpty(title)) {
+					  title = false;
+				  }
+				  if ($.common.isEmpty(url)) {
+					  url = "/404.html";
+				  }
+				  if ($.common.isEmpty(width)) {
+					width = 800;
+				  }
+				  if ($.common.isEmpty(height)) {
+					height = ($(window).height() - 50);
+				  }
+				  // if ($.common.isEmpty(callback)) {
+				  //     callback = function(index, layero) {
+				  //         var iframeWin = layero.find('iframe')[0];
+				  //         iframeWin.contentWindow.submitHandler(index, layero);
+				  //     }
+				  // }
+				//   if ($.common.isEmpty(text)) {
+				//     text = "OK";
+				//   }
+				layer.open({
+				  type: 2,
+				  area: [width + 'px', height + 'px'],
+				  fix: false,
+				  maxmin: true,
+				  shade: 0.3,
+				  title: title,
+				  content: url,
+				  //btn: [text],
+				  shadeClose: true,
+				  //yes: callback,
+				});
+		},
+			
             // 选卡页方式打开
             openTab: function (title, url) {
             	createMenuItem(url, title);

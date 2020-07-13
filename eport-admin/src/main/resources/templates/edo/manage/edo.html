@@ -11,24 +11,15 @@
       <div class="row">
         <div class="col-sm-12 select-table mt0 pr5">
           <div class="col-sm-12 fixed-table-toolbar">
-            <div class="bs-bars pull-left mb5 mt0"><input class="form-control" type="text" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" /></div>
+            <div class="bs-bars pull-left mb5 mt0 billNoView">
+              <input class="form-control" type="text" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" />
+              <select class="form-control combobox-carrier" id="carrierCode">
+                <option value="" selected>OPR CODE</option>
+              </select>
+            </div>
             <div class="columns columns-right btn-group pull-right mb0 mt0">
               <div class="select-list">
                 <ul>
-                  <li>
-                    <!-- <div class="form-group">
-                      <select class="form-control" id="carrierCode">
-                        <option value="" selected disabled>Chọn Hãng tàu</option>
-                      </select>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="form-group">
-                      <select class="form-control" id="carrierCode">
-                        <option value="" selected disabled>Chọn Carrier Code</option>
-                      </select>
-                    </div> -->
-                  </li>
                   <li>
                     <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
                   </li>
@@ -46,7 +37,7 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-2 table-container table-left">
+          <div class="col-sm-3 table-container table-left">
             <span class="btn-collapse"><i class="fa fa-caret-left"></i></span>
             <table id="dg">
               <thead>
@@ -58,13 +49,19 @@
                       OPR <br />
                       CODE
                     </th>
+                    <th data-options="field:'createTime',align:'left'" width="130">
+                      CREATE TIME
+                    </th>
+                    <th data-options="field:'numberContainer',align:'center'" width="90">
+                      NUMBER <br> CONTAINER
+                    </th> 
                   </tr>
-                
+                 
               </thead>
             </table>
           </div>
-          <div class="col-sm-10 table-container table-right">
-            <table id="dgContainer">
+          <div class="col-sm-9 table-container table-right">
+            <table id="dgContainer" fitColumns="true">
               <thead>
                 <tr>
                   <th data-options="field:'containerNumber',align:'left'" width="120">
@@ -86,7 +83,7 @@
                     TIME
                   </th>
                   <th data-options="field:'vessel',align:'left'" width="110">
-                    VESSEL
+                    VESSEL NO
                   </th>
                   <th data-options="field:'voyNo',align:'left'" width="110">
                     VOY NO
@@ -101,7 +98,7 @@
                   <th data-options="field:'createTime',align:'center',formatter:formatToYDMHMS" width="110">
                     CREATE TIME
                   </th>
-                  <th data-options="field:'id',align:'center',formatter: formatAction" width="150">
+                  <th data-options="field:'id',align:'center',formatter: formatAction" fixed:true  width="150">
                     ACTION
                   </th>
                 </tr>
