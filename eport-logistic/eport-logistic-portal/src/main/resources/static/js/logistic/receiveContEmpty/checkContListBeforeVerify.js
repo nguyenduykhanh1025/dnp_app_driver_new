@@ -25,4 +25,6 @@ $("#contTable").datagrid({
 if ('0' == creditFlag) {
     $('#credit').hide();
     $('#creditLabel').hide();
+} else {
+    $('#credit').prop('checked', true);
 }
