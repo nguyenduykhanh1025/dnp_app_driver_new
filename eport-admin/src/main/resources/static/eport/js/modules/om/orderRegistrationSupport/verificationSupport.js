@@ -2,6 +2,7 @@
 const PREFIX = ctx + "om/order/support";
 var dogrid = document.getElementById("container-grid"), hot;
 var processOrderIds;
+var toggleTrigger = true, countEvent = 2;
 
 $(document).ready(function () {
   $("#toggle-status").bootstrapToggle();
@@ -203,50 +204,71 @@ function dischargePortRenderer (instance, td, row, col, prop, value, cellPropert
 }
 
 $("#toggle-status").change(function(e) {
-  if ($("#toggle-status").prop('checked')) {
-    layer.confirm("Xác nhận làm lệnh cho lô này.", {
-      icon: 3,
-      title: "Xác Nhận",
-      btn: ['Đồng Ý', 'Hủy Bỏ']
-    }, function () {
-      $.ajax({
-        url: PREFIX + "/process-order/doing",
-        method: "Get",
-        data: {
-          processOrderIds: processOrderIds
-        }
-      }).done(function(res) {
-        if (res.code != 0) {
-          $("#toggle-status").prop('checked', false).change();
-          $.modal.alertError(res.msg);
-        }
-        layer.close(layer.index);
+  if (toggleTrigger && countEvent == 2) {
+    if ($("#toggle-status").prop('checked')) {
+
+      // HANDLE WHEN TOGGLE TURN ON
+      layer.confirm("Xác nhận làm lệnh cho lô này.", {
+        icon: 3,
+        title: "Xác Nhận",
+        btn: ['Đồng Ý', 'Hủy Bỏ']
+      }, function () {
+
+        // UPDATE PROCESS ORDER TO DOING STATUS
+        $.ajax({
+          url: PREFIX + "/process-order/doing",
+          method: "Get",
+          data: {
+            processOrderIds: processOrderIds
+          }
+        }).done(function(res) {
+          if (res.code != 0) {
+            $("#toggle-status").prop('checked', false).change();
+            $.modal.alertError(res.msg);
+          }
+          layer.close(layer.index);
+        });
+      }, function () {
+
+        // CANCEL REQUEST MAKE ORDER
+        toggleTrigger = false;
+        countEvent = 0;
+        $("#toggle-status").prop('checked', false).change();
       });
-    }, function () {
-      $("#toggle-status").prop('checked', false).change();
-    });
+    } else {
+
+      // HANDLE WHEN TOGGLE TURN OFF
+      layer.confirm("Hủy làm lệnh cho lô này.", {
+        icon: 3,
+        title: "Xác Nhận",
+        btn: ['Đồng Ý', 'Hủy Bỏ']
+      }, function () {
+
+        // CANCEL DOING PROCESS ORDER
+        $.ajax({
+          url: PREFIX + "/process-order/canceling",
+          method: "Get",
+          data: {
+            processOrderIds: processOrderIds
+          }
+        }).done(function(res) {
+          if (res.code != 0) {
+            $("#toggle-status").prop('checked', true).change();
+            $.modal.alertError(res.msg);
+          }
+          layer.close(layer.index);
+        });
+      }, function () {
+
+        // CANCEL ACTION 
+        toggleTrigger = false;
+        countEvent = 0
+        $("#toggle-status").prop('checked', true).change();
+      });
+    }
   } else {
-    layer.confirm("Hủy làm lệnh cho lô này.", {
-      icon: 3,
-      title: "Xác Nhận",
-      btn: ['Đồng Ý', 'Hủy Bỏ']
-    }, function () {
-      $.ajax({
-        url: PREFIX + "/process-order/canceling",
-        method: "Get",
-        data: {
-          processOrderIds: processOrderIds
-        }
-      }).done(function(res) {
-        if (res.code != 0) {
-          $("#toggle-status").prop('checked', true).change();
-          $.modal.alertError(res.msg);
-        }
-        layer.close(layer.index);
-      });
-    }, function () {
-      $("#toggle-status").prop('checked', true).change();
-    });
+    toggleTrigger = true;
+    countEvent++;
   }
 });
 
