@@ -13,7 +13,7 @@
         <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
         <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
         <div class="title-top">
-          <span class="title">Danh sách lô</span>
+          <span class="title">Danh sách lô đang thực hiện</span>
           <select class="shipment-type" onchange="loadTable()" name="shipmentType" id="shipmentType">
             <option value="1" selected>Nhận container có hàng</option>
             <option value="2">Giao container rỗng</option>
@@ -146,11 +146,11 @@
                 <thead>
                   <tr>
                     <th data-options="field:'id', fixed:true">Id</th>
-                    <th data-options="field:'containerNo', align:'center',halign:'center'" width="200">Container No</th>
+                    <th data-options="field:'containerNo', align:'center',halign:'center', fixed:true" width="150">Container No</th>
                     <th data-options="field:'sztp',halign:'center', fixed:true" width="100">Kích Thước</th>
                     <th data-options="field:'preorderPickup', align:'center', fixed:true, formatter: formatPickup" width="100">Bốc Chỉ Định</th>
-                    <th data-options="field:'wgt',halign:'center'" width="100">Trọng lượng</th>
-                    <th data-options="field:'driverAmount',halign:'center'" width="100">Số Lượng tài xế điều</th>
+                    <th data-options="field:'wgt',halign:'center'" width="60">Trọng lượng</th>
+                    <th data-options="field:'driverAmount',halign:'center', align:'center'" width="100">Số Lượng tài xế điều</th>
                     <th data-options="field:'action', formatter: formatActionAssign, align:'center', halign:'center'" width="100">Hành động</th>
                   </tr>
                 </thead>
