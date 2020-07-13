@@ -598,7 +598,7 @@ function getDataSelectedFromTable(isValidate) {
     let regiterNos = [];
     $.each(cleanedGridData, function (index, object) {
         var shipmentDetail = new Object();
-        if (object["containerNo"] != null && object["containerNo"] != "" && !/^[A-Z]{4}[0-9]{7}$/g.test(object["containerNo"]) && isValidate && shipmentSelected.specificContFlg == 1) {
+        if (object["containerNo"] && !/^[A-Z]{4}[0-9]{7}$/g.test(object["containerNo"]) && isValidate && shipmentSelected.specificContFlg == 1) {
             $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
             errorFlg = true;
         }
@@ -650,7 +650,10 @@ function getDataFromTable(isValidate) {
     let cleanedGridData = [];
     for (let i = 0; i < checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
-            cleanedGridData.push(myTableData[i]);
+            if (myTableData[i].containerNo || myTableData[i].expiredDem || myTableData[i].opeCode || myTableData[i].vslNm ||
+                myTableData[i].voyNo || myTableData[i].sztp || myTableData[i].dischargePort || myTableData[i].remark) {
+                    cleanedGridData.push(myTableData[i]);
+                }
         }
     }
     shipmentDetails = [];
@@ -665,35 +668,35 @@ function getDataFromTable(isValidate) {
     $.each(cleanedGridData, function (index, object) {
         var shipmentDetail = new Object();
         if (isValidate) {
-            if((object["containerNo"] == null || object["containerNo"] == "") && shipmentSelected.specificContFlg == 1) {
+            if(!object["containerNo"] && shipmentSelected.specificContFlg == 1) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập số container!");
                 errorFlg = true;
                 return false;
-            } else if (object["containerNo"] != null && object["containerNo"] != "" && !/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && shipmentSelected.specificContFlg == 1) {
+            } else if (!/[A-Z]{4}[0-9]{7}/g.test(object["containerNo"]) && shipmentSelected.specificContFlg == 1) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
                 errorFlg = true;
                 return false;
-            } else if (object["expiredDem"] == null || object["expiredDem"] == "") {
+            } else if (!object["expiredDem"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
                 errorFlg = true;
                 return false;
-            } else if (object["opeCode"] == null || object["opeCode"] == "") {
+            } else if (!object["opeCode"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ khai thác!");
                 errorFlg = true;
                 return false;
-            } else if (object["vslNm"] == null || object["sztp"] == "") {
+            } else if (!object["vslNm"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
                 return false;
-            } else if (object["voyNo"] == null || object["sztp"] == "") {
+            } else if (!object["voyNo"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
                 return false;
-            } else if (object["sztp"] == null || object["sztp"] == "") {
+            } else if (!object["sztp"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
                 return false;
-            } else if (object["dischargePort"] == null || object["sztp"] == "") {
+            } else if (!object["dischargePort"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
                 return false;

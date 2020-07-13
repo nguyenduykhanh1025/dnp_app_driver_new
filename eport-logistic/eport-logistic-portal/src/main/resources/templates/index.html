@@ -104,13 +104,13 @@
                 <li><a class="menuItem" th:href="@{/carrier/cont/contEmpty}">DS Container lưu rỗng</a></li>
               </ul>
             </li> -->
-            <li>
+            <!-- <li>
               <a title="Hướng dẫn sử dụng portal" th:href="@{/page/tutorial}" class="menuItem"><i
                   class="fa fa-question-circle"></i>&nbsp;Hướng dẫn</a>
-            </li>
+            </li> -->
             <li class="dropdown user-menu">
               <a href="javascript:void(0)" class="dropdown-toggle" data-hover="dropdown">
-                <span class="hidden-xs">[[${#strings.defaultString(user.fullName, '-')}]]</span
+                <span class="hidden-xs">[[${#strings.defaultString(groupName, '-')}]]</span
                   >
                 </a>
                 <ul class="dropdown-menu">

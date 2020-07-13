@@ -70,4 +70,6 @@ public interface IProcessBillService
     public List<ProcessBill> selectBillReportList(ProcessBill processBill);
 
     public boolean saveProcessBillWithCredit(List<ShipmentDetail> shipmentDetails, ProcessOrder processOrder);
+
+    public long sumOfBillList(ProcessBill processBill);
 }
