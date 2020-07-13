@@ -16,9 +16,13 @@
             <div class="bs-bars pull-left mb5 mt0"><input class="form-control" type="text" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" /></div>
             <div class="columns columns-right btn-group pull-right mb0 mt0">
               <div class="select-list">
-                
+               
                  <ul>
-                  </li>
+                   <li>
+                      <button class="btn btn-success btn-sm" id="updateEdo"  onclick="updateEdo() ">
+                        <i class="fa fa-update"></i> Cập nhật
+                      </button>
+                   </li>
                   <li>
                     <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
                   </li>
@@ -55,7 +59,7 @@
               <table id="dgContainer">
                 <thead>
                   <tr>
-                  
+                    <th data-options="field:'id',checkbox:true"></th>
                     <th data-options="field:'containerNumber',align:'left'" width="120">
                       CONTAINER NO
                     </th>
@@ -67,7 +71,7 @@
                       CONSIGNEE
                     </th>
                     <th data-options="field:'expiredDem',align:'left',formatter:formatToYDMHMS" width="110">
-                      EXPIRE <br />
+                      EXPIRED <br />
                       DEM
                     </th>
                     <th data-options="field:'detFreeTime',align:'left'" width="80">
@@ -87,7 +91,7 @@
                     <th data-options="field:'createTime',align:'center',formatter:formatToYDMHMS" width="110">
                       CREATE TIME
                     </th>
-                    <th data-options="field:'id',align:'center',formatter: formatAction" width="110">
+                    <th data-options="field:'#',align:'center',formatter: formatAction" width="150">
                       ACTION
                     </th>
                   </tr>
