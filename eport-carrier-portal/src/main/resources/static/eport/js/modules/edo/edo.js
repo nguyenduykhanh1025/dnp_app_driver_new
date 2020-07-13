@@ -115,7 +115,7 @@ function closedPopUp()
   $.modal.closedPopUp();
 }
 function viewUpdateCont(id) {
-  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 800, 400);
+  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 1000, 600);
 }
 
 function loadTableByContainer(billOfLading) {

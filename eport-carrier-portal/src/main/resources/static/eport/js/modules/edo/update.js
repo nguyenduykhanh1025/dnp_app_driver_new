@@ -24,6 +24,10 @@ function closeForm()
 
 function confirm()
 {
+    // if(formatDateForSubmit($("#expiredDem").val()) == expiredDem && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot)
+    // {
+    //   $.modal.alertError("Không có thông tin nào được thay đổi !!!")
+    // }
     if($("#detFreeTime").val() < detFreeTime)
     {
         $.modal.alertError("Số ngày miễn lưu vỏ mới phải lớn hơn " + '</br>' + " số ngày miễn lưu vỏ hiện tại !!!")

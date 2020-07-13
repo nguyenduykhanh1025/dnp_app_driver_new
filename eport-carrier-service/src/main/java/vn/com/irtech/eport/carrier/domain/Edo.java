@@ -90,7 +90,7 @@ public class Edo extends BaseEntity {
 
 	/** Delete Flag */
 	@Excel(name = "Delete Flag")
-	private int delFlg;
+	private Integer delFlg;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date fromDate;
@@ -244,11 +244,11 @@ public class Edo extends BaseEntity {
 		return createSource;
 	}
 
-	public void setDelFlg(int delFlg) {
+	public void setDelFlg(Integer delFlg) {
 		this.delFlg = delFlg;
 	}
 
-	public int getDelFlg() {
+	public Integer getDelFlg() {
 		return delFlg;
 	}
 
