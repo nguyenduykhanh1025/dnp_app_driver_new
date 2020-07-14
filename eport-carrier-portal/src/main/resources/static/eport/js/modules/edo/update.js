@@ -34,7 +34,7 @@ function confirm()
         "Bạn có chắc chắn muốn cập nhật DO không? Hành động này không thể hoàn tác",
         function () {
           $.ajax({
-            url: PREFIX + "/updateEdo",
+            url: PREFIX + "/update",
             method: "post",
             dataType: "json",
             data : {
@@ -73,7 +73,7 @@ function formatDateForSubmit(value) {
     if (value == null) {
       return;
     }
-    var newdate = value.split("-").reverse();
+    var newdate = value.split("/").reverse();
     var date = new Date(newdate)
     var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
     var month = date.getMonth() + 1;

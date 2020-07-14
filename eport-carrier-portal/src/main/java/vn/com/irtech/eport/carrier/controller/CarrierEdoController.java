@@ -171,64 +171,6 @@ public class CarrierEdoController extends CarrierBaseController {
 		return PREFIX + "/update";
 	}
 
-	@PostMapping("/updateEdo")
-	@ResponseBody 
-	public AjaxResult updateEdo(Edo edo)
-	{
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		try { 
-			Date timeNow = new Date();
-			int segNo = 1;
-			EdoAuditLog edoAuditLog = new EdoAuditLog();
-			edoAuditLog.setCarrierId(super.getUser().getGroupId());
-			edoAuditLog.setCarrierCode(super.getUserGroup().getGroupCode());
-			edoAuditLog.setCreateTime(timeNow);
-			edoAuditLog.setEdoId(edo.getId());
-			EdoAuditLog edoAuditLogCheckSegNo = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-			if(edo.getExpiredDem() != null)
-			{
-				Date setTimeUpdatExpicedDem = edo.getExpiredDem();
-				setTimeUpdatExpicedDem.setHours(23);
-				setTimeUpdatExpicedDem.setMinutes(59);
-				setTimeUpdatExpicedDem.setSeconds(59);
-				edo.setExpiredDem(setTimeUpdatExpicedDem);
-				edoAuditLog.setFieldName("Expired Dem");
-				EdoAuditLog edoAuditLogCheckValue = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-				edoAuditLog.setOldValue(edoAuditLogCheckValue.getNewValue());
-				edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
-				edoAuditLog.setNewValue(formatter.format(setTimeUpdatExpicedDem).toString()); 
-				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
-				segNo += 1;
-			}
-			if(edo.getDetFreeTime() != null && !("").equals(edo.getDetFreeTime().toString()))
-			{
-				edoAuditLog.setFieldName("Det Free Time");
-				EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-				edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-				edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
-				edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
-				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
-				segNo += 1;
-			}
-			if(edo.getEmptyContainerDepot() != null && !("").equals(edo.getEmptyContainerDepot().toString()))
-			{
-				edoAuditLog.setFieldName("Empty Container Depot");
-				EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-				edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-				edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
-				edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
-				edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
-			}
-			edoService.updateEdo(edo);
-			return AjaxResult.success("Update thành công");
-			
-		} catch(Exception e) {
-			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
-		} 
-		
-	}
-
-
 	@GetMapping("/multiUpdate/{ids}")
 	public String multiUpdate(@PathVariable("ids") String ids,ModelMap map)
 	{
@@ -240,10 +182,14 @@ public class CarrierEdoController extends CarrierBaseController {
 		return PREFIX + "/multiUpdate";
 	}
 
-	@PostMapping("/multiUpdate")
+	@PostMapping("/update")
 	@ResponseBody 
 	public AjaxResult multiUpdate(String ids,Edo edo)
 	{
+		if(ids == null)
+		{
+			ids = edo.getId().toString();
+		}
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		try {
 			EdoAuditLog edoAuditLog = new EdoAuditLog();
@@ -256,7 +202,7 @@ public class CarrierEdoController extends CarrierBaseController {
 			{	
 				int segNo = 1;
 				edoAuditLog.setEdoId(Long.parseLong(id));
-				EdoAuditLog edoAuditLogCheckSegNo = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+				String maxSegNo = edoAuditLogService.selectEdoAuditLogByEdoId(Long.parseLong(id));
 				if(edo.getExpiredDem() != null)
 				{
 					Date setTimeUpdatExpicedDem = edo.getExpiredDem();
@@ -265,9 +211,9 @@ public class CarrierEdoController extends CarrierBaseController {
 					setTimeUpdatExpicedDem.setSeconds(59);
 					edo.setExpiredDem(setTimeUpdatExpicedDem);
 					edoAuditLog.setFieldName("Expired Dem");
-					EdoAuditLog edoAuditLogCheckValue = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-					edoAuditLog.setOldValue(edoAuditLogCheckValue.getNewValue());
-					edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
 					edoAuditLog.setNewValue(formatter.format(setTimeUpdatExpicedDem).toString()); 
 					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 					segNo += 1;
@@ -277,7 +223,7 @@ public class CarrierEdoController extends CarrierBaseController {
 					edoAuditLog.setFieldName("Det Free Time");
 					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
 					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-					edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo)  + segNo);
 					edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
 					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 					segNo += 1;
@@ -287,7 +233,7 @@ public class CarrierEdoController extends CarrierBaseController {
 					edoAuditLog.setFieldName("Empty Container Depot");
 					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
 					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-					edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
 					edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
 					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
 				}

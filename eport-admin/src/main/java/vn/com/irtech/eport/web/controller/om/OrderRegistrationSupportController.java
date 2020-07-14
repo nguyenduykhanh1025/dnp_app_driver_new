@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -47,7 +48,8 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @Autowired
   private IShipmentDetailService shipmentDetailService;
 
-  @Autowired IProcessHistoryService processHistoryService;
+  @Autowired 
+  private IProcessHistoryService processHistoryService;
 
   @GetMapping()
   public String getMainView() {
@@ -75,6 +77,9 @@ public class OrderRegistrationSupportController extends AdminBaseController {
 
   @GetMapping("/do/{shipmentId}")
   public String getReceiveDoSupport(@PathVariable Long shipmentId, ModelMap mmap) {
+    ShipmentDetail shipmentDetail = new ShipmentDetail();
+    shipmentDetail.setShipmentId(shipmentId);
+    mmap.put("shipmentDetails", shipmentDetailService.selectShipmentDetailList(shipmentDetail));
     return PREFIX + "/receiveDoSupport";
   }
 
@@ -185,9 +190,53 @@ public class OrderRegistrationSupportController extends AdminBaseController {
     return error("Thất bại.");
   }
 
-  @PostMapping("/payment")
+  @GetMapping("/payment")
+  @Transactional
   @ResponseBody
   public AjaxResult payBillByOrderId(Long processOrderId) {
-    return error();
+
+    SysUser user = getUser();
+
+    // UPDATE PROCESS BILL PAYMENT STATUS Y
+    ProcessBill processBill = new ProcessBill();
+    processBill.setProcessOrderId(processOrderId);
+    processBill.setUpdateBy(user.getUserName());
+    processBill.setUpdateTime(new Date());
+    processBill.setPaymentStatus("Y");
+    processBillService.updateBillList(processBill);
+
+    // UPDATE SHIPMENT DETAIL PAYMENT STATUS Y
+    ShipmentDetail shipmentDt = new ShipmentDetail();
+    shipmentDt.setProcessOrderId(processOrderId);
+    List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+    for (ShipmentDetail shipmentDetail : shipmentDetails) {
+      if ("N".equals(shipmentDetail.getPaymentStatus())) {
+        shipmentDetail.setPaymentStatus("Y");
+        shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+        shipmentDetail.setUpdateBy(user.getUserName());
+        shipmentDetail.setUpdateTime(new Date());
+        shipmentDetailService.updateShipmentDetail(shipmentDetail);
+      }
+    }
+
+    return success("Cập nhật trạng thái thanh toán thành công.");
+  }
+
+  @PostMapping("/do")
+  @Transactional
+  @ResponseBody
+  public AjaxResult updateDoStatus(Long shipmentId) {
+    ShipmentDetail shipmentDetail = new ShipmentDetail();
+    shipmentDetail.setShipmentId(shipmentId);
+    List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+    for (ShipmentDetail shipmentDt : shipmentDetails) {
+      shipmentDt.setDoReceivedTime(new Date());
+      shipmentDt.setDoStatus("Y");
+      shipmentDt.setStatus(shipmentDt.getStatus()+1);
+      shipmentDt.setUpdateBy(getUser().getUserName());
+      shipmentDt.setUpdateTime(new Date());
+      shipmentDetailService.updateShipmentDetail(shipmentDt);
+    }
+    return success("Nhận DO gốc thành công.");
   }
 }

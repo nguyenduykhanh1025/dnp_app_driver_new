@@ -74,4 +74,6 @@ public interface IProcessBillService
     public long sumOfBillList(ProcessBill processBill);
 
     public List<ProcessBill> getBillListByShipmentId(Long shipmentId);
+
+    public int updateBillList(ProcessBill processBill);
 }

@@ -15,7 +15,7 @@ var myAvatarzone = new Dropzone("#bannarzone", {
     maxFiles: 100,
     maxFilesize: 10, //MB
     autoProcessQueue: false,
-    acceptedFiles: ".edi,.TO_VN",
+    acceptedFiles: ".edi,.TO_VN,.evu,",
     parallelUploads: 100,
     addRemoveLinks: true,
     dictDefaultMessage: 'Choose a file EDI, or drag it here !',
@@ -119,6 +119,11 @@ function loadView() {
                 editor: false
             },
             {
+                data: 'sztp',
+                type: 'text',
+                editor: false
+            },
+            {
                 data: 'billOfLading',
                 type: 'text',
                 editor: false
@@ -134,12 +139,17 @@ function loadView() {
                 editor: false
             },
             {
+                data: 'vessel',
+                type: 'text',
+                editor: false
+            },
+            {
                 data: 'voyNo',
                 type: 'text',
                 editor: false
             },
             {
-                data: 'vessel',
+                data: 'vesselNo',
                 type: 'text',
                 editor: false
             },
@@ -168,11 +178,13 @@ function loadView() {
         rowHeaders: true,
         colHeaders: [
             'Số Cont',
+            'Sztp',
             'Số Bill',
             'Chủ khai thác',
             'Order Number',
+            'Tên tàu',
             'Số chuyến',
-            'Số tàu',
+            'Mã tàu',
             'Người nhận hàng',
             'Ngày hết hạn lưu cont',
             'Nơi hạ rỗng',
