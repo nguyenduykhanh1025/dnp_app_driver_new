@@ -91,8 +91,10 @@ public class EdoManageController extends BaseController {
 	@ResponseBody
 	public Object readEdi(String fileContent)
 	{
-		List<Edo> edo = new ArrayList<>();
-		String[] text = fileContent.split("'");
+    List<Edo> edo = new ArrayList<>();
+    fileContent = fileContent.replace("\n", "");
+    fileContent = fileContent.replace("\r", "");
+		String[] text = fileContent.split("\\'\\");
 		edo = edoService.readEdi(text);
 		return edo;
   }
