@@ -500,6 +500,19 @@ function configHandson() {
             isChange = false;
           }
           if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
+
+            // CLEAR DATA
+            hot.setDataAtCell(row[0], 4, ''); //consignee
+            hot.setDataAtCell(row[0], 6, ''); //opeCode
+            hot.setDataAtCell(row[0], 7, ''); //vslNm
+            hot.setDataAtCell(row[0], 8, ''); //voyNo
+            hot.setDataAtCell(row[0], 9, ''); //sztp
+            hot.setDataAtCell(row[0], 10, ''); //sealNo
+            hot.setDataAtCell(row[0], 11, ''); //wgt
+            hot.setDataAtCell(row[0], 12, ''); //loadingPort
+            hot.setDataAtCell(row[0], 13, ''); //dischargePort
+            hot.setDataAtCell(row[0], 14, ''); //remark
+
             // Call data to auto-fill
             $.ajax({
               url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
@@ -798,6 +811,14 @@ function getDataFromTable(isValidate) {
         return false;
       }
     }
+
+    // $.ajax({
+    //   url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
+    //   type: "GET"
+    // }).done(function (shipmentDetail) {
+      
+    // });
+
     consignee = object["consignee"];
     emptydepot = object["emptyDepot"];
     let expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
@@ -880,28 +901,31 @@ function saveShipmentDetail() {
     $.modal.msgError("Bạn cần chọn lô trước");
     return;
   } else {
-    if (getDataFromTable(true)) {
-      if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
-        if (dnDepot) {
-          layer.confirm("Quý khách đã chọn nơi hạ container ở cảng Tiên Sa, hệ thống sẽ tự động tạo lô và thông tin giao container rỗng.", {
-            icon: 3,
-            title: "Xác Nhận",
-            btn: ['Đồng Ý', 'Hủy Bỏ']
-          }, function () {
-            save(true);
-            layer.close(layer.index);
-          }, function () {
+    hot.deselectCell();
+    setTimeout(() => {
+      if (getDataFromTable(true)) {
+        if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
+          if (dnDepot) {
+            layer.confirm("Quý khách đã chọn nơi hạ container ở cảng Tiên Sa, hệ thống sẽ tự động tạo lô và thông tin giao container rỗng.", {
+              icon: 3,
+              title: "Xác Nhận",
+              btn: ['Đồng Ý', 'Hủy Bỏ']
+            }, function () {
+              save(true);
+              layer.close(layer.index);
+            }, function () {
+              save(false);
+            });
+          } else {
             save(false);
-          });
+          }
+        } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
+          $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
         } else {
-          save(false);
+          $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
         }
-      } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
-        $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
-      } else {
-        $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
       }
-    }
+    }, 100);
   }
 }
 function save(isSendEmpty) {

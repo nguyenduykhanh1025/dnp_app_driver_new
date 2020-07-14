@@ -115,6 +115,9 @@ public class ShipmentDetailEntity extends BaseEntity
 
     /** Status */
     private Integer status;
+    
+    /** Block*/
+    private String block;
 
     /** Bay*/
     private Integer bay;
@@ -144,7 +147,15 @@ public class ShipmentDetailEntity extends BaseEntity
         return processOrderId;
     }
     
-    public Integer getBay() {
+    public String getBlock() {
+		return block;
+	}
+
+	public void setBlock(String block) {
+		this.block = block;
+	}
+
+	public Integer getBay() {
 		return bay;
 	}
 
@@ -501,6 +512,7 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("preorderPickup", getPreorderPickup())
             .append("shiftingContNumber", getShiftingContNumber())
             .append("status", getStatus())
+            .append("block",getBlock())
             .append("bay", getBay())
             .append("roww", getRow())
             .append("tier", getTier())
