@@ -144,36 +144,44 @@ function paymentHandle(processOrderId, paymentStatus, index) {
   if ('Y' == paymentStatus) {
     $.modal.alertError('Bill này đã được thanh toán.');
   } else {
-    $.modal.loading("Đang xử lý...");
-    $.ajax({
-      url: PREFIX + "/payment",
-      method: "GET",
-      data: {
-        processOrderId: processOrderId
-      }
-    }).done(function (res) {
-      if (res.code == 0) {
-        for (let i=0; i<bills.length; i++) {
-          bills[i].paymentStatus = 'Y';
+    layer.confirm("Xác nhận bill này đã thanh toán.", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Đồng Ý', 'Hủy Bỏ']
+    }, function () {
+      $.modal.loading("Đang xử lý...");
+      $.ajax({
+        url: PREFIX + "/payment",
+        method: "GET",
+        data: {
+          processOrderId: processOrderId
         }
-        $("#billTitle"+index).text('Invoice No: ' + bills[0].referenceNo + ' Mã Lệnh: ' + processOrderId + ' Trạng Thái: ' + (bills[0].paymentStatus=='Y'?'Đã thanh toán':'Chưa thanh toán'));
-        $("#paymentButton"+index).attr('onclick', 'paymentHandle(' + processOrderId + ', "Y", ' + index + ')');
-        $('#dgOrder' + index + ' table').datagrid({
-          height: DOCUMENT_HEIGHT / 2 - 70,
-          width: $(document).width() - 50,
-          singleSelect: true,
-          clientPaging: false,
-          pagination: false,
-          rownumbers: true,
-          nowrap: false,
-          striped: true,
-          loader: function (param, success, error) {
-            success(bills);
-          },
-        });
-      }
-      $.modal.closeLoading();
-      $.modal.msgSuccess(res.msg);
+      }).done(function (res) {
+        if (res.code == 0) {
+          for (let i=0; i<bills.length; i++) {
+            bills[i].paymentStatus = 'Y';
+          }
+          $("#billTitle"+index).text('Invoice No: ' + bills[0].referenceNo + ' Mã Lệnh: ' + processOrderId + ' Trạng Thái: ' + (bills[0].paymentStatus=='Y'?'Đã thanh toán':'Chưa thanh toán'));
+          $("#paymentButton"+index).attr('onclick', 'paymentHandle(' + processOrderId + ', "Y", ' + index + ')');
+          $('#dgOrder' + index + ' table').datagrid({
+            height: DOCUMENT_HEIGHT / 2 - 70,
+            width: $(document).width() - 50,
+            singleSelect: true,
+            clientPaging: false,
+            pagination: false,
+            rownumbers: true,
+            nowrap: false,
+            striped: true,
+            loader: function (param, success, error) {
+              success(bills);
+            },
+          });
+        }
+        $.modal.closeLoading();
+        $.modal.msgSuccess(res.msg);
+      });
+    }, function () {
+      // DO NOTHING
     });
   }
 }
