@@ -22,7 +22,7 @@ async function submitHandler() {
         if ($("#groupName").val() != null && $("#groupName").val() != '') {
             let res = await getBookingNoUnique();
             if (res.code == 0) {
-                await $.operate.save(prefix + "/shipment", $('#form-add-shipment').serialize());
+                $.operate.save(prefix + "/shipment", $('#form-add-shipment').serialize());
                 parent.loadTable();
             }
         } else {

@@ -38,7 +38,7 @@ async function submitHandler() {
                     $('#edoFlg').val(res.shipment.edoFlg).text("Lệnh giao hàng (DO)");
                     $('#edoFlgInput').val(res.shipment.edoFlg);
                 }
-                await $.operate.save(prefix + "/shipment", $('#form-add-shipment').serialize());
+                $.operate.save(prefix + "/shipment", $('#form-add-shipment').serialize());
                 parent.loadTable();
             }
         } else {

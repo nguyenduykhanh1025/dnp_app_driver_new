@@ -98,10 +98,11 @@
        SELECT            
            CNTR_NO AS containerNo,
            BL_NO AS blNo,
+           BLOCK AS block,
            ROWW AS roww,
            BAY AS bay,
            TIER AS tier
-            FROM TB_INVENTORY
+        FROM TB_INVENTORY
         WHERE BL_NO = #{blNo}
         ORDER BY CNTR_NO ASC
     </select>

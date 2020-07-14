@@ -68,11 +68,11 @@ async function submitHandler() {
             if ($("#bookingNo").val() != currentBooking) {
                 let res = await getBookingNoUnique();
                 if (res.code == 0) {
-                    await $.operate.save(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
+                    $.operate.save(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
                     parent.loadTable();
                 }
             } else {
-                await $.operate.save(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
+                $.operate.save(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
                 parent.loadTable();
             }
         } else {
