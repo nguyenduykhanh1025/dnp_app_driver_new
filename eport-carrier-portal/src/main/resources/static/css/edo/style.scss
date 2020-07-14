@@ -27,6 +27,7 @@ $primary-grey: #e5e5e5;
 .wrapper {
   display: flex;
   justify-content: space-between;
+  padding: 0 !important;
   .left {
     border-right: 1px solid $primary-grey;
     padding-right: 15px;
