@@ -182,7 +182,7 @@ function openVerificationSupport(id) {
 }
 
 function openPaymentSupport(id) {
-  $.modal.open("Thanh toán", PREFIX + "/payment/" + id);
+  $.modal.openWithOneButton("Thanh toán", PREFIX + "/payment/" + id, null, null);
 }
 
 function openReceiverDOSupport(id) {

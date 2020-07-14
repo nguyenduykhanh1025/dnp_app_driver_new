@@ -193,6 +193,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getBillListByShipmentId" parameterType="Long" resultMap="ProcessBillResult">
         <include refid="selectBillReport"/>
-        where b.shipment_id = #{shipmentId} orderby b.process_order_id asc
+        where b.shipment_id = #{shipmentId} order by b.process_order_id asc
     </select>
+
+    <update id="updateBillList" parameterType="ProcessBill">
+        update process_bill
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="paymentStatus != null  and paymentStatus != ''">payment_status = #{paymentStatus},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="paymentTime != null ">payment_time = #{paymentTime},</if>
+        </trim>
+        <where>  
+            <if test="processOrderId != null "> and process_order_id = #{processOrderId}</if>
+        </where>
+    </update>
 </mapper>

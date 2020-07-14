@@ -1,14 +1,85 @@
 'use strict';
 const PREFIX = ctx + 'om/order/support';
 const DOCUMENT_HEIGHT = $(document).height();
-var tableQnt = 3;
+var matrixBill = [];
 
 $(document).ready(function () {
-  for (let i = 1; i < tableQnt; i++) {
-    let divClone = $('div#dgOrder' + i);
-    let totalLabel = divClone.find('.txt-total');
-    $(totalLabel).text(formatCurency(123456789) + ' VNĐ ');
-    $('#dgOrder' + i + ' table').datagrid({
+
+  // CHECK BILL LIST NOT NULL OR EMPTY
+  if (billList != null && billList.length > 0) {
+
+    let invoiceNo = billList[0].referenceNo;
+
+    // PAYMENT STATUS
+    let paymentStatus = billList[0].paymentStatus;
+
+    // NUMBER OF BILL
+    let count = 1;
+
+    // STORE CURRENT BILL
+    let dataList = [];
+
+    // TOTAL OF BILL
+    let total = 0;
+
+    // CURRENT PROCESS ORDER ID
+    let processOrderId = billList[0].processOrderId;
+
+    // START LOADING DATA
+    $.modal.loading("Đang xử lý...");
+    for (let i=0; i<billList.length; i++) {
+      if (processOrderId != billList[i].processOrderId) {
+        matrixBill.push(dataList);
+        let divClone = $('div#dgOrder' + count);
+        let clonned = divClone.clone().prop('id', 'dgOrder' + (count + 1));
+        let totalLabel = clonned.find('.txt-total');
+        clonned.find(".btn-payment").attr("id", "paymentButton"+(count+1))
+        .attr('onclick', 'paymentHandle(' + processOrderId + ', "' + paymentStatus + '", ' + (count + 1) + ')');
+        clonned.find(".bill-title").attr("id", "billTitle" + (count+1))
+        .text('Invoice No: ' + invoiceNo + ' Mã Lệnh: ' + processOrderId + ' Trạng Thái: ' + (paymentStatus=='Y'?'Đã thanh toán':'Chưa thanh toán'));
+        $(totalLabel).text(formatMoney(total) + ' VND ');
+        divClone.after(clonned);
+        $('#dgOrder' + (count + 1) + ' table').datagrid({
+          height: DOCUMENT_HEIGHT / 2 - 70,
+          width: $(document).width() - 50,
+          singleSelect: true,
+          clientPaging: false,
+          pagination: false,
+          rownumbers: true,
+          nowrap: false,
+          striped: true,
+          loader: function (param, success, error) {
+            success(dataList);
+          },
+        });
+        
+        // REFRESH DATA TO STORE NEW BILL
+        dataList = [];
+        dataList.push(billList[i]);
+        processOrderId = billList[i].processOrderId;
+        total = 0;
+        total += billList[i].vatAfterFee;
+        paymentStatus = billList[i].paymentStatus;
+        invoiceNo = billList[i].referenceNo;
+        count++;
+      } else {
+        dataList.push(billList[i]);
+        total += billList[i].vatAfterFee;
+      }
+    }
+
+    // LOAD THE LAST BILL
+    matrixBill.push(dataList);
+    let divClone = $('div#dgOrder' + count);
+    let clonned = divClone.clone().prop('id', 'dgOrder' + (count + 1));
+    let totalLabel = clonned.find('.txt-total');
+    clonned.find(".btn-payment").attr("id", "paymentButton" + (count+1))
+    .attr('onclick', 'paymentHandle(' + processOrderId + ', "' + paymentStatus + '", ' + (count + 1) + ')');
+    clonned.find(".bill-title").attr("id", "billTitle" + (count+1))
+    .text('Invoice No: ' + invoiceNo + ' Mã Lệnh: ' + processOrderId + ' Trạng Thái: ' + (paymentStatus=='Y'?'Đã thanh toán':'Chưa thanh toán'));
+    $(totalLabel).text(formatMoney(total) + ' VND ');
+    divClone.after(clonned);
+    $('#dgOrder' + (count + 1)   + ' table').datagrid({
       height: DOCUMENT_HEIGHT / 2 - 70,
       width: $(document).width() - 50,
       singleSelect: true,
@@ -18,18 +89,74 @@ $(document).ready(function () {
       nowrap: false,
       striped: true,
       loader: function (param, success, error) {
-        success(orderList);
+        success(dataList);
       },
     });
-    let currentId = i + 1;
-    let clonned = divClone.clone().prop('id', 'dgOrder' + currentId);
-    divClone.after(clonned);
+
+    // FINISH LOADING DATA
+    $.modal.closeLoading();
+    $('.content').height(DOCUMENT_HEIGHT - $('.header').height() - 20);
+  } else {
+    layer.confirm("Lô này hiện tại không có bill nào để hiển thị.", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Xác nhận']
+    }, function () {
+      $.modal.close();
+    });
   }
- 
-  $('.content').height(DOCUMENT_HEIGHT - $('.header').height() - 20);
 });
 
-function formatCurency(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+function formatMoney(value) {
+  return value.format(2, 3, ',', '.');
 }
 
+Number.prototype.format = function(n, x, s, c) {
+  var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+      num = this.toFixed(Math.max(0, ~~n));
+
+  return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+};
+
+function paymentHandle(processOrderId, paymentStatus, index) {
+  let bills = matrixBill[index-2];
+  if ('Y' == paymentStatus) {
+    $.modal.alertError('Bill này đã được thanh toán.');
+  } else {
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: PREFIX + "/payment",
+      method: "GET",
+      data: {
+        processOrderId: processOrderId
+      }
+    }).done(function (res) {
+      if (res.code == 0) {
+        for (let i=0; i<bills.length; i++) {
+          bills[i].paymentStatus = 'Y';
+        }
+        $("#billTitle"+index).text('Invoice No: ' + bills[0].referenceNo + ' Mã Lệnh: ' + processOrderId + ' Trạng Thái: ' + (bills[0].paymentStatus=='Y'?'Đã thanh toán':'Chưa thanh toán'));
+        $("#paymentButton"+index).attr('onclick', 'paymentHandle(' + processOrderId + ', "Y", ' + index + ')');
+        $('#dgOrder' + index + ' table').datagrid({
+          height: DOCUMENT_HEIGHT / 2 - 70,
+          width: $(document).width() - 50,
+          singleSelect: true,
+          clientPaging: false,
+          pagination: false,
+          rownumbers: true,
+          nowrap: false,
+          striped: true,
+          loader: function (param, success, error) {
+            success(bills);
+          },
+        });
+      }
+      $.modal.closeLoading();
+      $.modal.msgSuccess(res.msg);
+    });
+  }
+}
+
+function closeForm() {
+  $.modal.close();
+}
