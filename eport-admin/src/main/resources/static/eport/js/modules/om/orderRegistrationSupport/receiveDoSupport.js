@@ -1,18 +1,53 @@
 "use strict";
 const PREFIX = ctx + "om/order/support";
+const DOCUMENT_HEIGHT = $(document).height();
 var notification = new Object();
 
 $(document).ready(function () {
   $("#toggle-status").bootstrapToggle();
+
+  if (shipmentDetails != null && shipmentDetails.length > 0) {
+    if ('Y' == shipmentDetails[0].doStatus) {
+      $("#toggle-status").prop('checked', true).change();
+    }
+  }
+
   loadTable();
+
+  if (shipment) {
+    if (shipment.blNo) {
+      $('.bl-no').text(shipment.blNo);
+    } else {
+      $('.bl-no-div').hide();
+    }
+    if (shipment.bookingNo) {
+      $('.booking-no').text(shipment.bookingNo);
+    } else {
+      $('.booking-no-div').hide();
+    }
+    $('.batch-code').text(shipment.id);
+    switch (shipment.serviceType) {
+      case 1:
+        $('.service-type').text('Bốc Hàng');
+        break;
+      case 2:
+        $('.service-type').text('Hạ Rỗng');
+        break;
+      case 3:
+        $('.service-type').text('Bốc Rỗng');
+        break;
+      case 4:
+        $('.service-type').text('Hạ Hàng');
+        break;
+    }
+    
+  }
 });
 
 function loadTable() {
   $("#dg").datagrid({
-    url: "/notifications" + "/list",
-    method: "POST",
     singleSelect: true,
-    height: $(document).height() - 170,
+    height: DOCUMENT_HEIGHT - 170,
     clientPaging: false,
     pagination: true,
     rownumbers: true,
@@ -21,30 +56,46 @@ function loadTable() {
     striped: true,
     loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
-      if (!opts.url) return false;
-      $.ajax({
-        type: opts.method,
-        url: opts.url,
-        contentType: "application/json",
-        accept: "text/plain",
-        dataType: "text",
-        data: JSON.stringify({
-          pageNum: param.page,
-          pageSize: param.rows,
-          orderByColumn: param.sort,
-          isAsc: param.order,
-          data: notification,
-        }),
-        success: function (data) {
-          success(JSON.parse(data));
-        },
-        error: function () {
-          error.apply(this, arguments);
-        },
-      });
+      success(shipmentDetails);
     },
   });
+}
+
+function formatDate(value) {
+  if (value) {
+    return value.substring(8, 10) + '/' + value.substring(5, 7) + '/' + value.substring(0, 4);
+  }
+  return '';
+}
+
+function confirm() {
+  if ($("#toggle-status").prop('checked')) {
+    layer.confirm("Xác nhận đã nhận DO gốc.", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Đồng Ý', 'Hủy Bỏ']
+    }, function () {
+
+      // CANCEL DOING PROCESS ORDER
+      $.ajax({
+        url: PREFIX + "/do",
+        method: "POST",
+        data: {
+          shipmentId: shipment.id
+        }
+      }).done(function (res) {
+        if (res.code == 0) {
+          parent.finishForm(res);
+          layer.close(layer.index);
+          $.modal.close();
+        }
+      });
+    }, function () {
+      // DO NOTHING
+    });
+  } else {
+    $.modal.alertError("Bạn chưa đánh dấu đã nhận DO gốc.");
+  }
 }
 
 $("#toggle-status").change(function(e) {

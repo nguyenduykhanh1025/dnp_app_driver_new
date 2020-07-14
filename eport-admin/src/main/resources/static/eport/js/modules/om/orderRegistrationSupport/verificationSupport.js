@@ -28,7 +28,9 @@ $(document).ready(function () {
     $('#bookingNo').text(processOrder.bookingNo);
     $('#payType').text(processOrder.payType);
     let pickupDate = processOrder.pickupDate;
-    $('#pickupDate').text(pickupDate.substring(8, 10)+'/'+pickupDate.substring(5, 7)+'/'+pickupDate.substring(0, 4));
+    if (pickupDate) {
+      $('#pickupDate').text(pickupDate.substring(8, 10)+'/'+pickupDate.substring(5, 7)+'/'+pickupDate.substring(0, 4));
+    }
     $('#vessel').text(processOrder.vessel);
     $('#voyage').text(processOrder.voyage);
 
@@ -227,7 +229,7 @@ let config = {
 hot = new Handsontable(dogrid, config);
 hot.loadData(orderList);
 hot.render();
-$("section.content").css("overflow-x", "auto");
+$("section.content").css("overflow", "auto");
 
 $("#toggle-status").change(function (e) {
   if (toggleTrigger && countEvent == 2) {
