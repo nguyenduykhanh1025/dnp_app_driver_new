@@ -1,51 +1,76 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-
-<head>
+  <head>
     <th:block th:include="include :: header('Hỗ trợ Robot làm lệnh')" />
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/om/executeCatos/executeCatos.css}" rel="stylesheet" />
-</head>
+  </head>
 
-<body class="white-bg">
-    <div class="ui-layout-center">
-        <div class="container-div">
-            <div class="row">
-                <h2>Danh sách lệnh đang chờ</h2>
-                <hr>
-            </div>
-            <div class="row">
-                <!-- /table toolbar -->
-                <div class="col-sm-12 table-container">
-                    <table id="dg" pageList="[20,50,100,150,200]">
-                        <thead>
-                            <tr>
-                                <th data-options="field: 'process', halign:'left', align:'left', formatter: formatProcess" width="250">
-                                    Lệnh
-                                </th>
-                                <th data-options="field: 'blNo', halign:'left', align:'left', formatter: formatBLNo" width="250">
-                                    B/L no
-                                </th>
-                                <th data-options="field: 'ship', halign:'left', align:'left', formatter: formatShip" width="250">
-                                    Tàu
-                                </th>
-                                <th data-options="field:'processStatus', halign:'left', align:'left', fixed:true, formatter: formatProcessStatus" width="250">
-                                    Trạng thái
-                                </th>
-                                <th data-options="field: 'shipmentId', halign:'left', align:'left', fixed:true, formatter: formatAction" width="250">
-                                    Action
-                                </th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
+  <body class="container-fluid white-bg">
+    <section class="filter mb20 mt20">
+      <div class="form-inline">
+        <div class="form-group">
+          <label class="sr-only" for="searchBox">Tìm kiếm</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="searchBox" placeholder="Tìm kiếm" />
+          </div>
         </div>
-    </div>
+        <div class="form-group">
+          <label class="sr-only" for="serviceType">Loại lệnh</label>
+          <div class="input-group">
+            <select class="form-control" id="serviceType">
+              <option value="" selected disabled>Chọn loại lệnh</option>
+              <option value="">Tất cả</option>
+              <option value="1">Bốc Hàng</option>
+              <option value="2">Hạ Rỗng</option>
+              <option value="3">Bốc Rỗng</option>
+              <option value="4">Hạ Hàng</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="fromDate">Từ ngày</label>
+          <div class="input-group">
+            <select class="form-control" id="serviceType">
+              <option value="" selected disabled>Chọn trạng thái</option>
+              <option value="">Tất cả</option>
+              <option value="1">Đang chờ</option>
+              <option value="2">Đã hoàn tất</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="toDate">Đến ngày</label>
+          <div class="input-group">
+            <select class="form-control" id="action">
+              <option value="" selected disabled>Chọn tình trạng</option>
+              <option value="">Tất cả</option>
+              <option value="1">Đang chờ</option>
+              <option value="2">Đã hoàn tất</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>&nbsp;Search</button>
+      </div>
+    </section>
+    <section class="content">
+      <table id="dg" style="width: 99%;" pageList="[20, 50, 100, 150, 200]">
+        <thead>
+          <tr>
+            <th data-options="field: 'blNo', halign: 'center', align: 'left', resizable: true, fixed: 'true'" width="150" sortable="true">Bl NO</th>
+            <th data-options="field: 'process', halign: 'center', align: 'left', resizable: true" width="150" sortable="true">Process</th>
+            <th data-options="field: 'ship', halign: 'center', align:'center', resizable:true" width="150" sortable="true">Ship</th>
+            <th data-options="field: 'processStatus', halign: 'center', align:'center', resizable: true, formatter: formatProcessStatus" width="150" sortable="true">Process Status</th>
+            <th data-options="field: 'formatAction', halign: 'center', align:'center', resizable: true, formatter: formatAction" width="150" sortable="true">Action</th>
+
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
 
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <script th:src="@{/eport/js/modules/om/executeCatos/executeCatos.js}"></script>
-</body>
-
+  </body>
 </html>
