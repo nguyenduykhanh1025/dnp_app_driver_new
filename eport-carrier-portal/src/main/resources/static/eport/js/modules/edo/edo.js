@@ -4,6 +4,13 @@ var edo = new Object();
 var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
 $(function () {
+  $(".left").css("height", $(document).height());
+  $("#btn-collapse").click(function () {
+    handleCollapse(true);
+  });
+  $("#btn-uncollapse").click(function () {
+    handleCollapse(false);
+  });
     $("#dg").height($(document).height() - 100);
     $("#dgContainer").height($(document).height() - 100);
     currentLeftTableWidth = $(".left-table").width();
@@ -51,25 +58,26 @@ $(function () {
             loadTable(edo);
         }
     });
-    $(".btn-collapse").click(function (event) {
-      let leftTable = $(".table-left");
-      let rightTable = $(".table-right");
-      let leftWidth = leftTable.width();
-      if (leftWidth !== 0) {
-        leftTable.width(0);
-        rightTable.width(currentRightWidth + currentLeftWidth);
-        loadTableByContainer();
-        leftTable.css("border-color","transparent");
-        $(this).css({'transform' : 'rotate('+ 180 +'deg)'});
-        return;
-      }
-      leftTable.width(currentLeftWidth);
-      rightTable.width(currentRightWidth);
-      leftTable.css("border-color","darkgrey");
-      $(this).css({'transform' : 'rotate('+ 360 +'deg)'});
-      return;
-    });
 });
+
+function handleCollapse(status) {
+  if (status) {
+    $(".left").css("width", "0.5%");
+    $(".left").children().hide();
+    $("#btn-collapse").hide();
+    $("#btn-uncollapse").show();
+    $(".right").css("width", "99%");
+    loadTableByContainer();
+    return;
+  }
+  $(".left").css("width", "25%");
+  $(".left").children().show();
+  $("#btn-collapse").show();
+  $("#btn-uncollapse").hide();
+  $(".right").css("width", "74%");
+  loadTableByContainer();
+  return;
+}
 
 function loadTable(edo) {
     $("#dg").datagrid({
