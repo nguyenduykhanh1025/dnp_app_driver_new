@@ -2,9 +2,12 @@
 const PREFIX = ctx + "om/executeCatos";
 var dogrid = document.getElementById("container-grid"), hot;
 var toggleTrigger = true, countEvent = 2, processOrder;
+var check = false;
 
 $(document).ready(function () {
-  $("#toggle-status").bootstrapToggle();
+  $("#toggle-status").bootstrapToggle({
+    width: '160px',
+  });
 
   if (orderList != null && orderList.length > 0) {
     processOrder = orderList[0];
@@ -35,8 +38,23 @@ $(document).ready(function () {
     $('#voyage').text(processOrder.voyage);
 
     if (processOrder.status != 0) {
+      $("#toggle-status").bootstrapToggle({
+        on:"<i class='fa fa-cog fa-spin fa-fw'></i>&nbsp;Đang làm lệnh",
+        off:"Không",
+        onstyle:"success",
+        offstyle:"default"
+      });
+      $("#toggle-status").bootstrapToggle('on');
       $("#toggle-status").prop('disabled', true);
       $('#invoiceNo').val(processOrder.referenceNo).prop('readonly', true);
+    } else {
+      $("#toggle-status").bootstrapToggle({
+        on:"<i class='fa fa-cog fa-spin fa-fw'></i>&nbsp;Đang làm lệnh",
+        off:"Không",
+        onstyle:"success",
+        offstyle:"default"
+      });
+      $("#toggle-status").bootstrapToggle('off');
     }
   }
 });
@@ -212,6 +230,10 @@ hot.render();
 $("section.content").css("overflow", "auto");
 
 $("#toggle-status").change(function (e) {
+  if (!check) {
+    check = true;
+    return;
+  }
   if (toggleTrigger && countEvent == 2) {
     if ($("#toggle-status").prop('checked')) {
 
@@ -246,7 +268,7 @@ $("#toggle-status").change(function (e) {
     } else {
 
       // HANDLE WHEN TOGGLE TURN OFF
-      layer.confirm("Hủy làm lệnh cho lô này.", {
+      layer.confirm("Hủy làm lệnh này.", {
         icon: 3,
         title: "Xác Nhận",
         btn: ['Đồng Ý', 'Hủy Bỏ']
