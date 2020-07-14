@@ -127,4 +127,9 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
     public int countProcessOrderDoing(String[] processOrderIds) {
         return processOrderMapper.countProcessOrderDoing(processOrderIds);
     }
+
+    @Override
+    public List<ProcessOrder> selectProcessOrderListForOmManagement(ProcessOrder processOrder) {
+        return processOrderMapper.selectProcessOrderListForOmManagement(processOrder);
+    }
 }
