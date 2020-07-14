@@ -3,8 +3,8 @@
   <head>
     <th:block th:include="include :: header('Custom Support')" />
     <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: bootstrap-toggle-css" />
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet" />
     <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
   </head>
 
@@ -73,7 +73,10 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <th:block th:include="include :: bootstrap-toggle-js" />
+    <script type="text/javascript" th:inline="javascript">
+      var orderList = /*[[${orderList}]]*/;
+    </script>
     <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/receiveDoSupport.js}"></script>
   </body>
 </html>

@@ -90,6 +90,7 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   public String getReceiveDoSupport(@PathVariable Long shipmentId, ModelMap mmap) {
     ShipmentDetail shipmentDetail = new ShipmentDetail();
     shipmentDetail.setShipmentId(shipmentId);
+    mmap.put("shipment", shipmentService.selectShipmentById(shipmentId));
     mmap.put("shipmentDetails", shipmentDetailService.selectShipmentDetailList(shipmentDetail));
     return PREFIX + "/receiveDoSupport";
   }
