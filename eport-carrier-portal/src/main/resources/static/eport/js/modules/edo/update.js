@@ -24,21 +24,13 @@ function closeForm()
 
 function confirm()
 {
-    // if(formatDateForSubmit($("#expiredDem").val()) == expiredDem && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot)
-    // {
-    //   $.modal.alertError("Không có thông tin nào được thay đổi !!!")
-    // }
-    if($("#detFreeTime").val() < detFreeTime)
+   
+    if(formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot)
     {
-        $.modal.alertError("Số ngày miễn lưu vỏ mới phải lớn hơn " + '</br>' + " số ngày miễn lưu vỏ hiện tại !!!")
-        return;
+      $.modal.alertError("Không có thông tin nào được thay đổi !!!")
+      return;
     }
-    if(formatDateForSubmit($("#expiredDem").val()) < expiredDem)
-    {
-      $.modal.alertError("Hạn lệnh mới phải lớn hơn " + '</br>' + " hạn lệnh hiện tại !!!")
-        return;
-    }
-    $.modal.confirm(
+      $.modal.confirm(
         "Bạn có chắc chắn muốn cập nhật DO không? Hành động này không thể hoàn tác",
         function () {
           $.ajax({
@@ -53,11 +45,13 @@ function confirm()
             },
             success: function (data) {
               if (data.code == 0) {
-                  $.modal.alertSuccess("Cập nhật thành công");
+                layer.msg('Cập nhật thành công ... ', {icon: 6});
               } else {
                 $.modal.alertError(data.msg)
               }
-              
+              setTimeout(function () {
+                 $.modal.close();
+              },1500)
             },
             error: function (data) {
               $.modal.alertError(
@@ -79,7 +73,7 @@ function formatDateForSubmit(value) {
     if (value == null) {
       return;
     }
-    var newdate = value.split("/").reverse();
+    var newdate = value.split("-").reverse();
     var date = new Date(newdate)
     var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
     var month = date.getMonth() + 1;

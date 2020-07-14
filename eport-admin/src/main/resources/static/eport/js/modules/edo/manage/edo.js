@@ -232,19 +232,14 @@ function formatStatus(value) {
   switch (value) {
     case 0:
       return "<span class='label label-success'>Trạng thái 0</span>";
-      break;
     case 1:
       return "<span class='label label-success'>Trạng thái 1</span>";
-      break;
     case 2:
       return "<span class='label label-success'>Trạng thái 2</span>";
-      break;
     case 3:
       return "<span class='label label-success'>Trạng thái 2</span>";
-      break;
     case 4:
       return "<span class='label label-success'>Trạng thái 2</span>";
-      break;
     default:
       return "<span class='label label-warning'>Chờ làm lệnh</span>";
   }
