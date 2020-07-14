@@ -29,7 +29,7 @@ function loadTable() {
     singleSelect: true,
     height: DOCUMENT_HEIGHT - 90,
     clientPaging: false,
-    pagination: true,
+    pagination: false,
     rownumbers: true,
     pageSize: 50,
     nowrap: false,

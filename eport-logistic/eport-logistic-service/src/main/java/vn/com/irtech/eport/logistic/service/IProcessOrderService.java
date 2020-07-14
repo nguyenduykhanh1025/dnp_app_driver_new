@@ -70,5 +70,7 @@ public interface IProcessOrderService
     public int updateCancelingProcessOrder(String[] processOrderIds);
 
     public int countProcessOrderDoing(String[] processOrderIds);
+
+    public List<ProcessOrder> selectProcessOrderListForOmManagement(ProcessOrder processOrder);
     
 }

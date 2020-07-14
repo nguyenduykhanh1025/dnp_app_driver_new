@@ -191,6 +191,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join shipment_detail s on p.id = s.process_order_id
         <where>
             <if test="shipmentId != null "> and p.shipment_id = #{shipmentId}</if>
+            <if test="id != null "> and p.id = #{id}</if>
             <if test="status != null "> and (p.status = #{status}</if>
             <if test="result != null  and result != ''"> or p.result = #{result})</if>
         </where>
@@ -225,5 +226,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
         and status = 1
     </update>
+
+    <select id="selectProcessOrderListForOmManagement" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
+        <include refid="selectProcessOrderVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="serviceType != null "> and service_type = #{serviceType}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="taxCode != null  and taxCode != ''"> and (upper(tax_code) like concat('%', #{taxCode}, '%')</if>
+            <if test="vessel != null  and vessel != ''"> or upper(vessel) like concat('%', #{vessel}, '%')</if>
+            <if test="voyage != null  and voyage != ''"> or upper(voyage) like concat('%', #{voyage}, '%'))</if>
+        </where>
+    </select>
     
 </mapper>
