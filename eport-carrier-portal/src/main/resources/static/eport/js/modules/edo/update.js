@@ -73,7 +73,7 @@ function formatDateForSubmit(value) {
     if (value == null) {
       return;
     }
-    var newdate = value.split("-").reverse();
+    var newdate = value.split("/").reverse();
     var date = new Date(newdate)
     var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
     var month = date.getMonth() + 1;
