@@ -27,13 +27,17 @@ $primary-grey: #e5e5e5;
 .wrapper {
   display: flex;
   justify-content: space-between;
+  padding: 0 !important;
   .left {
     border-right: 1px solid $primary-grey;
     padding-right: 15px;
     width: 25%;
-    @include transition("all", 0.1, "ease");
     overflow: hidden;
     position: relative;
+    @include transition("all", 0.1, "ease");
+    .searchBill {
+      width: 40%;
+    }
     .fixed {
       position: absolute;
       top: 45%;

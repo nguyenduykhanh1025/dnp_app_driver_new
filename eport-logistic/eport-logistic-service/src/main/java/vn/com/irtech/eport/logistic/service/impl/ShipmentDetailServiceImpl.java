@@ -185,6 +185,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             for (int i = 0; i < coordinateOfList.size(); i++) {
                 if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).get("containerNo"))) {
+                    shipmentDetail.setBlock(coordinateOfList.get(i).get("block").toString());
                     shipmentDetail.setBay(coordinateOfList.get(i).get("bay").toString());
                     shipmentDetail.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
                     shipmentDetail.setTier(Integer.parseInt(coordinateOfList.get(i).get("tier").toString()));
@@ -196,6 +197,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
         for (int i = 0; i < coordinateOfList.size(); i++) {
             ShipmentDetail shipmentDetail2 = new ShipmentDetail();
+            shipmentDetail2.setBlock(coordinateOfList.get(i).get("block").toString());
             shipmentDetail2.setBay(coordinateOfList.get(i).get("bay").toString());
             shipmentDetail2.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
             shipmentDetail2.setTier(Integer.parseInt(coordinateOfList.get(i).get("tier").toString()));
@@ -672,7 +674,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 ship.setConsignee(i.getConsignee());
                 ship.setEmptyDepot(i.getEmptyContainerDepot());
                 ship.setOpeCode(i.getCarrierCode());
-                ship.setVslNm(i.getVessel());
+                ship.setVslNm(i.getVesselNo());
                 ship.setVoyNo(i.getVoyNo());
                 listShip.add(ship);
             }

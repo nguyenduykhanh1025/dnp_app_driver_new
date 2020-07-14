@@ -3,12 +3,29 @@ const DOCUMENT_HEIGHT = $(document).height();
 
 $(document).ready(function () {
   loadTable();
+
+  if (shipments != null && shipments.length > 0) {
+    $('.batch-code').text(shipments[0].id);
+    switch (shipments[0].serviceType) {
+      case 1:
+        $('.service-type').text('Bốc Hàng');
+        break;
+      case 2:
+        $('.service-type').text('Hạ Rỗng');
+        break;
+      case 3:
+        $('.service-type').text('Bốc Rỗng');
+        break;
+      case 4:
+        $('.service-type').text('Hạ Hàng');
+        break;
+    }
+    $('.group-name').text(shipments[0].logisticName);
+  }
 });
 
 function loadTable() {
-  $("#dgOrder table").datagrid({
-    url: "/notifications" + "/list",
-    method: "POST",
+  $("#dg").datagrid({
     singleSelect: true,
     height: DOCUMENT_HEIGHT - 170,
     clientPaging: false,
@@ -19,28 +36,23 @@ function loadTable() {
     striped: true,
     loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
-      if (!opts.url) return false;
-      $.ajax({
-        type: opts.method,
-        url: opts.url,
-        contentType: "application/json",
-        accept: "text/plain",
-        dataType: "text",
-        data: JSON.stringify({
-          pageNum: param.page,
-          pageSize: param.rows,
-          orderByColumn: param.sort,
-          isAsc: param.order,
-          data: notification,
-        }),
-        success: function (data) {
-          success(JSON.parse(data));
-        },
-        error: function () {
-          error.apply(this, arguments);
-        },
-      });
+      success(pickupHistories);
     },
   });
+}
+
+function formatSize(value, row) {
+  return row.shipmentDetail.sztp;
+}
+
+function formatDriverName(value, row) {
+  return row.pickupAssign.fullName;
+}
+
+function formatPhoneNumber(value, row) {
+  return row.pickupAssign.phoneNumber;
+}
+
+function closeForm() {
+  $.modal.close();
 }
