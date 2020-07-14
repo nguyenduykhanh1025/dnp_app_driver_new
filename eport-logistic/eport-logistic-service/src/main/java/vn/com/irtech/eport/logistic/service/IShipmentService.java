@@ -72,5 +72,4 @@ public interface IShipmentService
     public List<Shipment> selectShipmentListForOm(Shipment shipment);
 
     public List<Shipment> getShipmentListForAssign(Shipment shipment);
-
 }

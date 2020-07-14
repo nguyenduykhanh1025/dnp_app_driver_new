@@ -159,6 +159,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         left join shipment_detail sh on s.id = sh.shipment_id
         <where>
             sh.shipment_id is not null
+            <if test="id != null "> and s.id = #{id}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="fromDate != null">and s.create_time &gt;= #{fromDate}</if>
             <if test="toDate != null">and s.create_time &lt;= #{toDate}</if>
@@ -193,4 +194,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by create_time desc
     </select>
+
 </mapper>

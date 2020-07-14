@@ -82,4 +82,6 @@ public interface PickupHistoryMapper
     public List<PickupHistory> selectPickupHistoryListForReport(PickupHistory pickupHistory);
 
     public List<PickupHistory> selectPickupHistoryListForHistory(PickupHistory pickupHistory);
+
+    public List<PickupHistory> selectPickupHistoryListForOmSupport(PickupHistory pickupHistory);
 }

@@ -106,6 +106,8 @@ public class PickupHistory extends BaseEntity {
 
 	private DriverAccount driver;
 
+	private PickupAssign pickupAssign;
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date fromDate;
 
@@ -256,6 +258,14 @@ public class PickupHistory extends BaseEntity {
 
 	public void setDriver(DriverAccount driver) {
 		this.driver = driver;
+	}
+
+	public void setPickupAssign(PickupAssign pickupAssign) {
+		this.pickupAssign = pickupAssign;
+	}
+
+	public PickupAssign getPickupAssign() {
+		return pickupAssign;
 	}
 
 	public void setFromDate(Date fromDate) {
