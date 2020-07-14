@@ -34,7 +34,7 @@ function confirm()
         "Bạn có chắc chắn muốn cập nhật DO không? Hành động này không thể hoàn tác",
         function () {
           $.ajax({
-            url: PREFIX + "/updateEdo",
+            url: PREFIX + "/update",
             method: "post",
             dataType: "json",
             data : {

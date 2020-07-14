@@ -41,7 +41,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectEdoAuditLogVo"/>
         where id = #{id}
     </select>
-        
+
+    <select id="selectEdoAuditLogByEdoId" parameterType="Long" resultType="String">
+        select seq_no from edo_audit_log
+        where edo_id = #{edoId} 
+         ORDER BY seq_no DESC LIMIT 1
+    </select>
+
     <insert id="insertEdoAuditLog" parameterType="EdoAuditLog" useGeneratedKeys="true" keyProperty="id">
         insert into edo_audit_log
         <trim prefix="(" suffix=")" suffixOverrides=",">
