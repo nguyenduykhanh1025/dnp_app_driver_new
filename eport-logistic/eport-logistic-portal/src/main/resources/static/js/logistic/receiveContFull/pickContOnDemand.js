@@ -48,7 +48,7 @@ bayList.forEach(function(bay) {
         for (let row=4; row>=0; row--) {
             if (bay[row][col] != null) {
                 bay[row][col].expiredDem = null;
-                bayName = bay[row][col].bay;
+                bayName = bay[row][col].block + "-" + bay[row][col].bay;
                 shipmentId = bay[row][col].shipmentId;
                 if (bay[row][col].containerNo == null) {
                     str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" style="background-color: #dbcfcf;" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">CONT</div>';

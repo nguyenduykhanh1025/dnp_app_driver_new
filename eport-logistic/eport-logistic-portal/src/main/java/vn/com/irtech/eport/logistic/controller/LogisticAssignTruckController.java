@@ -98,6 +98,9 @@ public class LogisticAssignTruckController extends LogisticBaseController{
     	driverAccount.setLogisticGroupId(getUser().getGroupId());
 		driverAccount.setDelFlag(false);
 		driverAccount.setStatus("0");//khóa
+		if(pickedIds == null){
+			return driverAccountService.selectDriverAccountList(driverAccount);
+		}
 		List<DriverAccount> driverList = driverAccountService.selectDriverAccountList(driverAccount);
 		List<DriverAccount> assignedDriverList = driverAccountService.getAssignedDrivers(pickedIds);
 		driverList.removeAll(assignedDriverList);
@@ -122,11 +125,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 					driverList.add(driverAccountService.selectDriverAccountById(i.getDriverId()));
 				}
 			}
-			//TH:default assign ca doi xe ma co cont chi dinh
-			if(driverList.size() == 0 ){
-				return driverAccountService.selectDriverAccountList(driverAccount);
-			}
-        } else {//TH:default assign ca doi xe , ko co cont chi dinh
+        } else {//TH:default assign ca doi xe , ko co cont chi dinh, ko thue ngoai
 			return driverAccountService.selectDriverAccountList(driverAccount);
 		}
         return driverList;
@@ -136,7 +135,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	@Transactional
 	@ResponseBody
 	public AjaxResult savePickupAssignFollowBatch(@RequestBody List<PickupAssign> pickupAssigns){
-		if(pickupAssigns == null){
+		if(pickupAssigns.size() == 0){
 			return error();
 		}
 		int accountNumber = 0;
@@ -160,9 +159,11 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			i.setLogisticGroupId(getUser().getGroupId());
 		}
 		//check driverId of current logistic
-		int check = driverAccountService.checkDriverOfLogisticGroup(pickupAssigns);
-		if(check != accountNumber){
-			return error("Có tài xế không tồn tại.");
+		if(accountNumber > 0){// co driver trong cty moi check
+			int check = driverAccountService.checkDriverOfLogisticGroup(pickupAssigns);
+			if(check != accountNumber){
+				return error("Có tài xế không tồn tại.");
+			}
 		}
 		//check shipmentId of current logistic
 		Shipment shipment = shipmentService.selectShipmentById(pickupAssigns.get(0).getShipmentId());
@@ -226,11 +227,6 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 					driverList.add(driverAccountService.selectDriverAccountById(i.getDriverId()));
 				}
 			}
-			if(driverList.size() == 0){
-				//TH: chua assign
-					//return driverAccountService.selectDriverAccountList(driverAccount);
-					return driverList;
-			}
         } else {
 			//TH: chua assign theo cont, batch
 			return driverList;
@@ -258,7 +254,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	@Transactional
 	@ResponseBody
 	public AjaxResult savePickupAssignFollowContainer(@RequestBody List<PickupAssign> pickupAssigns){
-		if(pickupAssigns == null){
+		if(pickupAssigns.size() == 0){
 			return error();
 		}
 		int accountNumber = 0; // so driver trong cty
@@ -282,9 +278,11 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			i.setLogisticGroupId(getUser().getGroupId());
 		}
 		//check driverId of current logistic
-		int check = driverAccountService.checkDriverOfLogisticGroup(pickupAssigns);
-		if(check != accountNumber){
-			return error("Có tài xế không tồn tại.");
+		if(accountNumber > 0){// co driver trong cty moi check
+			int check = driverAccountService.checkDriverOfLogisticGroup(pickupAssigns);
+			if(check != accountNumber){
+				return error("Có tài xế không tồn tại.");
+			}
 		}
 		//check shipmentId of current logistic
 		Shipment shipment  = shipmentService.selectShipmentById(pickupAssigns.get(0).getShipmentId());

@@ -6,17 +6,50 @@ var conts = '';
 var allChecked = false, dnDepot = false;
 var checkList = [];
 var rowAmount = 0;
-var consigneeList;
-
+var sizeList = [
+  "22G0: Cont 20 feet khô", 
+  "22P0: Cont 20 feet flat rack - quá khổ", 
+  "22R0: Cont 20 feet lạnh", 
+  "22T0: Cont 20 feet tank - cont bồn",
+  "22U0: Cont 20 feet open top", 
+  "42G0: Cont 40 feet thấp khô", 
+  "42P0: Cont 40 feet thấp flat rack - quá khổ",
+  "42R0: Cont 40 feet thấp lạnh", 
+  "42T0: Cont 40 feet thấp tank - cont bồn", 
+  "42U0: Cont 40 feet thấp open top",
+  "45G0: Cont 40 feet cao khô", 
+  "45P0: Cont 40 feet cao flat rack - quá khổ", 
+  "45R0: Cont 40 feet cao lạnh",
+  "45T0: Cont 40 feet cao tank - cont bồn",
+  "45U0: Cont 40 feet cao open top", 
+  "L4G0: Cont 45 feet khô", 
+  "L4P0: Cont 45 feet flat rack - quá khổ", 
+  "L4R0: Cont 45 feet lạnh",
+  "L4T0: Cont 45 feet tank - cont bồn",
+  "L4U0: Cont 45 feet open top"
+];
+var consigneeList, opeCodeList, dischargePortList, vslNmList;
 $.ajax({
-  url: prefix + "/consignees",
+  url: "/logistic/source/option",
   method: "GET",
   success: function (data) {
-    if (data.code == 0) {
-      consigneeList = data.consigneeList;
-    }
+      if (data.code == 0) {
+          dischargePortList = data.dischargePortList;
+          opeCodeList = data.opeCodeList;
+          vslNmList = data.vslNmList;
+          consigneeList = data.consigneeList;
+      }
   }
 });
+// $.ajax({
+//   url: prefix + "/consignees",
+//   method: "GET",
+//   success: function (data) {
+//     if (data.code == 0) {
+//       consigneeList = data.consigneeList;
+//     }
+//   }
+// });
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
@@ -71,6 +104,7 @@ function loadTable() {
     singleSelect: true,
     collapsible: true,
     clientPaging: false,
+    rownumbers:true,
     pagination: true,
     onClickRow: function () {
       getSelected();
@@ -399,12 +433,12 @@ function configHandson() {
         case 12:
           return "Cảng Xếp Hàng";
         case 13:
-          return "Cảng Dỡ Hàng";
+          return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
         case 14:
           return "Ghi Chú";
       }
     },
-    colWidths: [50, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200],
+    colWidths: [50, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100, 100, 100, 110, 200],
     filter: "true",
     columns: [
       {
@@ -426,8 +460,7 @@ function configHandson() {
       {
         data: "expiredDem",
         type: "date",
-        dateFormat: "DD/MM/YYYY",
-        correctFormat: true,
+        dateFormat: "YYYY-MM-DD",
         defaultDate: new Date(),
         renderer: expiredDemRenderer
       },
@@ -447,21 +480,29 @@ function configHandson() {
       },
       {
         data: "opeCode",
+        type: "autocomplete",
+        source: opeCodeList,
         strict: true,
         renderer: opeCodeRenderer
       },
       {
         data: "vslNm",
+        type: "autocomplete",
+        source: vslNmList,
         strict: true,
         renderer: vslNmRenderer
       },
       {
         data: "voyNo",
+        type: "autocomplete",
         strict: true,
         renderer: voyNoRenderer
       },
       {
         data: "sztp",
+        type: "autocomplete",
+        source: sizeList,
+        strict: true,
         renderer: sizeRenderer
       },
       {
@@ -474,10 +515,14 @@ function configHandson() {
       },
       {
         data: "loadingPort",
+        type: "autocomplete",
+        source: dischargePortList,
         renderer: loadingPortRenderer
       },
       {
         data: "dischargePort",
+        type: "autocomplete",
+        source: dischargePortList,
         renderer: dischargePortRenderer
       },
       {
@@ -491,46 +536,66 @@ function configHandson() {
     afterChange: function (changes, src) {
       //Get data change in cell to render another column
       if (src !== "loadData") {
-        changes.forEach(function interate(row) {
-          let containerNo;
-          if (row[1] == "containerNo") {
-            containerNo = hot.getDataAtRow(row[0])[2];
-            isChange = true;
-          } else {
-            isChange = false;
-          }
-          if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
-
-            // CLEAR DATA
-            hot.setDataAtCell(row[0], 4, ''); //consignee
-            hot.setDataAtCell(row[0], 6, ''); //opeCode
-            hot.setDataAtCell(row[0], 7, ''); //vslNm
-            hot.setDataAtCell(row[0], 8, ''); //voyNo
-            hot.setDataAtCell(row[0], 9, ''); //sztp
-            hot.setDataAtCell(row[0], 10, ''); //sealNo
-            hot.setDataAtCell(row[0], 11, ''); //wgt
-            hot.setDataAtCell(row[0], 12, ''); //loadingPort
-            hot.setDataAtCell(row[0], 13, ''); //dischargePort
-            hot.setDataAtCell(row[0], 14, ''); //remark
-
-            // Call data to auto-fill
+        changes.forEach(function interate(change) {
+          if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
             $.ajax({
-              url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
-              type: "GET"
-            }).done(function (shipmentDetail) {
-              if (shipmentDetail != null) {
-                hot.setDataAtCell(row[0], 4, shipmentDetail.consignee); //consignee
-                hot.setDataAtCell(row[0], 6, shipmentDetail.opeCode); //opeCode
-                hot.setDataAtCell(row[0], 7, shipmentDetail.vslNm); //vslNm
-                hot.setDataAtCell(row[0], 8, shipmentDetail.voyNo); //voyNo
-                hot.setDataAtCell(row[0], 9, shipmentDetail.sztp); //sztp
-                hot.setDataAtCell(row[0], 10, shipmentDetail.sealNo); //sealNo
-                hot.setDataAtCell(row[0], 11, shipmentDetail.wgt); //wgt
-                hot.setDataAtCell(row[0], 12, shipmentDetail.loadingPort); //loadingPort
-                hot.setDataAtCell(row[0], 13, shipmentDetail.dischargePort); //dischargePort
-                hot.setDataAtCell(row[0], 14, shipmentDetail.remark); //remark
+              url: "/logistic/vessel/" + change[3] + "/voyages",
+              method: "GET",
+              success: function (data) {
+                if (data.code == 0) {
+                  hot.updateSettings({
+                    cells: function (row, col, prop) {
+                      if (row == change[0] && col == 8) {
+                        let cellProperties = {};
+                        cellProperties.source = data.voyages;
+                        return cellProperties;
+                      }
+                    }
+                  });
+                }
               }
             });
+          } else {
+            let containerNo;
+            if (change[1] == "containerNo") {
+              containerNo = hot.getDataAtRow(change[0])[2];
+              isChange = true;
+            } else {
+              isChange = false;
+            }
+            if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
+
+              // CLEAR DATA
+              hot.setDataAtCell(change[0], 4, ''); //consignee
+              hot.setDataAtCell(change[0], 6, ''); //opeCode
+              hot.setDataAtCell(change[0], 7, ''); //vslNm
+              hot.setDataAtCell(change[0], 8, ''); //voyNo
+              hot.setDataAtCell(change[0], 9, ''); //sztp
+              hot.setDataAtCell(change[0], 10, ''); //sealNo
+              hot.setDataAtCell(change[0], 11, ''); //wgt
+              hot.setDataAtCell(change[0], 12, ''); //loadingPort
+              hot.setDataAtCell(change[0], 13, ''); //dischargePort
+              hot.setDataAtCell(change[0], 14, ''); //remark
+
+              // Call data to auto-fill
+              $.ajax({
+                url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
+                type: "GET"
+              }).done(function (shipmentDetail) {
+                if (shipmentDetail != null) {
+                  hot.setDataAtCell(change[0], 4, shipmentDetail.consignee); //consignee
+                  hot.setDataAtCell(change[0], 6, shipmentDetail.opeCode); //opeCode
+                  hot.setDataAtCell(change[0], 7, shipmentDetail.vslNm); //vslNm
+                  hot.setDataAtCell(change[0], 8, shipmentDetail.voyNo); //voyNo
+                  hot.setDataAtCell(change[0], 9, shipmentDetail.sztp); //sztp
+                  hot.setDataAtCell(change[0], 10, shipmentDetail.sealNo); //sealNo
+                  hot.setDataAtCell(change[0], 11, shipmentDetail.wgt); //wgt
+                  hot.setDataAtCell(change[0], 12, shipmentDetail.loadingPort); //loadingPort
+                  hot.setDataAtCell(change[0], 13, shipmentDetail.dischargePort); //dischargePort
+                  hot.setDataAtCell(change[0], 14, shipmentDetail.remark); //remark
+                }
+              });
+            }
           }
         });
       }
@@ -801,6 +866,10 @@ function getDataFromTable(isValidate) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn nơi hạ vỏ!");
         errorFlg = true;
         return false;
+      } else if (!object["dischargePort"]) {
+        $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Cảng dở hàng!");
+        errorFlg = true;
+        return false;
       } else if (consignee != object["consignee"]) {
         $.modal.alertError("Tên chủ hàng không được khác nhau!");
         errorFlg = true;
@@ -821,7 +890,7 @@ function getDataFromTable(isValidate) {
 
     consignee = object["consignee"];
     emptydepot = object["emptyDepot"];
-    let expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
+    let expiredDem = new Date(object["expiredDem"].substring(0, 4) + "/" + object["expiredDem"].substring(5, 7) + "/" + object["expiredDem"].substring(8, 10));
     shipmentDetail.blNo = shipmentSelected.blNo;
     shipmentDetail.containerNo = object["containerNo"];
     contList.push(object["containerNo"]);
