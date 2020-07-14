@@ -7,6 +7,7 @@ $(document).ready(function () {
 
 function loadTable() {
   $("#dg").datagrid({
+    height: $(document).height() - 100,
     singleSelect: true,
     clientPaging: false,
     pagination: false,

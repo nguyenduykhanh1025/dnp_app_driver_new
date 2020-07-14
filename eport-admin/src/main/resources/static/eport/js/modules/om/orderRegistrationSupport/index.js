@@ -186,7 +186,7 @@ function openPaymentSupport(id) {
 }
 
 function openReceiverDOSupport(id) {
-  $.modal.open("DO gốc", PREFIX + "/do/" + id);
+  $.modal.openWithOneButton("DO gốc", PREFIX + "/do/" + id);
 }
 
 function openDriverSupport(id) {

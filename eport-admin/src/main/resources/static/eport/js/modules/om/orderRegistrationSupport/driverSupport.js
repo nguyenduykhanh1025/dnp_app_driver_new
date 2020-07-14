@@ -25,13 +25,16 @@ $(document).ready(function () {
 });
 
 function loadTable() {
-  $("#dg").datagrid({
+  $("#dgOrder table").datagrid({
     singleSelect: true,
+    height: DOCUMENT_HEIGHT - 170,
     clientPaging: false,
-    pagination: false,
+    pagination: true,
     rownumbers: true,
+    pageSize: 50,
     nowrap: false,
     striped: true,
+    loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
       success(pickupHistories);
     },
