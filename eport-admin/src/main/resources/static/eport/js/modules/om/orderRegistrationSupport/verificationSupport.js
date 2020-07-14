@@ -147,7 +147,6 @@ let config = {
   minRows: orderList.length,
   maxRows: orderList.length,
   width: "100%",
-  height: "200px",
   minSpareRows: 0,
   rowHeights: 30,
   fixedColumnsLeft: 0,
