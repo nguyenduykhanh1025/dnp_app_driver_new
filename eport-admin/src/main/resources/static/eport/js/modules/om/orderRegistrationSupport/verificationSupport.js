@@ -4,8 +4,7 @@ var dogrid = document.getElementById("container-grid"), hot;
 var toggleTrigger = true, countEvent = 2, processOrderIds = [], processOrders = [];
 
 $(document).ready(function () {
-  $("#toggle-status").bootstrapToggle();
-
+ 
   if (orderList != null && orderList.length > 0) {
     let processOrder = orderList[0];
     switch (processOrder.serviceType) {
@@ -55,9 +54,23 @@ $(document).ready(function () {
       $.modal.close();
     });
   }
-
   if (processOrderIds.length == 0) {
+    $("#toggle-status").bootstrapToggle({
+      on: "Đã làm lệnh",
+      off: "",
+      onstyle: "success", 
+      offstyle: "default",
+      style: "quick"
+    });
+    $("#toggle-status").bootstrapToggle('on');
     $("#toggle-status").prop('disabled', true);
+  } else {
+    $("#toggle-status").bootstrapToggle({
+      on: "<i class='fa fa-check'></i>&nbsp;Làm lệnh",
+      off: "<i class='fa fa-spinner fa-spin fa-fw'></i>Đang chờ...",
+      onstyle: "success", 
+      offstyle: "default"
+    });
   }
 });
 
@@ -232,6 +245,7 @@ hot.render();
 $("section.content").css("overflow", "auto");
 
 $("#toggle-status").change(function (e) {
+  if (processOrderIds.length == 0) return;
   if (toggleTrigger && countEvent == 2) {
     if ($("#toggle-status").prop('checked')) {
 
