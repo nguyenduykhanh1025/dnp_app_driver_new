@@ -7,8 +7,19 @@
   height: $height;
   line-height: $height;
 }
+
+@mixin transition ($direction, $time, $type) {
+  -webkit-transition: $direction $time $type;
+  -moz-transition: $direction $time $type;
+  -ms-transition: $direction $time $type;
+  -o-transition: $direction $time $type;
+  transition: $direction $time $type;
+}
+
 $blue: #1c84c6;
 $dark-grey: darkgrey;
+$primary-grey: #e5e5e5;
+
 .datagrid-header-row > td {
   color: $blue;
   font-weight: bold;
@@ -18,27 +29,38 @@ $dark-grey: darkgrey;
   text-transform: uppercase;
   color: $blue;
 }
-.table-left {
-  position: relative;
-  border-right: 1px solid $dark-grey;
-  padding-right: 15px;
-}
-.table-left .btn-collapse {
-  position: absolute;
-  right: 0;
-  top: 45%;
-  font-size: 2.5em;
-  cursor: pointer;
-}
-.billNoView {
-  display: flex;
-}
-.combobox-carrier {
-  margin-left: 5px;
-}
 
-.left {
-  border-right: 1px solid $dark-grey;
-  padding-right: 15px;
-  width: 20%;
+.wrapper {
+  @include d-flex-space-between;
+  .left {
+    border-right: 1px solid $primary-grey;
+    padding-right: 15px;
+    width: 25%;
+    @include transition("all", 0.1, "ease");
+    overflow: hidden;
+    position: relative;
+    .fixed {
+      position: absolute;
+      top: 45%;
+      right: 0;
+      width: 10px;
+      height: 60px;
+      line-height: 60px;
+      background-color: #e5e5e5;
+      text-align: center;
+    }
+    #btn-uncollapse {
+      display: none;
+    }
+    
+    #btn-collapse,
+    #btn-uncollapse {
+      cursor: pointer;
+    }
+  }
+  
+  .right {
+    width: 74%;
+  }
+  
 }

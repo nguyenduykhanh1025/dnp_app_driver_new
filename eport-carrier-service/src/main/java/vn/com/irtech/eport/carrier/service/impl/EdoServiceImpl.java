@@ -168,10 +168,16 @@ public class EdoServiceImpl implements IEdoService
 			{
 			
 				String[] contNo = s.split("\\+");
-				if(!s.isEmpty())
+				if(contNo.length >= 2)
 				{
 					obj.put("contNo",contNo[2]);
                 	edi.setContainerNumber(contNo[2]);
+				}
+				if(contNo.length >= 3)
+				{
+					String[] sztp = contNo[3].split("\\:");
+					obj.put("sztp",sztp[0]);
+                	edi.setSztp(sztp[0]);
 				}
 				continue;
 			}
@@ -241,7 +247,7 @@ public class EdoServiceImpl implements IEdoService
 				continue; 
 			}
 
-			//haulage
+			//Voy and vessel
 			if(s.contains("TDT+20"))
 			{
 				String[] infoDTD20 = s.split("\\:");
@@ -251,8 +257,10 @@ public class EdoServiceImpl implements IEdoService
 					String [] vesselNo = infoDTD20[2].split("\\+");
 					edi.setVoyNo(voyNo[2]);
 					edi.setVesselNo(vesselNo[3]);
+					edi.setVessel(infoDTD20[5]);
 					obj.put("voyNo", voyNo[2]);
 					obj.put("vesselNo", vesselNo[3]);
+					obj.put("vessel", infoDTD20[5]);
 				}
 				
 				continue; 

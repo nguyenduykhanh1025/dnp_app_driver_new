@@ -106,6 +106,18 @@ public class Edo extends BaseEntity {
 	@Excel(name = "So Tau")
 	private String vesselNo;
 
+	/** Sztp */
+	@Excel(name = "Size / Type")
+	private String sztp;
+
+	
+	public void setSztp(String sztp) {
+		this.sztp = sztp;
+	}
+
+	public String getSztp() {
+		return sztp;
+	}
 
 	public void setVesselNo(String vesselNo) {
 		this.vesselNo = vesselNo;
