@@ -175,6 +175,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.process_status = 'Y') as container_amount
         from shipment s
         <where>
+            (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.process_status = 'Y') > 0
+            <if test="containerAmount != null "> and container_amount > 0</if>
             <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
@@ -183,7 +185,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
             <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
             <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
-            <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>

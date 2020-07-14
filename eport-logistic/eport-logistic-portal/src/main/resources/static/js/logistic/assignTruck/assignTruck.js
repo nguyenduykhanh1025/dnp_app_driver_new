@@ -355,6 +355,8 @@ function save(){
             let object = new Object();
             object.driverId = rows[i].id;
             object.shipmentId = shipmentSelected.id;
+            object.fullName = rows[i].fullName;
+            object.phoneNumber = rows[i].mobileNumber;
             pickupAssigns.push(object);
         }
     }
@@ -436,6 +438,9 @@ function finishAssignTruck(msg) {
     $.modal.msgSuccess(msg);
 }
 
+function finishAssignFollowCont(msg) {
+    $.modal.msgSuccess(msg);
+}
 function checkForChanges(){		
     $('#driverTable').datagrid('resize');
 
