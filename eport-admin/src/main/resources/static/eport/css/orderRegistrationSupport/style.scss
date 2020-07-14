@@ -34,10 +34,13 @@ h4 {
 
 .page-payment {
   .content {
-    overflow-x: scroll;
+    margin-bottom: 60px;
     .clone-zone {
       &:first-child {
         display: none;
+      }
+      &:last-child {
+        border-color: transparent;
       }
       overflow-x: hidden;
       border-bottom: 1px solid $black;
