@@ -147,6 +147,7 @@ let config = {
   minRows: orderList.length,
   maxRows: orderList.length,
   width: "100%",
+  height: "200px",
   minSpareRows: 0,
   rowHeights: 30,
   fixedColumnsLeft: 0,
@@ -229,7 +230,7 @@ let config = {
 hot = new Handsontable(dogrid, config);
 hot.loadData(orderList);
 hot.render();
-$("section.content").css("overflow-x", "auto");
+$("section.content").css("overflow", "auto");
 
 $("#toggle-status").change(function (e) {
   if (toggleTrigger && countEvent == 2) {
