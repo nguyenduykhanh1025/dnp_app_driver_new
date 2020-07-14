@@ -67,4 +67,6 @@ public interface IEdoAuditLogService
 
     public int insertEdoAuditLogDetFreeTime(EdoAuditLog edoAuditLog);
 
+    public String selectEdoAuditLogByEdoId(Long id);
+
 }
