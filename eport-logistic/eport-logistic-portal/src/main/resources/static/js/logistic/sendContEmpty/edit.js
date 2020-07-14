@@ -58,7 +58,7 @@ function loadGroupName() {
 async function submitHandler() {
     if ($.validate.form()) {
         if ($("#groupName").val() != null && $("#groupName").val() != '') {
-            await $.operate.save(prefix + "/shipment/" + $('#id').val(), $('#form-edit-shipment').serialize());
+            $.operate.save(prefix + "/shipment/" + $('#id').val(), $('#form-edit-shipment').serialize());
             parent.loadTable();
         }
     } else {
