@@ -135,8 +135,8 @@ function formatToYDMHMS(date) {
 
 function formatAction(value, row, index) {
   var actions = [];
-  actions.push('<a class="btn btn-success btn-xs btn-action mt5" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Cập nhật</a> '+'<br>');
-  actions.push('<a class="btn btn-success btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Xem lịch sử</a> ');
+  actions.push('<a class="btn btn-success btn-xs btn-action mt5" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập nhật</a> '+'<br>');
+  actions.push('<a class="btn btn-success btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch sử</a> ');
   return actions.join("");
 }
 
@@ -145,7 +145,7 @@ function viewHistoryCont(id) {
 }
 
 function viewUpdateCont(id) {
-  $.modal.openOption("Update Container", PREFIX + "/update/" + id, 1000, 400);
+  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 600, 400);
 }
 
 function loadTableByContainer(billOfLading) {
@@ -282,7 +282,7 @@ function formatStatus(value)
 
 
 
-function updateEdo()
+function multiUpdateEdo()
 {
   let ids = [];
   let rows = $('#dgContainer').datagrid('getSelections');
@@ -295,7 +295,7 @@ function updateEdo()
     let row = rows[i];
        ids.push(row.id);
   }
-  $.modal.openOption("Update Container", PREFIX + "/multiUpdate/" + ids, 1000, 400);
+  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 600, 400);
 }
 
 $("#vesselNo").change(function() {

@@ -165,7 +165,7 @@ function formatToYDM(date) {
 
 function formatAction(value, row, index) {
   var actions = [];
-  actions.push('<a class="btn btn-success btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-view"></i>Xem lịch sử</a> ');
+  actions.push('<a class="btn btn-success btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch sử</a> ');
   return actions.join("");
 }
 
