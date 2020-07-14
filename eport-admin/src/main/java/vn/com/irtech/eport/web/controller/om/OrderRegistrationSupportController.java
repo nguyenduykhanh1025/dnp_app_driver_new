@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -51,6 +53,9 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @Autowired 
   private IProcessHistoryService processHistoryService;
 
+  @Autowired
+  private IPickupHistoryService pickupHistoryService;
+
   @GetMapping()
   public String getMainView() {
     return PREFIX + "/index";
@@ -66,6 +71,12 @@ public class OrderRegistrationSupportController extends AdminBaseController {
 
   @GetMapping("/driver/{shipmentId}")
   public String getdriverSupport(@PathVariable Long shipmentId, ModelMap mmap) {
+    Shipment shipment = new Shipment();
+    shipment.setId(shipmentId);
+    mmap.put("shipments", shipmentService.selectShipmentListForOm(shipment));
+    PickupHistory pickupHistory = new PickupHistory();
+    pickupHistory.setShipmentId(shipmentId);
+    mmap.put("pickupHistories", pickupHistoryService.selectPickupHistoryListForOmSupport(pickupHistory));
     return PREFIX + "/driverSupport";
   }
 

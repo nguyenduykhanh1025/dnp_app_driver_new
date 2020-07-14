@@ -66,7 +66,7 @@ function loadTable() {
                 }),
                 success: function (res) {
                     success(res.list);
-                    $('#total').text(res.total+" (VND)");
+                    $('#total').text(formatMoney(res.total)+" (VND)");
                 },
                 error: function () {
                     error.apply(this, arguments);

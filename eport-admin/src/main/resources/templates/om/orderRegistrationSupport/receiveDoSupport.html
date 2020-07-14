@@ -9,21 +9,47 @@
   </head>
 
   <body class="container-fluid white-bg page-receiveDO">
-    <section class="header mb20">
-      <div class="row">
-        <div class="col-md-12">
-          <label class="checkbox-inline">
-            <h4><label>Trạng thái DO</label></h4>
-            <input
-              id="toggle-status"
-              type="checkbox"
-              data-on="Đã nhận DO"
-              data-off="Chưa nhận"
-              data-onstyle="success"
-              data-offstyle="default"
-            />
-          </label>
+    <section class="header mb5 mt10">
+      <!-- row one -->
+      <div class="row mb5">
+        <!-- max 3 inner info in a row -->
+        <div class="header__inner-info">
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <span>Lô BL BL No&#58;</span>
+          </div>
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <span class="lo-bl">123456789</span>
+          </div>
         </div>
+
+        <div class="header__inner-info">
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <span>Lô BL&#58;</span>
+          </div>
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <span class="lo-bl">123456789</span>
+          </div>
+        </div>
+      </div>
+      <!-- row two  -->
+      <div class="row mb5">
+        <!-- max 3 inner info in a row -->
+        <div class="header__inner-info">
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <span>Lô BL&#58;</span>
+          </div>
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <span class="lo-bl">123456789</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="header mb20">
+      <div>
+        <label>
+          <h4><label>Trạng thái DO</label></h4>
+          <input id="toggle-status" type="checkbox" data-on="Đã nhận DO" data-off="Chưa nhận" data-onstyle="success" data-offstyle="default" />
+        </label>
       </div>
     </section>
     <section class="content clearfix">
@@ -41,6 +67,10 @@
         <tbody></tbody>
       </table>
     </section>
+    <div class="layui-layer-btn footer clearfix">
+      <a class="layui-layer-btn0" onclick="closeForm()">Xác nhận</a>
+      <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
+    </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
