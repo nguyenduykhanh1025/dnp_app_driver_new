@@ -12,7 +12,7 @@ function loadTable() {
     url: "/notifications" + "/list",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 70,
+    height: $(document).height() - 170,
     clientPaging: false,
     pagination: true,
     rownumbers: true,
