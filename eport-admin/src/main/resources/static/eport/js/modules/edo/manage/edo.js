@@ -12,8 +12,8 @@ $(document).ready(function () {
   $("#btn-uncollapse").click(function () {
     handleCollapse(false);
   });
-  $("#dg").height($(document).height() - 100);
-  $("#dgContainer").height($(document).height() - 100);
+  $("#dg").height($(document).height() - 60);
+  $("#dgContainer").height($(document).height() - 60);
   loadTable();
   loadTableByContainer();
   $("#searchAll").keyup(function (event) {
