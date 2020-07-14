@@ -8,6 +8,28 @@ $(document).ready(function () {
   // CHECK BILL LIST NOT NULL OR EMPTY
   if (billList != null && billList.length > 0) {
 
+    // SET HEADER INFO
+    $('#batchCode').text(billList[0].shipmentId);
+    $('#taxCode').text(billList[0].processOrder.taxCode);
+    switch (billList[0].serviceType) {
+      case 1:
+        $('#serviceType').text("Bốc Hàng");
+        break;
+      case 2:
+        $('#serviceType').text("Hạ Rỗng");
+        break;
+      case 3:
+        $('#serviceType').text("Bốc Rỗng");
+        break;
+      case 4:
+        $('#serviceType').text("Hạ Hàng");
+        break;
+    }
+    $('#blNo').text(billList[0].processOrder.blNo);
+    $('#bookingNo').text(billList[0].processOrder.bookingNo);
+    $('#vessel').text(billList[0].processOrder.vessel);
+    $('#voyage').text(billList[0].processOrder.voyage);
+
     let invoiceNo = billList[0].referenceNo;
 
     // PAYMENT STATUS
