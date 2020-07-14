@@ -48,7 +48,8 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @Autowired
   private IShipmentDetailService shipmentDetailService;
 
-  @Autowired IProcessHistoryService processHistoryService;
+  @Autowired 
+  private IProcessHistoryService processHistoryService;
 
   @GetMapping()
   public String getMainView() {
