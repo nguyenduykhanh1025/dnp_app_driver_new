@@ -64,4 +64,6 @@ public interface ProcessOrderMapper
     public int updateDoingProcessOrder(String[] processOrderIds);
 
     public int updateCancelingProcessOrder(String[] processOrderIds);
+
+    public int countProcessOrderDoing(String[] processOrderIds);
 }
