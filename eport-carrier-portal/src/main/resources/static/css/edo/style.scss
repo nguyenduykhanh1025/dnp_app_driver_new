@@ -1,29 +1,71 @@
-$darkgrey: #a9a9a9;
-
-@mixin transition {
-  -webkit-transition: all 1s ease-in-out;
-  -moz-transition: all 1s ease-in-out;
-  -o-transition: all 1s ease-in-out;
-  transition: all 1s ease-in-out;
+@mixin transition ($direction, $time, $type) {
+  -webkit-transition: $direction $time $type;
+  -moz-transition: $direction $time $type;
+  -ms-transition: $direction $time $type;
+  -o-transition: $direction $time $type;
+  transition: $direction $time $type;
 }
+
+$blue: #1c84c6;
+$dark-grey: darkgrey;
+$primary-grey: #e5e5e5;
 
 .btn-action {
   width: 76px;
 }
 
-.content-section {
+.datagrid-header-row > td {
+  color: $blue;
+  font-weight: bold;
+}
+.textTitle {
+  text-align: center;
+  text-transform: uppercase;
+  color: $blue;
+}
+
+.wrapper {
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  .left-table {
-    width: 30%;
-    @include transition;
+  padding: 0 !important;
+  .left {
+    border-right: 1px solid $primary-grey;
+    padding-right: 15px;
+    width: 25%;
+    overflow: hidden;
+    position: relative;
+    @include transition("all", 0.1, "ease");
+    .searchBill {
+      width: 40%;
+    }
+    .fixed {
+      position: absolute;
+      top: 45%;
+      right: 0;
+      width: 10px;
+      height: 60px;
+      line-height: 60px;
+      background-color: #e5e5e5;
+      text-align: center;
+    }
+    #btn-uncollapse {
+      display: none;
+    }
+    
+    #btn-collapse,
+    #btn-uncollapse {
+      cursor: pointer;
+    }
   }
   
-  .right-table {
-    width: 78%;
-    @include transition;
+  .right {
+    width: 74%;
+    .form-right {
+      display: flex;
+      justify-content: space-between;
+    }
   }
+  
 }
 
 
