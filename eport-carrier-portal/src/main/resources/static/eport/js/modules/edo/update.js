@@ -1,6 +1,6 @@
 const PREFIX = ctx + "edo";
 $(function() {
-    $("#containerNumber").text(containerNumber);
+    $("#containerNumber").val(containerNumber);
     $("#expiredDem").val(formatDate(expiredDem));
     $("#detFreeTime").val(detFreeTime);
     $("#emptyContainerDepot").val(emptyContainerDepot);
