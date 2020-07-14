@@ -227,6 +227,7 @@ let config = {
 hot = new Handsontable(dogrid, config);
 hot.loadData(orderList);
 hot.render();
+$("section.content").css("overflow-x", "auto");
 
 $("#toggle-status").change(function (e) {
   if (toggleTrigger && countEvent == 2) {

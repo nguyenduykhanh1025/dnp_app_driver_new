@@ -47,9 +47,15 @@ function assignFollowBatchTab() {
     // if(row){
     //     loadDriver(row.id);
     // }
-    dataAssignedDriver ? $("#pickedDriverTable").datagrid('loadData', dataAssignedDriver):[]
-    dataDriver ? $("#driverTable").datagrid('loadData', dataDriver):[]
-    checkForChanges();
+    if(dataAssignedDriver.length >0){
+        $("#pickedDriverTable").datagrid('loadData', dataAssignedDriver);
+        checkForChanges();
+
+    }
+    if(dataDriver.length > 0){
+        $("#driverTable").datagrid('loadData', dataDriver)
+        checkForChanges();
+    }
 }
 
 function assignFollowContainerTab() {
@@ -61,8 +67,10 @@ function assignFollowContainerTab() {
     // if(row){
     //     loadShipmentDetail(row.id);
     // }
-    dataContainerList ? $("#dgShipmentDetail").datagrid('loadData', dataContainerList):[]
-    checkForChanges();
+    if(dataContainerList.length > 0){
+        $("#dgShipmentDetail").datagrid('loadData', dataContainerList)
+        checkForChanges();
+    }
 }
 // LOAD SHIPMENT LIST
 function loadTable() {
