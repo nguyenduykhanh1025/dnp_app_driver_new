@@ -47,9 +47,15 @@ function assignFollowBatchTab() {
     // if(row){
     //     loadDriver(row.id);
     // }
-    dataAssignedDriver ? $("#pickedDriverTable").datagrid('loadData', dataAssignedDriver):[]
-    dataDriver ? $("#driverTable").datagrid('loadData', dataDriver):[]
-    checkForChanges();
+    if(dataAssignedDriver.length >0){
+        $("#pickedDriverTable").datagrid('loadData', dataAssignedDriver);
+        checkForChanges();
+
+    }
+    if(dataDriver.length > 0){
+        $("#driverTable").datagrid('loadData', dataDriver)
+        checkForChanges();
+    }
 }
 
 function assignFollowContainerTab() {
@@ -61,8 +67,10 @@ function assignFollowContainerTab() {
     // if(row){
     //     loadShipmentDetail(row.id);
     // }
-    dataContainerList ? $("#dgShipmentDetail").datagrid('loadData', dataContainerList):[]
-    checkForChanges();
+    if(dataContainerList.length > 0){
+        $("#dgShipmentDetail").datagrid('loadData', dataContainerList)
+        checkForChanges();
+    }
 }
 // LOAD SHIPMENT LIST
 function loadTable() {
@@ -355,6 +363,8 @@ function save(){
             let object = new Object();
             object.driverId = rows[i].id;
             object.shipmentId = shipmentSelected.id;
+            object.fullName = rows[i].fullName;
+            object.phoneNumber = rows[i].mobileNumber;
             pickupAssigns.push(object);
         }
     }
@@ -436,6 +446,9 @@ function finishAssignTruck(msg) {
     $.modal.msgSuccess(msg);
 }
 
+function finishAssignFollowCont(msg) {
+    $.modal.msgSuccess(msg);
+}
 function checkForChanges(){		
     $('#driverTable').datagrid('resize');
 

@@ -98,6 +98,7 @@ function loadTable() {
         collapsible: true,
         clientPaging: false,
         pagination: true,
+        rownumbers:true,
         onClickRow: function () {
             getSelected();
         },

@@ -186,11 +186,11 @@ function openPaymentSupport(id) {
 }
 
 function openReceiverDOSupport(id) {
-  $.modal.open("DO gốc", PREFIX + "/do/" + id);
+  $.modal.openWithOneButton("DO gốc", PREFIX + "/do/" + id);
 }
 
 function openDriverSupport(id) {
-  $.modal.open("Tài xế", PREFIX + "/driver/" + id);
+  $.modal.openWithOneButton("Tài xế", PREFIX + "/driver/" + id, null, null);
 }
 
 function completeVerification(processOrders) {

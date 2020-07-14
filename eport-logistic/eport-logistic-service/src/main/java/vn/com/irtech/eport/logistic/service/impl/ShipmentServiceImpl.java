@@ -136,5 +136,5 @@ public class ShipmentServiceImpl implements IShipmentService {
     public List<Shipment> getShipmentListForAssign(Shipment shipment) {
         return shipmentMapper.getShipmentListForAssign(shipment);
     }
-	
+
 }

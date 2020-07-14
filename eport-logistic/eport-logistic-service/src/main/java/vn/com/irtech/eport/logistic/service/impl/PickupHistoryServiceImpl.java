@@ -112,4 +112,9 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     public List<PickupHistory> selectPickupHistoryListForHistory(PickupHistory pickupHistory) {
         return pickupHistoryMapper.selectPickupHistoryListForHistory(pickupHistory);
     }
+
+    @Override
+    public List<PickupHistory> selectPickupHistoryListForOmSupport(PickupHistory pickupHistory) {
+        return pickupHistoryMapper.selectPickupHistoryListForOmSupport(pickupHistory);
+    }
 }
