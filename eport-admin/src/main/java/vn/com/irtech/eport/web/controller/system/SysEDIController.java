@@ -99,7 +99,7 @@ public class SysEDIController extends BaseController
 				data += myReader.nextLine();
 		      }
               myReader.close();
-			  String[] text = data.split("'");
+			  String[] text = data.split("//'");
               obj = this.ReadEDI(text);
 		} catch (IOException e) {
 			e.printStackTrace();
