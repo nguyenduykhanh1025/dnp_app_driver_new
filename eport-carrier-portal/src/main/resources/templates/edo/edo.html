@@ -12,7 +12,7 @@
     <section class="left">
       <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
       <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
-      <form class="form-inline mt10 mb10">
+      <div class="form-inline mt10 mb10">
         <div class="form-group">
           <label class="sr-only" for="searchBillNo">Tìm kiếm</label>
           <div class="input-group">
@@ -20,22 +20,22 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="voyNo">OPR Code</label>
-          <div class="input-group">
-            <select class="form-control" id="voyNo">
-              <option value="" selected disabled>OPR Code</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="sr-only" for="voyNo">OPR Code</label>
+          <label class="sr-only" for="voyNo">Vessel</label>
           <div class="input-group">
             <select class="form-control" id="vesselNo">
               <option value="" selected disabled>Vessel</option>
             </select>
           </div>
         </div>
-      </form>
+        <div class="form-group">
+          <label class="sr-only" for="voyNo">Voy No</label>
+          <div class="input-group">
+            <select class="form-control" id="voyNo">
+              <option value="" selected disabled>Voy No</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <table id="dg">
         <thead>
           <tr>
@@ -60,9 +60,9 @@
       </table>
     </section>
     <section class="right">
-      <form class="form-inline mt10 mb10 form-right">
+      <div class="form-inline mt10 mb10 form-right">
         <div class="form-group">
-          <label class="sr-only" for="searchBillNo">Tìm kiếm</label>
+          <label class="sr-only">Tìm kiếm</label>
           <div class="input-group">
             <button class="btn btn-success btn-sm" id="updateEdo" onclick="updateEdo() "><i class="fa fa-update"></i> Cập Nhật</button>
           </div>
@@ -93,7 +93,7 @@
             </div>
           </div>
         </div>
-      </form>
+      </div>
       <table id="dgContainer" style="width: auto;" fitColumns="true">
         <thead data-options="frozen:true">
           <tr>

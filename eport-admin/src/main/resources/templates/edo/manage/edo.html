@@ -6,13 +6,12 @@
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}"/>
     <link th:href="@{/eport/css/edo/manage/edo.css}" rel="stylesheet" />
   </head>
-  <body class="gray-bg container-fluid wrapper">
+  <body class="container-fluid wrapper">
     <section class="left">
       <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
       <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
-      <form class="form-inline mt10 mb10">
+      <div class="form-inline mt10 mb10" >
         <div class="form-group">
-          <label class="sr-only" for="searchBillNo">Tìm kiếm</label>
           <div class="input-group">
             <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" />
           </div>
@@ -25,7 +24,7 @@
             </select>
           </div>
         </div>
-      </form>
+      </div>
       <table id="dg">
         <thead>
             <tr>
@@ -76,6 +75,9 @@
           <tr>
             <th data-options="field:'containerNumber',align:'left'" width="120">
               CONTAINER NO
+            </th>
+            <th data-options="field:'sztp',align:'left'" width="50">
+              SZTP
             </th>
             <th data-options="field:'businessUnit',align:'center'" width="90">
               OPR <br />
