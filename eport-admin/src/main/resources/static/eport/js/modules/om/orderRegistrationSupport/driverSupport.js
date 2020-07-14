@@ -25,7 +25,7 @@ $(document).ready(function () {
 });
 
 function loadTable() {
-  $("#dg").datagrid({
+  $("#dgOrder table").datagrid({
     singleSelect: true,
     height: DOCUMENT_HEIGHT - 170,
     clientPaging: false,
