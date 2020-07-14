@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -62,7 +61,9 @@ public class EportTask {
             String path = fileEntry.getAbsolutePath();
             String fileName = fileEntry.getName();
             String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
-            String[] text = content.split("'");
+            content = content.replace("\n", "");
+            content = content.replace("\r", "");
+            String[] text = content.split("\\'");
             EdoHistory edoHistory = new EdoHistory();
             EdoAuditLog edoAuditLog = new EdoAuditLog();
             Date timeNow = new Date();

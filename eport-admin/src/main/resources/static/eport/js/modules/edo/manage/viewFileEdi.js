@@ -15,7 +15,7 @@ var myAvatarzone = new Dropzone("#bannarzone", {
     maxFiles: 100,
     maxFilesize: 10, //MB
     autoProcessQueue: false,
-    acceptedFiles: ".edi,.TO_VN,.evu,",
+    acceptedFiles: ".edi,.TO_VN,.evu,.txt,",
     parallelUploads: 100,
     addRemoveLinks: true,
     dictDefaultMessage: 'Choose a file EDI, or drag it here !',

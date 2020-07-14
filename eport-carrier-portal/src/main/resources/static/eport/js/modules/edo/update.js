@@ -51,7 +51,7 @@ function confirm()
               }
               setTimeout(function () {
                  $.modal.close();
-              },1500)
+              },1500) 
             },
             error: function (data) {
               $.modal.alertError(
