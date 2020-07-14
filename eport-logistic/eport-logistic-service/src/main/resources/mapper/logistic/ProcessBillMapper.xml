@@ -32,6 +32,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="taxCode"    column="tax_code"    />
         <result property="blNo"    column="bl_no"    />
         <result property="bookingNo"    column="booking_no"    />
+        <result property="vessel"    column="vessel"    />
+        <result property="voyage"    column="voyage"    />
     </resultMap>
 
     <sql id="selectProcessBillVo">
@@ -39,7 +41,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <sql id="selectBillReport">
-        select b.id, b.shipment_id, b.logistic_group_id, b.process_order_id, b.service_type, b.pay_type, b.payment_status, b.payment_time, b.reference_no, b.sztp, b.exchange_fee, b.vat_rate, b.vat_after_fee, b.container_no, b.remark, b.create_by, b.create_time, b.update_by, b.update_time, o.tax_code, o.bl_no, o.booking_no
+        select b.id, b.shipment_id, b.logistic_group_id, b.process_order_id, b.service_type, b.pay_type, b.payment_status, b.payment_time, b.reference_no, b.sztp, b.exchange_fee, b.vat_rate, b.vat_after_fee, b.container_no, 
+        b.remark, b.create_by, b.create_time, b.update_by, b.update_time, o.tax_code, o.bl_no, o.booking_no, o.vessel, o.voyage
         from process_bill b left join process_order o on b.process_order_id = o.id
     </sql>
 
@@ -59,6 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vatAfterFee != null "> and vat_after_fee = #{vatAfterFee}</if>
             <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
         </where>
+        order by process_order_id asc
     </select>
     
     <select id="selectProcessBillById" parameterType="Long" resultMap="ProcessBillResult">
@@ -185,5 +189,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sztp != null  and sztp != ''"> or upper(b.sztp) like concat('%', #{sztp}, '%')</if>
             <if test="containerNo != null  and containerNo != ''"> or upper(b.container_no) like concat('%', #{containerNo}, '%'))</if>
         </where>
+    </select>
+
+    <select id="getBillListByShipmentId" parameterType="Long" resultMap="ProcessBillResult">
+        <include refid="selectBillReport"/>
+        where b.shipment_id = #{shipmentId} orderby b.process_order_id asc
     </select>
 </mapper>

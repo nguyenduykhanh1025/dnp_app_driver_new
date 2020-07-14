@@ -173,4 +173,9 @@ public class ProcessBillServiceImpl implements IProcessBillService
     public long sumOfBillList(ProcessBill processBill) {
         return processBillMapper.sumOfBillList(processBill);
     }
+
+    @Override
+    public List<ProcessBill> getBillListByShipmentId(Long shipmentId) {
+        return processBillMapper.getBillListByShipmentId(shipmentId);
+    }
 }
