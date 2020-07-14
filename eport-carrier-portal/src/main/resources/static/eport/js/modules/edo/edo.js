@@ -1,20 +1,17 @@
 const PREFIX = ctx + "edo";
 var bill;
 var edo = new Object();
-var currentLeftWidth = $(".table-left").width();
-var currentRightWidth = $(".table-right").width();
 $(function () {
   $(".left").css("height", $(document).height());
+  $(".right").css("height", $(document).height());
   $("#btn-collapse").click(function () {
     handleCollapse(true);
   });
   $("#btn-uncollapse").click(function () {
     handleCollapse(false);
   });
-    $("#dg").height($(document).height() - 100);
-    $("#dgContainer").height($(document).height() - 100);
-    currentLeftTableWidth = $(".left-table").width();
-    currentRightTableWidth = $(".right-table").width();
+    $("#dg").height($(document).height() - 60);
+    $("#dgContainer").height($(document).height() - 60);
     $.ajax({
         type: "GET",
         url: PREFIX + "/getVesselNo",
