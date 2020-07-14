@@ -47,7 +47,10 @@
   <script type="text/javascript" th:inline="javascript"></script>
   <script type="text/javascript" th:inline="javascript">
     var ids = /*[[${ids}]]*/ ;
-  
+    var containerNumber = /*[[${edo.containerNumber}]]*/ ;
+    var expiredDem = /*[[${edo.expiredDem}]]*/ ;
+    var detFreeTime = /*[[${edo.detFreeTime}]]*/ ;
+    var emptyContainerDepot = /*[[${edo.emptyContainerDepot}]]*/ ;
   </script>
    <script th:src="@{/eport/js/modules/edo/multiUpdate.js}"></script>
 </html>

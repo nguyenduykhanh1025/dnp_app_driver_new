@@ -3,6 +3,10 @@ $(function() {
     loadTable();
 });
 
+function closeForm()
+{
+   $.modal.close();
+}
 
 function loadTable() {
     $("#dg").datagrid({
@@ -10,8 +14,9 @@ function loadTable() {
         method: "GET",
         singleSelect: true,
         clientPaging: true,
-        // pagination: true,
-        // pageSize: 20,
+        height: $(document).height() - 65,
+        pagination: true,
+        pageSize: 20,
         onClickRow: function () {
             getSelectedRow();
         },

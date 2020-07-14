@@ -19,7 +19,7 @@
                 <option value="" selected>Voy no</option>
               </select>
               <select class="form-control combobox-carrier" id="vesselNo">
-                <option value="" selected>Vessel no</option>
+                <option value="" selected>Vessel</option>
               </select>
             </div>
             <div class="columns columns-right btn-group pull-right mb0 mt0">
@@ -52,9 +52,11 @@
                   <th data-options="field:'billOfLading',align:'left'" width="130">
                     BILL OF LADING
                   </th>
-                  <th data-options="field:'businessUnit',align:'center'" width="90">
-                    OPR <br />
-                    CODE
+                  <th data-options="field:'vesselNo',align:'left'" width="110">
+                    VESSEL NO
+                  </th>
+                  <th data-options="field:'voyNo',align:'left'" width="110">
+                    VOY NO
                   </th>
                   <th data-options="field:'numberContainer',align:'center'" width="90">
                     NUMBER <br> CONTAINER
@@ -90,19 +92,19 @@
                     EXPIRED <br />
                     DEM
                   </th>
-                  <th data-options="field:'detFreeTime',align:'left'" width="80">
+                  <th data-options="field:'detFreeTime',align:'center'" width="80">
                     DET FREE <br />
                     TIME
+                  </th>
+                  <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
+                    EMPTY CONTAINER <br />
+                    DEPOT
                   </th>
                   <th data-options="field:'vesselNo',align:'left'" width="110">
                     VESSEL NO
                   </th>
                   <th data-options="field:'voyNo',align:'left'" width="110">
                     VOY NO
-                  </th>
-                  <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
-                    EMPTY CONTAINER <br />
-                    DEPOT
                   </th>
                   <th data-options="field:'status',align:'left',formatter:formatStatus" width="80">
                     STATUS

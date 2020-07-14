@@ -11,7 +11,7 @@ function loadTable() {
     $("#dg").datagrid({
         url: prefix + "/auditLog/" + edoId,
         method: "GET",
-        height: $(document).height() - 70,
+        height: $(document).height() - 65,
         singleSelect: true,
         clientPaging: true,
         pagination: true,

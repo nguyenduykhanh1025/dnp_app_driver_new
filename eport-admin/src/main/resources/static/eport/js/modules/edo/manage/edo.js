@@ -163,18 +163,7 @@ function formatAction(value, row, index) {
 }
 
 function viewHistoryCont(id) {
-  var options = {
-    title: 'Lịch sử thay đổi thông tin',
-    width: "1000",
-    height: "500",
-    url: PREFIX + "/history/" + id,
-    callBack: closedPopUp
-  };
-  $.modal.openOptions(options);
-}
-function closedPopUp()
-{
-  $.modal.reload();
+  $.modal.openWithOneButton('Lịch sử thay đổi thông tin',PREFIX + "/history/" + id,1000,400);
 }
 
 function getSelectedRow() {
@@ -257,7 +246,7 @@ function formatStatus(value) {
       return "<span class='label label-success'>Trạng thái 2</span>";
       break;
     default:
-      return "<span class='label label-warning'>Đang chờ</span>";
+      return "<span class='label label-warning'>Chờ làm lệnh</span>";
   }
 }
 
