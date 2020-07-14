@@ -190,7 +190,7 @@ function openReceiverDOSupport(id) {
 }
 
 function openDriverSupport(id) {
-  $.modal.open("Tài xế", PREFIX + "/driver/" + id);
+  $.modal.openWithOneButton("Tài xế", PREFIX + "/driver/" + id, null, null);
 }
 
 function completeVerification(processOrders) {

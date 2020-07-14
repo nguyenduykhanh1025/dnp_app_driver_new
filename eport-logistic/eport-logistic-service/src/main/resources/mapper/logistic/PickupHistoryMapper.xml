@@ -35,6 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<association property="shipmentDetail" column="shipment_detail_id" javaType="ShipmentDetail" select="selectShipmentDetail" />
 		<association property="logisticGroup" column="logistic_group_id" javaType="LogisticGroup" select="selectLogisticGroup" />
 		<association property="driver" column="driver_id" javaType="DriverAccount" select="selectDriverAccount" />
+		<association property="pickupAssign" column="pickup_assign_id" javaType="PickupAssign" select="selectPickupAssign" />
 	</resultMap>
 
 	<sql id="selectPickupHistoryVo">
@@ -46,8 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectPickupHistoryVo" />
 		<where>
 			<if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
-			<if test="shipmentId != null "> and shipment_id like concat('%', #{shipmentId}, '%')
-			</if>
+			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
 			<if test="shipmentDetailId != null "> and shipment_detail_id = #{shipmentDetailId}</if>
 			<if test="driverId != null "> and driver_id = #{driverId}</if>
 			<if test="pickupAssignId != null "> and pickup_assign_id = #{pickupAssignId}</if>
@@ -314,6 +314,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="fullName" column="full_name" />
 	</resultMap>
 
+	<select id="selectPickupAssign" resultMap="DriverAccountResult">
+		select * from
+		driver_account where id = #{id}
+	</select>
+
+	<resultMap type="PickupAssign" id="PickupAssignResult">
+		<result property="id" column="id" />
+		<result property="phoneNumber" column="phone_number" />
+		<result property="fullName" column="full_name" />
+		<result property="externalFlg" column="external_flg" />
+		<result property="externalSecretCode" column="external_secret_code" />
+	</resultMap>
+
 	<select id="selectPickupHistoryListForReport" resultMap="PickupHistoryResult">
 		SELECT *
 		FROM pickup_history as p 
@@ -360,6 +373,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="sztp != null  and sztp != ''"> or upper(sh.sztp) like concat('%', #{sztp}, '%')</if>
 			<if test="vslNm != null  and vslNm != ''"> or upper(sh.vsl_nm) like concat('%', #{vslNm}, '%')</if>
 			<if test="voyNo != null  and voyNo != ''"> or upper(sh.voy_no) like concat('%', #{voyNo}, '%'))</if>
+		</where>
+	</select>
+
+	<select id="selectPickupHistoryListForOmSupport" resultType="PickupHistory" resultMap="PickupHistoryResult">
+		SELECT *
+			FROM pickup_history as p 
+			left join pickup_assign a on p.pickup_assign_id = a.id
+			left join shipment_detail sh on p.shipment_detail_id = sh.id
+		<where>
+			<if test="shipmentId != null "> and p.shipment_id = #{shipmentId}</if>
 		</where>
 	</select>
 </mapper>
