@@ -7,11 +7,12 @@ $(document).ready(function () {
 
   // CHECK BILL LIST NOT NULL OR EMPTY
   if (billList != null && billList.length > 0) {
+    let bill = billList[0];
 
     // SET HEADER INFO
-    $('#batchCode').text(billList[0].shipmentId);
-    $('#taxCode').text(billList[0].processOrder.taxCode);
-    switch (billList[0].serviceType) {
+    $('#batchCode').text(bill.shipmentId);
+    $('#taxCode').text(bill.processOrder.taxCode);
+    switch (bill.serviceType) {
       case 1:
         $('#serviceType').text("Bốc Hàng");
         break;
@@ -25,15 +26,15 @@ $(document).ready(function () {
         $('#serviceType').text("Hạ Hàng");
         break;
     }
-    $('#blNo').text(billList[0].processOrder.blNo);
-    $('#bookingNo').text(billList[0].processOrder.bookingNo);
-    $('#vessel').text(billList[0].processOrder.vessel);
-    $('#voyage').text(billList[0].processOrder.voyage);
+    $('#blNo').text(bill.processOrder.blNo);
+    $('#bookingNo').text(bill.processOrder.bookingNo);
+    $('#vessel').text(bill.processOrder.vessel);
+    $('#voyage').text(bill.processOrder.voyage);
 
-    let invoiceNo = billList[0].referenceNo;
+    let invoiceNo = bill.referenceNo;
 
     // PAYMENT STATUS
-    let paymentStatus = billList[0].paymentStatus;
+    let paymentStatus = bill.paymentStatus;
 
     // NUMBER OF BILL
     let count = 1;
@@ -45,7 +46,7 @@ $(document).ready(function () {
     let total = 0;
 
     // CURRENT PROCESS ORDER ID
-    let processOrderId = billList[0].processOrderId;
+    let processOrderId = bill.processOrderId;
 
     // START LOADING DATA
     $.modal.loading("Đang xử lý...");
@@ -88,7 +89,6 @@ $(document).ready(function () {
         total += billList[i].vatAfterFee;
       }
     }
-
     // LOAD THE LAST BILL
     matrixBill.push(dataList);
     let divClone = $('div#dgOrder' + count);
@@ -100,6 +100,7 @@ $(document).ready(function () {
     .text('Invoice No: ' + invoiceNo + ' Mã Lệnh: ' + processOrderId + ' Trạng Thái: ' + (paymentStatus=='Y'?'Đã thanh toán':'Chưa thanh toán'));
     $(totalLabel).text(formatMoney(total) + ' VND ');
     divClone.after(clonned);
+    console.log("start");
     $('#dgOrder' + (count + 1)   + ' table').datagrid({
       height: DOCUMENT_HEIGHT / 2 - 70,
       singleSelect: true,
@@ -110,9 +111,10 @@ $(document).ready(function () {
       striped: true,
       loader: function (param, success, error) {
         success(dataList);
+        console.log("ok");
       },
     });
-
+    console.log("end");
     // FINISH LOADING DATA
     $.modal.closeLoading();
   } else {
@@ -142,36 +144,44 @@ function paymentHandle(processOrderId, paymentStatus, index) {
   if ('Y' == paymentStatus) {
     $.modal.alertError('Bill này đã được thanh toán.');
   } else {
-    $.modal.loading("Đang xử lý...");
-    $.ajax({
-      url: PREFIX + "/payment",
-      method: "GET",
-      data: {
-        processOrderId: processOrderId
-      }
-    }).done(function (res) {
-      if (res.code == 0) {
-        for (let i=0; i<bills.length; i++) {
-          bills[i].paymentStatus = 'Y';
+    layer.confirm("Xác nhận bill này đã thanh toán.", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Đồng Ý', 'Hủy Bỏ']
+    }, function () {
+      $.modal.loading("Đang xử lý...");
+      $.ajax({
+        url: PREFIX + "/payment",
+        method: "GET",
+        data: {
+          processOrderId: processOrderId
         }
-        $("#billTitle"+index).text('Invoice No: ' + bills[0].referenceNo + ' Mã Lệnh: ' + processOrderId + ' Trạng Thái: ' + (bills[0].paymentStatus=='Y'?'Đã thanh toán':'Chưa thanh toán'));
-        $("#paymentButton"+index).attr('onclick', 'paymentHandle(' + processOrderId + ', "Y", ' + index + ')');
-        $('#dgOrder' + index + ' table').datagrid({
-          height: DOCUMENT_HEIGHT / 2 - 70,
-          width: $(document).width() - 50,
-          singleSelect: true,
-          clientPaging: false,
-          pagination: false,
-          rownumbers: true,
-          nowrap: false,
-          striped: true,
-          loader: function (param, success, error) {
-            success(bills);
-          },
-        });
-      }
-      $.modal.closeLoading();
-      $.modal.msgSuccess(res.msg);
+      }).done(function (res) {
+        if (res.code == 0) {
+          for (let i=0; i<bills.length; i++) {
+            bills[i].paymentStatus = 'Y';
+          }
+          $("#billTitle"+index).text('Invoice No: ' + bills[0].referenceNo + ' Mã Lệnh: ' + processOrderId + ' Trạng Thái: ' + (bills[0].paymentStatus=='Y'?'Đã thanh toán':'Chưa thanh toán'));
+          $("#paymentButton"+index).attr('onclick', 'paymentHandle(' + processOrderId + ', "Y", ' + index + ')');
+          $('#dgOrder' + index + ' table').datagrid({
+            height: DOCUMENT_HEIGHT / 2 - 70,
+            width: $(document).width() - 50,
+            singleSelect: true,
+            clientPaging: false,
+            pagination: false,
+            rownumbers: true,
+            nowrap: false,
+            striped: true,
+            loader: function (param, success, error) {
+              success(bills);
+            },
+          });
+        }
+        $.modal.closeLoading();
+        $.modal.msgSuccess(res.msg);
+      });
+    }, function () {
+      // DO NOTHING
     });
   }
 }

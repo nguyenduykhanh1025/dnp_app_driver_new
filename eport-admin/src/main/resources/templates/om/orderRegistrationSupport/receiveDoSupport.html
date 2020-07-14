@@ -3,8 +3,8 @@
   <head>
     <th:block th:include="include :: header('Custom Support')" />
     <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: bootstrap-toggle-css" />
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet" />
     <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
   </head>
 
@@ -15,31 +15,37 @@
         <!-- max 3 inner info in a row -->
         <div class="header__inner-info">
           <div class="col-md-2 col-sm-2 col-xs-2">
-            <span>Lô BL BL No&#58;</span>
+            <span>Lô&#58;</span>
           </div>
           <div class="col-md-2 col-sm-2 col-xs-2">
-            <span class="lo-bl">123456789</span>
+            <span class="batch-code"></span>
+          </div>
+        </div>
+
+        <div class="header__inner-info">
+          <div class="bl-no-div col-md-2 col-sm-2 col-xs-2">
+            <span>B/L No.&#58;</span>
+          </div>
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <span class="bl-no"></span>
+          </div>
+        </div>
+
+        <div class="header__inner-info">
+          <div class="booking-no-div col-md-2 col-sm-2 col-xs-2">
+            <span>Booking No.&#58;</span>
+          </div>
+          <div class="col-md-2 col-sm-2 col-xs-2">
+            <span class="booking-no"></span>
           </div>
         </div>
 
         <div class="header__inner-info">
           <div class="col-md-2 col-sm-2 col-xs-2">
-            <span>Lô BL&#58;</span>
+            <span>Hình Thức&#58;</span>
           </div>
           <div class="col-md-2 col-sm-2 col-xs-2">
-            <span class="lo-bl">123456789</span>
-          </div>
-        </div>
-      </div>
-      <!-- row two  -->
-      <div class="row mb5">
-        <!-- max 3 inner info in a row -->
-        <div class="header__inner-info">
-          <div class="col-md-2 col-sm-2 col-xs-2">
-            <span>Lô BL&#58;</span>
-          </div>
-          <div class="col-md-2 col-sm-2 col-xs-2">
-            <span class="lo-bl">123456789</span>
+            <span class="service-type"></span>
           </div>
         </div>
       </div>
@@ -53,27 +59,37 @@
       </div>
     </section>
     <section class="content clearfix">
-      <table id="dg" pageList="[20, 50, 100, 150, 200]">
+      <table id="dg">
         <thead>
           <tr>
-            <th data-options="field:'id', halign:'center', resizable:true, fixed:true" width="120">Số thứ tự</th>
-            <th data-options="field:'logisticGroup', halign:'center', align:'center'" width="200" sortable="true">Đơn vị logistic</th>
-            <th data-options="field:'blNo', halign:'center', fixed:'true'" width="150" sortable="true">Bill No</th>
-            <th data-options="field:'sampleField1', align:'center', fixed:'true'" width="150" sortable="true">Sample Data 1</th>
-            <th data-options="field:'sampleField2', align:'center', fixed:'true'" width="150" sortable="true">Sample Data 2</th>
-            <th data-options="field:'sampleField2', align:'center', fixed:'true'" width="150" sortable="true">Sample Data 3</th>
+            <th data-options="field:'containerNo', align:'center', halign:'center', fixed:true" width="120" sortable="true">Container No.</th>
+            <th data-options="field:'sztp', halign:'center', align:'center'" width="100" sortable="true">Kích Thước</th>
+            <th data-options="field:'wgt', align:'right', fixed:'true'" width="130" sortable="true">Trọng Lượng</th>
+            <th data-options="field:'fe', align:'center', halign:'center', fixed:'true'" width="50" sortable="true">FE</th>
+            <th data-options="field:'sealNo', align:'center', halign:'center'" width="100" sortable="true">Seal No.</th>
+            <th data-options="field:'consignee', align:'center', halign:'center'" width="150" sortable="true">Chủ Hàng</th>
+            <th data-options="field:'expiredDem', align:'center', fixed:'true', formatter: formatDate" width="130" sortable="true">Hạn Lệnh</th>
+            <th data-options="field:'opeCode', align:'center', fixed:'true'" width="120" sortable="true">Hãng Tàu</th>
+            <th data-options="field:'vslNm', align:'center', fixed:'true'" width="120" sortable="true">Tàu</th>
+            <th data-options="field:'voyNo', align:'center', fixed:'true'" width="100" sortable="true">Chuyến</th>
+            <th data-options="field:'loadingPort', align:'center', fixed:'true'" width="150" sortable="true">Cảng Xếp Hàng</th>
+            <th data-options="field:'dischargePort', align:'center', fixed:'true'" width="150" sortable="true">Cảng Dỡ Hàng</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
     </section>
     <div class="layui-layer-btn footer clearfix">
-      <a class="layui-layer-btn0" onclick="closeForm()">Xác nhận</a>
+      <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
       <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <th:block th:include="include :: bootstrap-toggle-js" />
+    <script type="text/javascript" th:inline="javascript">
+      var shipment = /*[[${shipment}]]*/;
+      var shipmentDetails = /*[[${shipmentDetails}]]*/;
+    </script>
     <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/receiveDoSupport.js}"></script>
   </body>
 </html>
