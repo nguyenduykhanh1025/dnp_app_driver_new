@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
@@ -68,9 +69,7 @@ public class OrderRegistrationSupportController extends AdminBaseController {
 
   @GetMapping("/payment/{shipmentId}")
   public String getpaymentSupport(@PathVariable Long shipmentId, ModelMap mmap) {
-    ProcessOrder processOrder = new ProcessOrder();
-    processOrder.setShipmentId(shipmentId);
-    mmap.put("orderList", processOrderService.selectOrderListForOmSupport(processOrder));
+    mmap.put("billList", processBillService.getBillListByShipmentId(shipmentId));
     return PREFIX + "/paymentSupport";
   }
 
@@ -102,10 +101,12 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @GetMapping("/process-order/doing")
   @Transactional
   @ResponseBody
-  public AjaxResult updateProcessOrder(String processOrderIds) {
+  public AjaxResult updateProcessOrder(@RequestParam(value="processOrderIds[]") String[] processOrderIds) {
+    if (processOrderService.countProcessOrderDoing(processOrderIds) != processOrderIds.length) {
+      return error("Xác nhận làm lệnh của bạn bị gián đoạn, vui lòng thử lại sau.");
+    }
     if (processOrderService.updateDoingProcessOrder(processOrderIds) == 1) {
-      String[] processOrderIdArr = processOrderIds.split(",");
-      for (String processOrderId : processOrderIdArr) {
+      for (String processOrderId : processOrderIds) {
         ProcessHistory processHistory = new ProcessHistory();
         processHistory.setProcessOrderId(Long.valueOf(processOrderId));
         processHistory.setSysUserId(getUserId());
@@ -122,14 +123,13 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @GetMapping("/process-order/canceling")
   @Transactional
   @ResponseBody
-  public AjaxResult cancelProcessOrder(String processOrderIds) {
+  public AjaxResult cancelProcessOrder(@RequestParam(value="processOrderIds[]") String[] processOrderIds) {
     if (processOrderService.updateCancelingProcessOrder(processOrderIds) == 1) {
-      String[] processOrderIdArr = processOrderIds.split(",");
-      for (String processOrderId : processOrderIdArr) {
+      for (String processOrderId : processOrderIds) {
         ProcessHistory processHistory = new ProcessHistory();
         processHistory.setProcessOrderId(Long.valueOf(processOrderId));
         processHistory.setSysUserId(getUserId());
-        processHistory.setStatus(3); // CANCEL
+        processHistory.setStatus(0); // CANCEL
         processHistory.setResult("S"); // RESULT SUCCESS
         processHistory.setCreateTime(new Date());
         processHistoryService.insertProcessHistory(processHistory);
@@ -185,5 +185,9 @@ public class OrderRegistrationSupportController extends AdminBaseController {
     return error("Thất bại.");
   }
 
-  
+  @PostMapping("/payment")
+  @ResponseBody
+  public AjaxResult payBillByOrderId(Long processOrderId) {
+    return error();
+  }
 }
