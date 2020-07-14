@@ -72,4 +72,6 @@ public interface IProcessBillService
     public boolean saveProcessBillWithCredit(List<ShipmentDetail> shipmentDetails, ProcessOrder processOrder);
 
     public long sumOfBillList(ProcessBill processBill);
+
+    public List<ProcessBill> getBillListByShipmentId(Long shipmentId);
 }

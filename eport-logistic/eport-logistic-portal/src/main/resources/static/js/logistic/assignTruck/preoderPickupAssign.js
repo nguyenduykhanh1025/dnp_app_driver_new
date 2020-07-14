@@ -15,7 +15,7 @@ function loadDriver(shipmentId){
     //pickedDriverList
     $("#pickedDriverTable").datagrid({
         url: prefix + "/assignedDriverAccountListForPreoderPickup",
-        height: window.innerHeight/2 - 35,
+        height: window.innerHeight/2 - 55,
         collapsible: true,
         nowrap: false,
         striped: true,
@@ -42,7 +42,7 @@ function loadDriver(shipmentId){
                     }
                     $("#driverTable").datagrid({
                         url: prefix + "/listDriverAccountPreorderPickup",
-                        height: window.innerHeight/2 - 35,
+                        height: window.innerHeight/2 - 55,
                         collapsible: true,
                         nowrap: false,
                         striped: true,
@@ -181,6 +181,10 @@ function addTruck(){
 function addDriver(){
     $.modal.open("Thêm xe mới", "/logistic/transport/add");
 }
+
+function finishAssignTruck(msg) {
+    $.modal.msgSuccess(msg);
+}
  //---------------------------------THUE NGOAI------------------------------------------------
  var dogrid = document.getElementById("container-grid"), hot;
  var config;
@@ -233,6 +237,9 @@ config = {
     columns: [
         {
             data: "driverOwner",
+            type: "autocomplete",
+            source: driverOwnerList,
+            strict: true
         },
         {
             data: "phoneNumber",
@@ -256,27 +263,39 @@ function onChange(changes, source) {
     if (!changes) {
         return;
     }
-    // changes.forEach(function (change) {
-    //     if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-    //         $.ajax({
-    //             url: "/logistic/vessel/" + change[3] + "/voyages",
-    //             method: "GET",
-    //             success: function (data) {
-    //                 if (data.code == 0) {
-    //                     hot.updateSettings({
-    //                         cells: function (row, col, prop) {
-    //                             if (row == change[0] && col == 6) {
-    //                                 let cellProperties = {};
-    //                                 cellProperties.source = data.voyages;
-    //                                 return cellProperties;
-    //                             }
-    //                         }
-    //                     });
-    //                 }
-    //             }
-    //         });
-    //     }
-    // });
+    changes.forEach(function (change) {
+        if (change[1] == "driverOwner" && change[3] != null && change[3] != '') {
+            $.ajax({
+                url: prefix + "/owner/"+ change[3] +"/driver-phone-list",
+                method: "GET",
+                success: function (data) {
+                    if (data.code == 0) {
+                        hot.updateSettings({
+                            cells: function (row, col, prop) {
+                                if (row == change[0] && col == 1) {
+                                    let cellProperties = {};
+                                    cellProperties.source = data.driverPhoneList;
+                                    return cellProperties;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        } else if (change[1] == "phoneNumber" && change[3] != null && change[3] != '') {
+            $.ajax({
+                url: prefix + "/driver-phone/" + change[3] + "/infor",
+                method: "GET",
+                success: function (data) {
+                    if (data.code == 0) {
+                        hot.setDataAtCell(change[0], 2, data.pickupAssign.fullName);
+                        hot.setDataAtCell(change[0], 3, data.pickupAssign.truckNo);
+                        hot.setDataAtCell(change[0], 4, data.pickupAssign.chassisNo);
+                    }
+                }
+            });
+        }
+    });
 }
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
@@ -288,7 +307,7 @@ function getDataFromOutSource(){
     let errorFlg = false;
     for (let i = 0; i < myTableData.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
-            if (myTableData[i].phoneNumber || myTableData[i].fullName || myTableData[i].truckNo || myTableData[i].chassisNo) {
+            if (myTableData[i].driverOwner ||myTableData[i].phoneNumber || myTableData[i].fullName || myTableData[i].truckNo || myTableData[i].chassisNo) {
                 cleanedGridData.push(myTableData[i]);
             }
         }

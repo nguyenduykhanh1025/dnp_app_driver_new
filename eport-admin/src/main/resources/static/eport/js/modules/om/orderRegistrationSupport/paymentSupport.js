@@ -1,47 +1,35 @@
-"use strict";
-const PREFIX = ctx + "om/order/support";
-var notification = new Object();
+'use strict';
+const PREFIX = ctx + 'om/order/support';
+const DOCUMENT_HEIGHT = $(document).height();
+var tableQnt = 3;
 
 $(document).ready(function () {
-  loadTable();
+  for (let i = 1; i < tableQnt; i++) {
+    let divClone = $('div#dgOrder' + i);
+    let totalLabel = divClone.find('.txt-total');
+    $(totalLabel).text(formatCurency(123456789) + ' VNĐ ');
+    $('#dgOrder' + i + ' table').datagrid({
+      height: DOCUMENT_HEIGHT / 2 - 70,
+      width: $(document).width() - 50,
+      singleSelect: true,
+      clientPaging: false,
+      pagination: false,
+      rownumbers: true,
+      nowrap: false,
+      striped: true,
+      loader: function (param, success, error) {
+        success(orderList);
+      },
+    });
+    let currentId = i + 1;
+    let clonned = divClone.clone().prop('id', 'dgOrder' + currentId);
+    divClone.after(clonned);
+  }
+ 
+  $('.content').height(DOCUMENT_HEIGHT - $('.header').height() - 20);
 });
 
-function loadTable() {
-  $("#dg").datagrid({
-    url: "/notifications" + "/list",
-    method: "POST",
-    singleSelect: true,
-    height: $(document).height() - 50,
-    clientPaging: false,
-    pagination: true,
-    rownumbers: true,
-    pageSize: 50,
-    nowrap: false,
-    striped: true,
-    loadMsg: " Đang xử lý...",
-    loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
-      if (!opts.url) return false;
-      $.ajax({
-        type: opts.method,
-        url: opts.url,
-        contentType: "application/json",
-        accept: "text/plain",
-        dataType: "text",
-        data: JSON.stringify({
-          pageNum: param.page,
-          pageSize: param.rows,
-          orderByColumn: param.sort,
-          isAsc: param.order,
-          data: notification,
-        }),
-        success: function (data) {
-          success(JSON.parse(data));
-        },
-        error: function () {
-          error.apply(this, arguments);
-        },
-      });
-    },
-  });
+function formatCurency(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
+

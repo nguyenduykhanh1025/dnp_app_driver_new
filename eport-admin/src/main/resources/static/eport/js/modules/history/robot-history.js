@@ -93,7 +93,6 @@ function loadTable() {
         type: opts.method,
         url: opts.url,
         contentType: "application/json",
-        accept: 'text/plain',
         data: JSON.stringify({
           pageNum: param.page,
           pageSize: param.rows,
@@ -102,7 +101,7 @@ function loadTable() {
           data: processHistory
         }),
         success: function (data) {
-          success(JSON.parse(data));
+          success(data);
         },
         error: function () {
           error.apply(this, arguments);

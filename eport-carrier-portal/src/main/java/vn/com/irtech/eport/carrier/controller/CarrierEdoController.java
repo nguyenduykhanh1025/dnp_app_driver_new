@@ -58,15 +58,18 @@ public class CarrierEdoController extends CarrierBaseController {
 		return PREFIX + "/edo";
 	}
 
-    //List
-	@GetMapping("/billNo")
+
+	@PostMapping("/billNo")
 	@ResponseBody
-	public TableDataInfo billNo(Edo edo)
-	{
-		startPage();
-		edo.setCarrierCode(super.getUserGroup().getGroupCode());
-		List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
-		return getDataTable(dataList);
+	public TableDataInfo billNo(@RequestBody PageAble<Edo> param) {
+	  startPage();
+	  Edo edo = param.getData();
+	  if (edo == null) {
+		edo = new Edo();
+	  }
+	  edo.setCarrierCode(super.getUserGroup().getGroupCode());
+	  List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
+	  return getDataTable(dataList);
 	}
 
 	//List
@@ -230,6 +233,10 @@ public class CarrierEdoController extends CarrierBaseController {
 	public String multiUpdate(@PathVariable("ids") String ids,ModelMap map)
 	{
 		map.put("ids", ids);
+		String [] idMap = ids.split(",");
+		Long id = Long.parseLong(idMap[0]);
+		Edo edo = edoService.selectEdoById(id);
+		map.put("edo", edo);
 		return PREFIX + "/multiUpdate";
 	}
 
@@ -312,7 +319,19 @@ public class CarrierEdoController extends CarrierBaseController {
 		return getDataTable(edoAuditLogsList);
 	}
 
-	
+	@GetMapping("/getVesselNo")
+	@ResponseBody
+	public List<String> lisVesselNo()
+	{
+		return edoService.selectVesselNo();
+	}
+
+	@GetMapping("/getVoyNo")
+	@ResponseBody
+	public List<String> listVoyNo()
+	{
+		return edoService.selectVoyNo();
+	}
 
 
 }

@@ -80,14 +80,14 @@ async function submitHandler() {
                     $('#containerAmount').val("");
                     $('#edoFlg').val(null).text("");
                 } else {
-                    $('#opeCode').val(result.shipment.opeCode);
-                    $('#containerAmount').val(result.shipment.containerAmount);
-                    if (result.shipment.edoFlg == "1") {
-                        $('#edoFlg').val(result.shipment.edoFlg).text("Lệnh giao hàng điện tử (eDO)");
-                        $('#edoFlgInput').val(result.shipment.edoFlg);
+                    $('#opeCode').val(res.shipment.opeCode);
+                    $('#containerAmount').val(res.shipment.containerAmount);
+                    if (res.shipment.edoFlg == "1") {
+                        $('#edoFlg').val(res.shipment.edoFlg).text("Lệnh giao hàng điện tử (eDO)");
+                        $('#edoFlgInput').val(res.shipment.edoFlg);
                     } else {
-                        $('#edoFlg').val(result.shipment.edoFlg).text("Lệnh giao hàng (DO)");
-                        $('#edoFlgInput').val(result.shipment.edoFlg);
+                        $('#edoFlg').val(res.shipment.edoFlg).text("Lệnh giao hàng (DO)");
+                        $('#edoFlgInput').val(res.shipment.edoFlg);
                     }
                     await $.operate.save(prefix + "/shipment/" + $("#id").val(), $('#form-edit-shipment').serialize());
                     parent.loadTable();

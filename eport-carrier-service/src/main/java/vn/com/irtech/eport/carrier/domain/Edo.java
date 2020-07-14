@@ -100,6 +100,30 @@ public class Edo extends BaseEntity {
 
 	private String transactionId;
 
+	private String numberContainer;
+
+	/** Tau */
+	@Excel(name = "So Tau")
+	private String vesselNo;
+
+
+	public void setVesselNo(String vesselNo) {
+		this.vesselNo = vesselNo;
+	}
+
+	public String getVesselNo() {
+		return vesselNo;
+	}
+
+
+	public void setNumberContainer(String numberContainer) {
+		this.numberContainer = numberContainer;
+	}
+
+	public String getNumberContainer() {
+		return numberContainer;
+	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}

@@ -3,15 +3,19 @@ $(function() {
     loadTable();
 });
 
-
+function closeForm()
+{
+   $.modal.close();
+}
 function loadTable() {
     $("#dg").datagrid({
         url: prefix + "/auditLog/" + edoId,
         method: "GET",
+        height: $(document).height() - 65,
         singleSelect: true,
         clientPaging: true,
-        // pagination: true,
-        // pageSize: 20,
+        pagination: true,
+        pageSize: 20,
         onClickRow: function () {
             getSelectedRow();
         },

@@ -78,4 +78,10 @@ public interface EdoMapper
     public List<Edo> selectEdoListByBlNo(String blNo);
 
     public List<Edo> selectEdoListByBillNo(Edo edo);
+
+    public List<String> selectVesselNo();
+
+    public List<String> selectCarrierCode();
+
+    public List<String> selectVoyNo();
 }

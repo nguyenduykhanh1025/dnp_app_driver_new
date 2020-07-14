@@ -39,6 +39,7 @@ var myAvatarzone = new Dropzone("#bannarzone", {
                     if (data != "") {
                         if (dataObj == null) {
                             dataObj = data;
+                            console.log(data);
                             dataObj.forEach(element => {
                                 element["file"] = file.upload.uuid;
                             });
@@ -133,6 +134,16 @@ function loadView() {
                 editor: false
             },
             {
+                data: 'voyNo',
+                type: 'text',
+                editor: false
+            },
+            {
+                data: 'vessel',
+                type: 'text',
+                editor: false
+            },
+            {
                 data: 'consignee',
                 type: 'text',
                 editor: false
@@ -160,6 +171,8 @@ function loadView() {
             'Số Bill',
             'Chủ khai thác',
             'Order Number',
+            'Số chuyến',
+            'Số tàu',
             'Người nhận hàng',
             'Ngày hết hạn lưu cont',
             'Nơi hạ rỗng',

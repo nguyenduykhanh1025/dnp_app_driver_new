@@ -8,12 +8,20 @@
     <link rel="stylesheet" th:href="@{/eport/css/edo.css}" />
   </head>
 
-  <body class="gray-bg container-fluid">
+  <body class="white-bg container-fluid">
     <div id="wrapper">
       <div class="row">
         <div class="col-sm-12 select-table mt0 pr5">
           <div class="col-sm-12 fixed-table-toolbar">
-            <div class="bs-bars pull-left mb5 mt0"><input class="form-control" type="text" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" /></div>
+            <div class="bs-bars pull-left mb5 mt0 billNoView">
+              <input class="form-control" type="text" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" />
+              <select class="form-control combobox-carrier" id="voyNo">
+                <option value="" selected>Voy no</option>
+              </select>
+              <select class="form-control combobox-carrier" id="vesselNo">
+                <option value="" selected>Vessel</option>
+              </select>
+            </div>
             <div class="columns columns-right btn-group pull-right mb0 mt0">
               <div class="select-list">
                 <ul>
@@ -36,7 +44,7 @@
               </div>
             </div>
           </div>
-          <div class="col-sm-2 table-container table-left">
+          <div class="col-sm-3 table-container table-left">
             <span class="btn-collapse"><i class="fa fa-caret-left"></i></span>
             <table id="dg">
               <thead>
@@ -44,16 +52,24 @@
                   <th data-options="field:'billOfLading',align:'left'" width="130">
                     BILL OF LADING
                   </th>
-                  <th data-options="field:'businessUnit',align:'center'" width="100">
-                    OPR <br />
-                    CODE
+                  <th data-options="field:'vesselNo',align:'left'" width="110">
+                    VESSEL NO
+                  </th>
+                  <th data-options="field:'voyNo',align:'left'" width="110">
+                    VOY NO
+                  </th>
+                  <th data-options="field:'numberContainer',align:'center'" width="90">
+                    NUMBER <br> CONTAINER
+                  </th>
+                  <th data-options="field:'createTime',align:'left'" width="130">
+                    CREATE TIME
                   </th>
                 </tr>
               </thead>
             </table>
           </div>
-          <div class="col-sm-10 table-container table-right">
-            <table id="dgContainer">
+          <div class="col-sm-9 table-container table-right">
+            <table id="dgContainer" style="width: auto;" fitColumns="true">
               <thead data-options="frozen:true">
                 <tr>
                   <th data-options="field:'id',checkbox:true"></th>
@@ -76,19 +92,19 @@
                     EXPIRED <br />
                     DEM
                   </th>
-                  <th data-options="field:'detFreeTime',align:'left'" width="80">
+                  <th data-options="field:'detFreeTime',align:'center'" width="80">
                     DET FREE <br />
                     TIME
-                  </th>
-                  <th data-options="field:'vessel',align:'left'" width="110">
-                    VESSEL
-                  </th>
-                  <th data-options="field:'voyNo',align:'left'" width="110">
-                    VOY NO
                   </th>
                   <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
                     EMPTY CONTAINER <br />
                     DEPOT
+                  </th>
+                  <th data-options="field:'vesselNo',align:'left'" width="110">
+                    VESSEL NO
+                  </th>
+                  <th data-options="field:'voyNo',align:'left'" width="110">
+                    VOY NO
                   </th>
                   <th data-options="field:'status',align:'left',formatter:formatStatus" width="80">
                     STATUS
@@ -96,7 +112,7 @@
                   <th data-options="field:'createTime',align:'center',formatter:formatToYDMHMS" width="110">
                     CREATE TIME
                   </th>
-                  <th data-options="field:'#',align:'center',formatter: formatAction" width="150">
+                  <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="150">
                     ACTION
                   </th>
                 </tr>

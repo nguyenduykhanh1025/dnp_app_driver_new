@@ -10,13 +10,22 @@ $(function () {
     currentRightTableWidth = $(".right-table").width();
     $.ajax({
         type: "GET",
-        url: PREFIX + "/carrierCode",
+        url: PREFIX + "/getVesselNo",
         success(data) {
             data.forEach((element) => {
-                $("#carrierCode").append(`<option value="${element}"> ${element}</option>`);
+                $("#vesselNo").append(`<option value="${element}"> ${element}</option>`);
             });
         },
     });
+    $.ajax({
+      type: "GET",
+      url: PREFIX + "/getVoyNo",
+      success(data) {
+          data.forEach((element) => {
+              $("#voyNo").append(`<option value="${element}"> ${element}</option>`);
+          });
+      },
+  });
     loadTable();
     loadTableByContainer();
 
@@ -35,9 +44,11 @@ $(function () {
             billOfLading = $('#searchBillNo').val().toUpperCase();
             if(billOfLading == "")
             {
-                loadTable();
+              loadTable(edo);
             }
-            loadTable(billOfLading);
+            edo = new Object();
+            edo.billOfLading = billOfLading;
+            loadTable(edo);
         }
     });
     $(".btn-collapse").click(function (event) {
@@ -60,10 +71,10 @@ $(function () {
     });
 });
 
-function loadTable(billOfLading) {
+function loadTable(edo) {
     $("#dg").datagrid({
         url: PREFIX + "/billNo",
-        method: "GET",
+        method: "POST",
         singleSelect: true,
         clientPaging: true,
         pagination: true,
@@ -79,9 +90,12 @@ function loadTable(billOfLading) {
             $.ajax({
                 type: opts.method,
                 url: opts.url,
-                data: {
-                    billOfLading: billOfLading,
-                },
+                contentType: "application/json",
+                accept: "text/plain",
+                dataType: "text",
+                data: JSON.stringify({
+                  data: edo,
+                }),
                 dataType: "json",
                 success: function (data) {
                     success(data);
@@ -122,19 +136,9 @@ function formatAction(value, row, index) {
 }
 
 function viewHistoryCont(id) {
-  var options = {
-    title: 'Lịch sử thay đổi thông tin',
-    width: "1000",
-    height: "400",
-    url: PREFIX + "/history/" + id,
-    callBack: closedPopUp
-  };
-  $.modal.openOptions(options);
+  $.modal.openWithOneButton('Lịch sử thay đổi thông tin',PREFIX + "/history/" + id,1000,400);
 }
-function closedPopUp()
-{
-  $.modal.reload();
-}
+
 function viewUpdateCont(id) {
   $.modal.openOption("Update Container", PREFIX + "/update/" + id, 1000, 400);
 }
@@ -172,9 +176,8 @@ function loadTableByContainer(billOfLading) {
                 }),
                 success: function (data) {
                     success(JSON.parse(data));
-                    let dataTotal = JSON.parse(data);
-                    $("#countContainer").text("Số lượng container : " + dataTotal.total);
-                    $("#showBillNo").text("Bill No : " + bill);
+                    // let dataTotal = JSON.parse(data);
+                    // console.log(dataTotal);
                 },
 
         error: function () {
@@ -267,7 +270,7 @@ function formatStatus(value)
         case 4:
             return "<span class='label label-success'>Trạng thái 2</span>";
         default:
-            return "<span class='label label-warning'>Đang chờ</span>";
+            return "<span class='label label-warning'>Chờ làm lệnh</span>";
 
     }
 }
@@ -289,4 +292,15 @@ function updateEdo()
   }
   $.modal.openOption("Update Container", PREFIX + "/multiUpdate/" + ids, 1000, 400);
 }
+
+$("#vesselNo").change(function() {
+  let edo = new Object();
+  edo.vesselNo = this.value;
+  loadTable(edo);
+});
+$("#voyNo").change(function() {
+  let edo = new Object();
+  edo.voyNo = this.value;
+  loadTable(edo);
+});
 

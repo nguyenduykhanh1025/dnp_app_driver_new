@@ -65,8 +65,10 @@ public interface IProcessOrderService
 
     public List<ProcessOrder> selectOrderListForOmSupport(ProcessOrder processOrder);
 
-    public int updateDoingProcessOrder(String processOrderIds);
+    public int updateDoingProcessOrder(String[] processOrderIds);
 
-    public int updateCancelingProcessOrder(String processOrderIds);
+    public int updateCancelingProcessOrder(String[] processOrderIds);
 
+    public int countProcessOrderDoing(String[] processOrderIds);
+    
 }

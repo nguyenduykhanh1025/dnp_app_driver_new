@@ -190,10 +190,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from process_order p
         left join shipment_detail s on p.id = s.process_order_id
         <where>
-            <if test="status != null "> or p.status = #{status}</if>
-            <if test="result != null  and result != ''"> or p.result = #{result}</if>
+            <if test="shipmentId != null "> and p.shipment_id = #{shipmentId}</if>
+            <if test="status != null "> and (p.status = #{status}</if>
+            <if test="result != null  and result != ''"> or p.result = #{result})</if>
         </where>
+        order by p.id asc
+    </select>
 
+    <select id="countProcessOrderDoing" parameterType="String" resultType="int">
+        select count(*) from process_order
+        where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        and status = 0
     </select>
 
     <update id="updateDoingProcessOrder" parameterType="String">

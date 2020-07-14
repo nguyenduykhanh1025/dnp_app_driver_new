@@ -12,9 +12,6 @@ public class EdiReq implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotBlank
-	private String siteId;
-
-	@NotBlank
 	private String partnerCode;
 
 	@NotBlank
@@ -22,14 +19,6 @@ public class EdiReq implements Serializable {
 
 	@NotEmpty
 	private List<@Valid EdiDataReq> data;
-
-	public String getSiteId() {
-		return siteId;
-	}
-
-	public void setSiteId(String siteId) {
-		this.siteId = siteId;
-	}
 
 	public String getPartnerCode() {
 		return partnerCode;

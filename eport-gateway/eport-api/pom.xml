@@ -24,9 +24,13 @@
 	</dependencies>
 	    <repositories>
         <!-- Repository for ORACLE ojdbc6. -->
-        <repository>
+        <!-- repository>
             <id>codelds</id>
             <url>https://code.lds.org/nexus/content/groups/main-repo</url>
+        </repository>-->
+        <repository>
+          <id>rdc</id>
+          <url>http://nexus.saas.hand-china.com/content/repositories/rdc</url>
         </repository>
     </repositories>
 	<build>
