@@ -141,6 +141,8 @@ function saveAssignPreorderPickup(){
             object.driverId = rows[i].id;
             object.shipmentId = shipment.id;
             object.shipmentDetailId = shipmentDetail.id;
+            object.fullName = rows[i].fullName;
+            object.phoneNumber = rows[i].mobileNumber;
             pickupAssigns.push(object);
         }
     }
@@ -150,7 +152,6 @@ function saveAssignPreorderPickup(){
                 pickupAssigns.push(outsources[i])
             }
         }
-        $.modal.loading("Đang xử lý...");
         $.ajax({
             url: prefix + "/savePickupAssignFollowContainer",
             method: "post",
@@ -159,15 +160,12 @@ function saveAssignPreorderPickup(){
             success: function(result){
                 if(result.code == 0){
                     $.modal.msgSuccess(result.msg);
-                    getSelectedShipment()
                 }else{
                     $.modal.msgError(result.msg);
                 }
-                $.modal.closeLoading();
             },
             error: function (result) {
                 $.modal.alertError("Có lỗi trong quá trình lưu dữ liệu, vui lòng liên hệ admin.");
-                $.modal.closeLoading();
             },
         })
     }
