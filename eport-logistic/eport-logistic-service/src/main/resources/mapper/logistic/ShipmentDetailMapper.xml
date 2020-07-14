@@ -258,7 +258,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="paymentStatus != null  and paymentStatus != ''">payment_status = #{paymentStatus},</if>
             <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
             <if test="doStatus != null  and doStatus != ''">do_status = #{doStatus},</if>
-            <if test="doReceivedTime != null  and doReceivedTime != ''">do_received_time = #{doReceivedTime},</if>
+            <if test="doReceivedTime != null">do_received_time = #{doReceivedTime},</if>
             <if test="userVerifyStatus != null  and userVerifyStatus != ''">user_verify_status = #{userVerifyStatus},</if>
             <if test="status != null ">status = #{status},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>

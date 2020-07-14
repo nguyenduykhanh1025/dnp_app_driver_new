@@ -244,7 +244,6 @@ public class OrderRegistrationSupportController extends AdminBaseController {
     for (ShipmentDetail shipmentDt : shipmentDetails) {
       shipmentDt.setDoReceivedTime(new Date());
       shipmentDt.setDoStatus("Y");
-      shipmentDt.setStatus(shipmentDt.getStatus()+1);
       shipmentDt.setUpdateBy(getUser().getUserName());
       shipmentDt.setUpdateTime(new Date());
       shipmentDetailService.updateShipmentDetail(shipmentDt);
