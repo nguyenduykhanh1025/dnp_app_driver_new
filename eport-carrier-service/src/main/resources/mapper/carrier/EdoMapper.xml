@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectEdoVo">
-        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, status, release_status, create_source, remark, del_flg, create_by, create_time, update_by, update_time, transaction_id from edo
+        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, vessel_no , voy_no, status, release_status, create_source, remark, del_flg, create_by, create_time, update_by, update_time, transaction_id from edo
     </sql>
 
   
@@ -92,6 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee  = #{consignee}</if>
             <if test="containerNumber != null  and containerNumber != ''">and container_number = #{containerNumber}</if>
             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+             <if test="vesselNo != null  and vesselNo != ''"> and vessel_no = #{vesselNo}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
         </where>
         limit 1
@@ -214,7 +215,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
-        SELECT bill_of_lading, carrier_code, business_unit, create_time, (SELECT COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
+        SELECT bill_of_lading, carrier_code, business_unit, create_time, vessel_no, voy_no, (SELECT COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
         <where>  
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>
@@ -226,7 +227,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
             <if test="secureCode != null  and secureCode != ''"> and secure_code = #{secureCode}</if>
             <if test="releaseDate != null "> and release_date = #{releaseDate}</if>
-            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="vesselNo != null  and vesselNo != ''"> and vessel_no = #{vesselNo}</if>
+             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
