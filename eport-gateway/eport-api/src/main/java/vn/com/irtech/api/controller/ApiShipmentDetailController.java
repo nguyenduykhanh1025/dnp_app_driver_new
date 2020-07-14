@@ -32,6 +32,9 @@ public class ApiShipmentDetailController {
 	@PostMapping("/shipmentDetail/containerInfor")
 	public R getShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetail) {
 		ShipmentDetailEntity ship = shipmentDetailDao.selectShipmentDetailByContNo(shipmentDetail);
+		if(ship == null) {
+			return R.ok().put("data", new ShipmentDetailEntity());
+		}
 		return R.ok().put("data", ship);
 	}
 	

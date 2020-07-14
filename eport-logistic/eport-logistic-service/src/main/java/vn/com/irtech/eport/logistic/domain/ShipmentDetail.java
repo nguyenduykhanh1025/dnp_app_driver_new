@@ -152,6 +152,8 @@ public class ShipmentDetail extends BaseEntity
     /** Status */
     @Excel(name = "Status")
     private Integer status;
+    
+    private String block;
 
     private String bay;
 
@@ -444,7 +446,15 @@ public class ShipmentDetail extends BaseEntity
         return status;
     }
 
-    public void setBay(String bay) {
+    public String getBlock() {
+		return block;
+	}
+
+	public void setBlock(String block) {
+		this.block = block;
+	}
+
+	public void setBay(String bay) {
         this.bay = bay;
     }
 
@@ -542,6 +552,7 @@ public class ShipmentDetail extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("block", getBlock())
             .append("bay", getBay())
             .append("roww", getRow())
             .append("tier", getTier())

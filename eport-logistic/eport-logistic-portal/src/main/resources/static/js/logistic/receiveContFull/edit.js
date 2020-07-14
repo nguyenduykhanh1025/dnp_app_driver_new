@@ -80,6 +80,7 @@ async function submitHandler() {
                     $('#containerAmount').val("");
                     $('#edoFlg').val(null).text("");
                 } else {
+            	    $("#blNo").removeClass("error-input");
                     $('#opeCode').val(res.shipment.opeCode);
                     $('#containerAmount').val(res.shipment.containerAmount);
                     if (res.shipment.edoFlg == "1") {
@@ -89,11 +90,11 @@ async function submitHandler() {
                         $('#edoFlg').val(res.shipment.edoFlg).text("Lệnh giao hàng (DO)");
                         $('#edoFlgInput').val(res.shipment.edoFlg);
                     }
-                    await $.operate.save(prefix + "/shipment/" + $("#id").val(), $('#form-edit-shipment').serialize());
+                    $.operate.save(prefix + "/shipment/" + $("#id").val(), $('#form-edit-shipment').serialize());
                     parent.loadTable();
                 }
             } else {
-                await $.operate.save(prefix + "/shipment/" + $("#id").val(), $('#form-edit-shipment').serialize());
+                $.operate.save(prefix + "/shipment/" + $("#id").val(), $('#form-edit-shipment').serialize());
                 parent.loadTable();
             }
         } else {
@@ -123,6 +124,7 @@ function checkBlNoUnique() {
                 $('#containerAmount').val("");
                 $('#edoFlg').val(null).text("");
             } else {
+            	$("#blNo").removeClass("error-input");
                 $('#opeCode').val(result.shipment.opeCode);
                 $('#containerAmount').val(result.shipment.containerAmount);
                 if (result.shipment.edoFlg == "1") {
