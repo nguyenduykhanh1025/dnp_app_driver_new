@@ -1,68 +1,64 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
-<head>
+  <head>
     <th:block th:include="include :: header('Payment Support')" />
     <th:block th:include="include :: easyui-css" />
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
     <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
-</head>
-<body class="container-fluid white-bg page-payment">
-  <div class="container">
-    <div class="content-body clearfix">
-      <section class="header mb5 mt10">
-        <!-- row one -->
-        <div class="row mb5">
-          <!-- max 3 inner info in a row -->
-          <div class="header__inner-info">
-            <div class="col-md-2 col-sm-2 col-xs-2">
-              <span>Lô: &#58;</span>
-            </div>
-            <div class="col-md-2 col-sm-2 col-xs-2">
-              <span class="batchCode"></span>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section class="content">
-        <div class="clone-zone mb10 pb5" id="dgOrder1">
-          <div>
-            <b class="bill-title"></b>
-          </div>
-          <div class="content__table mb10">
-            <table>
-              <thead>
-                <tr>
-                  <th data-options="field:'containerNo', halign:'center', align:'center'" width="200" sortable="true">Container No.</th>
-                  <th data-options="field:'payType', halign:'center', align:'center', fixed:'true'" width="70" sortable="true">HT Thanh Toán</th>
-                  <th data-options="field:'sztp', halign:'center', align:'center'" width="150" sortable="true">Kích Thước</th>
-                  <th data-options="field:'exchangeFee', halign:'center', align:'right', formatter: formatMoney" width="150" sortable="true">Đơn Giá (VND)</th>
-                  <th data-options="field:'vatRate', halign:'center', align:'right', fixed:'true'" width="150" sortable="true">Thuế (%)</th>
-                  <th data-options="field:'vatAfterFee', halign:'center', align:'right', fixed:'true', formatter: formatMoney" width="150" sortable="true">Thành Tiền (VND)</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-          <div class="content__footer">
-            <button class="btn btn-primary btn-payment">Thanh toán</button>
-            <div class="price-label">
-              <span>Tổng tiền: </span><span class="txt-total"></span>
+  </head>
+  <body class="container-fluid white-bg page-payment">
+    <div class="container">
+      <div class="content-body clearfix">
+        <section class="header mb5 mt10">
+          <!-- row one -->
+          <div class="row mb5">
+            <!-- max 3 inner info in a row -->
+            <div class="header__inner-info">
+              <div class="col-md-2 col-sm-2 col-xs-2">
+                <span>Lô: &#58;</span>
+              </div>
+              <div class="col-md-2 col-sm-2 col-xs-2">
+                <span class="batchCode"></span>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+        <section class="content">
+          <div class="clone-zone mb10 pb5" id="dgOrder1">
+            <div>
+              <b class="bill-title"></b>
+            </div>
+            <div class="content__table mb10">
+              <table>
+                <thead>
+                  <tr>
+                    <th data-options="field:'containerNo', halign:'center', align:'center'" width="200" sortable="true">Container No.</th>
+                    <th data-options="field:'payType', halign:'center', align:'center', fixed:'true'" width="70" sortable="true">HT Thanh Toán</th>
+                    <th data-options="field:'sztp', halign:'center', align:'center'" width="150" sortable="true">Kích Thước</th>
+                    <th data-options="field:'exchangeFee', halign:'center', align:'right', formatter: formatMoney" width="150" sortable="true">Đơn Giá (VND)</th>
+                    <th data-options="field:'vatRate', halign:'center', align:'right', fixed:'true'" width="150" sortable="true">Thuế (%)</th>
+                    <th data-options="field:'vatAfterFee', halign:'center', align:'right', fixed:'true', formatter: formatMoney" width="150" sortable="true">Thành Tiền (VND)</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="content__footer">
+              <button class="btn btn-primary btn-payment">Thanh toán</button>
+              <div class="price-label"><span>Tổng tiền: </span><span class="txt-total"></span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="layui-layer-btn footer clearfix">
+        <a class="layui-layer-btn0" onclick="closeForm()">Đóng</a>
+      </div>
     </div>
-    <div class="layui-layer-btn footer clearfix">
-      <a class="layui-layer-btn0" onclick="closeForm()">Đóng</a>
-    </div>
-  </div>
-  <th:block th:include="include :: footer" />
-  <th:block th:include="include :: easyui-js" />
-  <script type="text/javascript" th:inline="javascript">
-    var billList = /*[[${billList}]]*/;
-  </script>
-  <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/paymentSupport.js}"></script>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script type="text/javascript" th:inline="javascript">
+      var billList = /*[[${billList}]]*/;
+    </script>
+    <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/paymentSupport.js}"></script>
   </body>
-  
-  </html>
+</html>
