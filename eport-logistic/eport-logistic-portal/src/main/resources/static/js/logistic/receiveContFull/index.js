@@ -895,7 +895,7 @@ function getDataFromTable(isValidate) {
     shipmentDetail.containerNo = object["containerNo"];
     contList.push(object["containerNo"]);
     shipmentDetail.opeCode = object["opeCode"];
-    shipmentDetail.sztp = object["sztp"];
+    shipmentDetail.sztp = object["sztp"].split(":")[0];
     shipmentDetail.consignee = object["consignee"];
     shipmentDetail.sealNo = object["sealNo"];
     shipmentDetail.expiredDem = expiredDem.getTime();

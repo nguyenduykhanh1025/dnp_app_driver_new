@@ -2,10 +2,16 @@ var prefix = ctx + "om/executeCatos";
 var dogrid = document.getElementById("grid");
 var hot;
 
+$(document).ready(function () {
+  $("#toggle-status").bootstrapToggle({
+    width: '160px',
+  });
+  loadTable();
+});
+
 // CONFIGURATE HANDSONTABLE
 config = {
   stretchH: "all",
-  height: document.documentElement.clientHeight,
   width: "100%",
   rowHeights: 30,
   manualColumnMove: false,
@@ -69,15 +75,12 @@ config = {
   ],
 };
 
-$(document).ready(function () {
-  loadTable();
-});
-
 // LOAD TABLE
 function loadTable() {
   hot = new Handsontable(dogrid, config);
   hot.loadData(shipmentDetail);
   hot.render();
+  $("section.content").css("overflow", "auto");
 }
 
 // COPY DATA OF THE TABLE
