@@ -63,7 +63,6 @@ $(document).ready(function () {
         divClone.after(clonned);
         $('#dgOrder' + (count + 1) + ' table').datagrid({
           height: DOCUMENT_HEIGHT / 2 - 70,
-          width: $(document).width() - 50,
           singleSelect: true,
           clientPaging: false,
           pagination: false,
@@ -103,7 +102,6 @@ $(document).ready(function () {
     divClone.after(clonned);
     $('#dgOrder' + (count + 1)   + ' table').datagrid({
       height: DOCUMENT_HEIGHT / 2 - 70,
-      width: $(document).width() - 50,
       singleSelect: true,
       clientPaging: false,
       pagination: false,
@@ -117,7 +115,6 @@ $(document).ready(function () {
 
     // FINISH LOADING DATA
     $.modal.closeLoading();
-    $('.content').height(DOCUMENT_HEIGHT - $('.header').height() - 20);
   } else {
     layer.confirm("Lô này hiện tại không có bill nào để hiển thị.", {
       icon: 3,
