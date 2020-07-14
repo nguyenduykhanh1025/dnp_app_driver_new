@@ -119,5 +119,11 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
         return edoAuditLogMapper.insertEdoAuditLogDetFreeTime(edoAuditLog);
     }
 
+    @Override
+    public String selectEdoAuditLogByEdoId(Long edoId)
+    {
+        return edoAuditLogMapper.selectEdoAuditLogByEdoId(edoId);
+    }
+
 
 }

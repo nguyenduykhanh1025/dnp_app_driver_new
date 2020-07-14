@@ -27,13 +27,14 @@ $(document).ready(function () {
     $('#blNo').text(processOrder.blNo);
     $('#bookingNo').text(processOrder.bookingNo);
     $('#payType').text(processOrder.payType);
-    $('#pickupDate').text(processOrder.pickupDate);
+    let pickupDate = processOrder.pickupDate;
+    $('#pickupDate').text(pickupDate.substring(8, 10)+'/'+pickupDate.substring(5, 7)+'/'+pickupDate.substring(0, 4));
     $('#vessel').text(processOrder.vessel);
     $('#voyage').text(processOrder.voyage);
 
     let invoiceNoList = '';
     for (let i = 0; i < orderList.length; i++) {
-      if (orderList[i].status == 0 && processOrderIds.includes(orderList[i].id)) {
+      if (orderList[i].status == 0 && !processOrderIds.includes(orderList[i].id)) {
         invoiceNoList += '<div class="input-group p10">';
         invoiceNoList += '<span class="input-group-addon">Mã Lệnh <span>' + orderList[i].id + '</span></span>';
         invoiceNoList += '<input type="text" class="form-control" id="invoiceNo' + orderList[i].id + '" placeholder="Invoice No.">';
@@ -43,6 +44,14 @@ $(document).ready(function () {
       }
     }
     $('#invoiceNoList').html(invoiceNoList);
+  } else {
+    layer.confirm("Lô này hiện tại không có lệnh nào để hiển thị.", {
+      icon: 3,
+      title: "Xác Nhận",
+      btn: ['Xác nhận']
+    }, function () {
+      $.modal.close();
+    });
   }
 
   if (processOrderIds.length == 0) {

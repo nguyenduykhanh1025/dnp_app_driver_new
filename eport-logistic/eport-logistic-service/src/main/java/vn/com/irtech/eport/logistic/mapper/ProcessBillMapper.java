@@ -67,4 +67,5 @@ public interface ProcessBillMapper
 
     public List<ProcessBill> getBillListByShipmentId(Long shipmentId);
 
+    public int updateBillList(ProcessBill processBill);
 }

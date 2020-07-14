@@ -66,4 +66,6 @@ public interface EdoAuditLogMapper
     public int insertEdoAuditLogExpiredDem(EdoAuditLog edoAuditLog);
 
     public int insertEdoAuditLogDetFreeTime(EdoAuditLog edoAuditLog);
+
+    public String selectEdoAuditLogByEdoId(Long edoId);
 }
