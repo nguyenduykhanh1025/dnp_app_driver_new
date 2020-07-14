@@ -7,6 +7,12 @@ $(function() {
 })
 function confirm()
 {
+  
+  if(formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot)
+  {
+    $.modal.alertError("Không có thông tin nào được thay đổi !!!")
+    return;
+  }
     $.modal.confirm(
         "Bạn có chắc chắn muốn cập nhật DO không? Hành động này không thể hoàn tác",
         function () {
@@ -25,12 +31,13 @@ function confirm()
             },
             success: function (data) {
               if (data.code == 0) {
-                  $.modal.alertSuccess("Cập nhật thành công");
-                  
+                  layer.msg('Cập nhật thành công ... ', {icon: 6});
               } else {
                 $.modal.alertError(data.msg);
               }
-              $.modal.closeLoading();
+              setTimeout(function () {
+                $.modal.close();
+             },1500)
             },
             error: function (data) {
               $.modal.alertError(
