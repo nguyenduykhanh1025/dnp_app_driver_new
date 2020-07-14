@@ -83,4 +83,9 @@ public interface IEdoService {
 	// Get Bill No DISTINCT
 	public List<Edo> selectEdoListByBillNo(Edo edo);
 
+	public List<String> selectVesselNo();
+
+	public List<String> selectCarrierCode();
+
+	public List<String> selectVoyNo();
 }

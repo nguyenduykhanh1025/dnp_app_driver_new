@@ -57,6 +57,7 @@ public class EdiServiceImpl implements IEdiService {
 		Edo edoInsert = new Edo();
 		this.settingEdoData(edoInsert, ediDataReq, partnerCode, transactionId);
 		edoInsert.setCreateBy(API);
+		edoInsert.setDelFlg(0);
 		return edoService.insertEdo(edoInsert);
 	}
 

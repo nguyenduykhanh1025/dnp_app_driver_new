@@ -8,20 +8,65 @@
     <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
 </head>
 <body class="container-fluid white-bg page-payment">
-  <section class="content clearfix">
-    <table id="dgOrder">
-      <thead>
-        <tr>
-          <th data-options="field:'id', halign:'center', resizable:true, fixed:true" width="40" sortable="true">STT</th>
-          <th data-options="field:'Số Container', halign:'center', align:'center'" width="200" sortable="true">Số Container</th>
-          <th data-options="field:'OPE', halign:'center', fixed:'true'" width="70" sortable="true">OPE</th>
-          <th data-options="field:'Tàu', halign:'center'" width="150" sortable="true">Tàu</th>
-          <th data-options="field:'Chuyến', halign:'center'" width="150" sortable="true">Chuyến</th>
-          <th data-options="field:'Trạng thái', align:'center', fixed:'true'" width="150" sortable="true">Trạng thái</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+  <section class="header mb5 mt10">
+    <!-- row one -->
+    <div class="row mb5">
+      <!-- max 3 inner info in a row -->
+      <div class="header__inner-info">
+        <div class="col-md-2 col-sm-2 col-xs-2">
+          <span>Lô BL BL No&#58;</span>
+        </div>
+        <div class="col-md-2 col-sm-2 col-xs-2">
+          <span class="lo-bl">123456789</span>
+        </div>
+      </div>
+      
+      <div class="header__inner-info">
+        <div class="col-md-2 col-sm-2 col-xs-2">
+          <span>Lô BL&#58;</span>
+        </div>
+        <div class="col-md-2 col-sm-2 col-xs-2">
+          <span class="lo-bl">123456789</span>
+        </div>
+      </div>
+    </div>
+    <!-- row two  -->
+    <div class="row mb5">
+      <!-- max 3 inner info in a row -->
+      <div class="header__inner-info">
+        <div class="col-md-2 col-sm-2 col-xs-2">
+          <span>Lô BL&#58;</span>
+        </div>
+        <div class="col-md-2 col-sm-2 col-xs-2">
+          <span class="lo-bl">123456789</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="content">
+    <div class="clone-zone mb10 pb5" id="dgOrder1">
+      <div class="content__table mb10">
+        <table>
+          <thead>
+            <tr>
+              <th data-options="field:'id', halign:'center', resizable:true, fixed:true" width="40" sortable="true">STT</th>
+              <th data-options="field:'Số Container', halign:'center', align:'center'" width="200" sortable="true">Số Container</th>
+              <th data-options="field:'OPE', halign:'center', fixed:'true'" width="70" sortable="true">OPE</th>
+              <th data-options="field:'Tàu', halign:'center'" width="150" sortable="true">Tàu</th>
+              <th data-options="field:'Chuyến', halign:'center'" width="150" sortable="true">Chuyến</th>
+              <th data-options="field:'Trạng thái', align:'center', fixed:'true'" width="150" sortable="true">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="content__footer">
+        <button class="btn btn-primary">Thanh toán</button>
+        <div class="price-label">
+          <span>Tổng tiền: </span><span class="txt-total"></span>
+        </div>
+      </div>
+    </div>
   </section>
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />

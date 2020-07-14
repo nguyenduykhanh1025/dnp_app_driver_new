@@ -41,10 +41,14 @@ public class EdoManageController extends BaseController {
     return PREFIX + "/edo";
   }
 
-  @GetMapping("/billNo")
+  @PostMapping("/billNo")
   @ResponseBody
-  public TableDataInfo billNo(Edo edo) {
+  public TableDataInfo billNo(@RequestBody PageAble<Edo> param) {
     startPage();
+    Edo edo = param.getData();
+    if (edo == null) {
+      edo = new Edo();
+    }
     List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
     return getDataTable(dataList);
   }
@@ -91,6 +95,13 @@ public class EdoManageController extends BaseController {
 		String[] text = fileContent.split("'");
 		edo = edoService.readEdi(text);
 		return edo;
+  }
+
+  @GetMapping("/getCarrierCode")
+  @ResponseBody
+  public List<String> lisCarrierCode()
+  {
+      return edoService.selectCarrierCode();
   }
   
 }
