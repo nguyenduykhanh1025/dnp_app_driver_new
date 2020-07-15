@@ -8,7 +8,10 @@ $('#validDate').datetimepicker({
 $(function () {
 loadTable();
 });
-function loadTable() {
+function loadTable(msg) {
+      if (msg) {
+        $.modal.msgSuccess(msg);
+      }
 	  $("#dg").datagrid({
 	    url: ctx + "logistic/transport/list",
 	    height: heightInfo,

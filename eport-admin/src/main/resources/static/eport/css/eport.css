@@ -1080,3 +1080,8 @@ label {
 .d-flex {
   display: flex !important;
 }
+
+.nav.navbar-top-links a {
+  font-size: 13px;
+  padding: 15px 20px;
+}
