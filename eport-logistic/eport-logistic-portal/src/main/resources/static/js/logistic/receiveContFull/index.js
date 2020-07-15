@@ -1222,3 +1222,15 @@ function onError(error) {
   console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
 }
 
+function openLoading(text) {
+  $('.loader').show();
+  $('.loading-text').html(text);
+}
+
+function closeLoading() {
+  $('.loader').hide();
+}
+
+function changeTextLoading(text) {
+  $('.loading-text').html(text);
+}
