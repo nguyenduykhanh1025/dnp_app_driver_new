@@ -55,10 +55,6 @@
           <input
             id="toggle-status"
             type="checkbox"
-            data-on="<i class='fa fa-cog fa-spin fa-fw'></i>&nbsp;Đang làm lệnh"
-            data-off="Không"
-            data-onstyle="success"
-            data-offstyle="default"
           />
         </label>
       </div>
@@ -67,7 +63,7 @@
       </div>
     </div>
     <section class="content">
-    <div id="grid" class="hot handsontable htColumnHeaders"></div>
+    <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
 
     </section>
     <section class="content-bottom mt10">
@@ -76,16 +72,18 @@
         <div class="panel-body">
           <div class="input-group p10">
             <span class="input-group-addon">Mã Lệnh </span>
-            <input type="text" class="form-control" placeholder="Invoice No.">
+            <input type="text" class="form-control" id="invoiceNo" placeholder="Invoice No.">
           </div>
         </div>
       </div>
     </section>
+    <div class="layui-layer-btn footer">
+      <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+    </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: handsontable-js" />
     <script type="text/javascript" th:inline="javascript">
-      var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
-      var shipmentDetail = /*[[${shipmentDetail}]]*/;
+      var orderList = /*[[${orderList}]]*/;
     </script>
     <th:block th:include="include :: bootstrap-toggle-js" />
     <script th:src="@{/eport/js/modules/om/executeCatos/edit.js}"></script>
