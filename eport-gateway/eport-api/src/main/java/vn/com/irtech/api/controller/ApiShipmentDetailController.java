@@ -88,4 +88,13 @@ public class ApiShipmentDetailController {
 	public ShipmentEntity getOpeCodeCatosByBlNo(@PathVariable String blNo) {
 		return shipmentDetailDao.getOpeCodeCatosByBlNo(blNo);
 	}
+	
+	@GetMapping("shipmentDetail/check/custom/{containerNo}/{voyNo}")
+	public Boolean checkCustomStatus(@PathVariable String containerNo, @PathVariable String voyNo) {
+		Boolean rs = shipmentDetailDao.checkCustomStatus(containerNo, voyNo);
+		if(rs != null) {
+			return rs;
+		}
+		return false;
+	}
 }

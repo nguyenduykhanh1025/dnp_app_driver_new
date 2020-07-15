@@ -98,4 +98,13 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		return count.intValue();
 	}
 
+	@Override
+	public Boolean checkCustomStatus(String containerNo, String voyNo) {
+		String url = Global.getApiUrl() + "/shipmentDetail/check/custom/" + containerNo + "/" + voyNo;
+		RestTemplate restTemplate = new RestTemplate();
+		Boolean rs = restTemplate.getForObject(url, Boolean.class);
+		return rs;
+	}
+	
+
 }

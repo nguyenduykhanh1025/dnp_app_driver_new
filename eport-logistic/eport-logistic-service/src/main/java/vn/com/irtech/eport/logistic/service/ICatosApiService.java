@@ -26,4 +26,6 @@ public interface ICatosApiService {
 	public List<String> getVoyageNoList(String vesselCode);
 	
 	public int getCountContByBlNo(String blNo);
+	
+	public Boolean checkCustomStatus(String containerNo, String voyNo);
 }
