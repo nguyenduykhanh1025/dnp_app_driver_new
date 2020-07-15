@@ -29,7 +29,7 @@ import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 @RequestMapping("/mc/plan")
 public class PlanController extends BaseController {
 
-	private static final String PREFIX = "/mc/plan";
+	private static final String PREFIX = "mc/plan";
 
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
