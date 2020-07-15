@@ -71,6 +71,7 @@ function checkCustomStatus() {
 
 loadData() 
 function closeForm() {
+    parent.reloadShipmentDetail();
     $.modal.close();
 }
 function loadData() 
