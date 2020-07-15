@@ -11,7 +11,6 @@ var isMobile = $.common.isMobile() || $(window).width() < 769;
 $(function () {
   // MetsiMenu
   $("#side-menu").metisMenu();
-
   // Fixed menu bar
   $(function () {
     $(".sidebar-collapse").slimScroll({
