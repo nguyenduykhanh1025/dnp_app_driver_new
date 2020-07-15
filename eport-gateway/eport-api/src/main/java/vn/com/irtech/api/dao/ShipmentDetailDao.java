@@ -35,4 +35,6 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public Integer getCountContByBlNo(String blNo);
 	
 	public ShipmentEntity getOpeCodeCatosByBlNo(String blNo);
+	
+	public Boolean checkCustomStatus(@Param("containerNo") String containerNo, @Param("voyNo") String voyNo);
 }
