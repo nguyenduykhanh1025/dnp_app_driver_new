@@ -2,7 +2,10 @@ var prefix = ctx + "logistic/logisticTruck";
 $(function () {
     loadTable();
 });
-function loadTable() {
+function loadTable(msg) {
+    if (msg) {
+        $.modal.msgSuccess(msg);
+    }
     $("#dg").datagrid({
       url: prefix + "/list",
       height: heightInfo,

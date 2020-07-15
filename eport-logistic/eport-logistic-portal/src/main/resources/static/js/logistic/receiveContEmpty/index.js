@@ -76,7 +76,10 @@ function handleCollapse(status) {
 }
 
 // LOAD SHIPMENT LIST
-function loadTable() {
+function loadTable(msg) {
+    if (msg) {
+        $.modal.msgSuccess(msg);
+    }
     $("#dg").datagrid({
         url: '/logistic/shipments/3',
         height: window.innerHeight - 70,

@@ -48,25 +48,6 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
-    <script type="text/javascript">
-        var prefix = ctx + "logistic/logisticTruck"
-        $("#form-truck-add").validate({
-            focusCleanup: true
-        });
-
-        function submitHandler() {
-            if ($.validate.form()) {
-                $.operate.save(prefix + "/add", $('#form-truck-add').serialize());
-            }
-            parent.loadTable();
-        }
-
-        $("input[name='registryExpiryDate']").datetimepicker({
-            format: "yyyy-mm-dd",
-            minView: "month",
-            language: 'en',
-            autoclose: true
-        });
-    </script>
+    <script th:src="@{/js/logistic/logisticTruck/add.js}"></script>
 </body>
 </html>
