@@ -20,8 +20,7 @@ $('input:radio[name="taxCodeDefault"]').change(function() {
 async function submitHandler() {
     if ($.validate.form()) {
         if ($("#groupName").val() != null && $("#groupName").val() != '') {
-            $.operate.save(prefix + "/shipment", $('#form-add-shipment').serialize());
-            parent.loadTable();
+            save(prefix + "/shipment", $('#form-add-shipment').serialize());
         } else {
             $.modal.alertError("Không tìm ra mã số thuế!<br>Quý khách vui lòng liên hệ đến bộ phận chăm sóc khách hàng 0933.157.159.");
         }
@@ -46,4 +45,25 @@ function loadGroupName() {
     } else {
         $("#groupName").val('');
     }
+}
+function save(url, data) {
+    $.ajax({
+        url: url,
+        type: "post",
+        dataType: "json",
+        data: data,
+        beforeSend: function () {
+            $.modal.loading("Đang xử lý, vui lòng chờ...");
+            $.modal.disable();
+        },
+        success: function(result) {
+            $.modal.closeLoading();
+            if (result.code == 0) {
+                parent.loadTable(result.msg);
+                $.modal.close();
+            } else {
+                $.modal.msgError(result.msg);
+            }
+        }
+    })
 }

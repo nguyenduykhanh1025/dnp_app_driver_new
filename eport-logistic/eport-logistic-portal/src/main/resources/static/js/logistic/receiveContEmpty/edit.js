@@ -68,12 +68,10 @@ async function submitHandler() {
             if ($("#bookingNo").val() != currentBooking) {
                 let res = await getBookingNoUnique();
                 if (res.code == 0) {
-                    $.operate.save(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
-                    parent.loadTable();
+                    edit(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize())
                 }
             } else {
-                $.operate.save(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
-                parent.loadTable();
+                edit(prefix + "/shipment/" + shipment.id, $('#form-edit-shipment').serialize());
             }
         } else {
             $.modal.alertError("Không tìm ra mã số thuế!<br>Quý khách vui lòng liên hệ đến bộ phận chăm sóc khách hàng 0933.157.159.");
@@ -102,4 +100,26 @@ function checkBookingNoUnique() {
             }
         });
     }
+}
+
+function edit(url, data) {
+    $.ajax({
+        url: url,
+        type: "post",
+        dataType: "json",
+        data: data,
+        beforeSend: function () {
+            $.modal.loading("Đang xử lý, vui lòng chờ...");
+            $.modal.disable();
+        },
+        success: function(result) {
+            $.modal.closeLoading();
+            if (result.code == 0) {
+                parent.loadTable(result.msg);
+                $.modal.close();
+            } else {
+                $.modal.msgError(result.msg);
+            }
+        }
+    })
 }
