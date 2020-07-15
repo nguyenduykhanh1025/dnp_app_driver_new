@@ -204,8 +204,7 @@ public class EportTask {
         edoAuditLog.setNewValue(edo.getExpiredDem().toString());
         edoAuditLog.setEdoId(edo.getId());
         edoAuditLog.setCreateTime(timeNow);
-        
-        String maxSegNo = edoAuditLogService.selectEdoAuditLogByEdoId(Long.parseLong(id));
+        String maxSegNo = edoAuditLogService.selectEdoAuditLogByEdoId(edo.getId());
         if(edo.getExpiredDem() != null)
         {
             edoAuditLog.setFieldName("Expired Dem");
