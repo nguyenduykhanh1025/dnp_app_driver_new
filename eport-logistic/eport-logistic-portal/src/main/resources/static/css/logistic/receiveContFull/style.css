@@ -245,6 +245,11 @@ span {
   left: 50%;
   top: 40%;
 }
+.loader__text {
+  font-weight: bolder;
+  font-size: 1.5em;
+  color: darkgrey;
+}
 .lds-spinner {
   color: official;
   display: inline-block;
