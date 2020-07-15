@@ -30,6 +30,7 @@ function confirm() {
 }
 
 function closeForm() {
+    parent.reloadShipmentDetail();
     $.modal.close();
 }
 
