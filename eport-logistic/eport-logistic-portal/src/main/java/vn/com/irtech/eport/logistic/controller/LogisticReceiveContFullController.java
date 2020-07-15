@@ -284,6 +284,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null && shipmentDetails.size() > 0){
+			String dnPortName = configService.selectConfigByKey("danang.port.name");
 			LogisticAccount user = getUser();
 			ShipmentDetail shipmentDt = shipmentDetails.get(0);
 			Shipment shipmentSendCont = new Shipment();
@@ -291,7 +292,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			Shipment shipment = new Shipment();
 			shipment.setId(shipmentDetails.get(0).getShipmentId());
 			boolean updateShipment = true;
-			if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && shipmentDt.getVgmChk()) {
+			if (dnPortName.equals(shipmentDt.getEmptyDepot()) && shipmentDt.getVgmChk()) {
 				shipmentSendCont.setBlNo(shipmentDt.getBlNo());
 				shipmentSendCont.setServiceType(Constants.SEND_CONT_EMPTY);
 				List<Shipment> shipments = shipmentService.selectShipmentList(shipmentSendCont);
@@ -330,7 +331,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
-					if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && !isCreated && shipmentDt.getVgmChk()) {
+					if (dnPortName.equals(shipmentDt.getEmptyDepot()) && !isCreated && shipmentDt.getVgmChk()) {
 						shipmentDetail.setShipmentId(shipmentSendCont.getId());
 						shipmentDetail.setCustomStatus("N");
 						shipmentDetail.setFe("E");
