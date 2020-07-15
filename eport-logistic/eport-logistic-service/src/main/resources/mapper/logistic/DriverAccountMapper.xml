@@ -43,6 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
             <if test="status != null"> and c.status = #{status}</if>
         </where>
+        ORDER BY create_Time DESC
     </select>
     
     <select id="selectDriverAccountById" parameterType="Long" resultMap="DriverAccountResult">

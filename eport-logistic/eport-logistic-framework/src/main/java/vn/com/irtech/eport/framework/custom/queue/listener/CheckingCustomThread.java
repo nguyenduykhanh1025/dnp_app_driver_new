@@ -41,17 +41,19 @@ public class CheckingCustomThread {
             	while(true) {
         			try {
         				ShipmentDetail shipmentDetail = customQueueService.getShipmentDetail();
-        				logger.info("Connec To Acis.");
-        				AjaxResult ajaxResult;
-        				if (true/*shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo())*/) {
-        					shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
-        					shipmentDetail.setCustomStatus("R");
-        					shipmentDetailService.updateShipmentDetail(shipmentDetail);
-        				} 
-        				ajaxResult = AjaxResult.success();
-        				ajaxResult.put("shipmentDetail", shipmentDetail);
-        				webSocketService.sendMessage("/" + shipmentDetail.getContainerNo() + "/response", ajaxResult);
-        				Thread.sleep(1000);
+        				logger.info("Connect To Acciss.");
+        				if (shipmentDetail != null) {
+							AjaxResult ajaxResult;
+							if (shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo())) {
+								shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+								shipmentDetail.setCustomStatus("R");
+								shipmentDetailService.updateShipmentDetail(shipmentDetail);
+							} 
+							ajaxResult = AjaxResult.success();
+							ajaxResult.put("shipmentDetail", shipmentDetail);
+							webSocketService.sendMessage("/" + shipmentDetail.getContainerNo() + "/response", ajaxResult);
+							Thread.sleep(1000);
+						}
         			} catch (Exception e) {
         				e.printStackTrace();
         			}

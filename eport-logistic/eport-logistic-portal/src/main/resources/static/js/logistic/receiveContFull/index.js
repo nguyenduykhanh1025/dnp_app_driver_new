@@ -1221,4 +1221,3 @@ function onMessageReceived(payload) {
 function onError(error) {
   console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
 }
-

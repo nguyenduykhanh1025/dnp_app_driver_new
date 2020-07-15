@@ -32,6 +32,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
+import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
@@ -83,6 +84,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired
 	private ICarrierGroupService carrierGroupService;
+
+	@Autowired
+	private WebSocketService webSocketService;
 
 	@GetMapping()
 	public String receiveContFull(ModelMap mmap) {
@@ -284,6 +288,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult saveShipmentDetail(@RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null && shipmentDetails.size() > 0){
+			String dnPortName = configService.selectConfigByKey("danang.port.name");
 			LogisticAccount user = getUser();
 			ShipmentDetail shipmentDt = shipmentDetails.get(0);
 			Shipment shipmentSendCont = new Shipment();
@@ -291,7 +296,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			Shipment shipment = new Shipment();
 			shipment.setId(shipmentDetails.get(0).getShipmentId());
 			boolean updateShipment = true;
-			if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && shipmentDt.getVgmChk()) {
+			if (dnPortName.equals(shipmentDt.getEmptyDepot()) && shipmentDt.getVgmChk()) {
 				shipmentSendCont.setBlNo(shipmentDt.getBlNo());
 				shipmentSendCont.setServiceType(Constants.SEND_CONT_EMPTY);
 				List<Shipment> shipments = shipmentService.selectShipmentList(shipmentSendCont);
@@ -330,7 +335,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
-					if ("Cảng Tiên Sa".equals(shipmentDt.getEmptyDepot()) && !isCreated && shipmentDt.getVgmChk()) {
+					if (dnPortName.equals(shipmentDt.getEmptyDepot()) && !isCreated && shipmentDt.getVgmChk()) {
 						shipmentDetail.setShipmentId(shipmentSendCont.getId());
 						shipmentDetail.setCustomStatus("N");
 						shipmentDetail.setFe("E");
@@ -405,7 +410,16 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			if (shipmentDetails != null && shipmentDetails.size() > 0) {
 				if (verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
-						customQueueService.offerShipmentDetail(shipmentDetail);
+						if (catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
+							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+							shipmentDetail.setCustomStatus("R");
+							shipmentDetailService.updateShipmentDetail(shipmentDetail);
+							AjaxResult ajaxResult = AjaxResult.success();
+							ajaxResult.put("shipmentDetail", shipmentDetail);
+							webSocketService.sendMessage("/" + shipmentDetail.getContainerNo() + "/response", ajaxResult);
+						} else {
+							customQueueService.offerShipmentDetail(shipmentDetail);
+						}
 					}
 					return success();
 				}

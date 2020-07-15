@@ -167,4 +167,14 @@
     	WHERE BL_NO = #{blNo}
     	GROUP BY PTNR_CODE
     </select>
+    <select id="checkCustomStatus" resultType="java.lang.Boolean">
+    	SELECT CASE
+    				WHEN HOLD_CHK = 'N' THEN 'true'
+    				WHEN HOLD_CHK = 'Y' THEN 'false'
+    			END AS HOLD_CHK
+    	FROM TB_HOLD_STATE
+    	WHERE HOLD_TYPE = 'C'
+    		AND CNTR_NO = #{containerNo}
+    		AND CALL_SEQ = #{voyNo}
+    </select>
 </mapper>
