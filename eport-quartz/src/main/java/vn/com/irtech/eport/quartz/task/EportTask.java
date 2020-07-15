@@ -205,12 +205,12 @@ public class EportTask {
         edoAuditLog.setEdoId(edo.getId());
         edoAuditLog.setCreateTime(timeNow);
         
-        EdoAuditLog edoAuditLogCheckSegNo = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
+        String maxSegNo = edoAuditLogService.selectEdoAuditLogByEdoId(Long.parseLong(id));
         if(edo.getExpiredDem() != null)
         {
             edoAuditLog.setFieldName("Expired Dem");
             EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-            edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+            edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
             edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
             edoAuditLog.setNewValue(formatter.format(edo.getExpiredDem()).toString());
             edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
@@ -221,7 +221,7 @@ public class EportTask {
             edoAuditLog.setFieldName("Det Free Time");
             EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
             edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-            edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+            edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
             edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
             edoAuditLogService.insertEdoAuditLogDetFreeTime(edoAuditLog);
             segNo += 1;
@@ -231,7 +231,7 @@ public class EportTask {
             edoAuditLog.setFieldName("Empty Container Depot");
             EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
             edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-            edoAuditLog.setSeqNo(edoAuditLogCheckSegNo.getSeqNo() + segNo);
+            edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
             edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
             edoAuditLogService.insertEdoAuditLogDetFreeTime(edoAuditLog);
         }
