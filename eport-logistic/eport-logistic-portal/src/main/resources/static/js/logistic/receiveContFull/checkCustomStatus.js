@@ -45,7 +45,7 @@ function checkCustomStatus() {
                     contAmount = contList.length;
                     connectToWebsocketServer();
                     //$.modal.loading("Đang kiểm tra trạng thái thông quan: 0/"+contList.length);
-                    parent.openLoading("Đang kiểm tra trạng thái thông quan: 0/"+contList.length);
+                    openLoading("Đang kiểm tra trạng thái thông quan: 0/"+contList.length);
                     asked = true;
                     $.ajax({
                         url: prefix + "/custom-status/shipment-detail/" + shipmentDetailIds.substring(0, shipmentDetailIds.length - 1),
@@ -144,10 +144,10 @@ function onMessageReceived(payload) {
         contAmount--;
         //$.modal.closeLoading();
         //$.modal.loading("Đang kiểm tra trạng thái thông quan: "+(contList.length-contAmount)+"/"+contList.length);
-        parent.changeTextLoading("Đang kiểm tra trạng thái thông quan: "+(contList.length-contAmount)+"/"+contList.length);
+        changeTextLoading("Đang kiểm tra trạng thái thông quan: "+(contList.length-contAmount)+"/"+contList.length);
         if (contAmount == 0) {
             //$.modal.closeLoading();
-            parent.closeLoading();
+            closeLoading();
             $("#contTable").datagrid({
                 loadMsg: " Đang xử lý...",
                 loader: function (param, success, error) {
@@ -171,4 +171,17 @@ function onMessageReceived(payload) {
 
 function onDisconnected(){
     console.log('Disconnected socket.');
+}
+
+function openLoading(text) {
+    $('.loader').show();
+    $('#loading-text').text(text);
+}
+
+function closeLoading() {
+    $('.loader').hide();
+}
+
+function changeTextLoading(text) {
+    $('#loading-text').text(text);
 }
