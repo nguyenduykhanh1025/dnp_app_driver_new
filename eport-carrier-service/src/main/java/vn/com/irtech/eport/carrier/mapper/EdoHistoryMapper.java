@@ -58,4 +58,6 @@ public interface EdoHistoryMapper
      * @return result
      */
     public int deleteEdoHistoryByIds(String[] ids);
+
+    public EdoHistory selectEdoHistoryByFileName(String fileName);
 }

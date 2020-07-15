@@ -61,5 +61,5 @@ public interface IEdoHistoryService
      */
     public int deleteEdoHistoryById(Long id);
 
-    
+    public EdoHistory selectEdoHistoryByFileName(String fileName);
 }

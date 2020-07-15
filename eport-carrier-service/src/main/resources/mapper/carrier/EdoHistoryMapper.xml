@@ -127,4 +127,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
+    <select id="selectEdoHistoryByFileName" parameterType="String" resultMap="EdoHistoryResult">
+        <include refid="selectEdoHistoryVo"/>
+        where file_name = #{fileName}
+    </select>
 </mapper>

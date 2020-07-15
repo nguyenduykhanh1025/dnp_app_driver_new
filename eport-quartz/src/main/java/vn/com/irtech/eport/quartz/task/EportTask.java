@@ -60,6 +60,11 @@ public class EportTask {
         for (final File fileEntry : receiveFolder.listFiles()) {
             String path = fileEntry.getAbsolutePath();
             String fileName = fileEntry.getName();
+            if(edoHistoryService.selectEdoHistoryByFileName(fileName) != null)
+            {
+                fileEntry.delete();
+                continue;
+            }
             String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
             content = content.replace("\n", "");
             content = content.replace("\r", "");
@@ -201,7 +206,6 @@ public class EportTask {
         edoAuditLog.setCarrierId(edo.getId());
         edoAuditLog.setCarrierCode(edo.getCarrierCode());
         edoAuditLog.setCreateBy(edo.getCarrierCode());
-        edoAuditLog.setNewValue(edo.getExpiredDem().toString());
         edoAuditLog.setEdoId(edo.getId());
         edoAuditLog.setCreateTime(timeNow);
         String maxSegNo = edoAuditLogService.selectEdoAuditLogByEdoId(edo.getId());

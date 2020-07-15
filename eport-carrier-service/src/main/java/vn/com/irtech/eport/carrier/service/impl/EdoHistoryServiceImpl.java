@@ -95,4 +95,10 @@ public class EdoHistoryServiceImpl implements IEdoHistoryService
         return edoHistoryMapper.deleteEdoHistoryById(id);
     }
 
+    @Override
+    public EdoHistory selectEdoHistoryByFileName(String fileName)
+	{
+		return edoHistoryMapper.selectEdoHistoryByFileName(fileName);
+	}
+
 }
