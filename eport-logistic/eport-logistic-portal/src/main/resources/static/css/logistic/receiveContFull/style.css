@@ -237,13 +237,14 @@ span {
   top: 0;
   left: 0;
   z-index: 14061997;
-  display: none;
+  display: none; 
 }
 .loader__container {
   position: absolute;
-  transform: translate(-40%, -50%);
-  left: 50%;
+  transform: translate(-40%, -45%);
+  left: 45%;
   top: 40%;
+  text-align: center;
 }
 .loader__text {
   font-weight: bolder;
