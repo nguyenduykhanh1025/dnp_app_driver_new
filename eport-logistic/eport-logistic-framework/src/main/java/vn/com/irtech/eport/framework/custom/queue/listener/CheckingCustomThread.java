@@ -41,9 +41,9 @@ public class CheckingCustomThread {
             	while(true) {
         			try {
         				ShipmentDetail shipmentDetail = customQueueService.getShipmentDetail();
-        				logger.info("Connec To Acis.");
+        				logger.info("Connect To Acciss.");
         				AjaxResult ajaxResult;
-        				if (true/*shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo())*/) {
+        				if (shipmentDetailService.checkCustomStatus(shipmentDetail.getVoyNo(),shipmentDetail.getContainerNo())) {
         					shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
         					shipmentDetail.setCustomStatus("R");
         					shipmentDetailService.updateShipmentDetail(shipmentDetail);

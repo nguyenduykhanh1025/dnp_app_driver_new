@@ -35,6 +35,8 @@ import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.system.domain.SysConfig;
+import vn.com.irtech.eport.system.service.ISysConfigService;
 
 /**
  * Shipment DetailsService Business Processing
@@ -52,6 +54,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Autowired
     private IProcessOrderService processOrderService;
+
+    @Autowired
+    private ISysConfigService configService;
 
     class BayComparator implements Comparator<ShipmentDetail> {
         public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
@@ -507,36 +512,40 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public boolean checkCustomStatus(String userVoy, String cntrNo) throws IOException {
+    public boolean checkCustomStatus(String userVoy, String cntrNo) {
+        try {
+            // "http://192.168.0.36:8060/ACCIS-Web/rest/v1/eportcontroller/getCustomsStatus/"
+            String uri = configService.selectConfigByKey("acciss.api.uri");
+            // URI uri = new URI(uri);
 
-        String uri = "http://192.168.0.36:8060/ACCIS-Web/rest/v1/eportcontroller/getCustomsStatus/";
-        // URI uri = new URI(uri);
-
-        String requestJson = "{\"RequestCntrStatus\": {\"UserVoy\": \"" + userVoy + "\",\"CntrNo\": \"" + cntrNo
-                + "\"}}";
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
-        headers.set("Authorization", "Basic RVBPUlQ6MTEx");
-        RestTemplate restTemplate = new RestTemplate();
-        // String result = restTemplate.getForObject(uri,HttpMethod.GET,
-        // String.class,headers);
-        HttpEntity<String> entity = new HttpEntity<String>(requestJson, headers);
-        ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
-        String stringJson = result.getBody();
-        JsonObject convertedObject = new Gson().fromJson(stringJson, JsonObject.class);
-        convertedObject = convertedObject.getAsJsonObject("response");
-        JsonArray jarray = convertedObject.getAsJsonArray("data");
-        if (jarray.size() > 0) {
-            convertedObject = jarray.get(0).getAsJsonObject();
-            String rs = convertedObject.get("customsStatus").toString();
-            System.out.print(rs);
-            if ("TQ".equals(rs.substring(1, rs.length() - 1))) {
-                return true;
-            } else {
-                return false;
+            String requestJson = "{\"RequestCntrStatus\": {\"UserVoy\": \"" + userVoy + "\",\"CntrNo\": \"" + cntrNo
+                    + "\"}}";
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Content-Type", "application/json");
+            headers.set("Authorization", "Basic RVBPUlQ6MTEx");
+            RestTemplate restTemplate = new RestTemplate();
+            // String result = restTemplate.getForObject(uri,HttpMethod.GET,
+            // String.class,headers);
+            HttpEntity<String> entity = new HttpEntity<String>(requestJson, headers);
+            ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+            String stringJson = result.getBody();
+            JsonObject convertedObject = new Gson().fromJson(stringJson, JsonObject.class);
+            convertedObject = convertedObject.getAsJsonObject("response");
+            JsonArray jarray = convertedObject.getAsJsonArray("data");
+            if (jarray.size() > 0) {
+                convertedObject = jarray.get(0).getAsJsonObject();
+                String rs = convertedObject.get("customsStatus").toString();
+                System.out.print(rs);
+                if ("TQ".equals(rs.substring(1, rs.length() - 1))) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
+            return false;
+        } catch (Exception e) {
+            return false;
         }
-        return false;
     }
 
     @Override
