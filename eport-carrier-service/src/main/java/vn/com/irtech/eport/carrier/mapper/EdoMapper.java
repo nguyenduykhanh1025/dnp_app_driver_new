@@ -84,4 +84,5 @@ public interface EdoMapper
     public List<String> selectCarrierCode();
 
     public List<String> selectVoyNo();
+
 }
