@@ -144,15 +144,16 @@ function loadView() {
                 editor: false
             },
             {
-                data: 'voyNo',
-                type: 'text',
-                editor: false
-            },
-            {
                 data: 'vesselNo',
                 type: 'text',
                 editor: false
             },
+            {
+                data: 'voyNo',
+                type: 'text',
+                editor: false
+            },
+           
             {
                 data: 'consignee',
                 type: 'text',
@@ -183,8 +184,8 @@ function loadView() {
             'Chủ khai thác',
             'Order Number',
             'Tên tàu',
-            'Số chuyến',
             'Mã tàu',
+            'Số chuyến',
             'Người nhận hàng',
             'Ngày hết hạn lưu cont',
             'Nơi hạ rỗng',
