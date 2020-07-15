@@ -68,7 +68,7 @@ public class EportTask {
             String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
             content = content.replace("\n", "");
             content = content.replace("\r", "");
-            String[] text = content.split("\\'");
+            String[] text = content.split("'");
             EdoHistory edoHistory = new EdoHistory();
             EdoAuditLog edoAuditLog = new EdoAuditLog();
             Date timeNow = new Date();
