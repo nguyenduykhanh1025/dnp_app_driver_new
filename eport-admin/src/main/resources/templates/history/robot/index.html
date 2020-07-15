@@ -47,14 +47,14 @@
     </div>
     <div class="row section-content">
       <div class="col-md-12">
-        <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
+        <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]" fitColumns="true">
           <thead>
             <tr>
-              <th data-options="field: 'robotUuid', halign: 'center', resizable: true">Tên robot</th>
-              <th data-options="field: 'serviceType', halign: 'center', resizable: true, formatter: formatServiceType">Loại lệnh</th>
-              <th data-options="field:'result', halign:'center', align:'center', formatter: formatResult" sortable="true">Kết quả</th>
-              <th data-options="field: 'status', halign: 'center', align: 'center', formatter: formatStatus">Trạng thái</th>
-              <th data-options="field:'createTime', halign:'center', formatter: formatDate" sortable="true">Thời gian</th>
+              <th data-options="field: 'robotUuid', halign: 'center', resizable: true" sortable="true" width="150">Tên robot</th>
+              <th data-options="field: 'serviceType', halign: 'center', resizable: true, formatter: formatServiceType" sortable="true" width="150">Loại lệnh</th>
+              <th data-options="field:'result', halign:'center', align:'center', formatter: formatResult" sortable="true" width="150">Kết quả</th>
+              <th data-options="field: 'status', halign: 'center', align: 'center', formatter: formatStatus" sortable="true" width="150">Trạng thái</th>
+              <th data-options="field:'createTime', align: 'center', halign:'center', formatter: formatDate, fixed: true" sortable="true" width="150">Thời gian</th>
             </tr>
           </thead>
           <tbody></tbody>
