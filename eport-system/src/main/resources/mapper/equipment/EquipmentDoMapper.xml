@@ -46,15 +46,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectEquipmentDoListPagingAdmin" parameterType="equipmentDo" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
         <where>  
-            <if test="expiredDemStartDay != null"> and expired_dem = #{expiredDemStartDay} OR expired_dem > #{expiredDemStartDay}</if>
-            <if test="expiredDemEndDay != null"> and expired_dem = #{expiredDemEndDay} OR expired_dem &lt; #{expiredDemEndDay}</if>
+            <if test="expiredDemStartDay != null  and expiredDemStartDay != ''"> and expired_dem = to_date(#{expiredDemStartDay},'yyyy-MM-dd HH24:mi:ss') OR expired_dem > to_date(#{expiredDemStartDay},'yyyy-MM-dd HH24:mi:ss')</if>
+            <if test="expiredDemEndDay != null  and expiredDemEndDay != ''"> and expired_dem = to_date(#{expiredDemEndDay},'yyyy-MM-dd HH24:mi:ss') OR expired_dem &lt; to_date(#{expiredDemEndDay},'yyyy-MM-dd HH24:mi:ss')</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
-            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code like concat('%', #{carrierCode}, '%')</if>
-            <if test="consignee != null  and consignee != ''"> and consignee like concat('%', #{consignee}, '%')</if>
-            <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat('%', #{containerNumber}, '%')</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code like concat(concat('%',#{carrierCode}),'%')</if>
+            <if test="consignee != null  and consignee != ''"> and consignee like concat(concat('%',#{consignee}),'%')</if>
+            <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat(concat('%',#{containerNumber}),'%')</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
-            <if test="voyNo != null  and voyNo != ''"> and voy_no like concat('%', #{voyNo}, '%')</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no like concat(concat('%',#{voyNo}),'%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
             <if test="detFreeTime != null  and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
@@ -63,9 +63,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="documentStatus != null  and documentStatus != ''"> and document_status = #{documentStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
-            <if test="vessel != null  and vessel != ''"> and lower(vessel) like concat('%', #{vessel}, '%')</if>
-            <if test="voyNo != null  and voyNo != ''"> and voy_no like concat('%', #{voyNo}, '%')</if>
-            <if test="expiredDemStartDay != null and expiredDemEndDay != null"> and expired_dem BETWEEN #{expiredDemStartDay} AND #{expiredDemEndDay}</if>
+            <if test="vessel != null  and vessel != ''"> and lower(vessel) like concat(concat('%',#{vessel}),'%')</if>
+            <if test="expiredDemStartDay != null and expiredDemEndDay != null"> and expired_dem BETWEEN to_date(#{expiredDemStartDay},'yyyy-MM-dd HH24:mi:ss') AND to_date(#{expiredDemEndDay},'yyyy-MM-dd HH24:mi:ss')</if>
         </where> 
     </select>
     <select id="selectEquipmentDoListPagingCarrier" parameterType="equipmentDo" resultMap="EquipmentDoResult">
@@ -78,12 +77,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
-            <if test="expiredDem != null and expiredDem != ''"> and expired_dem = #{expiredDem}</if>
+            <if test="expiredDem != null and expiredDem != ''"> and expired_dem = to_date(#{expiredDem},'yyyy-MM-dd HH24:mi:ss')</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
             <if test="detFreeTime != null  and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
-            <if test="documentReceiptDate != null "> and document_receipt_date = #{documentReceiptDate}</if>
+            <if test="documentReceiptDate != null "> and document_receipt_date = to_date(#{documentReceiptDate},'yyyy-MM-dd HH24:mi:ss')</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
@@ -97,54 +96,54 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectEquipmentDoDetails" parameterType="EquipmentDo"  resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
         <where>
-            <if test="fromDate != null and toDate != null"> and expired_dem between #{fromDate} and #{toDate}</if>
-            <if test="fromDate != null"> and expired_dem = #{fromDate} OR expired_dem > #{fromDate}</if>
-            <if test="toDate != null"> and expired_dem = #{toDate} OR expired_dem &lt; #{toDate}</if> 
+            <if test="fromDate != null and toDate != null"> and expired_dem between to_date(#{fromDate},'yyyy-MM-dd HH24:mi:ss') and to_date(#{toDate},'yyyy-MM-dd HH24:mi:ss')</if>
+            <if test="fromDate != null"> and expired_dem = to_date(#{fromDate},'yyyy-MM-dd HH24:mi:ss') OR expired_dem > to_date(#{fromDate},'yyyy-MM-dd HH24:mi:ss')</if>
+            <if test="toDate != null"> and expired_dem = to_date(#{toDate},'yyyy-MM-dd HH24:mi:ss') OR expired_dem &lt; to_date(#{toDate},'yyyy-MM-dd HH24:mi:ss')</if> 
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>  
             <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
-            <if test="containerNumber != null  and containerNumber != ''"> and lower(container_number) like concat('%', #{containerNumber}, '%')</if>
+            <if test="containerNumber != null  and containerNumber != ''"> and lower(container_number) like concat(concat('%', #{containerNumber}), '%')</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
-            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="expiredDem != null "> and expired_dem = to_date(#{expiredDem},'yyyy-MM-dd HH24:mi:ss')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
             <if test="detFreeTime != null  and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
-            <if test="documentReceiptDate != null "> and document_receipt_date = #{documentReceiptDate}</if>
+            <if test="documentReceiptDate != null "> and document_receipt_date = to_date(#{documentReceiptDate},'yyyy-MM-dd HH24:mi:ss')</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
-            <if test="voyNo != null  and voyNo != ''"> and voy_no like concat('%', #{voyNo}, '%')</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no like concat(concat('%', #{voyNo}), '%')</if>
         </where>
         ORDER BY id DESC  
     </select>
     <select id="selectEquipmentDoList" parameterType="EquipmentDo"  resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
         <where>
-            <if test="fromDate != null and toDate != null"> and expired_dem between #{fromDate} and #{toDate}</if>
-            <if test="fromDate != null"> and expired_dem = #{fromDate} OR expired_dem > #{fromDate}</if>
-            <if test="toDate != null"> and expired_dem = #{toDate} OR expired_dem &lt; #{toDate}</if> 
-            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>  
+            <if test="fromDate != null and toDate != null"> and expired_dem between to_date(#{fromDate},'yyyy-MM-dd HH24:mi:ss') and to_date(#{toDate},'yyyy-MM-dd HH24:mi:ss')</if>
+            <if test="fromDate != null"> and expired_dem = to_date(#{fromDate},'yyyy-MM-dd HH24:mi:ss') OR expired_dem > to_date(#{fromDate},'yyyy-MM-dd HH24:mi:ss')</if>
+            <if test="toDate != null"> and expired_dem = to_date(#{toDate},'yyyy-MM-dd HH24:mi:ss') OR expired_dem &lt; (#{toDate},'yyyy-MM-dd HH24:mi:ss')</if> 
+            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat(concat('%', #{billOfLading}), '%')</if>  
             <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
-            <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat('%', #{containerNumber}, '%')</if>
+            <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat(concat('%', #{containerNumber}), '%')</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
-            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="expiredDem != null "> and expired_dem = to_date(#{expiredDem},'yyyy-MM-dd HH24:mi:ss')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
             <if test="detFreeTime != null  and detFreeTime != ''"> and det_free_time = #{detFreeTime}</if>
-            <if test="documentReceiptDate != null "> and document_receipt_date = #{documentReceiptDate}</if>
+            <if test="documentReceiptDate != null "> and document_receipt_date = to_date(#{documentReceiptDate},'yyyy-MM-dd HH24:mi:ss')</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_Unit = #{businessUnit}</if>
             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
-            <if test="voyNo != null  and voyNo != ''"> and voy_no like concat('%', #{voyNo}, '%')</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no like concat(concat('%', #{voyNo}), '%')</if>
         </where>
         ORDER BY id DESC  
     </select>
@@ -153,22 +152,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from equipment_do
         <where>
             
-            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>  
+            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat(concat('%', #{billOfLading}), '%')</if>  
             <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
-            <if test="carrierCode != null  and carrierCode != ''"> and lower(carrier_code) like concat('%', #{carrierCode}, '%')</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and lower(carrier_code) like concat(concat('%', #{carrierCode}), '%')</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
-             <if test="consignee != null  and consignee != ''"> and lower(consignee) like concat('%', #{consignee}, '%')</if>
-            <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat('%', #{containerNumber}, '%')</if>
+             <if test="consignee != null  and consignee != ''"> and lower(consignee) like concat(concat('%', #{consignee}), '%')</if>
+            <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat(concat('%', #{containerNumber}), '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="documentStatus != null  and documentStatus != ''"> and document_status = #{documentStatus}</if>
             <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
-            <if test="vessel != null  and vessel != ''"> and lower(vessel) like concat('%', #{vessel}, '%')</if>
-            <if test="voyNo != null  and voyNo != ''"> and voy_no like concat('%', #{voyNo}, '%')</if>
-            <if test="fromDate != null ">AND create_time &gt;= #{fromDate}</if>
-			<if test="toDate != null ">AND create_time &lt;= #{toDate}</if>
-            <if test="fromDate != null and toDate != null"> and create_time between #{fromDate} and #{toDate}</if>
+            <if test="vessel != null  and vessel != ''"> and lower(vessel) like concat(concat('%', #{vessel}), '%')</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no like concat(concat('%', #{voyNo}), '%')</if>
+            <if test="fromDate != null ">AND create_time &gt;= to_date(#{documentReceifromDateptDate},'yyyy-MM-dd HH24:mi:ss')</if>
+			<if test="toDate != null ">AND create_time &lt;= to_date(#{toDate},'yyyy-MM-dd HH24:mi:ss')</if>
+            <if test="fromDate != null and toDate != null"> and create_time between to_date(#{fromDate},'yyyy-MM-dd HH24:mi:ss') and to_date(#{toDate},'yyyy-MM-dd HH24:mi:ss')</if>
         </where>
         group by bill_of_lading
         ORDER BY id DESC 
@@ -184,63 +183,62 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertEquipmentDo" parameterType="EquipmentDo" useGeneratedKeys="true" keyProperty="id">
-        insert into equipment_do
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="carrierId != null ">carrier_id,</if>
-            <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
-            <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
-            <if test="billOfLading != null  and billOfLading != ''">bill_of_lading,</if>
-            <if test="businessUnit != null  and businessUnit != ''">business_unit,</if>
-            <if test="consignee != null  and consignee != ''">consignee,</if>
-            <if test="containerNumber != null  and containerNumber != ''">container_number,</if>
-            <if test="expiredDem != null ">expired_dem,</if>
-            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">empty_container_depot,</if>
-            <if test="detFreeTime != null ">det_free_time,</if>
-            <if test="secureCode != null  and secureCode != ''">secure_code,</if>
-            <if test="releaseDate != null ">release_date,</if>
-            <if test="vessel != null  and vessel != ''">vessel,</if>
-            <if test="voyNo != null  and voyNo != ''">voy_no,</if>
-            <if test="doType != null  and doType != ''">do_type,</if>
-            <if test="status != null  and status != ''">status,</if>
-            <if test="processStatus != null  and processStatus != ''">process_status,</if>
-            <if test="documentStatus != null  and documentStatus != ''">document_status,</if>
-            <if test="documentReceiptDate != null ">document_receipt_date,</if>
-            <if test="releaseStatus != null  and releaseStatus != ''">release_status,</if>
-            <if test="createSource != null  and createSource != ''">create_source,</if>
-            <if test="remark != null  and remark != ''">remark,</if>
-            <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
-         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="carrierId != null ">#{carrierId},</if>
-            <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
-            <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
-            <if test="billOfLading != null  and billOfLading != ''">#{billOfLading},</if>
-            <if test="businessUnit != null  and businessUnit != ''">#{businessUnit},</if>
-            <if test="consignee != null  and consignee != ''">#{consignee},</if>
-            <if test="containerNumber != null  and containerNumber != ''">#{containerNumber},</if>
-            <if test="expiredDem != null ">#{expiredDem},</if>
-            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">#{emptyContainerDepot},</if>
-            <if test="detFreeTime != null ">#{detFreeTime},</if>
-            <if test="secureCode != null  and secureCode != ''">#{secureCode},</if>
-            <if test="releaseDate != null ">#{releaseDate},</if>
-            <if test="vessel != null  and vessel != ''">#{vessel},</if>
-            <if test="voyNo != null  and voyNo != ''">#{voyNo},</if>
-            <if test="doType != null  and doType != ''">#{doType},</if>
-            <if test="status != null  and status != ''">#{status},</if>
-            <if test="processStatus != null  and processStatus != ''">#{processStatus},</if>
-            <if test="documentStatus != null  and documentStatus != ''">#{documentStatus},</if>
-            <if test="documentReceiptDate != null ">#{documentReceiptDate},</if>
-            <if test="releaseStatus != null  and releaseStatus != ''">#{releaseStatus},</if>
-            <if test="createSource != null  and createSource != ''">#{createSource},</if>
-            <if test="remark != null  and remark != ''">#{remark},</if>
-            <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
-         </trim>
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+                select seq_equipment_do.nextval as id from DUAL
+            </selectKey>
+            insert into equipment_do
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="carrierId != null ">carrier_id,</if>
+                <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
+                <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
+                <if test="billOfLading != null  and billOfLading != ''">bill_of_lading,</if>
+                <if test="businessUnit != null  and businessUnit != ''">business_unit,</if>
+                <if test="consignee != null  and consignee != ''">consignee,</if>
+                <if test="containerNumber != null  and containerNumber != ''">container_number,</if>
+                <if test="expiredDem != null and expiredDem != ''">expired_dem,</if>
+                <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">empty_container_depot,</if>
+                <if test="detFreeTime != null ">det_free_time,</if>
+                <if test="secureCode != null  and secureCode != ''">secure_code,</if>
+                <if test="releaseDate != null and releaseDate !=''">release_date,</if>
+                <if test="vessel != null  and vessel != ''">vessel,</if>
+                <if test="voyNo != null  and voyNo != ''">voy_no,</if>
+                <if test="doType != null  and doType != ''">do_type,</if>
+                <if test="status != null  and status != ''">status,</if>
+                <if test="processStatus != null  and processStatus != ''">process_status,</if>
+                <if test="documentStatus != null  and documentStatus != ''">document_status,</if>
+                <if test="documentReceiptDate != null ">document_receipt_date,</if>
+                <if test="releaseStatus != null  and releaseStatus != ''">release_status,</if>
+                <if test="createSource != null  and createSource != ''">create_source,</if>
+                <if test="remark != null  and remark != ''">remark,</if>
+                <if test="createBy != null  and createBy != ''">create_by,</if>
+                create_time
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="carrierId != null ">#{carrierId},</if>
+                <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
+                <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
+                <if test="billOfLading != null  and billOfLading != ''">#{billOfLading},</if>
+                <if test="businessUnit != null  and businessUnit != ''">#{businessUnit},</if>
+                <if test="consignee != null  and consignee != ''">#{consignee},</if>
+                <if test="containerNumber != null  and containerNumber != ''">#{containerNumber},</if>
+                <if test="expiredDem != null and expiredDem != ''">to_date(#{expiredDem},'yyyy-MM-dd HH24:mi:ss'),</if>
+                <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">#{emptyContainerDepot},</if>
+                <if test="detFreeTime != null ">#{detFreeTime},</if>
+                <if test="secureCode != null  and secureCode != ''">#{secureCode},</if>
+                <if test="releaseDate != null and releaseDate != ''">to_date(#{releaseDate},'yyyy-MM-dd HH24:mi:ss'),</if>
+                <if test="vessel != null  and vessel != ''">#{vessel},</if>
+                <if test="voyNo != null  and voyNo != ''">#{voyNo},</if>
+                <if test="doType != null  and doType != ''">#{doType},</if>
+                <if test="status != null  and status != ''">#{status},</if>
+                <if test="processStatus != null  and processStatus != ''">#{processStatus},</if>
+                <if test="documentStatus != null  and documentStatus != ''">#{documentStatus},</if>
+                <if test="documentReceiptDate != null and documentReceiptDate != ''">to_date(#{documentReceiptDate},'yyyy-MM-dd HH24:mi:ss'),</if>
+                <if test="releaseStatus != null  and releaseStatus != ''">#{releaseStatus},</if>
+                <if test="createSource != null  and createSource != ''">#{createSource},</if>
+                <if test="remark != null  and remark != ''">#{remark},</if>
+                <if test="createBy != null  and createBy != ''">#{createBy},</if>
+                sysdate
+            </trim>
     </insert>
 
     <update id="updateEquipmentDo" parameterType="EquipmentDo">
@@ -253,11 +251,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="businessUnit != null  and businessUnit != ''">business_unit = #{businessUnit},</if>
             <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
             <if test="containerNumber != null  and containerNumber != ''">container_number = #{containerNumber},</if>
-            <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+            <if test="expiredDem != null and expiredDem != ''">expired_dem = to_date(#{expiredDem},'yyyy-MM-dd HH24:mi:ss'),</if>
             <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">empty_container_depot = #{emptyContainerDepot},</if>
             <if test="detFreeTime != null ">det_free_time = #{detFreeTime},</if>
             <if test="secureCode != null  and secureCode != ''">secure_code = #{secureCode},</if>
-            <if test="releaseDate != null ">release_date = #{releaseDate},</if>
+            <if test="releaseDate != null and releaseDate != ''">release_date = to_date(#{releaseDate},'yyyy-MM-dd HH24:mi:ss'),</if>
             <if test="vessel != null  and vessel != ''">vessel = #{vessel},</if>
             <if test="voyNo != null  and voyNo != ''">voy_no = #{voyNo},</if>
             <if test="doType != null  and doType != ''">do_type = #{doType},</if>
@@ -265,8 +263,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="processStatus != null  and processStatus != ''">process_status = #{processStatus},</if>
             <if test="documentStatus != null  and documentStatus != ''">document_status = #{documentStatus},</if>
             <choose>
-            <when test="documentReceiptDate != null ">
-              document_receipt_date = #{documentReceiptDate},
+            <when test="documentReceiptDate != null and documentReceiptDate != ''">
+              document_receipt_date = to_date(#{documentReceiptDate},'yyyy-MM-dd HH24:mi:ss'),
             </when>
             <otherwise>
                 document_receipt_date = NULL,
@@ -275,10 +273,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="releaseStatus != null  and releaseStatus != ''">release_status = #{releaseStatus},</if>
             <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
@@ -291,8 +287,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="documentStatus != null  and documentStatus != ''">document_status = #{documentStatus},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="processRemark != null  and processRemark != ''">process_remark = #{processRemark},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
-            <if test="documentReceiptDate != null ">document_receipt_date = #{documentReceiptDate},</if>
+            <if test="documentReceiptDate != null and documentReceiptDate != ''">document_receipt_date = to_date(#{documentReceiptDate},'yyyy-MM-dd HH24:mi:ss'),</if>
+            update_time = sysdate
         </trim>
         where bill_of_lading = #{billOfLading}
     </update>
@@ -300,14 +296,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateEquipmentDoExpiredDem" parameterType="EquipmentDo">
         update equipment_do
         <trim prefix="SET" suffixOverrides=",">
-            <if test="newExpiredDem != null ">new_expired_dem = #{newExpiredDem},</if>
+            <if test="newExpiredDem != null ">new_expired_dem = to_date(#{newExpiredDem},'yyyy-MM-dd HH24:mi:ss'),</if>
             <if test="releaseStatus != null  and releaseStatus != ''">release_status = #{releaseStatus},</if>
             <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where bill_of_lading = #{billOfLading}
     </update>
@@ -375,6 +369,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		            #{id}
 		        </foreach>
 		        AND process_status = 1) AS completedBl
+            from equipment_do
 	</select>
 	
 	<select id="getReportForAdmin" parameterType="String" resultType="hashmap">
@@ -383,6 +378,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			(SELECT COUNT(container_number) FROM equipment_do)        AS totalCont,
 			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do where process_status = 0) AS waitingBl,
 			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do where process_status = 1) AS completedBl
+        from equipment_do
 	</select>
 	
 	<select id="selectBillOfLadingInfo" parameterType="String" resultMap="EquipmentDoResult">
