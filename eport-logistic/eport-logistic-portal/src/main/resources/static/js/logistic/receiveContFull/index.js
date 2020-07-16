@@ -261,6 +261,10 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
   return td;
 }
 function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if ($("#dotype").text() == "eDO") {
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+  }
   if (value != null && value != '') {
     if (value.substring(2, 3) != "/") {
       value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);
