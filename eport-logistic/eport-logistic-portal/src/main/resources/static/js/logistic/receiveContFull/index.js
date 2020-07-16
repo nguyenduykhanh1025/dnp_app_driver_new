@@ -181,8 +181,10 @@ function getSelected() {
     $("#quantity").text(row.containerAmount);
     if (row.edoFlg == "0") {
       $("#dotype").text("DO");
+      $("#deleteBtn").show();
     } else {
       $("#dotype").text("eDO");
+      $("#deleteBtn").hide();
     }
     $("#blNo").text(row.blNo);
     rowAmount = row.containerAmount;
@@ -261,7 +263,7 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
   return td;
 }
 function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-  if ($("#dotype").text() == "eDO") {
+  if (shipmentSelected.edoFlg == "1") {
     cellProperties.readOnly = 'true';
     $(td).css("background-color", "rgb(232, 232, 232)");
   }
