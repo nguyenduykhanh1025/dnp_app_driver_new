@@ -23,10 +23,11 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public String getGroupNameByTaxCode(String taxCode) {
+	public Shipment getGroupNameByTaxCode(String taxCode) {
     	String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/"+taxCode;
 		RestTemplate restTemplate = new RestTemplate();
-		return restTemplate.getForObject(url, String.class);
+		Shipment shipment = restTemplate.getForObject(url, Shipment.class);
+		return  shipment;
 	}
 
 	@Override

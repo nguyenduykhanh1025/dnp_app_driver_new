@@ -141,9 +141,10 @@
 	    GROUP BY PTNR_CODE
 	</select>
 	
-	<select id="getGroupNameByTaxCode" parameterType="String" resultType="String">
+	<select id="getGroupNameByTaxCode" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentEntity">
 		SELECT
-	    	ENG_LNM
+	    	ENG_LNM as groupName,
+	    	ADDR as address
 		FROM TB_PTNR
 		WHERE PTNR_TYPE = 'TRK' AND PTNR_CODE = #{taxCode}
 	</select>

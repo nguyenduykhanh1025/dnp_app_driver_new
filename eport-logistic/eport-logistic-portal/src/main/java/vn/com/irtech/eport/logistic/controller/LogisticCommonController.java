@@ -21,6 +21,7 @@ import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -31,6 +32,8 @@ public class LogisticCommonController extends LogisticBaseController {
 	
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+
+	@Autowired ICatosApiService catosApiService;
 	
 	@Autowired
 	private IShipmentService shipmentService;
@@ -45,7 +48,12 @@ public class LogisticCommonController extends LogisticBaseController {
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		Shipment shipment = catosApiService.getGroupNameByTaxCode(taxCode);
+		String groupName = shipment.getGroupName();
+		String address = shipment.getAddress();
+		if (address != null) {
+			ajaxResult.put("address", address);
+		}
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {
