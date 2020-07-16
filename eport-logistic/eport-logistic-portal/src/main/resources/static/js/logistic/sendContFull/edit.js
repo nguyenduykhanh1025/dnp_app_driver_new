@@ -14,6 +14,7 @@ if (shipment != null) {
     }
     $("#containerAmount").val(shipment.containerAmount);
     $("#groupName").val(shipment.groupName);
+    $("#address").val(shipment.address);
     $("#remark").val(shipment.remark);
     if (shipment.status > 1) {
         $("#bookingNo").prop('disabled', true);
@@ -32,6 +33,7 @@ $('input:radio[name="taxCodeDefault"]').change(function() {
     } else {
         $('#taxCode').val(shipment.taxCode).prop('readonly', false);
         $("#groupName").val(shipment.groupName);
+        $("#address").val(shipment.address);
         $("#taxCode").removeClass("error-input");
     }
 });
@@ -48,15 +50,18 @@ function loadGroupName() {
         }).done(function (result) {
             if (result.code == 0) {
                 $("#groupName").val(result.groupName);
+                $("#address").val(result.address);
                 $("#taxCode").removeClass("error-input");
             } else {
                 $.modal.alertError("Không tìm ra mã số thuế!<br>Quý khách vui lòng liên hệ đến bộ phận chăm sóc khách hàng 0933.157.159.");
                 $("#groupName").val('');
                 $("#taxCode").addClass("error-input");
+                $("#address").val('');
             }
         });
     } else {
         $("#groupName").val('');
+        $("#address").val('');
     }
 }
 

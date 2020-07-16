@@ -148,7 +148,10 @@ function formatDate(value) {
   let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
   let month = date.getMonth() + 1;
   let monthText = month < 10 ? "0" + month : month;
-  return day + "/" + monthText + "/" + date.getFullYear();
+  let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+  let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+  let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+  return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes + ":" + seconds;
 }
 
 // FORMAT REMARK FOR SHIPMENT LIST
@@ -178,8 +181,10 @@ function getSelected() {
     $("#quantity").text(row.containerAmount);
     if (row.edoFlg == "0") {
       $("#dotype").text("DO");
+      $("#deleteBtn").show();
     } else {
       $("#dotype").text("eDO");
+      $("#deleteBtn").hide();
     }
     $("#blNo").text(row.blNo);
     rowAmount = row.containerAmount;
@@ -258,6 +263,10 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
   return td;
 }
 function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (shipmentSelected.edoFlg == "1") {
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+  }
   if (value != null && value != '') {
     if (value.substring(2, 3) != "/") {
       value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);

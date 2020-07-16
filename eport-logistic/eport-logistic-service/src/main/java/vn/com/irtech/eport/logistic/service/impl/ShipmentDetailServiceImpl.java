@@ -342,7 +342,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
-            processOrder.setTruckCo(shipment.getTaxCode() + " : " + getGroupNameByTaxCode(shipment.getTaxCode()));
+            processOrder.setTruckCo(shipment.getTaxCode() + " : " + getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -549,7 +549,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public String getGroupNameByTaxCode(String taxCode) throws Exception {
+    public Shipment getGroupNameByTaxCode(String taxCode) throws Exception {
         // String apiUrl = "https://thongtindoanhnghiep.co/api/company/";
         // String methodName = "GET";
         // String readLine = null;
@@ -582,7 +582,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         // return convertedObject.get("Title").toString().replace("\"", "");
         String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/" + taxCode;
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, String.class);
+        return restTemplate.getForObject(url, Shipment.class);
     }
 
     @Override

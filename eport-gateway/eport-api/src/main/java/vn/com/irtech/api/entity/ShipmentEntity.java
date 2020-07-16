@@ -28,6 +28,9 @@ public class ShipmentEntity {
     /** Tên cty theo MST */
     private String groupName;
 
+    /** Địa chỉ theo MST */
+    private String address;
+    
     /** So Luong Container */
     private Long containerAmount;
 
@@ -101,6 +104,14 @@ public class ShipmentEntity {
 		this.groupName = groupName;
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
 	public Long getContainerAmount() {
 		return containerAmount;
 	}
@@ -135,6 +146,7 @@ public class ShipmentEntity {
             .append("opeCode", getOpeCode())
             .append("taxCode", getTaxCode())
             .append("groupName", getGroupName())
+            .append("address", getAddress())
             .append("containerAmount", getContainerAmount())
             .append("edoFlg", getEdoFlg())
             .append("referenceNo", getReferenceNo())
