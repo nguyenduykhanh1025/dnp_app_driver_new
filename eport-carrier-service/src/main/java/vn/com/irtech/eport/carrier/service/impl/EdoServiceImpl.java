@@ -230,19 +230,23 @@ public class EdoServiceImpl implements IEdoService
 					obj.put("emptyContDepot", emptyContDepot[0]);
 					edi.setEmptyContainerDepot(emptyContDepot[0]);
 				}
-				continue;
-						
+				continue;		
 			}
 			//haulage
 			if(s.contains("FTX+AAI"))
 			{
 				String[] haulage = s.split("\\+");
 				haulage[4] = haulage[4].substring(0, haulage[4].length());
-				
                 if(!haulage[4].isEmpty()){
-                    int i = Integer.parseInt(haulage[4]);
-					edi.setDetFreeTime(i);
-					obj.put("haulage", haulage[4]);
+					try{
+						int i = Integer.parseInt(haulage[4]);
+						edi.setDetFreeTime(i);
+						obj.put("haulage", haulage[4]);
+					}catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+					
 				}
 				continue; 
 			}
@@ -250,17 +254,16 @@ public class EdoServiceImpl implements IEdoService
 			//Voy and vessel
 			if(s.contains("TDT+20"))
 			{
-				String[] infoDTD20 = s.split("\\:");
-				if(infoDTD20.length > 5)
+				String[] infoDTD20 = s.split("\\+");
+				if(infoDTD20.length > 7)
 				{
-					String [] voyNo = infoDTD20[0].split("\\+");
-					String [] vesselNo = infoDTD20[2].split("\\+");
-					edi.setVoyNo(voyNo[2]);
-					edi.setVesselNo(vesselNo[3]);
-					edi.setVessel(infoDTD20[5]);
-					obj.put("voyNo", voyNo[2]);
-					obj.put("vesselNo", vesselNo[3]);
-					obj.put("vessel", infoDTD20[5]);
+					String [] vessel = infoDTD20[8].split("\\:");
+					edi.setVoyNo(infoDTD20[2]);
+					edi.setVesselNo(vessel[0]);
+					edi.setVessel(vessel[3]);
+					obj.put("voyNo", infoDTD20[2]);
+					obj.put("vesselNo", vessel[0]);
+					obj.put("vessel", vessel[3]);
 				}
 				
 				continue; 

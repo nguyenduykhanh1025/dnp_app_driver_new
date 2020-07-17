@@ -298,14 +298,148 @@ function multiUpdateEdo()
   $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 600, 400);
 }
 
-$("#vesselNo").change(function() {
-  let edo = new Object();
-  edo.vesselNo = this.value;
-  loadTable(edo);
+// $("#vesselNo").change(function() {
+//   let edo = new Object();
+//   edo.vesselNo = this.value;
+//   loadTable(edo);
+// });
+// $("#voyNo").change(function() {
+//   let edo = new Object();
+//   edo.voyNo = this.value;
+//   loadTable(edo);
+// });
+
+
+// SEARCH INFO VESSEL AREA
+$(".c-search-box-vessel").select2({
+  placeholder: "Vessel",
+  allowClear: true,
+  minimumInputLength: 2,
+  ajax: {
+    url: PREFIX + "/getVessel",
+    dataType: "json",
+    method: "GET",
+    data: function (params) {
+      return {
+        keyString: params.term,
+      };
+    },
+    processResults: function (data) {
+      console.log("DATA" + obj);
+      let results = [];
+      data.data.forEach(function (element, i) {
+        let obj = {};
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
+        
+      })
+      return {
+        "results": [
+          {
+            "id": 1,
+            "text": "Option 1"
+          },
+          {
+            "id": 2,
+            "text": "Option 2"
+          }
+        ],
+        "pagination": {
+          "more": true
+        }
+      };
+    },
+  },
 });
-$("#voyNo").change(function() {
-  let edo = new Object();
-  edo.voyNo = this.value;
-  loadTable(edo);
+
+$(".c-search-box-voy-no").select2({
+  placeholder: "Voy No",
+  allowClear: true,
+  minimumInputLength: 2,
+  ajax: {
+    url: PREFIX + "/getVessel",
+    dataType: "json",
+    method: "GET",
+    data: function (params) {
+      return {
+        keyString: params.term,
+      };
+    },
+    processResults: function (data) {
+      console.log("DATA" + obj);
+      let results = [];
+      data.data.forEach(function (element, i) {
+        let obj = {};
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
+        
+      })
+      return {
+        "results": [
+          {
+            "id": 1,
+            "text": "Option 1"
+          },
+          {
+            "id": 2,
+            "text": "Option 2"
+          }
+        ],
+        "pagination": {
+          "more": true
+        }
+      };
+    },
+  },
 });
+
+$(".c-search-box-vessel-code").select2({
+  placeholder: "Vessel Code",
+  allowClear: true,
+  minimumInputLength: 2,
+  ajax: {
+    url: PREFIX + "/getVessel",
+    dataType: "json",
+    method: "GET",
+    data: function (params) {
+      return {
+        keyString: params.term,
+      };
+    },
+    processResults: function (data) {
+      console.log("DATA" + obj);
+      let results = [];
+      data.data.forEach(function (element, i) {
+        let obj = {};
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
+        
+      })
+      return {
+        "results": [
+          {
+            "id": 1,
+            "text": "Option 1"
+          },
+          {
+            "id": 2,
+            "text": "Option 2"
+          }
+        ],
+        "pagination": {
+          "more": true
+        }
+      };
+    },
+  },
+});
+// For submit search
+// $(".c-search-box-vessel").change(function () {
+//   loadTable($(this).text().trim());
+//   $(this).text(null);
+//   $('#btnReceiverDo').removeAttr("disabled");
+// });
 
