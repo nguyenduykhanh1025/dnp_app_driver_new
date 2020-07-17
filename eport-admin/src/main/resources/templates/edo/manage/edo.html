@@ -3,6 +3,7 @@
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}"/>
     <link th:href="@{/eport/css/edo/manage/edo.css}" rel="stylesheet" />
   </head>
@@ -17,10 +18,34 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="carrierCode">OPR Code</label>
+          <label class="sr-only" for="OPR Code">OPR Code</label>
           <div class="input-group">
-            <select class="form-control" id="carrierCode">
-              <option value="" selected disabled>OPR Code</option>
+            <select class="col-md-12 c-search-opr-code">
+              <option selected="selected"></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="voyNo">Vessel</label>
+          <div class="input-group width150" style="width: 120%;">
+            <select class="col-md-12 c-search-box-vessel"> 
+              <option selected="selected"></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="voyNo">Vessel Code</label>
+          <div class="input-group width150" style="width: 200%;">
+            <select class="col-md-12 c-search-box-vessel-code"> 
+              <option selected="selected"></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="voyNo">Voy No</label>
+          <div class="input-group width150" style="width: 150%;">
+            <select class="col-md-12 c-search-box-voy-no"> 
+              <option selected="selected"></option>
             </select>
           </div>
         </div>
@@ -30,6 +55,15 @@
             <tr>
               <th data-options="field:'billOfLading',align:'left'" width="120">
                 BILL OF LADING
+              </th>
+              <th data-options="field:'vessel',align:'left'" width="110">
+                VESSEL
+              </th>
+              <th data-options="field:'vesselNo',align:'left'" width="110">
+                VESSEL NO
+              </th>
+              <th data-options="field:'voyNo',align:'left'" width="110">
+                VOY NO
               </th>
               <th data-options="field:'businessUnit',align:'center'" width="100">
                 OPR <br />
@@ -98,6 +132,9 @@
               DET FREE <br />
               TIME
             </th>
+            <th data-options="field:'vessel',align:'left'" width="110">
+              VESSEL
+            </th>
             <th data-options="field:'vesselNo',align:'left'" width="110">
               VESSEL NO
             </th>
@@ -119,6 +156,8 @@
     </section>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+    <script th:src="@{/eport/js/modules/edo/manage/edo.js}"></script>
   </body>
-  <script th:src="@{/eport/js/modules/edo/manage/edo.js}"></script>
+
 </html>

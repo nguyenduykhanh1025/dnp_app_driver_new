@@ -99,11 +99,32 @@ public class EdoManageController extends BaseController {
 		return edo;
   }
 
-  @GetMapping("/getCarrierCode")
+  @GetMapping("/getOprCode")
   @ResponseBody
-  public List<String> lisCarrierCode()
+  public List<String> lisOprCode(String keyString)
   {
-      return edoService.selectCarrierCode();
+      return edoService.selectOprCode(keyString);
   }
+
+  @GetMapping("/getVesselCode")
+	@ResponseBody
+	public List<String> lisVesselNo(String keyString)
+	{
+		return edoService.selectVesselNo(keyString);
+	}
+
+	@GetMapping("/getVoyNo")
+	@ResponseBody
+	public List<String> listVoyNo(String keyString)
+	{
+		return edoService.selectVoyNo(keyString);
+	}
+
+	@GetMapping("/getVessel")
+	@ResponseBody
+	public List<String> listVessel(String keyString)
+	{
+		return edoService.selectVesselList(keyString);
+	}
   
 }

@@ -308,20 +308,25 @@ public class EdoServiceImpl implements IEdoService
 	}
 
 
-	public List<String> selectVesselNo()
+	public List<String> selectVesselNo(String keyString)
 	{
-		return edoMapper.selectVesselNo();
+		return edoMapper.selectVesselNo(keyString);
 	}
 
-	public List<String> selectCarrierCode()
+	public List<String> selectOprCode(String keyString)
 	{
-		return edoMapper.selectCarrierCode();
+		return edoMapper.selectOprCode(keyString);
 	} 
 
-	public List<String> selectVoyNo()
+	public List<String> selectVoyNo(String keyString)
 	{
-		return edoMapper.selectVoyNo();
+		return edoMapper.selectVoyNo(keyString);
 	} 
+
+	public List<String> selectVesselList(String keyString)
+	{
+		return edoMapper.selectVesselList(keyString);
+	}
 	
     
 

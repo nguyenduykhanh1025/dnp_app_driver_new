@@ -89,5 +89,19 @@ function formatDateForSubmit(value) {
     return 0;
   }
 
+  
+
+  $.ajax({
+    type: "GET",
+    url: PREFIX + "/getEmptyContainerDeport",
+    success(data) {
+      data.data.forEach(element => {
+        $('.select-emptyContainerDeport').append(`<option value="${element['dictLabel']}"> 
+                                                  ${element['dictLabel']} 
+                                                </option>`);
+      });
+
+    }
+  })
 
 

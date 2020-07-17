@@ -12,24 +12,6 @@ $(function () {
   });
     $("#dg").height($(document).height() - 60);
     $("#dgContainer").height($(document).height() - 60);
-    $.ajax({
-        type: "GET",
-        url: PREFIX + "/getVesselNo",
-        success(data) {
-            data.forEach((element) => {
-                $("#vesselNo").append(`<option value="${element}"> ${element}</option>`);
-            });
-        },
-    });
-    $.ajax({
-      type: "GET",
-      url: PREFIX + "/getVoyNo",
-      success(data) {
-          data.forEach((element) => {
-              $("#voyNo").append(`<option value="${element}"> ${element}</option>`);
-          });
-      },
-  });
     loadTable();
     loadTableByContainer();
 
@@ -325,9 +307,8 @@ $(".c-search-box-vessel").select2({
       };
     },
     processResults: function (data) {
-      console.log("DATA" + obj);
-      let results = [];
-      data.data.forEach(function (element, i) {
+      let results = []
+      data.forEach(function (element, i) {
         let obj = {};
         obj.id = i;
         obj.text = element;
@@ -335,61 +316,7 @@ $(".c-search-box-vessel").select2({
         
       })
       return {
-        "results": [
-          {
-            "id": 1,
-            "text": "Option 1"
-          },
-          {
-            "id": 2,
-            "text": "Option 2"
-          }
-        ],
-        "pagination": {
-          "more": true
-        }
-      };
-    },
-  },
-});
-
-$(".c-search-box-voy-no").select2({
-  placeholder: "Voy No",
-  allowClear: true,
-  minimumInputLength: 2,
-  ajax: {
-    url: PREFIX + "/getVessel",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term,
-      };
-    },
-    processResults: function (data) {
-      console.log("DATA" + obj);
-      let results = [];
-      data.data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
-        
-      })
-      return {
-        "results": [
-          {
-            "id": 1,
-            "text": "Option 1"
-          },
-          {
-            "id": 2,
-            "text": "Option 2"
-          }
-        ],
-        "pagination": {
-          "more": true
-        }
+        results: results,
       };
     },
   },
@@ -400,7 +327,7 @@ $(".c-search-box-vessel-code").select2({
   allowClear: true,
   minimumInputLength: 2,
   ajax: {
-    url: PREFIX + "/getVessel",
+    url: PREFIX + "/getVesselCode",
     dataType: "json",
     method: "GET",
     data: function (params) {
@@ -409,9 +336,8 @@ $(".c-search-box-vessel-code").select2({
       };
     },
     processResults: function (data) {
-      console.log("DATA" + obj);
-      let results = [];
-      data.data.forEach(function (element, i) {
+      let results = []
+      data.forEach(function (element, i) {
         let obj = {};
         obj.id = i;
         obj.text = element;
@@ -419,27 +345,57 @@ $(".c-search-box-vessel-code").select2({
         
       })
       return {
-        "results": [
-          {
-            "id": 1,
-            "text": "Option 1"
-          },
-          {
-            "id": 2,
-            "text": "Option 2"
-          }
-        ],
-        "pagination": {
-          "more": true
-        }
+        results: results,
+      };
+    },
+  },
+});
+
+$(".c-search-box-voy-no").select2({
+  placeholder: "Voy No",
+  allowClear: true,
+  minimumInputLength: 2,
+  ajax: {
+    url: PREFIX + "/getVoyNo",
+    dataType: "json",
+    method: "GET",
+    data: function (params) {
+      return {
+        keyString: params.term,
+      };
+    },
+    processResults: function (data) {
+      let results = []
+      data.forEach(function (element, i) {
+        let obj = {};
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
+        
+      })
+      return {
+        results: results,
       };
     },
   },
 });
 // For submit search
-// $(".c-search-box-vessel").change(function () {
-//   loadTable($(this).text().trim());
-//   $(this).text(null);
-//   $('#btnReceiverDo').removeAttr("disabled");
-// });
+$(".c-search-box-vessel").change(function () {
+  edo = new Object();
+  edo.vessel = $(this).text().trim();
+  $(this).text(null);
+  loadTable(edo);
+});
+$(".c-search-box-vessel-code").change(function () {
+  edo = new Object();
+  edo.vesselNo = $(this).text().trim();
+  $(this).text(null);
+  loadTable(edo);
+});
+$(".c-search-box-voy-no").change(function () {
+  edo = new Object();
+  edo.voyNo = $(this).text().trim();
+  $(this).text(null);
+  loadTable(edo);
+});
 

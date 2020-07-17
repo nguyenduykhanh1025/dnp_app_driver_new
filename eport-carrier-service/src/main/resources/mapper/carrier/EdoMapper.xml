@@ -221,7 +221,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
-        SELECT bill_of_lading, carrier_code, business_unit, create_time, vessel_no, voy_no, (SELECT COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
+        SELECT bill_of_lading, carrier_code, business_unit, create_time, vessel, vessel_no, voy_no, (SELECT COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
         <where>  
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>
@@ -252,18 +252,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
      <select id="selectVoyNo" parameterType="String" resultType="String">
-    	select distinct voy_no
-    	from edo
+    	select distinct voy_no 
+    	from edo where voy_no like concat('%', #{keyString}, '%')
      </select>
 
-     <select id="selectCarrierCode" parameterType="String" resultType="String">
+     <select id="selectOprCode" parameterType="String" resultType="String">
     	select distinct carrier_code
-    	from edo
+    	from edo where carrier_code like concat('%', #{keyString}, '%')
      </select>
 
       <select id="selectVesselNo" parameterType="String" resultType="String">
     	select distinct vessel_no
-    	from edo
+    	from edo where vessel_no like concat('%', #{keyString}, '%')
+     </select>
+
+      <select id="selectVesselList" parameterType="String" resultType="String">
+    	select distinct vessel
+    	from edo where vessel like concat('%', #{keyString}, '%')
      </select>
      
 </mapper>
