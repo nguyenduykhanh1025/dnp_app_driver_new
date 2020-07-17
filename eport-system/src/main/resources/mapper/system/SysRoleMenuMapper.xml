@@ -24,11 +24,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach> 
  	</delete>
 	
-	<insert id="batchRoleMenu">
-		insert into sys_role_menu(role_id, menu_id) values
-		<foreach item="item" index="index" collection="list" separator=",">
-			(#{item.roleId},#{item.menuId})
+	<insert id="batchRoleMenu" useGeneratedKeys="false">
+		insert all
+		<foreach item="item" index="index" collection="list">
+			into sys_role_menu(role_id, menu_id) values (#{item.roleId},#{item.menuId})
 		</foreach>
+		SELECT 1 FROM DUAL
 	</insert>
 	
 </mapper> 

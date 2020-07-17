@@ -46,8 +46,8 @@ public class SysConfig extends BaseEntity
         this.configId = configId;
     }
 
-    @NotBlank(message = "参数名称不能为空")
-    @Size(min = 0, max = 100, message = "参数名称不能超过100 ký tự")
+    @NotBlank(message = "Parameter name cannot be empty")
+    @Size(min = 0, max = 100, message = "Độ dài chuỗi không được vượt quá 100 ký tự")
     public String getConfigName()
     {
         return configName;
@@ -58,8 +58,8 @@ public class SysConfig extends BaseEntity
         this.configName = configName;
     }
 
-    @NotBlank(message = "参数键名长度不能为空")
-    @Size(min = 0, max = 100, message = "参数键名长度不能超过100 ký tự")
+    @NotBlank(message = "Parameter key name length cannot be empty")
+    @Size(min = 0, max = 100, message = "Độ dài chuỗi không được vượt quá 100 ký tự")
     public String getConfigKey()
     {
         return configKey;
@@ -70,8 +70,8 @@ public class SysConfig extends BaseEntity
         this.configKey = configKey;
     }
 
-    @NotBlank(message = "参数键值不能为空")
-    @Size(min = 0, max = 500, message = "参数键值长度不能超过500 ký tự")
+    @NotBlank(message = "Parameter key cannot be empty")
+    @Size(min = 0, max = 3000, message = "Độ dài chuỗi không được vượt quá 3000 ký tự")
     public String getConfigValue()
     {
         return configValue;
