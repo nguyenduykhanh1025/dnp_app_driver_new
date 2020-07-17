@@ -172,7 +172,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="sumOfBillList" parameterType="ProcessBill" resultType="long">
+    <select id="sumOfBillList" parameterType="ProcessBill" resultType="Long">
         select sum(b.vat_after_fee) from process_bill b left join process_order o on b.process_order_id = o.id
         <where>  
             <if test="logisticGroupId != null "> and b.logistic_group_id = #{logisticGroupId}</if>
