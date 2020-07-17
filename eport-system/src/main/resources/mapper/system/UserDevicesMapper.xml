@@ -34,24 +34,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertUserDevices" parameterType="UserDevices" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_user_devices.nextval as id from DUAL
+		</selectKey>
         insert into user_devices
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userToken != null  and userToken != ''">user_token,</if>
             <if test="deviceToken != null  and deviceToken != ''">device_token,</if>
             <if test="userType != null ">user_type,</if>
-            <if test="createTime != null ">create_time,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="updateTime != null ">update_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="userToken != null  and userToken != ''">#{userToken},</if>
             <if test="deviceToken != null  and deviceToken != ''">#{deviceToken},</if>
             <if test="userType != null ">#{userType},</if>
-            <if test="createTime != null ">#{createTime},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -61,10 +60,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userToken != null  and userToken != ''">user_token = #{userToken},</if>
             <if test="deviceToken != null  and deviceToken != ''">device_token = #{deviceToken},</if>
             <if test="userType != null ">user_type = #{userType},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>

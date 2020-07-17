@@ -35,8 +35,21 @@
             <groupId>vn.com.irtech.eport</groupId>
             <artifactId>eport-carrier-framework</artifactId>
         </dependency>
+        <!-- Oracle DB -->
+        <dependency>
+              <groupId>com.oracle</groupId>
+              <artifactId>ojdbc7</artifactId>
+              <version>12.1.0.2</version>
+        </dependency>
         
     </dependencies>
+    <repositories>
+        <!-- Repository for ORACLE ojdbc7. -->
+        <repository>
+          <id>rdc</id>
+          <url>http://nexus.saas.hand-china.com/content/repositories/rdc</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
