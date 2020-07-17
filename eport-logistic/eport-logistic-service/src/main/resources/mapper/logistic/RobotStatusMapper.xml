@@ -33,10 +33,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</selectKey>
         insert into robot_status
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
             <if test="seviceId != null ">sevice_id,</if>
             <if test="activeFlag != null  and activeFlag != ''">active_flag,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
             <if test="seviceId != null ">#{seviceId},</if>
             <if test="activeFlag != null  and activeFlag != ''">#{activeFlag},</if>
          </trim>
