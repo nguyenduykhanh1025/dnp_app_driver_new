@@ -40,8 +40,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
-            <if test="blNo != null and blNo != ''"> and upper(bl_no) like concat('%', #{blNo}, '%')</if>
-            <if test="bookingNo != null and bookingNo != ''"> and upper(booking_no) like concat('%', #{bookingNo}, '%')</if>
+            <if test="blNo != null and blNo != ''"> and upper(bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
             <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
             <if test="groupName != null  and groupName != ''"> and group_name like concat(concat('%', #{groupName}), '%')</if>
