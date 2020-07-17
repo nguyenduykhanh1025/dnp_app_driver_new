@@ -5,6 +5,8 @@ public class LoginForm {
 
 	private String passWord;
 
+	private String deviceToken;
+
 	public String getUserName() {
 		return userName;
 	}
@@ -19,6 +21,14 @@ public class LoginForm {
 
 	public void setPassWord(String passWord) {
 		this.passWord = passWord;
+	}
+
+	public void setDeviceToken(String deviceToken) {
+		this.deviceToken = deviceToken;
+	}
+
+	public String getDeviceToken() {
+		return deviceToken;
 	}
 
 }

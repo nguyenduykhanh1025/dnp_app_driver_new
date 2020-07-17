@@ -245,10 +245,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="params.toDate != null and params.toDate != ''">
-				and expired_dem &lt;= to_date(#{params.toDate},'yyyy-MM-dd HH24:mi:ss')
+				and date_format(expired_dem,'%y%m%d') &lt;= date_format(#{params.toDate},'%y%m%d')
 			</if>
              <if test="params.fromDate != null and params.fromDate != ''">
-				and expired_dem &gt;= to_date(#{params.fromDate},'yyyy-MM-dd HH24:mi:ss')
+				and date_format(expired_dem,'%y%m%d') &gt;= date_format(#{params.fromDate},'%y%m%d')
 			</if>
            
         </where>
