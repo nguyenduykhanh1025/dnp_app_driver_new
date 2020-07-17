@@ -33,24 +33,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertNotificationReceiver" parameterType="NotificationReceiver" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_notification_receiver.nextval as id from DUAL
+		</selectKey>
         insert into notification_receiver
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="notificationId != null ">notification_id,</if>
             <if test="userDeviceId != null ">user_device_id,</if>
             <if test="seenFlg != null">seen_flg,</if>
-            <if test="createTime != null ">create_time,</if>
             <if test="createBy != null ">create_by,</if>
-            <if test="updateTime != null ">update_time,</if>
-            <if test="updateBy != null ">update_by,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="notificationId != null ">#{notificationId},</if>
             <if test="userDeviceId != null ">#{userDeviceId},</if>
             <if test="seenFlg != null">seen_flg</if>
-            <if test="createTime != null ">#{createTime},</if>
             <if test="createBy != null ">#{createBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
-            <if test="updateBy != null ">#{updateBy},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -60,10 +59,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="notificationId != null ">notification_id = #{notificationId},</if>
             <if test="userDeviceId != null ">user_device_id = #{userDeviceId},</if>
             <if test="seenFlg != null">seen_flg = #{seenFlg}</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
-            <if test="createBy != null ">create_by = #{createBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="updateBy != null ">update_by = #{updateBy},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>

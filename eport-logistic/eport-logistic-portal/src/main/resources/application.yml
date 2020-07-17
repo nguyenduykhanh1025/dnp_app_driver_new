@@ -39,7 +39,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles: 
-    active: druid
+    active: test
   servlet:
      multipart:
        max-file-size:  10MB
@@ -54,7 +54,7 @@ mybatis:
     configLocation: classpath:mybatis/mybatis-config.xml
 
 pagehelper: 
-  helperDialect: mysql
+  helperDialect: oracle
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql 
@@ -86,7 +86,7 @@ xss:
 mqtt:
   username: admin             
   password: public            
-  host-url: tcp://127.0.0.1:1883                # The address and port of your own server need to be changed 
+  host-url: tcp://192.168.1.99:1883                # The address and port of your own server need to be changed 
 
 websocket:
    endpoint: /eport_logistic

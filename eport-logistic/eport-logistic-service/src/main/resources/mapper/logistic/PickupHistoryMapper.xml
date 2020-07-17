@@ -135,8 +135,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where id = #{id}
 	</select>
 
-	<insert id="insertPickupHistory" parameterType="PickupHistory"
-		useGeneratedKeys="true" keyProperty="id">
+	<insert id="insertPickupHistory" parameterType="PickupHistory" useGeneratedKeys="true" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_pickup_history.nextval as id from DUAL
+		</selectKey>
 		insert into pickup_history
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="logisticGroupId != null ">logistic_group_id,</if>
@@ -184,7 +186,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="planningDate != null ">#{planningDate},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            sysdate()
+            sysdate
 		</trim>
 	</insert>
 
@@ -212,7 +214,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="planningDate != null ">planning_date = #{planningDate},</if>
 			<if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            update_time = sysdate()
+            update_time = sysdate
 		</trim>
 		where id = #{id}
 	</update>
@@ -338,14 +340,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="serviceType != null "> and s.service_type = #{serviceType}</if>
             <if test="fromDate != null ">and (p.gatein_date = #{fromDate} OR p.gatein_date > #{fromDate})</if>
             <if test="toDate != null ">and (p.gatein_date = #{toDate} OR p.gatein_date &lt; #{toDate})</if>
-			<if test="containerNo != null  and containerNo != ''"> and ( upper(p.container_no) like concat('%', #{containerNo}, '%')</if>
-			<if test="truckNo != null  and truckNo != ''"> or upper(p.truck_no) like concat('%', #{truckNo}, '%')</if>
-			<if test="chassisNo != null  and chassisNo != ''"> or upper(p.chassis_no) like concat('%', #{chassisNo}, '%')</if>
-			<if test="blNo != null  and blNo != ''"> or upper(sh.bl_no) like concat ('%', #{blNo}, '%')</if>
-			<if test="bookingNo != null  and bookingNo != ''"> or upper(sh.booking_no) like concat('%', #{bookingNo}, '%')</if>
-			<if test="sztp != null  and sztp != ''"> or upper(sh.sztp) like concat('%', #{sztp}, '%')</if>
-			<if test="vslNm != null  and vslNm != ''"> or upper(sh.vsl_nm) like concat('%', #{vslNm}, '%')</if>
-			<if test="voyNo != null  and voyNo != ''"> or upper(sh.voy_no) like concat('%', #{voyNo}, '%'))</if>
+			<if test="containerNo != null  and containerNo != ''"> and ( upper(p.container_no) like concat(concat('%', #{containerNo}), '%')</if>
+			<if test="truckNo != null  and truckNo != ''"> or upper(p.truck_no) like concat(concat('%', #{truckNo}), '%')</if>
+			<if test="chassisNo != null  and chassisNo != ''"> or upper(p.chassis_no) like concat(concat('%', #{chassisNo}), '%')</if>
+			<if test="blNo != null  and blNo != ''"> or upper(sh.bl_no) like concat (concat('%', #{blNo}), '%')</if>
+			<if test="bookingNo != null  and bookingNo != ''"> or upper(sh.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+			<if test="sztp != null  and sztp != ''"> or upper(sh.sztp) like concat(concat('%', #{sztp}), '%')</if>
+			<if test="vslNm != null  and vslNm != ''"> or upper(sh.vsl_nm) like concat(concat('%', #{vslNm}), '%')</if>
+			<if test="voyNo != null  and voyNo != ''"> or upper(sh.voy_no) like concat(concat('%', #{voyNo}), '%'))</if>
 		</where>
 	</select>
 
@@ -362,17 +364,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="serviceType != null "> and s.service_type = #{serviceType}</if>
             <if test="fromDate != null ">and p.gatein_date &gt;= #{fromDate}</if>
             <if test="toDate != null ">and p.gatein_date &lt;= #{toDate}</if>
-			<if test="containerNo != null  and containerNo != ''"> and ( upper(p.container_no_) like concat('%', #{containerNo}, '%')</if>
-			<if test="truckNo != null  and truckNo != ''"> or upper(p.truck_no) like concat('%', #{truckNo}, '%')</if>
-			<if test="chassisNo != null  and chassisNo != ''"> or upper(p.chassis_no) like concat('%', #{chassisNo}, '%')</if>
-			<if test="driverName != null  and driverName != ''"> or upper(d.full_name) like concat('%', #{driverName}, '%')</if>
-			<if test="driverPhoneNumber != null  and driverPhoneNumber != ''"> or upper(d.mobile_number) like concat('%', #{driverPhoneNumber}, '%')</if>
-			<if test="logisticGroupName != null  and logisticGroupName != ''"> or upper(g.group_name) like concat('%', #{logisticGroupName}, '%')</if>
-			<if test="blNo != null  and blNo != ''"> or upper(sh.bl_no) like concat ('%', #{blNo}, '%')</if>
-			<if test="bookingNo != null  and bookingNo != ''"> or upper(sh.booking_no) like concat('%', #{bookingNo}, '%')</if>
-			<if test="sztp != null  and sztp != ''"> or upper(sh.sztp) like concat('%', #{sztp}, '%')</if>
-			<if test="vslNm != null  and vslNm != ''"> or upper(sh.vsl_nm) like concat('%', #{vslNm}, '%')</if>
-			<if test="voyNo != null  and voyNo != ''"> or upper(sh.voy_no) like concat('%', #{voyNo}, '%'))</if>
+			<if test="containerNo != null  and containerNo != ''"> and ( upper(p.container_no_) like concat(concat('%', #{containerNo}), '%')</if>
+			<if test="truckNo != null  and truckNo != ''"> or upper(p.truck_no) like concat(concat('%', #{truckNo}), '%')</if>
+			<if test="chassisNo != null  and chassisNo != ''"> or upper(p.chassis_no) like concat(concat('%', #{chassisNo}), '%')</if>
+			<if test="driverName != null  and driverName != ''"> or upper(d.full_name) like concat(concat('%', #{driverName}), '%')</if>
+			<if test="driverPhoneNumber != null  and driverPhoneNumber != ''"> or upper(d.mobile_number) like concat(concat('%', #{driverPhoneNumber}), '%')</if>
+			<if test="logisticGroupName != null  and logisticGroupName != ''"> or upper(g.group_name) like concat(concat('%', #{logisticGroupName}), '%')</if>
+			<if test="blNo != null  and blNo != ''"> or upper(sh.bl_no) like concat (concat('%', #{blNo}), '%')</if>
+			<if test="bookingNo != null  and bookingNo != ''"> or upper(sh.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+			<if test="sztp != null  and sztp != ''"> or upper(sh.sztp) like concat(concat('%', #{sztp}), '%')</if>
+			<if test="vslNm != null  and vslNm != ''"> or upper(sh.vsl_nm) like concat(concat('%', #{vslNm}), '%')</if>
+			<if test="voyNo != null  and voyNo != ''"> or upper(sh.voy_no) like concat(concat('%', #{voyNo}), '%'))</if>
 		</where>
 	</select>
 

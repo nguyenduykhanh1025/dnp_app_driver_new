@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.web.controller.system;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +64,14 @@ public class SysIndexController extends BaseController
     public String main(ModelMap mmap)
     {
     	SysUser user = ShiroUtils.getSysUser();
-		Map<String, String> report = doService.getReportForAdmin();
+        Map<String, String> report = doService.getReportForAdmin();
+        if (report == null) {
+            report = new HashMap<>();
+            report.put("totalBl", "0");
+            report.put("totalCont", "0");
+            report.put("completedBl", "0");
+            report.put("waitingBl", "0");
+        }
 	    mmap.put("report", report);
 	    mmap.put("user", user);
         mmap.put("version", Global.getVersion());

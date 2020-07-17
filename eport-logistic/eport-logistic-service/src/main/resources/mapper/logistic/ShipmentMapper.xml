@@ -44,8 +44,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bookingNo != null and bookingNo != ''"> and upper(booking_no) like concat('%', #{bookingNo}, '%')</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
             <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
-            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
-            <if test="address != null  and address != ''"> and address like concat('%', #{address}, '%')</if>
+            <if test="groupName != null  and groupName != ''"> and group_name like concat(concat('%', #{groupName}), '%')</if>
+            <if test="address != null  and address != ''"> and address like concat(concat('%', #{address}), '%')</if>
             <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
@@ -65,6 +65,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertShipment" parameterType="Shipment" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_shipment.nextval as id from DUAL
+		</selectKey>
         insert into shipment
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="logisticAccountId != null ">logistic_account_id,</if>
@@ -84,9 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''">status,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="logisticAccountId != null ">#{logisticAccountId},</if>
@@ -106,9 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''">#{status},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -131,10 +130,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo},</if>
             <if test="status != null  and status != ''">status = #{status},</if>
             <if test="remark != null">remark = #{remark},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
@@ -170,11 +167,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="fromDate != null">and s.create_time &gt;= #{fromDate}</if>
             <if test="toDate != null">and s.create_time &lt;= #{toDate}</if>
-            <if test="blNo != null and blNo != ''"> and (upper(s.bl_no) like concat('%', #{blNo}, '%')</if>
-            <if test="bookingNo != null and bookingNo != ''"> or upper(s.booking_no) like concat('%', #{bookingNo}, '%')</if>
-            <if test="vslNm != null and vslNm != ''"> or upper(sh.vsl_nm) like concat('%', #{vslNm}, '%')</if>
-            <if test="voyNo != null and voyNo != ''"> or upper(sh.voy_no) like concat('%', #{voyNo}, '%')</if>
-            <if test="taxCode != null and taxCode != ''"> or upper(s.tax_code) like concat('%', #{taxCode}, '%'))</if>
+            <if test="blNo != null and blNo != ''"> and (upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> or upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="vslNm != null and vslNm != ''"> or upper(sh.vsl_nm) like concat(concat('%', #{vslNm}), '%')</if>
+            <if test="voyNo != null and voyNo != ''"> or upper(sh.voy_no) like concat(concat('%', #{voyNo}), '%')</if>
+            <if test="taxCode != null and taxCode != ''"> or upper(s.tax_code) like concat(concat('%', #{taxCode}), '%'))</if>
         </where>
         GROUP BY sh.shipment_id
     </select>
@@ -192,7 +189,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
             <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
-            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="groupName != null  and groupName != ''"> and group_name like concat(concat('%', #{groupName}), '%')</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>

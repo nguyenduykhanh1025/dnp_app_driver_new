@@ -28,6 +28,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertRobotStatus" parameterType="RobotStatus" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_robot_status.nextval as id from DUAL
+		</selectKey>
         insert into robot_status
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="seviceId != null ">sevice_id,</if>
