@@ -40,13 +40,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <select id="selectDbTableColumnsByName" parameterType="String" resultMap="GenTableColumnResult">
-		select column_name, (case when (is_nullable = 'no' <![CDATA[ && ]]> column_key != 'PRI') then '1' else null end) as is_required, (case when column_key = 'PRI' then '1' else '0' end) as is_pk, ordinal_position as sort, column_comment, (case when extra = 'auto_increment' then '1' else '0' end) as is_increment, column_type
-		from information_schema.columns where table_schema = (select database()) and table_name = (#{tableName})
-		order by ordinal_position
+		 select lower(temp.column_name) as column_name,
+                (case when (temp.nullable = 'N'  and  temp.constraint_type != 'P') then '1' else null end) as is_required,
+                (case when temp.constraint_type = 'P' then '1' else '0' end) as is_pk,
+                temp.column_id as sort,
+                temp.comments as column_comment,
+                (case when temp.constraint_type = 'P' then '1' else '0' end) as is_increment,
+                lower(temp.data_type) as column_type
+           from (
+                  select col.column_id, col.column_name,col.nullable, col.data_type, colc.comments, uc.constraint_type
+                       , row_number() over (partition by col.column_name order by uc.constraint_type desc) as row_flg
+                  from user_tab_columns col
+                  left join user_col_comments colc on colc.table_name = col.table_name and colc.column_name = col.column_name
+                  left join user_cons_columns ucc on ucc.table_name = col.table_name and ucc.column_name = col.column_name
+                  left join user_constraints uc on uc.constraint_name = ucc.constraint_name
+                 where col.table_name = upper(#{tableName})
+                  ) temp
+           WHERE temp.row_flg = 1
+          ORDER BY temp.column_id
 	</select>
     
-    <insert id="insertGenTableColumn" parameterType="GenTableColumn" useGeneratedKeys="true" keyProperty="columnId">
+    <insert id="insertGenTableColumn" parameterType="GenTableColumn">
+        <selectKey keyProperty="columnId" resultType="long" order="BEFORE">
+            SELECT seq_gen_table_column.NEXTVAL as columnId FROM DUAL
+        </selectKey>
         insert into gen_table_column (
+			<if test="columnId != null and columnId != ''">column_id,</if>
 			<if test="tableId != null and tableId != ''">table_id,</if>
 			<if test="columnName != null and columnName != ''">column_name,</if>
 			<if test="columnComment != null and columnComment != ''">column_comment,</if>
@@ -67,6 +86,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createBy != null and createBy != ''">create_by,</if>
 			create_time
          )values(
+			<if test="columnId != null and columnId != ''">#{columnId},</if>
 			<if test="tableId != null and tableId != ''">#{tableId},</if>
 			<if test="columnName != null and columnName != ''">#{columnName},</if>
 			<if test="columnComment != null and columnComment != ''">#{columnComment},</if>
@@ -85,7 +105,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="dictType != null and dictType != ''">#{dictType},</if>
 			<if test="sort != null">#{sort},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
-			sysdate()
+			sysdate
          )
     </insert>
 	 
@@ -95,17 +115,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             column_comment = #{columnComment},
             java_type = #{javaType},
             java_field = #{javaField},
-            is_insert = #{isInsert},
-            is_edit = #{isEdit},
-            is_list = #{isList},
-            is_query = #{isQuery},
-            is_required = #{isRequired},
+            is_insert = #{isInsert,jdbcType=CHAR},
+            is_edit = #{isEdit,jdbcType=CHAR},
+            is_list = #{isList,jdbcType=CHAR},
+            is_query = #{isQuery,jdbcType=CHAR},
+            is_required = #{isRequired,jdbcType=CHAR},
             query_type = #{queryType},
             html_type = #{htmlType},
             dict_type = #{dictType},
             sort = #{sort},
-            update_by = #{updateBy},
-            update_time = sysdate()
+            update_by = #{updateBy,jdbcType=VARCHAR},
+            update_time = sysdate
         </set>
         where column_id = #{columnId}
     </update>

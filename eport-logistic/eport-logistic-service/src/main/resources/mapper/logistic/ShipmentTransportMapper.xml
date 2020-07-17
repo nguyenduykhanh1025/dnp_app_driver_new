@@ -32,6 +32,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertShipmentTransport" parameterType="ShipmentTransport" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_shipment_transport.nextval as id from DUAL
+		</selectKey>
         insert into shipment_transport
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="logisticGroupId != null ">logistic_group_id,</if>
