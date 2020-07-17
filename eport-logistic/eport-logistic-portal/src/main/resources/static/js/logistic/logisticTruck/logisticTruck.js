@@ -31,7 +31,7 @@ function loadTable(msg) {
             pageSize: param.rows,
             orderByColumn: param.sort,
             isAsc: param.order,
-			plateNumber: $('#plateNumber').val() == null ? "" : $('#plateNumber').val(),
+			      plateNumber: $('#plateNumber').val() == null ? "" : $('#plateNumber').val(),
           },
           dataType: "json",
           success: function (data) {
