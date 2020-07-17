@@ -27,4 +27,10 @@ public class TransportLoginController extends BaseController {
 		ajaxResult.put("token", loginService.login(loginForm, EportUserType.TRANSPORT));
 		return ajaxResult;
 	}
+
+	@PostMapping("/logout")
+	@ResponseBody
+	public AjaxResult logout() {
+		return success();
+	}
 }

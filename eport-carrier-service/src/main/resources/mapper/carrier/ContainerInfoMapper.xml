@@ -38,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where> 
             <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
             <if test="cntrState != null  and cntrState != ''"> and cntr_state = #{cntrState}</if>
-            <if test="ptnrCode != null  and ptnrCode != ''"> and ptnr_code like concat('%', #{ptnrCode}, '%')</if>
+            <if test="ptnrCode != null  and ptnrCode != ''"> and ptnr_code like concat(concat('%', #{ptnrCode}), '%')</if>
             <if test="toDate != null and fromDate == null">AND in_date &lt;= #{toDate} OR out_date &lt;= #{toDate}</if>
 			<if test="fromDate != null and toDate == null">AND in_date &gt;= #{fromDate} OR out_date  &gt;= #{fromDate}</if>
             <if test="toDate != null and fromDate != null"> AND in_date between #{fromDate} and #{toDate} OR out_date between #{fromDate} and #{toDate}</if>
@@ -52,8 +52,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <insert id="insertContainerInfo" parameterType="ContainerInfo" useGeneratedKeys="true" keyProperty="cntrId">
+        <selectKey keyProperty="cntrId" order="BEFORE" resultType="Long">
+			select seq_container_info.nextval as cntrId from DUAL
+		</selectKey>
         insert into container_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cntrId != null and cntrId != 0">cntr_id,</if>
             <if test="cntrNo != null  and cntrNo != ''">cntr_no,</if>
             <if test="sztp2 != null  and sztp2 != ''">sztp2,</if>
             <if test="fe != null  and fe != ''">fe,</if>
@@ -77,6 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="cntrId != null">#{cntrId},</if>
             <if test="cntrNo != null  and cntrNo != ''">#{cntrNo},</if>
             <if test="sztp2 != null  and sztp2 != ''">#{sztp2},</if>
             <if test="fe != null  and fe != ''">#{fe},</if>

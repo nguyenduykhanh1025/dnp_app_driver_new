@@ -39,6 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</selectKey>
         insert into user_devices
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
             <if test="userToken != null  and userToken != ''">user_token,</if>
             <if test="deviceToken != null  and deviceToken != ''">device_token,</if>
             <if test="userType != null ">user_type,</if>
@@ -46,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
             <if test="userToken != null  and userToken != ''">#{userToken},</if>
             <if test="deviceToken != null  and deviceToken != ''">#{deviceToken},</if>
             <if test="userType != null ">#{userType},</if>

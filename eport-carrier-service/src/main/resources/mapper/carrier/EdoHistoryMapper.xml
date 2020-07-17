@@ -38,14 +38,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
             <if test="action != null  and action != ''"> and action = #{action}</if>
             <if test="ediContent != null  and ediContent != ''"> and edi_content = #{ediContent}</if>
-            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat(concat('%', #{fileName}), '%')</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
             <if test="sendMailFlag != null  and sendMailFlag != ''"> and send_mail_flag = #{sendMailFlag}</if>
               <if test="params.toDate != null and params.toDate != ''">
-				and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.toDate},'%y%m%d')
+				and create_time &lt;= to_date(#{params.toDate},'yyyy-MM-dd HH24:mi:ss')
 			</if>
              <if test="params.fromDate != null and params.fromDate != ''">
-				and date_format(create_time,'%y%m%d') &gt;= date_format(#{params.fromDate},'%y%m%d')
+				and create_time &gt;= to_date(#{params.fromDate},'yyyy-MM-dd HH24:mi:ss')
 			</if>
         </where>
             ORDER BY id ASC 
@@ -57,8 +57,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertEdoHistory" parameterType="EdoHistory" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_edo_history.nextval as id from DUAL
+		</selectKey>
         insert into edo_history
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
             <if test="carrierId != null ">carrier_id,</if>
             <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
             <if test="edoId != null ">edo_id,</if>
@@ -71,11 +75,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              <if test="createSource != null  and createSource != ''">create_source,</if>
             <if test="sendMailFlag != null  and sendMailFlag != ''">send_mail_flag,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
             <if test="carrierId != null ">#{carrierId},</if>
             <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
             <if test="edoId != null ">#{edoId},</if>
@@ -88,9 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createSource != null  and createSource != ''">#{createSource},</if>
             <if test="sendMailFlag != null  and sendMailFlag != ''">#{sendMailFlag},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -108,10 +109,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fileName != null  and fileName != ''">file_name = #{fileName},</if>
             <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>
             <if test="sendMailFlag != null  and sendMailFlag != ''">send_mail_flag = #{sendMailFlag},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
