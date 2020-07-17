@@ -213,7 +213,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public AjaxResult addShipment(Shipment shipment) {
 		//check MST 
 		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode());
+			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
 			if(groupName == null){
 				error("Mã số thuế không tồn tại");
 			}
@@ -236,7 +236,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
 		//check MST 
 		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode());
+			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
 			if(groupName == null){
 				error("Mã số thuế không tồn tại");
 			}
@@ -296,7 +296,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			Shipment shipment = new Shipment();
 			shipment.setId(shipmentDetails.get(0).getShipmentId());
 			boolean updateShipment = true;
-			if (dnPortName.equals(shipmentDt.getEmptyDepot()) && shipmentDt.getVgmChk()) {
+			boolean isSendEmpty = shipmentDt.getVgmChk();
+			if (dnPortName.equals(shipmentDt.getEmptyDepot()) && isSendEmpty) {
 				shipmentSendCont.setBlNo(shipmentDt.getBlNo());
 				shipmentSendCont.setServiceType(Constants.SEND_CONT_EMPTY);
 				List<Shipment> shipments = shipmentService.selectShipmentList(shipmentSendCont);
@@ -315,6 +316,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus(null);
 				shipmentDetail.setCustomStatus(null);
+				shipmentDetail.setVgmChk(null);
 				if (shipmentDetail.getId() == null) {
 					shipmentDetail.setLogisticGroupId(user.getGroupId());
 					shipmentDetail.setCreateBy(user.getFullName());
@@ -335,7 +337,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
 						return error("Lưu khai báo thất bại từ container: " + shipmentDetail.getContainerNo());
 					}
-					if (dnPortName.equals(shipmentDt.getEmptyDepot()) && !isCreated && shipmentDt.getVgmChk()) {
+					if (dnPortName.equals(shipmentDt.getEmptyDepot()) && !isCreated && isSendEmpty) {
 						shipmentDetail.setShipmentId(shipmentSendCont.getId());
 						shipmentDetail.setCustomStatus("N");
 						shipmentDetail.setFe("E");

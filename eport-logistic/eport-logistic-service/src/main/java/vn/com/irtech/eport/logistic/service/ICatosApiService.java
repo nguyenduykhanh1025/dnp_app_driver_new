@@ -9,7 +9,7 @@ public interface ICatosApiService {
 
 	public Shipment getOpeCodeCatosByBlNo(String blNo);
 	
-	public String getGroupNameByTaxCode(String taxCode);
+	public Shipment getGroupNameByTaxCode(String taxCode);
 	
 	public ProcessOrder getYearBeforeAfter(String vessel, String voyage);
 	

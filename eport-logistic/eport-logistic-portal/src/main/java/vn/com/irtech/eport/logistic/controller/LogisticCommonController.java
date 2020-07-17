@@ -11,16 +11,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -31,6 +34,8 @@ public class LogisticCommonController extends LogisticBaseController {
 	
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+
+	@Autowired ICatosApiService catosApiService;
 	
 	@Autowired
 	private IShipmentService shipmentService;
@@ -45,7 +50,12 @@ public class LogisticCommonController extends LogisticBaseController {
 		if (taxCode == null || "".equals(taxCode)) {
 			return error();
 		}
-		String groupName = shipmentDetailService.getGroupNameByTaxCode(taxCode);
+		Shipment shipment = catosApiService.getGroupNameByTaxCode(taxCode);
+		String groupName = shipment.getGroupName();
+		String address = shipment.getAddress();
+		if (address != null) {
+			ajaxResult.put("address", address);
+		}
 		if (groupName != null) {
 			ajaxResult.put("groupName", groupName);
 		} else {
@@ -54,14 +64,13 @@ public class LogisticCommonController extends LogisticBaseController {
 		return ajaxResult;
 	}
 	
-	@GetMapping("/shipments/{serviceType}")
+	@PostMapping("/shipments")
 	@ResponseBody
-	public TableDataInfo listShipment(@PathVariable int serviceType) {
-		startPage();
+	public TableDataInfo listShipment(@RequestBody PageAble<Shipment> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		LogisticAccount user = getUser();
-		Shipment shipment = new Shipment();
+		Shipment shipment = param.getData();
 		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setServiceType(serviceType);
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}

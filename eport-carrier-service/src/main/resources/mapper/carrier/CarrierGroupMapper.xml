@@ -33,12 +33,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectCarrierGroupVo" />
 		<where>
 			<if test="id != null  and id != ''"> and id = #{id}</if>
-			<if test="groupCode != null  and groupCode != ''"> and lower(group_code) like concat('%', #{groupCode},
-				'%')</if>
-			<if test="groupName != null  and groupName != ''"> and lower(group_name) like concat('%', #{groupName},
-				'%')</if>
-			<if test="operateCode != null  and operateCode != ''"> and lower(operate_code) like concat('%', #{operateCode},
-				'%')</if>
+			<if test="groupCode != null  and groupCode != ''"> and lower(group_code) like concat(concat('%', #{groupCode}), '%')</if>
+			<if test="groupName != null  and groupName != ''"> and lower(group_name) like concat(concat('%', #{groupName}), '%')</if>
+			<if test="operateCode != null  and operateCode != ''"> and lower(operate_code) like concat(concat('%', #{operateCode}), '%')</if>
 		</where>
 	</select>
 
@@ -52,8 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		parameterType="CarrierGroup" resultMap="CarrierGroupResult">
 		<include refid="selectCarrierGroupVo" />
 		<where>
-			<if test="groupCode != null  and groupCode != ''"> and lower(group_code) like concat('%', #{groupCode},
-				'%')</if>
+			<if test="groupCode != null  and groupCode != ''"> and lower(group_code) like concat(concat'%', #{groupCode}), '%')</if>
 		</where>
 	</select>
 
@@ -61,13 +57,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		parameterType="CarrierGroup" resultMap="CarrierGroupResult">
 		<include refid="selectCarrierGroupVo" />
 		<where>
-			<if test="groupName != null  and groupName != ''"> and lower(group_name) like concat('%', #{groupName},
-				'%')</if>
+			<if test="groupName != null  and groupName != ''"> and lower(group_name) like concat(concat('%', #{groupName}), '%')</if>
 		</where>
 	</select>
 
-	<insert id="insertCarrierGroup" parameterType="CarrierGroup"
-		useGeneratedKeys="true" keyProperty="id">
+	<insert id="insertCarrierGroup" parameterType="CarrierGroup" useGeneratedKeys="true" keyProperty="id">
+		<selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_carrier_group.nextval as id from DUAL
+		</selectKey>
 		insert into carrier_group
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="groupCode != null  and groupCode != ''">group_code,</if>
@@ -76,13 +73,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="mainEmail != null  and mainEmail != ''">main_email,</if>
 			<if test="doType != null  and doType != ''">do_type,</if>
 			<if test="createBy != null  and createBy != ''">create_by,</if>
-			<if test="createTime != null ">create_time,</if>
-			<if test="updateBy != null  and updateBy != ''">update_by,</if>
-			<if test="updateTime != null ">update_time,</if>
 			<if test="doFlag != null  and doFlag != ''">do_flag,</if>
 			<if test="edoFlag != null  and edoFlag != ''">edo_flag,</if>
 			<if test="apiPrivateKey != null  and apiPrivateKey != ''">api_private_key,</if>
 			<if test="apiPublicKey != null  and apiPublicKey != ''">api_public_key,</if>
+			create_time
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="groupCode != null  and groupCode != ''">#{groupCode},</if>
@@ -91,13 +86,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="mainEmail != null  and mainEmail != ''">#{mainEmail},</if>
 			<if test="doType != null  and doType != ''">#{doType},</if>
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
-			<if test="createTime != null ">#{createTime},</if>
-			<if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-			<if test="updateTime != null ">#{updateTime},</if>
 			<if test="doFlag != null  and doFlag != ''">#{doFlag},</if>
 			<if test="edoFlag != null  and edoFlag != ''">#{edoFlag},</if>
 			<if test="apiPrivateKey != null  and apiPrivateKey != ''">#{apiPrivateKey},</if>
             <if test="apiPublicKey != null  and apiPublicKey != ''">#{apiPublicKey},</if>
+			sysdate
 		</trim>
 	</insert>
 
@@ -109,16 +102,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="operateCode != null  and operateCode != ''">operate_code = #{operateCode},</if>
 			<if test="mainEmail != null  and mainEmail != ''">main_email = #{mainEmail},</if>
 			<if test="doType != null  and doType != ''">do_type = #{doType},</if>
-			<if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-			<if test="createTime != null ">create_time = #{createTime},</if>
 			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-			<if test="updateTime != null ">update_time = #{updateTime},</if>
 			<if test="doFlag != null  and doFlag != ''">do_flag = #{doFlag},</if>
 			<if test="edoFlag != null  and edoFlag != ''">edo_flag = #{edoFlag},</if>
 			<if test="pathEdiReceive != null  and pathEdiReceive != ''">path_edi_receive = #{pathEdiReceive},</if>
 			<if test="pathEdiBackup != null  and pathEdiBackup != ''">path_edi_backup = #{pathEdiBackup},</if>
 			<if test="apiPrivateKey != null  and apiPrivateKey != ''">api_private_key = #{apiPrivateKey},</if>
             <if test="apiPublicKey != null  and apiPublicKey != ''">api_public_key = #{apiPublicKey},</if>
+			update_time = sysdate
 		</trim>
 		where id = #{id}
 	</update>
@@ -149,7 +140,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getDoTypeByOpeCode" parameterType="String"
 		resultType="String">
 		select do_type from carrier_group where operate_code like
-		concat('%', #{opeCode}, '%')
+		concat(concat('%', #{opeCode}), '%')
 	</select>
 
 	<select id="selectCarrierGroupByGroupCode"

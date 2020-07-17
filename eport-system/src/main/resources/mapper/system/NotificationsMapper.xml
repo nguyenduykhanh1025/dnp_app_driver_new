@@ -53,23 +53,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertNotifications" parameterType="Notifications" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_notifications.nextval as id from DUAL
+		</selectKey>
         insert into notifications
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="title != null  and title != ''">title,</if>
             <if test="content != null  and content != ''">content,</if>
-            <if test="createTime != null ">create_time,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="updateTime != null ">update_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="title != null  and title != ''">#{title},</if>
             <if test="content != null  and content != ''">#{content},</if>
-            <if test="createTime != null ">#{createTime},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-         </trim>
+            sysdate
+        </trim>
     </insert>
 
     <update id="updateNotifications" parameterType="Notifications">
@@ -77,10 +76,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="title != null  and title != ''">title = #{title},</if>
             <if test="content != null  and content != ''">content = #{content},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>

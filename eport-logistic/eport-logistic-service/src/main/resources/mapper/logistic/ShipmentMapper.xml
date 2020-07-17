@@ -14,6 +14,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="opeCode"    column="ope_code"    />
         <result property="taxCode"    column="tax_code"    />
         <result property="groupName"    column="group_name"    />
+        <result property="address"    column="address"    />
         <result property="containerAmount"    column="container_amount"    />
         <result property="edoFlg"    column="edo_flg"    />
         <result property="specificContFlg"    column="specific_cont_flg"    />
@@ -30,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="voyNo"    column="voy_no"    />
     </resultMap>
     <sql id="selectShipmentVo">
-        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, container_amount, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, create_by, create_time, update_by, update_time from shipment
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, address, container_amount, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, create_by, create_time, update_by, update_time from shipment
     </sql>
 
     <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
@@ -39,11 +40,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
-            <if test="blNo != null and blNo != ''"> and bl_no = #{blNo}</if>
-            <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="blNo != null and blNo != ''"> and upper(bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> and upper(booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
             <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
-            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="groupName != null  and groupName != ''"> and group_name like concat(concat('%', #{groupName}), '%')</if>
+            <if test="address != null  and address != ''"> and address like concat(concat('%', #{address}), '%')</if>
             <if test="containerAmount != null "> and container_amount = #{containerAmount}</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
@@ -51,6 +53,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
+            <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
+            <if test="toDate != null">and create_time &lt;= #{toDate}</if>
         </where>
         order by create_time desc
     </select>
@@ -61,8 +65,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertShipment" parameterType="Shipment" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_shipment.nextval as id from DUAL
+		</selectKey>
         insert into shipment
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
             <if test="logisticAccountId != null ">logistic_account_id,</if>
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="serviceType != null ">service_type,</if>
@@ -71,6 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="opeCode != null  and opeCode != ''">ope_code,</if>
             <if test="taxCode != null  and taxCode != ''">tax_code,</if>
             <if test="groupName != null  and groupName != ''">group_name,</if>
+            <if test="address != null  and address != ''">address,</if>
             <if test="containerAmount != null ">container_amount,</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg,</if>
             <if test="specificContFlg != null">specific_cont_flg,</if>
@@ -79,11 +88,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''">status,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
             <if test="logisticAccountId != null ">#{logisticAccountId},</if>
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="serviceType != null ">#{serviceType},</if>
@@ -92,6 +100,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="opeCode != null  and opeCode != ''">#{opeCode},</if>
             <if test="taxCode != null  and taxCode != ''">#{taxCode},</if>
             <if test="groupName != null  and groupName != ''">#{groupName},</if>
+            <if test="address != null  and address != ''">#{address},</if>
             <if test="containerAmount != null ">#{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">#{edoFlg},</if>
             <if test="specificContFlg != null">#{specificContFlg},</if>
@@ -100,9 +109,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''">#{status},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -117,6 +124,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="opeCode != null  and opeCode != ''">ope_code = #{opeCode},</if>
             <if test="taxCode != null  and taxCode != ''">tax_code = #{taxCode},</if>
             <if test="groupName != null  and groupName != ''">group_name = #{groupName},</if>
+            <if test="address != null  and address != ''">address = #{address},</if>
             <if test="containerAmount != null ">container_amount = #{containerAmount},</if>
             <if test="edoFlg != null  and edoFlg != ''">edo_flg = #{edoFlg},</if>
             <if test="specificContFlg != null">specific_cont_flg = #{specificContFlg},</if>
@@ -124,10 +132,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo},</if>
             <if test="status != null  and status != ''">status = #{status},</if>
             <if test="remark != null">remark = #{remark},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
@@ -163,11 +169,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="fromDate != null">and s.create_time &gt;= #{fromDate}</if>
             <if test="toDate != null">and s.create_time &lt;= #{toDate}</if>
-            <if test="blNo != null and blNo != ''"> and (upper(s.bl_no) like concat('%', #{blNo}, '%')</if>
-            <if test="bookingNo != null and bookingNo != ''"> or upper(s.booking_no) like concat('%', #{bookingNo}, '%')</if>
-            <if test="vslNm != null and vslNm != ''"> or upper(sh.vsl_nm) like concat('%', #{vslNm}, '%')</if>
-            <if test="voyNo != null and voyNo != ''"> or upper(sh.voy_no) like concat('%', #{voyNo}, '%')</if>
-            <if test="taxCode != null and taxCode != ''"> or upper(s.tax_code) like concat('%', #{taxCode}, '%'))</if>
+            <if test="blNo != null and blNo != ''"> and (upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> or upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="vslNm != null and vslNm != ''"> or upper(sh.vsl_nm) like concat(concat('%', #{vslNm}), '%')</if>
+            <if test="voyNo != null and voyNo != ''"> or upper(sh.voy_no) like concat(concat('%', #{voyNo}), '%')</if>
+            <if test="taxCode != null and taxCode != ''"> or upper(s.tax_code) like concat(concat('%', #{taxCode}), '%'))</if>
         </where>
         GROUP BY sh.shipment_id
     </select>
@@ -185,7 +191,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bookingNo != null and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
             <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
-            <if test="groupName != null  and groupName != ''"> and group_name like concat('%', #{groupName}, '%')</if>
+            <if test="groupName != null  and groupName != ''"> and group_name like concat(concat('%', #{groupName}), '%')</if>
             <if test="edoFlg != null  and edoFlg != ''"> and edo_flg = #{edoFlg}</if>
             <if test="specificContFlg != null"> and specific_cont_flg = #{specificContFlg}</if>
             <if test="contSupplyStatus != null"> and cont_supply_status = #{contSupplyStatus}</if>

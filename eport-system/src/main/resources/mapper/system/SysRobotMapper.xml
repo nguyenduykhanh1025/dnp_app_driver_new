@@ -66,6 +66,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertRobot" parameterType="SysRobot" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_sys_robot.nextval as id from DUAL
+		</selectKey>
         insert into sys_robot
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="uuId != null  and uuId != ''">uuid,</if>
@@ -77,10 +80,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isGateInOrder != null">is_gate_in_order,</if>
             <if test="ipAddress != null  and ipAddress != ''">ip_address,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
             <if test="remark != null  and remark != ''">remark,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="uuId != null  and uuId != ''">#{uuId},</if>
@@ -92,10 +93,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isGateInOrder != null">#{isGateInOrder},</if>
             <if test="ipAddress != null  and ipAddress != ''">#{ipAddress},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -110,11 +109,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isSendContEmptyOrder != null">is_send_cont_empty_order = #{isSendContEmptyOrder},</if>
             <if test="isGateInOrder != null">is_gate_in_order = #{isGateInOrder},</if>
             <if test="ipAddress != null  and ipAddress != ''">ip_address = #{ipAddress},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
@@ -152,11 +149,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isSendContEmptyOrder != null">is_send_cont_empty_order = #{isSendContEmptyOrder},</if>
             <if test="isGateInOrder != null">is_gate_in_order = #{isGateInOrder},</if>
             <if test="ipAddress != null  and ipAddress != ''">ip_address = #{ipAddress},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            update_time = sysdate
         </trim>
         where uuid = #{uuId}
     </update>

@@ -58,8 +58,11 @@ public class ShipmentDetailEntity extends BaseEntity
 
     /** Weight */
     private Long wgt;
-
+    
     /** Vessel name */
+    private String vslName;
+
+    /** Vessel code */
     private String vslNm;
 
     /** Voyage */
@@ -305,7 +308,16 @@ public class ShipmentDetailEntity extends BaseEntity
     {
         return wgt;
     }
-    public void setVslNm(String vslNm) 
+    
+    public String getVslName() {
+		return vslName;
+	}
+
+	public void setVslName(String vslName) {
+		this.vslName = vslName;
+	}
+
+	public void setVslNm(String vslNm) 
     {
         this.vslNm = vslNm;
     }
@@ -493,6 +505,7 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("consignee", getConsignee())
             .append("expiredDem", getExpiredDem())
             .append("wgt", getWgt())
+            .append("vslName", getVslName())
             .append("vslNm", getVslNm())
             .append("voyNo", getVoyNo())
             .append("opeCode", getOpeCode())

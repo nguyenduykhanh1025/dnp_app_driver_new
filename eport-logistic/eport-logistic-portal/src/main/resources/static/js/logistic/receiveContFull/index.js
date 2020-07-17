@@ -6,6 +6,8 @@ var conts = '';
 var allChecked = false, dnDepot = false;
 var checkList = [];
 var rowAmount = 0;
+var shipmentSearch = new Object;
+shipmentSearch.serviceType = 1;
 var sizeList = [
   "22G0: Cont 20 feet khô", 
   "22P0: Cont 20 feet flat rack - quá khổ", 
@@ -53,6 +55,18 @@ $.ajax({
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
+  //DEFAULT SEARCH FOLLOW DATE
+  let fromMonth = (new Date().getMonth()+1 < 10) ? "0" + (new Date().getMonth()+1) : new Date().getMonth()+1;
+  let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
+  $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
+  $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
+  let fromDate = stringToDate($('#fromDate').val());
+  let toDate =  stringToDate($('#toDate').val());
+  fromDate.setHours(0,0,0);
+  toDate.setHours(23, 59, 59);
+  shipmentSearch.fromDate = fromDate.getTime();
+  shipmentSearch.toDate = toDate.getTime();
+
   loadTable();
   $(".left-side").css("height", $(document).height());
   $("#btn-collapse").click(function () {
@@ -61,7 +75,25 @@ $(document).ready(function () {
   $("#btn-uncollapse").click(function () {
     handleCollapse(false);
   });
-
+  //find date
+  $('.from-date').datetimepicker({
+    language: 'en',
+    format: 'dd/mm/yyyy',
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    pickTime: false,
+    minView: 2
+  });
+  $('.to-date').datetimepicker({
+    language: 'en',
+    format: 'dd/mm/yyyy',
+    autoclose: true,
+    todayBtn: true,
+    todayHighlight: true,
+    pickTime: false,
+    minView: 2
+  });
   // Handle add
   $(function () {
     let options = {
@@ -71,6 +103,41 @@ $(document).ready(function () {
     };
     $.table.init(options);
   });
+});
+//search date
+function changeFromDate() {
+  let fromDate = stringToDate($('#fromDate').val());
+  if ($('#toDate').val() != '' && stringToDate($('#toDate').val()).getTime() < fromDate.getTime()) {
+      $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
+      $('#fromDate').val('');
+  } else {
+      shipmentSearch.fromDate = fromDate.getTime();
+      loadTable();
+  }
+}
+
+function changeToDate() {
+  let toDate = stringToDate($('.to-date').val());
+  if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
+      $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
+      $('.to-date').val('');
+  } else {
+      toDate.setHours(23, 59, 59);
+      shipmentSearch.toDate = toDate.getTime();
+      loadTable();
+  }
+}
+
+function stringToDate(dateStr) {
+  let dateParts = dateStr.split('/');
+  return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+}
+document.getElementById("billingSearch").addEventListener("keyup", function (event) {
+  event.preventDefault();
+  if (event.keyCode === 13) {
+    shipmentSearch.blNo = $('#billingSearch').val().toUpperCase();
+    loadTable();
+  }
 });
 
 function handleCollapse(status) {
@@ -101,9 +168,9 @@ function loadTable(msg) {
     $.modal.msgSuccess(msg);
   }
   $("#dg").datagrid({
-    url: "/logistic/shipments/1",
+    url: "/logistic/shipments",
     height: window.innerHeight - 70,
-    method: 'get',
+    method: 'post',
     singleSelect: true,
     collapsible: true,
     clientPaging: false,
@@ -122,13 +189,14 @@ function loadTable(msg) {
       $.ajax({
         type: opts.method,
         url: opts.url,
-        data: {
+        contentType: "application/json",
+        data: JSON.stringify({
           pageNum: param.page,
           pageSize: param.rows,
           orderByColumn: param.sort,
           isAsc: param.order,
-        },
-        dataType: "json",
+          data: shipmentSearch
+        }),
         success: function (data) {
           success(data);
           $("#dg").datagrid("hideColumn", "id");
@@ -148,7 +216,10 @@ function formatDate(value) {
   let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
   let month = date.getMonth() + 1;
   let monthText = month < 10 ? "0" + month : month;
-  return day + "/" + monthText + "/" + date.getFullYear();
+  let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+  let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+  let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+  return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes + ":" + seconds;
 }
 
 // FORMAT REMARK FOR SHIPMENT LIST
@@ -178,8 +249,10 @@ function getSelected() {
     $("#quantity").text(row.containerAmount);
     if (row.edoFlg == "0") {
       $("#dotype").text("DO");
+      $("#deleteBtn").show();
     } else {
       $("#dotype").text("eDO");
+      $("#deleteBtn").hide();
     }
     $("#blNo").text(row.blNo);
     rowAmount = row.containerAmount;
@@ -258,6 +331,10 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
   return td;
 }
 function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (shipmentSelected.edoFlg == "1") {
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+  }
   if (value != null && value != '') {
     if (value.substring(2, 3) != "/") {
       value = value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4);

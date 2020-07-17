@@ -138,7 +138,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     public AjaxResult addShipment(Shipment shipment) {
 		//check MST 
 		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode());
+			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
 			if(groupName == null){
 				error("Mã số thuế không tồn tại");
 			}
@@ -174,7 +174,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
     public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
 		//check MST 
 		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode());
+			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
 			if(groupName == null){
 				error("Mã số thuế không tồn tại");
 			}

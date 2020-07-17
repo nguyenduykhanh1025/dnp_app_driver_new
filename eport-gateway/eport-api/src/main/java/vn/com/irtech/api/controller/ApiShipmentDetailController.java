@@ -70,7 +70,7 @@ public class ApiShipmentDetailController {
 	}
 	
 	@GetMapping("/shipmentDetail/getGroupNameByTaxCode/{taxCode}")
-	public String getGroupNameByTaxCode(@PathVariable String taxCode) {
+	public ShipmentEntity getGroupNameByTaxCode(@PathVariable String taxCode) {
 		return shipmentDetailDao.getGroupNameByTaxCode(taxCode);
 	}
 	

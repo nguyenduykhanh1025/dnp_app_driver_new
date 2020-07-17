@@ -1,20 +1,20 @@
 spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
-        driverClassName: com.mysql.cj.jdbc.Driver
+        driverClassName: oracle.jdbc.OracleDriver
         druid:
             master:
-                url: jdbc:mysql://localhost:3306/eport?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B7
-                username: root
-                password: 
+                url: jdbc:oracle:thin:@117.3.52.70:41521/CATOS_TEST
+                username: EPORT_DNP_UAT
+                password: EPORT_DNP_2020
             slave:
                 enabled: false
                 url: 
                 username: 
                 password: 
-            initialSize: 5
+            initialSize: 10
             minIdle: 10
-            maxActive: 20
+            maxActive: 100
             maxWait: 60000
             timeBetweenEvictionRunsMillis: 60000
             minEvictableIdleTimeMillis: 300000

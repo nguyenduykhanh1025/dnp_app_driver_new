@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.carrier.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,14 @@ public class CarrierIndexController extends CarrierBaseController
     {
     	CarrierAccount user = ShiroUtils.getSysUser();
     	String opeCodes = groupService.selectCarrierGroupById(user.getGroupId()).getOperateCode();
-    	Map<String, String> report = doService.getReportByCarrierGroup(opeCodes.split(","));
+        Map<String, String> report = doService.getReportByCarrierGroup(opeCodes.split(","));
+        if (report == null) {
+            report = new HashMap<>();
+            report.put("totalBl", "0");
+            report.put("totalCont", "0");
+            report.put("completedBl", "0");
+            report.put("waitingBl", "0");
+        }
         mmap.put("report", report);
         mmap.put("user", user);
         mmap.put("version", Global.getVersion());

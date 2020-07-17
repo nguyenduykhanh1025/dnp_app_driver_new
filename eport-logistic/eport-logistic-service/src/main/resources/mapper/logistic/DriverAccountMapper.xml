@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from driver_account c left join logistic_group g on c.logistic_group_id = g.id
         <where>  
             <if test="logisticGroup.groupName != null and logisticGroup.groupName !=''"> <bind name="groupNamePattern" value="'%' + logisticGroup.groupName + '%'"/> and lower(g.group_name) like #{groupNamePattern}</if>
-            <if test="mobileNumber != null  and mobileNumber != ''"> and c.mobile_number like concat('%', #{mobileNumber}, '%')</if>
+            <if test="mobileNumber != null  and mobileNumber != ''"> and c.mobile_number like concat(concat('%', #{mobileNumber}), '%')</if>
             <if test="fullName != null  and fullName != ''"> and lower(c.full_name) like concat('%', #{fullName}, '%')</if>
             <if test="identifyCardNo != null  and identifyCardNo != ''"> and identify_card_no = #{identifyCardNo}</if>
             <if test="validDate != null ">and c.valid_date &lt;= #{validDate}</if>
@@ -57,6 +57,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertDriverAccount" parameterType="DriverAccount" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_driver_account.nextval as id from DUAL
+		</selectKey>
         insert into driver_account
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="logisticGroupId != null ">logistic_group_id,</if>
@@ -70,9 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validDate != null ">valid_date,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
@@ -86,9 +87,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validDate != null ">#{validDate},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -105,10 +104,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlag != null ">del_flag = #{delFlag},</if>
             <if test="validDate != null ">valid_date = #{validDate},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
