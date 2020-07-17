@@ -13,11 +13,14 @@ server:
 
 spring:
     datasource:
-        driverClassName: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/eport?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B7
-        username: root
-        password: 
-                        
+        # driverClassName: com.mysql.cj.jdbc.Driver
+        # url: jdbc:mysql://localhost:3306/eport?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B7
+        # username: root
+        # password:
+        driverClassName: oracle.jdbc.OracleDriver 
+        url: jdbc:oracle:thin:@117.3.52.70:41521/CATOS_TEST
+        username: EPORT_DNP_UAT
+        password: EPORT_DNP_2020
 mybatis:
     typeAliasesPackage: vn.com.irtech.eport.**.domain
     mapperLocations: classpath*:mapper/**/*Mapper.xml

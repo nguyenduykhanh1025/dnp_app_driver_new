@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - EportApiApplication",
+            "request": "launch",
+            "mainClass": "vn.com.irtech.eport.api.EportApiApplication",
+            "projectName": "eport-api-transport"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - EportCarrierApplication",
             "request": "launch",
             "mainClass": "vn.com.irtech.eport.EportCarrierApplication",
