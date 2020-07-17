@@ -11,10 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -62,14 +64,13 @@ public class LogisticCommonController extends LogisticBaseController {
 		return ajaxResult;
 	}
 	
-	@GetMapping("/shipments/{serviceType}")
+	@PostMapping("/shipments")
 	@ResponseBody
-	public TableDataInfo listShipment(@PathVariable int serviceType) {
-		startPage();
+	public TableDataInfo listShipment(@RequestBody PageAble<Shipment> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		LogisticAccount user = getUser();
-		Shipment shipment = new Shipment();
+		Shipment shipment = param.getData();
 		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setServiceType(serviceType);
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		return getDataTable(shipments);
 	}
