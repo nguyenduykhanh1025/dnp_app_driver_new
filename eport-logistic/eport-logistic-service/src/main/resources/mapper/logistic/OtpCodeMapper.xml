@@ -42,6 +42,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertSysOtp" parameterType="SysOtp" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_sys_otp.nextval as id from DUAL
+		</selectKey>
         insert into sys_otp
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="optCode != null  and optCode != ''">opt_code,</if>
@@ -52,9 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="verifyStatus != null  and verifyStatus != ''">verify_status,</if>
             <if test="expiredTime != null ">expired_time,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="optCode != null  and optCode != ''">#{optCode},</if>
@@ -65,9 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="verifyStatus != null  and verifyStatus != ''">#{verifyStatus},</if>
             <if test="expiredTime != null ">#{expiredTime},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -81,10 +80,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="msgStatus != null  and msgStatus != ''">msg_status = #{msgStatus},</if>
             <if test="verifyStatus != null  and verifyStatus != ''">verify_status = #{verifyStatus},</if>
             <if test="expiredTime != null ">expired_time = #{expiredTime},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>

@@ -38,7 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="externalSecretCode != null  and externalSecretCode != ''"> and external_secret_code = #{externalSecretCode}</if>
             <if test="driverOwner != null  and driverOwner != ''"> and driver_owner = #{driverOwner}</if>
             <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
-            <if test="fullName != null  and fullName != ''"> and full_name like concat('%', #{fullName}, '%')</if>
+            <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
         </where>
@@ -50,6 +50,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertPickupAssign" parameterType="PickupAssign" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_pickup_assign.nextval as id from DUAL
+		</selectKey>
         insert into pickup_assign
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="logisticGroupId != null ">logistic_group_id,</if>
@@ -65,9 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="chassisNo != null  and chassisNo != ''">chassis_no,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
@@ -83,9 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="chassisNo != null  and chassisNo != ''">#{chassisNo},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -104,10 +103,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="truckNo != null  and truckNo != ''">truck_no = #{truckNo},</if>
             <if test="chassisNo != null  and chassisNo != ''">chassis_no = #{chassisNo},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
@@ -133,14 +130,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="externalSecretCode != null  and externalSecretCode != ''"> and external_secret_code = #{externalSecretCode}</if>
             <if test="driverOwner != null  and driverOwner != ''"> and driver_owner = #{driverOwner}</if>
             <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
-            <if test="fullName != null  and fullName != ''"> and full_name like concat('%', #{fullName}, '%')</if>
+            <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
         </where>
         group by driver_owner
     </select>
     <select id="getPhoneNumbersByDriverOwner" parameterType="PickupAssign" resultType="String">
-    select phone_number from pickup_assign
+        select phone_number from pickup_assign
         <where>  
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
@@ -150,14 +147,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="externalSecretCode != null  and externalSecretCode != ''"> and external_secret_code = #{externalSecretCode}</if>
             <if test="driverOwner != null  and driverOwner != ''"> and driver_owner = #{driverOwner}</if>
             <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
-            <if test="fullName != null  and fullName != ''"> and full_name like concat('%', #{fullName}, '%')</if>
+            <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
         </where>
         group by phone_number
     </select>
     <select id="getInforOutSourceByPhoneNumber" parameterType="PickupAssign" resultMap="PickupAssignResult">
-    <include refid="selectPickupAssignVo"/>
+        <include refid="selectPickupAssignVo"/>
         <where>  
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
@@ -167,7 +164,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="externalSecretCode != null  and externalSecretCode != ''"> and external_secret_code = #{externalSecretCode}</if>
             <if test="driverOwner != null  and driverOwner != ''"> and driver_owner = #{driverOwner}</if>
             <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
-            <if test="fullName != null  and fullName != ''"> and full_name like concat('%', #{fullName}, '%')</if>
+            <if test="fullName != null  and fullName != ''"> and full_name like concat(concat('%', #{fullName}), '%')</if>
             <if test="truckNo != null  and truckNo != ''"> and truck_no = #{truckNo}</if>
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
         </where>

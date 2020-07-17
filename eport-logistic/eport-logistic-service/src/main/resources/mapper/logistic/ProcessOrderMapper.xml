@@ -82,9 +82,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertProcessOrder" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="ProcessOrder">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_process_order.nextval as id from DUAL
+		</selectKey>
         insert into process_order
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null ">id,</if>
             <if test="shipmentId != null ">shipment_id,</if>
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="serviceType != null ">service_type,</if>
@@ -107,12 +109,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="result != null  and result != ''">result,</if>
             <if test="data != null  and data != ''">data,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null ">#{id},</if>
             <if test="shipmentId != null ">#{shipmentId},</if>
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="serviceType != null ">#{serviceType},</if>
@@ -135,9 +134,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="result != null  and result != ''">#{result},</if>
             <if test="data != null  and data != ''">#{data},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -165,10 +162,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null ">status = #{status},</if>
             <if test="result != null  and result != ''">result = #{result},</if>
             <if test="data != null  and data != ''">data = #{data},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
@@ -186,7 +181,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectOrderListForOmSupport" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
         select p.id, p.shipment_id, p.logistic_group_id, p.service_type, p.pay_type, p.consignee, p.tax_code, p.bl_no, p.booking_no, p.pickup_date, 
-        p.vessel, p.voyage, p.cont_number, p.status, p.result, p.reference_no, s.process_order_id, s.container_no, s.sztp, s.fe, s.cargo_type, s.discharge_port, s.ope_code, s.wgt
+        p.vessel, p.voyage, p.cont_number, p.status, p.result, p.reference_no, s.container_no, s.sztp, s.fe, s.cargo_type, s.discharge_port, s.ope_code, s.wgt
         from process_order p
         left join shipment_detail s on p.id = s.process_order_id
         <where>
@@ -236,9 +231,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="status != null "> and status = #{status}</if>
             <if test="result != null  and result != ''"> and result = #{result}</if>
-            <if test="taxCode != null  and taxCode != ''"> and (upper(tax_code) like concat('%', #{taxCode}, '%')</if>
-            <if test="vessel != null  and vessel != ''"> or upper(vessel) like concat('%', #{vessel}, '%')</if>
-            <if test="voyage != null  and voyage != ''"> or upper(voyage) like concat('%', #{voyage}, '%'))</if>
+            <if test="taxCode != null  and taxCode != ''"> and (upper(tax_code) like concat(concat('%', #{taxCode}), '%')</if>
+            <if test="vessel != null  and vessel != ''"> or upper(vessel) like concat(concat('%', #{vessel}), '%')</if>
+            <if test="voyage != null  and voyage != ''"> or upper(voyage) like concat(concat('%', #{voyage}), '%'))</if>
         </where>
     </select>
     
