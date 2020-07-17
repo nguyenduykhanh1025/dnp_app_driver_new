@@ -147,6 +147,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</selectKey>
         insert into shipment_detail
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
             <if test="shipmentId != null ">shipment_id,</if>
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="processOrderId != null  and processOrderId != ''">process_order_id,</if>
@@ -161,7 +162,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''">consignee,</if>
             <if test="expiredDem != null ">expired_dem,</if>
             <if test="wgt != null ">wgt,</if>
-             <if test="vslName != null  and vslName != ''">vsl_name,</if>
+            <if test="vslName != null  and vslName != ''">vsl_name,</if>
             <if test="vslNm != null  and vslNm != ''">vsl_nm,</if>
             <if test="voyNo != null  and voyNo != ''">voy_no,</if>
             <if test="opeCode != null  and opeCode != ''">ope_code,</if>
@@ -187,6 +188,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
             <if test="shipmentId != null ">#{shipmentId},</if>
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="processOrderId != null  and processOrderId != ''">#{processOrderId},</if>
