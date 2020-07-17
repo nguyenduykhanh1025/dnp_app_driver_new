@@ -3,11 +3,13 @@ package vn.com.irtech.eport.logistic.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
 import vn.com.irtech.eport.logistic.mapper.PickupHistoryMapper;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 
@@ -116,5 +118,10 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     @Override
     public List<PickupHistory> selectPickupHistoryListForOmSupport(PickupHistory pickupHistory) {
         return pickupHistoryMapper.selectPickupHistoryListForOmSupport(pickupHistory);
+    }
+    
+    @Override
+    public List<PickupHistoryForm> selectPickupHistoryForDriver(@Param("userPhoneNumber") String userPhoneNumber) {
+        return pickupHistoryMapper.selectPickupHistoryForDriver(userPhoneNumber);
     }
 }

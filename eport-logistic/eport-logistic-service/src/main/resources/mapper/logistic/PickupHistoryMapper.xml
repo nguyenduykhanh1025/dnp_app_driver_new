@@ -389,4 +389,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="shipmentId != null "> and p.shipment_id = #{shipmentId}</if>
 		</where>
 	</select>
+
+	<select id="selectPickupHistoryForDriver" parameterType="String" resultType="vn.com.irtech.eport.logistic.form.PickupHistoryForm">
+		select p.id as pickupHistoryId, p.container_no as containerNo, p.gatein_date as gateInDate
+		from pickup_history p
+		left join pickup_assign a
+		on p.pickup_assign_id = a.id
+		<where>
+			<if test="userPhoneNumber != null "> and a.phone_number = #{userPhoneNumber}</if>
+		</where>
+		order by p.gatein_date desc
+	</select>
 </mapper>
