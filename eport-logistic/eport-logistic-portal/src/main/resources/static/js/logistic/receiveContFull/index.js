@@ -164,7 +164,6 @@ function handleCollapse(status) {
 
 // LOAD SHIPMENT LIST
 function loadTable(msg) {
-  console.log(shipmentSearch.fromDate, shipmentSearch.toDate)
   if (msg) {
     $.modal.msgSuccess(msg);
   }
