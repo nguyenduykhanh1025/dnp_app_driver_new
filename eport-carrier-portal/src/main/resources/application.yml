@@ -54,7 +54,7 @@ mybatis:
     configLocation: classpath:mybatis/mybatis-config.xml
 
 pagehelper: 
-  helperDialect: mysql
+  helperDialect: oracle
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql 
