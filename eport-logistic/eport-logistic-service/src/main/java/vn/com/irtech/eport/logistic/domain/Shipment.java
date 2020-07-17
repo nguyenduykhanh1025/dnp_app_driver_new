@@ -53,6 +53,10 @@ public class Shipment extends BaseEntity
     /** Tên cty theo MST */
     @Excel(name = "Tên công ty")
     private String groupName;
+    
+    /** Địa chỉ theo MST */
+    @Excel(name = "Địa chỉ")
+    private String address;
 
     /** So Luong Container */
     @Excel(name = "So Luong Container")
@@ -176,7 +180,15 @@ public class Shipment extends BaseEntity
         return groupName;
     }
     
-    public void setContainerAmount(Long containerAmount) 
+    public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public void setContainerAmount(Long containerAmount) 
     {
         this.containerAmount = containerAmount;
     }
@@ -281,6 +293,7 @@ public class Shipment extends BaseEntity
             .append("opeCode", getOpeCode())
             .append("taxCode", getTaxCode())
             .append("groupName", getGroupName())
+            .append("address", getAddress())
             .append("containerAmount", getContainerAmount())
             .append("edoFlg", getEdoFlg())
             .append("specificContFlg", getSpecificContFlg())

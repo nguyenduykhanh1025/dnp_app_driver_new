@@ -20,6 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="consignee"    column="consignee"    />
         <result property="expiredDem"    column="expired_dem"    />
         <result property="wgt"    column="wgt"    />
+        <result property="vslName"    column="vsl_name"    />
         <result property="vslNm"    column="vsl_nm"    />
         <result property="voyNo"    column="voy_no"    />
         <result property="opeCode"    column="ope_code"    />
@@ -51,7 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
-        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_nm, voy_no, ope_code, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, shifting_cont_number, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
+        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name, vsl_nm, voy_no, ope_code, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, shifting_cont_number, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -70,6 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
@@ -109,6 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
@@ -155,6 +158,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''">consignee,</if>
             <if test="expiredDem != null ">expired_dem,</if>
             <if test="wgt != null ">wgt,</if>
+             <if test="vslName != null  and vslName != ''">vsl_name,</if>
             <if test="vslNm != null  and vslNm != ''">vsl_nm,</if>
             <if test="voyNo != null  and voyNo != ''">voy_no,</if>
             <if test="opeCode != null  and opeCode != ''">ope_code,</if>
@@ -196,6 +200,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''">#{consignee},</if>
             <if test="expiredDem != null ">#{expiredDem},</if>
             <if test="wgt != null ">#{wgt},</if>
+            <if test="vslName != null  and vslName != ''">#{vslName},</if>
             <if test="vslNm != null  and vslNm != ''">#{vslNm},</if>
             <if test="voyNo != null  and voyNo != ''">#{voyNo},</if>
             <if test="opeCode != null  and opeCode != ''">#{opeCode},</if>
@@ -241,6 +246,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
             <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
             <if test="wgt != null ">wgt = #{wgt},</if>
+            <if test="vslName != null  and vslName != ''">vsl_name = #{vslName},</if>
             <if test="vslNm != null  and vslNm != ''">vsl_nm = #{vslNm},</if>
             <if test="voyNo != null  and voyNo != ''">voy_no = #{voyNo},</if>
             <if test="opeCode != null  and opeCode != ''">ope_code = #{opeCode},</if>
@@ -364,6 +370,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         consignee,
         expired_dem as expiredDem,
         wgt,
+        vsl_name as vslName,
         vsl_nm as vslNm,
         voy_no as voyNo,
         ope_code as opeCode,
@@ -406,6 +413,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
@@ -447,6 +455,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fe != null  and fe != ''"> or s.fe like concat('%', #{fe}, '%')</if>
             <if test="bookingNo != null  and bookingNo != ''"> or s.booking_no like concat('%', #{bookingNo}, '%')</if>
             <if test="blNo != null  and blNo != ''"> or s.bl_no like concat('%', #{blNo}, '%')</if>
+            <if test="vslName != null  and vslName != ''"> or s.vsl_name like concat('%', #{vslName}, '%')</if>
             <if test="vslNm != null  and vslNm != ''"> or s.vsl_nm like concat('%', #{vslNm}, '%')</if>
             <if test="voyNo != null  and voyNo != ''"> or s.voy_no like concat('%', #{voyNo}, '%'))</if>
         </where>

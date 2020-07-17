@@ -101,7 +101,7 @@ public interface IShipmentDetailService
 
     public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
 
-    public String getGroupNameByTaxCode(String taxCode) throws Exception;
+    public Shipment getGroupNameByTaxCode(String taxCode) throws Exception;
 
     public ProcessOrder getYearBeforeAfter(String vessel, String voyage);
     
