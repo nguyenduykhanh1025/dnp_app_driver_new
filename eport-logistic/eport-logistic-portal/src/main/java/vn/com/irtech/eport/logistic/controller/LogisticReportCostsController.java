@@ -43,7 +43,11 @@ public class LogisticReportCostsController extends LogisticBaseController {
 		processBill.setLogisticGroupId(getUser().getGroupId());
 		List<ProcessBill> processBills = processBillService.selectBillReportList(processBill);
 		ajaxResult.put("list", getDataTable(processBills));
-		ajaxResult.put("total", processBillService.sumOfBillList(processBill));
+		Long total = processBillService.sumOfBillList(processBill);
+		if (total == null) {
+			total = 0L;
+		}
+		ajaxResult.put("total", total);
 		return ajaxResult;
 	}
 }

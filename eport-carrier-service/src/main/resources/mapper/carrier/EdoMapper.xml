@@ -59,11 +59,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlg != null  and delFlg != ''"> and del_flg = #{delFlg}</if>
             <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
             <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
-            <if test="consignee != null  and consignee != ''"> and (upper(consignee) like concat('%', #{consignee}, '%')</if>
-            <if test="containerNumber != null  and containerNumber != ''"> or upper(container_number) like concat('%', #{containerNumber}, '%')</if>
-            <if test="vessel != null  and vessel != ''"> or upper(vessel) like concat('%', #{vessel}, '%')</if>
-            <if test="voyNo != null  and voyNo != ''"> or upper(voy_no) like concat('%', #{voyNo}, '%'))</if>
-            <if test="sztp != null  and sztp != ''"> or upper(sztp) like concat('%', #{sztp}, '%'))</if>
+            <if test="consignee != null  and consignee != ''"> and (upper(consignee) like concat(concat('%', #{consignee}), '%')</if>
+            <if test="containerNumber != null  and containerNumber != ''"> or upper(container_number) like concat(concat('%', #{containerNumber}), '%')</if>
+            <if test="vessel != null  and vessel != ''"> or upper(vessel) like concat(concat('%', #{vessel}), '%')</if>
+            <if test="voyNo != null  and voyNo != ''"> or upper(voy_no) like concat(concat('%', #{voyNo}), '%'))</if>
+            <if test="sztp != null  and sztp != ''"> or upper(sztp) like concat(concat('%', #{sztp}), '%'))</if>
         </where>
 
     </select>
@@ -102,8 +102,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
         
     <insert id="insertEdo" parameterType="Edo" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_edo.nextval as id from DUAL
+		</selectKey>
         insert into edo
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
             <if test="carrierId != null ">carrier_id,</if>
             <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
             <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
@@ -130,6 +134,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
             <if test="carrierId != null ">#{carrierId},</if>
             <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
             <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
@@ -153,7 +158,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="delFlg != null ">#{delFlg},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            sysdate()
+            sysdate
          </trim>
     </insert>
 
@@ -183,7 +188,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="delFlg != null ">del_flg = #{delFlg},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            update_time = sysdate()
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
@@ -224,7 +229,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         SELECT bill_of_lading, carrier_code, business_unit, create_time, vessel, vessel_no, voy_no, (SELECT COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
         <where>  
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
-            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat('%', #{billOfLading}, '%')</if>
+            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat(concat('%', #{billOfLading}), '%')</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>

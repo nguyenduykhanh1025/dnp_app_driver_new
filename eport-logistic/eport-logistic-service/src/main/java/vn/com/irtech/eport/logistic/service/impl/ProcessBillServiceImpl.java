@@ -170,7 +170,7 @@ public class ProcessBillServiceImpl implements IProcessBillService
     }
 
     @Override
-    public long sumOfBillList(ProcessBill processBill) {
+    public Long sumOfBillList(ProcessBill processBill) {
         return processBillMapper.sumOfBillList(processBill);
     }
 
