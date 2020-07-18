@@ -63,6 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</selectKey>
         insert into logistic_group
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
             <if test="groupName != null  and groupName != ''">group_name,</if>
             <if test="emailAddress != null  and emailAddress != ''">email_address,</if>
             <if test="address != null  and address != ''">address,</if>
@@ -88,6 +89,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
             <if test="groupName != null  and groupName != ''">#{groupName},</if>
             <if test="emailAddress != null  and emailAddress != ''">#{emailAddress},</if>
             <if test="address != null  and address != ''">#{address},</if>

@@ -437,27 +437,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectContainerStatusList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
-        select s.*, p.pay_type as pay_type, p.service_type as service_type, count(a.shipment_detail_id) as assign_number
+        select s.bl_no, s.booking_no, s.sztp, s.vsl_nm, s.voy_no, s.container_no, s.do_status, s.fe, s.payment_status, p.pay_type as pay_type, p.service_type as service_type,
+        count(a.shipment_detail_id) as assign_number
         from shipment_detail s
         left join process_order p on s.process_order_id = p.id
         left join pickup_assign a on s.id = a.shipment_detail_id
         <where>  
             <if test="logisticGroupId != null "> and s.logistic_group_id = #{logisticGroupId}</if>
-            <if test="customStatus != null  and customStatus != ''"> and s.custom_status = #{customStatus}</if>
-            <if test="paymentStatus != null  and paymentStatus != ''"> and s.payment_status = #{paymentStatus}</if>
-            <if test="processStatus != null  and processStatus != ''"> and s.process_status = #{processStatus}</if>
+            <if test="customStatus != null and customStatus != ''"> and s.custom_status = #{customStatus}</if>
+            <if test="paymentStatus != null and paymentStatus != ''"> and s.payment_status = #{paymentStatus}</if>
+            <if test="processStatus != null and processStatus != ''"> and s.process_status = #{processStatus}</if>
             <if test="doStatus != null  and doStatus != ''"> and s.do_status = #{doStatus}</if>
             <if test="serviceType != null"> and p.service_type = #{serviceType}</if>
             <if test="payType != null  and payType != ''"> and p.pay_type = #{payType}</if>
             <if test="containerNo != null  and containerNo != ''"> and (upper(s.container_no) like concat(concat('%', #{containerNo}), '%')</if>
-            <if test="sztp != null  and sztp != ''"> or s.sztp like concat(concat('%', #{sztp}), '%')</if>
-            <if test="fe != null  and fe != ''"> or s.fe like concat(concat('%', #{fe}), '%')</if>
-            <if test="bookingNo != null  and bookingNo != ''"> or s.booking_no like concat(concat('%', #{bookingNo}), '%')</if>
-            <if test="blNo != null  and blNo != ''"> or s.bl_no like concat(concat('%', #{blNo}), '%')</if>
-            <if test="vslName != null  and vslName != ''"> or s.vsl_name like concat(concat('%', #{vslName}), '%')</if>
-            <if test="vslNm != null  and vslNm != ''"> or s.vsl_nm like concat(concat('%', #{vslNm}), '%')</if>
-            <if test="voyNo != null  and voyNo != ''"> or s.voy_no like concat(concat('%', #{voyNo}), '%'))</if>
+            <if test="sztp != null  and sztp != ''"> or upper(s.sztp) like concat(concat('%', #{sztp}), '%')</if>
+            <if test="fe != null  and fe != ''"> or upper(s.fe) like concat(concat('%', #{fe}), '%')</if>
+            <if test="bookingNo != null  and bookingNo != ''"> or upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="blNo != null  and blNo != ''"> or upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="vslName != null  and vslName != ''"> or upper(s.vsl_name) like concat(concat('%', #{vslName}), '%')</if>
+            <if test="vslNm != null  and vslNm != ''"> or upper(s.vsl_nm) like concat(concat('%', #{vslNm}), '%')</if>
+            <if test="voyNo != null  and voyNo != ''"> or upper(s.voy_no) like concat(concat('%', #{voyNo}), '%'))</if>
         </where>
+        group by s.bl_no, s.booking_no, s.sztp, s.vsl_nm, s.voy_no, s.container_no, s.do_status, s.fe, s.payment_status, p.pay_type, p.service_type
     </select>
 
 </mapper>

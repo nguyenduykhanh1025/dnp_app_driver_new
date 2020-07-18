@@ -63,7 +63,7 @@ public interface ProcessBillMapper
 
     public List<ProcessBill> selectBillReportList(ProcessBill processBill);
 
-    public long sumOfBillList(ProcessBill processBill);
+    public Long sumOfBillList(ProcessBill processBill);
 
     public List<ProcessBill> getBillListByShipmentId(Long shipmentId);
 

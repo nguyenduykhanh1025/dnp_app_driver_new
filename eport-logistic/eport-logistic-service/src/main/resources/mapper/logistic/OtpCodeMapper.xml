@@ -47,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</selectKey>
         insert into sys_otp
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
             <if test="optCode != null  and optCode != ''">opt_code,</if>
             <if test="transactionId != null  and transactionId != ''">transaction_id,</if>
             <if test="otpType != null  and otpType != ''">otp_type,</if>
@@ -58,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
             <if test="optCode != null  and optCode != ''">#{optCode},</if>
             <if test="transactionId != null  and transactionId != ''">#{transactionId},</if>
             <if test="otpType != null  and otpType != ''">#{otpType},</if>
