@@ -107,5 +107,15 @@ public class LogisticTruckServiceImpl implements ILogisticTruckService
 	@Override
 	public int updateDelFlagByIds(String ids) {
 		return logisticTruckMapper.updateDelFlagByIds(Convert.toStrArray(ids));
-	}
+    }
+
+    @Override
+    public List<String> selectListTruckNoByDriverId(Long driverId) {
+        return logisticTruckMapper.selectListTruckNoByDriverId(driverId);
+    }
+    
+    @Override
+    public List<String> selectListChassisNoByDriverId(Long driverId) {
+        return logisticTruckMapper.selectListChassisNoByDriverId(driverId);
+    }
 }

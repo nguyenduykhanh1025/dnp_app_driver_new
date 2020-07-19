@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.logistic.mapper.DriverAccountMapper;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
+import vn.com.irtech.eport.logistic.form.DriverInfo;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.common.core.text.Convert;
 
@@ -108,4 +109,8 @@ public class DriverAccountServiceImpl implements IDriverAccountService {
         return driverAccountMapper.checkDriverOfLogisticGroup(pickupAssigns);
     }
     
+    @Override
+    public DriverInfo selectDriverAccountInfoById(Long id) {
+        return driverAccountMapper.selectDriverAccountInfoById(id);
+    }
 }

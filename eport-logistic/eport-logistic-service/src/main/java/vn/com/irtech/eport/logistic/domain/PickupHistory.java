@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.domain;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotEmpty;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -40,6 +42,7 @@ public class PickupHistory extends BaseEntity {
 
 	/** Assign ID */
 	@Excel(name = "Assign ID")
+	@NotEmpty
 	private Long pickupAssignId;
 
 	/** Container no */
@@ -48,10 +51,12 @@ public class PickupHistory extends BaseEntity {
 
 	/** Truck no */
 	@Excel(name = "Truck no")
+	@NotEmpty
 	private String truckNo;
 
 	/** Chassis no */
 	@Excel(name = "Chassis no")
+	@NotEmpty
 	private String chassisNo;
 
 	/** Area */

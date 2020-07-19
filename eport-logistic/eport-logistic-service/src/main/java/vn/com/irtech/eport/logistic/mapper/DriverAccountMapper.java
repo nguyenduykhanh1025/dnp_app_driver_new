@@ -3,6 +3,7 @@ package vn.com.irtech.eport.logistic.mapper;
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
+import vn.com.irtech.eport.logistic.form.DriverInfo;
 
 /**
  * Driver login infoMapper Interface
@@ -73,4 +74,12 @@ public interface DriverAccountMapper
     public List<DriverAccount> getAssignedDrivers(Long[] ids);
 
     public int checkDriverOfLogisticGroup(List<PickupAssign> pickupAssigns);
+
+    /**
+     * Get driver info
+     * 
+     * @param id
+     * @return
+     */
+    public DriverInfo selectDriverAccountInfoById(Long id);
 }
