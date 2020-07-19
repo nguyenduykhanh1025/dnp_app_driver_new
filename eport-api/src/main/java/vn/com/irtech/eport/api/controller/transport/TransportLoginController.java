@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.api.controller.transport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,24 +28,16 @@ public class TransportLoginController extends BaseController {
 
 	@PostMapping("/login")
 	@ResponseBody
-	public AjaxResult login(@RequestBody LoginForm loginForm) {
+	public AjaxResult login(@Validated @RequestBody LoginForm loginForm) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		String token = loginService.login(loginForm, EportUserType.TRANSPORT);
-		if (loginForm.getDeviceToken() != null) {
-			ajaxResult.put("token", token);
-			UserDevices userDevices = new UserDevices();
-			userDevices.setUserToken(token);
-			userDevices.setDeviceToken(loginForm.getDeviceToken());
-			userDevices.setUserType(2L);
-			userDevicesService.insertUserDevices(userDevices);
-			return ajaxResult;
-		}
-		return error("Thiếu device token!");
-	}
-
-	@PostMapping("/logout")
-	@ResponseBody
-	public AjaxResult logout() {
-		return success();
+		ajaxResult.put("token", token);
+		UserDevices userDevices = new UserDevices();
+		userDevices.setUserToken(token);
+		userDevices.setDeviceToken(loginForm.getDeviceToken());
+		userDevices.setUserType(2L);
+		userDevicesService.insertUserDevices(userDevices);
+		return ajaxResult;
 	}
 }
+ 

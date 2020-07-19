@@ -1,10 +1,14 @@
 package vn.com.irtech.eport.api.form;
 
+import javax.validation.constraints.NotBlank;
+
 public class LoginForm {
+	
 	private String userName;
 
 	private String passWord;
 
+	@NotBlank
 	private String deviceToken;
 
 	public String getUserName() {
