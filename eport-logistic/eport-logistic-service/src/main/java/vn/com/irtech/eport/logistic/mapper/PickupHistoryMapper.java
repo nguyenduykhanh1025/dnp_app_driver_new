@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
 
 /**
  * Pickup history Mapper Interface
@@ -84,4 +85,6 @@ public interface PickupHistoryMapper
     public List<PickupHistory> selectPickupHistoryListForHistory(PickupHistory pickupHistory);
 
     public List<PickupHistory> selectPickupHistoryListForOmSupport(PickupHistory pickupHistory);
+
+    public List<PickupHistoryForm> selectPickupHistoryForDriver(@Param("userPhoneNumber") String userPhoneNumber);
 }

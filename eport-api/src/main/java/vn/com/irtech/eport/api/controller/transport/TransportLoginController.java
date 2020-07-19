@@ -12,6 +12,8 @@ import vn.com.irtech.eport.api.form.LoginForm;
 import vn.com.irtech.eport.api.security.service.LoginService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.system.domain.UserDevices;
+import vn.com.irtech.eport.system.service.IUserDevicesService;
 
 @RestController
 @RequestMapping("/transport")
@@ -20,11 +22,29 @@ public class TransportLoginController extends BaseController {
 	@Autowired
 	private LoginService loginService;
 
+	@Autowired
+	private IUserDevicesService userDevicesService;
+
 	@PostMapping("/login")
 	@ResponseBody
 	public AjaxResult login(@RequestBody LoginForm loginForm) {
 		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("token", loginService.login(loginForm, EportUserType.TRANSPORT));
-		return ajaxResult;
+		String token = loginService.login(loginForm, EportUserType.TRANSPORT);
+		if (loginForm.getDeviceToken() != null) {
+			ajaxResult.put("token", token);
+			UserDevices userDevices = new UserDevices();
+			userDevices.setUserToken(token);
+			userDevices.setDeviceToken(loginForm.getDeviceToken());
+			userDevices.setUserType(2L);
+			userDevicesService.insertUserDevices(userDevices);
+			return ajaxResult;
+		}
+		return error("Thiếu device token!");
+	}
+
+	@PostMapping("/logout")
+	@ResponseBody
+	public AjaxResult logout() {
+		return success();
 	}
 }

@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 		<setting name="useGeneratedKeys"         value="true" />  <!-- Allow JDBC to support automatic primary key generation -->
 		<setting name="defaultExecutorType"      value="REUSE" /> <!-- Configure the default actuator -->
 		<setting name="logImpl"                  value="SLF4J" /> <!-- Specify the specific implementation of the log used by MyBatis -->
+		<!-- <setting name="jdbcTypeForNull"			 value="NULL" /> -->
 		<!-- <setting name="mapUnderscoreToCamelCase" value="true"/>  Camel naming -->
 	</settings>
 	

@@ -76,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</selectKey>
         insert into process_bill
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
             <if test="shipmentId != null ">shipment_id,</if>
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="processOrderId != null ">process_order_id,</if>
@@ -93,6 +94,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
             <if test="shipmentId != null ">#{shipmentId},</if>
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="processOrderId != null ">#{processOrderId},</if>
@@ -170,7 +172,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
-    <select id="sumOfBillList" parameterType="ProcessBill" resultType="long">
+    <select id="sumOfBillList" parameterType="ProcessBill" resultType="Long">
         select sum(b.vat_after_fee) from process_bill b left join process_order o on b.process_order_id = o.id
         <where>  
             <if test="logisticGroupId != null "> and b.logistic_group_id = #{logisticGroupId}</if>

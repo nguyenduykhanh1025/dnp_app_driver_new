@@ -61,6 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</selectKey>
         insert into carrier_account
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
             <if test="groupId != null ">group_id,</if>
             <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
             <if test="email != null  and email != ''">email,</if>
@@ -76,6 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             create_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
             <if test="groupId != null ">#{groupId},</if>
             <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
             <if test="email != null  and email != ''">#{email},</if>
