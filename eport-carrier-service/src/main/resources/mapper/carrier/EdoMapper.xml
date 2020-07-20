@@ -226,7 +226,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
-         SELECT bill_of_lading, carrier_code, business_unit, vessel, vessel_no, voy_no, (SELECT COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
+         SELECT bill_of_lading, carrier_code, business_unit, vessel, vessel_no, voy_no,(SELECT create_time from edo e2 where e1.bill_of_lading = e2.bill_of_lading ORDER BY create_time DESC FETCH NEXT 1 ROWS ONLY ) as create_time, (SELECT COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
         <where>  
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat(concat('%', #{billOfLading}), '%')</if>

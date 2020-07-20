@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.carrier.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,11 @@ public class EdiServiceImpl implements IEdiService {
 		edoInsert.setCreateBy(API);
 		edoInsert.setDelFlg(0);
 		edoInsert.setCarrierId(Long.valueOf(1));
+		Date setTimeUpdatExpicedDem = edoInsert.getExpiredDem();
+		setTimeUpdatExpicedDem.setHours(23);
+		setTimeUpdatExpicedDem.setMinutes(59);
+		setTimeUpdatExpicedDem.setSeconds(59);
+		edoInsert.setExpiredDem(setTimeUpdatExpicedDem);
 		int statusInsert = edoService.insertEdo(edoInsert);
 		edoAuditLogService.addAuditLogFirst(edoInsert);
 		return statusInsert;
@@ -79,7 +85,11 @@ public class EdiServiceImpl implements IEdiService {
 			throw new BusinessException(String.format("Edo to update is not exist (containerNo='%s', billOfLading=%s)",
 					ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
 		}
-
+		Date setTimeUpdatExpicedDem = edoUpdate.getExpiredDem();
+		setTimeUpdatExpicedDem.setHours(23);
+		setTimeUpdatExpicedDem.setMinutes(59);
+		setTimeUpdatExpicedDem.setSeconds(59);
+		edoUpdate.setExpiredDem(setTimeUpdatExpicedDem);
 		edoUpdate.setUpdateBy(API);
 		this.settingEdoData(edoUpdate, ediDataReq, partnerCode, transactionId);
 		int statusUpdate = edoService.updateEdo(edoUpdate);
