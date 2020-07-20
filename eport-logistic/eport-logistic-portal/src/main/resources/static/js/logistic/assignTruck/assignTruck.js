@@ -4,8 +4,21 @@ var shipmentSelected;
 var dataAssignedDriver = [];
 var dataDriver = [];
 var dataContainerList = [];
+var shipmentSearch = new Object;
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
+    //DEFAULT SEARCH FOLLOW DATE
+    let fromMonth = (new Date().getMonth()+1 < 10) ? "0" + (new Date().getMonth()+1) : new Date().getMonth()+1;
+    let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
+    $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
+    $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
+    let fromDate = stringToDate($('#fromDate').val());
+    let toDate =  stringToDate($('#toDate').val());
+    fromDate.setHours(0,0,0);
+    toDate.setHours(23, 59, 59);
+    shipmentSearch.fromDate = fromDate.getTime();
+    shipmentSearch.toDate = toDate.getTime();
+
     loadTable();
     $(".left-side").css("height", $(document).height());
     $("#btn-collapse").click(function () {
@@ -14,7 +27,56 @@ $(document).ready(function () {
     $("#btn-uncollapse").click(function () {
         handleCollapse(false);
     });
+
+    //find date
+    $('.from-date').datetimepicker({
+        language: 'en',
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        pickTime: false,
+        minView: 2
+    });
+    $('.to-date').datetimepicker({
+        language: 'en',
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        pickTime: false,
+        minView: 2
+    });
 });
+
+//search date
+function changeFromDate() {
+    let fromDate = stringToDate($('#fromDate').val());
+    if ($('#toDate').val() != '' && stringToDate($('#toDate').val()).getTime() < fromDate.getTime()) {
+        $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
+        $('#fromDate').val('');
+    } else {
+        shipmentSearch.fromDate = fromDate.getTime();
+        loadTable();
+    }
+}
+
+function changeToDate() {
+    let toDate = stringToDate($('.to-date').val());
+    if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
+        $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
+        $('.to-date').val('');
+    } else {
+        toDate.setHours(23, 59, 59);
+        shipmentSearch.toDate = toDate.getTime();
+        loadTable();
+    }
+}
+
+function stringToDate(dateStr) {
+    let dateParts = dateStr.split('/');
+    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+}
 function handleCollapse(status) {
     if (status) {
         $(".left-side").css("width", "0.5%");
@@ -74,10 +136,12 @@ function assignFollowContainerTab() {
 }
 // LOAD SHIPMENT LIST
 function loadTable() {
+    shipmentSearch.serviceType = $('#shipmentType').val();
 	//shipment
     $("#dg").datagrid({
         url: prefix + "/listShipment",
-        height: window.innerHeight - 70,
+        height: window.innerHeight - 100,
+        method:"post",
         singleSelect: true,
         collapsible: true,
         clientPaging: false,
@@ -95,14 +159,14 @@ function loadTable() {
             $.ajax({
                 type: opts.method,
                 url: opts.url,
-                data: {
-                    pageNum: param.page,
-                    pageSize: param.rows,
-                    orderByColumn: param.sort,
-                    isAsc: param.order,
-                    serviceType: $('#shipmentType').val()
-                },
-                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                  pageNum: param.page,
+                  pageSize: param.rows,
+                  orderByColumn: param.sort,
+                  isAsc: param.order,
+                  data: shipmentSearch
+                }),
                 success: function (data) {
                     success(data);
                     if ($('#shipmentType').val() == 1) {

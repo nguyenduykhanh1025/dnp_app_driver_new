@@ -153,4 +153,10 @@ public class LogisticCommonController extends LogisticBaseController {
 		ajaxResult.put("voyages", voyages);
 		return ajaxResult;
 	}
+
+	@GetMapping("/payment/napas")
+	@ResponseBody
+	public String getPaymentNapasForm() {
+		return getUserIp();
+	}
 }
