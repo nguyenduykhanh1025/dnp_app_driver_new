@@ -72,7 +72,7 @@ public class CarrierEdiController {
 		try {
 			ediService.executeListEdi(ediReq.getData(), ediReq.getPartnerCode(), transactionId);
 		} catch (Exception e) {
-			throw new EdiApiException(
+		throw new EdiApiException(
 					EdiRes.error(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), transactionId, ediReq.getData()));
 		}
 

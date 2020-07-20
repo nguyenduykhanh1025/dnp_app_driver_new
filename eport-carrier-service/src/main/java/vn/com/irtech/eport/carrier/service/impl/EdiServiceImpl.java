@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.dto.EdiDataReq;
 import vn.com.irtech.eport.carrier.service.IEdiService;
+import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.exception.BusinessException;
 
@@ -18,6 +19,9 @@ public class EdiServiceImpl implements IEdiService {
 
 	@Autowired
 	private IEdoService edoService;
+
+	@Autowired
+	private IEdoAuditLogService edoAuditLogService;
 
 	@Override
 	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, String transactionId) {
@@ -58,7 +62,10 @@ public class EdiServiceImpl implements IEdiService {
 		this.settingEdoData(edoInsert, ediDataReq, partnerCode, transactionId);
 		edoInsert.setCreateBy(API);
 		edoInsert.setDelFlg(0);
-		return edoService.insertEdo(edoInsert);
+		edoInsert.setCarrierId(Long.valueOf(1));
+		int statusInsert = edoService.insertEdo(edoInsert);
+		edoAuditLogService.addAuditLogFirst(edoInsert);
+		return statusInsert;
 	}
 
 	private int update(EdiDataReq ediDataReq, String partnerCode, String transactionId) {
@@ -75,7 +82,9 @@ public class EdiServiceImpl implements IEdiService {
 
 		edoUpdate.setUpdateBy(API);
 		this.settingEdoData(edoUpdate, ediDataReq, partnerCode, transactionId);
-		return edoService.updateEdo(edoUpdate);
+		int statusUpdate = edoService.updateEdo(edoUpdate);
+		edoAuditLogService.updateAuditLog(edoUpdate);
+		return statusUpdate;
 	}
 
 	private int delete(EdiDataReq ediDataReq) {
