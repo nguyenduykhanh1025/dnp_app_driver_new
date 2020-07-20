@@ -1,6 +1,8 @@
 package vn.com.irtech.eport.carrier.service;
 
 import java.util.List;
+
+import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 
 /**
@@ -68,5 +70,9 @@ public interface IEdoAuditLogService
     public int insertEdoAuditLogDetFreeTime(EdoAuditLog edoAuditLog);
 
     public String selectEdoAuditLogByEdoId(Long id);
+
+    public boolean addAuditLogFirst(Edo edo);
+
+    public boolean updateAuditLog(Edo edo);
 
 }
