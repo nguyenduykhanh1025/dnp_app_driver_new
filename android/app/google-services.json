@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "600562219748",
+    "firebase_url": "https://hoiana-2143f.firebaseio.com",
+    "project_id": "hoiana-2143f",
+    "storage_bucket": "hoiana-2143f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:600562219748:android:7dd7bf3f939b190a084af1",
+        "android_client_info": {
+          "package_name": "vn.com.irtech.mobile.eport.driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "600562219748-p4qkuecgcoefbab21rrd2ku2qo3vie4g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJcPwP-r23KCrGT6IeL9eptde38U0tX8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "600562219748-p4qkuecgcoefbab21rrd2ku2qo3vie4g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

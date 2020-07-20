@@ -1,0 +1,18 @@
+export default{
+    DancingScriptBold: 'DancingScript-Bold',
+    DancingScriptMedium: 'DancingScript-Medium',
+    DancingScriptRegular: 'DancingScript-Regular',
+    DancingScriptSemiBold: 'DancingScript-SemiBold',
+    SairaSemiCondensedBlack: 'SairaSemiCondensed-Black',
+    SairaSemiCondensedBold: 'SairaSemiCondensed-Bold',
+    SairaSemiCondensedExtraBold: 'SairaSemiCondensed-ExtraBold',
+    SairaSemiCondensedExtraLight: 'SairaSemiCondensed-ExtraLight',
+    SairaSemiCondensedLight: 'SairaSemiCondensed-Light',
+    SairaSemiCondensedMedium: 'SairaSemiCondensed-Medium',
+    SairaSemiCondensedRegular: 'SairaSemiCondensed-Regular',
+    SairaSemiCondensedSemiBold: 'SairaSemiCondensed-SemiBold',
+    SairaSemiCondensedThin: 'SairaSemiCondensed-Thin',
+    SFProDisplayRegular: 'SFProDisplay-Regular', 
+    OpenSansBold: 'OpenSans-Bold',
+    SFProDisplayBold: 'SFProDisplay-Bold', 
+}
