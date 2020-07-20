@@ -3,9 +3,10 @@
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
-    <!-- <link rel="stylesheet" th:href="@{/css/edo/style.css}" /> -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
     <link rel="stylesheet" th:href="@{/css/edo/style.css}" />
+  
   </head>
 
   <body class="white-bg container-fluid wrapper">
@@ -21,17 +22,25 @@
         </div>
         <div class="form-group">
           <label class="sr-only" for="voyNo">Vessel</label>
-          <div class="input-group">
-            <select class="form-control" id="vesselNo">
-              <option value="" selected disabled>Vessel</option>
+          <div class="input-group width150" style="width: 120%;">
+            <select class="col-md-12 c-search-box-vessel"> 
+              <option selected="selected"></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="voyNo">Vessel Code</label>
+          <div class="input-group width150" style="width: 200%;">
+            <select class="col-md-12 c-search-box-vessel-code"> 
+              <option selected="selected"></option>
             </select>
           </div>
         </div>
         <div class="form-group">
           <label class="sr-only" for="voyNo">Voy No</label>
-          <div class="input-group">
-            <select class="form-control" id="voyNo">
-              <option value="" selected disabled>Voy No</option>
+          <div class="input-group width150" style="width: 150%;">
+            <select class="col-md-12 c-search-box-voy-no"> 
+              <option selected="selected"></option>
             </select>
           </div>
         </div>
@@ -41,6 +50,9 @@
           <tr>
             <th data-options="field:'billOfLading',align:'left'" width="130">
               BILL OF LADING
+            </th>
+             <th data-options="field:'vessel',align:'left'" width="110">
+              VESSEL
             </th>
             <th data-options="field:'vesselNo',align:'left'" width="110">
               VESSEL NO
@@ -127,6 +139,9 @@
               EMPTY CONTAINER <br />
               DEPOT
             </th>
+            <th data-options="field:'vessel',align:'left'" width="110">
+              VESSEL
+            </th>
             <th data-options="field:'vesselNo',align:'left'" width="110">
               VESSEL NO
             </th>
@@ -149,6 +164,7 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: datetimepicker-js" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
     <script th:src="@{/eport/js/modules/edo/edo.js}"></script>
   </body>
 </html>

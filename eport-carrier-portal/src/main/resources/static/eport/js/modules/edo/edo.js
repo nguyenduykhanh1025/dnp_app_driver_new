@@ -12,24 +12,6 @@ $(function () {
   });
     $("#dg").height($(document).height() - 60);
     $("#dgContainer").height($(document).height() - 60);
-    $.ajax({
-        type: "GET",
-        url: PREFIX + "/getVesselNo",
-        success(data) {
-            data.forEach((element) => {
-                $("#vesselNo").append(`<option value="${element}"> ${element}</option>`);
-            });
-        },
-    });
-    $.ajax({
-      type: "GET",
-      url: PREFIX + "/getVoyNo",
-      success(data) {
-          data.forEach((element) => {
-              $("#voyNo").append(`<option value="${element}"> ${element}</option>`);
-          });
-      },
-  });
     loadTable();
     loadTableByContainer();
 
@@ -298,14 +280,122 @@ function multiUpdateEdo()
   $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 600, 400);
 }
 
-$("#vesselNo").change(function() {
-  let edo = new Object();
-  edo.vesselNo = this.value;
+// $("#vesselNo").change(function() {
+//   let edo = new Object();
+//   edo.vesselNo = this.value;
+//   loadTable(edo);
+// });
+// $("#voyNo").change(function() {
+//   let edo = new Object();
+//   edo.voyNo = this.value;
+//   loadTable(edo);
+// });
+
+
+// SEARCH INFO VESSEL AREA
+$(".c-search-box-vessel").select2({
+  placeholder: "Vessel",
+  allowClear: true,
+  minimumInputLength: 2,
+  ajax: {
+    url: PREFIX + "/getVessel",
+    dataType: "json",
+    method: "GET",
+    data: function (params) {
+      return {
+        keyString: params.term,
+      };
+    },
+    processResults: function (data) {
+      let results = []
+      data.forEach(function (element, i) {
+        let obj = {};
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
+        
+      })
+      return {
+        results: results,
+      };
+    },
+  },
+});
+
+$(".c-search-box-vessel-code").select2({
+  placeholder: "Vessel Code",
+  allowClear: true,
+  minimumInputLength: 2,
+  ajax: {
+    url: PREFIX + "/getVesselCode",
+    dataType: "json",
+    method: "GET",
+    data: function (params) {
+      return {
+        keyString: params.term,
+      };
+    },
+    processResults: function (data) {
+      let results = []
+      data.forEach(function (element, i) {
+        let obj = {};
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
+        
+      })
+      return {
+        results: results,
+      };
+    },
+  },
+});
+
+$(".c-search-box-voy-no").select2({
+  placeholder: "Voy No",
+  allowClear: true,
+  minimumInputLength: 2,
+  ajax: {
+    url: PREFIX + "/getVoyNo",
+    dataType: "json",
+    method: "GET",
+    data: function (params) {
+      return {
+        keyString: params.term,
+      };
+    },
+    processResults: function (data) {
+      let results = []
+      data.forEach(function (element, i) {
+        let obj = {};
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
+        
+      })
+      return {
+        results: results,
+      };
+    },
+  },
+});
+// For submit search
+$(".c-search-box-vessel").change(function () {
+  edo = new Object();
+  edo.vessel = $(this).text().trim();
+  $(this).text(null);
   loadTable(edo);
 });
-$("#voyNo").change(function() {
-  let edo = new Object();
-  edo.voyNo = this.value;
+$(".c-search-box-vessel-code").change(function () {
+  edo = new Object();
+  edo.vesselNo = $(this).text().trim();
+  $(this).text(null);
+  loadTable(edo);
+});
+$(".c-search-box-voy-no").change(function () {
+  edo = new Object();
+  edo.voyNo = $(this).text().trim();
+  $(this).text(null);
   loadTable(edo);
 });
 

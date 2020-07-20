@@ -24,7 +24,6 @@ function closeForm()
 
 function confirm()
 {
-   
     if(formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot)
     {
       $.modal.alertError("Không có thông tin nào được thay đổi !!!")
@@ -89,5 +88,19 @@ function formatDateForSubmit(value) {
     return 0;
   }
 
+  
+
+  $.ajax({
+    type: "GET",
+    url: PREFIX + "/getEmptyContainerDeport",
+    success(data) {
+      data.data.forEach(element => {
+        $('.select-emptyContainerDeport').append(`<option value="${element['dictLabel']}"> 
+                                                  ${element['dictLabel']} 
+                                                </option>`);
+      });
+
+    }
+  })
 
 

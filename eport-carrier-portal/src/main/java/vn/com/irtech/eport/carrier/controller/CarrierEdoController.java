@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,9 +33,13 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.framework.web.service.DictService;
+import vn.com.irtech.eport.system.domain.SysDictData;
+import vn.com.irtech.eport.system.service.ISysDictDataService;
 
 @Controller
 @RequestMapping("/edo")
+@Transactional(rollbackFor = Exception.class)
 public class CarrierEdoController extends CarrierBaseController {
 
     private final String PREFIX = "edo";
@@ -46,6 +51,8 @@ public class CarrierEdoController extends CarrierBaseController {
 	@Autowired
 	private IEdoHistoryService edoHistoryService;
 
+	@Autowired
+    private ISysDictDataService dictDataService;
 	
 	@Autowired
 	private IEdoAuditLogService edoAuditLogService;
@@ -191,7 +198,7 @@ public class CarrierEdoController extends CarrierBaseController {
 			ids = edo.getId().toString();
 		}
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		try {
+		// try {
 			EdoAuditLog edoAuditLog = new EdoAuditLog();
 			Date timeNow = new Date();
 			edoAuditLog.setCarrierId(super.getUser().getGroupId());
@@ -212,7 +219,10 @@ public class CarrierEdoController extends CarrierBaseController {
 					edo.setExpiredDem(setTimeUpdatExpicedDem);
 					edoAuditLog.setFieldName("Expired Dem");
 					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					if(edoAuditLogCheck != null) 
+					{
+						edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					}
 					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
 					edoAuditLog.setNewValue(formatter.format(setTimeUpdatExpicedDem).toString()); 
 					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
@@ -222,7 +232,10 @@ public class CarrierEdoController extends CarrierBaseController {
 				{
 					edoAuditLog.setFieldName("Det Free Time");
 					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					if(edoAuditLogCheck != null)
+					{
+						edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					}
 					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo)  + segNo);
 					edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
 					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
@@ -232,7 +245,10 @@ public class CarrierEdoController extends CarrierBaseController {
 				{
 					edoAuditLog.setFieldName("Empty Container Depot");
 					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					if(edoAuditLogCheck != null)
+					{
+						edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					}
 					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
 					edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
 					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
@@ -241,9 +257,9 @@ public class CarrierEdoController extends CarrierBaseController {
 				edoService.updateEdo(edo);
 		}
 				return AjaxResult.success("Update thành công");
-		}catch(Exception e) {
-			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
-		} 
+		// }catch(Exception e) {
+		// 	return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
+		// } 
 		
 	}
 	@PostMapping("/readEdiOnly")
@@ -265,19 +281,44 @@ public class CarrierEdoController extends CarrierBaseController {
 		return getDataTable(edoAuditLogsList);
 	}
 
-	@GetMapping("/getVesselNo")
+	@GetMapping("/getVesselCode")
 	@ResponseBody
-	public List<String> lisVesselNo()
+	public List<String> lisVesselNo(String keyString)
 	{
-		return edoService.selectVesselNo();
+		return edoService.selectVesselNo(keyString);
 	}
 
 	@GetMapping("/getVoyNo")
 	@ResponseBody
-	public List<String> listVoyNo()
+	public List<String> listVoyNo(String keyString)
 	{
-		return edoService.selectVoyNo();
+		return edoService.selectVoyNo(keyString);
 	}
 
+	@GetMapping("/getVessel")
+	@ResponseBody
+	public List<String> listVessel(String keyString)
+	{
+		return edoService.selectVesselList(keyString);
+	}
+
+	@GetMapping("/getEmptyContainerDeport")
+	@ResponseBody
+	public AjaxResult listEmptyContainerDeport()
+	{
+		SysDictData dictData = new SysDictData();
+		dictData.setDictType("edo_empty_container_deport");
+		return AjaxResult.success(dictDataService.selectDictDataList(dictData));
+	}
+
+
+	// Report
+	@GetMapping("/report")
+	public String report() {
+		if (!hasDoPermission()) {
+			return "error/404";
+		}
+		return PREFIX + "/report";
+	}
 
 }
