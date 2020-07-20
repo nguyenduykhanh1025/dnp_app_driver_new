@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
@@ -69,11 +70,12 @@ public class LogisticAssignTruckController extends LogisticBaseController{
     	return PREFIX + "/assignTruck";
 	}
 	
-	@RequestMapping("/listShipment")
+	@PostMapping("/listShipment")
 	@ResponseBody
-	public TableDataInfo listShipment(Shipment shipment) {
-		startPage();
+	public TableDataInfo listShipment(@RequestBody PageAble<Shipment> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		LogisticAccount user = getUser();
+		Shipment shipment = param.getData();
 		shipment.setLogisticGroupId(user.getGroupId());
 		//List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		List<Shipment> shipments = shipmentService.getShipmentListForAssign(shipment);

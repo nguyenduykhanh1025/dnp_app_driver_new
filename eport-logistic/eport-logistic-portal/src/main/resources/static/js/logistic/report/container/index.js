@@ -2,6 +2,18 @@ const PREFIX = ctx + "logistic/report/container";
 var pickupHistory = new Object();
 
 $(document).ready(function() {
+    //DEFAULT SEARCH FOLLOW DATE
+    let fromMonth = (new Date().getMonth()+1 < 10) ? "0" + (new Date().getMonth()+1) : new Date().getMonth()+1;
+    let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
+    $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
+    $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
+    let fromDate = stringToDate($('#fromDate').val());
+    let toDate =  stringToDate($('#toDate').val());
+    fromDate.setHours(0,0,0);
+    toDate.setHours(23, 59, 59);
+    pickupHistory.fromDate = fromDate.getTime();
+    pickupHistory.toDate = toDate.getTime();
+
     loadTable();
 
     $('.from-date').datetimepicker({
