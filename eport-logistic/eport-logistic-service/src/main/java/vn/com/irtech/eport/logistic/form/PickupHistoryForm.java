@@ -3,7 +3,6 @@ package vn.com.irtech.eport.logistic.form;
 import java.util.Date;
 
 public class PickupHistoryForm {
-    private static final long serialVersionUID = 1L;
 
     private Long pickupHistoryId;
 

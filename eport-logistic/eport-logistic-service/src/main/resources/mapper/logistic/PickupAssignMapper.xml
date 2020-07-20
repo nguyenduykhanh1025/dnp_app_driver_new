@@ -173,4 +173,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY create_Time DESC
         LIMIT 1
     </select>
+
+    <select id="selectPickupAssignListByDriverId" resultType="vn.com.irtech.eport.logistic.form.PickupAssignForm">
+        select a.id as pickupAssignId, a.shipment_id as batchCode, s.bl_no as blNo, s.booking_no as bookingNo, sh.fe as fe, sh.sztp as sztp
+        from pickup_assign a
+        left join shipment s on a.shipment_id = s.id and s.service_type = #{serviceType}
+        left join shipment_detail sh on a.shipment_detail_id = sh.id
+        where a.shipment_detail_id is not null and a.driver_id = #{driverId}
+        order by a.create_time desc
+    </select>
+
+    
 </mapper>

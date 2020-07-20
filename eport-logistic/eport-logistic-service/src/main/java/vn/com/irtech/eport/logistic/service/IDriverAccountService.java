@@ -3,6 +3,7 @@ package vn.com.irtech.eport.logistic.service;
 import java.util.List;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
+import vn.com.irtech.eport.logistic.form.DriverInfo;
 
 /**
  * Driver login infoService Interface
@@ -66,4 +67,5 @@ public interface IDriverAccountService
     
     public int checkDriverOfLogisticGroup(List<PickupAssign> pickupAssigns);
 
+    public DriverInfo selectDriverAccountInfoById(Long id);
 }
