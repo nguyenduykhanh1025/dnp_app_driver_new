@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +40,8 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 @Controller
 @RequestMapping("/logistic/send-cont-full")
 public class LogisticSendContFullController extends LogisticBaseController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullController.class);
     
     private final String PREFIX = "logistic/sendContFull";
 	
@@ -311,6 +315,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 						return ajaxResult;
 					}
 				} catch (Exception e) {
+					logger.warn(e.getMessage());
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
 				

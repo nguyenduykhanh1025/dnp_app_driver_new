@@ -125,11 +125,11 @@ public class MqttService implements MqttCallback {
 	public String getComputerName() {
 		Map<String, String> env = System.getenv();
 		if (env.containsKey("COMPUTERNAME"))
-			return env.get("COMPUTERNAME");
+			return "Admin-" + env.get("COMPUTERNAME");
 		else if (env.containsKey("HOSTNAME"))
-			return env.get("HOSTNAME");
+			return "Admin-"+ env.get("HOSTNAME");
 		else
-			return "Unknown Computer";
+			return "Admin-Unknown Computer";
 	}
 
 	@Override

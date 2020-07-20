@@ -111,7 +111,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		processHistory.setRobotUuid(uuId);
 		processHistory.setStatus(2); // FINISH
 
-		ProcessOrder processOrder;
+		ProcessOrder processOrder = new ProcessOrder();
 
 		if ("success".equalsIgnoreCase(result)) {
 			// GET LIST SHIPMENT DETAIL BY PROCESS ORDER ID
@@ -120,7 +120,12 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			
 			// GET PROCESS ORDER AND SET NEW STATUS TO UPDATE
-			processOrder = processOrderService.selectProcessOrderById(id);
+			try {
+				processOrder = processOrderService.selectProcessOrderById(id);
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
+			
 			processOrder.setReferenceNo(invoiceNo);
 			processOrder.setStatus(2); // FINISH		
 			processOrder.setResult("S"); // RESULT SUCESS	

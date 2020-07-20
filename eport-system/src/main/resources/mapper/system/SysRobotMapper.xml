@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectRobotByUuId" parameterType="String" resultMap="RobotResult">
         <include refid="selectRobotVo"/>
         where uuid = #{uuId}
-        limit 1
+        OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
     </select>
     
     <select id="findFirstRobot" parameterType="SysRobot" resultMap="RobotResult">
@@ -62,7 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isGateInOrder != null"> and is_gate_in_order = #{isGateInOrder}</if>
             <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
         </where>
-        limit 1
+        OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
     </select>
         
     <insert id="insertRobot" parameterType="SysRobot" useGeneratedKeys="true" keyProperty="id">
@@ -132,7 +132,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="checkUuidRobotUnique" parameterType="String" resultMap="RobotResult">
         <include refid="selectRobotVo"/>
         where uuid = #{uuId}
-        limit 1
+        OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
     </select>
     
     <update id="updateRobotStatusByUuId">

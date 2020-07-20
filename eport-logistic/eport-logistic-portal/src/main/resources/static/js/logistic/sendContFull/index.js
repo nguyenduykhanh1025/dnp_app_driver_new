@@ -6,6 +6,8 @@ var conts = '';
 var allChecked = false;
 var checkList = [];
 var rowAmount = 0;
+var shipmentSearch = new Object;
+shipmentSearch.serviceType = 4;
 var sizeList = [
     "22G0: Cont 20 feet khô", 
     "22P0: Cont 20 feet flat rack - quá khổ", 
@@ -46,6 +48,18 @@ var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dang
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
+    //DEFAULT SEARCH FOLLOW DATE
+    let fromMonth = (new Date().getMonth()+1 < 10) ? "0" + (new Date().getMonth()+1) : new Date().getMonth()+1;
+    let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
+    $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
+    $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
+    let fromDate = stringToDate($('#fromDate').val());
+    let toDate =  stringToDate($('#toDate').val());
+    fromDate.setHours(0,0,0);
+    toDate.setHours(23, 59, 59);
+    shipmentSearch.fromDate = fromDate.getTime();
+    shipmentSearch.toDate = toDate.getTime();
+
     loadTable();
     $(".left-side").css("height", $(document).height());
     $("#btn-collapse").click(function () {
@@ -54,7 +68,25 @@ $(document).ready(function () {
     $("#btn-uncollapse").click(function () {
         handleCollapse(false);
     });
-
+    //find date
+    $('.from-date').datetimepicker({
+        language: 'en',
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        pickTime: false,
+        minView: 2
+    });
+    $('.to-date').datetimepicker({
+        language: 'en',
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        todayBtn: true,
+        todayHighlight: true,
+        pickTime: false,
+        minView: 2
+    });
     // Handle add
     $(function () {
         let options = {
@@ -65,7 +97,41 @@ $(document).ready(function () {
         $.table.init(options);
     });
 });
+//search date
+function changeFromDate() {
+    let fromDate = stringToDate($('#fromDate').val());
+    if ($('#toDate').val() != '' && stringToDate($('#toDate').val()).getTime() < fromDate.getTime()) {
+        $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
+        $('#fromDate').val('');
+    } else {
+        shipmentSearch.fromDate = fromDate.getTime();
+        loadTable();
+    }
+}
 
+function changeToDate() {
+    let toDate = stringToDate($('.to-date').val());
+    if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
+        $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
+        $('.to-date').val('');
+    } else {
+        toDate.setHours(23, 59, 59);
+        shipmentSearch.toDate = toDate.getTime();
+        loadTable();
+    }
+}
+
+function stringToDate(dateStr) {
+    let dateParts = dateStr.split('/');
+    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+}
+document.getElementById("bookingSearch").addEventListener("keyup", function (event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+    shipmentSearch.blNo = $('#bookingSearch').val().toUpperCase();
+    loadTable();
+    }
+});
 function handleCollapse(status) {
     if (status) {
         $(".left-side").css("width", "0.5%");
@@ -94,9 +160,9 @@ function loadTable(msg) {
         $.modal.msgSuccess(msg);
     }
     $("#dg").datagrid({
-        url: '/logistic/shipments/4',
+        url: '/logistic/shipments',
         height: window.innerHeight - 70,
-        method: 'get',
+        method: 'post',
         singleSelect: true,
         collapsible: true,
         clientPaging: false,
@@ -115,13 +181,14 @@ function loadTable(msg) {
             $.ajax({
                 type: opts.method,
                 url: opts.url,
-                data: {
-                    pageNum: param.page,
-                    pageSize: param.rows,
-                    orderByColumn: param.sort,
-                    isAsc: param.order,
-                },
-                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                  pageNum: param.page,
+                  pageSize: param.rows,
+                  orderByColumn: param.sort,
+                  isAsc: param.order,
+                  data: shipmentSearch
+                }),
                 success: function (data) {
                     success(data);
                     $("#dg").datagrid("hideColumn", "id");
