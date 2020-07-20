@@ -65,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="voyNo != null  and voyNo != ''"> or upper(voy_no) like concat(concat('%', #{voyNo}), '%'))</if>
             <if test="sztp != null  and sztp != ''"> or upper(sztp) like concat(concat('%', #{sztp}), '%'))</if>
         </where>
-
+            ORDER BY create_time DESC
     </select>
     
     <select id="selectEdoById" parameterType="Long" resultMap="EdoResult">
