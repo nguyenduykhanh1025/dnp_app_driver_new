@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
         marginLeft: ws(8),
     },
     text: {
-        color: '#86889E',
+        color: Colors.tinyTextGrey,
         fontSize: fs(15),
         lineHeight: 18,
     },

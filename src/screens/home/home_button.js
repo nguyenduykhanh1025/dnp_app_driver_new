@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         tintColor: '#FFFFFF',
     },
     title: {
-        color: '#86889E',
+        color: Colors.tinyTextGrey,
         fontSize: 13,
         lineHeight: 15,
     }

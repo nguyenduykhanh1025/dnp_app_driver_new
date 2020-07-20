@@ -18,7 +18,7 @@ export default class AuthInput extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            eyeColor: '#86889E',
+            eyecolor: Colors.tinyTextGrey,
             passShow: this.props.secureTextEntry ? true : false,
         }
     }
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     inputTitle: {
         fontSize: fs(15),
         lineHeight: 18,
-        color: '#86889E',
+        color: Colors.tinyTextGrey,
         fontWeight: 'bold',
         position: 'absolute',
         marginTop: sizeHeight(2.5),

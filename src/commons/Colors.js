@@ -29,7 +29,7 @@ export default {
   brown: '#A5673F',
   transparent: 'transparent',
 
-  headerColor:'#15307A',
+  headerColor: '#15307A',
 
   tintColor,
   tabIconDefault: '#ccc',
@@ -51,6 +51,16 @@ export default {
   titleColor: '#AABBCC',
   blueColor: '#0F8FFF',
   badgeColor: '#FF6060',
+  bgGrey: '#F2f2f2',
+  tinyTextGrey: '#86889E',
+  "FFAA00": "#FFAA07",
+  "C2D0F8": '#C2D0F8',
+  "E4EBF7": '#E4EBF7',
+  "BAC9F3": '#BAC9F3',
+  "(0, 224, 150, 0.3)": 'rgba(0, 224, 150, 0.3)',
+  "(0, 224, 150, 0.1)": 'rgba(0, 224, 150, 0.1)',
+  "00E096": '#00E096',
+
 };
 
 const percentToHex = (p) => {

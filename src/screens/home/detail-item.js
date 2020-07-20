@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   text: {
-    color: '#86889E',
+    color: Colors.tinyTextGrey,
     fontSize: 13,
     lineHeight: 15,
     marginRight: sizeWidth(7),

@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   commonContTitle: {
     fontSize: 20,
     lineHeight: 23,
-    color: '#86889E',
+    color: Colors.tinyTextGrey,
     fontWeight: 'bold',
     marginVertical: sizeHeight(1),
     marginRight: sizeWidth(5),

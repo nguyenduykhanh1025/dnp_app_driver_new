@@ -57,12 +57,12 @@ const styles = StyleSheet.create({
   description: {
     width: sizeWidth(70),
     fontSize: 15,
-    color: '#86889E'
+    color: Colors.tinyTextGrey,
   },
   datetime: {
     width: sizeWidth(70),
     fontSize: 12,
-    color: '#86889E',
+    color: Colors.tinyTextGrey,
     marginTop: sizeHeight(0.5)
   },
 })

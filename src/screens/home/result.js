@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   },
   txtLabel: {
     fontSize: 13,
-    color: '#86889E',
+    color: Colors.tinyTextGrey,
     width: sizeWidth(11)
   },
   txtValue: {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     marginTop: sizeHeight(1),
   },
   frame2: {
-    backgroundColor: '#E4EBF7',
+    backgroundColor: Colors["E4EBF7"],
     width: sizeWidth(43),
     height: sizeHeight(10),
     borderRadius: 8,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   txtLabel1: {
     fontSize: 14,
-    color: '#86889E',
+    color: Colors.tinyTextGrey,
     width: sizeWidth(26)
   },
   txtValue2: {
