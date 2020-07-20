@@ -153,7 +153,7 @@ function loadTable(msg) {
     }
     $("#dg").datagrid({
         url: '/logistic/shipments',
-        height: window.innerHeight - 70,
+        height: window.innerHeight - 110,
         method: 'post',
         singleSelect: true,
         collapsible: true,

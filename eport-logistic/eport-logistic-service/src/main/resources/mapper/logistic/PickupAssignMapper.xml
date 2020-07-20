@@ -171,7 +171,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="chassisNo != null  and chassisNo != ''"> and chassis_no = #{chassisNo}</if>
         </where>
         ORDER BY create_Time DESC
-        LIMIT 1
+        OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
     </select>
 
     <select id="selectPickupAssignListByDriverId" resultType="vn.com.irtech.eport.logistic.form.PickupAssignForm">

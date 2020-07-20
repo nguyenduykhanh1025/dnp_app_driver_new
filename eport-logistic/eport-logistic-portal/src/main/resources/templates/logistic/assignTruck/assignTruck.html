@@ -5,6 +5,7 @@
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
     <th:block th:include="include :: handsontable-css" />
+    <th:block th:include="include :: datetimepicker-css" />
     <link th:href="@{/css/logistic/assignTruck/assignTruck.css}" rel="stylesheet" />
   </head>
   <body>
@@ -13,16 +14,30 @@
         <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
         <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
         <div class="title-top">
-          <span class="title">Danh sách lô đang thực hiện</span>
-          <select class="shipment-type" onchange="loadTable()" name="shipmentType" id="shipmentType">
-            <option value="1" selected>Nhận container có hàng</option>
-            <option value="2">Giao container rỗng</option>
-            <option value="3">Nhận container rỗng</option>
-            <option value="4">Giao container có hàng</option>
-          </select>
+          <div class="row">
+            <div class="col-sm-12">
+              <select class="shipment-type col-sm-5" style="font-size: small;" onchange="loadTable()" name="shipmentType" id="shipmentType">
+                <option value="1" selected>Nhận container có hàng</option>
+                <option value="2">Giao container rỗng</option>
+                <option value="3">Nhận container rỗng</option>
+                <option value="4">Giao container có hàng</option>
+              </select>
+              <div class="col-sm-8" style="display: flex;height: 20px; margin-left: -20px;margin-right: -20px;">
+                <div class="form-group col-md-8 col-sm-8 col-xs-8">
+                  <input type="text" class="form-control from-date date" id="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" readonly>
+                </div>
+                <div class="form-group col-md-8 col-sm-8 col-xs-8">
+                  <input type="text" class="form-control to-date date" id="toDate" onchange="changeToDate()" placeholder="Đến ngày" readonly>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <hr />
+        <span class="title">Danh sách lô đang thực hiện</span>
         <div class="table-content">
-          <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]" fitColumns="true">
+          <table id="dg" style="width: 100%; height: calc(100% - 20px);" pageList="[20,50,100,150,200]" fitColumns="true">
             <thead>
               <tr>
                 <th data-options="field:'id', fixed:true" sortable="true" width="60">Mã Lô</th>
@@ -164,6 +179,7 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: handsontable-js" />
     <script type="text/javascript" th:inline="javascript">
       var driverOwnerList = /*[[${driverOwnerList}]]*/;
