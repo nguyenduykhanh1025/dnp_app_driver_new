@@ -45,5 +45,9 @@ public abstract class LogisticBaseController extends BaseController {
 		}
 		return false;
 	}
+
+	public String getUserIp() {
+		return ShiroUtils.getIp();
+	}
 	
 }
