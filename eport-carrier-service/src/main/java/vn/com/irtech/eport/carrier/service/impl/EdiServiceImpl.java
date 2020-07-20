@@ -88,6 +88,14 @@ public class EdiServiceImpl implements IEdiService {
 		edoUpdate.setUpdateBy(API);
 		this.settingEdoData(edoUpdate, ediDataReq, partnerCode, transactionId);
 		Edo odlEdo = edoService.selectEdoById(edoUpdate.getId());
+		if(edoUpdate.getExpiredDem() != null)
+		{
+			Date setTimeUpdatExpicedDem = edoUpdate.getExpiredDem();
+			setTimeUpdatExpicedDem.setHours(23);
+			setTimeUpdatExpicedDem.setMinutes(59);
+			setTimeUpdatExpicedDem.setSeconds(59);
+			edoUpdate.setExpiredDem(setTimeUpdatExpicedDem);
+		}
 		if(odlEdo.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) == 0)
 		{
 			edoUpdate.setExpiredDem(null);
