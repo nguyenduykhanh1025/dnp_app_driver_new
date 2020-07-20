@@ -19,5 +19,7 @@ public class MessageConsts {
 	public static final String E0008 = "E0008";
 
 	public static final String E0009 = "E0009";
+	
+	public static final String E0010 = "E0010";
 
 }
