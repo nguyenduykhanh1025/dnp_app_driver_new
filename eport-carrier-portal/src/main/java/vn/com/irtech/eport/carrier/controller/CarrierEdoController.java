@@ -198,7 +198,7 @@ public class CarrierEdoController extends CarrierBaseController {
 			ids = edo.getId().toString();
 		}
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		try {
+		// try {
 			EdoAuditLog edoAuditLog = new EdoAuditLog();
 			Date timeNow = new Date();
 			edoAuditLog.setCarrierId(super.getUser().getGroupId());
@@ -219,7 +219,10 @@ public class CarrierEdoController extends CarrierBaseController {
 					edo.setExpiredDem(setTimeUpdatExpicedDem);
 					edoAuditLog.setFieldName("Expired Dem");
 					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					if(edoAuditLogCheck != null) 
+					{
+						edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					}
 					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
 					edoAuditLog.setNewValue(formatter.format(setTimeUpdatExpicedDem).toString()); 
 					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
@@ -229,7 +232,10 @@ public class CarrierEdoController extends CarrierBaseController {
 				{
 					edoAuditLog.setFieldName("Det Free Time");
 					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					if(edoAuditLogCheck != null)
+					{
+						edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					}
 					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo)  + segNo);
 					edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
 					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
@@ -239,7 +245,10 @@ public class CarrierEdoController extends CarrierBaseController {
 				{
 					edoAuditLog.setFieldName("Empty Container Depot");
 					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					if(edoAuditLogCheck != null)
+					{
+						edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+					}
 					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
 					edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
 					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
@@ -248,9 +257,9 @@ public class CarrierEdoController extends CarrierBaseController {
 				edoService.updateEdo(edo);
 		}
 				return AjaxResult.success("Update thành công");
-		}catch(Exception e) {
-			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
-		} 
+		// }catch(Exception e) {
+		// 	return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
+		// } 
 		
 	}
 	@PostMapping("/readEdiOnly")
