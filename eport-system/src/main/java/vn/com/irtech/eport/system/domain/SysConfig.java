@@ -47,7 +47,7 @@ public class SysConfig extends BaseEntity
     }
 
     @NotBlank(message = "Parameter name cannot be empty")
-    @Size(min = 0, max = 100, message = "Độ dài chuỗi không được vượt quá 100 ký tự")
+    @Size(min = 0, max = 200, message = "Độ dài chuỗi không được vượt quá 100 ký tự")
     public String getConfigName()
     {
         return configName;
@@ -59,7 +59,7 @@ public class SysConfig extends BaseEntity
     }
 
     @NotBlank(message = "Parameter key name length cannot be empty")
-    @Size(min = 0, max = 100, message = "Độ dài chuỗi không được vượt quá 100 ký tự")
+    @Size(min = 0, max = 200, message = "Độ dài chuỗi không được vượt quá 100 ký tự")
     public String getConfigKey()
     {
         return configKey;
