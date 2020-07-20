@@ -24,7 +24,6 @@ function closeForm()
 
 function confirm()
 {
-    console.log($("#emptyContainerDepot").val());
     if(formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot)
     {
       $.modal.alertError("Không có thông tin nào được thay đổi !!!")
