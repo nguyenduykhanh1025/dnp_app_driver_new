@@ -58,6 +58,12 @@ public interface ILogisticTruckService
      * @return result
      */
     public int deleteLogisticTruckById(Long id);
+
     public int checkPlateNumberUnique(String plateNumber);
+
     public int updateDelFlagByIds(String ids);
+
+    public List<String> selectListTruckNoByDriverId(Long driverId);
+    
+    public List<String> selectListChassisNoByDriverId(Long driverId); 
 }

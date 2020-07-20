@@ -114,4 +114,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(1) from logistic_truck where lower(plate_number)=#{plateNumber}
 	</select>
     
+    <select id="selectListTruckNoByDriverId" parameterType="Long" resultType="String">
+        select t.plate_number from driver_truck dt left join logistic_truck t on dt.truck_id = t.id where t.type = '0' and dt.driver_id = #{driverId}
+    </select>
+
+    <select id="selectListChassisNoByDriverId" parameterType="Long" resultType="String">
+        select t.plate_number from driver_truck dt left join logistic_truck t on dt.truck_id = t.id where t.type = '1' and dt.driver_id = #{driverId}
+    </select>
 </mapper>

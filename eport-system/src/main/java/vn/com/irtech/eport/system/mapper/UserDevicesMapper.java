@@ -60,4 +60,6 @@ public interface UserDevicesMapper
     public int deleteUserDevicesByIds(String[] ids);
 
     public List<UserDevices> selectDeviceTokenList(String[] userTypeList);
+
+    public int deleteUserDevicesByUserToken(String token);
 }
