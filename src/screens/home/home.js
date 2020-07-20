@@ -224,43 +224,50 @@ export default class HomeScreen extends Component {
               {/* {
             -- Phần hiển thị item bốc công hàng
           } */}
-              <View style={styles.PorterItemContainer}>
-                <View style={styles.PorterItemLeft}>
-                  <Image source={icCont1} style={styles.PorterIcon} />
-                </View>
-                <View style={styles.PorterItemRight}>
-                  <View style={styles.PorterItemRightUp}>
-                    <Text style={styles.PorterItemLabel}>Số Công:</Text>
-                    <Text style={styles.PorterItemValue}>KUST123456789</Text>
+              <TouchableOpacity
+                onPress={() => { NavigationService.navigate(mainStack.detail, {}) }}
+              >
+                <View style={styles.PorterItemContainer}>
+                  <View style={styles.PorterItemLeft}>
+                    <Image source={icCont1} style={styles.PorterIcon} />
                   </View>
-                  <View style={[styles.PorterItemRightDown, { marginTop: hs(10) }]}>
+                  <View style={styles.PorterItemRight}>
                     <View style={styles.PorterItemRightUp}>
-                      <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
-                      <Text style={styles.PorterItemValue}>2020</Text>
+                      <Text style={styles.PorterItemLabel}>Số Công:</Text>
+                      <Text style={styles.PorterItemValue}>KUST123456789</Text>
                     </View>
-                    <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                    <View style={[styles.PorterItemRightDown, { marginTop: hs(10) }]}>
+                      <View style={styles.PorterItemRightUp}>
+                        <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
+                        <Text style={styles.PorterItemValue}>2020</Text>
+                      </View>
+                      <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-
-              <View style={styles.PorterItemContainer}>
-                <View style={styles.PorterItemLeft}>
-                  <Image source={icCont2} style={styles.PorterIcon} />
-                </View>
-                <View style={styles.PorterItemRight}>
-                  <View style={styles.PorterItemRightUp}>
-                    <Text style={styles.PorterItemLabel}>Số Công:</Text>
-                    <Text style={styles.PorterItemValue}>KUST123456789</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => { NavigationService.navigate(mainStack.detail, {}) }}
+              >
+                <View style={styles.PorterItemContainer}>
+                  <View style={styles.PorterItemLeft}>
+                    <Image source={icCont2} style={styles.PorterIcon} />
                   </View>
-                  <View style={styles.PorterItemRightDown}>
+                  <View style={styles.PorterItemRight}>
                     <View style={styles.PorterItemRightUp}>
-                      <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
-                      <Text style={styles.PorterItemValue}>2020</Text>
+                      <Text style={styles.PorterItemLabel}>Số Công:</Text>
+                      <Text style={styles.PorterItemValue}>KUST123456789</Text>
                     </View>
-                    <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                    <View style={styles.PorterItemRightDown}>
+                      <View style={styles.PorterItemRightUp}>
+                        <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
+                        <Text style={styles.PorterItemValue}>2020</Text>
+                      </View>
+                      <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
           {/* {
