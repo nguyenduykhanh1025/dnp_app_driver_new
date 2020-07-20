@@ -256,22 +256,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
      <select id="selectVoyNo" parameterType="String" resultType="String">
     	select distinct voy_no 
-    	from edo where voy_no like concat('%', #{keyString}, '%')
+    	from edo where voy_no like concat(concat('%', #{keyString}), '%')
      </select>
 
      <select id="selectOprCode" parameterType="String" resultType="String">
     	select distinct carrier_code
-    	from edo where carrier_code like concat('%', #{keyString}, '%')
+    	from edo where carrier_code like concat(concat('%', #{keyString}), '%')
      </select>
 
       <select id="selectVesselNo" parameterType="String" resultType="String">
     	select distinct vessel_no
-    	from edo where vessel_no like concat('%', #{keyString}, '%')
+    	from edo where vessel_no like concat(concat('%', #{keyString}), '%')
      </select>
 
       <select id="selectVesselList" parameterType="String" resultType="String">
     	select distinct vessel
-    	from edo where vessel like concat('%', #{keyString}, '%')
+    	from edo where vessel like concat(concat('%', #{keyString}), '%')
      </select>
      
 </mapper>
