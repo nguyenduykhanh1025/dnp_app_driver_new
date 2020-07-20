@@ -41,6 +41,7 @@ import { loginAPI } from '@/requests';
 import { FaceDetector } from 'react-native-camera';
 
 const ibg = require('@/assets/images/auth_bg.png');
+const hicon = require('@/assets/images/logo.png');
 
 class LoginContainer extends PureComponent {
     constructor(props) {
@@ -154,7 +155,17 @@ class LoginContainer extends PureComponent {
             >
                 <View style={styles.ImageContainer}>
                     <Image source={ibg} style={styles.image} />
-                    <View></View>
+                    <View style={styles.Frame0}>
+                        <View style={styles.HeaderContainer}>
+                            <View style={styles.HeaderText}>
+                                <Text style={styles.HeaderTextUp}>Ứng dụng tài xế</Text>
+                                <Text style={styles.HeaderTextDown}>CẢNG ĐÀ NẴNG</Text>
+                            </View>
+                            <View style={styles.HeaderIcon}>
+                                <Image source={hicon} style={styles.HeaderIconImage} />
+                            </View>
+                        </View>
+                    </View>
                 </View>
                 <View style={styles.Frame1}>
                     <View style={styles.Frame2}>
@@ -196,7 +207,7 @@ class LoginContainer extends PureComponent {
                                 showPassword={true}
                                 focusValue={this.state.onFocusp}
                             />
-                            <View style={{marginTop: hs(28)}}>
+                            <View style={{ marginTop: hs(28) }}>
                                 <AuthButton
                                     onPress={() => this.onLogin(this.state.loginname, this.state.pwd)}
                                     title='Đăng nhập'
@@ -232,6 +243,38 @@ const styles = StyleSheet.create({
         width: ws(375),
         height: hs(424),
         position: 'absolute',
+    },
+    HeaderContainer: {
+        flexDirection: 'row',
+        marginHorizontal: ws(25),
+        justifyContent: 'space-between',
+        alignItems: 'center', 
+        paddingTop: hs(58),
+    },
+    HeaderText: {
+
+    },
+    HeaderIcon: {
+
+    },
+    HeaderTextUp: {
+        fontFamily: null,
+        color: Colors.white,
+        fontSize: fs(18),
+        fontWeight: 'bold'
+    },
+    HeaderTextDown: {
+        fontFamily: null,
+        color: Colors.white,
+        fontSize: fs(25),
+        fontWeight: 'bold',
+    },
+    HeaderIconImage: {
+        width: ws(75),
+        height: hs(46),
+    },
+    Frame0: {
+        width: ws(375),
     },
     Frame1: {
         flex: 1,

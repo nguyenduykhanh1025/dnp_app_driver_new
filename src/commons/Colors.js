@@ -49,7 +49,8 @@ export default {
   colorBorder: '#BBBBBB',
   textColor: '#556299',
   titleColor: '#AABBCC',
-  blueColor: '#0F8FFF'
+  blueColor: '#0F8FFF',
+  badgeColor: '#FF6060',
 };
 
 const percentToHex = (p) => {

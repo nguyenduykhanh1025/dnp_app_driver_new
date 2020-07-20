@@ -1,18 +1,32 @@
 import React, { Component } from 'react'
 
-import { 
-    TouchableOpacity, 
-    StyleSheet, 
-    SafeAreaView , 
-    Text, 
+import {
+    TouchableOpacity,
+    StyleSheet,
+    SafeAreaView,
+    Text,
     Image,
     StatusBar,
     View
 } from 'react-native';
-import { mainStack , homeTab} from '@/config/navigator';
-import {home_icon, home_user, history_icon, notify_icon} from '@/assets/icons/index';
-import { maincolor, grey5, white} from '@/commons/Colors'
-import { sizes, sizeWidth, Colors, sizeHeight } from '@/commons'
+import { mainStack, homeTab } from '@/config/navigator';
+import {
+    home_icon,
+    home_user,
+    history_icon,
+    notify_icon,
+    command_icon
+} from '@/assets/icons/index';
+import { maincolor, grey5, white } from '@/commons/Colors'
+import {
+    sizes,
+    sizeWidth,
+    Colors,
+    sizeHeight,
+    widthPercentageToDP as ws,
+    heightPercentageToDP as hs,
+    fontSizeValue as fs,
+} from '@/commons'
 
 
 const Tabbar = (props) => {
@@ -28,14 +42,21 @@ const Tabbar = (props) => {
             iconName: history_icon,
             name: 'Lịch sử',
             router: homeTab.history,
-            isShow: true,
+            isShow: false,
         },
         {
-            iconName: notify_icon,
-            name: 'Thông báo',
+            iconName: command_icon,
+            name: 'Làm lệnh',
             router: homeTab.notification,
+            bgRound: true,
             isShow: true,
         },
+        // {
+        //     iconName: notify_icon,
+        //     name: 'Thông báo',
+        //     router: homeTab.notification,
+        //     isShow: false,
+        // },
         {
             iconName: home_user,
             name: 'Tài khoản',
@@ -47,38 +68,72 @@ const Tabbar = (props) => {
     //size={navigation.state.index === index ? sizes.h1 : sizes.h3}
     return (
         <SafeAreaView style={[styles.container,]}>
-            <StatusBar 
-                translucent 
-                backgroundColor = 'transparent'
+            <StatusBar
+                translucent
+                backgroundColor='transparent'
             />
             {data.map((tab, index) => tab.isShow ? (
                 <TouchableOpacity
                     key={index}
                     style={[styles.item]}
-                    onPress={() => navigation.navigate(tab.router)}
+                    onPress={() => {
+                        navigation.navigate(tab.router)
+                    }}
                 >
-                    <View style = {[navigation.state.index === index ? styles.iconContainer : null]}>
-                        <Image
-                            source = {tab.iconName}
-                            style = {[styles.icon, navigation.state.index === index ? styles.activeIcon : null]}
-                            resizeMode = 'contain'
-                        />
-                    </View>
+                    {
+                        !tab.bgRound ?
+                            (<View style={[navigation.state.index === index ? styles.iconContainer : null]}>
+                                <Image
+                                    source={tab.iconName}
+                                    style={[styles.icon, navigation.state.index === index ? styles.activeIcon : null]}
+                                    resizeMode='contain'
+                                />
+                            </View>)
+                            :
+                            (<View style={styles.iconCommand}>
+                                <View style={[styles.bgRound, navigation.state.index === index ? { backgroundColor: Colors.maincolor, borderWidth: ws(5), borderColor: '#F2f2f2' } : { backgroundColor: '#F2F2F2' }]}>
+                                    <Image
+                                        source={tab.iconName}
+                                        style={[styles.iconBgRound, navigation.state.index === index ? { tintColor: Colors.white } : { tintColor: Colors.greyColor }]}
+                                        resizeMode='contain'
+                                    />
+                                    {
+                                        false ?
+                                            <View style={[styles.badgeIcon, navigation.state.index === index ?
+                                                {
+                                                    left: ws(44),
+                                                    top: hs(16),
+                                                } :
+                                                {
+                                                    left: ws(49),
+                                                    top: hs(21),
+                                                }]}>
+                                                <Text style={styles.badgeText}>1</Text>
+                                            </View>
+                                            :
+                                            null
+                                    }
+                                </View>
+
+                            </View>)
+                    }
+
                 </TouchableOpacity>
-            ) : null)}
+            ) :
+                null)}
         </SafeAreaView>
     )
 };
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
-        width: sizeWidth(100),
-        height: sizeHeight(8),
+        backgroundColor: Colors.white,
+        width: ws(375),
+        height: hs(73),
         flexDirection: 'row',
         alignSelf: 'center',
         bottom: 0,
-        shadowColor: "#000",
+        shadowColor: 'rgba(0, 0, 0, 0.05)',
         shadowOffset: {
             width: 0,
             height: 1,
@@ -92,8 +147,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         alignSelf: 'center',
-        justifyContent: 'center', 
-        flex:1,
+        justifyContent: 'center',
+        flex: 1,
     },
     text: {
         paddingHorizontal: sizes.h6,
@@ -107,9 +162,39 @@ const styles = StyleSheet.create({
         tintColor: Colors.maincolor,
     },
     iconContainer: {
-        borderTopWidth: sizeHeight(0.4),
+        borderTopWidth: hs(3),
         borderColor: Colors.maincolor,
+        height: hs(73)
     },
+    bgRound: {
+        width: ws(79),
+        height: ws(79),
+        borderRadius: 200,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    iconBgRound: {
+        width: ws(42),
+        height: hs(28),
+    },
+    activeIconBgRound: {
+
+    },
+    iconCommand: {
+        paddingBottom: hs(32)
+    },
+    badgeIcon: {
+        position: 'absolute',
+        backgroundColor: Colors.badgeColor,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 100,
+        height: ws(18),
+    },
+    badgeText: {
+        marginVertical: hs(1),
+        marginHorizontal: ws(5)
+    }
 });
 
 export default Tabbar;
