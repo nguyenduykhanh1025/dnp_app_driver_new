@@ -6,33 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <th:block th:include="include :: header('NAPAS PAYMENT GATEWAY')" />
 </head>
-<style>
-    .content {
-        text-align: center;
-        color: #3c8dbc;
-        font-size: xx-large;
-        font-weight: bolder;
-    }
-
-    .payment-button {
-        font-size: large;
-        font-weight: bolder;
-        padding: 10px;
-    }
-</style>
-
 <body>
-    <div class="content">
-        <h>NAPAS PAYMENT GATEWAY</h>
-    </div>
-    <div style="text-align: center;">
-        <button class="payment-button" onclick="closeNapas()">Thanh Toán</button>
-    </div>
+    <th:block th:include="include :: footer" />
+    <form id="merchant-form" th:action="${resultUrl}" method="POST"></form>
+    <div id="napas-widget-container"></div>
+    <script type="text/javascript"
+        id="napas-widget-script" 
+        src="https://dps-staging.napas.com.vn/api/restjs/resources/js/napas.paymentpage.min.js" 
+        merchantId="DANANGPORT"
+        deviceId="deviceId" 
+        environment="WebApp"
+        cardScheme="AtmCard" 
+        enable3DSecure="false"
+        apiOperation="PAY"
+        channel="6014" 
+        sourceOfFundsType="CARD"
+        th:attr="clientIP=${clientIp},
+        orderId=${data.order.id},
+        orderReference=${data.order.id},
+        orderAmount=${data.order.amount},
+        orderCurrency=${data.order.currency},
+        dataKey=${data.dataKey},
+        napasKey=${data.napasKey}"
+        ></script>
+    </form>
 </body>
-<th:block th:include="include :: footer" />
-<script type="text/javascript" th:inline="javascript">
-    function closeNapas() {
-        $.modal.closeTab();
-    }
-</script>
 </html>
