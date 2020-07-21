@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
@@ -40,10 +41,12 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.INapasApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.logistic.service.impl.NapasApiService;
 import vn.com.irtech.eport.logistic.utils.R;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
@@ -87,6 +90,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired
 	private WebSocketService webSocketService;
+	
+	@Autowired
+	private INapasApiService napasApiService;
 
 	@GetMapping()
 	public String receiveContFull(ModelMap mmap) {
@@ -598,6 +604,13 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		ajaxResult = error("Số bill không tồn tại!");
 		return ajaxResult;
+	}
+	
+	@GetMapping("/test")
+	@ResponseBody
+	public JSONObject test() {
+		return napasApiService.getAccessToken();
+		
 	}
 }
 
