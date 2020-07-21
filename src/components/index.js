@@ -27,6 +27,8 @@ import WaitingModal from './modal/modal.waiting';
 import ModalQRResult from './modal/modal.QRresult';
 import HeaderResult from './header/headerresult';
 import HeaderMain from './header/header-main';
+import DropDown from './dropdown/dropdown';
+import Button from './button/button';
 
 export {
     Input,
@@ -63,4 +65,6 @@ export {
     ModalQRResult,
     HeaderResult,
     HeaderMain,
+    DropDown,
+    Button,
 }
