@@ -237,12 +237,10 @@ config = {
             data: "driverOwner",
             type: "autocomplete",
             source: driverOwnerList,
-            strict: true
         },
         {
             data: "phoneNumber",
             type: "autocomplete",
-            strict: true,
         },
         {
             data: "fullName",

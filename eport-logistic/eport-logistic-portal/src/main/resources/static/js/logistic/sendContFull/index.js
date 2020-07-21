@@ -128,7 +128,7 @@ function stringToDate(dateStr) {
 document.getElementById("bookingSearch").addEventListener("keyup", function (event) {
     event.preventDefault();
     if (event.keyCode === 13) {
-    shipmentSearch.blNo = $('#bookingSearch').val().toUpperCase();
+    shipmentSearch.bookingNo = $('#bookingSearch').val().toUpperCase();
     loadTable();
     }
 });
