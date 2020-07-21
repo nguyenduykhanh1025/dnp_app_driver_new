@@ -2,11 +2,19 @@ import React from 'react';
 import { createStackNavigator, TransitionPresets } from 'react-navigation-stack'
 import { mainStack } from '../config/navigator';
 
-import { Home, Detail, QRCode, Result } from '@/screens/home';
+import {
+    Home,
+    Detail,
+    QRCode,
+    Result,
+    Detail1,
+    Detail11,
+    Detail2,
+} from '@/screens/home';
 import ListNotification from '@/screens/notification/list';
 import ListHistory from '@/screens/history/list';
 import Profile from '@/screens/profile/profile';
-import HomeTab from './home_tab'
+import HomeTab from './home_tab';
 
 import { Tabbar } from '@/components'
 
@@ -15,6 +23,9 @@ export default createStackNavigator(
     {
         [mainStack.home_tab]: HomeTab,
         [mainStack.detail]: Detail,
+        [mainStack.detail1]: Detail1,
+        [mainStack.detail11]: Detail11,
+        [mainStack.detail2]: Detail2,
         [mainStack.qr_code]: QRCode,
         [mainStack.result]: Result,
 
@@ -28,5 +39,6 @@ export default createStackNavigator(
         defaultNavigationOptions: {
             header: null,
             ...TransitionPresets.SlideFromRightIOS,
-        },}
+        },
+    }
 );

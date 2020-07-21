@@ -106,7 +106,7 @@ export default class DetailScreen extends Component {
           onPressLeft={() => {
             this.props.navigation.goBack()
           }}
-          status={0}
+          status={1}
         />
 
         <View style={styles.Body}>
@@ -334,11 +334,6 @@ export default class DetailScreen extends Component {
            */}
           <Button
             value={'Tiếp tục'}
-            onPress={
-              () => {
-                NavigationService.navigate(mainStack.detail1, {})
-              }
-            }
           />
         </View>
       </ScrollView>
