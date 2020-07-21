@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 15,
-        color: '#86889E',
+        color: Colors.tinyTextGrey,
         fontWeight: 'bold',
     },
     txtValue: {

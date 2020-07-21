@@ -1,31 +1,44 @@
 import React, { Component } from 'react';
-import { 
-  Text, 
-  View, 
-  StyleSheet, 
-  Button, 
-  ScrollView, 
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  ScrollView,
   ImageBackground,
   Image,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import { mainStack, authStack } from '@/config/navigator';
-import { Colors, sizes, sizeWidth, sizeHeight } from '@/commons'
+import {
+  Colors,
+  sizes,
+  sizeWidth,
+  sizeHeight,
+  widthPercentageToDP as ws,
+  heightPercentageToDP as hs,
+  fontSizeValue as fs,
+} from '@/commons'
 import { getListInfoHome } from '@/mock/index';
 import Item from './item';
 import {
-  down_arrow, 
-  cont2_icon, 
+  down_arrow,
+  cont2_icon,
   cont3_icon,
   cont4_icon,
   cont5_icon
 } from '@/assets/icons'
 import HomeButton from './home_button'
-import {getRequestAPI} from '@/requests'
-import {getToken} from '@/stores';
+import { getRequestAPI } from '@/requests'
+import { getToken } from '@/stores';
+import { hasSystemFeature } from 'react-native-device-info';
 
+const icUser = require('@/assets/icons/account/user.png')
+const icCont1 = require('@/assets/icons/cont2_icon.png')
+const icCont2 = require('@/assets/icons/cont4_icon.png')
 
 export default class HomeScreen extends Component {
   constructor(props) {
@@ -33,44 +46,29 @@ export default class HomeScreen extends Component {
     this.state = {
       Data: [
         {
-            batchCode: "HH001",
-            billNumber: "BN001",
-            size: "A12",
-            type: "AB23",
-            contCount: "10",
-            note: 'ok 1234'
+
+        }
+      ],
+      dataHistory: [
+        {
+          "pickupHistoryId": 1,
+          "containerNo": "CDFD1231237",
+          "gateInDate": "2020-07-18T01:45:57.261+0000"
         },
         {
-            batchCode: "HH002",
-            billNumber: "BN002",
-            size: "A12",
-            type: "AB23",
-            contCount: "20",
-            note: 'ok 1234'
+          "pickupHistoryId": 2,
+          "containerNo": "CDFD1231237",
+          "gateInDate": "2020-07-18T01:45:57.261+0000"
         },
         {
-            batchCode: "HH003",
-            billNumber: "BN003",
-            size: "A12",
-            type: "AB23",
-            contCount: "12",
-            note: 'ok 1234'
+          "pickupHistoryId": 2,
+          "containerNo": "CDFD1231237",
+          "gateInDate": "2020-07-18T01:45:57.261+0000"
         },
         {
-            batchCode: "HH004",
-            billNumber: "BN004",
-            size: "A12",
-            type: "AB23",
-            contCount: "9",
-            note: 'ok 1234'
-        },
-        {
-            batchCode: "HH005",
-            billNumber: "BN005",
-            size: "A12",
-            type: "AB23",
-            contCount: "3",
-            note: 'ok 1234'
+          "pickupHistoryId": 2,
+          "containerNo": "CDFD1231237",
+          "gateInDate": "2020-07-18T01:45:57.261+0000"
         },
       ],
       carCode: '73A1 - 042.32',
@@ -81,6 +79,7 @@ export default class HomeScreen extends Component {
       boc_rong_focused: false,
       ha_rong_focused: false,
       userData: [],
+      userName: 'Họ và tên'
     }
   };
 
@@ -90,7 +89,6 @@ export default class HomeScreen extends Component {
       data: getListInfoHome[0].Data
     })
     this.getUserInfo()
-
   };
 
   getUserInfo = async () => {
@@ -100,10 +98,11 @@ export default class HomeScreen extends Component {
       token: token,
     }
     const result = await getRequestAPI(param);
-    this.setState({userData: result.data})
+    this.setState({ userData: result.data })
+    console.log('userData', this.state.userData)
   }
 
-  onLoadProduct  = () => {
+  onLoadProduct = () => {
     this.setState({
       boc_focused: true,
       ha_focused: false,
@@ -139,225 +138,394 @@ export default class HomeScreen extends Component {
     })
   }
 
-  onChangeCarCode = () => {
-
-  }
-
-  onChangeContCode = () => {
-    
-  }
+  renderItem = (item, index) => (
+    <Item data={item.item} />
+  )
 
   render() {
-    var { Data, carCode, ContCode, date, userData } = this.state;
     return (
       <View style={styles.container}>
-        <View
-          showsVerticalScrollIndicator = {false}
+        <StatusBar
+          translucent
+          barStyle={'dark-content'}
+          backgroundColor='transparent'
+        />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
         >
-          <ImageBackground
-            source = {require('@/assets/images/home_bg.png')}
-            style = {styles.bg}
-          >
-            <View style = {styles.bgArea}> 
-              <View style = {styles.detail}>
-                <View style = {{flexDirection: 'row', alignItems: 'center'}}>
-                  <Image
-                    source = {require('@/assets/images/profile_2.jpg')}
-                    style = {styles.avatar}
-                  />
-                  <View>  
-                    <Text style = {styles.bgText}>{date}</Text>
-                    <Text style = {styles.bgBoldText}>{'DANG BIN'}</Text>
-                  </View>
+          {/* {
+            -- Phần ảnh đại diện, họ và tên
+          } */}
+          <View style={styles.Header}>
+            <View style={styles.HeaderName}>
+              <View style={styles.HeaderIcon}>
+                <Image source={icUser} style={styles.icUser} />
+              </View>
+              <View style={styles.HeaderText}>
+                <View style={styles.HeaderTextUp}>
+                  <Text style={styles.HeaderTextDate}>{this.state.date}</Text>
                 </View>
-                <View>
-                    <Text style = {styles.bgSubText}>Xe đầu kéo</Text>
-                    <TouchableOpacity 
-                      style = {styles.detail_2}
-                      onPress = {this.onChangeCarCode}
-                    >
-                      <Text style = {styles.bgBoldText}>{carCode}</Text>
-                      <Image
-                        source = {down_arrow}
-                        style = {styles.bgIcon}
-                        resizeMode = 'contain'
-                      />
-                    </TouchableOpacity>
-                    <Text style = {[styles.bgSubText, {marginTop: sizeHeight(1)}]}>Xe Rơ-mooc</Text>
-                    <TouchableOpacity 
-                      style = {styles.detail_2}
-                      onPress = {this.onChangeContCode}
-                    >
-                      <Text style = {styles.bgBoldText}>{ContCode}</Text>
-                      <Image
-                        source = {down_arrow}
-                        style = {styles.bgIcon}
-                        resizeMode = 'contain'
-                      />
-                    </TouchableOpacity>
+                <View style={styles.HeaderTextDown}>
+                  <Text style={styles.HeaderTextName}>{this.state.userName}</Text>
                 </View>
               </View>
             </View>
-          </ImageBackground>
-
-            <ScrollView 
-              style = {styles.listArea}
-              showsVerticalScrollIndicator = {false}
-            >
-                <View style = {styles.listContainer}>
-                    <Text style = {styles.listTitle}>Danh sách</Text>
-                    {Data.map((item, index) => (
-                      <Item 
-                        data = {item} 
-                        key = {index}
-                        onPress = {() => this.props.navigation.navigate(mainStack.detail, {item: item.batchCode})}
-                      />
-                    ))}
-                </View>   
-            </ScrollView>
-
-          <View style = {styles.buttonArea}>
-            <View style = {[styles.buttonContainer,{borderBottomWidth: 1}]}>
-              <HomeButton 
-                title = 'Bốc công hàng từ Cảng'
-                icon = {cont2_icon}
-                active = {this.state.boc_focused}
-                onPress = {this.onLoadProduct} 
-              />
-              <HomeButton 
-                icon = {cont3_icon}
-                title = 'Hạ công hàng từ Cảng'
-                active = {this.state.ha_focused}
-                onPress = {this.onUnLoadProduct}
-              />
-            </View>
-            <View style = {styles.buttonContainer}>
-              <HomeButton 
-                title = 'Bốc công rỗng từ Cảng'
-                icon = {cont4_icon}
-                active = {this.state.boc_rong_focused}
-                onPress = {this.onLoadEmptyProduct}
-              />
-              <HomeButton 
-                title = 'Hạ công rỗng từ Cảng'
-                icon = {cont5_icon}
-                active = {this.state.ha_rong_focused}
-                onPress = {this.onUnLoadEmptyProduct}
-              />
-            </View>
-            <View style = {styles.spacing}></View>
+            <TouchableOpacity>
+              <View style={styles.HeaderButton}>
+                <Text style={styles.HeaderButtonText}>Check in</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        </View>
+          {/* {
+            -- Phần hiển thị biển số xe đầu kéo
+          } */}
+          <View style={styles.LicensePlateContainer}>
+            <View style={styles.LicensePlateTag}>
+              <View style={styles.LicensePlate}>
+                <Text style={styles.LicensePlateTextUp}>Biển số xe đầu kéo</Text>
+                <Text style={styles.LicensePlateTextDown}>{this.state.ContCode}</Text>
+              </View>
+              <View style={styles.LicensePlateLine} />
+              <View style={styles.LicensePlate}>
+                <Text style={styles.LicensePlateTextUp}>Biển số xe Romooc</Text>
+                <Text style={styles.LicensePlateTextDown}>{this.state.ContCode}</Text>
+              </View>
+            </View>
+          </View>
+          {/* {
+            -- Phần hiển thị danh sách bốc công hàng từ cảng
+          } */}
+          <View style={styles.PortersContainer}>
+            {/* {
+            -- Phần hiển thị item bốc công hàng
+          } */}
+            <View style={styles.PortersTag}>
+              {/* {
+            -- Phần hiển thị header item bốc công hàng
+          } */}
+              <View style={styles.PortersHeader}>
+                <View style={styles.PorterHeaderUp}>
+                  <Text style={styles.PorterHeaderTitle}>Bốc công hàng từ Cảng</Text>
+                  <View style={styles.PorterButtonStatus}>
+                    <Text style={styles.PorterButtonStatusText}>Sẵn sàng</Text>
+                  </View>
+                </View>
+                <View style={styles.PorterHeaderDown}>
+                  <View style={styles.PorterHeaderDownItem}>
+                    <Text style={styles.PorterHeaderDownItemLabel}>Mã lô:</Text>
+                    <Text style={styles.PorterHeaderDownItemValue}>1234</Text>
+                  </View>
+                  <View style={[styles.PorterHeaderDownItem]}>
+                    <Text style={styles.PorterHeaderDownItemLabel}>Bill No:</Text>
+                    <Text style={styles.PorterHeaderDownItemValue}>1234567890123</Text>
+                  </View>
+                </View>
+              </View>
+              {/* {
+            -- Phần hiển thị item bốc công hàng
+          } */}
+              <TouchableOpacity
+                onPress={() => { NavigationService.navigate(mainStack.detail, {}) }}
+              >
+                <View style={styles.PorterItemContainer}>
+                  <View style={styles.PorterItemLeft}>
+                    <Image source={icCont1} style={styles.PorterIcon} />
+                  </View>
+                  <View style={styles.PorterItemRight}>
+                    <View style={styles.PorterItemRightUp}>
+                      <Text style={styles.PorterItemLabel}>Số Công:</Text>
+                      <Text style={styles.PorterItemValue}>KUST123456789</Text>
+                    </View>
+                    <View style={[styles.PorterItemRightDown, { marginTop: hs(10) }]}>
+                      <View style={styles.PorterItemRightUp}>
+                        <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
+                        <Text style={styles.PorterItemValue}>2020</Text>
+                      </View>
+                      <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => { NavigationService.navigate(mainStack.detail, {}) }}
+              >
+                <View style={styles.PorterItemContainer}>
+                  <View style={styles.PorterItemLeft}>
+                    <Image source={icCont2} style={styles.PorterIcon} />
+                  </View>
+                  <View style={styles.PorterItemRight}>
+                    <View style={styles.PorterItemRightUp}>
+                      <Text style={styles.PorterItemLabel}>Số Công:</Text>
+                      <Text style={styles.PorterItemValue}>KUST123456789</Text>
+                    </View>
+                    <View style={styles.PorterItemRightDown}>
+                      <View style={styles.PorterItemRightUp}>
+                        <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
+                        <Text style={styles.PorterItemValue}>2020</Text>
+                      </View>
+                      <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* {
+            -- Phần hiển thị danh sách lịch sử
+          } */}
+          <View style={styles.HistoryContainer}>
+            <View style={styles.TitleHistory}>
+              <Text style={styles.TitleHistoryText}>Lịch sử</Text>
+            </View>
+            <FlatList
+              data={this.state.dataHistory}
+              renderItem={(item, index) => this.renderItem(item, index)}
+            />
+          </View>
+        </ScrollView>
       </View>
-
     )
   }
 }
 const styles = StyleSheet.create({
   container: {
-    height: sizeHeight(100),
-    width: sizeWidth(100),
+    flex: 1,
     backgroundColor: Colors.white
   },
-  title: {
-    fontSize: sizes.h3,
-    paddingLeft: sizeWidth(2),
-    color: Colors.blueColor
-  },
-  bg: {
-    height: sizeHeight(30),
-    width: sizeWidth(100),
-  },
-  bgArea: {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    height: sizeHeight(30),
-    width: sizeWidth(100),
-  },
-  listArea: {
-    height: sizeHeight(80),
-    width: sizeWidth(100),
-    backgroundColor: '#FFFFFF',
-  },
-  buttonArea: {
-    position: 'absolute',
-    height: sizeHeight(25),
-    width: sizeWidth(92),
-    backgroundColor: '#FFFFFF',
-    top: sizeHeight(17.5),
-    bottom: sizeHeight(57.5),
-    left: sizeWidth(4),
-    shadowColor: "#000",
-    shadowOffset: {
-        width: 0,
-        height: 1,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
-    elevation: 6,
-    borderRadius: 10,
-    padding: sizeHeight(1),
-  },
-  detail: {
+  Header: {
+    width: ws(375),
+    height: hs(37),
+    marginTop: hs(66),
+    justifyContent: 'space-between',
     flexDirection: 'row',
-    marginVertical: sizeHeight(5),
-    marginHorizontal: sizeWidth(5),
+    alignItems: 'center',
+    marginVertical: ws(20),
+    marginBottom: hs(20),
+  },
+  HeaderName: {
+    flexDirection: 'row',
+    marginLeft: ws(20)
+  },
+  HeaderButton: {
+    width: ws(99),
+    height: hs(35),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    backgroundColor: Colors["FFAA00"],
+    marginRight: ws(20)
+  },
+  HeaderIcon: {
+    backgroundColor: Colors.white,
+    borderRadius: 100,
+    marginRight: ws(8),
+  },
+  icUser: {
+    width: ws(35),
+    height: ws(35),
+    borderRadius: 100,
+  },
+  HeaderText: {
+
+  },
+  HeaderTextUp: {
+
+  },
+  HeaderTextDown: {
+
+  },
+  HeaderTextDate: {
+    fontFamily: null,
+    fontSize: fs(11),
+    color: Colors.tinyTextGrey,
+  },
+  HeaderTextName: {
+    fontFamily: null,
+    fontSize: fs(14),
+    fontWeight: 'bold',
+    color: Colors.blue,
+  },
+  HeaderButtonText: {
+    fontFamily: null,
+    fontSize: fs(15),
+    color: Colors.white,
+  },
+  LicensePlateContainer: {
+    width: ws(375),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: hs(16),
+  },
+  LicensePlateTag: {
+    flexDirection: 'row',
+    width: ws(345),
+    height: hs(89),
+    backgroundColor: Colors["E4EBF7"],
+    borderRadius: 8,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: Colors["C2D0F8"],
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  LicensePlate: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: ws(172),
+  },
+  LicensePlateLine: {
+    width: 0,
+    height: hs(67.5),
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: Colors["C2D0F8"]
+  },
+  LicensePlateTextUp: {
+    color: Colors.tinyTextGrey,
+    fontFamily: null,
+    fontSize: fs(15)
+  },
+  LicensePlateTextDown: {
+    color: Colors.blue,
+    fontFamily: null,
+    fontSize: fs(18),
+    fontWeight: 'bold',
+  },
+  PortersContainer: {
+    width: ws(375),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: hs(24),
+  },
+  PortersTag: {
+    width: ws(345),
+    height: hs(248),
+    backgroundColor: Colors.blue,
+    shadowColor: '0px 2px 8px rgba(0, 0, 0, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.05)',
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: hs(12)
+  },
+  PortersHeader: {
+    flexDirection: 'column',
+    marginBottom: hs(24)
+  },
+  PorterHeaderDown: {
+    width: ws(305),
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  bgIcon: {
-    height: sizeHeight(2),
-    width: sizeWidth(3),
-    marginLeft: sizeWidth(2),
-  },
-  bgText: {
-    fontSize: 12,
-    lineHeight: 14,
-    color: '#FFFFFF',
-  },
-  bgBoldText: {
-    fontSize: 16,
-    lineHeight: 19,
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-  },
-  detail_2: {
+  PorterHeaderUp: {
+    width: ws(305),
+    height: hs(25),
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: hs(14)
+  },
+  PorterHeaderTitle: {
+    fontFamily: null,
+    fontSize: fs(15),
+    color: Colors.white,
+    fontWeight: 'bold',
+    marginLeft: ws(1),
+  },
+  PorterButtonStatus: {
+    width: ws(64),
+    height: hs(25),
+    borderRadius: 4,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: Colors["(0, 224, 150, 0.3)"],
+    backgroundColor: Colors["(0, 224, 150, 0.1)"],
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  PorterButtonStatusText: {
+    fontFamily: null,
+    fontSize: fs(11),
+    color: Colors["00E096"],
+  },
+  PorterHeaderDownItem: {
+    flexDirection: 'row',
+  },
+  PorterHeaderDownItemLabel: {
+    marginRight: ws(9),
+    fontFamily: null,
+    fontSize: fs(13),
+    color: Colors.BAC9F3,
+  },
+  PorterHeaderDownItemValue: {
+    fontFamily: null,
+    fontSize: fs(13),
+    fontWeight: 'bold',
+    color: Colors.white,
+  },
+  PorterItemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: ws(305),
+    height: hs(63),
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'rgba(255, 255, 255, 0.11)',
+    marginBottom: hs(10)
+  },
+  PorterItemLeft: {
+    width: ws(72),
     justifyContent: 'center',
     alignItems: 'center',
   },
-  listContainer: {
-    width: sizeWidth(100),
-    marginTop: sizeHeight(15),
-    marginBottom: sizeHeight(20),
-    paddingHorizontal: sizeWidth(8),
-    paddingVertical: sizeHeight(1),
+  PorterItemRight: {
+    flexDirection: 'column',
+    width: ws(233),
   },
-  listTitle: {
-    fontSize: 17,
-    lineHeight: 21,
-    color: '#000000',
+  PorterItemRightUp: {
+    flexDirection: 'row',
+  },
+  PorterItemLabel: {
+    fontFamily: null,
+    fontSize: fs(13),
+    color: Colors.BAC9F3,
+    width: ws(49),
+    marginRight: ws(9),
+
+  },
+  PorterItemValue: {
+    fontFamily: null,
+    fontSize: fs(13),
+    color: Colors.white,
     fontWeight: 'bold',
   },
-  buttonContainer: {
+  PorterItemRightDown: {
     flexDirection: 'row',
-    borderColor: '#EFF1F5',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
-  spacing: {
-    height: '100%',
-    width: 1.5,
-    backgroundColor: '#EFF1F5',
-    position: 'absolute',
-    alignSelf: 'center',
+  PorterItemRightDownStatus: {
+    fontSize: fs(11),
+    color: Colors.white,
+    marginRight: ws(13),
   },
-  avatar: {
-    height: sizeHeight(6),
-    width: sizeHeight(6),
-    marginRight: sizeHeight(2),
-    borderRadius: 25,
+  PorterIcon: {
+    width: ws(34),
+    height: ws(34),
+    tintColor: Colors.white,
   },
-  bgSubText: {
-    color: 'rgba(255, 255, 255, 0.7)',
-    fontSize: 11,
-    lineHeight: 13,
-  }
+  HistoryContainer: {
+    width: ws(375),
+  },
+  TitleHistory: {
+    marginLeft: ws(16),
+    marginBottom: hs(14),
+  },
+  TitleHistoryText: {
+    fontSize: fs(18),
+    fontWeight: 'bold',
+    color: Colors.black,
+  },
 })

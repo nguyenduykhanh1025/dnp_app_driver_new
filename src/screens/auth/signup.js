@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
         marginVertical: sizeHeight(5),
     },
     noteText: {
-        color: '#86889E',
+        color: Colors.tinyTextGrey,
         fontSize: 15,
         lineHeight: 18,
     },

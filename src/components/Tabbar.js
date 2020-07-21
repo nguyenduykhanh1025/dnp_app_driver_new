@@ -91,23 +91,15 @@ const Tabbar = (props) => {
                             </View>)
                             :
                             (<View style={styles.iconCommand}>
-                                <View style={[styles.bgRound, navigation.state.index === index ? { backgroundColor: Colors.maincolor, borderWidth: ws(5), borderColor: '#F2f2f2' } : { backgroundColor: '#F2F2F2' }]}>
+                                <View style={[styles.bgRound]}>
                                     <Image
                                         source={tab.iconName}
-                                        style={[styles.iconBgRound, navigation.state.index === index ? { tintColor: Colors.white } : { tintColor: Colors.greyColor }]}
+                                        style={[styles.iconBgRound]}
                                         resizeMode='contain'
                                     />
                                     {
                                         false ?
-                                            <View style={[styles.badgeIcon, navigation.state.index === index ?
-                                                {
-                                                    left: ws(44),
-                                                    top: hs(16),
-                                                } :
-                                                {
-                                                    left: ws(49),
-                                                    top: hs(21),
-                                                }]}>
+                                            <View style={[styles.badgeIcon]}>
                                                 <Text style={styles.badgeText}>1</Text>
                                             </View>
                                             :
@@ -172,10 +164,14 @@ const styles = StyleSheet.create({
         borderRadius: 200,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: Colors.maincolor,
+        borderWidth: ws(5), borderColor:
+            Colors.bgGrey
     },
     iconBgRound: {
         width: ws(42),
         height: hs(28),
+        tintColor: Colors.white
     },
     activeIconBgRound: {
 
@@ -190,6 +186,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 100,
         height: ws(18),
+        left: ws(44),
+        top: hs(16),
     },
     badgeText: {
         marginVertical: hs(1),
