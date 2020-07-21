@@ -333,7 +333,7 @@ export default class DetailScreen extends Component {
             ---------------------------------------------------- 
            */}
           <Button
-            value={'Tiếp tục'}
+            value={'Xác nhận'}
           />
         </View>
       </ScrollView>

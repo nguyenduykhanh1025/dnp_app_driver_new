@@ -334,6 +334,11 @@ export default class DetailScreen extends Component {
            */}
           <Button
             value={'Tiếp tục'}
+            onPress={
+              ()=>{
+                NavigationService.navigate(mainStack.detail11, {})
+              }
+            }
           />
         </View>
       </ScrollView>
