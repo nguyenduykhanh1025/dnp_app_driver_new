@@ -45,7 +45,7 @@ public class ProcessOrder extends BaseEntity
 
     /** Loại lệnh */
     @Excel(name = "Loại lệnh")
-    private String mode;
+    private String modee;
 
     /** Chủ hàng */
     @Excel(name = "Chủ hàng")
@@ -170,14 +170,14 @@ public class ProcessOrder extends BaseEntity
     {
         return sztp;
     }
-    public void setMode(String mode) 
+    public void setModee(String modee) 
     {
-        this.mode = mode;
+        this.modee = modee;
     }
 
-    public String getMode() 
+    public String getModee() 
     {
-        return mode;
+        return modee;
     }
     public void setConsignee(String consignee) 
     {
@@ -324,7 +324,7 @@ public class ProcessOrder extends BaseEntity
             .append("referenceNo", getReferenceNo())
             .append("payType", getPayType())
             .append("sztp", getSztp())
-            .append("mode", getMode())
+            .append("modee", getModee())
             .append("consignee", getConsignee())
             .append("truckCo", getTruckCo())
             .append("taxCode", getTaxCode())
