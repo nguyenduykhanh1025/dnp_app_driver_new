@@ -5,56 +5,65 @@
   <th:block th:include="include :: header('Danh sách DO')" />
   <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: datetimepicker-css" />
-  <style type="text/css">
-    .datagrid-header-row>td {
-      color: #1C84C6;
-      font-weight: bold;
-    }
-  </style>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/eport/css/report.css}" />
 </head>
 
-<body class="gray-bg">
+<body class="white-bg container-fluid wrapper">
   <div id="wrapper">
     <div class="row">
-      <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
+      <div class="col-md-12 select-table" style="margin-top: 0px; padding-bottom:5px">
         <!-- Table toolbar -->
-        <div class="col-sm-12 fixed-table-toolbar" style="height: 44px;">
+        <div class="col-md-12" style="height: 44px;">
           <div class="bs-bars pull-left" style="margin-bottom: 5px;margin-top:0px">
-            <div class="btn-group-sm" id="toolbar" role="group">
+            <!-- <div class="btn-group-sm" id="toolbar" role="group">
               <a class="btn btn-success" onclick="exportExcel()">
                 <i class="fa fa-download"></i> Xuất excel
               </a>
-            </div>
+            </div> -->
           </div>
           <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:0px">
-
             <div class="select-list">
               <ul>
                 <li>
+                    <div class="form-group">
+                      <select class="col-md-12 c-search-box-vessel width150"> 
+                        <option selected="selected"></option>
+                      </select>
+                    </div>
+                </li>
+                <li>
                   <div class="form-group">
-                    <select class="form-control" id="carrierCode">
-                      <option value="">Tất cả</option>
+                    <select class="col-md-12 c-search-box-vessel-code width150"> 
+                      <option selected="selected"></option>
                     </select>
                   </div>
+              </li>
+              <li>
+                <div class="form-group">
+                  <select class="col-md-12 c-search-box-voy-no width150"> 
+                    <option selected="selected"></option>
+                  </select>
+                </div>
+            </li>
+                <li>
+                  <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
                 </li>
                 <li>
-                  <input class="form-control" type="text" name="cntrNo" id="cntrNo" placeholder="Container No" />
+                  <input class="time-input" id="fromDate" name="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" />
                 </li>
                 <li>
-                  <input class="time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
+                  <input class="time-input" id="toDate" name="toDate" onchange="changeToDate()" placeholder="Đến ngày" />
                 </li>
-                <li>
-                  <input class="time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
-                </li>
-                <a class="btn btn-primary btn-rounded btn-sm" onclick="searchContainer()" id="searchBtn"><i
+                <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
                     class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
                 </li>
               </ul>
             </div>
           </div>
         </div>
-        <div class="col-sm-12 table-container">
-          <table id="dg" style="width: 100%;" pageList="[10,50,100,200,500,1000]">
+        <div class="col-md-12 table-container">
+          <table id="dg" style="width: auto;" fitColumns="true">
             <thead>
               <tr>
                 <th data-options="field:'containerNumber',align:'left'" width="120">
@@ -102,10 +111,7 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <script type="text/javascript" th:inline="javascript">
-      var contFE = /*[[${contFE}]]*/ ;
-    </script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
      <script th:src="@{/eport/js/modules/edo/report.js}"></script>
 </body>
 

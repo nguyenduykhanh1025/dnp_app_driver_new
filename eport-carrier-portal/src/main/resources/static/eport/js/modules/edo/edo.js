@@ -81,6 +81,10 @@ function loadTable(edo) {
                 accept: "text/plain",
                 dataType: "text",
                 data: JSON.stringify({
+                  pageNum: param.page,
+                  pageSize: param.rows,
+                  orderByColumn: param.sort,
+                  isAsc: param.order,
                   data: edo,
                 }),
                 dataType: "json",

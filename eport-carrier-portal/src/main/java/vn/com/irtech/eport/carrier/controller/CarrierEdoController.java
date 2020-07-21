@@ -1,14 +1,9 @@
 package vn.com.irtech.eport.carrier.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,21 +14,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
-import vn.com.irtech.eport.carrier.domain.EdoHistory;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
-import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
 
@@ -47,9 +36,6 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@Autowired
 	private IEdoService edoService;
-
-	@Autowired
-	private IEdoHistoryService edoHistoryService;
 
 	@Autowired
     private ISysDictDataService dictDataService;
@@ -69,8 +55,8 @@ public class CarrierEdoController extends CarrierBaseController {
 	@PostMapping("/billNo")
 	@ResponseBody
 	public TableDataInfo billNo(@RequestBody PageAble<Edo> param) {
-	  startPage();
-	  Edo edo = param.getData();
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		Edo edo = param.getData();
 	  if (edo == null) {
 		edo = new Edo();
 	  }
@@ -227,9 +213,9 @@ public class CarrierEdoController extends CarrierBaseController {
 	{
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		Edo edo = param.getData();
-		if (edo == null) {
+		  if (edo == null) {
 			edo = new Edo();
-		}
+		  }
 		edo.setCarrierCode(super.getUserGroup().getGroupCode());
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);

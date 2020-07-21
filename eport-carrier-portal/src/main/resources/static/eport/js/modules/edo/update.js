@@ -29,6 +29,11 @@ function confirm()
       $.modal.alertError("Không có thông tin nào được thay đổi !!!")
       return;
     }
+  //  if(validateDateUpdate(expiredDem,$("#expiredDem").val()) == 1)
+  //  {
+  //     $.modal.alertError("Hạn lệnh chỉ có thể thay đổi về quá khứ nhiều nhất là 1 ngày !!!")
+  //     return;
+  //  }
       $.modal.confirm(
         "Bạn có chắc chắn muốn cập nhật DO không? Hành động này không thể hoàn tác",
         function () {
@@ -102,5 +107,28 @@ function formatDateForSubmit(value) {
 
     }
   })
+
+
+  function validateDateUpdate(fromDate, toDate) {
+    console.log(toDate);
+    toDate = toDate.replace("/","-");
+    if (fromDate == "" || toDate == "") {
+      return 1;
+    }
+    var formatDate1 = new Date(fromDate);
+    var toDate1 = new Date(toDate);
+    console.log(toDate);
+    var offset = toDate1.getTime() - formatDate1.getTime();
+
+    var totalDays = Math.round(offset / 1000 / 60 / 60 / 24);
+    
+    if (totalDays < 0) {
+      return -1;
+    } else if (totalDays <= 2) {
+      return 1;
+    }
+    return 0;
+
+  }
 
 
