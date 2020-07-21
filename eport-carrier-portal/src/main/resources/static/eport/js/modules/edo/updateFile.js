@@ -177,3 +177,4 @@ $("#submitFile").click( function (e) {
     myAvatarzone.processQueue();
     //$.modal.loading("Đang xử lý");
 });
+
