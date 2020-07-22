@@ -450,14 +450,14 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		return ajaxResult;
 	}
 
-	@GetMapping("/out-source/container/{shipmentId}")
+	@GetMapping("/out-source/container/{shipmentDetailId}")
 	@ResponseBody
-	public AjaxResult getOutSourceListForContainer(@PathVariable Long shipmentId){
+	public AjaxResult getOutSourceListForContainer(@PathVariable Long shipmentDetailId){
 		AjaxResult ajaxResult = success();
 		PickupAssign pickupAssign = new PickupAssign();
 		pickupAssign.setExternalFlg(1L);
 		pickupAssign.setLogisticGroupId(getUser().getGroupId());
-		pickupAssign.setShipmentId(shipmentId);
+		pickupAssign.setShipmentDetailId(shipmentDetailId);
 		List<PickupAssign> pickupAssigns = pickupAssignService.selectPickupAssignList(pickupAssign);
 		List<PickupAssign> outSourceForContainer = new ArrayList<PickupAssign>();
 		if(pickupAssigns.size() > 0){
@@ -492,6 +492,37 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		pickupAssign.setExternalFlg(1L);
 		pickupAssign.setPhoneNumber(driverPhone);
 		ajaxResult.put("pickupAssign", pickupAssignService.getInforOutSourceByPhoneNumber(pickupAssign));
+		return ajaxResult;
+	}
+
+	@GetMapping("/remark/batch/{shipmentId}")
+	@ResponseBody
+	public AjaxResult getRemarkFollowBatch(@PathVariable Long shipmentId){
+		if(shipmentId == null){
+			return error();
+		}
+		PickupAssign pickupAssign = new PickupAssign();
+		pickupAssign.setShipmentId(shipmentId);
+		pickupAssign.setLogisticGroupId(getUser().getGroupId());
+		String remark = pickupAssignService.getRemarkFollowBatchByShipmentId(pickupAssign);
+		AjaxResult ajaxResult = success();
+		ajaxResult.put("remark", remark);
+		return ajaxResult;
+	}
+
+	
+	@GetMapping("/remark/container/{shipmentDetailId}")
+	@ResponseBody
+	public AjaxResult getRemarkFollowContainer(@PathVariable Long shipmentDetailId){
+		if(shipmentDetailId == null){
+			return error();
+		}
+		PickupAssign pickupAssign = new PickupAssign();
+		pickupAssign.setShipmentDetailId(shipmentDetailId);
+		pickupAssign.setLogisticGroupId(getUser().getGroupId());
+		String remark = pickupAssignService.getRemarkFollowContainerByShipmentDetailId(pickupAssign);
+		AjaxResult ajaxResult = success();
+		ajaxResult.put("remark", remark);
 		return ajaxResult;
 	}
 }
