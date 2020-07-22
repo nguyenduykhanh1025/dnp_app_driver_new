@@ -141,7 +141,7 @@ export default class HomeScreen extends Component {
   renderItem = (item, index) => (
     <Item
       data={item.item}
-      onPress={()=>{
+      onPress={() => {
         NavigationService.navigate(mainStack.result, {})
       }}
     />
@@ -176,7 +176,7 @@ export default class HomeScreen extends Component {
               </View>
             </View>
             <TouchableOpacity
-              onPress={()=>{
+              onPress={() => {
                 NavigationService.navigate(mainStack.qr_code, {})
               }}
             >
@@ -201,87 +201,85 @@ export default class HomeScreen extends Component {
               </View>
             </View>
           </View>
-          {/* {
-            -- Phần hiển thị danh sách bốc công hàng từ cảng
-          } */}
+
           <View style={styles.PortersContainer}>
-            {/* {
-            -- Phần hiển thị item bốc công hàng
-          } */}
-            <View style={styles.PortersTag}>
-              {/* {
-            -- Phần hiển thị header item bốc công hàng
-          } */}
-              <View style={styles.PortersHeader}>
-                <View style={styles.PorterHeaderUp}>
-                  <Text style={styles.PorterHeaderTitle}>Bốc công hàng từ Cảng</Text>
-                  <View style={styles.PorterButtonStatus}>
-                    <Text style={styles.PorterButtonStatusText}>Sẵn sàng</Text>
-                  </View>
+
+            {
+              false ?
+                <View style={styles.PortersTagEmpty}>
+                  <Text>Chưa nhận cont nào !</Text>
                 </View>
-                <View style={styles.PorterHeaderDown}>
-                  <View style={styles.PorterHeaderDownItem}>
-                    <Text style={styles.PorterHeaderDownItemLabel}>Mã lô:</Text>
-                    <Text style={styles.PorterHeaderDownItemValue}>1234</Text>
-                  </View>
-                  <View style={[styles.PorterHeaderDownItem]}>
-                    <Text style={styles.PorterHeaderDownItemLabel}>Bill No:</Text>
-                    <Text style={styles.PorterHeaderDownItemValue}>1234567890123</Text>
-                  </View>
-                </View>
-              </View>
-              {/* {
-            -- Phần hiển thị item bốc công hàng
-          } */}
-              <TouchableOpacity
-                onPress={() => { NavigationService.navigate(mainStack.result, {}) }}
-              >
-                <View style={styles.PorterItemContainer}>
-                  <View style={styles.PorterItemLeft}>
-                    <Image source={icCont1} style={styles.PorterIcon} />
-                  </View>
-                  <View style={styles.PorterItemRight}>
-                    <View style={styles.PorterItemRightUp}>
-                      <Text style={styles.PorterItemLabel}>Số Công:</Text>
-                      <Text style={styles.PorterItemValue}>KUST123456789</Text>
-                    </View>
-                    <View style={[styles.PorterItemRightDown, { marginTop: hs(10) }]}>
-                      <View style={styles.PorterItemRightUp}>
-                        <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
-                        <Text style={styles.PorterItemValue}>2020</Text>
+                :
+                <View style={styles.PortersTag}>
+
+                  <View style={styles.PortersHeader}>
+                    <View style={styles.PorterHeaderUp}>
+                      <Text style={styles.PorterHeaderTitle}>Bốc công hàng từ Cảng</Text>
+                      <View style={styles.PorterButtonStatus}>
+                        <Text style={styles.PorterButtonStatusText}>Sẵn sàng</Text>
                       </View>
-                      <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
                     </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => { NavigationService.navigate(mainStack.resultReturn, {}) }}
-              >
-                <View style={styles.PorterItemContainer}>
-                  <View style={styles.PorterItemLeft}>
-                    <Image source={icCont2} style={styles.PorterIcon} />
-                  </View>
-                  <View style={styles.PorterItemRight}>
-                    <View style={styles.PorterItemRightUp}>
-                      <Text style={styles.PorterItemLabel}>Số Công:</Text>
-                      <Text style={styles.PorterItemValue}>KUST123456789</Text>
-                    </View>
-                    <View style={styles.PorterItemRightDown}>
-                      <View style={styles.PorterItemRightUp}>
-                        <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
-                        <Text style={styles.PorterItemValue}>2020</Text>
+                    <View style={styles.PorterHeaderDown}>
+                      <View style={styles.PorterHeaderDownItem}>
+                        <Text style={styles.PorterHeaderDownItemLabel}>Mã lô:</Text>
+                        <Text style={styles.PorterHeaderDownItemValue}>1234</Text>
                       </View>
-                      <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                      <View style={[styles.PorterHeaderDownItem]}>
+                        <Text style={styles.PorterHeaderDownItemLabel}>Bill No:</Text>
+                        <Text style={styles.PorterHeaderDownItemValue}>1234567890123</Text>
+                      </View>
                     </View>
                   </View>
+
+                  <TouchableOpacity
+                    onPress={() => { NavigationService.navigate(mainStack.result, {}) }}
+                  >
+                    <View style={styles.PorterItemContainer}>
+                      <View style={styles.PorterItemLeft}>
+                        <Image source={icCont1} style={styles.PorterIcon} />
+                      </View>
+                      <View style={styles.PorterItemRight}>
+                        <View style={styles.PorterItemRightUp}>
+                          <Text style={styles.PorterItemLabel}>Số Công:</Text>
+                          <Text style={styles.PorterItemValue}>KUST123456789</Text>
+                        </View>
+                        <View style={[styles.PorterItemRightDown, { marginTop: hs(10) }]}>
+                          <View style={styles.PorterItemRightUp}>
+                            <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
+                            <Text style={styles.PorterItemValue}>2020</Text>
+                          </View>
+                          <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => { NavigationService.navigate(mainStack.resultReturn, {}) }}
+                  >
+                    <View style={styles.PorterItemContainer}>
+                      <View style={styles.PorterItemLeft}>
+                        <Image source={icCont2} style={styles.PorterIcon} />
+                      </View>
+                      <View style={styles.PorterItemRight}>
+                        <View style={styles.PorterItemRightUp}>
+                          <Text style={styles.PorterItemLabel}>Số Công:</Text>
+                          <Text style={styles.PorterItemValue}>KUST123456789</Text>
+                        </View>
+                        <View style={styles.PorterItemRightDown}>
+                          <View style={styles.PorterItemRightUp}>
+                            <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
+                            <Text style={styles.PorterItemValue}>2020</Text>
+                          </View>
+                          <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                        </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
-            </View>
+            }
+
           </View>
-          {/* {
-            -- Phần hiển thị danh sách lịch sử
-          } */}
+
           <View style={styles.HistoryContainer}>
             <View style={styles.TitleHistory}>
               <Text style={styles.TitleHistoryText}>Lịch sử</Text>
@@ -414,6 +412,19 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginBottom: hs(12)
+  },
+  PortersTagEmpty: {
+    width: ws(345),
+    height: hs(52),
+    backgroundColor: 'rgba(255, 15, 15, 0.24)',
+    shadowColor: '0px 2px 8px rgba(0, 0, 0, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.05)',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: hs(12),
+    borderColor: 'rgba(255, 15, 15, 0.64)',
+    borderWidth: 1,
+    borderStyle: 'solid'
   },
   PortersHeader: {
     flexDirection: 'column',

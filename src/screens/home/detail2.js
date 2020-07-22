@@ -203,7 +203,7 @@ export default class DetailScreen extends Component {
               value={'Xác nhận'}
               onPress={
                 () => {
-
+                  NavigationService.navigate(mainStack.home_tab)
                 }
               }
             />
