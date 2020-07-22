@@ -209,4 +209,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="processOrderId != null "> and process_order_id = #{processOrderId}</if>
         </where>
     </update>
+
+    <select id="getSumOfTotalBillList" parameterType="String" resultType="Long">
+        select sum(vat_after_fee) from process_bill
+        where process_order_id in 
+        <foreach item="processOrderId" collection="array" open="(" separator="," close=")">
+            #{processOrderId}
+        </foreach>
+    </select>
 </mapper>

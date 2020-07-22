@@ -37,6 +37,7 @@ import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
@@ -196,8 +197,23 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return PREFIX + "/paymentForm";
 	}
 
-	@GetMapping("/payment/napas")
-	public String napasPaymentForm() {
+	@GetMapping("/payment/napas/{processOrderIds}")
+	public String napasPaymentForm(@PathVariable String processOrderIds, ModelMap mmap) {
+		List<ProcessBill> processBills = processBillService.selectProcessBillListByProcessOrderIds(processOrderIds);
+		Long total = 0L;
+		String[] processOrderIdArr = processOrderIds.split(",");
+		String orderId = "";
+		for (String id : processOrderIdArr) {
+			orderId += "_Order_" + id;
+		}
+		orderId = orderId.substring(1, orderId.length());
+		for (ProcessBill processBill : processBills) {
+			total += processBill.getVatAfterFee();
+		}
+		//mmap.put("resultUrl", configService.selectConfigByKey("napas.payment.result"));
+		// mmap.put("referenceOrder", "Thanh toan " + orderId);
+		// mmap.put("clientIp", getUserIp());
+		// mmap.put("data", napasApiService.getDataKey(getUserIp(), "deviceId", orderId, total, napasApiService.getAccessToken()));
 		return PREFIX + "/napasPaymentForm";
 	}
 
@@ -604,13 +620,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		ajaxResult = error("Số bill không tồn tại!");
 		return ajaxResult;
-	}
-	
-	@GetMapping("/test")
-	@ResponseBody
-	public JSONObject test() {
-		return napasApiService.getAccessToken();
-		
 	}
 }
 

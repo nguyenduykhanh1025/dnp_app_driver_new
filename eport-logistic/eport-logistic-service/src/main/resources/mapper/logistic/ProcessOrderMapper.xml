@@ -239,4 +239,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
+    <select id="checkLogisticOwnedProcessOrder" resultType="int">
+        select count(*) from process_order
+        where logistic_group_id = #{logisticGroupId}
+        and status = 2
+        and id in
+        <foreach item="id" collection="processOrderIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 </mapper>
