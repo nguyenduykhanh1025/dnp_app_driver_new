@@ -335,7 +335,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag, boolean orderByBl) {
         ProcessOrder processOrder = new ProcessOrder();
         if (orderByBl) {
-            processOrder.setModee("Pickup Order by BL");
+            processOrder.setModee("Pickup Order By BL");
         } else {
             processOrder.setModee("Truck Out");
         }

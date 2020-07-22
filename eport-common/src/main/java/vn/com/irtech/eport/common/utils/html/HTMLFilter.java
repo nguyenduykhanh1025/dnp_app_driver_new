@@ -537,7 +537,6 @@ public final class HTMLFilter
 
     private String checkEntity(final String preamble, final String term)
     {
-
         return ";".equals(term) && isValidEntity(preamble) ? '&' + preamble : "&amp;" + preamble;
     }
 

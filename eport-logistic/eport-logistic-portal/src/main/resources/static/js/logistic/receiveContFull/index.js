@@ -880,7 +880,7 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   });
 
   if (processOrderIds != '') {
-    processOrderIds.substring(0, processOrderIds.length - 1);
+    processOrderIds = processOrderIds.substring(0, processOrderIds.length - 1);
   }
 
   // Get result in "selectedList" letiable
@@ -1256,7 +1256,8 @@ function finishVerifyForm(result) {
 }
 
 function napasPaymentForm() {
-  $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/payment/napas");
+  $.modal.openTab("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
+  //window.open(prefix + "/payment/napas/" + processOrderIds);
 }
 
 function connectToWebsocketServer() {

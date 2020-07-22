@@ -128,7 +128,7 @@ function stringToDate(dateStr) {
 document.getElementById("bookingSearch").addEventListener("keyup", function (event) {
     event.preventDefault();
     if (event.keyCode === 13) {
-    shipmentSearch.blNo = $('#bookingSearch').val().toUpperCase();
+    shipmentSearch.bookingNo = $('#bookingSearch').val().toUpperCase();
     loadTable();
     }
 });
@@ -749,7 +749,7 @@ function getDataSelectedFromTable(isValidate) {
     });
 
     if (processOrderIds != '') {
-        processOrderIds.substring(0, processOrderIds.length-1);
+        processOrderIds = processOrderIds.substring(0, processOrderIds.length-1);
     }
 
     // Get result in "selectedList" letiable
@@ -1090,7 +1090,8 @@ function finishVerifyForm(result) {
 }
 
 function napasPaymentForm() {
-    $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/payment/napas");
+    $.modal.openTab("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
+    //window.open(prefix + "/payment/napas/" + processOrderIds);
 }
 
 function connectToWebsocketServer(){

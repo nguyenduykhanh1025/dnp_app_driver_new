@@ -107,8 +107,19 @@ public class PickupAssignServiceImpl implements IPickupAssignService {
     }
 
     @Override
-    public List<PickupAssignForm> selectPickupAssignListByDriverId(@Param("driverId") Long driverId, @Param("serviceType") Integer serviceType) {
+    public List<PickupAssignForm> selectPickupAssignListByDriverId(@Param("driverId") Long driverId,
+            @Param("serviceType") Integer serviceType) {
         return pickupAssignMapper.selectPickupAssignListByDriverId(driverId, serviceType);
+    }
+
+    @Override
+    public String getRemarkFollowBatchByShipmentId(PickupAssign pickupAssign) {
+        return pickupAssignMapper.getRemarkFollowBatchByShipmentId(pickupAssign);
+    }
+
+    @Override
+    public String getRemarkFollowContainerByShipmentDetailId(PickupAssign pickupAssign) {
+        return pickupAssignMapper.getRemarkFollowContainerByShipmentDetailId(pickupAssign);
     }
     
 }

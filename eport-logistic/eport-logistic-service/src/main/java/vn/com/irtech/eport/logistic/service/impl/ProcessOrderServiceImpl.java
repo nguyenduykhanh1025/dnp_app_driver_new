@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
 import vn.com.irtech.eport.common.utils.DateUtils;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,4 +134,11 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
     public List<ProcessOrder> selectProcessOrderListForOmManagement(ProcessOrder processOrder) {
         return processOrderMapper.selectProcessOrderListForOmManagement(processOrder);
     }
+
+    @Override
+    public int checkLogisticOwnedProcessOrder(@Param("logisticGroupId") Long logisticGroupId, @Param("processOrderIds") String[] processOrderIds) {
+        return processOrderMapper.checkLogisticOwnedProcessOrder(logisticGroupId, processOrderIds);
+    }
+
+
 }
