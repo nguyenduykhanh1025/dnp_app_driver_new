@@ -390,7 +390,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         do_received_time as doReceivedTime,
         user_verify_status as userVerifyStatus, 
         status,
-        remark,
+        (select remark from pickup_assign where shipment_detail_id = s.id and rownum = 1) as remark,
         create_by as createBy,
         create_time as createTime,
         update_by as updateBy,

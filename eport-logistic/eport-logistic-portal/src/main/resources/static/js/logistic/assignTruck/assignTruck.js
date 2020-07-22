@@ -219,6 +219,7 @@ function getSelectedShipment() {
         $("#blNo").text(row.blNo);
         $("#bookingNo").text(row.bookingNo);
         $("#edoFlg").text(row.edoFlg == 1 ? "eDO" : "DO");
+        loadRemarkFollowBatch(row.id);
         loadShipmentDetail(row.id);
         loadDriver(row.id);
         loadOutSource(row.id);
@@ -280,6 +281,20 @@ function loadShipmentDetail(id) {
 //     }
 // }
 
+function loadRemarkFollowBatch(shipmentId){
+    $('#remark').val('');
+    $.ajax({
+        url: prefix + "/remark/batch/" + shipmentId,
+        method: "GET",
+        success: function (data) {
+            if (data.code == 0) {
+                if(data.remark){
+                    $('#remark').val(data.remark);
+                }
+            }
+        }
+    });
+}
 function formatPickup(value) {
     if (value == "Y") {
         return "<span class='label label-success'>Có</span>"
@@ -421,7 +436,6 @@ function transferAllToIn(){
 function save(){
     let rows = $('#pickedDriverTable').datagrid('getRows');
     let pickupAssigns = [];
-    
     if(rows){
         for(let i=0; i< rows.length;i++){
             let object = new Object();
@@ -429,12 +443,14 @@ function save(){
             object.shipmentId = shipmentSelected.id;
             object.fullName = rows[i].fullName;
             object.phoneNumber = rows[i].mobileNumber;
+            object.remark = $('#remark').val();
             pickupAssigns.push(object);
         }
     }
     if (getDataFromOutSource(true)){
         if(outsources.length > 0){
             for(let i=0;i < outsources.length; i++){
+                outsources[i].remark = $('#remark').val();
                 pickupAssigns.push(outsources[i])
             }
         }

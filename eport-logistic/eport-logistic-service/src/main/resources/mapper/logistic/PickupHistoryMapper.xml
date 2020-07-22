@@ -275,6 +275,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="doReceivedTime" column="do_received_time" />
 		<result property="userVerifyStatus" column="user_verify_status" />
 		<result property="status" column="status" />
+		<result property="createTime" column="create_time" />
 	</resultMap>
 
 	<select id="selectShipment" resultMap="ShipmentResult">
