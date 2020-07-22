@@ -148,7 +148,7 @@
 	    	ENG_LNM as groupName,
 	    	ADDR as address
 		FROM TB_PTNR
-		WHERE REG_NO = #{taxCode}
+		WHERE REG_NO = #{taxCode} AND ROWNUM = 1
 	</select>
 	<select id="checkContReservedByContainerNos" parameterType="String" resultType="String">
 		SELECT 
