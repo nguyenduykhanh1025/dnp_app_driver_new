@@ -211,9 +211,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			total += processBill.getVatAfterFee();
 		}
 		//mmap.put("resultUrl", configService.selectConfigByKey("napas.payment.result"));
-		mmap.put("referenceOrder", "Thanh toan " + orderId);
-		mmap.put("clientIp", getUserIp());
-		mmap.put("data", napasApiService.getDataKey(getUserIp(), "deviceId", orderId, total, napasApiService.getAccessToken()));
+		// mmap.put("referenceOrder", "Thanh toan " + orderId);
+		// mmap.put("clientIp", getUserIp());
+		// mmap.put("data", napasApiService.getDataKey(getUserIp(), "deviceId", orderId, total, napasApiService.getAccessToken()));
 		return PREFIX + "/napasPaymentForm";
 	}
 
