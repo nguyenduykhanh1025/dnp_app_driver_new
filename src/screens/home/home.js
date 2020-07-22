@@ -139,7 +139,12 @@ export default class HomeScreen extends Component {
   }
 
   renderItem = (item, index) => (
-    <Item data={item.item} />
+    <Item
+      data={item.item}
+      onPress={()=>{
+        NavigationService.navigate(mainStack.result, {})
+      }}
+    />
   )
 
   render() {
@@ -170,7 +175,11 @@ export default class HomeScreen extends Component {
                 </View>
               </View>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={()=>{
+                NavigationService.navigate(mainStack.qr_code, {})
+              }}
+            >
               <View style={styles.HeaderButton}>
                 <Text style={styles.HeaderButtonText}>Check in</Text>
               </View>
@@ -225,7 +234,7 @@ export default class HomeScreen extends Component {
             -- Phần hiển thị item bốc công hàng
           } */}
               <TouchableOpacity
-                onPress={() => { NavigationService.navigate(mainStack.detail, {}) }}
+                onPress={() => { NavigationService.navigate(mainStack.result, {}) }}
               >
                 <View style={styles.PorterItemContainer}>
                   <View style={styles.PorterItemLeft}>
@@ -247,7 +256,7 @@ export default class HomeScreen extends Component {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => { NavigationService.navigate(mainStack.detail, {}) }}
+                onPress={() => { NavigationService.navigate(mainStack.resultReturn, {}) }}
               >
                 <View style={styles.PorterItemContainer}>
                   <View style={styles.PorterItemLeft}>

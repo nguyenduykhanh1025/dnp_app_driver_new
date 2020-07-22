@@ -37,16 +37,31 @@ export default class HeaderMain extends Component {
       onPressLeft,
       onPressCenter,
       onPressRight,
+      disableBG,
+      disableStep,
     } = this.props;
     return (
-      <View style={styles.Container}>
+      <View style={[
+        styles.Container,
+        disableBG && disableStep
+          ?
+          { height: hs(100) }
+          :
+          null
+      ]}>
         <StatusBar
           translucent
-          barStyle={'light-content'}
+          barStyle={disableBG && disableStep ? 'dark-content' : 'light-content'}
           backgroundColor='transparent'
         />
-        <Image source={hbg} style={styles.ContainerBg} />
-        <View style={[styles.ContainerBg]} />
+        {
+          disableBG ?
+            null :
+            <View>
+              <Image source={hbg} style={styles.ContainerBg} />
+              <View style={[styles.ContainerBg]} />
+            </View>
+        }
         <View style={styles.HeaderButton}>
           <TouchableOpacity onPress={onPressLeft ? onPressLeft : null}>
             <View style={styles.HeaderButtonLeft}>
@@ -64,36 +79,40 @@ export default class HeaderMain extends Component {
             </View>
           </TouchableOpacity>
         </View>
-        <View style={styles.HeaderStatus}>
-          <StepIndicator
-            customStyles={{
-              stepIndicatorSize: ws(30),
-              currentStepIndicatorSize: ws(30),
-              separatorStrokeWidth: 2,
-              currentStepStrokeWidth: 0,
-              stepStrokeCurrentColor: Colors.subColor,
-              stepStrokeWidth: 1,
-              stepStrokeFinishedColor: Colors.subColor,
-              stepStrokeUnFinishedColor: Colors.grey5,
-              separatorFinishedColor: Colors.white,
-              separatorUnFinishedColor: 'rgba(255, 255, 255, 0.1)',
-              stepIndicatorFinishedColor: Colors.subColor,
-              stepIndicatorUnFinishedColor: '#364F8D',
-              stepIndicatorCurrentColor: Colors.subColor,
-              stepIndicatorLabelFontSize: fs(15),
-              currentStepIndicatorLabelFontSize: fs(15),
-              stepIndicatorLabelCurrentColor: Colors.white,
-              stepIndicatorLabelFinishedColor: Colors.white,
-              stepIndicatorLabelUnFinishedColor: Colors.grey4,
-              labelColor: Colors.grey5,
-              labelSize: fs(10),
-              currentStepLabelColor: Colors.white,
-            }}
-            currentPosition={status}
-            labels={this.state.labels}
-            stepCount={3}
-          />
-        </View>
+        {
+          disableStep ?
+            null :
+            <View style={styles.HeaderStatus}>
+              <StepIndicator
+                customStyles={{
+                  stepIndicatorSize: ws(30),
+                  currentStepIndicatorSize: ws(30),
+                  separatorStrokeWidth: 2,
+                  currentStepStrokeWidth: 0,
+                  stepStrokeCurrentColor: Colors.subColor,
+                  stepStrokeWidth: 1,
+                  stepStrokeFinishedColor: Colors.subColor,
+                  stepStrokeUnFinishedColor: Colors.grey5,
+                  separatorFinishedColor: Colors.white,
+                  separatorUnFinishedColor: 'rgba(255, 255, 255, 0.1)',
+                  stepIndicatorFinishedColor: Colors.subColor,
+                  stepIndicatorUnFinishedColor: '#364F8D',
+                  stepIndicatorCurrentColor: Colors.subColor,
+                  stepIndicatorLabelFontSize: fs(15),
+                  currentStepIndicatorLabelFontSize: fs(15),
+                  stepIndicatorLabelCurrentColor: Colors.white,
+                  stepIndicatorLabelFinishedColor: Colors.white,
+                  stepIndicatorLabelUnFinishedColor: Colors.grey4,
+                  labelColor: Colors.grey5,
+                  labelSize: fs(10),
+                  currentStepLabelColor: Colors.white,
+                }}
+                currentPosition={status}
+                labels={this.state.labels}
+                stepCount={3}
+              />
+            </View>
+        }
       </View>
     )
   }
@@ -104,6 +123,7 @@ const styles = StyleSheet.create({
     width: ws(375),
     height: hs(183),
     flexDirection: 'column',
+    backgroundColor: Colors.white,
   },
   ContainerBg: {
     width: ws(375),
@@ -127,9 +147,11 @@ const styles = StyleSheet.create({
     width: ws(93.75)
   },
   HeaderButtonCenter: {
-    width: ws(187.5)
+    width: ws(148),
+    alignItems: 'center',
   },
   HeaderButtonRight: {
-    width: ws(93.75)
+    width: ws(133.25),
+    alignItems: 'flex-end',
   }
 })

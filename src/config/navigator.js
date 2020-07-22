@@ -18,6 +18,7 @@ export const mainStack = {
 
     qr_code: 'qrCodeScreen',
     result: 'resultQRScreen',
+    resultReturn: 'resultReturnQRScreen',
 
     history: 'historyScreen',
     notification: 'notificationScreen',

@@ -9,8 +9,16 @@ import {
     StyleSheet,
     TouchableOpacity,
 } from 'react-native';
-import { Colors, sizeHeight, sizeWidth } from '@/commons';
+import {
+    Colors,
+    sizeHeight,
+    sizeWidth,
+    widthPercentageToDP as ws,
+    heightPercentageToDP as hs,
+    fontSizeValue as fs,
+} from '@/commons';
 import { Spinner } from 'native-base';
+import { hasSystemFeature } from 'react-native-device-info';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -57,7 +65,7 @@ export default class WaitingModal extends Component {
                 <View style={styles.container}>
                     <View style={styles.imagegif}>
                         <Image source={bg_waiting} style={styles.image} />
-                        <Spinner color={'#F3B03F'}  />
+                        <Spinner color={'#F3B03F'} size={ws(50)} />
                         <Text style={styles.msg}>{this.state.msg}...</Text>
                     </View>
                 </View>
@@ -75,11 +83,12 @@ const styles = StyleSheet.create({
     imagegif: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: windowHeight * 0.2
+        marginTop: hs(134)
     },
     image: {
-        width: sizeWidth(70),
-        height: sizeWidth(75),
+        width: ws(229),
+        height: ws(250),
+        marginBottom: hs(40),
     },
     ic_close: {
         width: windowWidth * 0.03,
@@ -90,7 +99,8 @@ const styles = StyleSheet.create({
         padding: windowWidth * 0.03,
     },
     msg: {
-        color: '#15307A',
-        fontSize: 16,
+        color: Colors.blue,
+        fontSize: fs(16),
+        marginTop: hs(21)
     }
 })

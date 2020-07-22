@@ -3,7 +3,6 @@ import {
   Text,
   View,
   StyleSheet,
-  Button,
   StatusBar,
   Image,
   ScrollView
@@ -28,7 +27,8 @@ import {
 } from '@/commons';
 import {
   HeaderResult,
-  HeaderMain
+  HeaderMain,
+  Button,
 } from '@/components'
 import {
   SearchQRCode
@@ -71,25 +71,25 @@ export default class ResultScreen extends Component {
     return (
       <View
         style={{
-          backgroundColor: '#E2F1FF',
-          borderColor: '#ACD7FF',
+          backgroundColor: 'rgba(0, 224, 150, 0.1)',
+          borderColor: 'rgba(0, 224, 150, 0.3)',
           borderRadius: 4,
           borderStyle: 'solid',
           borderWidth: 1,
           flexDirection: 'row',
           alignItems: 'center',
           marginRight: ws(19),
-          width: ws(115),
+          // width: ws(115),
           height: hs(32),
         }}>
-        <Icon name={'checkcircle'} style={{ marginLeft: 6 }} size={15} color={'#0587FF'} />
+        {/* <Icon name={'checkcircle'} style={{ marginLeft: 6 }} size={15} color={'#0587FF'} /> */}
         <Text
           style={{
             fontSize: fs(14),
-            color: '#0587FF',
+            color: '#00E096',
             paddingHorizontal: 6,
             paddingVertical: 2
-          }}>Thành công</Text>
+          }}>Sẵn sàng</Text>
       </View>
     )
   }
@@ -138,25 +138,51 @@ export default class ResultScreen extends Component {
                         fontWeight: 'bold',
                         marginTop: hs(31)
                       }}>Bốc công hàng từ Cảng</Text>
-                    <View style={styles.frame1}>
-                      <Text style={styles.txtLabel}>Cont</Text>
-                      <Text style={styles.txtValue}></Text>
+                    <View style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: ws(320),
+                    }}>
+                      <View style={{
+                        width: ws(150)
+                      }}>
+                        <View style={styles.frame1}>
+                          <Text style={styles.txtLabel}>Xe</Text>
+                          <Text style={styles.txtValue}>43-C1264.02</Text>
+                        </View>
+                        <View style={styles.frame1}>
+                          <Text style={styles.txtLabel}>ML</Text>
+                          <Text style={styles.txtValue}>XXXX</Text>
+                        </View>
+                        <View style={styles.frame1}>
+                          <Text style={styles.txtLabel}>Type</Text>
+                          <Text style={styles.txtValue}>yyy</Text>
+                        </View>
+                      </View>
+                      <View style={{
+                        marginRight: ws(18),
+                        width: ws(150),
+                      }}>
+                        <View style={styles.frame1}>
+                          <Text style={styles.txtLabel}>Đầu kéo</Text>
+                          <Text style={styles.txtValue}>43-C1264.02</Text>
+                        </View>
+                        <View style={styles.frame1}>
+                          <Text style={styles.txtLabel}>Size</Text>
+                          <Text style={styles.txtValue}>1000</Text>
+                        </View>
+                        <View style={styles.frame1}>
+                          <Text style={styles.txtLabel}>Cont</Text>
+                          <Text style={styles.txtValue}>MUST1234567</Text>
+                        </View>
+                      </View>
                     </View>
-                    <View style={styles.frame1}>
-                      <Text style={styles.txtLabel}>Size</Text>
-                      <Text style={styles.txtValue}>22GO</Text>
-                    </View>
-                    <View style={styles.frame1}>
-                      <Text style={styles.txtLabel}>Type</Text>
-                      <Text style={styles.txtValue}>F</Text>
-                    </View>
+
                   </View>
                 </View>
                 <View style={{}}>
-                  <Image
-                    source={ic_crane}
-                    style={styles.image}
-                  />
+
                 </View>
               </View>
             </View>
@@ -227,6 +253,21 @@ export default class ResultScreen extends Component {
               </View>
             </View>
           </View>
+          <View
+            style={{
+              marginTop: hs(17),
+              marginBottom: hs(17)
+            }}
+          >
+            <Button
+              value={'Trả hàng'}
+              onPress={
+                () => {
+
+                }
+              }
+            />
+          </View>
         </ScrollView>
       </View>
     )
@@ -280,8 +321,8 @@ const styles = StyleSheet.create({
     fontSize: fs(13),
     color: Colors.tinyTextGrey,
     marginBottom: hs(5),
-    marginRight: ws(11),
-    width: ws(28)
+    marginRight: ws(4),
+    width: ws(42)
   },
   txtValue: {
     fontSize: fs(15),
