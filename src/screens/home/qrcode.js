@@ -18,9 +18,30 @@ import {
 import { connect } from 'react-redux';
 import Toast from 'react-native-tiny-toast';
 import QRCode from 'react-native-qrcode-svg';
-import { HeaderList, sizeWidthInput, FlashMessage, LoadingBase, WaitingModal, ModalQRResult, HeaderMain } from '@/components';
-import { getListNotification, SearchQRCode } from '@/mock/index';
-import { commonStyles, Colors, Fonts, colorOpacityMaker, sizeHeight, sizeWidth } from '@/commons';
+import {
+    HeaderList,
+    sizeWidthInput,
+    FlashMessage,
+    LoadingBase,
+    WaitingModal,
+    ModalQRResult,
+    HeaderMain
+} from '@/components';
+import {
+    getListNotification,
+    SearchQRCode
+} from '@/mock/index';
+import {
+    commonStyles,
+    Colors,
+    Fonts,
+    colorOpacityMaker,
+    sizeHeight,
+    sizeWidth,
+    widthPercentageToDP as ws,
+    heightPercentageToDP as hs,
+    fontSizeValue as fs,
+} from '@/commons';
 import PushNotification from 'react-native-push-notification';
 import { signOut } from '@/modules';
 import Geolocation from '@react-native-community/geolocation';
@@ -134,7 +155,16 @@ class HomeScreen extends PureComponent {
 
     renderLeft = () => {
         return (
-            <Icon name={'arrowleft'} size={25} />
+            <View
+                style={{
+                    marginLeft: ws(20),
+                }}
+            >
+                <Icon
+                    name={'arrowleft'}
+                    size={fs(25)}
+                />
+            </View>
         )
     }
 
@@ -142,70 +172,82 @@ class HomeScreen extends PureComponent {
         return (
             <View style={[commonStyles.containerClass,]}>
                 <StatusBar
-                    barStyle = 'dark-content'
+                    translucent
+                    barStyle={'dark-content'}
+                    backgroundColor='transparent'
                 />
                 <HeaderMain
                     backgroundColor={Colors.white}
-                    left={this.renderLeft()}
-                    onPress={() => { this.props.navigation.goBack() }}
+                    renderLeft={this.renderLeft()}
+                    onPressLeft={() => { this.props.navigation.goBack() }}
+                    disableBG
+                    disableStep
                 />
-                <ScrollView style = {styles.scroll}>
-                    <View >
-                        <View style={{ alignItems: 'center' }}>
-                            <View style={{
-                                backgroundColor: Colors.blue,
-                                height: sizeHeight(9),
-                                width: sizeWidth(85),
+                <View >
+                    <View style={{ alignItems: 'center' }}>
+                        <View style={{
+                            backgroundColor: Colors.blue,
+                            height: hs(75),
+                            width: ws(315),
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderRadius: 8
+                        }}>
+                            <Text
+                                style={{
+                                    fontSize: fs(18),
+                                    color: Colors.white
+                                }}>
+                                Quét mã ở cổng để vào cảng
+                                </Text>
+                        </View>
+                    </View>
+                    <View style={styles.QRCode}>
+                        <ImageBackground
+                            source={bg_qrcode}
+                            style={{
+                                width: ws(268),
+                                height: ws(268),
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                borderRadius: 8
-                            }}>
-                                <Text style={{ fontSize: 18, color: Colors.white }}>Quét mã ở cổng để vào cảng</Text>
-                            </View>
-                        </View>
-                        <View style={styles.QRCode}>
-                            <ImageBackground
-                                source={bg_qrcode}
-                                style={{
-                                    width: sizeWidth(70),
-                                    height: sizeWidth(70),
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }} >
-                                <QRCode
-                                    value={this.state.qrvalue}
-                                    size={sizeWidth(50)}
-                                />
-                            </ImageBackground>
-                        </View>
-                        <TouchableOpacity
-                            onPress={() => { this.onTestLoading() }}
-                        >
-                            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: sizeHeight(7) }}>
-                                <View style={styles.outline}>
-                                    <View style={styles.frame}>
-                                        <View style={styles.frame1Border}>
-                                            <Text style={styles.title}>Lô</Text>
-                                            <Text style={styles.txtValue}>0001</Text>
-                                        </View>
-                                        <View style={styles.frame1Border}>
-                                            <Text style={styles.title}>Size</Text>
-                                            <Text style={styles.txtValue}>0001</Text>
-                                        </View>
-                                        <View style={styles.frame1Border}>
-                                            <Text style={styles.title}>Type</Text>
-                                            <Text style={styles.txtValue}>0001</Text>
-                                        </View>
-                                        <View style={styles.frame1}>
-                                            <Text style={styles.title}>Số lượng</Text>
-                                            <Text style={styles.txtValue}>0001</Text>
-                                        </View>
+                            }} >
+                            <QRCode
+                                value={this.state.qrvalue}
+                                size={sizeWidth(50)}
+                            />
+                        </ImageBackground>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => { this.onTestLoading() }}
+                    >
+                        <View style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginTop: hs(46.78),
+                        }}>
+                            <View style={styles.outline}>
+                                <View style={styles.frame}>
+                                    <View style={styles.frame1Border}>
+                                        <Text style={styles.title}>Lô</Text>
+                                        <Text style={styles.txtValue}>0001</Text>
+                                    </View>
+                                    <View style={styles.frame1Border}>
+                                        <Text style={styles.title}>Size</Text>
+                                        <Text style={styles.txtValue}>0001</Text>
+                                    </View>
+                                    <View style={styles.frame1Border}>
+                                        <Text style={styles.title}>Type</Text>
+                                        <Text style={styles.txtValue}>0001</Text>
+                                    </View>
+                                    <View style={styles.frame1}>
+                                        <Text style={styles.title}>Số lượng</Text>
+                                        <Text style={styles.txtValue}>0001</Text>
                                     </View>
                                 </View>
                             </View>
-                        </TouchableOpacity>
-                    </View>
-                </ScrollView>
+                        </View>
+                    </TouchableOpacity>
+                </View>
                 <WaitingModal
                     visible={this.state.loading}
                     msg={this.state.msg}
@@ -228,17 +270,17 @@ const mapStateToProps = (state) => {
 const styles = StyleSheet.create({
     QRCode: {
         alignItems: 'center',
-        marginTop: sizeHeight(5)
+        marginTop: hs(43),
     },
     scroll: {
-        height: sizeHeight(87),
+        height: hs(721),
     },
     outline: {
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: Colors.white,
-        width: sizeWidth(85),
-        height: sizeWidth(70),
+        width: ws(335),
+        height: hs(241),
         borderRadius: 10,
         shadowColor: "#000",
         shadowOffset: {
@@ -258,31 +300,38 @@ const styles = StyleSheet.create({
         padding: sizeHeight(2),
     },
     frame: {
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     frame1: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: sizeWidth(75),
-        height: sizeWidth(17.5),
+        width: ws(305),
+        height: hs(40),
+        marginTop: hs(16),
     },
     frame1Border: {
-        borderBottomWidth: 1, 
+        borderBottomWidth: 1,
         borderBottomColor: '#EFF1F5',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: sizeWidth(75),
-        height: sizeWidth(17.5),
+        width: ws(305),
+        height: hs(40),
+        marginTop: hs(16),
     },
     title: {
-        fontSize: 15,
+        fontSize: fs(15),
         color: Colors.tinyTextGrey,
         fontWeight: 'bold',
+        marginLeft: ws(4),
     },
     txtValue: {
-        fontSize: 20,
-        fontWeight: 'bold'
+        fontSize: fs(20),
+        fontWeight: 'bold',
+        marginRight: ws(5)
     }
 })
 

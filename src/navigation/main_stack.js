@@ -10,6 +10,7 @@ import {
     Detail1,
     Detail11,
     Detail2,
+    ResultReturn,
 } from '@/screens/home';
 import ListNotification from '@/screens/notification/list';
 import ListHistory from '@/screens/history/list';
@@ -28,6 +29,7 @@ export default createStackNavigator(
         [mainStack.detail2]: Detail2,
         [mainStack.qr_code]: QRCode,
         [mainStack.result]: Result,
+        [mainStack.resultReturn]: ResultReturn,
 
         [mainStack.history]: ListHistory,
 
