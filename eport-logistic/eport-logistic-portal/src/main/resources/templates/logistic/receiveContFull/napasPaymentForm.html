@@ -8,7 +8,7 @@
 </head>
 <body>
     <th:block th:include="include :: footer" />
-    <form id="merchant-form" th:action="${resultUrl}" method="POST"></form>
+    <form id="merchant-form" action="https://test-merchant.napas.com.vn/ecom3stg/finalHostedCheckout.jsp?merchantId=DANANGPORT" method="POST"></form>
     <div id="napas-widget-container"></div>
     <script type="text/javascript"
         id="napas-widget-script" 
@@ -23,12 +23,11 @@
         sourceOfFundsType="CARD"
         th:attr="clientIP=${clientIp},
         orderId=${data.order.id},
-        orderReference=${data.order.id},
+        orderReference=${referenceOrder},
         orderAmount=${data.order.amount},
         orderCurrency=${data.order.currency},
         dataKey=${data.dataKey},
-        napasKey=${data.napasKey}"
-        ></script>
-    </form>
+        napasKey=${data.napasKey}">
+    </script>
 </body>
 </html>

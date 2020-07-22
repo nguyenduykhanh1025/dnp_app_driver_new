@@ -201,12 +201,19 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public String napasPaymentForm(@PathVariable String processOrderIds, ModelMap mmap) {
 		List<ProcessBill> processBills = processBillService.selectProcessBillListByProcessOrderIds(processOrderIds);
 		Long total = 0L;
+		String[] processOrderIdArr = processOrderIds.split(",");
+		String orderId = "";
+		for (String id : processOrderIdArr) {
+			orderId += "_Order_" + id;
+		}
+		orderId = orderId.substring(1, orderId.length());
 		for (ProcessBill processBill : processBills) {
 			total += processBill.getVatAfterFee();
 		}
-		mmap.put("resultUrl", configService.selectConfigByKey("napas.payment.result"));
+		//mmap.put("resultUrl", configService.selectConfigByKey("napas.payment.result"));
+		mmap.put("referenceOrder", "Thanh toan " + orderId);
 		mmap.put("clientIp", getUserIp());
-		mmap.put("data", napasApiService.getDataKey(getUserIp(), "deviceId", processOrderIds, total, napasApiService.getAccessToken()));
+		mmap.put("data", napasApiService.getDataKey(getUserIp(), "deviceId", orderId, total, napasApiService.getAccessToken()));
 		return PREFIX + "/napasPaymentForm";
 	}
 

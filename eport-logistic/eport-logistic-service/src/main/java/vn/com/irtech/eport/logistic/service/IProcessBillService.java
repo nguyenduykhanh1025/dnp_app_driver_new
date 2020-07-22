@@ -76,4 +76,12 @@ public interface IProcessBillService
     public List<ProcessBill> getBillListByShipmentId(Long shipmentId);
 
     public int updateBillList(ProcessBill processBill);
+
+    /**
+     * Get sum of total list bill
+     * 
+     * @param proccessOrderIds
+     * @return
+     */
+    public Long getSumOfTotalBillList(String[] proccessOrderIds);
 }

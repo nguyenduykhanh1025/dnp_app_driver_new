@@ -1,0 +1,50 @@
+package vn.com.irtech.eport.logistic.service;
+
+import java.util.List;
+
+import vn.com.irtech.eport.logistic.domain.PaymentHistory;
+
+/**
+ * Payment History Service Interface
+ * 
+ * @author HieuNT
+ * @date 2020-07-22
+ */
+public interface IPaymentHistoryService 
+{
+	/**
+     * 
+     * @param id
+     * @return 
+     */
+    public PaymentHistory selectPaymentHistoryById(Long id);
+
+    /**
+     * 
+     * @param paymentHistory
+     * @return 
+     */
+    public List<PaymentHistory> selectPaymentHistoryList(PaymentHistory paymentHistory);
+
+    /**
+     * 
+     * @param paymentHistory
+     * @return
+     */
+    public int insertPaymentHistory(PaymentHistory paymentHistory);
+
+    /**
+     * 
+     * @param paymentHistory
+     * @return
+     */
+    public int updatePaymentHistory(PaymentHistory paymentHistory);
+
+    /**
+     * 
+     * @param id
+     * @return
+     */
+    public int deletePaymentHistoryById(Long id);
+
+}
