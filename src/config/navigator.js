@@ -12,6 +12,10 @@ export const authStack = {
 export const mainStack = {
     home_tab:'homeTab',
     detail: 'homeDetailScreen',
+    detail1: 'homeDetail1Screen',
+    detail11: 'homeDetai11Screen',
+    detail2: 'homeDetail2Screen',
+
     qr_code: 'qrCodeScreen',
     result: 'resultQRScreen',
 
