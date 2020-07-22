@@ -101,15 +101,15 @@ function refresh() {
 }
 
 function formatBlNo(value, row) {
-    return row.shipmentDetail1.blNo;
+    return row.shipmentDetail.blNo;
 }
 
 function formatBookingNo(value, row) {
-    return row.shipmentDetail1.bookingNo;
+    return row.shipmentDetail.bookingNo;
 }
 
 function formatSztp(value, row) {
-    return row.shipmentDetail1.sztp;
+    return row.shipmentDetail.sztp;
 }
 
 function formatServiceType(value, row) {
@@ -126,11 +126,11 @@ function formatServiceType(value, row) {
 }
 
 function formatVslNm(value, row) {
-    return row.shipmentDetail1.vslNm;
+    return row.shipmentDetail.vslNm;
 }
 
 function formatVoyNo(value, row) {
-    return row.shipmentDetail1.voyNo;
+    return row.shipmentDetail.voyNo;
 }
 
 function formatDate(value) {
@@ -138,6 +138,9 @@ function formatDate(value) {
         return value.substring(8, 10)+'/'+value.substring(5, 7)+'/'+value.substring(0, 4)+value.substring(10, 19);
     }
     return value;
+}
+function formatRegisterTime(value, row){
+    return row.shipmentDetail.createTime;
 }
 
 function changeServiceType() {
