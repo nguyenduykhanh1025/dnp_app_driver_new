@@ -23,14 +23,13 @@ public class NapasApiService implements INapasApiService {
 	private ISysConfigService configService;
 
 	@Override
-	public JSONObject getAccessToken() {
+	public String getAccessToken() {
 		String urlString = configService.selectConfigByKey("napas.access.key");
+		urlString = urlString.replace("amp;", "");
 		RestTemplate restTemplate = new RestTemplate();
-		Map<String, String> map = new HashMap<>();
-		map.put("something", "something");
 		HttpHeaders headers = new HttpHeaders();
-		HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(map, headers);
-		return restTemplate.postForObject(urlString,  requestEntity, JSONObject.class);
+		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		return restTemplate.postForObject(urlString,  requestEntity, JSONObject.class).getString("access_token");
 	}
 
 	@Override

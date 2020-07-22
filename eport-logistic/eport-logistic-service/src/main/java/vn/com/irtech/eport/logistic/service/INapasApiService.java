@@ -8,7 +8,7 @@ public interface INapasApiService {
 	 * 
 	 * @return
 	 */
-    public JSONObject getAccessToken();
+    public String getAccessToken();
     
     /**
      * 

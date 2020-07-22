@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
@@ -72,5 +75,16 @@ public interface IProcessOrderService
     public int countProcessOrderDoing(String[] processOrderIds);
 
     public List<ProcessOrder> selectProcessOrderListForOmManagement(ProcessOrder processOrder);
+
+    /**
+     * Count process order in process order id array owned by logistic group id
+     * 
+     * @param logisticGroupId
+     * @param processOrderIds
+     * @return
+     */
+    public int checkLogisticOwnedProcessOrder(@Param("logisticGroupId") Long logisticGroupId, @Param("processOrderIds") String[] processOrderIds);
+
+    
     
 }
