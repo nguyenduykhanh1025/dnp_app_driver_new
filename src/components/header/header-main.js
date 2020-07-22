@@ -46,6 +46,7 @@ export default class HeaderMain extends Component {
           backgroundColor='transparent'
         />
         <Image source={hbg} style={styles.ContainerBg} />
+        <View style={[styles.ContainerBg]} />
         <View style={styles.HeaderButton}>
           <TouchableOpacity onPress={onPressLeft ? onPressLeft : null}>
             <View style={styles.HeaderButtonLeft}>

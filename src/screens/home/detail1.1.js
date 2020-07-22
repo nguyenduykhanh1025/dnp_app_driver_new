@@ -36,7 +36,8 @@ import {
   cont4_icon,
   cont5_icon,
 } from '@/assets/icons';
-import ListItem from './detail-item';
+import Item from './detail11-item';
+import ItemSingle from './detail11-item-single';
 import navigation from '@/utils/navigation';
 import {
   SCANNER_QR,
@@ -52,7 +53,43 @@ export default class DetailScreen extends Component {
       active2: false,
       active3: false,
       active4: false,
-
+      data: [
+        {
+          LoCode: 'zxcv7828281',
+          BillNumber: 'N9TT9GN9TT9G',
+          Type: 'F',
+          Size: 'SX',
+          SL: 15,
+        },
+        {
+          LoCode: 'zxcv7828281',
+          BillNumber: 'N9TT9GN9TT9G',
+          Type: 'F',
+          Size: 'SX',
+          SL: 15,
+        },
+        {
+          LoCode: 'zxcv7828281',
+          BillNumber: 'N9TT9GN9TT9G',
+          Type: 'F',
+          Size: 'SX',
+          SL: 15,
+        },
+        {
+          LoCode: 'zxcv7828281',
+          BillNumber: 'N9TT9GN9TT9G',
+          Type: 'F',
+          Size: 'SX',
+          SL: 15,
+        },
+        {
+          LoCode: 'zxcv7828281',
+          BillNumber: 'N9TT9GN9TT9G',
+          Type: 'F',
+          Size: 'SX',
+          SL: 15,
+        },
+      ]
     };
   }
 
@@ -95,9 +132,15 @@ export default class DetailScreen extends Component {
     }
   }
 
+  renderItem = (item, index) => (
+    <Item
+      data={item.item}
+    />
+  )
+
   render() {
     return (
-      <ScrollView style={styles.Container}>
+      <View style={styles.Container}>
 
         <HeaderMain
           renderLeft={(
@@ -108,240 +151,49 @@ export default class DetailScreen extends Component {
           }}
           status={1}
         />
-
         <View style={styles.Body}>
-          <Text style={styles.TitleLine}>Chọn xe</Text>
-          <DropDown
-            title={'BSX Đầu Kéo'}
-            style={{ marginBottom: hs(33) }}
-            onSelect={() => { }}
-          />
-          <DropDown
-            title={'BSX Rơ Mooc'}
-            onSelect={() => { }}
-          />
-          <Text style={styles.TitleLine}>Chọn dịch vụ</Text>
-          {/*
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+          >
+            <Text style={styles.TitleLine}>Cont chung</Text>
+            <ItemSingle
+              data={this.state.data[0]}
+            />
+            <Text style={[
+              styles.TitleLine,
+              { marginTop: hs(25) }
+            ]}>
+              Cont chỉ định
+          </Text>
+            {/*
             ---------------------------------------------------- 
            */}
-          <View style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: ws(375),
-            marginBottom: hs(43)
-          }}>
-            <View style={styles.SelectIconContainer}>
-              <View style={styles.SelectIconTag}>
-                <TouchableOpacity
-                  onPress={() => { this.onSelectService(1) }}
-                >
-                  <View style={styles.SelectIconItemContainer}>
-                    <View style={[
-                      styles.SelectIconBG,
-                      this.state.active1 ?
-                        {
-                          backgroundColor: Colors.blue
-                        }
-                        :
-                        {
-                          backgroundColor: Colors.E5ECFF
-                        }
-                    ]}>
-                      <Image
-                        source={cont2_icon}
-                        style={[
-                          styles.SelectIcon,
-                          this.state.active1 ?
-                            {
-                              tintColor: Colors.white
-                            }
-                            :
-                            {
-                              tintColor: Colors["5E79BF"]
-                            },
-                          {
-                            width: ws(34),
-                            height: ws(34),
-                          }
-                        ]} />
-                    </View>
-                    <Text style={[
-                      styles.SelectIconText,
-                      this.state.active1 ?
-                        {
-                          color: Colors.blue
-                        }
-                        :
-                        {
-                          color: Colors["96ABE1"]
-                        },
-                    ]}>
-                      Bốc công hàng
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => { this.onSelectService(2) }}
-                >
-                  <View style={styles.SelectIconItemContainer}>
-                    <View style={[
-                      styles.SelectIconBG,
-                      this.state.active2 ?
-                        {
-                          backgroundColor: Colors.blue
-                        }
-                        :
-                        {
-                          backgroundColor: Colors.E5ECFF
-                        }
-                    ]}>
-                      <Image
-                        source={cont3_icon}
-                        style={[
-                          styles.SelectIcon,
-                          this.state.active2 ?
-                            {
-                              tintColor: Colors.white
-                            }
-                            :
-                            {
-                              tintColor: Colors["5E79BF"]
-                            },
-                          {
-                            width: ws(43.98),
-                            height: ws(34),
-                          }
-                        ]} />
-                    </View>
-                    <Text style={[
-                      styles.SelectIconText,
-                      this.state.active2 ?
-                        {
-                          color: Colors.blue
-                        }
-                        :
-                        {
-                          color: Colors["96ABE1"]
-                        }
-                    ]}>
-                      Hạ công hàng
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.SelectIconTag}>
-                <TouchableOpacity
-                  onPress={() => { this.onSelectService(3) }}
-                >
-                  <View style={styles.SelectIconItemContainer}>
-                    <View style={[
-                      styles.SelectIconBG,
-                      this.state.active3 ?
-                        {
-                          backgroundColor: Colors.blue
-                        }
-                        :
-                        {
-                          backgroundColor: Colors.E5ECFF
-                        }
-                    ]}>
-                      <Image
-                        source={cont4_icon}
-                        style={[
-                          styles.SelectIcon,
-                          this.state.active3 ?
-                            {
-                              tintColor: Colors.white
-                            }
-                            :
-                            {
-                              tintColor: Colors["5E79BF"]
-                            },
-                          {
-                            width: ws(34),
-                            height: ws(34),
-                          }
-                        ]} />
-                    </View>
-                    <Text style={[
-                      styles.SelectIconText,
-                      this.state.active3 ?
-                        {
-                          color: Colors.blue
-                        }
-                        :
-                        {
-                          color: Colors["96ABE1"]
-                        },
-                    ]}>
-                      Bốc công rỗng
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => { this.onSelectService(4) }}
-                >
-                  <View style={styles.SelectIconItemContainer}>
-                    <View style={[
-                      styles.SelectIconBG,
-                      this.state.active4 ?
-                        {
-                          backgroundColor: Colors.blue
-                        }
-                        :
-                        {
-                          backgroundColor: Colors.E5ECFF
-                        }
-                    ]}>
-                      <Image
-                        source={cont5_icon}
-                        style={[
-                          styles.SelectIcon,
-                          this.state.active4 ?
-                            {
-                              tintColor: Colors.white
-                            }
-                            :
-                            {
-                              tintColor: Colors["5E79BF"]
-                            },
-                          {
-                            width: ws(34.95),
-                            height: ws(26.72),
-                          }
-                        ]} />
-                    </View>
-                    <Text style={[
-                      styles.SelectIconText,
-                      this.state.active4 ?
-                        {
-                          color: Colors.blue
-                        }
-                        :
-                        {
-                          color: Colors["96ABE1"]
-                        }
-                    ]}>
-                      Hạ công rỗng
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-          {/*
-            ---------------------------------------------------- 
-           */}
-          <Button
-            value={'Tiếp tục'}
-            onPress={
-              ()=>{
-                NavigationService.navigate(mainStack.detail2, {})
+            <FlatList
+              data={this.state.data}
+              renderItem={
+                (item, index) =>
+                  this.renderItem(item, index)
               }
-            }
-          />
+              showsVerticalScrollIndicator={false}
+            />
+          </ScrollView>
+          <View
+            style={{
+              marginTop: hs(17),
+              marginBottom: hs(17)
+            }}
+          >
+            <Button
+              value={'Tiếp tục'}
+              onPress={
+                () => {
+                  NavigationService.navigate(mainStack.detail2, {})
+                }
+              }
+            />
+          </View>
         </View>
-      </ScrollView>
+      </View>
     )
   }
 }
@@ -364,7 +216,7 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontSize: fs(18),
     fontWeight: 'bold',
-    marginLeft: ws(29),
+    marginLeft: ws(15),
     marginTop: hs(35),
     marginBottom: hs(22),
   },
