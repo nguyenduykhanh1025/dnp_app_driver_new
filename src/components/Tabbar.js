@@ -47,7 +47,7 @@ const Tabbar = (props) => {
         {
             iconName: command_icon,
             name: 'Làm lệnh',
-            router: homeTab.notification,
+            router: mainStack.detail,
             bgRound: true,
             isShow: true,
         },
