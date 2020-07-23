@@ -1090,8 +1090,7 @@ function finishVerifyForm(result) {
 }
 
 function napasPaymentForm() {
-    $.modal.openTab("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
-    //window.open(prefix + "/payment/napas/" + processOrderIds);
+    $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
 }
 
 function connectToWebsocketServer(){
