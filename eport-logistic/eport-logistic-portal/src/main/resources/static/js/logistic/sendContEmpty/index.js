@@ -993,7 +993,7 @@ function finishVerifyForm(result) {
 }
 
 function napasPaymentForm() {
-    $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/payment/napas");
+    $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
 }
 
 function connectToWebsocketServer(){

@@ -75,4 +75,12 @@ public interface ProcessOrderMapper
     public int checkLogisticOwnedProcessOrder(@Param("logisticGroupId") Long logisticGroupId, @Param("processOrderIds") String[] processOrderIds);
 
     public Long getSumOfTotalBillList(String[] proccessOrderIds);
+
+    /**
+     * Get shipment id by process order id
+     * 
+     * @param id
+     * @return
+     */
+    public Long getShipmentIdByProcessOrderId(Long id);
 }

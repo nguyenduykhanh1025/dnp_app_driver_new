@@ -37,17 +37,14 @@ import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
-import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.INapasApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
-import vn.com.irtech.eport.logistic.service.impl.NapasApiService;
 import vn.com.irtech.eport.logistic.utils.R;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
@@ -91,9 +88,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired
 	private WebSocketService webSocketService;
-	
-	@Autowired
-	private INapasApiService napasApiService;
 
 	@GetMapping()
 	public String receiveContFull(ModelMap mmap) {
@@ -195,26 +189,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
-	}
-
-	@GetMapping("/payment/napas/{processOrderIds}")
-	public String napasPaymentForm(@PathVariable String processOrderIds, ModelMap mmap) {
-		List<ProcessBill> processBills = processBillService.selectProcessBillListByProcessOrderIds(processOrderIds);
-		Long total = 0L;
-		String[] processOrderIdArr = processOrderIds.split(",");
-		String orderId = "";
-		for (String id : processOrderIdArr) {
-			orderId += "_Order_" + id;
-		}
-		orderId = orderId.substring(1, orderId.length());
-		for (ProcessBill processBill : processBills) {
-			total += processBill.getVatAfterFee();
-		}
-		//mmap.put("resultUrl", configService.selectConfigByKey("napas.payment.result"));
-		// mmap.put("referenceOrder", "Thanh toan " + orderId);
-		// mmap.put("clientIp", getUserIp());
-		// mmap.put("data", napasApiService.getDataKey(getUserIp(), "deviceId", orderId, total, napasApiService.getAccessToken()));
-		return PREFIX + "/napasPaymentForm";
 	}
 
 	@GetMapping("/unique/bl-no/{blNo}")

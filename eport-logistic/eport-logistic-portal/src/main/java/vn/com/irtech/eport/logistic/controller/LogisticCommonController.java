@@ -1,7 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,8 +34,8 @@ import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.PaymentHistory;
-import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.INapasApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
@@ -78,7 +78,7 @@ public class LogisticCommonController extends LogisticBaseController {
 
 	@Autowired
 	private IPaymentHistoryService paymentHistoryService;
-	
+
 	@GetMapping("/company/{taxCode}")
 	@ResponseBody
 	public AjaxResult getGroupNameByTaxCode(@PathVariable String taxCode) throws Exception {
@@ -205,27 +205,33 @@ public class LogisticCommonController extends LogisticBaseController {
 		}
 		orderId = orderId + "-" + DateUtils.dateTimeNow();
 
-		// check if process order is on payment transaction
-		PaymentHistory paymentHistoryParam = new PaymentHistory();
-		Date now = new Date();
-		paymentHistoryParam.setProccessOrderIds(processOrderIds);
-		List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
-		if (paymentHistories.isEmpty()) {
-			
-		} else {
-			PaymentHistory paymentHistory = paymentHistories.get(0);
-			if (now.getTime() < paymentHistory.getExpireTime().getTime()) {
-				return "/napas/result";
-			}
-			
- 		}
-
 		// return error when get total bill null
 		Long total = processBillService.getSumOfTotalBillList(processOrderIdsArr);
 		if (total == null) {
 			return "error/500";
 		}
-	
+
+		// check if process order is on payment transaction
+		PaymentHistory paymentHistoryParam = new PaymentHistory();
+		paymentHistoryParam.setProccessOrderIds(processOrderIds);
+		List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
+		PaymentHistory paymentHistory;
+		if (paymentHistories.isEmpty()) {
+			paymentHistory = new PaymentHistory();
+			paymentHistory.setUserId(getUserId());
+			paymentHistory.setProccessOrderIds(processOrderIds);
+			paymentHistory.setShipmentId(processOrderService.getShipmentIdByProcessOrderId(Long.valueOf(processOrderIdsArr[0])));
+			paymentHistory.setAmount(total);
+			paymentHistory.setStatus("0");
+			paymentHistory.setOrderId(orderId);
+			paymentHistory.setCreateBy(getUser().getFullName());
+			paymentHistoryService.insertPaymentHistory(paymentHistory);
+		} else {
+			paymentHistory = paymentHistories.get(0);
+			paymentHistory.setOrderId(orderId);
+			paymentHistoryService.updatePaymentHistory(paymentHistory);
+		}
+
 		mmap.put("resultUrl", configService.getKey("napas.payment.result"));
 		mmap.put("referenceOrder", "Thanh toan " + orderId);
 		mmap.put("clientIp", getUserIp());
@@ -235,9 +241,12 @@ public class LogisticCommonController extends LogisticBaseController {
 	}
 
 	@RequestMapping(value="/payment/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+	@Transactional
 	public String getPaymentResult(@RequestParam("napasResult") String result, ModelMap mmap) {
 		JSONObject json = JSONObject.parseObject(result);
 		String dataBase64 = json.getString("data");
+
+		boolean isError = true;
 		
 		//checksum
 		String  checksumString = json.getString("checksum");
@@ -252,13 +261,42 @@ public class LogisticCommonController extends LogisticBaseController {
 			if ("SUCCESS".equalsIgnoreCase(resultStatus)) {
 				// order id
 				String orderId = decodeData.getJSONObject("paymentResult").getJSONObject("order").getString("id");
+				PaymentHistory paymentHistoryParam = new PaymentHistory();
+				paymentHistoryParam.setOrderId(orderId);
+				List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
+				if (!paymentHistories.isEmpty()) {
+					PaymentHistory paymentHistory = paymentHistories.get(0);
 
-				// update success status for order
-			} else {
-				// update error status for order
+					// Update payment history
+					if ("1".equals(paymentHistory.getStatus())) {
+						paymentHistory.setId(null);
+						paymentHistoryService.insertPaymentHistory(paymentHistory);
+					} else {
+						paymentHistory.setUpdateBy(getUser().getFullName());
+						paymentHistory.setStatus("1");
+						paymentHistoryService.updatePaymentHistory(paymentHistory);
+					}
 
+					// Update shipment detail
+					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(paymentHistory.getProcessOrderIds());
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						shipmentDetail.setPaymentStatus("Y");
+						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+						shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					}
+
+					// Update bill
+					processBillService.updateBillListByProcessOrderIds(paymentHistory.getProcessOrderIds());
+
+					isError = false;
+				}
 			}
 		}
-		return PREFIX + "/napas/result";
+		if (isError) {
+			mmap.put("result", "ERROR");
+		} else {
+			mmap.put("result", "SUCCESS");
+		}
+		return PREFIX + "/napas/resultForm";
 	}
 }

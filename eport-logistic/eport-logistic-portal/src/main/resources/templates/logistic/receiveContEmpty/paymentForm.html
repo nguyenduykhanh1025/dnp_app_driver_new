@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
   <th:block th:include="include :: header('Thanh toan')" />
+  <th:block th:include="include :: easyui-css" />
   <link th:href="@{/css/logistic/payment-form.css}" rel="stylesheet" />
 </head>
 <body>
@@ -35,6 +37,7 @@
   </div>
 </body>
 <th:block th:include="include :: footer" />
+<th:block th:include="include :: easyui-js" />
 <script type="text/javascript" th:inline="javascript">
   var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
   var processBills = /*[[${processBills}]]*/;
