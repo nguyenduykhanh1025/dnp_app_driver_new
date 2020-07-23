@@ -10,6 +10,7 @@ import {
   FlatList,
   TouchableOpacity,
   StatusBar,
+  Alert,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import { mainStack, authStack } from '@/config/navigator';
@@ -32,7 +33,7 @@ import {
   cont5_icon
 } from '@/assets/icons'
 import HomeButton from './home_button'
-import { getRequestAPI } from '@/requests'
+import { callApi } from '@/requests'
 import { getToken } from '@/stores';
 import { hasSystemFeature } from 'react-native-device-info';
 
@@ -44,33 +45,10 @@ export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      Data: [
-        {
-
-        }
-      ],
-      dataHistory: [
-        {
-          "pickupHistoryId": 1,
-          "containerNo": "CDFD1231237",
-          "gateInDate": "2020-07-18T01:45:57.261+0000"
-        },
-        {
-          "pickupHistoryId": 2,
-          "containerNo": "CDFD1231237",
-          "gateInDate": "2020-07-18T01:45:57.261+0000"
-        },
-        {
-          "pickupHistoryId": 2,
-          "containerNo": "CDFD1231237",
-          "gateInDate": "2020-07-18T01:45:57.261+0000"
-        },
-        {
-          "pickupHistoryId": 2,
-          "containerNo": "CDFD1231237",
-          "gateInDate": "2020-07-18T01:45:57.261+0000"
-        },
-      ],
+      PickupList: [],
+      HistoryList: [],
+      pageNum: 1,
+      pageSize: 10,
       carCode: '73A1 - 042.32',
       ContCode: '73A1 - 042.32',
       date: '10 Jun 2020',
@@ -84,11 +62,8 @@ export default class HomeScreen extends Component {
   };
 
   componentDidMount = async () => {
-    var { data } = this.state;
-    this.setState({
-      data: getListInfoHome[0].Data
-    })
-    this.getUserInfo()
+    this.onGetPickupList()
+    this.onGetHistoryList()
   };
 
   getUserInfo = async () => {
@@ -102,40 +77,46 @@ export default class HomeScreen extends Component {
     console.log('userData', this.state.userData)
   }
 
-  onLoadProduct = () => {
-    this.setState({
-      boc_focused: true,
-      ha_focused: false,
-      boc_rong_focused: false,
-      ha_rong_focused: false,
-    })
+  onGetPickupList = async () => {
+    var token = await getToken()
+    const params = {
+      api: 'pickup',
+      param: '',
+      token: token,
+      method: 'GET'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('resultonGetPickupList', result)
+    if (result.code == 0) {
+      await this.setState({
+        PickupList: result.data,
+      })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
   }
 
-  onUnLoadProduct = () => {
-    this.setState({
-      boc_focused: false,
-      ha_focused: true,
-      boc_rong_focused: false,
-      ha_rong_focused: false,
-    })
-  }
-
-  onLoadEmptyProduct = () => {
-    this.setState({
-      boc_focused: false,
-      ha_focused: false,
-      boc_rong_focused: true,
-      ha_rong_focused: false,
-    })
-  }
-
-  onUnLoadEmptyProduct = () => {
-    this.setState({
-      boc_focused: false,
-      ha_focused: false,
-      boc_rong_focused: false,
-      ha_rong_focused: true,
-    })
+  onGetHistoryList = async () => {
+    var token = await getToken()
+    const params = {
+      api: 'pickup/history?pageNum=' + this.state.pageNum + '&pageSize=' + this.state.pageSize,
+      param: '',
+      token: token,
+      method: 'GET'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('resultonGetHistoryList', result)
+    if (result.code == 0) {
+      await this.setState({
+        HistoryList: result.data,
+      })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
   }
 
   renderItem = (item, index) => (
@@ -185,107 +166,127 @@ export default class HomeScreen extends Component {
               </View>
             </TouchableOpacity>
           </View>
-          {/* {
-            -- Phần hiển thị biển số xe đầu kéo
-          } */}
-          <View style={styles.LicensePlateContainer}>
-            <View style={styles.LicensePlateTag}>
-              <View style={styles.LicensePlate}>
-                <Text style={styles.LicensePlateTextUp}>Biển số xe đầu kéo</Text>
-                <Text style={styles.LicensePlateTextDown}>{this.state.ContCode}</Text>
-              </View>
-              <View style={styles.LicensePlateLine} />
-              <View style={styles.LicensePlate}>
-                <Text style={styles.LicensePlateTextUp}>Biển số xe Romooc</Text>
-                <Text style={styles.LicensePlateTextDown}>{this.state.ContCode}</Text>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.PortersContainer}>
-
-            {
-              false ?
+          {
+            this.state.PickupList.length < 0 ?
+              <View style={{
+                width: ws(375),
+                alignItems: 'center',
+              }}>
                 <View style={styles.PortersTagEmpty}>
                   <Text>Chưa nhận cont nào !</Text>
                 </View>
-                :
-                <View style={styles.PortersTag}>
+              </View>
 
-                  <View style={styles.PortersHeader}>
-                    <View style={styles.PorterHeaderUp}>
-                      <Text style={styles.PorterHeaderTitle}>Bốc công hàng từ Cảng</Text>
-                      <View style={styles.PorterButtonStatus}>
-                        <Text style={styles.PorterButtonStatusText}>Sẵn sàng</Text>
+              :
+              this.state.PickupList.map((item, index) => (
+                <View>
+                  <View style={styles.LicensePlateContainer}>
+                    <View style={styles.LicensePlateTag}>
+                      <View style={styles.LicensePlate}>
+                        <Text style={styles.LicensePlateTextUp}>Biển số xe đầu kéo</Text>
+                        <Text style={styles.LicensePlateTextDown}>{item.truckNo}</Text>
                       </View>
-                    </View>
-                    <View style={styles.PorterHeaderDown}>
-                      <View style={styles.PorterHeaderDownItem}>
-                        <Text style={styles.PorterHeaderDownItemLabel}>Mã lô:</Text>
-                        <Text style={styles.PorterHeaderDownItemValue}>1234</Text>
-                      </View>
-                      <View style={[styles.PorterHeaderDownItem]}>
-                        <Text style={styles.PorterHeaderDownItemLabel}>Bill No:</Text>
-                        <Text style={styles.PorterHeaderDownItemValue}>1234567890123</Text>
+                      <View style={styles.LicensePlateLine} />
+                      <View style={styles.LicensePlate}>
+                        <Text style={styles.LicensePlateTextUp}>Biển số xe Romooc</Text>
+                        <Text style={styles.LicensePlateTextDown}>{item.chassisNo}</Text>
                       </View>
                     </View>
                   </View>
 
-                  <TouchableOpacity
-                    onPress={() => { NavigationService.navigate(mainStack.result, {}) }}
-                  >
-                    <View style={styles.PorterItemContainer}>
-                      <View style={styles.PorterItemLeft}>
-                        <Image source={icCont1} style={styles.PorterIcon} />
-                      </View>
-                      <View style={styles.PorterItemRight}>
-                        <View style={styles.PorterItemRightUp}>
-                          <Text style={styles.PorterItemLabel}>Số Công:</Text>
-                          <Text style={styles.PorterItemValue}>KUST123456789</Text>
-                        </View>
-                        <View style={[styles.PorterItemRightDown, { marginTop: hs(10) }]}>
-                          <View style={styles.PorterItemRightUp}>
-                            <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
-                            <Text style={styles.PorterItemValue}>2020</Text>
+                  <View style={styles.PortersContainer}>
+                    <View style={styles.PortersTag}>
+
+                      <View style={styles.PortersHeader}>
+                        <View style={styles.PorterHeaderUp}>
+                          <Text style={styles.PorterHeaderTitle}>
+                            {
+                              item.serviceType == 1 ?
+                                'Bốc container hàng từ cảng'
+                                :
+                                item.serviceType == 2 ?
+                                  'Hạ container rỗng cho cảng'
+                                  :
+                                  item.serviceType == 3 ?
+                                    'Bốc container rỗng từ cảng'
+                                    :
+                                    item.serviceType == 4 ?
+                                      'Giao container hàng cho cảng'
+                                      :
+                                      ''
+                            }
+                          </Text>
+                          <View style={styles.PorterButtonStatus}>
+                            <Text style={styles.PorterButtonStatusText}>Sẵn sàng</Text>
                           </View>
-                          <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
                         </View>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => { NavigationService.navigate(mainStack.resultReturn, {}) }}
-                  >
-                    <View style={styles.PorterItemContainer}>
-                      <View style={styles.PorterItemLeft}>
-                        <Image source={icCont2} style={styles.PorterIcon} />
-                      </View>
-                      <View style={styles.PorterItemRight}>
-                        <View style={styles.PorterItemRightUp}>
-                          <Text style={styles.PorterItemLabel}>Số Công:</Text>
-                          <Text style={styles.PorterItemValue}>KUST123456789</Text>
-                        </View>
-                        <View style={styles.PorterItemRightDown}>
-                          <View style={styles.PorterItemRightUp}>
-                            <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
-                            <Text style={styles.PorterItemValue}>2020</Text>
+                        <View style={styles.PorterHeaderDown}>
+                          <View style={styles.PorterHeaderDownItem}>
+                            <Text style={styles.PorterHeaderDownItemLabel}>Mã lô:</Text>
+                            <Text style={styles.PorterHeaderDownItemValue}>{item.batchCode}</Text>
                           </View>
-                          <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                          <View style={[styles.PorterHeaderDownItem]}>
+                            <Text style={styles.PorterHeaderDownItemLabel}>Bill No:</Text>
+                            <Text style={styles.PorterHeaderDownItemValue}>1234567890123</Text>
+                          </View>
                         </View>
                       </View>
+
+                      <TouchableOpacity
+                        onPress={() => { NavigationService.navigate(mainStack.result, {}) }}
+                      >
+                        <View style={styles.PorterItemContainer}>
+                          <View style={styles.PorterItemLeft}>
+                            <Image source={icCont1} style={styles.PorterIcon} />
+                          </View>
+                          <View style={styles.PorterItemRight}>
+                            <View style={styles.PorterItemRightUp}>
+                              <Text style={styles.PorterItemLabel}>Số Công:</Text>
+                              <Text style={styles.PorterItemValue}>{item.containerNo}</Text>
+                            </View>
+                            <View style={[styles.PorterItemRightDown, { marginTop: hs(10) }]}>
+                              <View style={styles.PorterItemRightUp}>
+                                <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
+                                <Text style={styles.PorterItemValue}>{item.sztp}</Text>
+                              </View>
+                              <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                            </View>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => { NavigationService.navigate(mainStack.resultReturn, {}) }}
+                      >
+                        <View style={styles.PorterItemContainer}>
+                          <View style={styles.PorterItemLeft}>
+                            <Image source={icCont2} style={styles.PorterIcon} />
+                          </View>
+                          <View style={styles.PorterItemRight}>
+                            <View style={styles.PorterItemRightUp}>
+                              <Text style={styles.PorterItemLabel}>Số Công:</Text>
+                              <Text style={styles.PorterItemValue}>KUST123456789</Text>
+                            </View>
+                            <View style={styles.PorterItemRightDown}>
+                              <View style={styles.PorterItemRightUp}>
+                                <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
+                                <Text style={styles.PorterItemValue}>2020</Text>
+                              </View>
+                              <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                            </View>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 </View>
-            }
-
-          </View>
-
+              ))
+          }
           <View style={styles.HistoryContainer}>
             <View style={styles.TitleHistory}>
               <Text style={styles.TitleHistoryText}>Lịch sử</Text>
             </View>
             <FlatList
-              data={this.state.dataHistory}
+              data={this.state.HistoryList}
               renderItem={(item, index) => this.renderItem(item, index)}
             />
           </View>

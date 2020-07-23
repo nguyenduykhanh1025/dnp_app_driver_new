@@ -28,9 +28,17 @@ import {
 import { getInfoUser } from '@/mock/index';
 import { signOut } from '@/modules/auth/action';
 import { connect } from 'react-redux';
-import { getRequestAPI } from '@/requests'
-import { getToken } from '@/stores';
-import { down_arrow } from '@/assets/icons'
+import {
+  getRequestAPI,
+  callApi
+} from '@/requests'
+import {
+  getToken
+} from '@/stores';
+import {
+  down_arrow
+} from '@/assets/icons';
+import Toast from 'react-native-tiny-toast'
 
 const profile_background = require('@/assets/images/profile_2.jpg')
 const ic_camera = require('@/assets/icons/camera.png')
@@ -68,6 +76,27 @@ class ProfileScreen extends Component {
     })
   }
 
+  onLogout = async () => {
+    Toast.showLoading()
+    var token = await getToken();
+    const params = {
+      api: 'user/logout',
+      param: '',
+      token: token,
+      method: 'POST'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    if (result.code == 0) {
+      Toast.hide()
+      this.props.dispatch(signOut())
+    }
+    else {
+      Toast.hide()
+      FlashMessage(result.msg, 'warning')
+    }
+  }
+
   render() {
     var { data } = this.state;
     return (
@@ -79,7 +108,7 @@ class ProfileScreen extends Component {
           <View style={styles.bgContainer}>
             <View style={{ alignItems: 'flex-end' }}>
               <TouchableOpacity
-                onPress={() => { this.props.dispatch(signOut()) }}
+                onPress={() => this.onLogout()}
               >
                 <View>
                   <Text style={{ marginRight: 10, color: Colors.white }}>Đăng xuất</Text>

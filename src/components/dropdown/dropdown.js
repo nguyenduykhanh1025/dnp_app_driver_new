@@ -37,7 +37,7 @@ export default class DropDown extends Component {
         await this.setState({
             selected: value
         });
-        this.props.onSelect(value)
+        await this.props.onSelect(value)
     }
 
     render() {
@@ -45,28 +45,32 @@ export default class DropDown extends Component {
             title,
             style,
             onSelect,
+            data,
         } = this.props;
         return (
-            <View style={[styles.Container,style]}>
+            <View style={[styles.Container, style]}>
                 <View style={styles.TitleView}>
                     <Text style={styles.TitleText}>
                         {title}
                     </Text>
                 </View>
                 <Picker
-                        mode="dropdown"
-                        placeholder=""
-                        placeholderStyle={{ color: "#bfc6ea" }}
-                        placeholderIconColor="#007aff"
-                        style={styles.Picker}
-                        itemTextStyle={styles.DropdownItemText}
-                        selectedValue={this.state.selected}
-                        onValueChange={this.onValueChange.bind(this)}
-                    >
-                        <Picker.Item label="xxxxxx" value="key0" />
-                        <Picker.Item label="xxxxxx" value="key0" />
-                        <Picker.Item label="xxxxxx" value="key0" />
-                    </Picker>
+                    mode="dropdown"
+                    placeholder=""
+                    placeholderStyle={{ color: "#bfc6ea" }}
+                    placeholderIconColor="#007aff"
+                    style={styles.Picker}
+                    itemTextStyle={styles.DropdownItemText}
+                    selectedValue={this.state.selected}
+                    onValueChange={this.onValueChange.bind(this)}
+                >
+                    {
+                        data.map((item, index) => (
+                            <Picker.Item label={item} value={item} />
+                        ))
+                    }
+
+                </Picker>
                 <View style={styles.Line} />
             </View>
         )
