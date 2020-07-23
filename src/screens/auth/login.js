@@ -14,31 +14,63 @@ import {
     AsyncStorage,
     ScrollView,
     Keyboard,
-    TextInput
+    TextInput,
+    Alert
 } from 'react-native';
 import { connect } from 'react-redux';
 import Toast from 'react-native-tiny-toast'
 import firebase from 'react-native-firebase';
-import { Input, FlashMessage, LoadingBase } from '@/components';
-import { commonStyles, Colors, Fonts, colorOpacityMaker } from '@/commons';
-import { login, loginSupplier } from '@/modules/auth/action';
-import { Checkbox } from '@/components/checkbox';
+import {
+    Input,
+    FlashMessage,
+    LoadingBase
+} from '@/components';
+import {
+    commonStyles,
+    Colors,
+    Fonts,
+    colorOpacityMaker,
+    fontSizeValue as fs,
+    widthPercentageToDP as ws,
+    heightPercentageToDP as hs,
+    sizeHeight,
+} from '@/commons';
+import {
+    login,
+    loginSupplier
+} from '@/modules/auth/action';
+import {
+    Checkbox
+} from '@/components/checkbox';
 import { screen } from '@/utils';
-import { getAccount, getPassword, saveAccount, savePassword, saveToken } from '@/stores';
+import {
+    getAccount,
+    getPassword,
+    saveAccount,
+    savePassword,
+    saveToken
+} from '@/stores';
 const STORAGE_TOKEN = 'storage_token';
-import { mainStack } from '@/config/navigator';
-import { user_icon, password_icon, phone_icon } from '@/assets/icons/index';
+import {
+    mainStack
+} from '@/config/navigator';
+import {
+    user_icon,
+    password_icon,
+    phone_icon
+} from '@/assets/icons/index';
 import AuthInput from '@/components/auth/AuthInput';
 import AuthButton from '@/components/auth/AuthButton';
-import { authStack } from '@/config/navigator';
-import CheckBox from '@/components/checkbox';
+import {
+    authStack
+} from '@/config/navigator';
 import NavigationService from '@/utils/navigation';
-// import {Colors} from '@/commons/Colors';
-import { sizes, sizeWidth, sizeHeight } from '@/commons/Spanding'
-import { fontSizeValue as fs, widthPercentageToDP as ws, heightPercentageToDP as hs } from '@/commons';
-// const ip_save = 'IP_SAVE'
-import { loginAPI } from '@/requests';
-import { FaceDetector } from 'react-native-camera';
+import {
+    callApi
+} from '@/requests';
+import {
+    FaceDetector
+} from 'react-native-camera';
 
 const ibg = require('@/assets/images/auth_bg.png');
 const hicon = require('@/assets/images/logo.png');
@@ -47,8 +79,10 @@ class LoginContainer extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            loginname: this.props.loginname != undefined || this.props.loginname != null ? this.props.loginname : '',
-            pwd: this.props.pwd != undefined || this.props.pwd != null ? this.props.pwd : '',
+            // loginname: this.props.loginname != undefined || this.props.loginname != null ? this.props.loginname : '',
+            // pwd: this.props.pwd != undefined || this.props.pwd != null ? this.props.pwd : '',
+            loginname: '0935802290',
+            pwd: '123456',
             showpassword: 1,
             onFocusu: false,
             onFocusp: false,
@@ -60,15 +94,6 @@ class LoginContainer extends PureComponent {
     componentDidMount = async () => {
         const account = await getAccount();
         const pwd = await getPassword();
-        //const ip = await AsyncStorage.getItem('IP_SAVE');
-        this.setState({
-            loginname: account != undefined || account != null ? account : '',
-            pwd: pwd != undefined || pwd != null ? pwd : '',
-            //supplier: Number(ip)
-        })
-        // if (this.state.loginname != '' && this.state.pwd != '') {
-        //     this.onAutoLogin({ loginname: this.state.loginname, pwd: this.state.pwd })
-        // }
     }
 
     _saveIP = async (a) => {
@@ -101,41 +126,31 @@ class LoginContainer extends PureComponent {
     }
 
     onLogin = async () => {
-        // const {loginname, pwd} = this.state;
-        // const param = {
-        //     userName: loginname,
-        //     passWord: pwd,
-        // }
-        // const result = await loginAPI(param);
-        // if (result.code == 0) {
-        //     saveAccount(loginname);
-        //     savePassword(pwd);
-        //     saveToken(result.token)
-        //     this.props.dispatch(login(param))
-        //     NavigationService.navigate(mainStack.home_tab)
-        // } 
-        // else {
-        //     FlashMessage(result.msg, 'warning')
-        // }
-        NavigationService.navigate(mainStack.home_tab)
-    }
-
-    onAutoLogin = async ({ loginname, pwd }) => {
-        const param = {
-            userName: loginname,
-            passWord: pwd,
+        Toast.showLoading()
+        const { loginname, pwd } = this.state;
+        const params = {
+            api: 'login',
+            param: {
+                userName: loginname,
+                passWord: pwd,
+                deviceToken: 'ádasdadas'
+            },
+            token: '',
+            method: 'POST'
         }
-        const result = await loginAPI(param);
-        console.log(result)
+        var result = undefined;
+        result = await callApi(params);
         if (result.code == 0) {
+            Toast.hide()
             saveAccount(loginname);
             savePassword(pwd);
-            saveToken(result.token);
-            this.props.dispatch(loginSupplier(param))
+            saveToken(result.token)
+            FlashMessage('Đăng nhập thành công', 'success')
             NavigationService.navigate(mainStack.home_tab)
         }
         else {
-            FlashMessage(result.msg, 'warning')
+            Toast.hide()
+            Alert.alert('Thông báo!', result.msg)
         }
     }
 
@@ -248,7 +263,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginHorizontal: ws(25),
         justifyContent: 'space-between',
-        alignItems: 'center', 
+        alignItems: 'center',
         paddingTop: hs(58),
     },
     HeaderText: {

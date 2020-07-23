@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import {
@@ -41,6 +42,13 @@ import navigation from '@/utils/navigation';
 import {
   SCANNER_QR,
 } from '@/modules/home/constants';
+import {
+  getToken
+} from '@/stores';
+import {
+  callApi
+} from '@/requests';
+
 
 const next = require('@/assets/icons/icon_next.png')
 
@@ -52,8 +60,35 @@ export default class DetailScreen extends Component {
       active2: false,
       active3: false,
       active4: false,
-
+      truckNoList: [],
+      chassisNoList: [],
     };
+  }
+
+  componentDidMount = async () => {
+    this.onGetTruckList()
+  }
+
+  onGetTruckList = async () => {
+    var token = await getToken()
+    const params = {
+      api: 'truck',
+      param: '',
+      token: token,
+      method: 'GET'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('result', result)
+    if (result.code == 0) {
+      await this.setState({
+        truckNoList: result.data.truckNoList,
+        chassisNoList: result.data.chassisNoList,
+      })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
   }
 
   onSelectService = async (value) => {
@@ -112,13 +147,15 @@ export default class DetailScreen extends Component {
         <View style={styles.Body}>
           <Text style={styles.TitleLine}>Chọn xe</Text>
           <DropDown
+            data={this.state.truckNoList}
             title={'BSX Đầu Kéo'}
             style={{ marginBottom: hs(33) }}
-            onSelect={() => { }}
+            onSelect={(item) => { console.log('BSX Đầu Kéo', item) }}
           />
           <DropDown
+            data={this.state.chassisNoList}
             title={'BSX Rơ Mooc'}
-            onSelect={() => { }}
+            onSelect={(item) => { console.log('BSX Rơ Mooc', item) }}
           />
           <Text style={styles.TitleLine}>Chọn dịch vụ</Text>
           {/*

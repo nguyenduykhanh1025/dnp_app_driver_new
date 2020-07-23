@@ -10,14 +10,35 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
-import { Colors, sizes, sizeWidth, sizeHeight, commonStyles } from '@/commons';
-import { Right, Thumbnail, Content } from 'native-base';
+import {
+  Colors,
+  sizes,
+  sizeWidth,
+  sizeHeight,
+  commonStyles,
+  widthPercentageToDP as ws,
+  heightPercentageToDP as hs,
+  fontSizeValue as fs,
+} from '@/commons';
+import {
+  Right,
+  Thumbnail,
+  Content
+} from 'native-base';
 import { getInfoUser } from '@/mock/index';
 import { signOut } from '@/modules/auth/action';
 import { connect } from 'react-redux';
-import {getRequestAPI} from '@/requests'
-import {getToken} from '@/stores';
-import {down_arrow} from '@/assets/icons'
+import {
+  getRequestAPI,
+  callApi
+} from '@/requests'
+import {
+  getToken
+} from '@/stores';
+import {
+  down_arrow
+} from '@/assets/icons';
+import Toast from 'react-native-tiny-toast'
 
 const profile_background = require('@/assets/images/profile_2.jpg')
 const ic_camera = require('@/assets/icons/camera.png')
@@ -46,7 +67,7 @@ class ProfileScreen extends Component {
       token: token,
     }
     const result = await getRequestAPI(param);
-    this.setState({data: result.data})
+    this.setState({ data: result.data })
   }
 
   toggleSwitch = async () => {
@@ -55,51 +76,72 @@ class ProfileScreen extends Component {
     })
   }
 
+  onLogout = async () => {
+    Toast.showLoading()
+    var token = await getToken();
+    const params = {
+      api: 'user/logout',
+      param: '',
+      token: token,
+      method: 'POST'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    if (result.code == 0) {
+      Toast.hide()
+      this.props.dispatch(signOut())
+    }
+    else {
+      Toast.hide()
+      FlashMessage(result.msg, 'warning')
+    }
+  }
+
   render() {
     var { data } = this.state;
     return (
       <View style={styles.container}>
-          <ImageBackground
-            source={require('@/assets/images/home_bg.png')}
-            style={styles.bg}
-          >
-            <View style={styles.bgContainer}>
-              <View style={{ alignItems: 'flex-end' }}>
-                <TouchableOpacity
-                  onPress={() => { this.props.dispatch(signOut()) }}
-                >
-                  <View>
-                    <Text style={{ marginRight: 10, color: Colors.white }}>Đăng xuất</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <View style={{ alignItems: 'center', justifyContent: 'center', height: sizeHeight(22.5) }}>
+        <ImageBackground
+          source={require('@/assets/images/home_bg.png')}
+          style={styles.bg}
+        >
+          <View style={styles.bgContainer}>
+            <View style={{ alignItems: 'flex-end' }}>
+              <TouchableOpacity
+                onPress={() => this.onLogout()}
+              >
                 <View>
-                  <Image
-                    source={profile_background}
-                    style={{
-                      width: (sizeHeight(100) * sizeWidth(100)) * 0.0004,
-                      height: (sizeHeight(100) * sizeWidth(100)) * 0.0004,
-                      borderRadius: 100,
-                    }}
-                  />
-                  <Image
-                    source={ic_camera}
-                    style={{
-                      width: (sizeHeight(100) * sizeWidth(100)) * 0.00013,
-                      height: (sizeHeight(100) * sizeWidth(100)) * 0.00013,
-                      position: 'absolute',
-                      bottom: 0,
-                      right: -(sizeHeight(100) * sizeWidth(100)) * 0.00003,
-                    }}
-                  />
+                  <Text style={{ marginRight: 10, color: Colors.white }}>Đăng xuất</Text>
                 </View>
+              </TouchableOpacity>
+            </View>
+            <View style={{ alignItems: 'center', justifyContent: 'center', height: sizeHeight(22.5) }}>
+              <View>
+                <Image
+                  source={profile_background}
+                  style={{
+                    width: (sizeHeight(100) * sizeWidth(100)) * 0.0004,
+                    height: (sizeHeight(100) * sizeWidth(100)) * 0.0004,
+                    borderRadius: 100,
+                  }}
+                />
+                <Image
+                  source={ic_camera}
+                  style={{
+                    width: (sizeHeight(100) * sizeWidth(100)) * 0.00013,
+                    height: (sizeHeight(100) * sizeWidth(100)) * 0.00013,
+                    position: 'absolute',
+                    bottom: 0,
+                    right: -(sizeHeight(100) * sizeWidth(100)) * 0.00003,
+                  }}
+                />
               </View>
             </View>
-          </ImageBackground>
-        <ScrollView 
-          style = {styles.scroll}
-          showsVerticalScrollIndicator = {false}
+          </View>
+        </ImageBackground>
+        <ScrollView
+          style={styles.scroll}
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.body}>
             <View>
@@ -117,28 +159,28 @@ class ProfileScreen extends Component {
                 <View style={{ flexDirection: 'column', width: sizeWidth(85), marginTop: 20 }}>
                   <Text style={styles.textTitle}>Số xe đầu kéo</Text>
                   <TouchableOpacity
-                    style = {{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}
+                    style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
                   >
                     <Text style={styles.textValue}>43-24812</Text>
                     <Image
-                        source = {down_arrow}
-                        style = {styles.downIcon}
-                        resizeMode = 'contain'
-                      />
+                      source={down_arrow}
+                      style={styles.downIcon}
+                      resizeMode='contain'
+                    />
                   </TouchableOpacity>
                   <View style={{ borderBottomWidth: 1.5, borderBottomColor: '#EFF1F5', borderStyle: "solid" }} />
                 </View>
                 <View style={{ flexDirection: 'column', width: sizeWidth(85), marginTop: 20 }}>
                   <Text style={styles.textTitle}>Số xe Rơ-mooc</Text>
                   <TouchableOpacity
-                    style = {{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}
+                    style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
                   >
                     <Text style={styles.textValue}>43-24812</Text>
                     <Image
-                        source = {down_arrow}
-                        style = {styles.downIcon}
-                        resizeMode = 'contain'
-                      />
+                      source={down_arrow}
+                      style={styles.downIcon}
+                      resizeMode='contain'
+                    />
                   </TouchableOpacity>
                   <View style={{ borderBottomWidth: 1.5, borderBottomColor: '#EFF1F5', borderStyle: "solid" }} />
                 </View>
@@ -217,11 +259,11 @@ const styles = StyleSheet.create({
   body: {
     width: sizeWidth(100),
   },
-  bgContainer: { 
-    flexDirection: 'column', 
-    flex: 1, 
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', 
-    paddingTop: sizeHeight(5) 
+  bgContainer: {
+    flexDirection: 'column',
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    paddingTop: sizeHeight(5)
   },
   downIcon: {
     height: sizeHeight(2),
