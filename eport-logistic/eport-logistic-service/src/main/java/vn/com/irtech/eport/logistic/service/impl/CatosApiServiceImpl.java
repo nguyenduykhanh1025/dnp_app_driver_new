@@ -1,16 +1,28 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
+
+import org.apache.poi.ss.usermodel.Header;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 @Service
 public class CatosApiServiceImpl implements ICatosApiService {
@@ -47,12 +59,13 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public List<String> getPODList() {
+	public List<String> getPODList(ShipmentDetail shipmentDetail) {
 		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
-		List<String> listPort = response.getBody();
-		return listPort;
+		HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
+		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<String>>(){});
+		List<String> pods = response.getBody();
+		return pods;
 	}
 
 	@Override
