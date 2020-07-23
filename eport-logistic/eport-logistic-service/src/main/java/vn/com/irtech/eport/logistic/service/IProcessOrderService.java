@@ -85,6 +85,12 @@ public interface IProcessOrderService
      */
     public int checkLogisticOwnedProcessOrder(@Param("logisticGroupId") Long logisticGroupId, @Param("processOrderIds") String[] processOrderIds);
 
-    
+    /**
+     * Get shipment id by process order id
+     * 
+     * @param id
+     * @return
+     */
+    public Long getShipmentIdByProcessOrderId(Long id);
     
 }

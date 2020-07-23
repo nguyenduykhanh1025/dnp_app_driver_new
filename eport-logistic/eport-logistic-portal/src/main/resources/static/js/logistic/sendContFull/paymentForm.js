@@ -29,21 +29,7 @@ Number.prototype.format = function(n, x, s, c) {
 
 function confirm() {
     parent.napasPaymentForm();
-    // $.ajax({
-    //     url: prefix + "/payment/" + shipmentDetailIds,
-    //     method: "post",
-    //     success: function (data) {
-    //         if (data.code != 0) {
-    //             $.modal.msgError(data.msg);
-    //         } else {
-    //             parent.finishForm(data);
-    //             $.modal.close();
-    //         }
-    //     },
-    //     error: function (result) {
-    //         $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-    //     }
-    // });
+    $.modal.close();
 }
 
 function closeForm() {

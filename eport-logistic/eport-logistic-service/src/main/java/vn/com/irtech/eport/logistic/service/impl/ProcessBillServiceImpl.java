@@ -188,4 +188,9 @@ public class ProcessBillServiceImpl implements IProcessBillService
     public Long getSumOfTotalBillList(String[] proccessOrderIds) {
         return processBillMapper.getSumOfTotalBillList(proccessOrderIds);
     }
+
+    @Override
+    public int updateBillListByProcessOrderIds(String processOrderIds) {
+        return processBillMapper.updateBillListByProcessOrderIds(Convert.toStrArray(processOrderIds));
+    }
 }
