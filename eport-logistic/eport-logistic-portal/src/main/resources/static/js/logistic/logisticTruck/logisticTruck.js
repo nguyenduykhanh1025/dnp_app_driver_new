@@ -31,7 +31,7 @@ function loadTable(msg) {
             pageSize: param.rows,
             orderByColumn: param.sort,
             isAsc: param.order,
-			plateNumber: $('#plateNumber').val() == null ? "" : $('#plateNumber').val(),
+			      plateNumber: $('#plateNumber').val() == null ? "" : $('#plateNumber').val(),
           },
           dataType: "json",
           success: function (data) {
@@ -104,9 +104,16 @@ function remove(id){
 	});
 }
 function editt(id) {
-    $.modal.open("Chỉnh Sửa ", prefix+"/edit/"+id);
+  $(function() {
+    var options = {
+      updateUrl: prefix + "/edit/"+ id,
+      modalName: "Truck"
+    };
+    $.table.init(options);
+  });
+    $.operate.editTruck();
 }
-function addTruck(id) {
+function addTruck() {
     $(function() {
 	      var options = {
 	        createUrl: prefix + "/add",

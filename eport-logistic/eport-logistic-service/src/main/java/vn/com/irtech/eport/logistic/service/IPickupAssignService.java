@@ -1,7 +1,11 @@
 package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
+import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 
 /**
  * Pickup AssignService Interface
@@ -64,4 +68,20 @@ public interface IPickupAssignService
     public List<String> getPhoneNumbersByDriverOwner(PickupAssign pickupAssign);
 
     public PickupAssign getInforOutSourceByPhoneNumber(PickupAssign pickupAssign);
+
+    /**
+     * 
+     * @param driverId
+     * @param serviceType
+     * @return
+     */
+    public List<PickupAssignForm> selectPickupAssignListByDriverId(@Param("driverId") Long driverId, @Param("serviceType") Integer serviceType); 
+    /**
+     * Get remark pickup_assgin follow batch
+     */
+    public String getRemarkFollowBatchByShipmentId(PickupAssign pickupAssign);
+    /**
+     * Get remark pickup_assgin follow container
+     */
+    public String getRemarkFollowContainerByShipmentDetailId(PickupAssign pickupAssign);
 }

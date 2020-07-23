@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
@@ -69,11 +70,12 @@ public class LogisticAssignTruckController extends LogisticBaseController{
     	return PREFIX + "/assignTruck";
 	}
 	
-	@RequestMapping("/listShipment")
+	@PostMapping("/listShipment")
 	@ResponseBody
-	public TableDataInfo listShipment(Shipment shipment) {
-		startPage();
+	public TableDataInfo listShipment(@RequestBody PageAble<Shipment> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		LogisticAccount user = getUser();
+		Shipment shipment = param.getData();
 		shipment.setLogisticGroupId(user.getGroupId());
 		//List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
 		List<Shipment> shipments = shipmentService.getShipmentListForAssign(shipment);
@@ -448,14 +450,14 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		return ajaxResult;
 	}
 
-	@GetMapping("/out-source/container/{shipmentId}")
+	@GetMapping("/out-source/container/{shipmentDetailId}")
 	@ResponseBody
-	public AjaxResult getOutSourceListForContainer(@PathVariable Long shipmentId){
+	public AjaxResult getOutSourceListForContainer(@PathVariable Long shipmentDetailId){
 		AjaxResult ajaxResult = success();
 		PickupAssign pickupAssign = new PickupAssign();
 		pickupAssign.setExternalFlg(1L);
 		pickupAssign.setLogisticGroupId(getUser().getGroupId());
-		pickupAssign.setShipmentId(shipmentId);
+		pickupAssign.setShipmentDetailId(shipmentDetailId);
 		List<PickupAssign> pickupAssigns = pickupAssignService.selectPickupAssignList(pickupAssign);
 		List<PickupAssign> outSourceForContainer = new ArrayList<PickupAssign>();
 		if(pickupAssigns.size() > 0){
@@ -490,6 +492,37 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		pickupAssign.setExternalFlg(1L);
 		pickupAssign.setPhoneNumber(driverPhone);
 		ajaxResult.put("pickupAssign", pickupAssignService.getInforOutSourceByPhoneNumber(pickupAssign));
+		return ajaxResult;
+	}
+
+	@GetMapping("/remark/batch/{shipmentId}")
+	@ResponseBody
+	public AjaxResult getRemarkFollowBatch(@PathVariable Long shipmentId){
+		if(shipmentId == null){
+			return error();
+		}
+		PickupAssign pickupAssign = new PickupAssign();
+		pickupAssign.setShipmentId(shipmentId);
+		pickupAssign.setLogisticGroupId(getUser().getGroupId());
+		String remark = pickupAssignService.getRemarkFollowBatchByShipmentId(pickupAssign);
+		AjaxResult ajaxResult = success();
+		ajaxResult.put("remark", remark);
+		return ajaxResult;
+	}
+
+	
+	@GetMapping("/remark/container/{shipmentDetailId}")
+	@ResponseBody
+	public AjaxResult getRemarkFollowContainer(@PathVariable Long shipmentDetailId){
+		if(shipmentDetailId == null){
+			return error();
+		}
+		PickupAssign pickupAssign = new PickupAssign();
+		pickupAssign.setShipmentDetailId(shipmentDetailId);
+		pickupAssign.setLogisticGroupId(getUser().getGroupId());
+		String remark = pickupAssignService.getRemarkFollowContainerByShipmentDetailId(pickupAssign);
+		AjaxResult ajaxResult = success();
+		ajaxResult.put("remark", remark);
 		return ajaxResult;
 	}
 }

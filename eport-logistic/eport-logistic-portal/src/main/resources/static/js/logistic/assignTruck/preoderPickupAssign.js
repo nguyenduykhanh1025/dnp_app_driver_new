@@ -8,7 +8,8 @@ $(document).ready(function () {
     $('#edoFlg').text(shipment.edoFlg == 1 ? "eDO" : "DO");
     $('#containerNo').text(shipmentDetail.containerNo);
     loadDriver(shipmentDetail.shipmentId);
-    loadOutSource(shipment.id);
+    loadOutSource(shipmentDetail.id);
+    loadRemarkFollowContainer(shipmentDetail.id);
 });
 function loadDriver(shipmentId){
     pickedIds = [];
@@ -76,6 +77,22 @@ function loadDriver(shipmentId){
         },
     });
 }
+
+function loadRemarkFollowContainer(shipmentDetailId){
+    $('#remark').val('');
+    $.ajax({
+        url: prefix + "/remark/container/" + shipmentDetailId,
+        method: "GET",
+        success: function (data) {
+            if (data.code == 0) {
+                if(data.remark){
+                    $('#remark').val(data.remark);
+                }
+            }
+        }
+    });
+}
+
 function formatAction(value, row, index) {
 	let actions = [];
     actions.push('<a class="btn btn-primary btn-xs" onclick="editDriver(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
@@ -143,12 +160,14 @@ function saveAssignPreorderPickup(){
             object.shipmentDetailId = shipmentDetail.id;
             object.fullName = rows[i].fullName;
             object.phoneNumber = rows[i].mobileNumber;
+            object.remark = $('#remark').val();
             pickupAssigns.push(object);
         }
     }
     if (getDataFromOutSource(true)){
         if(outsources.length > 0){
             for(let i=0;i < outsources.length; i++){
+                outsources[i].remark = $('#remark').val();
                 pickupAssigns.push(outsources[i])
             }
         }
@@ -187,9 +206,9 @@ function finishAssignTruck(msg) {
  var dogrid = document.getElementById("container-grid"), hot;
  var config;
  var outsources = [];
- function loadOutSource(shipmentId) {
+ function loadOutSource(shipmentDetailId) {
     $.ajax({
-        url: prefix + "/out-source/container/" + shipmentId,
+        url: prefix + "/out-source/container/" + shipmentDetailId,
         method: "GET",
         success: function (data) {
             if (data.code == 0) {
@@ -237,12 +256,10 @@ config = {
             data: "driverOwner",
             type: "autocomplete",
             source: driverOwnerList,
-            strict: true
         },
         {
             data: "phoneNumber",
             type: "autocomplete",
-            strict: true,
         },
         {
             data: "fullName",

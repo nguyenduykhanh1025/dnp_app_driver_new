@@ -115,11 +115,12 @@
        	FROM TB_VSL
 	</select>
 	
-	<select id="selectPODList"	resultType="String">
+	<select id="selectPODList" parameterType="ShipmentDetailEntity"	resultType="String">
 		SELECT 
-   			CNTRY_CD || PORT_CD || ': '|| PORT_NM AS POD
-		FROM TB_PORT 
-		OFFSET 0 ROWS FETCH NEXT 5000 ROWS ONLY
+   			POD AS POD
+		FROM TB_VSL_POD
+		WHERE VSL_CD = #{vslNm} and CALL_SEQ = #{voyNo} and CALL_YEAR = EXTRACT(YEAR FROM sysdate)
+		GROUP BY POD
 	</select>
 	
 	<select id="selectConsigneeList" resultType="String">
@@ -148,13 +149,13 @@
 	    	ENG_LNM as groupName,
 	    	ADDR as address
 		FROM TB_PTNR
-		WHERE PTNR_TYPE = 'TRK' AND PTNR_CODE = #{taxCode}
+		WHERE REG_NO = #{taxCode} AND ROWNUM = 1
 	</select>
 	<select id="checkContReservedByContainerNos" parameterType="String" resultType="String">
 		SELECT 
 			CNTR_NO
 		FROM TB_RESERVE
-		WHERE CNTR_NO IN 
+		WHERE CNTR_STATE != 'D' AND CNTR_NO IN 
 		<foreach item="containerNo" collection="array" open="(" separator="," close=")">
            	#{containerNo}
        	</foreach>

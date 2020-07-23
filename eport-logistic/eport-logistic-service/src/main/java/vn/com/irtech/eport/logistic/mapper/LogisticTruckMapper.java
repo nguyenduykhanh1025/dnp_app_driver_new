@@ -58,6 +58,12 @@ public interface LogisticTruckMapper
      * @return result
      */
     public int deleteLogisticTruckByIds(String[] ids);
+
     public int checkPlateNumberUnique(String plateNumber);
+
     public int updateDelFlagByIds(String[] ids);
+
+    public List<String> selectListTruckNoByDriverId(Long driverId);
+    
+    public List<String> selectListChassisNoByDriverId(Long driverId); 
 }

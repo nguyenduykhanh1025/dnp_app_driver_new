@@ -6,6 +6,8 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.form.Pickup;
+import vn.com.irtech.eport.logistic.form.PickupHistoryDetail;
 import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
 
 /**
@@ -76,5 +78,17 @@ public interface IPickupHistoryService
 
     public List<PickupHistory> selectPickupHistoryListForOmSupport(PickupHistory pickupHistory);
 
-    public List<PickupHistoryForm> selectPickupHistoryForDriver(@Param("userPhoneNumber") String userPhoneNumber);
+    public List<PickupHistoryForm> selectPickupHistoryForDriver(@Param("userId") Long userId);
+
+    /**
+     * 
+     * @param driverId
+     * @return
+     */
+    public List<Pickup> selectPickupListByDriverId(Long driverId);
+
+    public Boolean checkPossiblePickup(@Param("driverId") Long driverId, @Param("serviceType") Integer serviceType);
+
+    public PickupHistoryDetail selectPickupHistoryDetailById(@Param("driverId") Long driverId, @Param("pickupId") Long pickupId);
+
 }

@@ -142,4 +142,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             and logistic_group_id = #{list[0].logisticGroupId}
         </where>
     </select>
+
+    <select id="selectDriverAccountInfoById" parameterType="Long" resultType="vn.com.irtech.eport.logistic.form.DriverInfo">
+        select full_name as driverName, mobile_number as driverPhoneNumber
+        from driver_account
+        where id = #{id}
+    </select>
 </mapper>

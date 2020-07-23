@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.carrier.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.dto.EdiDataReq;
 import vn.com.irtech.eport.carrier.service.IEdiService;
+import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.exception.BusinessException;
 
@@ -18,6 +20,9 @@ public class EdiServiceImpl implements IEdiService {
 
 	@Autowired
 	private IEdoService edoService;
+
+	@Autowired
+	private IEdoAuditLogService edoAuditLogService;
 
 	@Override
 	public void executeListEdi(List<EdiDataReq> ediDataReqs, String partnerCode, String transactionId) {
@@ -58,7 +63,15 @@ public class EdiServiceImpl implements IEdiService {
 		this.settingEdoData(edoInsert, ediDataReq, partnerCode, transactionId);
 		edoInsert.setCreateBy(API);
 		edoInsert.setDelFlg(0);
-		return edoService.insertEdo(edoInsert);
+		edoInsert.setCarrierId(Long.valueOf(1));
+		Date setTimeUpdatExpicedDem = edoInsert.getExpiredDem();
+		setTimeUpdatExpicedDem.setHours(23);
+		setTimeUpdatExpicedDem.setMinutes(59);
+		setTimeUpdatExpicedDem.setSeconds(59);
+		edoInsert.setExpiredDem(setTimeUpdatExpicedDem);
+		int statusInsert = edoService.insertEdo(edoInsert);
+		edoAuditLogService.addAuditLogFirst(edoInsert);
+		return statusInsert;
 	}
 
 	private int update(EdiDataReq ediDataReq, String partnerCode, String transactionId) {
@@ -72,10 +85,32 @@ public class EdiServiceImpl implements IEdiService {
 			throw new BusinessException(String.format("Edo to update is not exist (containerNo='%s', billOfLading=%s)",
 					ediDataReq.getContainerNo(), ediDataReq.getBillOfLading()));
 		}
-
 		edoUpdate.setUpdateBy(API);
 		this.settingEdoData(edoUpdate, ediDataReq, partnerCode, transactionId);
-		return edoService.updateEdo(edoUpdate);
+		Edo odlEdo = edoService.selectEdoById(edoUpdate.getId());
+		if(edoUpdate.getExpiredDem() != null)
+		{
+			Date setTimeUpdatExpicedDem = edoUpdate.getExpiredDem();
+			setTimeUpdatExpicedDem.setHours(23);
+			setTimeUpdatExpicedDem.setMinutes(59);
+			setTimeUpdatExpicedDem.setSeconds(59);
+			edoUpdate.setExpiredDem(setTimeUpdatExpicedDem);
+		}
+		if(odlEdo.getExpiredDem().compareTo(edoUpdate.getExpiredDem()) == 0)
+		{
+			edoUpdate.setExpiredDem(null);
+		}
+		if(odlEdo.getDetFreeTime() == edoUpdate.getDetFreeTime())
+		{
+			edoUpdate.setDetFreeTime(null);
+		}
+		if(odlEdo.getEmptyContainerDepot().equals(edoUpdate.getEmptyContainerDepot()))
+		{
+			edoUpdate.setEmptyContainerDepot(null);
+		}
+		int statusUpdate = edoService.updateEdo(edoUpdate);
+		edoAuditLogService.updateAuditLog(edoUpdate);
+		return statusUpdate;
 	}
 
 	private int delete(EdiDataReq ediDataReq) {

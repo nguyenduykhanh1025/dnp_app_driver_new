@@ -335,9 +335,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag, boolean orderByBl) {
         ProcessOrder processOrder = new ProcessOrder();
         if (orderByBl) {
-            processOrder.setMode("Pickup Order by BL");
+            processOrder.setModee("Pickup Order By BL");
         } else {
-            processOrder.setMode("Truck Out");
+            processOrder.setModee("Truck Out");
         }
         processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
@@ -416,7 +416,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Transactional
     private ServiceSendFullRobotReq groupShipmentDetailByReceiveContEmptyOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
         ProcessOrder processOrder = new ProcessOrder();
-        processOrder.setMode("Pickup By Booking");
+        processOrder.setModee("Pickup By Booking");
         processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         processOrder.setTruckCo(shipment.getTaxCode()+" : "+shipment.getGroupName());

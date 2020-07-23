@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 
 /**
@@ -68,4 +71,16 @@ public interface ProcessOrderMapper
     public int countProcessOrderDoing(String[] processOrderIds);
 
     public List<ProcessOrder> selectProcessOrderListForOmManagement(ProcessOrder processOrder);
+
+    public int checkLogisticOwnedProcessOrder(@Param("logisticGroupId") Long logisticGroupId, @Param("processOrderIds") String[] processOrderIds);
+
+    public Long getSumOfTotalBillList(String[] proccessOrderIds);
+
+    /**
+     * Get shipment id by process order id
+     * 
+     * @param id
+     * @return
+     */
+    public Long getShipmentIdByProcessOrderId(Long id);
 }

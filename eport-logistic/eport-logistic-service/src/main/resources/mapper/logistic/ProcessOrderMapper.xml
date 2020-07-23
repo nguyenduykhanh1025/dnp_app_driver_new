@@ -12,7 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="referenceNo"    column="reference_no"    />
         <result property="payType"    column="pay_type"    />
         <result property="sztp"    column="sztp"    />
-        <result property="mode"    column="mode"    />
+        <result property="modee"    column="modee"    />
         <result property="consignee"    column="consignee"    />
         <result property="truckCo"    column="truck_co"    />
         <result property="taxCode"    column="tax_code"    />
@@ -46,7 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectProcessOrderVo">
-        select id, shipment_id, logistic_group_id, service_type, reference_no, pay_type, sztp, mode, consignee, truck_co, tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, result, data, create_by, create_time, update_by, update_time from process_order
+        select id, shipment_id, logistic_group_id, service_type, reference_no, pay_type, sztp, modee, consignee, truck_co, tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, result, data, create_by, create_time, update_by, update_time from process_order
     </sql>
 
     <select id="selectProcessOrderList" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
@@ -58,7 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
             <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
-            <if test="mode != null  and mode != ''"> and mode = #{mode}</if>
+            <if test="modee != null  and modee != ''"> and modee = #{modee}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="truckCo != null  and truckCo != ''"> and truck_co = #{truckCo}</if>
             <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
@@ -94,7 +94,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
             <if test="payType != null  and payType != ''">pay_type,</if>
             <if test="sztp != null  and sztp != ''">sztp,</if>
-            <if test="mode != null  and mode != ''">mode,</if>
+            <if test="modee != null  and modee != ''">modee,</if>
             <if test="consignee != null  and consignee != ''">consignee,</if>
             <if test="truckCo != null  and truckCo != ''">truck_co,</if>
             <if test="taxCode != null  and taxCode != ''">tax_code,</if>
@@ -120,7 +120,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
             <if test="payType != null  and payType != ''">#{payType},</if>
             <if test="sztp != null  and sztp != ''">#{sztp},</if>
-            <if test="mode != null  and mode != ''">#{mode},</if>
+            <if test="modee != null  and modee != ''">#{modee},</if>
             <if test="consignee != null  and consignee != ''">#{consignee},</if>
             <if test="truckCo != null  and truckCo != ''">#{truckCo},</if>
             <if test="taxCode != null  and taxCode != ''">#{taxCode},</if>
@@ -149,7 +149,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="referenceNo != null  and referenceNo != ''">reference_no = #{referenceNo},</if>
             <if test="payType != null  and payType != ''">pay_type = #{payType},</if>
             <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
-            <if test="mode != null  and mode != ''">mode = #{mode},</if>
+            <if test="modee != null  and modee != ''">modee = #{modee},</if>
             <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
             <if test="truckCo != null  and truckCo != ''">truck_co = #{truckCo},</if>
             <if test="taxCode != null  and taxCode != ''">tax_code = #{taxCode},</if>
@@ -239,4 +239,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     
+    <select id="checkLogisticOwnedProcessOrder" resultType="int">
+        select count(*) from process_order
+        where logistic_group_id = #{logisticGroupId}
+        and status = 2
+        and id in
+        <foreach item="id" collection="processOrderIds" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+    
+    <select id="getShipmentIdByProcessOrderId" resultType="Long" parameterType="Long">
+        select shipment_id from process_order
+        where id = #{id}
+    </select>
 </mapper>

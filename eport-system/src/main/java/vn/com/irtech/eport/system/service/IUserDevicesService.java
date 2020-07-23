@@ -60,4 +60,12 @@ public interface IUserDevicesService
     public int deleteUserDevicesById(Long id);
 
     public List<UserDevices> selectDeviceTokenList(String userTypeList);
+
+    /**
+     * Delete user device by user token
+     * 
+     * @param token
+     * @return
+     */
+    public int deleteUserDevicesByUserToken(String token);
 }

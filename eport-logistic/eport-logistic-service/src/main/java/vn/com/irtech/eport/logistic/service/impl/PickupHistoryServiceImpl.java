@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.form.Pickup;
+import vn.com.irtech.eport.logistic.form.PickupHistoryDetail;
 import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
 import vn.com.irtech.eport.logistic.mapper.PickupHistoryMapper;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
@@ -121,7 +123,26 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     }
     
     @Override
-    public List<PickupHistoryForm> selectPickupHistoryForDriver(@Param("userPhoneNumber") String userPhoneNumber) {
-        return pickupHistoryMapper.selectPickupHistoryForDriver(userPhoneNumber);
+    public List<PickupHistoryForm> selectPickupHistoryForDriver(@Param("userId") Long userId) {
+        return pickupHistoryMapper.selectPickupHistoryForDriver(userId);
+    }
+
+    @Override
+    public List<Pickup> selectPickupListByDriverId(Long driverId) {
+        return pickupHistoryMapper.selectPickupListByDriverId(driverId);
+    }
+
+    @Override
+    public Boolean checkPossiblePickup(@Param("driverId") Long driverId, @Param("serviceType") Integer serviceType) {
+        List<String> sztps = pickupHistoryMapper.checkPossiblePickup(driverId, serviceType);
+        if (sztps.isEmpty() || (sztps.size() == 1 && "20G0".equals(sztps.get(0)))) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public PickupHistoryDetail selectPickupHistoryDetailById(@Param("driverId") Long driverId, @Param("pickupId") Long pickupId) {
+        return pickupHistoryMapper.selectPickupHistoryDetailById(driverId, pickupId);
     }
 }

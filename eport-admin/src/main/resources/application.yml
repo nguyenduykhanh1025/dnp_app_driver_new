@@ -39,7 +39,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles: 
-    active: druid
+    active: test
   servlet:
      multipart:
        max-file-size:  10MB
@@ -85,8 +85,9 @@ xss:
   
 mqtt:
   username: admin             
-  password: public            
-  host-url: tcp://192.168.1.99:1883                # The address and port of your own server need to be changed 
+  password: public 
+  host-url: tcp://192.168.1.99:1883           
+  #host-url: tcp://localhost:1883                # The address and port of your own server need to be changed 
 
 websocket:
    endpoint: /eport_admin

@@ -30,14 +30,13 @@ var sizeList = [
     "L4T0: Cont 45 feet tank - cont bồn",
     "L4U0: Cont 45 feet open top"
 ];
-var consigneeList, opeCodeList, dischargePortList, vslNmList, currentProcessId, currentSubscription;
+var consigneeList, opeCodeList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({
     url: "/logistic/source/option",
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
-            dischargePortList = data.dischargePortList;
             opeCodeList = data.opeCodeList;
             vslNmList = data.vslNmList;
             consigneeList = data.consigneeList;
@@ -154,7 +153,7 @@ function loadTable(msg) {
     }
     $("#dg").datagrid({
         url: '/logistic/shipments',
-        height: window.innerHeight - 70,
+        height: window.innerHeight - 110,
         method: 'post',
         singleSelect: true,
         collapsible: true,
@@ -348,29 +347,29 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
-function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'wgt' + row).addClass("htMiddle");
-    $(td).html(value);
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    }
-    return td;
-}
-function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
-    if (value != null && value != '') {
-        value = value.split(':')[0];
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    }
-    $(td).html(value);
-    return td;
-}
+// function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
+//     $(td).attr('id', 'wgt' + row).addClass("htMiddle");
+//     $(td).html(value);
+//     if (value != null && value != '') {
+//         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+//             cellProperties.readOnly = 'true';
+//             $(td).css("background-color", "rgb(232, 232, 232)");
+//         }
+//     }
+//     return td;
+// }
+// function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
+//     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
+//     if (value != null && value != '') {
+//         value = value.split(':')[0];
+//         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+//             cellProperties.readOnly = 'true';
+//             $(td).css("background-color", "rgb(232, 232, 232)");
+//         }
+//     }
+//     $(td).html(value);
+//     return td;
+// }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
     $(td).html(value);
@@ -414,15 +413,15 @@ function configHandson() {
                     return '<span>Chuyến</span><span style="color: red;">(*)</span>';
                 case 7:
                     return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+                // case 8:
+                //     return '<span>Trọng Tải</span><span style="color: red;">(*)</span>';
+                // case 9:
+                //     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
                 case 8:
-                    return '<span>Trọng Tải</span><span style="color: red;">(*)</span>';
-                case 9:
-                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
-                case 10:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 120, 100, 100, 100, 100, 100, 150, 200],
+        colWidths: [50, 100, 100, 120, 100, 100, 100, 100, 200],
         filter: "true",
         columns: [
             {
@@ -476,19 +475,19 @@ function configHandson() {
                 strict: true,
                 renderer: sizeRenderer
             },
-            {
-                data: "wgt",
-                type: "numeric",
-                strict: true,
-                renderer: wgtRenderer
-            },
-            {
-                data: "dischargePort",
-                strict: true,
-                type: "autocomplete",
-                source: dischargePortList,
-                renderer: dischargePortRenderer
-            },
+            // {
+            //     data: "wgt",
+            //     type: "numeric",
+            //     strict: true,
+            //     renderer: wgtRenderer
+            // },
+            // {
+            //     data: "dischargePort",
+            //     strict: true,
+            //     type: "autocomplete",
+            //     source: dischargePortList,
+            //     renderer: dischargePortRenderer
+            // },
             {
                 data: "remark",
                 renderer: remarkRenderer
@@ -508,6 +507,7 @@ function onChange(changes, source) {
     }
     changes.forEach(function (change) {
         if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+            hot.setDataAtCell(change[0], 6, '');//voyNo reset
             $.ajax({
                 url: "/logistic/vessel/" + change[3] + "/voyages",
                 method: "GET",
@@ -720,8 +720,7 @@ function getDataFromTable(isValidate) {
     for (let i=0; i<checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
             if (myTableData[i].containerNo || myTableData[i].opeCode || myTableData[i].expiredDem || myTableData[i].vslNm ||
-                myTableData[i].voyNo || myTableData[i].sztp || myTableData[i].wgt || myTableData[i].dischargePort ||
-                myTableData[i].remark) {
+                myTableData[i].voyNo || myTableData[i].sztp || myTableData[i].remark) {
                 cleanedGridData.push(myTableData[i]);
             }
         }
@@ -734,7 +733,6 @@ function getDataFromTable(isValidate) {
         opecode = cleanedGridData[0].opeCode;
         vessel = cleanedGridData[0].vslNm;
         voyage = cleanedGridData[0].voyNo;
-        pod = cleanedGridData[0].dischargePort;
     }
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
@@ -767,14 +765,6 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
                 return false;
-            } else if (!object["wgt"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn trọng tải!");
-                errorFlg = true;
-                return false;
-            } else if (!object["dischargePort"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn cảng dỡ hàng!");
-                errorFlg = true;
-                return false;
             } else if (opecode != object["opeCode"]) {
                 $.modal.alertError("Hãng tàu không được khác nhau!");
                 errorFlg = true;
@@ -787,16 +777,11 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Số chuyến không được khác nhau!");
                 errorFlg = true;
                 return false;
-            } else if (pod != object["dischargePort"]) {
-                $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
-                errorFlg = true;
-                return false;
             }
         }
         opecode = object["opeCode"];
         vessel = object["vslNm"];
         voyage = object["voyNo"];
-        pod = object["dischargePort"];
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
@@ -808,8 +793,6 @@ function getDataFromTable(isValidate) {
         shipmentDetail.vslNm = object["vslNm"];
         shipmentDetail.voyNo = object["voyNo"];
         shipmentDetail.sztp = object["sztp"].split(":")[0];
-        shipmentDetail.wgt = object["wgt"];
-        shipmentDetail.dischargePort = object["dischargePort"].split(":")[0];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
@@ -1011,7 +994,7 @@ function finishVerifyForm(result) {
 }
 
 function napasPaymentForm() {
-    $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/payment/napas");
+    $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
 }
 
 function connectToWebsocketServer(){

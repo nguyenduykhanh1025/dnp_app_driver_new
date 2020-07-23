@@ -2,10 +2,13 @@ package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
 import vn.com.irtech.eport.common.utils.DateUtils;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.logistic.mapper.PickupAssignMapper;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
+import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.common.core.text.Convert;
 
@@ -101,6 +104,22 @@ public class PickupAssignServiceImpl implements IPickupAssignService {
     @Override
     public PickupAssign getInforOutSourceByPhoneNumber(PickupAssign pickupAssign) {
         return pickupAssignMapper.getInforOutSourceByPhoneNumber(pickupAssign);
+    }
+
+    @Override
+    public List<PickupAssignForm> selectPickupAssignListByDriverId(@Param("driverId") Long driverId,
+            @Param("serviceType") Integer serviceType) {
+        return pickupAssignMapper.selectPickupAssignListByDriverId(driverId, serviceType);
+    }
+
+    @Override
+    public String getRemarkFollowBatchByShipmentId(PickupAssign pickupAssign) {
+        return pickupAssignMapper.getRemarkFollowBatchByShipmentId(pickupAssign);
+    }
+
+    @Override
+    public String getRemarkFollowContainerByShipmentDetailId(PickupAssign pickupAssign) {
+        return pickupAssignMapper.getRemarkFollowContainerByShipmentDetailId(pickupAssign);
     }
     
 }

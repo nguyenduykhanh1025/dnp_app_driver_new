@@ -169,7 +169,7 @@ function loadTable(msg) {
   }
   $("#dg").datagrid({
     url: "/logistic/shipments",
-    height: window.innerHeight - 70,
+    height: window.innerHeight - 110,
     method: 'post',
     singleSelect: true,
     collapsible: true,
@@ -880,7 +880,7 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   });
 
   if (processOrderIds != '') {
-    processOrderIds.substring(0, processOrderIds.length - 1);
+    processOrderIds = processOrderIds.substring(0, processOrderIds.length - 1);
   }
 
   // Get result in "selectedList" letiable
@@ -1256,7 +1256,7 @@ function finishVerifyForm(result) {
 }
 
 function napasPaymentForm() {
-  $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/payment/napas");
+  $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);;
 }
 
 function connectToWebsocketServer() {

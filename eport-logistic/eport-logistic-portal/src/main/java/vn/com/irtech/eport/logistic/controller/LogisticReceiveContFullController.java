@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
@@ -188,11 +189,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
-	}
-
-	@GetMapping("/payment/napas")
-	public String napasPaymentForm() {
-		return PREFIX + "/napasPaymentForm";
 	}
 
 	@GetMapping("/unique/bl-no/{blNo}")

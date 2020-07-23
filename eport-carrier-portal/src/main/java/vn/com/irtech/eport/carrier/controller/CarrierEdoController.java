@@ -1,14 +1,9 @@
 package vn.com.irtech.eport.carrier.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,21 +14,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
-import vn.com.irtech.eport.carrier.domain.EdoHistory;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
-import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
 
@@ -47,9 +36,6 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@Autowired
 	private IEdoService edoService;
-
-	@Autowired
-	private IEdoHistoryService edoHistoryService;
 
 	@Autowired
     private ISysDictDataService dictDataService;
@@ -69,8 +55,8 @@ public class CarrierEdoController extends CarrierBaseController {
 	@PostMapping("/billNo")
 	@ResponseBody
 	public TableDataInfo billNo(@RequestBody PageAble<Edo> param) {
-	  startPage();
-	  Edo edo = param.getData();
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		Edo edo = param.getData();
 	  if (edo == null) {
 		edo = new Edo();
 	  }
@@ -107,63 +93,6 @@ public class CarrierEdoController extends CarrierBaseController {
 		return PREFIX + "/update";
 	}
 
-	@RequestMapping(value = "/file",method = { RequestMethod.POST })
-	@ResponseBody
-	public Object upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws IOException {
-		String content = "";
-		List<Edo> listEdo = new ArrayList<>();
-		try {
-			  String fileName = file.getOriginalFilename();
-		      File fileNew = new File(edoService.getFolderUploadByTime(super.folderUpLoad()), fileName);
-		      file.transferTo(fileNew);
-		      File myObj = new File(edoService.getFolderUploadByTime(super.folderUpLoad())+File.separator+fileName);
-		      Scanner myReader = new Scanner(myObj);
-		      while (myReader.hasNextLine()) {
-				content += myReader.nextLine();
-		      }
-              myReader.close();
-			  String[] text = content.split("'");
-			  listEdo = edoService.readEdi(text);
-			  EdoHistory edoHistory = new EdoHistory();
-			  edoHistory.setFileName(fileName);
-			  edoHistory.setCreateSource("websiteDaNangPort");
-			  Date timeNow = new Date();
-			  for(Edo edo : listEdo)
-            	{
-					edo.setCarrierId(super.getUser().getGroupId());
-					edo.setCreateSource("web");
-					edoHistory.setBillOfLading(edo.getBillOfLading());
-					edoHistory.setOrderNumber(edo.getOrderNumber());
-					edoHistory.setCarrierCode(edo.getCarrierCode());
-					edoHistory.setCarrierId(super.getUserId());
-					edoHistory.setEdiContent(content);
-					edoHistory.setContainerNumber(edo.getContainerNumber());
-					edoHistory.setCreateBy(super.getUser().getFullName());
-					Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(),edo.getBillOfLading());
-                if(edoCheck != null)
-                {
-					edo.setId(edoCheck.getId());
-					edo.setUpdateTime(timeNow);
-					edo.setUpdateBy(super.getUser().getFullName());
-                    edoService.updateEdo(edo); //TODO
-                    edoHistory.setEdoId(edo.getId());
-                    edoHistory.setAction("update");
-                    edoHistoryService.insertEdoHistory(edoHistory);
-                }else {
-					edo.setCreateTime(timeNow);
-					edo.setCreateBy(super.getUser().getFullName());
-                    edoService.insertEdo(edo);
-                    edoHistory.setEdoId(edo.getId());
-                    edoHistory.setAction("add");
-                    edoHistoryService.insertEdoHistory(edoHistory);
-				}
-				}
-		} catch (IOException e) {
-			e.printStackTrace(); // transaction rollback?
-		}
-		return  listEdo;
-    }
-
 	@GetMapping("/history/{id}")
 	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
 		map.put("edoId", id);
@@ -197,60 +126,25 @@ public class CarrierEdoController extends CarrierBaseController {
 		{
 			ids = edo.getId().toString();
 		}
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		try {
+		// try {
 			EdoAuditLog edoAuditLog = new EdoAuditLog();
 			Date timeNow = new Date();
 			edoAuditLog.setCarrierId(super.getUser().getGroupId());
 			edoAuditLog.setCarrierCode(super.getUserGroup().getGroupCode());
 			edoAuditLog.setCreateTime(timeNow);
 			String[] idsList = ids.split(",");
+			edo.setCarrierCode(super.getUserGroup().getGroupCode());
+			edo.setCarrierId(super.getUser().getGroupId());
 			for(String id : idsList)
 			{	
-				int segNo = 1;
-				edoAuditLog.setEdoId(Long.parseLong(id));
-				String maxSegNo = edoAuditLogService.selectEdoAuditLogByEdoId(Long.parseLong(id));
-				if(edo.getExpiredDem() != null)
-				{
-					Date setTimeUpdatExpicedDem = edo.getExpiredDem();
-					setTimeUpdatExpicedDem.setHours(23);
-					setTimeUpdatExpicedDem.setMinutes(59);
-					setTimeUpdatExpicedDem.setSeconds(59);
-					edo.setExpiredDem(setTimeUpdatExpicedDem);
-					edoAuditLog.setFieldName("Expired Dem");
-					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
-					edoAuditLog.setNewValue(formatter.format(setTimeUpdatExpicedDem).toString()); 
-					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
-					segNo += 1;
-				}
-				if(edo.getDetFreeTime() != null && !("").equals(edo.getDetFreeTime().toString()))
-				{
-					edoAuditLog.setFieldName("Det Free Time");
-					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo)  + segNo);
-					edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
-					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
-					segNo += 1;
-				}
-				if(edo.getEmptyContainerDepot() != null && !("").equals(edo.getEmptyContainerDepot().toString()))
-				{
-					edoAuditLog.setFieldName("Empty Container Depot");
-					EdoAuditLog edoAuditLogCheck = edoAuditLogService.selectEdoAuditLogByEdo(edoAuditLog);
-					edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
-					edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
-					edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
-					edoAuditLogService.insertEdoAuditLogExpiredDem(edoAuditLog);
-				}
 				edo.setId(Long.parseLong(id));
 				edoService.updateEdo(edo);
-		}
-				return AjaxResult.success("Update thành công");
-		}catch(Exception e) {
-			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
-		} 
+				edoAuditLogService.updateAuditLog(edo);	
+			}
+		return AjaxResult.success("Update thành công");
+		// }catch(Exception e) {
+		// 	return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
+		// } 
 		
 	}
 	@PostMapping("/readEdiOnly")
@@ -311,5 +205,22 @@ public class CarrierEdoController extends CarrierBaseController {
 		}
 		return PREFIX + "/report";
 	}
+
+	//List
+	@PostMapping("/edoReport")
+	@ResponseBody
+	public TableDataInfo edoReport(@RequestBody PageAble<Edo> param)
+	{
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		Edo edo = param.getData();
+		  if (edo == null) {
+			edo = new Edo();
+		  }
+		edo.setCarrierCode(super.getUserGroup().getGroupCode());
+		List<Edo> dataList = edoService.selectEdoList(edo);
+		return getDataTable(dataList);
+	}
+
+
 
 }

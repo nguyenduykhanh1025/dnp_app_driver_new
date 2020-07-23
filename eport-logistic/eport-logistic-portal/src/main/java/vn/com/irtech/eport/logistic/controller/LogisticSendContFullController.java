@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,19 +19,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.sun.jna.platform.unix.X11.XClientMessageEvent.Data;
+
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
+import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.INapasApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -38,6 +45,8 @@ import vn.com.irtech.eport.logistic.service.IShipmentService;
 @Controller
 @RequestMapping("/logistic/send-cont-full")
 public class LogisticSendContFullController extends LogisticBaseController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(LogisticSendContFullController.class);
     
     private final String PREFIX = "logistic/sendContFull";
 	
@@ -61,6 +70,12 @@ public class LogisticSendContFullController extends LogisticBaseController {
 
 	@Autowired
 	private ICatosApiService catosApiService;
+	
+	@Autowired
+	private INapasApiService napasApiService;
+	
+	@Autowired
+	private ConfigService configService;
 
     @GetMapping()
 	public String sendContFull() {
@@ -114,11 +129,6 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
-	}
-
-	@GetMapping("/payment/napas")
-	public String napasPaymentForm() {
-		return PREFIX + "/napasPaymentForm";
 	}
 
 	@GetMapping("/custom-status/{shipmentDetailIds}")
@@ -311,6 +321,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 						return ajaxResult;
 					}
 				} catch (Exception e) {
+					logger.warn(e.getMessage());
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
 				

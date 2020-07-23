@@ -943,6 +943,38 @@ var table = {
             	});
                 layer.full(index);
 			},
+			openFullWithoutButton: function (title, url, width, height) {
+            	//如果是移动端，就使用自适应大小弹窗
+            	if ($.common.isMobile()) {
+            	    width = 'auto';
+            	    height = 'auto';
+            	}
+            	if ($.common.isEmpty(title)) {
+                    title = false;
+                }
+                if ($.common.isEmpty(url)) {
+                    url = "/404.html";
+                }
+                if ($.common.isEmpty(width)) {
+                	width = 800;
+                }
+                if ($.common.isEmpty(height)) {
+                	height = ($(window).height() - 50);
+                }
+                var index = layer.open({
+            		type: 2,
+            		area: [width + 'px', height + 'px'],
+            		fix: false,
+            		//不固定
+            		maxmin: true,
+            		shade: 0.3,
+            		title: title,
+            		content: url,
+            		// 弹层外区域关闭
+            		shadeClose: true,
+            	});
+                layer.full(index);
+			},
 			// open full
             openFullDo: function (title, url, width, height) {
             	//如果是移动端，就使用自适应大小弹窗
@@ -1205,7 +1237,7 @@ var table = {
 			},
 			addTruck: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 850, 460);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 850, 300);
             },
             // 添加信息，以tab页展现
             addTab: function (id) {
@@ -1237,6 +1269,15 @@ var table = {
             	} else {
             	    $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id));
             	}
+			},
+			//Edit truck
+			editTruck: function() {
+				table.set();
+				if (table.options.updateUrl != "0") {
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 320);
+				} else {
+					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
+				}
 			},
 			// 修改信息
             editShipment: function(id) {

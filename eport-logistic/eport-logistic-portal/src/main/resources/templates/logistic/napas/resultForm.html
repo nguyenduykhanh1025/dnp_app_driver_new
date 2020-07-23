@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:include="include :: header('NAPAS PAYMENT RESULT')" />
+</head>
+<body>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript" th:inline="javascript">
+        var result = /*[[${result}]]*/;
+    </script>
+    <script type="text/javascript" th:inline="javascript">
+        var res = new Object();
+        if ('SUCCESS' == result) {
+            res.code = 0;
+            res.msg = 'Thanh toán thành công!';
+        } else {
+            res.code = 500;
+            res.msg = 'Thanh toán thất bại, vui lòng thử lại hoặc liên hệ với bộ phận thủ tục!';
+        }
+        parent.finishForm(res);
+        $.modal.close();
+    </script>
+</body>
+</html>

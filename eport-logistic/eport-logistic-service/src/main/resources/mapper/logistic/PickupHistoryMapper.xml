@@ -275,6 +275,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="doReceivedTime" column="do_received_time" />
 		<result property="userVerifyStatus" column="user_verify_status" />
 		<result property="status" column="status" />
+		<result property="createTime" column="create_time" />
 	</resultMap>
 
 	<select id="selectShipment" resultMap="ShipmentResult">
@@ -390,14 +391,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</where>
 	</select>
 
-	<select id="selectPickupHistoryForDriver" parameterType="String" resultType="vn.com.irtech.eport.logistic.form.PickupHistoryForm">
+	<select id="selectPickupHistoryForDriver" parameterType="Long" resultType="vn.com.irtech.eport.logistic.form.PickupHistoryForm">
 		select p.id as pickupHistoryId, p.container_no as containerNo, p.gatein_date as gateInDate
 		from pickup_history p
 		left join pickup_assign a
 		on p.pickup_assign_id = a.id
-		<where>
-			<if test="userPhoneNumber != null "> and a.phone_number = #{userPhoneNumber}</if>
-		</where>
+		where p.id = #{userId}
 		order by p.gatein_date desc
+	</select>
+
+	<select id="selectPickupListByDriverId" parameterType="Long" resultType="vn.com.irtech.eport.logistic.form.Pickup">
+		select p.id as pickupId, p.container_no as containerNo, p.shipment_id as batchCode, p.truck_no as truckNo, 
+		p.status as status, p.chassis_no as chassisNo, s.service_type as serviceType, sh.sztp as sztp
+		from pickup_history p
+		left join shipment s on p.shipment_id = s.id
+		left join shipment_detail sh on p.shipment_detail_id = sh.id
+		where p.driver_id = #{driverId}
+		and p.status != 3
+	</select>
+
+	<select id="checkPossiblePickup" resultType="String">
+		select sh.sztp
+		from pickup_history p
+		left join shipment s on p.shipment_id = s.id and s.service_type = #{serviceType}
+		left join shipment_detail sh on p.shipment_detail_id = sh.id
+		where p.driver_id = #{driverId}
+		and p.status = 0
 	</select>
 </mapper>

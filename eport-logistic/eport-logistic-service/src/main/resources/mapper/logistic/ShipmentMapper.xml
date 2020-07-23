@@ -198,6 +198,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
+            <if test="fromDate != null">and create_time &gt;= #{fromDate}</if>
+            <if test="toDate != null">and create_time &lt;= #{toDate}</if>
         </where>
         order by create_time desc
     </select>
