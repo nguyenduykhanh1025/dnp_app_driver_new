@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
@@ -150,13 +151,6 @@ public class LogisticCommonController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult getField() {
 		AjaxResult ajaxResult = success();
-		List<String> listPOD = (List<String>) CacheUtils.get("dischargePortList");
-		if (listPOD == null) {
-			listPOD = shipmentDetailService.getPODList();
-			CacheUtils.put("dischargePortList", listPOD);
-		}
-		ajaxResult.put("dischargePortList", listPOD);
-		
 		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
 		if (listConsignee == null) {
 			listConsignee = shipmentDetailService.getConsigneeList();
@@ -298,5 +292,17 @@ public class LogisticCommonController extends LogisticBaseController {
 			mmap.put("result", "SUCCESS");
 		}
 		return PREFIX + "/napas/resultForm";
+	}
+	@PostMapping("/pods")
+	@ResponseBody
+	public AjaxResult getPODs(@RequestBody ShipmentDetail shipmentDetail){
+		AjaxResult ajaxResult = success();
+		List<String> listPOD = new ArrayList<String>();
+		if(shipmentDetail != null){
+			listPOD = catosApiService.getPODList(shipmentDetail);
+			ajaxResult.put("dischargePorts", listPOD);
+			return ajaxResult;
+		}
+		return error();
 	}
 }

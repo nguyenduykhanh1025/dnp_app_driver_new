@@ -4,6 +4,7 @@ import java.util.List;
 
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 
 public interface ICatosApiService {
 
@@ -15,7 +16,7 @@ public interface ICatosApiService {
 	
 	public List<String> checkContainerReserved(String containerNos);
 	
-	public List<String> getPODList();
+	public List<String> getPODList(ShipmentDetail shipmentDetail);
 	
 	public List<String> getVesselCodeList();
 	

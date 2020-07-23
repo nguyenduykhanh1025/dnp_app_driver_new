@@ -507,6 +507,7 @@ function onChange(changes, source) {
     }
     changes.forEach(function (change) {
         if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+            hot.setDataAtCell(change[0], 6, '');//voyNo reset
             $.ajax({
                 url: "/logistic/vessel/" + change[3] + "/voyages",
                 method: "GET",
