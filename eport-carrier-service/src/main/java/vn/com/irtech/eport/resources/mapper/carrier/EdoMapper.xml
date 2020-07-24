@@ -30,13 +30,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="delFlg"    column="del_flg"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="fileCreateTime"    column="file_create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="numberContainer"    column="number_container"    />
     </resultMap>
 
     <sql id="selectEdoVo">
-        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, vessel_no , voy_no, sztp, status, release_status, create_source, remark, del_flg, create_by, create_time, update_by, update_time, transaction_id from edo
+        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, vessel_no , voy_no, sztp, status, release_status, create_source, remark, del_flg, create_by, file_create_time, create_time, update_by, update_time, transaction_id from edo
     </sql>
 
   
@@ -131,6 +132,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="delFlg != null ">del_flg,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="fileCreateTime != null  and fileCreateTime != ''">file_create_time,</if>
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -158,6 +160,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="delFlg != null ">#{delFlg},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="fileCreateTime != null  and fileCreateTime != ''">#{fileCreateTime},</if>
             sysdate
          </trim>
     </insert>

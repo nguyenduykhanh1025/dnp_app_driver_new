@@ -108,7 +108,6 @@ public class EportTask {
                     edoAuditLogService.addAuditLogFirst(edo);
                 }
             }
-
             // Move file to distination folder
             fileEntry.renameTo(new File(destinationFolder + fileEntry.getName()));
             fileEntry.delete();

@@ -39,7 +39,7 @@ var myAvatarzone = new Dropzone("#bannarzone", {
                     if (data != "") {
                         if (dataObj == null) {
                             dataObj = data;
-                            console.log(data);
+                            console.log(dataObj);
                             dataObj.forEach(element => {
                                 element["file"] = file.upload.uuid;
                             });
@@ -134,6 +134,11 @@ function loadView() {
                 editor: false
             },
             {
+                data: 'carrierCode',
+                type: 'text',
+                editor: false
+            },
+            {
                 data: 'orderNumber',
                 type: 'text',
                 editor: false
@@ -153,7 +158,11 @@ function loadView() {
                 type: 'text',
                 editor: false
             },
-           
+            {
+                data: 'unloadingPort',
+                type: 'text',
+                editor: false
+            },
             {
                 data: 'consignee',
                 type: 'text',
@@ -161,6 +170,12 @@ function loadView() {
             },
             {
                 data: 'expiredDem',
+                type: 'date',
+                dateFormat: 'MM/DD/YYYY',
+                editor: false
+            },
+            {
+                data: 'fileCreateTime',
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
                 editor: false
@@ -182,12 +197,15 @@ function loadView() {
             'Sztp',
             'Số Bill',
             'Chủ khai thác',
+            'OPR Code',
             'Order Number',
             'Tên tàu',
             'Mã tàu',
             'Số chuyến',
+            'Cảng dỡ hàng',
             'Người nhận hàng',
             'Ngày hết hạn lưu cont',
+            'Ngày tạo file',
             'Nơi hạ rỗng',
             'Số ngày miễn lưu vỏ'
         ],
