@@ -166,7 +166,7 @@ class ProfileScreen extends Component {
                     borderRadius: 100,
                   }}
                 />
-                <Image
+                {/* <Image
                   source={ic_camera}
                   style={{
                     width: ws(40),
@@ -175,7 +175,7 @@ class ProfileScreen extends Component {
                     bottom: 0,
                     left: ws(95),
                   }}
-                />
+                /> */}
               </View>
             </View>
           </View>
