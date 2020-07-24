@@ -124,21 +124,33 @@ public class EdoServiceImpl implements IEdoService
     {
         Edo edi = new Edo();
 		ZoneId defaultZoneId = ZoneId.systemDefault();
-		JSONObject obj = new JSONObject();
 		List<Edo> listEdi = new ArrayList<>();
 		System.out.print(text.toString());
 		String business = "";
+		Date fileCreateTime = new Date();
 		for(String s : text)
 		{
 			
-			//businessUnit
+			//businessUnit and createTime
 			if(s.contains("UNB+UNOA"))
 			{
 				String[] businessUnit = s.split("\\+");
-				if(!s.isEmpty())
+				if(businessUnit.length > 2)
 				{
-					obj.put("businessUnit", businessUnit[2]);
 					business = businessUnit[2];
+				}
+				if(businessUnit.length > 4)
+				{
+					String [] timeInfo = businessUnit[4].split("\\:");
+					if(timeInfo.length > 1)
+					{
+						fileCreateTime.setYear(Integer.parseInt("20"+timeInfo[0].substring(0,2))-1900);
+						fileCreateTime.setMonth(Integer.parseInt(timeInfo[0].substring(2,4))-1);
+						fileCreateTime.setDate(Integer.parseInt(timeInfo[0].substring(4,6)));
+						fileCreateTime.setHours(Integer.parseInt(timeInfo[1].substring(0,2)));
+						fileCreateTime.setMinutes(Integer.parseInt(timeInfo[1].substring(2,4)));
+						fileCreateTime.setSeconds(00);
+					}
 				}
 				continue;
 			}
@@ -147,6 +159,7 @@ public class EdoServiceImpl implements IEdoService
 				edi = new Edo();
 				edi.setBusinessUnit(business);
 				edi.setCarrierCode(business);
+				edi.setFileCreateTime(fileCreateTime);
 				continue;
 			}
 
@@ -156,7 +169,6 @@ public class EdoServiceImpl implements IEdoService
 				if(!s.isEmpty() && s.length() > 7)
 				{
 					s = s.substring(7,s.length());
-					obj.put("buildNo", s);
 					edi.setBillOfLading(s);
 				}
 				continue;
@@ -170,13 +182,11 @@ public class EdoServiceImpl implements IEdoService
 				String[] contNo = s.split("\\+");
 				if(contNo.length >= 2)
 				{
-					obj.put("contNo",contNo[2]);
                 	edi.setContainerNumber(contNo[2]);
 				}
 				if(contNo.length >= 3)
 				{
 					String[] sztp = contNo[3].split("\\:");
-					obj.put("sztp",sztp[0]);
                 	edi.setSztp(sztp[0]);
 				}
 				continue;
@@ -187,7 +197,6 @@ public class EdoServiceImpl implements IEdoService
 				if(!s.isEmpty() && s.length() > 8)
 				{
 					s = s.substring(8,s.length());
-					obj.put("orderNo", s);
 					edi.setOrderNumber(s);
 				}
 				continue;
@@ -199,7 +208,6 @@ public class EdoServiceImpl implements IEdoService
 				if(!releaseTo[3].isEmpty())
 				{
 					releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length());
-					obj.put("releaseTo", releaseTo[3]);
 					edi.setConsignee(releaseTo[3]);
 				}
 				continue;
@@ -216,7 +224,6 @@ public class EdoServiceImpl implements IEdoService
 					releaseDate.setHours(23);
 					releaseDate.setMinutes(59);
 					releaseDate.setSeconds(59);
-					obj.put("validToDay", releaseDate);
 					edi.setExpiredDem(releaseDate);
 				}
 				continue;
@@ -227,8 +234,17 @@ public class EdoServiceImpl implements IEdoService
 				String[] emptyContDepotA = s.split("\\+");
 				if(emptyContDepotA.length >= 4){
 					String[] emptyContDepot = emptyContDepotA[3].split(":");
-					obj.put("emptyContDepot", emptyContDepot[0]);
 					edi.setEmptyContainerDepot(emptyContDepot[0]);
+				}
+				continue;		
+			}
+			//Unloading port
+			if(s.contains("LOC+170"))
+			{
+				String[] unloadingPorts = s.split("\\+");
+				if(unloadingPorts.length >= 4){
+					String[] unloadingPort = unloadingPorts[3].split(":");
+					edi.setUnloadingPort(unloadingPort[0]);
 				}
 				continue;		
 			}
@@ -241,7 +257,6 @@ public class EdoServiceImpl implements IEdoService
 					try{
 						int i = Integer.parseInt(haulage[4]);
 						edi.setDetFreeTime(i);
-						obj.put("haulage", haulage[4]);
 					}catch (Exception e)
 					{
 						e.printStackTrace();
@@ -255,15 +270,14 @@ public class EdoServiceImpl implements IEdoService
 			if(s.contains("TDT+20"))
 			{
 				String[] infoDTD20 = s.split("\\+");
-				if(infoDTD20.length > 7)
+				if(infoDTD20.length > 8)
 				{
 					String [] vessel = infoDTD20[8].split("\\:");
+					String [] carrierCode = infoDTD20[5].split("\\:");
+					edi.setCarrierCode(carrierCode[0]);
 					edi.setVoyNo(infoDTD20[2]);
 					edi.setVesselNo(vessel[0]);
-					edi.setVessel(vessel[3]);
-					obj.put("voyNo", infoDTD20[2]);
-					obj.put("vesselNo", vessel[0]);
-					obj.put("vessel", vessel[3]);
+					edi.setVessel(vessel[3]); 
 				}
 				
 				continue; 
