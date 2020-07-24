@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     Picker: {
-        width: ws(325),
+        width: ws(315),
     },
     TitleView: {
         width: ws(375),
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         marginLeft: ws(29),
         fontSize: fs(15),
         fontWeight: 'bold',
-        color: Colors.maincolor,
+        color: '#BEC2CE',
     },
     DropdownItemText: {
         fontSize: fs(16)
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         borderTopColor: "#EFF1F5",
         borderTopWidth: 1.5,
         borderStyle: 'solid',
-        width: ws(325),
+        width: ws(315),
         marginTop: -12.71,
     }
 })

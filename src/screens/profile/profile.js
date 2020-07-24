@@ -8,6 +8,8 @@ import {
   ScrollView,
   Switch,
   TouchableOpacity,
+  StatusBar,
+  Alert,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import {
@@ -38,7 +40,10 @@ import {
 import {
   down_arrow
 } from '@/assets/icons';
-import Toast from 'react-native-tiny-toast'
+import Toast from 'react-native-tiny-toast';
+import {
+  DropDownProfile
+} from '@/components'
 
 const profile_background = require('@/assets/images/profile_2.jpg')
 const ic_camera = require('@/assets/icons/camera.png')
@@ -47,27 +52,39 @@ class ProfileScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      truckNoList: [],
+      chassisNoList: [],
       isEnabled: false,
+      name: '',
+      phone: '',
     }
   };
 
   componentDidMount = async () => {
-    this.setState({
-      data: getInfoUser[0].Data[0]
-    })
-
     this.getUserInfo();
   };
 
   getUserInfo = async () => {
-    const token = await getToken();
-    const param = {
-      url: 'user/info',
+    var token = await getToken();
+    const params = {
+      api: 'user/info',
+      param: '',
       token: token,
+      method: 'GET'
     }
-    const result = await getRequestAPI(param);
-    this.setState({ data: result.data })
+    var result = undefined;
+    result = await callApi(params);
+    if (result.code == 0) {
+      await this.setState({
+        name: result.data.driverName,
+        phone: result.data.driverPhoneNumber,
+        chassisNoList: result.data.chassisNoList,
+        truckNoList: result.data.truckNoList,
+      })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
   }
 
   toggleSwitch = async () => {
@@ -100,7 +117,12 @@ class ProfileScreen extends Component {
   render() {
     var { data } = this.state;
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
+        <StatusBar
+          translucent
+          barStyle={'light-content'}
+          backgroundColor='transparent'
+        />
         <ImageBackground
           source={require('@/assets/images/home_bg.png')}
           style={styles.bg}
@@ -111,95 +133,111 @@ class ProfileScreen extends Component {
                 onPress={() => this.onLogout()}
               >
                 <View>
-                  <Text style={{ marginRight: 10, color: Colors.white }}>Đăng xuất</Text>
+                  <Text
+                    style={{
+                      marginRight: ws(17),
+                      color: Colors.white,
+                      fontSize: fs(15)
+                    }}>
+                    Đăng xuất
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>
-            <View style={{ alignItems: 'center', justifyContent: 'center', height: sizeHeight(22.5) }}>
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: hs(14)
+              }}>
               <View>
                 <Image
                   source={profile_background}
                   style={{
-                    width: (sizeHeight(100) * sizeWidth(100)) * 0.0004,
-                    height: (sizeHeight(100) * sizeWidth(100)) * 0.0004,
+                    width: ws(120),
+                    height: ws(120),
                     borderRadius: 100,
                   }}
                 />
                 <Image
                   source={ic_camera}
                   style={{
-                    width: (sizeHeight(100) * sizeWidth(100)) * 0.00013,
-                    height: (sizeHeight(100) * sizeWidth(100)) * 0.00013,
+                    width: ws(40),
+                    height: ws(40),
                     position: 'absolute',
                     bottom: 0,
-                    right: -(sizeHeight(100) * sizeWidth(100)) * 0.00003,
+                    left: ws(95),
                   }}
                 />
               </View>
             </View>
           </View>
         </ImageBackground>
-        <ScrollView
-          style={styles.scroll}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.body}>
-            <View>
-              <View style={{ alignItems: 'center' }}>
-                <View style={{ flexDirection: 'column', width: sizeWidth(85), marginTop: 20 }}>
-                  <Text style={styles.textTitle}>Họ và tên</Text>
-                  <Text style={styles.textValue}>{'DANG BIN'}</Text>
-                  <View style={{ borderBottomWidth: 1.5, borderBottomColor: '#EFF1F5', borderStyle: "solid" }} />
-                </View>
-                <View style={{ flexDirection: 'column', width: sizeWidth(85), marginTop: 20 }}>
-                  <Text style={styles.textTitle}>Số điện thoại</Text>
-                  <Text style={styles.textValue}>{'0123654879'}</Text>
-                  <View style={{ borderBottomWidth: 1.5, borderBottomColor: '#EFF1F5', borderStyle: "solid" }} />
-                </View>
-                <View style={{ flexDirection: 'column', width: sizeWidth(85), marginTop: 20 }}>
-                  <Text style={styles.textTitle}>Số xe đầu kéo</Text>
-                  <TouchableOpacity
-                    style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-                  >
-                    <Text style={styles.textValue}>43-24812</Text>
-                    <Image
-                      source={down_arrow}
-                      style={styles.downIcon}
-                      resizeMode='contain'
-                    />
-                  </TouchableOpacity>
-                  <View style={{ borderBottomWidth: 1.5, borderBottomColor: '#EFF1F5', borderStyle: "solid" }} />
-                </View>
-                <View style={{ flexDirection: 'column', width: sizeWidth(85), marginTop: 20 }}>
-                  <Text style={styles.textTitle}>Số xe Rơ-mooc</Text>
-                  <TouchableOpacity
-                    style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-                  >
-                    <Text style={styles.textValue}>43-24812</Text>
-                    <Image
-                      source={down_arrow}
-                      style={styles.downIcon}
-                      resizeMode='contain'
-                    />
-                  </TouchableOpacity>
-                  <View style={{ borderBottomWidth: 1.5, borderBottomColor: '#EFF1F5', borderStyle: "solid" }} />
-                </View>
-                <View style={{ flexDirection: 'row', width: sizeWidth(85), marginTop: 20, alignItems: 'center', marginBottom: sizeHeight(25) }}>
-                  <Text style={[styles.textTitle, { color: '#000' }]}>Bật chia sẻ vị trí</Text>
-                  <Switch
-                    style={{ position: 'absolute', right: 0 }}
-                    trackColor={{ false: Colors.grey2, true: '#0095FF' }}
-                    thumbColor={this.state.isEnabled ? Colors.white : "#f4f3f4"}
-                    ios_backgroundColor="#0095FF"
-                    onValueChange={this.toggleSwitch}
-                    value={this.state.isEnabled}
-                  />
-                </View>
-              </View>
+        <View style={styles.body}>
+          <View style={{ alignItems: 'center' }}>
+            <View style={{
+              flexDirection: 'column',
+              width: ws(315),
+              marginTop: 20
+            }}>
+              <Text style={styles.textTitle}>Họ và tên</Text>
+              <Text style={styles.textValue}>{this.state.name}</Text>
+              <View style={{
+                borderBottomWidth: 1.5,
+                borderBottomColor: '#EFF1F5',
+                borderStyle: "solid"
+              }}
+              />
+            </View>
+            <View style={{
+              flexDirection: 'column',
+              width: ws(315),
+              marginTop: 20
+            }}>
+              <Text style={styles.textTitle}>Số điện thoại</Text>
+              <Text style={styles.textValue}>{this.state.phone}</Text>
+              <View style={{
+                borderBottomWidth: 1.5,
+                borderBottomColor: '#EFF1F5',
+                borderStyle: "solid"
+              }}
+              />
+            </View>
+            <DropDownProfile
+              data={this.state.truckNoList}
+              title={'Số xe đầu kéo'}
+              style={{
+                marginVertical: hs(24),
+              }}
+              onSelect={(item) => { console.log('BSX Đầu Kéo', item) }}
+            />
+            <DropDownProfile
+              data={this.state.chassisNoList}
+              title={'Số xe Rơ-mooc'}
+              onSelect={(item) => { console.log('BSX Rơ Mooc', item) }}
+            />
+            <View style={{
+              flexDirection: 'row',
+              width: ws(315),
+              marginTop: 20,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+              <Text style={[styles.textTitle, { color: '#000' }]}>Bật chia sẻ vị trí</Text>
+              <Switch
+                style={{
+                  marginRight: -ws(11)
+                }}
+                trackColor={{ false: Colors.grey2, true: '#0095FF' }}
+                thumbColor={this.state.isEnabled ? Colors.white : "#f4f3f4"}
+                ios_backgroundColor="#0095FF"
+                onValueChange={this.toggleSwitch}
+                value={this.state.isEnabled}
+              />
             </View>
           </View>
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     )
   }
 }
@@ -213,10 +251,10 @@ export default connect(mapStateToProps)(ProfileScreen);
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: Colors.white,
   },
   scroll: {
-    height: sizeHeight(80),
   },
   profile: {
     width: sizeWidth(100),
@@ -227,34 +265,24 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     height: sizeHeight(100)
   },
-  element: {
-    width: sizeWidth(80),
-    height: sizeHeight(10),
-    alignItems: 'center',
-    alignSelf: 'center',
-    borderBottomWidth: 1,
-    borderColor: Colors.blue,
-    borderRadius: 4,
-    marginVertical: sizeHeight(1.5)
-  },
   icon: {
     marginHorizontal: sizeWidth(15),
   },
   textTitle: {
-    fontSize: 15,
+    fontSize: fs(15),
     lineHeight: 18,
     color: '#BEC2CE',
     marginVertical: 10,
   },
   textValue: {
-    fontSize: 18,
+    fontSize: fs(18),
     lineHeight: 22,
     letterSpacing: -0.434118,
     marginVertical: 5,
   },
   bg: {
-    height: sizeHeight(30),
-    width: sizeWidth(100),
+    height: hs(250),
+    width: ws(375),
   },
   body: {
     width: sizeWidth(100),
