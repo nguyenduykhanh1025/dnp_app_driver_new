@@ -16,6 +16,8 @@ public class Pickup {
 
     private Long batchCode;
 
+    private Integer status;
+
     public Long getPickupId() {
         return this.pickupId;
     }
@@ -70,6 +72,14 @@ public class Pickup {
 
     public void setBatchCode(Long batchCode) {
         this.batchCode = batchCode;
+    }
+
+    public Integer getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
 }
