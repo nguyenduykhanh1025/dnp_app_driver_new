@@ -9,6 +9,9 @@ import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+
 /**
  * Driver login info Object transport_account
  * 
@@ -27,6 +30,7 @@ public class DriverAccount extends BaseEntity {
 
     /** So DT */
     @Excel(name = "So DT")
+    @Pattern(regexp = "^[0-9]{10,11}$")
     private String mobileNumber;
 
     /** Ho va Ten */
@@ -40,6 +44,7 @@ public class DriverAccount extends BaseEntity {
     /** Mat Khau */
     @Excel(name = "Mat Khau")
     @JsonIgnore
+    @Min(6)
     private String password;
 
     /** Salt */
