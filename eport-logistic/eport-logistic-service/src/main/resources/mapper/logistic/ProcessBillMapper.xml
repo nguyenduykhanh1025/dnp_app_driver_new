@@ -210,6 +210,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </update>
 
+    <update id="updateBillListByProcessOrderIds" parameterType="String">
+        update process_bill
+        <trim prefix="SET" suffixOverrides=",">
+            payment_status = 'Y',
+            payment_time = sysdate,
+            update_time = sysdate
+        </trim>
+        where process_order_id in 
+        <foreach item="processOrderId" collection="array" open="(" separator="," close=")">
+            #{processOrderId}
+        </foreach>
+    </update>
+
     <select id="getSumOfTotalBillList" parameterType="String" resultType="Long">
         select sum(vat_after_fee) from process_bill
         where process_order_id in 

@@ -70,4 +70,12 @@ public interface ProcessBillMapper
     public int updateBillList(ProcessBill processBill);
 
     public Long getSumOfTotalBillList(String[] proccessOrderIds);
+
+    /**
+     * Update payment status for bill list by process order id array
+     * 
+     * @param processOrderIds
+     * @return
+     */
+    public int updateBillListByProcessOrderIds(String[] processOrderIds);
 }

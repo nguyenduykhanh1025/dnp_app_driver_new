@@ -943,6 +943,38 @@ var table = {
             	});
                 layer.full(index);
 			},
+			openFullWithoutButton: function (title, url, width, height) {
+            	//如果是移动端，就使用自适应大小弹窗
+            	if ($.common.isMobile()) {
+            	    width = 'auto';
+            	    height = 'auto';
+            	}
+            	if ($.common.isEmpty(title)) {
+                    title = false;
+                }
+                if ($.common.isEmpty(url)) {
+                    url = "/404.html";
+                }
+                if ($.common.isEmpty(width)) {
+                	width = 800;
+                }
+                if ($.common.isEmpty(height)) {
+                	height = ($(window).height() - 50);
+                }
+                var index = layer.open({
+            		type: 2,
+            		area: [width + 'px', height + 'px'],
+            		fix: false,
+            		//不固定
+            		maxmin: true,
+            		shade: 0.3,
+            		title: title,
+            		content: url,
+            		// 弹层外区域关闭
+            		shadeClose: true,
+            	});
+                layer.full(index);
+			},
 			// open full
             openFullDo: function (title, url, width, height) {
             	//如果是移动端，就使用自适应大小弹窗

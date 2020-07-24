@@ -140,5 +140,8 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
         return processOrderMapper.checkLogisticOwnedProcessOrder(logisticGroupId, processOrderIds);
     }
 
-
+    @Override
+    public Long getShipmentIdByProcessOrderId(Long id) {
+        return processOrderMapper.getShipmentIdByProcessOrderId(id);
+    }
 }

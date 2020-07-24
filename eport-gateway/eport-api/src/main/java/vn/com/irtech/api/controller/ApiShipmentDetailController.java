@@ -44,9 +44,10 @@ public class ApiShipmentDetailController {
 		return R.ok().put("data", list);
 	}
 	
-	@GetMapping("/shipmentDetail/getPODList")
-	public List<String> getPODList() {
-		return shipmentDetailDao.selectPODList();
+	@PostMapping("/shipmentDetail/getPODList")
+	public List<String> getPODList(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		List<String> pods = shipmentDetailDao.selectPODList(shipmentDetailEntity);
+		return pods;
 	}
 	
 	@GetMapping("/shipmentDetail/getVesselCodeList")

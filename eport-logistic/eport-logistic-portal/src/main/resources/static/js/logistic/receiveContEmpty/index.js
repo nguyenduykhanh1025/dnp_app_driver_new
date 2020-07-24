@@ -5,7 +5,7 @@ var contList = [], orders = [], processOrderIds;
 var conts = '';
 var allChecked = false;
 var checkList = [];
-var dischargePortList, opeCodeList, vslNmList;
+var opeCodeList, vslNmList;
 var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.serviceType = 3;
@@ -37,7 +37,6 @@ $.ajax({
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
-            dischargePortList = data.dischargePortList;
             opeCodeList = data.opeCodeList;
             vslNmList = data.vslNmList;
         }
@@ -479,7 +478,6 @@ function configHandson() {
             {
                 data: "dischargePort",
                 type: "autocomplete",
-                source: dischargePortList,
                 strict: true,
                 renderer: dischargePortRenderer
             },
@@ -502,6 +500,7 @@ function onChange(changes, source) {
     }
     changes.forEach(function (change) {
         if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+            hot.setDataAtCell(change[0], 6, '');//voyNo reset
             $.ajax({
                 url: "/logistic/vessel/" + change[3] + "/voyages",
                 method: "GET",
@@ -519,6 +518,33 @@ function onChange(changes, source) {
                     }
                 }
             });
+        } else if (change[1] == "voyNo" && change[3] != null && change[3] != '') {
+            let vslNm = hot.getDataAtCell(change[0], 5);
+            if (vslNm) {
+                let shipmentDetail = new Object();
+                shipmentDetail.vslNm = vslNm;
+                shipmentDetail.voyNo = change[3];
+                hot.setDataAtCell(change[0], 8, ''); // dischargePort reset
+                $.ajax({
+                    url: "/logistic/pods",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(shipmentDetail),
+                    success: function (data) {
+                        if (data.code == 0) {
+                            hot.updateSettings({
+                                cells: function (row, col, prop) {
+                                    if (row == change[0] && col == 8) {
+                                        let cellProperties = {};
+                                        cellProperties.source = data.dischargePorts;
+                                        return cellProperties;
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
         }
     });
 }
@@ -1007,7 +1033,7 @@ function finishVerifyForm(result) {
 }
 
 function napasPaymentForm() {
-    $.modal.openTab("Cổng Thanh Toán NAPAS", prefix + "/payment/napas");
+    $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
 }
 
 function connectToWebsocketServer() {

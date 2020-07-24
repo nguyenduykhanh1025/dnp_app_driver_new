@@ -84,4 +84,12 @@ public interface IProcessBillService
      * @return
      */
     public Long getSumOfTotalBillList(String[] proccessOrderIds);
+
+    /**
+     * Update payment status for bill list by process order ids
+     * 
+     * @param processOrderIds
+     * @return
+     */
+    public int updateBillListByProcessOrderIds(String processOrderIds);
 }
