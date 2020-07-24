@@ -9,8 +9,9 @@ const KEY_TOKEN = 'access_token';
 
 const KEY_ACCOUNT = 'account';
 const KEY_PASSWORD = 'pwd';
-const KEY_USERID = 'id'
-const KEY_NAME = 'name'
+const KEY_USERID = 'id';
+const KEY_NAME = 'name';
+const KEY_GPS_ENABLE = 'KEY_GPS_ENABLE';
 
 
 export const saveToken = (token) => {
@@ -42,14 +43,21 @@ export const saveUserID = (id) => {
     AsyncStorage.setItem(KEY_USERID, id.toString());
 }
 export const saveName = (name) => {
-    AsyncStorage.setItem(KEY_NAME,name);
+    AsyncStorage.setItem(KEY_NAME, name);
 }
 
+export const saveGPSEnable = (gps) => {
+    AsyncStorage.setItem(KEY_GPS_ENABLE, gps);
+}
+
+export const getGPSEnable = () => {
+    return AsyncStorage.getItem(KEY_GPS_ENABLE);
+}
 
 export const getUserID = () => {
     return AsyncStorage.getItem(KEY_USERID);
 };
-export const getName= () => {
+export const getName = () => {
     return AsyncStorage.getItem(KEY_NAME);
 };
 

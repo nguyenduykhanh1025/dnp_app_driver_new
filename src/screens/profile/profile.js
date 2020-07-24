@@ -35,7 +35,9 @@ import {
   callApi
 } from '@/requests'
 import {
-  getToken
+  getToken,
+  getGPSEnable,
+  saveGPSEnable,
 } from '@/stores';
 import {
   down_arrow
@@ -62,6 +64,10 @@ class ProfileScreen extends Component {
 
   componentDidMount = async () => {
     this.getUserInfo();
+    var gpsEnable = await getGPSEnable();
+    await this.setState({
+      isEnabled: gpsEnable == 'true' ? true : false
+    })
   };
 
   getUserInfo = async () => {
@@ -91,6 +97,7 @@ class ProfileScreen extends Component {
     await this.setState({
       isEnabled: this.state.isEnabled ? false : true
     })
+    saveGPSEnable(this.state.isEnabled ? "true" : "false")
   }
 
   onLogout = async () => {
@@ -223,10 +230,17 @@ class ProfileScreen extends Component {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-              <Text style={[styles.textTitle, { color: '#000' }]}>Bật chia sẻ vị trí</Text>
+              <Text style={[
+                styles.textTitle,
+                {
+                  color: '#000'
+                }
+              ]}>
+                Bật chia sẻ vị trí
+              </Text>
               <Switch
                 style={{
-                  marginRight: -ws(11)
+                  marginRight: -ws(11),
                 }}
                 trackColor={{ false: Colors.grey2, true: '#0095FF' }}
                 thumbColor={this.state.isEnabled ? Colors.white : "#f4f3f4"}
