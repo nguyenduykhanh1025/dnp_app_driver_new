@@ -96,7 +96,7 @@
 				AND IX_CD = 'I'
     </select>
     
-    <select id="selectCoordinateOfContainers" parameterType="ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
+    <select id="selectCoordinateOfContainers" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
        SELECT            
            CNTR_NO AS containerNo,
            BL_NO AS blNo,

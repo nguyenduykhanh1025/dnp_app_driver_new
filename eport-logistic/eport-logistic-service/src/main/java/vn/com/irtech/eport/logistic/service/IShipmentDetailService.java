@@ -87,9 +87,9 @@ public interface IShipmentDetailService
      */
     public List<ShipmentWaitExec> selectListShipmentWaitExec();
 
-    public List<ShipmentDetail[][]> getContPosition(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> shipmentDetails);
+    public List<ShipmentDetail[][]> getContPosition(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> shipmentDetails);
     
-    public boolean calculateMovingCont(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails);
+    public boolean calculateMovingCont(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails);
 
     public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag);
 

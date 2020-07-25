@@ -157,12 +157,11 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public String pickContOnDemand(@PathVariable("blNo") String blNo, ModelMap mmap) {
 		ShipmentDetail shipmentDt = new ShipmentDetail();
 		shipmentDt.setBlNo(blNo);
+		shipmentDt.setFe("F");
+//		shipmentDt.setServiceType(Constants.RECEIVE_CONT_FULL);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
 		//Get coordinate from catos test
-		String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers";
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.postForObject(url,shipmentDt , R.class);
-		List<LinkedHashMap> coordinateOfList = (List<LinkedHashMap>) r.get("data");
+		List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(blNo);
 		List<ShipmentDetail[][]> bayList = new ArrayList<>();
 		try {
 			bayList = shipmentDetailService.getContPosition(coordinateOfList, shipmentDetails);
@@ -260,6 +259,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			// load vessel = vslCode(vslNm) + vslName
+			for(ShipmentDetail i : shipmentDetails) {
+				i.setVslNm(i.getVslNm() + (i.getVslName() != null? ": " + i.getVslName():""));
+			}
 			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) {
 				shipmentDetails = new ArrayList<>();
 				//get infor from edi
@@ -508,11 +511,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (preorderPickupConts.size() > 0) {
 			ShipmentDetail shipmentDt = new ShipmentDetail();
 			shipmentDt.setBlNo(preorderPickupConts.get(0).getBlNo());
+			shipmentDt.setFe("F");
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
-			String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers";
-			RestTemplate restTemplate = new RestTemplate();
-			R r = restTemplate.postForObject(url, shipmentDt, R.class);
-			List<LinkedHashMap> coordinateOfList = (List<LinkedHashMap>) r.get("data");
+			//Get coordinate from catos test
+			List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(preorderPickupConts.get(0).getBlNo());
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 				if (shipmentDetailService.calculateMovingCont(coordinateOfList, preorderPickupConts, shipmentDetails)) {
 					return success("Bốc container chỉ định thành công.");

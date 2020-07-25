@@ -38,10 +38,10 @@ public class ApiShipmentDetailController {
 		return R.ok().put("data", ship);
 	}
 	
-	@PostMapping("/shipmentDetail/getCoordinateOfContainers")
-	public R getCoordinateOfContainers(@RequestBody ShipmentDetailEntity shipmentDetail) {
-		List<ShipmentDetailEntity> list = shipmentDetailDao.selectCoordinateOfContainers(shipmentDetail);
-		return R.ok().put("data", list);
+	@GetMapping("/shipmentDetail/getCoordinateOfContainers/{blNo}")
+	public List<ShipmentDetailEntity> getCoordinateOfContainers(@PathVariable String blNo) {
+		List<ShipmentDetailEntity> list = shipmentDetailDao.selectCoordinateOfContainers(blNo);
+		return list;
 	}
 	
 	@PostMapping("/shipmentDetail/getPODList")

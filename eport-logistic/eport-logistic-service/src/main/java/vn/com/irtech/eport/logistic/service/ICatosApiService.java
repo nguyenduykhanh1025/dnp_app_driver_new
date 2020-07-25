@@ -29,4 +29,6 @@ public interface ICatosApiService {
 	public int getCountContByBlNo(String blNo);
 	
 	public Boolean checkCustomStatus(String containerNo, String voyNo);
+	
+	public List<ShipmentDetail> getCoordinateOfContainers(String blNo);
 }
