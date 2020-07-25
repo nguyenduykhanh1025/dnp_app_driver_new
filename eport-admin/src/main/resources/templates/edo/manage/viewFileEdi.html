@@ -10,7 +10,6 @@
     <th:block th:include="include :: handsontable-css" />
     <script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
     <link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet" />
-    <link th:href="@{/eport/js/edo/manage/uploadFile.css}" rel="stylesheet" />
 </head>
 
 <body class="gray-bg">
@@ -23,7 +22,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div id="bannarzone" class="dropzone" style="min-height: 120px"></div>
-                                    <!-- <button id="submitFile" type="submit" class="btn btn-primary">Gửi file </button> -->
+                                    <button id="export-file" class="intext-btn">Download CSV</button>
                                     <div id="viewEdi" style="margin-bottom: 20px;"></div>
                                 </div>
                             </div>
