@@ -518,7 +518,7 @@ function configHandson() {
           return "Ghi Chú";
       }
     },
-    colWidths: [50, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100, 100, 100, 110, 200],
+    colWidths: [50, 100, 100, 100, 150, 100, 100, 200, 100, 100, 100, 100, 100, 110, 200],
     filter: "true",
     columns: [
       {
@@ -665,7 +665,7 @@ function configHandson() {
                 if (shipmentDetail != null) {
                   hot.setDataAtCell(change[0], 4, shipmentDetail.consignee); //consignee
                   hot.setDataAtCell(change[0], 6, shipmentDetail.opeCode); //opeCode
-                  hot.setDataAtCell(change[0], 7, shipmentDetail.vslNm); //vslNm
+                  hot.setDataAtCell(change[0], 7, shipmentDetail.vslNm + ": " + shipmentDetail.vslName); //vslNm
                   hot.setDataAtCell(change[0], 8, shipmentDetail.voyNo); //voyNo
                   hot.setDataAtCell(change[0], 9, shipmentDetail.sztp); //sztp
                   hot.setDataAtCell(change[0], 10, shipmentDetail.sealNo); //sealNo
@@ -980,7 +980,9 @@ function getDataFromTable(isValidate) {
     shipmentDetail.sealNo = object["sealNo"];
     shipmentDetail.expiredDem = expiredDem.getTime();
     shipmentDetail.wgt = object["wgt"];
-    shipmentDetail.vslNm = object["vslNm"];
+    let vessel = object["vslNm"].split(":");
+    shipmentDetail.vslNm = vessel[0];
+    shipmentDetail.vslName = vessel[1];
     shipmentDetail.voyNo = object["voyNo"];
     shipmentDetail.loadingPort = object["loadingPort"];
     shipmentDetail.dischargePort = object["dischargePort"];
