@@ -126,7 +126,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		{
 			ids = edo.getId().toString();
 		}
-		// try {
+		try {
 			EdoAuditLog edoAuditLog = new EdoAuditLog();
 			Date timeNow = new Date();
 			edoAuditLog.setCarrierId(super.getUser().getGroupId());
@@ -142,9 +142,9 @@ public class CarrierEdoController extends CarrierBaseController {
 				edoAuditLogService.updateAuditLog(edo);	
 			}
 		return AjaxResult.success("Update thành công");
-		// }catch(Exception e) {
-		// 	return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
-		// } 
+		}catch(Exception e) {
+			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
+		} 
 		
 	}
 	@PostMapping("/readEdiOnly")
@@ -216,7 +216,6 @@ public class CarrierEdoController extends CarrierBaseController {
 		  if (edo == null) {
 			edo = new Edo();
 		  }
-		edo.setCarrierCode(super.getUserGroup().getGroupCode());
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}

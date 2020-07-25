@@ -39,7 +39,6 @@ var myAvatarzone = new Dropzone("#bannarzone", {
                     if (data != "") {
                         if (dataObj == null) {
                             dataObj = data;
-                            console.log(data);
                             dataObj.forEach(element => {
                                 element["file"] = file.upload.uuid;
                             });
@@ -57,6 +56,7 @@ var myAvatarzone = new Dropzone("#bannarzone", {
                         return;
                     }
                     loadView();
+
                 });
             };
             reader.onabort = () => console.log('file reading was aborted');
@@ -73,7 +73,6 @@ var myAvatarzone = new Dropzone("#bannarzone", {
         });
         this.on('sending',function(data){
             countFile += 1;
-            console.log("countFile" + countFile);
         })
         this.on("success", function(data) {
             temp += 1;
@@ -134,6 +133,11 @@ function loadView() {
                 editor: false
             },
             {
+                data: 'carrierCode',
+                type: 'text',
+                editor: false
+            },
+            {
                 data: 'orderNumber',
                 type: 'text',
                 editor: false
@@ -153,7 +157,11 @@ function loadView() {
                 type: 'text',
                 editor: false
             },
-           
+            {
+                data: 'unloadingPort',
+                type: 'text',
+                editor: false
+            },
             {
                 data: 'consignee',
                 type: 'text',
@@ -161,6 +169,12 @@ function loadView() {
             },
             {
                 data: 'expiredDem',
+                type: 'date',
+                dateFormat: 'MM/DD/YYYY',
+                editor: false
+            },
+            {
+                data: 'fileCreateTime',
                 type: 'date',
                 dateFormat: 'MM/DD/YYYY',
                 editor: false
@@ -182,29 +196,43 @@ function loadView() {
             'Sztp',
             'Số Bill',
             'Chủ khai thác',
+            'OPR Code',
             'Order Number',
             'Tên tàu',
             'Mã tàu',
             'Số chuyến',
+            'Cảng dỡ hàng',
             'Người nhận hàng',
             'Ngày hết hạn lưu cont',
+            'Ngày tạo file',
             'Nơi hạ rỗng',
             'Số ngày miễn lưu vỏ'
         ],
 
     });
     statusTable = true;
+  
 }
 
-$("#submitFile").click( function (e) {
-    $.modal.alertWarning("Chức năng này chưa mở trên hệ thống ! ");
-        return;
-    // if(checkFileInDropZone == 0)
-    // {
-    //     $.modal.alertWarning("Bạn chưa nhập file nào lên hệ thống! ");
-    //     return;
-    // }
-    e.preventDefault();
-    myAvatarzone.processQueue();
-    //$.modal.loading("Đang xử lý");
+
+
+
+$('#export-file').click(function() {
+    console.log(hot);
+    const exportPlugin = hot.getPlugin('exportFile');
+    console.log("TCL: exportPlugin", exportPlugin)
+    exportPlugin1.downloadFile('csv', {
+    bom: false,
+    columnDelimiter: ',',
+    columnHeaders: false,
+    exportHiddenColumns: true,
+    exportHiddenRows: true,
+    fileExtension: 'csv',
+    filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
+    mimeType: 'text/csv',
+    rowDelimiter: '\r\n',
+    rowHeaders: true
+    });
+    
 });
+
