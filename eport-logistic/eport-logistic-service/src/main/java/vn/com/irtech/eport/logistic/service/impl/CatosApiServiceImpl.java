@@ -123,6 +123,21 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return false;
 		}
 	}
+
+	@Override
+	public List<ShipmentDetail> getCoordinateOfContainers(String blNo) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers/" + blNo;
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
+			List<ShipmentDetail> coordinates = response.getBody();
+			return coordinates;
+		}catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+	
 	
 
 }

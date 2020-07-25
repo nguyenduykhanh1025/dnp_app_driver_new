@@ -183,17 +183,17 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public List<ShipmentDetail[][]> getContPosition(List<LinkedHashMap> coordinateOfList,
+    public List<ShipmentDetail[][]> getContPosition(List<ShipmentDetail> coordinateOfList,
             List<ShipmentDetail> shipmentDetails) {
         // simulating the location of container in da nang port, mapping to matrix
         List<ShipmentDetail[][]> bayList = new ArrayList<>();
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             for (int i = 0; i < coordinateOfList.size(); i++) {
-                if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).get("containerNo"))) {
-                    shipmentDetail.setBlock(coordinateOfList.get(i).get("block").toString());
-                    shipmentDetail.setBay(coordinateOfList.get(i).get("bay").toString());
-                    shipmentDetail.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
-                    shipmentDetail.setTier(Integer.parseInt(coordinateOfList.get(i).get("tier").toString()));
+                if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).getContainerNo())) {
+                    shipmentDetail.setBlock(coordinateOfList.get(i).getBlock());
+                    shipmentDetail.setBay(coordinateOfList.get(i).getBay());
+                    shipmentDetail.setRow(coordinateOfList.get(i).getRow());
+                    shipmentDetail.setTier(coordinateOfList.get(i).getTier());
                     coordinateOfList.remove(i);
                     i--;
                 }
@@ -202,10 +202,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
         for (int i = 0; i < coordinateOfList.size(); i++) {
             ShipmentDetail shipmentDetail2 = new ShipmentDetail();
-            shipmentDetail2.setBlock(coordinateOfList.get(i).get("block").toString());
-            shipmentDetail2.setBay(coordinateOfList.get(i).get("bay").toString());
-            shipmentDetail2.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
-            shipmentDetail2.setTier(Integer.parseInt(coordinateOfList.get(i).get("tier").toString()));
+            shipmentDetail2.setBlock(coordinateOfList.get(i).getBlock());
+            shipmentDetail2.setBay(coordinateOfList.get(i).getBay());
+            shipmentDetail2.setRow(coordinateOfList.get(i).getRow());
+            shipmentDetail2.setTier(coordinateOfList.get(i).getTier());
             shipmentDetails.add(shipmentDetail2);
         }
 
@@ -230,16 +230,16 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     @Transactional
-    public boolean calculateMovingCont(List<LinkedHashMap> coordinateOfList, List<ShipmentDetail> preorderPickupConts,
+    public boolean calculateMovingCont(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> preorderPickupConts,
             List<ShipmentDetail> shipmentDetails) {
         try {
             List<ShipmentDetail[][]> bayList = new ArrayList<>();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 for (int i = 0; i < coordinateOfList.size(); i++) {
-                    if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).get("containerNo"))) {
-                        shipmentDetail.setBay(coordinateOfList.get(i).get("bay").toString());
-                        shipmentDetail.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
-                        shipmentDetail.setTier(Integer.parseInt(coordinateOfList.get(i).get("tier").toString()));
+                    if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).getContainerNo())) {
+                        shipmentDetail.setBay(coordinateOfList.get(i).getBay());
+                        shipmentDetail.setRow(coordinateOfList.get(i).getRow());
+                        shipmentDetail.setTier(coordinateOfList.get(i).getTier());
                         coordinateOfList.remove(i);
                         i--;
                     }
@@ -248,9 +248,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
             for (int i = 0; i < coordinateOfList.size(); i++) {
                 ShipmentDetail shipmentDetail2 = new ShipmentDetail();
-                shipmentDetail2.setBay(coordinateOfList.get(i).get("bay").toString());
-                shipmentDetail2.setRow(Integer.parseInt(coordinateOfList.get(i).get("row").toString()));
-                shipmentDetail2.setTier(Integer.parseInt(coordinateOfList.get(i).get("tier").toString()));
+                shipmentDetail2.setBay(coordinateOfList.get(i).getBay());
+                shipmentDetail2.setRow(coordinateOfList.get(i).getRow());
+                shipmentDetail2.setTier(coordinateOfList.get(i).getTier());
                 shipmentDetails.add(shipmentDetail2);
             }
 
