@@ -157,5 +157,15 @@ public class EportTask {
         return;
 
     }
+
+    /**
+     * check robot connection
+     * 
+     * @param expiredTime
+     */
+    public void pingRobot(Integer expiredTime) {
+
+        System.out.println(expiredTime);
+    }
    
 }
