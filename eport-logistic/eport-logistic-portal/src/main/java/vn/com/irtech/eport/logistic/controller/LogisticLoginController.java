@@ -99,5 +99,6 @@ public class LogisticLoginController extends LogisticBaseController {
 	@GetMapping("/tutorial")
     public String tutorial() {
       return "tutorial";
-    }
+	}
+	
 }
