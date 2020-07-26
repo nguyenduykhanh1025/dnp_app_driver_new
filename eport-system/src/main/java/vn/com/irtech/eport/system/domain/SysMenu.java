@@ -6,6 +6,7 @@ import javax.validation.constraints.*;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
+import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
  * 菜单权限表 sys_menu
@@ -118,6 +119,10 @@ public class SysMenu extends BaseEntity
 
     public String getTarget()
     {
+        if (StringUtils.isEmpty(target))
+        {
+            return StringUtils.EMPTY;
+        }
         return target;
     }
 
@@ -150,6 +155,10 @@ public class SysMenu extends BaseEntity
     @Size(min = 0, max = 100, message = "权限标识长度不能超过100 ký tự")
     public String getPerms()
     {
+        if (StringUtils.isEmpty(perms))
+        {
+            return StringUtils.EMPTY;
+        }
         return perms;
     }
 

@@ -92,7 +92,5 @@ public interface PickupHistoryMapper
 
     public List<Pickup> selectPickupListByDriverId(Long driverId);
 
-    public List<String> checkPossiblePickup(@Param("driverId") Long driverId, @Param("serviceType") Integer serviceType);
-
     public PickupHistoryDetail selectPickupHistoryDetailById(@Param("driverId") Long driverId, @Param("pickupId") Long pickupId);
 }
