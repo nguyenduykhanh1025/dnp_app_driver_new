@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler({ HttpRequestMethodNotSupportedException.class })
 	public ModelAndView handleException(HttpRequestMethodNotSupportedException e) {
-		log.error(e.getMessage(), e);
+		log.warn(e.getMessage(), e);
 		AjaxResult ajaxResult = AjaxResult.error(MessageHelper.getMessage(MessageConsts.E0001));
 		ajaxResult.put("errorCode", HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 		return processException(ajaxResult);
@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(RuntimeException.class)
 	public ModelAndView notFount(RuntimeException e) {
-		log.error("Runtime Exception:", e);
+		log.warn("Runtime Exception:", e);
 		AjaxResult ajaxResult = AjaxResult.error(MessageHelper.getMessage(MessageConsts.E0001));
 		ajaxResult.put("errorCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		return processException(ajaxResult);
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(Exception.class)
 	public ModelAndView handleException(Exception e) {
-		log.error(e.getMessage(), e);
+		log.warn(e.getMessage(), e);
 		AjaxResult ajaxResult = AjaxResult.error(MessageHelper.getMessage(MessageConsts.E0001));
 		ajaxResult.put("errorCode", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		return processException(ajaxResult);
@@ -80,7 +80,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(BusinessException.class)
 	public ModelAndView businessException(HttpServletRequest request, BusinessException e) {
-		log.error(e.getMessage(), e);
+		log.warn(e.getMessage(), e);
 		AjaxResult ajaxResult = AjaxResult.error(e.getMessage());
 		ajaxResult.put("errorCode", HttpServletResponse.SC_BAD_REQUEST);
 
@@ -92,7 +92,7 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(BindException.class)
 	public ModelAndView validatedBindException(BindException e) {
-		log.error(e.getMessage(), e);
+		log.warn(e.getMessage(), e);
 		String message = e.getAllErrors().get(0).getDefaultMessage();
 		AjaxResult ajaxResult = AjaxResult.error(message);
 		ajaxResult.put("errorCode", HttpServletResponse.SC_PRECONDITION_FAILED);
@@ -118,9 +118,7 @@ public class GlobalExceptionHandler {
 	private ModelAndView processException(AjaxResult ajaxResult) {
 		ModelAndView view = new ModelAndView(new MappingJackson2JsonView());
 		for (Map.Entry<String, Object> entry : ajaxResult.entrySet()) {
-			if (!entry.getKey().equalsIgnoreCase("code")) {
-				view.addObject(entry.getKey(), entry.getValue());
-			}
+			view.addObject(entry.getKey(), entry.getValue());
 		}
 		return view;
 	}

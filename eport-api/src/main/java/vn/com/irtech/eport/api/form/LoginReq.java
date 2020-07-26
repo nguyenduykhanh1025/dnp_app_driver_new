@@ -1,8 +1,12 @@
 package vn.com.irtech.eport.api.form;
 
+import java.io.Serializable;
+
 import javax.validation.constraints.NotBlank;
 
-public class LoginForm {
+public class LoginReq implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
 	private String userName;
 
