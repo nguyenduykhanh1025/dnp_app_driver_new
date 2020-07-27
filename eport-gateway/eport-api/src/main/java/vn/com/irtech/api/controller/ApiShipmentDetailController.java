@@ -23,19 +23,19 @@ public class ApiShipmentDetailController {
 	@Autowired
 	private ShipmentDetailDao shipmentDetailDao;
 	
-	@PostMapping("/shipmentDetail/list")
-	public R listShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetail) {
-		List<ShipmentDetailEntity> list = shipmentDetailDao.selectShipmentDetailsByBLNo(shipmentDetail);
-		return R.ok().put("data", list);
+	@GetMapping("/shipmentDetail/list/{blNo}")
+	public List<ShipmentDetailEntity> listShipmentDetail(@PathVariable String blNo) {
+		List<ShipmentDetailEntity> list = shipmentDetailDao.selectShipmentDetailsByBLNo(blNo);
+		return list;
 	}
 	
-	@PostMapping("/shipmentDetail/containerInfor")
-	public R getShipmentDetail(@RequestBody ShipmentDetailEntity shipmentDetail) {
-		ShipmentDetailEntity ship = shipmentDetailDao.selectShipmentDetailByContNo(shipmentDetail);
+	@GetMapping("/shipmentDetail/containerInfor/{blNo}/{containerNo}")
+	public ShipmentDetailEntity getShipmentDetail(@PathVariable String blNo, @PathVariable String containerNo) {
+		ShipmentDetailEntity ship = shipmentDetailDao.selectShipmentDetailByContNo(blNo, containerNo);
 		if(ship == null) {
-			return R.ok().put("data", new ShipmentDetailEntity());
+			return new ShipmentDetailEntity();
 		}
-		return R.ok().put("data", ship);
+		return ship;
 	}
 	
 	@GetMapping("/shipmentDetail/getCoordinateOfContainers/{blNo}")

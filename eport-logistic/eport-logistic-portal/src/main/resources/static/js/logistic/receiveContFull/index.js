@@ -513,7 +513,7 @@ function configHandson() {
         case 12:
           return "Cảng Xếp Hàng";
         case 13:
-          return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+          return "Cảng Dỡ Hàng";
         case 14:
           return "Ghi Chú";
       }
@@ -665,7 +665,7 @@ function configHandson() {
                 if (shipmentDetail != null) {
                   hot.setDataAtCell(change[0], 4, shipmentDetail.consignee); //consignee
                   hot.setDataAtCell(change[0], 6, shipmentDetail.opeCode); //opeCode
-                  hot.setDataAtCell(change[0], 7, shipmentDetail.vslNm + ": " + shipmentDetail.vslName); //vslNm
+                  hot.setDataAtCell(change[0], 7, shipmentDetail.vslNm); //vslNm
                   hot.setDataAtCell(change[0], 8, shipmentDetail.voyNo); //voyNo
                   hot.setDataAtCell(change[0], 9, shipmentDetail.sztp); //sztp
                   hot.setDataAtCell(change[0], 10, shipmentDetail.sealNo); //sealNo
@@ -946,10 +946,6 @@ function getDataFromTable(isValidate) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn nơi hạ vỏ!");
         errorFlg = true;
         return false;
-      } else if (!object["dischargePort"]) {
-        $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Cảng dở hàng!");
-        errorFlg = true;
-        return false;
       } else if (consignee != object["consignee"]) {
         $.modal.alertError("Tên chủ hàng không được khác nhau!");
         errorFlg = true;
@@ -974,7 +970,7 @@ function getDataFromTable(isValidate) {
     shipmentDetail.blNo = shipmentSelected.blNo;
     shipmentDetail.containerNo = object["containerNo"];
     contList.push(object["containerNo"]);
-    shipmentDetail.opeCode = object["opeCode"];
+    shipmentDetail.opeCode = object["opeCode"].split(":")[0];
     shipmentDetail.sztp = object["sztp"].split(":")[0];
     shipmentDetail.consignee = object["consignee"];
     shipmentDetail.sealNo = object["sealNo"];
