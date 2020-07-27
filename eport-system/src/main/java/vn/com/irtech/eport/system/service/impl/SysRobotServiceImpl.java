@@ -161,4 +161,14 @@ public class SysRobotServiceImpl implements ISysRobotService {
 	public SysRobot findFirstRobot(SysRobot robot) {
 		return sysRobotMapper.findFirstRobot(robot);
 	}
+
+	/**
+     * Select robot list online (include available and busy)
+     * 
+     * @param robot
+     * @return list robot
+     */
+    public List<SysRobot> selectRobotListOnline(SysRobot robot) {
+		return sysRobotMapper.selectRobotListOnline(robot);
+	}
 }

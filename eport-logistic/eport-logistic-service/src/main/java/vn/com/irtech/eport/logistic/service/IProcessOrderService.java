@@ -93,4 +93,19 @@ public interface IProcessOrderService
      */
     public Long getShipmentIdByProcessOrderId(Long id);
     
+    /**
+     * Get process order by robot uuid
+     * 
+     * @param uuid
+     * @return Process Order
+     */
+    public ProcessOrder getProcessOrderByUuid(String uuid);
+
+    /**
+     * Find process order for robot
+     * 
+     * @param serviceTypes
+     * @return Process Order
+     */
+    public ProcessOrder findProcessOrderForRobot(String serviceTypes);
 }
