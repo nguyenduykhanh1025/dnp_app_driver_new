@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="vn.com.irtech.api.dao.ShipmentDetailDao">
-    <select id="selectShipmentDetailsByBLNo" parameterType="ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
+    <select id="selectShipmentDetailsByBLNo" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
         SELECT            
                 M.CNTR_NO AS containerNo,
                 M.SZTP2 AS sztp,
                 M.FE AS fe,
-                M.PTNR_CODE AS opeCode,
+                M.PTNR_CODE ||': ' || (SELECT ENG_SNM FROM TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS opeCode,
                 (SELECT VSL_NM FROM TB_VSL WHERE VSL_CD = M.VSL_CD) AS vslName,
-                M.VSL_CD AS vslNm,
+                M.VSL_CD ||': '|| (SELECT VSL_NM FROM TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslNm,
                 M.BOOKING_NO AS bookingNo,
                 M.BL_NO AS blNo,
                 M.SEAL_NO1 AS sealNo,
@@ -46,14 +46,14 @@
         ORDER BY M.CNTR_NO ASC
     </select>
     
-    <select id="selectShipmentDetailByContNo" parameterType="ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
+    <select id="selectShipmentDetailByContNo"  resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
         SELECT            
                 M.CNTR_NO AS containerNo,
                 M.SZTP2 AS sztp,
                 M.FE AS fe,
-                M.PTNR_CODE AS opeCode,
+                M.PTNR_CODE ||': ' || (SELECT ENG_SNM FROM TB_PTNR WHERE PTNR_CODE = M.PTNR_CODE AND PTNR_TYPE = 'SHP') AS opeCode,
                 (SELECT VSL_NM FROM TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslName,
-                M.VSL_CD AS vslNm,
+                M.VSL_CD ||': '|| (SELECT VSL_NM FROM TB_VSL V WHERE V.VSL_CD = M.VSL_CD) AS vslNm,
                 M.BOOKING_NO AS bookingNo,
                 M.BL_NO AS blNo,
                 M.SEAL_NO1 AS sealNo,
@@ -90,7 +90,7 @@
                     ELSE M.CNTR_STATE
                 END AS containerStatus
             FROM TB_INVENTORY M
-		WHERE CNTR_NO = #{containerNo}
+		WHERE BL_NO = #{blNo} AND CNTR_NO = #{containerNo}
 				AND OPR_EXPIRE_DATE IS NULL
 				AND JOB_ODR_NO2 IS NULL
 				AND IX_CD = 'I'

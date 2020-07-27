@@ -683,8 +683,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 ship.setConsignee(i.getConsignee());
                 ship.setEmptyDepot(i.getEmptyContainerDepot());
                 ship.setOpeCode(i.getCarrierCode());
-                ship.setVslNm(i.getVesselNo());
+                ship.setVslNm(i.getVesselNo()+": "+i.getVessel());
+                ship.setVslName(i.getVessel());
                 ship.setVoyNo(i.getVoyNo());
+                ship.setSztp(i.getSztp());
                 listShip.add(ship);
             }
             return listShip;
