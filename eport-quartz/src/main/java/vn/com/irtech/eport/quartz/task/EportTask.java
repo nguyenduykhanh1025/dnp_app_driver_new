@@ -159,7 +159,8 @@ public class EportTask {
     }
 
     /**
-     * check robot connection
+     * check robot connection 
+     * expiredTime (minute)
      * 
      * @param expiredTime
      */

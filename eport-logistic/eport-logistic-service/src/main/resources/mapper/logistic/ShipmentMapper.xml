@@ -159,12 +159,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectShipmentListForOm" parameterType="Shipment" resultMap="ShipmentResult">
-        select s.*, l.group_name as logistic_name, sh.vsl_nm as vsl_nm, sh.voy_no as voy_no
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, tax_code, status, create_time,
+        (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logistic_name,
+        (select sh.vsl_nm from shipment_detail sh where sh.shipment_id = s.id FETCH NEXT 1 ROWS ONLY) as vsl_nm,
+        (select sh.voy_no from shipment_detail sh where sh.shipment_id = s.id FETCH NEXT 1 ROWS ONLY) as voy_no
+        <!-- l.group_name as logistic_name, sh.vsl_nm as vsl_nm, sh.voy_no as voy_no -->
         from shipment s
-        left join logistic_group l on s.logistic_group_id = l.id
-        left join shipment_detail sh on s.id = sh.shipment_id
+        <!-- left join logistic_group l on s.logistic_group_id = l.id
+        left join shipment_detail sh on s.id = sh.shipment_id -->
         <where>
-            sh.shipment_id is not null
             <if test="id != null "> and s.id = #{id}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="fromDate != null">and s.create_time &gt;= #{fromDate}</if>
@@ -175,7 +178,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="voyNo != null and voyNo != ''"> or upper(sh.voy_no) like concat(concat('%', #{voyNo}), '%')</if>
             <if test="taxCode != null and taxCode != ''"> or upper(s.tax_code) like concat(concat('%', #{taxCode}), '%'))</if>
         </where>
-        GROUP BY sh.shipment_id
+        GROUP BY id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, tax_code, status, create_time
     </select>
     <select id="getShipmentListForAssign" parameterType="Shipment" resultMap="ShipmentResult">
         select  id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, create_by, create_time, update_by, update_time,
