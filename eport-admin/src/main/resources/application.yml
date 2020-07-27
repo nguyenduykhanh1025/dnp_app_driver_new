@@ -5,6 +5,7 @@ eport:
   demoEnabled: true
   profile: D:/eport/upload
   addressEnabled: true
+  cacheExpireTime: 3600
 
 server:
   port: 7071

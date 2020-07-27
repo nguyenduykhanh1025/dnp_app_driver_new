@@ -7,6 +7,7 @@ eport:
   addressEnabled: true
   apiUrl: http://192.168.1.99:9090/api
   # apiUrl: http://127.0.0.1:9090/api
+  cacheExpireTime: 3600
 server:
   port: 7070
   servlet:
@@ -87,7 +88,7 @@ xss:
 mqtt:
   username: admin             
   password: public            
-  host-url: tcp://192.168.1.99:1883                # The address and port of your own server need to be changed 
+  host-url: tcp://192.168.1.99:1883                # The address and port of your own server need to be changed
 
 websocket:
    endpoint: /eport_logistic
