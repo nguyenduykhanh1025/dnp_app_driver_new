@@ -56,7 +56,7 @@ function loadListRobot() {
       },
       {
         field: "isSendContFullOrder",
-        title: "Gửi container có hàng",
+        title: "Giao container có hàng",
         align: "center",
         formatter: function (value, row, index) {
           return isSendContFullOrderFormater(value, row, index);
@@ -64,10 +64,18 @@ function loadListRobot() {
       },
       {
         field: "isSendContEmptyOrder",
-        title: "Gửi container rỗng",
+        title: "Giao container rỗng",
         align: "center",
         formatter: function (value, row, index) {
           return isSendContEmptyOrderFormater(value, row, index);
+        },
+      },
+      {
+        field: "isShiftingContOrder",
+        title: "Dịch chuyển container",
+        align: "center",
+        formatter: function (value, row, index) {
+          return isShiftingContOrderFormater(value, row, index);
         },
       },
       {
@@ -142,6 +150,15 @@ function isSendContFullOrderFormater(value, row, index) {
 /* formatter for SendContEmptyOrder column */
 function isSendContEmptyOrderFormater(value, row, index) {
   if (row.isSendContEmptyOrder == true) {
+    return '<span class="badge badge-primary">Yes</span>';
+  } else {
+    return '<span class="badge badge-danger">No</span>';
+  }
+}
+
+/* formatter for shiftingContOrder column */
+function isShiftingContOrderFormater(value, row, index) {
+  if (row.isShiftingContOrder == true) {
     return '<span class="badge badge-primary">Yes</span>';
   } else {
     return '<span class="badge badge-danger">No</span>';

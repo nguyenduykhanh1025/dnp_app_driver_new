@@ -39,10 +39,13 @@
             <label><input type="checkbox" name="isReceiveContEmptyOrder"  th:checked="${robot.isReceiveContEmptyOrder}">Nhận container rỗng</label>
           </div>
           <div class="checkbox">
-            <label><input type="checkbox" name="isSendContFullOrder"  th:checked="${robot.isSendContFullOrder}">Gửi container có hàng</label>
+            <label><input type="checkbox" name="isSendContFullOrder"  th:checked="${robot.isSendContFullOrder}">Giao container có hàng</label>
           </div>
           <div class="checkbox">
-            <label><input type="checkbox" name="isSendContEmptyOrder"  th:checked="${robot.isSendContEmptyOrder}">Gửi container rỗng</label>
+            <label><input type="checkbox" name="isSendContEmptyOrder"  th:checked="${robot.isSendContEmptyOrder}">Giao container rỗng</label>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" name="isShiftingContOrder"  th:checked="${robot.isShiftingContOrder}">Dịch chuyển container</label>
           </div>
           <div class="checkbox">
             <label><input type="checkbox" name="isGateInOrder"  th:checked="${robot.isGateInOrder}">Gate in</label>

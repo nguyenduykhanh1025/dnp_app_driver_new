@@ -1,5 +1,7 @@
 package vn.com.irtech.eport.system.domain;
 
+import java.util.Date;
+
 import javax.validation.constraints.NotBlank;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -46,6 +48,12 @@ public class SysRobot extends BaseEntity {
 	/** ip address */
 	@Excel(name = "ip address")
 	private String ipAddress;
+
+	@Excel(name = "Is Shifting Cont Order")
+	private Boolean isShiftingContOrder;
+
+	@Excel(name = "Response Time")
+	private Date responseTime;
 
 	public Long getId() {
 		return id;
@@ -111,14 +119,28 @@ public class SysRobot extends BaseEntity {
 		this.isSendContFullOrder = isSendContFullOrder;
 	}
 	
-	
-
 	public Boolean getIsGateInOrder() {
 		return isGateInOrder;
 	}
 
 	public void setIsGateInOrder(Boolean isGateInOrder) {
 		this.isGateInOrder = isGateInOrder;
+	}
+
+	public Boolean getIsShiftingContOrder() {
+		return this.isShiftingContOrder;
+	}
+
+	public void setIsShiftingContOrder(Boolean isShiftingContOrder) {
+		this.isShiftingContOrder = isShiftingContOrder;
+	}
+
+	public Date getResponseTime() {
+		return this.responseTime;
+	}
+
+	public void setResponseTime(Date responseTime) {
+		this.responseTime = responseTime;
 	}
 
 	@Override
@@ -133,6 +155,7 @@ public class SysRobot extends BaseEntity {
 				.append("ipAddress", getIpAddress())
 				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
 				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("remark", getRemark())
+				.append("isShiftingContOrder", getIsShiftingContOrder()).append("responseTime", getResponseTime())
 				.toString();
 	}
 }

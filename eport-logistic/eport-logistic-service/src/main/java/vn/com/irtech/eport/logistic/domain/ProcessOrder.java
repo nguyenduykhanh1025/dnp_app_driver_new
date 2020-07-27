@@ -103,6 +103,10 @@ public class ProcessOrder extends BaseEntity
     @Excel(name = "Detail Data (Json)")
     private String data;
 
+    /** Robot UUID */
+    @Excel(name = "Robot UUID")
+    private String robotUuid;
+
     private ShipmentDetail shipmentDetail;
 
     public void setId(Long id) 
@@ -306,6 +310,14 @@ public class ProcessOrder extends BaseEntity
         return data;
     }
 
+    public String getRobotUuid() {
+        return this.robotUuid;
+    }
+
+    public void setRobotUuid(String robotUuid) {
+        this.robotUuid = robotUuid;
+    }
+
     public void setShipmentDetail(ShipmentDetail shipmentDetail) {
         this.shipmentDetail = shipmentDetail;
     }
@@ -343,6 +355,7 @@ public class ProcessOrder extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("robotUuid", getRobotUuid())
             .append("shipmentDetail", getShipmentDetail())
             .toString();
     }
