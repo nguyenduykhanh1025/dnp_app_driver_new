@@ -39,6 +39,11 @@
 				<groupId>vn.com.irtech.eport</groupId>
 				<artifactId>eport-carrier-service</artifactId>
 		</dependency>
+        <!-- Logistics service -->
+        <dependency>
+				<groupId>vn.com.irtech.eport</groupId>
+				<artifactId>eport-logistic-service</artifactId>
+		</dependency>
         <!-- Framework -->
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>

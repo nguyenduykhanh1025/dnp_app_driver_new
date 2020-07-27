@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +17,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.framework.web.service.ConfigService;
+import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
+import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
+import vn.com.irtech.eport.framework.web.service.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -51,6 +55,12 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	
 	@Autowired
 	private IProcessHistoryService processHistoryService;
+
+	@Autowired
+	private MqttService mqttService;
+
+	@Autowired
+	private ConfigService configService;
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -82,18 +92,19 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		String result = map.get("result") == null ? null : map.get("result").toString();
 		String receiptId = map.get("receiptId") == null ? null : map.get("receiptId").toString();
 		String invoiceNo = map.get("invoiceNo") == null ? "" : map.get("invoiceNo").toString(); 
-		
-		robotService.updateRobotStatusByUuId(uuId, status);
 
 		if (receiptId != null) {
 			if ("0".equals(status)) {
 				this.updateShipmentDetail(result, receiptId, invoiceNo, uuId);
 				this.sendMessageWebsocket(result, receiptId);
+				status = this.assignNewProcessOrder(sysRobot);
 			} else if ("1".equals(status)) {
 				// SAVE HISTORY ROBOT START MAKE-ORDER
 				this.updateHistory(receiptId, uuId);
 			}
 		}
+
+		robotService.updateRobotStatusByUuId(uuId, status);
 	}
 	
 	/**
@@ -151,6 +162,13 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
 			processOrderService.updateProcessOrder(processOrder);
 
+			// Send notification for om
+			try {
+				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh", configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
+
 			// SET RESULT FOR HISTORY FAILED
 			processHistory.setResult("F");
 		}
@@ -180,4 +198,60 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		webSocketService.sendMessage("/" + receiptId + "/response", ajaxResult);
 	}
 
+	public String assignNewProcessOrder(SysRobot robot) throws MqttException {
+		// Get service types of robot
+		String serviceTypes = "";
+
+		if (robot.getIsReceiveContFullOrder()) {
+			serviceTypes += 1 + ",";
+		}
+		if (robot.getIsReceiveContEmptyOrder()) {
+			serviceTypes += 3 + ",";
+		}
+		if (robot.getIsSendContFullOrder()) {
+			serviceTypes += 4 + ",";
+		}
+		if (robot.getIsSendContEmptyOrder()) {
+			serviceTypes += 2 + ",";
+		}
+		if (robot.getIsShiftingContOrder()) {
+			serviceTypes += 5 + ",";
+		}
+
+		if (serviceTypes.length() > 0) {
+			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);
+		}
+
+		// Find process order for robot
+		ProcessOrder reqProcessOrder = processOrderService.findProcessOrderForRobot(serviceTypes);
+		if (reqProcessOrder != null) {
+			if (processOrderService.updateProcessOrder(reqProcessOrder) == 1) {
+				ShipmentDetail shipmentDetail = new ShipmentDetail();
+				shipmentDetail.setProcessOrderId(reqProcessOrder.getId());
+				List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+				ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(reqProcessOrder, shipmentDetails);
+
+				// Send order to robot
+				switch (reqProcessOrder.getServiceType()) {
+					case 1:
+						mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_FULL, robot.getUuId());
+						break;
+					case 2:
+						mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_EMPTY, robot.getUuId());
+						break;
+					case 3:
+						mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_EMPTY, robot.getUuId());
+						break;
+					case 4:
+						mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_FULL, robot.getUuId());
+						break;
+					case 5:
+						mqttService.publicMessageToDemandRobot(req, EServiceRobot.SHIFTING_CONT, robot.getUuId());
+						break;
+				}
+				return "1";
+			} 
+		}
+		return "0";
+	}
 }

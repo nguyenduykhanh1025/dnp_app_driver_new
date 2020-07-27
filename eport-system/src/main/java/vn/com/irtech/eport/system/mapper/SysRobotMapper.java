@@ -110,4 +110,12 @@ public interface SysRobotMapper
 	 * @return robot
 	 */
     public SysRobot findFirstRobot(SysRobot robot);
+
+    /**
+     * Select robot list online (include available and busy)
+     * 
+     * @param robot
+     * @return list robot
+     */
+    public List<SysRobot> selectRobotListOnline(SysRobot robot);
 }

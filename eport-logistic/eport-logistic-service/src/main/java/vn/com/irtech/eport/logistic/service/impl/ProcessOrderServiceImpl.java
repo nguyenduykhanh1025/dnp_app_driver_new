@@ -144,4 +144,24 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
     public Long getShipmentIdByProcessOrderId(Long id) {
         return processOrderMapper.getShipmentIdByProcessOrderId(id);
     }
+
+    /**
+     * Get process order by robot uuid
+     * 
+     * @param uuid
+     * @return Process Order
+     */
+    public ProcessOrder getProcessOrderByUuid(String uuid) {
+        return processOrderMapper.getProcessOrderByUuid(uuid);
+    }
+
+    /**
+     * Find process order for robot
+     * 
+     * @param serviceTypes
+     * @return Process Order
+     */
+    public ProcessOrder findProcessOrderForRobot(String serviceTypes) {
+        return processOrderMapper.findProcessOrderForRobot(Convert.toStrArray(serviceTypes));
+    }
 }

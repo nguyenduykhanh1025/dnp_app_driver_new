@@ -10,6 +10,7 @@ function edit() {
     isReceiveContEmptyOrder: $("input[name='isReceiveContEmptyOrder']").is(':checked') == true,
     isSendContFullOrder: $("input[name='isSendContFullOrder']").is(':checked') == true,
     isSendContEmptyOrder: $("input[name='isSendContEmptyOrder']").is(':checked') == true,
+    isShiftingContOrder: $("input[name='isShiftingContOrder']").is(':checked') == true,
     isGateInOrder: $("input[name='isGateInOrder']").is(':checked') == true,
     remark: $("textarea[name='remark']").val()
   }
