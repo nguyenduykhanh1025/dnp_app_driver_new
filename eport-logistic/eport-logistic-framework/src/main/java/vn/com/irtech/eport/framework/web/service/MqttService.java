@@ -74,7 +74,7 @@ public class MqttService implements MqttCallback {
 		return instance;
 	}
 
-	private MqttService() {
+	public MqttService() {
 	}
 
 	public MqttAsyncClient getMqttClient() {

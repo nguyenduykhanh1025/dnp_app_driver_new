@@ -32,11 +32,11 @@ public class MqttService implements MqttCallback {
 
 	private static final String ROBOT_BASE = BASE + "/robot";
 
-	private static final String NOTIFICATION_OM_TOPIC = ROBOT_BASE + "/notification/om";
+	private static final String NOTIFICATION_OM_TOPIC = BASE + "/notification/om";
 
-	private static final String NOTIFICATION_IT_TOPIC = ROBOT_BASE + "/notification/it";
+	private static final String NOTIFICATION_IT_TOPIC = BASE + "/notification/it";
 
-	private static final String NOTIFICATION_CONT_TOPIC = ROBOT_BASE + "/notification/cont";
+	private static final String NOTIFICATION_CONT_TOPIC = BASE + "/notification/cont";
 
 	private static final String ROBOT_CONNECTION_REQUEST = ROBOT_BASE + "/connection/request";
 

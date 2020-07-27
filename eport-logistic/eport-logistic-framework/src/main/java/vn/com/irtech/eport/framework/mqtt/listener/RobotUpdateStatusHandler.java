@@ -139,6 +139,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 				//this.updateReceiptId(receiptId);
 				this.updateHistory(receiptId.toString(), uuId);
 			} catch (Exception ex) {
+
 			}
 		} else if ("0".equals(status)) {
 			ProcessOrder processOrder = processOrderService.getProcessOrderByUuid(uuId);
