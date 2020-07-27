@@ -56,7 +56,7 @@ bayList.forEach(function(bay) {
                 } else if (bay[row][col].status > 1 && bay[row][col].status < 4) {
                     if (bay[row][col].preorderPickup == "Y") {
                         str += '<div id="cell'+ bay[row][col].id +'" style="background-color: #72ecea;" class="cellDiv" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + true +')">'+ bay[row][col].containerNo +'</div>';
-                        let tableRow = '<tr id="row'+ bay[row][col].id +'"><td width="330px">' + bay[row][col].containerNo + '</td><td width="330px">' + bay[row][col].sztp + '</td></tr>';
+                        let tableRow = '<tr id="row'+ bay[row][col].id +'"><td width="330px">' + bay[row][col].containerNo + '</td><td width="165px">' + bay[row][col].sztp + '</td><td width="165px">' + bay[row][col].block + "-" + bay[row][col].bay + "-" + bay[row][col].row + "-" + bay[row][col].tier + '</td></tr>';
                         $("#pickedContList").append(tableRow);
                     } else {
                         str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">'+ bay[row][col].containerNo +'</div>';
@@ -90,7 +90,7 @@ function pickCont(id, row, col, index, isPicked) {
             if (bayList[index][row][col].preorderPickup == "N") {
                 bayList[index][row][col].preorderPickup = "Y";
                 $('#cell'+ id).css("background-color", "#bfe5bf");
-                let tableRow = '<tr id="row'+ id +'"><td width="330px">' + bayList[index][row][col].containerNo + '</td><td width="330px">' + bayList[index][row][col].sztp + '</td></tr>';
+                let tableRow = '<tr id="row'+ id +'"><td width="330px">' + bayList[index][row][col].containerNo + '</td><td width="165px">' + bayList[index][row][col].sztp + '</td><td width="165px">' + bayList[index][row][col].block + "-" + bayList[index][row][col].bay + "-" + bayList[index][row][col].row + "-" + bayList[index][row][col].tier +'</td></tr>';
                 $("#pickedContList").append(tableRow);
             } else {
                 bayList[index][row][col].preorderPickup = "N";
