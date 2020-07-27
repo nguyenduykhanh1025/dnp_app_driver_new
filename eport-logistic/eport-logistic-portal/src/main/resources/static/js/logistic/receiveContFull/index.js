@@ -658,6 +658,7 @@ function configHandson() {
               hot.setDataAtCell(change[0], 14, ''); //remark
 
               // Call data to auto-fill
+              $.modal.loading("Đang xử lý...");
               $.ajax({
                 url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
                 type: "GET"
@@ -674,6 +675,7 @@ function configHandson() {
                   hot.setDataAtCell(change[0], 13, shipmentDetail.dischargePort); //dischargePort
                   hot.setDataAtCell(change[0], 14, shipmentDetail.remark); //remark
                 }
+                $.modal.closeLoading();
               });
             }
           }
@@ -970,13 +972,15 @@ function getDataFromTable(isValidate) {
     shipmentDetail.blNo = shipmentSelected.blNo;
     shipmentDetail.containerNo = object["containerNo"];
     contList.push(object["containerNo"]);
-    shipmentDetail.opeCode = object["opeCode"].split(":")[0];
+    let carrier = object["opeCode"].split(": ");
+    shipmentDetail.opeCode = carrier[0];
+    shipmentDetail.carrierName = carrier[1];
     shipmentDetail.sztp = object["sztp"].split(":")[0];
     shipmentDetail.consignee = object["consignee"];
     shipmentDetail.sealNo = object["sealNo"];
     shipmentDetail.expiredDem = expiredDem.getTime();
     shipmentDetail.wgt = object["wgt"];
-    let vessel = object["vslNm"].split(":");
+    let vessel = object["vslNm"].split(": ");
     shipmentDetail.vslNm = vessel[0];
     shipmentDetail.vslName = vessel[1];
     shipmentDetail.voyNo = object["voyNo"];
