@@ -89,5 +89,7 @@ public interface ShipmentDetailMapper
     public List<ShipmentDetail> getShipmentDetailListForAssign(ShipmentDetail shipmentDetail);
 
     public List <ShipmentDetail> selectContainerStatusList(ShipmentDetail shipmentDetail);
+    
+    public List<ShipmentDetail> getShipmentDetailList(ShipmentDetail shipmentDetail);
 
 }

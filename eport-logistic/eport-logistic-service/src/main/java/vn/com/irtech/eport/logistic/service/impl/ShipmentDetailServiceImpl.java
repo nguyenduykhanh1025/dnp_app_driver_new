@@ -708,4 +708,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     public List <ShipmentDetail> selectContainerStatusList(ShipmentDetail shipmentDetail) {
         return shipmentDetailMapper.selectContainerStatusList(shipmentDetail);
     }
+
+	@Override
+	public List<ShipmentDetail> getShipmentDetailList(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.getShipmentDetailList(shipmentDetail);
+	}
+    
+    
 }

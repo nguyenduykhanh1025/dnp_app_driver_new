@@ -89,7 +89,11 @@ public class ShipmentDetail extends BaseEntity
     /** Operator Code */
     @Excel(name = "Operator Code")
     private String opeCode;
-
+    
+    /** Carrier Name */
+    @Excel(name = "Carrier name")
+    private String carrierName;
+    
     /** Cang Chuyen Tai */
     @Excel(name = "Cang Chuyen Tai")
     private String loadingPort;
@@ -323,7 +327,16 @@ public class ShipmentDetail extends BaseEntity
     public String getOpeCode() {
         return opeCode;
     }
-    public void setLoadingPort(String loadingPort) {
+    
+    public String getCarrierName() {
+		return carrierName;
+	}
+
+	public void setCarrierName(String carrierName) {
+		this.carrierName = carrierName;
+	}
+
+	public void setLoadingPort(String loadingPort) {
         this.loadingPort = loadingPort;
     }
 
@@ -544,6 +557,7 @@ public class ShipmentDetail extends BaseEntity
             .append("vslNm", getVslNm())
             .append("voyNo", getVoyNo())
             .append("opeCode", getOpeCode())
+            .append("carrierName", getCarrierName())
             .append("loadingPort", getLoadingPort())
             .append("dischargePort", getDischargePort())
             .append("transportType", getTransportType())

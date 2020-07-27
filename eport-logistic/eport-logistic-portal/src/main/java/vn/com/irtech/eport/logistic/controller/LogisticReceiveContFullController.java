@@ -258,11 +258,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-			// load vessel = vslCode(vslNm) + vslName
-			for(ShipmentDetail i : shipmentDetails) {
-				i.setVslNm(i.getVslNm() + (i.getVslName() != null? ": " + i.getVslName():""));
-			}
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
 			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) {
 				shipmentDetails = new ArrayList<>();
 				//get infor from edi
