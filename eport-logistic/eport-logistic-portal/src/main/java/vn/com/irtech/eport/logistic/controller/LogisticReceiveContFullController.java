@@ -275,6 +275,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						for(ShipmentDetail j : shipmentDetailsCatos) {
 							if(i.getContainerNo() == j.getContainerNo()) {
 								i.setOpeCode(j.getOpeCode());
+								i.setVslNm(j.getVslNm());
+								i.setVoyNo(j.getVoyNo());
 								i.setSealNo(j.getSealNo());
 								i.setWgt(j.getWgt());
 								i.setLoadingPort(j.getLoadingPort());
