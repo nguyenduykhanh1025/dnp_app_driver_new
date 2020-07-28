@@ -56,7 +56,6 @@ var myAvatarzone = new Dropzone("#bannarzone", {
                         return;
                     }
                     loadView();
-
                 });
             };
             reader.onabort = () => console.log('file reading was aborted');
@@ -109,9 +108,6 @@ function loadView() {
         width: '100%',
         height: 320,
         rowHeights: 23,
-        rowHeaders: true,
-        colHeaders: true,
-
         columns: [{
                 data: 'containerNumber',
                 type: 'text',
@@ -214,25 +210,18 @@ function loadView() {
   
 }
 
-
-
-
 $('#export-file').click(function() {
-    console.log(hot);
-    const exportPlugin = hot.getPlugin('exportFile');
-    console.log("TCL: exportPlugin", exportPlugin)
-    exportPlugin1.downloadFile('csv', {
-    bom: false,
-    columnDelimiter: ',',
-    columnHeaders: false,
-    exportHiddenColumns: true,
-    exportHiddenRows: true,
-    fileExtension: 'csv',
-    filename: 'Handsontable-CSV-file_[YYYY]-[MM]-[DD]',
-    mimeType: 'text/csv',
-    rowDelimiter: '\r\n',
-    rowHeaders: true
-    });
-    
+    let filename = "InfoEDIFile";
+    let date = new Date();
+    let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    let month = date.getMonth() + 1;
+    let monthText = month < 10 ? "0" + month : month;
+    let year = date.getFullYear();
+    $("#viewEdi").table2excel({
+        // exclude CSS class
+        exclude: ".csv",
+        name: "Worksheet Name",
+        filename: filename + day + monthText + year //do not include extension
+      }); 
 });
 

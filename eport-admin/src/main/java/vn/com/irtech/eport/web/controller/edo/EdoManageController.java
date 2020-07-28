@@ -2,6 +2,9 @@ package vn.com.irtech.eport.web.controller.edo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import com.alibaba.fastjson.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,15 +15,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.apache.commons.beanutils.BeanUtils;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 
 @Controller
 @RequestMapping("/edo/manage")
@@ -29,6 +37,8 @@ public class EdoManageController extends BaseController {
   final String PREFIX = "edo/manage";
   @Autowired
   private IEdoService edoService;
+
+  private static final String EXPORT_SHEET_NAME = "EDI_INFO";
 
   @Autowired
   private ICarrierGroupService carrierGroupService;
@@ -125,6 +135,21 @@ public class EdoManageController extends BaseController {
 	public List<String> listVessel(String keyString)
 	{
 		return edoService.selectVesselList(keyString);
-	}
+  }
   
+  @Log(title = "Export Excel Infomation File EDI", businessType = BusinessType.EXPORT)
+  @PostMapping("/export")
+  public AjaxResult export(@RequestBody Edo data) throws Exception
+  {
+    List list = new ArrayList();
+    Edo ctnr = null;
+    // convert to list entity before export
+    // for(Map<String, JSONObject> item : requestParams) {
+    //   ctnr = new Edo();
+    //   BeanUtils.copyProperties(ctnr, item);
+    //     list.add(ctnr);
+    // }
+    ExcelUtil<Edo> util = new ExcelUtil<Edo>(Edo.class);
+    return util.exportExcel(list, EXPORT_SHEET_NAME);
+  }
 }
