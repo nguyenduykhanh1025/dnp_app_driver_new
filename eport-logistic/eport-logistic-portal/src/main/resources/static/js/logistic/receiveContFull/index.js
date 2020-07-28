@@ -21,6 +21,18 @@ $.ajax({
 		  }
 	  }
 	})
+//dictionary SSR
+funtion getSSR(sztp){
+	$.ajax({
+		  type: "GET",
+		  url: "/logistic/special-service-request/size/" + sztp,
+		  success(data) {
+			  if(data.code == 0){
+			      console.log(data.data)
+			  }
+		  }
+		})
+}
 var consigneeList, opeCodeList, dischargePortList, vslNmList;
 $.ajax({
   url: "/logistic/source/option",

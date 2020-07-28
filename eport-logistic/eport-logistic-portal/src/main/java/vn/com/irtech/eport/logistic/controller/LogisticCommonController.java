@@ -316,4 +316,5 @@ public class LogisticCommonController extends LogisticBaseController {
 	{
 		return AjaxResult.success(dictDataService.getType("sys_size_container_eport"));
 	}
+	
 }

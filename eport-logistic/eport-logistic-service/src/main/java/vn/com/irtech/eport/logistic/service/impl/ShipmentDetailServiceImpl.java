@@ -20,11 +20,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.mapper.EdoMapper;
 import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -36,7 +40,11 @@ import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysConfig;
+import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.service.ISysConfigService;
+import vn.com.irtech.eport.system.service.ISysDictDataService;
+import vn.com.irtech.eport.system.service.ISysDictTypeService;
+
 
 /**
  * Shipment DetailsService Business Processing
@@ -57,7 +65,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Autowired
     private ISysConfigService configService;
-
+    
+    @Autowired
+    private ISysDictTypeService dictTypeService;
+    
     class BayComparator implements Comparator<ShipmentDetail> {
         public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
             // In the following line you set the criterion,
@@ -714,6 +725,15 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> getShipmentDetailList(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.getShipmentDetailList(shipmentDetail);
 	}
-    
-    
+    @Override
+	public String getSSR(String sztp)
+	{
+		List<SysDictData> dictDatas = dictTypeService.selectDictDataByType("sys_special_service_request");
+		for(SysDictData i : dictDatas) {
+			if(i.getDictValue().equals(sztp)) {
+				return i.getDictLabel();
+			}
+		}
+		return null;
+	}
 }
