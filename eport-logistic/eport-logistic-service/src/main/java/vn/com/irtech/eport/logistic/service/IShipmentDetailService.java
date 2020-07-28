@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -129,4 +130,6 @@ public interface IShipmentDetailService
     public List <ShipmentDetail> selectContainerStatusList(ShipmentDetail shipmentDetail);
     
     public List<ShipmentDetail> getShipmentDetailList(ShipmentDetail shipmentDetail);
+    
+    public String getSSR(String sztp);
 }

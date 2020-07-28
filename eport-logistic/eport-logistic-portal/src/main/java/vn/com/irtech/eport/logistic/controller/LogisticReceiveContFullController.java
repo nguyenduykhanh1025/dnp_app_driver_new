@@ -3,7 +3,6 @@ package vn.com.irtech.eport.logistic.controller;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -20,14 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.client.RestTemplate;
 
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
-import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
@@ -45,7 +40,6 @@ import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
-import vn.com.irtech.eport.logistic.utils.R;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 @Controller
@@ -88,7 +82,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired
 	private WebSocketService webSocketService;
-
+	
 	@GetMapping()
 	public String receiveContFull(ModelMap mmap) {
 		List<String> emptyDepots = new ArrayList<>();
@@ -603,5 +597,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		ajaxResult = error("Số bill không tồn tại!");
 		return ajaxResult;
 	}
+
 }
 
