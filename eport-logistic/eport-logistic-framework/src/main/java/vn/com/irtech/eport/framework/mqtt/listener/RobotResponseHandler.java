@@ -103,8 +103,8 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				this.updateHistory(receiptId, uuId);
 			}
 		}
-
 		robotService.updateRobotStatusByUuId(uuId, status);
+		
 	}
 	
 	/**
@@ -164,7 +164,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 
 			// Send notification for om
 			try {
-				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh", configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
 			} catch (Exception e) {
 				logger.warn(e.getMessage());
 			}

@@ -829,10 +829,12 @@ function updateLayout() {
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
+  $.modal.openLoading("Đang xử lý ...");
   $.ajax({
     url: prefix + "/shipment/" + id + "/shipment-detail",
     method: "GET",
     success: function (data) {
+      $.modal.closeLoading();
       if (data.code == 0) {
         sourceData = data.shipmentDetails;
         if (rowAmount < sourceData.length) {
@@ -1295,6 +1297,11 @@ function finishVerifyForm(result) {
     orderNumber = result.orderNumber;
     // CONNECT WEB SOCKET
     connectToWebsocketServer();
+
+    setTimeout(() => {
+      reloadShipmentDetail();
+      $.modal.alertError("Yêu cầu của quý khách đang được chờ xử lý, quý khách vui lòng đợi hoặc liên hệ với bộ phận thủ tục để được hỗ trợ thêm!");
+    }, 5000);
 
   } else {
     reloadShipmentDetail();
