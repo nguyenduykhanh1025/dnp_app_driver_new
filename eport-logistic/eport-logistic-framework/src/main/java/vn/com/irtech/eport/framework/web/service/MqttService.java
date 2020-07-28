@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PreDestroy;
+
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -52,6 +54,11 @@ public class MqttService implements MqttCallback {
 	private static MqttService instance = null;
 	private MqttAsyncClient mqttClient;
 	private Object connectLock = new Object();
+	
+	// connection info
+	private String host;
+	private String username;
+	private String password;
 
 	@Autowired
 	private RobotUpdateStatusHandler robotUpdateStatusHandler;
@@ -85,7 +92,19 @@ public class MqttService implements MqttCallback {
 		return mqttClient != null && mqttClient.isConnected();
 	}
 
+	/**
+	 * Connect to MQTT Server
+	 * 
+	 * @param host
+	 * @param username
+	 * @param password
+	 * @throws MqttException
+	 */
 	public void connect(String host, String username, String password) throws MqttException {
+		this.host = host;
+		this.username = username;
+		this.password = password;
+		
 		if (mqttClient == null) {
 			mqttClient = newMqttClient(host);
 		}
@@ -93,7 +112,8 @@ public class MqttService implements MqttCallback {
 		mqttClient.setCallback(this);
 
 		MqttConnectOptions clientOptions = new MqttConnectOptions();
-		clientOptions.setCleanSession(true);
+		clientOptions.setCleanSession(false);
+
 		// checkConnection
 		if (!mqttClient.isConnected()) {
 			synchronized (connectLock) {
@@ -104,6 +124,11 @@ public class MqttService implements MqttCallback {
 							@Override
 							public void onSuccess(IMqttToken iMqttToken) {
 								logger.info("MQTT broker connection established!");
+								try {
+									subscribeToTopics();
+								} catch (MqttException e) {
+									e.printStackTrace();
+								}
 							}
 
 							@Override
@@ -111,13 +136,14 @@ public class MqttService implements MqttCallback {
 								logger.info("MQTT broker connection faied!" + e.getMessage());
 							}
 						}).waitForCompletion();
-						subscribeToTopics();
 					} catch (MqttException e) {
+						e.printStackTrace();
 						logger.info("MQTT broker connection failed!" + e.getMessage());
 						if (!mqttClient.isConnected()) {
 							try {
 								Thread.sleep(3000); // 3s
 							} catch (InterruptedException e1) {
+								logger.warn(e.getMessage());
 							}
 						}
 					}
@@ -130,14 +156,18 @@ public class MqttService implements MqttCallback {
 	private void subscribeToTopics() throws MqttException {
 		List<IMqttToken> tokens = new ArrayList<>();
 		// subscribe default topics when connect
+		System.out.println("Subscribe to topic: " + BASE);
 		tokens.add(mqttClient.subscribe(BASE, 0, robotUpdateStatusHandler));
+		System.out.println("Subscribe to topic: " + RESPONSE_TOPIC);
 		tokens.add(mqttClient.subscribe(RESPONSE_TOPIC, 0, robotResponseHandler));
 		// Wait for subscribe complete
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
 		}
+		System.out.println("Subscribe topic completed!");
 	}
 
+	@PreDestroy
 	public void disconnect() {
 		try {
 			if (mqttClient != null && mqttClient.isConnected()) {
@@ -175,10 +205,14 @@ public class MqttService implements MqttCallback {
 				}
 				return;
 			} catch (MqttException e) {
+				e.printStackTrace();
+				logger.warn(e.getMessage());
 			}
 			try {
 				Thread.sleep(3000); // wait 3s before reconnect
 			} catch (InterruptedException e) {
+				e.printStackTrace();
+				logger.warn(e.getMessage());
 			}
 		}
 	}
@@ -196,9 +230,10 @@ public class MqttService implements MqttCallback {
 
 	private void reconnect() throws MqttException {
 		if (!mqttClient.isConnected()) {
-			IMqttToken token = mqttClient.connect();
-			token.waitForCompletion();
-			subscribeToTopics();
+			this.connect(host, username, password);
+//			IMqttToken token = mqttClient.connect();
+//			token.waitForCompletion();
+//			subscribeToTopics();
 			isReconnecting = false;
 		}
 	}

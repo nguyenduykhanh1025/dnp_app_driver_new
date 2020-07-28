@@ -264,7 +264,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where robot_uuid = #{uuid} and status = 1
     </select>
 
-    <select id="findProcessOrderForRobot" resultType="ProcessOrder" parameterType="String">
+    <select id="findProcessOrderForRobot" resultMap="ProcessOrderResult" parameterType="String">
         <include refid="selectProcessOrderVo"/>
         where robot_uuid is null and status = 0 
         and service_type in

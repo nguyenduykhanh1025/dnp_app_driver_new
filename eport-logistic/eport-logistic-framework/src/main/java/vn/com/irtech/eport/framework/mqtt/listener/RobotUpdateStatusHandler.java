@@ -154,7 +154,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 				// Send notification for OM
 				try {
-					mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh", configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+					mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
 				} catch (Exception e) {
 					logger.warn(e.getMessage());
 				}
@@ -205,7 +205,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 				// Send notification for om
 				try {
-					mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh", configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+					mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
 				} catch (Exception e) {
 					logger.warn(e.getMessage());
 				}
@@ -214,7 +214,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 			// Send notification for IT
 			try {
-				mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot", configService.getKey("domain.admin.name") + "/system/robot/" + sysRobot.getId());
+				mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + sysRobot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/" + sysRobot.getId());
 			} catch (Exception e) {
 				logger.warn(e.getMessage());
 			}

@@ -216,7 +216,7 @@ public class EportTask {
                     
                     // Send notification to IT
                     try {
-                        mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot", configService.getKey("domain.admin.name") + "/system/robot/" + robot.getId());
+                        mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + robot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/" + robot.getId());
                     } catch (Exception e) {
                         logger.warn(e.getMessage());
                     }
@@ -232,7 +232,7 @@ public class EportTask {
 
                         // Send notification to OM
                         try {
-                            mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh", configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+                            mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
                         } catch (Exception e) {
                             logger.warn(e.getMessage());
                         }
