@@ -216,7 +216,7 @@ public class EportTask {
                     
                     // Send notification to IT
                     try {
-                        mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + robot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/" + robot.getId());
+                        mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + robot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/edit/" + robot.getId());
                     } catch (Exception e) {
                         logger.warn(e.getMessage());
                     }
@@ -238,13 +238,14 @@ public class EportTask {
                         }
                     }
                     continue;
-                } else {
-                    try {
-                        mqttService.pingRobot(robot.getUuId());
-                    } catch (Exception e) {
-                        logger.warn(e.getMessage());
-                    }
-                }
+                } 
+                // else {
+                //     try {
+                //         mqttService.pingRobot(robot.getUuId());
+                //     } catch (Exception e) {
+                //         logger.warn(e.getMessage());
+                //     }
+                // }
             }
         }
     }

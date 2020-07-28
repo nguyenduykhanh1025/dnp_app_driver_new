@@ -107,6 +107,10 @@ public class ProcessOrder extends BaseEntity
     @Excel(name = "Robot UUID")
     private String robotUuid;
 
+    /** SSR Code */
+    @Excel(name = "SSR Code")
+    private String ssrCode;
+
     private ShipmentDetail shipmentDetail;
 
     public void setId(Long id) 
@@ -318,6 +322,14 @@ public class ProcessOrder extends BaseEntity
         this.robotUuid = robotUuid;
     }
 
+    public String getSsrCode() {
+        return this.ssrCode;
+    }
+
+    public void setSsrCode(String ssrCode) {
+        this.ssrCode = ssrCode;
+    }
+
     public void setShipmentDetail(ShipmentDetail shipmentDetail) {
         this.shipmentDetail = shipmentDetail;
     }
@@ -356,6 +368,7 @@ public class ProcessOrder extends BaseEntity
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("robotUuid", getRobotUuid())
+            .append("ssrCode", getSsrCode())
             .append("shipmentDetail", getShipmentDetail())
             .toString();
     }

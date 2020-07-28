@@ -36,6 +36,7 @@ import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.PaymentHistory;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
@@ -288,8 +289,6 @@ public class LogisticCommonController extends LogisticBaseController {
 					processBillService.updateBillListByProcessOrderIds(paymentHistory.getProcessOrderIds());
 
 					isError = false;
-				} else {
-
 				}
 			}
 		}
@@ -319,6 +318,122 @@ public class LogisticCommonController extends LogisticBaseController {
 	public AjaxResult getSztps()
 	{
 		return AjaxResult.success(dictDataService.getType("sys_size_container_eport"));
+	}
+
+	@GetMapping("/shipment/{shipmentId}/napas")
+	public String napasShiftingPaymentForm(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
+
+		List<ProcessBill> processBills = processBillService.getBillShiftingContByShipmentId(shipmentId, getUser().getGroupId());
+
+		if (processBills.isEmpty()) {
+			return "error/500";
+		}
+
+		Long total = 0L;
+		Long idTemp = processBills.get(0).getProcessOrderId();
+		String orderId = "Order-" + idTemp;
+		String processOrderIds = idTemp + ",";
+		for (ProcessBill processBill : processBills) {
+			total += processBill.getVatAfterFee();
+			if (!idTemp.equals(processBill.getProcessOrderId())) {
+				idTemp = processBill.getProcessOrderId();
+				orderId += "-" + idTemp;
+				processOrderIds += idTemp + ",";
+			}
+		}
+		orderId = orderId + "-" + DateUtils.dateTimeNow();
+		processOrderIds.substring(0, processOrderIds.length()-1);
+
+		// check if process order is on payment transaction
+		PaymentHistory paymentHistoryParam = new PaymentHistory();
+		paymentHistoryParam.setProccessOrderIds(processOrderIds);
+		paymentHistoryParam.setStatus("0");
+		List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
+		PaymentHistory paymentHistory;
+		if (paymentHistories.isEmpty()) {
+			paymentHistory = new PaymentHistory();
+			paymentHistory.setUserId(getUserId());
+			paymentHistory.setProccessOrderIds(processOrderIds);
+			paymentHistory.setShipmentId(shipmentId);
+			paymentHistory.setAmount(total);
+			paymentHistory.setStatus("0");
+			paymentHistory.setOrderId(orderId);
+			paymentHistory.setCreateBy(getUser().getFullName());
+			paymentHistoryService.insertPaymentHistory(paymentHistory);
+		} else {
+			paymentHistory = paymentHistories.get(0);
+			paymentHistory.setOrderId(orderId);
+			paymentHistoryService.updatePaymentHistory(paymentHistory);
+		}
+
+		mmap.put("resultUrl", configService.getKey("napas.payment.shifting.result"));
+		mmap.put("referenceOrder", "Thanh toan " + orderId);
+		mmap.put("clientIp", getUserIp());
+		mmap.put("data", napasApiService.getDataKey(getUserIp(), "deviceId", orderId, total, napasApiService.getAccessToken()));
+
+		return PREFIX + "/napas/napasPaymentForm";
+	}
+
+	@RequestMapping(value="/payment/shifting/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+	@Transactional
+	public String getPaymentShiftingResult(@RequestParam("napasResult") String result, ModelMap mmap) {
+		JSONObject json = JSONObject.parseObject(result);
+		String dataBase64 = json.getString("data");
+
+		boolean isError = true;
+		
+		//checksum
+		String  checksumString = json.getString("checksum");
+		if (checksumString.equalsIgnoreCase(DigestUtils.sha256Hex(dataBase64+configService.getKey("napas.client.secret")))) {
+			
+			//decode base
+			JSONObject decodeData = JSONObject.parseObject(new String(Base64.getDecoder().decode(dataBase64)));
+			
+			// result (Success or Failed)
+			String resultStatus = decodeData.getJSONObject("paymentResult").getString("result");
+			
+			if ("SUCCESS".equalsIgnoreCase(resultStatus)) {
+				// order id
+				String orderId = decodeData.getJSONObject("paymentResult").getJSONObject("order").getString("id");
+				PaymentHistory paymentHistoryParam = new PaymentHistory();
+				paymentHistoryParam.setOrderId(orderId);
+				List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
+				if (!paymentHistories.isEmpty()) {
+					PaymentHistory paymentHistory = paymentHistories.get(0);
+
+					// Update payment history
+					if ("1".equals(paymentHistory.getStatus())) {
+						paymentHistory.setId(null);
+						paymentHistoryService.insertPaymentHistory(paymentHistory);
+					} else {
+						paymentHistory.setUpdateBy(getUser().getFullName());
+						paymentHistory.setStatus("1");
+						paymentHistoryService.updatePaymentHistory(paymentHistory);
+					}
+
+					// Update shipment detail
+					ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+					shipmentDetailParam.setShipmentId(paymentHistory.getShipmentId());
+					shipmentDetailParam.setPreorderPickup("Y");
+					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetailParam);
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						shipmentDetail.setPrePickupPaymentStatus("Y");
+						shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					}
+
+					// Update bill
+					processBillService.updateBillListByProcessOrderIds(paymentHistory.getProcessOrderIds());
+
+					isError = false;
+				}
+			}
+		}
+		if (isError) {
+			mmap.put("result", "ERROR");
+		} else {
+			mmap.put("result", "SUCCESS");
+		}
+		return PREFIX + "/napas/resultForm";
 	}
 	
 }

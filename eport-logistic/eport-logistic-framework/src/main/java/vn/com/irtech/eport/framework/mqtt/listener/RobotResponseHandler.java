@@ -93,18 +93,14 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		String receiptId = map.get("receiptId") == null ? null : map.get("receiptId").toString();
 		String invoiceNo = map.get("invoiceNo") == null ? "" : map.get("invoiceNo").toString(); 
 
-		if (sysRobot.getIsShiftingContOrder()) {
-
-		} else {
-			if (receiptId != null) {
-				if ("0".equals(status)) {
-					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId);
-					this.sendMessageWebsocket(result, receiptId);
-					status = this.assignNewProcessOrder(sysRobot);
-				} else if ("1".equals(status)) {
-					// SAVE HISTORY ROBOT START MAKE-ORDER
-					this.updateHistory(receiptId, uuId);
-				}
+		if (receiptId != null) {
+			if ("0".equals(status)) {
+				this.updateShipmentDetail(result, receiptId, invoiceNo, uuId);
+				this.sendMessageWebsocket(result, receiptId);
+				status = this.assignNewProcessOrder(sysRobot);
+			} else if ("1".equals(status)) {
+				// SAVE HISTORY ROBOT START MAKE-ORDER
+				this.updateHistory(receiptId, uuId);
 			}
 		}
 
@@ -150,12 +146,14 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			// SAVE BILL TO PROCESS BILL BY INVOICE NO
 			if (invoiceNo != null && !invoiceNo.equals("")) {
 				processBillService.saveProcessBillByInvoiceNo(processOrder);
-			} else {
+			} else if (processOrder.getServiceType() != 5) {
 				processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
 			}
 
 			// UPDATE STATUS OF SHIPMENT DETAIL AFTER MAKE ORDER SUCCESS
-			shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo, processOrder);
+			if (processOrder.getServiceType() != 5) {
+				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo, processOrder);
+			}
 
 			// SET RESULT FOR HISTORY SUCCESS
 			processHistory.setResult("S");

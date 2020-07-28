@@ -1208,7 +1208,7 @@ function pickContOnDemand() {
 }
 
 function payShifting() {
-  $.modal.openCustomForm("Thanh toán phí dịch chuyển", prefix + "/payment/shifting/" + shipmentSelected.id, 800, 400);
+  $.modal.openCustomForm("Thanh toán phí dịch chuyển", prefix + "/shipment/" + shipmentSelected.id + "/payment/shifting", 800, 400);
 }
 
 function exportBill() {
@@ -1310,8 +1310,8 @@ function napasPaymentForm() {
   $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
 }
 
-function napasPaymentFormForShifting(processOrderIds) {
-  $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/payment/napas/" + processOrderIds);
+function napasPaymentFormForShifting() {
+  $.modal.openFullWithoutButton("Cổng Thanh Toán", ctx + "logistic/shipment/" + shipmentSelected.id + "/napas");
 }
 
 function connectToWebsocketServer() {

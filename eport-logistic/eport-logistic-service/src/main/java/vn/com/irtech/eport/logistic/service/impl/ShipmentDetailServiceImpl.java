@@ -308,7 +308,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             Collections.sort(shiftingContList, new SztpComparator());
             String sztp = shiftingContList.get(0).getSztp();
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-            for (ShipmentDetail shipmentDetail : shipmentDetails) {
+            for (ShipmentDetail shipmentDetail : shiftingContList) {
                 if (!sztp.equals(shipmentDetail.getSztp())) {
                     serviceRobotReq.add(groupShipmentDetailByShiftingContOrder(shipmentOrderList, shipment, isCredit));
                     shipmentOrderList = new ArrayList<>();
@@ -336,6 +336,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setPayType("Cash");
         }
         processOrder.setContNumber(shipmentDetails.size());
+        processOrder.setSsrCode(getSSR(shipmentDetails.get(0).getSztp()));
         processOrderService.insertProcessOrder(processOrder);
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setPreorderPickup("Y");

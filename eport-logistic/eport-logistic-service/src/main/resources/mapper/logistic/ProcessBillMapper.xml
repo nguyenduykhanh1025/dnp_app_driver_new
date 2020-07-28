@@ -236,5 +236,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where service_type = 5
         and shipment_id = #{shipmentId}
         and logistic_group_id = #{logisticGroupId}
+        order by process_order_id asc
     </select>
 </mapper>

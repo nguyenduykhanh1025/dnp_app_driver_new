@@ -214,7 +214,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 			// Send notification for IT
 			try {
-				mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + sysRobot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/" + sysRobot.getId());
+				mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + sysRobot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/edit/" + sysRobot.getId());
 			} catch (Exception e) {
 				logger.warn(e.getMessage());
 			}
@@ -226,7 +226,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			robotService.insertRobot(sysRobot);
 		} else {
 			// update status of robot
-			robotService.updateRobotStatusByUuId(uuId, status);
+			robotService.updateRobotByUuId(sysRobot);
 		}
 	}
 
