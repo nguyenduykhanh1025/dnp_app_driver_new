@@ -335,6 +335,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         }
         processOrder.setContNumber(shipmentDetails.size());
         processOrderService.insertProcessOrder(processOrder);
+        for (ShipmentDetail shipmentDetail : shipmentDetails) {
+            shipmentDetail.setPreorderPickup("Y");
+            shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+        }
         return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
     }
 
@@ -434,8 +438,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             Collections.sort(shipmentDetails, new SztpComparator());
             String sztp = shipmentDetails.get(0).getSztp();
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
-            List<ProcessOrder> processOrders = new ArrayList<>();
-            // ProcessOrder processOrder = new ProcessOrder();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (!sztp.equals(shipmentDetail.getSztp())) {
                     serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag));

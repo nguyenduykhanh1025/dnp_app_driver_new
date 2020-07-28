@@ -194,7 +194,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@GetMapping("/shipment/{shipmentId}/payment/shifting")
 	public String paymentShiftingForm(@PathVariable Long shipmentId, ModelMap mmap) {
-
+		mmap.put("billList", processBillService.getBillShiftingContByShipmentId(shipmentId, getUser().getGroupId()));
 		return PREFIX + "/paymentShiftingForm";
 	}
 
@@ -339,6 +339,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setDoStatus("N");
 					shipmentDetail.setPreorderPickup("N");
+					shipmentDetail.setPrePickupPaymentStatus("N");
 					if ("VN".equalsIgnoreCase(shipmentDetail.getLoadingPort().substring(0, 2))) {
 						shipmentDetail.setCustomStatus("R");
 						shipmentDetail.setStatus(2);
@@ -553,25 +554,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				}
 			}
 			ajaxResult.put("orderIds", orderIds);
-			return success();
+			return ajaxResult;
 		}
 		return error("Có lỗi xảy ra trong quá trình bốc container chỉ định!");
-	}
-
-	@PostMapping("/payment/{shipmentDetailIds}")
-	@Transactional
-	@ResponseBody
-	public AjaxResult payment(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setStatus(4);
-				shipmentDetail.setPaymentStatus("Y");
-				shipmentDetailService.updateShipmentDetail(shipmentDetail);
-			}
-			return success("Thanh toán thành công");
-		}
-		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
 	@SuppressWarnings("unchecked")

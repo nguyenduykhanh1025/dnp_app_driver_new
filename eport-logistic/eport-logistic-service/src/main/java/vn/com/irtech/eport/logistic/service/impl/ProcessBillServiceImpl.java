@@ -193,4 +193,16 @@ public class ProcessBillServiceImpl implements IProcessBillService
     public int updateBillListByProcessOrderIds(String processOrderIds) {
         return processBillMapper.updateBillListByProcessOrderIds(Convert.toStrArray(processOrderIds));
     }
+
+    /**
+     * Get Bill Shifting Cont By Shipment Id
+     * 
+     * @param shipmentId
+     * @param logisticGroupId
+     * @return  List<ProcessBill>
+     */
+    @Override
+    public List<ProcessBill> getBillShiftingContByShipmentId(Long shipmentId, Long logisticGroupId) {
+        return processBillMapper.getBillShiftingContByShipmentId(shipmentId, logisticGroupId);
+    }
 }

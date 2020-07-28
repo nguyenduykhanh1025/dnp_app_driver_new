@@ -230,4 +230,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{processOrderId}
         </foreach>
     </select>
+
+    <select id="getBillShiftingContByShipmentId" resultMap="ProcessBillResult">
+        <include refid="selectProcessBillVo"/>
+        where service_type = 5
+        and shipment_id = #{shipmentId}
+        and logistic_group_id = #{logisticGroupId}
+    </select>
 </mapper>
