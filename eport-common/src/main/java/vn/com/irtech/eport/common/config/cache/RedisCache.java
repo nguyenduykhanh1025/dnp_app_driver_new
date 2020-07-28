@@ -59,7 +59,7 @@ public class RedisCache<K, V> implements Cache<K, V> {
 
     @Override
     public Set<K> keys() {
-        return redisTemplate.keys((K) (cacheName + "*"));
+        return redisTemplate.keys((K) ("*" + cacheName + "*"));
     }
 
     @Override
