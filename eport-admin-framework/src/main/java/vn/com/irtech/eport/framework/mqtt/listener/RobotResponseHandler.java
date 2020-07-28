@@ -36,8 +36,11 @@ public class RobotResponseHandler implements IMqttMessageListener {
             logger.warn(e.getMessage());
             return;
 		}
-		
-        String uuid = String.valueOf(map.get("uuid"));
+		String uuid = null;
+		String[] dataStrings = topic.split("/");
+		if (dataStrings.length > 2) {
+	        uuid = dataStrings[2];//String.valueOf(map.get("uuid"));
+		} 
         
         if (uuid == null) {
             return;
