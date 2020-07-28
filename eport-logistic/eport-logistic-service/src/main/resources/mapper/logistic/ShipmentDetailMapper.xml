@@ -519,4 +519,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         group by s.bl_no, s.booking_no, s.sztp, s.vsl_nm, s.voy_no, s.container_no, s.do_status, s.fe, s.payment_status, p.pay_type, p.service_type
     </select>
 
+    <select id="countNumberOfLegalCont" resultType="Integer">
+        select count(*) from shipment_detail
+        where logistic_group_id = #{logisticGroupId}
+        and status > 2
+        and id in
+        <foreach item="shipmentDetail" collection="shipmentDetails" open="(" separator="," close=")">
+            #{shipmentDetail.id}
+        </foreach>
+    </select>
 </mapper>

@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Flow.Processor;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -230,9 +233,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     @Transactional
-    public boolean calculateMovingCont(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> preorderPickupConts,
-            List<ShipmentDetail> shipmentDetails) {
+    public List<ServiceSendFullRobotReq> calculateMovingCont(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> preorderPickupConts,
+            List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit) {
         try {
+
+            // Apply yard position for shipment detail list
             List<ShipmentDetail[][]> bayList = new ArrayList<>();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 for (int i = 0; i < coordinateOfList.size(); i++) {
@@ -246,6 +251,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 }
             }
 
+            // 
             for (int i = 0; i < coordinateOfList.size(); i++) {
                 ShipmentDetail shipmentDetail2 = new ShipmentDetail();
                 shipmentDetail2.setBay(coordinateOfList.get(i).getBay());
@@ -270,36 +276,66 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             }
             bayList.add(shipmentDetailMatrix);
 
-            int movingContAmount = 0;
-            int movingContCol = 0;
+            // Collect list cont need to shifting
+            List<ShipmentDetail> shiftingContList = new ArrayList<>();
             for (int b = 0; b < bayList.size(); b++) {
-                int movingContAmountTemp = 0;
+                List<ShipmentDetail> tempShiftingContList = new ArrayList<>();
                 for (int row = 0; row < 6; row++) {
                     for (int tier = 4; tier >= 0; tier--) {
                         if (bayList.get(b)[tier][row] != null) {
+                            Boolean needMoving = true;
                             for (ShipmentDetail shipmentDetail : preorderPickupConts) {
-                                if (bayList.get(b)[tier][row].getId() == shipmentDetail.getId()) {
-                                    movingContCol = movingContAmountTemp;
+                                if (Objects.equals(bayList.get(b)[tier][row].getId(), shipmentDetail.getId())) {
+                                    shiftingContList.addAll(tempShiftingContList);
+                                    tempShiftingContList.clear();
+                                    needMoving = false;
                                     break;
                                 }
                             }
-                            movingContAmountTemp++;
+                            if ("N".equals(bayList.get(b)[tier][row].getPreorderPickup()) && needMoving) {
+                                tempShiftingContList.add(bayList.get(b)[tier][row]);
+                            }
                         }
                     }
-                    movingContAmount += movingContCol;
-                    movingContCol = 0;
-                    movingContAmountTemp = 0;
+                    tempShiftingContList.clear();
                 }
             }
 
-            for (ShipmentDetail shipmentDetail : preorderPickupConts) {
-                shipmentDetail.setShiftingContNumber(movingContAmount);
-                shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+            // Seperate cont with different sztp
+            List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
+            Collections.sort(shiftingContList, new SztpComparator());
+            String sztp = shiftingContList.get(0).getSztp();
+            List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
+            for (ShipmentDetail shipmentDetail : shipmentDetails) {
+                if (!sztp.equals(shipmentDetail.getSztp())) {
+                    serviceRobotReq.add(groupShipmentDetailByShiftingContOrder(shipmentOrderList, shipment, isCredit));
+                    shipmentOrderList = new ArrayList<>();
+                }
+                shipmentOrderList.add(shipmentDetail);
             }
-            return true;
+            serviceRobotReq.add(groupShipmentDetailByShiftingContOrder(shipmentOrderList, shipment, isCredit));
+
+            return serviceRobotReq;
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
+            return null;
         }
+    }
+
+    public ServiceSendFullRobotReq groupShipmentDetailByShiftingContOrder(List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit) {
+        ProcessOrder processOrder = new ProcessOrder();
+        processOrder.setTaxCode(shipment.getTaxCode());
+        processOrder.setShipmentId(shipment.getId());
+        processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
+        processOrder.setServiceType(5);
+        if (isCredit) {
+            processOrder.setPayType("Credit");
+        } else {
+            processOrder.setPayType("Cash");
+        }
+        processOrder.setContNumber(shipmentDetails.size());
+        processOrderService.insertProcessOrder(processOrder);
+        return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
     }
 
     public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails,
@@ -714,5 +750,15 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return shipmentDetailMapper.getShipmentDetailList(shipmentDetail);
 	}
     
-    
+    /**
+     * Count number of legal container
+     * 
+     * @param shipmentDetails
+     * @param logisticGroupId
+     * @return Integer
+     */
+    @Override
+    public Integer countNumberOfLegalCont(List<ShipmentDetail> shipmentDetails, Long logisticGroupId) {
+        return shipmentDetailMapper.countNumberOfLegalCont(shipmentDetails, logisticGroupId);
+    }
 }

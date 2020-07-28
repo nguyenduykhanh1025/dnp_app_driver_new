@@ -89,7 +89,7 @@ public interface IShipmentDetailService
 
     public List<ShipmentDetail[][]> getContPosition(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> shipmentDetails);
     
-    public boolean calculateMovingCont(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails);
+    public List<ServiceSendFullRobotReq> calculateMovingCont(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit);
 
     public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag);
 
@@ -129,4 +129,13 @@ public interface IShipmentDetailService
     public List <ShipmentDetail> selectContainerStatusList(ShipmentDetail shipmentDetail);
     
     public List<ShipmentDetail> getShipmentDetailList(ShipmentDetail shipmentDetail);
+
+    /**
+     * Count number of legal container
+     * 
+     * @param shipmentDetails
+     * @param logisticGroupId
+     * @return Integer
+     */
+    public Integer countNumberOfLegalCont(List<ShipmentDetail> shipmentDetails, Long logisticGroupId);
 }

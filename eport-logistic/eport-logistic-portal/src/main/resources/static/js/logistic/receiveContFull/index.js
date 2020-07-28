@@ -165,7 +165,7 @@ function handleCollapse(status) {
 // LOAD SHIPMENT LIST
 function loadTable(msg) {
   if (msg) {
-    $.modal.msgSuccess(msg);
+    $.modal.alertSuccess(msg);
   }
   $("#dg").datagrid({
     url: "/logistic/shipments",
@@ -793,7 +793,7 @@ function updateLayout() {
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
-  $.modal.openLoading("Đang xử lý ...");
+  $.modal.loading("Đang xử lý ...");
   $.ajax({
     url: prefix + "/shipment/" + id + "/shipment-detail",
     method: "GET",
@@ -810,6 +810,11 @@ function loadShipmentDetail(id) {
             saved = false;
           }
         });
+        if (saved) {
+          $('#pickContOnDemandBtn').prop('disabled', false);
+        } else {
+          $('#pickContOnDemandBtn').prop('disabled', true);
+        }
         hot.destroy();
         configHandson();
         hot = new Handsontable(dogrid, config);
@@ -1051,7 +1056,7 @@ function getDataFromTable(isValidate) {
 // SAVE/EDIT/DELETE SHIPMENT DETAIL
 function saveShipmentDetail() {
   if (shipmentSelected == null) {
-    $.modal.msgError("Bạn cần chọn lô trước");
+    $.modal.alertError("Bạn cần chọn lô trước");
     return;
   } else {
     hot.deselectCell();
@@ -1096,10 +1101,10 @@ function save(isSendEmpty) {
     success: function (data) {
       var result = JSON.parse(data);
       if (result.code == 0) {
-        $.modal.msgSuccess(result.msg);
+        $.modal.alertSuccess(result.msg);
         reloadShipmentDetail();
       } else {
-        $.modal.msgError(result.msg);
+        $.modal.alertError(result.msg);
       }
       $.modal.closeLoading();
     },
@@ -1120,10 +1125,10 @@ function deleteShipmentDetail() {
       method: "delete",
       success: function (result) {
         if (result.code == 0) {
-          $.modal.msgSuccess(result.msg);
+          $.modal.alertSuccess(result.msg);
           reloadShipmentDetail();
         } else {
-          $.modal.msgError(result.msg);
+          $.modal.alertError(result.msg);
         }
         $.modal.closeLoading();
       },
@@ -1167,6 +1172,10 @@ function pay() {
 function pickContOnDemand() {
   getDataFromTable(false);
   $.modal.openCustomForm("Bốc container chỉ định", prefix + "/cont-list/yard-position/" + billNo, 710, 565);
+}
+
+function payShifting() {
+  $.modal.openCustomForm("Thanh toán phí dịch chuyển", prefix + "/payment/shifting/" + shipmentSelected.id, 800, 400);
 }
 
 function exportBill() {
@@ -1238,9 +1247,9 @@ function setLayoutFinishStatus() {
 
 function finishForm(result) {
   if (result.code == 0) {
-    $.modal.msgSuccess(result.msg);
+    $.modal.alertSuccess(result.msg);
   } else {
-    $.modal.msgError(result.msg);
+    $.modal.alertError(result.msg);
   }
   reloadShipmentDetail();
 }
@@ -1256,7 +1265,7 @@ function finishVerifyForm(result) {
     setTimeout(() => {
       reloadShipmentDetail();
       $.modal.alertError("Yêu cầu của quý khách đang được chờ xử lý, quý khách vui lòng đợi hoặc liên hệ với bộ phận thủ tục để được hỗ trợ thêm!");
-    }, 5000);
+    }, 300000);
 
   } else {
     reloadShipmentDetail();

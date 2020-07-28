@@ -5,7 +5,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,8 +172,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			mmap.put("bayList", bayList);
-			mmap.put("unitCosts", 20000);
 		}
+		mmap.put("isCredit", "1".equals(getGroup().getCreditFlag()));
 		return PREFIX + "/pickContOnDemand";
 	}
 
@@ -188,6 +190,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
+	}
+
+	@GetMapping("/shipment/{shipmentId}/payment/shifting")
+	public String paymentShiftingForm(@PathVariable Long shipmentId, ModelMap mmap) {
+
+		return PREFIX + "/paymentShiftingForm";
 	}
 
 	@GetMapping("/unique/bl-no/{blNo}")
@@ -393,15 +401,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public ShipmentDetail getContInfo(@PathVariable("blNo") String blNo, @PathVariable("containerNo") String containerNo) {
 		if (blNo != null && containerNo != null) {
-//			ShipmentDetail shipmentDetail = new ShipmentDetail();
-//			shipmentDetail.setBlNo(blNo);
-//			shipmentDetail.setContainerNo(containerNo);
-//			String url = Global.getApiUrl() + "/shipmentDetail/containerInfor";
-//			RestTemplate restTemplate = new RestTemplate();
-//			R r = restTemplate.postForObject(url, shipmentDetail, R.class);
-//			// List<ShipmentDetail> l = (List<ShipmentDetail>) r.get("data");
-//			ObjectMapper mapper = new ObjectMapper();
-//			ShipmentDetail aShipmentDetail = mapper.convertValue(r.get("data"), ShipmentDetail.class);
 			ShipmentDetail shipmentDetail = catosApiService.selectShipmentDetailByContNo(blNo, containerNo);
 			return shipmentDetail;
 		} else {
@@ -511,21 +510,50 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
 
-	@PostMapping("/shipment-detail/pickup-cont")
+	@PostMapping("/shipment-detail/pickup-cont/{isCredit}")
 	@ResponseBody
-	public AjaxResult pickContOnDemand(@RequestBody List<ShipmentDetail> preorderPickupConts) {
-		if (preorderPickupConts.size() > 0) {
+	public AjaxResult pickContOnDemand(@RequestBody List<ShipmentDetail> preorderPickupConts, @PathVariable("isCredit") Boolean isCredit) {
+		// Check if logistic can pay by credit
+		if (getGroup().getCreditFlag() == "0" && isCredit) {
+			return error("Qúy khách không có quyền thanh toán trả sau!");
+		}
+		if (!preorderPickupConts.isEmpty()) {
 			ShipmentDetail shipmentDt = new ShipmentDetail();
 			shipmentDt.setBlNo(preorderPickupConts.get(0).getBlNo());
 			shipmentDt.setFe("F");
+			shipmentDt.setLogisticGroupId(getUser().getGroupId());
+
+			// Check if logistic own preorderPickupConts
+			if (preorderPickupConts.size() != shipmentDetailService.countNumberOfLegalCont(preorderPickupConts, getUser().getGroupId())) {
+				return error("Bạn không có quyền bốc chỉ định những container này!");
+			}
+
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
+
+			Shipment shipment = null;
+			if (shipmentDetails.isEmpty()) {
+				return error("Có lỗi xảy ra trong quá trình bốc container chỉ định!");
+			} else {
+				shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+			}
+
 			//Get coordinate from catos test
 			List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(preorderPickupConts.get(0).getBlNo());
-			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-				if (shipmentDetailService.calculateMovingCont(coordinateOfList, preorderPickupConts, shipmentDetails)) {
-					return success("Bốc container chỉ định thành công.");
+			AjaxResult ajaxResult = AjaxResult.success();
+			List<Long> orderIds = new ArrayList<>();
+			if (!shipmentDetails.isEmpty()) {
+				List<ServiceSendFullRobotReq> reqs = shipmentDetailService.calculateMovingCont(coordinateOfList, preorderPickupConts, shipmentDetails, shipment, isCredit);
+				try {
+					for (ServiceSendFullRobotReq robotReq : reqs) {
+						orderIds.add(robotReq.processOrder.getId());
+						mqttService.publishMessageToRobot(robotReq, EServiceRobot.SHIFTING_CONT);
+					}
+				} catch (MqttException e) {
+					logger.warn(e.getMessage());
 				}
 			}
+			ajaxResult.put("orderIds", orderIds);
+			return success();
 		}
 		return error("Có lỗi xảy ra trong quá trình bốc container chỉ định!");
 	}
