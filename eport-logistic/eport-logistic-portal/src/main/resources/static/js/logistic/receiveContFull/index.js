@@ -8,28 +8,19 @@ var checkList = [];
 var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.serviceType = 1;
-var sizeList = [
-  "22G0: Cont 20 feet khô", 
-  "22P0: Cont 20 feet flat rack - quá khổ", 
-  "22R0: Cont 20 feet lạnh", 
-  "22T0: Cont 20 feet tank - cont bồn",
-  "22U0: Cont 20 feet open top", 
-  "42G0: Cont 40 feet thấp khô", 
-  "42P0: Cont 40 feet thấp flat rack - quá khổ",
-  "42R0: Cont 40 feet thấp lạnh", 
-  "42T0: Cont 40 feet thấp tank - cont bồn", 
-  "42U0: Cont 40 feet thấp open top",
-  "45G0: Cont 40 feet cao khô", 
-  "45P0: Cont 40 feet cao flat rack - quá khổ", 
-  "45R0: Cont 40 feet cao lạnh",
-  "45T0: Cont 40 feet cao tank - cont bồn",
-  "45U0: Cont 40 feet cao open top", 
-  "L4G0: Cont 45 feet khô", 
-  "L4P0: Cont 45 feet flat rack - quá khổ", 
-  "L4R0: Cont 45 feet lạnh",
-  "L4T0: Cont 45 feet tank - cont bồn",
-  "L4U0: Cont 45 feet open top"
-];
+var sizeList = [];
+//dictionary sizeList
+$.ajax({
+	  type: "GET",
+	  url: "/logistic/size/container/list",
+	  success(data) {
+		  if(data.code == 0){
+		      data.data.forEach(element => {
+		    	  sizeList.push(element['dictLabel'])
+		      })
+		  }
+	  }
+	})
 var consigneeList, opeCodeList, dischargePortList, vslNmList;
 $.ajax({
   url: "/logistic/source/option",

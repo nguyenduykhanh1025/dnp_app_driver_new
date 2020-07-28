@@ -31,6 +31,7 @@ import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
+import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
@@ -79,6 +80,9 @@ public class LogisticCommonController extends LogisticBaseController {
 
 	@Autowired
 	private IPaymentHistoryService paymentHistoryService;
+	
+	@Autowired
+	private DictService dictDataService;
 
 	@GetMapping("/company/{taxCode}")
 	@ResponseBody
@@ -304,5 +308,12 @@ public class LogisticCommonController extends LogisticBaseController {
 			return ajaxResult;
 		}
 		return error();
+	}
+	
+	@GetMapping("/size/container/list")
+	@ResponseBody
+	public AjaxResult getSztps()
+	{
+		return AjaxResult.success(dictDataService.getType("sys_size_container_eport"));
 	}
 }
