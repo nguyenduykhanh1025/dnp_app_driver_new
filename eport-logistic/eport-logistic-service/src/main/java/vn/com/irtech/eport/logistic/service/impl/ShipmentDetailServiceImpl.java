@@ -1,17 +1,14 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -20,15 +17,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.mapper.EdoMapper;
 import vn.com.irtech.eport.common.config.Global;
-import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -39,10 +32,8 @@ import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
-import vn.com.irtech.eport.system.domain.SysConfig;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.service.ISysConfigService;
-import vn.com.irtech.eport.system.service.ISysDictDataService;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
 
 
