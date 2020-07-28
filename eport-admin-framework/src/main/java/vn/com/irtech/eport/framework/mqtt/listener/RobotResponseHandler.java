@@ -47,6 +47,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
         }
 
         SysRobot robot = new SysRobot();
+        robot.setUuId(uuid);
         robotService.updateRobot(robot);
 	}
 }

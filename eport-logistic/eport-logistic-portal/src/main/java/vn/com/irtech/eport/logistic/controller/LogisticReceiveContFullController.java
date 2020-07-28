@@ -538,6 +538,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			List<Long> orderIds = new ArrayList<>();
 			if (!shipmentDetails.isEmpty()) {
 				List<ServiceSendFullRobotReq> reqs = shipmentDetailService.calculateMovingCont(coordinateOfList, preorderPickupConts, shipmentDetails, shipment, isCredit);
+				if (reqs == null) {
+					return error("Không có container nào cần làm lệnh dịch chuyển!");
+				}
 				try {
 					for (ServiceSendFullRobotReq robotReq : reqs) {
 						orderIds.add(robotReq.processOrder.getId());
@@ -545,6 +548,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					}
 				} catch (MqttException e) {
 					logger.warn(e.getMessage());
+					return AjaxResult.warn("Lệnh dịch chuyển của quý khách đang được chờ xử lý!");
 				}
 			}
 			ajaxResult.put("orderIds", orderIds);

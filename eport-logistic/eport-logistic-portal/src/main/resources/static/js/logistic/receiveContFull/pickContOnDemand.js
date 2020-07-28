@@ -7,6 +7,7 @@ var orders = [], orderNumber;
 
 function confirm() {
     if (preorderPickupConts.length > 0) {
+        $.modal.loading("Đang xử lý ...");
         $.modal.confirm("Xác nhận bốc container chỉ định (Quý khách<br>không thể hủy chỉ định cho container đã được chỉ định).", function() {
             $.ajax({
                 url: prefix + "/shipment-detail/pickup-cont/" + $('#credit').prop('checked'),
@@ -19,11 +20,15 @@ function confirm() {
                 dataType: 'text',
                 success: function (data) {
                     let result = JSON.parse(data);
+                    if (result.code == 301) {
+                        $.modal.closeLoading();
+                        parent.finishForm(result);
+                        $.modal.close();
+                    }
                     if (result.code != 0) {
                         $.modal.alertError(result.alert);
                     } else {
-                        $.modal.loading("Đang xử lý ...");
-                        orders = data.orderIds;
+                        orders = result.orderIds;
                         orderNumber = orders.length;
                         connectToWebsocketServer();
                     }

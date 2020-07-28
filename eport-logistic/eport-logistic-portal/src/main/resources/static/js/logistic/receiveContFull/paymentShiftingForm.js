@@ -3,11 +3,12 @@ var prefix = ctx + "logistic/receive-cont-full";
 var processOrderIds = '';
 
 $(document).ready(function () {
-    if (billList == null) {
+    if (billList == null || billList.length == 0) {
         let res = new Object();
         res.code = 500;
         res.msg = "Quý khách không có phí dịch chuyển container nào cần thanh toán.";
         parent.finishForm(res);
+        $.modal.close();
     }
     $("#billDatagrid").datagrid({
         singleSelect: true,
@@ -42,7 +43,7 @@ Number.prototype.format = function(n, x, s, c) {
 };
 
 function confirm() {
-    parent.napasPaymentFormForShifting(processOrderIds);
+    parent.napasPaymentFormForShifting();
     $.modal.close();
 }
 

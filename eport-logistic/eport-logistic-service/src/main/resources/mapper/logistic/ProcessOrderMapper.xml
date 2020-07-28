@@ -32,6 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="robotUuid"    column="robot_uuid"    />
+        <result property="ssrCode"    column="ssr_code"    />
         <association property="shipmentDetail"    column="id" javaType="ShipmentDetail" resultMap="ShipmentDetailResult" />
     </resultMap>
 
@@ -47,7 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectProcessOrderVo">
-        select id, shipment_id, logistic_group_id, service_type, reference_no, pay_type, sztp, modee, consignee, truck_co, tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, result, data, create_by, create_time, update_by, update_time, robot_uuid from process_order
+        select id, shipment_id, logistic_group_id, service_type, reference_no, pay_type, sztp, modee, consignee, truck_co, tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code from process_order
     </sql>
 
     <select id="selectProcessOrderList" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
@@ -75,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="result != null  and result != ''"> and result = #{result}</if>
             <if test="data != null  and data != ''"> and data = #{data}</if>
             <if test="robotUuid != null  and robotUuid != ''"> and robot_uuid = #{robotUuid}</if>
+            <if test="ssrCode != null  and ssrCode != ''"> and ssr_code = #{ssrCode}</if>
         </where>
     </select>
     
@@ -112,6 +114,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="result != null  and result != ''">result,</if>
             <if test="data != null  and data != ''">data,</if>
             <if test="robotUuid != null  and robotUuid != ''">robot_uuid,</if>
+            <if test="ssrCode != null  and ssrCode != ''">ssr_code,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
          </trim>
@@ -139,6 +142,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="result != null  and result != ''">#{result},</if>
             <if test="data != null  and data != ''">#{data},</if>
             <if test="robotUuid != null  and robotUuid != ''">#{robotUuid},</if>
+            <if test="ssrCode != null  and ssrCode != ''">#{ssrCode},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
          </trim>
@@ -170,6 +174,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="data != null  and data != ''">data = #{data},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="robotUuid != null  and robotUuid != ''">robot_uuid = #{robotUuid},</if>
+            <if test="ssrCode != null  and ssrCode != ''">ssr_code = #{ssrCode},</if>
             update_time = sysdate
         </trim>
         where id = #{id}

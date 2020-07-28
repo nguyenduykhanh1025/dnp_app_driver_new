@@ -65,7 +65,6 @@ public class SysRobotServiceImpl implements ISysRobotService {
 	 */
 	@Override
 	public int updateRobot(SysRobot robot) {
-		robot.setUpdateTime(DateUtils.getNowDate());
 		return sysRobotMapper.updateRobot(robot);
 	}
 
