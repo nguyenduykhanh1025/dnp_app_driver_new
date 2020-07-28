@@ -1,17 +1,14 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -35,8 +32,10 @@ import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
-import vn.com.irtech.eport.system.domain.SysConfig;
+import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.service.ISysConfigService;
+import vn.com.irtech.eport.system.service.ISysDictTypeService;
+
 
 /**
  * Shipment DetailsService Business Processing
@@ -57,7 +56,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Autowired
     private ISysConfigService configService;
-
+    
+    @Autowired
+    private ISysDictTypeService dictTypeService;
+    
     class BayComparator implements Comparator<ShipmentDetail> {
         public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
             // In the following line you set the criterion,
@@ -680,6 +682,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 ShipmentDetail ship = new ShipmentDetail();
                 ship.setContainerNo(i.getContainerNumber());
                 ship.setExpiredDem(i.getExpiredDem());
+                ship.setDetFreeTime(i.getDetFreeTime());
                 ship.setEmptyDepot(i.getEmptyContainerDepot());
                 ship.setOpeCode(i.getCarrierCode());
                 ship.setVslNm(i.getVesselNo()+": "+i.getVessel());
@@ -713,6 +716,15 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	public List<ShipmentDetail> getShipmentDetailList(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.getShipmentDetailList(shipmentDetail);
 	}
-    
-    
+    @Override
+	public String getSSR(String sztp)
+	{
+		List<SysDictData> dictDatas = dictTypeService.selectDictDataByType("sys_special_service_request");
+		for(SysDictData i : dictDatas) {
+			if(i.getDictValue().equals(sztp)) {
+				return i.getDictLabel();
+			}
+		}
+		return null;
+	}
 }
