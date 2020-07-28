@@ -680,6 +680,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 ShipmentDetail ship = new ShipmentDetail();
                 ship.setContainerNo(i.getContainerNumber());
                 ship.setExpiredDem(i.getExpiredDem());
+                ship.setDetFreeTime(i.getDetFreeTime());
                 ship.setEmptyDepot(i.getEmptyContainerDepot());
                 ship.setOpeCode(i.getCarrierCode());
                 ship.setVslNm(i.getVesselNo()+": "+i.getVessel());

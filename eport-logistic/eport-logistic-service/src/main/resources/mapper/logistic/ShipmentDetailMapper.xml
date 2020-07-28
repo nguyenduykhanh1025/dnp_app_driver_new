@@ -19,6 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sealNo"    column="seal_no"    />
         <result property="consignee"    column="consignee"    />
         <result property="expiredDem"    column="expired_dem"    />
+        <result property="detFreeTime"    column="det_free_time"    />
         <result property="wgt"    column="wgt"    />
         <result property="vslName"    column="vsl_name"    />
         <result property="vslNm"    column="vsl_nm"    />
@@ -53,7 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
-        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name, vsl_nm, voy_no, ope_code, carrier_name, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, shifting_cont_number, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
+        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name, vsl_nm, voy_no, ope_code, carrier_name, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, shifting_cont_number, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -71,6 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
@@ -112,6 +114,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
@@ -140,7 +143,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="getShipmentDetailList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
         select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, 
-        	container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name,
+        	container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name,
         	vsl_nm || ': '|| vsl_name as vsl_nm,
         	voy_no,
         	ope_code || ': ' || carrier_name as ope_code,
@@ -162,6 +165,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
@@ -213,6 +217,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sealNo != null  and sealNo != ''">seal_no,</if>
             <if test="consignee != null  and consignee != ''">consignee,</if>
             <if test="expiredDem != null ">expired_dem,</if>
+            <if test="detFreeTime != null ">det_free_time,</if>
             <if test="wgt != null ">wgt,</if>
             <if test="vslName != null  and vslName != ''">vsl_name,</if>
             <if test="vslNm != null  and vslNm != ''">vsl_nm,</if>
@@ -255,6 +260,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sealNo != null  and sealNo != ''">#{sealNo},</if>
             <if test="consignee != null  and consignee != ''">#{consignee},</if>
             <if test="expiredDem != null ">#{expiredDem},</if>
+            <if test="detFreeTime != null ">#{detFreeTime},</if>
             <if test="wgt != null ">#{wgt},</if>
             <if test="vslName != null  and vslName != ''">#{vslName},</if>
             <if test="vslNm != null  and vslNm != ''">#{vslNm},</if>
@@ -300,6 +306,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sealNo != null  and sealNo != ''">seal_no = #{sealNo},</if>
             <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
             <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+            <if test="detFreeTime != null ">det_free_time = #{detFreeTime},</if>
             <if test="wgt != null ">wgt = #{wgt},</if>
             <if test="vslName != null  and vslName != ''">vsl_name = #{vslName},</if>
             <if test="vslNm != null  and vslNm != ''">vsl_nm = #{vslNm},</if>
@@ -423,6 +430,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         seal_no as sealNo,
         consignee,
         expired_dem as expiredDem,
+        det_free_time as detFreeTime,
         wgt,
         vsl_name as vslName,
         vsl_nm as vslNm,
@@ -467,6 +475,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
