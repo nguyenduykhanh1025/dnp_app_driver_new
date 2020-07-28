@@ -132,7 +132,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="delFlg != null ">del_flg,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="fileCreateTime != null  and fileCreateTime != ''">file_create_time,</if>
+            <if test="fileCreateTime != null">file_create_time,</if>
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -160,7 +160,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="delFlg != null ">#{delFlg},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="fileCreateTime != null  and fileCreateTime != ''">#{fileCreateTime},</if>
+            <if test="fileCreateTime != null">#{fileCreateTime},</if>
             sysdate
          </trim>
     </insert>

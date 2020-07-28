@@ -8,28 +8,19 @@ var checkList = [];
 var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.serviceType = 1;
-var sizeList = [
-  "22G0: Cont 20 feet khô", 
-  "22P0: Cont 20 feet flat rack - quá khổ", 
-  "22R0: Cont 20 feet lạnh", 
-  "22T0: Cont 20 feet tank - cont bồn",
-  "22U0: Cont 20 feet open top", 
-  "42G0: Cont 40 feet thấp khô", 
-  "42P0: Cont 40 feet thấp flat rack - quá khổ",
-  "42R0: Cont 40 feet thấp lạnh", 
-  "42T0: Cont 40 feet thấp tank - cont bồn", 
-  "42U0: Cont 40 feet thấp open top",
-  "45G0: Cont 40 feet cao khô", 
-  "45P0: Cont 40 feet cao flat rack - quá khổ", 
-  "45R0: Cont 40 feet cao lạnh",
-  "45T0: Cont 40 feet cao tank - cont bồn",
-  "45U0: Cont 40 feet cao open top", 
-  "L4G0: Cont 45 feet khô", 
-  "L4P0: Cont 45 feet flat rack - quá khổ", 
-  "L4R0: Cont 45 feet lạnh",
-  "L4T0: Cont 45 feet tank - cont bồn",
-  "L4U0: Cont 45 feet open top"
-];
+var sizeList = [];
+//dictionary sizeList
+$.ajax({
+	  type: "GET",
+	  url: "/logistic/size/container/list",
+	  success(data) {
+		  if(data.code == 0){
+		      data.data.forEach(element => {
+		    	  sizeList.push(element['dictLabel'])
+		      })
+		  }
+	  }
+})
 var consigneeList, opeCodeList, dischargePortList, vslNmList;
 $.ajax({
   url: "/logistic/source/option",
@@ -368,99 +359,125 @@ function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties)
   return td;
 }
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
   $(td).html(value);
-  if (value != null && value != '') {
-    if (hot.getDataAtCell(row, 1) != null) {
-      cellProperties.readOnly = 'true';
-      $(td).css("background-color", "rgb(232, 232, 232)");
-    }
-  }
+//  if (value != null && value != '') {
+//    if (hot.getDataAtCell(row, 1) != null) {
+//      cellProperties.readOnly = 'true';
+//      $(td).css("background-color", "rgb(232, 232, 232)");
+//    }
+//  }
   return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
   $(td).html(value);
-  if (value != null && value != '') {
-    if (hot.getDataAtCell(row, 1) != null) {
-      cellProperties.readOnly = 'true';
-      $(td).css("background-color", "rgb(232, 232, 232)");
-    }
-  }
+//  if (value != null && value != '') {
+//    if (hot.getDataAtCell(row, 1) != null) {
+//      cellProperties.readOnly = 'true';
+//      $(td).css("background-color", "rgb(232, 232, 232)");
+//    }
+//  }
   return td;
 }
 function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
   $(td).html(value);
-  if (value != null && value != '') {
-    if (hot.getDataAtCell(row, 1) != null) {
-      cellProperties.readOnly = 'true';
-      $(td).css("background-color", "rgb(232, 232, 232)");
-    }
-  }
+//  if (value != null && value != '') {
+//    if (hot.getDataAtCell(row, 1) != null) {
+//      cellProperties.readOnly = 'true';
+//      $(td).css("background-color", "rgb(232, 232, 232)");
+//    }
+//  }
   return td;
 }
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).attr('id', 'sztp' + row).addClass("htMiddle");
-  if (value != null && value != '') {
-    value = value.split(':')[0];
-    if (hot.getDataAtCell(row, 1) != null) {
-      cellProperties.readOnly = 'true';
-      $(td).css("background-color", "rgb(232, 232, 232)");
-    }
-  }
+//  if (value != null && value != '') {
+//    value = value.split(':')[0];
+//    if (hot.getDataAtCell(row, 1) != null) {
+//      cellProperties.readOnly = 'true';
+//      $(td).css("background-color", "rgb(232, 232, 232)");
+//    }
+//  }
   $(td).html(value);
   return td;
 }
 function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).attr('id', 'sztp' + row).addClass("htMiddle");
-  if (value != null && value != '') {
-    value = value.split(':')[0];
-    if (hot.getDataAtCell(row, 1) != null) {
-      cellProperties.readOnly = 'true';
-      $(td).css("background-color", "rgb(232, 232, 232)");
-    }
-  }
+//  if (value != null && value != '') {
+//    value = value.split(':')[0];
+//    if (hot.getDataAtCell(row, 1) != null) {
+//      cellProperties.readOnly = 'true';
+//      $(td).css("background-color", "rgb(232, 232, 232)");
+//    }
+//  }
   $(td).html(value);
   return td;
 }
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).attr('id', 'wgt' + row).addClass("htMiddle");
   $(td).html(value);
-  if (value != null && value != '') {
-    if (hot.getDataAtCell(row, 1) != null) {
-      cellProperties.readOnly = 'true';
-      $(td).css("background-color", "rgb(232, 232, 232)");
-    }
-  }
+//  if (value != null && value != '') {
+//    if (hot.getDataAtCell(row, 1) != null) {
+//      cellProperties.readOnly = 'true';
+//      $(td).css("background-color", "rgb(232, 232, 232)");
+//    }
+//  }
   return td;
 }
 function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).attr('id', 'loadingPort' + row).addClass("htMiddle");
-  if (value != null && value != '') {
-    value = value.split(':')[0];
-    if (hot.getDataAtCell(row, 1) != null) {
-      cellProperties.readOnly = 'true';
-      $(td).css("background-color", "rgb(232, 232, 232)");
-    }
-  }
+//  if (value != null && value != '') {
+//    value = value.split(':')[0];
+//    if (hot.getDataAtCell(row, 1) != null) {
+//      cellProperties.readOnly = 'true';
+//      $(td).css("background-color", "rgb(232, 232, 232)");
+//    }
+//  }
   $(td).html(value);
   return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
+  cellProperties.readOnly = 'true';
+  $(td).css("background-color", "rgb(232, 232, 232)");
   $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
-  if (value != null && value != '') {
-    value = value.split(':')[0];
-    if (hot.getDataAtCell(row, 1) != null) {
-      cellProperties.readOnly = 'true';
-      $(td).css("background-color", "rgb(232, 232, 232)");
-    }
-  }
+//  if (value != null && value != '') {
+//    value = value.split(':')[0];
+//    if (hot.getDataAtCell(row, 1) != null) {
+//      cellProperties.readOnly = 'true';
+//      $(td).css("background-color", "rgb(232, 232, 232)");
+//    }
+//  }
   $(td).html(value);
   return td;
 }
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'remark' + row).addClass("htMiddle");
+  $(td).html(value);
+  return td;
+}
+
+function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
+  if (shipmentSelected.edoFlg == "1") {
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+  }
+  $(td).attr('id', 'detFreeTime' + row).addClass("htMiddle");
   $(td).html(value);
   return td;
 }
@@ -495,30 +512,32 @@ function configHandson() {
         case 3:
           return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
         case 4:
-          return '<span>Chủ hàng</span><span style="color: red;">(*)</span>';
+          return '<span>Số Ngày Miễn Lưu Vỏ</span><span style="color: red;">(*)</span>';
         case 5:
-          return '<span>Nơi Hạ Vỏ</span><span style="color: red;">(*)</span>';
+          return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
         case 6:
-          return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+          return '<span>Nơi Hạ Vỏ</span><span style="color: red;">(*)</span>';
         case 7:
-          return '<span>Tàu</span><span style="color: red;">(*)</span>';
+          return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
         case 8:
-          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
+          return '<span>Tàu</span><span style="color: red;">(*)</span>';
         case 9:
-          return "Kích Thước";
+          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
         case 10:
-          return "Seal No";
+          return "Kích Thước";
         case 11:
-          return "Trọng tải";
+          return "Seal No";
         case 12:
-          return "Cảng Xếp Hàng";
+          return "Trọng Tải";
         case 13:
-          return "Cảng Dỡ Hàng";
+          return '<span>Cảng Xếp Hàng</span><span style="color: red;">(*)</span>';
         case 14:
+          return "Cảng Dỡ Hàng";
+        case 15:
           return "Ghi Chú";
       }
     },
-    colWidths: [50, 100, 100, 100, 150, 100, 100, 200, 100, 100, 100, 100, 100, 110, 200],
+    colWidths: [50, 100, 100, 100, 150, 150, 100, 150, 200, 100, 100, 100, 100, 120, 100, 200],
     filter: "true",
     columns: [
       {
@@ -543,6 +562,11 @@ function configHandson() {
         dateFormat: "YYYY-MM-DD",
         defaultDate: new Date(),
         renderer: expiredDemRenderer
+      },
+      {
+          data: "detFreeTime",
+          type: "numeric",
+          renderer: detFreeTimeRenderer
       },
       {
         data: "consignee",
@@ -625,7 +649,7 @@ function configHandson() {
                 if (data.code == 0) {
                   hot.updateSettings({
                     cells: function (row, col, prop) {
-                      if (row == change[0] && col == 8) {
+                      if (row == change[0] && col == 9) {
                         let cellProperties = {};
                         cellProperties.source = data.voyages;
                         return cellProperties;
@@ -646,16 +670,16 @@ function configHandson() {
             if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
 
               // CLEAR DATA
-              hot.setDataAtCell(change[0], 4, ''); //consignee
-              hot.setDataAtCell(change[0], 6, ''); //opeCode
-              hot.setDataAtCell(change[0], 7, ''); //vslNm
-              hot.setDataAtCell(change[0], 8, ''); //voyNo
-              hot.setDataAtCell(change[0], 9, ''); //sztp
-              hot.setDataAtCell(change[0], 10, ''); //sealNo
-              hot.setDataAtCell(change[0], 11, ''); //wgt
-              hot.setDataAtCell(change[0], 12, ''); //loadingPort
-              hot.setDataAtCell(change[0], 13, ''); //dischargePort
-              hot.setDataAtCell(change[0], 14, ''); //remark
+              hot.setDataAtCell(change[0], 5, ''); //consignee
+              hot.setDataAtCell(change[0], 7, ''); //opeCode
+              hot.setDataAtCell(change[0], 8, ''); //vslNm
+              hot.setDataAtCell(change[0], 9, ''); //voyNo
+              hot.setDataAtCell(change[0], 10, ''); //sztp
+              hot.setDataAtCell(change[0], 11, ''); //sealNo
+              hot.setDataAtCell(change[0], 12, ''); //wgt
+              hot.setDataAtCell(change[0], 13, ''); //loadingPort
+              hot.setDataAtCell(change[0], 14, ''); //dischargePort
+              hot.setDataAtCell(change[0], 15, ''); //remark
 
               // Call data to auto-fill
               $.modal.loading("Đang xử lý...");
@@ -664,16 +688,16 @@ function configHandson() {
                 type: "GET"
               }).done(function (shipmentDetail) {
                 if (shipmentDetail != null) {
-                  hot.setDataAtCell(change[0], 4, shipmentDetail.consignee); //consignee
-                  hot.setDataAtCell(change[0], 6, shipmentDetail.opeCode); //opeCode
-                  hot.setDataAtCell(change[0], 7, shipmentDetail.vslNm); //vslNm
-                  hot.setDataAtCell(change[0], 8, shipmentDetail.voyNo); //voyNo
-                  hot.setDataAtCell(change[0], 9, shipmentDetail.sztp); //sztp
-                  hot.setDataAtCell(change[0], 10, shipmentDetail.sealNo); //sealNo
-                  hot.setDataAtCell(change[0], 11, shipmentDetail.wgt); //wgt
-                  hot.setDataAtCell(change[0], 12, shipmentDetail.loadingPort); //loadingPort
-                  hot.setDataAtCell(change[0], 13, shipmentDetail.dischargePort); //dischargePort
-                  hot.setDataAtCell(change[0], 14, shipmentDetail.remark); //remark
+                  hot.setDataAtCell(change[0], 5, shipmentDetail.consignee); //consignee
+                  hot.setDataAtCell(change[0], 7, shipmentDetail.opeCode); //opeCode
+                  hot.setDataAtCell(change[0], 8, shipmentDetail.vslNm); //vslNm
+                  hot.setDataAtCell(change[0], 9, shipmentDetail.voyNo); //voyNo
+                  hot.setDataAtCell(change[0], 10, shipmentDetail.sztp); //sztp
+                  hot.setDataAtCell(change[0], 11, shipmentDetail.sealNo); //sealNo
+                  hot.setDataAtCell(change[0], 12, shipmentDetail.wgt); //wgt
+                  hot.setDataAtCell(change[0], 13, shipmentDetail.loadingPort); //loadingPort
+                  hot.setDataAtCell(change[0], 14, shipmentDetail.dischargePort); //dischargePort
+                  hot.setDataAtCell(change[0], 15, shipmentDetail.remark); //remark
                 }
                 $.modal.closeLoading();
               });
@@ -947,6 +971,10 @@ function getDataFromTable(isValidate) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
         errorFlg = true;
         return false;
+      } else if (!object["detFreeTime"]) {
+          $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập Ngày miễn lưu vỏ!");
+          errorFlg = true;
+          return false;
       } else if (!object["consignee"]) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
         errorFlg = true;
@@ -955,6 +983,10 @@ function getDataFromTable(isValidate) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn nơi hạ vỏ!");
         errorFlg = true;
         return false;
+      } else if (!object["loadingPort"]) {
+          $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Cảng xếp hàng!");
+          errorFlg = true;
+          return false;
       } else if (consignee != object["consignee"]) {
         $.modal.alertError("Tên chủ hàng không được khác nhau!");
         errorFlg = true;
@@ -976,6 +1008,7 @@ function getDataFromTable(isValidate) {
     consignee = object["consignee"];
     emptydepot = object["emptyDepot"];
     let expiredDem = new Date(object["expiredDem"].substring(0, 4) + "/" + object["expiredDem"].substring(5, 7) + "/" + object["expiredDem"].substring(8, 10));
+    shipmentDetail.detFreeTime = object["detFreeTime"];
     shipmentDetail.blNo = shipmentSelected.blNo;
     shipmentDetail.containerNo = object["containerNo"];
     contList.push(object["containerNo"]);

@@ -71,6 +71,10 @@ public class ShipmentDetail extends BaseEntity
     private Date expiredDem;
 
     /** Weight */
+    @Excel(name = "Depot Free Time")
+    private Integer detFreeTime;
+    
+    /** Weight */
     @Excel(name = "Weight")
     private Long wgt;
     
@@ -288,7 +292,15 @@ public class ShipmentDetail extends BaseEntity
         return expiredDem;
     }
 
-    public void setWgt(Long wgt) {
+    public Integer getDetFreeTime() {
+		return detFreeTime;
+	}
+
+	public void setDetFreeTime(Integer detFreeTime) {
+		this.detFreeTime = detFreeTime;
+	}
+
+	public void setWgt(Long wgt) {
         this.wgt = wgt;
     }
 
@@ -552,6 +564,7 @@ public class ShipmentDetail extends BaseEntity
             .append("sealNo", getSealNo())
             .append("consignee", getConsignee())
             .append("expiredDem", getExpiredDem())
+            .append("detFreeTime", getDetFreeTime())
             .append("wgt", getWgt())
             .append("vslName", getVslName())
             .append("vslNm", getVslNm())
