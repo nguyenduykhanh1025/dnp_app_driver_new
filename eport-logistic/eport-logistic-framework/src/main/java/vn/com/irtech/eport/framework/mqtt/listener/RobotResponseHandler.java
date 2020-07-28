@@ -93,16 +93,21 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		String receiptId = map.get("receiptId") == null ? null : map.get("receiptId").toString();
 		String invoiceNo = map.get("invoiceNo") == null ? "" : map.get("invoiceNo").toString(); 
 
-		if (receiptId != null) {
-			if ("0".equals(status)) {
-				this.updateShipmentDetail(result, receiptId, invoiceNo, uuId);
-				this.sendMessageWebsocket(result, receiptId);
-				status = this.assignNewProcessOrder(sysRobot);
-			} else if ("1".equals(status)) {
-				// SAVE HISTORY ROBOT START MAKE-ORDER
-				this.updateHistory(receiptId, uuId);
+		if (sysRobot.getIsShiftingContOrder()) {
+
+		} else {
+			if (receiptId != null) {
+				if ("0".equals(status)) {
+					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId);
+					this.sendMessageWebsocket(result, receiptId);
+					status = this.assignNewProcessOrder(sysRobot);
+				} else if ("1".equals(status)) {
+					// SAVE HISTORY ROBOT START MAKE-ORDER
+					this.updateHistory(receiptId, uuId);
+				}
 			}
 		}
+
 		robotService.updateRobotStatusByUuId(uuId, status);
 		
 	}

@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 
 /**
@@ -78,4 +81,13 @@ public interface ProcessBillMapper
      * @return
      */
     public int updateBillListByProcessOrderIds(String[] processOrderIds);
+
+    /**
+     * Get Bill Shifting Cont By Shipment Id
+     * 
+     * @param shipmentId
+     * @param logisticGroupId
+     * @return  List<ProcessBill>
+     */
+    public List<ProcessBill> getBillShiftingContByShipmentId(@Param("shipmentId") Long shipmentId, @Param("logisticGroupId") Long logisticGroupId);
 }

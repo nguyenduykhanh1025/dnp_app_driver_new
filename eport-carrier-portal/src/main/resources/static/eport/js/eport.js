@@ -222,7 +222,7 @@ var table = {
         			        title: false,
         			        type: 1,
         			        closeBtn: true,
-        			        shadeClose: true,
+        			        shadeClose: false,
         			        area: ['auto', 'auto'],
         			        content: "<img src='" + src + "' height='" + height + "' width='" + width + "'/>"
         			    });
@@ -240,7 +240,7 @@ var table = {
             		} else if ($.common.equals("open", target)) {
             			parent.layer.alert(input.val(), {
                 	        title: "Thông Báo",
-                	        shadeClose: true,
+                	        shadeClose: false,
                 	        btn: ['OK'],
                 	        btnclass: ['btn btn-primary'],
                 	    });
@@ -410,7 +410,7 @@ var table = {
             		content: $('#' + currentId).html(),
             		btn: ['<i class="fa fa-check"></i> Nhập', '<i class="fa fa-remove"></i> Bỏ Qua'],
             		// 弹层外区域关闭
-            		shadeClose: true,
+            		shadeClose: false,
             		btn1: function(index, layero){
             			var file = layero.find('#file').val();
             			if (file == '' || (!$.common.endWith(file, '.xls') && !$.common.endWith(file, '.xlsx'))){
@@ -763,7 +763,7 @@ var table = {
             		content: url,
             		btn: ['OK', 'Đóng'],
             	    // 弹层外区域关闭
-            		shadeClose: true,
+            		shadeClose: false,
             		yes: callback,
             	    cancel: function(index) {
             	        return true;
@@ -805,7 +805,7 @@ var table = {
           title: title,
           content: url,
             // 弹层外区域关闭
-          shadeClose: true,
+          shadeClose: false,
           yes: callback,
             cancel: function(index) {
                 return true;
@@ -871,7 +871,7 @@ var table = {
             		content: url,
             		btn: ['OK', 'Đóng'],
             		// 弹层外区域关闭
-            		shadeClose: true,
+            		shadeClose: false,
             		yes: function(index, layero) {
             	        var iframeWin = layero.find('iframe')[0];
             	        iframeWin.contentWindow.submitHandler(index, layero);
@@ -914,7 +914,7 @@ var table = {
             		title: title,
             		content: url,
             		//btn: ['OK', 'Đóng'],
-            		shadeClose: true,
+            		shadeClose: false,
             		yes: callback,
             	    cancel: function(index) {
             	        return true;
@@ -950,7 +950,7 @@ var table = {
             		title: title,
             		content: url,
             		// 弹层外区域关闭
-            		shadeClose: true,
+            		shadeClose: false,
             		yes: function(index, layero) {
             	        var iframeWin = layero.find('iframe')[0];
             	        iframeWin.contentWindow.submitHandler(index, layero);
@@ -996,7 +996,7 @@ var table = {
 				  title: title,
 				  content: url,
 				  //btn: [text],
-				  shadeClose: true,
+				  shadeClose: false,
 				  //yes: callback,
 				});
 		},

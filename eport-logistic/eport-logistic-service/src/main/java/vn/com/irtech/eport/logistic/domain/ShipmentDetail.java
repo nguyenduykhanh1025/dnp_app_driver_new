@@ -134,9 +134,9 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Boc Chi Dinh (Y,N)")
     private String preorderPickup;
 
-    /** So Cont Dich Chuyen */
-    @Excel(name = "So Cont Dich Chuyen")
-    private Integer shiftingContNumber;
+    /** Trang Thai Thanh Toan Phi Dich Chuyen */
+    @Excel(name = "Trang Thai Thanh Toan Phi Dich Chuyen (Y, N)")
+    private String prePickupPaymentStatus;
 
     /** Custom Status (H,R) */
     @Excel(name = "Custom Status (H,R)")
@@ -420,12 +420,12 @@ public class ShipmentDetail extends BaseEntity
         return preorderPickup;
     }
 
-    public void setShiftingContNumber(Integer shiftingContNumber) {
-        this.shiftingContNumber = shiftingContNumber;
+    public void setPrePickupPaymentStatus(String prePickupPaymentStatus) {
+        this.prePickupPaymentStatus = prePickupPaymentStatus;
     }
 
-    public Integer getShiftingContNumber() {
-        return shiftingContNumber;
+    public String getPrePickupPaymentStatus() {
+        return prePickupPaymentStatus;
     }
 
     public void setCustomStatus(String customStatus) {
@@ -580,7 +580,7 @@ public class ShipmentDetail extends BaseEntity
             .append("vgm", getVgm())
             .append("vgmPersonInfo", getVgmPersonInfo())
             .append("preorderPickup", getPreorderPickup())
-            .append("shiftingContNumber", getShiftingContNumber())
+            .append("prePickupPaymentStatus", getPrePickupPaymentStatus())
             .append("customStatus", getCustomStatus())
             .append("paymentStatus", getPaymentStatus())
             .append("processStatus", getProcessStatus())

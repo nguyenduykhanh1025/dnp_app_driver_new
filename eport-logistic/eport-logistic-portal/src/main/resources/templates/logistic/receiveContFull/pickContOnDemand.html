@@ -28,7 +28,7 @@
   }
 
   .contListPosition {
-    height: 250px;
+    height: 225px;
     /* width: 760px; */
     overflow-y: scroll;
     text-align: center;
@@ -86,6 +86,10 @@
     margin-bottom: 0 !important;
   }
 
+  .payment-type-form {
+    display: flex;
+    margin-top: 10px;
+  }
 </style>
 
 <body>
@@ -134,6 +138,13 @@
           </tbody>
         </table>
       </div> -->
+      <div class="payment-type-form">
+        <label></span>Phương thức thanh toán </label>
+        <input style="margin: 3px 10px 0 20px;" type="radio" name="paymentType" id="credit" value="1"/>
+        <label id="creditLabel">Credit (Trả sau)</label>
+        <input style="margin: 3px 10px 0 20px;" type="radio" name="paymentType" id="cash" value="0" checked/>
+        <label>Cash (Trả tiền mặt)</label>
+      </div>
     </div>
     <div class="layui-layer-btn footer">
       <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
@@ -142,10 +153,11 @@
   </div>
 </body>
 <th:block th:include="include :: footer" />
+<th:block th:include="include :: websocket" />
 <script type="text/javascript" th:inline="javascript">
-  var unitCosts = /*[[${unitCosts}]]*/;
   var bayList = /*[[${bayList}]]*/;
   var blNo = /*[[${blNo}]]*/;
+  var isCredit = /*[[${isCredit}]]*/;
 </script>
 <script th:src="@{/js/logistic/receiveContFull/pickContOnDemand.js}"></script>
 

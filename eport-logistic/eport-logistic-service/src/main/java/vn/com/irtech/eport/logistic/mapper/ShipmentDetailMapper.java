@@ -92,4 +92,13 @@ public interface ShipmentDetailMapper
     
     public List<ShipmentDetail> getShipmentDetailList(ShipmentDetail shipmentDetail);
 
+    /**
+     * Count number of legal container
+     * 
+     * @param shipmentDetails
+     * @param logisticGroupId
+     * @return Integer
+     */
+    public Integer countNumberOfLegalCont(@Param("shipmentDetails") List<ShipmentDetail> shipmentDetails,@Param("logisticGroupId") Long logisticGroupId);
+
 }

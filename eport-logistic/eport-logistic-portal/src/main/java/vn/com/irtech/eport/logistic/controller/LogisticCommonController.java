@@ -212,6 +212,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		// check if process order is on payment transaction
 		PaymentHistory paymentHistoryParam = new PaymentHistory();
 		paymentHistoryParam.setProccessOrderIds(processOrderIds);
+		paymentHistoryParam.setStatus("0");
 		List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
 		PaymentHistory paymentHistory;
 		if (paymentHistories.isEmpty()) {
@@ -287,6 +288,8 @@ public class LogisticCommonController extends LogisticBaseController {
 					processBillService.updateBillListByProcessOrderIds(paymentHistory.getProcessOrderIds());
 
 					isError = false;
+				} else {
+
 				}
 			}
 		}
@@ -297,6 +300,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		}
 		return PREFIX + "/napas/resultForm";
 	}
+
 	@PostMapping("/pods")
 	@ResponseBody
 	public AjaxResult getPODs(@RequestBody ShipmentDetail shipmentDetail){
