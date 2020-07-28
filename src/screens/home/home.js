@@ -144,9 +144,15 @@ export default class HomeScreen extends Component {
           } */}
           <View style={styles.Header}>
             <View style={styles.HeaderName}>
-              <View style={styles.HeaderIcon}>
-                <Image source={icUser} style={styles.icUser} />
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  NavigationService.navigate(mainStack.profile, {})
+                }}
+              >
+                <View style={styles.HeaderIcon}>
+                  <Image source={icUser} style={styles.icUser} />
+                </View>
+              </TouchableOpacity>
               <View style={styles.HeaderText}>
                 <View style={styles.HeaderTextUp}>
                   <Text style={styles.HeaderTextDate}>{this.state.date}</Text>

@@ -1,8 +1,22 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, ScrollView } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
 import NavigationService from '@/utils/navigation';
 import { mainStack } from '@/config/navigator';
-import { Colors, sizes, sizeWidth, sizeHeight } from '@/commons'
+import {
+  Colors,
+  sizes,
+  sizeWidth,
+  sizeHeight,
+  widthPercentageToDP as ws,
+  heightPercentageToDP as hs,
+  fontSizeValue as fs,
+} from '@/commons'
 import { getListNotification, SearchQRCode } from '@/mock/index';
 import Item from './item';
 import { HeaderMain } from '@/components'
@@ -45,34 +59,53 @@ export default class ListScreen extends Component {
     return null
   }
 
+  renderCenter = () => (
+    <Text style={{
+      fontSize: fs(18),
+      fontWeight: 'bold',
+      color: Colors.white,
+      marginLeft: ws(20)
+    }}>
+      Thông báo
+    </Text>
+  )
+
   render() {
     var { data } = this.state;
     return (
       <View>
-      <HeaderMain
-        backgroundColor={Colors.blue}
-        title='Notification'
-      />
-      <ScrollView 
-        style={styles.container}
-        showsVerticalScrollIndicator = {false}
-      >
-        <View style = {styles.list}>
-          {data.map((item, index) => (
-            <View>
-              <View style={styles.itemView}>
-                <Item
-                  data={item}
-                  index={index}
-                  onPress={() => {
-                    NavigationService.navigate(mainStack.result, { item: item })
-                  }}
-                />
+        <HeaderMain
+          backgroundColor={Colors.blue}
+          title='Notification'
+          renderCenter={this.renderCenter()}
+          disableBG
+          disableStep
+        />
+        <StatusBar
+          translucent
+          barStyle={'light-content'}
+          backgroundColor='transparent'
+        />
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.list}>
+            {data.map((item, index) => (
+              <View>
+                <View style={styles.itemView}>
+                  <Item
+                    data={item}
+                    index={index}
+                    onPress={() => {
+                      NavigationService.navigate(mainStack.result, { item: item })
+                    }}
+                  />
+                </View>
               </View>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+            ))}
+          </View>
+        </ScrollView>
       </View>
     )
   }

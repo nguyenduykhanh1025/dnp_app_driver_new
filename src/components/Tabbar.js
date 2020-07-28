@@ -38,12 +38,12 @@ const Tabbar = (props) => {
             router: homeTab.home,
             isShow: true,
         },
-        {
-            iconName: history_icon,
-            name: 'Lịch sử',
-            router: homeTab.history,
-            isShow: false,
-        },
+        // {
+        //     iconName: history_icon,
+        //     name: 'Lịch sử',
+        //     router: homeTab.history,
+        //     isShow: false,
+        // },
         {
             iconName: command_icon,
             name: 'Làm lệnh',
@@ -52,17 +52,18 @@ const Tabbar = (props) => {
             isShow: true,
         },
         // {
-        //     iconName: notify_icon,
-        //     name: 'Thông báo',
-        //     router: homeTab.notification,
-        //     isShow: false,
+        //     iconName: home_user,
+        //     name: 'Tài khoản',
+        //     router: homeTab.profile,
+        //     isShow: true,
         // },
         {
-            iconName: home_user,
-            name: 'Tài khoản',
-            router: homeTab.profile,
+            iconName: notify_icon,
+            name: 'Thông báo',
+            router: homeTab.notification,
             isShow: true,
         },
+        
     ];
 
     //size={navigation.state.index === index ? sizes.h1 : sizes.h3}
