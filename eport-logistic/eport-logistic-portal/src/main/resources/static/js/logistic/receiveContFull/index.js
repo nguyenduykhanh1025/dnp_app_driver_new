@@ -513,12 +513,12 @@ function configHandson() {
         case 12:
           return "Cảng Xếp Hàng";
         case 13:
-          return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+          return "Cảng Dỡ Hàng";
         case 14:
           return "Ghi Chú";
       }
     },
-    colWidths: [50, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100, 100, 100, 110, 200],
+    colWidths: [50, 100, 100, 100, 150, 100, 100, 200, 100, 100, 100, 100, 100, 110, 200],
     filter: "true",
     columns: [
       {
@@ -658,6 +658,7 @@ function configHandson() {
               hot.setDataAtCell(change[0], 14, ''); //remark
 
               // Call data to auto-fill
+              $.modal.loading("Đang xử lý...");
               $.ajax({
                 url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
                 type: "GET"
@@ -674,6 +675,7 @@ function configHandson() {
                   hot.setDataAtCell(change[0], 13, shipmentDetail.dischargePort); //dischargePort
                   hot.setDataAtCell(change[0], 14, shipmentDetail.remark); //remark
                 }
+                $.modal.closeLoading();
               });
             }
           }
@@ -791,10 +793,12 @@ function updateLayout() {
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
+  $.modal.openLoading("Đang xử lý ...");
   $.ajax({
     url: prefix + "/shipment/" + id + "/shipment-detail",
     method: "GET",
     success: function (data) {
+      $.modal.closeLoading();
       if (data.code == 0) {
         sourceData = data.shipmentDetails;
         if (rowAmount < sourceData.length) {
@@ -946,10 +950,6 @@ function getDataFromTable(isValidate) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn nơi hạ vỏ!");
         errorFlg = true;
         return false;
-      } else if (!object["dischargePort"]) {
-        $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Cảng dở hàng!");
-        errorFlg = true;
-        return false;
       } else if (consignee != object["consignee"]) {
         $.modal.alertError("Tên chủ hàng không được khác nhau!");
         errorFlg = true;
@@ -974,13 +974,17 @@ function getDataFromTable(isValidate) {
     shipmentDetail.blNo = shipmentSelected.blNo;
     shipmentDetail.containerNo = object["containerNo"];
     contList.push(object["containerNo"]);
-    shipmentDetail.opeCode = object["opeCode"];
+    let carrier = object["opeCode"].split(": ");
+    shipmentDetail.opeCode = carrier[0];
+    shipmentDetail.carrierName = carrier[1];
     shipmentDetail.sztp = object["sztp"].split(":")[0];
     shipmentDetail.consignee = object["consignee"];
     shipmentDetail.sealNo = object["sealNo"];
     shipmentDetail.expiredDem = expiredDem.getTime();
     shipmentDetail.wgt = object["wgt"];
-    shipmentDetail.vslNm = object["vslNm"];
+    let vessel = object["vslNm"].split(": ");
+    shipmentDetail.vslNm = vessel[0];
+    shipmentDetail.vslName = vessel[1];
     shipmentDetail.voyNo = object["voyNo"];
     shipmentDetail.loadingPort = object["loadingPort"];
     shipmentDetail.dischargePort = object["dischargePort"];
@@ -1248,6 +1252,11 @@ function finishVerifyForm(result) {
     orderNumber = result.orderNumber;
     // CONNECT WEB SOCKET
     connectToWebsocketServer();
+
+    setTimeout(() => {
+      reloadShipmentDetail();
+      $.modal.alertError("Yêu cầu của quý khách đang được chờ xử lý, quý khách vui lòng đợi hoặc liên hệ với bộ phận thủ tục để được hỗ trợ thêm!");
+    }, 5000);
 
   } else {
     reloadShipmentDetail();

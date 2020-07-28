@@ -106,4 +106,12 @@ public interface ISysRobotService {
 	 * @return result
 	 */
 	public int deleteRobotByUuId(String uuId);
+
+	/**
+     * Select robot list online (include available and busy)
+     * 
+     * @param robot
+     * @return list robot
+     */
+    public List<SysRobot> selectRobotListOnline(SysRobot robot);
 }

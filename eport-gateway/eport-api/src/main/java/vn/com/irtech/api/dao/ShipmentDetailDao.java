@@ -12,11 +12,11 @@ import vn.com.irtech.api.entity.ShipmentDetailEntity;
 import vn.com.irtech.api.entity.ShipmentEntity;
 @Mapper
 public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
-    public List<ShipmentDetailEntity> selectShipmentDetailsByBLNo(ShipmentDetailEntity shipmentDetailEntity);
+    public List<ShipmentDetailEntity> selectShipmentDetailsByBLNo(String blNo);
     
-    public ShipmentDetailEntity selectShipmentDetailByContNo(ShipmentDetailEntity shipmentDetailEntity);
+    public ShipmentDetailEntity selectShipmentDetailByContNo(@Param("blNo") String blNo, @Param("containerNo") String containerNo);
     
-    public List<ShipmentDetailEntity> selectCoordinateOfContainers(ShipmentDetailEntity shipmentDetailEntity);
+    public List<ShipmentDetailEntity> selectCoordinateOfContainers(String blNo);
     
 	public List<String> selectVesselCodeList();
 	

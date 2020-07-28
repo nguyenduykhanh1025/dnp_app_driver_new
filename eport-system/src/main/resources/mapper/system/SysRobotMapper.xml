@@ -19,10 +19,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="remark"    column="remark"    />
+        <result property="isShiftingContOrder"    column="is_shifting_cont_order"    />
+        <result property="responseTime"    column="response_time"    />
     </resultMap>
 
     <sql id="selectRobotVo">
-        select id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark from sys_robot
+        select id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, response_time from sys_robot
     </sql>
 
     <select id="selectRobotList" parameterType="SysRobot" resultMap="RobotResult">
@@ -36,6 +38,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isSendContEmptyOrder != null"> and is_send_cont_empty_order = #{isSendContEmptyOrder}</if>
             <if test="isGateInOrder != null"> and is_gate_in_order = #{isGateInOrder}</if>
             <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
+            <if test="isShiftingContOrder != null"> and is_shifting_cont_order = #{isShiftingContOrder}</if>
+            <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
     </select>
     
@@ -61,6 +65,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isSendContEmptyOrder != null"> and is_send_cont_empty_order = #{isSendContEmptyOrder}</if>
             <if test="isGateInOrder != null"> and is_gate_in_order = #{isGateInOrder}</if>
             <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
+            <if test="isShiftingContOrder != null"> and is_shifting_cont_order = #{isShiftingContOrder}</if>
+            <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
         OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
     </select>
@@ -82,6 +88,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ipAddress != null  and ipAddress != ''">ip_address,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="remark != null  and remark != ''">remark,</if>
+            <if test="isShiftingContOrder != null">is_shifting_cont_order,</if>
+            response_time,
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -96,6 +104,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ipAddress != null  and ipAddress != ''">#{ipAddress},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="isShiftingContOrder != null">#{isShiftingContOrder},</if>
+            sysdate,
             sysdate
          </trim>
     </insert>
@@ -113,6 +123,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ipAddress != null  and ipAddress != ''">ip_address = #{ipAddress},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="isShiftingContOrder != null">is_shifting_cont_order = #{isShiftingContOrder},</if>
+            <if test="responseTime != null"></if>
+            response_time = sysdate,
             update_time = sysdate
         </trim>
         where id = #{id}
@@ -153,6 +166,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ipAddress != null  and ipAddress != ''">ip_address = #{ipAddress},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="isShiftingContOrder != null">is_shifting_cont_order = #{isShiftingContOrder},</if>
+            response_time = sysdate,
             update_time = sysdate
         </trim>
         where uuid = #{uuId}
@@ -161,4 +176,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <delete id="deleteRobotByUuId" parameterType="String">
         delete from sys_robot where uuid = #{uuId}
     </delete>
+
+    <select id="selectRobotListOnline" parameterType="SysRobot" resultMap="RobotResult">
+        <include refid="selectRobotVo"/>
+        <where>  
+            and status != '2'
+            <if test="uuId != null  and uuId != ''"> and uuid = #{uuId}</if>
+            <if test="isReceiveContFullOrder != null"> and is_receive_cont_full_order = #{isReceiveContFullOrder}</if>
+            <if test="isReceiveContEmptyOrder != null"> and is_receive_cont_empty_order = #{isReceiveContEmptyOrder}</if>
+            <if test="isSendContFullOrder != null"> and is_send_cont_full_order = #{isSendContFullOrder}</if>
+            <if test="isSendContEmptyOrder != null"> and is_send_cont_empty_order = #{isSendContEmptyOrder}</if>
+            <if test="isGateInOrder != null"> and is_gate_in_order = #{isGateInOrder}</if>
+            <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
+            <if test="isShiftingContOrder != null"> and is_shifting_cont_order = #{isShiftingContOrder}</if>
+            <if test="responseTime != null"> and response_time = #{responseTime}</if>
+        </where>
+    </select>
 </mapper>

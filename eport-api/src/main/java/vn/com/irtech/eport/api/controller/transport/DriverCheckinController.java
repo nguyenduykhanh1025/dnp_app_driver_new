@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import vn.com.irtech.eport.api.form.CheckinForm;
+import vn.com.irtech.eport.api.form.CheckinReq;
 import vn.com.irtech.eport.api.service.transport.IDriverCheckinService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -23,11 +23,15 @@ public class DriverCheckinController extends BaseController  {
 	
 	@PostMapping("")
 	@ResponseBody
-	public AjaxResult checkin(@Valid @RequestBody CheckinForm req) throws Exception{
+	public AjaxResult checkin(@Valid @RequestBody CheckinReq req) throws Exception{
 		
 		AjaxResult ajaxResult = AjaxResult.success();
 		
-		ajaxResult.put("qrString", driverCheckinService.checkin(req));
+		String sessionId = getSession().getId();
+		
+		ajaxResult.put("sessionId", sessionId);
+		
+		ajaxResult.put("qrString", driverCheckinService.checkin(req, sessionId));
 		
 		return ajaxResult;
 	}

@@ -5,6 +5,7 @@ eport:
   demoEnabled: true
   profile: D:/eport/upload
   addressEnabled: true
+  # apiUrl: http://192.168.1.99:9090/api
   apiUrl: http://127.0.0.1:9090/api
 server:
   port: 7070
@@ -86,8 +87,7 @@ xss:
 mqtt:
   username: admin             
   password: public            
-  host-url: tcp://192.168.1.99:1883                # The address and port of your own server need to be changed 
-  #host-url: tcp://127.0.0.1:1883
+  host-url: tcp://127.0.0.1:1883                # The address and port of your own server need to be changed 
 
 websocket:
    endpoint: /eport_logistic

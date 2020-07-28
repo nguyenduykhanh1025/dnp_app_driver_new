@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 
 import vn.com.irtech.eport.api.consts.MessageConsts;
-import vn.com.irtech.eport.api.form.CheckinForm;
+import vn.com.irtech.eport.api.form.CheckinReq;
+import vn.com.irtech.eport.api.form.CheckinRes;
+import vn.com.irtech.eport.api.form.PickupHistoryDataRes;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.service.transport.IDriverCheckinService;
 import vn.com.irtech.eport.api.util.SecurityUtils;
@@ -21,8 +23,11 @@ public class DriverCheckinServiceImpl implements IDriverCheckinService{
 	private IPickupHistoryService pickupHistoryService;
 	
 	@Override
-	public String checkin(CheckinForm req) throws Exception{
+	public String checkin(CheckinReq req, String sessionId) throws Exception{
 		
+		CheckinRes checkinRes = new CheckinRes();
+		
+		checkinRes.setSessionId(sessionId);
 		
 		// validate
 		for (Long id : req.getPickupHistoryIds()) {
@@ -42,11 +47,27 @@ public class DriverCheckinServiceImpl implements IDriverCheckinService{
 			if (pickupHistory.getStatus() >= 2) {
 				throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0010));
 			}
+			
+			PickupHistoryDataRes pickupHistoryDataRes = new PickupHistoryDataRes();
+			pickupHistoryDataRes.setPickupHistoryId(id);
+			pickupHistoryDataRes.setContNo(pickupHistory.getContainerNo());
+			pickupHistoryDataRes.setShipmentId(pickupHistory.getShipmentId());
+			pickupHistoryDataRes.setShipmentDetailId(pickupHistory.getShipmentDetailId());
+			pickupHistoryDataRes.setVessel(pickupHistory.getShipmentDetail().getVslNm());
+			pickupHistoryDataRes.setVoyage(pickupHistory.getShipmentDetail().getVoyNo());
+			pickupHistoryDataRes.setSztp(pickupHistory.getShipmentDetail().getSztp());
+			pickupHistoryDataRes.setFe(pickupHistory.getShipmentDetail().getFe());
+			pickupHistoryDataRes.setServiceType(pickupHistory.getShipment().getServiceType());
+			pickupHistoryDataRes.setWeight(pickupHistory.getShipmentDetail().getWgt());
+			pickupHistoryDataRes.setChassisNo(pickupHistory.getChassisNo());
+			pickupHistoryDataRes.setTruckNo(pickupHistory.getTruckNo());
+			
+			checkinRes.getData().add(pickupHistoryDataRes);
 		}
 		
-		String qrString = new Gson().toJson(req) + "*";
+		String qrString = new Gson().toJson(checkinRes) + "*";
 		
-		return qrString;
+		return qrString.replace("\"", "'");
 	}
 
 }

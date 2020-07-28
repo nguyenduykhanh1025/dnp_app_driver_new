@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.api.consts.BusinessConst;
 import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.domain.EportUserType;
-import vn.com.irtech.eport.api.form.LoginForm;
+import vn.com.irtech.eport.api.form.LoginReq;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.security.CustomUserDetails;
 import vn.com.irtech.eport.api.util.TokenUtils;
@@ -29,7 +29,7 @@ public class LoginService {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 
-	public String login(LoginForm loginForm, EportUserType userType) {
+	public String login(LoginReq loginForm, EportUserType userType) {
 
 		Authentication authentication = null;
 

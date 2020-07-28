@@ -157,12 +157,11 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public String pickContOnDemand(@PathVariable("blNo") String blNo, ModelMap mmap) {
 		ShipmentDetail shipmentDt = new ShipmentDetail();
 		shipmentDt.setBlNo(blNo);
+		shipmentDt.setFe("F");
+//		shipmentDt.setServiceType(Constants.RECEIVE_CONT_FULL);
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
 		//Get coordinate from catos test
-		String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers";
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.postForObject(url,shipmentDt , R.class);
-		List<LinkedHashMap> coordinateOfList = (List<LinkedHashMap>) r.get("data");
+		List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(blNo);
 		List<ShipmentDetail[][]> bayList = new ArrayList<>();
 		try {
 			bayList = shipmentDetailService.getContPosition(coordinateOfList, shipmentDetails);
@@ -259,19 +258,28 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
 			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) {
 				shipmentDetails = new ArrayList<>();
 				//get infor from edi
 				shipmentDetails = shipmentDetailService.getShipmentDetailsFromEDIByBlNo(shipment.getBlNo());
 				//get infor from catos
-				if (shipmentDetails.size() == 0 ){
-					String url = Global.getApiUrl() + "/shipmentDetail/list";
-					ShipmentDetail shipDetail = new ShipmentDetail();
-					shipDetail.setBlNo(shipment.getBlNo());
-					RestTemplate restTemplate = new RestTemplate();
-					R r = restTemplate.postForObject( url, shipDetail, R.class);
-					shipmentDetails = (List<ShipmentDetail>) r.get("data");
+				List<ShipmentDetail> shipmentDetailsCatos = catosApiService.selectShipmentDetailsByBLNo(shipment.getBlNo());
+				//Get opecode, sealNo, wgt, pol,pod
+				if(shipmentDetailsCatos != null) {
+					for(ShipmentDetail i : shipmentDetails) {
+						for(ShipmentDetail j : shipmentDetailsCatos) {
+							if(i.getContainerNo() == j.getContainerNo()) {
+								i.setOpeCode(j.getOpeCode());
+								i.setVslNm(j.getVslNm());
+								i.setVoyNo(j.getVoyNo());
+								i.setSealNo(j.getSealNo());
+								i.setWgt(j.getWgt());
+								i.setLoadingPort(j.getLoadingPort());
+								i.setDischargePort(j.getDischargePort());
+							}
+						}
+					}
 				}
 			}
 			ajaxResult.put("shipmentDetails", shipmentDetails);
@@ -323,7 +331,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setDoStatus("N");
 					shipmentDetail.setPreorderPickup("N");
-					if ("VN".equalsIgnoreCase(shipmentDetail.getDischargePort().substring(0, 2))) {
+					if ("VN".equalsIgnoreCase(shipmentDetail.getLoadingPort().substring(0, 2))) {
 						shipmentDetail.setCustomStatus("R");
 						shipmentDetail.setStatus(2);
 					} else {
@@ -385,16 +393,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public ShipmentDetail getContInfo(@PathVariable("blNo") String blNo, @PathVariable("containerNo") String containerNo) {
 		if (blNo != null && containerNo != null) {
-			ShipmentDetail shipmentDetail = new ShipmentDetail();
-			shipmentDetail.setBlNo(blNo);
-			shipmentDetail.setContainerNo(containerNo);
-			String url = Global.getApiUrl() + "/shipmentDetail/containerInfor";
-			RestTemplate restTemplate = new RestTemplate();
-			R r = restTemplate.postForObject(url, shipmentDetail, R.class);
-			// List<ShipmentDetail> l = (List<ShipmentDetail>) r.get("data");
-			ObjectMapper mapper = new ObjectMapper();
-			ShipmentDetail aShipmentDetail = mapper.convertValue(r.get("data"), ShipmentDetail.class);
-			return aShipmentDetail;
+//			ShipmentDetail shipmentDetail = new ShipmentDetail();
+//			shipmentDetail.setBlNo(blNo);
+//			shipmentDetail.setContainerNo(containerNo);
+//			String url = Global.getApiUrl() + "/shipmentDetail/containerInfor";
+//			RestTemplate restTemplate = new RestTemplate();
+//			R r = restTemplate.postForObject(url, shipmentDetail, R.class);
+//			// List<ShipmentDetail> l = (List<ShipmentDetail>) r.get("data");
+//			ObjectMapper mapper = new ObjectMapper();
+//			ShipmentDetail aShipmentDetail = mapper.convertValue(r.get("data"), ShipmentDetail.class);
+			ShipmentDetail shipmentDetail = catosApiService.selectShipmentDetailByContNo(blNo, containerNo);
+			return shipmentDetail;
 		} else {
 			return null;
 		}
@@ -508,11 +517,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (preorderPickupConts.size() > 0) {
 			ShipmentDetail shipmentDt = new ShipmentDetail();
 			shipmentDt.setBlNo(preorderPickupConts.get(0).getBlNo());
+			shipmentDt.setFe("F");
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
-			String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers";
-			RestTemplate restTemplate = new RestTemplate();
-			R r = restTemplate.postForObject(url, shipmentDt, R.class);
-			List<LinkedHashMap> coordinateOfList = (List<LinkedHashMap>) r.get("data");
+			//Get coordinate from catos test
+			List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(preorderPickupConts.get(0).getBlNo());
 			if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 				if (shipmentDetailService.calculateMovingCont(coordinateOfList, preorderPickupConts, shipmentDetails)) {
 					return success("Bốc container chỉ định thành công.");
@@ -581,9 +589,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				if(edoFlg == null){
 					return error("Mã hãng tàu:"+ shipCatos.getOpeCode() +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
 				}
-				if(edoFlg.equals("1")){
-					return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng liên hệ Cảng!");
-				}
+//				if(edoFlg.equals("1")){
+//					return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng liên hệ Cảng!");
+//				}
 				shipment.setEdoFlg(edoFlg);
 				ajaxResult = success();
 				shipment.setOpeCode(shipCatos.getOpeCode());

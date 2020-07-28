@@ -8,7 +8,16 @@ import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.mail.service.MailService;
+import vn.com.irtech.eport.framework.web.service.ConfigService;
+import vn.com.irtech.eport.framework.web.service.MqttService;
+import vn.com.irtech.eport.framework.web.service.WebSocketService;
+import vn.com.irtech.eport.framework.web.service.MqttService.NotificationCode;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.service.ISysRobotService;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,22 +35,46 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component("eportTask")
 public class EportTask {
 
+    private static final Logger logger = LoggerFactory.getLogger(EportTask.class);
+
     @Autowired
     private IEdoService edoService;
+
     @Autowired
     private IEdoHistoryService edoHistoryService;
+
     @Autowired
     private IEdoAuditLogService edoAuditLogService;
+
     @Autowired
     private ICarrierGroupService carrierGroupService;
+
     @Autowired
     private MailService mailService;
+
+    @Autowired
+    private ISysRobotService robotService;
+
+    @Autowired
+    private IProcessOrderService processOrderService;
+
+    @Autowired
+    private WebSocketService webSocketService;
+
+    @Autowired
+    private MqttService mqttService;
+
+    @Autowired
+    private ConfigService configService;
 
     public void readFileFromFolder(String groupCode) throws IOException {
         System.out.print("Đọc file EDI from folder .... " + groupCode);
@@ -156,6 +189,64 @@ public class EportTask {
         }
         return;
 
+    }
+
+    /**
+     * check robot connection 
+     * expiredTime (minute)
+     * 
+     * @param expiredTime
+     */
+    public void pingRobot(Integer expiredTime) {
+        // Get all robot online (available or busy)
+        List<SysRobot> robots = robotService.selectRobotListOnline(new SysRobot());
+        if (!robots.isEmpty()) {
+
+            Date now = new Date();
+            now = DateUtils.addMinutes(now, expiredTime*(-1));
+
+            for (SysRobot robot : robots) {
+
+                ProcessOrder processOrder = processOrderService.getProcessOrderByUuid(robot.getUuId());
+
+                // Response time exceed current time
+                if (robot.getResponseTime().getTime() < now.getTime()) {
+                    robot.setStatus("2");
+                    robotService.updateRobot(robot);
+                    
+                    // Send notification to IT
+                    try {
+                        mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + robot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/" + robot.getId());
+                    } catch (Exception e) {
+                        logger.warn(e.getMessage());
+                    }
+
+                    if (processOrder != null) {
+                        processOrder.setStatus(0);
+                        processOrderService.updateProcessOrder(processOrder);
+
+                        // Send notification to logistics
+                        AjaxResult ajaxResult= null;
+                        ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
+                        webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
+
+                        // Send notification to OM
+                        try {
+                            mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+                        } catch (Exception e) {
+                            logger.warn(e.getMessage());
+                        }
+                    }
+                    continue;
+                } else {
+                    try {
+                        mqttService.pingRobot(robot.getUuId());
+                    } catch (Exception e) {
+                        logger.warn(e.getMessage());
+                    }
+                }
+            }
+        }
     }
    
 }

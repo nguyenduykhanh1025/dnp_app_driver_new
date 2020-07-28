@@ -1,8 +1,11 @@
 package vn.com.irtech.eport.framework.web.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.PreDestroy;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -17,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -24,6 +28,10 @@ import com.google.gson.JsonObject;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.framework.mqtt.listener.RobotResponseHandler;
 import vn.com.irtech.eport.framework.mqtt.listener.RobotUpdateStatusHandler;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
@@ -32,13 +40,25 @@ public class MqttService implements MqttCallback {
 	private static final Logger logger = LoggerFactory.getLogger(MqttService.class);
 
 	private static final String BASE = "eport/robot";
+
 	private static final String RESPONSE_TOPIC = BASE + "/+/response";
 
 	private static final String REQUEST_TOPIC = BASE + "/+/request";
 
+	private static final String NOTIFICATION_OM_TOPIC = BASE + "/notification/om";
+
+	private static final String NOTIFICATION_IT_TOPIC = BASE + "/notification/it";
+
+	private static final String NOTIFICATION_CONT_TOPIC = BASE + "/notification/cont";
+
 	private static MqttService instance = null;
 	private MqttAsyncClient mqttClient;
 	private Object connectLock = new Object();
+	
+	// connection info
+	private String host;
+	private String username;
+	private String password;
 
 	@Autowired
 	private RobotUpdateStatusHandler robotUpdateStatusHandler;
@@ -49,6 +69,9 @@ public class MqttService implements MqttCallback {
 	@Autowired
 	private ISysRobotService robotService;
 
+	@Autowired
+	private IProcessOrderService processOrderService;
+
 	private Boolean isReconnecting = false;
 
 	public static MqttService getInstance() {
@@ -58,7 +81,7 @@ public class MqttService implements MqttCallback {
 		return instance;
 	}
 
-	private MqttService() {
+	public MqttService() {
 	}
 
 	public MqttAsyncClient getMqttClient() {
@@ -69,7 +92,19 @@ public class MqttService implements MqttCallback {
 		return mqttClient != null && mqttClient.isConnected();
 	}
 
+	/**
+	 * Connect to MQTT Server
+	 * 
+	 * @param host
+	 * @param username
+	 * @param password
+	 * @throws MqttException
+	 */
 	public void connect(String host, String username, String password) throws MqttException {
+		this.host = host;
+		this.username = username;
+		this.password = password;
+		
 		if (mqttClient == null) {
 			mqttClient = newMqttClient(host);
 		}
@@ -77,7 +112,8 @@ public class MqttService implements MqttCallback {
 		mqttClient.setCallback(this);
 
 		MqttConnectOptions clientOptions = new MqttConnectOptions();
-		clientOptions.setCleanSession(true);
+		clientOptions.setCleanSession(false);
+
 		// checkConnection
 		if (!mqttClient.isConnected()) {
 			synchronized (connectLock) {
@@ -88,6 +124,11 @@ public class MqttService implements MqttCallback {
 							@Override
 							public void onSuccess(IMqttToken iMqttToken) {
 								logger.info("MQTT broker connection established!");
+								try {
+									subscribeToTopics();
+								} catch (MqttException e) {
+									e.printStackTrace();
+								}
 							}
 
 							@Override
@@ -95,13 +136,14 @@ public class MqttService implements MqttCallback {
 								logger.info("MQTT broker connection faied!" + e.getMessage());
 							}
 						}).waitForCompletion();
-						subscribeToTopics();
 					} catch (MqttException e) {
+						e.printStackTrace();
 						logger.info("MQTT broker connection failed!" + e.getMessage());
 						if (!mqttClient.isConnected()) {
 							try {
 								Thread.sleep(3000); // 3s
 							} catch (InterruptedException e1) {
+								logger.warn(e.getMessage());
 							}
 						}
 					}
@@ -114,14 +156,18 @@ public class MqttService implements MqttCallback {
 	private void subscribeToTopics() throws MqttException {
 		List<IMqttToken> tokens = new ArrayList<>();
 		// subscribe default topics when connect
+		System.out.println("Subscribe to topic: " + BASE);
 		tokens.add(mqttClient.subscribe(BASE, 0, robotUpdateStatusHandler));
+		System.out.println("Subscribe to topic: " + RESPONSE_TOPIC);
 		tokens.add(mqttClient.subscribe(RESPONSE_TOPIC, 0, robotResponseHandler));
 		// Wait for subscribe complete
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
 		}
+		System.out.println("Subscribe topic completed!");
 	}
 
+	@PreDestroy
 	public void disconnect() {
 		try {
 			if (mqttClient != null && mqttClient.isConnected()) {
@@ -159,10 +205,14 @@ public class MqttService implements MqttCallback {
 				}
 				return;
 			} catch (MqttException e) {
+				e.printStackTrace();
+				logger.warn(e.getMessage());
 			}
 			try {
 				Thread.sleep(3000); // wait 3s before reconnect
 			} catch (InterruptedException e) {
+				e.printStackTrace();
+				logger.warn(e.getMessage());
 			}
 		}
 	}
@@ -180,9 +230,10 @@ public class MqttService implements MqttCallback {
 
 	private void reconnect() throws MqttException {
 		if (!mqttClient.isConnected()) {
-			IMqttToken token = mqttClient.connect();
-			token.waitForCompletion();
-			subscribeToTopics();
+			this.connect(host, username, password);
+//			IMqttToken token = mqttClient.connect();
+//			token.waitForCompletion();
+//			subscribeToTopics();
 			isReconnecting = false;
 		}
 	}
@@ -206,10 +257,11 @@ public class MqttService implements MqttCallback {
 	}
 
 	public enum EServiceRobot {
-		RECEIVE_CONT_FULL, RECEIVE_CONT_EMPTY, SEND_CONT_FULL, SEND_CONT_EMPTY
+		RECEIVE_CONT_FULL, RECEIVE_CONT_EMPTY, SEND_CONT_FULL, SEND_CONT_EMPTY, SHIFTING_CONT
 	}
 
-	public boolean publishMessageToRobot(Object payLoad, EServiceRobot serviceRobot) throws MqttException {
+	@Transactional
+	public boolean publishMessageToRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot) throws MqttException {
 		SysRobot sysRobot = this.getAvailableRobot(serviceRobot);
 		if (sysRobot == null) {
 			return false;
@@ -217,7 +269,32 @@ public class MqttService implements MqttCallback {
 		String msg = new Gson().toJson(payLoad);
 		String topic = REQUEST_TOPIC.replace("+", sysRobot.getUuId());
 		publish(topic, new MqttMessage(msg.getBytes()));
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setId(payLoad.processOrder.getId());
+		processOrder.setRobotUuid(sysRobot.getUuId()); // robot uuid in charge of process order
+		processOrder.setStatus(1); // on progress
+		processOrderService.updateProcessOrder(processOrder);
+		sysRobot.setStatus("1"); // set robot busy
+		robotService.updateRobot(sysRobot);
 		return true;
+	}
+
+	/**
+	 * 
+	 * @param payLoad
+	 * @param serviceRobot
+	 * @param uuid
+	 * @throws MqttException
+	 */
+	public void publicMessageToDemandRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot, String uuid) throws MqttException {
+		String msg = new Gson().toJson(payLoad);
+		String topic = REQUEST_TOPIC.replace("+", uuid);
+		publish(topic, new MqttMessage(msg.getBytes()));
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setId(payLoad.processOrder.getId());
+		processOrder.setRobotUuid(uuid); // robot uuid in charge of process order
+		processOrder.setStatus(1); // on progress
+		processOrderService.updateProcessOrder(processOrder);
 	}
 
 	/**
@@ -242,7 +319,45 @@ public class MqttService implements MqttCallback {
 		case SEND_CONT_EMPTY:
 			sysRobot.setIsSendContEmptyOrder(true);
 			break;
+		case SHIFTING_CONT:
+			sysRobot.setIsShiftingContOrder(true);
+			break;
 		}
 		return robotService.findFirstRobot(sysRobot);
+	}
+
+	public enum NotificationCode {
+		NOTIFICATION_OM, NOTIFICATION_IT, NOTIFICATION_CONT
+	}
+
+	/**
+	 * 
+	 * @param code
+	 * @param content
+	 * @param url
+	 * @throws MqttException
+	 */
+	public void sendNotification(NotificationCode code, String content, String url) throws MqttException {
+		String title = "", topic = "";
+		switch (code) {
+			case NOTIFICATION_OM:
+				topic = NOTIFICATION_OM_TOPIC;
+				title = "Lỗi làm lệnh!";
+				break;
+			case NOTIFICATION_IT:
+				topic = NOTIFICATION_IT_TOPIC;
+				title = "Lỗi robot!";
+				break;
+			case NOTIFICATION_CONT:
+				topic = NOTIFICATION_CONT_TOPIC;
+				title = "Cần cấp cont!";
+				break;
+		}
+		Map<String, String> data = new HashMap<>();
+		data.put("title", title);
+		data.put("msg", content);
+		data.put("link", url);
+		String msg = new Gson().toJson(data);
+		publish(topic, new MqttMessage(msg.getBytes()));
 	}
 }

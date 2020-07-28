@@ -10,6 +10,7 @@ import vn.com.irtech.eport.common.annotation.Excel.ColumnType;
 import vn.com.irtech.eport.common.annotation.Excel.Type;
 import vn.com.irtech.eport.common.annotation.Excels;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
+import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
  * 用户对象 sys_user
@@ -224,7 +225,14 @@ public class SysUser extends BaseEntity
 
     public String getAvatar()
     {
-        return avatar;
+        if (StringUtils.isEmpty(avatar))
+        {
+            return StringUtils.EMPTY;
+        }
+        else
+        {
+            return avatar;
+        }
     }
 
     public void setAvatar(String avatar)

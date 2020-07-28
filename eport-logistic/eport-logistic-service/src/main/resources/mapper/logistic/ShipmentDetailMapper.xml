@@ -24,6 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="vslNm"    column="vsl_nm"    />
         <result property="voyNo"    column="voy_no"    />
         <result property="opeCode"    column="ope_code"    />
+        <result property="carrierName"    column="carrier_name"    />
         <result property="loadingPort"    column="loading_port"    />
         <result property="dischargePort"    column="discharge_port"    />
         <result property="transportType"    column="transport_type"    />
@@ -52,7 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
-        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name, vsl_nm, voy_no, ope_code, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, shifting_cont_number, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
+        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name, vsl_nm, voy_no, ope_code, carrier_name, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, shifting_cont_number, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -75,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="carrierName != null  and carrierName != ''"> and carrier_name = #{carrierName}</if>
             <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
             <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
             <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
@@ -115,6 +117,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="carrierName != null  and carrierName != ''"> and carrier_name = #{carrierName}</if>
             <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
             <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
             <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
@@ -135,7 +138,56 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
        
     </select>
-    
+    <select id="getShipmentDetailList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
+        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, 
+        	container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name,
+        	vsl_nm || ': '|| vsl_name as vsl_nm,
+        	voy_no,
+        	ope_code || ': ' || carrier_name as ope_code,
+        	carrier_name, loading_port, discharge_port, transport_type,
+        	empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, shifting_cont_number,
+        	custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status,
+        	status, remark, create_by, create_time, update_by, update_time from shipment_detail
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="processOrderId != null  and processOrderId != ''"> and process_order_id = #{processOrderId}</if>
+            <if test="registerNo != null  and registerNo != ''"> and register_no = #{registerNo}</if>
+            <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
+            <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
+            <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="carrierName != null  and carrierName != ''"> and carrier_name = #{carrierName}</if>
+            <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
+            <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
+            <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
+            <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
+            <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
+            <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
+            <if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
+            <if test="shiftingContNumber != null"> and shifting_cont_number = #{shiftingContNumber}</if>
+            <if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
+            <if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
+            <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
+            <if test="doStatus != null  and doStatus != ''"> and do_status = #{doStatus}</if>
+            <if test="doReceivedTime != null  and doReceivedTime != ''"> and do_received_time = #{doReceivedTime}</if>
+            <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+       
+    </select>
     <select id="selectShipmentDetailById" parameterType="Long" resultMap="ShipmentDetailResult">
         <include refid="selectShipmentDetailVo"/>
         where id = #{id}
@@ -166,6 +218,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vslNm != null  and vslNm != ''">vsl_nm,</if>
             <if test="voyNo != null  and voyNo != ''">voy_no,</if>
             <if test="opeCode != null  and opeCode != ''">ope_code,</if>
+            <if test="carrierName != null  and carrierName != ''">carrier_name,</if>
             <if test="loadingPort != null  and loadingPort != ''">loading_port,</if>
             <if test="dischargePort != null  and dischargePort != ''">discharge_port,</if>
             <if test="transportType != null  and transportType != ''">transport_type,</if>
@@ -207,6 +260,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vslNm != null  and vslNm != ''">#{vslNm},</if>
             <if test="voyNo != null  and voyNo != ''">#{voyNo},</if>
             <if test="opeCode != null  and opeCode != ''">#{opeCode},</if>
+            <if test="carrierName != null  and carrierName != ''">#{carrierName},</if>
             <if test="loadingPort != null  and loadingPort != ''">#{loadingPort},</if>
             <if test="dischargePort != null  and dischargePort != ''">#{dischargePort},</if>
             <if test="transportType != null  and transportType != ''">#{transportType},</if>
@@ -251,6 +305,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vslNm != null  and vslNm != ''">vsl_nm = #{vslNm},</if>
             <if test="voyNo != null  and voyNo != ''">voy_no = #{voyNo},</if>
             <if test="opeCode != null  and opeCode != ''">ope_code = #{opeCode},</if>
+            <if test="carrierName != null  and carrierName != ''">carrier_name = #{carrierName},</if>
             <if test="loadingPort != null  and loadingPort != ''">loading_port = #{loadingPort},</if>
             <if test="dischargePort != null  and dischargePort != ''">discharge_port = #{dischargePort},</if>
             <if test="transportType != null  and transportType != ''">transport_type = #{transportType},</if>
@@ -373,6 +428,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         vsl_nm as vslNm,
         voy_no as voyNo,
         ope_code as opeCode,
+        carrier_name as carrierName,
         loading_port as loadingPort,
         discharge_port as dischargePort,
         transport_type as transportType,
@@ -416,6 +472,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="carrierName != null  and carrierName != ''"> and carrier_name = #{carrierName}</if>
             <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
             <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
             <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>

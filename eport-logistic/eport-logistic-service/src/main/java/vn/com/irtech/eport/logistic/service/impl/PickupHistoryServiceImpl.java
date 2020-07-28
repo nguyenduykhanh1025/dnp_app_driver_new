@@ -134,10 +134,14 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
 
     @Override
     public Boolean checkPossiblePickup(@Param("driverId") Long driverId, @Param("serviceType") Integer serviceType) {
-        List<String> sztps = pickupHistoryMapper.checkPossiblePickup(driverId, serviceType);
-        if (sztps.isEmpty() || (sztps.size() == 1 && "20G0".equals(sztps.get(0)))) {
+        List<Pickup> pickups = pickupHistoryMapper.selectPickupListByDriverId(driverId);
+        
+        if (pickups.isEmpty()) {
             return true;
         }
+
+        
+        
         return false;
     }
 

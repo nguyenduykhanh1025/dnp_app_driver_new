@@ -30,13 +30,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
 
     <sql id="selectNotificationsDetailVo">
-        select n.*, 
-            count(d.notification_id) as total_receiver, 
-            count(case when d.seen_flg = 1 then 1 else null end) as seen_amount 
+        select n.id, n.title, n.create_time, n.create_by, n.update_time, n.update_by,
+            DBMS_LOB.SUBSTR (n.content,4000,1) as "content",
+            count(d.notification_id) as "total_receiver", 
+            count(case when d.seen_flg = 1 then 1 else null end) as "seen_amount"
         from notifications n 
         left join notification_receiver d 
             on n.id = d.notification_id 
-        GROUP BY n.title, n.content, n.id
+        GROUP BY n.id, n.title, n.create_time, n.create_by, n.update_time, n.update_by, DBMS_LOB.SUBSTR (n.content,4000,1)
     </sql>
 
     <select id="selectNotificationsList" parameterType="Notifications" resultMap="NotificationsResult">
@@ -99,7 +100,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectNotificationsDetailVo"/>
         <where> 
             <if test="title != null  and title != ''"> and n.title = #{title}</if>
-            <if test="content != null  and content != ''"> and n.content = #{content}</if>
+            <if test="content != null  and content != ''"> and to_char(n.content) = #{content}</if>
         </where>
     </select>
 

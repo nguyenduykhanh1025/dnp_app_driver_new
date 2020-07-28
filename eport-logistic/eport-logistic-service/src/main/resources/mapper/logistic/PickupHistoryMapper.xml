@@ -408,14 +408,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		left join shipment_detail sh on p.shipment_detail_id = sh.id
 		where p.driver_id = #{driverId}
 		and p.status != 3
+		order by s.service_type desc
 	</select>
 
-	<select id="checkPossiblePickup" resultType="String">
-		select sh.sztp
-		from pickup_history p
-		left join shipment s on p.shipment_id = s.id and s.service_type = #{serviceType}
-		left join shipment_detail sh on p.shipment_detail_id = sh.id
-		where p.driver_id = #{driverId}
-		and p.status = 0
-	</select>
 </mapper>

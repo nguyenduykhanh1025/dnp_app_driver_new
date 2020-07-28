@@ -123,6 +123,49 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return false;
 		}
 	}
+
+	@Override
+	public List<ShipmentDetail> getCoordinateOfContainers(String blNo) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers/" + blNo;
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
+			List<ShipmentDetail> coordinates = response.getBody();
+			return coordinates;
+		}catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailsByBLNo(String blNo) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/list/" + blNo;
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
+			List<ShipmentDetail> shipmentDetails = response.getBody();
+			return shipmentDetails;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+
+	}
+
+	@Override
+	public ShipmentDetail selectShipmentDetailByContNo(String blNo, String containerNo) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/containerInfor/" + blNo + "/" + containerNo;
+			RestTemplate restTemplate = new RestTemplate();
+			ShipmentDetail shipmentDetail = restTemplate.getForObject(url, ShipmentDetail.class);
+			return shipmentDetail;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+	
 	
 
 }

@@ -31,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
+        <result property="robotUuid"    column="robot_uuid"    />
         <association property="shipmentDetail"    column="id" javaType="ShipmentDetail" resultMap="ShipmentDetailResult" />
     </resultMap>
 
@@ -46,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectProcessOrderVo">
-        select id, shipment_id, logistic_group_id, service_type, reference_no, pay_type, sztp, modee, consignee, truck_co, tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, result, data, create_by, create_time, update_by, update_time from process_order
+        select id, shipment_id, logistic_group_id, service_type, reference_no, pay_type, sztp, modee, consignee, truck_co, tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, result, data, create_by, create_time, update_by, update_time, robot_uuid from process_order
     </sql>
 
     <select id="selectProcessOrderList" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
@@ -73,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null "> and status = #{status}</if>
             <if test="result != null  and result != ''"> and result = #{result}</if>
             <if test="data != null  and data != ''"> and data = #{data}</if>
+            <if test="robotUuid != null  and robotUuid != ''"> and robot_uuid = #{robotUuid}</if>
         </where>
     </select>
     
@@ -109,6 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null ">status,</if>
             <if test="result != null  and result != ''">result,</if>
             <if test="data != null  and data != ''">data,</if>
+            <if test="robotUuid != null  and robotUuid != ''">robot_uuid,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
          </trim>
@@ -135,6 +138,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null ">#{status},</if>
             <if test="result != null  and result != ''">#{result},</if>
             <if test="data != null  and data != ''">#{data},</if>
+            <if test="robotUuid != null  and robotUuid != ''">#{robotUuid},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
          </trim>
@@ -165,6 +169,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="result != null  and result != ''">result = #{result},</if>
             <if test="data != null  and data != ''">data = #{data},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="robotUuid != null  and robotUuid != ''">robot_uuid = #{robotUuid},</if>
             update_time = sysdate
         </trim>
         where id = #{id}
@@ -252,5 +257,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getShipmentIdByProcessOrderId" resultType="Long" parameterType="Long">
         select shipment_id from process_order
         where id = #{id}
+    </select>
+
+    <select id="getProcessOrderByUuid" resultType="ProcessOrder" parameterType="String">
+        <include refid="selectProcessOrderVo"/>
+        where robot_uuid = #{uuid} and status = 1
+    </select>
+
+    <select id="findProcessOrderForRobot" resultMap="ProcessOrderResult" parameterType="String">
+        <include refid="selectProcessOrderVo"/>
+        where robot_uuid is null and status = 0 
+        and service_type in
+        <foreach item="serviceType" collection="array" open="(" separator="," close=")">
+            #{serviceType}
+        </foreach>
+        order by create_time desc FETCH NEXT 1 ROWS ONLY
     </select>
 </mapper>
