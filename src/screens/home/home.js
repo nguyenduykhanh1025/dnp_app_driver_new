@@ -36,6 +36,7 @@ import HomeButton from './home_button'
 import { callApi } from '@/requests'
 import { getToken } from '@/stores';
 import { hasSystemFeature } from 'react-native-device-info';
+import Toast from 'react-native-tiny-toast';
 
 const icUser = require('@/assets/icons/account/user.png')
 const icCont1 = require('@/assets/icons/cont2_icon.png')
@@ -57,32 +58,22 @@ export default class HomeScreen extends Component {
       boc_rong_focused: false,
       ha_rong_focused: false,
       userData: [],
-      userName: 'Họ và tên'
-    }
+      userName: 'Họ và tên',
+      token: '',
+    };
   };
 
   componentDidMount = async () => {
+    this.token = await getToken();
     this.onGetPickupList()
     this.onGetHistoryList()
   };
 
-  getUserInfo = async () => {
-    const token = await getToken();
-    const param = {
-      url: 'user/info',
-      token: token,
-    }
-    const result = await getRequestAPI(param);
-    this.setState({ userData: result.data })
-    console.log('userData', this.state.userData)
-  }
-
   onGetPickupList = async () => {
-    var token = await getToken()
     const params = {
       api: 'pickup',
       param: '',
-      token: token,
+      token: this.token,
       method: 'GET'
     }
     var result = undefined;
@@ -99,11 +90,10 @@ export default class HomeScreen extends Component {
   }
 
   onGetHistoryList = async () => {
-    var token = await getToken()
     const params = {
       api: 'pickup/history?pageNum=' + this.state.pageNum + '&pageSize=' + this.state.pageSize,
       param: '',
-      token: token,
+      token: this.token,
       method: 'GET'
     }
     var result = undefined;
@@ -127,6 +117,33 @@ export default class HomeScreen extends Component {
       }}
     />
   )
+
+  onGoCheckIn = async () => {
+    Toast.showLoading('Đang lấy dữ liệu check in! Vui lòng chờ.')
+    var pickupHistoryIds = [];
+    this.state.PickupList.map((item, index) => {
+      pickupHistoryIds = pickupHistoryIds.concat(item.pickupId)
+    })
+    const params = {
+      api: 'checkin',
+      param: {
+        pickupHistoryIds: pickupHistoryIds
+      },
+      token: this.token,
+      method: 'POST'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('resultonGoCheckIn', result)
+    if (!result.code == 0) {
+      Toast.hide()
+      NavigationService.navigate(mainStack.qr_code, { dataQR: result })
+    }
+    else {
+      Toast.hide()
+      Alert.alert('Thông báo!', result.msg)
+    }
+  }
 
   render() {
     return (
@@ -164,7 +181,7 @@ export default class HomeScreen extends Component {
             </View>
             <TouchableOpacity
               onPress={() => {
-                NavigationService.navigate(mainStack.qr_code, {})
+                this.onGoCheckIn()
               }}
             >
               <View style={styles.HeaderButton}>

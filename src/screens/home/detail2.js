@@ -12,7 +12,8 @@ import {
 import NavigationService from '@/utils/navigation';
 import {
   homeStack,
-  mainStack
+  mainStack,
+  homeTab,
 } from '@/config/navigator';
 import {
   commonStyles,
@@ -60,76 +61,10 @@ export default class DetailScreen extends Component {
           Size: 'SX',
           SL: 15,
         },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
       ]
     };
   }
 
-  onSelectService = async (value) => {
-    switch (value) {
-      case 1:
-        await this.setState({
-          active1: true,
-          active2: false,
-          active3: false,
-          active4: false,
-        })
-        break;
-      case 2:
-        await this.setState({
-          active1: false,
-          active2: true,
-          active3: false,
-          active4: false,
-        })
-        break;
-      case 3:
-        await this.setState({
-          active1: false,
-          active2: false,
-          active3: true,
-          active4: false,
-        })
-        break;
-      case 4:
-        await this.setState({
-          active1: false,
-          active2: false,
-          active3: false,
-          active4: true,
-        })
-        break;
-      default:
-        break;
-    }
-  }
 
   renderItem = (item, index) => (
     <Item
@@ -203,7 +138,7 @@ export default class DetailScreen extends Component {
               value={'Xác nhận'}
               onPress={
                 () => {
-                  NavigationService.navigate(mainStack.home_tab)
+                  NavigationService.navigate(homeTab.home)
                 }
               }
             />

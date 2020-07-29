@@ -93,48 +93,12 @@ export default class DetailScreen extends Component {
     };
   }
 
-  onSelectService = async (value) => {
-    switch (value) {
-      case 1:
-        await this.setState({
-          active1: true,
-          active2: false,
-          active3: false,
-          active4: false,
-        })
-        break;
-      case 2:
-        await this.setState({
-          active1: false,
-          active2: true,
-          active3: false,
-          active4: false,
-        })
-        break;
-      case 3:
-        await this.setState({
-          active1: false,
-          active2: false,
-          active3: true,
-          active4: false,
-        })
-        break;
-      case 4:
-        await this.setState({
-          active1: false,
-          active2: false,
-          active3: false,
-          active4: true,
-        })
-        break;
-      default:
-        break;
-    }
-  }
-
   renderItem = (item, index) => (
     <Item
       data={item.item}
+      onPress={() => {
+        NavigationService.navigate(mainStack.detail2, {})
+      }}
     />
   )
 
@@ -158,6 +122,9 @@ export default class DetailScreen extends Component {
             <Text style={styles.TitleLine}>Cont chung</Text>
             <ItemSingle
               data={this.state.data[0]}
+              onPress={() => {
+                NavigationService.navigate(mainStack.detail2, {})
+              }}
             />
             <Text style={[
               styles.TitleLine,
@@ -177,7 +144,7 @@ export default class DetailScreen extends Component {
               showsVerticalScrollIndicator={false}
             />
           </ScrollView>
-          <View
+          {/* <View
             style={{
               marginTop: hs(17),
               marginBottom: hs(17)
@@ -191,7 +158,7 @@ export default class DetailScreen extends Component {
                 }
               }
             />
-          </View>
+          </View> */}
         </View>
       </View>
     )

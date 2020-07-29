@@ -59,7 +59,7 @@ export default class WaitingModal extends Component {
                 transparent={true}
                 visible={this.state.visible}
                 onRequestClose={() => {
-                    this.onModalClose();
+                    // this.onModalClose();
                 }}
             >
                 <View style={styles.container}>
