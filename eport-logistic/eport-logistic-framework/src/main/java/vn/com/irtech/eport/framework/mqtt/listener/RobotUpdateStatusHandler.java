@@ -158,6 +158,15 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 					logger.warn(e.getMessage());
 				}
 			}
+			
+			// check robot exists in db
+			if (robotService.selectRobotByUuId(uuId) == null) {
+				// insert robot to db
+				robotService.insertRobot(sysRobot);
+			} else {
+				// update status of robot
+				robotService.updateRobotByUuId(sysRobot);
+			}
 
 			// Find process order for robot
 			ProcessOrder reqProcessOrder = processOrderService.findProcessOrderForRobot(serviceTypes);
