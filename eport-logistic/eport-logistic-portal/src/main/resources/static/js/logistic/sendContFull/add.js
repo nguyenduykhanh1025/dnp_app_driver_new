@@ -46,7 +46,7 @@ function checkBookingNoUnique() {
             if (result.code == 0) {
                 $("#bookingNo").removeClass("error-input");
             } else {
-                $.modal.msgError("Số book đã tồn tại!");
+                $.modal.alertError("Số book đã tồn tại!");
                 $("#bookingNo").addClass("error-input");
             }
         });
@@ -92,7 +92,7 @@ function save(url, data) {
                 parent.loadTable(result.msg);
                 $.modal.close();
             } else {
-                $.modal.msgError(result.msg);
+                $.modal.alertError(result.msg);
             }
         }
     })

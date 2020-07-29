@@ -1,27 +1,28 @@
 var prefix = ctx + "logistic/receive-cont-empty";
+var interval, currentPercent;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0, currentVslNm;
 var contList = [], orders = [], processOrderIds;
 var conts = '';
 var allChecked = false;
 var checkList = [];
-var opeCodeList, vslNmList;
+var opeCodeList, vslNmList, consigneeList;
 var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.serviceType = 3;
 var sizeList = [];
 //dictionary sizeList
 $.ajax({
-	  type: "GET",
-	  url: "/logistic/size/container/list",
-	  success(data) {
-		  if(data.code == 0){
-		      data.data.forEach(element => {
-		    	  sizeList.push(element['dictLabel'])
-		      })
-		  }
-	  }
-	})
+    type: "GET",
+    url: "/logistic/size/container/list",
+    success(data) {
+        if (data.code == 0) {
+            data.data.forEach(element => {
+                sizeList.push(element['dictLabel'])
+            })
+        }
+    }
+});
 
 $.ajax({
     url: "/logistic/source/option",
@@ -30,6 +31,7 @@ $.ajax({
         if (data.code == 0) {
             opeCodeList = data.opeCodeList;
             vslNmList = data.vslNmList;
+            consigneeList = data.consigneeList;
         }
     }
 });
@@ -139,7 +141,7 @@ function handleCollapse(status) {
 // LOAD SHIPMENT LIST
 function loadTable(msg) {
     if (msg) {
-        $.modal.msgSuccess(msg);
+        $.modal.alertSuccess(msg);
     }
     $("#dg").datagrid({
         url: '/logistic/shipments',
@@ -254,19 +256,19 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     let content = '';
         switch (value) {
             case 1:
-                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: rgb(5, 148, 148);"></i>';
+                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
                 content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
                 content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
             case 2:
                 content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
                 content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
             case 3:
                 content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
                 content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
             case 4:
                 content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
@@ -304,6 +306,17 @@ function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties)
         $(td).html(value);
     } else {
         $(td).html('');
+    }
+    return td;
+}
+function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'consignee' + row).addClass("htMiddle");
+    $(td).html(value);
+    if (value != null && value != '') {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
     }
     return td;
 }
@@ -400,6 +413,8 @@ function configHandson() {
                 case 3:
                     return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
                 case 4:
+                    return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
+                case 4:
                     return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
                 case 5:
                     return '<span>Tàu</span><span style="color: red;">(*)</span>';
@@ -413,7 +428,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 100, 120, 100, 100, 100, 150, 200],
+        colWidths: [50, 100, 100, 100, 150, 120, 100, 100, 100, 150, 200],
         filter: "true",
         columns: [
             {
@@ -438,6 +453,13 @@ function configHandson() {
                 correctFormat: true,
                 defaultDate: new Date(),
                 renderer: expiredDemRenderer
+            },
+            {
+                data: "consignee",
+                strict: true,
+                type: "autocomplete",
+                source: consigneeList,
+                renderer: consigneeRenderer
             },
             {
                 data: "opeCode",
@@ -477,9 +499,9 @@ function configHandson() {
                 renderer: remarkRenderer
             },
         ],
-        beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
-            if(coords.col == 0) event.stopImmediatePropagation();
-        },
+        // beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
+        //     if(coords.col == 0) event.stopImmediatePropagation();
+        // },
         afterChange: onChange
     };
 }
@@ -776,6 +798,10 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
                 errorFlg = true;
                 return false;
+            } else if (!object["consignee"]) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
+                errorFlg = true;
+                return false;
             } else if (!object["opeCode"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ khai thác!");
                 errorFlg = true;
@@ -825,6 +851,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.sztp = object["sztp"].split(":")[0];
         shipmentDetail.opeCode = object["opeCode"];
         shipmentDetail.expiredDem = expiredDem.getTime();
+        shipmentDetail.consignee = object["consignee"];
         shipmentDetail.dischargePort = object["dischargePort"].split(":")[0];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.voyNo = object["voyNo"];
@@ -871,7 +898,7 @@ function getDataFromTable(isValidate) {
 // SAVE/EDIT/DELETE SHIPMENT DETAIL
 function saveShipmentDetail() {
     if (shipmentSelected == null) {
-        $.modal.msgError("Bạn cần chọn lô trước");
+        $.modal.alertError("Bạn cần chọn lô trước");
         return;
     } else {
         if (getDataFromTable(true)) {
@@ -887,10 +914,10 @@ function saveShipmentDetail() {
                     success: function (data) {
                         var result = JSON.parse(data);
                         if (result.code == 0) {
-                            $.modal.msgSuccess(result.msg);
+                            $.modal.alertSuccess(result.msg);
                             reloadShipmentDetail();
                         } else {
-                            $.modal.msgError(result.msg);
+                            $.modal.alertError(result.msg);
                         }
                         $.modal.closeLoading();
                     },
@@ -917,10 +944,10 @@ function deleteShipmentDetail() {
         method: "delete",
         success: function (result) {
             if (result.code == 0) {
-                $.modal.msgSuccess(result.msg);
+                $.modal.alertSuccess(result.msg);
                 reloadShipmentDetail();
             } else {
-                $.modal.msgError(result.msg);
+                $.modal.alertError(result.msg);
             }
             $.modal.closeLoading();
         },
@@ -1002,20 +1029,29 @@ function setLayoutFinishStatus() {
 
 function finishForm(result) {
     if (result.code == 0) {
-        $.modal.msgSuccess(result.msg);
+        $.modal.alertSuccess(result.msg);
     } else {
-        $.modal.msgError(result.msg);
+        $.modal.alertError(result.msg);
     }
     reloadShipmentDetail();
 }
 
 function finishVerifyForm(result) {
     if (result.code == 0 || result.code == 301) {
-        $.modal.loading(result.msg);
+        //$.modal.loading(result.msg);
         orders = result.processIds;
         orderNumber = result.orderNumber;
         // CONNECT WEB SOCKET
         connectToWebsocketServer();
+
+        showProgress("Đang xử lý ...");
+        setTimeout(() => {
+            setTimeout(() => {
+                hideProgress();
+                reloadShipmentDetail();
+                $.modal.alertError("Yêu cầu của quý khách đang được chờ xử lý, quý khách vui lòng đợi hoặc liên hệ với bộ phận thủ tục để được hỗ trợ thêm!");
+            }, 1000);
+        }, 200000);
 
     } else {
         reloadShipmentDetail();
@@ -1041,27 +1077,35 @@ function onConnected() {
 function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
     if (message.code != 0) {
-        reloadShipmentDetail();
 
-        $.modal.alertError(message.msg);
-
-        // Close loading
-        $.modal.closeLoading();
-
-        // Close websocket connection 
-        $.websocket.disconnect(onDisconnected);
-    } else {
-        orderNumber--;
-        if (orderNumber == 0) {
+        setProgressPercent(currentPercent=99);
+        setTimeout(() => {
             reloadShipmentDetail();
 
-            $.modal.alertSuccess(message.msg);
+            $.modal.alertError(message.msg);
 
             // Close loading
-            $.modal.closeLoading();
+            //$.modal.closeLoading();
 
             // Close websocket connection 
             $.websocket.disconnect(onDisconnected);
+        }, 1000);
+    } else {
+        orderNumber--;
+        if (orderNumber == 0) {
+
+            setProgressPercent(currentPercent=99);
+            setTimeout(() => {
+                reloadShipmentDetail();
+
+                $.modal.alertSuccess(message.msg);
+
+                // Close loading
+                //$.modal.closeLoading();
+
+                // Close websocket connection 
+                $.websocket.disconnect(onDisconnected);
+            }, 1000);
         }
     }
 }
@@ -1069,3 +1113,28 @@ function onMessageReceived(payload) {
 function onError(error) {
     console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
 }      
+
+function showProgress(title) {
+    $('.progress-wrapper').show();
+    $('.dim-bg').show();
+    $('#titleProgress').text(title);
+    $('.percent-text').text("0%");
+    currentPercent = 0;
+    interval = setInterval(function() {
+        setProgressPercent(++currentPercent);
+        if (currentPercent >= 100) {
+            clearInterval(interval);
+        }
+    }, 1000);
+}
+
+function setProgressPercent(percent) {
+    $('#progressBar').prop('aria-valuenow', percent)
+    $('#progressBar').css('width', percent + "%")
+    $('.percent-text').text(percent + "%");
+}
+
+function hideProgress() {
+    $('.progress-wrapper').hide();
+    $('.dim-bg').hide();
+}

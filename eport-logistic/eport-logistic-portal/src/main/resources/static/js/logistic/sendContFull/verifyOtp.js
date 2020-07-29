@@ -40,7 +40,7 @@ function getOtp() {
             method: "GET",
             success: function (data) {
                 if (data.code != 0) {
-                    $.modal.msgSuccess("Đã gửi OTP.");
+                    $.modal.alertSuccess("Đã gửi OTP.");
                 } 
             },
             error: function (result) {
@@ -81,7 +81,7 @@ function getOtp() {
             }
         }, 1000);
     } else {
-        $.modal.msgError("Quý khách vui lòng đợi " + (seconds - 30) + " giây trước khi yêu cầu gửi lại OTP");
+        $.modal.alertError("Quý khách vui lòng đợi " + (seconds - 30) + " giây trước khi yêu cầu gửi lại OTP");
     }
 }
 

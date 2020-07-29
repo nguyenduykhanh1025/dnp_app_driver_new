@@ -112,7 +112,7 @@ public class MqttService implements MqttCallback {
 		mqttClient.setCallback(this);
 
 		MqttConnectOptions clientOptions = new MqttConnectOptions();
-		clientOptions.setCleanSession(false);
+		clientOptions.setCleanSession(true);
 
 		// checkConnection
 		if (!mqttClient.isConnected()) {
@@ -273,7 +273,7 @@ public class MqttService implements MqttCallback {
 		processOrder.setId(payLoad.processOrder.getId());
 		processOrder.setRobotUuid(sysRobot.getUuId()); // robot uuid in charge of process order
 		processOrder.setStatus(1); // on progress
-		processOrderService.updateProcessOrder(processOrder);
+		// processOrderService.updateProcessOrder(processOrder);
 		sysRobot.setStatus("1"); // set robot busy
 		robotService.updateRobot(sysRobot);
 		return true;

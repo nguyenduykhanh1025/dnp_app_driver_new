@@ -65,7 +65,7 @@ function save(url, data) {
                 parent.loadTable(result.msg);
                 $.modal.close();
             } else {
-                $.modal.msgError(result.msg);
+                $.modal.alertError(result.msg);
             }
         }
     })

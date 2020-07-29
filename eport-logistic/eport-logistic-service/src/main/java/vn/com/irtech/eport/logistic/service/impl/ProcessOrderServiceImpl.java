@@ -73,7 +73,6 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
     @Override
     public int updateProcessOrder(ProcessOrder processOrder)
     {
-        processOrder.setUpdateTime(DateUtils.getNowDate());
         return processOrderMapper.updateProcessOrder(processOrder);
     }
 

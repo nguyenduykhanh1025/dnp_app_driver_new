@@ -79,7 +79,7 @@ async function submitHandler() {
             if ($("#blNo").val() != currentBill) {
                 let res = await getBillNoUnique();
                 if (res.code == 500) {
-                    $.modal.msgError(result.msg);
+                    $.modal.alertError(result.msg);
                     $("#blNo").addClass("error-input");
                     $('#opeCode').val("");
                     $('#containerAmount').val("");
@@ -121,7 +121,7 @@ function checkBlNoUnique() {
             method: "GET",
         }).done(function (result) {
             if (result.code == 500) {
-                $.modal.msgError(result.msg);
+                $.modal.alertError(result.msg);
                 $("#blNo").addClass("error-input");
                 $('#opeCode').val("");
                 $('#containerAmount').val("");
@@ -158,7 +158,7 @@ function edit(url, data) {
                 parent.loadTable(result.msg);
                 $.modal.close();
             } else {
-                $.modal.msgError(result.msg);
+                $.modal.alertError(result.msg);
             }
         }
     })

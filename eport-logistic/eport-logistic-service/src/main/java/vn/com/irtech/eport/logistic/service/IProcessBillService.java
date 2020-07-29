@@ -92,4 +92,13 @@ public interface IProcessBillService
      * @return
      */
     public int updateBillListByProcessOrderIds(String processOrderIds);
+
+    /**
+     * Get Bill Shifting Cont By Shipment Id
+     * 
+     * @param shipmentId
+     * @param logisticGroupId
+     * @return  List<ProcessBill>
+     */
+    public List<ProcessBill> getBillShiftingContByShipmentId(Long shipmentId, Long logisticGroupId);
 }

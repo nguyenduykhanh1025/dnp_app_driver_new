@@ -3,26 +3,34 @@ var moveContAmount = 0;
 var preorderPickupConts = [];
 var currentPickedBay, currentPickedRow, currentPickedTier, currentPickedId;
 var shipmentId;
-
-$("#unitCosts").html(unitCosts);
+var orders = [], orderNumber;
 
 function confirm() {
     if (preorderPickupConts.length > 0) {
+        $.modal.loading("Đang xử lý ...");
         $.modal.confirm("Xác nhận bốc container chỉ định (Quý khách<br>không thể hủy chỉ định cho container đã được chỉ định).", function() {
             $.ajax({
-                url: prefix + "/shipment-detail/pickup-cont",
+                url: prefix + "/shipment-detail/pickup-cont/" + $('#credit').prop('checked'),
                 method: "post",
                 contentType: "application/json",
                 accept: 'text/plain',
-                data: JSON.stringify(preorderPickupConts),
+                data: JSON.stringify(
+                    preorderPickupConts
+                ),
                 dataType: 'text',
                 success: function (data) {
                     let result = JSON.parse(data);
-                    if (result.code != 0) {
-                        $.modal.msgError(result.msg);
-                    } else {
+                    if (result.code == 301) {
+                        $.modal.closeLoading();
                         parent.finishForm(result);
                         $.modal.close();
+                    }
+                    if (result.code != 0) {
+                        $.modal.alertError(result.alert);
+                    } else {
+                        orders = result.orderIds;
+                        orderNumber = orders.length;
+                        connectToWebsocketServer();
                     }
                 },
                 error: function (result) {
@@ -31,7 +39,7 @@ function confirm() {
             });
         }, "Xác nhận");
     } else {
-        $.modal.msgError("Quý khách chưa chọn container chỉ định.");
+        $.modal.alertError("Quý khách chưa chọn container chỉ định.");
     }
 }
 
@@ -51,18 +59,25 @@ bayList.forEach(function(bay) {
                 bay[row][col].expiredDem = null;
                 bayName = bay[row][col].block + "-" + bay[row][col].bay;
                 shipmentId = bay[row][col].shipmentId;
+
+                // Position is empty
                 if (bay[row][col].containerNo == null) {
                     str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" style="background-color: #dbcfcf;" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">CONT</div>';
-                } else if (bay[row][col].status > 1 && bay[row][col].status < 4) {
+                    
+                    // Container must be make into an order
+                } else if (bay[row][col].status > 2) {
+
+                    // Container has already been pre-order pickup
                     if (bay[row][col].preorderPickup == "Y") {
                         str += '<div id="cell'+ bay[row][col].id +'" style="background-color: #72ecea;" class="cellDiv" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + true +')">'+ bay[row][col].containerNo +'</div>';
                         let tableRow = '<tr id="row'+ bay[row][col].id +'"><td width="330px">' + bay[row][col].containerNo + '</td><td width="165px">' + bay[row][col].sztp + '</td><td width="165px">' + bay[row][col].block + "-" + bay[row][col].bay + "-" + bay[row][col].row + "-" + bay[row][col].tier + '</td></tr>';
                         $("#pickedContList").append(tableRow);
+                    
+                    // Container can be ready to pre-order pickup
                     } else {
                         str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">'+ bay[row][col].containerNo +'</div>';
                     }
-                } else if (bay[row][col].status > 3) {
-                    str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" style="background-color: #dbcfcf;" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">'+ bay[row][col].containerNo +'</div>';
+
                 } else {
                     str += '<div id="cell'+ bay[row][col].id +'" class="cellDiv" style="background-color: #dbcfcf;" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + false +')">'+ bay[row][col].containerNo +'</div>';
                 }
@@ -80,12 +95,10 @@ bayList.forEach(function(bay) {
 
 function pickCont(id, row, col, index, isPicked) {
     if (bayList[index][row][col].containerNo == null) {
-        $.modal.msgError("Container này không nằm trong lô của quý<br>khách.");
-    } else if (bayList[index][row][col].status > 3) {
-        $.modal.msgError("Container này đã được thanh toán.");
-    } else if (bayList[index][row][col].status > 1) {
+        $.modal.alertError("Container này không nằm trong lô của quý<br>khách.");
+    } else if (bayList[index][row][col].status > 2) {
         if (isPicked) {
-            $.modal.msgError("Container này đã được chỉ định.");
+            $.modal.alertError("Container này đã được chỉ định.");
         } else {
             if (bayList[index][row][col].preorderPickup == "N") {
                 bayList[index][row][col].preorderPickup = "Y";
@@ -100,15 +113,16 @@ function pickCont(id, row, col, index, isPicked) {
             }
             calculateMovingCont();
         }
+    } else if (bayList[index][row][col].status == 2) {
+        $.modal.alertError("Container này chưa được làm lệnh.");
     } else {
-        $.modal.msgError("Container này chưa thông quan.");
+        $.modal.alertError("Container này chưa thông quan.");
     }
 }
 
 function calculateMovingCont() {
     preorderPickupConts = [];
     moveContAmount = 0;
-    let moveContCol = 0;
     for (let b=0; b<bayList.length; b++) {
         let moveContAmountTemp = 0;
         for (let j=0; j<6; j++) {
@@ -116,16 +130,69 @@ function calculateMovingCont() {
                 if (bayList[b][i][j] != null) {
                     if (bayList[b][i][j].preorderPickup == "Y") {
                         preorderPickupConts.push(bayList[b][i][j]);
-                        moveContCol = moveContAmountTemp;
+                        moveContAmount += moveContAmountTemp;
+                        moveContAmountTemp = 0;
+                    } else {
+                        moveContAmountTemp++;
                     }
-                    moveContAmountTemp++;
                 }
             }
-            moveContAmount += moveContCol;
-            moveContCol = 0;
             moveContAmountTemp = 0;
         }
     }
-    $("#pickedContAmount").html(moveContAmount);
-    $("#totalCosts").html(moveContAmount*unitCosts);
+}
+
+if (!isCredit) {
+    $('#credit').hide();
+    $('#creditLabel').hide();
+} else {
+    $('#credit').prop('checked', true);
+}
+
+function connectToWebsocketServer() {
+    // Connect to WebSocket Server.
+    $.websocket.connect({}, onConnected, onError);
+}
+
+function onConnected() {
+    for (let i = 0; i < orders.length; i++) {
+        $.websocket.subscribe(orders[i] + '/response', onMessageReceived);
+    }
+}
+
+function onMessageReceived(payload) {
+    let message = JSON.parse(payload.body);
+    if (message.code != 0) {
+        parent.finishForm(message);
+
+        // Close loading
+        $.modal.closeLoading();
+
+        $.modal.close();
+
+        // Close websocket connection 
+        $.websocket.disconnect(onDisconnected);
+    } else {
+        orderNumber--;
+        if (orderNumber == 0) {
+
+            parent.finishForm(message.msg);
+
+            // Close loading
+            $.modal.closeLoading();
+
+            $.modal.close();
+
+            // Close websocket connection 
+            $.websocket.disconnect(onDisconnected);
+        }
+    }
+}
+
+function onDisconnected() {
+    console.log('Disconnected socket.');
+} 
+
+function onError(error) {
+    console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
 }

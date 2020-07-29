@@ -40,7 +40,7 @@ function getOtp() {
             method: "GET",
             success: function (data) {
                 if (data.code != 0) {
-                    $.modal.msgSuccess("Đã gửi OTP.");
+                    $.modal.alertSuccess("Đã gửi OTP.");
                 } 
             },
             error: function (result) {
