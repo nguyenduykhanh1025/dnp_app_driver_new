@@ -52,7 +52,7 @@ spring:
   redis:
     database: 0
     password: secret
-    host: localhost
+    host: 127.0.0.1
     port: 6379
     lettuce:
       pool:
@@ -100,7 +100,7 @@ xss:
 mqtt:
   username: admin             
   password: public            
-  host-url: tcp://192.168.1.99:1883                # The address and port of your own server need to be changed
+  host-url: tcp://127.0.0.1:1883                # The address and port of your own server need to be changed
 
 websocket:
    endpoint: /eport_logistic

@@ -1,3 +1,12 @@
+eport:
+  name: DNG ePort
+  version: 4.2.0
+  copyrightYear: 2020
+  demoEnabled: true
+  profile: D:/eport/upload
+  addressEnabled: true
+  cacheExpireTime: 3600
+
 server:
   port: 7073
   servlet:
@@ -21,13 +30,26 @@ spring:
         url: jdbc:oracle:thin:@117.3.52.70:41521/CATOS_TEST
         username: EPORT_DNP_UAT
         password: EPORT_DNP_2020
+    redis:
+        database: 0
+        password: secret
+        host: 127.0.0.1
+        port: 6379
+        lettuce:
+            pool:
+                max-active: 100
+                max-idle: 100
+                min-idle: 50
+                max-wait: 6000
+        timeout: 60000
+
 mybatis:
     typeAliasesPackage: vn.com.irtech.eport.**.domain
     mapperLocations: classpath*:mapper/**/*Mapper.xml
     configLocation: classpath:mybatis/mybatis-config.xml
     
 jwt:
-   token-expiration-time: 3600 # 604800 #1 hour
+   token-expiration-time: 12000 #1 hour
    token-issuer: EPORT
    token-signing-key: Dpm4BwgXO6ad085xgVj6ysFHSTOUozr
 
