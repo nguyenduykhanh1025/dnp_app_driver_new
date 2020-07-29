@@ -1341,8 +1341,10 @@ function onMessageReceived(payload) {
   let message = JSON.parse(payload.body);
   if (message.code != 0) {
 
-    setProgressPercent(currentPercent=99);
+    setProgressPercent(currentPercent=100);
     setTimeout(() => {
+      hideProgress();
+
       reloadShipmentDetail();
 
       $.modal.alertError(message.msg);
@@ -1357,8 +1359,10 @@ function onMessageReceived(payload) {
     orderNumber--;
     if (orderNumber == 0) {
 
-      setProgressPercent(currentPercent=99);
+      setProgressPercent(currentPercent=100);
       setTimeout(() => {
+        hideProgress();
+
         reloadShipmentDetail();
 
         $.modal.alertSuccess(message.msg);
@@ -1389,7 +1393,7 @@ function showProgress(title) {
   currentPercent = 0;
   interval = setInterval(function() {
     setProgressPercent(++currentPercent);
-    if (currentPercent >= 100) {
+    if (currentPercent >= 99) {
         clearInterval(interval);
     }
   }, 1000);

@@ -1136,8 +1136,10 @@ function onError(error) {
 }
 
 function onMessageReceived(payload) {
-    setProgressPercent(currentPercent=99);
+    setProgressPercent(currentPercent=100);
     setTimeout(() => {
+        hideProgress();
+
         let message = JSON.parse(payload.body);
 
         reloadShipmentDetail();
@@ -1173,7 +1175,7 @@ function showProgress(title) {
     currentPercent = 0;
     interval = setInterval(function() {
         setProgressPercent(++currentPercent);
-        if (currentPercent >= 100) {
+        if (currentPercent >= 99) {
             clearInterval(interval);
         }
     }, 1000);

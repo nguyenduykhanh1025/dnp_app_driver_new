@@ -45,11 +45,11 @@ public class MqttService implements MqttCallback {
 
 	private static final String REQUEST_TOPIC = BASE + "/+/request";
 
-	private static final String NOTIFICATION_OM_TOPIC = BASE + "/notification/om";
+	private static final String NOTIFICATION_OM_TOPIC = "eport/notification/om";
 
-	private static final String NOTIFICATION_IT_TOPIC = BASE + "/notification/it";
+	private static final String NOTIFICATION_IT_TOPIC = "eport/notification/it";
 
-	private static final String NOTIFICATION_CONT_TOPIC = BASE + "/notification/cont";
+	private static final String NOTIFICATION_CONT_TOPIC = "eport/notification/cont";
 
 	private static MqttService instance = null;
 	private MqttAsyncClient mqttClient;
@@ -273,9 +273,8 @@ public class MqttService implements MqttCallback {
 		processOrder.setId(payLoad.processOrder.getId());
 		processOrder.setRobotUuid(sysRobot.getUuId()); // robot uuid in charge of process order
 		processOrder.setStatus(1); // on progress
-		// processOrderService.updateProcessOrder(processOrder);
-		sysRobot.setStatus("1"); // set robot busy
-		robotService.updateRobot(sysRobot);
+		processOrderService.updateProcessOrder(processOrder);
+		robotService.updateRobotStatusByUuId(sysRobot.getUuId(), "1");
 		return true;
 	}
 
