@@ -142,7 +142,7 @@ public class EportTask {
                 }
             }
             // Move file to distination folder
-            fileEntry.renameTo(new File(destinationFolder + fileEntry.getName()));
+            fileEntry.renameTo(new File(destinationFolder + File.separator + fileEntry.getName()));
             fileEntry.delete();
         }
         System.out.print("Thành công .... " + groupCode);
