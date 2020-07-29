@@ -62,7 +62,7 @@ function checkCustomStatus() {
                         }
                     });
                 } else {
-                    $.modal.msgError("Số tờ khai không hợp lệ.");
+                    $.modal.alertError("Số tờ khai không hợp lệ.");
                 }
             }
         }

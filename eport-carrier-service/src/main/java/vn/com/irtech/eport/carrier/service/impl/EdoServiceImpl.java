@@ -12,11 +12,11 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.mapper.EdoMapper;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.DateUtils;
 
 
@@ -65,6 +65,13 @@ public class EdoServiceImpl implements IEdoService
     @Override
     public int insertEdo(Edo edo)
     {
+		Edo edoCheck = new Edo();
+		edoCheck.setContainerNumber(edo.getContainerNumber());
+		edoCheck.setBillOfLading(edo.getBillOfLading());
+		edoCheck.setDelFlg(0);
+		 if (selectFirstEdo(edo) != null) {
+			 throw new BusinessException(String.format("Edo to insert was existed"));
+		 }	
         edo.setCreateTime(DateUtils.getNowDate());
         return edoMapper.insertEdo(edo);
     }
@@ -157,7 +164,6 @@ public class EdoServiceImpl implements IEdoService
 			{
 				edi = new Edo();
 				edi.setBusinessUnit(business);
-				edi.setCarrierCode(business);
 				edi.setFileCreateTime(fileCreateTime);
 				continue;
 			}

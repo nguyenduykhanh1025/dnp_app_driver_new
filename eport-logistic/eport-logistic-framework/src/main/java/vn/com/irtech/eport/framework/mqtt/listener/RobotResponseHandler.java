@@ -158,19 +158,19 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			// SET RESULT FOR HISTORY SUCCESS
 			processHistory.setResult("S");
 		} else {
-			// INIT PROCESS ORDER TO UPDATE
-			processOrder = new ProcessOrder();
-			processOrder.setId(id);
-			processOrder.setResult("F"); // RESULT FAILED
-			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
-			processOrderService.updateProcessOrder(processOrder);
-
 			// Send notification for om
 			try {
 				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
 			} catch (Exception e) {
 				logger.warn(e.getMessage());
 			}
+
+			// INIT PROCESS ORDER TO UPDATE
+			processOrder = new ProcessOrder();
+			processOrder.setId(id);
+			processOrder.setResult("F"); // RESULT FAILED
+			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrderService.updateProcessOrder(processOrder);
 
 			// SET RESULT FOR HISTORY FAILED
 			processHistory.setResult("F");
