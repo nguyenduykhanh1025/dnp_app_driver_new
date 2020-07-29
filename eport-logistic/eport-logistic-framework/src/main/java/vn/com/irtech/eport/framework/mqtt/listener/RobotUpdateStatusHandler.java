@@ -172,6 +172,16 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 					// Send order to robot
 					status = "1";
+
+					// check robot exists in db
+					if (robotService.selectRobotByUuId(uuId) == null) {
+						// insert robot to db
+						robotService.insertRobot(sysRobot);
+					} else {
+						// update status of robot
+						robotService.updateRobotByUuId(sysRobot);
+					}
+
 					switch (reqProcessOrder.getServiceType()) {
 						case 1:
 							mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_FULL, uuId);
