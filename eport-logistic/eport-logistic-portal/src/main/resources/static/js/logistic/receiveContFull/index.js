@@ -1299,7 +1299,7 @@ function finishForm(result) {
 
 function finishVerifyForm(result) {
   if (result.code == 0 || result.code == 301) {
-    $.modal.loading(result.msg);
+    //$.modal.loading(result.msg);
     orders = result.processIds;
     orderNumber = result.orderNumber;
     // CONNECT WEB SOCKET
@@ -1341,14 +1341,14 @@ function onMessageReceived(payload) {
   let message = JSON.parse(payload.body);
   if (message.code != 0) {
 
-    setProgressPercent(currentPercent=100);
+    setProgressPercent(currentPercent=99);
     setTimeout(() => {
       reloadShipmentDetail();
 
       $.modal.alertError(message.msg);
 
       // Close loading
-      $.modal.closeLoading();
+      //$.modal.closeLoading();
 
       // Close websocket connection 
       $.websocket.disconnect(onDisconnected);
@@ -1357,14 +1357,14 @@ function onMessageReceived(payload) {
     orderNumber--;
     if (orderNumber == 0) {
 
-      setProgressPercent(currentPercent=100);
+      setProgressPercent(currentPercent=99);
       setTimeout(() => {
         reloadShipmentDetail();
 
         $.modal.alertSuccess(message.msg);
 
         // Close loading
-        $.modal.closeLoading();
+        //$.modal.closeLoading();
 
         // Close websocket connection 
         $.websocket.disconnect(onDisconnected);
@@ -1389,7 +1389,7 @@ function showProgress(title) {
   currentPercent = 0;
   interval = setInterval(function() {
     setProgressPercent(++currentPercent);
-    if (currentPercent == 100) {
+    if (currentPercent >= 100) {
         clearInterval(interval);
     }
   }, 1000);

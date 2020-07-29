@@ -974,7 +974,7 @@ function finishForm(result) {
 
 function finishVerifyForm(result) {
     if (result.code == 0 || result.code == 301){
-        $.modal.loading(result.msg);
+        //$.modal.loading(result.msg);
         currentProcessId = result.processId;
         // CONNECT WEB SOCKET
         connectToWebsocketServer();
@@ -1011,11 +1011,11 @@ function onConnected() {
 function onError(error) {
     console.log(error);
     $.modal.alertError('Could not connect to WebSocket server. Please refresh this page to try again!');
-    $.modal.closeLoading();
+    //$.modal.closeLoading();
 }
 
 function onMessageReceived(payload) {
-    setProgressPercent(currentPercent=100);
+    setProgressPercent(currentPercent=99);
     setTimeout(() => {
         let message = JSON.parse(payload.body);
 
@@ -1028,7 +1028,7 @@ function onMessageReceived(payload) {
         }
 
         // Close loading
-        $.modal.closeLoading();
+        //$.modal.closeLoading();
 
         // Unsubscribe destination
         if (currentSubscription){
@@ -1052,7 +1052,7 @@ function showProgress(title) {
     currentPercent = 0;
     interval = setInterval(function() {
         setProgressPercent(++currentPercent);
-        if (currentPercent == 100) {
+        if (currentPercent >= 100) {
             clearInterval(interval);
         }
     }, 1000);
