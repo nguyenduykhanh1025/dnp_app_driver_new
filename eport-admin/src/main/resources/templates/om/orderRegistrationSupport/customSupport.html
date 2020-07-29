@@ -9,25 +9,36 @@
 </head>
 
 <body class="container-fluid white-bg page-custom">
-  <div class="container">
+  <div class="mt10">
+    <div class="content-header row">
+      <div class="col-md-4">
+        <h3 class="title" style="display: inline-block;">Hãng tàu: </h3>
+        <span class="content">WHL</span>
+      </div>
+      <div class="col-md-4">
+        <h3 class="title" style="display: inline-block;">Tên tàu: </h3>
+        <span class="content">HAMI</span>
+      </div>
+      <div class="col-md-4">
+        <h3 class="title" style="display: inline-block;">Chuyến: </h3>
+        <span class="content">0029</span>
+      </div>
+    </div>
     <div class="content-body">
       <section class="content clearfix">
         <table id="dg" fitColumn="true">
           <thead>
             <tr>
-              <th data-options="field:'containerNo', halign:'center', align:'center', fixed:'true'" width="150" sortable="true">Số Container</th>
-              <th data-options="field:'opeCode', halign:'center', fixed:'true'" width="150" sortable="true">Hãng Tàu</th>
-              <th data-options="field:'vslNm', halign:'center', fixed:'true'" width="120" sortable="true">Tàu</th>
-              <th data-options="field:'voyNo', halign:'center', fixed:'true'" width="120" sortable="true">Chuyến</th>
-              <th data-options="field:'customStatus', align:'center', formatter: formatCustomStatus" width="165" sortable="true">Trạng thái</th>
+              <th data-options="field:'containerNo', halign:'center', align:'center', fixed:'true'" width="50%" sortable="true">Số Container</th>
+              <th data-options="field:'customStatus', align:'center', formatter: formatCustomStatus" width="50%" sortable="true">Trạng thái thông quan</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </section>
     </div>
-    <div class="layui-layer-btn footer">
-      <a class="layui-layer-btn0" onclick="closeForm()">Đóng</a>
+    <div class="content-footer">
+      <a class="btn btn-block btn-success" onclick="closeForm()">Đồng bộ</a>
     </div>
   </div>
   <th:block th:include="include :: footer" />

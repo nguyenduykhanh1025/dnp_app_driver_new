@@ -174,7 +174,7 @@ $("#toDate").on("inputchange", function () {
 });
 
 function openCustomSupport(id) {
-  $.modal.openWithOneButton("Hải quan", PREFIX + "/custom/" + id, null, null);
+  $.modal.openTab("Hỗ trợ Hải Quan cho [BillNo/Booking No]", PREFIX + "/custom/" + id, null, null);
 }
 
 function openVerificationSupport(id) {
