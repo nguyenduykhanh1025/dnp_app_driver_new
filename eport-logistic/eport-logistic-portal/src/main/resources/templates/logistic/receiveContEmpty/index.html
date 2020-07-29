@@ -72,6 +72,12 @@
                 <span class="label-title">Booking No: </span>
                 <span id="bookingNo"></span>
               </div>
+              <div>
+                <a id="attachIcon" class="hidden" href="javascript:void(0)"
+                   th:attr="data-url=@{/logistic/receive-cont-empty/shipments/{shipmentId}/shipment-images}">
+                  <i class="fa fa-paperclip" style="font-size:3rem;"></i>
+                </a>
+              </div>
             </div>
             <ul class="right-info">
               <li><a id="registerStatus" class="disable">Khai báo</a></li>
