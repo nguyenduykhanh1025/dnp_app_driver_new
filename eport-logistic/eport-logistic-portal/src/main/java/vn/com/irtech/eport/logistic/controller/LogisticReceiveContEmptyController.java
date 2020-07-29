@@ -74,7 +74,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     }
 
     // VIEW RECEIVE CONT EMPTY ATTACH IMAGE
-    @GetMapping("/{shipmentId}/shipment-images")
+    @GetMapping("/shipments/{shipmentId}/shipment-images")
     public String receiveContEmptyAttachImage(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
         Shipment shipment = shipmentService.selectShipmentById(shipmentId);
         if (!verifyPermission(shipment.getLogisticGroupId())) {
@@ -89,6 +89,19 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
         return PREFIX + "/shipmentImage";
     }
+
+	// COUNT SHIPMENT IMAGE BY SHIPMENT ID
+	@GetMapping("/shipments/{shipmentId}/shipment-images/count")
+	@ResponseBody
+	public AjaxResult countShipmentImage(@PathVariable("shipmentId") Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if (verifyPermission(shipment.getLogisticGroupId())) {
+			int numberOfShipmentImage = shipmentImageService.countShipmentImagesByShipmentId(shipment.getId());
+			ajaxResult.put("numberOfShipmentImage", numberOfShipmentImage);
+		}
+		return ajaxResult;
+	}
 
 	// FORM ADD NEW SHIPMENT
 	@GetMapping("/shipment/add")

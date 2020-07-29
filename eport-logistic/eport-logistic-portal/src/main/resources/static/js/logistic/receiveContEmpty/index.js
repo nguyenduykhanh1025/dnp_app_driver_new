@@ -78,6 +78,15 @@ $(document).ready(function () {
         pickTime: false,
         minView: 2
     });
+
+    $("#attachIcon").on("click", function () {
+        let shipmentId = $(this).data("shipment-id");
+        if (!shipmentId) {
+            return;
+        }
+        let url = $(this).data("url");
+        $.modal.openTab(`Đính kèm - Cont [${shipmentId}]`, url.replace("{shipmentId}", shipmentId));
+    });
 });
 
 //search date
@@ -240,21 +249,19 @@ function getSelected() {
         toggleAttachIcon(shipmentSelected.id);
     }
 }
+
 function toggleAttachIcon(shipmentId) {
     $.ajax({
         type: "GET",
-        url: prefix + "/shipments/" + shipmentId + "/shipment-images",
+        url: prefix + "/shipments/" + shipmentId + "/shipment-images/count",
         contentType: "application/json",
         success: function (data) {
             let $attachIcon = $("a#attachIcon");
             if (data.numberOfShipmentImage && data.numberOfShipmentImage > 0) {
-                $attachIcon.bind("click", function () {
-                    let url = $(this).data("url");
-                    $.modal.openTab(`Đính kèm - Cont [${shipmentId}]`, url.replace("{shipmentId}", shipmentId));
-                });
+                $attachIcon.data("shipment-id", shipmentId);
                 $attachIcon.removeClass("hidden");
             } else {
-                $attachIcon.unbind("click");
+                $attachIcon.removeData("shipment-id");
                 $attachIcon.addClass("hidden");
             }
         }
@@ -302,6 +309,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         $(td).html(content);
     return td;
 }
+
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
     $(td).html(value);
@@ -374,6 +382,7 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     }
     return td;
 }
+
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
