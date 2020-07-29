@@ -1,4 +1,5 @@
 var prefix = ctx + "logistic/send-cont-empty";
+var interval, currentPercent;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
 var contList = [];
@@ -140,7 +141,7 @@ function handleCollapse(status) {
 // LOAD SHIPMENT LIST
 function loadTable(msg) {
     if (msg) {
-        $.modal.msgSuccess(msg);
+        $.modal.alertSuccess(msg);
     }
     $("#dg").datagrid({
         url: '/logistic/shipments',
@@ -244,19 +245,19 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
     let content = '';
         switch (value) {
             case 1:
-                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: rgb(5, 148, 148);"></i>';
+                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
                 content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
                 content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
             case 2:
                 content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i>';
+                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
                 content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
             case 3:
                 content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
                 content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
-                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px; color: rgb(5, 148, 148);"></i></div>';
+                content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
             case 4:
                 content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
@@ -828,7 +829,7 @@ function getDataFromTable(isValidate) {
 // SAVE/EDIT/DELETE SHIPMENT DETAIL
 function saveShipmentDetail() {
     if (shipmentSelected == null) {
-        $.modal.msgError("Bạn cần chọn lô trước");
+        $.modal.alertError("Bạn cần chọn lô trước");
         return;
     } else {
         if (getDataFromTable(true)) {
@@ -845,13 +846,13 @@ function saveShipmentDetail() {
                     success: function (data) {
                         var result = JSON.parse(data);
                         if (result.code == 0) {
-                            $.modal.msgSuccess(result.msg);
+                            $.modal.alertSuccess(result.msg);
                             reloadShipmentDetail();
                         } else {
                             if (result.conts != null) {
                                 $.modal.alertError("Không thể làm lệnh đối với các container: "+result.conts);
                             } else {
-                                $.modal.msgError(result.msg);
+                                $.modal.alertError(result.msg);
                             }
                         }
                         $.modal.closeLoading();
@@ -879,10 +880,10 @@ function deleteShipmentDetail() {
         method: "delete",
         success: function (result) {
             if (result.code == 0) {
-                $.modal.msgSuccess(result.msg);
+                $.modal.alertSuccess(result.msg);
                 reloadShipmentDetail();
             } else {
-                $.modal.msgError(result.msg);
+                $.modal.alertError(result.msg);
             }
             $.modal.closeLoading();
         },
@@ -964,9 +965,9 @@ function setLayoutFinishStatus() {
 
 function finishForm(result) {
     if (result.code == 0) {
-        $.modal.msgSuccess(result.msg);
+        $.modal.alertSuccess(result.msg);
     } else {
-        $.modal.msgError(result.msg);
+        $.modal.alertError(result.msg);
     }
     reloadShipmentDetail();
 }
@@ -977,6 +978,15 @@ function finishVerifyForm(result) {
         currentProcessId = result.processId;
         // CONNECT WEB SOCKET
         connectToWebsocketServer();
+
+        showProgress("Đang xử lý ...");
+        setTimeout(() => {
+            setTimeout(() => {
+                hideProgress();
+                reloadShipmentDetail();
+                $.modal.alertError("Yêu cầu của quý khách đang được chờ xử lý, quý khách vui lòng đợi hoặc liên hệ với bộ phận thủ tục để được hỗ trợ thêm!");
+            }, 1000);
+        }, 200000);
        
     } else {
         reloadShipmentDetail();
@@ -1005,28 +1015,56 @@ function onError(error) {
 }
 
 function onMessageReceived(payload) {
-    let message = JSON.parse(payload.body);
+    setProgressPercent(currentPercent=100);
+    setTimeout(() => {
+        let message = JSON.parse(payload.body);
 
-    reloadShipmentDetail();
+        reloadShipmentDetail();
 
-    if (message.code == 0){
-        $.modal.alertSuccess(message.msg);
-    } else {
-        $.modal.alertError(message.msg);
-    }
+        if (message.code == 0){
+            $.modal.alertSuccess(message.msg);
+        } else {
+            $.modal.alertError(message.msg);
+        }
 
-    // Close loading
-    $.modal.closeLoading();
+        // Close loading
+        $.modal.closeLoading();
 
-    // Unsubscribe destination
-    if (currentSubscription){
-        currentSubscription.unsubscribe();
-    }
+        // Unsubscribe destination
+        if (currentSubscription){
+            currentSubscription.unsubscribe();
+        }
 
-    // Close websocket connection 
-    $.websocket.disconnect(onDisconnected);
+        // Close websocket connection 
+        $.websocket.disconnect(onDisconnected);
+    }, 1000);
 }
 
 function onDisconnected() {
     console.log('Disconnected socket.');
 }     
+
+function showProgress(title) {
+    $('.progress-wrapper').show();
+    $('.dim-bg').show();
+    $('#titleProgress').text(title);
+    $('.percent-text').text("0%");
+    currentPercent = 0;
+    interval = setInterval(function() {
+        setProgressPercent(++currentPercent);
+        if (currentPercent == 100) {
+            clearInterval(interval);
+        }
+    }, 1000);
+}
+
+function setProgressPercent(percent) {
+    $('#progressBar').prop('aria-valuenow', percent)
+    $('#progressBar').css('width', percent + "%")
+    $('.percent-text').text(percent + "%");
+}
+
+function hideProgress() {
+    $('.progress-wrapper').hide();
+    $('.dim-bg').hide();
+}

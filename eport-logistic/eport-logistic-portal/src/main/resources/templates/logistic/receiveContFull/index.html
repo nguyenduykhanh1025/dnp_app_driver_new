@@ -11,6 +11,7 @@
   </head>
   <body>
     <div id="wrapper">
+      
       <div class="left-side">
         <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
         <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
@@ -95,7 +96,7 @@
             <button id="verifyBtn" class="btn btn-sm btn-primary" onclick="verify()" disabled>Xác Nhận</button>
             <button id="pickContOnDemandBtn" class="btn btn-sm btn-primary" onclick="pickContOnDemand()" disabled>Bốc Cont Chỉ Định</button>
             <button id="payBtn" class="btn btn-sm btn-primary" onclick="pay()" disabled>Thanh Toán</button>
-            <button id="payShiftingBtn" class="btn btn-sm btn-primary" onclick="payShifting()">Thanh Toán Phí Dịch Chuyển</button>
+            <button id="payShiftingBtn" class="btn btn-sm btn-primary" onclick="payShifting()" disabled>Thanh Toán Phí Dịch Chuyển</button>
           </div>
           <div class="search-bar">
             <button id="exportBillBtn" class="btn btn-sm btn-success" onclick="exportBill()" disabled>Xuất Hóa Đơn</button>
@@ -103,7 +104,16 @@
         </div>
         <hr />
         <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+        <div class="progress-wrapper">
+          <p class="text-white" id="titleProgress"></p>
+          <div class="progress">
+            <span class="percent-text"></span>
+            <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+            </div>
+          </div>
+        </div>
       </div>
+      <div class="dim-bg"></div>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: handsontable-js" />

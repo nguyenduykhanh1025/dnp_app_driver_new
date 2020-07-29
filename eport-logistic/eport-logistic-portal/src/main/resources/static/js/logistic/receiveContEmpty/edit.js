@@ -100,7 +100,7 @@ function checkBookingNoUnique() {
             if (result.code == 0) {
                 $("#bookingNo").removeClass("error-input");
             } else {
-                $.modal.msgError("Số book đã tồn tại!");
+                $.modal.alertError("Số book đã tồn tại!");
                 $("#bookingNo").addClass("error-input");
             }
         });
