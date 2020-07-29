@@ -232,7 +232,7 @@ function getSelected() {
 // FORMAT HANDSONTABLE COLUMN
 function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
     let content = '';
-    if (checkList[row] == 1 || value) {
+    if (checkList[row] == 1) {
         content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')" checked></div>';
     } else {
         content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
@@ -485,9 +485,9 @@ function configHandson() {
                 renderer: remarkRenderer
             },
         ],
-        beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
-            if(coords.col == 0) event.stopImmediatePropagation();
-        },
+        // beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
+        //     if(coords.col == 0) event.stopImmediatePropagation();
+        // },
         afterChange: onChange
     };
 }

@@ -108,14 +108,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectRobotHistory" parameterType="ProcessHistory" resultMap="ProcessHistoryResult">
         <include refid="selectRobotHistoryVo"/>
-        <!-- <where>
-            and h.robot_uuid != null
+        <where>
+            <!-- and h.robot_uuid != null
             <if test="serviceType != null  and serviceType != ''"> and p.service_type = #{serviceType}</if>
             <if test="result != null  and result != ''"> and h.result = #{result}</if>
             <if test="fromDate != null ">and h.create_time &gt;= #{fromDate}</if>
             <if test="toDate != null ">and h.create_time &lt;= #{toDate}</if>
-            <if test="robotUuid != null  and robotUuid != ''"> and upper(h.robot_uuid) like concat(concat('%', #{robotUuid}), '%')</if>
-        </where> -->
+            <if test="robotUuid != null  and robotUuid != ''"> and upper(h.robot_uuid) like concat(concat('%', #{robotUuid}), '%')</if> -->
+        </where>
 
     </select>
     
