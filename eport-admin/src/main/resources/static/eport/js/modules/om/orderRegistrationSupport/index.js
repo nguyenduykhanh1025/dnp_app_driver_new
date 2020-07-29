@@ -86,9 +86,9 @@ function formatPayment(value, row, index) {
 
 function formatDo(value, row, index) {
   if (row.serviceType == 1) {
-    return '<a class="btn btn-danger btn-xs" onclick="openReceiverDOSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Nộp DO gốc</a> ';
+    return '<a class="btn btn-danger btn-xs" onclick="openReceiverDOSupport(\'' + row.id + '\')"><i class="fa fa-check-circle"></i> Thu Chứng Từ</a> ';
   }
-  return '';
+  return '<span style="color: #333333; font-size: 12px;">Đầy đủ chứng từ</span>';
 }
 
 function formatDriver(value, row, index) {
