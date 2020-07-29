@@ -44,11 +44,25 @@ export default class ResultScreen extends Component {
     super(props);
     this.state = {
       data: [],
+      "chassisNo": "",
+      "contNo": "",
+      "fe": "",
+      "sztp": "",
+      "truckNo": "",
+      "yardPosition": ""
     }
   }
 
   componentDidMount() {
-    this.setState({ data: SearchQRCode[0].Data[0] })
+    console.log('this.props.navigation.state.params', this.props.navigation.state.params.Data[0])
+    this.setState({
+      "chassisNo": this.props.navigation.state.params.Data[0].chassisNo,
+      "contNo": this.props.navigation.state.params.Data[0].contNo,
+      "fe": this.props.navigation.state.params.Data[0].fe,
+      "sztp": this.props.navigation.state.params.Data[0].sztp,
+      "truckNo": this.props.navigation.state.params.Data[0].truckNo,
+      "yardPosition": this.props.navigation.state.params.Data[0].yardPosition
+    })
   }
 
   onBack = () => {
@@ -140,15 +154,15 @@ export default class ResultScreen extends Component {
                       }}>Bốc công hàng từ Cảng</Text>
                     <View style={styles.frame1}>
                       <Text style={styles.txtLabel}>Cont</Text>
-                      <Text style={styles.txtValue}></Text>
+                      <Text style={styles.txtValue}>{this.state.contNo}</Text>
                     </View>
                     <View style={styles.frame1}>
                       <Text style={styles.txtLabel}>Size</Text>
-                      <Text style={styles.txtValue}>22GO</Text>
+                      <Text style={styles.txtValue}>{this.state.sztp}</Text>
                     </View>
                     <View style={styles.frame1}>
                       <Text style={styles.txtLabel}>Type</Text>
-                      <Text style={styles.txtValue}>F</Text>
+                      <Text style={styles.txtValue}>{this.state.fe}</Text>
                     </View>
                   </View>
                 </View>
@@ -182,11 +196,11 @@ export default class ResultScreen extends Component {
                     }]}>
                     Position
                   </Text>
-                  <Text style={styles.txtValue1}>A-1-4-3</Text>
+                  <Text style={styles.txtValue1}>{this.state.yardPosition}</Text>
                 </View>
                 <View style={styles.frame2}>
                   <Text style={[styles.txtLabel, { width: null }]}>Gate Pass</Text>
-                  <Text style={styles.txtValue1}>xxxxxxx</Text>
+                  <Text style={styles.txtValue1}>{}</Text>
                 </View>
               </View>
             </View>
@@ -208,7 +222,7 @@ export default class ResultScreen extends Component {
                 }}>
                   Thông tin khác
                 </Text>
-                <View style={styles.Line}>
+                {/* <View style={styles.Line}>
                   <Text style={styles.txtLabel1} >Khách hàng</Text>
                   <Text style={styles.txtValue2}>Anh A</Text>
                 </View>
@@ -223,7 +237,7 @@ export default class ResultScreen extends Component {
                 <View style={styles.Line}>
                   <Text style={styles.txtLabel1} >Ghi chú</Text>
                   <Text style={[styles.txtValue2, { fontSize: 15, fontWeight: null }]}>Không có ghi chú gì</Text>
-                </View>
+                </View> */}
               </View>
             </View>
           </View>

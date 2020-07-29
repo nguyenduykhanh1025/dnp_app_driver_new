@@ -39,10 +39,15 @@ export default class HeaderMain extends Component {
       onPressRight,
       disableBG,
       disableStep,
+      backgroundColor,
     } = this.props;
     return (
       <View style={[
         styles.Container,
+        backgroundColor ?
+          { backgroundColor: backgroundColor }
+          :
+          null,
         disableBG && disableStep
           ?
           { height: hs(100) }
@@ -51,7 +56,7 @@ export default class HeaderMain extends Component {
       ]}>
         <StatusBar
           translucent
-          barStyle={disableBG && disableStep ? 'dark-content' : 'light-content'}
+          barStyle={disableBG && disableStep && !backgroundColor ? 'dark-content' : 'light-content'}
           backgroundColor='transparent'
         />
         {

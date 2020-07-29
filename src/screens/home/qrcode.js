@@ -53,8 +53,6 @@ import {
 } from '@/config/navigator';
 import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { SCANNER_QR } from '@/modules/home/constants';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const bg_qrcode = require('../../assets/images/qr-code.png');
 
@@ -62,20 +60,23 @@ class HomeScreen extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            qrvalue: 'HOA',
+            qrvalue: 'abc',
             getLocationEnable: false,
             loading: false,
             result: false,
             msg: 'Đang xử lý',
             Data: [],
             deviceId: '',
+            sessionId: '',
         };
     }
 
     componentDidMount = async () => {
+        console.log('dataQR', this.props.navigation.state.params.dataQR)
         this.getId()
         await this.setState({
-            qrvalue: JSON.stringify(this.props.navigation.state.params.item),
+            qrvalue: JSON.stringify(this.props.navigation.state.params.dataQR.qrCode),
+            sessionId: this.props.navigation.state.params.dataQR.sessionId,
         })
         this.onTestMqtt()
     }
@@ -89,12 +90,44 @@ class HomeScreen extends PureComponent {
 
     }
 
+    componentWillUnmount = () => {
+        var settings = {
+            mqttServerUrl: "192.168.1.99",
+            port: 1883,
+            // topic: "eport/driver/" + this.state.sessionId + "/res",
+            topic: "eport/driver/ado3709Adlfj/res"
+        }
+
+        mqtt.createClient({
+            uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
+            clientId: this.state.deviceId,
+        }).then((client) => {
+            client.on('closed', () => {
+                console.log('closed');
+            });
+            client.disconnect();
+        }).catch((err) => {
+            Alert.alert(
+                'Lỗi!!!',
+                'Liên hệ người phụ trách!',
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            this.props.navigation.goBack()
+                        }
+                    }
+                ],
+                { cancelable: false }
+            );
+        });
+    }
+
     onTestMqtt = async () => {
         var settings = {
-            // mqttServerUrl : "localhost", 
-            mqttServerUrl: "192.168.1.92",
+            mqttServerUrl: "192.168.1.99",
             port: 1883,
-            topic: "myTopic"
+            // topic: "eport/driver/" + this.state.sessionId + "/res",
+            topic: "eport/driver/ado3709Adlfj/res"
         }
 
         mqtt.createClient({
@@ -103,19 +136,37 @@ class HomeScreen extends PureComponent {
         }).then((client) => {
             client.on('connect', () => {
                 console.log('connected');
-                client.subscribe('/data', 0);
+                client.subscribe(settings.topic, 0);
             });
             client.on('message', (msg) => {
-                var message = JSON.parse(msg.data)
-                console.log('message', message);
+                var message = JSON.parse(msg.data);
+                console.log('message', message)
                 this.setState({
-                    loading: message.status ? message.status : this.state.loading,
+                    loading: message.status == 'PROCESSING' ? true : message.status == 'FINISH' ? false : this.state.loading,
                     msg: message.msg,
-                    Data: message.Data
+                    Data: message.data
                 })
-                if (!message.status && this.state.loading) {
-                    NavigationService.navigate(mainStack.result, { item: message.Data })
+                if (message.status == 'FINISH' && message.result == 'PASS') {
+                    client.unsubscribe(settings.topic)
+                    client.disconnect();
                     this.setState({ loading: false })
+                    NavigationService.navigate(mainStack.result, { Data: message.data })
+                }
+                if (message.status == 'FINISH' && message.result == 'FAIL') {
+                    client.unsubscribe(settings.topic)
+                    client.disconnect();
+                    Alert.alert(
+                        'Thông báo!',
+                        'Checkin thất bại!',
+                        [
+                            {
+                                text: 'OK', onPress: () => {
+                                    this.props.navigation.goBack()
+                                }
+                            }
+                        ],
+                        { cancelable: false }
+                    );
                 }
                 // PushNotification.localNotification({
                 //     title: message.title, // (optional)
@@ -126,31 +177,25 @@ class HomeScreen extends PureComponent {
                 //     playSound: true,
                 // })
             });
-
             client.connect();
         }).catch((err) => {
-            this.props.navigation.goBack();
+            Alert.alert(
+                'Lỗi!!!',
+                'Liên hệ người phụ trách!',
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            this.props.navigation.goBack()
+                        }
+                    }
+                ],
+                { cancelable: false }
+            );
         });
     }
 
     onModalClose = () => {
         this.setState({ loading: false })
-    }
-
-    onTestLoading = async () => {
-        this.setState({ loading: true });
-        setTimeout(() => {
-            this.setState({ msg: 'Đang tìm vị trí' })
-        }, 3000)
-        setTimeout(() => {
-            this.setState({ msg: 'Đang xử lý' })
-        }, 5000)
-        setTimeout(() => {
-            if (this.state.loading) {
-                NavigationService.navigate(mainStack.result)
-                this.setState({ loading: false });
-            }
-        }, 5001)
     }
 
     renderLeft = () => {
@@ -217,36 +262,36 @@ class HomeScreen extends PureComponent {
                             />
                         </ImageBackground>
                     </View>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         onPress={() => { this.onTestLoading() }}
-                    >
-                        <View style={{
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginTop: hs(46.78),
-                        }}>
-                            <View style={styles.outline}>
-                                <View style={styles.frame}>
-                                    <View style={styles.frame1Border}>
-                                        <Text style={styles.title}>Lô</Text>
-                                        <Text style={styles.txtValue}>0001</Text>
-                                    </View>
-                                    <View style={styles.frame1Border}>
-                                        <Text style={styles.title}>Size</Text>
-                                        <Text style={styles.txtValue}>0001</Text>
-                                    </View>
-                                    <View style={styles.frame1Border}>
-                                        <Text style={styles.title}>Type</Text>
-                                        <Text style={styles.txtValue}>0001</Text>
-                                    </View>
-                                    <View style={styles.frame1}>
-                                        <Text style={styles.title}>Số lượng</Text>
-                                        <Text style={styles.txtValue}>0001</Text>
-                                    </View>
+                    > */}
+                    <View style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: hs(46.78),
+                    }}>
+                        <View style={styles.outline}>
+                            <View style={styles.frame}>
+                                <View style={styles.frame1Border}>
+                                    <Text style={styles.title}>Lô</Text>
+                                    <Text style={styles.txtValue}>0001</Text>
+                                </View>
+                                <View style={styles.frame1Border}>
+                                    <Text style={styles.title}>Size</Text>
+                                    <Text style={styles.txtValue}>0001</Text>
+                                </View>
+                                <View style={styles.frame1Border}>
+                                    <Text style={styles.title}>Type</Text>
+                                    <Text style={styles.txtValue}>0001</Text>
+                                </View>
+                                <View style={styles.frame1}>
+                                    <Text style={styles.title}>Số lượng</Text>
+                                    <Text style={styles.txtValue}>0001</Text>
                                 </View>
                             </View>
                         </View>
-                    </TouchableOpacity>
+                    </View>
+                    {/* </TouchableOpacity> */}
                 </View>
                 <WaitingModal
                     visible={this.state.loading}

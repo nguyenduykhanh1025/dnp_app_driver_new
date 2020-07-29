@@ -94,36 +94,40 @@ export default class DetailScreen extends Component {
   onSelectService = async (value) => {
     switch (value) {
       case 1:
-        await this.setState({
-          active1: true,
-          active2: false,
-          active3: false,
-          active4: false,
-        })
+        // await this.setState({
+        //   active1: true,
+        //   active2: false,
+        //   active3: false,
+        //   active4: false,
+        // })
+        NavigationService.navigate(mainStack.detail1, {})
         break;
       case 2:
-        await this.setState({
-          active1: false,
-          active2: true,
-          active3: false,
-          active4: false,
-        })
+        // await this.setState({
+        //   active1: false,
+        //   active2: true,
+        //   active3: false,
+        //   active4: false,
+        // })
+        NavigationService.navigate(mainStack.detail1, {})
         break;
       case 3:
-        await this.setState({
-          active1: false,
-          active2: false,
-          active3: true,
-          active4: false,
-        })
+        // await this.setState({
+        //   active1: false,
+        //   active2: false,
+        //   active3: true,
+        //   active4: false,
+        // })
+        NavigationService.navigate(mainStack.detail1, {})
         break;
       case 4:
-        await this.setState({
-          active1: false,
-          active2: false,
-          active3: false,
-          active4: true,
-        })
+        // await this.setState({
+        //   active1: false,
+        //   active2: false,
+        //   active3: false,
+        //   active4: true,
+        // })
+        NavigationService.navigate(mainStack.detail1, {})
         break;
       default:
         break;
@@ -369,14 +373,14 @@ export default class DetailScreen extends Component {
           {/*
             ---------------------------------------------------- 
            */}
-          <Button
+          {/* <Button
             value={'Tiếp tục'}
             onPress={
               () => {
                 NavigationService.navigate(mainStack.detail1, {})
               }
             }
-          />
+          /> */}
         </View>
       </ScrollView>
     )

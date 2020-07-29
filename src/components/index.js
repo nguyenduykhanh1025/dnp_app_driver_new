@@ -28,6 +28,7 @@ import ModalQRResult from './modal/modal.QRresult';
 import HeaderResult from './header/headerresult';
 import HeaderMain from './header/header-main';
 import DropDown from './dropdown/dropdown';
+import DropDownProfile from './dropdown/dropdown.profile';
 import Button from './button/button';
 
 export {
@@ -66,5 +67,6 @@ export {
     HeaderResult,
     HeaderMain,
     DropDown,
+    DropDownProfile,
     Button,
 }

@@ -7,6 +7,10 @@ import { PersistGate } from 'redux-persist/integration/react';
 import configureStore from './config-store';
 import firebase from 'react-native-firebase'
 import { StatusBar, View, Text } from 'react-native';
+import {
+  saveGPSEnable,
+  getGPSEnable,
+} from '@/stores'
 
 const { store, persistor } = configureStore();
 console.disableYellowBox = true;
@@ -14,6 +18,13 @@ console.disableYellowBox = true;
 class App extends Component {
 
   componentDidMount = async () => {
+    var gpsEnable = await getGPSEnable()
+    console.log('gpsEnable', gpsEnable)
+    if (!gpsEnable) {
+      saveGPSEnable("false")
+      console.log('saveGPSEnable', false)
+    }
+    console.log('saveGPSEnable', true)
   }
 
   render() {
