@@ -10,9 +10,15 @@
     width: 100%;
 }
 
-#carousel-custom .carousel-inner img {
+#carousel-custom .carousel-inner {
+    position: relative;
     width: 100%;
-    height: 50rem;
+    overflow: hidden;
+    height: 50rem !important;
+}
+
+#carousel-custom .carousel-inner img {
+    margin: auto;
     cursor: pointer;
 }
 
@@ -21,16 +27,18 @@
     -webkit-border-radius: 0;
     border-radius: 0;
     display: inline-block;
-    height: auto;
-    margin: 0 !important;
-    width: auto;
+    margin: 1rem;
+    position: relative;
+    overflow: hidden;
+    width: 8rem;
+    height: 8rem;
 }
 
 #carousel-custom .carousel-indicators li img {
+    width: 100%;
+    margin: auto;
     display: block;
     opacity: 0.5;
-    width: 8rem;
-    height: 8rem;
 }
 
 #carousel-custom .carousel-indicators li.active img {
@@ -43,4 +51,11 @@
 
 #carousel-custom .carousel-outer {
     position: relative;
+}
+
+#zoomImage {
+    max-width : 100%;
+    margin-left: auto!important;
+    margin-right: auto!important;
+    display: block!important;
 }

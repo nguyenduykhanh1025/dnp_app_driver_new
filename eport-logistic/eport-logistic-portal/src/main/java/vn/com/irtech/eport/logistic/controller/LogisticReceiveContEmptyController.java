@@ -17,8 +17,10 @@ import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
+import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -192,9 +194,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
             try {
                 insertShipmentImages(shipment);
                 return success("Thêm lô thành công");
-            } catch (IOException e) {
+            } catch (IOException | InvalidExtensionException e) {
                 return error(e.getMessage());
-            }
+           }
         }
         return error("Thêm lô thất bại");
     }
@@ -376,7 +378,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
-    private void insertShipmentImages(Shipment shipment) throws IOException {
+    private void insertShipmentImages(Shipment shipment) throws IOException, InvalidExtensionException {
         Long shipmentId = shipment.getId();
         String timeNow = DateUtils.dateTimeNow();
         String basePath = String.format("%s/%s/%s", Global.getUploadPath(), shipment.getLogisticGroupId(), shipmentId);
@@ -384,7 +386,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
         for (MultipartFile image : shipment.getImages()) {
             String imageName = String.format("img%d_%s.%s", ++imageIndex, timeNow, FileUploadUtils.getExtension(image));
-            String imagePath = FileUploadUtils.upload(basePath, imageName, image);
+            String imagePath = FileUploadUtils.upload(basePath, imageName, image, MimeTypeUtils.IMAGE_EXTENSION);
 
             ShipmentImage shipmentImage = new ShipmentImage();
             shipmentImage.setShipmentId(shipmentId);

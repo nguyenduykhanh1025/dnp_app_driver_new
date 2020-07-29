@@ -137,18 +137,22 @@ function previewImages($input) {
 
 function isValidFiles(files) {
     if (files.length > 5) {
-        $.modal.msgError("Chỉ được phép đính kèm tối đa 5 hình ảnh!");
+        $.modal.alertError("Chỉ được phép đính kèm tối đa 5 hình ảnh!");
         return false;
     }
 
     let totalFileSize = 0;
     $.each(files, function (index, file) {
+        if (!/\.(jpe?g|png|gif|bmp)$/i.test(file.name)) {
+            $.modal.alertError("Vui lòng chọn hình ảnh có định dạng (.bmp/.gif/.jpg/.jpeg/.png)!");
+        }
+
         totalFileSize += file.size;
     });
 
     // Check total file size larger than 25MB or not ?
     if (totalFileSize > 2000000) {
-        $.modal.msgError("Tổng dung lượng ảnh đính kèm chỉ được phép dưới 20MB!");
+        $.modal.alertError("Tổng dung lượng ảnh đính kèm chỉ được phép dưới 20MB!");
         return false;
     }
 
