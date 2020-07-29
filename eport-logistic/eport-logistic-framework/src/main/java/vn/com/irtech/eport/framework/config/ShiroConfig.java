@@ -1,18 +1,8 @@
 package vn.com.irtech.eport.framework.config;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import javax.servlet.Filter;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.shiro.cache.ehcache.EhCacheManager;
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.codec.Base64;
-import org.apache.shiro.config.ConfigurationException;
-import org.apache.shiro.io.ResourceUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -23,9 +13,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
-import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.spring.SpringUtils;
 import vn.com.irtech.eport.framework.shiro.realm.UserRealm;
 import vn.com.irtech.eport.framework.shiro.session.OnlineSessionDAO;
@@ -37,12 +24,15 @@ import vn.com.irtech.eport.framework.shiro.web.filter.sync.SyncOnlineSessionFilt
 import vn.com.irtech.eport.framework.shiro.web.session.OnlineWebSessionManager;
 import vn.com.irtech.eport.framework.shiro.web.session.SpringSessionValidationScheduler;
 
+import javax.servlet.Filter;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * @author admin
  */
 @Configuration
-public class ShiroConfig
-{
+public class ShiroConfig {
     public static final String PREMISSION_STRING = "perms[\"{0}\"]";
 
     // @Value("${shiro.session.expireTime}")
@@ -82,47 +72,7 @@ public class ShiroConfig
     private String unauthorizedUrl;
 
     @Bean
-    public EhCacheManager getEhCacheManager()
-    {
-        net.sf.ehcache.CacheManager cacheManager = net.sf.ehcache.CacheManager.getCacheManager("eport-carrier");
-        EhCacheManager em = new EhCacheManager();
-        if (StringUtils.isNull(cacheManager))
-        {
-            em.setCacheManager(new net.sf.ehcache.CacheManager(getCacheManagerConfigFileInputStream()));
-            return em;
-        }
-        else
-        {
-            em.setCacheManager(cacheManager);
-            return em;
-        }
-    }
-
-    protected InputStream getCacheManagerConfigFileInputStream()
-    {
-        String configFile = "classpath:ehcache/ehcache-shiro.xml";
-        InputStream inputStream = null;
-        try
-        {
-            inputStream = ResourceUtils.getInputStreamForPath(configFile);
-            byte[] b = IOUtils.toByteArray(inputStream);
-            InputStream in = new ByteArrayInputStream(b);
-            return in;
-        }
-        catch (IOException e)
-        {
-            throw new ConfigurationException(
-                    "Unable to obtain input stream for cacheManagerConfigFile [" + configFile + "]", e);
-        }
-        finally
-        {
-            IOUtils.closeQuietly(inputStream);
-        }
-    }
-
-    @Bean
-    public UserRealm userRealm(EhCacheManager cacheManager)
-    {
+    public UserRealm userRealm(CacheManager cacheManager) {
         UserRealm userRealm = new UserRealm();
         userRealm.setCacheManager(cacheManager);
         return userRealm;
@@ -143,10 +93,9 @@ public class ShiroConfig
     }
 
     @Bean
-    public OnlineWebSessionManager sessionManager()
-    {
+    public OnlineWebSessionManager sessionManager(CacheManager cacheManager) {
         OnlineWebSessionManager manager = new OnlineWebSessionManager();
-        manager.setCacheManager(getEhCacheManager());
+        manager.setCacheManager(cacheManager);
         manager.setDeleteInvalidSessions(true);
         //manager.setGlobalSessionTimeout(expireTime * 60 * 1000);
         manager.setSessionIdUrlRewritingEnabled(false);
@@ -158,27 +107,24 @@ public class ShiroConfig
     }
 
     @Bean
-    public SecurityManager securityManager(UserRealm userRealm)
-    {
+    public SecurityManager securityManager(UserRealm userRealm, CacheManager cacheManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         securityManager.setRealm(userRealm);
         securityManager.setRememberMeManager(rememberMeManager());
-        securityManager.setCacheManager(getEhCacheManager());
-        securityManager.setSessionManager(sessionManager());
+        securityManager.setCacheManager(cacheManager);
+        securityManager.setSessionManager(sessionManager(cacheManager));
         return securityManager;
     }
 
-    public LogoutFilter logoutFilter()
-    {
+    public LogoutFilter logoutFilter(CacheManager cacheManager) {
         LogoutFilter logoutFilter = new LogoutFilter();
-        logoutFilter.setCacheManager(getEhCacheManager());
+        logoutFilter.setCacheManager(cacheManager);
         logoutFilter.setLoginUrl(loginUrl);
         return logoutFilter;
     }
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager)
-    {
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager, CacheManager cacheManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setLoginUrl(loginUrl);
@@ -204,7 +150,7 @@ public class ShiroConfig
         filters.put("syncOnlineSession", syncOnlineSessionFilter());
 //        filters.put("captchaValidate", captchaValidateFilter());
 //        filters.put("kickout", kickoutSessionFilter());
-        filters.put("logout", logoutFilter());
+        filters.put("logout", logoutFilter(cacheManager));
         shiroFilterFactoryBean.setFilters(filters);
 
         filterChainDefinitionMap.put("/**", "user,onlineSession,syncOnlineSession");
