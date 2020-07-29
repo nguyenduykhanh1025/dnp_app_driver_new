@@ -1,14 +1,10 @@
 package vn.com.irtech.eport.logistic.controller;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,46 +12,83 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.multipart.MultipartFile;
+import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/logistic/receive-cont-empty")
 public class LogisticReceiveContEmptyController extends LogisticBaseController {
-    
+
     private final String PREFIX = "logistic/receiveContEmpty";
-	
-	@Autowired
-	private IShipmentService shipmentService;
 
-	@Autowired
-	private IShipmentDetailService shipmentDetailService;
+    @Autowired
+    private ServerConfig serverConfig;
 
-	@Autowired
-	private IOtpCodeService otpCodeService;
+    @Autowired
+    private IShipmentService shipmentService;
 
-	@Autowired
-	private MqttService mqttService;
+    @Autowired
+    private IShipmentImageService shipmentImageService;
 
-	@Autowired
-	private ICatosApiService catosApiService;
-	// VIEW SEND CONT EMPTY
+    @Autowired
+    private IShipmentDetailService shipmentDetailService;
+
+    @Autowired
+    private IOtpCodeService otpCodeService;
+
+    @Autowired
+    private MqttService mqttService;
+
+    @Autowired
+    private ICatosApiService catosApiService;
+
+    // VIEW RECEIVE CONT EMPTY
     @GetMapping()
-	public String sendContEmpty() {
-		return PREFIX + "/index";
-	}
+    public String receiveContEmpty() {
+        return PREFIX + "/index";
+    }
+
+    // VIEW RECEIVE CONT EMPTY ATTACH IMAGE
+    @GetMapping("/{shipmentId}/shipment-images")
+    public String receiveContEmptyAttachImage(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
+        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+        if (!verifyPermission(shipment.getLogisticGroupId())) {
+            return PREFIX + "/shipmentImage";
+        }
+
+        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImagesByShipmentId(shipment.getId());
+        if (!CollectionUtils.isEmpty(shipmentImages)) {
+            shipmentImages.forEach(image -> image.setPath(serverConfig.getUrl() + image.getPath()));
+            mmap.put("shipmentImages", shipmentImages);
+        }
+
+        return PREFIX + "/shipmentImage";
+    }
 
 	// FORM ADD NEW SHIPMENT
 	@GetMapping("/shipment/add")
@@ -116,36 +149,48 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return error();
 	}
 
-	// ADD SHIPMENT
-	@PostMapping("/shipment")
+    // ADD SHIPMENT
+    @PostMapping("/shipment")
     @ResponseBody
+    @Transactional
     public AjaxResult addShipment(Shipment shipment) {
-		//check MST 
-		if(shipment.getTaxCode() != null){
-			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
-			if(groupName == null){
-				error("Mã số thuế không tồn tại");
-			}
-		}
-		LogisticAccount user = getUser();
-		shipment.setLogisticAccountId(user.getId());
-		shipment.setLogisticGroupId(user.getGroupId());
-		shipment.setCreateTime(new Date());
-		shipment.setCreateBy(user.getFullName());
-		shipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
-		shipment.setStatus("1");
-		shipment.setContSupplyStatus(0);
-		if (shipmentService.insertShipment(shipment) == 1) {
-			return success("Thêm lô thành công");
-		}
-		return error("Thêm lô thất bại");
-	}
-	
-	// EDIT SHIPMENT WITH SHIPMENT ID
-	@PostMapping("/shipment/{shipmentId}")
+        //check MST
+        if (shipment.getTaxCode() != null) {
+            String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
+            if (groupName == null) {
+                return error("Mã số thuế không tồn tại");
+            }
+        }
+
+        MultipartFile[] images = shipment.getImages();
+        if (Objects.nonNull(images) && images.length > 5) {
+            return error("Chỉ được phép đính kèm tối đa 5 hình ảnh!");
+        }
+
+        LogisticAccount user = getUser();
+        shipment.setLogisticAccountId(user.getId());
+        shipment.setLogisticGroupId(user.getGroupId());
+        shipment.setCreateTime(new Date());
+        shipment.setCreateBy(user.getFullName());
+        shipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
+        shipment.setStatus("1");
+        shipment.setContSupplyStatus(0);
+        if (shipmentService.insertShipment(shipment) == 1) {
+            try {
+                insertShipmentImages(shipment);
+                return success("Thêm lô thành công");
+            } catch (IOException e) {
+                return error(e.getMessage());
+            }
+        }
+        return error("Thêm lô thất bại");
+    }
+
+    // EDIT SHIPMENT WITH SHIPMENT ID
+    @PostMapping("/shipment/{shipmentId}")
     @ResponseBody
     public AjaxResult editShipment(Shipment shipment) {
-		//check MST 
+		//check MST
 		if(shipment.getTaxCode() != null){
 			String groupName = catosApiService.getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName();
 			if(groupName == null){
@@ -302,7 +347,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
 
-	// PAYMENT AFTER SHOW BILL 
+	// PAYMENT AFTER SHOW BILL
 	@PostMapping("/payment")
 	@ResponseBody
 	public AjaxResult payment(String shipmentDetailIds) {
@@ -318,4 +363,22 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
 
+    private void insertShipmentImages(Shipment shipment) throws IOException {
+        Long shipmentId = shipment.getId();
+        String timeNow = DateUtils.dateTimeNow();
+        String basePath = String.format("%s/%s/%s", Global.getUploadPath(), shipment.getLogisticGroupId(), shipmentId);
+        int imageIndex = 0;
+
+        for (MultipartFile image : shipment.getImages()) {
+            String imageName = String.format("img%d_%s.%s", ++imageIndex, timeNow, FileUploadUtils.getExtension(image));
+            String imagePath = FileUploadUtils.upload(basePath, imageName, image);
+
+            ShipmentImage shipmentImage = new ShipmentImage();
+            shipmentImage.setShipmentId(shipmentId);
+            shipmentImage.setPath(imagePath);
+            shipmentImage.setCreateTime(DateUtils.getNowDate());
+            shipmentImage.setCreateBy(getUser().getFullName());
+            shipmentImageService.insertShipmentImage(shipmentImage);
+        }
+    }
 }

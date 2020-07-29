@@ -237,7 +237,28 @@ function getSelected() {
         checkList = Array(rowAmount).fill(0);
         allChecked = false;
         loadShipmentDetail(row.id);
+        toggleAttachIcon(shipmentSelected.id);
     }
+}
+function toggleAttachIcon(shipmentId) {
+    $.ajax({
+        type: "GET",
+        url: prefix + "/shipments/" + shipmentId + "/shipment-images",
+        contentType: "application/json",
+        success: function (data) {
+            let $attachIcon = $("a#attachIcon");
+            if (data.numberOfShipmentImage && data.numberOfShipmentImage > 0) {
+                $attachIcon.bind("click", function () {
+                    let url = $(this).data("url");
+                    $.modal.openTab(`Đính kèm - Cont [${shipmentId}]`, url.replace("{shipmentId}", shipmentId));
+                });
+                $attachIcon.removeClass("hidden");
+            } else {
+                $attachIcon.unbind("click");
+                $attachIcon.addClass("hidden");
+            }
+        }
+    });
 }
 
 // FORMAT HANDSONTABLE COLUMN
@@ -434,7 +455,7 @@ function configHandson() {
             {
                 data: "active",
                 type: "checkbox",
-                className: "htCenter",  
+                className: "htCenter",
                 renderer: checkBoxRenderer
             },
             {
@@ -1087,7 +1108,7 @@ function onMessageReceived(payload) {
             // Close loading
             //$.modal.closeLoading();
 
-            // Close websocket connection 
+            // Close websocket connection
             $.websocket.disconnect(onDisconnected);
         }, 1000);
     } else {
@@ -1103,7 +1124,7 @@ function onMessageReceived(payload) {
                 // Close loading
                 //$.modal.closeLoading();
 
-                // Close websocket connection 
+                // Close websocket connection
                 $.websocket.disconnect(onDisconnected);
             }, 1000);
         }
@@ -1112,7 +1133,7 @@ function onMessageReceived(payload) {
 
 function onError(error) {
     console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
-}      
+}
 
 function showProgress(title) {
     $('.progress-wrapper').show();

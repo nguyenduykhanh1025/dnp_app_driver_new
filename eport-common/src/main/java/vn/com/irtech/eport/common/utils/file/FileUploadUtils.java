@@ -15,7 +15,7 @@ import vn.com.irtech.eport.common.utils.security.Md5Utils;
 
 /**
  * 文件上传工具类
- * 
+ *
  * @author admin
  */
 public class FileUploadUtils
@@ -87,9 +87,54 @@ public class FileUploadUtils
     }
 
     /**
+     * 根据文件路径上传
+     *
+     * @param baseDir 相对应用的基目录
+     * @param fileName 文档名称
+     * @param file 上传的文件
+     * @return 文件名称
+     * @throws IOException
+     */
+    public static final String upload(String baseDir, String fileName, MultipartFile file)
+            throws IOException
+    {
+        try
+        {
+            return upload(baseDir, fileName, file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+        }
+        catch (Exception e)
+        {
+            throw new IOException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * 根据文件路径上传
+     *
+     * @param baseDir 相对应用的基目录
+     * @param file 上传的文件
+     * @param allowedExtension 上传文件类型
+     * @return 文件名称
+     * @throws IOException
+     */
+    public static final String upload(String baseDir, MultipartFile file, String[] allowedExtension)
+            throws IOException
+    {
+        try
+        {
+            return upload(baseDir, null, file, allowedExtension);
+        }
+        catch (Exception e)
+        {
+            throw new IOException(e.getMessage(), e);
+        }
+    }
+
+    /**
      * 文件上传
      *
      * @param baseDir 相对应用的基目录
+     * @param fileName 文档名称
      * @param file 上传的文件
      * @param allowedExtension 上传文件类型
      * @return 返回上传成功的文件名
@@ -98,7 +143,8 @@ public class FileUploadUtils
      * @throws IOException 比如读写文件出错时
      * @throws InvalidExtensionException 文件校验异常
      */
-    public static final String upload(String baseDir, MultipartFile file, String[] allowedExtension)
+    public static final String upload(String baseDir, String fileName,
+                                      MultipartFile file, String[] allowedExtension)
             throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException,
             InvalidExtensionException
     {
@@ -110,7 +156,10 @@ public class FileUploadUtils
 
         assertAllowed(file, allowedExtension);
 
-        String fileName = extractFilename(file);
+        if (StringUtils.isBlank(fileName))
+        {
+            fileName = extractFilename(file);
+        }
 
         File desc = getAbsoluteFile(baseDir, fileName);
         file.transferTo(desc);
@@ -227,7 +276,7 @@ public class FileUploadUtils
 
     /**
      * 获取文件名的后缀
-     * 
+     *
      * @param file 表单文件
      * @return 后缀名
      */

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.ShipmentImageMapper">
+
+    <resultMap type="ShipmentImage" id="ShipmentImageResult">
+        <result property="id" column="id"/>
+        <result property="shipmentId" column="shipment_id"/>
+        <result property="path" column="path"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <select id="countShipmentImagesByShipmentId" parameterType="Long" resultType="int">
+        select count(id)
+        from shipment_image
+        <where>
+            shipment_id = #{shipmentId}
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectShipmentImagesByShipmentId" parameterType="Long" resultMap="ShipmentImageResult">
+        select id, shipment_id, path, create_by, create_time, update_by, update_time
+        from shipment_image
+        <where>
+            shipment_id = #{shipmentId}
+        </where>
+        order by create_time desc
+    </select>
+
+    <insert id="insertShipmentImage" parameterType="ShipmentImage" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+            select seq_shipment_image.nextval as id from DUAL
+        </selectKey>
+        insert into shipment_image (id, shipment_id, path, create_by, create_time)
+        values (#{id}, #{shipmentId}, #{path}, #{createBy}, sysdate)
+    </insert>
+</mapper>
