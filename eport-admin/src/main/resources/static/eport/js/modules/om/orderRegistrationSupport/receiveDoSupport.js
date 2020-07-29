@@ -4,8 +4,6 @@ const DOCUMENT_HEIGHT = $(document).height();
 var notification = new Object();
 
 $(document).ready(function () {
-  $("#toggle-status").bootstrapToggle();
-
   if (shipmentDetails != null && shipmentDetails.length > 0) {
     if ('Y' == shipmentDetails[0].doStatus) {
       $("#toggle-status").prop('checked', true).change();
