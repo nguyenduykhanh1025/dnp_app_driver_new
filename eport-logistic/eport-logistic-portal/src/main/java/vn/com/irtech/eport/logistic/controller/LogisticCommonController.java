@@ -149,7 +149,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		 } catch (IOException ex) {
 		 	// process the exception
 		 }
-		return AjaxResult.success("response.toString()");
+		return AjaxResult.success();
 	}
 	
 	@SuppressWarnings("unchecked")

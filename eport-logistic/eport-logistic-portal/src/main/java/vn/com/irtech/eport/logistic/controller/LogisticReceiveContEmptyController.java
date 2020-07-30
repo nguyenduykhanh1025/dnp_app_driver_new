@@ -311,6 +311,11 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
 	public AjaxResult verifyOtp(@PathVariable("otp") String otp, @PathVariable("shipmentDetailIds") String shipmentDetailIds, boolean creditFlag) {
+		try {
+			Long.parseLong(otp);
+		} catch (Exception e) {
+			return error("Mã OTP nhập vào không hợp lệ!");
+		}
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();

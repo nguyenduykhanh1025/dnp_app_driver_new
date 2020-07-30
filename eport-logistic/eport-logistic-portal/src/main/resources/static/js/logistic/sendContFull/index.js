@@ -1,4 +1,5 @@
 var prefix = ctx + "logistic/send-cont-full";
+var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
 var contList = [];
@@ -776,6 +777,7 @@ function reloadShipmentDetail() {
     for (let i=0; i<checkList.length; i++) {
         $('#check'+i).prop('checked', false);
     }
+    $("#deleteBtn").prop("disabled", true);
     setLayoutRegisterStatus();
     loadShipmentDetail(shipmentSelected.id);
 }
@@ -1020,25 +1022,26 @@ function saveShipmentDetail() {
 
 // DELETE SHIPMENT DETAIL
 function deleteShipmentDetail() {
-    getDataSelectedFromTable(true);
-    $.modal.loading("Đang xử lý...");
-    $.ajax({
-        url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
-        method: "delete",
-        success: function (result) {
-            if (result.code == 0) {
-                $.modal.alertSuccess(result.msg);
-                reloadShipmentDetail();
-            } else {
-                $.modal.alertError(result.msg);
-            }
-            $.modal.closeLoading();
-        },
-        error: function (result) {
-            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-            $.modal.closeLoading();
-        },
-    });
+    if (getDataSelectedFromTable(true)) {
+        $.modal.loading("Đang xử lý...");
+        $.ajax({
+            url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
+            method: "delete",
+            success: function (result) {
+                if (result.code == 0) {
+                    $.modal.alertSuccess(result.msg);
+                    reloadShipmentDetail();
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+                $.modal.closeLoading();
+            },
+            error: function (result) {
+                $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+                $.modal.closeLoading();
+            },
+        });
+    }
 }
 
 // Handling logic
@@ -1155,7 +1158,7 @@ function finishVerifyForm(result) {
         connectToWebsocketServer();
 
         showProgress("Đang xử lý ...");
-        setTimeout(() => {
+        timeout = setTimeout(() => {
             setTimeout(() => {
                 hideProgress();
                 reloadShipmentDetail();
@@ -1189,6 +1192,7 @@ function onError(error) {
 }
 
 function onMessageReceived(payload) {
+    clearTimeout(timeout);
     setProgressPercent(currentPercent=100);
     setTimeout(() => {
         hideProgress();

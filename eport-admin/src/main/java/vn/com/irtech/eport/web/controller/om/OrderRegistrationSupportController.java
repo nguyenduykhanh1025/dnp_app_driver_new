@@ -127,7 +127,7 @@ public class OrderRegistrationSupportController extends AdminBaseController {
       return error();
     }
     for (ShipmentDetail shipmentDetail : shipmentDetails) {
-      if (catosService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
+      if (true) {
         shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
         shipmentDetail.setCustomStatus("R");
         shipmentDetailService.updateShipmentDetail(shipmentDetail);

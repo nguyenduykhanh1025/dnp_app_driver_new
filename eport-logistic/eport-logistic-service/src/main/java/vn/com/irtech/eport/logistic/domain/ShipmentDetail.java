@@ -6,6 +6,8 @@ import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Shipment Details Object shipment_detail
  * 
@@ -159,6 +161,7 @@ public class ShipmentDetail extends BaseEntity
     private String doStatus;
 
     /** Ngay nhan DO goc */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date doReceivedTime;
 
     /** Xac Thuc (Y,N) */
