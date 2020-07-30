@@ -8,6 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.logistic.mapper.ShipmentMapper;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.form.ShipmentForm;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.carrier.mapper.CarrierGroupMapper;
 import vn.com.irtech.eport.carrier.mapper.EdoMapper;
@@ -137,4 +138,15 @@ public class ShipmentServiceImpl implements IShipmentService {
         return shipmentMapper.getShipmentListForAssign(shipment);
     }
 
+    /**
+     * Select Shipment List For Driver App
+     * 
+     * @param serviceType
+     * @param logisticGroupId
+     * @return List<ShipmentForm>
+     */
+    @Override
+    public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long logisticGroupId) {
+        return shipmentMapper.selectShipmentListForDriver(serviceType, logisticGroupId);
+    }
 }

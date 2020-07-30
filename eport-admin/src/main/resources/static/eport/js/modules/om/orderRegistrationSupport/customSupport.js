@@ -1,5 +1,5 @@
 "use strict";
-const PREFIX = ctx + "om/order/support";
+const PREFIX = ctx + "om/support";
 
 $(document).ready(function () {
   loadTable();
@@ -29,4 +29,32 @@ function formatCustomStatus(value, row, index) {
 
 function closeForm() {
   $.modal.close();
+}
+
+function syncCustomStatus() {
+  $.modal.loading("Đang xử lý...");
+  $.ajax({
+    url: PREFIX + "/do",
+    method: "POST",
+    data: shipmentDetails
+  }).done(function (res) {
+    $.modal.closeLoading();
+    if (res.code == 0) {
+      $("#dg").datagrid({
+        height: $(document).height() - 100,
+        singleSelect: true,
+        clientPaging: false,
+        pagination: false,
+        rownumbers: true,
+        nowrap: false,
+        striped: true,
+        loader: function (param, success, error) {
+          success(shipmentDetails);
+        },
+      });
+      $.modal.alertSuccess(res.msg);
+    } else {
+      $.modal.alertError("Có lỗi xảy ra trong quá trình đồng bộ dữ liệu!");
+    }
+  });
 }

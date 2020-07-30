@@ -79,13 +79,13 @@ public class NotificationController extends BaseController {
 		List<UserDevices> receivers = userDevicesService.selectDeviceTokenList(receiverGroups);
 		List<String> receiverTokens = new ArrayList<>();
     
-    for (UserDevices userDevices : receivers) {
-			NotificationReceiver receiverDetail = new NotificationReceiver();
-			receiverDetail.setUserDeviceId(userDevices.getId());
-			receiverDetail.setNotificationId(noti.getId());
-			notificationReceiverService.insertNotificationReceiver(receiverDetail);
-			receiverTokens.add(userDevices.getDeviceToken());
-		}
+		for (UserDevices userDevices : receivers) {
+				NotificationReceiver receiverDetail = new NotificationReceiver();
+				receiverDetail.setUserDeviceId(userDevices.getId());
+				receiverDetail.setNotificationId(noti.getId());
+				notificationReceiverService.insertNotificationReceiver(receiverDetail);
+				receiverTokens.add(userDevices.getDeviceToken());
+			}
 
 		// new Thread() {
 		// 	public void run() {

@@ -133,20 +133,61 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     }
 
     @Override
-    public Boolean checkPossiblePickup(@Param("driverId") Long driverId, @Param("serviceType") Integer serviceType) {
+    public PickupHistoryDetail selectPickupHistoryDetailById(@Param("driverId") Long driverId, @Param("pickupId") Long pickupId) {
+        return pickupHistoryMapper.selectPickupHistoryDetailById(driverId, pickupId);
+    }
+
+    /**
+     * Check pickup history exists
+     * 
+     * @param shipmentId
+     * @param containerNo
+     * @return  int
+     */
+    @Override
+    public int checkPickupHistoryExists(Long shipmentId, String containerNo) {
+        return pickupHistoryMapper.checkPickupHistoryExists(shipmentId, containerNo);
+    }
+
+    /**
+     * Check possible pickup
+     * 
+     * @param driverId
+     * @return Boolean
+     */
+    @Override
+    public Boolean checkPossiblePickup(Long driverId, Integer serviceType) {
         List<Pickup> pickups = pickupHistoryMapper.selectPickupListByDriverId(driverId);
-        
+        // Empty can pick
         if (pickups.isEmpty()) {
             return true;
         }
 
-        
-        
-        return false;
-    }
+        // Exceed max number 4, can't pick
+        if (pickups.size() > 4) {
+            return false;
+        }
 
-    @Override
-    public PickupHistoryDetail selectPickupHistoryDetailById(@Param("driverId") Long driverId, @Param("pickupId") Long pickupId) {
-        return pickupHistoryMapper.selectPickupHistoryDetailById(driverId, pickupId);
+        // Check condition to pickup
+        int countCont20 = 0;
+        for (Pickup pickup: pickups) {
+            if (pickup.getServiceType() == serviceType) {
+                if ("20G0".equals(pickup.getSztp())) {
+                    countCont20++;
+                } else {
+                    countCont20 += 2;
+                }
+            }
+            
+            // Is gate in but not confirm finish yet, can't pick
+            if (pickup.getStatus() == 2) {
+                return false;
+            }
+        }
+
+        if (countCont20 > 1) {
+            return false;
+        }
+        return true;
     }
 }

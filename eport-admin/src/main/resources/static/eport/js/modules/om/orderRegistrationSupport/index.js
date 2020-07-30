@@ -1,5 +1,5 @@
 "use strict";
-const PREFIX = ctx + "om/order/support";
+const PREFIX = ctx + "om/support";
 var shipment = new Object();
 
 $(document).ready(function () {
@@ -76,9 +76,9 @@ function formatCustom(value, row, index) {
   return '';
 }
 
-function formatOrder(value, row, index) {
-  return '<a class="btn btn-success btn-xs" onclick="openVerificationSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Làm lệnh</a> ';
-}
+// function formatOrder(value, row, index) {
+//   return '<a class="btn btn-success btn-xs" onclick="openVerificationSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Làm lệnh</a> ';
+// }
 
 function formatPayment(value, row, index) {
   return '<a class="btn btn-default btn-xs" onclick="openPaymentSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Thanh toán</a> ';
@@ -177,9 +177,9 @@ function openCustomSupport(id) {
   $.modal.openTab("Hỗ trợ Hải Quan cho [BillNo/Booking No]", PREFIX + "/custom/" + id, null, null);
 }
 
-function openVerificationSupport(id) {
-  $.modal.openWithOneButton("Làm lệnh", PREFIX + "/verification/" + id, null, null);
-}
+// function openVerificationSupport(id) {
+//   $.modal.openWithOneButton("Làm lệnh", PREFIX + "/verification/" + id, null, null);
+// }
 
 function openPaymentSupport(id) {
   $.modal.openWithOneButton("Thanh toán", PREFIX + "/payment/" + id, null, null);
@@ -193,25 +193,25 @@ function openDriverSupport(id) {
   $.modal.openWithOneButton("Tài xế", PREFIX + "/driver/" + id, null, null);
 }
 
-function completeVerification(processOrders) {
-  $.ajax({
-    url: PREFIX + "/process-order/",
-    method: "post",
-    contentType: "application/json",
-    accept: 'text/plain',
-    data: JSON.stringify(shipmentDetails),
-    dataType: 'text',
-    success: function (data) {
-      var result = JSON.parse(data);
+// function completeVerification(processOrders) {
+//   $.ajax({
+//     url: PREFIX + "/process-order/",
+//     method: "post",
+//     contentType: "application/json",
+//     accept: 'text/plain',
+//     data: JSON.stringify(shipmentDetails),
+//     dataType: 'text',
+//     success: function (data) {
+//       var result = JSON.parse(data);
       
-      $.modal.closeLoading();
-    },
-    error: function (result) {
-      $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
-      $.modal.closeLoading();
-    },
-  });
-}
+//       $.modal.closeLoading();
+//     },
+//     error: function (result) {
+//       $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+//       $.modal.closeLoading();
+//     },
+//   });
+// }
 
 function finishForm(res) {
   if (res.code == 0) {

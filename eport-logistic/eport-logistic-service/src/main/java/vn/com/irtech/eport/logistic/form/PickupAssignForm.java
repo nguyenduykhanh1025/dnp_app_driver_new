@@ -4,15 +4,11 @@ public class PickupAssignForm {
 
     private Long pickupAssignId;
 
-    private Long batchCode;
-
-    private String blNo;
-
-    private String bookingNo;
-
-    private String fe;
+    private String containerNo;
 
     private String sztp;
+
+    private Long wgt;
 
     public Long getPickupAssignId() {
         return this.pickupAssignId;
@@ -22,36 +18,12 @@ public class PickupAssignForm {
         this.pickupAssignId = pickupAssignId;
     }
 
-    public Long getBatchCode() {
-        return this.batchCode;
+    public String getContainerNo() {
+        return this.containerNo;
     }
 
-    public void setBatchCode(Long batchCode) {
-        this.batchCode = batchCode;
-    }
-
-    public String getBlNo() {
-        return this.blNo;
-    }
-
-    public void setBlNo(String blNo) {
-        this.blNo = blNo;
-    }
-
-    public String getBookingNo() {
-        return this.bookingNo;
-    }
-
-    public void setBookingNo(String bookingNo) {
-        this.bookingNo = bookingNo;
-    }
-
-    public String getFe() {
-        return this.fe;
-    }
-
-    public void setFe(String fe) {
-        this.fe = fe;
+    public void setContainerNo(String containerNo) {
+        this.containerNo = containerNo;
     }
 
     public String getSztp() {
@@ -60,6 +32,14 @@ public class PickupAssignForm {
 
     public void setSztp(String sztp) {
         this.sztp = sztp;
+    }
+
+    public Long getWgt() {
+        return this.wgt;
+    }
+
+    public void setWgt(Long wgt) {
+        this.wgt = wgt;
     }
     
 }
