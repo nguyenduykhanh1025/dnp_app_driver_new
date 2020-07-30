@@ -16,7 +16,7 @@ $.ajax({
 	  success(data) {
 		  if(data.code == 0){
 		      data.data.forEach(element => {
-		    	  sizeList.push(element['dictLabel'])
+		    	  sizeList.push(element['dictLabel']);
 		      })
 		  }
 	  }
@@ -29,7 +29,7 @@ $.ajax({
     success: function (data) {
         if (data.code == 0) {
 //            opeCodeList = data.opeCodeList;
-//            vslNmList = data.vslNmList;
+            vslNmList = data.vslNmList;
             consigneeList = data.consigneeList;
         }
     }
@@ -368,7 +368,7 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
-        value = value.split(':')[0];
+        value = value;
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
@@ -417,6 +417,17 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+function temperatureRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'temperature' + row).addClass("htMiddle");
+    $(td).html(value);
+    if (value != null && value != '') {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    return td;
+}
 
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
@@ -456,16 +467,18 @@ function configHandson() {
                 case 7:
                     return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
                 case 8:
-                    return '<span>Trọng Lượng</span><span style="color: red;">(*)</span>';
+                    return "Nhiệt Độ";
                 case 9:
-                    return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span>Trọng Lượng</span><span style="color: red;">(*)</span>';
                 case 10:
-                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
                 case 11:
+                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                case 12:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 110, 100, 200, 150, 150, 100, 150, 100, 150, 150, 200],
+        colWidths: [50, 110, 100, 200, 150, 150, 100, 150, 100, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -501,6 +514,7 @@ function configHandson() {
             {
                 data: "vslNm",
                 type: "autocomplete",
+                source: vslNmList,
                 strict: true,
                 renderer: vslNmRenderer
             },
@@ -516,6 +530,12 @@ function configHandson() {
                 source: sizeList,
                 strict: true,
                 renderer: sizeRenderer
+            },
+            {
+                data: "temperature",
+                type: "numeric",
+                strict: true,
+                renderer: temperatureRenderer
             },
             {
                 data: "wgt",
@@ -598,7 +618,7 @@ function onChange(changes, source) {
                 let shipmentDetail = new Object();
                 shipmentDetail.vslNm = vslNm.split(": ")[0];
                 shipmentDetail.voyNo = change[3];
-                hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
+                hot.setDataAtCell(change[0], 11, ''); // dischargePort reset
                 $.ajax({
                     url: "/logistic/pods",
                     method: "POST",
@@ -608,7 +628,7 @@ function onChange(changes, source) {
                         if (data.code == 0) {
                             hot.updateSettings({
                                 cells: function (row, col, prop) {
-                                    if (row == change[0] && col == 10) {
+                                    if (row == change[0] && col == 11) {
                                         let cellProperties = {};
                                         cellProperties.source = data.dischargePorts;
                                         return cellProperties;
@@ -817,7 +837,7 @@ function getDataFromTable(isValidate) {
     for (let i=0; i<checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
             if (myTableData[i].containerNo || myTableData[i].consignee || myTableData[i].opeCode || myTableData[i].vslNm ||
-                myTableData[i].voyNo || myTableData[i].sztp || myTableData[i].wgt || myTableData[i].cargoType ||
+                myTableData[i].voyNo || myTableData[i].sztp || myTableData[i].temperature || myTableData[i].wgt || myTableData[i].cargoType ||
                 myTableData[i].dischargePort || myTableData[i].remark) {
                     cleanedGridData.push(myTableData[i]);
                 }
@@ -881,10 +901,10 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hãng tàu không được khác nhau!");
                 errorFlg = true;
                 return false;
-            } else if (vessel != object["vslNm"]) {
-                $.modal.alertError("Tàu không được khác nhau!");
-                errorFlg = true;
-                return false;
+//            } else if (vessel != object["vslNm"]) {
+//                $.modal.alertError("Tàu không được khác nhau!");
+//                errorFlg = true;
+//                return false;
             } else if (voyage != object["voyNo"]) {
                 $.modal.alertError("Số chuyến không được khác nhau!");
                 errorFlg = true;
@@ -897,7 +917,7 @@ function getDataFromTable(isValidate) {
         }
         consignee = object["consignee"];
         opecode = object["opeCode"];
-        vessel = object["vslNm"];
+//        vessel = object["vslNm"];
         voyage = object["voyNo"];
         pod = object["dischargePort"];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
@@ -909,7 +929,8 @@ function getDataFromTable(isValidate) {
         let carrier = object["opeCode"].split(": ");
         shipmentDetail.opeCode = carrier[0];
         shipmentDetail.carrierName = carrier[1];
-        shipmentDetail.sztp = object["sztp"].split(":")[0];
+        shipmentDetail.sztp = object["sztp"];
+        shipmentDetail.temperature = object["temperature"];
         shipmentDetail.consignee = object["consignee"];
         shipmentDetail.wgt = object["wgt"];
         let vessel = object["vslNm"].split(": ");

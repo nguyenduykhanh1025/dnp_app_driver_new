@@ -45,7 +45,11 @@ public class ShipmentDetail extends BaseEntity
     /** Size Type */
     @Excel(name = "Size Type")
     private String sztp;
-
+    
+    /** Temperature */
+    @Excel(name = "Temperature")
+    private String temperature;
+    
     /** FE */
     @Excel(name = "FE")
     private String fe;
@@ -246,7 +250,15 @@ public class ShipmentDetail extends BaseEntity
         return sztp;
     }
 
-    public void setFe(String fe) {
+    public String getTemperature() {
+		return temperature;
+	}
+
+	public void setTemperature(String temperature) {
+		this.temperature = temperature;
+	}
+
+	public void setFe(String fe) {
         this.fe = fe;
     }
 
@@ -569,6 +581,7 @@ public class ShipmentDetail extends BaseEntity
             .append("containerNo", getContainerNo())
             .append("containerStatus", getContainerStatus())
             .append("sztp", getSztp())
+            .append("temperature", getTemperature())
             .append("fe", getFe())
             .append("bookingNo", getBookingNo())
             .append("blNo", getBlNo())

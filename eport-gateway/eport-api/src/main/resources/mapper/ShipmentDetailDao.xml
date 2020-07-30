@@ -143,7 +143,6 @@
         	PTNR_CODE || ': ' || ENG_SNM AS PTNR_CODE
 	    FROM TB_PTNR
 	    WHERE PTNR_TYPE = 'SHP'
-	    GROUP BY PTNR_CODE
 	</select>
 	
 	<select id="getGroupNameByTaxCode" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentEntity">
