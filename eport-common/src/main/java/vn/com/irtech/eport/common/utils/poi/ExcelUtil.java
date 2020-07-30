@@ -11,11 +11,13 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -50,6 +52,7 @@ import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.reflect.ReflectUtils;
+import vn.com.irtech.eport.common.utils.spring.SpringUtils;
 
 /**
  * Excel相关处理
@@ -174,7 +177,7 @@ public class ExcelUtil<T>
             for (int i = 0; i < heard.getPhysicalNumberOfCells(); i++)
             {
                 Cell cell = heard.getCell(i);
-                if (StringUtils.isNotNull(cell != null))
+                if (StringUtils.isNotNull(cell))
                 {
                     String value = this.getCellValue(heard, i).toString();
                     cellMap.put(value, i);
@@ -276,7 +279,11 @@ public class ExcelUtil<T>
                         }
                         else if (StringUtils.isNotEmpty(attr.readConverterExp()))
                         {
-                            val = reverseByExp(String.valueOf(val), attr.readConverterExp());
+                            val = reverseByExp(Convert.toStr(val), attr.readConverterExp(), attr.separator());
+                        }
+                        else if (StringUtils.isNotEmpty(attr.dictType()))
+                        {
+                            val = reverseDictByExp(Convert.toStr(val), attr.dictType(), attr.separator());
                         }
                         ReflectUtils.invokeSetter(entity, propertyName, val);
                     }
@@ -535,13 +542,19 @@ public class ExcelUtil<T>
                 Object value = getTargetValue(vo, field, attr);
                 String dateFormat = attr.dateFormat();
                 String readConverterExp = attr.readConverterExp();
+                String separator = attr.separator();
+                String dictType = attr.dictType();
                 if (StringUtils.isNotEmpty(dateFormat) && StringUtils.isNotNull(value))
                 {
                     cell.setCellValue(DateUtils.parseDateToStr(dateFormat, (Date) value));
                 }
                 else if (StringUtils.isNotEmpty(readConverterExp) && StringUtils.isNotNull(value))
                 {
-                    cell.setCellValue(convertByExp(String.valueOf(value), readConverterExp));
+                    cell.setCellValue(convertByExp(Convert.toStr(value), readConverterExp, separator));
+                }
+                else if (StringUtils.isNotEmpty(dictType))
+                {
+                    cell.setCellValue(convertDictByExp(Convert.toStr(value), dictType, separator));
                 }
                 else
                 {
@@ -619,20 +632,36 @@ public class ExcelUtil<T>
      * 
      * @param propertyValue 参数值
      * @param converterExp 翻译注解
+     * @param separator 分隔符
      * @return 解析后值
      * @throws Exception
      */
     public static String convertByExp(String propertyValue, String converterExp) throws Exception
     {
+        StringBuilder propertyString = new StringBuilder();
         try
         {
             String[] convertSource = converterExp.split(",");
             for (String item : convertSource)
             {
                 String[] itemArray = item.split("=");
-                if (itemArray[0].equals(propertyValue))
+                if (StringUtils.containsAny(separator, propertyValue))
                 {
-                    return itemArray[1];
+                    for (String value : propertyValue.split(separator))
+                    {
+                        if (itemArray[0].equals(value))
+                        {
+                            propertyString.append(itemArray[1] + separator);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (itemArray[0].equals(propertyValue))
+                    {
+                        return itemArray[1];
+                    }
                 }
             }
         }
@@ -640,7 +669,7 @@ public class ExcelUtil<T>
         {
             throw e;
         }
-        return propertyValue;
+        return StringUtils.stripEnd(propertyString.toString(), separator);
     }
 
     /**
@@ -648,28 +677,69 @@ public class ExcelUtil<T>
      * 
      * @param propertyValue 参数值
      * @param converterExp 翻译注解
+     * @param separator 分隔符
      * @return 解析后值
      * @throws Exception
      */
-    public static String reverseByExp(String propertyValue, String converterExp) throws Exception
+    public static String reverseByExp(String propertyValue, String converterExp, String separator) throws Exception
     {
-        try
+        StringBuilder propertyString = new StringBuilder();
+        String[] convertSource = converterExp.split(",");
+        for (String item : convertSource)
         {
-            String[] convertSource = converterExp.split(",");
-            for (String item : convertSource)
+            String[] itemArray = item.split("=");
+            if (StringUtils.containsAny(separator, propertyValue))
             {
-                String[] itemArray = item.split("=");
+                for (String value : propertyValue.split(separator))
+                {
+                    if (itemArray[1].equals(value))
+                    {
+                        propertyString.append(itemArray[0] + separator);
+                        break;
+                    }
+                }
+            }
+            else
+            {
                 if (itemArray[1].equals(propertyValue))
                 {
                     return itemArray[0];
                 }
             }
         }
-        catch (Exception e)
-        {
-            throw e;
-        }
-        return propertyValue;
+        return StringUtils.stripEnd(propertyString.toString(), separator);
+    }
+
+    /**
+     * 解析字典值
+     * 
+     * @param dictValue 字典值
+     * @param dictType 字典类型
+     * @param separator 分隔符
+     * @return 字典标签
+     */
+    public static String convertDictByExp(String dictValue, String dictType, String separator) throws Exception
+    {
+        Object bean = SpringUtils.getBean("dictUtils");
+        String methodName = "getDictLabel";
+        Method method = bean.getClass().getDeclaredMethod(methodName, String.class, String.class, String.class);
+        return Convert.toStr(method.invoke(bean, dictType, dictValue, separator));
+    }
+
+    /**
+     * 反向解析值字典值
+     * 
+     * @param dictLabel 字典标签
+     * @param dictType 字典类型
+     * @param separator 分隔符
+     * @return 字典值
+     */
+    public static String reverseDictByExp(String dictLabel, String dictType, String separator) throws Exception
+    {
+        Object bean = SpringUtils.getBean("dictUtils");
+        String methodName = "getDictValue";
+        Method method = bean.getClass().getDeclaredMethod(methodName, String.class, String.class, String.class);
+        return Convert.toStr(method.invoke(bean, dictType, dictLabel, separator));
     }
 
     /**
@@ -776,6 +846,7 @@ public class ExcelUtil<T>
                 }
             }
         }
+        this.fields = this.fields.stream().sorted(Comparator.comparing(objects -> ((Excel) objects[1]).sort())).collect(Collectors.toList());
     }
 
     /**
@@ -835,7 +906,7 @@ public class ExcelUtil<T>
         try
         {
             Cell cell = row.getCell(column);
-            if (cell != null)
+            if (StringUtils.isNotNull(cell))
             {
                 if (cell.getCellTypeEnum() == CellType.NUMERIC || cell.getCellTypeEnum() == CellType.FORMULA)
                 {
