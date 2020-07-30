@@ -1,5 +1,5 @@
 "use strict";
-const PREFIX = ctx + "om/order/support";
+const PREFIX = ctx + "om/support";
 var dogrid = document.getElementById("container-grid"), hot;
 var toggleTrigger = true, countEvent = 2, processOrderIds = [], processOrders = [];
 

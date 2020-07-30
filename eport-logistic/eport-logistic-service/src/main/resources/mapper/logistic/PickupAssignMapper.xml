@@ -175,13 +175,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectPickupAssignListByDriverId" resultType="vn.com.irtech.eport.logistic.form.PickupAssignForm">
-        select a.id as pickupAssignId, a.shipment_id as batchCode, s.bl_no as blNo, s.booking_no as bookingNo, sh.fe as fe, sh.sztp as sztp
+        select a.id as pickupAssignId, sh.container_no as containerNo, sh.wgt as wgt, sh.sztp as sztp
         from pickup_assign a
-        left join shipment s on a.shipment_id = s.id and s.service_type = #{serviceType}
         left join shipment_detail sh on a.shipment_detail_id = sh.id
-        where a.shipment_detail_id is not null and a.driver_id = #{driverId}
+        left join pickup_history p on a.id = p.pickup_assign_id
+        where 
+            p.pickup_assign_id is null
+            and a.driver_id = #{driverId}
+            and sh.shipment_id = #{shipmentId}
+        group by a.id, a.create_time, sh.container_no, sh.wgt, sh.sztp
         order by a.create_time desc
     </select>
+
     <select id ="getRemarkFollowBatchByShipmentId" parameterType="PickupAssign" resultType="String">
         select remark
         from pickup_assign
