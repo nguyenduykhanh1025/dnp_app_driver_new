@@ -45,7 +45,11 @@ public class ShipmentDetail extends BaseEntity
     /** Size Type */
     @Excel(name = "Size Type")
     private String sztp;
-
+    
+    /** Temperature */
+    @Excel(name = "Temperature")
+    private String temperature;
+    
     /** FE */
     @Excel(name = "FE")
     private String fe;
@@ -180,6 +184,8 @@ public class ShipmentDetail extends BaseEntity
     private Integer assignNumber;
 
     private Integer serviceType;
+    
+    private String year;
 
     public void setId(Long id) {
         this.id = id;
@@ -244,7 +250,15 @@ public class ShipmentDetail extends BaseEntity
         return sztp;
     }
 
-    public void setFe(String fe) {
+    public String getTemperature() {
+		return temperature;
+	}
+
+	public void setTemperature(String temperature) {
+		this.temperature = temperature;
+	}
+
+	public void setFe(String fe) {
         this.fe = fe;
     }
 
@@ -546,8 +560,17 @@ public class ShipmentDetail extends BaseEntity
     public Integer getServiceType() {
         return serviceType;
     }
+    
 
-    @Override
+    public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
@@ -558,6 +581,7 @@ public class ShipmentDetail extends BaseEntity
             .append("containerNo", getContainerNo())
             .append("containerStatus", getContainerStatus())
             .append("sztp", getSztp())
+            .append("temperature", getTemperature())
             .append("fe", getFe())
             .append("bookingNo", getBookingNo())
             .append("blNo", getBlNo())
@@ -601,6 +625,7 @@ public class ShipmentDetail extends BaseEntity
             .append("payType", getPayType())
             .append("assignNumber", getAssignNumber())
             .append("serviceType", getServiceType())
+            .append("year", getYear())
             .toString();
     }
 }

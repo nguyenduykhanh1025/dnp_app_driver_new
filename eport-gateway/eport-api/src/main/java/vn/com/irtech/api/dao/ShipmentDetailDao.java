@@ -37,4 +37,10 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public ShipmentEntity getOpeCodeCatosByBlNo(String blNo);
 	
 	public Boolean checkCustomStatus(@Param("containerNo") String containerNo, @Param("voyNo") String voyNo);
+	
+	public List<String> selectVesselCodeBerthPlan(String opeCode);
+	
+	public String getYearByVslCodeAndVoyNo(@Param("vesselCode") String vesselCode, @Param("voyNo") String voyNo);
+	
+	public List<String> selectOpeCodeListInBerthPlan();
 }
