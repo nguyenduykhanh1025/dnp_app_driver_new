@@ -21,7 +21,7 @@ function loadTable() {
 }
 
 function formatCustomStatus(value, row, index) {
-  if (value == 'Y') {
+  if (value == 'R') {
     return "<span class='label label-primary'>Đã thông quan</span>";
   }
   return "<span class='label label-danger'>Chưa thông quan</span>";
@@ -34,9 +34,10 @@ function closeForm() {
 function syncCustomStatus() {
   $.modal.loading("Đang xử lý...");
   $.ajax({
-    url: PREFIX + "/do",
+    url: PREFIX + "/custom",
     method: "POST",
-    data: shipmentDetails
+    contentType: "application/json",
+    data: JSON.stringify(shipmentDetails)
   }).done(function (res) {
     $.modal.closeLoading();
     if (res.code == 0) {
@@ -49,7 +50,7 @@ function syncCustomStatus() {
         nowrap: false,
         striped: true,
         loader: function (param, success, error) {
-          success(shipmentDetails);
+          success(res.shipmentDetails);
         },
       });
       $.modal.alertSuccess(res.msg);
