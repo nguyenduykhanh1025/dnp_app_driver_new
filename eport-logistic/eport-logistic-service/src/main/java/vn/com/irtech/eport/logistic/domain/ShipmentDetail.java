@@ -180,6 +180,8 @@ public class ShipmentDetail extends BaseEntity
     private Integer assignNumber;
 
     private Integer serviceType;
+    
+    private String year;
 
     public void setId(Long id) {
         this.id = id;
@@ -546,8 +548,17 @@ public class ShipmentDetail extends BaseEntity
     public Integer getServiceType() {
         return serviceType;
     }
+    
 
-    @Override
+    public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
@@ -601,6 +612,7 @@ public class ShipmentDetail extends BaseEntity
             .append("payType", getPayType())
             .append("assignNumber", getAssignNumber())
             .append("serviceType", getServiceType())
+            .append("year", getYear())
             .toString();
     }
 }

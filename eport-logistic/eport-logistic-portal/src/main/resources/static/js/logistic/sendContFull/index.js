@@ -28,9 +28,19 @@ $.ajax({
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
-            opeCodeList = data.opeCodeList;
-            vslNmList = data.vslNmList;
+//            opeCodeList = data.opeCodeList;
+//            vslNmList = data.vslNmList;
             consigneeList = data.consigneeList;
+        }
+    }
+});
+//get opeCodeList BerthPlan
+$.ajax({
+    url: prefix + "/berthplan/ope-code/list",
+    method: "GET",
+    success: function (data) {
+        if (data.code == 0) {
+            opeCodeList = data.opeCodeList;
         }
     }
 });
@@ -455,7 +465,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 110, 100, 200, 100, 100, 100, 150, 100, 150, 150, 200],
+        colWidths: [50, 110, 100, 200, 150, 150, 100, 150, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -491,7 +501,6 @@ function configHandson() {
             {
                 data: "vslNm",
                 type: "autocomplete",
-                source: vslNmList,
                 strict: true,
                 renderer: vslNmRenderer
             },
@@ -545,10 +554,29 @@ function onChange(changes, source) {
         return;
     }
     changes.forEach(function (change) {
-        if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+        if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
+            hot.setDataAtCell(change[0], 5, '');//vessel reset
+            $.ajax({
+                url: "/logistic/ope-code/"+ change[3].split(": ")[0] +"/vessel-code/list",
+                method: "GET",
+                success: function (data) {
+                    if (data.code == 0) {
+                        hot.updateSettings({
+                            cells: function (row, col, prop) {
+                                if (row == change[0] && col == 5) {
+                                    let cellProperties = {};
+                                    cellProperties.source = data.vessels;
+                                    return cellProperties;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        } else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
             hot.setDataAtCell(change[0], 6, '');//voyNo reset
             $.ajax({
-                url: "/logistic/vessel/" + change[3] + "/voyages",
+                url: "/logistic/vessel/" + change[3].split(": ")[0] + "/voyages",
                 method: "GET",
                 success: function (data) {
                     if (data.code == 0) {
@@ -568,7 +596,7 @@ function onChange(changes, source) {
             let vslNm = hot.getDataAtCell(change[0], 5);
             if (vslNm) {
                 let shipmentDetail = new Object();
-                shipmentDetail.vslNm = vslNm;
+                shipmentDetail.vslNm = vslNm.split(": ")[0];
                 shipmentDetail.voyNo = change[3];
                 hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
                 $.ajax({
@@ -878,11 +906,15 @@ function getDataFromTable(isValidate) {
             conts += object["containerNo"] + ',';
         }
         contList.push(object["containerNo"]);
-        shipmentDetail.opeCode = object["opeCode"];
+        let carrier = object["opeCode"].split(": ");
+        shipmentDetail.opeCode = carrier[0];
+        shipmentDetail.carrierName = carrier[1];
         shipmentDetail.sztp = object["sztp"].split(":")[0];
         shipmentDetail.consignee = object["consignee"];
         shipmentDetail.wgt = object["wgt"];
-        shipmentDetail.vslNm = object["vslNm"];
+        let vessel = object["vslNm"].split(": ");
+        shipmentDetail.vslNm = vessel[0];
+        shipmentDetail.vslName = vessel[1];
         shipmentDetail.voyNo = object["voyNo"];
         shipmentDetail.dischargePort = object["dischargePort"].split(":")[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);

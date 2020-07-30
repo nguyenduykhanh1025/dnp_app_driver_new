@@ -165,7 +165,47 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
-	
-	
 
+	@Override
+	public List<String> selectVesselCodeBerthPlan(String opeCode) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/berthplan/vessel-code/list/ope-code/" + opeCode ;
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+			List<String> vslCodes = response.getBody();
+			return vslCodes;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+		
+	}
+
+	@Override
+	public String getYearByVslCodeAndVoyNo(String vslCode, String voyNo) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/vessel-code/"+ vslCode +"/voyage/" + voyNo + "/year" ;
+			RestTemplate restTemplate = new RestTemplate();
+			String year = restTemplate.getForObject(url, String.class);
+			return year;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<String> selectOpeCodeListInBerthPlan() {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/berthplan/ope-code/list" ;
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+			List<String> opeCodes = response.getBody();
+			return opeCodes;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+	
 }

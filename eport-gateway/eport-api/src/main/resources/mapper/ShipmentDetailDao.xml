@@ -111,7 +111,7 @@
     
     <select id="selectVesselCodeList" resultType="String">
         SELECT
-               VSL_CD AS VSL_CD
+               VSL_CD||': '||VSL_NM AS VSL_CD
        	FROM TB_VSL
 	</select>
 	
@@ -119,7 +119,7 @@
 		SELECT 
    			POD AS POD
 		FROM TB_VSL_POD
-		WHERE VSL_CD = #{vslNm} and CALL_SEQ = #{voyNo} and CALL_YEAR = EXTRACT(YEAR FROM sysdate)
+		WHERE VSL_CD = #{vslNm} and CALL_SEQ = #{voyNo} and CALL_YEAR = #{year}
 		GROUP BY POD
 	</select>
 	
@@ -135,10 +135,12 @@
 	    	CALL_SEQ AS VOYAGE
 		FROM TB_BERTHPLAN
 		WHERE VSL_CD = #{vesselCode}
+		       AND longterm_eta IS NOT NULL
+		       AND atc IS NULL
 	</select>	
 	<select id="selectOpeCodeList" resultType="String">
 	    SELECT 
-        	PTNR_CODE AS PTNR_CODE
+        	PTNR_CODE || ': ' || ENG_SNM AS PTNR_CODE
 	    FROM TB_PTNR
 	    WHERE PTNR_TYPE = 'SHP'
 	    GROUP BY PTNR_CODE
@@ -181,4 +183,39 @@
     		AND CNTR_NO = #{containerNo}
     		AND CALL_SEQ = #{voyNo}
     </select>
+    <select id="selectVesselCodeBerthPlan" parameterType="String" resultType="String">
+		SELECT t.VSL_CD||': '|| (SELECT VSL_NM FROM TB_VSL WHERE VSL_CD = t.VSL_CD) AS VSL_CD
+		  FROM tb_berthplan t
+		WHERE  PTNR_CODE = #{opeCode}
+		       AND t.vsl_cd NOT IN ('DBO','EMTY',
+		                            'STRG',
+		                            'TBA',
+		                            'DUMY')
+		       AND t.longterm_eta IS NOT NULL
+		       AND t.atc IS NULL
+		GROUP BY VSL_CD
+	</select>
+	<select id="getYearByVslCodeAndVoyNo" resultType="String">
+		SELECT CALL_YEAR
+		  FROM tb_berthplan t
+		WHERE  VSL_CD = #{vesselCode} and CALL_SEQ = #{voyNo}
+		       AND t.vsl_cd NOT IN ('DBO','EMTY',
+		                            'STRG',
+		                            'TBA',
+		                            'DUMY')
+		       AND t.longterm_eta IS NOT NULL
+		       AND t.atc IS NULL
+	</select>
+	<select id="selectOpeCodeListInBerthPlan" resultType="String">
+			SELECT t.PTNR_CODE || ': ' || (SELECT ENG_SNM FROM TB_PTNR WHERE PTNR_CODE = t.PTNR_CODE AND ROWNUM = 1) AS PTNR_CODE
+			FROM tb_berthplan t
+			WHERE
+			       t.vsl_cd NOT IN ('DBO','EMPTY',
+			                            'STRG',
+			                            'TBA',
+			                            'DUMY')
+			       AND t.longterm_eta IS NOT NULL
+			       AND t.atc IS NULL
+			 GROUP BY PTNR_CODE
+	</select>
 </mapper>

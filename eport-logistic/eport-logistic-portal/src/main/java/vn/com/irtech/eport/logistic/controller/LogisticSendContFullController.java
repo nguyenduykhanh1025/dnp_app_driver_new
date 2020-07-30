@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.aspectj.weaver.loadtime.Aj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -367,5 +368,18 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			}
 		}
 		return error();
+	}
+	
+	@GetMapping("/berthplan/ope-code/list")
+	@ResponseBody
+	public AjaxResult getOpeCodeList() {
+		AjaxResult ajaxResult = success();
+		List<String> opeCodeList = catosApiService.selectOpeCodeListInBerthPlan();
+		if(opeCodeList.size() > 0 ) {
+			ajaxResult.put("opeCodeList", opeCodeList);
+			return ajaxResult;
+		}
+		return error();
+		
 	}
 }
