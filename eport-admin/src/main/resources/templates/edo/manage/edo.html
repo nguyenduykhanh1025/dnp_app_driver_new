@@ -34,14 +34,6 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="voyNo">Vessel Code</label>
-          <div class="input-group width150" style="width: 200%;">
-            <select class="col-md-12 c-search-box-vessel-code"> 
-              <option selected="selected"></option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
           <label class="sr-only" for="voyNo">Voy No</label>
           <div class="input-group width150" style="width: 150%;">
             <select class="col-md-12 c-search-box-voy-no"> 
@@ -58,9 +50,6 @@
               </th>
               <th data-options="field:'vessel',align:'left'" width="110">
                 VESSEL
-              </th>
-              <th data-options="field:'vesselNo',align:'left'" width="110">
-                VESSEL NO
               </th>
               <th data-options="field:'voyNo',align:'left'" width="110">
                 VOY NO
@@ -104,12 +93,15 @@
             class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
         </div>
       </form>
-      <table id="dgContainer" fitColumns="true">
-        <thead>
+      <table id="dgContainer">
+        <thead frozen="true">
           <tr>
             <th data-options="field:'containerNumber',align:'left'" width="120">
               CONTAINER NO
             </th>
+          </tr>
+      </thead>
+        <thead>
             <th data-options="field:'sztp',align:'left'" width="50">
               SZTP
             </th>
@@ -135,9 +127,6 @@
             <th data-options="field:'vessel',align:'left'" width="110">
               VESSEL
             </th>
-            <th data-options="field:'vesselNo',align:'left'" width="110">
-              VESSEL NO
-            </th>
             <th data-options="field:'voyNo',align:'left'" width="110">
               VOY NO
             </th>
@@ -147,7 +136,7 @@
             <th data-options="field:'fileCreateTime',align:'center'" width="110">
               CREATE TIME
             </th>
-            <th data-options="field:'createTime',align:'left'" width="130">
+            <th data-options="field:'createTime',align:'left'" width="110">
               RECEVER TIME
              </th> 
             <th data-options="field:'id',align:'center',formatter: formatAction" fixed:true  width="150">

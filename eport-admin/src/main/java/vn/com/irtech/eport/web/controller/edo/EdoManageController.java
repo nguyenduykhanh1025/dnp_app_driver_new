@@ -139,17 +139,20 @@ public class EdoManageController extends BaseController {
   
   @Log(title = "Export Excel Infomation File EDI", businessType = BusinessType.EXPORT)
   @PostMapping("/export")
-  public AjaxResult export(@RequestBody Edo data) throws Exception
+  @ResponseBody
+  public AjaxResult export(@RequestBody List<Edo> dataObj) throws Exception
   {
-    List list = new ArrayList();
-    Edo ctnr = null;
+    // List list = new ArrayList();
+    // Edo ctnr = null;
     // convert to list entity before export
     // for(Map<String, JSONObject> item : requestParams) {
     //   ctnr = new Edo();
     //   BeanUtils.copyProperties(ctnr, item);
     //     list.add(ctnr);
     // }
-    ExcelUtil<Edo> util = new ExcelUtil<Edo>(Edo.class);
-    return util.exportExcel(list, EXPORT_SHEET_NAME);
+    // ExcelUtil<Edo> util = new ExcelUtil<Edo>(Edo.class);
+    // return util.exportExcel(list, EXPORT_SHEET_NAME);
+    System.out.print(dataObj);
+    return null;
   }
 }

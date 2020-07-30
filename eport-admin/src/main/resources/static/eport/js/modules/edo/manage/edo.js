@@ -397,7 +397,3 @@ $(".c-search-opr-code").change(function () {
   loadTable(edo);
 });
 
-module.exports = {
-formatToYDM: formatToYDM
-}
-
