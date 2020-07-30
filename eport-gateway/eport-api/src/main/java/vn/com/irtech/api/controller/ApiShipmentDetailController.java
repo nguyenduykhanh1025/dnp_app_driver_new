@@ -98,4 +98,19 @@ public class ApiShipmentDetailController {
 		}
 		return false;
 	}
+	
+	@GetMapping("/shipmentDetail/berthplan/vessel-code/list/ope-code/{opeCode}")
+	public List<String> selectVesselCodeBerthPlan(@PathVariable String opeCode){
+		return shipmentDetailDao.selectVesselCodeBerthPlan(opeCode);
+	}
+	
+	@GetMapping("/shipmentDetail/vessel-code/{vesselCode}/voyage/{voyNo}/year")
+	public String getYearByVslCodeAndVoyNo(@PathVariable String vesselCode, @PathVariable String voyNo) {
+		return shipmentDetailDao.getYearByVslCodeAndVoyNo(vesselCode, voyNo);
+	}
+	
+	@GetMapping("/shipmentDetail/berthplan/ope-code/list")
+	public List<String> selectOpeCodeListInBerthPlan(){
+		return shipmentDetailDao.selectOpeCodeListInBerthPlan();
+	}
 }

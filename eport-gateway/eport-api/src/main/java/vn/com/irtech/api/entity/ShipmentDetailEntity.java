@@ -134,6 +134,8 @@ public class ShipmentDetailEntity extends BaseEntity
     /** Cargo Type */
     private String cargoType;
     
+    private String year;
+    
     public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
     }
@@ -487,7 +489,15 @@ public class ShipmentDetailEntity extends BaseEntity
         return status;
     }
 
-    @Override
+    public String getYear() {
+		return year;
+	}
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
@@ -529,6 +539,7 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("bay", getBay())
             .append("roww", getRow())
             .append("tier", getTier())
+            .append("year", getYear())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
