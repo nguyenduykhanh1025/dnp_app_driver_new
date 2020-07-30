@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <title>Dinh Kem</title>
+  <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
+  <link th:href="@{/css/logistic/shipment-image.css}" rel="stylesheet"/>
+</head>
+<body>
+<h2 class="text-center">
+  Hình ảnh đính kèm cho container [<span th:text="${shipmentImages.get(0).shipmentId}" th:remove="tag"></span>]
+</h2>
+<div id='carousel-custom' class='carousel slide' data-ride='carousel'>
+  <div class='carousel-outer'>
+    <!-- Wrapper for slides -->
+    <div class='carousel-inner'>
+      <div th:each="shipmentImage, iter: ${shipmentImages}"
+         th:class="${iter.index == 0} ? 'item active' : 'item'">
+        <img th:src="${shipmentImage.path}" alt='' onclick="zoomImage(this)"/>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <th:block th:if="${shipmentImages.size() > 1}">
+      <a class='left carousel-control' href='#carousel-custom' data-slide='prev'>
+        <span class='glyphicon glyphicon-chevron-left'></span>
+      </a>
+      <a class='right carousel-control' href='#carousel-custom' data-slide='next'>
+        <span class='glyphicon glyphicon-chevron-right'></span>
+      </a>
+    </th:block>
+  </div>
+
+  <!-- Indicators -->
+  <ol th:if="${shipmentImages.size() > 1}" class='carousel-indicators mCustomScrollbar'>
+    <li th:each="shipmentImage, iter: ${shipmentImages}"
+      th:class="${iter.index == 0} ? 'active' : ''"
+      th:attr="data-slide-to=${iter.index}" data-target='#carousel-custom'>
+      <img th:src="${shipmentImage.path}" alt=''/>
+    </li>
+  </ol>
+
+  <div aria-hidden="true" aria-labelledby="zoomModalLabel" class="modal fade" id="zoomModal" role="dialog"
+     tabindex="-1">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-body mb-0 p-0">
+          <img id="zoomImage" src="" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<script th:inline="javascript">
+  function zoomImage(img) {
+    $("#zoomImage").attr("src", img.src);
+    $("#zoomModal").modal('toggle')
+  }
+</script>
+</body>
+</html>

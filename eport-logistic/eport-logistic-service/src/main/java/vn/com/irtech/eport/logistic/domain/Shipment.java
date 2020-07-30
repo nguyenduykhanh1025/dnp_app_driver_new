@@ -1,17 +1,18 @@
 package vn.com.irtech.eport.logistic.domain;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.web.multipart.MultipartFile;
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Shipment Object shipment
- * 
+ *
  * @author admin
  * @date 2020-05-07
  */
@@ -41,7 +42,7 @@ public class Shipment extends BaseEntity
     /** Booking No */
     @Excel(name = "Booking No")
     private String bookingNo;
-    
+
     /** Mã hãng tàu */
     @Excel(name = "Mã hãng tàu")
     private String opeCode;
@@ -49,11 +50,11 @@ public class Shipment extends BaseEntity
     /** MST */
     @Excel(name = "MST")
     private String taxCode;
-    
+
     /** Tên cty theo MST */
     @Excel(name = "Tên công ty")
     private String groupName;
-    
+
     /** Địa chỉ theo MST */
     @Excel(name = "Địa chỉ")
     private String address;
@@ -80,7 +81,7 @@ public class Shipment extends BaseEntity
     /** Shipment Status */
     @Excel(name = "Shipment Status")
     private String status;
-    
+
     /** Ghi chu */
     @Excel(name = "Ghi chu")
     private String remak;
@@ -97,40 +98,39 @@ public class Shipment extends BaseEntity
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date toDate;
 
-    public void setId(Long id) 
-    {
+    private MultipartFile[] images;
+
+    private List<String> attachedImageUrls;
+
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getId() 
-    {
+    public Long getId() {
         return id;
     }
-    public void setLogisticAccountId(Long logisticAccountId) 
-    {
+
+    public void setLogisticAccountId(Long logisticAccountId) {
         this.logisticAccountId = logisticAccountId;
     }
 
-    public Long getLogisticAccountId() 
-    {
+    public Long getLogisticAccountId() {
         return logisticAccountId;
     }
-    public void setLogisticGroupId(Long logisticGroupId) 
-    {
+
+    public void setLogisticGroupId(Long logisticGroupId) {
         this.logisticGroupId = logisticGroupId;
     }
 
-    public Long getLogisticGroupId() 
-    {
+    public Long getLogisticGroupId() {
         return logisticGroupId;
     }
-    public void setServiceType(Integer serviceType) 
-    {
+
+    public void setServiceType(Integer serviceType) {
         this.serviceType = serviceType;
     }
 
-    public Integer getServiceType() 
-    {
+    public Integer getServiceType() {
         return serviceType;
     }
 
@@ -149,61 +149,52 @@ public class Shipment extends BaseEntity
     public String getBookingNo() {
         return bookingNo;
     }
-    
-    public void setOpeCode(String opeCode) 
-    {
+
+    public void setOpeCode(String opeCode) {
         this.opeCode = opeCode;
     }
 
-    public String getOpeCode() 
-    {
+    public String getOpeCode() {
         return opeCode;
     }
 
-    public void setTaxCode(String taxCode) 
-    {
+    public void setTaxCode(String taxCode) {
         this.taxCode = taxCode;
     }
 
-    public String getTaxCode() 
-    {
+    public String getTaxCode() {
         return taxCode;
     }
-    
-    public void setGroupName(String groupName) 
-    {
+
+    public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
 
-    public String getGroupName() 
-    {
+    public String getGroupName() {
         return groupName;
     }
-    
+
     public String getAddress() {
-		return address;
-	}
+        return address;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setContainerAmount(Long containerAmount) 
-    {
+    public void setContainerAmount(Long containerAmount) {
         this.containerAmount = containerAmount;
     }
 
-    public Long getContainerAmount() 
-    {
+    public Long getContainerAmount() {
         return containerAmount;
     }
-    public void setEdoFlg(String edoFlg) 
-    {
+
+    public void setEdoFlg(String edoFlg) {
         this.edoFlg = edoFlg;
     }
 
-    public String getEdoFlg() 
-    {
+    public String getEdoFlg() {
         return edoFlg;
     }
 
@@ -230,14 +221,12 @@ public class Shipment extends BaseEntity
     public String getReferenceNo() {
         return referenceNo;
     }
-    
-    public void setStatus(String status) 
-    {
+
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public String getStatus() 
-    {
+    public String getStatus() {
         return status;
     }
 
@@ -279,6 +268,14 @@ public class Shipment extends BaseEntity
 
     public Date getToDate() {
         return toDate;
+    }
+
+    public MultipartFile[] getImages() {
+        return images;
+    }
+
+    public void setImages(final MultipartFile[] images) {
+        this.images = images;
     }
 
     @Override

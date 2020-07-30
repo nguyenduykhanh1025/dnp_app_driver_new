@@ -78,6 +78,15 @@ $(document).ready(function () {
         pickTime: false,
         minView: 2
     });
+
+    $("#attachIcon").on("click", function () {
+        let shipmentId = $(this).data("shipment-id");
+        if (!shipmentId) {
+            return;
+        }
+        let url = $(this).data("url");
+        $.modal.openTab(`Đính kèm - Cont [${shipmentId}]`, url.replace("{shipmentId}", shipmentId));
+    });
 });
 
 //search date
@@ -237,13 +246,32 @@ function getSelected() {
         checkList = Array(rowAmount).fill(0);
         allChecked = false;
         loadShipmentDetail(row.id);
+        toggleAttachIcon(shipmentSelected.id);
     }
+}
+
+function toggleAttachIcon(shipmentId) {
+    $.ajax({
+        type: "GET",
+        url: prefix + "/shipments/" + shipmentId + "/shipment-images/count",
+        contentType: "application/json",
+        success: function (data) {
+            let $attachIcon = $("a#attachIcon");
+            if (data.numberOfShipmentImage && data.numberOfShipmentImage > 0) {
+                $attachIcon.data("shipment-id", shipmentId);
+                $attachIcon.removeClass("hidden");
+            } else {
+                $attachIcon.removeData("shipment-id");
+                $attachIcon.addClass("hidden");
+            }
+        }
+    });
 }
 
 // FORMAT HANDSONTABLE COLUMN
 function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
     let content = '';
-    if (checkList[row] == 1 || value) {
+    if (checkList[row] == 1) {
         content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')" checked></div>';
     } else {
         content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
@@ -281,6 +309,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
         $(td).html(content);
     return td;
 }
+
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
     $(td).html(value);
@@ -353,6 +382,7 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     }
     return td;
 }
+
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
@@ -434,7 +464,7 @@ function configHandson() {
             {
                 data: "active",
                 type: "checkbox",
-                className: "htCenter",  
+                className: "htCenter",
                 renderer: checkBoxRenderer
             },
             {
@@ -1078,8 +1108,10 @@ function onMessageReceived(payload) {
     let message = JSON.parse(payload.body);
     if (message.code != 0) {
 
-        setProgressPercent(currentPercent=99);
+        setProgressPercent(currentPercent=100);
         setTimeout(() => {
+            hideProgress();
+
             reloadShipmentDetail();
 
             $.modal.alertError(message.msg);
@@ -1087,15 +1119,17 @@ function onMessageReceived(payload) {
             // Close loading
             //$.modal.closeLoading();
 
-            // Close websocket connection 
+            // Close websocket connection
             $.websocket.disconnect(onDisconnected);
         }, 1000);
     } else {
         orderNumber--;
         if (orderNumber == 0) {
 
-            setProgressPercent(currentPercent=99);
+            setProgressPercent(currentPercent=100);
             setTimeout(() => {
+                hideProgress();
+
                 reloadShipmentDetail();
 
                 $.modal.alertSuccess(message.msg);
@@ -1103,7 +1137,7 @@ function onMessageReceived(payload) {
                 // Close loading
                 //$.modal.closeLoading();
 
-                // Close websocket connection 
+                // Close websocket connection
                 $.websocket.disconnect(onDisconnected);
             }, 1000);
         }
@@ -1112,7 +1146,7 @@ function onMessageReceived(payload) {
 
 function onError(error) {
     console.error('Could not connect to WebSocket server. Please refresh this page to try again!');
-}      
+}
 
 function showProgress(title) {
     $('.progress-wrapper').show();
@@ -1122,7 +1156,7 @@ function showProgress(title) {
     currentPercent = 0;
     interval = setInterval(function() {
         setProgressPercent(++currentPercent);
-        if (currentPercent >= 100) {
+        if (currentPercent >= 99) {
             clearInterval(interval);
         }
     }, 1000);

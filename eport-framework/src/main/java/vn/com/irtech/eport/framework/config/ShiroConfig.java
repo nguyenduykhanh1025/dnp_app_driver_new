@@ -1,16 +1,8 @@
 package vn.com.irtech.eport.framework.config;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import javax.servlet.Filter;
-import org.apache.commons.io.IOUtils;
-import org.apache.shiro.cache.ehcache.EhCacheManager;
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.codec.Base64;
-import org.apache.shiro.config.ConfigurationException;
-import org.apache.shiro.io.ResourceUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -21,7 +13,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.spring.SpringUtils;
 import vn.com.irtech.eport.framework.shiro.realm.UserRealm;
 import vn.com.irtech.eport.framework.shiro.session.OnlineSessionDAO;
@@ -33,16 +24,18 @@ import vn.com.irtech.eport.framework.shiro.web.filter.online.OnlineSessionFilter
 import vn.com.irtech.eport.framework.shiro.web.filter.sync.SyncOnlineSessionFilter;
 import vn.com.irtech.eport.framework.shiro.web.session.OnlineWebSessionManager;
 import vn.com.irtech.eport.framework.shiro.web.session.SpringSessionValidationScheduler;
-import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+
+import javax.servlet.Filter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Permission configuration loading
- * 
+ *
  * @author admin
  */
 @Configuration
-public class ShiroConfig
-{
+public class ShiroConfig {
     public static final String PREMISSION_STRING = "perms[\"{0}\"]";
 
     // Session timeout time, in milliseconds (default 30 minutes)
@@ -94,56 +87,10 @@ public class ShiroConfig
     private String unauthorizedUrl;
 
     /**
-     * Cache manager using Ehcache
-     */
-    @Bean
-    public EhCacheManager getEhCacheManager()
-    {
-        net.sf.ehcache.CacheManager cacheManager = net.sf.ehcache.CacheManager.getCacheManager("eport");
-        EhCacheManager em = new EhCacheManager();
-        if (StringUtils.isNull(cacheManager))
-        {
-            em.setCacheManager(new net.sf.ehcache.CacheManager(getCacheManagerConfigFileInputStream()));
-            return em;
-        }
-        else
-        {
-            em.setCacheManager(cacheManager);
-            return em;
-        }
-    }
-
-    /**
-     * Return to the configuration file flow to prevent the ehcache configuration file from being occupied all the time, and the project cannot be completely destroyed and redeployed
-     */
-    protected InputStream getCacheManagerConfigFileInputStream()
-    {
-        String configFile = "classpath:ehcache/ehcache-shiro.xml";
-        InputStream inputStream = null;
-        try
-        {
-            inputStream = ResourceUtils.getInputStreamForPath(configFile);
-            byte[] b = IOUtils.toByteArray(inputStream);
-            InputStream in = new ByteArrayInputStream(b);
-            return in;
-        }
-        catch (IOException e)
-        {
-            throw new ConfigurationException(
-                    "Unable to obtain input stream for cacheManagerConfigFile [" + configFile + "]", e);
-        }
-        finally
-        {
-            IOUtils.closeQuietly(inputStream);
-        }
-    }
-
-    /**
      * Custom Realm
      */
     @Bean
-    public UserRealm userRealm(EhCacheManager cacheManager)
-    {
+    public UserRealm userRealm(CacheManager cacheManager) {
         UserRealm userRealm = new UserRealm();
         userRealm.setCacheManager(cacheManager);
         return userRealm;
@@ -153,8 +100,7 @@ public class ShiroConfig
      * Custom sessionDAO session
      */
     @Bean
-    public OnlineSessionDAO sessionDAO()
-    {
+    public OnlineSessionDAO sessionDAO() {
         OnlineSessionDAO sessionDAO = new OnlineSessionDAO();
         return sessionDAO;
     }
@@ -163,8 +109,7 @@ public class ShiroConfig
      * Custom sessionFactory session
      */
     @Bean
-    public OnlineSessionFactory sessionFactory()
-    {
+    public OnlineSessionFactory sessionFactory() {
         OnlineSessionFactory sessionFactory = new OnlineSessionFactory();
         return sessionFactory;
     }
@@ -173,11 +118,10 @@ public class ShiroConfig
      * Session manager
      */
     @Bean
-    public OnlineWebSessionManager sessionManager()
-    {
+    public OnlineWebSessionManager sessionManager(CacheManager cacheManager) {
         OnlineWebSessionManager manager = new OnlineWebSessionManager();
         // Join the cache manager
-        manager.setCacheManager(getEhCacheManager());
+        manager.setCacheManager(cacheManager);
         // Delete expired session
         manager.setDeleteInvalidSessions(true);
         // Set global session timeout
@@ -199,27 +143,25 @@ public class ShiroConfig
      * Security manager
      */
     @Bean
-    public SecurityManager securityManager(UserRealm userRealm)
-    {
+    public SecurityManager securityManager(UserRealm userRealm, CacheManager cacheManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         // Set up realm.
         securityManager.setRealm(userRealm);
         // remember me
         securityManager.setRememberMeManager(rememberMeManager());
         // Inject into the cache manager;
-        securityManager.setCacheManager(getEhCacheManager());
+        securityManager.setCacheManager(cacheManager);
         // session manager
-        securityManager.setSessionManager(sessionManager());
+        securityManager.setSessionManager(sessionManager(cacheManager));
         return securityManager;
     }
 
     /**
      * Exit filter
      */
-    public LogoutFilter logoutFilter()
-    {
+    public LogoutFilter logoutFilter(CacheManager cacheManager) {
         LogoutFilter logoutFilter = new LogoutFilter();
-        logoutFilter.setCacheManager(getEhCacheManager());
+        logoutFilter.setCacheManager(cacheManager);
         logoutFilter.setLoginUrl(loginUrl);
         return logoutFilter;
     }
@@ -228,8 +170,7 @@ public class ShiroConfig
      * Shiro Filter configuration
      */
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager)
-    {
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager, CacheManager cacheManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         // Shiro's core security interface, this attribute is required
         shiroFilterFactoryBean.setSecurityManager(securityManager);
@@ -263,9 +204,9 @@ public class ShiroConfig
         filters.put("onlineSession", onlineSessionFilter());
         filters.put("syncOnlineSession", syncOnlineSessionFilter());
         filters.put("captchaValidate", captchaValidateFilter());
-        filters.put("kickout", kickoutSessionFilter());
+        filters.put("kickout", kickoutSessionFilter(cacheManager));
         // If the logout is successful, jump to the specified page
-        filters.put("logout", logoutFilter());
+        filters.put("logout", logoutFilter(cacheManager));
         shiroFilterFactoryBean.setFilters(filters);
 
         // All requests require authentication
@@ -279,8 +220,7 @@ public class ShiroConfig
      * Custom online user processing filters
      */
     @Bean
-    public OnlineSessionFilter onlineSessionFilter()
-    {
+    public OnlineSessionFilter onlineSessionFilter() {
         OnlineSessionFilter onlineSessionFilter = new OnlineSessionFilter();
         onlineSessionFilter.setLoginUrl(loginUrl);
         return onlineSessionFilter;
@@ -290,8 +230,7 @@ public class ShiroConfig
      * Custom online user synchronization filter
      */
     @Bean
-    public SyncOnlineSessionFilter syncOnlineSessionFilter()
-    {
+    public SyncOnlineSessionFilter syncOnlineSessionFilter() {
         SyncOnlineSessionFilter syncOnlineSessionFilter = new SyncOnlineSessionFilter();
         return syncOnlineSessionFilter;
     }
@@ -300,8 +239,7 @@ public class ShiroConfig
      * Custom verification code filter
      */
     @Bean
-    public CaptchaValidateFilter captchaValidateFilter()
-    {
+    public CaptchaValidateFilter captchaValidateFilter() {
         CaptchaValidateFilter captchaValidateFilter = new CaptchaValidateFilter();
         captchaValidateFilter.setCaptchaEnabled(captchaEnabled);
         captchaValidateFilter.setCaptchaType(captchaType);
@@ -311,8 +249,7 @@ public class ShiroConfig
     /**
      * cookie Property setting
      */
-    public SimpleCookie rememberMeCookie()
-    {
+    public SimpleCookie rememberMeCookie() {
         SimpleCookie cookie = new SimpleCookie("rememberMe");
         cookie.setDomain(domain);
         cookie.setPath(path);
@@ -324,8 +261,7 @@ public class ShiroConfig
     /**
      * remember me
      */
-    public CookieRememberMeManager rememberMeManager()
-    {
+    public CookieRememberMeManager rememberMeManager() {
         CookieRememberMeManager cookieRememberMeManager = new CookieRememberMeManager();
         cookieRememberMeManager.setCookie(rememberMeCookie());
         cookieRememberMeManager.setCipherKey(Base64.decode("fCq+/xW488hMTCD+cmJ3aQ=="));
@@ -335,11 +271,10 @@ public class ShiroConfig
     /**
      * Restrictions on multiple device logins for the same user
      */
-    public KickoutSessionFilter kickoutSessionFilter()
-    {
+    public KickoutSessionFilter kickoutSessionFilter(CacheManager cacheManager) {
         KickoutSessionFilter kickoutSessionFilter = new KickoutSessionFilter();
-        kickoutSessionFilter.setCacheManager(getEhCacheManager());
-        kickoutSessionFilter.setSessionManager(sessionManager());
+        kickoutSessionFilter.setCacheManager(cacheManager);
+        kickoutSessionFilter.setSessionManager(sessionManager(cacheManager));
         // The maximum number of sessions for the same user, the default is -1 unlimited; for example, 2 means that the same user is allowed to log in at most two people at the same time
         kickoutSessionFilter.setMaxSession(maxSession);
         // Whether to log out later, the default is false; that is, the user who logs in the latter kicks out the user who logs in the former; the order of kicking out
@@ -353,8 +288,7 @@ public class ShiroConfig
      * Integration of thymeleaf template engine and shiro framework
      */
     @Bean
-    public ShiroDialect shiroDialect()
-    {
+    public ShiroDialect shiroDialect() {
         return new ShiroDialect();
     }
 
@@ -363,8 +297,7 @@ public class ShiroConfig
      */
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(
-            @Qualifier("securityManager") SecurityManager securityManager)
-    {
+            @Qualifier("securityManager") SecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;

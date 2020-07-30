@@ -136,7 +136,6 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			try {
 				String receiptIdStr = map.get("receiptId") == null ? null : map.get("receiptId").toString();
 				Long receiptId = Long.parseLong(receiptIdStr);
-				//this.updateReceiptId(receiptId);
 				this.updateHistory(receiptId.toString(), uuId);
 			} catch (Exception ex) {
 
@@ -158,6 +157,15 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 				} catch (Exception e) {
 					logger.warn(e.getMessage());
 				}
+			}
+			
+			// check robot exists in db
+			if (robotService.selectRobotByUuId(uuId) == null) {
+				// insert robot to db
+				robotService.insertRobot(sysRobot);
+			} else {
+				// update status of robot
+				robotService.updateRobotByUuId(sysRobot);
 			}
 
 			// Find process order for robot
@@ -228,16 +236,16 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			} catch (Exception e) {
 				logger.warn(e.getMessage());
 			}
-		}
-
-		// check robot exists in db
-		if (robotService.selectRobotByUuId(uuId) == null) {
-			// insert robot to db
-			robotService.insertRobot(sysRobot);
-		} else {
-			// update status of robot
-			robotService.updateRobotByUuId(sysRobot);
-		}
+			
+			// check robot exists in db
+			if (robotService.selectRobotByUuId(uuId) == null) {
+				// insert robot to db
+				robotService.insertRobot(sysRobot);
+			} else {
+				// update status of robot
+				robotService.updateRobotByUuId(sysRobot);
+			}
+		}	
 	}
 
 	private void updateHistory(String receiptId, String uuId) {
