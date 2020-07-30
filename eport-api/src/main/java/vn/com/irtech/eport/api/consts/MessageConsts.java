@@ -30,4 +30,10 @@ public class MessageConsts {
 
 	public static final String E0014 = "E0014";
 
+	public static final String E0015 = "E0015";
+
+	public static final String E0016 = "E0016";
+
+	public static final String E0017 = "E0017";
+
 }

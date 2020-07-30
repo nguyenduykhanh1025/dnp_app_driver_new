@@ -13,7 +13,6 @@ import vn.com.irtech.eport.api.form.LoginReq;
 import vn.com.irtech.eport.api.security.service.LoginService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
-import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.system.domain.UserDevices;
 import vn.com.irtech.eport.system.service.IUserDevicesService;
 

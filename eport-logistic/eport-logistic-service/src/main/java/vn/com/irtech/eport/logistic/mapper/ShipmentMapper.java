@@ -1,7 +1,11 @@
 package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.form.ShipmentForm;
 
 /**
  * ShipmentMapper Interface
@@ -64,4 +68,13 @@ public interface ShipmentMapper
     public List<Shipment> selectShipmentListForOm(Shipment shipment);
 
     public List<Shipment> getShipmentListForAssign(Shipment shipment);
+
+    /**
+     * Select Shipment List For Driver App
+     * 
+     * @param serviceType
+     * @param logisticGroupId
+     * @return List<ShipmentForm>
+     */
+    public List<ShipmentForm> selectShipmentListForDriver(@Param("serviceType") Integer serviceType, @Param("logisticGroupId") Long logisticGroupId);
 }

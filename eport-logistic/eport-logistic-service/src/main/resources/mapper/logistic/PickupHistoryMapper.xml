@@ -381,7 +381,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</where>
 	</select>
 
-	<select id="selectPickupHistoryListForOmSupport" resultType="PickupHistory" resultMap="PickupHistoryResult">
+	<select id="selectPickupHistoryListForOmSupport" resultMap="PickupHistoryResult">
 		SELECT *
 			FROM pickup_history p 
 			left join pickup_assign a on p.pickup_assign_id = a.id
@@ -392,12 +392,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<select id="selectPickupHistoryForDriver" parameterType="Long" resultType="vn.com.irtech.eport.logistic.form.PickupHistoryForm">
-		select p.id as pickupHistoryId, p.container_no as containerNo, p.gatein_date as gateInDate
-		from pickup_history p
-		left join pickup_assign a
-		on p.pickup_assign_id = a.id
-		where p.id = #{userId}
-		order by p.gatein_date desc
+		select id as pickupHistoryId, container_no as containerNo, gatein_date as gateInDate
+		from pickup_history
+		where driver_id = #{userId} and status = 3
+		order by gatein_date desc
 	</select>
 
 	<select id="selectPickupListByDriverId" parameterType="Long" resultType="vn.com.irtech.eport.logistic.form.Pickup">
@@ -409,6 +407,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where p.driver_id = #{driverId}
 		and p.status != 3
 		order by s.service_type desc
+	</select>
+
+	<select id="checkPickupHistoryExists" resultType="int">
+		select count(*) from pickup_history 
+		where
+			shipment_id = #{shipmentId}
+			and container_no = #{containerNo}
+	</select>
+
+	<select id="selectPickupHistoryDetailById" resultType="vn.com.irtech.eport.logistic.form.PickupHistoryDetail">
+		select p.id as pickupHistoryId, p.container_no as containerNo, p.gatein_date as gateInDate, p.shipment_id as batchId, p.truck_no as truckNo, 
+		p.status as status, p.chassis_no as chassisNo, sh.sztp as sztp, sh.consignee as consignee, concat(concat(concat(p.block, concat('-', p.bay)), concat('-', p.line)), concat('-', p.tier)) as yardPosition
+		from pickup_history p
+		left join shipment s on p.shipment_id = s.id
+		left join shipment_detail sh on p.shipment_detail_id = sh.id
+		where 
+		p.id = #{pickupId}
+		and p.driver_id = #{driverId}
+		group by p.id, p.container_no, p.gatein_date, p.shipment_id, p.truck_no, 
+		p.status, p.chassis_no, sh.sztp, sh.consignee, p.block, p.bay, p.line, p.tier
 	</select>
 
 </mapper>

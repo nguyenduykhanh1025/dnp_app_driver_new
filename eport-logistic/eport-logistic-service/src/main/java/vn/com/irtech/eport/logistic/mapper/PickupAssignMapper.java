@@ -75,7 +75,7 @@ public interface PickupAssignMapper
      * @param serviceType
      * @return
      */
-    public List<PickupAssignForm> selectPickupAssignListByDriverId(@Param("driverId") Long driverId, @Param("serviceType") Integer serviceType); 
+    public List<PickupAssignForm> selectPickupAssignListByDriverId(@Param("driverId") Long driverId, @Param("shipmentId") Long shipmentId); 
 
     /**
      * Get remark pickup_assgin follow batch

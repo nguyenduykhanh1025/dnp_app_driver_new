@@ -47,6 +47,7 @@ public class PickupHistory extends BaseEntity {
 
 	/** Container no */
 	@Excel(name = "Container no")
+	@NotEmpty
 	private String containerNo;
 
 	/** Truck no */

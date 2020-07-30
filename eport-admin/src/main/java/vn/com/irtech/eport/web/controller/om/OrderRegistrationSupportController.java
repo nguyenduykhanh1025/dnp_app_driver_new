@@ -23,6 +23,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
@@ -33,7 +34,7 @@ import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
-@RequestMapping("/om/order/support")
+@RequestMapping("/om/support")
 public class OrderRegistrationSupportController extends AdminBaseController {
 
   private final String PREFIX = "om/orderRegistrationSupport";
@@ -55,6 +56,9 @@ public class OrderRegistrationSupportController extends AdminBaseController {
 
   @Autowired
   private IPickupHistoryService pickupHistoryService;
+
+  @Autowired
+  private ICatosApiService catosService;
 
   @GetMapping()
   public String getMainView() {
@@ -113,6 +117,24 @@ public class OrderRegistrationSupportController extends AdminBaseController {
     }
     List<Shipment> shipments = shipmentService.selectShipmentListForOm(shipment);
     return getDataTable(shipments);
+  }
+
+  @PostMapping("/custom")
+  @ResponseBody
+  public AjaxResult syncCustomStatus(@RequestBody List<ShipmentDetail> shipmentDetails) {
+    AjaxResult ajaxResult = AjaxResult.success();
+    if (shipmentDetails.isEmpty()) {
+      return error();
+    }
+    for (ShipmentDetail shipmentDetail : shipmentDetails) {
+      if (catosService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
+        shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+        shipmentDetail.setCustomStatus("R");
+        shipmentDetailService.updateShipmentDetail(shipmentDetail);
+      }
+    }
+    ajaxResult.put("shipmentDetails", getDataTable(shipmentDetails));
+    return ajaxResult;
   }
 
   @GetMapping("/process-order/doing")
