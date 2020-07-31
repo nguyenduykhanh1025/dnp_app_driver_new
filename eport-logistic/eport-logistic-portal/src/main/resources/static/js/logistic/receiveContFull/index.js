@@ -871,6 +871,10 @@ function reloadShipmentDetail() {
     $('#check' + i).prop('checked', false);
   }
   $("#deleteBtn").prop("disabled", true);
+  $("#customBtn").prop("disabled", true);
+  $("#verifyBtn").prop("disabled", true);
+  $("#payBtn").prop("disabled", true);
+  $("#exportBillBtn").prop("disabled", true);
   setLayoutRegisterStatus();
   loadShipmentDetail(shipmentSelected.id);
 }

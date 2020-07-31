@@ -283,6 +283,12 @@ public class LogisticCommonController extends LogisticBaseController {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
 						shipmentDetail.setPaymentStatus("Y");
 						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+						if (shipmentDetail.getCustomStatus() != null && "N".equals(shipmentDetail.getCustomStatus()) && 
+						shipmentDetail.getDischargePort() != null && shipmentDetail.getDischargePort().length() > 2 && 
+						"VN".equals(shipmentDetail.getLoadingPort().substring(0, 2))) {
+							shipmentDetail.setCustomStatus("R");
+							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+						}
 						shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					}
 
