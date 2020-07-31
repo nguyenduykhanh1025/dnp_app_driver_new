@@ -107,4 +107,11 @@ public interface IPickupHistoryService
      */
     public Boolean checkPossiblePickup(Long driverId, Integer serviceType);
 
+    /**
+     * Select Delievering Driver Info
+     * 
+     * @return PickupHistory
+     */
+    public List<PickupHistory> selectDeliveringDriverInfo(PickupHistory pickupHistory);
+
 }
