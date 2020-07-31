@@ -10,6 +10,7 @@ var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.serviceType = 4;
 var sizeList = [];
+var berthplanList = [];
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -30,7 +31,7 @@ $.ajax({
     success: function (data) {
         if (data.code == 0) {
 //            opeCodeList = data.opeCodeList;
-            vslNmList = data.vslNmList;
+//            vslNmList = data.vslNmList;
             consigneeList = data.consigneeList;
         }
     }
@@ -355,17 +356,17 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     }
     return td;
 }
-function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
-    $(td).html(value);
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    }
-    return td;
-}
+//function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+//    $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
+//    $(td).html(value);
+//    if (value != null && value != '') {
+//        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+//            cellProperties.readOnly = 'true';
+//            $(td).css("background-color", "rgb(232, 232, 232)");
+//        }
+//    }
+//    return td;
+//}
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
@@ -463,24 +464,22 @@ function configHandson() {
                 case 4:
                     return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
                 case 5:
-                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
+                    return '<span>Tàu và Chuyến</span><span style="color: red;">(*)</span>';
                 case 6:
-                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
-                case 7:
                     return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
-                case 8:
+                case 7:
                     return "Nhiệt Độ";
-                case 9:
+                case 8:
                     return '<span>Trọng Lượng</span><span style="color: red;">(*)</span>';
-                case 10:
+                case 9:
                     return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
-                case 11:
+                case 10:
                     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
-                case 12:
+                case 11:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 110, 100, 200, 150, 150, 100, 150, 100, 100, 150, 150, 200],
+        colWidths: [50, 110, 100, 200, 150, 200, 150, 100, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -519,12 +518,6 @@ function configHandson() {
                 source: vslNmList,
                 strict: true,
                 renderer: vslNmRenderer
-            },
-            {
-                data: "voyNo",
-                type: "autocomplete",
-                strict: true,
-                renderer: voyNoRenderer
             },
             {
                 data: "sztp",
@@ -577,10 +570,11 @@ function onChange(changes, source) {
         return;
     }
     changes.forEach(function (change) {
+    	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
         if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
-            hot.setDataAtCell(change[0], 5, '');//vessel reset
+            hot.setDataAtCell(change[0], 5, '');//vessel and voyage reset
             $.ajax({
-                url: "/logistic/ope-code/"+ change[3].split(": ")[0] +"/vessel-code/list",
+                url: prefix + "/berthplan/ope-code/"+ change[3].split(": ")[0] +"/vessel-voyage/list",
                 method: "GET",
                 success: function (data) {
                     if (data.code == 0) {
@@ -588,7 +582,8 @@ function onChange(changes, source) {
                             cells: function (row, col, prop) {
                                 if (row == change[0] && col == 5) {
                                     let cellProperties = {};
-                                    cellProperties.source = data.vessels;
+                                    berthplanList = data.berthplanList;
+                                    cellProperties.source = data.vesselAndVoyages;
                                     return cellProperties;
                                 }
                             }
@@ -597,54 +592,61 @@ function onChange(changes, source) {
                 }
             });
 
-            // Trigger when vessel change, get list voyage by vessel
+//            // Trigger when vessel change, get list voyage by vessel
+//        } else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+//            hot.setDataAtCell(change[0], 6, '');//voyNo reset
+//            $.ajax({
+//                url: "/logistic/vessel/" + change[3].split(": ")[0] + "/voyages",
+//                method: "GET",
+//                success: function (data) {
+//                    if (data.code == 0) {
+//                        hot.updateSettings({
+//                            cells: function (row, col, prop) {
+//                                if (row == change[0] && col == 6) {
+//                                    let cellProperties = {};
+//                                    cellProperties.source = data.voyages;
+//                                    return cellProperties;
+//                                }
+//                            }
+//                        });
+//                    }
+//                }
+//            });
+
+            // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
         } else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-            hot.setDataAtCell(change[0], 6, '');//voyNo reset
-            $.ajax({
-                url: "/logistic/vessel/" + change[3].split(": ")[0] + "/voyages",
-                method: "GET",
-                success: function (data) {
-                    if (data.code == 0) {
-                        hot.updateSettings({
-                            cells: function (row, col, prop) {
-                                if (row == change[0] && col == 6) {
-                                    let cellProperties = {};
-                                    cellProperties.source = data.voyages;
-                                    return cellProperties;
+            let vesselAndVoy = hot.getDataAtCell(change[0], 5);
+            hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
+            if (vesselAndVoy) {
+            	console.log(vesselAndVoy)
+                let shipmentDetail = new Object();
+                for (let i= 0; i < berthplanList.length;i++){
+                	console.log(berthplanList[i].vslAndVoy)
+                	if(vesselAndVoy == berthplanList[i].vslAndVoy){
+                		shipmentDetail.vslNm = berthplanList[i].vslNm;
+                		shipmentDetail.voyNo = berthplanList[i].voyNo;
+                		shipmentDetail.year = berthplanList[i].year;
+                        $.ajax({
+                            url: "/logistic/pods",
+                            method: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(shipmentDetail),
+                            success: function (data) {
+                                if (data.code == 0) {
+                                    hot.updateSettings({
+                                        cells: function (row, col, prop) {
+                                            if (row == change[0] && col == 10) {
+                                                let cellProperties = {};
+                                                cellProperties.source = data.dischargePorts;
+                                                return cellProperties;
+                                            }
+                                        }
+                                    });
                                 }
                             }
                         });
-                    }
+                	}
                 }
-            });
-
-            // Trigger when voy no change, get list discharge port by vessel, voy no
-        } else if (change[1] == "voyNo" && change[3] != null && change[3] != '') {
-            let vslNm = hot.getDataAtCell(change[0], 5);
-            if (vslNm) {
-                let shipmentDetail = new Object();
-                shipmentDetail.vslNm = vslNm.split(": ")[0];
-                shipmentDetail.voyNo = change[3];
-                hot.setDataAtCell(change[0], 11, ''); // dischargePort reset
-                $.ajax({
-                    url: "/logistic/pods",
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(shipmentDetail),
-                    success: function (data) {
-                        if (data.code == 0) {
-                            hot.updateSettings({
-                                cells: function (row, col, prop) {
-                                    if (row == change[0] && col == 11) {
-                                        let cellProperties = {};
-                                        cellProperties.source = data.dischargePorts;
-                                        return cellProperties;
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
             }
 
             // Trigger when sztp change, make temperature is writable
@@ -782,10 +784,12 @@ function updateLayout() {
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
+	$.modal.loading("Đang xử lý ...");
     $.ajax({
         url: prefix + "/shipment/" + id + "/shipment-detail",
         method: "GET",
         success: function (data) {
+        	$.modal.closeLoading();
             if (data.code == 0) {
                 sourceData = data.shipmentDetails;
                 if (rowAmount < sourceData.length) {
@@ -914,10 +918,6 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu!");
                 errorFlg = true;
                 return false;
-            } else if (!object["voyNo"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chuyến!");
-                errorFlg = true;
-                return false;
             } else if (!object["sztp"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
@@ -939,13 +939,13 @@ function getDataFromTable(isValidate) {
                 errorFlg = true;
                 return false;
            } else if (vessel != object["vslNm"]) {
-               $.modal.alertError("Tàu không được khác nhau!");
+               $.modal.alertError("Tàu và Chuyến không được khác nhau!");
                errorFlg = true;
                return false;
-            } else if (voyage != object["voyNo"]) {
-                $.modal.alertError("Số chuyến không được khác nhau!");
-                errorFlg = true;
-                return false;
+//            } else if (voyage != object["voyNo"]) {
+//                $.modal.alertError("Số chuyến không được khác nhau!");
+//                errorFlg = true;
+//                return false;
             } else if (pod != object["dischargePort"]) {
                 $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
                 errorFlg = true;
@@ -955,7 +955,7 @@ function getDataFromTable(isValidate) {
         consignee = object["consignee"];
         opecode = object["opeCode"];
         vessel = object["vslNm"];
-        voyage = object["voyNo"];
+//        voyage = object["voyNo"];
         pod = object["dischargePort"];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
@@ -966,14 +966,25 @@ function getDataFromTable(isValidate) {
         let carrier = object["opeCode"].split(": ");
         shipmentDetail.opeCode = carrier[0];
         shipmentDetail.carrierName = carrier[1];
-        shipmentDetail.sztp = object["sztp"];
+        let sizeType = object["sztp"].split(": ");
+        shipmentDetail.sztp = sizeType[0];
+        shipmentDetail.sztpDefine = sizeType[1];
         shipmentDetail.temperature = object["temperature"];
         shipmentDetail.consignee = object["consignee"];
         shipmentDetail.wgt = object["wgt"];
-        vessel = object["vslNm"].split(": ");
-        shipmentDetail.vslNm = vessel[0];
-        shipmentDetail.vslName = vessel[1];
-        shipmentDetail.voyNo = object["voyNo"];
+//        vessel = object["vslNm"].split(": ");
+//        shipmentDetail.vslNm = vessel[0];
+//        shipmentDetail.vslName = vessel[1];
+//        shipmentDetail.voyNo = object["voyNo"];
+        for (let i= 0; i < berthplanList.length;i++){
+        	if(object["vslNm"] == berthplanList[i].vslAndVoy){
+        		shipmentDetail.vslNm = berthplanList[i].vslNm;
+        		shipmentDetail.voyNo = berthplanList[i].voyNo;
+        		shipmentDetail.year = berthplanList[i].year;
+        		shipmentDetail.vslName = berthplanList[i].vslAndVoy.split(" - ")[0];
+        		shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
+        	}
+        }
         shipmentDetail.dischargePort = object["dischargePort"].split(":")[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetail.remark = object["remark"];

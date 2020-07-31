@@ -48,6 +48,10 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Size Type")
     private String sztp;
     
+    /** Size Type define */
+    @Excel(name = "Size Type Define")
+    private String sztpDefine;
+    
     /** Temperature */
     @Excel(name = "Temperature")
     private String temperature;
@@ -95,6 +99,10 @@ public class ShipmentDetail extends BaseEntity
     /** Voyage */
     @Excel(name = "Voyage")
     private String voyNo;
+    
+    /** Voyage carrier */
+    @Excel(name = "Voyage carrier")
+    private String voyCarrier;
 
     /** Operator Code */
     @Excel(name = "Operator Code")
@@ -189,6 +197,8 @@ public class ShipmentDetail extends BaseEntity
     private Integer serviceType;
     
     private String year;
+    
+    private String vslAndVoy;
 
     public void setId(Long id) {
         this.id = id;
@@ -253,7 +263,15 @@ public class ShipmentDetail extends BaseEntity
         return sztp;
     }
 
-    public String getTemperature() {
+    public String getSztpDefine() {
+		return sztpDefine;
+	}
+
+	public void setSztpDefine(String sztpDefine) {
+		this.sztpDefine = sztpDefine;
+	}
+
+	public String getTemperature() {
 		return temperature;
 	}
 
@@ -349,7 +367,15 @@ public class ShipmentDetail extends BaseEntity
         return voyNo;
     }
 
-    public void setOpeCode(String opeCode) {
+    public String getVoyCarrier() {
+		return voyCarrier;
+	}
+
+	public void setVoyCarrier(String voyCarrier) {
+		this.voyCarrier = voyCarrier;
+	}
+
+	public void setOpeCode(String opeCode) {
         this.opeCode = opeCode;
     }
 
@@ -573,6 +599,14 @@ public class ShipmentDetail extends BaseEntity
 		this.year = year;
 	}
 
+	public String getVslAndVoy() {
+		return vslAndVoy;
+	}
+
+	public void setVslAndVoy(String vslAndVoy) {
+		this.vslAndVoy = vslAndVoy;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -584,6 +618,7 @@ public class ShipmentDetail extends BaseEntity
             .append("containerNo", getContainerNo())
             .append("containerStatus", getContainerStatus())
             .append("sztp", getSztp())
+            .append("sztpDefine", getSztpDefine())
             .append("temperature", getTemperature())
             .append("fe", getFe())
             .append("bookingNo", getBookingNo())
@@ -596,6 +631,7 @@ public class ShipmentDetail extends BaseEntity
             .append("vslName", getVslName())
             .append("vslNm", getVslNm())
             .append("voyNo", getVoyNo())
+            .append("voyCarrier", getVoyCarrier())
             .append("opeCode", getOpeCode())
             .append("carrierName", getCarrierName())
             .append("loadingPort", getLoadingPort())
@@ -629,6 +665,7 @@ public class ShipmentDetail extends BaseEntity
             .append("assignNumber", getAssignNumber())
             .append("serviceType", getServiceType())
             .append("year", getYear())
+            .append("vslAndVoy", getVslAndVoy())
             .toString();
     }
 }

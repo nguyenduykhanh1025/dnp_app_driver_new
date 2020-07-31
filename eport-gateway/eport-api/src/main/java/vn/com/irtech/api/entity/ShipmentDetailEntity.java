@@ -67,6 +67,9 @@ public class ShipmentDetailEntity extends BaseEntity
 
     /** Voyage */
     private String voyNo;
+    
+    /** Voyage */
+    private String voyCarrier;
 
     /** Operator Code */
     private String opeCode;
@@ -135,6 +138,8 @@ public class ShipmentDetailEntity extends BaseEntity
     private String cargoType;
     
     private String year;
+    
+    private String vslAndVoy;
     
     public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
@@ -337,7 +342,16 @@ public class ShipmentDetailEntity extends BaseEntity
     {
         return voyNo;
     }
-    public void setOpeCode(String opeCode) 
+    
+    public String getVoyCarrier() {
+		return voyCarrier;
+	}
+
+	public void setVoyCarrier(String voyCarrier) {
+		this.voyCarrier = voyCarrier;
+	}
+
+	public void setOpeCode(String opeCode) 
     {
         this.opeCode = opeCode;
     }
@@ -497,6 +511,14 @@ public class ShipmentDetailEntity extends BaseEntity
 		this.year = year;
 	}
 
+	public String getVslAndVoy() {
+		return vslAndVoy;
+	}
+
+	public void setVslAndVoy(String vslAndVoy) {
+		this.vslAndVoy = vslAndVoy;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -518,6 +540,7 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("vslName", getVslName())
             .append("vslNm", getVslNm())
             .append("voyNo", getVoyNo())
+            .append("voyCarrier", getVoyCarrier())
             .append("opeCode", getOpeCode())
             .append("loadingPort", getLoadingPort())
             .append("dischargePort", getDischargePort())
@@ -540,6 +563,7 @@ public class ShipmentDetailEntity extends BaseEntity
             .append("roww", getRow())
             .append("tier", getTier())
             .append("year", getYear())
+            .append("vslAndVoy", getVslAndVoy())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

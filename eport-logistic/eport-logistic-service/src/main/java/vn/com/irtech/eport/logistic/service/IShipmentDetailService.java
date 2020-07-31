@@ -141,4 +141,10 @@ public interface IShipmentDetailService
     public Integer countNumberOfLegalCont(List<ShipmentDetail> shipmentDetails, Long logisticGroupId);
     
     public String getSSR(String sztp);
+    
+    /***
+     * getShipmentDetail for SendContFull and receiveContEmpty
+     */
+    public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail);
+    
 }

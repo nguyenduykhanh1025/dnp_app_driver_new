@@ -113,4 +113,9 @@ public class ApiShipmentDetailController {
 	public List<String> selectOpeCodeListInBerthPlan(){
 		return shipmentDetailDao.selectOpeCodeListInBerthPlan();
 	}
+	
+	@GetMapping("/shipmentDetail/berthplan/ope-code/{opeCode}/vessel-voyage/list")
+	public List<ShipmentDetailEntity> selectVesselVoyageBerthPlan(@PathVariable String opeCode){
+		return shipmentDetailDao.selectVesselVoyageBerthPlan(opeCode);
+	}
 }

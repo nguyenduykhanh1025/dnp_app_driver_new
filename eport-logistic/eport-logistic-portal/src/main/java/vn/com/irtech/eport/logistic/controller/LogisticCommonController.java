@@ -313,10 +313,10 @@ public class LogisticCommonController extends LogisticBaseController {
 		AjaxResult ajaxResult = success();
 		List<String> listPOD = new ArrayList<String>();
 		if(shipmentDetail != null){
-			String year = catosApiService.getYearByVslCodeAndVoyNo(shipmentDetail.getVslNm(), shipmentDetail.getVoyNo());
-			if(year != null) {
-				shipmentDetail.setYear(year);
-			}
+//			String year = catosApiService.getYearByVslCodeAndVoyNo(shipmentDetail.getVslNm(), shipmentDetail.getVoyNo());
+//			if(year != null) {
+//				shipmentDetail.setYear(year);
+//			}
 			listPOD = catosApiService.getPODList(shipmentDetail);
 			ajaxResult.put("dischargePorts", listPOD);
 			return ajaxResult;
