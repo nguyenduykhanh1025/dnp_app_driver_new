@@ -459,4 +459,16 @@ public class LogisticCommonController extends LogisticBaseController {
 		return error();
 	}
 	
+	@GetMapping("/abc")
+	@ResponseBody
+	public AjaxResult abc(@RequestBody List<ShipmentDetail> shipmentDetails) {
+		AjaxResult ajaxResult = success();
+		List<ProcessBill> bills = catosApiService.getUnitBillByShipmentDetailsForReserve(shipmentDetails);
+		if(bills.size() > 0) {
+			ajaxResult.put("bills", bills);
+			return ajaxResult;
+		}
+		return error();
+	}
+	
 }

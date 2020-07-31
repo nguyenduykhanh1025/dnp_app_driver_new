@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.json.JSONObject;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -221,5 +222,64 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
-	
+
+	@Override
+	public List<ProcessBill> getUnitBillByShipmentDetailsForReserve(List<ShipmentDetail> shipmentDetails) {
+		try {
+			String url = Global.getApiUrl() + "/unit-bill/list/send-cont";
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity httpEntity = new HttpEntity<List<ShipmentDetail>>(shipmentDetails);
+			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
+			List<ProcessBill> bills= response.getBody();
+			return bills;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<ProcessBill> getUnitBillByShipmentDetailsForInventory(List<ShipmentDetail> shipmentDetails) {
+		try {
+			String url = Global.getApiUrl() + "/unit-bill/list/receive-cont";
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity httpEntity = new HttpEntity<List<ShipmentDetail>>(shipmentDetails);
+			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
+			List<ProcessBill> bills= response.getBody();
+			return bills;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<ProcessBill> getUnitBillByShipmentDetailsForReceiveSSR(List<ShipmentDetail> shipmentDetails) {
+		try {
+			String url = Global.getApiUrl() + "/unit-bill/list/receive-cont/ssr";
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity httpEntity = new HttpEntity<List<ShipmentDetail>>(shipmentDetails);
+			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
+			List<ProcessBill> bills= response.getBody();
+			return bills;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<ProcessBill> getUnitBillByShipmentDetailsForSendSSR(List<ShipmentDetail> shipmentDetails) {
+		try {
+			String url = Global.getApiUrl() + "/unit-bill/list/send-cont/ssr";
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity httpEntity = new HttpEntity<List<ShipmentDetail>>(shipmentDetails);
+			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
+			List<ProcessBill> bills= response.getBody();
+			return bills;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
 }

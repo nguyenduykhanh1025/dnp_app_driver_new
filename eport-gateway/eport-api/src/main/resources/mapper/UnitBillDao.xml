@@ -12,4 +12,104 @@
 		FROM TB_INVOICE_UNIT
 		WHERE INV_NO = #{referenceNo}
 	</select>
+	<select id="getUnitBillByShipmentDetailsForReserve" parameterType="vn.com.irtech.api.entity.ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.UnitBillEntity">
+		SELECT 
+		    INV_NO AS REFERENCE_NO,
+		    NET_AMT AS EXCHANGE_FEE,
+		    VAT_RATE AS VAT_RATE,
+		    AMT AS VAT_AFTER_FEE,
+		    CNTR_NO AS CONTAINER_NO,
+		    SZTP2 AS SZTP
+		FROM TB_INVOICE_UNIT
+		WHERE ORDER_NO = (SELECT JOB_ODR_NO FROM TB_RESERVE 
+				<where>
+					<foreach item="shipmentDetailEntity" collection="list">
+					OR (
+						<if test="shipmentDetailEntity.containerNo != null  and shipmentDetailEntity.containerNo != ''"> CNTR_NO = #{shipmentDetailEntity.containerNo}</if>
+						<if test="shipmentDetailEntity.blNo != null  and shipmentDetailEntity.blNo != ''"> AND BL_NO = #{shipmentDetailEntity.blNo}</if>
+						<if test="shipmentDetailEntity.bookingNo != null  and shipmentDetailEntity.bookingNo != ''"> AND BOOKING_NO = #{shipmentDetailEntity.bookingNo}</if>
+						<if test="shipmentDetailEntity.vslNm != null  and shipmentDetailEntity.vslNm != ''"> AND VSL_CD = #{shipmentDetailEntity.vslNm}</if>
+						<if test="shipmentDetailEntity.voyNo != null  and shipmentDetailEntity.voyNo != ''"> AND CALL_SEQ = #{shipmentDetailEntity.voyNo}</if>
+						<if test="shipmentDetailEntity.fe != null  and shipmentDetailEntity.fe != ''"> AND FE = #{shipmentDetailEntity.fe}</if>
+						<if test="shipmentDetailEntity.opeCode != null  and shipmentDetailEntity.opeCode != ''"> AND PTNR_CODE = #{shipmentDetailEntity.opeCode}</if>
+					)
+			        </foreach>				
+				</where> 
+	        GROUP BY JOB_ODR_NO)
+	</select>
+	<select id="getUnitBillByShipmentDetailsForInventory" parameterType="vn.com.irtech.api.entity.ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.UnitBillEntity">
+		SELECT 
+		    INV_NO AS REFERENCE_NO,
+		    NET_AMT AS EXCHANGE_FEE,
+		    VAT_RATE AS VAT_RATE,
+		    AMT AS VAT_AFTER_FEE,
+		    CNTR_NO AS CONTAINER_NO,
+		    SZTP2 AS SZTP
+		FROM TB_INVOICE_UNIT
+		WHERE ORDER_NO = (SELECT JOB_ODR_NO2 FROM TB_INVENTORY 
+				<where>
+					<foreach item="shipmentDetailEntity" collection="list">
+					OR (
+						<if test="shipmentDetailEntity.containerNo != null  and shipmentDetailEntity.containerNo != ''"> CNTR_NO = #{shipmentDetailEntity.containerNo}</if>
+						<if test="shipmentDetailEntity.blNo != null  and shipmentDetailEntity.blNo != ''"> AND BL_NO = #{shipmentDetailEntity.blNo}</if>
+						<if test="shipmentDetailEntity.bookingNo != null  and shipmentDetailEntity.bookingNo != ''"> AND BOOKING_NO = #{shipmentDetailEntity.bookingNo}</if>
+						<if test="shipmentDetailEntity.vslNm != null  and shipmentDetailEntity.vslNm != ''"> AND VSL_CD = #{shipmentDetailEntity.vslNm}</if>
+						<if test="shipmentDetailEntity.voyNo != null  and shipmentDetailEntity.voyNo != ''"> AND CALL_SEQ = #{shipmentDetailEntity.voyNo}</if>
+						<if test="shipmentDetailEntity.fe != null  and shipmentDetailEntity.fe != ''"> AND FE = #{shipmentDetailEntity.fe}</if>
+						<if test="shipmentDetailEntity.opeCode != null  and shipmentDetailEntity.opeCode != ''"> AND PTNR_CODE = #{shipmentDetailEntity.opeCode}</if>
+					)
+			        </foreach>				
+				</where> 
+	        GROUP BY JOB_ODR_NO2)
+	</select>
+	<select id="getUnitBillByShipmentDetailsForReceiveSSR" parameterType="vn.com.irtech.api.entity.ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.UnitBillEntity">
+		SELECT 
+		    INV_NO AS REFERENCE_NO,
+		    NET_AMT AS EXCHANGE_FEE,
+		    VAT_RATE AS VAT_RATE,
+		    AMT AS VAT_AFTER_FEE,
+		    CNTR_NO AS CONTAINER_NO,
+		    SZTP2 AS SZTP
+		FROM TB_INVOICE_UNIT
+		WHERE ORDER_NO = (SELECT JOB_ODR_NO2 FROM TB_SSR 
+				<where>
+					<foreach item="shipmentDetailEntity" collection="list">
+					OR (
+						<if test="shipmentDetailEntity.containerNo != null  and shipmentDetailEntity.containerNo != ''"> CNTR_NO = #{shipmentDetailEntity.containerNo}</if>
+						<if test="shipmentDetailEntity.blNo != null  and shipmentDetailEntity.blNo != ''"> AND BL_NO = #{shipmentDetailEntity.blNo}</if>
+						<if test="shipmentDetailEntity.bookingNo != null  and shipmentDetailEntity.bookingNo != ''"> AND BOOKING_NO = #{shipmentDetailEntity.bookingNo}</if>
+						<if test="shipmentDetailEntity.vslNm != null  and shipmentDetailEntity.vslNm != ''"> AND VSL_CD = #{shipmentDetailEntity.vslNm}</if>
+						<if test="shipmentDetailEntity.voyNo != null  and shipmentDetailEntity.voyNo != ''"> AND CALL_SEQ = #{shipmentDetailEntity.voyNo}</if>
+						<if test="shipmentDetailEntity.fe != null  and shipmentDetailEntity.fe != ''"> AND FE = #{shipmentDetailEntity.fe}</if>
+						<if test="shipmentDetailEntity.opeCode != null  and shipmentDetailEntity.opeCode != ''"> AND PTNR_CODE = #{shipmentDetailEntity.opeCode}</if>
+					)
+			        </foreach>				
+				</where> 
+	        GROUP BY JOB_ODR_NO2)
+	</select>
+	<select id="getUnitBillByShipmentDetailsForSendSSR" parameterType="vn.com.irtech.api.entity.ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.UnitBillEntity">
+		SELECT 
+		    INV_NO AS REFERENCE_NO,
+		    NET_AMT AS EXCHANGE_FEE,
+		    VAT_RATE AS VAT_RATE,
+		    AMT AS VAT_AFTER_FEE,
+		    CNTR_NO AS CONTAINER_NO,
+		    SZTP2 AS SZTP
+		FROM TB_INVOICE_UNIT
+		WHERE ORDER_NO = (SELECT JOB_ODR_NO FROM TB_SSR 
+				<where>
+					<foreach item="shipmentDetailEntity" collection="list">
+					OR (
+						<if test="shipmentDetailEntity.containerNo != null  and shipmentDetailEntity.containerNo != ''"> CNTR_NO = #{shipmentDetailEntity.containerNo}</if>
+						<if test="shipmentDetailEntity.blNo != null  and shipmentDetailEntity.blNo != ''"> AND BL_NO = #{shipmentDetailEntity.blNo}</if>
+						<if test="shipmentDetailEntity.bookingNo != null  and shipmentDetailEntity.bookingNo != ''"> AND BOOKING_NO = #{shipmentDetailEntity.bookingNo}</if>
+						<if test="shipmentDetailEntity.vslNm != null  and shipmentDetailEntity.vslNm != ''"> AND VSL_CD = #{shipmentDetailEntity.vslNm}</if>
+						<if test="shipmentDetailEntity.voyNo != null  and shipmentDetailEntity.voyNo != ''"> AND CALL_SEQ = #{shipmentDetailEntity.voyNo}</if>
+						<if test="shipmentDetailEntity.fe != null  and shipmentDetailEntity.fe != ''"> AND FE = #{shipmentDetailEntity.fe}</if>
+						<if test="shipmentDetailEntity.opeCode != null  and shipmentDetailEntity.opeCode != ''"> AND PTNR_CODE = #{shipmentDetailEntity.opeCode}</if>
+					)
+			        </foreach>				
+				</where> 
+	        GROUP BY JOB_ODR_NO)
+	</select>
 </mapper>
