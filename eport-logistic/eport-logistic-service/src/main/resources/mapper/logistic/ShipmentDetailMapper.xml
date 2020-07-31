@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="containerNo"    column="container_no"    />
         <result property="containerStatus"    column="container_status"    />
         <result property="sztp"    column="sztp"    />
+        <result property="temperature"    column="temperature"    />
         <result property="fe"    column="fe"    />
         <result property="bookingNo"    column="booking_no"    />
         <result property="blNo"    column="bl_no"    />
@@ -54,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
-        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name, vsl_nm, voy_no, ope_code, carrier_name, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
+        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name, vsl_nm, voy_no, ope_code, carrier_name, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -66,6 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
             <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
             <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="temperature != null "> and temperature = #{temperature}</if>
             <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
             <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
@@ -108,6 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
             <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
             <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="temperature != null "> and temperature = #{temperature}</if>
             <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
             <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
@@ -143,7 +146,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     <select id="getShipmentDetailList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
         select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, 
-        	container_status, sztp, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name,
+        	container_status, sztp, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name,
         	vsl_nm || ': '|| vsl_name as vsl_nm,
         	voy_no,
         	ope_code || ': ' || carrier_name as ope_code,
@@ -159,6 +162,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
             <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
             <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="temperature != null "> and temperature = #{temperature}</if>
             <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
             <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
@@ -211,6 +215,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNo != null  and containerNo != ''">container_no,</if>
             <if test="containerStatus != null  and containerStatus != ''">container_status,</if>
             <if test="sztp != null  and sztp != ''">sztp,</if>
+            <if test="temperature != null ">temperature,</if>
             <if test="fe != null  and fe != ''">fe,</if>
             <if test="bookingNo != null  and bookingNo != ''">booking_no,</if>
             <if test="blNo != null  and blNo != ''">bl_no,</if>
@@ -254,6 +259,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNo != null  and containerNo != ''">#{containerNo},</if>
             <if test="containerStatus != null  and containerStatus != ''">#{containerStatus},</if>
             <if test="sztp != null  and sztp != ''">#{sztp},</if>
+            <if test="temperature != null ">#{temperature},</if>
             <if test="fe != null  and fe != ''">#{fe},</if>
             <if test="bookingNo != null  and bookingNo != ''">#{bookingNo},</if>
             <if test="blNo != null  and blNo != ''">#{blNo},</if>
@@ -300,6 +306,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNo != null  and containerNo != ''">container_no = #{containerNo},</if>
             <if test="containerStatus != null  and containerStatus != ''">container_status = #{containerStatus},</if>
             <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
+            <if test="temperature != null ">temperature = #{temperature},</if>
             <if test="fe != null  and fe != ''">fe = #{fe},</if>
             <if test="bookingNo != null  and bookingNo != ''">booking_no = #{bookingNo},</if>
             <if test="blNo != null  and blNo != ''">bl_no = #{blNo},</if>
@@ -424,6 +431,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         container_no as containerNo,
         container_status as containerNo,
         sztp,
+        temperature,
         fe,
         booking_no as bookingNo,
         bl_no as blNo,
@@ -469,6 +477,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
             <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
             <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="temperature != null "> and temperature = #{temperature}</if>
             <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
             <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
             <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
@@ -503,7 +512,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectContainerStatusList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
-        select s.bl_no, s.booking_no, s.sztp, s.vsl_nm, s.voy_no, s.container_no, s.do_status, s.fe, s.payment_status, p.pay_type as pay_type, p.service_type as service_type,
+        select s.bl_no, s.booking_no, s.sztp, s.temperature, s.vsl_nm, s.voy_no, s.container_no, s.do_status, s.fe, s.payment_status, p.pay_type as pay_type, p.service_type as service_type,
         count(a.shipment_detail_id) as assign_number
         from shipment_detail s
         left join process_order p on s.process_order_id = p.id

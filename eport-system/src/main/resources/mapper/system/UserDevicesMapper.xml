@@ -90,4 +90,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <delete id="deleteUserDevicesByUserToken" parameterType="String">
         delete from user_devices where user_token = #{token}
     </delete>
+
 </mapper>

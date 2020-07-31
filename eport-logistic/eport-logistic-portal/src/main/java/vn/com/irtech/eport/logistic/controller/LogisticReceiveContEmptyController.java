@@ -235,6 +235,14 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			shipmentDetail.setShipmentId(shipmentId);
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			if (shipmentDetails != null) {
+				for(ShipmentDetail i : shipmentDetails) {
+					if(! i.getCarrierName().equals(null)) {
+						i.setOpeCode(i.getOpeCode() + ": " + i.getCarrierName());
+					}
+					if(! i.getVslName().equals(null)) {
+						i.setVslNm(i.getVslNm() + ": " + i.getVslName());
+					}
+				}
 				ajaxResult.put("shipmentDetails", shipmentDetails);
 			} else {
 				ajaxResult = AjaxResult.error();
@@ -311,6 +319,11 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
 	public AjaxResult verifyOtp(@PathVariable("otp") String otp, @PathVariable("shipmentDetailIds") String shipmentDetailIds, boolean creditFlag) {
+		try {
+			Long.parseLong(otp);
+		} catch (Exception e) {
+			return error("Mã OTP nhập vào không hợp lệ!");
+		}
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();

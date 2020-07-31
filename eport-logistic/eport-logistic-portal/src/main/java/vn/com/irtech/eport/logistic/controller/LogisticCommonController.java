@@ -37,6 +37,7 @@ import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.PaymentHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
@@ -148,7 +149,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		 } catch (IOException ex) {
 		 	// process the exception
 		 }
-		return AjaxResult.success("response.toString()");
+		return AjaxResult.success();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -282,6 +283,12 @@ public class LogisticCommonController extends LogisticBaseController {
 					for (ShipmentDetail shipmentDetail : shipmentDetails) {
 						shipmentDetail.setPaymentStatus("Y");
 						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+						if (shipmentDetail.getCustomStatus() != null && "N".equals(shipmentDetail.getCustomStatus()) && 
+						shipmentDetail.getDischargePort() != null && shipmentDetail.getDischargePort().length() > 2 && 
+						"VN".equals(shipmentDetail.getLoadingPort().substring(0, 2))) {
+							shipmentDetail.setCustomStatus("R");
+							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+						}
 						shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					}
 
@@ -306,6 +313,10 @@ public class LogisticCommonController extends LogisticBaseController {
 		AjaxResult ajaxResult = success();
 		List<String> listPOD = new ArrayList<String>();
 		if(shipmentDetail != null){
+			String year = catosApiService.getYearByVslCodeAndVoyNo(shipmentDetail.getVslNm(), shipmentDetail.getVoyNo());
+			if(year != null) {
+				shipmentDetail.setYear(year);
+			}
 			listPOD = catosApiService.getPODList(shipmentDetail);
 			ajaxResult.put("dischargePorts", listPOD);
 			return ajaxResult;
@@ -434,6 +445,18 @@ public class LogisticCommonController extends LogisticBaseController {
 			mmap.put("result", "SUCCESS");
 		}
 		return PREFIX + "/napas/resultForm";
+	}
+	
+	@GetMapping("/ope-code/{opeCode}/vessel-code/list")
+	@ResponseBody
+	public AjaxResult getVesselBerthPlanByOpeCode(@PathVariable String opeCode) {
+		AjaxResult ajaxResult = success();
+		List<String> vesselList = catosApiService.selectVesselCodeBerthPlan(opeCode);
+		if(vesselList.size() > 0) {
+			ajaxResult.put("vessels", vesselList);
+			return ajaxResult;
+		}
+		return error();
 	}
 	
 }

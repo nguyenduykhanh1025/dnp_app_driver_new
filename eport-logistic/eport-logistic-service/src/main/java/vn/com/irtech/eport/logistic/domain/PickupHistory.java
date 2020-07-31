@@ -47,6 +47,7 @@ public class PickupHistory extends BaseEntity {
 
 	/** Container no */
 	@Excel(name = "Container no")
+	@NotEmpty
 	private String containerNo;
 
 	/** Truck no */
@@ -136,6 +137,10 @@ public class PickupHistory extends BaseEntity {
 	private String driverPhoneNumber;
 
 	private String logisticGroupName;
+	
+	private Double x;
+	
+	private Double y;
 
 	public void setId(Long id) {
 		this.id = id;
@@ -423,6 +428,22 @@ public class PickupHistory extends BaseEntity {
 
 	public void setPlanningDate(Date planningDate) {
 		this.planningDate = planningDate;
+	}
+	
+	public void setX(Double x) {
+		this.x = x;
+	}
+	
+	public Double getX() {
+		return x;
+	}
+	
+	public void setY(Double y) {
+		this.y = y;
+	}
+	
+	public Double getY() {
+		return y;
 	}
 
 	@Override

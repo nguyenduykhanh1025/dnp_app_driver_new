@@ -93,4 +93,20 @@ public interface PickupHistoryMapper
     public List<Pickup> selectPickupListByDriverId(Long driverId);
 
     public PickupHistoryDetail selectPickupHistoryDetailById(@Param("driverId") Long driverId, @Param("pickupId") Long pickupId);
+
+    /**
+     * Check pickup history exists
+     * 
+     * @param shipmentId
+     * @param containerNo
+     * @return  int
+     */
+    public int checkPickupHistoryExists(@Param("shipmentId") Long shipmentId, @Param("containerNo") String containerNo);
+
+      /**
+     * Select Delievering Driver Info
+     * 
+     * @return PickupHistory
+     */
+    public List<PickupHistory> selectDeliveringDriverInfo(PickupHistory pickupHistory);
 }

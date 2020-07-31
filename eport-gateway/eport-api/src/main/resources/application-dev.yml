@@ -3,7 +3,7 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: oracle.jdbc.OracleDriver
-      url: jdbc:oracle:thin:@117.3.52.70:41521/CATOS_TEST
+      url: jdbc:oracle:thin:@192.168.0.29:1521/CATOS_TEST
       username: DNP_UAT
       password: SUCCESS
       initial-size: 10

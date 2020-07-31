@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.aspectj.weaver.loadtime.Aj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -290,6 +291,11 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
 	public AjaxResult verifyOtp(@PathVariable String otp, @PathVariable String shipmentDetailIds, boolean creditFlag) {
+		try {
+			Long.parseLong(otp);
+		} catch (Exception e) {
+			return error("Mã OTP nhập vào không hợp lệ!");
+		}
 		OtpCode otpCode = new OtpCode();
 		otpCode.setTransactionId(shipmentDetailIds);
 		Date now = new Date();
@@ -367,5 +373,18 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			}
 		}
 		return error();
+	}
+	
+	@GetMapping("/berthplan/ope-code/list")
+	@ResponseBody
+	public AjaxResult getOpeCodeList() {
+		AjaxResult ajaxResult = success();
+		List<String> opeCodeList = catosApiService.selectOpeCodeListInBerthPlan();
+		if(opeCodeList.size() > 0 ) {
+			ajaxResult.put("opeCodeList", opeCodeList);
+			return ajaxResult;
+		}
+		return error();
+		
 	}
 }

@@ -87,8 +87,31 @@ public interface IPickupHistoryService
      */
     public List<Pickup> selectPickupListByDriverId(Long driverId);
 
-    public Boolean checkPossiblePickup(@Param("driverId") Long driverId, @Param("serviceType") Integer serviceType);
-
     public PickupHistoryDetail selectPickupHistoryDetailById(@Param("driverId") Long driverId, @Param("pickupId") Long pickupId);
+
+    /**
+     * Check pickup history exists
+     * 
+     * @param shipmentId
+     * @param containerNo
+     * @return  int
+     */
+    public int checkPickupHistoryExists(Long shipmentId, String containerNo);
+
+    /**
+     * Check possible pickup
+     * 
+     * @param driverId
+     * @param serviceType
+     * @return Boolean
+     */
+    public Boolean checkPossiblePickup(Long driverId, Integer serviceType);
+
+    /**
+     * Select Delievering Driver Info
+     * 
+     * @return PickupHistory
+     */
+    public List<PickupHistory> selectDeliveringDriverInfo(PickupHistory pickupHistory);
 
 }

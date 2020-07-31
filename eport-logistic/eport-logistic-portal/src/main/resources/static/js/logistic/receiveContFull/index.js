@@ -1,5 +1,5 @@
 var prefix = ctx + "logistic/receive-cont-full";
-var interval, currentPercent;
+var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0, isChange;
 var contList = [], orders = [], processOrderIds;
@@ -870,6 +870,11 @@ function reloadShipmentDetail() {
   for (let i = 0; i < checkList.length; i++) {
     $('#check' + i).prop('checked', false);
   }
+  $("#deleteBtn").prop("disabled", true);
+  $("#customBtn").prop("disabled", true);
+  $("#verifyBtn").prop("disabled", true);
+  $("#payBtn").prop("disabled", true);
+  $("#exportBillBtn").prop("disabled", true);
   setLayoutRegisterStatus();
   loadShipmentDetail(shipmentSelected.id);
 }
@@ -1160,26 +1165,27 @@ function save(isSendEmpty) {
 
 // DELETE SHIPMENT DETAIL
 function deleteShipmentDetail() {
-  getDataSelectedFromTable(true, false);
-  if (shipmentDetails.length > 0) {
-    $.modal.loading("Đang xử lý...");
-    $.ajax({
-      url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
-      method: "delete",
-      success: function (result) {
-        if (result.code == 0) {
-          $.modal.alertSuccess(result.msg);
-          reloadShipmentDetail();
-        } else {
-          $.modal.alertError(result.msg);
-        }
-        $.modal.closeLoading();
-      },
-      error: function (result) {
-        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-        $.modal.closeLoading();
-      },
-    });
+  if (getDataSelectedFromTable(true, false)) {
+    if (shipmentDetails.length > 0) {
+      $.modal.loading("Đang xử lý...");
+      $.ajax({
+        url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
+        method: "delete",
+        success: function (result) {
+          if (result.code == 0) {
+            $.modal.alertSuccess(result.msg);
+            reloadShipmentDetail();
+          } else {
+            $.modal.alertError(result.msg);
+          }
+          $.modal.closeLoading();
+        },
+        error: function (result) {
+          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+          $.modal.closeLoading();
+        },
+      });
+    }
   }
 }
 
@@ -1305,7 +1311,7 @@ function finishVerifyForm(result) {
     // CONNECT WEB SOCKET
     connectToWebsocketServer();
     showProgress("Đang xử lý ...");
-    setTimeout(() => {
+    timeout = setTimeout(() => {
       setTimeout(() => {
         hideProgress();
         reloadShipmentDetail();
@@ -1341,6 +1347,8 @@ function onMessageReceived(payload) {
   let message = JSON.parse(payload.body);
   if (message.code != 0) {
 
+    clearTimeout(timeout);
+
     setProgressPercent(currentPercent=100);
     setTimeout(() => {
       hideProgress();
@@ -1358,6 +1366,8 @@ function onMessageReceived(payload) {
   } else {
     orderNumber--;
     if (orderNumber == 0) {
+
+      clearTimeout(timeout);
 
       setProgressPercent(currentPercent=100);
       setTimeout(() => {

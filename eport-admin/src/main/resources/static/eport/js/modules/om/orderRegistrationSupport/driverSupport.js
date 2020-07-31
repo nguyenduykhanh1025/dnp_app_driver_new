@@ -1,4 +1,4 @@
-const PREFIX = ctx + "om/order/support";
+const PREFIX = ctx + "om/support";
 const DOCUMENT_HEIGHT = $(document).height();
 
 $(document).ready(function () {
