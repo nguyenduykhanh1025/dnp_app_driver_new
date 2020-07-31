@@ -194,6 +194,15 @@
 		       AND t.atc IS NULL
 		GROUP BY VSL_CD
 	</select>
+	<select id="selectVesselVoyageBerthPlan" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
+		SELECT t.vsl_cd as vslNm,
+		       t.call_seq as voyNo,
+		       t.call_year as year,
+		       t.in_voy as voyCarrier,
+		       (select vsl_nm from tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
+		 FROM tb_berthplan t
+		 where t.ptnr_code = #{opeCode}
+	</select>
 	<select id="getYearByVslCodeAndVoyNo" resultType="String">
 		SELECT CALL_YEAR
 		  FROM tb_berthplan t

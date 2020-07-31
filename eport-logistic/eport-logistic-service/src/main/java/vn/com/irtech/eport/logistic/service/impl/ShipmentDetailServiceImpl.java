@@ -778,4 +778,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		}
 		return null;
 	}
+
+	@Override
+	public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.getShipmentDetailListForSendFReceiveE(shipmentDetail);
+	}  
+    
 }
