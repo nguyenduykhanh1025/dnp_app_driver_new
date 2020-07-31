@@ -386,7 +386,6 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
-        value = value.split(':')[0];
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
@@ -444,21 +443,21 @@ function configHandson() {
                     return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
                 case 4:
                     return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
-                case 4:
-                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
                 case 5:
-                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
+                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
                 case 6:
-                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
+                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
                 case 7:
-                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
                 case 8:
-                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
                 case 9:
+                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                case 10:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 100, 150, 120, 100, 100, 100, 150, 200],
+        colWidths: [50, 100, 100, 100, 150, 120, 150, 100, 200, 150, 200],
         filter: "true",
         columns: [
             {
@@ -543,15 +542,15 @@ function onChange(changes, source) {
     }
     changes.forEach(function (change) {
         if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-            hot.setDataAtCell(change[0], 6, '');//voyNo reset
+            hot.setDataAtCell(change[0], 7, '');//voyNo reset
             $.ajax({
-                url: "/logistic/vessel/" + change[3] + "/voyages",
+                url: "/logistic/vessel/" + change[3].split(": ")[0] + "/voyages",
                 method: "GET",
                 success: function (data) {
                     if (data.code == 0) {
                         hot.updateSettings({
                             cells: function (row, col, prop) {
-                                if (row == change[0] && col == 6) {
+                                if (row == change[0] && col == 7) {
                                     let cellProperties = {};
                                     cellProperties.source = data.voyages;
                                     return cellProperties;
@@ -562,12 +561,12 @@ function onChange(changes, source) {
                 }
             });
         } else if (change[1] == "voyNo" && change[3] != null && change[3] != '') {
-            let vslNm = hot.getDataAtCell(change[0], 5);
+            let vslNm = hot.getDataAtCell(change[0], 6);
             if (vslNm) {
                 let shipmentDetail = new Object();
-                shipmentDetail.vslNm = vslNm;
+                shipmentDetail.vslNm = vslNm.split(": ")[0];
                 shipmentDetail.voyNo = change[3];
-                hot.setDataAtCell(change[0], 8, ''); // dischargePort reset
+                hot.setDataAtCell(change[0], 9, ''); // dischargePort reset
                 $.ajax({
                     url: "/logistic/pods",
                     method: "POST",
@@ -577,7 +576,7 @@ function onChange(changes, source) {
                         if (data.code == 0) {
                             hot.updateSettings({
                                 cells: function (row, col, prop) {
-                                    if (row == change[0] && col == 8) {
+                                    if (row == change[0] && col == 9) {
                                         let cellProperties = {};
                                         cellProperties.source = data.dischargePorts;
                                         return cellProperties;
@@ -882,14 +881,18 @@ function getDataFromTable(isValidate) {
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
-        shipmentDetail.sztp = object["sztp"].split(":")[0];
-        shipmentDetail.opeCode = object["opeCode"];
+        shipmentDetail.sztp = object["sztp"];
+        let carrier = object["opeCode"].split(": ");
+        shipmentDetail.opeCode = carrier[0];
+        shipmentDetail.carrierName = carrier[1];
         shipmentDetail.expiredDem = expiredDem.getTime();
         shipmentDetail.consignee = object["consignee"];
         shipmentDetail.dischargePort = object["dischargePort"].split(":")[0];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.voyNo = object["voyNo"];
-        shipmentDetail.vslNm = object["vslNm"];
+        let vsl = object["vslNm"].split(": ");
+        shipmentDetail.vslNm = vsl[0];
+        shipmentDetail.vslName = vsl[1];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];

@@ -235,6 +235,14 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			shipmentDetail.setShipmentId(shipmentId);
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			if (shipmentDetails != null) {
+				for(ShipmentDetail i : shipmentDetails) {
+					if(! i.getCarrierName().equals(null)) {
+						i.setOpeCode(i.getOpeCode() + ": " + i.getCarrierName());
+					}
+					if(! i.getVslName().equals(null)) {
+						i.setVslNm(i.getVslNm() + ": " + i.getVslName());
+					}
+				}
 				ajaxResult.put("shipmentDetails", shipmentDetails);
 			} else {
 				ajaxResult = AjaxResult.error();
