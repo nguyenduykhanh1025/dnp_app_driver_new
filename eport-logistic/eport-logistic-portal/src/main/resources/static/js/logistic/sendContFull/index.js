@@ -1,4 +1,5 @@
 var prefix = ctx + "logistic/send-cont-full";
+var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
 var contList = [];
@@ -419,13 +420,14 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function temperatureRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'temperature' + row).addClass("htMiddle");
-    $(td).html(value);
     if (value != null && value != '') {
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
-    }
+    } else if (value) {
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    }   
     return td;
 }
 
@@ -535,6 +537,7 @@ function configHandson() {
                 data: "temperature",
                 type: "numeric",
                 strict: true,
+                readonly: true,
                 renderer: temperatureRenderer
             },
             {
@@ -593,6 +596,8 @@ function onChange(changes, source) {
                     }
                 }
             });
+
+            // Trigger when vessel change, get list voyage by vessel
         } else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
             hot.setDataAtCell(change[0], 6, '');//voyNo reset
             $.ajax({
@@ -612,6 +617,8 @@ function onChange(changes, source) {
                     }
                 }
             });
+
+            // Trigger when voy no change, get list discharge port by vessel, voy no
         } else if (change[1] == "voyNo" && change[3] != null && change[3] != '') {
             let vslNm = hot.getDataAtCell(change[0], 5);
             if (vslNm) {
@@ -635,6 +642,31 @@ function onChange(changes, source) {
                                     }
                                 }
                             });
+                        }
+                    }
+                });
+            }
+
+            // Trigger when sztp change, make temperature is writable
+        } else if (change[1] == "sztp") {
+            if (change[3] && change[3].includes("R")) {
+                hot.updateSettings({
+                    cells: function (row, col, prop) {
+                        if (row == change[0] && col == 8) {
+                            let cellProperties = {};
+                            cellProperties.readOnly = false;
+                            return cellProperties;
+                        }
+                    }
+                });
+            } else {
+                hot.updateSettings({
+                    cells: function (row, col, prop) {
+                        if (row == change[0] && col == 8) {
+                            let cellProperties = {};
+                            cellProperties.readOnly = true;
+                            $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
+                            return cellProperties;
                         }
                     }
                 });
@@ -776,6 +808,11 @@ function reloadShipmentDetail() {
     for (let i=0; i<checkList.length; i++) {
         $('#check'+i).prop('checked', false);
     }
+    $("#deleteBtn").prop("disabled", true);
+    $("#verifyBtn").prop("disabled", true);
+    $("#payBtn").prop("disabled", true);
+    $("#customBtn").prop("disabled", true);
+    $("#exportBillBtn").prop("disabled", true);
     setLayoutRegisterStatus();
     loadShipmentDetail(shipmentSelected.id);
 }
@@ -901,10 +938,10 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hãng tàu không được khác nhau!");
                 errorFlg = true;
                 return false;
-//            } else if (vessel != object["vslNm"]) {
-//                $.modal.alertError("Tàu không được khác nhau!");
-//                errorFlg = true;
-//                return false;
+           } else if (vessel != object["vslNm"]) {
+               $.modal.alertError("Tàu không được khác nhau!");
+               errorFlg = true;
+               return false;
             } else if (voyage != object["voyNo"]) {
                 $.modal.alertError("Số chuyến không được khác nhau!");
                 errorFlg = true;
@@ -917,7 +954,7 @@ function getDataFromTable(isValidate) {
         }
         consignee = object["consignee"];
         opecode = object["opeCode"];
-//        vessel = object["vslNm"];
+        vessel = object["vslNm"];
         voyage = object["voyNo"];
         pod = object["dischargePort"];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
@@ -933,7 +970,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.temperature = object["temperature"];
         shipmentDetail.consignee = object["consignee"];
         shipmentDetail.wgt = object["wgt"];
-        let vessel = object["vslNm"].split(": ");
+        vessel = object["vslNm"].split(": ");
         shipmentDetail.vslNm = vessel[0];
         shipmentDetail.vslName = vessel[1];
         shipmentDetail.voyNo = object["voyNo"];
@@ -1020,25 +1057,26 @@ function saveShipmentDetail() {
 
 // DELETE SHIPMENT DETAIL
 function deleteShipmentDetail() {
-    getDataSelectedFromTable(true);
-    $.modal.loading("Đang xử lý...");
-    $.ajax({
-        url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
-        method: "delete",
-        success: function (result) {
-            if (result.code == 0) {
-                $.modal.alertSuccess(result.msg);
-                reloadShipmentDetail();
-            } else {
-                $.modal.alertError(result.msg);
-            }
-            $.modal.closeLoading();
-        },
-        error: function (result) {
-            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-            $.modal.closeLoading();
-        },
-    });
+    if (getDataSelectedFromTable(true)) {
+        $.modal.loading("Đang xử lý...");
+        $.ajax({
+            url: prefix + "/shipment/" + shipmentSelected.id + "/shipment-detail/" + shipmentDetailIds,
+            method: "delete",
+            success: function (result) {
+                if (result.code == 0) {
+                    $.modal.alertSuccess(result.msg);
+                    reloadShipmentDetail();
+                } else {
+                    $.modal.alertError(result.msg);
+                }
+                $.modal.closeLoading();
+            },
+            error: function (result) {
+                $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+                $.modal.closeLoading();
+            },
+        });
+    }
 }
 
 // Handling logic
@@ -1155,7 +1193,7 @@ function finishVerifyForm(result) {
         connectToWebsocketServer();
 
         showProgress("Đang xử lý ...");
-        setTimeout(() => {
+        timeout = setTimeout(() => {
             setTimeout(() => {
                 hideProgress();
                 reloadShipmentDetail();
@@ -1189,6 +1227,7 @@ function onError(error) {
 }
 
 function onMessageReceived(payload) {
+    clearTimeout(timeout);
     setProgressPercent(currentPercent=100);
     setTimeout(() => {
         hideProgress();

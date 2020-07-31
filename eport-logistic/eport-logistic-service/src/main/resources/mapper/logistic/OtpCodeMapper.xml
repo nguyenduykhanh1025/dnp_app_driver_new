@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectSysOtpVo"/>
         <where>  
             <if test="optCode != null  and optCode != ''"> and opt_code = #{optCode}</if>
-            <if test="transactionId != null  and transactionId != ''"> and transaction_id = #{transactionId}</if>
+            <if test="transactionId != null  and transactionId != ''"> and DBMS_LOB.SUBSTR (transaction_id,4000,1) = #{transactionId}</if>
             <if test="otpType != null  and otpType != ''"> and otp_type = #{otpType}</if>
             <if test="phoneNumber != null  and phoneNumber != ''"> and phone_number = #{phoneNumber}</if>
             <if test="msgStatus != null  and msgStatus != ''"> and msg_status = #{msgStatus}</if>
@@ -76,7 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update sys_otp
         <trim prefix="SET" suffixOverrides=",">
             <if test="optCode != null  and optCode != ''">opt_code = #{optCode},</if>
-            <if test="transactionId != null  and transactionId != ''">transaction_id = #{transactionId},</if>
+            <if test="transactionId != null  and transactionId != ''">DBMS_LOB.SUBSTR (transaction_id,4000,1) = #{transactionId},</if>
             <if test="otpType != null  and otpType != ''">otp_type = #{otpType},</if>
             <if test="phoneNumber != null  and phoneNumber != ''">phone_number = #{phoneNumber},</if>
             <if test="msgStatus != null  and msgStatus != ''">msg_status = #{msgStatus},</if>
@@ -102,11 +102,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="verifyOtpCodeAvailable" parameterType="OtpCode" resultType="int">
         select count(*) from sys_otp
         where opt_code = #{optCode} 
-        and transaction_id = #{transactionId}
+        and DBMS_LOB.SUBSTR (transaction_id,4000,1) = #{transactionId}
         and (create_time = #{createTime} or create_time > #{createTime})
     </select>
     
     <delete id="deleteOtpCodeByShipmentDetailIds" parameterType="String">
-        delete from sys_otp where transaction_id = #{transactionId}
+        delete from sys_otp where DBMS_LOB.SUBSTR (transaction_id,4000,1) = #{transactionId}
     </delete>
 </mapper>
