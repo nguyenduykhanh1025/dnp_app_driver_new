@@ -40,7 +40,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
-    active: test
+    active: uat
   servlet:
     multipart:
       max-file-size:  10MB
@@ -81,9 +81,10 @@ shiro:
     captchaType: math
   cookie:
     domain: 
-    path: /
+    path: /admin
     httpOnly: true
     maxAge: 30
+    cipherKey: zSyK5Kp6PZAAjlT+eeNMlg==
   session:
     expireTime: 30
     dbSyncPeriod: 1
@@ -95,9 +96,9 @@ xss:
   enabled: true
   excludes: /system/notice/*
   urlPatterns: /system/*,/monitor/*,/tool/*
-  
+
 mqtt:
-  username: admin             
+  username: admin
   password: public 
   host-url: tcp://113.176.195.221:1883    
   #host-url: tcp://localhost:1883                # The address and port of your own server need to be changed 

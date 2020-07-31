@@ -11,11 +11,13 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -50,9 +52,10 @@ import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.reflect.ReflectUtils;
+import vn.com.irtech.eport.common.utils.spring.SpringUtils;
 
 /**
- * Excel相关处理
+ * Excel related processing
  * 
  * @author admin
  */
@@ -61,47 +64,47 @@ public class ExcelUtil<T>
     private static final Logger log = LoggerFactory.getLogger(ExcelUtil.class);
 
     /**
-     * Excel sheet最大行数，默认65536
+     * Maximum number of rows in Excel sheet, 65536 by default
      */
     public static final int sheetSize = 65536;
 
     /**
-     * 工作表名称
+     * Worksheet name
      */
     private String sheetName;
 
     /**
-     * 导出类型（EXPORT:导出数据；IMPORT：导入模板）
+     * Export type (EXPORT: export data; IMPORT: import template)
      */
     private Type type;
 
     /**
-     * 工作薄对象
+     * Workbook object
      */
     private Workbook wb;
 
     /**
-     * 工作表对象
+     * Worksheet object
      */
     private Sheet sheet;
 
     /**
-     * 样式列表
+     * Style list
      */
     private Map<String, CellStyle> styles;
 
     /**
-     * 导入导出数据列表
+     * Import and export data list
      */
     private List<T> list;
 
     /**
-     * 注解列表
+     * Annotation list
      */
     private List<Object[]> fields;
 
     /**
-     * 实体对象
+     * Entity object
      */
     public Class<T> clazz;
 
@@ -124,10 +127,10 @@ public class ExcelUtil<T>
     }
 
     /**
-     * 对excel表单默认第一个索引名转换成list
+     * The default first index name for excel forms is converted to list
      * 
-     * @param is 输入流
-     * @return 转换后集合
+     * @param is Input stream
+     * @return Collection after conversion
      */
     public List<T> importExcel(InputStream is) throws Exception
     {
@@ -135,11 +138,11 @@ public class ExcelUtil<T>
     }
 
     /**
-     * 对excel表单指定表格索引名转换成list
+     * Convert the index name of the specified table to the excel form into a list
      * 
-     * @param sheetName 表格索引名
-     * @param is 输入流
-     * @return 转换后集合
+     * @param sheetName Table index name
+     * @param is Input stream
+     * @return Collection after conversion
      */
     public List<T> importExcel(String sheetName, InputStream is) throws Exception
     {
@@ -149,12 +152,12 @@ public class ExcelUtil<T>
         Sheet sheet = null;
         if (StringUtils.isNotEmpty(sheetName))
         {
-            // 如果指定sheet名,则取指定sheet中的内容.
+            // If the sheet name is specified, the content in the specified sheet is taken.
             sheet = wb.getSheet(sheetName);
         }
         else
         {
-            // 如果传入的sheet名不存在则默认指向第1个sheet.
+            // If the passed sheet name does not exist, it will point to the first sheet by default.
             sheet = wb.getSheetAt(0);
         }
 
@@ -167,14 +170,14 @@ public class ExcelUtil<T>
 
         if (rows > 0)
         {
-            // 定义一个map用于存放excel列的序号和field.
+            // Define a map to store the serial number and field of the excel column.
             Map<String, Integer> cellMap = new HashMap<String, Integer>();
-            // 获取表头
+            // Get header
             Row heard = sheet.getRow(0);
             for (int i = 0; i < heard.getPhysicalNumberOfCells(); i++)
             {
                 Cell cell = heard.getCell(i);
-                if (StringUtils.isNotNull(cell != null))
+                if (StringUtils.isNotNull(cell))
                 {
                     String value = this.getCellValue(heard, i).toString();
                     cellMap.put(value, i);
@@ -184,9 +187,9 @@ public class ExcelUtil<T>
                     cellMap.put(null, i);
                 }
             }
-            // 有数据时才处理 得到类的所有field.
+            // Process when there is data to get all the fields of the class.
             Field[] allFields = clazz.getDeclaredFields();
-            // 定义一个map用于存放列的序号和field.
+            // Define a map to store the serial number and field of the column.
             Map<Integer, Field> fieldsMap = new HashMap<Integer, Field>();
             for (int col = 0; col < allFields.length; col++)
             {
@@ -276,7 +279,11 @@ public class ExcelUtil<T>
                         }
                         else if (StringUtils.isNotEmpty(attr.readConverterExp()))
                         {
-                            val = reverseByExp(String.valueOf(val), attr.readConverterExp());
+                            val = reverseByExp(Convert.toStr(val), attr.readConverterExp(), attr.separator());
+                        }
+                        else if (StringUtils.isNotEmpty(attr.dictType()))
+                        {
+                            val = reverseDictByExp(Convert.toStr(val), attr.dictType(), attr.separator());
                         }
                         ReflectUtils.invokeSetter(entity, propertyName, val);
                     }
@@ -535,13 +542,19 @@ public class ExcelUtil<T>
                 Object value = getTargetValue(vo, field, attr);
                 String dateFormat = attr.dateFormat();
                 String readConverterExp = attr.readConverterExp();
+                String separator = attr.separator();
+                String dictType = attr.dictType();
                 if (StringUtils.isNotEmpty(dateFormat) && StringUtils.isNotNull(value))
                 {
                     cell.setCellValue(DateUtils.parseDateToStr(dateFormat, (Date) value));
                 }
                 else if (StringUtils.isNotEmpty(readConverterExp) && StringUtils.isNotNull(value))
                 {
-                    cell.setCellValue(convertByExp(String.valueOf(value), readConverterExp));
+                    cell.setCellValue(convertByExp(Convert.toStr(value), readConverterExp, separator));
+                }
+                else if (StringUtils.isNotEmpty(dictType))
+                {
+                    cell.setCellValue(convertDictByExp(Convert.toStr(value), dictType, separator));
                 }
                 else
                 {
@@ -619,20 +632,36 @@ public class ExcelUtil<T>
      * 
      * @param propertyValue 参数值
      * @param converterExp 翻译注解
+     * @param separator 分隔符
      * @return 解析后值
      * @throws Exception
      */
-    public static String convertByExp(String propertyValue, String converterExp) throws Exception
+    public static String convertByExp(String propertyValue, String converterExp, String separator) throws Exception
     {
+        StringBuilder propertyString = new StringBuilder();
         try
         {
             String[] convertSource = converterExp.split(",");
             for (String item : convertSource)
             {
                 String[] itemArray = item.split("=");
-                if (itemArray[0].equals(propertyValue))
+                if (StringUtils.containsAny(separator, propertyValue))
                 {
-                    return itemArray[1];
+                    for (String value : propertyValue.split(separator))
+                    {
+                        if (itemArray[0].equals(value))
+                        {
+                            propertyString.append(itemArray[1] + separator);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (itemArray[0].equals(propertyValue))
+                    {
+                        return itemArray[1];
+                    }
                 }
             }
         }
@@ -640,7 +669,7 @@ public class ExcelUtil<T>
         {
             throw e;
         }
-        return propertyValue;
+        return StringUtils.stripEnd(propertyString.toString(), separator);
     }
 
     /**
@@ -648,28 +677,69 @@ public class ExcelUtil<T>
      * 
      * @param propertyValue 参数值
      * @param converterExp 翻译注解
+     * @param separator 分隔符
      * @return 解析后值
      * @throws Exception
      */
-    public static String reverseByExp(String propertyValue, String converterExp) throws Exception
+    public static String reverseByExp(String propertyValue, String converterExp, String separator) throws Exception
     {
-        try
+        StringBuilder propertyString = new StringBuilder();
+        String[] convertSource = converterExp.split(",");
+        for (String item : convertSource)
         {
-            String[] convertSource = converterExp.split(",");
-            for (String item : convertSource)
+            String[] itemArray = item.split("=");
+            if (StringUtils.containsAny(separator, propertyValue))
             {
-                String[] itemArray = item.split("=");
+                for (String value : propertyValue.split(separator))
+                {
+                    if (itemArray[1].equals(value))
+                    {
+                        propertyString.append(itemArray[0] + separator);
+                        break;
+                    }
+                }
+            }
+            else
+            {
                 if (itemArray[1].equals(propertyValue))
                 {
                     return itemArray[0];
                 }
             }
         }
-        catch (Exception e)
-        {
-            throw e;
-        }
-        return propertyValue;
+        return StringUtils.stripEnd(propertyString.toString(), separator);
+    }
+
+    /**
+     * 解析字典值
+     * 
+     * @param dictValue 字典值
+     * @param dictType 字典类型
+     * @param separator 分隔符
+     * @return 字典标签
+     */
+    public static String convertDictByExp(String dictValue, String dictType, String separator) throws Exception
+    {
+        Object bean = SpringUtils.getBean("dictUtils");
+        String methodName = "getDictLabel";
+        Method method = bean.getClass().getDeclaredMethod(methodName, String.class, String.class, String.class);
+        return Convert.toStr(method.invoke(bean, dictType, dictValue, separator));
+    }
+
+    /**
+     * 反向解析值字典值
+     * 
+     * @param dictLabel 字典标签
+     * @param dictType 字典类型
+     * @param separator 分隔符
+     * @return 字典值
+     */
+    public static String reverseDictByExp(String dictLabel, String dictType, String separator) throws Exception
+    {
+        Object bean = SpringUtils.getBean("dictUtils");
+        String methodName = "getDictValue";
+        Method method = bean.getClass().getDeclaredMethod(methodName, String.class, String.class, String.class);
+        return Convert.toStr(method.invoke(bean, dictType, dictLabel, separator));
     }
 
     /**
@@ -776,6 +846,7 @@ public class ExcelUtil<T>
                 }
             }
         }
+        this.fields = this.fields.stream().sorted(Comparator.comparing(objects -> ((Excel) objects[1]).sort())).collect(Collectors.toList());
     }
 
     /**
@@ -835,7 +906,7 @@ public class ExcelUtil<T>
         try
         {
             Cell cell = row.getCell(column);
-            if (cell != null)
+            if (StringUtils.isNotNull(cell))
             {
                 if (cell.getCellTypeEnum() == CellType.NUMERIC || cell.getCellTypeEnum() == CellType.FORMULA)
                 {

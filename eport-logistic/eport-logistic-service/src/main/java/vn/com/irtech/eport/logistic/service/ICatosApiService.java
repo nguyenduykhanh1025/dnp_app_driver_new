@@ -41,4 +41,6 @@ public interface ICatosApiService {
 	public String getYearByVslCodeAndVoyNo(String vslCode, String voyNo);
 	
 	public List<String> selectOpeCodeListInBerthPlan();
+	
+	public List<ShipmentDetail> selectVesselVoyageBerthPlan(String opeCode);
 }

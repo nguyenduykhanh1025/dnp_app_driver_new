@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -210,7 +211,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailListForSendFReceiveE(shipmentDetail);
 			if (shipmentDetails != null) {
 				ajaxResult.put("shipmentDetails", shipmentDetails);
 			} else {
@@ -386,5 +387,22 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		}
 		return error();
 		
+	}
+	
+	@GetMapping("/berthplan/ope-code/{opeCode}/vessel-voyage/list")
+	@ResponseBody
+	public AjaxResult getVesselVoyageList(@PathVariable String opeCode) {
+		AjaxResult ajaxResult = success();
+		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
+		if(berthplanList.size() > 0) {
+			List<String> vesselAndVoyages = new ArrayList<String>();
+			for(ShipmentDetail i : berthplanList) {
+				vesselAndVoyages.add(i.getVslAndVoy());
+			}
+			ajaxResult.put("berthplanList", berthplanList);
+			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+			return ajaxResult;
+		}
+		return error();
 	}
 }

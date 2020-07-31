@@ -101,4 +101,9 @@ public interface ShipmentDetailMapper
      */
     public Integer countNumberOfLegalCont(@Param("shipmentDetails") List<ShipmentDetail> shipmentDetails,@Param("logisticGroupId") Long logisticGroupId);
 
+    
+    /***
+     * getShipmentDetail for SendContFull and receiveContEmpty
+     */
+    public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail);
 }
