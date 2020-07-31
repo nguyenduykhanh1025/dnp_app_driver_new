@@ -212,40 +212,40 @@ public class EquipmentEdoAuditLogServiceImpl implements IEquipmentEdoAuditLogSer
             edoAuditLog.setFieldName("Expired Dem");
             EquipmentEdoAuditLog edoAuditLogCheck = selectEdoAuditLogByEdo(edoAuditLog);
             // check not default value
-            if(edoAuditLogCheck != null)
+            if(edoAuditLogCheck != null && !formatter.format(setTimeUpdatExpicedDem).toString().equals(edoAuditLogCheck.getNewValue()))
             {
                 edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+                edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
+                edoAuditLog.setNewValue(formatter.format(edo.getExpiredDem()).toString());
+                insertEdoAuditLogExpiredDem(edoAuditLog);
+                segNo += 1;
             }
-            edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
-            edoAuditLog.setNewValue(formatter.format(edo.getExpiredDem()).toString());
-            insertEdoAuditLogExpiredDem(edoAuditLog);
-            segNo += 1;
         }
         if(edo.getDetFreeTime() != null)
         {
             edoAuditLog.setFieldName("Det Free Time");
             EquipmentEdoAuditLog edoAuditLogCheck = selectEdoAuditLogByEdo(edoAuditLog);
             // check not default value
-            if(edoAuditLogCheck != null )
+            if(edoAuditLogCheck != null && !edoAuditLogCheck.getNewValue().equals(edo.getDetFreeTime().toString()))
             {
                 edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+                edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
+                edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
+                insertEdoAuditLogDetFreeTime(edoAuditLog);
+                segNo += 1;
             }
-            edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
-            edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
-            insertEdoAuditLogDetFreeTime(edoAuditLog);
-            segNo += 1;
         }
         if(edo.getEmptyContainerDepot() != null && !edo.getEmptyContainerDepot().equals(""))
         {
             edoAuditLog.setFieldName("Empty Container Depot");
             EquipmentEdoAuditLog edoAuditLogCheck = selectEdoAuditLogByEdo(edoAuditLog);
-            if(edoAuditLogCheck != null) 
+            if(edoAuditLogCheck != null && !edo.getEmptyContainerDepot().toString().equals(edoAuditLogCheck.getNewValue())) 
             {
                 edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
+                edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
+                edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
+                insertEdoAuditLogDetFreeTime(edoAuditLog);
             }
-            edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
-            edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
-            insertEdoAuditLogDetFreeTime(edoAuditLog);
         }
         return true;
     }
