@@ -187,6 +187,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </selectKey>
             insert into equipment_do
             <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null and id != 0">id,</if>
                 <if test="carrierId != null ">carrier_id,</if>
                 <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
                 <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
@@ -213,6 +214,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 create_time
             </trim>
             <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
                 <if test="carrierId != null ">#{carrierId},</if>
                 <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
                 <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>

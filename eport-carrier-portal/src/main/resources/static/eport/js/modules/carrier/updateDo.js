@@ -85,13 +85,6 @@ function loadTable() {
             correctFormat: true,
           },
           {
-            data: "newExpiredDem",
-            type: "date",
-            dateFormat: "DD/MM/YYYY",
-            correctFormat: true,
-            editor: false
-          },
-          {
             data: "emptyContainerDepot",
             type: "autocomplete",
             source: emptyDepotList,
@@ -133,7 +126,7 @@ function loadTable() {
         columnSorting: {
           indicator: true,
         },
-        colWidths: [70, 70, 80, 160, 70, 70, 140, 70, 80, 80, 80, 150, 0.1],
+        colWidths: [70, 70, 80, 160, 70, 140, 70, 80, 80, 80, 150, 0.1],
         manualColumnMove: true,
       })
       hot.validateCells()
