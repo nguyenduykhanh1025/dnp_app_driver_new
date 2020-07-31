@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
+import vn.com.irtech.eport.carrier.domain.EquipmentEdoAuditLog;
+import vn.com.irtech.eport.carrier.service.IEquipmentEdoAuditLogService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -41,6 +44,7 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
  */
 @Controller
 @RequestMapping("/carrier/do")
+@Transactional
 public class CarrierEquipmentDoController extends CarrierBaseController {
 	
     private final String prefix = "carrier/do";
@@ -53,6 +57,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 
 	@Autowired
 	private MailService mailService;
+
+	@Autowired
+	private IEquipmentEdoAuditLogService equipmentEdoAuditLogService;
 
 	@GetMapping()
 	public String EquipmentDo() {
@@ -234,6 +241,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			// Do the insert to DB
 			for(EquipmentDo edo : equipmentDos) {
 				equipmentDoService.insertEquipmentDo(edo);
+				equipmentEdoAuditLogService.addAuditLogFirst(edo);
 			}
 			// return toAjax(equipmentDoService.insertEquipmentDoList(doList));
 
@@ -359,6 +367,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			for(EquipmentDo edo : equipmentDos) {
 				if (edo.getId() != null) {
 					equipmentDoService.updateEquipmentDo(edo);
+					equipmentEdoAuditLogService.updateAuditLog(edo);
 				} else {
 					edo.setCarrierId(getUserId());
 					edo.setBillOfLading(billOfLading);
@@ -586,5 +595,20 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
   private boolean isContainerNumber(String input) {
 	  return VALID_CONTAINER_NO_REGEX.matcher(input).find();
   }
+
+  @GetMapping("/history/{id}")
+	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
+		map.put("edoId", id);
+		return prefix + "/history";
+	}
+
+	@GetMapping("/auditLog/{edoId}")
+	@ResponseBody
+	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EquipmentEdoAuditLog edoAuditLog)
+	{
+		edoAuditLog.setEdoId(edoId);
+		List<EquipmentEdoAuditLog> edoAuditLogsList = equipmentEdoAuditLogService.selectEquipmentEdoAuditLogList(edoAuditLog);
+		return getDataTable(edoAuditLogsList);
+	}
 
 }

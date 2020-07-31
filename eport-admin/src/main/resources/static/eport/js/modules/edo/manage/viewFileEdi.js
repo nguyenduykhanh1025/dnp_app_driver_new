@@ -211,17 +211,27 @@ function loadView() {
 }
 
 $('#export-file').click(function() {
-    let filename = "InfoEDIFile";
-    let date = new Date();
-    let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    let month = date.getMonth() + 1;
-    let monthText = month < 10 ? "0" + month : month;
-    let year = date.getFullYear();
-    $("#viewEdi").table2excel({
-        // exclude CSS class
-        exclude: ".csv",
-        name: "Worksheet Name",
-        filename: filename + day + monthText + year //do not include extension
-      }); 
+    console.log("dataObj", dataObj)
+    $.ajax({
+        url : PREFIX + "/export",
+        method : "POST",
+        contentType: "application/json",
+        dataType: 'json',
+        data: dataObj
+    }).done(function(result){
+        console.log(result);
+    });
+    
+    // let filename = "InfoEDIFile";
+    // let date = new Date();
+    // let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    // let month = date.getMonth() + 1;
+    // let monthText = month < 10 ? "0" + month : month;
+    // let year = date.getFullYear();
+    // $("#viewEdi").table2excel({
+    //     exclude: ".csv",
+    //     name: "Worksheet Name",
+    //     filename: filename + day + monthText + year 
+    //   }); 
 });
 

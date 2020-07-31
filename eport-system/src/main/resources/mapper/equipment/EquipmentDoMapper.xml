@@ -89,9 +89,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
         </where>
-        ORDER BY id DESC  
-        LIMIT 10
-        OFFSET #{page};
+        ORDER BY id DESC 
+        OFFSET #{page} ROWS FETCH NEXT #{10} ROWS ONLY 
     </select>
     <select id="selectEquipmentDoDetails" parameterType="EquipmentDo"  resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
@@ -148,7 +147,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY id DESC  
     </select>
     <select id="selectEquipmentDoListExclusiveBill" parameterType="EquipmentDo"  resultMap="EquipmentDoResult">
-        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, count(container_number) as container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time, process_remark, new_expired_dem
+        select carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time, process_remark, new_expired_dem
         from equipment_do
         <where>
             
@@ -169,13 +168,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="toDate != null">AND create_time &lt;= #{toDate}</if>
             <if test="fromDate != null"> and create_time between #{fromDate} and #{toDate}</if>
         </where>
-        group by bill_of_lading
-        ORDER BY id DESC 
+        <!-- GROUP BY bill_of_lading
+        ORDER BY id DESC  -->
     </select>
     <select id="selectEquipmentDoListAdmin" parameterType="int" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>   
         ORDER BY id DESC  
-        LIMIT #{page.offset} , ${10};
+        OFFSET #{page.offset} ROWS FETCH NEXT #{10} ROWS ONLY
     </select>
     <select id="selectEquipmentDoById" parameterType="Long" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
@@ -185,7 +184,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertEquipmentDo" parameterType="EquipmentDo" useGeneratedKeys="true" keyProperty="id">
         <selectKey keyProperty="id" order="BEFORE" resultType="Long">
                 select seq_equipment_do.nextval as id from DUAL
-            </selectKey>
+        </selectKey>
             insert into equipment_do
             <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="carrierId != null ">carrier_id,</if>
@@ -383,8 +382,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectBillOfLadingInfo" parameterType="String" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
-        where bill_of_lading = #{blNo}
-        LIMIT 1
+        WHERE bill_of_lading = #{blNo}
+        FETCH NEXT 1 ROWS ONLY
     </select>
 
     <select id="countDOStatusYes" parameterType="String" resultType="int">

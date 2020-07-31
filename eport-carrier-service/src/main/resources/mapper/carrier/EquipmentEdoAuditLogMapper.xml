@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.carrier.mapper.EquipmentEdoAuditLogMapper">
+    
+    <resultMap type="EquipmentEdoAuditLog" id="EquipmentEdoAuditLogResult">
+        <result property="id"    column="id"    />
+        <result property="carrierId"    column="carrier_id"    />
+        <result property="carrierCode"    column="carrier_code"    />
+        <result property="edoId"    column="edo_id"    />
+        <result property="seqNo"    column="seq_no"    />
+        <result property="fieldName"    column="field_name"    />
+        <result property="oldValue"    column="old_value"    />
+        <result property="newValue"    column="new_value"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectEquipmentEdoAuditLogVo">
+        select id, carrier_id, carrier_code, edo_id, seq_no, field_name, old_value, new_value, create_by, create_time, update_by, update_time from equipment_edo_audit_log
+    </sql>
+
+    <select id="selectEquipmentEdoAuditLogList" parameterType="EquipmentEdoAuditLog" resultMap="EquipmentEdoAuditLogResult">
+        <include refid="selectEquipmentEdoAuditLogVo"/>
+        <where>  
+            <if test="carrierId != null "> and carrier_id = #{carrierId}</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
+            <if test="edoId != null "> and edo_id = #{edoId}</if>
+            <if test="seqNo != null "> and seq_no = #{seqNo}</if>
+            <if test="fieldName != null  and fieldName != ''"> and field_name like concat('%', #{fieldName}, '%')</if>
+            <if test="oldValue != null  and oldValue != ''"> and old_value = #{oldValue}</if>
+            <if test="newValue != null  and newValue != ''"> and new_value = #{newValue}</if>
+        </where>
+        ORDER BY seq_no DESC
+    </select>
+    
+    <select id="selectEquipmentEdoAuditLogById" parameterType="Long" resultMap="EquipmentEdoAuditLogResult">
+        <include refid="selectEquipmentEdoAuditLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEquipmentEdoAuditLog" parameterType="EquipmentEdoAuditLog" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_equipment_edo_audit_log.nextval as id from DUAL
+		</selectKey>
+        insert into equipment_edo_audit_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="carrierId != null ">carrier_id,</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
+            <if test="edoId != null ">edo_id,</if>
+            <if test="seqNo != null ">seq_no,</if>
+            <if test="fieldName != null  and fieldName != ''">field_name,</if>
+            <if test="oldValue != null  and oldValue != ''">old_value,</if>
+            <if test="newValue != null  and newValue != ''">new_value,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="carrierId != null ">#{carrierId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
+            <if test="edoId != null ">#{edoId},</if>
+            <if test="seqNo != null ">#{seqNo},</if>
+            <if test="fieldName != null  and fieldName != ''">#{fieldName},</if>
+            <if test="oldValue != null  and oldValue != ''">#{oldValue},</if>
+            <if test="newValue != null  and newValue != ''">#{newValue},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEquipmentEdoAuditLog" parameterType="EquipmentEdoAuditLog">
+        update equipment_edo_audit_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="carrierId != null ">carrier_id = #{carrierId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code = #{carrierCode},</if>
+            <if test="edoId != null ">edo_id = #{edoId},</if>
+            <if test="seqNo != null ">seq_no = #{seqNo},</if>
+            <if test="fieldName != null  and fieldName != ''">field_name = #{fieldName},</if>
+            <if test="oldValue != null  and oldValue != ''">old_value = #{oldValue},</if>
+            <if test="newValue != null  and newValue != ''">new_value = #{newValue},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEquipmentEdoAuditLogById" parameterType="Long">
+        delete from equipment_edo_audit_log where id = #{id}
+    </delete>
+
+    <delete id="deleteEquipmentEdoAuditLogByIds" parameterType="String">
+        delete from equipment_edo_audit_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+
+     <select id="getSeqNo" parameterType="Long" resultType="java.lang.Long">
+        select seq_no from equipment_edo_audit_log
+        where edo_id = #{id} 
+    </select>
+    <select id="selectEdoAuditLogByEdo" parameterType="EdoAuditLog" resultMap="EquipmentEdoAuditLogResult">
+        <include refid="selectEquipmentEdoAuditLogVo"/>
+        <where>  
+            <if test="edoId != null "> and edo_id = #{edoId}</if>
+            <if test="fieldName != null  and fieldName != ''"> and field_name like concat(concat('%', #{fieldName}), '%')</if>
+        </where>
+        ORDER BY seq_no DESC FETCH NEXT 1 ROWS ONLY
+    </select>
+
+
+    <insert id="insertEdoAuditLogExpiredDem" parameterType="EquipmentEdoAuditLog" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_equipment_edo_audit_log.nextval as id from DUAL
+		</selectKey>
+        insert into equipment_edo_audit_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
+            <if test="carrierId != null ">carrier_id,</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
+            <if test="edoId != null ">edo_id,</if>
+            <if test="seqNo != null ">seq_no,</if>
+            <if test="fieldName != null  and fieldName != ''">field_name,</if>
+            <if test="oldValue != null  and oldValue != ''">old_value,</if>
+            <if test="newValue != null  and newValue != ''">new_value,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            create_time
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
+            <if test="carrierId != null ">#{carrierId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
+            <if test="edoId != null ">#{edoId},</if>
+            <if test="seqNo != null ">#{seqNo},</if>
+            <if test="fieldName != null  and fieldName != ''">#{fieldName},</if>
+            <if test="oldValue != null  and oldValue != ''">#{oldValue},</if>
+            <if test="newValue != null  and newValue != ''">#{newValue},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            sysdate
+         </trim>
+    </insert>
+
+    <select id="selectEdoAuditLogByEdoId" parameterType="Long" resultType="String">
+        select seq_no from equipment_edo_audit_log
+        WHERE edo_id = #{edoId} 
+        ORDER BY seq_no DESC FETCH NEXT 1 ROWS ONLY
+    </select>
+
+
+     <insert id="insertEdoAuditLogDetFreeTime" parameterType="EquipmentEdoAuditLog" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Long">
+			select seq_equipment_edo_audit_log.nextval as id from DUAL
+		</selectKey>
+        insert into equipment_edo_audit_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0">id,</if>
+            <if test="carrierId != null ">carrier_id,</if>
+            <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
+            <if test="edoId != null ">edo_id,</if>
+            <if test="seqNo != null ">seq_no,</if>
+            <if test="fieldName != null  and fieldName != ''">field_name,</if>
+            <if test="oldValue != null  and oldValue != ''">old_value,</if>
+            <if test="newValue != null  and newValue != ''">new_value,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+ 			<if test="id != null">#{id},</if>
+            <if test="carrierId != null ">#{carrierId},</if>
+            <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
+            <if test="edoId != null ">#{edoId},</if>
+            <if test="seqNo != null ">#{seqNo},</if>
+            <if test="fieldName != null  and fieldName != ''">#{fieldName},</if>
+            <if test="oldValue != null  and oldValue != ''">#{oldValue},</if>
+            <if test="newValue != null  and newValue != ''">#{newValue},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            sysdate
+         </trim>
+    </insert>
+</mapper>

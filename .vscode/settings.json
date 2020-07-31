@@ -9,5 +9,6 @@
     ],
     "cSpell.words": [
         "datagrid"
-    ]
+    ],
+    "spring-boot.ls.checkJVM": false
 }
