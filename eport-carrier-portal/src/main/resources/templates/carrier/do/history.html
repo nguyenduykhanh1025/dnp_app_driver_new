@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/eport/css/history.css}" rel="stylesheet" />
+  </head>
+
+  <body class="white-bg">
+    <div id="wrapper">
+        <div class="row">
+                <div class="col-sm-12 select-table title-table">
+                <div class="col-sm-12 table-container">
+                    <table id="dg" style="width: auto;">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'seqNo',align:'center'" width="90">
+                                    THỨ TỰ
+                                </th>
+                                <th data-options="field:'createTime',align:'left',formatter:formatToYDMHMS" width="200">
+                                    THỜI GIAN <br> THAY ĐỔI
+                                </th>
+                                <th data-options="field:'fieldName',align:'center'" width="130">
+                                    TÊN TRƯỜNG
+                                </th>
+                                <th data-options="field:'oldValue',align:'center'" width="200">
+                                    GIÁ TRỊ CŨ
+                                </th>
+                                <th data-options="field:'newValue',align:'center'" width="200">
+                                    GIÁ TRỊ MỚI
+                                </th>
+                                <th data-options="field:'carrierCode',align:'center'" width="120">
+                                    NHÂN VIÊN
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="layui-layer-btn footer">
+        <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
+    </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript" th:inline="javascript">
+      var edoId = /*[[${edoId}]]*/ ;
+    </script>
+    <script th:src="@{/eport/js/modules/carrier/history.js}"></script>
+  </body>
+</html>

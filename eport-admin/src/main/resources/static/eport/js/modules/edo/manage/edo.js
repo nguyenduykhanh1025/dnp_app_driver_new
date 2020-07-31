@@ -236,7 +236,8 @@ function formatStatus(value) {
     case 4:
       return "<span class='label label-success'>Trạng thái 2</span>";
     default:
-      return "<span class='label label-warning'>Chờ làm lệnh</span>";
+      return "<span class='label label-warning'>Release</span>";
+
   }
 }
 
@@ -396,8 +397,4 @@ $(".c-search-opr-code").change(function () {
   $(this).text(null);
   loadTable(edo);
 });
-
-module.exports = {
-formatToYDM: formatToYDM
-}
 
