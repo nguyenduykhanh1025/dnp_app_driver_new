@@ -45,9 +45,6 @@ public class CarrierEdoController extends CarrierBaseController {
 
     @GetMapping("/index")
 	public String EquipmentDo() {
-		if (!hasDoPermission()) {
-			return "error/404";
-		}
 		return PREFIX + "/edo";
 	}
 

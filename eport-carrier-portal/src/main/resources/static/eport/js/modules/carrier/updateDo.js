@@ -1,8 +1,9 @@
-var doList
-var hot
-var consigneeList = []
-var emptyDepotList = []
-var vesselList = []
+var PREFIX = "/carrier/do";
+var doList;
+var hot;
+var consigneeList = [];
+var emptyDepotList = [];
+var vesselList = [];
 getOptionsColumn()
 $("#billNo").html("No: " + firstDo.billOfLading)
 $("#billNumber").html(firstDo.billOfLading)
@@ -22,7 +23,7 @@ loadTable();
 
 function loadTable() {
   $.ajax({
-    url: "/carrier/do/getInfoBl",
+    url: PREFIX + "/getInfoBl",
     method: "get",
     data: {
       blNo: firstDo.billOfLading,
@@ -54,6 +55,7 @@ function loadTable() {
           "Ngày miễn lưu<br> DET Freetime",
           "Tên tàu<br>Vessel",
           "Chuyến<br>Voyage",
+          "Lịch sử",
           "Ghi chú",
           "ID",
         ],
@@ -113,6 +115,12 @@ function loadTable() {
             type: "text",
           },
           {
+            data: "id",
+            type: "text",
+            renderer: historyRenderer,
+            readOnly : true
+          },
+          {
             data: "remark",
             type: "text",
           },
@@ -125,7 +133,7 @@ function loadTable() {
         columnSorting: {
           indicator: true,
         },
-        colWidths: [70, 70, 80, 160, 70, 70, 140, 70, 80, 80, 150, 0.1],
+        colWidths: [70, 70, 80, 160, 70, 70, 140, 70, 80, 80, 80, 150, 0.1],
         manualColumnMove: true,
       })
       hot.validateCells()
@@ -377,4 +385,21 @@ function reload() {
 
 function changeExpiredDate() {
   $.modal.openChangeExpired("Thay đổi hạn lệnh", "/carrier/do/changeExpiredDate/" + firstDo.billOfLading, 500, 380)
+}
+
+function historyRenderer(instance, td, row, col, prop, value, cellProperties) {
+  let content;
+  if(value == null)
+  {
+    content = '';
+  }else {
+    content = '<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + value + '\')"><i class="fa fa-history"></i> Lịch sử</a> ';
+  }
+  $(td).html(content);
+  return td;
+}
+
+function viewHistoryCont(value)
+{
+  $.modal.openWithOneButton('Lịch sử thay đổi thông tin', PREFIX + "/history/" + value, 1000, 400);
 }
