@@ -50,8 +50,8 @@ spring:
       enabled: true
   redis:
     database: 0
-    password: secret
-    host: 192.168.1.65
+    password: 
+    host: 127.0.0.1
     port: 6379
     lettuce:
       pool:
