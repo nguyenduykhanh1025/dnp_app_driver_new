@@ -50,7 +50,7 @@ public class SysRegisterService
         else if (password.length() < UserConstants.PASSWORD_MIN_LENGTH
                 || password.length() > UserConstants.PASSWORD_MAX_LENGTH)
         {
-            msg = "密码长度必须在5到20 ký tự之间";
+            msg = "Password length must be between 5 and 20 characters";
         }
         else if (username.length() < UserConstants.USERNAME_MIN_LENGTH
                 || username.length() > UserConstants.USERNAME_MAX_LENGTH)

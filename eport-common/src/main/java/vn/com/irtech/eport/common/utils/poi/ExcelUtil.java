@@ -55,7 +55,7 @@ import vn.com.irtech.eport.common.utils.reflect.ReflectUtils;
 import vn.com.irtech.eport.common.utils.spring.SpringUtils;
 
 /**
- * Excel相关处理
+ * Excel related processing
  * 
  * @author admin
  */
@@ -64,47 +64,47 @@ public class ExcelUtil<T>
     private static final Logger log = LoggerFactory.getLogger(ExcelUtil.class);
 
     /**
-     * Excel sheet最大行数，默认65536
+     * Maximum number of rows in Excel sheet, 65536 by default
      */
     public static final int sheetSize = 65536;
 
     /**
-     * 工作表名称
+     * Worksheet name
      */
     private String sheetName;
 
     /**
-     * 导出类型（EXPORT:导出数据；IMPORT：导入模板）
+     * Export type (EXPORT: export data; IMPORT: import template)
      */
     private Type type;
 
     /**
-     * 工作薄对象
+     * Workbook object
      */
     private Workbook wb;
 
     /**
-     * 工作表对象
+     * Worksheet object
      */
     private Sheet sheet;
 
     /**
-     * 样式列表
+     * Style list
      */
     private Map<String, CellStyle> styles;
 
     /**
-     * 导入导出数据列表
+     * Import and export data list
      */
     private List<T> list;
 
     /**
-     * 注解列表
+     * Annotation list
      */
     private List<Object[]> fields;
 
     /**
-     * 实体对象
+     * Entity object
      */
     public Class<T> clazz;
 
@@ -127,10 +127,10 @@ public class ExcelUtil<T>
     }
 
     /**
-     * 对excel表单默认第一个索引名转换成list
+     * The default first index name for excel forms is converted to list
      * 
-     * @param is 输入流
-     * @return 转换后集合
+     * @param is Input stream
+     * @return Collection after conversion
      */
     public List<T> importExcel(InputStream is) throws Exception
     {
@@ -138,11 +138,11 @@ public class ExcelUtil<T>
     }
 
     /**
-     * 对excel表单指定表格索引名转换成list
+     * Convert the index name of the specified table to the excel form into a list
      * 
-     * @param sheetName 表格索引名
-     * @param is 输入流
-     * @return 转换后集合
+     * @param sheetName Table index name
+     * @param is Input stream
+     * @return Collection after conversion
      */
     public List<T> importExcel(String sheetName, InputStream is) throws Exception
     {
@@ -152,12 +152,12 @@ public class ExcelUtil<T>
         Sheet sheet = null;
         if (StringUtils.isNotEmpty(sheetName))
         {
-            // 如果指定sheet名,则取指定sheet中的内容.
+            // If the sheet name is specified, the content in the specified sheet is taken.
             sheet = wb.getSheet(sheetName);
         }
         else
         {
-            // 如果传入的sheet名不存在则默认指向第1个sheet.
+            // If the passed sheet name does not exist, it will point to the first sheet by default.
             sheet = wb.getSheetAt(0);
         }
 
@@ -170,9 +170,9 @@ public class ExcelUtil<T>
 
         if (rows > 0)
         {
-            // 定义一个map用于存放excel列的序号和field.
+            // Define a map to store the serial number and field of the excel column.
             Map<String, Integer> cellMap = new HashMap<String, Integer>();
-            // 获取表头
+            // Get header
             Row heard = sheet.getRow(0);
             for (int i = 0; i < heard.getPhysicalNumberOfCells(); i++)
             {
@@ -187,9 +187,9 @@ public class ExcelUtil<T>
                     cellMap.put(null, i);
                 }
             }
-            // 有数据时才处理 得到类的所有field.
+            // Process when there is data to get all the fields of the class.
             Field[] allFields = clazz.getDeclaredFields();
-            // 定义一个map用于存放列的序号和field.
+            // Define a map to store the serial number and field of the column.
             Map<Integer, Field> fieldsMap = new HashMap<Integer, Field>();
             for (int col = 0; col < allFields.length; col++)
             {
@@ -636,7 +636,7 @@ public class ExcelUtil<T>
      * @return 解析后值
      * @throws Exception
      */
-    public static String convertByExp(String propertyValue, String converterExp) throws Exception
+    public static String convertByExp(String propertyValue, String converterExp, String separator) throws Exception
     {
         StringBuilder propertyString = new StringBuilder();
         try
