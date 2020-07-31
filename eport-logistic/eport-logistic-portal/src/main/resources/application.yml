@@ -82,7 +82,7 @@ shiro:
     captchaType: math
   cookie:
     domain: 
-    path: /
+    path: /logistic
     httpOnly: true
     maxAge: 30
   session:

@@ -81,7 +81,7 @@ shiro:
     captchaType: math
   cookie:
     domain: 
-    path: /
+    path: /admin
     httpOnly: true
     maxAge: 30
     cipherKey: zSyK5Kp6PZAAjlT+eeNMlg==
@@ -96,12 +96,11 @@ xss:
   enabled: true
   excludes: /system/notice/*
   urlPatterns: /system/*,/monitor/*,/tool/*
-  
+
 mqtt:
-  username: admin             
+  username: admin
   password: public 
-  host-url: tcp://127.0.0.1:1883           
-  #host-url: tcp://localhost:1883                # The address and port of your own server need to be changed 
+  host-url: tcp://127.0.0.1:1883 
 
 websocket:
    endpoint: /eport_admin
