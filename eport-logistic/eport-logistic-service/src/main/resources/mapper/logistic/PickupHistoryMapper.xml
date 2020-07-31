@@ -429,4 +429,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		p.status, p.chassis_no, sh.sztp, sh.consignee, p.block, p.bay, p.line, p.tier
 	</select>
 
+	<select id="selectDeliveringDriverInfo" parameterType="PickupHistory" resultMap="PickupHistoryResult">
+		select p.id, p.logistic_group_id, p.shipment_id, p.shipment_detail_id, p.driver_id, p.pickup_assign_id, 
+		p.container_no, p.truck_no, p.chassis_no, p.status, p.gatein_date, d.mobile_number, d.full_name
+		from pickup_history p
+		left join driver_account d on p.driver_id = d.id
+		<where>
+			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
+		</where>
+		group by p.id, p.logistic_group_id, p.shipment_id, p.shipment_detail_id, p.driver_id, p.pickup_assign_id, 
+		p.container_no, p.truck_no, p.chassis_no, p.status, p.gatein_date, d.mobile_number, d.full_name
+	</select>
 </mapper>

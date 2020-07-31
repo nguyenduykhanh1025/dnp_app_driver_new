@@ -1,33 +1,34 @@
 package vn.com.irtech.eport.common.utils.sql;
 
+import vn.com.irtech.eport.common.exception.base.BaseException;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * sql操作工具类
+ * SQL operation utils
  * 
  * @author admin
  */
 public class SqlUtil
 {
     /**
-     * 仅支持字母、数字、下划线、空格、逗号（支持多个字段排序）
+     * Only supports letters, numbers, underscores, spaces, commas, decimal points (supports multiple field sorting)
      */
-    public static String SQL_PATTERN = "[a-zA-Z0-9_\\ \\,]+";
+    public static String SQL_PATTERN = "[a-zA-Z0-9_\\ \\,\\.]+";
 
     /**
-     * 检查字符，防止注入绕过
+     * Check characters to prevent injection bypass
      */
     public static String escapeOrderBySql(String value)
     {
         if (StringUtils.isNotEmpty(value) && !isValidOrderBySql(value))
         {
-            return StringUtils.EMPTY;
+            throw new BaseException("The parameter does not meet the specifications and cannot be queried");
         }
         return value;
     }
 
     /**
-     * 验证 order by 语法是否符合规范
+     * Verify that the order by syntax complies with the specification
      */
     public static boolean isValidOrderBySql(String value)
     {
