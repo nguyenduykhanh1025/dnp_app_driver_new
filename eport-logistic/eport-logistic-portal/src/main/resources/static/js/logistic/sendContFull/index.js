@@ -572,7 +572,7 @@ function onChange(changes, source) {
     changes.forEach(function (change) {
     	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
         if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
-            hot.setDataAtCell(change[0], 5, '');//vessel and voyage reset
+            //hot.setDataAtCell(change[0], 5, '');//vessel and voyage reset
             $.ajax({
                 url: prefix + "/berthplan/ope-code/"+ change[3].split(": ")[0] +"/vessel-voyage/list",
                 method: "GET",
@@ -616,7 +616,7 @@ function onChange(changes, source) {
             // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
         } else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
             let vesselAndVoy = hot.getDataAtCell(change[0], 5);
-            hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
+            //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
             if (vesselAndVoy) {
             	console.log(vesselAndVoy)
                 let shipmentDetail = new Object();
@@ -650,30 +650,31 @@ function onChange(changes, source) {
             }
 
             // Trigger when sztp change, make temperature is writable
-        } else if (change[1] == "sztp") {
-            if (change[3] && change[3].includes("R")) {
-                hot.updateSettings({
-                    cells: function (row, col, prop) {
-                        if (row == change[0] && col == 8) {
-                            let cellProperties = {};
-                            cellProperties.readOnly = false;
-                            return cellProperties;
-                        }
-                    }
-                });
-            } else {
-                hot.updateSettings({
-                    cells: function (row, col, prop) {
-                        if (row == change[0] && col == 8) {
-                            let cellProperties = {};
-                            cellProperties.readOnly = true;
-                            $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
-                            return cellProperties;
-                        }
-                    }
-                });
-            }
         }
+//        else if (change[1] == "sztp") {
+//            if (change[3] && change[3].includes("R")) {
+//                hot.updateSettings({
+//                    cells: function (row, col, prop) {
+//                        if (row == change[0] && col == 8) {
+//                            let cellProperties = {};
+//                            cellProperties.readOnly = false;
+//                            return cellProperties;
+//                        }
+//                    }
+//                });
+//            } else {
+//                hot.updateSettings({
+//                    cells: function (row, col, prop) {
+//                        if (row == change[0] && col == 8) {
+//                            let cellProperties = {};
+//                            cellProperties.readOnly = true;
+//                            $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
+//                            return cellProperties;
+//                        }
+//                    }
+//                });
+//            }
+//        }
     });
 }
 

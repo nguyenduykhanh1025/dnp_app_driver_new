@@ -305,32 +305,31 @@ function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties)
     }
     return td;
 }
-function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
-    $(td).html(value);
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    }
-    return td;
-}
-function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
-    $(td).html(value);
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    }
-    return td;
-}
+//function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
+//    $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
+//    $(td).html(value);
+//    if (value != null && value != '') {
+//        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+//            cellProperties.readOnly = 'true';
+//            $(td).css("background-color", "rgb(232, 232, 232)");
+//        }
+//    }
+//    return td;
+//}
+//function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+//    $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
+//    $(td).html(value);
+//    if (value != null && value != '') {
+//        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+//            cellProperties.readOnly = 'true';
+//            $(td).css("background-color", "rgb(232, 232, 232)");
+//        }
+//    }
+//    return td;
+//}
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
-        value = value.split(':')[0];
         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
@@ -399,21 +398,21 @@ function configHandson() {
                     return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
                 case 4:
                     return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+//                case 5:
+//                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
+//                case 6:
+//                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
                 case 5:
-                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
-                case 6:
-                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
-                case 7:
                     return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
                 // case 8:
                 //     return '<span>Trọng Tải</span><span style="color: red;">(*)</span>';
                 // case 9:
                 //     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
-                case 8:
+                case 6:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 120, 100, 100, 100, 100, 200],
+        colWidths: [50, 100, 100, 120, 100, 100, 200],
         filter: "true",
         columns: [
             {
@@ -447,19 +446,19 @@ function configHandson() {
                 defaultDate: new Date(),
                 renderer: expiredDemRenderer
             },
-            {
-                data: "vslNm",
-                type: "autocomplete",
-                source: vslNmList,
-                strict: true,
-                renderer: vslNmRenderer
-            },
-            {
-                data: "voyNo",
-                type: "autocomplete",
-                strict: true,
-                renderer: voyNoRenderer
-            },
+//            {
+//                data: "vslNm",
+//                type: "autocomplete",
+//                source: vslNmList,
+//                strict: true,
+//                renderer: vslNmRenderer
+//            },
+//            {
+//                data: "voyNo",
+//                type: "autocomplete",
+//                strict: true,
+//                renderer: voyNoRenderer
+//            },
             {
                 data: "sztp",
                 type: "autocomplete",
@@ -498,26 +497,26 @@ function onChange(changes, source) {
         return;
     }
     changes.forEach(function (change) {
-        if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-            hot.setDataAtCell(change[0], 6, '');//voyNo reset
-            $.ajax({
-                url: "/logistic/vessel/" + change[3] + "/voyages",
-                method: "GET",
-                success: function (data) {
-                    if (data.code == 0) {
-                        hot.updateSettings({
-                            cells: function (row, col, prop) {
-                                if (row == change[0] && col == 6) {
-                                    let cellProperties = {};
-                                    cellProperties.source = data.voyages;
-                                    return cellProperties;
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        }
+//        if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+//            hot.setDataAtCell(change[0], 6, '');//voyNo reset
+//            $.ajax({
+//                url: "/logistic/vessel/" + change[3] + "/voyages",
+//                method: "GET",
+//                success: function (data) {
+//                    if (data.code == 0) {
+//                        hot.updateSettings({
+//                            cells: function (row, col, prop) {
+//                                if (row == change[0] && col == 6) {
+//                                    let cellProperties = {};
+//                                    cellProperties.source = data.voyages;
+//                                    return cellProperties;
+//                                }
+//                            }
+//                        });
+//                    }
+//                }
+//            });
+//        }
     });
 }
 
@@ -715,8 +714,8 @@ function getDataFromTable(isValidate) {
     let cleanedGridData = [];
     for (let i=0; i<checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
-            if (myTableData[i].containerNo || myTableData[i].opeCode || myTableData[i].expiredDem || myTableData[i].vslNm ||
-                myTableData[i].voyNo || myTableData[i].sztp || myTableData[i].remark) {
+            if (myTableData[i].containerNo || myTableData[i].opeCode || myTableData[i].expiredDem ||
+                myTableData[i].sztp || myTableData[i].remark) {
                 cleanedGridData.push(myTableData[i]);
             }
         }
@@ -727,8 +726,8 @@ function getDataFromTable(isValidate) {
     let opecode, vessel, voyage, pod;
     if (cleanedGridData.length > 0) {
         opecode = cleanedGridData[0].opeCode;
-        vessel = cleanedGridData[0].vslNm;
-        voyage = cleanedGridData[0].voyNo;
+//        vessel = cleanedGridData[0].vslNm;
+//        voyage = cleanedGridData[0].voyNo;
     }
     $.each(cleanedGridData, function (index, object) {
         let shipmentDetail = new Object();
@@ -749,14 +748,14 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
                 errorFlg = true;
                 return false;
-            } else if (!object["vslNm"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu!");
-                errorFlg = true;
-                return false;
-            } else if (!object["voyNo"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chuyến!");
-                errorFlg = true;
-                return false;
+//            } else if (!object["vslNm"]) {
+//                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu!");
+//                errorFlg = true;
+//                return false;
+//            } else if (!object["voyNo"]) {
+//                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chuyến!");
+//                errorFlg = true;
+//                return false;
             } else if (!object["sztp"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
@@ -765,30 +764,34 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hãng tàu không được khác nhau!");
                 errorFlg = true;
                 return false;
-            } else if (vessel != object["vslNm"]) {
-                $.modal.alertError("Tàu không được khác nhau!");
-                errorFlg = true;
-                return false;
-            } else if (voyage != object["voyNo"]) {
-                $.modal.alertError("Số chuyến không được khác nhau!");
-                errorFlg = true;
-                return false;
+//            } else if (vessel != object["vslNm"]) {
+//                $.modal.alertError("Tàu không được khác nhau!");
+//                errorFlg = true;
+//                return false;
+//            } else if (voyage != object["voyNo"]) {
+//                $.modal.alertError("Số chuyến không được khác nhau!");
+//                errorFlg = true;
+//                return false;
             }
         }
         opecode = object["opeCode"];
-        vessel = object["vslNm"];
-        voyage = object["voyNo"];
+//        vessel = object["vslNm"];
+//        voyage = object["voyNo"];
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
         if (object["status"] == 1 || object["status"] == null) {
             conts += object["containerNo"] + ',';
         }
-        shipmentDetail.opeCode = object["opeCode"];
+        let carrier = object["opeCode"].split(": ");
+        shipmentDetail.opeCode = carrier[0];
+        shipmentDetail.carrierName = carrier[1];
         shipmentDetail.expiredDem = expiredDem.getTime();
-        shipmentDetail.vslNm = object["vslNm"];
-        shipmentDetail.voyNo = object["voyNo"];
-        shipmentDetail.sztp = object["sztp"].split(":")[0];
+//        shipmentDetail.vslNm = object["vslNm"];
+//        shipmentDetail.voyNo = object["voyNo"];
+        let sizeType = object["sztp"].split(": ");
+        shipmentDetail.sztp = sizeType[0];
+        shipmentDetail.sztpDefine = sizeType[1];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];

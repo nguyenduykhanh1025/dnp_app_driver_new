@@ -50,7 +50,6 @@ function loadTable() {
           "Số Container <i class='red'>(*)</i><br>Container No.",
           "Tên khách hàng <i class='red'>(*)</i><br>Consignee",
           "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
-          "Hạn lệnh mới",
           "Nơi hạ vỏ<br> Empty depot",
           "Ngày miễn lưu<br> DET Freetime",
           "Tên tàu<br>Vessel",
@@ -62,21 +61,25 @@ function loadTable() {
         columns: [
           {
             data: "carrierCode",
-            editor: false
+            editor: false,
+            readOnly : true
           },
           {
             data: "billOfLading",
-            editor: false
+            editor: false,
+            readOnly : true
           },
           {
             data: "containerNumber",
             type: "text",
+            readOnly : true
           },
           {
             data: "consignee",
             type: "autocomplete",
             source: consigneeList,
             strict: false,
+            readOnly : true
           },
           {
             data: "expiredDem",
@@ -102,10 +105,12 @@ function loadTable() {
             type: "autocomplete",
             source: vesselList,
             strict: false,
+            readOnly : true
           },
           {
             data: "voyNo",
             type: "text",
+            readOnly : true
           },
           {
             data: "id",

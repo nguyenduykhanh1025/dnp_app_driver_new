@@ -204,9 +204,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, 
         	container_status,
         	sztp || ': ' || sztp_define as sztp,
-        	sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name,
+        	sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name, voy_no, voy_carrier,
         	vsl_name|| ' - ' || voy_carrier as vsl_nm,
-        	voy_no, voy_carrier,
         	ope_code || ': ' || carrier_name as ope_code,
         	carrier_name, loading_port, discharge_port, transport_type,
         	empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status,
@@ -220,6 +219,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
             <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
             <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="sztpDefine != null  and sztpDefine != ''"> and sztp_define = #{sztpDefine}</if>
             <if test="temperature != null "> and temperature = #{temperature}</if>
             <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
             <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>

@@ -48,6 +48,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</selectKey>
         insert into equipment_edo_audit_log
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0 ">id,</if>
             <if test="carrierId != null ">carrier_id,</if>
             <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
             <if test="edoId != null ">edo_id,</if>
@@ -56,11 +57,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="oldValue != null  and oldValue != ''">old_value,</if>
             <if test="newValue != null  and newValue != ''">new_value,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
-            <if test="createTime != null ">create_time,</if>
-            <if test="updateBy != null  and updateBy != ''">update_by,</if>
-            <if test="updateTime != null ">update_time,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null and id != 0 ">#{id},</if>
             <if test="carrierId != null ">#{carrierId},</if>
             <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
             <if test="edoId != null ">#{edoId},</if>
@@ -69,9 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="oldValue != null  and oldValue != ''">#{oldValue},</if>
             <if test="newValue != null  and newValue != ''">#{newValue},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
-            <if test="createTime != null ">#{createTime},</if>
-            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
-            <if test="updateTime != null ">#{updateTime},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -85,10 +83,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fieldName != null  and fieldName != ''">field_name = #{fieldName},</if>
             <if test="oldValue != null  and oldValue != ''">old_value = #{oldValue},</if>
             <if test="newValue != null  and newValue != ''">new_value = #{newValue},</if>
-            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
-            <if test="createTime != null ">create_time = #{createTime},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
-            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
