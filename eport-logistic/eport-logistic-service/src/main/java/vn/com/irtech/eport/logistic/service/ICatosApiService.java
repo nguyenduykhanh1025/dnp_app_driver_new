@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
 
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -43,4 +44,12 @@ public interface ICatosApiService {
 	public List<String> selectOpeCodeListInBerthPlan();
 	
 	public List<ShipmentDetail> selectVesselVoyageBerthPlan(String opeCode);
+	
+	public List<ProcessBill> getUnitBillByShipmentDetailsForReserve(List<ShipmentDetail> shipmentDetails);
+	
+	public List<ProcessBill> getUnitBillByShipmentDetailsForInventory(List<ShipmentDetail> shipmentDetails);
+	
+	public List<ProcessBill> getUnitBillByShipmentDetailsForReceiveSSR(List<ShipmentDetail> shipmentDetails);
+	
+	public List<ProcessBill> getUnitBillByShipmentDetailsForSendSSR(List<ShipmentDetail> shipmentDetails);
 }
