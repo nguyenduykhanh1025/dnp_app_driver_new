@@ -190,4 +190,14 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
         }
         return true;
     }
+
+      /**
+     * Select Delievering Driver Info
+     * 
+     * @return PickupHistory
+     */
+    @Override
+    public List<PickupHistory> selectDeliveringDriverInfo(PickupHistory pickupHistory) {
+        return pickupHistoryMapper.selectDeliveringDriverInfo(pickupHistory);
+    }
 }
