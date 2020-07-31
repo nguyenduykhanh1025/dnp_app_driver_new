@@ -147,15 +147,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         ORDER BY id DESC  
     </select>
     <select id="selectEquipmentDoListExclusiveBill" parameterType="EquipmentDo"  resultMap="EquipmentDoResult">
-        select carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time, process_remark, new_expired_dem
+        select max(carrier_id) as carrier_id, max(carrier_code) as carrier_code, max(order_number) as order_number, 
+        bill_of_lading, max(business_unit) as business_unit, max(consignee) as consignee, max(expired_dem) as expired_dem, 
+        max(empty_container_depot) as empty_container_depot, max(det_free_time) as det_free_time, max(secure_code) as secure_code, 
+        max(release_date) as release_date, max(vessel) as vessel, max(voy_no) as voy_no, max(do_type) as do_type, max(status) as status, 
+        max(process_status) as process_status, max(document_status) as document_status, max(document_receipt_date) as document_receipt_date, 
+        max(release_status) as release_status, max(create_source) as create_source, max(remark) as remark, max(create_by) as create_by, 
+        max(create_time) as create_time, max(update_by) as update_by, max(update_time) as update_time, max(process_remark) as process_remark, 
+        max(new_expired_dem) as new_expired_dem
         from equipment_do
         <where>
-            
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat(concat('%', #{billOfLading}), '%')</if>  
             <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
             <if test="carrierCode != null  and carrierCode != ''"> and lower(carrier_code) like concat(concat('%', #{carrierCode}), '%')</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
-             <if test="consignee != null  and consignee != ''"> and lower(consignee) like concat(concat('%', #{consignee}), '%')</if>
+            <if test="consignee != null  and consignee != ''"> and lower(consignee) like concat(concat('%', #{consignee}), '%')</if>
             <if test="containerNumber != null  and containerNumber != ''"> and container_number like concat(concat('%', #{containerNumber}), '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="documentStatus != null  and documentStatus != ''"> and document_status = #{documentStatus}</if>
@@ -168,8 +174,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="toDate != null">AND create_time &lt;= #{toDate}</if>
             <if test="fromDate != null"> and create_time between #{fromDate} and #{toDate}</if>
         </where>
-        <!-- GROUP BY bill_of_lading
-        ORDER BY id DESC  -->
+        GROUP BY bill_of_lading
+        ORDER BY create_time DESC 
     </select>
     <select id="selectEquipmentDoListAdmin" parameterType="int" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>   
@@ -187,6 +193,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </selectKey>
             insert into equipment_do
             <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null and id != 0 ">id,</if>
                 <if test="carrierId != null ">carrier_id,</if>
                 <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
                 <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
@@ -213,6 +220,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 create_time
             </trim>
             <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null and id != 0 ">#{id},</if>
                 <if test="carrierId != null ">#{carrierId},</if>
                 <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
                 <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
