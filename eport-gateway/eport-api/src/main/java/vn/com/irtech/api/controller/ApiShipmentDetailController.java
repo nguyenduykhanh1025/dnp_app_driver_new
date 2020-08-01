@@ -118,4 +118,9 @@ public class ApiShipmentDetailController {
 	public List<ShipmentDetailEntity> selectVesselVoyageBerthPlan(@PathVariable String opeCode){
 		return shipmentDetailDao.selectVesselVoyageBerthPlan(opeCode);
 	}
+	
+	@GetMapping("/shipmentDetail/check/booking-no/{bookingNo}")
+	public Integer checkBookingNoForSendFReceiveE(@PathVariable String bookingNo) {
+		return shipmentDetailDao.checkBookingNoForSendFReceiveE(bookingNo);
+	}
 }

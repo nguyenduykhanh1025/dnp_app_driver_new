@@ -282,4 +282,18 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+
+	@Override
+	public Integer checkBookingNoForSendFReceiveE(String bookingNo) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/check/booking-no/"+ bookingNo;
+			RestTemplate restTemplate = new RestTemplate();
+			Integer result = restTemplate.getForObject(url, Integer.class);
+			return result;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+	
 }

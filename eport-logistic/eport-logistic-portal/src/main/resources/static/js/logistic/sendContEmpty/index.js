@@ -743,7 +743,7 @@ function getDataFromTable(isValidate) {
                 errorFlg = true;
                 return false;
             } else if (!object["opeCode"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ khai thác!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Hãng tàu!");
                 errorFlg = true;
                 return false;
             } else if (!object["expiredDem"]) {
