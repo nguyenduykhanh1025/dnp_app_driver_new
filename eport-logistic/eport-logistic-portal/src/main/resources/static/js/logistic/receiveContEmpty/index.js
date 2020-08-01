@@ -698,10 +698,12 @@ function updateLayout() {
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
+	$.modal.loading("Đang xử lý ...");
     $.ajax({
         url: prefix + "/shipment/" + id + "/shipment-detail",
         method: "GET",
         success: function (data) {
+        	$.modal.closeLoading();
             if (data.code == 0) {
                 sourceData = data.shipmentDetails;
                 if (rowAmount < sourceData.length) {
