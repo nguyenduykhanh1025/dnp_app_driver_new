@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import vn.com.irtech.eport.carrier.mapper.EquipmentEdoAuditLogMapper;
-import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EquipmentEdoAuditLog;
 import vn.com.irtech.eport.carrier.service.IEquipmentEdoAuditLogService;
 import vn.com.irtech.eport.common.core.text.Convert;
@@ -19,7 +18,7 @@ import vn.com.irtech.eport.common.core.text.Convert;
 /**
  * eDO Audit Trail LogService Business Processing
  * 
- * @author ruoyi
+ * @author minhtc
  * @date 2020-07-31
  */
 @Service
@@ -177,11 +176,35 @@ public class EquipmentEdoAuditLogServiceImpl implements IEquipmentEdoAuditLogSer
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
         }
+        if(edo.getVessel() != null)
+        {
+            edoAuditLog.setSeqNo((long) edoSeg);
+            edoAuditLog.setFieldName("Vessel");
+            edoAuditLog.setNewValue(edo.getVessel().toString());
+            insertEdoAuditLogDetFreeTime(edoAuditLog);
+            edoSeg +=1;
+        }
         if(edo.getVoyNo() != null) 
         {
             edoAuditLog.setSeqNo((long) edoSeg);
             edoAuditLog.setFieldName("Voy No");
             edoAuditLog.setNewValue(edo.getVoyNo().toString());
+            insertEdoAuditLogDetFreeTime(edoAuditLog);
+            edoSeg +=1;
+        }
+        if(edo.getWeight() != null) 
+        {
+            edoAuditLog.setSeqNo((long) edoSeg);
+            edoAuditLog.setFieldName("Weight ");
+            edoAuditLog.setNewValue(edo.getWeight().toString());
+            insertEdoAuditLogDetFreeTime(edoAuditLog);
+            edoSeg +=1;
+        }
+        if(edo.getSealNo() != null) 
+        {
+            edoAuditLog.setSeqNo((long) edoSeg);
+            edoAuditLog.setFieldName("Seal No");
+            edoAuditLog.setNewValue(edo.getSealNo().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
         }

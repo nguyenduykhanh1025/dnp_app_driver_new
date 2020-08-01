@@ -67,9 +67,11 @@ config = {
     "Ngày miễn lưu <br> DET free time",
     "Tên tàu <br> Vessel",
     "Chuyến <br> Voyage",
+    "Trọng tải <br> Weight",
+    "Số seal <br> Seal No",
     "Ghi chú",
   ],
-  colWidths: [7, 8, 8, 20, 8, 15, 8, 8, 8, 15],
+  colWidths: [7, 8, 8, 20, 8, 15, 8, 8, 8, 10, 10, 15],
   filter: "true",
   columns: [
     {
@@ -118,6 +120,12 @@ config = {
     },
     {
       data: "voyage",
+    },
+    {
+      data: "weight",
+    },
+    {
+      data: "sealNo",
     },
     {
       data: "remark",
@@ -235,6 +243,8 @@ function saveDO() {
     doObj.voyNo = item["voyage"];
     doObj.vessel = item["vessel"];
     doObj.remark = item["remark"];
+    doObj.weight = item["weight"];
+    doObj.sealNo = item["sealNo"];
     doList.push(doObj);
   });
 

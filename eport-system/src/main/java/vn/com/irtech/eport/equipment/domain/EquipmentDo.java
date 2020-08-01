@@ -113,6 +113,26 @@ public class EquipmentDo extends BaseEntity
 
     private Date newExpiredDem;
 
+    private String weight;
+
+    private String sealNo;
+
+    public String getWeight() {
+        return this.weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getSealNo() {
+        return this.sealNo;
+    }
+
+    public void setSealNo(String sealNo) {
+        this.sealNo = sealNo;
+    }
+
     public void setNewExpiredDem(Date newExpiredDem) {
       this.newExpiredDem = newExpiredDem;
     }
