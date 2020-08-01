@@ -34,6 +34,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="processRemark"    column="process_remark"    />
         <result property="newExpiredDem"    column="new_expired_dem"    />
+        <result property="weight"    column="weight"    />
+        <result property="sealNo"    column="seal_no"    />
     </resultMap>
 
     <resultMap type="String" id="ContainerNumberListResult">
@@ -41,7 +43,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectEquipmentDoVo">
-        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time, process_remark,new_expired_dem from equipment_do
+        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, voy_no, do_type, status, process_status, document_status, document_receipt_date, release_status, create_source, remark, create_by, create_time, update_by, update_time, process_remark,new_expired_dem, weight, seal_no from equipment_do
     </sql>
     <select id="selectEquipmentDoListPagingAdmin" parameterType="equipmentDo" resultMap="EquipmentDoResult">
         <include refid="selectEquipmentDoVo"/>
@@ -154,7 +156,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         max(process_status) as process_status, max(document_status) as document_status, max(document_receipt_date) as document_receipt_date, 
         max(release_status) as release_status, max(create_source) as create_source, max(remark) as remark, max(create_by) as create_by, 
         max(create_time) as create_time, max(update_by) as update_by, max(update_time) as update_time, max(process_remark) as process_remark, 
-        max(new_expired_dem) as new_expired_dem
+        max(new_expired_dem) as new_expired_dem, max(weight) as weight, max(seal_no) as seal_no
         from equipment_do
         <where>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat(concat('%', #{billOfLading}), '%')</if>  
@@ -216,6 +218,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="releaseStatus != null  and releaseStatus != ''">release_status,</if>
                 <if test="createSource != null  and createSource != ''">create_source,</if>
                 <if test="remark != null  and remark != ''">remark,</if>
+                <if test="weight != null  and weight != ''">weight,</if>
+                <if test="sealNo != null  and sealNo != ''">seal_no,</if>
                 <if test="createBy != null  and createBy != ''">create_by,</if>
                 create_time
             </trim>
@@ -243,6 +247,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 <if test="releaseStatus != null  and releaseStatus != ''">#{releaseStatus},</if>
                 <if test="createSource != null  and createSource != ''">#{createSource},</if>
                 <if test="remark != null  and remark != ''">#{remark},</if>
+                <if test="weight != null  and weight != ''">#{weight},</if>
+                <if test="sealNo != null  and sealNo != ''">#{sealNo},</if>
                 <if test="createBy != null  and createBy != ''">#{createBy},</if>
                 sysdate
             </trim>
@@ -386,6 +392,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do where process_status = 0) AS waitingBl,
 			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do where process_status = 1) AS completedBl
         from equipment_do
+        FETCH NEXT 1 ROWS ONLY
 	</select>
 	
 	<select id="selectBillOfLadingInfo" parameterType="String" resultMap="EquipmentDoResult">
