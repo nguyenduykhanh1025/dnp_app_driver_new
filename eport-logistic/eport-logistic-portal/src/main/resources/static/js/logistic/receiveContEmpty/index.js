@@ -11,6 +11,7 @@ var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.serviceType = 3;
 var sizeList = [];
+var berthplanList = [];
 //dictionary sizeList
 $.ajax({
     type: "GET",
@@ -29,17 +30,26 @@ $.ajax({
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
-            opeCodeList = data.opeCodeList;
-            vslNmList = data.vslNmList;
+//            opeCodeList = data.opeCodeList;
+//            vslNmList = data.vslNmList;
             consigneeList = data.consigneeList;
         }
     }
 });
-
+//get opeCodeList BerthPlan
+$.ajax({
+    url: prefix + "/berthplan/ope-code/list",
+    method: "GET",
+    success: function (data) {
+        if (data.code == 0) {
+            opeCodeList = data.opeCodeList;
+        }
+    }
+});
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
     //DEFAULT SEARCH FOLLOW DATE
-    let fromMonth = (new Date().getMonth()+1 < 10) ? "0" + (new Date().getMonth()+1) : new Date().getMonth()+1;
+    let fromMonth = (new Date().getMonth() < 10) ? "0" + (new Date().getMonth()) : new Date().getMonth();
     let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
     $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
     $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
@@ -440,24 +450,22 @@ function configHandson() {
                 case 2:
                     return "Container No";
                 case 3:
-                    return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
-                case 4:
-                    return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
-                case 5:
-                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
-                case 6:
-                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
-                case 7:
-                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
-                case 8:
                     return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
-                case 9:
+                case 4:
+                    return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+                case 5:
+                    return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
+                case 6:
+                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+                case 7:
+                    return '<span>Tàu và Chuyến</span><span style="color: red;">(*)</span>';
+                case 8:
                     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
-                case 10:
+                case 9:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 100, 150, 120, 150, 100, 200, 150, 200],
+        colWidths: [50, 100, 100, 150, 100, 200, 150, 220, 150, 200],
         filter: "true",
         columns: [
             {
@@ -474,6 +482,13 @@ function configHandson() {
             {
                 data: "containerNo",
                 renderer: containerNoRenderer
+            },
+            {
+                data: "sztp",
+                type: "autocomplete",
+                source: sizeList,
+                strict: true,
+                renderer: sizeRenderer
             },
             {
                 data: "expiredDem",
@@ -500,23 +515,15 @@ function configHandson() {
             {
                 data: "vslNm",
                 type: "autocomplete",
-                source: vslNmList,
                 strict: true,
                 renderer: vslNmRenderer
             },
-            {
-                data: "voyNo",
-                type: "autocomplete",
-                strict: true,
-                renderer: voyNoRenderer
-            },
-            {
-                data: "sztp",
-                type: "autocomplete",
-                source: sizeList,
-                strict: true,
-                renderer: sizeRenderer
-            },
+//            {
+//                data: "voyNo",
+//                type: "autocomplete",
+//                strict: true,
+//                renderer: voyNoRenderer
+//            },
             {
                 data: "dischargePort",
                 type: "autocomplete",
@@ -541,18 +548,22 @@ function onChange(changes, source) {
         return;
     }
     changes.forEach(function (change) {
-        if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-            hot.setDataAtCell(change[0], 7, '');//voyNo reset
+   	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
+        if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
+            //hot.setDataAtCell(change[0], 7, '');//vessel and voyage reset
+        	$.modal.loading("Đang xử lý ...");
             $.ajax({
-                url: "/logistic/vessel/" + change[3].split(": ")[0] + "/voyages",
+                url: prefix + "/berthplan/ope-code/"+ change[3].split(": ")[0] +"/vessel-voyage/list",
                 method: "GET",
                 success: function (data) {
+                	$.modal.closeLoading();
                     if (data.code == 0) {
                         hot.updateSettings({
                             cells: function (row, col, prop) {
                                 if (row == change[0] && col == 7) {
                                     let cellProperties = {};
-                                    cellProperties.source = data.voyages;
+                                    berthplanList = data.berthplanList;
+                                    cellProperties.source = data.vesselAndVoyages;
                                     return cellProperties;
                                 }
                             }
@@ -560,32 +571,40 @@ function onChange(changes, source) {
                     }
                 }
             });
-        } else if (change[1] == "voyNo" && change[3] != null && change[3] != '') {
-            let vslNm = hot.getDataAtCell(change[0], 6);
-            if (vslNm) {
+            // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
+        } else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+            let vesselAndVoy = hot.getDataAtCell(change[0], 7);
+            //hot.setDataAtCell(change[0], 8, ''); // dischargePort reset
+            if (vesselAndVoy) {
                 let shipmentDetail = new Object();
-                shipmentDetail.vslNm = vslNm.split(": ")[0];
-                shipmentDetail.voyNo = change[3];
-                hot.setDataAtCell(change[0], 9, ''); // dischargePort reset
-                $.ajax({
-                    url: "/logistic/pods",
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(shipmentDetail),
-                    success: function (data) {
-                        if (data.code == 0) {
-                            hot.updateSettings({
-                                cells: function (row, col, prop) {
-                                    if (row == change[0] && col == 9) {
-                                        let cellProperties = {};
-                                        cellProperties.source = data.dischargePorts;
-                                        return cellProperties;
-                                    }
+                for (let i= 0; i < berthplanList.length;i++){
+                	if(vesselAndVoy == berthplanList[i].vslAndVoy){
+                		shipmentDetail.vslNm = berthplanList[i].vslNm;
+                		shipmentDetail.voyNo = berthplanList[i].voyNo;
+                		shipmentDetail.year = berthplanList[i].year;
+                		$.modal.loading("Đang xử lý ...");
+                        $.ajax({
+                            url: "/logistic/pods",
+                            method: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(shipmentDetail),
+                            success: function (data) {
+                            	$.modal.closeLoading();
+                                if (data.code == 0) {
+                                    hot.updateSettings({
+                                        cells: function (row, col, prop) {
+                                            if (row == change[0] && col == 8) {
+                                                let cellProperties = {};
+                                                cellProperties.source = data.dischargePorts;
+                                                return cellProperties;
+                                            }
+                                        }
+                                    });
                                 }
-                            });
-                        }
-                    }
-                });
+                            }
+                        });
+                	}
+                }
             }
         }
     });
@@ -815,7 +834,7 @@ function getDataFromTable(isValidate) {
     if (cleanedGridData.length > 0) {
         opecode = cleanedGridData[0].opeCode;
         vessel = cleanedGridData[0].vslNm;
-        voyage = cleanedGridData[0].voyNo;
+//        voyage = cleanedGridData[0].voyNo;
         pod = cleanedGridData[0].dischargePort;
     }
     $.each(cleanedGridData, function (index, object) {
@@ -838,23 +857,23 @@ function getDataFromTable(isValidate) {
                 errorFlg = true;
                 return false;
             } else if (!object["opeCode"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ khai thác!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Hãng tàu!");
                 errorFlg = true;
                 return false;
             } else if (!object["vslNm"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Tàu và chuyến!");
                 errorFlg = true;
                 return false;
-            } else if (!object["voyNo"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
-                errorFlg = true;
-                return false;
+//            } else if (!object["voyNo"]) {
+//                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
+//                errorFlg = true;
+//                return false;
             } else if (!object["sztp"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
                 return false;
             } else if (!object["dischargePort"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Cảng dở hàng!");
                 errorFlg = true;
                 return false;
             } else if (opecode != object["opeCode"]) {
@@ -862,13 +881,13 @@ function getDataFromTable(isValidate) {
                 errorFlg = true;
                 return false;
             } else if (vessel != object["vslNm"]) {
-                $.modal.alertError("Tàu không được khác nhau!");
+                $.modal.alertError("Tàu và Chuyến không được khác nhau!");
                 errorFlg = true;
                 return false;
-            } else if (voyage != object["voyNo"]) {
-                $.modal.alertError("Số chuyến không được khác nhau!");
-                errorFlg = true;
-                return false;
+//            } else if (voyage != object["voyNo"]) {
+//                $.modal.alertError("Số chuyến không được khác nhau!");
+//                errorFlg = true;
+//                return false;
             } else if (pod != object["dischargePort"]) {
                 $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
                 errorFlg = true;
@@ -877,24 +896,35 @@ function getDataFromTable(isValidate) {
         }
         opecode = object["opeCode"];
         vessel = object["vslNm"];
-        voyage = object["voyNo"];
+//        voyage = object["voyNo"];
         pod = object["dischargePort"];
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
-        shipmentDetail.sztp = object["sztp"];
+        let sizeType = object["sztp"].split(": ");
+        shipmentDetail.sztp = sizeType[0];
+        shipmentDetail.sztpDefine = sizeType[1];
         let carrier = object["opeCode"].split(": ");
         shipmentDetail.opeCode = carrier[0];
         shipmentDetail.carrierName = carrier[1];
         shipmentDetail.expiredDem = expiredDem.getTime();
         shipmentDetail.consignee = object["consignee"];
-        shipmentDetail.dischargePort = object["dischargePort"].split(":")[0];
+        shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
         shipmentDetail.remark = object["remark"];
-        shipmentDetail.voyNo = object["voyNo"];
-        let vsl = object["vslNm"].split(": ");
-        shipmentDetail.vslNm = vsl[0];
-        shipmentDetail.vslName = vsl[1];
+//        shipmentDetail.voyNo = object["voyNo"];
+//        let vsl = object["vslNm"].split(": ");
+//        shipmentDetail.vslNm = vsl[0];
+//        shipmentDetail.vslName = vsl[1];
+        for (let i= 0; i < berthplanList.length;i++){
+        	if(object["vslNm"] == berthplanList[i].vslAndVoy){
+        		shipmentDetail.vslNm = berthplanList[i].vslNm;
+        		shipmentDetail.voyNo = berthplanList[i].voyNo;
+        		shipmentDetail.year = berthplanList[i].year;
+        		shipmentDetail.vslName = berthplanList[i].vslAndVoy.split(" - ")[1];
+        		shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
+        	}
+        }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];

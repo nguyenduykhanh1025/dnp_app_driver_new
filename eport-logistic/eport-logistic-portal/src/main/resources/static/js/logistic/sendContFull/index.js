@@ -51,7 +51,7 @@ var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dang
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
     //DEFAULT SEARCH FOLLOW DATE
-    let fromMonth = (new Date().getMonth()+1 < 10) ? "0" + (new Date().getMonth()+1) : new Date().getMonth()+1;
+    let fromMonth = (new Date().getMonth() < 10) ? "0" + (new Date().getMonth()) : new Date().getMonth();
     let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
     $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
     $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
@@ -460,13 +460,13 @@ function configHandson() {
                 case 2:
                     return '<span>Container No</span><span style="color: red;">(*)</span>';
                 case 3:
-                    return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
-                case 4:
-                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
-                case 5:
-                    return '<span>Tàu và Chuyến</span><span style="color: red;">(*)</span>';
-                case 6:
                     return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+                case 4:
+                    return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
+                case 5:
+                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+                case 6:
+                    return '<span>Tàu và Chuyến</span><span style="color: red;">(*)</span>';
                 case 7:
                     return "Nhiệt Độ";
                 case 8:
@@ -479,7 +479,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 110, 100, 200, 150, 200, 150, 100, 100, 150, 150, 200],
+        colWidths: [50, 110, 100, 200, 200, 150, 220, 100, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -497,6 +497,13 @@ function configHandson() {
                 data: "containerNo",
                 strict: true,
                 renderer: containerNoRenderer,
+            },
+            {
+                data: "sztp",
+                type: "autocomplete",
+                source: sizeList,
+                strict: true,
+                renderer: sizeRenderer
             },
             {
                 data: "consignee",
@@ -518,13 +525,6 @@ function configHandson() {
                 source: vslNmList,
                 strict: true,
                 renderer: vslNmRenderer
-            },
-            {
-                data: "sztp",
-                type: "autocomplete",
-                source: sizeList,
-                strict: true,
-                renderer: sizeRenderer
             },
             {
                 data: "temperature",
@@ -572,15 +572,17 @@ function onChange(changes, source) {
     changes.forEach(function (change) {
     	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
         if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
-            //hot.setDataAtCell(change[0], 5, '');//vessel and voyage reset
+            //hot.setDataAtCell(change[0], 6, '');//vessel and voyage reset
+        	$.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/berthplan/ope-code/"+ change[3].split(": ")[0] +"/vessel-voyage/list",
                 method: "GET",
                 success: function (data) {
+                	$.modal.closeLoading();
                     if (data.code == 0) {
                         hot.updateSettings({
                             cells: function (row, col, prop) {
-                                if (row == change[0] && col == 5) {
+                                if (row == change[0] && col == 6) {
                                     let cellProperties = {};
                                     berthplanList = data.berthplanList;
                                     cellProperties.source = data.vesselAndVoyages;
@@ -615,23 +617,23 @@ function onChange(changes, source) {
 
             // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
         } else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-            let vesselAndVoy = hot.getDataAtCell(change[0], 5);
+            let vesselAndVoy = hot.getDataAtCell(change[0], 6);
             //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
             if (vesselAndVoy) {
-            	console.log(vesselAndVoy)
                 let shipmentDetail = new Object();
                 for (let i= 0; i < berthplanList.length;i++){
-                	console.log(berthplanList[i].vslAndVoy)
                 	if(vesselAndVoy == berthplanList[i].vslAndVoy){
                 		shipmentDetail.vslNm = berthplanList[i].vslNm;
                 		shipmentDetail.voyNo = berthplanList[i].voyNo;
                 		shipmentDetail.year = berthplanList[i].year;
+                		$.modal.loading("Đang xử lý ...");
                         $.ajax({
                             url: "/logistic/pods",
                             method: "POST",
                             contentType: "application/json",
                             data: JSON.stringify(shipmentDetail),
                             success: function (data) {
+                            	$.modal.closeLoading();
                                 if (data.code == 0) {
                                     hot.updateSettings({
                                         cells: function (row, col, prop) {
@@ -655,7 +657,7 @@ function onChange(changes, source) {
 //            if (change[3] && change[3].includes("R")) {
 //                hot.updateSettings({
 //                    cells: function (row, col, prop) {
-//                        if (row == change[0] && col == 8) {
+//                        if (row == change[0] && col == 7) {
 //                            let cellProperties = {};
 //                            cellProperties.readOnly = false;
 //                            return cellProperties;
@@ -665,7 +667,7 @@ function onChange(changes, source) {
 //            } else {
 //                hot.updateSettings({
 //                    cells: function (row, col, prop) {
-//                        if (row == change[0] && col == 8) {
+//                        if (row == change[0] && col == 7) {
 //                            let cellProperties = {};
 //                            cellProperties.readOnly = true;
 //                            $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
@@ -982,7 +984,7 @@ function getDataFromTable(isValidate) {
         		shipmentDetail.vslNm = berthplanList[i].vslNm;
         		shipmentDetail.voyNo = berthplanList[i].voyNo;
         		shipmentDetail.year = berthplanList[i].year;
-        		shipmentDetail.vslName = berthplanList[i].vslAndVoy.split(" - ")[0];
+        		shipmentDetail.vslName = berthplanList[i].vslAndVoy.split(" - ")[1];
         		shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
         	}
         }
