@@ -233,16 +233,8 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailListForSendFReceiveE(shipmentDetail);
 			if (shipmentDetails != null) {
-				for(ShipmentDetail i : shipmentDetails) {
-					if(! i.getCarrierName().equals(null)) {
-						i.setOpeCode(i.getOpeCode() + ": " + i.getCarrierName());
-					}
-					if(! i.getVslName().equals(null)) {
-						i.setVslNm(i.getVslNm() + ": " + i.getVslName());
-					}
-				}
 				ajaxResult.put("shipmentDetails", shipmentDetails);
 			} else {
 				ajaxResult = AjaxResult.error();
@@ -409,4 +401,33 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
             shipmentImageService.insertShipmentImage(shipmentImage);
         }
     }
+	@GetMapping("/berthplan/ope-code/list")
+	@ResponseBody
+	public AjaxResult getOpeCodeList() {
+		AjaxResult ajaxResult = success();
+		List<String> opeCodeList = catosApiService.selectOpeCodeListInBerthPlan();
+		if(opeCodeList.size() > 0 ) {
+			ajaxResult.put("opeCodeList", opeCodeList);
+			return ajaxResult;
+		}
+		return error();
+		
+	}
+	
+	@GetMapping("/berthplan/ope-code/{opeCode}/vessel-voyage/list")
+	@ResponseBody
+	public AjaxResult getVesselVoyageList(@PathVariable String opeCode) {
+		AjaxResult ajaxResult = success();
+		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
+		if(berthplanList.size() > 0) {
+			List<String> vesselAndVoyages = new ArrayList<String>();
+			for(ShipmentDetail i : berthplanList) {
+				vesselAndVoyages.add(i.getVslAndVoy());
+			}
+			ajaxResult.put("berthplanList", berthplanList);
+			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+			return ajaxResult;
+		}
+		return error();
+	}
 }

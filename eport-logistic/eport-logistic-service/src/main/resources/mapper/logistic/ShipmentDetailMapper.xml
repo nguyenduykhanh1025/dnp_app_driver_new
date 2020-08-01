@@ -205,7 +205,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         	container_status,
         	sztp || ': ' || sztp_define as sztp,
         	sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name, voy_no, voy_carrier,
-        	vsl_name|| ' - ' || voy_carrier as vsl_nm,
+        	vsl_nm || ' - ' || vsl_name|| ' - ' || voy_carrier as vsl_nm,
         	ope_code || ': ' || carrier_name as ope_code,
         	carrier_name, loading_port, discharge_port, transport_type,
         	empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status,

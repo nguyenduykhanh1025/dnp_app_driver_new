@@ -40,7 +40,7 @@ var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dang
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
     //DEFAULT SEARCH FOLLOW DATE
-    let fromMonth = (new Date().getMonth()+1 < 10) ? "0" + (new Date().getMonth()+1) : new Date().getMonth()+1;
+    let fromMonth = (new Date().getMonth() < 10) ? "0" + (new Date().getMonth()) : new Date().getMonth();
     let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
     $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
     $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
@@ -395,15 +395,15 @@ function configHandson() {
                 case 2:
                     return '<span>Container No</span><span style="color: red;">(*)</span>';
                 case 3:
-                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
                 case 4:
+                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+                case 5:
                     return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
 //                case 5:
 //                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
 //                case 6:
 //                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
-                case 5:
-                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
                 // case 8:
                 //     return '<span>Trọng Tải</span><span style="color: red;">(*)</span>';
                 // case 9:
@@ -412,7 +412,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 120, 100, 100, 200],
+        colWidths: [50, 100, 100, 100, 120, 100, 200],
         filter: "true",
         columns: [
             {
@@ -430,6 +430,13 @@ function configHandson() {
                 data: "containerNo",
                 strict: true,
                 renderer: containerNoRenderer,
+            },
+            {
+                data: "sztp",
+                type: "autocomplete",
+                source: sizeList,
+                strict: true,
+                renderer: sizeRenderer
             },
             {
                 data: "opeCode",
@@ -459,13 +466,6 @@ function configHandson() {
 //                strict: true,
 //                renderer: voyNoRenderer
 //            },
-            {
-                data: "sztp",
-                type: "autocomplete",
-                source: sizeList,
-                strict: true,
-                renderer: sizeRenderer
-            },
             // {
             //     data: "wgt",
             //     type: "numeric",
@@ -624,10 +624,12 @@ function updateLayout() {
 
 // LOAD SHIPMENT DETAIL LIST
 function loadShipmentDetail(id) {
+	$.modal.loading("Đang xử lý ...");
     $.ajax({
         url: prefix + "/shipment/" + id + "/shipment-detail",
         method: "GET",
         success: function (data) {
+        	$.modal.closeLoading();
             if (data.code == 0) {
                 sourceData = data.shipmentDetails;
                 if (rowAmount < sourceData.length) {
