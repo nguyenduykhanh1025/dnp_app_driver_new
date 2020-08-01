@@ -117,7 +117,7 @@
 	
 	<select id="selectPODList" parameterType="ShipmentDetailEntity"	resultType="String">
 		SELECT 
-   			POD AS POD
+   			POD || ': ' ||(SELECT PORT_NM FROM TB_PORT WHERE CNTRY_CD = SUBSTR(POD, 1, 2) AND PORT_CD = SUBSTR(POD, 3)) AS POD
 		FROM TB_VSL_POD
 		WHERE VSL_CD = #{vslNm} and CALL_SEQ = #{voyNo} and CALL_YEAR = #{year}
 		GROUP BY POD

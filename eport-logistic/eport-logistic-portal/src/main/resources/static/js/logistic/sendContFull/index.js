@@ -986,7 +986,7 @@ function getDataFromTable(isValidate) {
         		shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
         	}
         }
-        shipmentDetail.dischargePort = object["dischargePort"].split(":")[0];
+        shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetail.remark = object["remark"];
         shipmentDetail.shipmentId = shipmentSelected.id;
