@@ -45,15 +45,17 @@ function loadTable() {
         },
         height: document.documentElement.clientHeight - 70,
         colHeaders: [
-          "Hãng tàu <i class='red'>(*)</i><br>OPR Code",
-          "Số vận đơn <i class='red'>(*)</i><br> B/L No",
-          "Số Container <i class='red'>(*)</i><br>Container No.",
-          "Tên khách hàng <i class='red'>(*)</i><br>Consignee",
+          "Hãng tàu <br>OPR Code",
+          "Số vận đơn <br> B/L No",
+          "Số Container <br>Container No.",
+          "Tên khách hàng <br>Consignee",
           "Hạn lệnh <i class='red'>(*)</i><br> Valid to date",
-          "Nơi hạ vỏ<br> Empty depot",
-          "Ngày miễn lưu<br> DET Freetime",
+          "Nơi hạ vỏ <i class='red'>(*)</i> <br> Empty depot",
+          "Ngày miễn lưu <i class='red'>(*)</i><br> DET Freetime",
           "Tên tàu<br>Vessel",
           "Chuyến<br>Voyage",
+          "Trọng tải <br> Weight",
+          "Số seal <br> Seal No",
           "Lịch sử",
           "Ghi chú",
           "ID",
@@ -113,6 +115,16 @@ function loadTable() {
             readOnly : true
           },
           {
+            data: "weight",
+            type: "text",
+            readOnly : true
+          },
+          {
+            data: "sealNo",
+            type: "text",
+            readOnly : true
+          },
+          {
             data: "id",
             type: "text",
             renderer: historyRenderer,
@@ -131,7 +143,7 @@ function loadTable() {
         columnSorting: {
           indicator: true,
         },
-        colWidths: [70, 70, 80, 160, 70, 140, 70, 80, 80, 80, 150, 0.1],
+        colWidths: [70, 70, 80, 160, 90, 140, 110, 80, 80, 80, 80, 80, 150, 0.1],
         manualColumnMove: true,
       })
       hot.validateCells()
