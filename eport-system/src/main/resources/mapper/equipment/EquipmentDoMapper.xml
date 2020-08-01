@@ -386,6 +386,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do where process_status = 0) AS waitingBl,
 			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do where process_status = 1) AS completedBl
         from equipment_do
+        FETCH NEXT 1 ROWS ONLY
 	</select>
 	
 	<select id="selectBillOfLadingInfo" parameterType="String" resultMap="EquipmentDoResult">
