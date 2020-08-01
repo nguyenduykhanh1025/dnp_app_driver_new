@@ -226,4 +226,9 @@
 			       AND t.atc IS NULL
 			 GROUP BY PTNR_CODE
 	</select>
+	<select id="checkBookingNoForSendFReceiveE" parameterType="String" resultType="Integer">
+			SELECT COUNT(*)
+			FROM TB_BOOKING
+			WHERE BOOKING_NO = #{bookingNo}
+	</select>
 </mapper>

@@ -52,4 +52,6 @@ public interface ICatosApiService {
 	public List<ProcessBill> getUnitBillByShipmentDetailsForReceiveSSR(List<ShipmentDetail> shipmentDetails);
 	
 	public List<ProcessBill> getUnitBillByShipmentDetailsForSendSSR(List<ShipmentDetail> shipmentDetails);
+	
+	public Integer checkBookingNoForSendFReceiveE(String bookingNo);
 }
