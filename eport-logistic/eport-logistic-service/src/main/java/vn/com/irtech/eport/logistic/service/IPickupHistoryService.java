@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.Pickup;
 import vn.com.irtech.eport.logistic.form.PickupHistoryDetail;
 import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
@@ -103,9 +104,10 @@ public interface IPickupHistoryService
      * 
      * @param driverId
      * @param serviceType
+     * @param shipmentDetail
      * @return Boolean
      */
-    public Boolean checkPossiblePickup(Long driverId, Integer serviceType);
+    public Boolean checkPossiblePickup(Long driverId, Integer serviceType, ShipmentDetail shipmentDetail);
 
     /**
      * Select Delievering Driver Info
