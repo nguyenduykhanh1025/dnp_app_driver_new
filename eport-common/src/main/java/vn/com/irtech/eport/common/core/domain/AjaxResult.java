@@ -4,7 +4,7 @@ import java.util.HashMap;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 操作消息提醒
+ * Operation message reminder
  * 
  * @author admin
  */
@@ -12,25 +12,25 @@ public class AjaxResult extends HashMap<String, Object>
 {
     private static final long serialVersionUID = 1L;
 
-    /** 状态码 */
+    /** status code */
     public static final String CODE_TAG = "code";
 
-    /** 返回内容 */
+    /** Return content */
     public static final String MSG_TAG = "msg";
 
-    /** 数据对象 */
+    /** Data object */
     public static final String DATA_TAG = "data";
 
     /**
-     * 状态类型
+     * State type
      */
     public enum Type
     {
-        /** 成功 */
+        /** success */
         SUCCESS(0),
-        /** 警告 */
+        /** warning */
         WARN(301),
-        /** 错误 */
+        /** error */
         ERROR(500);
         private final int value;
 
@@ -46,17 +46,17 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 初始化一个新创建的 AjaxResult 对象，使其表示一个空消息。
+     * Initialize a newly created AjaxResult object so that it represents an empty message.
      */
     public AjaxResult()
     {
     }
 
     /**
-     * 初始化一个新创建的 AjaxResult 对象
+     * Initialize a newly created AjaxResult object
      * 
-     * @param type 状态类型
-     * @param msg 返回内容
+     * @param type State type
+     * @param msg Return content
      */
     public AjaxResult(Type type, String msg)
     {
@@ -65,11 +65,11 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 初始化一个新创建的 AjaxResult 对象
+     * Initialize a newly created AjaxResult object
      * 
-     * @param type 状态类型
-     * @param msg 返回内容
-     * @param data 数据对象
+     * @param type State type
+     * @param msg Return content
+     * @param data Data object
      */
     public AjaxResult(Type type, String msg, Object data)
     {
@@ -82,9 +82,9 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 返回成功消息
+     * Return success message
      * 
-     * @return 成功消息
+     * @return Success message
      */
     public static AjaxResult success()
     {
@@ -92,9 +92,9 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 返回成功数据
+     * Return success data
      * 
-     * @return 成功消息
+     * @return Success message
      */
     public static AjaxResult success(Object data)
     {
@@ -102,10 +102,10 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 返回成功消息
+     * Return success message
      * 
-     * @param msg 返回内容
-     * @return 成功消息
+     * @param msg Return content
+     * @return Success message
      */
     public static AjaxResult success(String msg)
     {
@@ -113,11 +113,11 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 返回成功消息
+     * Return success message
      * 
-     * @param msg 返回内容
-     * @param data 数据对象
-     * @return 成功消息
+     * @param msg Return content
+     * @param data Data object
+     * @return Success message
      */
     public static AjaxResult success(String msg, Object data)
     {
@@ -125,10 +125,10 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 返回警告消息
+     * Return warning message
      * 
-     * @param msg 返回内容
-     * @return 警告消息
+     * @param msg Return content
+     * @return Warning message
      */
     public static AjaxResult warn(String msg)
     {
@@ -136,11 +136,11 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 返回警告消息
+     * Return warning message
      * 
-     * @param msg 返回内容
-     * @param data 数据对象
-     * @return 警告消息
+     * @param msg Return content
+     * @param data Data object
+     * @return Warning message
      */
     public static AjaxResult warn(String msg, Object data)
     {
@@ -148,7 +148,7 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 返回错误消息
+     * Return error message
      * 
      * @return
      */
@@ -158,10 +158,10 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 返回错误消息
+     * Return error message
      * 
-     * @param msg 返回内容
-     * @return 警告消息
+     * @param msg Return content
+     * @return Warning message
      */
     public static AjaxResult error(String msg)
     {
@@ -169,11 +169,11 @@ public class AjaxResult extends HashMap<String, Object>
     }
 
     /**
-     * 返回错误消息
+     * Return error message
      * 
-     * @param msg 返回内容
-     * @param data 数据对象
-     * @return 警告消息
+     * @param msg Return content
+     * @param data Data object
+     * @return Warning message
      */
     public static AjaxResult error(String msg, Object data)
     {

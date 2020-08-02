@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.common.exception;
 
 /**
- * 业务异常
+ * Business exception
  * 
  * @author admin
  */

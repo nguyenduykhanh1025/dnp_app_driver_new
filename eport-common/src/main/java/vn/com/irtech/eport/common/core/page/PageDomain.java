@@ -3,19 +3,19 @@ package vn.com.irtech.eport.common.core.page;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 分页数据
+ * Paging data
  * 
  * @author admin
  */
 public class PageDomain
 {
-    /** 当前记录起始索引 */
+    /** Current record start index */
     private Integer pageNum;
-    /** 每页显示记录数 */
+    /** Number of records displayed per page */
     private Integer pageSize;
-    /** 排序列 */
+    /** Sort column */
     private String orderByColumn;
-    /** 排序的方向 "desc" 或者 "asc". */
+    /** Sorting direction "desc" or "asc". */
     private String isAsc;
 
     public String getOrderBy()

@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * 全局配置类
+ * Global configuration class
  * 
  * @author admin
  */
@@ -91,7 +91,7 @@ public class Global
     }
 
     /**
-     * 获取头像上传路径
+     * Get avatar upload path
      */
     public static String getAvatarPath()
     {
@@ -99,7 +99,7 @@ public class Global
     }
 
     /**
-     * 获取下载路径
+     * Get download path
      */
     public static String getDownloadPath()
     {
@@ -107,7 +107,7 @@ public class Global
     }
 
     /**
-     * 获取上传路径
+     * Get upload path
      */
     public static String getUploadPath()
     {

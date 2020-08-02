@@ -4,7 +4,7 @@ import vn.com.irtech.eport.common.utils.MessageUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 基础异常
+ * Basic exception
  * 
  * @author admin
  */
@@ -13,22 +13,22 @@ public class BaseException extends RuntimeException
     private static final long serialVersionUID = 1L;
 
     /**
-     * 所属模块
+     * Owning module
      */
     private String module;
 
     /**
-     * 错误码
+     * error code
      */
     private String code;
 
     /**
-     * 错误码对应的参数
+     * Parameters corresponding to the error code
      */
     private Object[] args;
 
     /**
-     * 错误消息
+     * error information
      */
     private String defaultMessage;
 

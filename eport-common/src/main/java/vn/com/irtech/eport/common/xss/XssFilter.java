@@ -16,19 +16,19 @@ import javax.servlet.http.HttpServletResponse;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 防止XSS攻击的过滤器
+ * Filter to prevent XSS attacks
  * 
  * @author admin
  */
 public class XssFilter implements Filter
 {
     /**
-     * 排除链接
+     * Exclude link
      */
     public List<String> excludes = new ArrayList<>();
 
     /**
-     * xss过滤开关
+     * xss filter switch
      */
     public boolean enabled = false;
 

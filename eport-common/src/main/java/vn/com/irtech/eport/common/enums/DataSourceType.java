@@ -1,19 +1,19 @@
 package vn.com.irtech.eport.common.enums;
 
 /**
- * 数据源
+ * data source
  * 
  * @author admin
  */
 public enum DataSourceType
 {
     /**
-     * 主库
+     * master
      */
     MASTER,
 
     /**
-     * 从库
+     * slave
      */
     SLAVE
 }

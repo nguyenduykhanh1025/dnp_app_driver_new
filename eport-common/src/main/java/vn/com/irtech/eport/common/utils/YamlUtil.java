@@ -11,7 +11,7 @@ import org.yaml.snakeyaml.Yaml;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 配置处理工具类
+ * Configuration processing tools
  * 
  * @author yml
  */

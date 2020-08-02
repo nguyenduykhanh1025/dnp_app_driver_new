@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.common.exception.file;
 
 /**
- * 文件名称超长限制异常类
+ * File name overlength limit exception class
  * 
  * @author admin
  */
