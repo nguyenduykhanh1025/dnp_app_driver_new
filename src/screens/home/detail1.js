@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import {
@@ -41,6 +42,12 @@ import navigation from '@/utils/navigation';
 import {
   SCANNER_QR,
 } from '@/modules/home/constants';
+import {
+  callApi,
+} from '@/requests';
+import {
+  getToken,
+} from '@/stores';
 
 const next = require('@/assets/icons/icon_next.png')
 
@@ -48,55 +55,42 @@ export default class DetailScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active1: false,
-      active2: false,
-      active3: false,
-      active4: false,
-      data: [
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-      ]
+      data: []
     };
+    this.token = null;
+  }
+
+  componentDidMount = async () => {
+    this.token = await getToken();
+    console.log('this.props.navigation.state.params.serviceType', this.props.navigation.state.params.serviceType)
+    this.onGetContainerList(this.props.navigation.state.params.serviceType);
+  }
+
+  onGetContainerList = async (serviceType) => {
+    const params = {
+      api: 'shipments/service-type/' + serviceType,
+      param: '',
+      token: this.token,
+      method: 'GET'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('resultonGetContainerList', result)
+    if (result.code == 0) {
+      await this.setState({
+        data: result.shipmentList,
+      })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
   }
 
   renderItem = (item, index) => (
     <Item
       data={item.item}
       onPress={() => {
-        NavigationService.navigate(mainStack.detail11, {})
+        NavigationService.navigate(mainStack.detail11, { shipmentId: item.item.batchId })
       }}
     />
   )

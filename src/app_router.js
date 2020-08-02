@@ -7,6 +7,8 @@ import Geolocation from '@react-native-community/geolocation';
 
 import { AppContainer } from './navigation/root-switch';
 import NavigationService from './utils/navigation';
+import { callApi } from '@/requests';
+import { getGPSEnable, getToken } from '@/stores';
 
 import { CheckInternetEvery } from '@/utils';
 import BackgroundTimer from 'react-native-background-timer';
@@ -19,35 +21,73 @@ class AppAppContainer extends React.Component {
             isCheck: false,
             isConnected: true,
             appState: AppState.currentState,
+            GPSEnable: false,
         };
+        this.token = null;
     }
 
-    componentDidMount = () => {
-        // BackgroundTimer.runBackgroundTimer(() => {
-        //     console.log('ádasdasdasdasdasd')
-        // },
-        //     3000);
+    onPushLocation = async (x, y) => {
+        const params = {
+            api: 'location',
+            param: {
+                x: x,
+                y: y
+            },
+            token: this.token,
+            method: 'POST'
+        }
+        var result = undefined;
+        result = await callApi(params);
+        console.log('resultonPushLocation', result)
+        if (!result.code == 0) {
+        }
+        else {
+            console.log('erronPushLocation', result.msg)
+        }
+    }
+
+    componentDidMount = async () => {
+        this.token = await getToken();
+        var x = null;
+        var y = null;
+        var speed = null;
         CheckInternetEvery();
+        var GPSEnable = await getGPSEnable();
+        console.log('GPSEnable', GPSEnable)
         Geolocation.setRNConfiguration({
             authorizationLevel: 'always'
         });
-
-        Geolocation.getCurrentPosition(
-            info => {
-                Alert.alert('GPS location', JSON.stringify(info))
-            },
-            error => {
-                Alert.alert('Error', JSON.stringify(error))
-            },
-            Platform.OS === 'android' ? {}
-                :
-                {
-                    enableHighAccuracy: true,
-                    timeout: 200,
-                    distanceFilter: 0.5,
-                    useSignificantChanges: true,
+        if (GPSEnable == 'true') {
+            Geolocation.getCurrentPosition(
+                info => {
+                    // Alert.alert('GPS location', JSON.stringify(info))
+                    var GPS = info.coords;
+                    // console.log('GPS', GPS)
+                    x = GPS.latitude;
+                    y = GPS.longitude;
+                    speed = GPS.speed;
+                    this.onPushLocation(GPS.latitude, GPS.longitude)
                 },
-        )
+                error => {
+                    // Alert.alert('Error', JSON.stringify(error))
+                },
+                Platform.OS === 'android' ? {}
+                    :
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 200,
+                        distanceFilter: 0.5,
+                        useSignificantChanges: true,
+                    },
+            )
+
+            BackgroundTimer.runBackgroundTimer(() => {
+                console.log('x', x)
+                console.log('y', y)
+                this.onPushLocation(x, y);
+            },
+                120000);
+        }
     }
 
 

@@ -54,14 +54,14 @@ export default class ResultScreen extends Component {
   }
 
   componentDidMount() {
-    console.log('this.props.navigation.state.params', this.props.navigation.state.params.Data[0])
+    var Data = this.props.navigation.state.params.Data[0];
     this.setState({
-      "chassisNo": this.props.navigation.state.params.Data[0].chassisNo,
-      "contNo": this.props.navigation.state.params.Data[0].contNo,
-      "fe": this.props.navigation.state.params.Data[0].fe,
-      "sztp": this.props.navigation.state.params.Data[0].sztp,
-      "truckNo": this.props.navigation.state.params.Data[0].truckNo,
-      "yardPosition": this.props.navigation.state.params.Data[0].yardPosition
+      "chassisNo": Data && Data.chassisNo,
+      "contNo": Data && Data.contNo,
+      "fe": Data && Data.fe,
+      "sztp": Data && Data.sztp,
+      "truckNo": Data && Data.truckNo,
+      "yardPosition": Data && Data.yardPosition
     })
   }
 
