@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.shiro.session.ExpiredSessionException;
 import org.apache.shiro.session.InvalidSessionException;
@@ -13,6 +14,7 @@ import org.apache.shiro.session.mgt.SessionKey;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import vn.com.irtech.eport.common.constant.ShiroConstants;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.bean.BeanUtils;
@@ -22,7 +24,8 @@ import vn.com.irtech.eport.system.domain.SysUserOnline;
 import vn.com.irtech.eport.system.service.ISysUserOnlineService;
 
 /**
- * 主要是在此如果会话的属性修改了 就标识下其修改了 然后方便 OnlineSessionDao同步
+ * The main reason is that if the properties of the session are modified, 
+ * mark the modification and then facilitate the synchronization of OnlineSessionDao
  * 
  * @author admin
  */
@@ -48,7 +51,7 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
             return false;
         }
         String attributeKeyStr = attributeKey.toString();
-        // 优化 flash属性没必要持久化
+        // Optimized flash properties do not need to be persistent
         if (attributeKeyStr.startsWith("org.springframework"))
         {
             return false;
@@ -90,7 +93,7 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
     }
 
     /**
-     * 验证session是否有效 用于删除过期session
+     * Verify that the session is valid for deleting expired sessions
      */
     @Override
     public void validateSessions()
@@ -106,7 +109,7 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
         Date expiredDate = DateUtils.addMilliseconds(new Date(), 0 - timeout);
         ISysUserOnlineService userOnlineService = SpringUtils.getBean(ISysUserOnlineService.class);
         List<SysUserOnline> userOnlineList = userOnlineService.selectOnlineByExpired(expiredDate);
-        // 批量过期删除
+        // Batch expiration delete
         List<String> needOfflineIdList = new ArrayList<String>();
         for (SysUserOnline userOnline : userOnlineList)
         {

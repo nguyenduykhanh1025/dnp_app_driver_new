@@ -15,7 +15,7 @@ import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.service.ISysUserService;
 
 /**
- * 注册校验方法
+ * Registration verification method
  * 
  * @author admin
  */
@@ -29,7 +29,7 @@ public class SysRegisterService
     private SysPasswordService passwordService;
 
     /**
-     * 注册
+     * registered
      */
     public String register(SysUser user)
     {

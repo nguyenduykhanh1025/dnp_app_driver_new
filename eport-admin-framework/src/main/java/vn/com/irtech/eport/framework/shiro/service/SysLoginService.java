@@ -22,7 +22,7 @@ import vn.com.irtech.eport.system.domain.SysUser;
 import vn.com.irtech.eport.system.service.ISysUserService;
 
 /**
- * 登录校验方法
+ * Login verification method
  * 
  * @author admin
  */
@@ -36,23 +36,23 @@ public class SysLoginService
     private ISysUserService userService;
 
     /**
-     * 登录
+     * log in
      */
     public SysUser login(String username, String password)
     {
-        // 验证码校验
+        // Verification code verification
         if (!StringUtils.isEmpty(ServletUtils.getRequest().getAttribute(ShiroConstants.CURRENT_CAPTCHA)))
         {
             AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.error")));
             throw new CaptchaException();
         }
-        // 用户名或密码为空 错误
+        // Username or password is empty error
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password))
         {
             AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("not.null")));
             throw new UserNotExistsException();
         }
-        // 密码如果不在指定范围内 错误
+        // If the password is not in the specified range, error
         if (password.length() < UserConstants.PASSWORD_MIN_LENGTH
                 || password.length() > UserConstants.PASSWORD_MAX_LENGTH)
         {
@@ -60,7 +60,7 @@ public class SysLoginService
             throw new UserPasswordNotMatchException();
         }
 
-        // 用户名不在指定范围内 错误
+        // Username is not in the specified range error
         if (username.length() < UserConstants.USERNAME_MIN_LENGTH
                 || username.length() > UserConstants.USERNAME_MAX_LENGTH)
         {
@@ -68,7 +68,7 @@ public class SysLoginService
             throw new UserPasswordNotMatchException();
         }
 
-        // 查询用户信息
+        // Query user information
         SysUser user = userService.selectUserByLoginName(username);
 
         if (user == null && maybeMobilePhoneNumber(username))
@@ -125,7 +125,7 @@ public class SysLoginService
     }
 
     /**
-     * 记录登录信息
+     * Record login information
      */
     public void recordLoginInfo(SysUser user)
     {
