@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.Pickup;
 import vn.com.irtech.eport.logistic.form.PickupHistoryDetail;
 import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
@@ -153,10 +154,12 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
      * Check possible pickup
      * 
      * @param driverId
+     * @param serviceType
+     * @param shipmentDetail
      * @return Boolean
      */
     @Override
-    public Boolean checkPossiblePickup(Long driverId, Integer serviceType) {
+    public Boolean checkPossiblePickup(Long driverId, Integer serviceType, ShipmentDetail shipmentDetail) {
         List<Pickup> pickups = pickupHistoryMapper.selectPickupListByDriverId(driverId);
         // Empty can pick
         if (pickups.isEmpty()) {
@@ -171,14 +174,15 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
         // Check condition to pickup
         int countCont20 = 0;
         for (Pickup pickup: pickups) {
-            if (pickup.getServiceType() == serviceType) {
-                if ("20G0".equals(pickup.getSztp())) {
-                    countCont20++;
-                } else {
+            if ((pickup.getServiceType() % 2) == (serviceType % 2)) {
+                if (pickup.getSztp() == null || !"20".equals(pickup.getSztp().substring(0, 2)) || shipmentDetail == null
+                        || !"20".equals(shipmentDetail.getSztp().substring(0, 2))) {
                     countCont20 += 2;
+                } else {
+                    countCont20++;
                 }
             }
-            
+
             // Is gate in but not confirm finish yet, can't pick
             if (pickup.getStatus() == 2) {
                 return false;

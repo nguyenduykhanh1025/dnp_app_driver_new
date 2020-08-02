@@ -36,4 +36,6 @@ public class MessageConsts {
 
 	public static final String E0017 = "E0017";
 
+	public static final String E0018 = "E0018";
+
 }
