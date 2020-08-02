@@ -18,7 +18,7 @@ import vn.com.irtech.eport.framework.manager.factory.AsyncFactory;
 import vn.com.irtech.eport.system.domain.SysUser;
 
 /**
- * 登录密码方法
+ * Login password method
  * 
  * @author admin
  */

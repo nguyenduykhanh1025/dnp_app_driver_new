@@ -11,7 +11,7 @@ import vn.com.irtech.eport.common.json.JSON;
 import vn.com.irtech.eport.common.utils.IpUtils;
 
 /**
- * 处理并记录日志文件
+ * Process and record log files
  * 
  * @author admin
  */
@@ -21,7 +21,7 @@ public class LogUtils
     public static final Logger ACCESS_LOG = LoggerFactory.getLogger("sys-access");
 
     /**
-     * 记录访问日志 [username][jsessionid][ip][accept][UserAgent][url][params][Referer]
+     * Record access log [username][jsessionid][ip][accept][UserAgent][url][params][Referer]
      *
      * @param request
      * @throws Exception
@@ -49,7 +49,7 @@ public class LogUtils
     }
 
     /**
-     * 记录异常错误 格式 [exception]
+     * Record abnormal error format [exception]
      *
      * @param message
      * @param e
@@ -65,7 +65,7 @@ public class LogUtils
     }
 
     /**
-     * 记录页面错误 错误日志记录 [page/eception][username][statusCode][errorMessage][servletName][uri][exceptionName][ip][exception]
+     * Record page fault Error log record [page/eception][username][statusCode][errorMessage][servletName][uri][exceptionName][ip][exception]
      *
      * @param request
      */

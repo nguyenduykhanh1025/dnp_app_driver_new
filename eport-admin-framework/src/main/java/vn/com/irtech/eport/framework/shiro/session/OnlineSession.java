@@ -4,7 +4,7 @@ import org.apache.shiro.session.mgt.SimpleSession;
 import vn.com.irtech.eport.common.enums.OnlineStatus;
 
 /**
- * 在线用户会话属性
+ * Online user session attributes
  * 
  * @author admin
  */
@@ -12,31 +12,31 @@ public class OnlineSession extends SimpleSession
 {
     private static final long serialVersionUID = 1L;
 
-    /** 用户ID */
+    /** User ID */
     private Long userId;
 
-    /** 用户名称 */
+    /** user name */
     private String loginName;
 
-    /** 部门名称 */
+    /** Department name */
     private String deptName;
 	
-	/** 用户头像 */
+	/** profile picture */
 	private String avatar;
 
-    /** 登录IP地址 */
+    /** Login IP address */
     private String host;
 
-    /** 浏览器类型 */
+    /** Browser type */
     private String browser;
 
-    /** 操作系统 */
+    /** operating system */
     private String os;
 
-    /** 在线状态 */
+    /** online status */
     private OnlineStatus status = OnlineStatus.on_line;
 
-    /** 属性是否改变 优化session数据同步 */
+    /** Whether the attribute is changed to optimize session data synchronization */
     private transient boolean attributeChanged = false;
 
     @Override

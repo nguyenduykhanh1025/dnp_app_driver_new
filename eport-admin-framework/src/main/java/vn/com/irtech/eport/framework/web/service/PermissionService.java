@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * RuoYi首创 js调用 thymeleaf 实现按钮权限可见性
+ * js calls thymeleaf to realize button permission visibility
  * 
  * @author admin
  */
@@ -20,7 +20,7 @@ public class PermissionService
 {
     private static final Logger log = LoggerFactory.getLogger(PermissionService.class);
 
-    /** 没有权限，hidden用于前端隐藏按钮 */
+    /** Without permission, hidden is used to hide buttons on the front end */
     public static final String NOACCESS = "hidden";
 
     private static final String ROLE_DELIMETER = ",";
@@ -28,10 +28,10 @@ public class PermissionService
     private static final String PERMISSION_DELIMETER = ",";
 
     /**
-     * 验证用户是否具备某权限，无权限返回hidden用于前端隐藏（如需返回Boolean使用isPermitted）
+     * Verify whether the user has a certain permission, and return to hidden for front-end hiding if there is no permission (if you need to return Boolean, use isPermitted)
      * 
-     * @param permission 权限字符串
-     * @return 用户是否具备某权限
+     * @param permission Permission string
+     * @return Does the user have certain permissions
      */
     public String hasPermi(String permission)
     {
