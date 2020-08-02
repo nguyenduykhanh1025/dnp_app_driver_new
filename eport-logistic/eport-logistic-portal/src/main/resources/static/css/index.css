@@ -1,0 +1,18 @@
+.brand-title {
+  font-size: 17px;
+}
+
+#logo-img {
+  margin-right: 10px;
+}
+
+#main-logo {
+  padding-top: 2px;
+  padding-right: 10px;
+  padding-bottom: 0;
+}
+
+.no-hover:hover {
+  background-color: #3c8dbc !important;
+  cursor: default;
+}
