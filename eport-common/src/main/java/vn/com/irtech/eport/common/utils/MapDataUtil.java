@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Map通用处理方法
+ * Map general processing method
  * 
  * @author admin
  */

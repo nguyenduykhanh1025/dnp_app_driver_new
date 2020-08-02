@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 通用消息对象，基于Map实现的可嵌套数据结构。 支持JSON数据结构。
+ * General message object, a nestable data structure based on Map implementation. Support JSON data structure.
  * 
  * @author admin
  */
@@ -23,7 +23,7 @@ public class JSONObject extends LinkedHashMap<String, Object>
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
-     * 数组结构。
+     * 数组结Array structure.构。
      */
     public static class JSONArray extends ArrayList<Object>
     {
@@ -95,9 +95,9 @@ public class JSONObject extends LinkedHashMap<String, Object>
     }
 
     /**
-     * 转换为紧凑格式的字符串。
+     * A string converted to compact format.
      * 
-     * @return 返回本对象紧凑格式字符串。
+     * @return Returns the compact format string of this object.
      */
     public String toCompactString()
     {
@@ -112,10 +112,10 @@ public class JSONObject extends LinkedHashMap<String, Object>
     }
 
     /**
-     * 获取指定字段的整数值。如果字段不存在，或者无法转换为整数，返回null。
+     * Get the integer value of the specified field. If the field does not exist or cannot be converted to an integer, null is returned.
      * 
-     * @param name 字段名，支持多级。
-     * @return 返回指定的整数值，或者null。
+     * @param name Field name, supports multiple levels.
+     * @return Returns the specified integer value, or null.
      */
     public Integer intValue(final String name)
     {
@@ -123,11 +123,11 @@ public class JSONObject extends LinkedHashMap<String, Object>
     }
 
     /**
-     * 获取指定字段的整数值。如果字段不存在，或者无法转换为整数，返回defaultValue。
+     * Get the integer value of the specified field. If the field does not exist or cannot be converted to an integer, the defaultValue is returned.
      * 
-     * @param name 字段名，支持多级。
-     * @param defaultValue 查询失败时，返回的值。
-     * @return 返回指定的整数值，或者defaultValue。
+     * @param name Field name, supports multiple levels.
+     * @param defaultValue The value returned when the query fails.
+     * @return Returns the specified integer value, or defaultValue.
      */
     public Integer intValue(final String name, final Integer defaultValue)
     {

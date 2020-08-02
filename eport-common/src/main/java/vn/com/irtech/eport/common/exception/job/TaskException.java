@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.common.exception.job;
 
 /**
- * 计划策略异常
+ * Planning strategy abnormal
  * 
  * @author admin
  */

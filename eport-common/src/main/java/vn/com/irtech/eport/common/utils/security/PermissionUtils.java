@@ -12,7 +12,7 @@ import vn.com.irtech.eport.common.constant.PermissionConstants;
 import vn.com.irtech.eport.common.utils.MessageUtils;
 
 /**
- * permission 工具类
+ * permission utils
  * 
  * @author admin
  */
@@ -21,40 +21,40 @@ public class PermissionUtils
     private static final Logger log = LoggerFactory.getLogger(PermissionUtils.class);
 
     /**
-     * 查看数据的权限
+     * Permission to view data
      */
     public static final String VIEW_PERMISSION = "no.view.permission";
 
     /**
-     * 创建数据的权限
+     * Permission to create data
      */
     public static final String CREATE_PERMISSION = "no.create.permission";
 
     /**
-     * 修改数据的权限
+     * Permission to modify data
      */
     public static final String UPDATE_PERMISSION = "no.update.permission";
 
     /**
-     * 删除数据的权限
+     * Permission to delete data
      */
     public static final String DELETE_PERMISSION = "no.delete.permission";
 
     /**
-     * 导出数据的权限
+     * Permission to export data
      */
     public static final String EXPORT_PERMISSION = "no.export.permission";
 
     /**
-     * 其他数据的权限
+     * Access to other data
      */
     public static final String PERMISSION = "no.permission";
 
     /**
-     * 权限错误消息提醒
+     * Permission error message reminder
      * 
-     * @param permissionsStr 错误信息
-     * @return 提示信息
+     * @param permissionsStr Error message
+     * @return Prompt information
      */
     public static String getMsg(String permissionsStr)
     {
@@ -85,10 +85,10 @@ public class PermissionUtils
     }
 
     /**
-     * 返回用户属性值
+     * Return user attribute value
      *
-     * @param property 属性名称
-     * @return 用户属性值
+     * @param property Attribute name
+     * @return User attribute value
      */
     public static Object getPrincipalProperty(String property)
     {

@@ -23,7 +23,7 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.sql.SqlUtil;
 
 /**
- * web层通用数据处理
+ * Web layer general data processing
  * 
  * @author admin
  */
@@ -32,12 +32,12 @@ public class BaseController
     protected final Logger logger = LoggerFactory.getLogger(BaseController.class);
 
     /**
-     * 将前台传递过来的日期格式的字符串，自动转化为Date类型
+     * The date format string passed from the front desk is automatically converted to Date type
      */
     @InitBinder
     public void initBinder(WebDataBinder binder)
     {
-        // Date 类型转换
+        // Date type conversion
         binder.registerCustomEditor(Date.class, new PropertyEditorSupport()
         {
             @Override
@@ -49,7 +49,7 @@ public class BaseController
     }
 
     /**
-     * 设置请求分页数据
+     * Set request paging data
      */
     protected void startPage()
     {
@@ -71,7 +71,7 @@ public class BaseController
     }
 
     /**
-     * 设置请求排序数据
+     * Set request sort data
      */
     protected void startOrderBy()
     {
@@ -84,7 +84,7 @@ public class BaseController
     }
 
     /**
-     * 获取request
+     * Get request
      */
     public HttpServletRequest getRequest()
     {
@@ -92,7 +92,7 @@ public class BaseController
     }
 
     /**
-     * 获取response
+     * Get response
      */
     public HttpServletResponse getResponse()
     {
@@ -100,7 +100,7 @@ public class BaseController
     }
 
     /**
-     * 获取session
+     * Get session
      */
     public HttpSession getSession()
     {
@@ -108,7 +108,7 @@ public class BaseController
     }
 
     /**
-     * 响应请求分页数据
+     * Paging data in response to requests
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     protected TableDataInfo getDataTable(List<?> list)
@@ -121,10 +121,10 @@ public class BaseController
     }
 
     /**
-     * 响应返回结果
+     * Response return result
      * 
-     * @param rows 影响行数
-     * @return 操作结果
+     * @param rows Number of affected rows
+     * @return Operation result
      */
     protected AjaxResult toAjax(int rows)
     {
@@ -132,10 +132,10 @@ public class BaseController
     }
 
     /**
-     * 响应返回结果
+     * Response return result
      * 
-     * @param result 结果
-     * @return 操作结果
+     * @param result result
+     * @return Operation result
      */
     protected AjaxResult toAjax(boolean result)
     {
@@ -143,7 +143,7 @@ public class BaseController
     }
 
     /**
-     * 返回成功
+     * Return success
      */
     public AjaxResult success()
     {
@@ -151,7 +151,7 @@ public class BaseController
     }
 
     /**
-     * 返回失败消息
+     * Return failure message
      */
     public AjaxResult error()
     {
@@ -159,7 +159,7 @@ public class BaseController
     }
 
     /**
-     * 返回成功消息
+     * Return success message
      */
     public AjaxResult success(String message)
     {
@@ -167,7 +167,7 @@ public class BaseController
     }
 
     /**
-     * 返回失败消息
+     * Return failure message
      */
     public AjaxResult error(String message)
     {
@@ -175,7 +175,7 @@ public class BaseController
     }
 
     /**
-     * 返回错误码消息
+     * Return error code message
      */
     public AjaxResult error(Type type, String message)
     {
@@ -183,7 +183,7 @@ public class BaseController
     }
 
     /**
-     * 页面跳转
+     * Page jump
      */
     public String redirect(String url)
     {

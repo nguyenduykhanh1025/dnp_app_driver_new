@@ -117,7 +117,7 @@ public class SysLoginService
 
     private boolean maybeMobilePhoneNumber(String username)
     {
-        if (!username.matches(UserConstants.MOBILE_PHONE_NUMBER_PATTERN))
+        if (!username.matches(UserConstants.MOBILE_PHONE_PATTERN))
         {
             return false;
         }
