@@ -15,8 +15,7 @@ import {
   heightPercentageToDP as hs,
   fontSizeValue as fs,
 } from '@/commons';
-import { righticon } from '@/assets/icons'
-import { hasSystemFeature } from 'react-native-device-info';
+import { righticon } from '@/assets/icons';
 
 export default class Item extends Component {
   render() {
@@ -35,7 +34,7 @@ export default class Item extends Component {
                     Mã lô
                   </Text>
                   <Text style={styles.TextValue1}>
-                    {data.LoCode}
+                    {data.batchId}
                   </Text>
                 </View>
               </View>
@@ -48,7 +47,7 @@ export default class Item extends Component {
                     Số bill
                   </Text>
                   <Text style={styles.TextValue2}>
-                    {data.BillNumber}
+                    {data.blNo}
                   </Text>
                 </View>
               </View>
@@ -63,10 +62,10 @@ export default class Item extends Component {
                     alignItems: 'center'
                   }}>
                     <Text style={styles.TextLabel}>
-                      Type
+                      FE
                     </Text>
                     <Text style={styles.TextValue2}>
-                      {data.Type}
+                      {data.fe}
                     </Text>
                   </View>
                   <View style={{
@@ -74,10 +73,10 @@ export default class Item extends Component {
                     alignItems: 'center'
                   }}>
                     <Text style={styles.TextLabel}>
-                      Size
+                      SizeType
                     </Text>
                     <Text style={styles.TextValue2}>
-                      {data.Size}
+                      {data.sztp}
                     </Text>
                   </View>
                   <View style={{
@@ -88,7 +87,7 @@ export default class Item extends Component {
                       Số lượng
                     </Text>
                     <Text style={styles.TextValue2}>
-                      {data.SL}
+                      {data.contAmount}
                     </Text>
                   </View>
                 </View>

@@ -42,6 +42,12 @@ import navigation from '@/utils/navigation';
 import {
   SCANNER_QR,
 } from '@/modules/home/constants';
+import {
+  callApi
+} from '@/requests';
+import {
+  getToken
+} from '@/stores';
 
 const next = require('@/assets/icons/icon_next.png')
 
@@ -49,48 +55,35 @@ export default class DetailScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active1: false,
-      active2: false,
-      active3: false,
-      active4: false,
-      data: [
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-      ]
+      data: [],
     };
+    this.token = null;
+  }
+
+  componentDidMount = async () => {
+    this.token = await getToken();
+    console.log('this.props.navigation.state.params.shipmentId', this.props.navigation.state.params.shipmentId)
+    this.onGetPickupList(this.props.navigation.state.params.shipmentId);
+  }
+
+  onGetPickupList = async (shipmentId) => {
+    const params = {
+      api: 'shipment/' + shipmentId + '/pickup',
+      param: '',
+      token: this.token,
+      method: 'GET'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('resultonGetPickupList', result)
+    if (result.code == 0) {
+      await this.setState({
+        // data: result.shipmentList,
+      })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
   }
 
   renderItem = (item, index) => (
@@ -120,12 +113,12 @@ export default class DetailScreen extends Component {
             showsVerticalScrollIndicator={false}
           >
             <Text style={styles.TitleLine}>Cont chung</Text>
-            <ItemSingle
+            {/* <ItemSingle
               data={this.state.data[0]}
               onPress={() => {
                 NavigationService.navigate(mainStack.detail2, {})
               }}
-            />
+            /> */}
             <Text style={[
               styles.TitleLine,
               { marginTop: hs(25) }
@@ -135,14 +128,14 @@ export default class DetailScreen extends Component {
             {/*
             ---------------------------------------------------- 
            */}
-            <FlatList
+            {/* <FlatList
               data={this.state.data}
               renderItem={
                 (item, index) =>
                   this.renderItem(item, index)
               }
               showsVerticalScrollIndicator={false}
-            />
+            /> */}
           </ScrollView>
           {/* <View
             style={{

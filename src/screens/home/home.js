@@ -113,7 +113,7 @@ export default class HomeScreen extends Component {
     <Item
       data={item.item}
       onPress={() => {
-        NavigationService.navigate(mainStack.result, {})
+        NavigationService.navigate(mainStack.result, { Data: [] })
       }}
     />
   )
@@ -256,7 +256,7 @@ export default class HomeScreen extends Component {
                       </View>
 
                       <TouchableOpacity
-                        onPress={() => { NavigationService.navigate(mainStack.result, {}) }}
+                        onPress={() => { NavigationService.navigate(mainStack.result, { Data: [] }) }}
                       >
                         <View style={styles.PorterItemContainer}>
                           <View style={styles.PorterItemLeft}>
@@ -278,7 +278,7 @@ export default class HomeScreen extends Component {
                         </View>
                       </TouchableOpacity>
                       <TouchableOpacity
-                        onPress={() => { NavigationService.navigate(mainStack.resultReturn, {}) }}
+                        onPress={() => { NavigationService.navigate(mainStack.resultReturn, { Data: [] }) }}
                       >
                         <View style={styles.PorterItemContainer}>
                           <View style={styles.PorterItemLeft}>

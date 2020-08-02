@@ -12,6 +12,8 @@ const KEY_PASSWORD = 'pwd';
 const KEY_USERID = 'id';
 const KEY_NAME = 'name';
 const KEY_GPS_ENABLE = 'KEY_GPS_ENABLE';
+const KEY_TRUCK = 'KEY_TRUCK';
+const KEY_CHASSIS = 'KEY_CHASSIS';
 
 
 export const saveToken = (token) => {
@@ -52,6 +54,22 @@ export const saveGPSEnable = (gps) => {
 
 export const getGPSEnable = () => {
     return AsyncStorage.getItem(KEY_GPS_ENABLE);
+}
+
+export const saveTruck = (item) => {
+    AsyncStorage.setItem(KEY_TRUCK, item);
+}
+
+export const getTruck = () => {
+    return AsyncStorage.getItem(KEY_TRUCK);
+}
+
+export const saveChassis = (item) => {
+    AsyncStorage.setItem(KEY_CHASSIS, item);
+}
+
+export const getChassis = () => {
+    return AsyncStorage.getItem(KEY_CHASSIS);
 }
 
 export const getUserID = () => {

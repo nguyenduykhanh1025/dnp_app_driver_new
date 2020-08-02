@@ -43,7 +43,9 @@ import {
   SCANNER_QR,
 } from '@/modules/home/constants';
 import {
-  getToken
+  getToken,
+  saveChassis,
+  saveTruck,
 } from '@/stores';
 import {
   callApi
@@ -94,40 +96,16 @@ export default class DetailScreen extends Component {
   onSelectService = async (value) => {
     switch (value) {
       case 1:
-        // await this.setState({
-        //   active1: true,
-        //   active2: false,
-        //   active3: false,
-        //   active4: false,
-        // })
-        NavigationService.navigate(mainStack.detail1, {})
+        NavigationService.navigate(mainStack.detail1, { serviceType: 1 })
         break;
       case 2:
-        // await this.setState({
-        //   active1: false,
-        //   active2: true,
-        //   active3: false,
-        //   active4: false,
-        // })
-        NavigationService.navigate(mainStack.detail1, {})
+        NavigationService.navigate(mainStack.detail1, { serviceType: 2 })
         break;
       case 3:
-        // await this.setState({
-        //   active1: false,
-        //   active2: false,
-        //   active3: true,
-        //   active4: false,
-        // })
-        NavigationService.navigate(mainStack.detail1, {})
+        NavigationService.navigate(mainStack.detail1, { serviceType: 3 })
         break;
       case 4:
-        // await this.setState({
-        //   active1: false,
-        //   active2: false,
-        //   active3: false,
-        //   active4: true,
-        // })
-        NavigationService.navigate(mainStack.detail1, {})
+        NavigationService.navigate(mainStack.detail1, { serviceType: 4 })
         break;
       default:
         break;
@@ -154,12 +132,16 @@ export default class DetailScreen extends Component {
             data={this.state.truckNoList}
             title={'BSX Đầu Kéo'}
             style={{ marginBottom: hs(33) }}
-            onSelect={(item) => { console.log('BSX Đầu Kéo', item) }}
+            onSelect={async (item) => {
+              await saveTruck(item)
+            }}
           />
           <DropDown
             data={this.state.chassisNoList}
             title={'BSX Rơ Mooc'}
-            onSelect={(item) => { console.log('BSX Rơ Mooc', item) }}
+            onSelect={async (item) => {
+              await saveChassis(item)
+            }}
           />
           <Text style={styles.TitleLine}>Chọn dịch vụ</Text>
           {/*
@@ -222,7 +204,7 @@ export default class DetailScreen extends Component {
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => { this.onSelectService(2) }}
+                  onPress={() => { this.onSelectService(4) }}
                 >
                   <View style={styles.SelectIconItemContainer}>
                     <View style={[
@@ -320,7 +302,7 @@ export default class DetailScreen extends Component {
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => { this.onSelectService(4) }}
+                  onPress={() => { this.onSelectService(2) }}
                 >
                   <View style={styles.SelectIconItemContainer}>
                     <View style={[
