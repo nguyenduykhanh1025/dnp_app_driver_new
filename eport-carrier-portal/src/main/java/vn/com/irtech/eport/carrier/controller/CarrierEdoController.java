@@ -45,6 +45,9 @@ public class CarrierEdoController extends CarrierBaseController {
 
     @GetMapping("/index")
 	public String EquipmentDo() {
+		if (!hasEdoPermission()) {
+			return "error/404";
+		}
 		return PREFIX + "/edo";
 	}
 
@@ -132,6 +135,18 @@ public class CarrierEdoController extends CarrierBaseController {
 			String[] idsList = ids.split(",");
 			edo.setCarrierCode(super.getUserGroup().getGroupCode());
 			edo.setCarrierId(super.getUser().getGroupId());
+			for(String id : idsList)
+			{
+				Edo edoCheck = new Edo();
+				edoCheck.setId(Long.parseLong(id));
+				edoCheck.setCarrierId(super.getUser().getGroupId());
+				if(edoService.selectFirstEdo(edoCheck) == null)
+				{
+					return AjaxResult.error("Bạn đã chọn container mà bạn không có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
+				}else if (edoService.selectFirstEdo(edoCheck).getStatus().equals('3')) {
+					return AjaxResult.error("Bạn đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
+				}
+			}
 			for(String id : idsList)
 			{	
 				edo.setId(Long.parseLong(id));
