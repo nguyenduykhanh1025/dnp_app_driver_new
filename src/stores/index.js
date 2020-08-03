@@ -14,6 +14,8 @@ const KEY_NAME = 'name';
 const KEY_GPS_ENABLE = 'KEY_GPS_ENABLE';
 const KEY_TRUCK = 'KEY_TRUCK';
 const KEY_CHASSIS = 'KEY_CHASSIS';
+const KEY_UP = 'KEY_UP';
+const KEY_DOWN = 'KEY_DOWN';
 
 
 export const saveToken = (token) => {
@@ -70,6 +72,22 @@ export const saveChassis = (item) => {
 
 export const getChassis = () => {
     return AsyncStorage.getItem(KEY_CHASSIS);
+}
+
+export const saveUpEnable = (item) => {
+    AsyncStorage.setItem(KEY_UP, item);
+}
+
+export const getUpEnable = () => {
+    return AsyncStorage.getItem(KEY_UP);
+}
+
+export const saveDownEnable = (item) => {
+    AsyncStorage.setItem(KEY_DOWN, item);
+}
+
+export const getDownEnable = () => {
+    return AsyncStorage.getItem(KEY_DOWN);
 }
 
 export const getUserID = () => {

@@ -8,11 +8,14 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Alert,
+  RefreshControl,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import {
   homeStack,
-  mainStack
+  mainStack,
+  homeTab
 } from '@/config/navigator';
 import {
   commonStyles,
@@ -46,7 +49,9 @@ import {
   callApi
 } from '@/requests';
 import {
-  getToken
+  getToken,
+  getUpEnable,
+  getDownEnable,
 } from '@/stores';
 
 const next = require('@/assets/icons/icon_next.png')
@@ -56,14 +61,26 @@ export default class DetailScreen extends Component {
     super(props);
     this.state = {
       data: [],
+      refreshing: false,
     };
     this.token = null;
+    this.upEnable = null;
+    this.DownEnable = null;
   }
 
   componentDidMount = async () => {
+    this.setState({
+      refreshing: true,
+    })
     this.token = await getToken();
+    this.upEnable = await getUpEnable();
+    this.DownEnable = await getDownEnable();
     console.log('this.props.navigation.state.params.shipmentId', this.props.navigation.state.params.shipmentId)
     this.onGetPickupList(this.props.navigation.state.params.shipmentId);
+  }
+
+  onRefresh = async () => {
+    this.componentDidMount()
   }
 
   onGetPickupList = async (shipmentId) => {
@@ -78,8 +95,29 @@ export default class DetailScreen extends Component {
     console.log('resultonGetPickupList', result)
     if (result.code == 0) {
       await this.setState({
-        // data: result.shipmentList,
+        data: result.data,
       })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
+    this.setState({
+      refreshing: false,
+    })
+  }
+
+  onAutoPickup = async () => {
+    const params = {
+      api: 'shipment/' + this.props.navigation.state.params.shipmentId + '/auto-pickup',
+      param: '',
+      token: this.token,
+      method: 'GET'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('resultonAutoPickup', result)
+    if (result.code == 0) {
+      NavigationService.navigate(homeTab.home)
     }
     else {
       Alert.alert('Thông báo!', result.msg)
@@ -90,7 +128,10 @@ export default class DetailScreen extends Component {
     <Item
       data={item.item}
       onPress={() => {
-        NavigationService.navigate(mainStack.detail2, {})
+        this.DownEnable == '1' || this.upEnable == '1' && item.item.sztp.slice(0, 2) != '20' ?
+          Alert.alert('Thông báo !', 'Không thể chọn.')
+          :
+          NavigationService.navigate(mainStack.detail2, { data: item.item })
       }}
     />
   )
@@ -111,8 +152,14 @@ export default class DetailScreen extends Component {
         <View style={styles.Body}>
           <ScrollView
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={() => { this.onRefresh() }}
+              />
+            }
           >
-            <Text style={styles.TitleLine}>Cont chung</Text>
+            {/* <Text style={styles.TitleLine}>Cont chung</Text> */}
             {/* <ItemSingle
               data={this.state.data[0]}
               onPress={() => {
@@ -128,30 +175,30 @@ export default class DetailScreen extends Component {
             {/*
             ---------------------------------------------------- 
            */}
-            {/* <FlatList
+            <FlatList
               data={this.state.data}
               renderItem={
                 (item, index) =>
                   this.renderItem(item, index)
               }
               showsVerticalScrollIndicator={false}
-            /> */}
+            />
           </ScrollView>
-          {/* <View
+          <View
             style={{
               marginTop: hs(17),
               marginBottom: hs(17)
             }}
           >
             <Button
-              value={'Tiếp tục'}
+              value={'Chọn theo lô'}
               onPress={
                 () => {
-                  NavigationService.navigate(mainStack.detail2, {})
+                  this.onAutoPickup()
                 }
               }
             />
-          </View> */}
+          </View>
         </View>
       </View>
     )

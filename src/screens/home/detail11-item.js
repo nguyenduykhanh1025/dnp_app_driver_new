@@ -31,11 +31,11 @@ export default class Item extends Component {
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}>
-                  <Text style={[styles.TextLabel, { width: ws(32) }]}>
-                    Mã lô
+                  <Text style={[styles.TextLabel, { width: ws(40) }]}>
+                    Số cont
                   </Text>
                   <Text style={styles.TextValue1}>
-                    {data.LoCode}
+                    {data.containerNo}
                   </Text>
                 </View>
               </View>
@@ -50,23 +50,29 @@ export default class Item extends Component {
                     alignItems: 'center'
                   }}>
                     <Text style={styles.TextLabel}>
-                      Type
-                    </Text>
-                    <Text style={styles.TextValue2}>
-                      {data.Type}
-                    </Text>
-                  </View>
-                  <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center'
-                  }}>
-                    <Text style={styles.TextLabel}>
                       Size
                     </Text>
                     <Text style={styles.TextValue2}>
-                      {data.Size}
+                      {data.sztp}
                     </Text>
                   </View>
+                  {
+                    data.wgt ?
+                      <View style={{
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                      }}>
+                        <Text style={styles.TextLabel}>
+                          Số booking
+                      </Text>
+                        <Text style={styles.TextValue2}>
+                          {data.wgt}
+                        </Text>
+                      </View>
+                      :
+                      null
+                  }
+
                 </View>
               </View>
             </View>

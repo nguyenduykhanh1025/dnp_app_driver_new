@@ -9,6 +9,7 @@ import {
   ScrollView,
   Image,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import {
@@ -55,15 +56,23 @@ export default class DetailScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      data: [],
+      refreshing: false
     };
     this.token = null;
   }
 
   componentDidMount = async () => {
+    this.setState({
+      refreshing: true,
+    })
     this.token = await getToken();
     console.log('this.props.navigation.state.params.serviceType', this.props.navigation.state.params.serviceType)
     this.onGetContainerList(this.props.navigation.state.params.serviceType);
+  }
+
+  onRefresh = async () => {
+    this.componentDidMount()
   }
 
   onGetContainerList = async (serviceType) => {
@@ -84,13 +93,19 @@ export default class DetailScreen extends Component {
     else {
       Alert.alert('Thông báo!', result.msg)
     }
+    this.setState({
+      refreshing: false,
+    })
   }
 
   renderItem = (item, index) => (
     <Item
       data={item.item}
       onPress={() => {
-        NavigationService.navigate(mainStack.detail11, { shipmentId: item.item.batchId })
+        NavigationService.navigate(mainStack.detail11, {
+          shipmentId: item.item.batchId,
+          serviceType: this.props.navigation.state.params.serviceType,
+        })
       }}
     />
   )
@@ -111,6 +126,12 @@ export default class DetailScreen extends Component {
         <View style={styles.Body}>
           <ScrollView
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={() => { this.onRefresh() }}
+              />
+            }
           >
             <Text style={styles.TitleLine}>Bốc công từ cảng</Text>
 

@@ -68,7 +68,7 @@ export default class Item extends Component {
                       {data.fe}
                     </Text>
                   </View>
-                  <View style={{
+                  {/* <View style={{
                     flexDirection: 'row',
                     alignItems: 'center'
                   }}>
@@ -78,7 +78,7 @@ export default class Item extends Component {
                     <Text style={styles.TextValue2}>
                       {data.sztp}
                     </Text>
-                  </View>
+                  </View> */}
                   <View style={{
                     flexDirection: 'row',
                     alignItems: 'center'
@@ -86,7 +86,7 @@ export default class Item extends Component {
                     <Text style={styles.TextLabel}>
                       Số lượng
                     </Text>
-                    <Text style={styles.TextValue2}>
+                    <Text style={[styles.TextValue2, { width: ws(140) }]}>
                       {data.contAmount}
                     </Text>
                   </View>
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   Line: {
-
+    width: ws(270)
   },
   TextLabel: {
     fontSize: fs(13),
@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
     fontSize: fs(15),
     color: Colors.subColor,
     fontWeight: 'bold',
-    marginRight: ws(28)
+    marginRight: ws(28),
+
   },
 })

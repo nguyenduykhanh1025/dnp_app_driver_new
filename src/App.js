@@ -21,10 +21,8 @@ class App extends Component {
     var gpsEnable = await getGPSEnable()
     console.log('gpsEnable', gpsEnable)
     if (!gpsEnable) {
-      saveGPSEnable("false")
-      console.log('saveGPSEnable', false)
+      saveGPSEnable("true")
     }
-    console.log('saveGPSEnable', true)
   }
 
   render() {

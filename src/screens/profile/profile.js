@@ -40,7 +40,8 @@ import {
   saveGPSEnable,
 } from '@/stores';
 import {
-  down_arrow
+  down_arrow,
+  lefticon,
 } from '@/assets/icons';
 import Toast from 'react-native-tiny-toast';
 import {
@@ -117,7 +118,7 @@ class ProfileScreen extends Component {
     }
     else {
       Toast.hide()
-      FlashMessage(result.msg, 'warning')
+      this.props.dispatch(signOut())
     }
   }
 
@@ -135,7 +136,14 @@ class ProfileScreen extends Component {
           style={styles.bg}
         >
           <View style={styles.bgContainer}>
-            <View style={{ alignItems: 'flex-end' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.goBack()}
+              >
+                <View>
+                  <Image source={lefticon} style={styles.Lefticon} />
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => this.onLogout()}
               >
@@ -312,5 +320,10 @@ const styles = StyleSheet.create({
     width: sizeWidth(4),
     marginLeft: sizeWidth(2),
     tintColor: '#919BBB'
+  },
+  Lefticon: {
+    width: ws(11.43),
+    height: hs(20),
+    marginLeft: ws(36.86)
   },
 })

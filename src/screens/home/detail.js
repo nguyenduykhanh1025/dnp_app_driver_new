@@ -46,6 +46,8 @@ import {
   getToken,
   saveChassis,
   saveTruck,
+  getDownEnable,
+  getUpEnable,
 } from '@/stores';
 import {
   callApi
@@ -58,17 +60,19 @@ export default class DetailScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active1: false,
-      active2: false,
-      active3: false,
-      active4: false,
       truckNoList: [],
       chassisNoList: [],
     };
+    this.upEnable = null;
+    this.DownEnable = null;
   }
 
   componentDidMount = async () => {
     this.onGetTruckList()
+    this.upEnable = await getUpEnable();
+    this.DownEnable = await getDownEnable();
+    console.log(' this.upEnable', this.upEnable)
+    console.log('this.DownEnable', this.DownEnable)
   }
 
   onGetTruckList = async () => {
@@ -157,6 +161,7 @@ export default class DetailScreen extends Component {
               <View style={styles.SelectIconTag}>
                 <TouchableOpacity
                   onPress={() => { this.onSelectService(1) }}
+                  disabled={this.upEnable == '2' ? true : false}
                 >
                   <View style={styles.SelectIconItemContainer}>
                     <View style={[
@@ -205,6 +210,7 @@ export default class DetailScreen extends Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => { this.onSelectService(4) }}
+                  disabled={this.DownEnable == '2' ? true : false}
                 >
                   <View style={styles.SelectIconItemContainer}>
                     <View style={[
@@ -255,6 +261,7 @@ export default class DetailScreen extends Component {
               <View style={styles.SelectIconTag}>
                 <TouchableOpacity
                   onPress={() => { this.onSelectService(3) }}
+                  disabled={this.upEnable == '2' ? true : false}
                 >
                   <View style={styles.SelectIconItemContainer}>
                     <View style={[
@@ -303,6 +310,7 @@ export default class DetailScreen extends Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => { this.onSelectService(2) }}
+                  disabled={this.DownEnable == '2' ? true : false}
                 >
                   <View style={styles.SelectIconItemContainer}>
                     <View style={[

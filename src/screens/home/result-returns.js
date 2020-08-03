@@ -5,11 +5,9 @@ import {
   StyleSheet,
   StatusBar,
   Image,
-  ScrollView
+  ScrollView,
+  Alert,
 } from 'react-native';
-import {
-  Content
-} from 'native-base';
 import NavigationService from '@/utils/navigation';
 import {
   mainStack
@@ -29,14 +27,11 @@ import {
   HeaderResult,
   HeaderMain,
   Button,
-} from '@/components'
-import {
-  SearchQRCode
-} from '@/mock/index';
+} from '@/components';
 import Icon from 'react-native-vector-icons/AntDesign';
-import Item from './item';
+import { getToken } from '@/stores';
+import { callApi } from '@/requests';
 
-const ic_crane = require('../../assets/images/crane.png');
 
 export default class ResultScreen extends Component {
 
@@ -45,15 +40,56 @@ export default class ResultScreen extends Component {
     this.state = {
       data: [],
     }
+    this.token = null;
   }
 
-  componentDidMount() {
-    this.setState({ data: SearchQRCode[0].Data[0] })
+  componentDidMount = async () => {
+    console.log('this.props.navigation.state.params.pickupId', this.props.navigation.state.params.pickupId)
+    this.token = await getToken();
+    this.onGetDetailInfo(this.props.navigation.state.params.pickupId);
+  }
+
+  onGetDetailInfo = async (pickupId) => {
+    const params = {
+      api: 'pickup/' + pickupId,
+      param: '',
+      token: this.token,
+      method: 'GET'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('resultonGetDetailInfo', result)
+    if (result.code == 0) {
+      await this.setState({
+        data: result.data
+      })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
   }
 
   onBack = () => {
-    NavigationService.navigate(mainStack.home_tab)
+    NavigationService.navigate(mainStack.home_tab, { update: 1 })
   };
+
+  onCancel = async (pickupId) => {
+    const params = {
+      api: 'pickup/' + pickupId + '/cancel',
+      param: '',
+      token: this.token,
+      method: 'POST'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('resultonCancel', result)
+    if (result.code == 0) {
+      NavigationService.navigate(mainStack.home_tab, { update: 1 })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
+  }
 
   renderLeft = () => {
     return (
@@ -89,13 +125,20 @@ export default class ResultScreen extends Component {
             color: '#00E096',
             paddingHorizontal: 6,
             paddingVertical: 2
-          }}>Sẵn sàng</Text>
+          }}>{
+            this.state.data.status == 0 ?
+              'Sẵn sàng'
+              :
+              this.state.data.status == 1 ?
+                'Gate in'
+                :
+                ''
+          }</Text>
       </View>
     )
   }
 
   render() {
-    var { data } = this.state;
 
     return (
       <View>
@@ -105,7 +148,7 @@ export default class ResultScreen extends Component {
         />
         <HeaderMain
           renderLeft={this.renderLeft()}
-          renderRight={this.renderRight()}
+          renderRight={this.state.data.status == 0 || this.state.data.status == 1 ? this.renderRight() : null}
           onPressLeft={() => { this.onBack() }}
           disableBG
           disableStep
@@ -149,15 +192,15 @@ export default class ResultScreen extends Component {
                       }}>
                         <View style={styles.frame1}>
                           <Text style={styles.txtLabel}>Xe</Text>
-                          <Text style={styles.txtValue}>43-C1264.02</Text>
+                          <Text style={styles.txtValue}>{this.state.data.truckNo}</Text>
                         </View>
                         <View style={styles.frame1}>
                           <Text style={styles.txtLabel}>ML</Text>
-                          <Text style={styles.txtValue}>XXXX</Text>
+                          <Text style={styles.txtValue}>{this.state.data.batchId}</Text>
                         </View>
                         <View style={styles.frame1}>
-                          <Text style={styles.txtLabel}>Type</Text>
-                          <Text style={styles.txtValue}>yyy</Text>
+                          <Text style={styles.txtLabel}></Text>
+                          <Text style={styles.txtValue}></Text>
                         </View>
                       </View>
                       <View style={{
@@ -166,15 +209,15 @@ export default class ResultScreen extends Component {
                       }}>
                         <View style={styles.frame1}>
                           <Text style={styles.txtLabel}>Đầu kéo</Text>
-                          <Text style={styles.txtValue}>43-C1264.02</Text>
+                          <Text style={styles.txtValue}>{this.state.data.chassisNo}</Text>
                         </View>
                         <View style={styles.frame1}>
                           <Text style={styles.txtLabel}>Size</Text>
-                          <Text style={styles.txtValue}>1000</Text>
+                          <Text style={styles.txtValue}>{this.state.data.sztp}</Text>
                         </View>
                         <View style={styles.frame1}>
                           <Text style={styles.txtLabel}>Cont</Text>
-                          <Text style={styles.txtValue}>MUST1234567</Text>
+                          <Text style={styles.txtValue}>{this.state.data.containerNo}</Text>
                         </View>
                       </View>
                     </View>
@@ -208,11 +251,11 @@ export default class ResultScreen extends Component {
                     }]}>
                     Position
                   </Text>
-                  <Text style={styles.txtValue1}>A-1-4-3</Text>
+                  <Text style={styles.txtValue1}>{this.state.data.yardPosition}</Text>
                 </View>
                 <View style={styles.frame2}>
                   <Text style={[styles.txtLabel, { width: null }]}>Gate Pass</Text>
-                  <Text style={styles.txtValue1}>xxxxxxx</Text>
+                  <Text style={styles.txtValue1}>{this.state.data.gatePass}</Text>
                 </View>
               </View>
             </View>
@@ -236,38 +279,54 @@ export default class ResultScreen extends Component {
                 </Text>
                 <View style={styles.Line}>
                   <Text style={styles.txtLabel1} >Khách hàng</Text>
-                  <Text style={styles.txtValue2}>Anh A</Text>
+                  <Text style={styles.txtValue2}>{this.state.data.consignee}</Text>
                 </View>
                 <View style={styles.Line}>
                   <Text style={styles.txtLabel1} >Địa chỉ</Text>
-                  <Text style={styles.txtValue2}>35 Cao thắng - Hải Châu - Đà nẵng</Text>
+                  <Text style={styles.txtValue2}>{this.state.data.address}</Text>
                 </View>
                 <View style={styles.Line}>
                   <Text style={styles.txtLabel1} >Điện thoại</Text>
-                  <Text style={styles.txtValue2}>6969696969</Text>
+                  <Text style={styles.txtValue2}>{this.state.data.mobileNumber}</Text>
                 </View>
                 <View style={styles.Line}>
                   <Text style={styles.txtLabel1} >Ghi chú</Text>
-                  <Text style={[styles.txtValue2, { fontSize: 15, fontWeight: null }]}>Không có ghi chú gì</Text>
+                  <Text style={[styles.txtValue2, { fontSize: 15, fontWeight: null }]}>{this.state.data.remark}</Text>
                 </View>
               </View>
             </View>
           </View>
-          <View
-            style={{
-              marginTop: hs(17),
-              marginBottom: hs(17)
-            }}
-          >
-            <Button
-              value={'Trả hàng'}
-              onPress={
-                () => {
-
-                }
-              }
-            />
-          </View>
+          {
+            this.state.data.status == 0 || this.state.data.status == 1 ?
+              <View
+                style={{
+                  marginTop: hs(17),
+                  marginBottom: hs(17)
+                }}
+              >
+                <Button
+                  value={
+                    this.state.data.status == 0 ?
+                      'Hủy'
+                      :
+                      this.state.data.status == 1 ?
+                        'Trả hàng'
+                        :
+                        ''
+                  }
+                  onPress={
+                    () => {
+                      this.state.data.status == 0 ?
+                        this.onCancel(this.props.navigation.state.params.pickupId)
+                        :
+                        null
+                    }
+                  }
+                />
+              </View>
+              :
+              null
+          }
         </ScrollView>
       </View>
     )
