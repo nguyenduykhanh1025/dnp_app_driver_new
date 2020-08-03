@@ -119,8 +119,13 @@ public class ApiShipmentDetailController {
 		return shipmentDetailDao.selectVesselVoyageBerthPlan(opeCode);
 	}
 	
-	@GetMapping("/shipmentDetail/check/booking-no/{bookingNo}")
-	public Integer checkBookingNoForSendFReceiveE(@PathVariable String bookingNo) {
-		return shipmentDetailDao.checkBookingNoForSendFReceiveE(bookingNo);
+	@GetMapping("/shipmentDetail/check/booking-no/{bookingNo}/fe/{fe}")
+	public Integer checkBookingNoForSendFReceiveE(@PathVariable String bookingNo, @PathVariable String fe) {
+		return shipmentDetailDao.checkBookingNoForSendFReceiveE(bookingNo, fe);
+	}
+	
+	@PostMapping("/shipmentDetail/infor/send-full-receive-e")
+	public ShipmentDetailEntity getInforSendFReceiveE(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		return shipmentDetailDao.getInforSendFReceiveE(shipmentDetailEntity);
 	}
 }
