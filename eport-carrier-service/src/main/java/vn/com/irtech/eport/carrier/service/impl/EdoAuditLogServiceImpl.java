@@ -3,6 +3,8 @@ package vn.com.irtech.eport.carrier.service.impl;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+
 import vn.com.irtech.eport.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -140,7 +142,11 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
         EdoAuditLog edoAuditLog = new EdoAuditLog();
         edoAuditLog.setCarrierId(edo.getCarrierId());
         edoAuditLog.setCarrierCode(edo.getCarrierCode());
-        edoAuditLog.setCreateBy(edo.getCarrierCode());
+        if(edo.getCreateBy() == null)
+        {
+            edo.setCreateBy("FPT Folder");
+        }
+        edoAuditLog.setCreateBy(edo.getCreateBy());
         edoAuditLog.setEdoId(edo.getId());
         if(edo.getExpiredDem() != null)
         {
@@ -204,7 +210,11 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
         EdoAuditLog edoAuditLog = new EdoAuditLog();
         edoAuditLog.setCarrierId(edo.getCarrierId());
         edoAuditLog.setCarrierCode(edo.getCarrierCode());
-        edoAuditLog.setCreateBy(edo.getCarrierCode());
+        if(edo.getCreateBy() == null)
+        {
+            edo.setCreateBy("FPT Folder");
+        }
+        edoAuditLog.setCreateBy(edo.getCreateBy());
         edoAuditLog.setEdoId(edo.getId());
         edoAuditLog.setCreateTime(timeNow);
         String maxSegNo = selectEdoAuditLogByEdoId(edo.getId());

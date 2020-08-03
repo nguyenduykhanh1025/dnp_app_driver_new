@@ -1,9 +1,10 @@
 package vn.com.irtech.eport.carrier.controller;
 
-
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -151,6 +152,7 @@ public class CarrierEdoController extends CarrierBaseController {
 			{	
 				edo.setId(Long.parseLong(id));
 				edoService.updateEdo(edo);
+				edo.setCreateBy(super.getUser().getEmail());
 				edoAuditLogService.updateAuditLog(edo);	
 			}
 		return AjaxResult.success("Update thành công");
@@ -228,6 +230,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		  if (edo == null) {
 			edo = new Edo();
 		  }
+		edo.setCarrierId(super.getUser().getGroupId());
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}
