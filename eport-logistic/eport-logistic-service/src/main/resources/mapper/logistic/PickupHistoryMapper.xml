@@ -440,4 +440,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		group by p.id, p.logistic_group_id, p.shipment_id, p.shipment_detail_id, p.driver_id, p.pickup_assign_id, 
 		p.container_no, p.truck_no, p.chassis_no, p.status, p.gatein_date, d.mobile_number, d.full_name
 	</select>
+
 </mapper>

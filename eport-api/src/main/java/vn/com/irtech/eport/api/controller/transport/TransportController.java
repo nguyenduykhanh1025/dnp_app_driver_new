@@ -6,20 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.message.MessageHelper;
+import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.api.util.SecurityUtils;
-import vn.com.irtech.eport.api.util.TokenUtils;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.exception.BusinessException;
@@ -29,6 +29,8 @@ import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.NotificationForm;
+import vn.com.irtech.eport.logistic.form.Pickup;
+import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
@@ -59,7 +61,11 @@ public class TransportController extends BaseController {
 	@Autowired
 	private ISysConfigService configService;
 
-	@Autowired IShipmentDetailService shipmentDetailService;
+	@Autowired 
+	private IShipmentDetailService shipmentDetailService;
+	
+	@Autowired
+	private MqttService mqttService;
 	
 	/**
 	 * Get pickup history
@@ -289,11 +295,30 @@ public class TransportController extends BaseController {
 
 		double lonEport = Double.parseDouble(configService.selectConfigByKey("location.port.long"));
 
-		if (distanceRequire > distance(location.get("x"), latEport, location.get("y"), lonEport, 0.0, 0.0)) {
-			System.out.println("senddddddddddddddddddddddddddddddd");
-		}
-
 		CacheUtils.put("driver-" + SecurityUtils.getCurrentUser().getUser().getUserId(), location);
+		
+		if (distanceRequire > distance(location.get("x"), latEport, location.get("y"), lonEport, 0.0, 0.0)) {
+			
+			List<Pickup> pickups = pickupHistoryService.selectPickupListByDriverId(SecurityUtils.getCurrentUser().getUser().getUserId());
+			
+			for (Pickup pickup : pickups) {
+				
+				// Check if service is send cont
+				if (pickup.getServiceType()%2 == 1) {
+					// Check if cont has position
+					
+					// Send to mc
+					Map<String, Long> map = new HashMap<>();
+					map.put("pickupHistoryId", pickup.getPickupId());
+					try {
+						mqttService.sendMessageToMc(map.toString());
+					} catch (MqttException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 		return success();
 	}
 
