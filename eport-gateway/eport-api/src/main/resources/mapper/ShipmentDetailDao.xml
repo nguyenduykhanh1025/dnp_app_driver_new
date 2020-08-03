@@ -231,4 +231,23 @@
 			FROM TB_BOOKING
 			WHERE BOOKING_NO = #{bookingNo}
 	</select>
+	<select id="getInforSendFReceiveE" parameterType="ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
+		SELECT  BO.VSL_CD as vslNm,
+		        BO.CALL_YEAR as year,
+		        BO.CALL_SEQ as voyNo,
+		        BO.PTNR_CODE as opeCode,
+		        BO.POD || ': ' ||(SELECT PORT_NM FROM TB_PORT WHERE CNTRY_CD = SUBSTR(BO.POD, 1, 2) AND PORT_CD = SUBSTR(BO.POD, 3)) as dischargePort,
+		        BO.CARGO_TYPE as cargoType,
+		        BO.SZTP as sztp,
+		        BO.VSL_CD || ' - ' || (SELECT VSL_NM FROM TB_VSL WHERE VSL_CD = BO.VSL_CD ) || ' - ' || 
+		        (SELECT B.IN_VOY
+		         FROM TB_BERTHPLAN B
+		         WHERE
+		            B.VSL_CD = BO.VSL_CD AND
+		            B.CALL_YEAR = BO.CALL_YEAR AND
+		            B.CALL_SEQ = BO.CALL_SEQ AND
+		            B.PTNR_CODE = BO.PTNR_CODE) as vslAndVoy
+		FROM TB_BOOKING BO
+		WHERE BO.BOOKING_NO = #{bookingNo} AND BO.SZTP = #{sztp} AND BO.PTNR_CODE = #{opeCode}
+	</select>
 </mapper>
