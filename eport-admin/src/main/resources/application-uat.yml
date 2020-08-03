@@ -62,3 +62,5 @@ spring:
                         port: 465
                         fallback: true
                         class: javax.net.ssl.SSLSocketFactory
+    redis:
+        enabled: true

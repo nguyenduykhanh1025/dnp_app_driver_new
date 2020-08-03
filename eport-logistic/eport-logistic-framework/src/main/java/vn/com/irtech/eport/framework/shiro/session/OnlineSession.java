@@ -12,22 +12,31 @@ public class OnlineSession extends SimpleSession
 {
     private static final long serialVersionUID = 1L;
 
+    /** User ID */
     private Long userId;
 
+    /** user name */
     private String loginName;
 
+    /** Department name */
     private String deptName;
 	
+	/** profile picture */
 	private String avatar;
 
+    /** Login IP address */
     private String host;
 
+    /** Browser type */
     private String browser;
 
+    /** operating system */
     private String os;
 
+    /** online status */
     private OnlineStatus status = OnlineStatus.on_line;
 
+    /** Whether the attribute is changed to optimize session data synchronization */
     private transient boolean attributeChanged = false;
 
     @Override
