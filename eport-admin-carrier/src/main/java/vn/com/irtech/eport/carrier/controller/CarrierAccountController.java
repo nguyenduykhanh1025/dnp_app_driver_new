@@ -189,7 +189,7 @@ public class CarrierAccountController extends BaseController
         return toAjax(carrierAccountService.updateCarrierAccount(carrierAccount));
     }
 
-    @Log(title = "Reset password", businessType = BusinessType.UPDATE)
+    @Log(title = "Thay đổi mật khẩu", businessType = BusinessType.UPDATE)
     @GetMapping("/resetPwd/{id}")
     public String resetPwd(@PathVariable("id") Long id, ModelMap mmap)
     {
@@ -197,7 +197,7 @@ public class CarrierAccountController extends BaseController
         return prefix + "/resetPwd";
     }
 
-    @Log(title = "Reset password", businessType = BusinessType.UPDATE)
+    @Log(title = "Thay đổi mật khẩu", businessType = BusinessType.UPDATE)
     @PostMapping("/resetPwd")
     @ResponseBody
     public AjaxResult resetPwdSave(CarrierAccount carrierAccount, String isSendEmail)

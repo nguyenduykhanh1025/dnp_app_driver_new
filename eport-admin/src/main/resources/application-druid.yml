@@ -6,7 +6,7 @@ spring:
             master:
                 url: jdbc:mysql://192.168.1.57:3306/eport?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B7
                 username: root
-                password: Irtech@2020
+                password: 
             slave:
                 enabled: false
                 url: 

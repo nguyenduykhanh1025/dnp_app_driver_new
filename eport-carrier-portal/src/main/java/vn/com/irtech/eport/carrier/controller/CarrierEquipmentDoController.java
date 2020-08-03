@@ -132,6 +132,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@Log(title = "Update Expired Date", businessType = BusinessType.UPDATE)
 	@PostMapping("/updateExpiredDate")
 	@ResponseBody
+	@Transactional
 	public AjaxResult updateExpiredDate(String billOfLading, String expiredDem) {
     Date newExpiredDem = AppToolUtils.formatStringToDate(expiredDem, "dd/MM/yyyy");
 		Date now = new Date();
@@ -182,6 +183,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
 	@PostMapping("/add")
 	@ResponseBody
+	@Transactional
 	public AjaxResult addSave(@RequestBody List<EquipmentDo> equipmentDos) {
 		//String message = userService.importUser(userList, updateSupport, operName);
 		//return AjaxResult.success(message);
@@ -310,6 +312,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
 	@PostMapping("/update/{billOfLading}")
 	@ResponseBody
+	@Transactional
 	public AjaxResult update(@RequestBody List<EquipmentDo> equipmentDos, @PathVariable("billOfLading") String bill) {
 		if (getUserId() != equipmentDoService.getBillOfLadingInfo(bill).getCarrierId()) {
 			return AjaxResult.error("Bạn không có quyền cập nhật DO này");
@@ -373,6 +376,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					edo.setBillOfLading(billOfLading);
 					edo.setCarrierCode(carrierCode);
 					equipmentDoService.insertEquipmentDo(edo);
+					equipmentEdoAuditLogService.addAuditLogFirst(edo);
 				}				
 			}
 			// SEND EMAIL WHEN ADD SUCCESSFULLY
