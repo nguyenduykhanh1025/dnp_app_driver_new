@@ -1,8 +1,8 @@
 eport:
-  name: DNG ePort
-  version: 4.2.0
+  name: DNP ePort
+  version: 1.0.0
   copyrightYear: 2020
-  demoEnabled: true
+  demoEnabled: false
   profile: D:/eport/upload
   addressEnabled: true
   cacheExpireTime: 3600

@@ -1,12 +1,13 @@
 eport:
-  name: DNG ePort
-  version: 4.2.0
+  name: DNP ePort
+  version: 1.0.0
   copyrightYear: 2020
-  demoEnabled: true
+  demoEnabled: false
   profile: D:/eport/upload
   addressEnabled: true
-  apiUrl: http://113.160.225.15:38080/api
   cacheExpireTime: 3600
+  apiUrl: http://127.0.0.1:9090/api
+
 server:
   port: 7072
   servlet:
@@ -49,7 +50,7 @@ spring:
     restart:
       enabled: true
   redis:
-    enabled: true
+    enabled: false
     database: 0
     password: 
     host: 127.0.0.1
