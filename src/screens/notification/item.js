@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { commonStyles, Colors, sizeWidth, sizeHeight } from '@/commons';
+import moment from 'moment';
 
 const ic_c = require('@/assets/icons/Group-c.png')
 const ic_l = require('@/assets/icons/Group-l.png')
@@ -8,6 +9,7 @@ const ic_l = require('@/assets/icons/Group-l.png')
 export default class Item extends Component {
   render() {
     var { data, onPress, index } = this.props;
+    var date = moment(data.createTime).format('DD-MM-YYYY')
     return (
       <TouchableOpacity onPress={onPress} style={styles.itemContainer}>
         <View style={styles.imageView}>
@@ -20,8 +22,8 @@ export default class Item extends Component {
         </View>
         <View style={styles.ContentView}>
           <Text style={styles.title}>{data.title}</Text>
-          <Text style={styles.description}>{data.description}</Text>
-          <Text style={styles.datetime}>{data.datetime}</Text>
+          <Text style={styles.description}>{data.content}</Text>
+          <Text style={styles.datetime}>{date}</Text>
         </View>
       </TouchableOpacity>
     )

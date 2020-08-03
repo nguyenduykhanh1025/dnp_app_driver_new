@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import {
@@ -16,9 +17,6 @@ import {
   homeTab,
 } from '@/config/navigator';
 import {
-  commonStyles,
-  sizeHeight,
-  sizeWidth,
   Colors,
   widthPercentageToDP as ws,
   heightPercentageToDP as hs,
@@ -32,16 +30,13 @@ import {
 import {
   righticon,
   lefticon,
-  cont2_icon,
-  cont3_icon,
-  cont4_icon,
-  cont5_icon,
 } from '@/assets/icons';
-import Item from './detail1-item';
-import navigation from '@/utils/navigation';
+import Item from './detail11-item';
 import {
-  SCANNER_QR,
-} from '@/modules/home/constants';
+  getChassis,
+  getToken,
+  getTruck,
+} from '@/stores';
 
 const next = require('@/assets/icons/icon_next.png')
 
@@ -49,28 +44,53 @@ export default class DetailScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active1: false,
-      active2: false,
-      active3: false,
-      active4: false,
-      data: [
-        {
-          LoCode: 'zxcv7828281',
-          BillNumber: 'N9TT9GN9TT9G',
-          Type: 'F',
-          Size: 'SX',
-          SL: 15,
-        },
-      ]
+      data: [],
+      truckNo: '',
+      chassisNo: '',
     };
+    this.token = null;
   }
 
+  componentDidMount = async () => {
+    var truckNo = await getTruck();
+    var chassisNo = await getChassis();
+    this.token = await getToken();
+    console.log('this.props.navigation.state.params.data', this.props.navigation.state.params.data)
+    await this.setState({
+      truckNo: truckNo,
+      chassisNo: chassisNo,
+      data: [this.props.navigation.state.params.data],
+    })
+  }
 
   renderItem = (item, index) => (
     <Item
       data={item.item}
     />
   )
+
+  onPickupContainer = async () => {
+    const params = {
+      api: 'pickup',
+      param: {
+        "pickupAssignId": this.props.navigation.state.params.data.pickupAssignId,
+        "containerNo": this.props.navigation.state.params.data.containerNo,
+        "truckNo": this.state.truckNo,
+        "chassisNo": this.state.chassisNo
+      },
+      token: this.token,
+      method: 'POST'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('resultonPickupContainer', result)
+    if (result.code == 0) {
+      NavigationService.navigate(homeTab.home, { update: 1 })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
+  }
 
   render() {
     return (
@@ -97,7 +117,7 @@ export default class DetailScreen extends Component {
                     BSX Đầu Kéo
                   </Text>
                   <Text style={styles.RegisterCarValue}>
-                    xxxxxxx
+                    {this.state.truckNo}
                   </Text>
                 </View>
                 <View style={[
@@ -110,7 +130,7 @@ export default class DetailScreen extends Component {
                     BSX Rơ Mooc
                   </Text>
                   <Text style={styles.RegisterCarValue}>
-                    xxxxxxx
+                    {this.state.chassisNo}
                   </Text>
                 </View>
               </View>
@@ -138,7 +158,8 @@ export default class DetailScreen extends Component {
               value={'Xác nhận'}
               onPress={
                 () => {
-                  NavigationService.navigate(homeTab.home)
+                  // NavigationService.navigate(homeTab.home)
+                  this.onPickupContainer()
                 }
               }
             />

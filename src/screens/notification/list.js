@@ -5,6 +5,8 @@ import {
   StyleSheet,
   ScrollView,
   StatusBar,
+  RefreshControl,
+  Alert,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import { mainStack } from '@/config/navigator';
@@ -19,9 +21,8 @@ import {
 } from '@/commons'
 import { getListNotification, SearchQRCode } from '@/mock/index';
 import Item from './item';
-import { HeaderMain } from '@/components'
-import { ModalQRResult } from '@/components/modal'
-import { Right } from 'native-base';
+import { HeaderMain } from '@/components';
+import { getToken } from '@/stores';
 
 export default class ListScreen extends Component {
   constructor(props) {
@@ -29,15 +30,39 @@ export default class ListScreen extends Component {
     this.state = {
       data: [],
       visible: false,
+      refreshing: false,
     }
+    this.token = null;
   };
 
   componentDidMount = async () => {
-    var { data } = this.state;
-    this.setState({
-      data: getListNotification[0].Data
-    })
+    this.token = await getToken();
+    this.onGetNotificationList()
   };
+
+  onRefresh = async () => {
+    this.componentDidMount()
+  }
+
+  onGetNotificationList = async () => {
+    const params = {
+      api: 'notify',
+      param: '',
+      token: this.token,
+      method: 'POST'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    console.log('resultonGetNotificationList', result)
+    if (result.code == 0) {
+      await this.setState({
+        data: result.notificationList,
+      })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
+  }
 
   onClose = () => {
     this.setState({
@@ -89,6 +114,12 @@ export default class ListScreen extends Component {
         <ScrollView
           style={styles.container}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={() => { this.onRefresh() }}
+            />
+          }
         >
           <View style={styles.list}>
             {data.map((item, index) => (
@@ -98,7 +129,7 @@ export default class ListScreen extends Component {
                     data={item}
                     index={index}
                     onPress={() => {
-                      NavigationService.navigate(mainStack.result, { item: item })
+                      // NavigationService.navigate(mainStack.result, { Data: [] })
                     }}
                   />
                 </View>

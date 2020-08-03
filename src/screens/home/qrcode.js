@@ -14,6 +14,7 @@ import {
     StatusBar,
     TextInput,
     Alert,
+    ScrollView,
 } from 'react-native';
 import { connect } from 'react-redux';
 import Toast from 'react-native-tiny-toast';
@@ -53,6 +54,8 @@ import {
 } from '@/config/navigator';
 import DeviceInfo from 'react-native-device-info';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { callApi } from '@/requests';
+import { getToken } from '@/stores';
 
 const bg_qrcode = require('../../assets/images/qr-code.png');
 
@@ -65,21 +68,33 @@ class HomeScreen extends PureComponent {
             loading: false,
             result: false,
             msg: 'Đang xử lý',
-            Data: [],
+            data: [],
             deviceId: '',
             sessionId: '',
+            "domain": "",
+            "port": "",
+            "topic": ""
         };
+        this.token = null;
     }
 
     componentDidMount = async () => {
-        console.log('dataQR', this.props.navigation.state.params.dataQR)
         this.getId()
+        this.token = await getToken();
+        this.onGetURLMqtt()
+        var qrString = this.props.navigation.state.params.dataQR.qrString;
+        qrString = qrString.slice(0, qrString.length - 1);
+        var dataQR = JSON.parse(qrString.replace(/'/g, '"'))
+        console.log('data', dataQR.data)
         await this.setState({
-            qrvalue: JSON.stringify(this.props.navigation.state.params.dataQR.qrCode),
+            qrvalue: this.props.navigation.state.params.dataQR.qrString,
             sessionId: this.props.navigation.state.params.dataQR.sessionId,
+            data: dataQR.data
         })
         this.onTestMqtt()
     }
+
+
 
     getId = async () => {
         let id = DeviceInfo.getDeviceId();
@@ -90,47 +105,70 @@ class HomeScreen extends PureComponent {
 
     }
 
-    componentWillUnmount = () => {
-        var settings = {
-            mqttServerUrl: "192.168.1.99",
-            port: 1883,
-            // topic: "eport/driver/" + this.state.sessionId + "/res",
-            topic: "eport/driver/ado3709Adlfj/res"
+    onGetURLMqtt = async () => {
+        const params = {
+            api: 'connection/info',
+            param: '',
+            token: this.token,
+            method: 'GET'
         }
-
-        mqtt.createClient({
-            uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
-            clientId: this.state.deviceId,
-        }).then((client) => {
-            client.on('closed', () => {
-                console.log('closed');
-            });
-            client.disconnect();
-        }).catch((err) => {
-            Alert.alert(
-                'Lỗi!!!',
-                'Liên hệ người phụ trách!',
-                [
-                    {
-                        text: 'OK', onPress: () => {
-                            this.props.navigation.goBack()
-                        }
-                    }
-                ],
-                { cancelable: false }
-            );
-        });
+        var result = undefined;
+        result = await callApi(params);
+        console.log('resultonGetURLMqtt', result)
+        if (result.code == 0) {
+            this.setState({
+                "domain": result.domain,
+                "port": result.port,
+                "topic": result.topic,
+            })
+        }
+        else {
+            Alert.alert('Thông báo!', result.msg)
+        }
     }
+
+    // componentWillUnmount = () => {
+    //     var settings = {
+    //         mqttServerUrl: "192.168.1.99",
+    //         port: 1883,
+    //         topic: "eport/driver/" + this.state.sessionId + "/res",
+    //         // topic: "eport/driver/ado3709Adlfj/res"
+    //     }
+
+    //     mqtt.createClient({
+    //         uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
+    //         clientId: this.state.deviceId,
+    //     }).then((client) => {
+    //         client.on('closed', () => {
+    //             console.log('closed');
+    //         });
+    //         client.disconnect();
+    //     }).catch((err) => {
+    //         Alert.alert(
+    //             'Lỗi!!!',
+    //             'Liên hệ người phụ trách!',
+    //             [
+    //                 {
+    //                     text: 'OK', onPress: () => {
+    //                         this.props.navigation.goBack()
+    //                     }
+    //                 }
+    //             ],
+    //             { cancelable: false }
+    //         );
+    //     });
+    // }
 
     onTestMqtt = async () => {
         var settings = {
-            mqttServerUrl: "192.168.1.99",
+            mqttServerUrl: '113.176.195.221',
             port: 1883,
-            // topic: "eport/driver/" + this.state.sessionId + "/res",
-            topic: "eport/driver/ado3709Adlfj/res"
+            topic: "eport/driver/" + this.state.sessionId + "/res",
+            // topic: "eport/driver/ado3709Adlfj/res"
         }
 
         mqtt.createClient({
+            // uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
             uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
             clientId: this.state.deviceId,
         }).then((client) => {
@@ -265,32 +303,41 @@ class HomeScreen extends PureComponent {
                     {/* <TouchableOpacity
                         onPress={() => { this.onTestLoading() }}
                     > */}
-                    <View style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        marginTop: hs(46.78),
-                    }}>
-                        <View style={styles.outline}>
-                            <View style={styles.frame}>
-                                <View style={styles.frame1Border}>
-                                    <Text style={styles.title}>Lô</Text>
-                                    <Text style={styles.txtValue}>0001</Text>
+                    <ScrollView
+                        horizontal={true}
+                    >
+                        {
+                            this.state.data.map((item, index) => (
+                                <View style={{
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginTop: hs(46.78),
+                                    width: ws(375)
+                                }}>
+                                    <View style={styles.outline}>
+                                        <View style={styles.frame}>
+                                            <View style={styles.frame1Border}>
+                                                <Text style={styles.title}>Cont</Text>
+                                                <Text style={styles.txtValue}>{item.contNo}</Text>
+                                            </View>
+                                            <View style={styles.frame1Border}>
+                                                <Text style={styles.title}>Size</Text>
+                                                <Text style={styles.txtValue}>{item.sztp}</Text>
+                                            </View>
+                                            <View style={styles.frame1Border}>
+                                                <Text style={styles.title}>Fe</Text>
+                                                <Text style={styles.txtValue}>{item.fe}</Text>
+                                            </View>
+                                            <View style={styles.frame1}>
+                                                <Text style={styles.title}>Khối lượng</Text>
+                                                <Text style={styles.txtValue}>{item.weight}</Text>
+                                            </View>
+                                        </View>
+                                    </View>
                                 </View>
-                                <View style={styles.frame1Border}>
-                                    <Text style={styles.title}>Size</Text>
-                                    <Text style={styles.txtValue}>0001</Text>
-                                </View>
-                                <View style={styles.frame1Border}>
-                                    <Text style={styles.title}>Type</Text>
-                                    <Text style={styles.txtValue}>0001</Text>
-                                </View>
-                                <View style={styles.frame1}>
-                                    <Text style={styles.title}>Số lượng</Text>
-                                    <Text style={styles.txtValue}>0001</Text>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
+                            ))
+                        }
+                    </ScrollView>
                     {/* </TouchableOpacity> */}
                 </View>
                 <WaitingModal
