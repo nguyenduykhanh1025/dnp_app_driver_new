@@ -3,14 +3,14 @@ eport:
   version: 4.2.0
   copyrightYear: 2020
   demoEnabled: true
-  profile: D:/eport/upload
+  profile: /home/eport/uat/api/upload
   addressEnabled: true
   cacheExpireTime: 3600
 
 server:
   port: 7073
   servlet:
-    context-path: /eport-api
+    context-path: /api
   tomcat:
     uri-encoding: UTF-8
     max-threads: 800
@@ -27,9 +27,9 @@ spring:
         # username: root
         # password:
         driverClassName: oracle.jdbc.OracleDriver 
-        url: jdbc:oracle:thin:@117.3.52.70:41521/CATOS_TEST
-        username: EPORT_DNP_UAT
-        password: EPORT_DNP_2020
+        url: jdbc:oracle:thin:@192.168.0.29:1521/EPORT
+        username: EPORT_TEST
+        password: WINNER
     redis:
         database: 0
         password: 

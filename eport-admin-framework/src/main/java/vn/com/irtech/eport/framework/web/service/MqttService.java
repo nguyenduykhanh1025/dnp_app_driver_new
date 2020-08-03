@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.Gson;
+import javax.annotation.PreDestroy;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.google.gson.Gson;
 
 import vn.com.irtech.eport.framework.mqtt.listener.MCRequestHandler;
 import vn.com.irtech.eport.framework.mqtt.listener.RobotResponseHandler;
@@ -111,11 +113,13 @@ public class MqttService implements MqttCallback {
 							}
 						}).waitForCompletion();
 					} catch (MqttException e) {
+						e.printStackTrace();
 						logger.info("MQTT broker connection failed!" + e.getMessage());
 						if (!mqttClient.isConnected()) {
 							try {
 								Thread.sleep(3000); // 3s
 							} catch (InterruptedException e1) {
+								logger.warn(e.getMessage());
 							}
 						}
 					}
@@ -138,6 +142,7 @@ public class MqttService implements MqttCallback {
 		}
 	}
 
+	@PreDestroy
 	public void disconnect() {
 		try {
 			if (mqttClient != null && mqttClient.isConnected()) {
@@ -175,10 +180,13 @@ public class MqttService implements MqttCallback {
 				}
 				return;
 			} catch (MqttException e) {
+				e.printStackTrace();
+				logger.warn(e.getMessage());
 			}
 			try {
 				Thread.sleep(3000); // wait 3s before reconnect
 			} catch (InterruptedException e) {
+				e.printStackTrace();
 				logger.warn(e.getMessage());
 			}
 		}
