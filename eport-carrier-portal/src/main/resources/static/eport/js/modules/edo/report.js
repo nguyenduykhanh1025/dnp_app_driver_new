@@ -194,3 +194,14 @@ $(".c-search-box-voy-no").change(function () {
   loadTable(edo);
 });
 
+function formatStatus(value) {
+  switch (value) {
+    case '1':
+      return "<span class='label label-success'>Chưa làm lệnh</span>";
+    case '2':
+      return "<span class='label label-success'>Đã làm lệnh</span>";
+    case '3':
+    return "<span class='label label-success'>Gate-in</span>";
+  }
+}
+

@@ -45,6 +45,11 @@ public class CarrierIndexController extends CarrierBaseController
         } else {
             mmap.put("doPermission", false);
         }
+        if (hasEdoPermission()) {
+            mmap.put("edoPermission", true);
+        } else {
+            mmap.put("edoPermission", false);
+        }
         return "index";
     }
     @GetMapping("/switchSkin")

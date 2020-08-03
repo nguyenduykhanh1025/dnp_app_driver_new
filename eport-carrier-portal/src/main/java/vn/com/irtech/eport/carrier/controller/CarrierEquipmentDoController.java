@@ -243,6 +243,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			// Do the insert to DB
 			for(EquipmentDo edo : equipmentDos) {
 				equipmentDoService.insertEquipmentDo(edo);
+				edo.setCreateBy(super.getUser().getEmail());
 				equipmentEdoAuditLogService.addAuditLogFirst(edo);
 			}
 			// return toAjax(equipmentDoService.insertEquipmentDoList(doList));
@@ -370,12 +371,14 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			for(EquipmentDo edo : equipmentDos) {
 				if (edo.getId() != null) {
 					equipmentDoService.updateEquipmentDo(edo);
+					edo.setCreateBy(super.getUser().getEmail());
 					equipmentEdoAuditLogService.updateAuditLog(edo);
 				} else {
 					edo.setCarrierId(getUserId());
 					edo.setBillOfLading(billOfLading);
 					edo.setCarrierCode(carrierCode);
 					equipmentDoService.insertEquipmentDo(edo);
+					edo.setCreateBy(super.getUser().getEmail());
 					equipmentEdoAuditLogService.addAuditLogFirst(edo);
 				}				
 			}
