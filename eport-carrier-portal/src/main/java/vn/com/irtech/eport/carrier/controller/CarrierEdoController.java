@@ -133,22 +133,23 @@ public class CarrierEdoController extends CarrierBaseController {
 			edoAuditLog.setCarrierCode(super.getUserGroup().getGroupCode());
 			edoAuditLog.setCreateTime(timeNow);
 			String[] idsList = ids.split(",");
+			edo.setCarrierCode(super.getUserGroup().getGroupCode());
 			edo.setCarrierId(super.getUser().getGroupId());
 			for(String id : idsList)
 			{
-				edo.setId(Long.parseLong(id));
-				Edo edoCheck = edoService.selectFirstEdo(edo);
-				if(edoCheck == null)
+				Edo edoCheck = new Edo();
+				edoCheck.setId(Long.parseLong(id));
+				edoCheck.setCarrierId(super.getUser().getGroupId());
+				if(edoService.selectFirstEdo(edoCheck) == null)
 				{
 					return AjaxResult.error("Bạn đã chọn container mà bạn không có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				}else if (edoCheck.getStatus().equals('3')) {
+				}else if (edoService.selectFirstEdo(edoCheck).getStatus().equals('3')) {
 					return AjaxResult.error("Bạn đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
 				}
 			}
 			for(String id : idsList)
 			{	
 				edo.setId(Long.parseLong(id));
-				
 				edoService.updateEdo(edo);
 				edoAuditLogService.updateAuditLog(edo);	
 			}
