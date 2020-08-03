@@ -156,5 +156,10 @@ public class CarrierGroupServiceImpl implements ICarrierGroupService
     public CarrierGroup selectCarrierGroupByGroupCode(String groupCode) {
         return carrierGroupMapper.selectCarrierGroupByGroupCode(groupCode);
     }
+
+	@Override
+	public CarrierGroup getCarrierGroupByOpeCode(String operateCode) {
+		return carrierGroupMapper.getCarrierGroupByOpeCode(operateCode);
+	}
 	
 }
