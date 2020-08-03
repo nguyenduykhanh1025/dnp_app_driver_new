@@ -47,6 +47,8 @@ public class SysIndexController extends BaseController
         mmap.put("user", user);
         mmap.put("sideTheme", configService.selectConfigByKey("sys.index.sideTheme"));
         mmap.put("skinName", configService.selectConfigByKey("sys.index.skinName"));
+        mmap.put("appName", Global.getName());
+        mmap.put("appVersion", Global.getVersion());
         mmap.put("copyrightYear", Global.getCopyrightYear());
         mmap.put("demoEnabled", Global.isDemoEnabled());
         return "index";
