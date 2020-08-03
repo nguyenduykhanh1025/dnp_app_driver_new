@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 /**
- * JSON解析处理
+ * JSON parsing and processing
  * 
  * @author admin
  */

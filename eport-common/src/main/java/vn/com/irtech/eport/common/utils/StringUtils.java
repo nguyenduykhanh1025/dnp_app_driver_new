@@ -5,23 +5,23 @@ import java.util.Map;
 import vn.com.irtech.eport.common.core.text.StrFormatter;
 
 /**
- * 字符串工具类
+ * String tools
  * 
  * @author admin
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils
 {
-    /** 空字符串 */
+    /** Empty string */
     private static final String NULLSTR = "";
 
-    /** 下划线 */
+    /** Underscore */
     private static final char SEPARATOR = '_';
 
     /**
-     * 获取参数不为空值
+     * Get parameter is not null
      * 
-     * @param value defaultValue 要判断的value
-     * @return value 返回值
+     * @param value defaultValue the value to be judged
+     * @return value return value
      */
     public static <T> T nvl(T value, T defaultValue)
     {
@@ -29,10 +29,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * * 判断一个Collection是否为空， 包含List，Set，Queue
+     * * Determine whether a Collection is empty, including List, Set, Queue
      * 
-     * @param coll 要判断的Collection
-     * @return true：为空 false：非空
+     * @param coll Collection to be judged
+     * @return true: empty false: not empty
      */
     public static boolean isEmpty(Collection<?> coll)
     {
@@ -40,10 +40,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * * 判断一个Collection是否非空，包含List，Set，Queue
+     * * Determine whether a Collection is not empty, including List, Set, Queue
      * 
-     * @param coll 要判断的Collection
-     * @return true：非空 false：空
+     * @param coll Collection to be judged
+     * @return true: not empty false: empty
      */
     public static boolean isNotEmpty(Collection<?> coll)
     {
@@ -117,10 +117,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * * 判断一个对象是否为空
+     * * Determine whether an object is empty
      * 
      * @param object Object
-     * @return true：为空 false：非空
+     * @return true: empty false: not empty
      */
     public static boolean isNull(Object object)
     {
@@ -128,10 +128,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * * 判断一个对象是否非空
+     * * Determine whether an object is not empty
      * 
      * @param object Object
-     * @return true：非空 false：空
+     * @return true: not empty false: empty
      */
     public static boolean isNotNull(Object object)
     {
@@ -139,10 +139,10 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * * 判断一个对象是否是数组类型（Java基本型别的数组）
+     * * Determine whether an object is an array type (array of basic Java types)
      * 
-     * @param object 对象
-     * @return true：是数组 false：不是数组
+     * @param object Object
+     * @return true: is an array false: not an array
      */
     public static boolean isArray(Object object)
     {
@@ -150,7 +150,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * 去空格
+     * Trim
      */
     public static String trim(String str)
     {
@@ -158,11 +158,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * 截取字符串
+     * Intercept string
      * 
-     * @param str 字符串
-     * @param start 开始
-     * @return 结果
+     * @param str String
+     * @param start start
+     * @return result
      */
     public static String substring(final String str, int start)
     {
@@ -189,12 +189,12 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * 截取字符串
+     * Intercept string
      * 
-     * @param str 字符串
-     * @param start 开始
-     * @param end 结束
-     * @return 结果
+     * @param str String
+     * @param start Start
+     * @param end End
+     * @return result
      */
     public static String substring(final String str, int start, int end)
     {
@@ -235,17 +235,17 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * 格式化文本, {} 表示占位符<br>
-     * 此方法只是简单将占位符 {} 按照顺序替换为参数<br>
-     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可<br>
-     * 例：<br>
-     * 通常使用：format("this is {} for {}", "a", "b") -> this is a for b<br>
-     * 转义{}： format("this is \\{} for {}", "a", "b") -> this is \{} for a<br>
-     * 转义\： format("this is \\\\{} for {}", "a", "b") -> this is \a for b<br>
+     * Formatted text, {} means placeholder<br>
+     * This method simply replaces the placeholder {} with parameters in order<br>
+     * If you want to output {}, use \\ to escape {, if you want to output the \ before {}, use double escape \\\\<br>
+     * example:<br>
+     * Usually used:format("this is {} for {}", "a", "b") -> this is a for b<br>
+     * Escaping{}:format("this is \\{} for {}", "a", "b") -> this is \{} for a<br>
+     * Escape \:format("this is \\\\{} for {}", "a", "b") -> this is \a for b<br>
      * 
-     * @param template 文本模板，被替换的部分用 {} 表示
-     * @param params 参数值
-     * @return 格式化后的文本
+     * @param template Text template, the replaced part is represented by {}
+     * @param params Parameter value
+     * @return Formatted text
      */
     public static String format(String template, Object... params)
     {
@@ -257,7 +257,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * 下划线转驼峰命名
+     * Underscore to hump naming
      */
     public static String toUnderScoreCase(String str)
     {
@@ -266,11 +266,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
             return null;
         }
         StringBuilder sb = new StringBuilder();
-        // 前置字符是否大写
+        // Whether the preceding character is capitalized
         boolean preCharIsUpperCase = true;
-        // 当前字符是否大写
+        // Whether the current character is uppercase
         boolean curreCharIsUpperCase = true;
-        // 下一字符是否大写
+        // Whether the next character is uppercase
         boolean nexteCharIsUpperCase = true;
         for (int i = 0; i < str.length(); i++)
         {
@@ -306,11 +306,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * 是否包含字符串
+     * Does it contain a string
      * 
-     * @param str 验证字符串
-     * @param strs 字符串组
-     * @return 包含返回true
+     * @param str Verification string
+     * @param strs String group
+     * @return Contains returns true
      */
     public static boolean inStringIgnoreCase(String str, String... strs)
     {
@@ -328,35 +328,35 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * 将下划线大写方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 例如：HELLO_WORLD->HelloWorld
+     * Convert a string named in underscore uppercase to camel case. If the string named in underscore capitalization before conversion is empty, an empty string is returned. For example: HELLO_WORLD->HelloWorld
      * 
-     * @param name 转换前的下划线大写方式命名的字符串
-     * @return 转换后的驼峰式命名的字符串
+     * @param name String named in underscore capitalization before conversion
+     * @return Converted camel case named string
      */
     public static String convertToCamelCase(String name)
     {
         StringBuilder result = new StringBuilder();
-        // 快速检查
+        // Quick check
         if (name == null || name.isEmpty())
         {
-            // 没必要转换
+            // No need to switch
             return "";
         }
         else if (!name.contains("_"))
         {
-            // 不含下划线，仅将首字母大写
+            // No underscore, capitalize only the first letter
             return name.substring(0, 1).toUpperCase() + name.substring(1);
         }
-        // 用下划线将原始字符串分割
+        // Split the original string with an underscore
         String[] camels = name.split("_");
         for (String camel : camels)
         {
-            // 跳过原始字符串中开头、结尾的下换线或双重下划线
+            // Skip the underline or double underline at the beginning and end of the original string
             if (camel.isEmpty())
             {
                 continue;
             }
-            // 首字母大写
+            // Capitalize the first letter
             result.append(camel.substring(0, 1).toUpperCase());
             result.append(camel.substring(1).toLowerCase());
         }
@@ -364,7 +364,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils
     }
 
     /**
-     * 驼峰式命名法 例如：user_name->userName
+     * CamelCase nomenclature For example: user_name->userName
      */
     public static String toCamelCase(String s)
     {

@@ -4,17 +4,17 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * 精确的浮点数运算
+ * Precise floating point operations
  * 
  * @author admin
  */
 public class Arith
 {
 
-    /** 默认除法运算精度 */
+    /** Default division precision */
     private static final int DEF_DIV_SCALE = 10;
 
-    /** 这个类不能实例化 */
+    /** This class cannot be instantiated */
     private Arith()
     {
     }

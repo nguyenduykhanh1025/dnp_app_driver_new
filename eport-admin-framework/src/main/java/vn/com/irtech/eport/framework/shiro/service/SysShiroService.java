@@ -10,7 +10,7 @@ import vn.com.irtech.eport.system.domain.SysUserOnline;
 import vn.com.irtech.eport.system.service.ISysUserOnlineService;
 
 /**
- * 会话db操作处理
+ * Session db operation processing
  * 
  * @author admin
  */

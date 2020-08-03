@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.common.core.domain;
 
 /**
- * Tree基类
+ * Tree base class
  * 
  * @author admin
  */
@@ -9,16 +9,16 @@ public class TreeEntity extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 父菜单名称 */
+    /** Parent menu name */
     private String parentName;
 
-    /** 父菜单ID */
+    /** Parent menu ID */
     private Long parentId;
 
-    /** 显示顺序 */
+    /** display order */
     private Integer orderNum;
 
-    /** 祖级列表 */
+    /** Ancestor list */
     private String ancestors;
 
     public String getParentName()

@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="renderer" content="webkit" />
-  <title>DaNangPort - Logistics Web Portal</title>
+  <title>DaNangPort:ePort - Web Portal</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <link th:href="@{favicon.ico}" rel="stylesheet" />
   <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet" />
@@ -15,26 +15,7 @@
   <link th:href="@{/css/style.css}" rel="stylesheet" />
   <link th:href="@{/css/skins.css}" rel="stylesheet" />
   <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
-  <style type="text/css">
-    .brand-title {
-      font-size: 17px;
-    }
-
-    #logo-img {
-      margin-right: 10px;
-    }
-
-    #main-logo {
-      padding-top: 2px;
-      padding-right: 10px;
-      padding-bottom: 0;
-    }
-
-    .no-hover:hover {
-      background-color: #3c8dbc !important;
-      cursor: default;
-    }
-  </style>
+  <link th:href="@{/css/index.css}" rel="stylesheet" />
 </head>
 
 <body class="top-navigation full-height-layout white-bg" style="overflow: hidden;">
@@ -49,8 +30,8 @@
                 <div style="display: flex; justify-content: space-between; padding-right: 50px">
                   <img th:src="@{/img/logo.png}" width="45px" height="45px" id="logo-img" />
                   <div class="text" style="display: flex; flex-direction: column;">
-                    <span class="brand-title">Da Nang Port</span>
-                    <span style="font-size: 13px;">Logistics Web Portal</span>
+                    <span class="brand-title">DaNangPort:ePort</span>
+                    <span style="font-size: 13px;">Web Portal</span>
                   </div>
                 </div>
               </a>
@@ -71,19 +52,19 @@
               </ul>
             </li>
             <li class="dropdown user-menu">
-              <a title="Quản Lý Đội Xe"  class="menuItem"><i class="fa fa-truck"></i>&nbsp; Quản Lý Đội Xe</a>
-              <ul class="dropdown-menu">
-                <li><a class="menuItem" th:href="@{/logistic/transport}">Quản lý Tài xế</a></li>
-                <li><a class="menuItem" th:href="@{/logistic/logisticTruck}">Quản lý Xe</a></li>
-                <li><a class="menuItem" th:href="@{/logistic/truck/history}">Lịch Sử</a></li>
-              </ul>
-            </li>
-            <li class="dropdown user-menu">
               <a title="Điều hành"  class="menuItem"><i class="fa fa-users"></i>&nbsp; Điều hành</a>
               <ul class="dropdown-menu">
                 <li><a class="menuItem" th:href="@{/logistic/assignTruck}">Điều xe</a></li>
                 <li><a class="menuItem" th:href="@{/logistic/transportMonitor/}">Giám Sát</a></li>
                 <li><a class="menuItem" th:href="@{/logistic/container/status}">Tình Trạng Container</a></li>
+              </ul>
+            </li>
+            <li class="dropdown user-menu">
+              <a title="Quản Lý Đội Xe"  class="menuItem"><i class="fa fa-truck"></i>&nbsp; Quản Lý Đội Xe</a>
+              <ul class="dropdown-menu">
+                <li><a class="menuItem" th:href="@{/logistic/transport}">Quản lý Tài xế</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/logisticTruck}">Quản lý Xe</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/truck/history}">Lịch Sử</a></li>
               </ul>
             </li>
             <li class="dropdown user-menu">
@@ -196,15 +177,6 @@
       var skin = storage.get("skin");
       var mode = "history";
       var historyPath = storage.get("historyPath");
-
-      // Hide or show do tab
-      $( document ).ready(function() {   
-        if ([[${doPermission}]]) {
-          $("#doTab").show();
-        } else {
-          $("#doTab").hide();
-        }  
-      });
 
       if($.common.isNotEmpty(skin)){
       	$("body").addClass(skin.split('|')[0]);

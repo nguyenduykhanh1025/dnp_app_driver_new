@@ -117,7 +117,7 @@
 	
 	<select id="selectPODList" parameterType="ShipmentDetailEntity"	resultType="String">
 		SELECT 
-   			POD AS POD
+   			POD || ': ' ||(SELECT PORT_NM FROM TB_PORT WHERE CNTRY_CD = SUBSTR(POD, 1, 2) AND PORT_CD = SUBSTR(POD, 3)) AS POD
 		FROM TB_VSL_POD
 		WHERE VSL_CD = #{vslNm} and CALL_SEQ = #{voyNo} and CALL_YEAR = #{year}
 		GROUP BY POD
@@ -199,7 +199,7 @@
 		       t.call_seq as voyNo,
 		       t.call_year as year,
 		       t.in_voy as voyCarrier,
-		       (select vsl_nm from tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
+		       t.vsl_cd || ' - ' || (select vsl_nm from tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
 		 FROM tb_berthplan t
 		 where t.ptnr_code = #{opeCode}
 	</select>
@@ -225,5 +225,10 @@
 			       AND t.longterm_eta IS NOT NULL
 			       AND t.atc IS NULL
 			 GROUP BY PTNR_CODE
+	</select>
+	<select id="checkBookingNoForSendFReceiveE" parameterType="String" resultType="Integer">
+			SELECT COUNT(*)
+			FROM TB_BOOKING
+			WHERE BOOKING_NO = #{bookingNo}
 	</select>
 </mapper>

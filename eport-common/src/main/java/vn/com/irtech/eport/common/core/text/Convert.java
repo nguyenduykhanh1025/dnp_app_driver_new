@@ -9,7 +9,7 @@ import java.util.Set;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 类型转换器
+ * Type converter
  * 
  * @author admin
  */

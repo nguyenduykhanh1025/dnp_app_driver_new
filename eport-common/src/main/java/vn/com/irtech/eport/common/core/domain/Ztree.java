@@ -3,7 +3,7 @@ package vn.com.irtech.eport.common.core.domain;
 import java.io.Serializable;
 
 /**
- * Ztree树结构实体类
+ * Ztree tree structure entity class
  * 
  * @author admin
  */
@@ -11,25 +11,25 @@ public class Ztree implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
-    /** 节点ID */
+    /** Node ID */
     private Long id;
 
-    /** 节点父ID */
+    /** Node parent ID */
     private Long pId;
 
-    /** 节点名称 */
+    /** Node name */
     private String name;
 
-    /** 节点标题 */
+    /** Node title */
     private String title;
 
-    /** 是否勾选 */
+    /** Whether to check */
     private boolean checked = false;
 
-    /** 是否展开 */
+    /** Whether to expand */
     private boolean open = false;
 
-    /** 是否能勾选 */
+    /** Can you check */
     private boolean nocheck = false;
 
     public Long getId()

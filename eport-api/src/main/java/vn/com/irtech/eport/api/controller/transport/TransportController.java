@@ -27,11 +27,13 @@ import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.NotificationForm;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
@@ -56,7 +58,14 @@ public class TransportController extends BaseController {
 
 	@Autowired
 	private ISysConfigService configService;
-    
+
+	@Autowired IShipmentDetailService shipmentDetailService;
+	
+	/**
+	 * Get pickup history
+	 * 
+	 * @return AjaxResult
+	 */
     @GetMapping("/pickup/history")
 	@ResponseBody
 	public AjaxResult getPickupHistory() {
@@ -66,7 +75,12 @@ public class TransportController extends BaseController {
 		ajaxResult.put("data",  pickupHistoryService.selectPickupHistoryForDriver(userId));
 		return ajaxResult;
     }
-    
+	
+	/**
+	 * Get pickup that waiting for deliver or finish
+	 * 
+	 * @return AjaxResult
+	 */
     @GetMapping("/pickup")
 	@ResponseBody
 	public AjaxResult getPickupList() {
@@ -75,7 +89,12 @@ public class TransportController extends BaseController {
 		ajaxResult.put("data", pickupHistoryService.selectPickupListByDriverId(userId));
 		return ajaxResult;
     }
-    
+	
+	/**
+	 * Get truck list (truck no list and chassis no lsit)
+	 * 
+	 * @return AjaxResult
+	 */
     @GetMapping("/truck")
 	@ResponseBody
 	public AjaxResult getTruckList() {
@@ -88,6 +107,12 @@ public class TransportController extends BaseController {
 		return ajaxResult;
 	}
 	
+	/**
+	 * Get Shipment List
+	 * 
+	 * @param serviceType
+	 * @return AjaxResult
+	 */
 	@GetMapping("/shipments/service-type/{serviceType}")
 	@ResponseBody
 	public AjaxResult getShipmentList(@PathVariable Integer serviceType) {
@@ -100,7 +125,13 @@ public class TransportController extends BaseController {
 		ajaxResult.put("shipmentList", shipmentService.selectShipmentListForDriver(serviceType, logisticGroupId));
 		return ajaxResult;
 	}
-    
+	
+	/**
+	 * Get pick up assign list for driver by shipment id
+	 * 
+	 * @param shipmentId
+	 * @return AjaxResult
+	 */
     @GetMapping("/shipment/{shipmentId}/pickup")
 	@ResponseBody
 	public AjaxResult getContainerList(@PathVariable Long shipmentId) {
@@ -112,11 +143,19 @@ public class TransportController extends BaseController {
 		ajaxResult.put("data", pickupAssignService.selectPickupAssignListByDriverId(userId, shipmentId));
 		return ajaxResult;
     }
-    
+	
+	/**
+	 * Make a pickup to deliver
+	 * 
+	 * @param pickupHistoryTemp
+	 * @return AjaxResult
+	 */
     @PostMapping("/pickup")
 	@ResponseBody
 	public AjaxResult pickup(@RequestBody PickupHistory pickupHistoryTemp) {
 		PickupAssign pickupAssign = pickupAssignService.selectPickupAssignById(pickupHistoryTemp.getPickupAssignId());
+		ShipmentDetail shipmentDetail = null;
+		PickupHistory pickupHistory = new PickupHistory();
 		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
 		if (pickupAssign == null) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0007));
@@ -125,25 +164,32 @@ public class TransportController extends BaseController {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0009));
 		}
 		Shipment shipment = shipmentService.selectShipmentById(pickupAssign.getShipmentId());
-		
-		if (!pickupHistoryService.checkPossiblePickup(pickupAssign.getDriverId(), shipment.getServiceType())) {
+		if (pickupAssign.getShipmentDetailId() != null) {
+			pickupHistory.setContainerNo(pickupHistoryTemp.getContainerNo());
+			pickupHistory.setShipmentDetailId(pickupAssign.getShipmentDetailId());
+			shipmentDetail = shipmentDetailService.selectShipmentDetailById(pickupAssign.getShipmentDetailId());
+		}
+		if (!pickupHistoryService.checkPossiblePickup(pickupAssign.getDriverId(), shipment.getServiceType(), shipmentDetail)) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0016));
 		}
-		PickupHistory pickupHistory = new PickupHistory();
 		pickupHistory.setLogisticGroupId(pickupAssign.getLogisticGroupId());
 		pickupHistory.setShipmentId(pickupAssign.getShipmentId());
-		pickupHistory.setShipmentDetailId(pickupAssign.getShipmentDetailId());
 		pickupHistory.setDriverPhoneNumber(pickupAssign.getPhoneNumber());
 		pickupHistory.setDriverId(pickupAssign.getDriverId());
 		pickupHistory.setPickupAssignId(pickupAssign.getId());
 		pickupHistory.setTruckNo(pickupHistoryTemp.getTruckNo());
 		pickupHistory.setChassisNo(pickupHistoryTemp.getChassisNo());
-		pickupHistory.setContainerNo(pickupHistoryTemp.getContainerNo());
 		pickupHistory.setStatus(0);
 		pickupHistoryService.insertPickupHistory(pickupHistory);
 		return success();
     }
-    
+	
+	/**
+	 * Get pickup detail info (from history or current pickup)
+	 * 
+	 * @param pickupId
+	 * @return AjaxResult
+	 */
     @GetMapping("/pickup/{pickupId}")
 	@ResponseBody
 	public AjaxResult getPickupDetailInfo(@PathVariable Long pickupId) {
@@ -155,7 +201,13 @@ public class TransportController extends BaseController {
 		ajaxResult.put("data", pickupHistoryService.selectPickupHistoryDetailById(userId, pickupId));
 		return ajaxResult;
     }
-    
+	
+	/**
+	 * Finish pick up (pickup become history)
+	 * 
+	 * @param pickupHistoryId
+	 * @return AjaxResult
+	 */
     @PostMapping("/pickup/{pickupHistoryId}/complete")
 	@ResponseBody
 	public AjaxResult finishPickup(@PathVariable Long pickupHistoryId) {
@@ -166,8 +218,40 @@ public class TransportController extends BaseController {
 		pickupHistory.setStatus(3);
 		pickupHistoryService.updatePickupHistory(pickupHistory);
 		return success();
-    }
-    
+	}
+	
+	@PostMapping("/pickup/{pickupId}/cancel")
+	@ResponseBody
+	public AjaxResult cancelPickup(@PathVariable Long pickupId) {
+		PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickupId);
+		if (pickupHistory == null || !pickupHistory.getDriverId().equals(SecurityUtils.getCurrentUser().getUser().getUserId()) || pickupHistory.getStatus() != 0) {
+			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0018));
+		}
+		pickupHistoryService.deletePickupHistoryById(pickupId);
+		return success();
+	}
+
+	@GetMapping("/shipment/{shipmentId}/auto-pickup")
+	@ResponseBody
+	public AjaxResult getPickupAssignByShipmentId(@PathVariable Long shipmentId) {
+		if (shipmentId == null) {
+			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0015));
+		}
+		PickupAssign pickupAssignParam = new PickupAssign();
+		pickupAssignParam.setShipmentId(shipmentId);
+		pickupAssignParam.setDriverId(SecurityUtils.getCurrentUser().getUser().getUserId());
+		PickupAssign pickupAssign = pickupAssignService.selectPickupAssignByShipmentId(pickupAssignParam);
+		if (pickupAssign == null) {
+			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0008));
+		}
+		return success();
+	}
+	
+	/**
+	 * Get list notification
+	 * 
+	 * @return AjaxResult
+	 */
     @PostMapping("/notify")
 	@ResponseBody
 	public AjaxResult getNotifyList() {
@@ -186,6 +270,12 @@ public class TransportController extends BaseController {
 		return ajaxResult;
     }
 	
+	/**
+	 * Update location
+	 * 
+	 * @param location
+	 * @return AjaxResult
+	 */
 	@PostMapping("/location")
 	@ResponseBody
 	public AjaxResult updateLocation(@RequestBody Map<String, Double> location) {
@@ -207,11 +297,18 @@ public class TransportController extends BaseController {
 		return success();
 	}
 
-	@GetMapping("/mqtt/url")
+	/**
+	 * Get connection info mqtt
+	 * 
+	 * @return AjaxResult
+	 */
+	@GetMapping("/connection/info")
 	@ResponseBody
 	public AjaxResult getMqttUrl() {
 		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("mqttUrl", configService.selectConfigByKey("mobile.mqtt.url"));
+		ajaxResult.put("domain", configService.selectConfigByKey("driver.connection.domain"));
+		ajaxResult.put("port", configService.selectConfigByKey("driver.connection.port"));
+		ajaxResult.put("topic", configService.selectConfigByKey("driver.topic"));
 		return ajaxResult;
 	}
 	

@@ -75,13 +75,23 @@ public interface IPickupAssignService
      * @param serviceType
      * @return
      */
+
     public List<PickupAssignForm> selectPickupAssignListByDriverId(@Param("driverId") Long driverId, @Param("shipmentId") Long shipmentId); 
     /**
      * Get remark pickup_assgin follow batch
      */
     public String getRemarkFollowBatchByShipmentId(PickupAssign pickupAssign);
+
     /**
      * Get remark pickup_assgin follow container
      */
     public String getRemarkFollowContainerByShipmentDetailId(PickupAssign pickupAssign);
+
+    /**
+     * Select Pickup Assign By Shipment Id
+     * 
+     * @param pickupAssign
+     * @return PickupAssign
+     */
+    public PickupAssign selectPickupAssignByShipmentId(PickupAssign pickupAssign);
 }

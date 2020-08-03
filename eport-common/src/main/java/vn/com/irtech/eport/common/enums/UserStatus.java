@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.common.enums;
 
 /**
- * 用户状态
+ * user status
  * 
  * @author admin
  */

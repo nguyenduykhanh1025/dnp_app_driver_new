@@ -3,7 +3,7 @@ package vn.com.irtech.eport.common.core.text;
 import vn.com.irtech.eport.common.utils.StringUtils;
 
 /**
- * 字符串格式化
+ * String formatting
  * 
  * @author admin
  */

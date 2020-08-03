@@ -16,6 +16,12 @@ public class PickupHistoryDetail extends PickupHistoryForm {
 
     private String consignee;
 
+    private String address;
+
+    private String mobileNumber;
+
+    private String remark;
+
     private Integer status;
 
     public String getTruckNo() {
@@ -82,4 +88,27 @@ public class PickupHistoryDetail extends PickupHistoryForm {
         this.status = status;
     }
     
+    public String getAddress() {
+        return this.address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getMobileNumber() {
+        return this.mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public String getRemark() {
+        return this.remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 }
