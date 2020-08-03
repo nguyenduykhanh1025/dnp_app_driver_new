@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import vn.com.irtech.eport.carrier.domain.CarrierGroup;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
@@ -68,6 +71,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
     @Autowired
     private ICatosApiService catosApiService;
+    
+    @Autowired
+    private ICarrierGroupService carrierService;
 
     // VIEW RECEIVE CONT EMPTY
     @GetMapping()
@@ -339,6 +345,15 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				shipment.setUpdateTime(new Date());
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
+			}
+			//Đổi opeCode operateCode -> groupCode
+			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipmentDetails.get(0).getOpeCode().toUpperCase());
+			if(carrierGroup != null) {
+				if(! shipmentDetails.get(0).getOpeCode().toUpperCase().equals(carrierGroup.getGroupCode())) {
+					for(ShipmentDetail i : shipmentDetails) {
+						i.setOpeCode(carrierGroup.getGroupCode());
+					}
+				}
 			}
 			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails, shipment, creditFlag);
 			if (serviceRobotReqs != null) {
