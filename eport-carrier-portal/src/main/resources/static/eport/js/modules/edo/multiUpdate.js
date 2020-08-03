@@ -38,7 +38,9 @@ function confirm() {
               icon: 6
             });
           } else {
-            $.modal.alertError(data.msg);
+              $.modal.alertError(data.msg);
+              $.modal.closeLoading();
+              return;
           }
           setTimeout(function () {
             $.modal.reload();

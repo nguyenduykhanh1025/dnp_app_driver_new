@@ -140,11 +140,13 @@ public class CarrierEdoController extends CarrierBaseController {
 			{
 				Edo edoCheck = new Edo();
 				edoCheck.setId(Long.parseLong(id));
-				edoCheck.setCarrierId(super.getUser().getGroupId());
+				// edoCheck.setCarrierId(super.getUser().getGroupId());
+				Edo seR = new Edo();
+				seR = edoService.selectFirstEdo(edoCheck);
 				if(edoService.selectFirstEdo(edoCheck) == null)
 				{
 					return AjaxResult.error("Bạn đã chọn container mà bạn không có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				}else if (edoService.selectFirstEdo(edoCheck).getStatus().equals('3')) {
+				}else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
 					return AjaxResult.error("Bạn đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
 				}
 			}
