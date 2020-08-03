@@ -123,4 +123,9 @@ public class ApiShipmentDetailController {
 	public Integer checkBookingNoForSendFReceiveE(@PathVariable String bookingNo) {
 		return shipmentDetailDao.checkBookingNoForSendFReceiveE(bookingNo);
 	}
+	
+	@PostMapping("/shipmentDetail/infor/send-full-receive-e")
+	public ShipmentDetailEntity getInforSendFReceiveE(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		return shipmentDetailDao.getInforSendFReceiveE(shipmentDetailEntity);
+	}
 }

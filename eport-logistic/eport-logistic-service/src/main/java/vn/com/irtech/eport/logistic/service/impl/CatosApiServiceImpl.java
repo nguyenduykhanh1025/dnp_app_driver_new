@@ -295,5 +295,18 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+
+	@Override
+	public ShipmentDetail getInforSendFReceiveE(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/infor/send-full-receive-e";
+			RestTemplate restTemplate = new RestTemplate();
+			ShipmentDetail result = restTemplate.postForObject(url, shipmentDetail, ShipmentDetail.class);
+			return result;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
 	
 }

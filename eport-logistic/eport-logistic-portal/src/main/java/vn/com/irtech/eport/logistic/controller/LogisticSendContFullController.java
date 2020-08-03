@@ -175,10 +175,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
 		shipment.setServiceType(Constants.SEND_CONT_FULL);
+		if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo).intValue() == 0) {
+			return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để tạo !");
+		}
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
-		return error();
+		return error("Số book đã tồn tại!");
 	}
 	
 	@PostMapping("/shipment/{shipmentId}")

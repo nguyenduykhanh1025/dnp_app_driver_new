@@ -47,4 +47,6 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public List<ShipmentDetailEntity> selectVesselVoyageBerthPlan(String opeCode);
 	
 	public Integer checkBookingNoForSendFReceiveE(String bookingNo);
+	
+	public ShipmentDetailEntity getInforSendFReceiveE(ShipmentDetailEntity shipmentDetailEntity);
 }
