@@ -126,7 +126,7 @@ function formatAction(value, row, index) {
     disabled = "disabled";
   }
   actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
-  actions.push('<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch sử</a> ');
+  actions.push('<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
   return actions.join("");
 }
 
