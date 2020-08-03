@@ -121,7 +121,7 @@ function formatToYDMHMS(date) {
 function formatAction(value, row, index) {
   let actions = [];
   let disabled = "";
-  if(row.id == 3)
+  if(row.status == '3')
   {
     disabled = "disabled";
   }
