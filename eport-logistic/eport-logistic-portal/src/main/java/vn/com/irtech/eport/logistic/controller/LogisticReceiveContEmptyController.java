@@ -158,10 +158,13 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
 		shipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
+		if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo).intValue() == 0) {
+			return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để tạo !");
+		}
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
-		return error();
+		return error("Số book đã tồn tại!");
 	}
 
     // ADD SHIPMENT
@@ -414,18 +417,29 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		
 	}
 	
-	@GetMapping("/berthplan/ope-code/{opeCode}/vessel-voyage/list")
+//	@GetMapping("/berthplan/ope-code/{opeCode}/vessel-voyage/list")
+//	@ResponseBody
+//	public AjaxResult getVesselVoyageList(@PathVariable String opeCode) {
+//		AjaxResult ajaxResult = success();
+//		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
+//		if(berthplanList.size() > 0) {
+//			List<String> vesselAndVoyages = new ArrayList<String>();
+//			for(ShipmentDetail i : berthplanList) {
+//				vesselAndVoyages.add(i.getVslAndVoy());
+//			}
+//			ajaxResult.put("berthplanList", berthplanList);
+//			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+//			return ajaxResult;
+//		}
+//		return error();
+//	}
+	@PostMapping("berthplan/container/infor")
 	@ResponseBody
-	public AjaxResult getVesselVoyageList(@PathVariable String opeCode) {
+	public AjaxResult getInforContainer(@RequestBody ShipmentDetail shipmentDetail) {
 		AjaxResult ajaxResult = success();
-		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
-		if(berthplanList.size() > 0) {
-			List<String> vesselAndVoyages = new ArrayList<String>();
-			for(ShipmentDetail i : berthplanList) {
-				vesselAndVoyages.add(i.getVslAndVoy());
-			}
-			ajaxResult.put("berthplanList", berthplanList);
-			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+		ShipmentDetail rs = catosApiService.getInforSendFReceiveE(shipmentDetail);
+		if(rs != null) {
+			ajaxResult.put("shipmentDetail", rs);
 			return ajaxResult;
 		}
 		return error();
