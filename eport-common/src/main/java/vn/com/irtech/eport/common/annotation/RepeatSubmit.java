@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 自定义注解防止表单重复提交
+ * Custom annotations prevent repeated submission of forms
  * 
  * @author admin
  *

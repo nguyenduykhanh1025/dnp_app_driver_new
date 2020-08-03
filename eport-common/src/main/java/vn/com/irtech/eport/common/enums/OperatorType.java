@@ -1,24 +1,24 @@
 package vn.com.irtech.eport.common.enums;
 
 /**
- * 操作人类别
+ * Operator category
  * 
  * @author admin
  */
 public enum OperatorType
 {
     /**
-     * 其它
+     * other
      */
     OTHER,
 
     /**
-     * 后台用户
+     * admin user
      */
     MANAGE,
 
     /**
-     * 手机端用户
+     * mobile
      */
     MOBILE
 }

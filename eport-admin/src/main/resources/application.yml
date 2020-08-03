@@ -49,9 +49,10 @@ spring:
     restart:
       enabled: true
   redis:
+    enabled: false
     database: 0
     password: 
-    host: 127.0.0.1
+    host: 192.168.1.65
     port: 6379
     lettuce:
       pool:
@@ -100,8 +101,8 @@ xss:
 mqtt:
   username: admin
   password: public 
-  host-url: tcp://127.0.0.1:1883    
-  #host-url: tcp://localhost:1883                # The address and port of your own server need to be changed 
+  host-url: tcp://113.176.195.221:1883    
+  #host-url: tcp://localhost:1883               # The address and port of your own server need to be changed 
 
 websocket:
    endpoint: /eport_admin

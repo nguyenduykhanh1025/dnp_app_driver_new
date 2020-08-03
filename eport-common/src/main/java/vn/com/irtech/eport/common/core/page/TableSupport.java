@@ -4,14 +4,14 @@ import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.utils.ServletUtils;
 
 /**
- * 表格数据处理
+ * Form data processing
  * 
  * @author admin
  */
 public class TableSupport
 {
     /**
-     * 封装分页对象
+     * Encapsulate the paging object
      */
     public static PageDomain getPageDomain()
     {

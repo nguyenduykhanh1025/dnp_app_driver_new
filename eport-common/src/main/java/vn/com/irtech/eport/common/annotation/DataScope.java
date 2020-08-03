@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 数据权限过滤注解
+ * Data permission filter annotation
  * 
  * @author admin
  */
@@ -17,12 +17,12 @@ import java.lang.annotation.Target;
 public @interface DataScope
 {
     /**
-     * 部门表的别名
+     * Alias ​​of department table
      */
     public String deptAlias() default "";
 
     /**
-     * 用户表的别名
+     * Alias ​​of user table
      */
     public String userAlias() default "";
 }

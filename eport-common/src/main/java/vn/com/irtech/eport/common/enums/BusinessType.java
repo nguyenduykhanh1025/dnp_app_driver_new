@@ -1,59 +1,59 @@
 package vn.com.irtech.eport.common.enums;
 
 /**
- * 业务操作类型
+ * Business operation type
  * 
  * @author admin
  */
 public enum BusinessType
 {
     /**
-     * 其它
+     * other
      */
     OTHER,
 
     /**
-     * 新增
+     * insert
      */
     INSERT,
 
     /**
-     * 修改
+     * update
      */
     UPDATE,
 
     /**
-     * 删除
+     * delete
      */
     DELETE,
 
     /**
-     * 授权
+     * grant
      */
     GRANT,
 
     /**
-     * 导出
+     * export
      */
     EXPORT,
 
     /**
-     * 导入
+     * import
      */
     IMPORT,
 
     /**
-     * 强退
+     * force
      */
     FORCE,
 
     /**
-     * 生成代码
+     * gencode
      */
     GENCODE,
     
     /**
-     * Clear
+     * Clean
      */
     CLEAN,
 }

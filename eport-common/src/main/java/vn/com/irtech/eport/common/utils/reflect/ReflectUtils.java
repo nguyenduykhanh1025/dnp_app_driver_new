@@ -16,7 +16,7 @@ import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
 
 /**
- * 反射工具类. 提供调用getter/setter方法, 访问私有变量, 调用私有方法, 获取泛型类型Class, 被AOP过的真实类等工具函数.
+ * Reflection tool class. Provides tool functions such as calling getter/setter methods, accessing private variables, calling private methods, obtaining generic types Class, real classes that have been AOP, etc.
  * 
  * @author admin
  */
@@ -32,8 +32,8 @@ public class ReflectUtils
     private static Logger logger = LoggerFactory.getLogger(ReflectUtils.class);
 
     /**
-     * 调用Getter方法.
-     * 支持多级，如：对象名.对象名.方法
+     * Call the Getter method.
+     * Support multiple levels, such as: object name. object name. method
      */
     @SuppressWarnings("unchecked")
     public static <E> E invokeGetter(Object obj, String propertyName)
@@ -48,8 +48,8 @@ public class ReflectUtils
     }
 
     /**
-     * 调用Setter方法, 仅匹配方法名。
-     * 支持多级，如：对象名.对象名.方法
+     * Call Setter method, only match method name.
+     * Support multiple levels, such as: object name. object name. method
      */
     public static <E> void invokeSetter(Object obj, String propertyName, E value)
     {
@@ -71,7 +71,7 @@ public class ReflectUtils
     }
 
     /**
-     * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
+     * Read object property values ​​directly, ignoring private/protected modifiers, and not passing through getter functions.
      */
     @SuppressWarnings("unchecked")
     public static <E> E getFieldValue(final Object obj, final String fieldName)
@@ -95,7 +95,7 @@ public class ReflectUtils
     }
 
     /**
-     * 直接设置对象属性值, 无视private/protected修饰符, 不经过setter函数.
+     * Set object property values ​​directly, ignoring private/protected modifiers, and not passing through setter functions.
      */
     public static <E> void setFieldValue(final Object obj, final String fieldName, final E value)
     {
@@ -117,9 +117,9 @@ public class ReflectUtils
     }
 
     /**
-     * 直接调用对象方法, 无视private/protected修饰符.
-     * 用于一次性调用的情况，否则应使用getAccessibleMethod()函数获得Method后反复调用.
-     * 同时匹配方法名+参数类型，
+     * Call object methods directly, ignoring private/protected modifiers.
+     * It is used in the case of one-time call, otherwise it should be called repeatedly after obtaining the Method using the getAccessibleMethod() function.
+     * Match the method name + parameter type at the same time,
      */
     @SuppressWarnings("unchecked")
     public static <E> E invokeMethod(final Object obj, final String methodName, final Class<?>[] parameterTypes,
@@ -275,14 +275,14 @@ public class ReflectUtils
     }
 
     /**
-     * 循环向上转型, 获取对象的DeclaredMethod,并强制设置为可访问.
-     * 如向上转型到Object仍无法找到, 返回null.
-     * 只匹配函数名。
-     * 用于方法需要被多次调用的情况. 先使用本函数先取得Method,然后调用Method.invoke(Object obj, Object... args)
+     * Cycle upward transformation, get the DeclaredMethod of the object, and force it to be accessible.
+     * If it can't be found after upcasting to Object, return null.
+     * Only match function names.
+     * Used when the method needs to be called multiple times. Use this function to get the Method first, and then call Method.invoke(Object obj, Object...args)
      */
     public static Method getAccessibleMethodByName(final Object obj, final String methodName, int argsNum)
     {
-        // 为空不报错。直接返回 null
+        // No error will be reported if it is empty. Return null directly
         if (obj == null)
         {
             return null;
@@ -304,7 +304,7 @@ public class ReflectUtils
     }
 
     /**
-     * 改变private/protected的方法为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。
+     * Change the private/protected method to public, try not to call the actual changed statement, to avoid complaints from the JDK SecurityManager.
      */
     public static void makeAccessible(Method method)
     {
@@ -316,7 +316,7 @@ public class ReflectUtils
     }
 
     /**
-     * 改变private/protected的成员变量为public，尽量不调用实际改动的语句，避免JDK的SecurityManager抱怨。
+     * Change the private/protected member variable to public, try not to call the actually changed statement, to avoid complaints from the SecurityManager of the JDK.
      */
     public static void makeAccessible(Field field)
     {
@@ -328,8 +328,8 @@ public class ReflectUtils
     }
 
     /**
-     * 通过反射, 获得Class定义中声明的泛型参数的类型, 注意泛型必须定义在父类处
-     * 如无法找到, 返回Object.class.
+     * Through reflection, get the type of the generic parameter declared in the Class definition, note that the generic must be defined at the parent class
+     * If it cannot be found, return Object.class.
      */
     @SuppressWarnings("unchecked")
     public static <T> Class<T> getClassGenricType(final Class clazz)
@@ -338,8 +338,8 @@ public class ReflectUtils
     }
 
     /**
-     * 通过反射, 获得Class定义中声明的父类的泛型参数的类型.
-     * 如无法找到, 返回Object.class.
+     * Through reflection, the type of the generic parameter of the parent class declared in the Class definition is obtained.
+     * If not found, return to Object.class.
      */
     public static Class getClassGenricType(final Class clazz, final int index)
     {
@@ -388,7 +388,7 @@ public class ReflectUtils
     }
 
     /**
-     * 将反射时的checked exception转换为unchecked exception.
+     * Convert checked exception during reflection to unchecked exception.
      */
     public static RuntimeException convertReflectionExceptionToUnchecked(String msg, Exception e)
     {

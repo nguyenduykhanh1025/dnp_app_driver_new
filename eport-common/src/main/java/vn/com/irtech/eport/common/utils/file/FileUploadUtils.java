@@ -14,24 +14,24 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.security.Md5Utils;
 
 /**
- * 文件上传工具类
+ * File upload tools
  *
  * @author admin
  */
 public class FileUploadUtils
 {
     /**
-     * 默认大小 50M
+     * Default size 50M
      */
     public static final long DEFAULT_MAX_SIZE = 50 * 1024 * 1024;
 
     /**
-     * 默认的文件名最大长度 100
+     * Default maximum length of file name 100
      */
     public static final int DEFAULT_FILE_NAME_LENGTH = 100;
 
     /**
-     * 默认上传的地址
+     * Default upload address
      */
     private static String defaultBaseDir = Global.getProfile();
 
@@ -48,10 +48,10 @@ public class FileUploadUtils
     }
 
     /**
-     * 以默认配置进行文件上传
+     * File upload with default configuration
      *
-     * @param file 上传的文件
-     * @return 文件名称
+     * @param file Uploaded file
+     * @return file name
      * @throws Exception
      */
     public static final String upload(MultipartFile file) throws IOException
@@ -67,11 +67,11 @@ public class FileUploadUtils
     }
 
     /**
-     * 根据文件路径上传
+     * Upload according to file path
      *
-     * @param baseDir 相对应用的基目录
-     * @param file 上传的文件
-     * @return 文件名称
+     * @param baseDir Relative application base directory
+     * @param file Uploaded file
+     * @return file name
      * @throws IOException
      */
     public static final String upload(String baseDir, MultipartFile file) throws IOException
@@ -87,12 +87,12 @@ public class FileUploadUtils
     }
 
     /**
-     * 根据文件路径上传
+     * Upload according to file path
      *
-     * @param baseDir 相对应用的基目录
-     * @param file 上传的文件
-     * @param allowedExtension 上传文件类型
-     * @return 文件名称
+     * @param baseDir Relative application base directory
+     * @param file Uploaded file
+     * @param allowedExtension Upload file type
+     * @return file name
      * @throws IOException
      */
     public static final String upload(String baseDir, MultipartFile file, String[] allowedExtension)
@@ -109,17 +109,17 @@ public class FileUploadUtils
     }
 
     /**
-     * 文件上传
+     * File Upload
      *
-     * @param baseDir 相对应用的基目录
-     * @param fileName 文档名称
-     * @param file 上传的文件
-     * @param allowedExtension 上传文件类型
-     * @return 返回上传成功的文件名
-     * @throws FileSizeLimitExceededException 如果超出最大大小
-     * @throws FileNameLengthLimitExceededException 文件名太长
-     * @throws IOException 比如读写文件出错时
-     * @throws InvalidExtensionException 文件校验异常
+     * @param baseDir Relative application base directory
+     * @param fileName file name
+     * @param file Uploaded file
+     * @param allowedExtension Upload file type
+     * @return Return the name of the uploaded file
+     * @throws FileSizeLimitExceededException If the maximum size is exceeded
+     * @throws FileNameLengthLimitExceededException File name is too long
+     * @throws IOException For example, when reading and writing files are wrong
+     * @throws InvalidExtensionException File verification exception
      */
     public static final String upload(String baseDir, String fileName,
                                       MultipartFile file, String[] allowedExtension)
@@ -146,7 +146,7 @@ public class FileUploadUtils
     }
 
     /**
-     * 编码文件名
+     * Encoding file name
      */
     public static final String extractFilename(MultipartFile file)
     {
@@ -180,7 +180,7 @@ public class FileUploadUtils
     }
 
     /**
-     * 编码文件名
+     * Encoding file name
      */
     private static final String encodingFilename(String fileName)
     {
@@ -190,11 +190,11 @@ public class FileUploadUtils
     }
 
     /**
-     * 文件大小校验
+     * File size check
      *
-     * @param file 上传的文件
+     * @param file Uploaded file
      * @return
-     * @throws FileSizeLimitExceededException 如果超出最大大小
+     * @throws FileSizeLimitExceededException If the maximum size is exceeded
      * @throws InvalidExtensionException
      */
     public static final void assertAllowed(MultipartFile file, String[] allowedExtension)
@@ -234,7 +234,7 @@ public class FileUploadUtils
     }
 
     /**
-     * 判断MIME类型是否是允许的MIME类型
+     * Determine whether the MIME type is an allowed MIME type
      *
      * @param extension
      * @param allowedExtension
@@ -253,10 +253,10 @@ public class FileUploadUtils
     }
 
     /**
-     * 获取文件名的后缀
+     * Get the suffix of the file name
      *
-     * @param file 表单文件
-     * @return 后缀名
+     * @param file Form file
+     * @return Suffix
      */
     public static final String getExtension(MultipartFile file)
     {

@@ -9,7 +9,7 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 
 /**
- * 自定义操作日志记录注解
+ * Custom operation log record annotation
  * 
  * @author admin
  */
@@ -19,22 +19,22 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 public @interface Log
 {
     /**
-     * 模块 
+     * Module 
      */
     public String title() default "";
 
     /**
-     * 功能
+     * Features
      */
     public BusinessType businessType() default BusinessType.OTHER;
 
     /**
-     * 操作人类别
+     * Operator category
      */
     public OperatorType operatorType() default OperatorType.MANAGE;
 
     /**
-     * 是否保存请求的参数
+     * Whether to save the requested parameters
      */
     public boolean isSaveRequestData() default true;
 }

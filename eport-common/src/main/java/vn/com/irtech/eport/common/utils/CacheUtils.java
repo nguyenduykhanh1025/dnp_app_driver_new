@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import vn.com.irtech.eport.common.utils.spring.SpringUtils;
 
 /**
- * Cache工具类
+ * Cache tools
  * 
  * @author admin
  */
@@ -22,7 +22,7 @@ public class CacheUtils
     private static final String SYS_CACHE = "sys-cache";
 
     /**
-     * 获取SYS_CACHE缓存
+     * Get SYS_CACHE cache
      * 
      * @param key
      * @return
@@ -33,7 +33,7 @@ public class CacheUtils
     }
 
     /**
-     * 获取SYS_CACHE缓存
+     * Get SYS_CACHE cache
      * 
      * @param key
      * @param defaultValue
@@ -46,7 +46,7 @@ public class CacheUtils
     }
 
     /**
-     * 写入SYS_CACHE缓存
+     * Write to SYS_CACHE cache
      * 
      * @param key
      * @return
@@ -57,7 +57,7 @@ public class CacheUtils
     }
 
     /**
-     * 从SYS_CACHE缓存中移除
+     * Remove from SYS_CACHE cache
      * 
      * @param key
      * @return
@@ -68,7 +68,7 @@ public class CacheUtils
     }
 
     /**
-     * 获取缓存
+     * Get cache
      * 
      * @param cacheName
      * @param key
@@ -80,7 +80,7 @@ public class CacheUtils
     }
 
     /**
-     * 获取缓存
+     * Get cache
      * 
      * @param cacheName
      * @param key
@@ -94,7 +94,7 @@ public class CacheUtils
     }
 
     /**
-     * 写入缓存
+     * Write cache
      * 
      * @param cacheName
      * @param key
@@ -109,7 +109,7 @@ public class CacheUtils
     }
 
     /**
-     * 从缓存中移除
+     * Remove from cache
      * 
      * @param cacheName
      * @param key
@@ -120,7 +120,7 @@ public class CacheUtils
     }
 
     /**
-     * 从缓存中移除所有
+     * Remove all from cache
      * 
      * @param cacheName
      */
@@ -136,7 +136,7 @@ public class CacheUtils
     }
 
     /**
-     * 从缓存中移除指定key
+     * Remove the specified key from the cache
      * 
      * @param keys
      */
@@ -146,7 +146,7 @@ public class CacheUtils
     }
 
     /**
-     * 从缓存中移除指定key
+     * Remove the specified key from the cache
      * 
      * @param cacheName
      * @param keys
@@ -161,7 +161,7 @@ public class CacheUtils
     }
 
     /**
-     * 获取缓存键名
+     * Get the cache key name
      * 
      * @param key
      * @return
@@ -172,7 +172,7 @@ public class CacheUtils
     }
 
     /**
-     * 获得一个Cache，没有则显示日志。
+     * Get a Cache, if not, display the log.
      * 
      * @param cacheName
      * @return

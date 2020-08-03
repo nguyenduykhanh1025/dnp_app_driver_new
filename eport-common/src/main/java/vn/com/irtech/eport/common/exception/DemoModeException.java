@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.common.exception;
 
 /**
- * 演示模式异常
+ * Demo mode is abnormal
  * 
  * @author admin
  */

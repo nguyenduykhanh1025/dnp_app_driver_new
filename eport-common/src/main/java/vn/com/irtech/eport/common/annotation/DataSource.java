@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import vn.com.irtech.eport.common.enums.DataSourceType;
 
 /**
- * 自定义多数据源切换注解
+ * Customize multiple data source switch annotations
  * 
  * @author admin
  */
@@ -20,7 +20,7 @@ import vn.com.irtech.eport.common.enums.DataSourceType;
 public @interface DataSource
 {
     /**
-     * 切换数据源名称
+     * Switch data source name
      */
     public DataSourceType value() default DataSourceType.MASTER;
 }

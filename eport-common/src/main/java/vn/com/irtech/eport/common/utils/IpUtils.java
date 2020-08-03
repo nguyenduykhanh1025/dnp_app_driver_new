@@ -5,7 +5,7 @@ import java.net.UnknownHostException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 获取IP方法
+ * Get IP method
  * 
  * @author admin
  */
@@ -87,10 +87,10 @@ public class IpUtils
     }
 
     /**
-     * 将IPv4地址转换成字节
+     * Convert IPv4 address to bytes
      * 
-     * @param text IPv4地址
-     * @return byte 字节
+     * @param text IPv4 address
+     * @return byte byte
      */
     public static byte[] textToNumericFormatV4(String text)
     {
@@ -183,6 +183,6 @@ public class IpUtils
         catch (UnknownHostException e)
         {
         }
-        return "未知";
+        return "Unknown";
     }
 }

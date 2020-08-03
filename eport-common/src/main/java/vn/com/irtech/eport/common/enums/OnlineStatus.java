@@ -1,13 +1,13 @@
 package vn.com.irtech.eport.common.enums;
 
 /**
- * 用户会话
+ * User session
  * 
  * @author admin
  */
 public enum OnlineStatus
 {
-    /** 用户状态 */
+    /** user status */
     on_line("Online"), off_line("Offline");
 
     private final String info;

@@ -3,7 +3,7 @@ package vn.com.irtech.eport.common.exception.file;
 import vn.com.irtech.eport.common.exception.base.BaseException;
 
 /**
- * 文件信息异常类
+ * File information exception class
  * 
  * @author admin
  */

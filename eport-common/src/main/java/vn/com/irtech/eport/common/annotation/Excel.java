@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 自定义导出Excel数据注解
+ * Custom export Excel data annotation
  * 
  * @author admin
  */
@@ -15,82 +15,82 @@ import java.lang.annotation.Target;
 public @interface Excel
 {
     /**
-     * 导出时在excel中排序
+     * Sort in excel when exporting
      */
     public int sort() default Integer.MAX_VALUE;
 
     /**
-     * 导出到Excel中的名字.
+     * Name exported to Excel.
      */
     public String name() default "";
 
     /**
-     * 日期格式, 如: yyyy-MM-dd
+     * Date format, such as: yyyy-MM-dd
      */
     public String dateFormat() default "";
 
     /**
-     * 如果是字典类型，请设置字典的type值 (如: sys_user_sex)
+     * If it is a dictionary type, please set the type value of the dictionary (eg: sys_user_sex)
      */
     public String dictType() default "";
 
     /**
-     * 读取内容转表达式 (如: 0=男,1=女,2=未知)
+     * Read content to expression (e.g.: 0=male, 1=female, 2=unknown)
      */
     public String readConverterExp() default "";
 
     /**
-     * 分隔符，读取字符串组内容
+     * Separator, read the contents of the string group
      */
     public String separator() default ",";
 
     /**
-     * 导出类型（0数字 1字符串）
+     * Export type (0 number 1 string)
      */
     public ColumnType cellType() default ColumnType.STRING;
 
     /**
-     * 导出时在excel中每个列的高度 单位为字符
+     * The height of each column in excel when exporting in characters
      */
     public double height() default 14;
 
     /**
-     * 导出时在excel中每个列的宽 单位为字符
+     * When exporting, the width of each column in excel is in characters
      */
     public double width() default 16;
 
     /**
-     * 文字后缀,如% 90 变成90%
+     * Text suffix, such as% 90 becomes 90%
      */
     public String suffix() default "";
 
     /**
-     * 当值为空时,字段的默认值
+     * When the value is empty, the default value of the field
      */
     public String defaultValue() default "";
 
     /**
-     * 提示信息
+     * Prompt information
      */
     public String prompt() default "";
 
     /**
-     * 设置只能选择不能输入的列内容.
+     * You can only select the column content that cannot be entered.
      */
     public String[] combo() default {};
 
     /**
-     * 是否导出数据,应对需求:有时我们需要导出一份模板,这是标题需要但内容需要用户手工填写.
+     * Whether to export data and respond to needs: Sometimes we need to export a template, which is required for the title but the content needs to be filled in manually by the user.
      */
     public boolean isExport() default true;
 
     /**
-     * 另一个类中的属性名称,支持多级获取,以小数点隔开
+     * The attribute name in another class supports multi-level acquisition, separated by decimal points
      */
     public String targetAttr() default "";
 
     /**
-     * 字段类型（0：导出导入；1：仅导出；2：仅导入）
+     * Field type (0: export and import; 1: export only; 2: import only)
      */
     Type type() default Type.ALL;
 

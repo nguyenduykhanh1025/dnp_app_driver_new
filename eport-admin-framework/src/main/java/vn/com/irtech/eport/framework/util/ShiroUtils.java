@@ -13,7 +13,7 @@ import vn.com.irtech.eport.framework.shiro.realm.UserRealm;
 import vn.com.irtech.eport.system.domain.SysUser;
 
 /**
- * shiro 工具类
+ * shiro utils
  * 
  * @author admin
  */
@@ -84,11 +84,11 @@ public class ShiroUtils
     }
 
     /**
-     * 生成随机盐
+     * Generate random salt
      */
     public static String randomSalt()
     {
-        // 一个Byte占两个字节，此处生成的3字节，字符串长度为6
+        // One Byte occupies two bytes, the 3 bytes generated here, the string length is 6
         SecureRandomNumberGenerator secureRandom = new SecureRandomNumberGenerator();
         String hex = secureRandom.nextBytes(3).toHex();
         return hex;

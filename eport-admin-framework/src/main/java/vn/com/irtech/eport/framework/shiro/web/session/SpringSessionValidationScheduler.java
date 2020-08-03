@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import vn.com.irtech.eport.common.utils.Threads;
 
 /**
- * 自定义任务调度器完成
+ * Custom task scheduler completed
  * 
  * @author admin
  */
@@ -27,7 +27,7 @@ public class SpringSessionValidationScheduler implements SessionValidationSchedu
     public static final long DEFAULT_SESSION_VALIDATION_INTERVAL = DefaultSessionManager.DEFAULT_SESSION_VALIDATION_INTERVAL;
 
     /**
-     * 定时器，用于处理超时的挂起请求，也用于连接断开时的重连。
+     * The timer is used to handle the timeout suspension request, and is also used to reconnect when the connection is disconnected.
      */
     @Autowired
     @Qualifier("scheduledExecutorService")
@@ -36,14 +36,14 @@ public class SpringSessionValidationScheduler implements SessionValidationSchedu
     private volatile boolean enabled = false;
 
     /**
-     * 会话验证管理器
+     * Session authentication manager
      */
     @Autowired
     @Qualifier("sessionManager")
     @Lazy
     private ValidatingSessionManager sessionManager;
 
-    // 相隔多久检查一次session的有效性，单位毫秒，默认就是10分钟
+    // How often to check the validity of the session, in milliseconds, the default is 10 minutes
     @Value("${shiro.session.validationInterval}")
     private long sessionValidationInterval;
 
