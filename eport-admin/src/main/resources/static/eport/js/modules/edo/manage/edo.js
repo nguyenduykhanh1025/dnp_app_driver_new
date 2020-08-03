@@ -225,19 +225,12 @@ function formatToYDMHMS(date) {
 
 function formatStatus(value) {
   switch (value) {
-    case 0:
-      return "<span class='label label-success'>Trạng thái 0</span>";
-    case 1:
-      return "<span class='label label-success'>Trạng thái 1</span>";
-    case 2:
-      return "<span class='label label-success'>Trạng thái 2</span>";
-    case 3:
-      return "<span class='label label-success'>Trạng thái 2</span>";
-    case 4:
-      return "<span class='label label-success'>Trạng thái 2</span>";
-    default:
-      return "<span class='label label-warning'>Release</span>";
-
+    case '1':
+      return "<span class='label label-success'>Chưa làm lệnh</span>";
+    case '2':
+      return "<span class='label label-success'>Đã làm lệnh</span>";
+    case '3':
+    return "<span class='label label-success'>Gate-in</span>";
   }
 }
 

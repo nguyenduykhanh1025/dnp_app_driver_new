@@ -119,12 +119,14 @@ function formatToYDMHMS(date) {
 }
 
 function formatAction(value, row, index) {
-  var actions = [];
-  if(row.status == 1)
+  let actions = [];
+  let disabled = "";
+  if(row.status == '3')
   {
-    actions.push('<a class="btn btn-success btn-xs btn-action mt5" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập nhật</a> ' + '<br>');
+    disabled = "disabled";
   }
-  actions.push('<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch sử</a> ');
+  actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
+  actions.push('<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
   return actions.join("");
 }
 
@@ -250,19 +252,12 @@ function searchInfoEdo() {
 
 function formatStatus(value) {
   switch (value) {
-    case 0:
-      return "<span class='label label-success'>Trạng thái 0</span>";
-    case 1:
-      return "<span class='label label-success'>Trạng thái 1</span>";
-    case 2:
-      return "<span class='label label-success'>Trạng thái 2</span>";
-    case 3:
-      return "<span class='label label-success'>Trạng thái 2</span>";
-    case 4:
-      return "<span class='label label-success'>Trạng thái 2</span>";
-    default:
-      return "<span class='label label-warning'>Release</span>";
-
+    case '1':
+      return "<span class='label label-success'>Chưa làm lệnh</span>";
+    case '2':
+      return "<span class='label label-success'>Đã làm lệnh</span>";
+    case '3':
+    return "<span class='label label-success'>Gate-in</span>";
   }
 }
 

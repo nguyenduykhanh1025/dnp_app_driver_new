@@ -459,11 +459,4 @@ public class LogisticCommonController extends LogisticBaseController {
 		return error();
 	}
 	
-//	@GetMapping("/abc")
-//	@ResponseBody
-//	public Integer abc(String bookingNo) {
-//		Integer result = catosApiService.checkBookingNoForSendFReceiveE(bookingNo);
-//		return result;
-//	}
-	
 }

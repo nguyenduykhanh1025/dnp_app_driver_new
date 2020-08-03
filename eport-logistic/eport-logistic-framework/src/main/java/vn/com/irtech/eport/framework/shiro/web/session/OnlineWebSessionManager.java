@@ -22,6 +22,9 @@ import vn.com.irtech.eport.system.domain.SysUserOnline;
 import vn.com.irtech.eport.system.service.ISysUserOnlineService;
 
 /**
+ * The main reason is that if the properties of the session are modified, 
+ * mark the modification and then facilitate the synchronization of OnlineSessionDao
+ * 
  * @author admin
  */
 public class OnlineWebSessionManager extends DefaultWebSessionManager
@@ -104,7 +107,7 @@ public class OnlineWebSessionManager extends DefaultWebSessionManager
         Date expiredDate = DateUtils.addMilliseconds(new Date(), 0 - timeout);
         ISysUserOnlineService userOnlineService = SpringUtils.getBean(ISysUserOnlineService.class);
         List<SysUserOnline> userOnlineList = userOnlineService.selectOnlineByExpired(expiredDate);
-        // Mass expired deletion
+        // Batch expiration delete
         List<String> needOfflineIdList = new ArrayList<String>();
         for (SysUserOnline userOnline : userOnlineList)
         {

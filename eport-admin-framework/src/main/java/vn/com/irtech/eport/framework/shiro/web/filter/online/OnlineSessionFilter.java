@@ -29,7 +29,7 @@ import vn.com.irtech.eport.system.domain.SysUser;
 public class OnlineSessionFilter extends AccessControlFilter
 {
     /**
-     * The redirected address after forced logout
+     * Redirected address after forced exit
      */
     @Value("${shiro.user.loginUrl}")
     private String loginUrl;

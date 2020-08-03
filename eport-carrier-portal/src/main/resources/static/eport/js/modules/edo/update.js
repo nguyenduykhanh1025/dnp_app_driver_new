@@ -45,15 +45,17 @@ function confirm() {
         },
         success: function (data) {
           if (data.code == 0) {
-            layer.msg('Cập nhật thành công ... ', {
+            layer.msg('Cập nhật thành công, đang reload lại dữ liệu! ', {
               icon: 6
             });
           } else {
-            $.modal.alertError(data.msg)
+            $.modal.alertError(data.msg);
+            $.modal.closeLoading();
+            return;
           }
           setTimeout(function () {
-            $.modal.close();
-          }, 1500)
+            $.modal.reload();
+          }, 2000)
         },
         error: function (data) {
           $.modal.alertError(

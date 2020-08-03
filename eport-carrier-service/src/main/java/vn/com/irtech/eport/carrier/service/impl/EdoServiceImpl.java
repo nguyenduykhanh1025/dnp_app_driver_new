@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -71,7 +72,8 @@ public class EdoServiceImpl implements IEdoService
 		edoCheck.setDelFlg(0);
 		 if (selectFirstEdo(edo) != null) {
 			 throw new BusinessException(String.format("Edo to insert was existed"));
-		 }	
+		 }
+		edo.setStatus("1");
         edo.setCreateTime(DateUtils.getNowDate());
         return edoMapper.insertEdo(edo);
     }
@@ -136,7 +138,6 @@ public class EdoServiceImpl implements IEdoService
 		Date fileCreateTime = new Date();
 		for(String s : text)
 		{
-			
 			//businessUnit and createTime
 			if(s.contains("UNB+UNOA"))
 			{

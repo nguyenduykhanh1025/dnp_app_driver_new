@@ -99,6 +99,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="sztp != null  and sztp != ''"> and voy_no = #{sztp}</if>
         </where>
+            where id = #{id}
          FETCH NEXT 1 ROWS ONLY
     </select>
         

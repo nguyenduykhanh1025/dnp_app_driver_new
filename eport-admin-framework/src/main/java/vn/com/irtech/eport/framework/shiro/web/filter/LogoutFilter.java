@@ -20,7 +20,7 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.system.domain.SysUser;
 
 /**
- * 退出过滤器
+ * Logout filter
  * 
  * @author admin
  */
@@ -29,7 +29,7 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
     private static final Logger log = LoggerFactory.getLogger(LogoutFilter.class);
 
     /**
-     * 退出后重定向的地址
+     * Redirected address after exit
      */
     private String loginUrl;
 
@@ -63,7 +63,7 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
                     // 清理缓存
                     cache.remove(loginName);
                 }
-                // 退出登录
+                // sign out
                 subject.logout();
             }
             catch (SessionException ise)
@@ -80,7 +80,7 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
     }
 
     /**
-     * 退出跳转URL
+     * Exit Jump URL
      */
     @Override
     protected String getRedirectUrl(ServletRequest request, ServletResponse response, Subject subject)
@@ -93,10 +93,10 @@ public class LogoutFilter extends org.apache.shiro.web.filter.authc.LogoutFilter
         return super.getRedirectUrl(request, response, subject);
     }
 
-    // 设置Cache的key的前缀
+    // Set the cache key prefix
     public void setCacheManager(CacheManager cacheManager)
     {
-        // 必须和ehcache缓存配置中的缓存name一致
+        // Must be the same as the cache name in the ehcache cache configuration
         this.cache = cacheManager.getCache(ShiroConstants.SYS_USERCACHE);
     }
 }

@@ -35,7 +35,7 @@
                   </div>
                 </div>
               </a>
-            <li>
+            <li class="edoTab">
               <a title="Quản Lý DO" th:href="@{/edo/index}" class="menuItem"><i
                   class="fa fa-ship"></i>&nbsp; Quản Lý eDO</a>
             </li>
@@ -44,7 +44,7 @@
                   class="fa fa-ship"></i>&nbsp; Phát hành DO</a>
             </li>
           </li>
-          <li>
+          <li class="edoTab">
            <a title="Quản Lý DO" th:href="@{/edo/report}" class="menuItem"><i
                class="fa fa-line-chart"></i>&nbsp; Báo cáo </a>
           </li>
@@ -126,12 +126,10 @@
           ></iframe>
         </div>
         <div class="footer">
-          <div class="pull-right">&nbsp;</div>
+          <div class="pull-right">[[${appName}]] v[[${appVersion}]]</div>
         </div>
       </div>
-      <!--右侧部分结束-->
     </div>
-    <!-- 全局js -->
     <script th:src="@{/js/jquery.min.js}"></script>
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/plugins/metisMenu/jquery.metisMenu.js}"></script>
@@ -155,6 +153,11 @@
         } else {
           $("#doTab").hide();
         }  
+        if ([[${edoPermission}]]) {
+          $(".edoTab").show();
+        } else {
+          $(".edoTab").hide();
+        }  
       });
 
       if($.common.isNotEmpty(skin)){
@@ -167,7 +170,7 @@
 
       function resetPwd() {
           var url = ctx + 'carrier/profile/resetPwd';
-          $.modal.open("Reset Password", url, '770', '380');
+          $.modal.open("Thay đổi mật khẩu", url, '770', '380');
       }
 
       function switchSkin() {

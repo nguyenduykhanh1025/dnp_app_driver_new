@@ -39,11 +39,18 @@ public class CarrierIndexController extends CarrierBaseController
         mmap.put("user", user);
         mmap.put("sideTheme", configService.selectConfigByKey("sys.index.sideTheme"));
         mmap.put("skinName", configService.selectConfigByKey("sys.index.skinName"));
+        mmap.put("appName", Global.getName());
+        mmap.put("appVersion", Global.getVersion());
         mmap.put("copyrightYear", Global.getCopyrightYear());
         if (hasDoPermission()) {
             mmap.put("doPermission", true);
         } else {
             mmap.put("doPermission", false);
+        }
+        if (hasEdoPermission()) {
+            mmap.put("edoPermission", true);
+        } else {
+            mmap.put("edoPermission", false);
         }
         return "index";
     }

@@ -19,6 +19,8 @@ public class LogUtils
     public static final Logger ACCESS_LOG = LoggerFactory.getLogger("carrier-access");
 
     /**
+     * Record access log [username][jsessionid][ip][accept][UserAgent][url][params][Referer]
+     *
      * @param request
      * @throws Exception
      */
@@ -45,6 +47,8 @@ public class LogUtils
     }
 
     /**
+     * Record abnormal error format [exception]
+     *
      * @param message
      * @param e
      */
@@ -59,6 +63,8 @@ public class LogUtils
     }
 
     /**
+     * Record page fault Error log record [page/eception][username][statusCode][errorMessage][servletName][uri][exceptionName][ip][exception]
+     *
      * @param request
      */
     public static void logPageError(HttpServletRequest request)

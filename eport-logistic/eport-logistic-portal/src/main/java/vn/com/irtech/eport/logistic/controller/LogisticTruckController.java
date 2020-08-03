@@ -48,6 +48,7 @@ public class LogisticTruckController extends LogisticBaseController
     {
         startPage();
         logisticTruck.setDelFlag(false);
+        logisticTruck.setLogisticGroupId(getUser().getGroupId());
         List<LogisticTruck> list = logisticTruckService.selectLogisticTruckList(logisticTruck);
         return getDataTable(list);
     }
@@ -120,6 +121,7 @@ public class LogisticTruckController extends LogisticBaseController
     	LogisticTruck logisticTruck = new LogisticTruck();
     	logisticTruck.setLogisticGroupId(getUser().getGroupId());
         logisticTruck.setPlateNumber(keyword);
+    	logisticTruck.setDelFlag(false);
         logisticTruck.setType("0");
     	List<LogisticTruck> list = logisticTruckService.selectLogisticTruckList(logisticTruck);
     	List<JSONObject> result = new ArrayList<>();
@@ -141,6 +143,7 @@ public class LogisticTruckController extends LogisticBaseController
     	LogisticTruck logisticTruck = new LogisticTruck();
     	logisticTruck.setLogisticGroupId(getUser().getGroupId());
         logisticTruck.setPlateNumber(keyword);
+    	logisticTruck.setDelFlag(false);
         logisticTruck.setType("1");
     	List<LogisticTruck> list = logisticTruckService.selectLogisticTruckList(logisticTruck);
     	List<JSONObject> result = new ArrayList<>();
@@ -161,6 +164,8 @@ public class LogisticTruckController extends LogisticBaseController
     @ResponseBody
     public List<LogisticTruck> getTractorList(){
     	LogisticTruck logisticTruck = new  LogisticTruck();
+    	logisticTruck.setLogisticGroupId(getUser().getGroupId());
+    	logisticTruck.setDelFlag(false);
     	logisticTruck.setType("0");
     	return logisticTruckService.selectLogisticTruckList(logisticTruck);
     }
@@ -169,6 +174,8 @@ public class LogisticTruckController extends LogisticBaseController
     @ResponseBody
     public List<LogisticTruck> getTrailerList(){
     	LogisticTruck logisticTruck = new  LogisticTruck();
+    	logisticTruck.setLogisticGroupId(getUser().getGroupId());
+    	logisticTruck.setDelFlag(false);
     	logisticTruck.setType("1");
     	return logisticTruckService.selectLogisticTruckList(logisticTruck);
     }
