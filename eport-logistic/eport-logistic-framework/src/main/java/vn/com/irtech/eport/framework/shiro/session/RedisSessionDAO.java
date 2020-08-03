@@ -44,7 +44,7 @@ public class RedisSessionDAO extends EnterpriseCacheSessionDAO
     /**
      * shiro redis prefix
      */
-    private final static String SYS_SHIRO_SESSION_ID = "shiro_redis_session:";
+    private final static String SYS_SHIRO_SESSION_ID = "logistic_session:";
 
     /**
      * Timestamp of the last time the database was synchronized

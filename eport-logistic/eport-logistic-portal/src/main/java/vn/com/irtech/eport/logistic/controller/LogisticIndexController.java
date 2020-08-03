@@ -33,6 +33,8 @@ public class LogisticIndexController extends LogisticBaseController
         mmap.put("groupName", getGroup().getGroupName());
         mmap.put("sideTheme", configService.selectConfigByKey("sys.index.sideTheme"));
         mmap.put("skinName", configService.selectConfigByKey("sys.index.skinName"));
+        mmap.put("appName", Global.getName());
+        mmap.put("appVersion", Global.getVersion());
         mmap.put("copyrightYear", Global.getCopyrightYear());
         return "index";
     }

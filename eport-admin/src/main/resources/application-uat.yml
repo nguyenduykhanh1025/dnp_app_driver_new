@@ -64,3 +64,8 @@ spring:
                         class: javax.net.ssl.SSLSocketFactory
     redis:
         enabled: true
+#Eport Config
+eport:
+    profile: /home/eport/uat/upload
+    apiUrl: http://127.0.0.1:9090/api
+        
