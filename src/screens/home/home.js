@@ -54,7 +54,7 @@ export default class HomeScreen extends Component {
       pageSize: 10,
       truckNo: '',
       chassisNo: '',
-      date: '10 Jun 2020',
+      date: '',
       boc_focused: true,
       ha_focused: false,
       boc_rong_focused: false,
@@ -70,12 +70,13 @@ export default class HomeScreen extends Component {
   };
 
   componentDidMount = async () => {
+    this.token = await getToken();
     saveUpEnable('0')
     saveDownEnable('0')
-    this.token = await getToken();
     this.onGetPickupList()
     this.onGetHistoryList()
     this.getUserInfo()
+
   };
 
   componentWillUnmount() {
@@ -97,12 +98,19 @@ export default class HomeScreen extends Component {
     result = await callApi(params);
     console.log('resultonGetPickupList', result)
     if (result.code == 0) {
-      await this.setState({
-        PickupList: result.data,
-        truckNo: result.data && result.data[0].truckNo,
-        chassisNo: result.data && result.data[0].chassisNo,
-      })
-      await this.onCheckEnableService(result.data)
+      if (result.data.length > 0) {
+        await this.setState({
+          PickupList: result.data,
+          truckNo: result.data[0].truckNo,
+          chassisNo: result.data[0].chassisNo,
+        })
+        await this.onCheckEnableService(result.data)
+      }
+      else{
+        await this.setState({
+          PickupList: [],
+        })
+      }
     }
     else {
       Alert.alert('Thông báo!', result.msg)

@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import {
-  mainStack
+  mainStack,
+  homeTab,
 } from '@/config/navigator';
 import {
   Colors,
@@ -70,7 +71,7 @@ export default class ResultScreen extends Component {
   }
 
   onBack = () => {
-    NavigationService.navigate(mainStack.home_tab, { update: 1 })
+    NavigationService.navigate(homeTab.home, { update: 1 })
   };
 
   onCancel = async (pickupId) => {
@@ -84,7 +85,7 @@ export default class ResultScreen extends Component {
     result = await callApi(params);
     console.log('resultonCancel', result)
     if (result.code == 0) {
-      NavigationService.navigate(mainStack.home_tab, { update: 1 })
+      NavigationService.navigate(homeTab.home, { update: 1 })
     }
     else {
       Alert.alert('Thông báo!', result.msg)

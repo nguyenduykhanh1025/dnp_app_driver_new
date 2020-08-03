@@ -117,7 +117,15 @@ export default class DetailScreen extends Component {
     result = await callApi(params);
     console.log('resultonAutoPickup', result)
     if (result.code == 0) {
-      NavigationService.navigate(homeTab.home)
+      // NavigationService.navigate(homeTab.home)
+      NavigationService.navigate(mainStack.detail2, {
+        data: {
+          "containerNo": null,
+          "pickupAssignId": result.pickupAssignId,
+          "sztp": null,
+          "wgt": null,
+        }
+      })
     }
     else {
       Alert.alert('Thông báo!', result.msg)
