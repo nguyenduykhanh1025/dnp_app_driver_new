@@ -53,7 +53,7 @@ public interface ICatosApiService {
 	
 	public List<ProcessBill> getUnitBillByShipmentDetailsForSendSSR(List<ShipmentDetail> shipmentDetails);
 	
-	public Integer checkBookingNoForSendFReceiveE(String bookingNo);
+	public Integer checkBookingNoForSendFReceiveE(String bookingNo, String fe);
 	
 	public ShipmentDetail getInforSendFReceiveE(ShipmentDetail shipmentDetail);
 }

@@ -175,7 +175,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
 		shipment.setServiceType(Constants.SEND_CONT_FULL);
-		if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo).intValue() == 0) {
+		if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo, "F").intValue() == 0) {
 			return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để tạo !");
 		}
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
@@ -413,6 +413,7 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult getInforContainer(@RequestBody ShipmentDetail shipmentDetail) {
 		AjaxResult ajaxResult = success();
+		shipmentDetail.setFe("F");
 		ShipmentDetail rs = catosApiService.getInforSendFReceiveE(shipmentDetail);
 		if(rs != null) {
 			ajaxResult.put("shipmentDetail", rs);
