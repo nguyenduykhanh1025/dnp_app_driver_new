@@ -80,7 +80,7 @@ public class CarrierEdoController extends CarrierBaseController {
 			edo = new Edo();
 		}
 		Map<String, Object> groupCodes = new HashMap<>();
-		  groupCodes.put("groupCode", super.getGroupCodes());
+		groupCodes.put("groupCode", super.getGroupCodes());
 		edo.setCarrierCode(null);
 	  	edo.setParams(groupCodes);
 		List<Edo> dataList = edoService.selectEdoList(edo);
