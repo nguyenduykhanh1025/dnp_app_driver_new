@@ -3,6 +3,7 @@ var hot
 var consigneeList = []
 var emptyDepotList = []
 var vesselList = []
+var prefix = ctx + "carrier/do";
 getOptionsColumn()
 $("#billNo").html("No: " + firstDo.billOfLading)
 $("#billNumber").html(firstDo.billOfLading)
@@ -147,7 +148,7 @@ function loadTable() {
 
 function getOptionsColumn() {
   $.ajax({
-    url: ctx + "carrier/do/getListOptions",
+    url: prefix + "/getListOptions",
     method: "get",
   }).done(function (result) {
     var list1 = result.consigneeList
