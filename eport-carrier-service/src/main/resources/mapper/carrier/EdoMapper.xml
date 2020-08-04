@@ -77,6 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      <select id="selectFirstEdo" parameterType="Edo" resultMap="EdoResult">
         <include refid="selectEdoVo"/>
          <where>  
+            <if test="id != null "> and id = #{id}</if>
             <if test="carrierId != null "> and carrier_id = #{carrierId}</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>

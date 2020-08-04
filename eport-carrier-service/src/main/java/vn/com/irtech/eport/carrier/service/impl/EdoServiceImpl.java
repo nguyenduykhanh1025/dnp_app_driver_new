@@ -72,7 +72,8 @@ public class EdoServiceImpl implements IEdoService
 		edoCheck.setDelFlg(0);
 		 if (selectFirstEdo(edo) != null) {
 			 throw new BusinessException(String.format("Edo to insert was existed"));
-		 }	
+		 }
+		edo.setStatus("1");
         edo.setCreateTime(DateUtils.getNowDate());
         return edoMapper.insertEdo(edo);
     }

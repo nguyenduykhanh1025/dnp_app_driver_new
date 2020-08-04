@@ -1,13 +1,13 @@
 eport:
-  name: DNG ePort
-  version: 4.2.0
+  name: DNP ePort
+  version: 1.0.0
   copyrightYear: 2020
   demoEnabled: true
   profile: D:/eport/upload
   addressEnabled: true
-  apiUrl: http://192.168.1.99:9090/api
-  #apiUrl: http://127.0.0.1:9090/api
   cacheExpireTime: 3600
+  apiUrl: http://192.168.1.99:9090/api
+
 server:
   port: 7070
   servlet:
@@ -41,7 +41,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
-    active: test
+    active: uat
   servlet:
     multipart:
       max-file-size:  10MB
@@ -50,6 +50,7 @@ spring:
     restart:
       enabled: true
   redis:
+    enabled: false
     database: 0
     password: 
     host: 127.0.0.1
@@ -82,11 +83,12 @@ shiro:
     captchaType: math
   cookie:
     domain: 
-    path: /logistic
+    path: /
     httpOnly: true
     maxAge: 30
+    cipherKey: zSyK5Kp6PZAAjlT+eeNMlg==
   session:
-    # expireTime: 30
+    expireTime: 30
     dbSyncPeriod: 1
     validationInterval: 10
     maxSession: -1

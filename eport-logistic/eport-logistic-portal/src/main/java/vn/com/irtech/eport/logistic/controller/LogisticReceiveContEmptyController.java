@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import vn.com.irtech.eport.carrier.domain.CarrierGroup;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
@@ -68,6 +71,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
     @Autowired
     private ICatosApiService catosApiService;
+    
+    @Autowired
+    private ICarrierGroupService carrierService;
 
     // VIEW RECEIVE CONT EMPTY
     @GetMapping()
@@ -158,10 +164,13 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBookingNo(bookingNo);
 		shipment.setServiceType(Constants.RECEIVE_CONT_EMPTY);
+		if(catosApiService.checkBookingNoForSendFReceiveE(bookingNo , "E").intValue() == 0) {
+			return error("Booking No này chưa có trong hệ thống. Vui lòng liên hệ OM để tạo !");
+		}
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
-		return error();
+		return error("Số book đã tồn tại!");
 	}
 
     // ADD SHIPMENT
@@ -338,6 +347,15 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
 			}
+			//Đổi opeCode operateCode -> groupCode
+			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipmentDetails.get(0).getOpeCode().toUpperCase());
+			if(carrierGroup != null) {
+				if(! shipmentDetails.get(0).getOpeCode().toUpperCase().equals(carrierGroup.getGroupCode())) {
+					for(ShipmentDetail i : shipmentDetails) {
+						i.setOpeCode(carrierGroup.getGroupCode());
+					}
+				}
+			}
 			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails, shipment, creditFlag);
 			if (serviceRobotReqs != null) {
 				List<Long> processIds = new ArrayList<>();
@@ -415,18 +433,30 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		
 	}
 	
-	@GetMapping("/berthplan/ope-code/{opeCode}/vessel-voyage/list")
+//	@GetMapping("/berthplan/ope-code/{opeCode}/vessel-voyage/list")
+//	@ResponseBody
+//	public AjaxResult getVesselVoyageList(@PathVariable String opeCode) {
+//		AjaxResult ajaxResult = success();
+//		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
+//		if(berthplanList.size() > 0) {
+//			List<String> vesselAndVoyages = new ArrayList<String>();
+//			for(ShipmentDetail i : berthplanList) {
+//				vesselAndVoyages.add(i.getVslAndVoy());
+//			}
+//			ajaxResult.put("berthplanList", berthplanList);
+//			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+//			return ajaxResult;
+//		}
+//		return error();
+//	}
+	@PostMapping("berthplan/container/infor")
 	@ResponseBody
-	public AjaxResult getVesselVoyageList(@PathVariable String opeCode) {
+	public AjaxResult getInforContainer(@RequestBody ShipmentDetail shipmentDetail) {
 		AjaxResult ajaxResult = success();
-		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
-		if(berthplanList.size() > 0) {
-			List<String> vesselAndVoyages = new ArrayList<String>();
-			for(ShipmentDetail i : berthplanList) {
-				vesselAndVoyages.add(i.getVslAndVoy());
-			}
-			ajaxResult.put("berthplanList", berthplanList);
-			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+		shipmentDetail.setFe("E");
+		ShipmentDetail rs = catosApiService.getInforSendFReceiveE(shipmentDetail);
+		if(rs != null) {
+			ajaxResult.put("shipmentDetail", rs);
 			return ajaxResult;
 		}
 		return error();

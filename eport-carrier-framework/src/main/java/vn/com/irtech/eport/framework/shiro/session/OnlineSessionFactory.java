@@ -11,7 +11,7 @@ import vn.com.irtech.eport.common.utils.ServletUtils;
 import eu.bitwalker.useragentutils.UserAgent;
 
 /**
- * 自定义sessionFactory会话
+ * Custom sessionFactory session
  * 
  * @author admin
  */
@@ -29,9 +29,9 @@ public class OnlineSessionFactory implements SessionFactory
             if (request != null)
             {
                 UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
-                // 获取客户端操作系统
+                // Get the client operating system
                 String os = userAgent.getOperatingSystem().getName();
-                // 获取客户端浏览器
+                // Get the client browser
                 String browser = userAgent.getBrowser().getName();
                 session.setHost(IpUtils.getIpAddr(request));
                 session.setBrowser(browser);

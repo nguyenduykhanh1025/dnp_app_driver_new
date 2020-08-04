@@ -29,7 +29,7 @@ public class ShutdownManager
     }
 
     /**
-     * 停止Seesion会话检查
+     * Stop session check
      */
     private void shutdownSpringSessionValidationScheduler()
     {

@@ -1,4 +1,4 @@
-var PREFIX = ctx + "/edo";
+var PREFIX = ctx + "edo";
 $(function () {
     loadTable();
 });

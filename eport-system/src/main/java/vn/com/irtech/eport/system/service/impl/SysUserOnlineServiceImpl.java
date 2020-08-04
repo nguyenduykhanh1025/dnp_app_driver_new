@@ -76,7 +76,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService
     @Override
     public void saveOnline(SysUserOnline online)
     {
-        userOnlineDao.saveOnline(online);
+        // userOnlineDao.saveOnline(online);
     }
 
     /**

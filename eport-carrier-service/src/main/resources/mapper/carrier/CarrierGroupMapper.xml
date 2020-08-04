@@ -149,4 +149,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectCarrierGroupVo" />
 		where group_code = #{groupCode}
 	</select>
+	<select id="getCarrierGroupByOpeCode" parameterType="String" resultMap="CarrierGroupResult">
+		<include refid="selectCarrierGroupVo" />
+		where operate_code like
+				concat(concat('%', #{operateCode}), '%')
+	</select>
 </mapper>

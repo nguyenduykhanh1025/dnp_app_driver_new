@@ -93,4 +93,6 @@ public interface CarrierGroupMapper
     public String getDoTypeByOpeCode(String opeCode);
 
     public CarrierGroup selectCarrierGroupByGroupCode(String groupCode);
+    
+    public CarrierGroup getCarrierGroupByOpeCode(String operateCode);
 }

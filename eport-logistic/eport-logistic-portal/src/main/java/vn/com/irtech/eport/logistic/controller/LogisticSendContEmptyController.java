@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.carrier.domain.CarrierGroup;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.web.service.MqttService;
@@ -56,6 +58,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@Autowired
 	private ICatosApiService catosApiService;
+	
+	@Autowired
+	private ICarrierGroupService carrierService;
 	
 	// @Autowired
 	// private CustomQueueService customQueueService;
@@ -283,6 +288,15 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
 			}
+			//Đổi opeCode operateCode -> groupCode
+			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipmentDetails.get(0).getOpeCode().toUpperCase());
+			if(carrierGroup != null) {
+				if(! shipmentDetails.get(0).getOpeCode().toUpperCase().equals(carrierGroup.getGroupCode())) {
+					for(ShipmentDetail i : shipmentDetails) {
+						i.setOpeCode(carrierGroup.getGroupCode());
+					}
+				}
+			}
 			ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
 			if (processOrder != null) {
 				ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
@@ -318,5 +332,4 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		}
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
 	}
-
 }
