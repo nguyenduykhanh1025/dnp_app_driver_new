@@ -15,7 +15,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import vn.com.irtech.eport.api.consts.BusinessConst;
+import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.security.service.CustomUserDetailsService;
@@ -85,7 +85,7 @@ public class JwtAuthenticationInterceptor extends HandlerInterceptorAdapter {
 
 	private Boolean validatePermission(String requestUri, String subject) {
 		try {
-			String perm = subject.split(BusinessConst.BLANK)[1];
+			String perm = subject.split(BusinessConsts.BLANK)[1];
 			if (requestUri.toLowerCase().contains(perm.toLowerCase())) {
 				return true;
 			} else {
