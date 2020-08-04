@@ -7,9 +7,8 @@ eport:
   addressEnabled: true
   cacheExpireTime: 3600
   #EDO Monitor Folders
-  edo:
-    rootPath: D:/eport/upload/edo
-    backupPath: D:/eport/upload/backup
+  edoRootPath: D:/eport/upload/edo
+  edoBackupPath: D:/eport/upload/backup
 
 server:
   port: 7071
@@ -44,7 +43,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
-    active: uat
+    active: test
   servlet:
     multipart:
       max-file-size:  10MB
@@ -53,7 +52,7 @@ spring:
     restart:
       enabled: true
   redis:
-    enabled: true
+    enabled: false
     database: 0
     password: 
     host: 127.0.0.1
@@ -86,7 +85,7 @@ shiro:
     captchaType: math
   cookie:
     domain: 
-    path: /admin
+    path: /
     httpOnly: true
     maxAge: 30
     cipherKey: zSyK5Kp6PZAAjlT+eeNMlg==
@@ -105,8 +104,7 @@ xss:
 mqtt:
   username: admin
   password: public 
-  host-url: tcp://113.176.195.221:1883    
-  #host-url: tcp://localhost:1883               # The address and port of your own server need to be changed 
+  host-url: tcp://127.0.0.1:1883               # The address and port of your own server need to be changed 
 
 websocket:
    endpoint: /eport_admin

@@ -38,17 +38,15 @@
         <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
           <thead>
             <tr>
-              <th data-options=" field: 'driver', halign: 'center', resizable: true, formatter: function(value,row){return row.driver.fullName}" sortable="true" width="150">Tên tài xế</th>
-              <th data-options=" field: 'driverPhone', halign: 'center', resizable: true, formatter: function(value,row){return row.driver.mobileNumber}" sortable="true" width="150">Số điện thoại</th>
-              <th data-options=" field:'shipmentDetail', halign:'center', align:'center', formatter: function(value,row){return row.shipmentDetail.containerNo}" sortable="true" width="150">Container</th>
+              <th data-options="field:'logisticName', halign:'center', formatter: function(value, row) { return row.logisticGroup.groupName }" width="200">Đơn vị logistic</th>
+              <th data-options="field:'blNo', halign:'center', align:'left', formatter: formatBillBooking" width="150">Bill/Booking No</th>
+              <th data-options=" field: 'driver', halign: 'center', resizable: true, formatter: function(value,row){return row.driver.fullName}" width="150">Tên tài xế</th>
+              <th data-options=" field: 'driverPhone', halign: 'center', resizable: true, formatter: function(value,row){return row.driver.mobileNumber}" width="150">Số điện thoại</th>
+              <th data-options=" field:'shipmentDetail', halign:'center', align:'center', formatter: function(value,row){return row.shipmentDetail.containerNo}" width="150">Container</th>
               <th data-options=" field:'gateinDate', align:'center', formatter: formatDate" sortable="true" width="150">Giờ vào cổng</th>
-              <th data-options=" field:'gateinDate', align:'center', formatter: formatDate" sortable="true" width="150">Giờ ra cổng</th>
-              <th data-options=" field:'receiptDate', halign:'center', align:'center', formatter: formatDate" sortable="true" width="150">Ngày nhận lệnh</th>
-              <th data-options="field:'blNo', halign:'center', align:'center', formatter: function(value, row) { return row.shipment.blNo }" sortable="true" width="150">Bill No</th>
-              <th data-options="field:'bookingNo', halign:'center', align:'center', formatter: function(value, row) { return row.shipment.bookingNo }" sortable="true" width="150">Booking No</th>
-              <th data-options="field:'truckNo',halign:'center'" sortable="true" width="150">Biển số xe đầu kéo</th>
-              <th data-options="field:'chassisNo',halign:'center'" sortable="true" width="150">Biển số xe rơ móc</th>
-              <th data-options="field:'logisticName', halign:'center', formatter: function(value, row) { return row.logisticGroup.groupName }" sortable="true" width="150">Logistic Name</th>
+              <th data-options=" field:'createTime', halign:'center', align:'center', formatter: formatDate" sortable="true" width="150">Ngày nhận lệnh</th>
+              <th data-options="field:'truckNo', align:'center',halign:'center'" sortable="true" width="150">Biển số xe đầu kéo</th>
+              <th data-options="field:'chassisNo', align:'center',halign:'center'" sortable="true" width="150">Biển số xe rơ móc</th>
             </tr>
           </thead>
           <tbody></tbody>

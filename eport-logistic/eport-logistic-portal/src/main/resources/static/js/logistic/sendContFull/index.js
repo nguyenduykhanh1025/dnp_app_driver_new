@@ -764,6 +764,9 @@ function loadShipmentDetail(id) {
                 hot.loadData(sourceData);
                 hot.render();
             }
+        },
+        error: function (data) {
+            $.modal.closeLoading();
         }
     });
 }

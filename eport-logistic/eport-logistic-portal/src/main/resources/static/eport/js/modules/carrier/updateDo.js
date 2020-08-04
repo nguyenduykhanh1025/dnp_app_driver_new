@@ -3,6 +3,7 @@ var hot
 var consigneeList = []
 var emptyDepotList = []
 var vesselList = []
+var prefix = ctx + "carrier/do";
 getOptionsColumn()
 $("#billNo").html("No: " + firstDo.billOfLading)
 $("#billNumber").html(firstDo.billOfLading)
@@ -22,7 +23,7 @@ loadTable();
 
 function loadTable() {
   $.ajax({
-    url: "/carrier/do/getInfoBl",
+    url: ctx + "carrier/do/getInfoBl",
     method: "get",
     data: {
       blNo: firstDo.billOfLading,
@@ -147,7 +148,7 @@ function loadTable() {
 
 function getOptionsColumn() {
   $.ajax({
-    url: "/carrier/do/getListOptions",
+    url: prefix + "/getListOptions",
     method: "get",
   }).done(function (result) {
     var list1 = result.consigneeList
@@ -295,7 +296,7 @@ function updateDO() {
     "Bạn có chắc chắn muốn cập nhật DO không?",
     function () {
       $.ajax({
-        url: "/carrier/do/update/" + firstDo.billOfLading,
+        url: ctx + "carrier/do/update/" + firstDo.billOfLading,
         method: "post",
         contentType: "application/json",
         accept: "text/plain",
@@ -326,7 +327,7 @@ function updateDO() {
 
 function search() {
   $.ajax({
-    url: "/carrier/do/searchCon",
+    url: ctx + "carrier/do/searchCon",
     method: "get",
     data: {
       billOfLading: firstDo.billOfLading,

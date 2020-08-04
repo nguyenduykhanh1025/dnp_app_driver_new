@@ -123,13 +123,9 @@ public class CarrierGroupServiceImpl implements ICarrierGroupService
 	 * @param groupCode
 	 * @return
 	 */
-	public String checkGroupCodeUnique(String groupCode) {
-        int count = carrierGroupMapper.checkGroupCodeUnique(groupCode);
-        if (count > 0)
-        {
-            return "1";
-        }
-        return "0";
+	@Override
+	public boolean checkGroupCodeExist(String groupCode) {
+        return carrierGroupMapper.checkGroupCodeUnique(groupCode) > 0;
     }
 
     /**
@@ -138,13 +134,9 @@ public class CarrierGroupServiceImpl implements ICarrierGroupService
 	 * @param mainEmail
 	 * @return
 	 */
-	public String checkMainEmailUnique(String mainEmail) {
-        int count = carrierGroupMapper.checkMainEmailUnique(mainEmail);
-        if (count > 0)
-        {
-            return "1";
-        }
-        return "0";
+	@Override
+	public boolean checkMainEmailExist(String mainEmail) {
+        return carrierGroupMapper.checkMainEmailUnique(mainEmail) > 0;
     }
 
 	@Override

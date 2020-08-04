@@ -1,4 +1,4 @@
-var PREFIX = ctx + "/carrier/do";
+var PREFIX = ctx + "carrier/do";
 var doList;
 var hot;
 var consigneeList = [];
@@ -165,7 +165,7 @@ function loadTable() {
 
 function getOptionsColumn() {
   $.ajax({
-    url: "/carrier/do/getListOptions",
+    url: PREFIX + "/getListOptions",
     method: "get",
   }).done(function (result) {
     var list1 = result.consigneeList
@@ -313,7 +313,7 @@ function updateDO() {
     "Bạn có chắc chắn muốn cập nhật DO không?",
     function () {
       $.ajax({
-        url: "/carrier/do/update/" + firstDo.billOfLading,
+        url: ctx + "carrier/do/update/" + firstDo.billOfLading,
         method: "post",
         contentType: "application/json",
         accept: "text/plain",
@@ -344,7 +344,7 @@ function updateDO() {
 
 function search() {
   $.ajax({
-    url: "/carrier/do/searchCon",
+    url: ctx + "carrier/do/searchCon",
     method: "get",
     data: {
       billOfLading: firstDo.billOfLading,

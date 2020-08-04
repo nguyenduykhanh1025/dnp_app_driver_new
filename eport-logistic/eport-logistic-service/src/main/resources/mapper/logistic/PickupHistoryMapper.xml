@@ -364,6 +364,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		FROM pickup_history p 
 		left join shipment s on p.shipment_id = s.id
 		left join driver_account d on p.driver_id = d.id
+		left join logistic_group l on l.id = p.logistic_group_id
 		<where>
 			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
 			<if test="status != null "> and p.status = #{status}</if>
@@ -375,6 +376,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="chassisNo != null  and chassisNo != ''"> or upper(p.chassis_no) like concat(concat('%', #{chassisNo}), '%')</if>
 			<if test="driverName != null  and driverName != ''"> or upper(d.full_name) like concat(concat('%', #{driverName}), '%')</if>
 			<if test="driverPhoneNumber != null  and driverPhoneNumber != ''"> or upper(d.mobile_number) like concat(concat('%', #{driverPhoneNumber}), '%')</if>
+			<if test="logisticGroupName != null  and logisticGroupName != ''"> or upper(l.group_name) like concat(concat('%', #{logisticGroupName}), '%')</if>
 			<if test="blNo != null  and blNo != ''"> or upper(s.bl_no) like concat (concat('%', #{blNo}), '%')</if>
 			<if test="bookingNo != null  and bookingNo != ''"> or upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%'))</if>
 		</where>

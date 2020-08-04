@@ -859,6 +859,9 @@ function loadShipmentDetail(id) {
           $.modal.alert("Thông tin container đã được hệ thống tự<br>động điền, quý khách vui lòng kiểm tra lại<br>thông tin và lưu khai báo.");
         }
       }
+    },
+    error: function (data) {
+      $.modal.closeLoading();
     }
   });
 }

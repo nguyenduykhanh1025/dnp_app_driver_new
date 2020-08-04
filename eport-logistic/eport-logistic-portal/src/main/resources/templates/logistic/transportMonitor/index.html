@@ -54,7 +54,7 @@
           zoom: 13,
         });
         let image = {
-          url: "/img/truck32x32.png",
+          url: ctx + "img/truck32x32.png",
           size: new google.maps.Size(32, 32),
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(16, 16),
@@ -191,24 +191,24 @@
             loadListDriver();
           }
         });
-        setInterval(function () {
-          $.ajax({
-            url: PREFIX + "/list",
-            method: "get"
-          }).done(function(res){
-            if (res.code == 0) {
-              locations = res.pickupHistories.sort(compareDriverId);
-              for (let i=0; i<locations.length; i++) {
-                if ((locations[i].serviceType%2 == 0 && locations[i].status == 1) || (locations[i].serviceType%2 == 1 && locations[i].staus == 0)) {
-                  locations.splice(i, 1);
-                  i--;
-                }
-              }
-              initMap();
-              loadListDriver();
-            }
-          });
-        }, 120000);
+        // setInterval(function () {
+        //   $.ajax({
+        //     url: PREFIX + "/list",
+        //     method: "get"
+        //   }).done(function(res){
+        //     if (res.code == 0) {
+        //       locations = res.pickupHistories.sort(compareDriverId);
+        //       for (let i=0; i<locations.length; i++) {
+        //         if ((locations[i].serviceType%2 == 0 && locations[i].status == 1) || (locations[i].serviceType%2 == 1 && locations[i].staus == 0)) {
+        //           locations.splice(i, 1);
+        //           i--;
+        //         }
+        //       }
+        //       initMap();
+        //       loadListDriver();
+        //     }
+        //   });
+        // }, 120000);
 
         $("#c-map").height($(window).height() - 70);
         $(".c-search-box").select2({

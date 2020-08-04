@@ -125,12 +125,12 @@ document.getElementById("blNo").addEventListener("keyup", function (event) {
 });
 
 function viewBL(value) {
-  $.modal.openTab("BL#" + value, "/carrier/do/viewbl/" + value);
+  $.modal.openTab("BL#" + value, ctx + "carrier/do/viewbl/" + value);
 }
 
 // add full size do
 function addDo(id) {
-  $.modal.openTab("Thêm DO", "/carrier/do/add");
+  $.modal.openTab("Thêm DO", ctx + "carrier/do/add");
 }
 
 function addChangeExpired(id) {
