@@ -250,7 +250,9 @@ public class TransportController extends BaseController {
 		if (pickupAssign == null) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0008));
 		}
-		return success();
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("pickupAssignId", pickupAssign.getId());
+		return ajaxResult;
 	}
 	
 	/**

@@ -58,22 +58,20 @@
         </div>    
         <div class="row section-content">
             <div>
-                <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]" fitColumns="true">
+                <table id="dg" style="width: 99%;" pageList="[20,50,100,150,200]">
                     <thead>
                         <tr>
-                            <th data-options="field:'id', fixed: true" width="1"></th>
-                            <th data-options="field:'blNo', halign:'center', resizable: true" width="130">B/L No.</th>
-                            <th data-options="field:'bookingNo', halign:'center', resizable: true" width="130">Booking No.</th>
-                            <th data-options="field:'containerNo', halign:'center', resizable: true, fixed: true" width="110">Container No.</th>
-                            <th data-options="field:'sztp', halign:'center', resizable: true, fixed: true" width="100">Kích Thước</th>
-                            <th data-options="field:'serviceType', halign:'center', resizable: true, fixed: true, formatter: formatServiceType" width="100">Hình Thức</th>
-                            <th data-options="field:'vslNm', halign:'center', resizable: true, fixed: true" width="120">Tàu</th>
-                            <th data-options="field:'voyNo', halign:'center', resizable: true, fixed: true" width="100">Chuyến</th>
-                            <th data-options="field:'payType', halign:'center', resizable: true, fixed: true" width="130">PT. Thanh Toán</th>
-                            <th data-options="field:'paymentStatus', halign:'center', resizable: true, fixed: true" width="130">TT. Thanh Toán</th>
-                            <th data-options="field:'doStatus', halign:'center', resizable: true, fixed: true" width="120">TT. DO Gốc</th>
-                            <th data-options="field:'assignNumber', halign:'right', resizable: true, fixed: true" width="120">Số Xe Đã Điều</th>
-                            <th data-options="field: 'createTime', halign: 'center', resizable: true, fixed: true, formatter: formatDate" width="150">Ngày Tạo</th>
+                            <th data-options="field:'blBookingNo', halign:'center', resizable: true, formatter: formatBlBooking" width="200">Bill/Booking No.</th>
+                            <th data-options="field:'containerNo', align:'center', halign:'center', resizable: true, fixed: true" sortable="true" width="110">Container No.</th>
+                            <th data-options="field:'sztp', align:'center', halign:'center', resizable: true, fixed: true" sortable="true" width="100">Kích Thước</th>
+                            <th data-options="field:'serviceType', halign:'center', resizable: true, fixed: true, formatter: formatServiceType" sortable="true" width="100">Hình Thức</th>
+                            <th data-options="field:'vslNm', align:'center', halign:'center', resizable: true, fixed: true" sortable="true" width="120">Tàu</th>
+                            <th data-options="field:'voyNo', align:'center', halign:'center', resizable: true, fixed: true" sortable="true" width="100">Chuyến</th>
+                            <th data-options="field:'payType', halign:'center', resizable: true, fixed: true" sortable="true" width="130">PT. Thanh Toán</th>
+                            <th data-options="field:'paymentStatus', halign:'center', resizable: true, fixed: true, formatter: formatPayment" sortable="true" width="130">TT. Thanh Toán</th>
+                            <th data-options="field:'doStatus', halign:'center', resizable: true, fixed: true, formatter: formatDo" sortable="true" width="120">TT. DO Gốc</th>
+                            <th data-options="field:'assignNumber', align:'right', halign:'right', resizable: true, fixed: true" sortable="true" width="120">Số Xe Đã Điều</th>
+                            <th data-options="field: 'createTime', align:'center', halign: 'center', resizable: true, fixed: true, formatter: formatDate" sortable="true" width="150">Ngày Tạo</th>
                         </tr>
                     </thead>
                     <tbody></tbody>

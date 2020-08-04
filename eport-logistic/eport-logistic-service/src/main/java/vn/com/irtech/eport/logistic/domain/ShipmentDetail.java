@@ -176,6 +176,10 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Xac Thuc (Y,N)")
     private String userVerifyStatus;
 
+    /** Finish Status(Y,N) */
+    @Excel(name = "Finish Status(Y,N")
+    private String finishStatus;
+
     /** Status */
     @Excel(name = "Status")
     private Integer status;
@@ -519,6 +523,14 @@ public class ShipmentDetail extends BaseEntity
         return userVerifyStatus;
     }
 
+    public String getFinishStatus() {
+        return this.finishStatus;
+    }
+
+    public void setFinishStatus(String finishStatus) {
+        this.finishStatus = finishStatus;
+    }
+
     public void setStatus(Integer status) {
         this.status = status;
     }
@@ -650,6 +662,7 @@ public class ShipmentDetail extends BaseEntity
             .append("doStatus", getDoStatus())
             .append("doReceivedTime", getDoReceivedTime())
             .append("userVerifyStatus", getUserVerifyStatus())
+            .append("finishStatus", getFinishStatus())
             .append("status", getStatus())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())

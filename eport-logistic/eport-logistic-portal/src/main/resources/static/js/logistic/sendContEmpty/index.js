@@ -13,7 +13,7 @@ var sizeList = [];
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
-	  url: "/logistic/size/container/list",
+	  url: ctx + "logistic/size/container/list",
 	  success(data) {
 		  if(data.code == 0){
 		      data.data.forEach(element => {
@@ -25,7 +25,7 @@ $.ajax({
 var consigneeList, opeCodeList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({
-    url: "/logistic/source/option",
+    url: ctx + "logistic/source/option",
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
@@ -144,7 +144,7 @@ function loadTable(msg) {
         $.modal.alertSuccess(msg);
     }
     $("#dg").datagrid({
-        url: '/logistic/shipments',
+        url: ctx + 'logistic/shipments',
         height: window.innerHeight - 110,
         method: 'post',
         singleSelect: true,

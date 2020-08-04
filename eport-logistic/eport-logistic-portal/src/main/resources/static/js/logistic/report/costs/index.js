@@ -84,7 +84,6 @@ function loadTable() {
                     error.apply(this, arguments);
                 },
             });
-            $("#dg").datagrid("hideColumn", "id");
         },
     });
 }
@@ -100,12 +99,14 @@ function refresh() {
     loadTable();
 }
 
-function formatBlNo(value, row) {
-    return row.processOrder.blNo;
-}
-
-function formatBookingNo(value, row) {
-    return row.processOrder.bookingNo;
+function formatBlBooking(value, row) {
+    if (row.processOrder.blNo) {
+        return row.processOrder.blNo;
+    }
+    if (row.processOrder.bookingNo) {
+        return row.processOrder.bookingNo;
+    }
+    return '';
 }
 
 function formatTaxCode(value, row) {
@@ -140,7 +141,7 @@ function formatDate(value) {
 }
 
 function formatMoney(value) {
-    return value.format(2, 3, ',', '.');
+    return value.format(0, 3, ',', '.');
 }
 
 Number.prototype.format = function(n, x, s, c) {

@@ -15,7 +15,7 @@ var berthplanList = [];
 //dictionary sizeList
 $.ajax({
     type: "GET",
-    url: "/logistic/size/container/list",
+    url: ctx + "logistic/size/container/list",
     success(data) {
         if (data.code == 0) {
             data.data.forEach(element => {
@@ -26,7 +26,7 @@ $.ajax({
 });
 
 $.ajax({
-    url: "/logistic/source/option",
+    url: ctx + "logistic/source/option",
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
@@ -163,7 +163,7 @@ function loadTable(msg) {
         $.modal.alertSuccess(msg);
     }
     $("#dg").datagrid({
-        url: '/logistic/shipments',
+        url: ctx + 'logistic/shipments',
         height: window.innerHeight - 110,
         method: 'post',
         singleSelect: true,
@@ -584,7 +584,7 @@ function onChange(changes, source) {
                 		shipmentDetail.year = berthplanList[i].year;
                 		$.modal.loading("Đang xử lý ...");
                         $.ajax({
-                            url: "/logistic/pods",
+                            url: ctx + "logistic/pods",
                             method: "POST",
                             contentType: "application/json",
                             data: JSON.stringify(shipmentDetail),

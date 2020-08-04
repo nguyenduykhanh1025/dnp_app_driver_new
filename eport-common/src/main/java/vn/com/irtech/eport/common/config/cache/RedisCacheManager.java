@@ -10,7 +10,7 @@ import vn.com.irtech.eport.common.utils.spring.SpringUtils;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-//@Service
+@Service
 public class RedisCacheManager implements CacheManager {
     @Value("${eport.cacheExpireTime}")
     private final long cacheExpireTime = 3600;

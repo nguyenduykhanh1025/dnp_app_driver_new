@@ -34,9 +34,10 @@ public class LogisticContainerStatusController extends LogisticBaseController {
 	public TableDataInfo listShipment(@RequestBody PageAble<ShipmentDetail> param) {
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		ShipmentDetail shipmentDetail = param.getData();
-		if (shipmentDetail != null) {
+		if (shipmentDetail == null) {
 			shipmentDetail = new ShipmentDetail();
 		}
+		shipmentDetail.setFinishStatus("N");
 		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
 		shipmentDetail.setProcessStatus("Y");
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectContainerStatusList(shipmentDetail);

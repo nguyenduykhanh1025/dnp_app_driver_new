@@ -1,7 +1,24 @@
 const PREFIX = ctx + "logistic/container/status";
 var shipmentDetail = new Object();
+shipmentDetail.params = new Object();
 
 $(document).ready(function() {
+
+    let date = new Date();
+    let firstDay = new Date(date.getFullYear(), date.getMonth(), 1); 
+    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    lastDay.setHours(23, 59, 59);
+
+    shipmentDetail.params.fromDate = ("0" + firstDay.getDate()).slice(-2) + "/" + ("0"+(firstDay.getMonth()+1)).slice(-2) + "/" + firstDay.getFullYear()
+    + " " + ("0" + firstDay.getHours()).slice(-2) + ":" + ("0" + firstDay.getMinutes()).slice(-2) + ":" + ("0" + firstDay.getSeconds()).slice(-2);
+
+    shipmentDetail.params.toDate = ("0" + lastDay.getDate()).slice(-2) + "/" + ("0"+(lastDay.getMonth()+1)).slice(-2) + "/" + lastDay.getFullYear()
+    + " " + ("0" + lastDay.getHours()).slice(-2) + ":" + ("0" + lastDay.getMinutes()).slice(-2) + ":" + ("0" + lastDay.getSeconds()).slice(-2);
+
+    $('.from-date').val(("0" + firstDay.getDate()).slice(-2) + "/" + ("0"+(firstDay.getMonth()+1)).slice(-2) + "/" + firstDay.getFullYear());
+
+    $('.to-date').val(("0" + lastDay.getDate()).slice(-2) + "/" + ("0"+(lastDay.getMonth()+1)).slice(-2) + "/" + lastDay.getFullYear());
+
     loadTable();
 
     $('.from-date').datetimepicker({
@@ -73,7 +90,6 @@ function loadTable() {
                     error.apply(this, arguments);
                 },
             });
-            $("#dg").datagrid("hideColumn", "id");
         },
     });
 }
@@ -103,8 +119,36 @@ function formatServiceType(value) {
 }
 
 function formatDate(value) {
-    return value.substring(8, 10)+'/'+value.substring(5, 7)+'/'+value.substring(0, 4)+value.substring(10, 19);
+    if (value) {
+        return value.substring(8, 10)+'/'+value.substring(5, 7)+'/'+value.substring(0, 4)+value.substring(10, 19);
+    }
+    return value;
 }
+
+function formatPayment(value) {
+    if (value) {
+        return 'Y'==value?'Đã thanh toán':'Chưa thanh toán';
+    }
+    return value;
+}
+
+function formatDo(value) {
+    if (value) {
+        return 'Y'==value?'Đã nhận':'Chưa nhận';
+    }
+    return "";
+}
+
+function formatBlBooking(value, row) {
+    if (row.blNo) {
+        return row.blNo;
+    }
+    if (row.bookingNo) {
+        return row.bookingNo;
+    }
+    return '';
+}
+
 function changeServiceType() {
     shipmentDetail.serviceType = $('#seviceTypeSelect').val();
     loadTable();
@@ -126,7 +170,8 @@ function changeFromDate() {
         $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
         $('.from-date').val('');
     } else {
-        shipmentDetail.fromDate = fromDate.getTime();
+        shipmentDetail.params.fromDate = ("0" + fromDate.getDate()).slice(-2) + "/" + ("0"+(fromDate.getMonth()+1)).slice(-2) + "/" + fromDate.getFullYear()
+        + " " + ("0" + fromDate.getHours()).slice(-2) + ":" + ("0" + fromDate.getMinutes()).slice(-2) + ":" + ("0" + fromDate.getSeconds()).slice(-2);
         loadTable();
     }
 }
@@ -138,7 +183,8 @@ function changeToDate() {
         $('.to-date').val('');
     } else {
         toDate.setHours(23, 59, 59);
-        shipmentDetail.toDate = toDate.getTime();
+        shipmentDetail.params.toDate = ("0" + toDate.getDate()).slice(-2) + "/" + ("0"+(toDate.getMonth()+1)).slice(-2) + "/" + toDate.getFullYear()
+        + " " + ("0" + toDate.getHours()).slice(-2) + ":" + ("0" + toDate.getMinutes()).slice(-2) + ":" + ("0" + toDate.getSeconds()).slice(-2);
         loadTable();
     }
 }
