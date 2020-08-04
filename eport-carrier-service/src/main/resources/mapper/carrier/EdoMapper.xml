@@ -45,6 +45,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectEdoList" parameterType="Edo" resultMap="EdoResult">
         <include refid="selectEdoVo"/>
         <where>  
+            <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+            </if> 
             <if test="carrierId != null "> and carrier_id = #{carrierId}</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
@@ -166,14 +172,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
     </insert>
 
-    <update id="updateEdo" parameterType="Edo">
+    <update id="updateEdo" parameterType="Edo" >
         update edo
         <trim prefix="SET" suffixOverrides=",">
-            <if test="carrierId != null ">carrier_id = #{carrierId},</if>
-            <if test="carrierCode != null  and carrierCode != ''">carrier_code = #{carrierCode},</if>
-            <if test="orderNumber != null  and orderNumber != ''">order_number = #{orderNumber},</if>
-            <if test="billOfLading != null  and billOfLading != ''">bill_of_lading = #{billOfLading},</if>
-            <if test="businessUnit != null  and businessUnit != ''">business_unit = #{businessUnit},</if>
             <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
             <if test="containerNumber != null  and containerNumber != ''">container_number = #{containerNumber},</if>
             <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
@@ -231,7 +232,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
          SELECT bill_of_lading, carrier_code, business_unit, vessel, vessel_no, voy_no,(SELECT create_time from edo e2 where e1.bill_of_lading = e2.bill_of_lading ORDER BY create_time DESC FETCH NEXT 1 ROWS ONLY ) as create_time, (SELECT COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
-        <where>  
+        <where> 
+            <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+            </if> 
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat(concat('%', #{billOfLading}), '%')</if>
             <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
