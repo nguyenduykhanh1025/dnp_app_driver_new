@@ -1615,6 +1615,13 @@ var table = {
       },
     },
   });
+  $(function() {
+    $('.more-menu, .show-more-menu').hover(function() {
+      $('.show-more-menu').css('transform', 'rotate(90deg)');
+    }, function() {
+      $('.show-more-menu').css('transform', 'rotate(0deg)');
+    });
+  });
 })(jQuery);
 
 table_type = {
