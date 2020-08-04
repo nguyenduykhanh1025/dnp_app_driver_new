@@ -81,7 +81,7 @@ public interface ICarrierGroupService
 	 * @param groupCode
 	 * @return
 	 */
-    public String checkGroupCodeUnique(String groupCode);
+    public boolean checkGroupCodeExist(String groupCode);
     
     /**
 	 * Check main email unique
@@ -89,7 +89,7 @@ public interface ICarrierGroupService
 	 * @param mainEmail
 	 * @return
 	 */
-    public String checkMainEmailUnique(String mainEmail);
+    public boolean checkMainEmailExist(String mainEmail);
     
     public String getDoTypeByOpeCode(String opeCode);
 
