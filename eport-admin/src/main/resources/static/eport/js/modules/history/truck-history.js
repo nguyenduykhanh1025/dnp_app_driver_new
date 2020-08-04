@@ -2,6 +2,20 @@ const PREFIX = ctx + "history/truck";
 var pickupHistory = new Object();
 
 $(document).ready(function () {
+
+  //DEFAULT SEARCH FOLLOW DATE
+  let fromMonth = (new Date().getMonth()+1 < 10) ? "0" + (new Date().getMonth()+1) : new Date().getMonth()+1;
+  let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
+  $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
+  $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
+  let fromDate = stringToDate($('#fromDate').val());
+  let toDate =  stringToDate($('#toDate').val());
+  fromDate.setHours(0,0,0);
+  toDate.setHours(23, 59, 59);
+  pickupHistory.fromDate = fromDate.getTime();
+  pickupHistory.toDate = toDate.getTime();
+
+
   loadTable();
 
   $('#fromDate').datetimepicker({
@@ -30,12 +44,11 @@ $(document).ready(function () {
       pickupHistory.containerNo = $('#searchAllInput').val().toUpperCase();
       pickupHistory.truckNo = $('#searchAllInput').val().toUpperCase();
       pickupHistory.chassisNo = $('#searchAllInput').val().toUpperCase();
-      pickupHistory.sztp = $('#searchAllInput').val().toUpperCase();
-      pickupHistory.vslNm = $('#searchAllInput').val().toUpperCase();
-      pickupHistory.voyNo = $('#searchAllInput').val().toUpperCase();
       pickupHistory.driverName = $('#searchAllInput').val().toUpperCase();
       pickupHistory.driverPhoneNumber = $('#searchAllInput').val().toUpperCase();
       pickupHistory.logisticGroupName = $('#searchAllInput').val().toUpperCase();
+      pickupHistory.blNo = $('#searchAllInput').val().toUpperCase();
+      pickupHistory.bookingNo = $('#searchAllInput').val().toUpperCase();
       loadTable();
     }
   });
@@ -48,7 +61,8 @@ function formatDate(value) {
     + "/" + formatNumber(date.getMonth() + 1)
     + "/" + date.getFullYear()
     + " " + formatNumber(date.getHours())
-    + ":" + formatNumber(date.getMinutes());
+    + ":" + formatNumber(date.getMinutes())
+    + ":" + formatNumber(date.getSeconds());
 }
 
 function formatNumber(number) {
@@ -101,6 +115,16 @@ function refresh() {
   $('#toDate').val('');
   pickupHistory = new Object();
   loadTable();
+}
+
+function formatBillBooking(value, row) {
+  if (row.shipment.bookingNo) {
+    return row.shipment.bookingNo;
+  }
+  if (row.shipment.blNo) {
+    return row.shipment.blNo;
+  }
+  return '';
 }
 
 function changeFromDate() {

@@ -27,8 +27,11 @@ $(document).ready(function () {
     }
     $('#consignee').text(processOrder.consignee);
     $('#taxCode').text(processOrder.taxCode);
-    $('#blNo').text(processOrder.blNo);
-    $('#bookingNo').text(processOrder.bookingNo);
+    if (processOrder.blNo) {
+      $('#blBookingNo').text(processOrder.blNo);
+    } else if (processOrder.bookingNo) {
+      $('#blBookingNo').text(processOrder.bookingNo);
+    }
     $('#payType').text(processOrder.payType);
     let pickupDate = processOrder.pickupDate;
     if (pickupDate) {
@@ -37,24 +40,29 @@ $(document).ready(function () {
     $('#vessel').text(processOrder.vessel);
     $('#voyage').text(processOrder.voyage);
 
-    if (processOrder.status != 0) {
-      $("#toggle-status").bootstrapToggle({
-        on:"<i class='fa fa-cog fa-spin fa-fw'></i>&nbsp;Đang làm lệnh",
-        off:"Không",
-        onstyle:"success",
-        offstyle:"default"
-      });
-      $("#toggle-status").bootstrapToggle('on');
-      $("#toggle-status").prop('disabled', true);
-      $('#invoiceNo').val(processOrder.referenceNo).prop('readonly', true);
+    if (processOrder.status == 2) {
+      $(".div-toggle").hide();
+      $(".toggle-section").hide();
     } else {
-      $("#toggle-status").bootstrapToggle({
-        on:"<i class='fa fa-cog fa-spin fa-fw'></i>&nbsp;Đang làm lệnh",
-        off:"Không",
-        onstyle:"success",
-        offstyle:"default"
-      });
-      $("#toggle-status").bootstrapToggle('off');
+      if (processOrder.status != 0) {
+        $("#toggle-status").bootstrapToggle({
+          on:"<i class='fa fa-cog fa-spin fa-fw'></i>&nbsp;Đang làm lệnh",
+          off:"Không",
+          onstyle:"success",
+          offstyle:"default"
+        });
+        $("#toggle-status").bootstrapToggle('on');
+        $("#toggle-status").prop('disabled', true);
+        $('#invoiceNo').val(processOrder.referenceNo).prop('readonly', true);
+      } else {
+        $("#toggle-status").bootstrapToggle({
+          on:"<i class='fa fa-cog fa-spin fa-fw'></i>&nbsp;Đang làm lệnh",
+          off:"Không",
+          onstyle:"success",
+          offstyle:"default"
+        });
+        $("#toggle-status").bootstrapToggle('off');
+      }
     }
   }
 });
@@ -64,13 +72,21 @@ function statusRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).addClass("htMiddle");
   switch (value) {
     case 0:
+      if (orderList[row].robotUuid) {
+        $(td).html('Bị lỗi');
+        $(td).css("color", "#f35f3e");
+        break;
+      }
       $(td).html('Đang chờ');
+      $(td).css("color", "rgb(38 77 152 / 1)");
       break;
     case 1:
       $(td).html('Đang làm');
+      $(td).css("color", "#23c6c8");
       break;
     case 2:
       $(td).html('Đã làm');
+      $(td).css("color", "#30d22d");
       break;
   }
   return td;
@@ -86,7 +102,7 @@ function idRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.containerNo) {
+  if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.containerNo) {
     $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.containerNo);
   }
   return td;
@@ -94,7 +110,7 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
 
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.opeCode) {
+  if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.opeCode) {
     $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.opeCode);
   }
   return td;
@@ -102,7 +118,7 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.sztp) {
+  if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.sztp) {
     $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.sztp);
   }
   return td;
@@ -110,7 +126,7 @@ function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function feRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.fe) {
+  if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.fe) {
     $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.fe);
   }
   return td;
@@ -118,7 +134,7 @@ function feRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.wgt) {
+  if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.wgt) {
     $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.wgt);
   }
   return td;
@@ -126,7 +142,7 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.cargoType) {
+  if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.cargoType) {
     $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.cargoType);
   }
   return td;
@@ -134,7 +150,7 @@ function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) 
 
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  if (orderList[row].shipmentDetail.dischargePort) {
+  if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.dischargePort) {
     $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.dischargePort);
   }
   return td;
@@ -303,31 +319,57 @@ $("#toggle-status").change(function (e) {
 });
 
 function confirm() {
-  let error = false;
-  if ($('#invoiceNo').val()) {
-    processOrder.referenceNo = $('#invoiceNo').val();
+  if (!$("#toggle-status").prop('checked')) {
+    $.modal.alertError("Bạn chưa xác nhận làm lệnh");
   } else {
-    error = true;
+    $.modal.loading("Đang đồng bộ dữ liệu...");
+
+    $.modal.closeLoading();
   }
-  if (error) {
-    $.modal.alertError("Bạn chưa nhập đủ số invoice no.");
-  } else {
-    $.modal.loading("Đang xử lý...");
-    $.ajax({
-      url: PREFIX + "/invoice-no",
-      method: "POST",
-      contentType: "application/json",
-      data: JSON.stringify(processOrder),
-      success: function (res) {
-        if (res.code == 0) {
-          parent.finishForm(res);
-          $.modal.close();
-        }
-      },
-      error: function () {
-        $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-        $.modal.closeLoading();
-      },
-    });
-  }
+  $.ajax({
+    url: PREFIX + "/sync",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify(processOrder),
+    success: function (res) {
+      if (res.code == 0) {
+        $.modal.alertSuccess("Đồng bộ thành công.");
+      }
+    },
+    error: function () {
+      $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+      $.modal.closeLoading();
+    },
+  });
+  // let error = false;
+  // if ($('#invoiceNo').val()) {
+  //   processOrder.referenceNo = $('#invoiceNo').val();
+  // } else {
+  //   error = true;
+  // }
+  // if (error) {
+  //   $.modal.alertError("Bạn chưa nhập đủ số invoice no.");
+  // } else {
+  //   $.modal.loading("Đang xử lý...");
+  //   $.ajax({
+  //     url: PREFIX + "/invoice-no",
+  //     method: "POST",
+  //     contentType: "application/json",
+  //     data: JSON.stringify(processOrder),
+  //     success: function (res) {
+  //       if (res.code == 0) {
+  //         parent.finishForm(res);
+  //         $.modal.close();
+  //       }
+  //     },
+  //     error: function () {
+  //       $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+  //       $.modal.closeLoading();
+  //     },
+  //   });
+  // }
+}
+
+function closeForm() {
+  $.modal.closeTab();
 }
