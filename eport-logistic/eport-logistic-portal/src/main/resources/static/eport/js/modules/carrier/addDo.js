@@ -3,7 +3,7 @@ var consigneeList = [];
 var emptyDepotList = [];
 var vesselList = [];
 
-var prefix = "/carrier/do";
+var prefix = ctx + "carrier/do";
 function submitHandler() {
   // add condition to validate before submit add do
   if (true) {
@@ -303,7 +303,7 @@ function saveDO() {
   if (!errorFlg) {
     $.modal.confirm("Bạn có chắc chắn cập nhật DO này lên Web Portal của Cảng Đà Nẵng không?", function() {
           $.ajax({
-            url: "/carrier/do/add",
+            url: prefix + "/add",
             method: "post",
             contentType : "application/json",
             accept: 'text/plain',

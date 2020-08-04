@@ -109,7 +109,7 @@ public class CarrierAccountController extends BaseController
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, carrierAccount.getEmail())) {
             return error("Email không hợp lệ!");
         }
-        if (carrierAccountService.checkEmailUnique(carrierAccount.getEmail().toLowerCase()).equals("1")) {
+        if (carrierAccountService.checkEmailExist(carrierAccount.getEmail().toLowerCase())) {
             return error("Email đã tồn tại!");
         }
         if (carrierAccount.getPassword().length() < 6) {
