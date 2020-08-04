@@ -7,9 +7,8 @@ eport:
   addressEnabled: true
   cacheExpireTime: 3600
   #EDO Monitor Folders
-  edo:
-    rootPath: D:/eport/upload/edo
-    backupPath: D:/eport/upload/backup
+  edoRootPath: D:/eport/upload/edo
+  edoBackupPath: D:/eport/upload/backup
 
 server:
   port: 7071
@@ -86,7 +85,7 @@ shiro:
     captchaType: math
   cookie:
     domain: 
-    path: /admin
+    path: /
     httpOnly: true
     maxAge: 30
     cipherKey: zSyK5Kp6PZAAjlT+eeNMlg==

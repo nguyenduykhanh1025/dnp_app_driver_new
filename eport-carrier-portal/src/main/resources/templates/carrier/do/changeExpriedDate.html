@@ -79,7 +79,7 @@
     var status = /*[[${status}]]*/;
     function update() {
       $.ajax({
-        url: "/carrier/do/updateExpiredDate",
+        url: ctx + "carrier/do/updateExpiredDate",
         method: "post",
         data: {
           billOfLading : billOfLading,

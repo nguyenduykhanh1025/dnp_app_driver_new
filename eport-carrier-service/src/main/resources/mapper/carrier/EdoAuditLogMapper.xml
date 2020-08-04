@@ -56,7 +56,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null and id != 0">id,</if>
             <if test="carrierId != null ">carrier_id,</if>
-            <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
             <if test="edoId != null ">edo_id,</if>
             <if test="seqNo != null ">seq_no,</if>
             <if test="fieldName != null  and fieldName != ''">field_name,</if>
@@ -68,7 +67,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
  			<if test="id != null">#{id},</if>
             <if test="carrierId != null ">#{carrierId},</if>
-            <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
             <if test="edoId != null ">#{edoId},</if>
             <if test="seqNo != null ">#{seqNo},</if>
             <if test="fieldName != null  and fieldName != ''">#{fieldName},</if>
@@ -83,7 +81,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update edo_audit_log
         <trim prefix="SET" suffixOverrides=",">
             <if test="carrierId != null ">carrier_id = #{carrierId},</if>
-            <if test="carrierCode != null  and carrierCode != ''">carrier_code = #{carrierCode},</if>
             <if test="edoId != null ">edo_id = #{edoId},</if>
             <if test="seqNo != null ">seq_no = #{seqNo},</if>
             <if test="fieldName != null  and fieldName != ''">field_name = #{fieldName},</if>
