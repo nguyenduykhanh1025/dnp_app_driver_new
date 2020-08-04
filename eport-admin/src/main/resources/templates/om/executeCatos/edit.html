@@ -11,10 +11,14 @@
     <section class="header">
       <div class="row">
         <div class="col-md-4 col-sm-4 col-xs-4">
+          <b class="label-title">Đơn vị logistics: </b>
+          <span id="logisticGroup"></span>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4">
           <b class="label-title">Loại Lệnh: </b>
           <span id="serviceType"></span>
         </div>
-        <div class="col-md-8 col-sm-8 col-xs-8">
+        <div class="col-md-4 col-sm-4 col-xs-4">
           <b class="label-title">Chủ Hàng: </b>
           <span id="consignee"></span>
         </div>
@@ -23,12 +27,8 @@
           <span id="taxCode"></span>
         </div>
         <div class="col-md-4 col-sm-4 col-xs-4">
-          <b class="label-title">B/L No.: </b>
-          <span id="blNo"></span>
-        </div>
-        <div class="col-md-4 col-sm-4 col-xs-4">
-          <b class="label-title">Booking No.: </b>
-          <span id="bookingNo"></span>
+          <b class="label-title">Bill/Booking No.: </b>
+          <span id="blBookingNo"></span>
         </div>
         <div class="col-md-4 col-sm-4 col-xs-4">
           <b class="label-title">Phương Thức Thanh Toán: </b>
@@ -48,14 +48,16 @@
         </div>
       </div>
     </section>
-    <div class="row mt10">
+    <div class="row mt10 toggle-section">
       <div class="col-md-12">
         <label>
           <h4><label>Nhận làm lệnh</label></h4>
-          <input
+          <div class="div-toggle">
+            <input
             id="toggle-status"
             type="checkbox"
           />
+          </div>
         </label>
       </div>
       <div class="col-md-12">
@@ -63,22 +65,11 @@
       </div>
     </div>
     <section class="content">
-    <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
-
+      <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
     </section>
-    <section class="content-bottom mt10">
-      <div class="panel panel-success">
-        <div class="panel-heading">Nhập Invoice No.</div>
-        <div class="panel-body">
-          <div class="input-group p10">
-            <span class="input-group-addon">Mã Lệnh </span>
-            <input type="text" class="form-control" id="invoiceNo" placeholder="Invoice No.">
-          </div>
-        </div>
-      </div>
-    </section>
-    <div class="layui-layer-btn footer">
-      <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+    <div class="content-footer">
+      <a class="btn btn-block btn-success" onclick="confirm()">Đồng bộ</a>
+      <a class="btn btn-block btn-success" onclick="closeForm()">Đóng</a>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: handsontable-js" />

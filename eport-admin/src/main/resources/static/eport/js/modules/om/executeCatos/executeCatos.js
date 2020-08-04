@@ -102,7 +102,7 @@ function formatAction(value, row, index) {
 }
 
 function openMakeOrderForm(id) {
-  $.modal.openWithOneButton("Làm lệnh", prefix + "/detail/" + id, null, null);
+  $.modal.openTab("Làm lệnh", prefix + "/detail/" + id);
 }
 
 function finishForm(res) {
