@@ -60,3 +60,8 @@ logging:
   level:
     vn.com.irtech.eport: debug
     org.springframework: warn
+    
+mqtt:
+  username: admin             
+  password: public            
+  host-url: tcp://127.0.0.1:1883                # The address and port of your own server need to be changed

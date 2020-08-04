@@ -65,20 +65,16 @@
                 <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
                     <thead>
                         <tr>
-                            <th data-options="field:'id', fixed:true" width="1"></th>
-                            <th data-options="field:'blNo', halign:'center', resizable:true, fixed:true, formatter: formatBlNo" sortable="true" width="150">B/L No.</th>
-                            <th data-options="field:'bookingNo', halign:'center', resizable:true, fixed:true, formatter: formatBookingNo" sortable="true" width="150">Booking No.</th>
-                            <th data-options="field:'taxCode', halign:'center', resizable:true, fixed:true, formatter: formatTaxCode" sortable="true" width="120">Mã Số Thuế</th>
-                            <th data-options="field:'containerNo', halign:'center', resizable:true, fixed:true" sortable="true" width="110">Container No.</th>
-                            <th data-options="field:'sztp', halign:'center', resizable:true, fixed:true" sortable="true" width="100">Kích Thước</th>
+                            <th data-options="field:'blNo', halign:'center', resizable:true, fixed:true, formatter: formatBlBooking" width="200">Bill/Booking No.</th>
+                            <th data-options="field:'taxCode', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatTaxCode" sortable="true" width="120">Mã Số Thuế</th>
+                            <th data-options="field:'containerNo', align:'center', halign:'center', resizable:true, fixed:true" sortable="true" width="110">Container No.</th>
+                            <th data-options="field:'sztp', align:'center', halign:'center', resizable:true, fixed:true" sortable="true" width="100">Kích Thước</th>
                             <th data-options="field:'serviceType', halign:'center', resizable:true, fixed:true, formatter: formatServiceType" sortable="true" width="100">Hình Thức</th>
                             <th data-options="field:'payType', halign:'center', resizable:true, fixed:true" sortable="true" width="120">PT Thanh Toán</th>
                             <th data-options="field:'paymentStatus', halign:'center', resizable:true, fixed:true, formatter: formatPaymentStatus" sortable="true" width="140">TT Thanh Toán</th>
                             <th data-options="field:'paymentTime', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" sortable="true" width="160">Thời Gian Thanh Toán</th>
-                            <th data-options="field:'createTime', halign:'center', resizable:true, fixed:true, formatter: formatDate" sortable="true" width="150">Thời gian làm lệnh</th>
-                            <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true" sortable="true" width="190">Invoice No.</th>
-                            <!-- <th data-options="field:'exchangeFee', align:'right', halign:'center', resizable:true, fixed:true, formatter: formatMoney" sortable="true" width="120">Đơn Giá(VND)</th>
-                            <th data-options="field:'vatRate', align:'right', halign:'center', resizable:true, fixed:true" sortable="true" width="80">Thuế(%)</th> -->
+                            <th data-options="field:'createTime', align:'center', halign:'center', resizable:true, fixed:true, formatter: formatDate" sortable="true" width="150">Thời gian làm lệnh</th>
+                            <th data-options="field:'referenceNo', align:'center', halign:'center', resizable:true, fixed:true" sortable="true" width="190">Invoice No.</th>
                             <th data-options="field:'vatAfterFee', align:'right', halign:'center', resizable:true, formatter: formatMoney" sortable="true" width="130">Thành Tiền(VND)</th>
                         </tr>
                     </thead>

@@ -2,6 +2,19 @@ const PREFIX = ctx + "logistic/truck/history";
 var pickupHistory = new Object();
 
 $(document).ready(function () {
+  
+  let date = new Date();
+  let firstDay = new Date(date.getFullYear(), date.getMonth(), 1); 
+  let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  lastDay.setHours(23, 59, 59);
+
+  pickupHistory.fromDate = firstDay.getTime();
+  pickupHistory.toDate = lastDay.getTime();
+
+  $('.from-date').val(("0" + firstDay.getDate()).slice(-2) + "/" + ("0"+(firstDay.getMonth()+1)).slice(-2) + "/" + firstDay.getFullYear());
+
+  $('.to-date').val(("0" + lastDay.getDate()).slice(-2) + "/" + ("0"+(lastDay.getMonth()+1)).slice(-2) + "/" + lastDay.getFullYear());
+
   loadTable();
 
   $('#fromDate').datetimepicker({
@@ -30,11 +43,10 @@ $(document).ready(function () {
       pickupHistory.containerNo = $('#searchAllInput').val().toUpperCase();
       pickupHistory.truckNo = $('#searchAllInput').val().toUpperCase();
       pickupHistory.chassisNo = $('#searchAllInput').val().toUpperCase();
-      pickupHistory.sztp = $('#searchAllInput').val().toUpperCase();
-      pickupHistory.vslNm = $('#searchAllInput').val().toUpperCase();
-      pickupHistory.voyNo = $('#searchAllInput').val().toUpperCase();
       pickupHistory.driverName = $('#searchAllInput').val().toUpperCase();
       pickupHistory.driverPhoneNumber = $('#searchAllInput').val().toUpperCase();
+      pickupHistory.blNo = $('#searchAllInput').val().toUpperCase();
+      pickupHistory.bookingNo = $('#searchAllInput').val().toUpperCase();
       loadTable();
     }
   });
@@ -47,11 +59,21 @@ function formatDate(value) {
     + "/" + formatNumber(date.getMonth() + 1)
     + "/" + date.getFullYear()
     + " " + formatNumber(date.getHours())
-    + ":" + formatNumber(date.getMinutes());
+    + ":" + formatNumber(date.getMinutes())
+    + ":" + formatNumber(date.getSeconds());
 }
 
 function formatNumber(number) {
   return number < 10 ? "0" + number : number;
+}
+
+function formatBillBook(value, row) {
+  if (row.shipment.bookingNo) {
+    return row.shipment.bookingNo
+  } else if (row.shipment.blNo) {
+    return row.shipment.blNo;
+  }
+  return '';
 }
 
 function loadTable() {

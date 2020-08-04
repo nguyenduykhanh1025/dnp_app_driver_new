@@ -218,6 +218,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 					shipmentDetail.setUserVerifyStatus("N");
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
+					shipmentDetail.setFinishStatus("N");
 					shipmentDetail.setFe("E");
 					shipmentDetail.setCargoType("MT");
 					shipmentDetail.setDischargePort("VNDAD");
