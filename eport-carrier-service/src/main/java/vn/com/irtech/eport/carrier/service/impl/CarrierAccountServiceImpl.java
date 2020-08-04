@@ -114,12 +114,7 @@ public class CarrierAccountServiceImpl implements ICarrierAccountService
 	 * @return
 	 */
     @Override
-	public String checkEmailUnique(String email) {
-        int count = carrierAccountMapper.checkEmailUnique(email);
-        if (count > 0)
-        {
-            return "1";
-        }
-        return "0";
+	public boolean checkEmailExist(String email) {
+        return carrierAccountMapper.checkEmailUnique(email) > 0;
     }
 }
