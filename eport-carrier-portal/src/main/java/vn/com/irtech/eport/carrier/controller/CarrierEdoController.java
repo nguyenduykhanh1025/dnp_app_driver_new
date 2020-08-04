@@ -61,7 +61,10 @@ public class CarrierEdoController extends CarrierBaseController {
 	  if (edo == null) {
 		edo = new Edo();
 	  }
-	  edo.setCarrierCode(super.getUserGroup().getGroupCode());
+	  Map<String, Object> groupCodes = new HashMap<>();
+	  groupCodes.put("groupCode", super.getGroupCodes());
+	  edo.setParams(groupCodes);
+	  edo.setCarrierCode(null);
 	  List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
 	  return getDataTable(dataList);
 	}
@@ -76,7 +79,10 @@ public class CarrierEdoController extends CarrierBaseController {
 		if (edo == null) {
 			edo = new Edo();
 		}
-		edo.setCarrierCode(super.getUserGroup().getGroupCode());
+		Map<String, Object> groupCodes = new HashMap<>();
+		  groupCodes.put("groupCode", super.getGroupCodes());
+		edo.setCarrierCode(null);
+	  	edo.setParams(groupCodes);
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}
@@ -128,6 +134,7 @@ public class CarrierEdoController extends CarrierBaseController {
 			ids = edo.getId().toString();
 		}
 		try {
+			
 			EdoAuditLog edoAuditLog = new EdoAuditLog();
 			Date timeNow = new Date();
 			edoAuditLog.setCarrierId(super.getUser().getGroupId());
@@ -141,8 +148,6 @@ public class CarrierEdoController extends CarrierBaseController {
 				Edo edoCheck = new Edo();
 				edoCheck.setId(Long.parseLong(id));
 				// edoCheck.setCarrierId(super.getUser().getGroupId());
-				Edo seR = new Edo();
-				seR = edoService.selectFirstEdo(edoCheck);
 				if(edoService.selectFirstEdo(edoCheck) == null)
 				{
 					return AjaxResult.error("Bạn đã chọn container mà bạn không có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
@@ -232,7 +237,9 @@ public class CarrierEdoController extends CarrierBaseController {
 		  if (edo == null) {
 			edo = new Edo();
 		  }
-		edo.setCarrierId(super.getUser().getGroupId());
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
+		edo.setParams(groupCodes);
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}

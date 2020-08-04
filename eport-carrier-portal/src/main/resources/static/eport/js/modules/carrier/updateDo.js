@@ -1,4 +1,4 @@
-var PREFIX = ctx + "/carrier/do";
+var PREFIX = ctx + "carrier/do";
 var doList;
 var hot;
 var consigneeList = [];
