@@ -30,7 +30,7 @@ async function submitHandler() {
 function loadGroupName() {
     if ($("#taxCode").val() != null && $("#taxCode").val() != '') {
         $.ajax({
-            url: "/logistic/company/" + $("#taxCode").val(),
+            url: ctx + "logistic/company/" + $("#taxCode").val(),
             method: "get"
         }).done(function (result) {
             if (result.code == 0) {

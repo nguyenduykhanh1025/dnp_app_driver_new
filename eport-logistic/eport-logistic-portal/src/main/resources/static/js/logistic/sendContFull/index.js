@@ -583,7 +583,9 @@ function onChange(changes, source) {
     changes.forEach(function (change) {
     	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
         if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
-            //hot.setDataAtCell(change[0], 6, '');//vessel and voyage reset
+            hot.setDataAtCell(change[0], 6, '');//vessel and voyage reset
+            hot.setDataAtCell(change[0], 9, '');//CargoType reset
+            hot.setDataAtCell(change[0], 10, '');//pod reset
         	let shipmentDetail = new Object();
         	shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         	if(hot.getDataAtCell(change[0], 3) != null){
@@ -608,6 +610,7 @@ function onChange(changes, source) {
             });
             // check to input temperature
         } else if (change[1] == "sztp") {
+        	hot.setDataAtCell(change[0], 5, '');//opeCode reset
             if (change[3] && change[3].length > 3 && change[3].substring(0,4).includes("R")) {
                 temperatureDisable[change[0]] = 0;
                 hot.updateSettings({
@@ -906,7 +909,7 @@ function getDataFromTable(isValidate) {
 //                $.modal.alertError("Số chuyến không được khác nhau!");
 //                errorFlg = true;
 //                return false;
-            } else if (pod != object["dischargePort"]) {
+            } else if (pod.split(": ")[0] != object["dischargePort"].split(": ")[0]) {
                 $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
                 errorFlg = true;
                 return false;
@@ -935,7 +938,9 @@ function getDataFromTable(isValidate) {
         let vsl = object["vslNm"].split(" - ");
         shipmentDetail.vslNm = vsl[0];
         shipmentDetail.vslName = vsl[1];
-        shipmentDetail.voyNo = berthplan.voyNo;
+        if(berthplan){
+            shipmentDetail.voyNo = berthplan.voyNo;
+        }
         shipmentDetail.voyCarrier = vsl[2];
         shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);
