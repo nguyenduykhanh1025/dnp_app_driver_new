@@ -2,7 +2,7 @@ var prefix = ctx + "logistic/send-cont-full";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
-var contList = [];
+var contList = [], temperatureDisable = [];
 var conts = '';
 var allChecked = false;
 var checkList = [];
@@ -243,6 +243,7 @@ function getSelected() {
         $("#bookingNo").text(row.bookingNo);
         rowAmount = row.containerAmount;
         checkList = Array(rowAmount).fill(0);
+        temperatureDisable = Array(rowAmount).fill(1);
         allChecked = false;
         loadShipmentDetail(row.id);
     }
@@ -381,6 +382,22 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+
+function temperatureRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'temperature' + row).addClass("htMiddle");
+    if (value != null && value != '') {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }  
+    if (temperatureDisable[row] == 1) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+    return td;
+}
+
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'wgt' + row).addClass("htMiddle");
     $(td).html(value);
@@ -423,18 +440,6 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
     $(td).html(value);
-    return td;
-}
-function temperatureRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'temperature' + row).addClass("htMiddle");
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    } else if (value) {
-        $(td).css("background-color", "rgb(232, 232, 232)");
-    }   
     return td;
 }
 
@@ -601,32 +606,34 @@ function onChange(changes, source) {
                     }
                 }
             });
-            // Trigger when sztp change, make temperature is writable
+            // check to input temperature
+        } else if (change[1] == "sztp") {
+            if (change[3] && change[3].length > 3 && change[3].substring(0,4).includes("R")) {
+                temperatureDisable[change[0]] = 0;
+                hot.updateSettings({
+                    cells: function (row, col, prop) {
+                        if (row == change[0] && col == 7) {
+                            let cellProperties = {};
+                            cellProperties.readOnly = false;
+                            return cellProperties;
+                        }
+                    }
+                });
+            } else {
+                console.log(change[0],"disalbe)");
+                temperatureDisable[change[0]] = 1;
+                hot.updateSettings({
+                    cells: function (row, col, prop) {
+                        if (row == change[0] && col == 7) {
+                            let cellProperties = {};
+                            cellProperties.readOnly = true;
+                            $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
+                            return cellProperties;
+                        }
+                    }
+                });
+            }
         }
-//        else if (change[1] == "sztp") {
-//            if (change[3] && change[3].includes("R")) {
-//                hot.updateSettings({
-//                    cells: function (row, col, prop) {
-//                        if (row == change[0] && col == 7) {
-//                            let cellProperties = {};
-//                            cellProperties.readOnly = false;
-//                            return cellProperties;
-//                        }
-//                    }
-//                });
-//            } else {
-//                hot.updateSettings({
-//                    cells: function (row, col, prop) {
-//                        if (row == change[0] && col == 7) {
-//                            let cellProperties = {};
-//                            cellProperties.readOnly = true;
-//                            $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
-//                            return cellProperties;
-//                        }
-//                    }
-//                });
-//            }
-//        }
     });
 }
 
