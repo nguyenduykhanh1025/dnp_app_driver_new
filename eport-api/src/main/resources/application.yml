@@ -27,10 +27,11 @@ spring:
         # username: root
         # password:
         driverClassName: oracle.jdbc.OracleDriver 
-        url: jdbc:oracle:thin:@192.168.0.29:1521/EPORT
-        username: EPORT_TEST
-        password: WINNER
+        url: jdbc:oracle:thin:@117.3.52.70:41521/CATOS_TEST
+        username: EPORT_DNP_UAT
+        password: EPORT_DNP_2020
     redis:
+        enabled: false
         database: 0
         password: 
         host: 192.168.1.65
