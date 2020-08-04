@@ -86,7 +86,6 @@ function loadTable() {
                     error.apply(this, arguments);
                 },
             });
-            $("#dg").datagrid("hideColumn", "id");
         },
     });
 }
@@ -100,16 +99,23 @@ function refresh() {
     loadTable();
 }
 
-function formatBlNo(value, row) {
-    return row.shipmentDetail.blNo;
-}
-
-function formatBookingNo(value, row) {
-    return row.shipmentDetail.bookingNo;
+function formatBlBooking(value, row) {
+    if (row.shipmentDetail) {
+        if (row.shipmentDetail.blNo) {
+            return row.shipmentDetail.blNo;
+        }
+        if (row.shipmentDetail.bookingNo) {
+            return row.shipmentDetail.bookingNo;
+        }
+    }
+    return '';
 }
 
 function formatSztp(value, row) {
-    return row.shipmentDetail.sztp;
+    if (row.shipmentDetail) {
+        return row.shipmentDetail.sztp;
+    }
+    return '';
 }
 
 function formatServiceType(value, row) {

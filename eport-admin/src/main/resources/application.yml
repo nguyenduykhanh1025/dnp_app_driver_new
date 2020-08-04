@@ -49,7 +49,7 @@ spring:
     restart:
       enabled: true
   redis:
-    enabled: false
+    enabled: true
     database: 0
     password: 
     host: 192.168.1.65

@@ -146,7 +146,7 @@
               "			<td>" +
               driverName +
               "</td></tr>" +
-              "			<tr><td>Biển số đầu kéo: " +
+              "			<tr><td>Số điện thoại: " +
               "</td>" +
               "			<td>" +
               mobileNumber +
@@ -162,7 +162,7 @@
               "                <td> " +
               chassisNo +
                 "</td></tr>" +
-              "			<tr><td>Biển số đầu kéo: " +
+              "			<tr><td>Container: " +
               "</td>" +
               "			<td>" +
               contNo.substring(0, contNo.length-1) +
@@ -181,6 +181,12 @@
         }).done(function(res){
           if (res.code == 0) {
             locations = res.pickupHistories.sort(compareDriverId);
+            for (let i=0; i<locations.length; i++) {
+              if ((locations[i].serviceType%2 == 0 && locations[i].status == 1) || (locations[i].serviceType%2 == 1 && locations[i].status == 0)) {
+                locations.splice(i, 1);
+                i--;
+              }
+            }
             initMap();
             loadListDriver();
           }
@@ -192,11 +198,17 @@
           }).done(function(res){
             if (res.code == 0) {
               locations = res.pickupHistories.sort(compareDriverId);
+              for (let i=0; i<locations.length; i++) {
+                if ((locations[i].serviceType%2 == 0 && locations[i].status == 1) || (locations[i].serviceType%2 == 1 && locations[i].staus == 0)) {
+                  locations.splice(i, 1);
+                  i--;
+                }
+              }
               initMap();
               loadListDriver();
             }
           });
-        }, 20000);
+        }, 120000);
 
         $("#c-map").height($(window).height() - 70);
         $(".c-search-box").select2({

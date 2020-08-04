@@ -6,7 +6,7 @@ eport:
   profile: D:/eport/upload
   addressEnabled: true
   cacheExpireTime: 3600
-  apiUrl: http://127.0.0.1:9090/api
+  apiUrl: http://192.168.1.99:9090/api
 
 server:
   port: 7070
@@ -41,7 +41,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
-    active: uat
+    active: test
   servlet:
     multipart:
       max-file-size:  10MB
