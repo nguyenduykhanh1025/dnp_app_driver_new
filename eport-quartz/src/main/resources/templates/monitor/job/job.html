@@ -163,7 +163,7 @@
 
 		/* Schedule task-enable*/
 		function start(jobId, jobGroup) {
-			$.modal.confirm("Kích hoạt tác vụ？", function() {
+			$.modal.confirm("Kích hoạt tác vụ?", function() {
 				$.operate.post(prefix + "/changeStatus", { "jobId": jobId, "jobGroup": jobGroup, "status": 0 });
 		    })
 		}
@@ -174,7 +174,7 @@
 		    if ($.common.isNotEmpty(jobId)) {
 		        url += '?jobId=' + jobId;
 		    }
-		    $.modal.openTab("调度日志", url);
+		    $.modal.openTab("Lịch Sử Job", url);
 		}
 	</script>
 </body>

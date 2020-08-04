@@ -6,6 +6,10 @@ eport:
   profile: D:/eport/upload
   addressEnabled: true
   cacheExpireTime: 3600
+  #EDO Monitor Folders
+  edo:
+    rootPath: D:/eport/upload/edo
+    backupPath: D:/eport/upload/backup
 
 server:
   port: 7071
@@ -40,7 +44,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
-    active: test
+    active: uat
   servlet:
     multipart:
       max-file-size:  10MB
@@ -49,10 +53,10 @@ spring:
     restart:
       enabled: true
   redis:
-    enabled: false
+    enabled: true
     database: 0
     password: 
-    host: 192.168.1.65
+    host: 127.0.0.1
     port: 6379
     lettuce:
       pool:

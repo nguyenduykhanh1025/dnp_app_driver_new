@@ -2,7 +2,7 @@ var prefix = ctx + "logistic/send-cont-full";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
-var contList = [];
+var contList = [], temperatureDisable = [];
 var conts = '';
 var allChecked = false;
 var checkList = [];
@@ -14,7 +14,7 @@ var berthplan;// get infor
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
-	  url: "/logistic/size/container/list",
+	  url: ctx + "logistic/size/container/list",
 	  success(data) {
 		  if(data.code == 0){
 		      data.data.forEach(element => {
@@ -26,7 +26,7 @@ $.ajax({
 var consigneeList, opeCodeList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({
-    url: "/logistic/source/option",
+    url: ctx + "logistic/source/option",
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
@@ -162,7 +162,7 @@ function loadTable(msg) {
         $.modal.alertSuccess(msg);
     }
     $("#dg").datagrid({
-        url: '/logistic/shipments',
+        url: ctx + 'logistic/shipments',
         height: window.innerHeight - 110,
         method: 'post',
         singleSelect: true,
@@ -243,6 +243,7 @@ function getSelected() {
         $("#bookingNo").text(row.bookingNo);
         rowAmount = row.containerAmount;
         checkList = Array(rowAmount).fill(0);
+        temperatureDisable = Array(rowAmount).fill(1);
         allChecked = false;
         loadShipmentDetail(row.id);
     }
@@ -381,6 +382,22 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+
+function temperatureRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'temperature' + row).addClass("htMiddle");
+    if (value != null && value != '') {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }  
+    if (temperatureDisable[row] == 1) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    }
+    return td;
+}
+
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'wgt' + row).addClass("htMiddle");
     $(td).html(value);
@@ -423,18 +440,6 @@ function dischargePortRenderer(instance, td, row, col, prop, value, cellProperti
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
     $(td).html(value);
-    return td;
-}
-function temperatureRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'temperature' + row).addClass("htMiddle");
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    } else if (value) {
-        $(td).css("background-color", "rgb(232, 232, 232)");
-    }   
     return td;
 }
 
@@ -578,7 +583,9 @@ function onChange(changes, source) {
     changes.forEach(function (change) {
     	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
         if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
-            //hot.setDataAtCell(change[0], 6, '');//vessel and voyage reset
+            hot.setDataAtCell(change[0], 6, '');//vessel and voyage reset
+            hot.setDataAtCell(change[0], 9, '');//CargoType reset
+            hot.setDataAtCell(change[0], 10, '');//pod reset
         	let shipmentDetail = new Object();
         	shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         	if(hot.getDataAtCell(change[0], 3) != null){
@@ -601,32 +608,35 @@ function onChange(changes, source) {
                     }
                 }
             });
-            // Trigger when sztp change, make temperature is writable
+            // check to input temperature
+        } else if (change[1] == "sztp") {
+        	hot.setDataAtCell(change[0], 5, '');//opeCode reset
+            if (change[3] && change[3].length > 3 && change[3].substring(0,4).includes("R")) {
+                temperatureDisable[change[0]] = 0;
+                hot.updateSettings({
+                    cells: function (row, col, prop) {
+                        if (row == change[0] && col == 7) {
+                            let cellProperties = {};
+                            cellProperties.readOnly = false;
+                            return cellProperties;
+                        }
+                    }
+                });
+            } else {
+                console.log(change[0],"disalbe)");
+                temperatureDisable[change[0]] = 1;
+                hot.updateSettings({
+                    cells: function (row, col, prop) {
+                        if (row == change[0] && col == 7) {
+                            let cellProperties = {};
+                            cellProperties.readOnly = true;
+                            $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
+                            return cellProperties;
+                        }
+                    }
+                });
+            }
         }
-//        else if (change[1] == "sztp") {
-//            if (change[3] && change[3].includes("R")) {
-//                hot.updateSettings({
-//                    cells: function (row, col, prop) {
-//                        if (row == change[0] && col == 7) {
-//                            let cellProperties = {};
-//                            cellProperties.readOnly = false;
-//                            return cellProperties;
-//                        }
-//                    }
-//                });
-//            } else {
-//                hot.updateSettings({
-//                    cells: function (row, col, prop) {
-//                        if (row == change[0] && col == 7) {
-//                            let cellProperties = {};
-//                            cellProperties.readOnly = true;
-//                            $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
-//                            return cellProperties;
-//                        }
-//                    }
-//                });
-//            }
-//        }
     });
 }
 
@@ -899,7 +909,7 @@ function getDataFromTable(isValidate) {
 //                $.modal.alertError("Số chuyến không được khác nhau!");
 //                errorFlg = true;
 //                return false;
-            } else if (pod != object["dischargePort"]) {
+            } else if (pod.split(": ")[0] != object["dischargePort"].split(": ")[0]) {
                 $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
                 errorFlg = true;
                 return false;
@@ -928,7 +938,9 @@ function getDataFromTable(isValidate) {
         let vsl = object["vslNm"].split(" - ");
         shipmentDetail.vslNm = vsl[0];
         shipmentDetail.vslName = vsl[1];
-        shipmentDetail.voyNo = berthplan.voyNo;
+        if(berthplan){
+            shipmentDetail.voyNo = berthplan.voyNo;
+        }
         shipmentDetail.voyCarrier = vsl[2];
         shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);

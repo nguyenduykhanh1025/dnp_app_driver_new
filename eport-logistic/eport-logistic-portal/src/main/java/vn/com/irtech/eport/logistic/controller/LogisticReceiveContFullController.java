@@ -334,6 +334,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setDoStatus("N");
 					shipmentDetail.setPreorderPickup("N");
 					shipmentDetail.setPrePickupPaymentStatus("N");
+					shipmentDetail.setFinishStatus("N");
 					if ("VN".equalsIgnoreCase(shipmentDetail.getLoadingPort().substring(0, 2))) {
 						shipmentDetail.setCustomStatus("R");
 						shipmentDetail.setStatus(2);

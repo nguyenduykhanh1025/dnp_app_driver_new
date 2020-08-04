@@ -15,7 +15,7 @@ var berthplan;
 //dictionary sizeList
 $.ajax({
     type: "GET",
-    url: "/logistic/size/container/list",
+    url: ctx + "logistic/size/container/list",
     success(data) {
         if (data.code == 0) {
             data.data.forEach(element => {
@@ -26,7 +26,7 @@ $.ajax({
 });
 
 $.ajax({
-    url: "/logistic/source/option",
+    url: ctx + "logistic/source/option",
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
@@ -163,7 +163,7 @@ function loadTable(msg) {
         $.modal.alertSuccess(msg);
     }
     $("#dg").datagrid({
-        url: '/logistic/shipments',
+        url: ctx + 'logistic/shipments',
         height: window.innerHeight - 110,
         method: 'post',
         singleSelect: true,
@@ -552,8 +552,13 @@ function onChange(changes, source) {
         return;
     }
     changes.forEach(function (change) {
+    	if (change[1] == "sztp" && change[3] != null && change[3] != '') {
+    		hot.setDataAtCell(change[0], 6, '');//opeCode reset
+    	}else
    	 // Trigger when opeCode no change, get list vessel-voyage, pod by opeCode
         if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
+        	hot.setDataAtCell(change[0], 7, '');//vessel and voyage reset
+        	hot.setDataAtCell(change[0], 8, '');//pod reset
         	let shipmentDetail = new Object();
         	shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         	if(hot.getDataAtCell(change[0], 3) != null){
@@ -792,7 +797,7 @@ function getDataFromTable(isValidate) {
     for (let i = 0; i < checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
             if (myTableData[i].containerNo || myTableData[i].expiredDem || myTableData[i].opeCode || myTableData[i].vslNm ||
-                myTableData[i].voyNo || myTableData[i].sztp || myTableData[i].dischargePort || myTableData[i].remark) {
+                myTableData[i].sztp || myTableData[i].dischargePort || myTableData[i].remark) {
                     cleanedGridData.push(myTableData[i]);
                 }
         }
@@ -857,7 +862,7 @@ function getDataFromTable(isValidate) {
 //                $.modal.alertError("Số chuyến không được khác nhau!");
 //                errorFlg = true;
 //                return false;
-            } else if (pod != object["dischargePort"]) {
+            } else if (pod.split(": ")[0] != object["dischargePort"].split(": ")[0]) {
                 $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
                 errorFlg = true;
                 return false;
@@ -884,7 +889,9 @@ function getDataFromTable(isValidate) {
         let vsl = object["vslNm"].split(" - ");
         shipmentDetail.vslNm = vsl[0];
         shipmentDetail.vslName = vsl[1];
-        shipmentDetail.voyNo = berthplan.voyNo;
+        if(berthplan){
+            shipmentDetail.voyNo = berthplan.voyNo;
+        }
         shipmentDetail.voyCarrier = vsl[2];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.shipmentId = shipmentSelected.id;

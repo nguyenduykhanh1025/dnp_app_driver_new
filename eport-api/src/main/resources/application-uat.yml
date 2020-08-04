@@ -1,0 +1,36 @@
+spring:
+    datasource:
+        # driverClassName: com.mysql.cj.jdbc.Driver
+        # url: jdbc:mysql://localhost:3306/eport?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B7
+        # username: root
+        # password:
+        driverClassName: oracle.jdbc.OracleDriver 
+        url: jdbc:oracle:thin:@192.168.0.29:1521/EPORT
+        username: EPORT_TEST
+        password: WINNER
+
+    #Email Setting
+    mail:
+        protocol: smtp
+        host: smtp.gmail.com
+        port: 587
+        username: accSendNotice
+        password: 123abc!@#
+        properties:
+            mail:
+                store:
+                    protocol: pop3
+                smtp:
+                    auth: true
+                    ssl:
+                        enable: true
+                    starttls:
+                        enable: true
+                        required: true
+                    socketFactory:
+                        port: 465
+                        fallback: true
+                        class: javax.net.ssl.SSLSocketFactory
+    redis:
+        enabled: true
+
