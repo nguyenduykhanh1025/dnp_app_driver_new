@@ -101,10 +101,10 @@ public class CarrierGroupController extends BaseController
     @ResponseBody
     public AjaxResult addSave(CarrierGroup carrierGroup)
     {
-        if (carrierGroupService.checkGroupCodeUnique(carrierGroup.getGroupCode().toLowerCase()).equals("1")) {
+        if (carrierGroupService.checkGroupCodeExist(carrierGroup.getGroupCode().toLowerCase())) {
             return error("Mã hãng tàu đã tồn tại");
         }
-        if (carrierGroup.getMainEmail() != null && carrierGroupService.checkMainEmailUnique(carrierGroup.getMainEmail().toLowerCase()).equals("1")) {
+        if (carrierGroup.getMainEmail() != null && carrierGroupService.checkMainEmailExist(carrierGroup.getMainEmail().toLowerCase())) {
             return error("Email đã tồn tại");
         }
         if (carrierGroup.getGroupCode().length() > 3) {

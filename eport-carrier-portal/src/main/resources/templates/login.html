@@ -16,10 +16,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="../static/favicon.ico" th:href="@{favicon.ico}"/>
     <style type="text/css">label.error { position:inherit;  }</style>
-    <script>
-        if(window.top!==window.self){alert('Hết phiên làm việc, xin vui lòng login lại!');window.top.location=window.location};
-    </script>
-</head>
 <style type="text/css">
   label.error {
     position: inherit;
@@ -39,12 +35,9 @@
     }
   }
 </style>
-<script>
-  if (window.top !== window.self) {
-    alert("Not logged in or login timed out. please login again");
-    window.top.location = window.location;
-  }
-</script>
+  <script>
+    if(window.top!==window.self){alert('Hết phiên làm việc, xin vui lòng login lại!');window.top.location=window.location};
+  </script>
 </head>
 
 <body class="signin">
@@ -54,8 +47,8 @@
       <h1>
         <img
           alt="cdn"
-          src="../static/img/CDN.png"
-          th:src="@{/img/CDN.png}"
+          src="../static/img/dnp.png"
+          th:src="@{/img/dnp.png}"
           style="width: 25%; height: 25%;"
         />
       </h1>
