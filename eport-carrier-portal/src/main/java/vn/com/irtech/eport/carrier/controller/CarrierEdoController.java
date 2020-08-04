@@ -147,7 +147,7 @@ public class CarrierEdoController extends CarrierBaseController {
 			{
 				Edo edoCheck = new Edo();
 				edoCheck.setId(Long.parseLong(id));
-				// edoCheck.setCarrierId(super.getUser().getGroupId());
+				edoCheck.setCarrierId(super.getUser().getGroupId());
 				if(edoService.selectFirstEdo(edoCheck) == null)
 				{
 					return AjaxResult.error("Bạn đã chọn container mà bạn không có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
