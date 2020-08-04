@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckinRes implements Serializable {
+public class QrCodeRes implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -12,7 +12,7 @@ public class CheckinRes implements Serializable {
 
 	private List<PickupHistoryDataRes> data;
 	
-	public CheckinRes() {
+	public QrCodeRes() {
 		data = new ArrayList<PickupHistoryDataRes>();
 	}
 

@@ -64,7 +64,7 @@ public class PlanController extends BaseController {
 
 	@PostMapping("/edit")
 	@ResponseBody
-	public AjaxResult editYardPosition(@Validated PickupHistory data) {
+	public AjaxResult editYardPosition(PickupHistory data) {
 		
 		PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(data.getId());
 		if (pickupHistory == null) {
