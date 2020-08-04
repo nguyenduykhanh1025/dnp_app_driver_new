@@ -83,6 +83,8 @@ function formatDateForSubmit(value) {
   var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
   var month = date.getMonth() + 1;
   var monthText = month < 10 ? "0" + month : month;
+  var s = date.getFullYear() + "-" + monthText + "-" + day;
+  console.log("formatDateForSubmit -> s", s)
   return date.getFullYear() + "-" + monthText + "-" + day;
 }
 

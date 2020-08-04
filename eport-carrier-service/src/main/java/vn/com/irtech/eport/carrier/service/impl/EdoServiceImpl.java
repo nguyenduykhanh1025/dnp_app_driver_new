@@ -6,7 +6,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.InputMismatchException;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -87,7 +86,16 @@ public class EdoServiceImpl implements IEdoService
     @Override
     public int updateEdo(Edo edo)
     {
-        edo.setUpdateTime(DateUtils.getNowDate());
+		
+		edo.setUpdateTime(DateUtils.getNowDate());
+		if(edo.getExpiredDem() != null)
+		{
+			Date setTimeUpdatExpicedDem = edo.getExpiredDem();
+			setTimeUpdatExpicedDem.setHours(23);
+			setTimeUpdatExpicedDem.setMinutes(59);
+			setTimeUpdatExpicedDem.setSeconds(59);
+			edo.setExpiredDem(setTimeUpdatExpicedDem);
+		}
         return edoMapper.updateEdo(edo);
     }
 
