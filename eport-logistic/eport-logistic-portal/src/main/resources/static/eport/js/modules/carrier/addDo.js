@@ -3,7 +3,7 @@ var consigneeList = [];
 var emptyDepotList = [];
 var vesselList = [];
 
-var prefix = ctx + "/carrier/do";
+var prefix = ctx + "carrier/do";
 function submitHandler() {
   // add condition to validate before submit add do
   if (true) {
