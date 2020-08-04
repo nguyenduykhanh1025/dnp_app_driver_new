@@ -46,7 +46,7 @@
     $(document).ready(function(){         
         $('.tractorList').select2({
             ajax: {
-                url: '/logistic/logisticTruck/searchTractorByKeyword',
+                url: ctx + 'logistic/logisticTruck/searchTractorByKeyword',
                 method: 'get',
                 delay: 250,
                 data: function (params) {
@@ -67,7 +67,7 @@
 
         $('.trailerList').select2({
             ajax: {
-                url: '/logistic/logisticTruck/searchTrailerByKeyword',
+                url: ctx + 'logistic/logisticTruck/searchTrailerByKeyword',
                 method: 'get',
                 delay: 250,
                 data: function (params) {
@@ -127,10 +127,10 @@
                 }
             }).done(function(rs) {
                 if(rs.code  == 0){
-                    $.modal.msgSuccess(rs.msg);
+                    $.modal.alertSuccess(rs.msg);
                 }
                 else{
-                    $.modal.msgError(rs.msg)
+                    $.modal.alertError(rs.msg)
                 }
             });
         }
