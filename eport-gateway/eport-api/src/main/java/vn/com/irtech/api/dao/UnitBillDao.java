@@ -14,12 +14,12 @@ public interface UnitBillDao extends BaseMapper<UnitBillDao>{
 
 	public List<UnitBillEntity> selectUnitBillByInvNo(String invNo);
 	
-	public List<UnitBillEntity> getUnitBillByShipmentDetailsForReserve(List<ShipmentDetailEntity> shipmentDetailEntities);
+	public List<UnitBillEntity> getUnitBillByShipmentDetailsForReserve(ShipmentDetailEntity shipmentDetailEntity);
 	
-	public List<UnitBillEntity> getUnitBillByShipmentDetailsForInventory(List<ShipmentDetailEntity> shipmentDetailEntities);
+	public List<UnitBillEntity> getUnitBillByShipmentDetailsForInventory(ShipmentDetailEntity shipmentDetailEntity);
 	
-	public List<UnitBillEntity> getUnitBillByShipmentDetailsForReceiveSSR(List<ShipmentDetailEntity> shipmentDetailEntities);
+	public List<UnitBillEntity> getUnitBillByShipmentDetailsForReceiveSSR(ShipmentDetailEntity shipmentDetailEntity);
 	
-	public List<UnitBillEntity> getUnitBillByShipmentDetailsForSendSSR(List<ShipmentDetailEntity> shipmentDetailEntities);
+	public List<UnitBillEntity> getUnitBillByShipmentDetailsForSendSSR(ShipmentDetailEntity shipmentDetailEntity);
 
 }
