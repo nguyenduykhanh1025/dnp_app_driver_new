@@ -1,6 +1,6 @@
 var stompClient = null;
-const ENDPOINT = ctx + '/eport_admin';
-const DESTINATION_PREFIX = ctx + '/eport_admin/';
+const ENDPOINT = ctx + 'eport_admin';
+const DESTINATION_PREFIX = ctx + 'eport_admin/';
 
 (function ($) {
   $.extend({
