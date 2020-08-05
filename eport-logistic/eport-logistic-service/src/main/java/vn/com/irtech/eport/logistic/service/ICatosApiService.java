@@ -45,13 +45,13 @@ public interface ICatosApiService {
 	
 	public List<ShipmentDetail> selectVesselVoyageBerthPlan(String opeCode);
 	
-	public List<ProcessBill> getUnitBillByShipmentDetailsForReserve(List<ShipmentDetail> shipmentDetails);
+	public List<ProcessBill> getUnitBillByShipmentDetailsForReserve(ShipmentDetail shipmentDetail);
 	
-	public List<ProcessBill> getUnitBillByShipmentDetailsForInventory(List<ShipmentDetail> shipmentDetails);
+	public List<ProcessBill> getUnitBillByShipmentDetailsForInventory(ShipmentDetail shipmentDetail);
 	
-	public List<ProcessBill> getUnitBillByShipmentDetailsForReceiveSSR(List<ShipmentDetail> shipmentDetails);
+	public List<ProcessBill> getUnitBillByShipmentDetailsForReceiveSSR(ShipmentDetail shipmentDetail);
 	
-	public List<ProcessBill> getUnitBillByShipmentDetailsForSendSSR(List<ShipmentDetail> shipmentDetails);
+	public List<ProcessBill> getUnitBillByShipmentDetailsForSendSSR(ShipmentDetail shipmentDetail);
 	
 	public Integer checkBookingNoForSendFReceiveE(String bookingNo, String fe);
 	

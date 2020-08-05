@@ -347,8 +347,6 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
@@ -410,8 +408,6 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
     if (value != null && value != '') {
         value = value.split(':')[0];
@@ -424,8 +420,6 @@ function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) 
     return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
     if (value != null && value != '') {
         value = value.split(':')[0];
