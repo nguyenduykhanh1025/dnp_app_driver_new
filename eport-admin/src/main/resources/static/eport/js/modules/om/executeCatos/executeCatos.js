@@ -71,9 +71,12 @@ function formatServiceType(value) {
   }
 }
 
-function formatStatus(value) {
+function formatStatus(value, row) {
   switch (value) {
     case 0:
+      if (row.robotUuid) {
+        return 'Bị lỗi';
+      }
       return 'Đang chờ';
     case 1:
       return 'Đang làm';
@@ -88,7 +91,13 @@ function changeServiceType() {
 }
 
 function changeStatus() {
-  processOrder.status = $('#status').val();
+  if ($('#status').val() == 3) {
+    processOrder.status = 0;
+    processOrder.robotUuid = 'blank';
+  } else {
+    processOrder.status = $('#status').val();
+    processOrder.robotUuid = '';
+  }
   loadTable();
 }
 
