@@ -25,7 +25,8 @@ $(document).ready(function () {
         $('#serviceType').text("Hạ Hàng");
         break;
     }
-    $('#consignee').text(processOrder.consignee);
+    console.log(processOrder);
+    $('#consignee').text(processOrder.shipmentDetail.consignee);
     $('#taxCode').text(processOrder.taxCode);
     if (processOrder.blNo) {
       $('#blBookingNo').text(processOrder.blNo);
@@ -39,7 +40,7 @@ $(document).ready(function () {
     }
     $('#vessel').text(processOrder.vessel);
     $('#voyage').text(processOrder.voyage);
-
+    $('#logisticGroup').text(processOrder.groupName);
     if (processOrder.status == 2) {
       $(".div-toggle").hide();
       $(".toggle-section").hide();
@@ -75,10 +76,10 @@ function statusRenderer(instance, td, row, col, prop, value, cellProperties) {
       if (orderList[row].robotUuid) {
         $(td).html('Bị lỗi');
         $(td).css("color", "#f35f3e");
-        break;
+      } else {
+        $(td).html('Đang chờ');
+        $(td).css("color", "rgb(38 77 152 / 1)");
       }
-      $(td).html('Đang chờ');
-      $(td).css("color", "rgb(38 77 152 / 1)");
       break;
     case 1:
       $(td).html('Đang làm');
@@ -246,10 +247,6 @@ hot.render();
 $("section.content").css("overflow", "auto");
 
 $("#toggle-status").change(function (e) {
-  if (!check) {
-    check = true;
-    return;
-  }
   if (toggleTrigger && countEvent == 2) {
     if ($("#toggle-status").prop('checked')) {
 
@@ -323,8 +320,6 @@ function confirm() {
     $.modal.alertError("Bạn chưa xác nhận làm lệnh");
   } else {
     $.modal.loading("Đang đồng bộ dữ liệu...");
-
-    $.modal.closeLoading();
   }
   $.ajax({
     url: PREFIX + "/sync",
@@ -332,8 +327,11 @@ function confirm() {
     contentType: "application/json",
     data: JSON.stringify(processOrder),
     success: function (res) {
+      $.modal.closeLoading();
       if (res.code == 0) {
         $.modal.alertSuccess("Đồng bộ thành công.");
+      } else {
+        $.modal.alertError("Xử lý thất bại, bạn vui lòng kiểm tra lại thông tin làm lệnh.");
       }
     },
     error: function () {

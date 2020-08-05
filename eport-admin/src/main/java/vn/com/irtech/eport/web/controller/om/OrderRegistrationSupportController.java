@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
@@ -65,7 +66,13 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   private ILogisticGroupService logisticGroupService;
 
   @GetMapping()
-  public String getMainView() {
+  public String getMainView(ModelMap mmap) {
+    LogisticGroup logisticGroup = new LogisticGroup();
+    logisticGroup.setGroupName("Chọn đơn vị Logistics");
+    logisticGroup.setId(0L);
+    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(new LogisticGroup());
+    logisticGroups.add(0, logisticGroup);
+    mmap.put("logisticsGroups", logisticGroups);
     return PREFIX + "/index";
   }
 

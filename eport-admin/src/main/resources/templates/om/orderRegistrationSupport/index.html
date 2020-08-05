@@ -19,11 +19,8 @@
           <label class="sr-only" for="logistic">Logistic</label>
           <div class="input-group">
             <select class="form-control" id="logistic">
-              <option value="">Xampp</option>
-              <option value="1">VCS</option>
-              <option value="2">Summner</option>
-              <option value="3">Bốc Rỗng</option>
-              <option value="4">Hạ Hàng</option>
+              <option th:each="logistic, iterator : ${logisticsGroups}" th:value=${logistic.id} th:text=${logistic.groupName}>
+              </option>
             </select>
           </div>
         </div>

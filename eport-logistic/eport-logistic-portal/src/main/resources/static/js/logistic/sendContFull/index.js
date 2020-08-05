@@ -1159,12 +1159,12 @@ function finishVerifyForm(result) {
             setTimeout(() => {
                 hideProgress();
                 reloadShipmentDetail();
-                $.modal.alertError("Yêu cầu của quý khách đang được chờ xử lý, quý khách vui lòng đợi hoặc liên hệ với bộ phận thủ tục để được hỗ trợ thêm!");
+                $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
             }, 1000);
         }, 200000);
     } else {
         reloadShipmentDetail();
-        $.modal.alertError(result.msg);
+        $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
     }
 }
 
@@ -1185,6 +1185,10 @@ function onConnected() {
 function onError(error) {
     console.log(error);
     $.modal.alertError('Could not connect to WebSocket server. Please refresh this page to try again!');
+    setTimeout(() => {
+        hideProgress();
+        $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
+    }, 1000);
     //$.modal.closeLoading();
 }
 
@@ -1201,7 +1205,7 @@ function onMessageReceived(payload) {
         if (message.code == 0){
             $.modal.alertSuccess(message.msg);
         }else{
-            $.modal.alertError(message.msg);
+            $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
         }
 
         // Close loading

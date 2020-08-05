@@ -173,6 +173,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             and status != 4
             <if test="id != null "> and s.id = #{id}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
+            <if test="logisticAccountId != null and logisticAccountId != ''"> and logistic_account_id = #{logisticAccountId}</if>
             <if test="fromDate != null">and s.create_time &gt;= #{fromDate}</if>
             <if test="toDate != null">and s.create_time &lt;= #{toDate}</if>
             <if test="containerAmount != null">and s.container_amount = #{containerAmount}</if>

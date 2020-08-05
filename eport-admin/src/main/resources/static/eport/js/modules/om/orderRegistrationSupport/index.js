@@ -246,3 +246,13 @@ function logisticInfo(id, logistics) {
     $.modal.close();
   });
 }
+
+$('#logistic').change(function() {
+  console.log($('#logistic option:selected').val());
+  if (0 != $('#logistic option:selected').val()) {
+    shipment.logisticName = $('#logistic option:selected').val();
+  } else {
+    shipment.logisticName = '';
+  }
+  loadTable();
+})
