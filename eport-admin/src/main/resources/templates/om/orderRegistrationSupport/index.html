@@ -16,6 +16,18 @@
           </div>
         </div>
         <div class="form-group">
+          <label class="sr-only" for="logistic">Logistic</label>
+          <div class="input-group">
+            <select class="form-control" id="logistic">
+              <option value="">Xampp</option>
+              <option value="1">VCS</option>
+              <option value="2">Summner</option>
+              <option value="3">Bốc Rỗng</option>
+              <option value="4">Hạ Hàng</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
           <label class="sr-only" for="serviceType">Loại lệnh</label>
           <div class="input-group">
             <select class="form-control" id="serviceType" onchange="changeServiceType()">
@@ -69,6 +81,7 @@
     </section>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    
     <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/index.js}"></script>
   </body>
 </html>

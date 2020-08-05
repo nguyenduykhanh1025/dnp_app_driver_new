@@ -72,9 +72,16 @@ h4 {
 }
 
 .content-footer {
+  position: fixed;
+  bottom: 0;
+  padding: 10px;
+  background-color: #fff;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
   a {
-    margin-top: 10px;
-    float: right;
-    width: 20%;
+    margin-top: 10px !important;
+    width: 10%;
   }
 }
