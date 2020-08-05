@@ -6,13 +6,13 @@ eport:
   profile: D:/eport/upload
   addressEnabled: true
   cacheExpireTime: 3600
-  #apiUrl: http://192.168.1.99:9090/api
-  apiUrl: http://127.0.0.1:9090/api
+  apiUrl: http://192.168.1.99:9090/api
+  #apiUrl: http://127.0.0.1:9090/api
 
 server:
   port: 7070
   servlet:
-    context-path: /
+    context-path: /logistic
   tomcat:
     uri-encoding: UTF-8
     max-threads: 100

@@ -103,7 +103,7 @@
         $(document).ready(function () {
             $('.groupName').select2({
                 ajax: {
-                    url: ctx + '/carrier/group/searchGroupNameByKeyword',
+                    url: ctx + 'carrier/group/searchGroupNameByKeyword',
                     method: 'get',
                     delay: 250,
                     data: function (params) {
@@ -124,7 +124,7 @@
             // Init carrier code select 2
             $('.carrierCodes').select2({
                 ajax: {
-                    url: ctx + '/carrier/group/searchOperateCodeByKeyword',
+                    url: ctx + 'carrier/group/searchOperateCodeByKeyword',
                     method: 'get',
                     delay: 250,
                     data: function (params) {
@@ -153,7 +153,7 @@
                 document.getElementById("toggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickToggle()"></i>';
             }
             $.ajax({
-                url: ctx + '/carrier/group/getGroupNameById',
+                url: ctx + 'carrier/group/getGroupNameById',
                 method: 'POST',
                 data: {
                     id : $("#groupId").val()

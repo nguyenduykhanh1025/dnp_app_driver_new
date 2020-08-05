@@ -7,6 +7,9 @@ $(document).ready(function () {
 
   // CHECK BILL LIST NOT NULL OR EMPTY
   if (billList != null && billList.length > 0) {
+
+    let matrixData = [];
+
     let bill = billList[0];
 
     // SET HEADER INFO
@@ -62,18 +65,7 @@ $(document).ready(function () {
         .text('Invoice No: ' + invoiceNo + ' Mã Lệnh: ' + processOrderId + ' Trạng Thái: ' + (paymentStatus=='Y'?'Đã thanh toán':'Chưa thanh toán'));
         $(totalLabel).text(formatMoney(total) + ' VND ');
         divClone.after(clonned);
-        $('#dgOrder' + (count + 1) + ' table').datagrid({
-          height: DOCUMENT_HEIGHT / 2 - 70,
-          singleSelect: true,
-          clientPaging: false,
-          pagination: false,
-          rownumbers: true,
-          nowrap: false,
-          striped: true,
-          loader: function (param, success, error) {
-            success(dataList);
-          },
-        });
+        matrixData.push(dataList);
         
         // REFRESH DATA TO STORE NEW BILL
         dataList = [];
@@ -101,21 +93,22 @@ $(document).ready(function () {
     $(totalLabel).text(formatMoney(total) + ' VND ');
     divClone.after(clonned);
     console.log("start");
-    $('#dgOrder' + (count + 1)   + ' table').datagrid({
-      height: DOCUMENT_HEIGHT / 2 - 70,
-      singleSelect: true,
-      clientPaging: false,
-      pagination: false,
-      rownumbers: true,
-      nowrap: false,
-      striped: true,
-      loader: function (param, success, error) {
-        success(dataList);
-        console.log("ok");
-      },
-    });
-    console.log("end");
-    // FINISH LOADING DATA
+    matrixData.push(dataList);
+    for (let i=0; i<matrixData.length; i++) {
+      $('#dgOrder' + (i + 2)   + ' table').datagrid({
+        height: DOCUMENT_HEIGHT / 2 - 70,
+        singleSelect: true,
+        clientPaging: false,
+        pagination: false,
+        rownumbers: true,
+        nowrap: false,
+        striped: true,
+        loader: function (param, success, error) {
+          success(matrixData[i]);
+          console.log("ok");
+        },
+      });
+    }
     $.modal.closeLoading();
   } else {
     layer.confirm("Lô này hiện tại không có bill nào để hiển thị.", {
@@ -123,7 +116,7 @@ $(document).ready(function () {
       title: "Xác Nhận",
       btn: ['Xác nhận']
     }, function () {
-      $.modal.close();
+      $.modal.closeTab();
     });
   }
 });
@@ -187,5 +180,5 @@ function paymentHandle(processOrderId, paymentStatus, index) {
 }
 
 function closeForm() {
-  $.modal.close();
+  $.modal.closeTab();
 }

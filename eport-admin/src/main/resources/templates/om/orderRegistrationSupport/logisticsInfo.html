@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <th:block th:include="include :: header('Logistics Info')" />
+    <th:block th:include="include :: easyui-css" />
+    <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
+    <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="wrapper">
+        <div class="form-horizontal">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Tên Logistic:</label>
+                <div class="col-sm-8">
+                    <input th:value="${logisticInfo.groupName}" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Người đại diện:</label>
+                <div class="col-sm-8">
+                    <input th:value="${logisticInfo.owned}" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Địa chỉ:</label>
+                <div class="col-sm-8">
+                    <input th:value="${logisticInfo.address}" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Điện thoại cố định:</label>
+                <div class="col-sm-8">
+                    <input th:value="${logisticInfo.phone}" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Điện thoại di động:</label>
+                <div class="col-sm-8">
+                    <input th:value="${logisticInfo.mobilePhone}" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">Email:</label>
+                <div class="col-sm-8">
+                    <input th:value="${logisticInfo.email}" class="form-control" readonly>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">MST doanh nghiệp:</label>
+                <div class="col-sm-8">
+                    <input th:value="${logisticInfo.mst}" class="form-control" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script th:src="@{/eport/js/modules/om/orderRegistrationSupport/index.js}"></script>
+  </body>
+</html>

@@ -23,17 +23,13 @@
 		FROM TB_INVOICE_UNIT
 		WHERE ORDER_NO = (SELECT JOB_ODR_NO FROM TB_RESERVE 
 				<where>
-					<foreach item="shipmentDetailEntity" collection="list">
-					OR (
-						<if test="shipmentDetailEntity.containerNo != null  and shipmentDetailEntity.containerNo != ''"> CNTR_NO = #{shipmentDetailEntity.containerNo}</if>
-						<if test="shipmentDetailEntity.blNo != null  and shipmentDetailEntity.blNo != ''"> AND BL_NO = #{shipmentDetailEntity.blNo}</if>
-						<if test="shipmentDetailEntity.bookingNo != null  and shipmentDetailEntity.bookingNo != ''"> AND BOOKING_NO = #{shipmentDetailEntity.bookingNo}</if>
-						<if test="shipmentDetailEntity.vslNm != null  and shipmentDetailEntity.vslNm != ''"> AND VSL_CD = #{shipmentDetailEntity.vslNm}</if>
-						<if test="shipmentDetailEntity.voyNo != null  and shipmentDetailEntity.voyNo != ''"> AND CALL_SEQ = #{shipmentDetailEntity.voyNo}</if>
-						<if test="shipmentDetailEntity.fe != null  and shipmentDetailEntity.fe != ''"> AND FE = #{shipmentDetailEntity.fe}</if>
-						<if test="shipmentDetailEntity.opeCode != null  and shipmentDetailEntity.opeCode != ''"> AND PTNR_CODE = #{shipmentDetailEntity.opeCode}</if>
-					)
-			        </foreach>				
+						<if test="containerNo != null  and containerNo != ''"> CNTR_NO = #{containerNo}</if>
+						<if test="blNo != null  and blNo != ''"> AND BL_NO = #{blNo}</if>
+						<if test="bookingNo != null  and bookingNo != ''"> AND BOOKING_NO = #{bookingNo}</if>
+						<if test="vslNm != null  and vslNm != ''"> AND VSL_CD = #{vslNm}</if>
+						<if test="voyNo != null  and voyNo != ''"> AND CALL_SEQ = #{voyNo}</if>
+						<if test="fe != null  and fe != ''"> AND FE = #{fe}</if>
+						<if test="opeCode != null  and opeCode != ''"> AND PTNR_CODE = #{opeCode}</if>			
 				</where> 
 	        GROUP BY JOB_ODR_NO)
 	</select>
@@ -48,17 +44,13 @@
 		FROM TB_INVOICE_UNIT
 		WHERE ORDER_NO = (SELECT JOB_ODR_NO2 FROM TB_INVENTORY 
 				<where>
-					<foreach item="shipmentDetailEntity" collection="list">
-					OR (
-						<if test="shipmentDetailEntity.containerNo != null  and shipmentDetailEntity.containerNo != ''"> CNTR_NO = #{shipmentDetailEntity.containerNo}</if>
-						<if test="shipmentDetailEntity.blNo != null  and shipmentDetailEntity.blNo != ''"> AND BL_NO = #{shipmentDetailEntity.blNo}</if>
-						<if test="shipmentDetailEntity.bookingNo != null  and shipmentDetailEntity.bookingNo != ''"> AND BOOKING_NO = #{shipmentDetailEntity.bookingNo}</if>
-						<if test="shipmentDetailEntity.vslNm != null  and shipmentDetailEntity.vslNm != ''"> AND VSL_CD = #{shipmentDetailEntity.vslNm}</if>
-						<if test="shipmentDetailEntity.voyNo != null  and shipmentDetailEntity.voyNo != ''"> AND CALL_SEQ = #{shipmentDetailEntity.voyNo}</if>
-						<if test="shipmentDetailEntity.fe != null  and shipmentDetailEntity.fe != ''"> AND FE = #{shipmentDetailEntity.fe}</if>
-						<if test="shipmentDetailEntity.opeCode != null  and shipmentDetailEntity.opeCode != ''"> AND PTNR_CODE = #{shipmentDetailEntity.opeCode}</if>
-					)
-			        </foreach>				
+						<if test="containerNo != null  and containerNo != ''"> CNTR_NO = #{containerNo}</if>
+						<if test="blNo != null  and blNo != ''"> AND BL_NO = #{blNo}</if>
+						<if test="bookingNo != null  and bookingNo != ''"> AND BOOKING_NO = #{bookingNo}</if>
+						<if test="vslNm != null  and vslNm != ''"> AND VSL_CD = #{vslNm}</if>
+						<if test="voyNo != null  and voyNo != ''"> AND CALL_SEQ = #{voyNo}</if>
+						<if test="fe != null  and fe != ''"> AND FE = #{fe}</if>
+						<if test="opeCode != null  and opeCode != ''"> AND PTNR_CODE = #{opeCode}</if>			
 				</where> 
 	        GROUP BY JOB_ODR_NO2)
 	</select>
@@ -73,17 +65,13 @@
 		FROM TB_INVOICE_UNIT
 		WHERE ORDER_NO = (SELECT JOB_ODR_NO2 FROM TB_SSR 
 				<where>
-					<foreach item="shipmentDetailEntity" collection="list">
-					OR (
-						<if test="shipmentDetailEntity.containerNo != null  and shipmentDetailEntity.containerNo != ''"> CNTR_NO = #{shipmentDetailEntity.containerNo}</if>
-						<if test="shipmentDetailEntity.blNo != null  and shipmentDetailEntity.blNo != ''"> AND BL_NO = #{shipmentDetailEntity.blNo}</if>
-						<if test="shipmentDetailEntity.bookingNo != null  and shipmentDetailEntity.bookingNo != ''"> AND BOOKING_NO = #{shipmentDetailEntity.bookingNo}</if>
-						<if test="shipmentDetailEntity.vslNm != null  and shipmentDetailEntity.vslNm != ''"> AND VSL_CD = #{shipmentDetailEntity.vslNm}</if>
-						<if test="shipmentDetailEntity.voyNo != null  and shipmentDetailEntity.voyNo != ''"> AND CALL_SEQ = #{shipmentDetailEntity.voyNo}</if>
-						<if test="shipmentDetailEntity.fe != null  and shipmentDetailEntity.fe != ''"> AND FE = #{shipmentDetailEntity.fe}</if>
-						<if test="shipmentDetailEntity.opeCode != null  and shipmentDetailEntity.opeCode != ''"> AND PTNR_CODE = #{shipmentDetailEntity.opeCode}</if>
-					)
-			        </foreach>				
+						<if test="containerNo != null  and containerNo != ''"> CNTR_NO = #{containerNo}</if>
+						<if test="blNo != null  and blNo != ''"> AND BL_NO = #{blNo}</if>
+						<if test="bookingNo != null  and bookingNo != ''"> AND BOOKING_NO = #{bookingNo}</if>
+						<if test="vslNm != null  and vslNm != ''"> AND VSL_CD = #{vslNm}</if>
+						<if test="voyNo != null  and voyNo != ''"> AND CALL_SEQ = #{voyNo}</if>
+						<if test="fe != null  and fe != ''"> AND FE = #{fe}</if>
+						<if test="opeCode != null  and opeCode != ''"> AND PTNR_CODE = #{opeCode}</if>			
 				</where> 
 	        GROUP BY JOB_ODR_NO2)
 	</select>
@@ -98,17 +86,13 @@
 		FROM TB_INVOICE_UNIT
 		WHERE ORDER_NO = (SELECT JOB_ODR_NO FROM TB_SSR 
 				<where>
-					<foreach item="shipmentDetailEntity" collection="list">
-					OR (
-						<if test="shipmentDetailEntity.containerNo != null  and shipmentDetailEntity.containerNo != ''"> CNTR_NO = #{shipmentDetailEntity.containerNo}</if>
-						<if test="shipmentDetailEntity.blNo != null  and shipmentDetailEntity.blNo != ''"> AND BL_NO = #{shipmentDetailEntity.blNo}</if>
-						<if test="shipmentDetailEntity.bookingNo != null  and shipmentDetailEntity.bookingNo != ''"> AND BOOKING_NO = #{shipmentDetailEntity.bookingNo}</if>
-						<if test="shipmentDetailEntity.vslNm != null  and shipmentDetailEntity.vslNm != ''"> AND VSL_CD = #{shipmentDetailEntity.vslNm}</if>
-						<if test="shipmentDetailEntity.voyNo != null  and shipmentDetailEntity.voyNo != ''"> AND CALL_SEQ = #{shipmentDetailEntity.voyNo}</if>
-						<if test="shipmentDetailEntity.fe != null  and shipmentDetailEntity.fe != ''"> AND FE = #{shipmentDetailEntity.fe}</if>
-						<if test="shipmentDetailEntity.opeCode != null  and shipmentDetailEntity.opeCode != ''"> AND PTNR_CODE = #{shipmentDetailEntity.opeCode}</if>
-					)
-			        </foreach>				
+						<if test="containerNo != null  and containerNo != ''"> CNTR_NO = #{containerNo}</if>
+						<if test="blNo != null  and blNo != ''"> AND BL_NO = #{blNo}</if>
+						<if test="bookingNo != null  and bookingNo != ''"> AND BOOKING_NO = #{bookingNo}</if>
+						<if test="vslNm != null  and vslNm != ''"> AND VSL_CD = #{vslNm}</if>
+						<if test="voyNo != null  and voyNo != ''"> AND CALL_SEQ = #{voyNo}</if>
+						<if test="fe != null  and fe != ''"> AND FE = #{fe}</if>
+						<if test="opeCode != null  and opeCode != ''"> AND PTNR_CODE = #{opeCode}</if>			
 				</where> 
 	        GROUP BY JOB_ODR_NO)
 	</select>

@@ -28,7 +28,7 @@ function formatCustomStatus(value, row, index) {
 }
 
 function closeForm() {
-  $.modal.close();
+  $.modal.closeTab();
 }
 
 function syncCustomStatus() {

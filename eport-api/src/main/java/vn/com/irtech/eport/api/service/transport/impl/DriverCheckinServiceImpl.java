@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 
 import vn.com.irtech.eport.api.consts.MessageConsts;
-import vn.com.irtech.eport.api.form.CheckinReq;
-import vn.com.irtech.eport.api.form.CheckinRes;
+import vn.com.irtech.eport.api.form.QrCodeReq;
+import vn.com.irtech.eport.api.form.QrCodeRes;
 import vn.com.irtech.eport.api.form.PickupHistoryDataRes;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.service.transport.IDriverCheckinService;
@@ -23,11 +23,11 @@ public class DriverCheckinServiceImpl implements IDriverCheckinService{
 	private IPickupHistoryService pickupHistoryService;
 	
 	@Override
-	public String checkin(CheckinReq req, String sessionId) throws Exception{
+	public String checkin(QrCodeReq req, String sessionId) throws Exception{
 		
-		CheckinRes checkinRes = new CheckinRes();
+		QrCodeRes qrCodeRes = new QrCodeRes();
 		
-		checkinRes.setSessionId(sessionId);
+		qrCodeRes.setSessionId(sessionId);
 		
 		// validate
 		for (Long id : req.getPickupHistoryIds()) {
@@ -62,10 +62,10 @@ public class DriverCheckinServiceImpl implements IDriverCheckinService{
 			pickupHistoryDataRes.setChassisNo(pickupHistory.getChassisNo());
 			pickupHistoryDataRes.setTruckNo(pickupHistory.getTruckNo());
 			
-			checkinRes.getData().add(pickupHistoryDataRes);
+			qrCodeRes.getData().add(pickupHistoryDataRes);
 		}
 		
-		String qrString = new Gson().toJson(checkinRes) + "*";
+		String qrString = new Gson().toJson(qrCodeRes) + "*";
 		
 		return qrString.replace("\"", "'");
 	}

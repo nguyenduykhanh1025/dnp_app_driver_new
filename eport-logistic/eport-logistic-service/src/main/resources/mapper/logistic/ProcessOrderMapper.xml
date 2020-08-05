@@ -33,6 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="robotUuid"    column="robot_uuid"    />
         <result property="ssrCode"    column="ssr_code"    />
+        <result property="groupName"    column="group_name"    />
         <association property="shipmentDetail"    column="id" javaType="ShipmentDetail" resultMap="ShipmentDetailResult" />
     </resultMap>
 
@@ -44,6 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="wgt"    column="wgt"    />
         <result property="opeCode"    column="ope_code"    />
         <result property="dischargePort"    column="discharge_port"    />
+        <result property="consignee"    column="consignee"    />
         <result property="cargoType"    column="cargo_type"    />
     </resultMap>
 
@@ -192,10 +194,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <select id="selectOrderListForOmSupport" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
-        select p.id, p.shipment_id, p.logistic_group_id, p.service_type, p.pay_type, p.consignee, p.tax_code, p.bl_no, p.booking_no, p.pickup_date, 
-        p.vessel, p.voyage, p.cont_number, p.status, p.result, p.reference_no, s.container_no, s.sztp, s.fe, s.cargo_type, s.discharge_port, s.ope_code, s.wgt
+        select p.id, p.shipment_id, p.logistic_group_id, p.service_type, p.pay_type, p.tax_code, p.bl_no, p.booking_no, p.pickup_date, p.robot_uuid,
+        p.vessel, p.voyage, p.cont_number, p.status, p.result, p.reference_no, s.container_no, s.sztp, s.fe, s.cargo_type, s.discharge_port, 
+        s.ope_code, s.wgt, s.consignee, l.group_name as group_name
         from process_order p
         left join shipment_detail s on p.id = s.process_order_id
+        left join logistic_group l on p.logistic_group_id = l.id
         <where>
             <if test="shipmentId != null "> and p.shipment_id = #{shipmentId}</if>
             <if test="id != null "> and p.id = #{id}</if>
@@ -240,6 +244,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null "> and id = #{id}</if>
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="robotUuid != null and robotUuid != ''"> and robot_uuid is not null</if>
+            <if test="robotUuid == null or robotUuid == ''"> and (robot_uuid = null or status != 0)</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="status != null "> and status = #{status}</if>
             <if test="result != null  and result != ''"> and result = #{result}</if>

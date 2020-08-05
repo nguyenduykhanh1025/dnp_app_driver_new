@@ -4,9 +4,9 @@ spring:
         driverClassName: oracle.jdbc.OracleDriver
         druid:
             master:
-                url: jdbc:oracle:thin:@117.3.52.70:41521/CATOS_TEST
-                username: EPORT_DNP_UAT
-                password: EPORT_DNP_2020
+                url: jdbc:oracle:thin:@117.3.52.70:41521/EPORT
+                username: EPORT_TEST
+                password: WINNER
             slave:
                 enabled: false
                 url: 

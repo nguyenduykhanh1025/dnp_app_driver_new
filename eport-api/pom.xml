@@ -6,7 +6,7 @@
 		<artifactId>eport</artifactId>
 		<groupId>vn.com.irtech.eport</groupId>
 		<version>4.2.0</version>
-        <relativePath>../pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>jar</packaging>
@@ -101,12 +101,12 @@
 	</dependencies>
 
 	<repositories>
-        <!-- Repository for ORACLE ojdbc7. -->
-        <repository>
-          <id>rdc</id>
-          <url>http://nexus.saas.hand-china.com/content/repositories/rdc</url>
-        </repository>
-    </repositories>
+		<!-- Repository for ORACLE ojdbc7. -->
+		<repository>
+			<id>rdc</id>
+			<url>http://nexus.saas.hand-china.com/content/repositories/rdc</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>

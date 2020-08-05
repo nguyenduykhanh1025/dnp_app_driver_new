@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import vn.com.irtech.eport.api.consts.BusinessConst;
+import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.domain.EportUserType;
 import vn.com.irtech.eport.api.form.LoginReq;
@@ -35,7 +35,7 @@ public class LoginService {
 
 		try {
 			authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-					loginForm.getUserName() + BusinessConst.BLANK + userType.value(), loginForm.getPassWord()));
+					loginForm.getUserName() + BusinessConsts.BLANK + userType.value(), loginForm.getPassWord()));
 
 		} catch (BadCredentialsException e) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0003));

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
@@ -24,6 +25,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
@@ -60,9 +62,24 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @Autowired
   private ICatosApiService catosService;
 
+  @Autowired
+  private ILogisticGroupService logisticGroupService;
+
   @GetMapping()
-  public String getMainView() {
+  public String getMainView(ModelMap mmap) {
+    LogisticGroup logisticGroup = new LogisticGroup();
+    logisticGroup.setGroupName("Chọn đơn vị Logistics");
+    logisticGroup.setId(0L);
+    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(new LogisticGroup());
+    logisticGroups.add(0, logisticGroup);
+    mmap.put("logisticsGroups", logisticGroups);
     return PREFIX + "/index";
+  }
+
+  @GetMapping("/logistics/{logisticGroupId}/info")
+  public String getLogisticInfo(@PathVariable("logisticGroupId") Long logisticGroupId, ModelMap mmap) {
+    mmap.put("logisticInfo", logisticGroupService.selectLogisticGroupById(logisticGroupId));
+    return PREFIX + "/logisticsInfo";
   }
 
   @GetMapping("/custom/{shipmentId}")
@@ -127,7 +144,7 @@ public class OrderRegistrationSupportController extends AdminBaseController {
       return error();
     }
     for (ShipmentDetail shipmentDetail : shipmentDetails) {
-      if (true) {
+      if (catosService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
         shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
         shipmentDetail.setCustomStatus("R");
         shipmentDetailService.updateShipmentDetail(shipmentDetail);
@@ -259,17 +276,17 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @PostMapping("/do")
   @Transactional
   @ResponseBody
-  public AjaxResult updateDoStatus(Long shipmentId) {
-    ShipmentDetail shipmentDetail = new ShipmentDetail();
-    shipmentDetail.setShipmentId(shipmentId);
-    List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-    for (ShipmentDetail shipmentDt : shipmentDetails) {
-      shipmentDt.setDoReceivedTime(new Date());
-      shipmentDt.setDoStatus("Y");
-      shipmentDt.setUpdateBy(getUser().getUserName());
-      shipmentDt.setUpdateTime(new Date());
-      shipmentDetailService.updateShipmentDetail(shipmentDt);
+  public AjaxResult updateDoStatus(@RequestBody List<ShipmentDetail> shipmentDetails) {
+    if (!shipmentDetails.isEmpty()) {
+      for (ShipmentDetail shipmentDt : shipmentDetails) {
+        shipmentDt.setDoReceivedTime(new Date());
+        shipmentDt.setDoStatus("Y");
+        shipmentDt.setUpdateBy(getUser().getUserName());
+        shipmentDt.setUpdateTime(new Date());
+        shipmentDetailService.updateShipmentDetail(shipmentDt);
+      }
+      return success("Nhận DO gốc thành công.");
     }
-    return success("Nhận DO gốc thành công.");
+    return error();
   }
 }

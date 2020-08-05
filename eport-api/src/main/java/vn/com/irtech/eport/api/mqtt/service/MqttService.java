@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PreDestroy;
-
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -18,42 +16,33 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import vn.com.irtech.eport.api.mqtt.listener.NotificationHandler;
+import vn.com.irtech.eport.api.consts.MqttConsts;
+import vn.com.irtech.eport.api.mqtt.listener.CheckinHandler;
 
 @Component
 public class MqttService implements MqttCallback {
-	
 	private static final Logger logger = LoggerFactory.getLogger(MqttService.class);
 
-	private static final String BASE = "eport";
-	
-	private static final String MC_REQUEST_TOPIC = BASE + "/mc/plan/request";
-	
-	@Autowired
-	private NotificationHandler notificationHandler;
+	public static String BASE_TOPIC;
 
-	private static MqttService instance = null;
+	@Autowired
+	private CheckinHandler checkinHandler;
+
+	@Value("${mqtt.root:'eport'}")
+	public void setBaseTopic(String baseTopic) {
+		BASE_TOPIC = baseTopic;
+	}
+
 	private MqttAsyncClient mqttClient;
 	private Object connectLock = new Object();
-	
-	// connection info
+
+	private Boolean isReconnecting = false;
 	private String host;
 	private String username;
 	private String password;
-
-	private Boolean isReconnecting = false;
-
-	public static MqttService getInstance() {
-		if (instance == null) {
-			instance = new MqttService();
-		}
-		return instance;
-	}
-
-	public MqttService() {
-	}
 
 	public MqttAsyncClient getMqttClient() {
 		return mqttClient;
@@ -63,19 +52,11 @@ public class MqttService implements MqttCallback {
 		return mqttClient != null && mqttClient.isConnected();
 	}
 
-	/**
-	 * Connect to MQTT Server
-	 * 
-	 * @param host
-	 * @param username
-	 * @param password
-	 * @throws MqttException
-	 */
 	public void connect(String host, String username, String password) throws MqttException {
+		// save info first
 		this.host = host;
 		this.username = username;
 		this.password = password;
-		
 		if (mqttClient == null) {
 			mqttClient = newMqttClient(host);
 		}
@@ -84,7 +65,6 @@ public class MqttService implements MqttCallback {
 
 		MqttConnectOptions clientOptions = new MqttConnectOptions();
 		clientOptions.setCleanSession(true);
-
 		// checkConnection
 		if (!mqttClient.isConnected()) {
 			synchronized (connectLock) {
@@ -108,13 +88,11 @@ public class MqttService implements MqttCallback {
 							}
 						}).waitForCompletion();
 					} catch (MqttException e) {
-						e.printStackTrace();
 						logger.info("MQTT broker connection failed!" + e.getMessage());
 						if (!mqttClient.isConnected()) {
 							try {
 								Thread.sleep(3000); // 3s
 							} catch (InterruptedException e1) {
-								logger.warn(e.getMessage());
 							}
 						}
 					}
@@ -126,17 +104,14 @@ public class MqttService implements MqttCallback {
 
 	private void subscribeToTopics() throws MqttException {
 		List<IMqttToken> tokens = new ArrayList<>();
-		// subscribe default topics when connect
-		// System.out.println("Subscribe to topic: " + BASE);
-		// tokens.add(mqttClient.subscribe(BASE, 0, notificationHandler));
-		// Wait for subscribe complete
+
+		tokens.add(mqttClient.subscribe(MqttConsts.SMART_GATE_REQ_TOPIC, 0, checkinHandler));
+
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
 		}
-		System.out.println("Subscribe topic completed!");
 	}
 
-	@PreDestroy
 	public void disconnect() {
 		try {
 			if (mqttClient != null && mqttClient.isConnected()) {
@@ -155,12 +130,13 @@ public class MqttService implements MqttCallback {
 
 	public String getComputerName() {
 		Map<String, String> env = System.getenv();
+		String prerix = "API-";
 		if (env.containsKey("COMPUTERNAME"))
-			return "Api-Mobile-" + env.get("COMPUTERNAME");
+			return prerix + env.get("COMPUTERNAME");
 		else if (env.containsKey("HOSTNAME"))
-			return "Api-Mobile-" + env.get("HOSTNAME");
+			return prerix + env.get("HOSTNAME");
 		else
-			return "Api-Mobile-Unknown Computer";
+			return prerix + "Unknown Computer";
 	}
 
 	@Override
@@ -174,13 +150,10 @@ public class MqttService implements MqttCallback {
 				}
 				return;
 			} catch (MqttException e) {
-				e.printStackTrace();
-				logger.warn(e.getMessage());
 			}
 			try {
 				Thread.sleep(3000); // wait 3s before reconnect
 			} catch (InterruptedException e) {
-				e.printStackTrace();
 				logger.warn(e.getMessage());
 			}
 		}
@@ -200,6 +173,9 @@ public class MqttService implements MqttCallback {
 	private void reconnect() throws MqttException {
 		if (!mqttClient.isConnected()) {
 			this.connect(host, username, password);
+//			IMqttToken token = mqttClient.connect();
+//			token.waitForCompletion();
+//			subscribeToTopics();
 			isReconnecting = false;
 		}
 	}
@@ -223,6 +199,7 @@ public class MqttService implements MqttCallback {
 	}
 
 	public void sendMessageToMc(String message) throws MqttException {
-		this.publish(MC_REQUEST_TOPIC, new MqttMessage(message.getBytes()));
+		this.publish(MqttConsts.MC_REQ_TOPIC, new MqttMessage(message.getBytes()));
 	}
+
 }

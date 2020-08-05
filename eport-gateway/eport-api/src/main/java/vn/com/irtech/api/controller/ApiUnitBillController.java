@@ -26,23 +26,23 @@ public class ApiUnitBillController {
 		return unitBillDao.selectUnitBillByInvNo(invNo);
 	}
 	@PostMapping("/unit-bill/list/send-cont")
-	public List<UnitBillEntity> getUnitBillByShipmentDetailsForReserve(@RequestBody List<ShipmentDetailEntity> shipmentDetailEntities){
-		return unitBillDao.getUnitBillByShipmentDetailsForReserve(shipmentDetailEntities);
+	public List<UnitBillEntity> getUnitBillByShipmentDetailsForReserve(@RequestBody ShipmentDetailEntity shipmentDetailEntity){
+		return unitBillDao.getUnitBillByShipmentDetailsForReserve(shipmentDetailEntity);
 	}
 	
 	@PostMapping("/unit-bill/list/receive-cont")
-	public List<UnitBillEntity> getUnitBillByShipmentDetailsForInventory(@RequestBody List<ShipmentDetailEntity> shipmentDetailEntities){
-		return unitBillDao.getUnitBillByShipmentDetailsForInventory(shipmentDetailEntities);
+	public List<UnitBillEntity> getUnitBillByShipmentDetailsForInventory(@RequestBody ShipmentDetailEntity shipmentDetailEntity){
+		return unitBillDao.getUnitBillByShipmentDetailsForInventory(shipmentDetailEntity);
 	}
 	
 	@PostMapping("/unit-bill/list/send-cont/ssr")
-	public List<UnitBillEntity> getUnitBillByShipmentDetailsForSendSSR(@RequestBody List<ShipmentDetailEntity> shipmentDetailEntities){
-		return unitBillDao.getUnitBillByShipmentDetailsForSendSSR(shipmentDetailEntities);
+	public List<UnitBillEntity> getUnitBillByShipmentDetailsForSendSSR(@RequestBody ShipmentDetailEntity shipmentDetailEntity){
+		return unitBillDao.getUnitBillByShipmentDetailsForSendSSR(shipmentDetailEntity);
 	}
 	
 	@PostMapping("/unit-bill/list/receive-cont/ssr")
-	public List<UnitBillEntity> getUnitBillByShipmentDetailsForReceiveSSR(@RequestBody List<ShipmentDetailEntity> shipmentDetailEntities){
-		return unitBillDao.getUnitBillByShipmentDetailsForReceiveSSR(shipmentDetailEntities);
+	public List<UnitBillEntity> getUnitBillByShipmentDetailsForReceiveSSR(@RequestBody ShipmentDetailEntity shipmentDetailEntity){
+		return unitBillDao.getUnitBillByShipmentDetailsForReceiveSSR(shipmentDetailEntity);
 	}
 
 }

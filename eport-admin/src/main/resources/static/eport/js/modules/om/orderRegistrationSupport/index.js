@@ -4,7 +4,6 @@ var shipment = new Object();
 
 $(document).ready(function () {
   loadTable();
-
   laydate.render({
     elem: '#fromDate',
     format: "dd/MM/yyyy"
@@ -71,7 +70,7 @@ function loadTable() {
 
 function formatCustom(value, row, index) {
   if (row.serviceType == 1 || row.serviceType == 4) {
-    return '<a class="btn btn-primary btn-xs" onclick="openCustomSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Hải quan</a> ';
+    return '<a class="btn btn-primary btn-xs" onclick="openCustomSupport(\'' + row.id + '\'' + ',' + '\'' + row.blNo + '\'' + ',' + '\'' + row.bookingNo + '\')"><i class="fa fa-view"></i>Hải quan</a> ';
   }
   return '';
 }
@@ -79,6 +78,20 @@ function formatCustom(value, row, index) {
 // function formatOrder(value, row, index) {
 //   return '<a class="btn btn-success btn-xs" onclick="openVerificationSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Làm lệnh</a> ';
 // }
+
+function formatBlBooking(value, row) {
+  if (row.blNo) {
+    return row.blNo;
+  }
+  if (row.bookingNo) {
+    return row.bookingNo;
+  }
+  return '';
+}
+
+function formatLogistic(value, row, index) {
+  return '<a onclick="logisticInfo(' + row.logisticGroupId + ',' + '\'' + value + '\')"> '+ value + '</a>'
+}
 
 function formatPayment(value, row, index) {
   return '<a class="btn btn-default btn-xs" onclick="openPaymentSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Thanh toán</a> ';
@@ -173,8 +186,14 @@ $("#toDate").on("inputchange", function () {
   }
 });
 
-function openCustomSupport(id) {
-  $.modal.openTab("Hỗ trợ Hải Quan cho [BillNo/Booking No]", PREFIX + "/custom/" + id, null, null);
+function openCustomSupport(id, blNo, bookingNo) {
+  if (blNo && blNo != 'null') {
+    $.modal.openTab("Hỗ trợ Hải Quan cho B/L " + blNo, PREFIX + "/custom/" + id, null, null);
+  } else if (bookingNo && bookingNo != 'null') {
+    $.modal.openTab("Hỗ trợ Hải Quan cho Booking " + bookingNo, PREFIX + "/custom/" + id, null, null);
+  } else {
+    $.modal.openTab("Hỗ trợ Hải Quan", PREFIX + "/custom/" + id, null, null);
+  }
 }
 
 // function openVerificationSupport(id) {
@@ -182,11 +201,11 @@ function openCustomSupport(id) {
 // }
 
 function openPaymentSupport(id) {
-  $.modal.openWithOneButton("Thanh toán", PREFIX + "/payment/" + id, null, null);
+  $.modal.openTab("Thanh toán", PREFIX + "/payment/" + id);
 }
 
 function openReceiverDOSupport(id) {
-  $.modal.openWithOneButton("DO gốc", PREFIX + "/do/" + id);
+  $.modal.openTab("DO gốc", PREFIX + "/do/" + id);
 }
 
 function openDriverSupport(id) {
@@ -221,3 +240,19 @@ function finishForm(res) {
   }
   loadTable();
 }
+
+function logisticInfo(id, logistics) {
+  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, PREFIX + "/logistics/" + id + "/info", null, 450, function() {
+    $.modal.close();
+  });
+}
+
+$('#logistic').change(function() {
+  console.log($('#logistic option:selected').val());
+  if (0 != $('#logistic option:selected').val()) {
+    shipment.logisticName = $('#logistic option:selected').val();
+  } else {
+    shipment.logisticName = '';
+  }
+  loadTable();
+})

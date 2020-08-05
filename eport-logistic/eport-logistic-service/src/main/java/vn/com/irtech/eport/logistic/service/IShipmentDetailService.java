@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -146,5 +147,4 @@ public interface IShipmentDetailService
      * getShipmentDetail for SendContFull and receiveContEmpty
      */
     public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail);
-    
 }

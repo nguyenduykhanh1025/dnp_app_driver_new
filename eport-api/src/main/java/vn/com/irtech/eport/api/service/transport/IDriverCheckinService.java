@@ -1,6 +1,6 @@
 package vn.com.irtech.eport.api.service.transport;
 
-import vn.com.irtech.eport.api.form.CheckinReq;
+import vn.com.irtech.eport.api.form.QrCodeReq;
 
 public interface IDriverCheckinService {
 	
@@ -10,6 +10,6 @@ public interface IDriverCheckinService {
 	 * @param sessionId
 	 * @return QR string
 	 */
-	public String checkin(CheckinReq req, String sessionId) throws Exception;
+	public String checkin(QrCodeReq req, String sessionId) throws Exception;
 	
 }

@@ -75,7 +75,7 @@
         }
         $('.groupName').select2({
             ajax: {
-                url: '/logistic/group/searchGroupNameByKeyword',
+                url: ctx + 'logistic/group/searchGroupNameByKeyword',
                 method: 'get',
                 delay: 250,
                 data: function (params) {
