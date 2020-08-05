@@ -177,7 +177,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		if (verifyPermission(shipment.getLogisticGroupId())) {
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setShipmentId(shipmentId);
-			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
 			if (shipmentDetails != null) {
 				ajaxResult.put("shipmentDetails", shipmentDetails);
 			} else {
@@ -331,5 +331,19 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			return success("Thanh toán thành công");
 		}
 		return error("Có lỗi xảy ra trong quá trình thanh toán.");
+	}
+	
+	@GetMapping("/shipment/bl-no/{blNo}")
+	@ResponseBody
+	public AjaxResult checkShipmentInforByBlNo(@PathVariable String blNo) {
+		Shipment shipment = new Shipment();
+		//check bill unique
+		shipment.setServiceType(Constants.SEND_CONT_EMPTY);
+		shipment.setLogisticGroupId(getUser().getGroupId());
+		shipment.setBlNo(blNo);
+		if (shipmentService.checkBillBookingNoUnique(shipment) != 0) {
+			return error("Số bill đã tồn tại");
+		}
+		return success();
 	}
 }
