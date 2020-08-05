@@ -1,18 +1,17 @@
 const PREFIX = ctx + "edo";
+
 $(function () {
-  // $("#containerNumber").val(containerNumber);
   $("#expiredDem").val(formatDate(expiredDem));
   $("#detFreeTime").val(detFreeTime);
   $("#emptyContainerDepot").val(emptyContainerDepot);
 })
 
 function confirm() {
-
   if (formatDate(expiredDem) == $("#expiredDem").val() && $("#detFreeTime").val() == detFreeTime && $("#emptyContainerDepot").val() == emptyContainerDepot) {
     $.modal.alertError("Không có thông tin nào được thay đổi !!!")
     return;
   }
-  if (validateDateUpdate(expiredDem, $("#expiredDem").val()) == 1) {
+  if (validateDateUpdate($("#expiredDem").val()) == 1 && formatDate(expiredDem) != $("#expiredDem").val()) {
     $.modal.alertError("Hạn lệnh chỉ có thể thay đổi về quá khứ nhiều nhất là 1 ngày !!!")
     return;
   }
@@ -38,12 +37,13 @@ function confirm() {
               icon: 6
             });
           } else {
-              $.modal.alertError(data.msg);
-              $.modal.closeLoading();
-              return;
+            $.modal.alertError(data.msg);
+            $.modal.closeLoading();
+            return;
           }
           setTimeout(function () {
-            $.modal.reload();
+            parent.getSelectedRow();
+            $.modal.close();
           }, 2000)
         },
         error: function (data) {
@@ -120,18 +120,17 @@ $.ajax({
   }
 })
 
-function validateDateUpdate(fromDate, toDate) {
+function validateDateUpdate(toDate) {
   toDate = toDate.split("/").reverse().join("-");
-  if (fromDate == "" || toDate == "") {
+  if (toDate == "") {
     return 1;
   }
-  var formatDate1 = new Date(fromDate);
+  var currentDay = new Date();
   var toDate1 = new Date(toDate);
-  var offset = toDate1.getTime() - formatDate1.getTime();
+  var offset = toDate1.getTime() - currentDay.getTime();
   var totalDays = Math.round(offset / 1000 / 60 / 60 / 24);
   if (totalDays < -1) {
     return 1;
   }
   return 0;
-
 }

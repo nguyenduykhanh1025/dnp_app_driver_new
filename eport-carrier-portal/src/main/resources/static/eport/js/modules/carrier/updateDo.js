@@ -143,7 +143,7 @@ function loadTable() {
         columnSorting: {
           indicator: true,
         },
-        colWidths: [70, 70, 80, 160, 90, 140, 110, 80, 80, 80, 80, 80, 150, 0.1],
+        colWidths: [70, 90, 90, 160, 90, 140, 110, 80, 80, 70, 100, 63, 130, 0.1],
         manualColumnMove: true,
       })
       hot.validateCells()
