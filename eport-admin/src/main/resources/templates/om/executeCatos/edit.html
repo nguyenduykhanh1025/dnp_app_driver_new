@@ -7,7 +7,7 @@
     <link th:href="@{/eport/css/eport.css}" rel="stylesheet" />
     <link th:href="@{/css/om/executeCatos/edit.css}" rel="stylesheet" />
   </head>
-  <body class="container-fluid white-bg">
+  <body class="container-fluid white-bg p5">
     <section class="header">
       <div class="row">
         <div class="col-md-4 col-sm-4 col-xs-4">
@@ -69,7 +69,7 @@
     </section>
     <div class="content-footer">
       <a class="btn btn-block btn-success" onclick="confirm()">Đồng bộ</a>
-      <a class="btn btn-block btn-success" onclick="closeForm()">Đóng</a>
+      <a class="btn btn-block btn-default ml5" onclick="closeForm()">Đóng</a>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: handsontable-js" />
