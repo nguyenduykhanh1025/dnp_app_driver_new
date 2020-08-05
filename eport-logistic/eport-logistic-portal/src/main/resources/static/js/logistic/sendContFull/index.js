@@ -10,7 +10,7 @@ var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.serviceType = 4;
 var sizeList = [];
-var berthplan;// get infor
+var berthplanList;// get infor
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -599,6 +599,42 @@ function onChange(changes, source) {
                    }
                }
            });
+       } 
+       // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
+       else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+         let vesselAndVoy = hot.getDataAtCell(change[0], 6);
+         //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
+         if (vesselAndVoy) {
+             let shipmentDetail = new Object();
+             for (let i= 0; i < berthplanList.length;i++){
+             	if(vesselAndVoy == berthplanList[i].vslAndVoy){
+             		shipmentDetail.vslNm = berthplanList[i].vslNm;
+             		shipmentDetail.voyNo = berthplanList[i].voyNo;
+             		shipmentDetail.year = berthplanList[i].year;
+             		$.modal.loading("Đang xử lý ...");
+                     $.ajax({
+                         url: ctx + "/logistic/pods",
+                         method: "POST",
+                         contentType: "application/json",
+                         data: JSON.stringify(shipmentDetail),
+                         success: function (data) {
+                         	$.modal.closeLoading();
+                             if (data.code == 0) {
+                                 hot.updateSettings({
+                                     cells: function (row, col, prop) {
+                                         if (row == change[0] && col == 10) {
+                                             let cellProperties = {};
+                                             cellProperties.source = data.dischargePorts;
+                                             return cellProperties;
+                                         }
+                                     }
+                                 });
+                             }
+                         }
+                     });
+             	}
+             }
+         }
             // check to input temperature
         } else if (change[1] == "sztp") {
         	hot.setDataAtCell(change[0], 5, '');//opeCode reset
@@ -929,13 +965,17 @@ function getDataFromTable(isValidate) {
         shipmentDetail.temperature = object["temperature"];
         shipmentDetail.consignee = object["consignee"];
         shipmentDetail.wgt = object["wgt"];
-        let vsl = object["vslNm"].split(" - ");
-        shipmentDetail.vslNm = vsl[0];
-        shipmentDetail.vslName = vsl[1];
-        if(berthplan){
-            shipmentDetail.voyNo = berthplan.voyNo;
+        if(berthplanList){
+            for (let i= 0; i < berthplanList.length;i++){
+            	if(object["vslNm"] == berthplanList[i].vslAndVoy){
+            		shipmentDetail.vslNm = berthplanList[i].vslNm;
+            		shipmentDetail.voyNo = berthplanList[i].voyNo;
+            		shipmentDetail.year = berthplanList[i].year;
+            		shipmentDetail.vslName = berthplanList[i].vslAndVoy.split(" - ")[1];
+            		shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
+            	}
+            }
         }
-        shipmentDetail.voyCarrier = vsl[2];
         shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetail.remark = object["remark"];
