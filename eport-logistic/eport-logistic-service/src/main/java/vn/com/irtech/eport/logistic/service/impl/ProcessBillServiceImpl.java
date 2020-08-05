@@ -15,8 +15,10 @@ import vn.com.irtech.eport.logistic.mapper.ProcessBillMapper;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.text.Convert;
 
 /**
@@ -30,6 +32,9 @@ public class ProcessBillServiceImpl implements IProcessBillService
 {
     @Autowired
     private ProcessBillMapper processBillMapper;
+    
+    @Autowired
+    private ICatosApiService catosApiService;
 
     /**
      * Get Process billing
@@ -205,4 +210,41 @@ public class ProcessBillServiceImpl implements IProcessBillService
     public List<ProcessBill> getBillShiftingContByShipmentId(Long shipmentId, Long logisticGroupId) {
         return processBillMapper.getBillShiftingContByShipmentId(shipmentId, logisticGroupId);
     }
+	@Override
+	public List<ProcessBill> getBillByShipmentDetail(ShipmentDetail shipmentDetail) {
+		if(shipmentDetail != null) {
+			if(shipmentDetail.getServiceType().equals(Constants.SEND_CONT_FULL)) {
+				return catosApiService.getUnitBillByShipmentDetailsForReserve(shipmentDetail);
+			}
+			if(shipmentDetail.getServiceType().equals(Constants.SEND_CONT_EMPTY)) {
+				return catosApiService.getUnitBillByShipmentDetailsForReserve(shipmentDetail);
+			}
+			if(shipmentDetail.getServiceType().equals(Constants.RECEIVE_CONT_FULL)) {
+				return catosApiService.getUnitBillByShipmentDetailsForInventory(shipmentDetail);
+			}
+			if(shipmentDetail.getServiceType().equals(Constants.RECEIVE_CONT_EMPTY)) {
+				return catosApiService.getUnitBillByShipmentDetailsForInventory(shipmentDetail);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public List<ProcessBill> getBillByShipmentDetailForSSR(ShipmentDetail shipmentDetail) {
+		if(shipmentDetail != null) {
+			if(shipmentDetail.getServiceType().equals(Constants.SEND_CONT_FULL)) {
+				return catosApiService.getUnitBillByShipmentDetailsForSendSSR(shipmentDetail);
+			}
+			if(shipmentDetail.getServiceType().equals(Constants.SEND_CONT_EMPTY)) {
+				return catosApiService.getUnitBillByShipmentDetailsForSendSSR(shipmentDetail);
+			}
+			if(shipmentDetail.getServiceType().equals(Constants.RECEIVE_CONT_FULL)) {
+				return catosApiService.getUnitBillByShipmentDetailsForReceiveSSR(shipmentDetail);
+			}
+			if(shipmentDetail.getServiceType().equals(Constants.RECEIVE_CONT_EMPTY)) {
+				return catosApiService.getUnitBillByShipmentDetailsForReceiveSSR(shipmentDetail);
+			}
+		}
+		return null;
+	} 
 }

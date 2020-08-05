@@ -224,11 +224,11 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public List<ProcessBill> getUnitBillByShipmentDetailsForReserve(List<ShipmentDetail> shipmentDetails) {
+	public List<ProcessBill> getUnitBillByShipmentDetailsForReserve(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/unit-bill/list/send-cont";
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<List<ShipmentDetail>>(shipmentDetails);
+			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
 			List<ProcessBill> bills= response.getBody();
 			return bills;
@@ -239,11 +239,11 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public List<ProcessBill> getUnitBillByShipmentDetailsForInventory(List<ShipmentDetail> shipmentDetails) {
+	public List<ProcessBill> getUnitBillByShipmentDetailsForInventory(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/unit-bill/list/receive-cont";
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<List<ShipmentDetail>>(shipmentDetails);
+			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
 			List<ProcessBill> bills= response.getBody();
 			return bills;
@@ -254,11 +254,11 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public List<ProcessBill> getUnitBillByShipmentDetailsForReceiveSSR(List<ShipmentDetail> shipmentDetails) {
+	public List<ProcessBill> getUnitBillByShipmentDetailsForReceiveSSR(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/unit-bill/list/receive-cont/ssr";
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<List<ShipmentDetail>>(shipmentDetails);
+			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
 			List<ProcessBill> bills= response.getBody();
 			return bills;
@@ -269,11 +269,11 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public List<ProcessBill> getUnitBillByShipmentDetailsForSendSSR(List<ShipmentDetail> shipmentDetails) {
+	public List<ProcessBill> getUnitBillByShipmentDetailsForSendSSR(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/unit-bill/list/send-cont/ssr";
 			RestTemplate restTemplate = new RestTemplate();
-			HttpEntity httpEntity = new HttpEntity<List<ShipmentDetail>>(shipmentDetails);
+			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
 			List<ProcessBill> bills= response.getBody();
 			return bills;

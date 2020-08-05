@@ -347,8 +347,6 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
@@ -410,8 +408,6 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
     if (value != null && value != '') {
         value = value.split(':')[0];
@@ -424,8 +420,6 @@ function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) 
     return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
     if (value != null && value != '') {
         value = value.split(':')[0];
@@ -581,33 +575,30 @@ function onChange(changes, source) {
         return;
     }
     changes.forEach(function (change) {
-    	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
-        if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
-            hot.setDataAtCell(change[0], 6, '');//vessel and voyage reset
-            hot.setDataAtCell(change[0], 9, '');//CargoType reset
-            hot.setDataAtCell(change[0], 10, '');//pod reset
-        	let shipmentDetail = new Object();
-        	shipmentDetail.bookingNo = shipmentSelected.bookingNo;
-        	if(hot.getDataAtCell(change[0], 3) != null){
-            	shipmentDetail.sztp =  hot.getDataAtCell(change[0], 3).split(": ")[0];
-        	}
-        	shipmentDetail.opeCode = change[3].split(": ")[0];
-        	$.modal.loading("Đang xử lý ...");
-            $.ajax({
-                url: prefix + "/berthplan/container/infor",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(shipmentDetail),
-                success: function (data) {
-                	$.modal.closeLoading();
-                    if (data.code == 0) {
-                    	berthplan = data.shipmentDetail;
-                    	hot.setDataAtCell(change[0], 6, data.shipmentDetail.vslAndVoy); //Tàu và chuyến
-                    	hot.setDataAtCell(change[0], 9, data.shipmentDetail.cargoType); //Loại hàng
-                    	hot.setDataAtCell(change[0], 10, data.shipmentDetail.dischargePort); //Cảng dở
-                    }
-                }
-            });
+
+   	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
+       if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
+           //hot.setDataAtCell(change[0], 6, '');//vessel and voyage reset
+       	$.modal.loading("Đang xử lý ...");
+           $.ajax({
+               url: prefix + "/berthplan/ope-code/"+ change[3].split(": ")[0] +"/vessel-voyage/list",
+               method: "GET",
+               success: function (data) {
+               	$.modal.closeLoading();
+                   if (data.code == 0) {
+                       hot.updateSettings({
+                           cells: function (row, col, prop) {
+                               if (row == change[0] && col == 6) {
+                                   let cellProperties = {};
+                                   berthplanList = data.berthplanList;
+                                   cellProperties.source = data.vesselAndVoyages;
+                                   return cellProperties;
+                               }
+                           }
+                       });
+                   }
+               }
+           });
             // check to input temperature
         } else if (change[1] == "sztp") {
         	hot.setDataAtCell(change[0], 5, '');//opeCode reset

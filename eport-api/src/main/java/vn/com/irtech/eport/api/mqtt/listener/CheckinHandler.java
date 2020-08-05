@@ -144,10 +144,10 @@ public class CheckinHandler implements IMqttMessageListener {
 		}
 		
 		String yardPosition = "";
-		yardPosition += (pickupHistory.getBlock() != null)?pickupHistory.getBlock():StringUtils.EMPTY + "-";
-		yardPosition += (pickupHistory.getBay() != null)?pickupHistory.getBay():StringUtils.EMPTY + "-";
-		yardPosition += (pickupHistory.getLine() != null)?pickupHistory.getLine():StringUtils.EMPTY + "-";
-		yardPosition += (pickupHistory.getTier() != null)?pickupHistory.getTier():StringUtils.EMPTY + "-";
+		yardPosition += (pickupHistory.getBlock() != null)?pickupHistory.getBlock():StringUtils.EMPTY;
+		yardPosition += "-" + ((pickupHistory.getBay() != null)?pickupHistory.getBay():StringUtils.EMPTY);
+		yardPosition += "-" + ((pickupHistory.getLine() != null)?pickupHistory.getLine():StringUtils.EMPTY);
+		yardPosition += "-" + ((pickupHistory.getTier() != null)?pickupHistory.getTier():StringUtils.EMPTY);
 		return yardPosition;
 	}
 	

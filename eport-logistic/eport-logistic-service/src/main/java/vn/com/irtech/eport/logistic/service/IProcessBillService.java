@@ -101,4 +101,17 @@ public interface IProcessBillService
      * @return  List<ProcessBill>
      */
     public List<ProcessBill> getBillShiftingContByShipmentId(Long shipmentId, Long logisticGroupId);
+    
+    /***
+     * Get bill
+     * @param shipmentDetail
+     * @return
+     */
+    public List<ProcessBill> getBillByShipmentDetail(ShipmentDetail shipmentDetail);
+    /***
+     * Get bill for SSR
+     * @param shipmentDetail
+     * @return
+     */
+    public List<ProcessBill> getBillByShipmentDetailForSSR(ShipmentDetail shipmentDetail);
 }
