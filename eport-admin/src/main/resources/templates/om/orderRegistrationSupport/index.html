@@ -48,9 +48,8 @@
         <thead>
           <tr>
             <th data-options="field: 'id', halign: 'center', align: 'left', resizable: true, fixed: 'true'" width="1" sortable="true"></th>
-            <th data-options="field: 'logisticName', halign: 'center', align: 'left', resizable: true, formatter: formatText" width="150" sortable="true">Logistics</th>
-            <th data-options="field: 'blNo', halign: 'center', align:'center', resizable:true" width="150" sortable="true">B/L No.</th>
-            <th data-options="field: 'bookingNo', halign: 'center', align:'center', resizable: true" width="150" sortable="true">Booking No.</th>
+            <th data-options="field: 'logisticName', halign: 'center', align: 'left', resizable: true, formatter: formatLogistic" width="150" sortable="true">Logistics</th>
+            <th data-options="field: 'blNo', halign: 'center', align:'center', resizable:true, formatter: formatBlBooking" width="150" sortable="true">Bill/Booking No.</th>
             <th data-options="field: 'serviceType', halign: 'center', align:'left', resizable: true, fixed:'true', formatter: formatServiceType" width="100" sortable="true">Hình Thức</th>
             <th data-options="field: 'taxCode', halign: 'center', align: 'center', resizable: true, fixed: 'true'" width="150" sortable="true">Mã Số Thuế</th>
             <th data-options="field: 'containerAmount', halign: 'center', align: 'right', resizable: true, fixed: 'true'" width="110" sortable="true">Số Container</th>

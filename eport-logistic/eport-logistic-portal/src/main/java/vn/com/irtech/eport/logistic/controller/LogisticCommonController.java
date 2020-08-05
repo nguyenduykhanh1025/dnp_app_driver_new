@@ -213,7 +213,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		// check if process order is on payment transaction
 		PaymentHistory paymentHistoryParam = new PaymentHistory();
 		paymentHistoryParam.setProccessOrderIds(processOrderIds);
-		paymentHistoryParam.setStatus("0");
+		paymentHistoryParam.setStatus("1");
 		List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
 		PaymentHistory paymentHistory;
 		if (paymentHistories.isEmpty()) {
@@ -227,9 +227,10 @@ public class LogisticCommonController extends LogisticBaseController {
 			paymentHistory.setCreateBy(getUser().getFullName());
 			paymentHistoryService.insertPaymentHistory(paymentHistory);
 		} else {
-			paymentHistory = paymentHistories.get(0);
-			paymentHistory.setOrderId(orderId);
-			paymentHistoryService.updatePaymentHistory(paymentHistory);
+			// paymentHistory = paymentHistories.get(0);
+			// paymentHistory.setOrderId(orderId);
+			// paymentHistoryService.updatePaymentHistory(paymentHistory);
+			return "error/unauth";
 		}
 
 		mmap.put("resultUrl", configService.getKey("napas.payment.result"));

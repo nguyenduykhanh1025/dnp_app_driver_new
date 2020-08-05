@@ -24,6 +24,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
@@ -60,9 +61,18 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @Autowired
   private ICatosApiService catosService;
 
+  @Autowired
+  private ILogisticGroupService logisticGroupService;
+
   @GetMapping()
   public String getMainView() {
     return PREFIX + "/index";
+  }
+
+  @GetMapping("/logistics/{logisticGroupId}/info")
+  public String getLogisticInfo(@PathVariable("logisticGroupId") Long logisticGroupId, ModelMap mmap) {
+    mmap.put("logisticInfo", logisticGroupService.selectLogisticGroupById(logisticGroupId));
+    return PREFIX + "/logisticsInfo";
   }
 
   @GetMapping("/custom/{shipmentId}")
