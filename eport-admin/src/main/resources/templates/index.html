@@ -71,7 +71,7 @@
               </li>
               <li th:each="menu, iterator : ${menus}">
                 <a
-                  th:if="${iterator.count &lt; 5}"
+                  th:if="${iterator.count &lt; 6}"
                   th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
                   th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
                 > 
@@ -138,7 +138,7 @@
                   </li>
                 </ul>
               </li>
-              <li th:if="${#lists.size(menus) &gt; 4}" class="show-more-menu">
+              <li th:if="${#lists.size(menus) &gt; 5}" class="show-more-menu">
                 <a href="javascript:void(0)">
                   <i class="fa fa-chevron-right"></i>
                 </a>
@@ -147,7 +147,7 @@
               <div class="more-menu">
                 <li th:each="menu, iterator : ${menus}"  style="position: relative;">
                   <a
-                    th:unless="${iterator.count &lt; 5}"
+                    th:unless="${iterator.count &lt; 6}"
                     th:class="@{${menu.url != '' && menu.url != '#'} ? ${menu.target}}"
                     th:href="@{${menu.url == ''} ? |#| : ${menu.url}}"
                     style="color: #fff"
