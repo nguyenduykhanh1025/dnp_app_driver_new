@@ -1,4 +1,4 @@
-.text span{
+.text span {
   font-size: 16px;
 }
 
@@ -16,9 +16,42 @@
   background-color: #3c8dbc !important;
   cursor: default;
 }
-body{
+body {
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   color: #f5f5f5 !important;
   overflow-x: hidden;
+}
+
+.more-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 90%;
+  background-color: #3c8dbc;
+  color: #fff;
+  width: max-content;
+}
+
+.show-more-menu:hover {
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.show-more-menu:hover + .more-menu {
+  display: flex;
+}
+
+.more-menu:hover {
+  display: flex;
+}
+
+.show-more-menu,
+.more-menu,
+.more-menu .nav-second-level {
+  justify-content: end;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
 }

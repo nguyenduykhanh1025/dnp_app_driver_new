@@ -1,6 +1,6 @@
 package vn.com.irtech.eport.api.domain;
 
-import vn.com.irtech.eport.api.consts.BusinessConst;
+import vn.com.irtech.eport.api.consts.BusinessConsts;
 
 public class EportUser {
 
@@ -75,7 +75,7 @@ public class EportUser {
 	}
 
 	public String getSubject() {
-		return this.loginName + BusinessConst.BLANK + this.userType.value();
+		return this.loginName + BusinessConsts.BLANK + this.userType.value();
 	}
 
 }

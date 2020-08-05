@@ -3,20 +3,28 @@ package vn.com.irtech.eport.api.form;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.validation.constraints.NotEmpty;
-
 public class CheckinReq implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	@NotEmpty
-	private List<Long> pickupHistoryIds;
 
-	public List<Long> getPickupHistoryIds() {
-		return pickupHistoryIds;
+	private String sessionId;
+
+	private List<PickupHistoryDataRes> data;
+
+	public String getSessionId() {
+		return sessionId;
 	}
 
-	public void setPickupHistoryIds(List<Long> pickupHistoryIds) {
-		this.pickupHistoryIds = pickupHistoryIds;
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
 	}
+
+	public List<PickupHistoryDataRes> getData() {
+		return data;
+	}
+
+	public void setData(List<PickupHistoryDataRes> data) {
+		this.data = data;
+	}
+
 }
