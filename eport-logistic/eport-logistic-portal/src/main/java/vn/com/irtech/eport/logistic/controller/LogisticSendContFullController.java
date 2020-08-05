@@ -393,40 +393,40 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		
 	}
 	
-//	@GetMapping("/berthplan/ope-code/{opeCode}/vessel-voyage/list")
-//	@ResponseBody
-//	public AjaxResult getVesselVoyageList(@PathVariable String opeCode) {
-//		AjaxResult ajaxResult = success();
-//		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
-//		if(berthplanList.size() > 0) {
-//			List<String> vesselAndVoyages = new ArrayList<String>();
-//			for(ShipmentDetail i : berthplanList) {
-//				vesselAndVoyages.add(i.getVslAndVoy());
-//			}
-//			ajaxResult.put("berthplanList", berthplanList);
-//			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
-//			return ajaxResult;
-//		}
-//		return error();
-//	}
-	
-	@PostMapping("berthplan/container/infor")
+	@GetMapping("/berthplan/ope-code/{opeCode}/vessel-voyage/list")
 	@ResponseBody
-	public AjaxResult getInforContainer(@RequestBody ShipmentDetail shipmentDetail) {
+	public AjaxResult getVesselVoyageList(@PathVariable String opeCode) {
 		AjaxResult ajaxResult = success();
-		shipmentDetail.setFe("F");
-		ShipmentDetail rs = catosApiService.getInforSendFReceiveE(shipmentDetail);
-		if(rs != null) {
-			ajaxResult.put("shipmentDetail", rs);
+		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
+		if(berthplanList.size() > 0) {
+			List<String> vesselAndVoyages = new ArrayList<String>();
+			for(ShipmentDetail i : berthplanList) {
+				vesselAndVoyages.add(i.getVslAndVoy());
+			}
+			ajaxResult.put("berthplanList", berthplanList);
+			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
 			return ajaxResult;
 		}
 		return error();
 	}
 	
-	@PostMapping("/abc")
-	@ResponseBody
-	public List<ProcessBill> abc(@RequestBody ShipmentDetail shipmentDetail){
-		shipmentDetail.setServiceType(Constants.SEND_CONT_FULL);
-		return processBillService.getBillByShipmentDetail(shipmentDetail);
-	}
+//	@PostMapping("berthplan/container/infor")
+//	@ResponseBody
+//	public AjaxResult getInforContainer(@RequestBody ShipmentDetail shipmentDetail) {
+//		AjaxResult ajaxResult = success();
+//		shipmentDetail.setFe("F");
+//		ShipmentDetail rs = catosApiService.getInforSendFReceiveE(shipmentDetail);
+//		if(rs != null) {
+//			ajaxResult.put("shipmentDetail", rs);
+//			return ajaxResult;
+//		}
+//		return error();
+//	}
+//	
+//	@PostMapping("/abc")
+//	@ResponseBody
+//	public List<ProcessBill> abc(@RequestBody ShipmentDetail shipmentDetail){
+//		shipmentDetail.setServiceType(Constants.SEND_CONT_FULL);
+//		return processBillService.getBillByShipmentDetail(shipmentDetail);
+//	}
 }
