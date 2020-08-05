@@ -9,10 +9,11 @@ import vn.com.irtech.eport.web.controller.AdminBaseController;
 @Controller
 @RequestMapping("/om/paymentHistory")
 public class NapasPaymentHistoryController extends AdminBaseController {
-	private String prefix = "om/paymentHistory";
+	private final String PREFIX = "om/paymentHistory";
 
-	@GetMapping("/")
-	public String getViewexEcuteCatos() {
-		return prefix + "/paymentHistory";
+	@GetMapping()
+	public String getViewPaymentHistory() {
+
+		return PREFIX + "/paymentHistory";
 	}
 }

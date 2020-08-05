@@ -59,7 +59,7 @@
         }
         $('.groupName').select2({
             ajax: {
-                url: '/logistic/group/searchGroupNameByKeyword',
+                url: ctx + 'logistic/group/searchGroupNameByKeyword',
                 method: 'get',
                 delay: 250,
                 data: function (params) {
@@ -84,7 +84,7 @@
                 document.getElementById("toggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickToggle()"></i>';
             }
             $.ajax({
-                url: '/logistic/group/getGroupNameById',
+                url: ctx + 'logistic/group/getGroupNameById',
                 method: 'POST',
                 data: {
                     id : $("#groupId").val()

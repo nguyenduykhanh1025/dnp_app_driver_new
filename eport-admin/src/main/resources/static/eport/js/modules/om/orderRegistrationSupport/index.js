@@ -71,7 +71,7 @@ function loadTable() {
 
 function formatCustom(value, row, index) {
   if (row.serviceType == 1 || row.serviceType == 4) {
-    return '<a class="btn btn-primary btn-xs" onclick="openCustomSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Hải quan</a> ';
+    return '<a class="btn btn-primary btn-xs" onclick="openCustomSupport(\'' + row.id + '\'' + ',' + '\'' + row.blNo + '\'' + ',' + '\'' + row.bookingNo + '\')"><i class="fa fa-view"></i>Hải quan</a> ';
   }
   return '';
 }
@@ -173,8 +173,14 @@ $("#toDate").on("inputchange", function () {
   }
 });
 
-function openCustomSupport(id) {
-  $.modal.openTab("Hỗ trợ Hải Quan cho [BillNo/Booking No]", PREFIX + "/custom/" + id, null, null);
+function openCustomSupport(id, blNo, bookingNo) {
+  if (blNo && blNo != 'null') {
+    $.modal.openTab("Hỗ trợ Hải Quan cho B/L " + blNo, PREFIX + "/custom/" + id, null, null);
+  } else if (bookingNo && bookingNo != 'null') {
+    $.modal.openTab("Hỗ trợ Hải Quan cho Booking " + bookingNo, PREFIX + "/custom/" + id, null, null);
+  } else {
+    $.modal.openTab("Hỗ trợ Hải Quan", PREFIX + "/custom/" + id, null, null);
+  }
 }
 
 // function openVerificationSupport(id) {
@@ -182,11 +188,11 @@ function openCustomSupport(id) {
 // }
 
 function openPaymentSupport(id) {
-  $.modal.openWithOneButton("Thanh toán", PREFIX + "/payment/" + id, null, null);
+  $.modal.openTab("Thanh toán", PREFIX + "/payment/" + id);
 }
 
 function openReceiverDOSupport(id) {
-  $.modal.openWithOneButton("DO gốc", PREFIX + "/do/" + id);
+  $.modal.openTab("DO gốc", PREFIX + "/do/" + id);
 }
 
 function openDriverSupport(id) {

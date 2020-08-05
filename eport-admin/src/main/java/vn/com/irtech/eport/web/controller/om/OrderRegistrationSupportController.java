@@ -127,7 +127,7 @@ public class OrderRegistrationSupportController extends AdminBaseController {
       return error();
     }
     for (ShipmentDetail shipmentDetail : shipmentDetails) {
-      if (true) {
+      if (catosService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
         shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
         shipmentDetail.setCustomStatus("R");
         shipmentDetailService.updateShipmentDetail(shipmentDetail);
@@ -259,17 +259,17 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @PostMapping("/do")
   @Transactional
   @ResponseBody
-  public AjaxResult updateDoStatus(Long shipmentId) {
-    ShipmentDetail shipmentDetail = new ShipmentDetail();
-    shipmentDetail.setShipmentId(shipmentId);
-    List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-    for (ShipmentDetail shipmentDt : shipmentDetails) {
-      shipmentDt.setDoReceivedTime(new Date());
-      shipmentDt.setDoStatus("Y");
-      shipmentDt.setUpdateBy(getUser().getUserName());
-      shipmentDt.setUpdateTime(new Date());
-      shipmentDetailService.updateShipmentDetail(shipmentDt);
+  public AjaxResult updateDoStatus(@RequestBody List<ShipmentDetail> shipmentDetails) {
+    if (!shipmentDetails.isEmpty()) {
+      for (ShipmentDetail shipmentDt : shipmentDetails) {
+        shipmentDt.setDoReceivedTime(new Date());
+        shipmentDt.setDoStatus("Y");
+        shipmentDt.setUpdateBy(getUser().getUserName());
+        shipmentDt.setUpdateTime(new Date());
+        shipmentDetailService.updateShipmentDetail(shipmentDt);
+      }
+      return success("Nhận DO gốc thành công.");
     }
-    return success("Nhận DO gốc thành công.");
+    return error();
   }
 }
