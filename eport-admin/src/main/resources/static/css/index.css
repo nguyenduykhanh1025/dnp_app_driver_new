@@ -33,6 +33,9 @@ body {
   color: #fff;
   width: max-content;
 }
+.more-menu > li:hover > ul.nav-second-level {
+  display: block;
+}
 
 .show-more-menu:hover {
   -webkit-transform: rotate(90deg);
