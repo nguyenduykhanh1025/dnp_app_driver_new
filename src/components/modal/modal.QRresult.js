@@ -40,7 +40,7 @@ export default class QRresult extends Component {
 
   render() {
     var { data } = this.state;
-    console.log(data)
+    // console.log(data)
     return (
       <Modal
         animationType="fade"

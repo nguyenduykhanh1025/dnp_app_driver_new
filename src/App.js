@@ -19,7 +19,7 @@ class App extends Component {
 
   componentDidMount = async () => {
     var gpsEnable = await getGPSEnable()
-    console.log('gpsEnable', gpsEnable)
+    // console.log('gpsEnable', gpsEnable)
     if (!gpsEnable) {
       saveGPSEnable("true")
     }

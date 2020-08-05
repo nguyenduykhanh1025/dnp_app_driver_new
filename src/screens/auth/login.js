@@ -103,7 +103,7 @@ class LoginContainer extends PureComponent {
                 a.toString()
             );
         } catch (error) {
-            console.log('error', error)
+            // console.log('error', error)
         }
     }
 

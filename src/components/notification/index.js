@@ -161,7 +161,7 @@ export default class Notification extends Component {
       await this.getToken();
     } catch (error) {
       // User has rejected permissions
-      console.log('permission rejected');
+      // console.log('permission rejected');
     }
   }
 

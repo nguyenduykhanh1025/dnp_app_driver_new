@@ -85,13 +85,12 @@ class HomeScreen extends PureComponent {
         var qrString = this.props.navigation.state.params.dataQR.qrString;
         qrString = qrString.slice(0, qrString.length - 1);
         var dataQR = JSON.parse(qrString.replace(/'/g, '"'))
-        console.log('data', dataQR.data)
+        // console.log('data', dataQR.data)
         await this.setState({
             qrvalue: this.props.navigation.state.params.dataQR.qrString,
             sessionId: this.props.navigation.state.params.dataQR.sessionId,
             data: dataQR.data
         })
-        this.onTestMqtt()
     }
 
 
@@ -114,7 +113,7 @@ class HomeScreen extends PureComponent {
         }
         var result = undefined;
         result = await callApi(params);
-        console.log('resultonGetURLMqtt', result)
+        // console.log('resultonGetURLMqtt', result.domain)
         if (result.code == 0) {
             this.setState({
                 "domain": result.domain,
@@ -125,55 +124,62 @@ class HomeScreen extends PureComponent {
         else {
             Alert.alert('Thông báo!', result.msg)
         }
+        this.onTestMqtt()
     }
 
-    // componentWillUnmount = () => {
-    //     var settings = {
-    //         mqttServerUrl: "192.168.1.99",
-    //         port: 1883,
-    //         topic: "eport/driver/" + this.state.sessionId + "/res",
-    //         // topic: "eport/driver/ado3709Adlfj/res"
-    //     }
-
-    //     mqtt.createClient({
-    //         uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
-    //         clientId: this.state.deviceId,
-    //     }).then((client) => {
-    //         client.on('closed', () => {
-    //             console.log('closed');
-    //         });
-    //         client.disconnect();
-    //     }).catch((err) => {
-    //         Alert.alert(
-    //             'Lỗi!!!',
-    //             'Liên hệ người phụ trách!',
-    //             [
-    //                 {
-    //                     text: 'OK', onPress: () => {
-    //                         this.props.navigation.goBack()
-    //                     }
-    //                 }
-    //             ],
-    //             { cancelable: false }
-    //         );
-    //     });
-    // }
-
-    onTestMqtt = async () => {
+    componentWillUnmount = () => {
         var settings = {
-            mqttServerUrl: '113.176.195.221',
-            port: 1883,
+            mqttServerUrl: this.state.domain,
+            port: this.state.port,
             topic: "eport/driver/" + this.state.sessionId + "/res",
-            // topic: "eport/driver/ado3709Adlfj/res"
         }
 
         mqtt.createClient({
+            uri: settings.mqttServerUrl + ":" + settings.port,
+            clientId: this.state.deviceId,
+        }).then((client) => {
+            client.on('closed', () => {
+                console.log('closed');
+            });
+            client.unsubscribe(settings.topic)
+            client.disconnect();
+        }).catch((err) => {
+            Alert.alert(
+                'Lỗi!!!',
+                'Liên hệ người phụ trách!',
+                [
+                    {
+                        text: 'OK', onPress: () => {
+                            this.props.navigation.goBack()
+                        }
+                    }
+                ],
+                { cancelable: false }
+            );
+        });
+    }
+
+    onTestMqtt = async () => {
+        var settings = {
+            mqttServerUrl: this.state.domain,
+            port: this.state.port,
+            topic: "eport/driver/" + this.state.sessionId + "/res",
+            // topic: "eport/driver/ado3709Adlfj/res"
+        }
+        // var settings = {
+        //     mqttServerUrl: '113.176.195.221',
+        //     port: 1883,
+        //     topic: "eport/driver/" + this.state.sessionId + "/res",
+        //     // topic: "eport/driver/ado3709Adlfj/res"
+        // }
+
+        mqtt.createClient({
             // uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
-            uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
+            uri: settings.mqttServerUrl + ":" + settings.port,
             clientId: this.state.deviceId,
         }).then((client) => {
             client.on('connect', () => {
-                console.log('connected');
+                // console.log('connected');
                 client.subscribe(settings.topic, 0);
             });
             client.on('message', (msg) => {

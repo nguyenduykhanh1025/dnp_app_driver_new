@@ -75,7 +75,7 @@ export default class DetailScreen extends Component {
     this.token = await getToken();
     this.upEnable = await getUpEnable();
     this.DownEnable = await getDownEnable();
-    console.log('this.props.navigation.state.params.shipmentId', this.props.navigation.state.params.shipmentId)
+    // console.log('this.props.navigation.state.params.shipmentId', this.props.navigation.state.params.shipmentId)
     this.onGetPickupList(this.props.navigation.state.params.shipmentId);
   }
 
@@ -92,7 +92,7 @@ export default class DetailScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonGetPickupList', result)
+    // console.log('resultonGetPickupList', result)
     if (result.code == 0) {
       await this.setState({
         data: result.data,
@@ -115,7 +115,7 @@ export default class DetailScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonAutoPickup', result)
+    // console.log('resultonAutoPickup', result)
     if (result.code == 0) {
       // NavigationService.navigate(homeTab.home)
       NavigationService.navigate(mainStack.detail2, {
@@ -192,21 +192,26 @@ export default class DetailScreen extends Component {
               showsVerticalScrollIndicator={false}
             />
           </ScrollView>
-          <View
-            style={{
-              marginTop: hs(17),
-              marginBottom: hs(17)
-            }}
-          >
-            <Button
-              value={'Chọn theo lô'}
-              onPress={
-                () => {
-                  this.onAutoPickup()
-                }
-              }
-            />
-          </View>
+          {
+            this.props.navigation.state.params.serviceType % 2 != 0 ?
+              <View
+                style={{
+                  marginTop: hs(17),
+                  marginBottom: hs(17)
+                }}
+              >
+                <Button
+                  value={'Chọn theo lô'}
+                  onPress={
+                    () => {
+                      this.onAutoPickup()
+                    }
+                  }
+                />
+              </View>
+              :
+              null
+          }
         </View>
       </View>
     )

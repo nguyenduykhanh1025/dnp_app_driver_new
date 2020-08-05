@@ -71,8 +71,8 @@ export default class DetailScreen extends Component {
     this.onGetTruckList()
     this.upEnable = await getUpEnable();
     this.DownEnable = await getDownEnable();
-    console.log(' this.upEnable', this.upEnable)
-    console.log('this.DownEnable', this.DownEnable)
+    // console.log(' this.upEnable', this.upEnable)
+    // console.log('this.DownEnable', this.DownEnable)
   }
 
   onGetTruckList = async () => {
@@ -85,7 +85,7 @@ export default class DetailScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('result', result)
+    // console.log('result', result)
     if (result.code == 0) {
       await this.setState({
         truckNoList: result.data.truckNoList,

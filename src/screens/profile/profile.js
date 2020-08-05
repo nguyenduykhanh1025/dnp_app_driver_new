@@ -229,7 +229,8 @@ class ProfileScreen extends Component {
             <DropDownProfile
               data={this.state.chassisNoList}
               title={'Số xe Rơ-mooc'}
-              onSelect={(item) => { console.log('BSX Rơ Mooc', item) }}
+              onSelect={(item) => { 
+                console.log('BSX Rơ Mooc', item) }}
             />
             <View style={{
               flexDirection: 'row',
