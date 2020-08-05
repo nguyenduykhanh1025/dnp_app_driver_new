@@ -20,3 +20,18 @@ h4 {
 .div-toggle {
   display: inline-block;
 }
+
+.content-footer {
+  position: fixed;
+  bottom: 0;
+  padding: 10px;
+  background-color: #fff;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  a {
+    margin-top: 10px !important;
+    width: 10%;
+  }
+}

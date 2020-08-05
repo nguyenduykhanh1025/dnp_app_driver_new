@@ -4,7 +4,6 @@ var shipment = new Object();
 
 $(document).ready(function () {
   loadTable();
-
   laydate.render({
     elem: '#fromDate',
     format: "dd/MM/yyyy"
