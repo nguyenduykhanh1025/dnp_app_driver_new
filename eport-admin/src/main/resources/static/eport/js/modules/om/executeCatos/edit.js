@@ -2,7 +2,7 @@
 const PREFIX = ctx + "om/executeCatos";
 var dogrid = document.getElementById("container-grid"), hot;
 var toggleTrigger = true, countEvent = 2, processOrder;
-var check = false;
+var check = true;
 
 $(document).ready(function () {
   $("#toggle-status").bootstrapToggle({
@@ -247,6 +247,10 @@ hot.render();
 $("section.content").css("overflow", "auto");
 
 $("#toggle-status").change(function (e) {
+  if (check) {
+    check = false;
+    return;
+  }
   if (toggleTrigger && countEvent == 2) {
     if ($("#toggle-status").prop('checked')) {
 
@@ -331,7 +335,7 @@ function confirm() {
       if (res.code == 0) {
         $.modal.alertSuccess("Đồng bộ thành công.");
       } else {
-        $.modal.alertError("Xử lý thất bại, bạn vui lòng kiểm tra lại thông tin làm lệnh.");
+        $.modal.alertWarn("Không tìm thấy dữ liệu trong catos để đồng bộ, bạn vui lòng kiểm trả lại lệnh đã làm.");
       }
     },
     error: function () {
