@@ -3,6 +3,7 @@
   <head>
     <th:block th:include="include :: header('Custom Support')" />
     <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: handsontable-css" />
     <th:block th:include="include :: bootstrap-toggle-css" />
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
     <link th:href="@{/eport/css/orderRegistrationSupport/style.css}" rel="stylesheet" />
@@ -56,20 +57,21 @@
           <label>
             <h4>DO Gốc:</h4>
             <!-- <span class="btn btn-white btn-bitbucket" style='cursor: unset;'>Đã thu DO</span> -->
-            <button class="btn btn-inline btn-primary"><i class="fa fa-check-circle"></i>&nbsp;Đã nhận DO</button>
+            <button class="btn btn-inline btn-primary do-status" onclick="confirm()"><i class="fa fa-check-circle"></i>&nbsp;Đã nhận DO</button>
           </label>
         </div>
-        <div class="col-md-6 col-6 col-sm-6 col-xs-12">
+        <div class="col-md-6 col-6 col-sm-6 col-xs-12 expired-dem">
           <label>
             <h4>Gia hạn lệnh: </h4>
             <!-- <span class="btn btn-white btn-bitbucket" style='cursor: unset;'>Đã thu hạn lệnh</span> -->
-            <button class="btn btn-inline btn-primary"><i class="fa fa-check-circle"></i>&nbsp;Đã thu hạn lệnh</button>
+            <button class="btn btn-inline btn-primary expired-dem-status" onclick="confirm()"><i class="fa fa-check-circle"></i>&nbsp;Đã thu hạn lệnh</button>
           </label>
         </div>
       </div>
     </section>
     <section class="content clearfix">
-      <table id="dg">
+      <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+      <!-- <table id="dg">
         <thead>
           <tr>
             <th data-options="field:'containerNo', align:'center', halign:'center', fixed:true" width="120" sortable="true">Container No.</th>
@@ -87,14 +89,14 @@
           </tr>
         </thead>
         <tbody></tbody>
-      </table>
+      </table> -->
     </section>
-    <div class="layui-layer-btn footer clearfix">
-      <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
-      <a class="layui-layer-btn1" onclick="closeForm()">Đóng</a>
+    <div class="content-footer">
+      <a class="btn btn-block btn-success" onclick="closeForm()">Đóng</a>
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: handsontable-js" />
     <th:block th:include="include :: bootstrap-toggle-js" />
     <script type="text/javascript" th:inline="javascript">
       var shipment = /*[[${shipment}]]*/;
