@@ -11,7 +11,7 @@ var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.serviceType = 3;
 var sizeList = [];
-var berthplan;
+var berthplanList;
 //dictionary sizeList
 $.ajax({
     type: "GET",
@@ -371,8 +371,6 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
@@ -407,8 +405,6 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)");
     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
     if (value != null && value != '') {
         value = value.split(':')[0];
@@ -552,34 +548,64 @@ function onChange(changes, source) {
         return;
     }
     changes.forEach(function (change) {
-    	if (change[1] == "sztp" && change[3] != null && change[3] != '') {
-    		hot.setDataAtCell(change[0], 6, '');//opeCode reset
-    	}else
-   	 // Trigger when opeCode no change, get list vessel-voyage, pod by opeCode
+      	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
         if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
-        	hot.setDataAtCell(change[0], 7, '');//vessel and voyage reset
-        	hot.setDataAtCell(change[0], 8, '');//pod reset
-        	let shipmentDetail = new Object();
-        	shipmentDetail.bookingNo = shipmentSelected.bookingNo;
-        	if(hot.getDataAtCell(change[0], 3) != null){
-            	shipmentDetail.sztp =  hot.getDataAtCell(change[0], 3).split(": ")[0];
-        	}
-        	shipmentDetail.opeCode = change[3].split(": ")[0];
         	$.modal.loading("Đang xử lý ...");
             $.ajax({
-                url: prefix + "/berthplan/container/infor",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(shipmentDetail),
+                url: prefix + "/berthplan/ope-code/"+ change[3].split(": ")[0] +"/vessel-voyage/list",
+                method: "GET",
                 success: function (data) {
                 	$.modal.closeLoading();
                     if (data.code == 0) {
-                    	berthplan = data.shipmentDetail;
-                    	hot.setDataAtCell(change[0], 7, data.shipmentDetail.vslAndVoy); //Tàu và chuyến
-                    	hot.setDataAtCell(change[0], 8, data.shipmentDetail.dischargePort); //Cảng dở
+                        hot.updateSettings({
+                            cells: function (row, col, prop) {
+                                if (row == change[0] && col == 7) {
+                                    let cellProperties = {};
+                                    berthplanList = data.berthplanList;
+                                    cellProperties.source = data.vesselAndVoyages;
+                                    return cellProperties;
+                                }
+                            }
+                        });
                     }
                 }
             });
+        } 
+        // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
+        else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+          let vesselAndVoy = hot.getDataAtCell(change[0], 7);
+          //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
+          if (vesselAndVoy) {
+              let shipmentDetail = new Object();
+              for (let i= 0; i < berthplanList.length;i++){
+              	if(vesselAndVoy == berthplanList[i].vslAndVoy){
+              		shipmentDetail.vslNm = berthplanList[i].vslNm;
+              		shipmentDetail.voyNo = berthplanList[i].voyNo;
+              		shipmentDetail.year = berthplanList[i].year;
+              		$.modal.loading("Đang xử lý ...");
+                      $.ajax({
+                          url: ctx + "/logistic/pods",
+                          method: "POST",
+                          contentType: "application/json",
+                          data: JSON.stringify(shipmentDetail),
+                          success: function (data) {
+                          	$.modal.closeLoading();
+                              if (data.code == 0) {
+                                  hot.updateSettings({
+                                      cells: function (row, col, prop) {
+                                          if (row == change[0] && col == 8) {
+                                              let cellProperties = {};
+                                              cellProperties.source = data.dischargePorts;
+                                              return cellProperties;
+                                          }
+                                      }
+                                  });
+                              }
+                          }
+                      });
+              	}
+              }
+          }
         }
     });
 }
@@ -889,13 +915,17 @@ function getDataFromTable(isValidate) {
         shipmentDetail.consignee = object["consignee"];
         shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
         shipmentDetail.remark = object["remark"];
-        let vsl = object["vslNm"].split(" - ");
-        shipmentDetail.vslNm = vsl[0];
-        shipmentDetail.vslName = vsl[1];
-        if(berthplan){
-            shipmentDetail.voyNo = berthplan.voyNo;
+        if(berthplanList){
+            for (let i= 0; i < berthplanList.length;i++){
+            	if(object["vslNm"] == berthplanList[i].vslAndVoy){
+            		shipmentDetail.vslNm = berthplanList[i].vslNm;
+            		shipmentDetail.voyNo = berthplanList[i].voyNo;
+            		shipmentDetail.year = berthplanList[i].year;
+            		shipmentDetail.vslName = berthplanList[i].vslAndVoy.split(" - ")[1];
+            		shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
+            	}
+            }
         }
-        shipmentDetail.voyCarrier = vsl[2];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
