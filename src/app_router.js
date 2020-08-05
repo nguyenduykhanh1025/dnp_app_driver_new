@@ -8,7 +8,12 @@ import Geolocation from '@react-native-community/geolocation';
 import { AppContainer } from './navigation/root-switch';
 import NavigationService from './utils/navigation';
 import { callApi } from '@/requests';
-import { getGPSEnable, getToken } from '@/stores';
+import {
+    homeStack,
+    mainStack,
+    homeTab,
+} from '@/config/navigator';
+import { getGPSEnable, getToken, getAccount, getPassword } from '@/stores';
 
 import { CheckInternetEvery } from '@/utils';
 import BackgroundTimer from 'react-native-background-timer';
@@ -39,11 +44,6 @@ class AppAppContainer extends React.Component {
         var result = undefined;
         result = await callApi(params);
         console.log('resultonPushLocation', result)
-        if (!result.code == 0) {
-        }
-        else {
-            console.log('erronPushLocation', result.msg)
-        }
     }
 
     componentDidMount = async () => {
@@ -53,7 +53,7 @@ class AppAppContainer extends React.Component {
         var speed = null;
         CheckInternetEvery();
         var GPSEnable = await getGPSEnable();
-        console.log('GPSEnable', GPSEnable)
+        // console.log('GPSEnable', GPSEnable)
         Geolocation.setRNConfiguration({
             authorizationLevel: 'always'
         });
@@ -82,8 +82,6 @@ class AppAppContainer extends React.Component {
             )
 
             BackgroundTimer.runBackgroundTimer(() => {
-                console.log('x', x)
-                console.log('y', y)
                 this.onPushLocation(x, y);
             },
                 120000);
@@ -93,7 +91,7 @@ class AppAppContainer extends React.Component {
 
     componentWillMount() {
         PushNotification.popInitialNotification(notification => {
-            console.log('Initial notification: ', notification);
+            // console.log('Initial notification: ', notification);
         });
     }
 

@@ -67,7 +67,7 @@ export default class DetailScreen extends Component {
       refreshing: true,
     })
     this.token = await getToken();
-    console.log('this.props.navigation.state.params.serviceType', this.props.navigation.state.params.serviceType)
+    // console.log('this.props.navigation.state.params.serviceType', this.props.navigation.state.params.serviceType)
     this.onGetContainerList(this.props.navigation.state.params.serviceType);
   }
 
@@ -84,7 +84,7 @@ export default class DetailScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonGetContainerList', result)
+    // console.log('resultonGetContainerList', result)
     if (result.code == 0) {
       await this.setState({
         data: result.shipmentList,

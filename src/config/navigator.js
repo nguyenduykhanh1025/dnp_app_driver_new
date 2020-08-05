@@ -1,5 +1,6 @@
 
 export const rootSwitch = {
+    splash: 'SplashStack',
     auth: 'AuthStack',
     main: 'mainStack',
 };
@@ -10,7 +11,7 @@ export const authStack = {
 };
 
 export const mainStack = {
-    home_tab:'homeTab',
+    home_tab: 'homeTab',
     detail: 'homeDetailScreen',
     detail1: 'homeDetail1Screen',
     detail11: 'homeDetai11Screen',

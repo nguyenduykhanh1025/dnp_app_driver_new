@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import {
-  mainStack
+  mainStack,
+  homeTab,
 } from '@/config/navigator';
 import {
   Colors,
@@ -44,7 +45,7 @@ export default class ResultScreen extends Component {
   }
 
   componentDidMount = async () => {
-    console.log('this.props.navigation.state.params.pickupId', this.props.navigation.state.params.pickupId)
+    // console.log('this.props.navigation.state.params.pickupId', this.props.navigation.state.params.pickupId)
     this.token = await getToken();
     this.onGetDetailInfo(this.props.navigation.state.params.pickupId);
   }
@@ -58,7 +59,7 @@ export default class ResultScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonGetDetailInfo', result)
+    // console.log('resultonGetDetailInfo', result)
     if (result.code == 0) {
       await this.setState({
         data: result.data
@@ -70,7 +71,7 @@ export default class ResultScreen extends Component {
   }
 
   onBack = () => {
-    NavigationService.navigate(mainStack.home_tab, { update: 1 })
+    NavigationService.navigate(homeTab.home, { update: 1 })
   };
 
   onCancel = async (pickupId) => {
@@ -82,9 +83,9 @@ export default class ResultScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonCancel', result)
+    // console.log('resultonCancel', result)
     if (result.code == 0) {
-      NavigationService.navigate(mainStack.home_tab, { update: 1 })
+      NavigationService.navigate(homeTab.home, { update: 1 })
     }
     else {
       Alert.alert('Thông báo!', result.msg)

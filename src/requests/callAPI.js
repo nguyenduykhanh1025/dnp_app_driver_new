@@ -3,10 +3,10 @@ import { URL } from '@/services/link';
 import { CheckInternetFetch } from '@/utils';
 
 export default callApi = (params) => {
-  console.log('params callapi', params)
-  console.log('params.api', params.api)
-  console.log('params.param', params.param)
-  console.log('params.token', params.token)
+  // console.log('params callapi', params)
+  // console.log('params.api', params.api)
+  // console.log('params.param', params.param)
+  // console.log('params.token', params.token)
   if (CheckInternetFetch()) {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -26,7 +26,7 @@ export default callApi = (params) => {
         headers: myHeaders,
       };
     }
-    console.log('requestOptions', requestOptions)
+    // console.log('requestOptions', requestOptions)
 
     return fetch(URL + params.api, requestOptions)
       .then(response => response.json())

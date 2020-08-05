@@ -55,7 +55,7 @@ export default class DetailScreen extends Component {
     var truckNo = await getTruck();
     var chassisNo = await getChassis();
     this.token = await getToken();
-    console.log('this.props.navigation.state.params.data', this.props.navigation.state.params.data)
+    // console.log('this.props.navigation.state.params.data', this.props.navigation.state.params.data)
     await this.setState({
       truckNo: truckNo,
       chassisNo: chassisNo,
@@ -83,7 +83,7 @@ export default class DetailScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonPickupContainer', result)
+    // console.log('resultonPickupContainer', result)
     if (result.code == 0) {
       NavigationService.navigate(homeTab.home, { update: 1 })
     }

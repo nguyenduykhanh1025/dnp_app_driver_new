@@ -9,7 +9,7 @@ class HeaderList extends Component {
     goBack = () => {
         const navigation = this.props.navigation
         navigation.goBack();
-        console.log('this.props.goBack', navigation)
+        // console.log('this.props.goBack', navigation)
     }
     render() {
         const { filter, title, bgColor, bdw } = this.props;

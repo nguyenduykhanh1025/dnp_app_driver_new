@@ -54,7 +54,7 @@ export default class HomeScreen extends Component {
       pageSize: 10,
       truckNo: '',
       chassisNo: '',
-      date: '10 Jun 2020',
+      date: '',
       boc_focused: true,
       ha_focused: false,
       boc_rong_focused: false,
@@ -70,12 +70,13 @@ export default class HomeScreen extends Component {
   };
 
   componentDidMount = async () => {
+    this.token = await getToken();
     saveUpEnable('0')
     saveDownEnable('0')
-    this.token = await getToken();
     this.onGetPickupList()
     this.onGetHistoryList()
     this.getUserInfo()
+
   };
 
   componentWillUnmount() {
@@ -95,14 +96,21 @@ export default class HomeScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonGetPickupList', result)
+    // console.log('resultonGetPickupList', result)
     if (result.code == 0) {
-      await this.setState({
-        PickupList: result.data,
-        truckNo: result.data && result.data[0].truckNo,
-        chassisNo: result.data && result.data[0].chassisNo,
-      })
-      await this.onCheckEnableService(result.data)
+      if (result.data.length > 0) {
+        await this.setState({
+          PickupList: result.data,
+          truckNo: result.data[0].truckNo,
+          chassisNo: result.data[0].chassisNo,
+        })
+        await this.onCheckEnableService(result.data)
+      }
+      else {
+        await this.setState({
+          PickupList: [],
+        })
+      }
     }
     else {
       Alert.alert('Thông báo!', result.msg)
@@ -112,7 +120,7 @@ export default class HomeScreen extends Component {
   onCheckEnableService = async (PickupList) => {
     var upEnable = 0;
     var downEnable = 0;
-    console.log('PickupList.length', PickupList.length)
+    // console.log('PickupList.length', PickupList.length)
     if (PickupList.length < 4) {
       PickupList.map((item, index) => {
         if (item.serviceType % 2 == 0) {
@@ -136,8 +144,8 @@ export default class HomeScreen extends Component {
     }
     else {
     }
-    console.log('upEnable', upEnable)
-    console.log('downEnable', downEnable)
+    // console.log('upEnable', upEnable)
+    // console.log('downEnable', downEnable)
     saveUpEnable(upEnable.toFixed())
     saveDownEnable(downEnable.toFixed())
   }
@@ -170,7 +178,7 @@ export default class HomeScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonGetHistoryList', result)
+    // console.log('resultonGetHistoryList', result)
     if (result.code == 0) {
       await this.setState({
         HistoryList: result.data,
@@ -182,7 +190,7 @@ export default class HomeScreen extends Component {
   }
 
   componentWillReceiveProps = (updateProps) => {
-    console.log('home.updateProps', updateProps)
+    // console.log('home.updateProps', updateProps)
   }
 
 
@@ -211,7 +219,7 @@ export default class HomeScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    console.log('resultonGoCheckIn', result)
+    // console.log('resultonGoCheckIn', result)
     if (result.code == 0) {
       Toast.hide()
       NavigationService.navigate(mainStack.qr_code, { dataQR: result })
@@ -259,15 +267,21 @@ export default class HomeScreen extends Component {
                 </View>
               </View>
             </View>
-            <TouchableOpacity
-              onPress={() => {
-                this.onGoCheckIn()
-              }}
-            >
-              <View style={styles.HeaderButton}>
-                <Text style={styles.HeaderButtonText}>Check in</Text>
-              </View>
-            </TouchableOpacity>
+            {
+              !this.state.PickupList.length < 1 ?
+                <TouchableOpacity
+                  onPress={() => {
+                    this.onGoCheckIn()
+                  }}
+                >
+                  <View style={styles.HeaderButton}>
+                    <Text style={styles.HeaderButtonText}>Check in</Text>
+                  </View>
+                </TouchableOpacity>
+                :
+                null
+            }
+
           </View>
           {
             this.state.PickupList.length < 1 ?
@@ -276,7 +290,7 @@ export default class HomeScreen extends Component {
                 alignItems: 'center',
               }}>
                 <View style={styles.PortersTagEmpty}>
-                  <Text>Chưa nhận cont nào !</Text>
+                  <Text>Bạn chưa nhận cont nào!</Text>
                 </View>
               </View>
               :
