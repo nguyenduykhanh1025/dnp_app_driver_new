@@ -121,8 +121,7 @@ function formatToYDMHMS(date) {
 function formatAction(value, row, index) {
   let actions = [];
   let disabled = "";
-  if(row.status == '3')
-  {
+  if (row.status == '3') {
     disabled = "disabled";
   }
   actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
@@ -171,8 +170,6 @@ function loadTableByContainer(billOfLading) {
         }),
         success: function (data) {
           success(JSON.parse(data));
-          // let dataTotal = JSON.parse(data);
-          // console.log(dataTotal);
         },
 
         error: function () {
@@ -257,7 +254,7 @@ function formatStatus(value) {
     case '2':
       return "<span class='label label-success'>Đã làm lệnh</span>";
     case '3':
-    return "<span class='label label-success'>Gate-in</span>";
+      return "<span class='label label-success'>Gate-in</span>";
   }
 }
 
@@ -267,26 +264,21 @@ function multiUpdateEdo() {
   let ids = [];
   let rows = $('#dgContainer').datagrid('getSelections');
   if (rows.length === 0) {
-    $.modal.alertWarning("Bạn chưa chọn container để update, vui lòng kiểm tra lại !");
+    $.modal.alertWarning("Quý khách chưa chọn container để update, vui lòng kiểm tra lại !");
     return;
   }
   for (let i = 0; i < rows.length; i++) {
     let row = rows[i];
+    if(row.status == '3')
+    {
+      $.modal.alertError("Quý khách đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
+      return;
+    }
     ids.push(row.id);
   }
   $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 600, 400);
 }
 
-// $("#vesselNo").change(function() {
-//   let edo = new Object();
-//   edo.vesselNo = this.value;
-//   loadTable(edo);
-// });
-// $("#voyNo").change(function() {
-//   let edo = new Object();
-//   edo.voyNo = this.value;
-//   loadTable(edo);
-// });
 
 
 // SEARCH INFO VESSEL AREA
@@ -395,3 +387,4 @@ $(".c-search-box-voy-no").change(function () {
   $(this).text(null);
   loadTable(edo);
 });
+

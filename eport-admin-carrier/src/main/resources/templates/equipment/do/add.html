@@ -59,20 +59,15 @@
         this.on("success", function (data) {
           if (data != "") {
             var rs = JSON.parse(data.xhr.response);
-            console.log(data.upload.uuid);
             if (dataObj == null) {
               dataObj = rs;
               dataObj.forEach(element => {
                   element["file"] = data.upload.uuid; 
               });
-              //console.log(dataObj);
             }else {
               rs.forEach(element => {
-                // add file-id to element
-                  //element.push("fid", data.upload.uuid);
                   element["file"] = data.upload.uuid;
                   dataObj.push(element);
-                  console.log(dataObj);
               });
             }
            }
@@ -84,12 +79,9 @@
             loadView();
         });
         this.on("error", function (file, data) {
-
-            console.log("error", data, file);
         });
         this.on("removedfile", function (file) { 
               var fileId = file.upload.uuid;
-              console.log(fileId);
               var i = 0;
               for(i; i<dataObj.length;i++)
               {
@@ -99,7 +91,6 @@
                     i--;
                   }
               }
-              console.log("i",i); 
               hot.render();
         });
       }

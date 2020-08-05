@@ -1,4 +1,5 @@
 var PREFIX = ctx + "edo";
+
 $(function () {
     loadTable();
 });

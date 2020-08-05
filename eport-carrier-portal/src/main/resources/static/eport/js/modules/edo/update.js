@@ -1,4 +1,5 @@
 const PREFIX = ctx + "edo";
+
 $(function () {
   $("#containerNumber").val(containerNumber);
   $("#expiredDem").val(formatDate(expiredDem));
@@ -26,7 +27,7 @@ function confirm() {
     $.modal.alertError("Không có thông tin nào được thay đổi !!!")
     return;
   }
-  if (validateDateUpdate(expiredDem, $("#expiredDem").val()) == 1) {
+  if (validateDateUpdate($("#expiredDem").val()) == 1 && formatDate(expiredDem) != $("#expiredDem").val()) {
     $.modal.alertError("Hạn lệnh chỉ có thể thay đổi về quá khứ nhiều nhất là 1 ngày !!!")
     return;
   }
@@ -54,7 +55,8 @@ function confirm() {
             return;
           }
           setTimeout(function () {
-            $.modal.reload();
+            parent.getSelectedRow();
+            $.modal.close();
           }, 2000)
         },
         error: function (data) {
@@ -84,10 +86,8 @@ function formatDateForSubmit(value) {
   var month = date.getMonth() + 1;
   var monthText = month < 10 ? "0" + month : month;
   var s = date.getFullYear() + "-" + monthText + "-" + day;
-  console.log("formatDateForSubmit -> s", s)
   return date.getFullYear() + "-" + monthText + "-" + day;
 }
-
 
 function validateUpdateDate(fromDate, toDate) {
   if (fromDate == toDate) {
@@ -95,8 +95,6 @@ function validateUpdateDate(fromDate, toDate) {
   }
   return 0;
 }
-
-
 
 $.ajax({
   type: "GET",
@@ -111,19 +109,17 @@ $.ajax({
   }
 })
 
-
-function validateDateUpdate(fromDate, toDate) {
+function validateDateUpdate(toDate) {
   toDate = toDate.split("/").reverse().join("-");
-  if (fromDate == "" || toDate == "") {
+  if (toDate == "") {
     return 1;
   }
-  var formatDate1 = new Date(fromDate);
+  var currentDay = new Date();
   var toDate1 = new Date(toDate);
-  var offset = toDate1.getTime() - formatDate1.getTime();
+  var offset = toDate1.getTime() - currentDay.getTime();
   var totalDays = Math.round(offset / 1000 / 60 / 60 / 24);
   if (totalDays < -1) {
     return 1;
   }
   return 0;
-
 }

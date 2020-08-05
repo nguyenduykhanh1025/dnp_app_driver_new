@@ -34,7 +34,6 @@ public class CarrierEdoController extends CarrierBaseController {
 
     private final String PREFIX = "edo";
 	
-
 	@Autowired
 	private IEdoService edoService;
 
@@ -69,7 +68,6 @@ public class CarrierEdoController extends CarrierBaseController {
 	  return getDataTable(dataList);
 	}
 
-	//List
 	@PostMapping("/edo")
 	@ResponseBody
 	public TableDataInfo edo(@RequestBody PageAble<Edo> param)
@@ -134,12 +132,6 @@ public class CarrierEdoController extends CarrierBaseController {
 			ids = edo.getId().toString();
 		}
 		try {
-			
-			EdoAuditLog edoAuditLog = new EdoAuditLog();
-			Date timeNow = new Date();
-			edoAuditLog.setCarrierId(super.getUser().getGroupId());
-			edoAuditLog.setCarrierCode(super.getUserGroup().getGroupCode());
-			edoAuditLog.setCreateTime(timeNow);
 			String[] idsList = ids.split(",");
 			edo.setCarrierCode(super.getUserGroup().getGroupCode());
 			edo.setCarrierId(super.getUser().getGroupId());
@@ -150,7 +142,7 @@ public class CarrierEdoController extends CarrierBaseController {
 				edoCheck.setCarrierId(super.getUser().getGroupId());
 				if(edoService.selectFirstEdo(edoCheck) == null)
 				{
-					return AjaxResult.error("Bạn đã chọn container mà bạn không có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
+					return AjaxResult.error("Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
 				}else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
 					return AjaxResult.error("Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
 				}
@@ -217,8 +209,6 @@ public class CarrierEdoController extends CarrierBaseController {
 		return AjaxResult.success(dictDataService.selectDictDataList(dictData));
 	}
 
-
-	// Report
 	@GetMapping("/report")
 	public String report() {
 		if (!hasDoPermission()) {
@@ -227,7 +217,6 @@ public class CarrierEdoController extends CarrierBaseController {
 		return PREFIX + "/report";
 	}
 
-	//List
 	@PostMapping("/edoReport")
 	@ResponseBody
 	public TableDataInfo edoReport(@RequestBody PageAble<Edo> param)
