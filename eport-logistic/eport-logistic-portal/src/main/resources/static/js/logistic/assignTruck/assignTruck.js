@@ -701,5 +701,6 @@ function getDataFromOutSource(){
     }
 }
 function generatePDF() {
-    $.modal.openTab("In phiếu", prefix +"/jasper-report/view/"+shipmentSelected.id);
+	// window.open(prefix +"/jasper-report/view/"+shipmentSelected.id);
+    $.modal.openTab("In phiếu", ctx +"logistic/print/shipment/"+shipmentSelected.id);
 }
