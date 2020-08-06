@@ -701,6 +701,10 @@ function getDataFromOutSource(){
     }
 }
 function generatePDF() {
-	window.open(prefix +"/jasper-report/view/"+shipmentSelected.id);
+	if(!shipmentSelected){
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}
+	window.open(prefix +"/jasper-report/view/" + shipmentSelected.id);
     //$.modal.openTab("In phiếu", prefix +"/jasper-report/view/"+shipmentSelected.id);
 }
