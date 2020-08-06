@@ -20,11 +20,11 @@ import { hasSystemFeature } from 'react-native-device-info';
 
 export default class Item extends Component {
   render() {
-    var { data, onPress } = this.props;
+    var { data, onPress, disabled } = this.props;
     return (
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity onPress={onPress} disabled={disabled}>
         <View style={styles.Container}>
-          <View style={styles.ItemContainer}>
+          <View style={[styles.ItemContainer, disabled ? { backgroundColor: 'rgba(0, 0, 0, 0.1)' } : null]}>
             <View style={styles.LeftView}>
               <View style={styles.Line}>
                 <View style={{
