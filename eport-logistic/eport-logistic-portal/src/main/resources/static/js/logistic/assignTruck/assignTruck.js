@@ -705,6 +705,5 @@ function generatePDF() {
 		$.modal.alertError("Bạn chưa chọn Lô!");
 		return
 	}
-	// window.open(prefix +"/jasper-report/view/"+shipmentSelected.id);
     $.modal.openTab("In phiếu", ctx +"logistic/print/shipment/"+shipmentSelected.id);
 }

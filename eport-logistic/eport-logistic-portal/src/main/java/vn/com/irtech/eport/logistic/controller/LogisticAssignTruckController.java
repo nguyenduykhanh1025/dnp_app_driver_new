@@ -1,13 +1,10 @@
 package vn.com.irtech.eport.logistic.controller;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,13 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -535,47 +525,5 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		AjaxResult ajaxResult = success();
 		ajaxResult.put("remark", remark);
 		return ajaxResult;
-	}
-	
-	@GetMapping("/jasper-report/view/{shipmentId}")
-	public String jasperReport(@PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
-		response.setContentType("application/x-download");
-		response.setHeader("Content-Disposition", String.format("attachment; filename=\"report.pdf\""));
-		ShipmentDetail shipmentDetail = new ShipmentDetail();
-		shipmentDetail.setShipmentId(shipmentId);
-		shipmentDetail.setPaymentStatus("Y");
-		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-		if(shipmentDetails.size() > 0) {
-	        try {
-	        	OutputStream out = response.getOutputStream();
-	            createPdfReport(shipmentDetails, out);
-	            
-	        } catch (final Exception e) {
-	            e.printStackTrace();
-	        }
-		}
-		return "error/unauth";
-	}
-	private void createPdfReport(final List<ShipmentDetail> shipmentDetails, OutputStream out) throws JRException {
-		// Fetching the .jrxml file from the resources folder.
-        final InputStream stream = this.getClass().getResourceAsStream("/order_report.jrxml");
-        // Compile the Jasper report from .jrxml to .japser
-        final JasperReport report = JasperCompileManager.compileReport(stream);
-        
-        // Fetching the shipmentDetails from the data source.
-        final JRBeanCollectionDataSource source = new JRBeanCollectionDataSource(shipmentDetails);
-        
-        // Adding the additional parameters to the pdf.
-//        final Map<String, Object> parameters = new HashMap<>();
-//        parameters.put("createdBy", "javacodegeek.com");
-        
-        // Filling the report with the shipmentDetail data and additional parameters information.
-        final JasperPrint print = JasperFillManager.fillReport(report, null, source);
-        
-        //final String filePath = "I:/";
-        // Export the report to a PDF file.
-        //JasperExportManager.exportReportToPdfFile(print, filePath + "order_report.pdf");
-        JasperExportManager.exportReportToPdfStream(print, out);
 	}
 }
