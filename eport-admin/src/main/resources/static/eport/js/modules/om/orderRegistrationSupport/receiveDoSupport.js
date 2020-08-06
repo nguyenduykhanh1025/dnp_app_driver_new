@@ -7,8 +7,8 @@ $(document).ready(function () {
   if (shipmentDetails != null && shipmentDetails.length > 0) {
     let date = new Date();
     date.setHours(0,0,0);
-    if ('Y' == shipmentDetails[0].doStatus) {
-      if (new Date(shipmentDetails[0].expiredDem).getTime() < date.getTime()) {
+    if (shipmentDetails[0].doReceivedTime) {
+      if ((new Date(shipmentDetails[0].expiredDem)).getTime() < date.getTime() || 'N' == shipmentDetails[0].doStatus) {
         $('.do-status').prop('disabled', true);
       } else {
         $('.do-status').prop('disabled', true);

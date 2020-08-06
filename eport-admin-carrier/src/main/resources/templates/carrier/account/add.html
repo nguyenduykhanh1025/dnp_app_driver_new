@@ -86,7 +86,7 @@
             // init group code select 2
             $('.groupName').select2({
                 ajax: {
-                    url: '/carrier/group/searchGroupNameByKeyword',
+                    url: ctx + 'carrier/group/searchGroupNameByKeyword',
                     method: 'get',
                     delay: 250,
                     data: function (params) {
@@ -107,7 +107,7 @@
             // Init carrier code select 2
             $('.carrierCodes').select2({
                 ajax: {
-                    url: '/carrier/group/searchOperateCodeByKeyword',
+                    url: ctx + 'carrier/group/searchOperateCodeByKeyword',
                     method: 'get',
                     delay: 250,
                     data: function (params) {

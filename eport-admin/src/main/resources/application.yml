@@ -13,7 +13,7 @@ eport:
 server:
   port: 7071
   servlet:
-    context-path: /
+    context-path: /admin
   tomcat:
     uri-encoding: UTF-8
     max-threads: 800
@@ -104,7 +104,7 @@ xss:
 mqtt:
   username: admin
   password: public 
-  host-url: tcp://127.0.0.1:1883               # The address and port of your own server need to be changed 
+  host-url: tcp://113.176.195.221:1883            # The address and port of your own server need to be changed 
 
 websocket:
    endpoint: /eport_admin

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
@@ -24,6 +25,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
@@ -60,9 +62,24 @@ public class OrderRegistrationSupportController extends AdminBaseController {
   @Autowired
   private ICatosApiService catosService;
 
+  @Autowired
+  private ILogisticGroupService logisticGroupService;
+
   @GetMapping()
-  public String getMainView() {
+  public String getMainView(ModelMap mmap) {
+    LogisticGroup logisticGroup = new LogisticGroup();
+    logisticGroup.setGroupName("Chọn đơn vị Logistics");
+    logisticGroup.setId(0L);
+    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(new LogisticGroup());
+    logisticGroups.add(0, logisticGroup);
+    mmap.put("logisticsGroups", logisticGroups);
     return PREFIX + "/index";
+  }
+
+  @GetMapping("/logistics/{logisticGroupId}/info")
+  public String getLogisticInfo(@PathVariable("logisticGroupId") Long logisticGroupId, ModelMap mmap) {
+    mmap.put("logisticInfo", logisticGroupService.selectLogisticGroupById(logisticGroupId));
+    return PREFIX + "/logisticsInfo";
   }
 
   @GetMapping("/custom/{shipmentId}")

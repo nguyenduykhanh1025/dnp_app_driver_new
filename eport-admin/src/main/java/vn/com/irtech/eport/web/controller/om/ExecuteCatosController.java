@@ -23,6 +23,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -129,48 +130,66 @@ public class ExecuteCatosController extends AdminBaseController {
 		return error("Lỗi hệ thống, vui lòng thử lại sau.");
 	}
 
-	@PostMapping("/invoice-no")
+	@PostMapping("/sync")
 	@Transactional
 	@ResponseBody
 	public AjaxResult updateInvoiceNo(@RequestBody ProcessOrder processOrder) {
 		if (processOrder != null) {
 			SysUser user = getUser();
-			if ((processOrder.getReferenceNo() != null && !"".equals(processOrder.getReferenceNo())) || "Credit".equals(processOrder.getPayType())) {
-				ShipmentDetail shipmentDetail = new ShipmentDetail();
-				shipmentDetail.setProcessOrderId(processOrder.getId());
-				List<ShipmentDetail> shipmentDetails = shipmentDetailService
-						.selectShipmentDetailList(shipmentDetail);
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setProcessOrderId(processOrder.getId());
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService
+					.selectShipmentDetailList(shipmentDetail);
 
-				// SAVE BILL
-				if ("Cash".equals(processOrder.getPayType())) {
-					processBillService.saveProcessBillByInvoiceNo(processOrder);
-				} else {
-					processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
-				}
-
-				// UPDATE PROCESS ORDER
-				processOrder.setStatus(2); // FINISH
-				processOrder.setResult("S"); // RESULT SUCESS
-				processOrder.setUpdateBy(user.getUserName());
-				processOrder.setUpdateTime(new Date());
-				processOrderService.updateProcessOrder(processOrder);
-
-				// UPDATE SHIPMENT DETAIL
-				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", processOrder.getReferenceNo(),
-						processOrder);
-
-				// SAVE HISTORY
-				ProcessHistory processHistory = new ProcessHistory();
-				processHistory.setProcessOrderId(processOrder.getId());
-				processHistory.setStatus(2); // FINISH
-				processHistory.setSysUserId(getUserId());
-				processHistory.setResult("S");
-				processHistory.setCreateTime(new Date());
-				processHistory.setCreateBy(user.getUserName());
-				processHistoryService.insertProcessHistory(processHistory);
-
-				return success("Thành công.");
+			if(shipmentDetails.isEmpty()) {
+				return error();
 			}
+
+			List<ProcessBill> processBills = null;
+			// SAVE BILL
+			if ("Cash".equals(processOrder.getPayType())) {
+				ShipmentDetail shipmentDetail2 = shipmentDetails.get(0);
+				shipmentDetail2.setServiceType(processOrder.getServiceType());
+				processBills = processBillService.getBillByShipmentDetail(shipmentDetail2);
+				if (processBills.isEmpty()) {
+					return error();
+				}
+				for (ProcessBill processBill : processBills) {
+					processBill.setProcessOrderId(processOrder.getId());
+					processBill.setServiceType(processOrder.getServiceType());
+					processBill.setShipmentId(processOrder.getShipmentId());
+					processBill.setCreateTime(new Date());
+					processBill.setLogisticGroupId(processOrder.getLogisticGroupId());
+					processBill.setPaymentStatus("N");
+					processBill.setPayType("Cash");
+					processBillService.insertProcessBill(processBill);
+				}
+			} else {
+				processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
+			}
+
+			// UPDATE PROCESS ORDER
+			processOrder.setStatus(2); // FINISH
+			processOrder.setResult("S"); // RESULT SUCESS
+			processOrder.setUpdateBy(user.getUserName());
+			processOrder.setUpdateTime(new Date());
+			processOrderService.updateProcessOrder(processOrder);
+
+			// UPDATE SHIPMENT DETAIL
+			shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", processOrder.getReferenceNo(),
+					processOrder);
+
+			// SAVE HISTORY
+			ProcessHistory processHistory = new ProcessHistory();
+			processHistory.setProcessOrderId(processOrder.getId());
+			processHistory.setStatus(2); // FINISH
+			processHistory.setSysUserId(getUserId());
+			processHistory.setResult("S");
+			processHistory.setCreateTime(new Date());
+			processHistory.setCreateBy(user.getUserName());
+			processHistoryService.insertProcessHistory(processHistory);
+
+			return success("Thành công.");
 		}
 		return error("Thất bại.");
 	}

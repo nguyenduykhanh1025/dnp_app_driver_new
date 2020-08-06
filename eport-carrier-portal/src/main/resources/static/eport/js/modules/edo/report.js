@@ -1,11 +1,11 @@
-const PREFIX= ctx + "edo";
+const PREFIX = ctx + "edo";
 var edo = new Object();
 
 $(function () {
   loadTable(edo)
 });
-function loadTable(edo)
-{
+
+function loadTable(edo) {
   $("#dg").datagrid({
     url: PREFIX + "/edoReport",
     method: "POST",
@@ -15,41 +15,41 @@ function loadTable(edo)
     pageSize: 20,
     nowrap: false,
     striped: true,
-    rownumbers:true,
+    rownumbers: true,
     loader: function (param, success, error) {
-        var opts = $(this).datagrid("options");
-        if (!opts.url) return false;
-        $.ajax({
-            type: opts.method,
-            url: opts.url,
-            contentType: "application/json",
-            accept: 'text/plain',
-            dataType: 'text',
-            data: JSON.stringify({
-              pageNum: param.page,
-              pageSize: param.rows,
-              orderByColumn: param.sort,
-              isAsc: param.order,
-              data: edo
-            }),
-            success: function (data) {
-                success(JSON.parse(data));
-            },
+      var opts = $(this).datagrid("options");
+      if (!opts.url) return false;
+      $.ajax({
+        type: opts.method,
+        url: opts.url,
+        contentType: "application/json",
+        accept: 'text/plain',
+        dataType: 'text',
+        data: JSON.stringify({
+          pageNum: param.page,
+          pageSize: param.rows,
+          orderByColumn: param.sort,
+          isAsc: param.order,
+          data: edo
+        }),
+        success: function (data) {
+          success(JSON.parse(data));
+        },
 
-    error: function () {
-      error.apply(this, arguments);
+        error: function () {
+          error.apply(this, arguments);
+        },
+      });
     },
   });
-},
-});
 }
 $('#searchAll').keyup(function (event) {
   if (event.keyCode == 13) {
-      edo.containerNumber = $('#searchAll').val().toUpperCase();
-      edo.consignee = $('#searchAll').val().toUpperCase();
-      edo.vessel = $('#searchAll').val().toUpperCase();
-      edo.voyNo = $('#searchAll').val().toUpperCase();
-      loadTable(edo)
+    edo.containerNumber = $('#searchAll').val().toUpperCase();
+    edo.consignee = $('#searchAll').val().toUpperCase();
+    edo.vessel = $('#searchAll').val().toUpperCase();
+    edo.voyNo = $('#searchAll').val().toUpperCase();
+    loadTable(edo)
   }
 
 });
@@ -108,7 +108,7 @@ $(".c-search-box-vessel").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
+
       })
       return {
         results: results,
@@ -137,7 +137,7 @@ $(".c-search-box-vessel-code").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
+
       })
       return {
         results: results,
@@ -166,7 +166,7 @@ $(".c-search-box-voy-no").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
+
       })
       return {
         results: results,
@@ -201,7 +201,6 @@ function formatStatus(value) {
     case '2':
       return "<span class='label label-success'>Đã làm lệnh</span>";
     case '3':
-    return "<span class='label label-success'>Gate-in</span>";
+      return "<span class='label label-success'>Gate-in</span>";
   }
 }
-

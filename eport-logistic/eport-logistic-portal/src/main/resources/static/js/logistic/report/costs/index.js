@@ -1,4 +1,4 @@
-const PREFIX = ctx + "/logistic/report/costs";
+const PREFIX = ctx + "logistic/report/costs";
 var processBill = new Object();
 //var fromDate, toDate;
 

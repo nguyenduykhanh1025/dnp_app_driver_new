@@ -165,14 +165,12 @@ function loadView() {
             },
             {
                 data: 'expiredDem',
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
+                type: 'text',
                 editor: false
             },
             {
                 data: 'fileCreateTime',
-                type: 'date',
-                dateFormat: 'MM/DD/YYYY',
+                type: 'text',
                 editor: false
             },
             {

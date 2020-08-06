@@ -37,7 +37,6 @@ import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.PaymentHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
@@ -214,7 +213,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		// check if process order is on payment transaction
 		PaymentHistory paymentHistoryParam = new PaymentHistory();
 		paymentHistoryParam.setProccessOrderIds(processOrderIds);
-		paymentHistoryParam.setStatus("0");
+		paymentHistoryParam.setStatus("1");
 		List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
 		PaymentHistory paymentHistory;
 		if (paymentHistories.isEmpty()) {
@@ -228,9 +227,10 @@ public class LogisticCommonController extends LogisticBaseController {
 			paymentHistory.setCreateBy(getUser().getFullName());
 			paymentHistoryService.insertPaymentHistory(paymentHistory);
 		} else {
-			paymentHistory = paymentHistories.get(0);
-			paymentHistory.setOrderId(orderId);
-			paymentHistoryService.updatePaymentHistory(paymentHistory);
+			// paymentHistory = paymentHistories.get(0);
+			// paymentHistory.setOrderId(orderId);
+			// paymentHistoryService.updatePaymentHistory(paymentHistory);
+			return "error/unauth";
 		}
 
 		mmap.put("resultUrl", configService.getKey("napas.payment.result"));
@@ -285,7 +285,7 @@ public class LogisticCommonController extends LogisticBaseController {
 						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
 						if (shipmentDetail.getCustomStatus() != null && "N".equals(shipmentDetail.getCustomStatus()) && 
 						shipmentDetail.getDischargePort() != null && shipmentDetail.getDischargePort().length() > 2 && 
-						"VN".equals(shipmentDetail.getLoadingPort().substring(0, 2))) {
+						"VN".equals(shipmentDetail.getDischargePort().substring(0, 2))) {
 							shipmentDetail.setCustomStatus("R");
 							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
 						}

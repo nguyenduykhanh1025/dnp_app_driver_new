@@ -79,6 +79,20 @@ function formatCustom(value, row, index) {
 //   return '<a class="btn btn-success btn-xs" onclick="openVerificationSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Làm lệnh</a> ';
 // }
 
+function formatBlBooking(value, row) {
+  if (row.blNo) {
+    return row.blNo;
+  }
+  if (row.bookingNo) {
+    return row.bookingNo;
+  }
+  return '';
+}
+
+function formatLogistic(value, row, index) {
+  return '<a onclick="logisticInfo(' + row.logisticGroupId + ',' + '\'' + value + '\')"> '+ value + '</a>'
+}
+
 function formatPayment(value, row, index) {
   return '<a class="btn btn-default btn-xs" onclick="openPaymentSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Thanh toán</a> ';
 }
@@ -226,3 +240,19 @@ function finishForm(res) {
   }
   loadTable();
 }
+
+function logisticInfo(id, logistics) {
+  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, PREFIX + "/logistics/" + id + "/info", null, 450, function() {
+    $.modal.close();
+  });
+}
+
+$('#logistic').change(function() {
+  console.log($('#logistic option:selected').val());
+  if (0 != $('#logistic option:selected').val()) {
+    shipment.logisticName = $('#logistic option:selected').val();
+  } else {
+    shipment.logisticName = '';
+  }
+  loadTable();
+})
