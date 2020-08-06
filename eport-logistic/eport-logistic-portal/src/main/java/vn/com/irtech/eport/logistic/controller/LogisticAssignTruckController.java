@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +61,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	
 	@Autowired
 	private ILogisticTruckService logisticTruckService;
-
+	
 	@GetMapping
     public String assignTruck(ModelMap mmap) {
 		PickupAssign pickupAssign = new PickupAssign();
@@ -69,7 +70,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		mmap.put("driverOwnerList", pickupAssignService.getDriverOwners(pickupAssign));
     	return PREFIX + "/assignTruck";
 	}
-	
+
 	@PostMapping("/listShipment")
 	@ResponseBody
 	public TableDataInfo listShipment(@RequestBody PageAble<Shipment> param) {
@@ -87,7 +88,8 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	public TableDataInfo getShipmentDetail(ShipmentDetail shipmentDetail) {
 		LogisticAccount user = getUser();
 		shipmentDetail.setLogisticGroupId(user.getGroupId());
-		shipmentDetail.setProcessStatus("Y");
+		//shipmentDetail.setProcessStatus("Y");
+		shipmentDetail.setPaymentStatus("Y");
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailListForAssign(shipmentDetail);
 		return getDataTable(shipmentDetails);
 	}

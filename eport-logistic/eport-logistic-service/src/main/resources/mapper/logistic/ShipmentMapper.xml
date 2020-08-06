@@ -188,7 +188,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="getShipmentListForAssign" parameterType="Shipment" resultMap="ShipmentResult">
         select  id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, create_by, create_time, update_by, update_time,
-                (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.process_status = 'Y') as container_amount
+                (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.payment_status = 'Y') as container_amount
         from shipment s
         <where>
             (select count(*) from shipment_detail sh where sh.shipment_id = s.id and sh.process_status = 'Y') > 0

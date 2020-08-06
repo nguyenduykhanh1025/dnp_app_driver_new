@@ -700,3 +700,10 @@ function getDataFromOutSource(){
         return true;
     }
 }
+function generatePDF() {
+	if(!shipmentSelected){
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}
+    $.modal.openTab("In phiếu", ctx +"logistic/print/shipment/"+shipmentSelected.id);
+}
