@@ -12,7 +12,7 @@ eport:
 server:
   port: 7070
   servlet:
-    context-path: /
+    context-path: /logistic
   tomcat:
     uri-encoding: UTF-8
     max-threads: 100
