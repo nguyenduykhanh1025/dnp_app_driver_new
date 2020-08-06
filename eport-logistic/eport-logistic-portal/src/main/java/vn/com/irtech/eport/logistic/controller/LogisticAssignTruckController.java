@@ -538,20 +538,24 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	}
 	
 	@GetMapping("/jasper-report/view/{shipmentId}")
-	public void jasperReport(@PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
+	public String jasperReport(@PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
 		response.setContentType("application/x-download");
 		response.setHeader("Content-Disposition", String.format("attachment; filename=\"report.pdf\""));
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		shipmentDetail.setPaymentStatus("Y");
+		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-        try {
-        	OutputStream out = response.getOutputStream();
-            createPdfReport(shipmentDetails, out);
-            
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
+		if(shipmentDetails.size() > 0) {
+	        try {
+	        	OutputStream out = response.getOutputStream();
+	            createPdfReport(shipmentDetails, out);
+	            
+	        } catch (final Exception e) {
+	            e.printStackTrace();
+	        }
+		}
+		return "error/unauth";
 	}
 	private void createPdfReport(final List<ShipmentDetail> shipmentDetails, OutputStream out) throws JRException {
 		// Fetching the .jrxml file from the resources folder.
