@@ -90,7 +90,7 @@ public interface ProcessOrderMapper
      * @param uuid
      * @return Process Order
      */
-    public ProcessOrder getProcessOrderByUuid(String uuid);
+    public List<ProcessOrder> getProcessOrderByUuid(String uuid);
 
     /**
      * Find process order for robot

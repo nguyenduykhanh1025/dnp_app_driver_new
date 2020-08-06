@@ -81,7 +81,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		String status = map.get("status") == null ? null : map.get("status").toString();
 
 		// Get ip
-		String ipAddress = map.get("ip") == null ? null : map.get("ip").toString();
+		String ipAddress = map.get("ipAddress") == null ? null : map.get("ipAddress").toString();
 
 		// Get services robot support
 		Boolean isReceiveContFullOrder = "1".equals(
@@ -141,21 +141,26 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 			}
 		} else if ("0".equals(status)) {
-			ProcessOrder processOrder = processOrderService.getProcessOrderByUuid(uuId);
-			if (processOrder != null) {
-				processOrder.setStatus(0);
-				processOrderService.updateProcessOrder(processOrder);
+			List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(uuId);
 
-				// Send notification to logistics
-				AjaxResult ajaxResult= null;
-				ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
-				webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
-
-				// Send notification for OM
-				try {
-					mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
-				} catch (Exception e) {
-					logger.warn(e.getMessage());
+			if (processOrders != null && !processOrders.isEmpty()) {
+				for (ProcessOrder processOrder : processOrders) {
+					if (processOrder != null) {
+						processOrder.setStatus(0);
+						processOrderService.updateProcessOrder(processOrder);
+		
+						// Send notification to logistics
+						AjaxResult ajaxResult= null;
+						ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
+						webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
+		
+						// Send notification for OM
+						try {
+							mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+						} catch (Exception e) {
+							logger.warn(e.getMessage());
+						}
+					}
 				}
 			}
 			
@@ -211,23 +216,26 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			}
 
 		} else if ("2".equals(status)) {
-			ProcessOrder processOrder = processOrderService.getProcessOrderByUuid(uuId);
-			if (processOrder != null) {
-				processOrder.setRobotUuid(null);
-				processOrderService.updateProcessOrder(processOrder);
-
-				// Send notification to logistics
-				AjaxResult ajaxResult= null;
-				ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
-				webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
-
-				// Send notification for om
-				try {
-					mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
-				} catch (Exception e) {
-					logger.warn(e.getMessage());
+			List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(uuId);
+			if (processOrders != null && !processOrders.isEmpty()) {
+				for (ProcessOrder processOrder : processOrders) {
+					if (processOrder != null) {
+						processOrder.setRobotUuid(null);
+						processOrderService.updateProcessOrder(processOrder);
+		
+						// Send notification to logistics
+						AjaxResult ajaxResult= null;
+						ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
+						webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
+		
+						// Send notification for om
+						try {
+							mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+						} catch (Exception e) {
+							logger.warn(e.getMessage());
+						}
+					}
 				}
-
 			}
 
 			// Send notification for IT

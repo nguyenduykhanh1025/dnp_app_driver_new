@@ -242,17 +242,16 @@ function finishForm(res) {
 }
 
 function logisticInfo(id, logistics) {
-  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, PREFIX + "/logistics/" + id + "/info", null, 450, function() {
+  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, PREFIX + "/logistics/" + id + "/info", null, 470, function() {
     $.modal.close();
   });
 }
 
 $('#logistic').change(function() {
-  console.log($('#logistic option:selected').val());
   if (0 != $('#logistic option:selected').val()) {
     shipment.logisticName = $('#logistic option:selected').val();
   } else {
     shipment.logisticName = '';
   }
   loadTable();
-})
+});

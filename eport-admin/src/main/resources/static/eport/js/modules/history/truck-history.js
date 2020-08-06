@@ -15,26 +15,16 @@ $(document).ready(function () {
   pickupHistory.fromDate = fromDate.getTime();
   pickupHistory.toDate = toDate.getTime();
 
-
   loadTable();
 
-  $('#fromDate').datetimepicker({
-    language: 'en',
-    format: 'dd/mm/yyyy',
-    autoclose: true,
-    todayBtn: true,
-    todayHighlight: true,
-    pickTime: false,
-    minView: 2
+  laydate.render({
+    elem: '#fromDate',
+    format: "dd/MM/yyyy"
   });
-  $('#toDate').datetimepicker({
-    language: 'en',
-    format: 'dd/mm/yyyy',
-    autoclose: true,
-    todayBtn: true,
-    todayHighlight: true,
-    pickTime: false,
-    minView: 2
+
+  laydate.render({
+    elem: '#toDate',
+    format: "dd/MM/yyyy"
   });
 
   $('#searchAllInput').keyup(function (event) {
@@ -127,28 +117,52 @@ function formatBillBooking(value, row) {
   return '';
 }
 
-function changeFromDate() {
-  let fromDate = stringToDate($('.from-date').val());
-  if ($('.to-date').val() != '' && stringToDate($('.to-date').val()).getTime() < fromDate.getTime()) {
+$.event.special.inputchange = {
+  setup: function () {
+    var self = this,
+      val;
+    $.data(
+      this,
+      "timer",
+      window.setInterval(function () {
+        val = self.value;
+        if ($.data(self, "cache") != val) {
+          $.data(self, "cache", val);
+          $(self).trigger("inputchange");
+        }
+      }, 20)
+    );
+  },
+  teardown: function () {
+    window.clearInterval($.data(this, "timer"));
+  },
+  add: function () {
+    $.data(this, "cache", this.value);
+  },
+};
+
+$("#fromDate").on("inputchange", function () {
+  let fromDate = stringToDate($('#fromDate').val());
+  if ($('#toDate').val() != '' && stringToDate($('#toDate').val()).getTime() < fromDate.getTime()) {
     $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
-    $('.from-date').val('');
+    $('#fromDate').val('');
   } else {
     pickupHistory.fromDate = fromDate.getTime();
     loadTable();
   }
-}
+});
 
-function changeToDate() {
-  let toDate = stringToDate($('.to-date').val());
-  if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
-    $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
-    $('.to-date').val('');
+$("#toDate").on("inputchange", function () {
+  let toDate = stringToDate($("#toDate").val());
+  if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
+    $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
+    $("#toDate").val("");
   } else {
     toDate.setHours(23, 59, 59);
     pickupHistory.toDate = toDate.getTime();
     loadTable();
   }
-}
+});
 
 function stringToDate(dateStr) {
   let dateParts = dateStr.split('/');
