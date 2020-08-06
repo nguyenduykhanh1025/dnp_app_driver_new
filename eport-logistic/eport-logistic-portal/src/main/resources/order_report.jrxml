@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order_report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3590fe74-00bf-4dec-a564-d54856adfe47">
 	<property name="ireport.zoom" value="1.3310000000000008"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="48"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -20,7 +20,7 @@
 	<field name="sealNo" class="java.lang.String"/>
 	<field name="consignee" class="java.lang.String"/>
 	<field name="expiredDem" class="oracle.sql.TIMESTAMP"/>
-	<field name="wgt" class="java.math.BigDecimal"/>
+	<field name="wgt" class="java.lang.Long"/>
 	<field name="vslNm" class="java.lang.String"/>
 	<field name="voyNo" class="java.lang.String"/>
 	<field name="opeCode" class="java.lang.String"/>
@@ -90,7 +90,7 @@
 				<text><![CDATA[Ghi chú:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="156" y="133" width="43" height="20" uuid="20ed17fe-de02-4587-9a9f-01160f82397f"/>
+				<reportElement x="279" y="133" width="53" height="20" uuid="20ed17fe-de02-4587-9a9f-01160f82397f"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
@@ -104,14 +104,14 @@
 				<text><![CDATA[Giao cho/ Nhận của:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="10" y="133" width="40" height="20" uuid="18799f84-a648-4307-aa9e-2cef7424bc76"/>
+				<reportElement x="10" y="133" width="58" height="20" uuid="18799f84-a648-4307-aa9e-2cef7424bc76"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tên tàu:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="156" y="173" width="53" height="20" uuid="a213778e-fde8-4f91-8b40-b668f9c64345"/>
+				<reportElement x="279" y="173" width="53" height="20" uuid="a213778e-fde8-4f91-8b40-b668f9c64345"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
@@ -139,7 +139,7 @@
 				<text><![CDATA[Hãng tàu:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="10" y="153" width="40" height="20" uuid="5725b3b3-3951-418f-9ab9-eea2026b401c"/>
+				<reportElement x="10" y="153" width="58" height="20" uuid="5725b3b3-3951-418f-9ab9-eea2026b401c"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
@@ -167,14 +167,14 @@
 				<text><![CDATA[Bill/Lệnh giao/Nhận số:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="156" y="153" width="43" height="20" uuid="122e28ca-45ae-470f-a7bc-9ec9dc679b92"/>
+				<reportElement x="279" y="153" width="53" height="20" uuid="122e28ca-45ae-470f-a7bc-9ec9dc679b92"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<text><![CDATA[Voy:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="156" y="193" width="53" height="20" uuid="0e7cb12f-e689-40a7-a621-836ef146e420"/>
+				<reportElement x="279" y="193" width="53" height="20" uuid="0e7cb12f-e689-40a7-a621-836ef146e420"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
@@ -209,14 +209,14 @@
 				<textFieldExpression><![CDATA[$F{consignee}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="50" y="133" width="100" height="20" uuid="e8802511-d6c9-4f0d-b658-f05a214e1835"/>
+				<reportElement x="66" y="133" width="100" height="20" uuid="e8802511-d6c9-4f0d-b658-f05a214e1835"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{vslName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="199" y="133" width="100" height="20" uuid="f00d3f17-b9d8-49d9-a087-58c4c3a757b9"/>
+				<reportElement x="332" y="133" width="100" height="20" uuid="f00d3f17-b9d8-49d9-a087-58c4c3a757b9"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
@@ -244,7 +244,7 @@
 				<text><![CDATA[Số container]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="132" y="0" width="100" height="20" uuid="e65ec0b5-2127-4595-b64f-e1fadc81c8a0"/>
+				<reportElement x="132" y="0" width="88" height="20" uuid="e65ec0b5-2127-4595-b64f-e1fadc81c8a0"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
 					<topPen lineWidth="1.5"/>
@@ -258,7 +258,7 @@
 				<text><![CDATA[Số chì]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="232" y="0" width="59" height="20" uuid="8d78a117-4948-4b3d-9f02-c9f0c3454130"/>
+				<reportElement x="220" y="0" width="59" height="20" uuid="8d78a117-4948-4b3d-9f02-c9f0c3454130"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
 					<topPen lineWidth="1.5"/>
@@ -272,7 +272,7 @@
 				<text><![CDATA[Kích cỡ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="291" y="0" width="64" height="20" uuid="fda1eb49-50be-41e8-aeff-095488fb9c98"/>
+				<reportElement x="279" y="0" width="76" height="20" uuid="fda1eb49-50be-41e8-aeff-095488fb9c98"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
 					<topPen lineWidth="1.5"/>
@@ -332,7 +332,7 @@
 	<detail>
 		<band height="21" splitType="Stretch">
 			<textField>
-				<reportElement x="132" y="0" width="100" height="20" uuid="c5f4f147-b127-4e9a-acc8-e971515263fb"/>
+				<reportElement x="132" y="0" width="88" height="20" uuid="c5f4f147-b127-4e9a-acc8-e971515263fb"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
 					<topPen lineWidth="1.5"/>
@@ -347,7 +347,7 @@
 				<textFieldExpression><![CDATA[$F{sealNo}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="232" y="0" width="59" height="20" uuid="44381b02-222a-4537-8a76-3e3e0d3bce68"/>
+				<reportElement x="220" y="0" width="59" height="20" uuid="44381b02-222a-4537-8a76-3e3e0d3bce68"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
 					<topPen lineWidth="1.5"/>
@@ -362,7 +362,7 @@
 				<textFieldExpression><![CDATA[$F{sztp}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="291" y="0" width="64" height="20" uuid="e8ccf8bd-aa3b-4461-9d61-10e68dd3fbcf"/>
+				<reportElement x="279" y="0" width="76" height="20" uuid="e8ccf8bd-aa3b-4461-9d61-10e68dd3fbcf"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
 					<topPen lineWidth="1.5"/>
