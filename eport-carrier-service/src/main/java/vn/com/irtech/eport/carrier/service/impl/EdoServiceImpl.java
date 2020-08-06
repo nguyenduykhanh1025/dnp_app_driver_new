@@ -262,6 +262,16 @@ public class EdoServiceImpl implements IEdoService
 				}
 				continue;		
 			}
+			// Pick-up location
+			if(s.contains("LOC+176"))
+			{
+				String[] pickUpLocations = s.split("\\+");
+				if(pickUpLocations.length >= 4){
+					String[] pickUpLocation = pickUpLocations[3].split(":");
+					edi.setPickUpLocation(pickUpLocation[0]);
+				}
+				continue;		
+			}
 			//haulage
 			if(s.contains("FTX+AAI"))
 			{
