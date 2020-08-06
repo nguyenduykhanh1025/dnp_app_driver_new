@@ -21,7 +21,13 @@ import {
 import { connect } from 'react-redux';
 import {
     getToken,
+    getAccount,
+    getPassword,
+    saveToken,
 } from '@/stores';
+import {
+    callApi
+} from '@/requests';
 
 const splash_bg = require('@/assets/images/splash-bg.png');
 const logo = require('@/assets/images/logo.png');
@@ -33,16 +39,38 @@ class ProfileScreen extends Component {
         }
     };
 
+    onLogin = async (loginname, pwd) => {
+        const params = {
+            api: 'login',
+            param: {
+                userName: loginname,
+                passWord: pwd,
+                deviceToken: 'sss'
+            },
+            token: '',
+            method: 'POST'
+        }
+        var result = undefined;
+        result = await callApi(params);
+        console.log('autologin', result)
+        if (result.code == 0) {
+            saveToken(result.token)
+            NavigationService.navigate(homeTab.home, {})
+        }
+        else {
+            NavigationService.navigate(authStack.login, {})
+        }
+    }
+
     componentDidMount = async () => {
         var token = await getToken();
+        var account = await getAccount();
+        var password = await getPassword();
         if (token == null) {
             NavigationService.navigate(authStack.login, {})
         }
         else {
-            setTimeout(() => {
-                NavigationService.navigate(homeTab.home, {})
-            }, 1500);
-
+            this.onLogin(account, password)
         }
     };
 

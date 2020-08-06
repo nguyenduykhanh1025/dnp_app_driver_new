@@ -66,7 +66,10 @@ class AppAppContainer extends React.Component {
                     x = GPS.latitude;
                     y = GPS.longitude;
                     speed = GPS.speed;
-                    this.onPushLocation(GPS.latitude, GPS.longitude)
+                    this.token != null ?
+                        this.onPushLocation(GPS.latitude, GPS.longitude)
+                        :
+                        null
                 },
                 error => {
                     // Alert.alert('Error', JSON.stringify(error))
@@ -82,23 +85,20 @@ class AppAppContainer extends React.Component {
             )
 
             BackgroundTimer.runBackgroundTimer(() => {
-                this.onPushLocation(x, y);
+                this.token != null ?
+                    this.onPushLocation(x, y)
+                    :
+                    null
             },
                 120000);
         }
     }
-
 
     componentWillMount() {
         PushNotification.popInitialNotification(notification => {
             // console.log('Initial notification: ', notification);
         });
     }
-
-    componentWillUnmount() {
-        // AppState.removeEventListener('change', this._handleAppStateChange);
-    }
-
 
     render() {
         return (
