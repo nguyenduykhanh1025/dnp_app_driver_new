@@ -180,42 +180,42 @@
 				</textElement>
 				<text><![CDATA[Invoice:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="143" y="93" width="100" height="20" uuid="0433c2a9-305e-4c0f-8992-d3f153382e32"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{blNo}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="143" y="93" width="100" height="20" uuid="1f90a864-598b-49fd-931a-60dbff9fdcbb"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{bookingNo}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="68" y="173" width="100" height="20" uuid="49edc06c-4279-428e-8bef-750ec1d5c2ab"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{opeCode}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="132" y="53" width="100" height="20" uuid="ef70bef6-ffb7-4551-b5ee-4f3d8dcc9b87"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{consignee}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="66" y="133" width="100" height="20" uuid="e8802511-d6c9-4f0d-b658-f05a214e1835"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{vslName}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="332" y="133" width="100" height="20" uuid="f00d3f17-b9d8-49d9-a087-58c4c3a757b9"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
@@ -331,7 +331,7 @@
 	</columnHeader>
 	<detail>
 		<band height="21" splitType="Stretch">
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="132" y="0" width="88" height="20" uuid="c5f4f147-b127-4e9a-acc8-e971515263fb"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
@@ -346,7 +346,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sealNo}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="220" y="0" width="59" height="20" uuid="44381b02-222a-4537-8a76-3e3e0d3bce68"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
@@ -361,7 +361,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sztp}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="279" y="0" width="76" height="20" uuid="e8ccf8bd-aa3b-4461-9d61-10e68dd3fbcf"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
@@ -376,7 +376,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{wgt}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="355" y="0" width="73" height="20" uuid="b9f385f0-8fd3-456b-8e95-b97f70dc713e"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
@@ -391,7 +391,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cargoType}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="428" y="0" width="126" height="20" uuid="15a57407-2458-4f29-8cac-db7cf6bb84b7"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
