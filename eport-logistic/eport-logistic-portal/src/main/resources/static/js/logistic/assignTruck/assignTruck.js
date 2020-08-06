@@ -701,6 +701,9 @@ function getDataFromOutSource(){
     }
 }
 function generatePDF() {
-	// window.open(prefix +"/jasper-report/view/"+shipmentSelected.id);
+	if(!shipmentSelected){
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}
     $.modal.openTab("In phiếu", ctx +"logistic/print/shipment/"+shipmentSelected.id);
 }
