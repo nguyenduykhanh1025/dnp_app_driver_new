@@ -700,3 +700,6 @@ function getDataFromOutSource(){
         return true;
     }
 }
+function generatePDF() {
+    $.modal.openTab("In phiếu", prefix +"/jasper-report/view/"+shipmentSelected.id);
+}
