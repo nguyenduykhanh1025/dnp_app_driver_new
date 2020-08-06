@@ -65,7 +65,7 @@ public class DriverCheckinServiceImpl implements IDriverCheckinService{
 			qrCodeRes.getData().add(pickupHistoryDataRes);
 		}
 		
-		String qrString = new Gson().toJson(qrCodeRes) + "*";
+		String qrString = new Gson().toJson(qrCodeRes) + "`";
 		
 		return qrString.replace("\"", "'");
 	}

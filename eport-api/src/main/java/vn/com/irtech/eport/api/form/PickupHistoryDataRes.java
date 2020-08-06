@@ -29,7 +29,7 @@ public class PickupHistoryDataRes implements Serializable {
 	private String truckNo;
 
 	private String chassisNo;
-
+	
 	public Long getPickupHistoryId() {
 		return pickupHistoryId;
 	}
@@ -125,5 +125,4 @@ public class PickupHistoryDataRes implements Serializable {
 	public void setShipmentDetailId(Long shipmentDetailId) {
 		this.shipmentDetailId = shipmentDetailId;
 	}
-
 }

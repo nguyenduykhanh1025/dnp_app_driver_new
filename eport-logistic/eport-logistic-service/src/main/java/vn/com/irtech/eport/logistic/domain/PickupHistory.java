@@ -103,6 +103,10 @@ public class PickupHistory extends BaseEntity {
 	@Excel(name = "planning Date", width = 30, dateFormat = "yyyy-MM-dd")
 	private Date planningDate;
 
+	/** Process Order Id */
+	@Excel(name = "Process Order Id")
+	private Long processOrderId;
+
 	private Shipment shipment;
 
 	private ShipmentDetail shipmentDetail;
@@ -428,6 +432,14 @@ public class PickupHistory extends BaseEntity {
 	public void setPlanningDate(Date planningDate) {
 		this.planningDate = planningDate;
 	}
+
+	public Long getProcessOrderId() {
+		return this.processOrderId;
+	}
+
+	public void setProcessOrderId(Long processOrderId) {
+		this.processOrderId = processOrderId;
+	}
 	
 	public void setX(Double x) {
 		this.x = x;
@@ -459,6 +471,7 @@ public class PickupHistory extends BaseEntity {
 				.append("bookingNo", getBookingNo()).append("sztp", getSztp()).append("vslNm", getVslNm())
 				.append("voyNo", getVoyNo()).append("driverName", getDriverName())
 				.append("driverPhoneNumber", getDriverPhoneNumber()).append("logisticGroupName", getLogisticGroupName())
+				.append("processOrderId", getProcessOrderId())
 				.toString();
 	}
 }

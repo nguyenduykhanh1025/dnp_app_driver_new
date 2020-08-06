@@ -308,16 +308,17 @@ public class TransportController extends BaseController {
 				// Check if service is send cont
 				if (pickup.getServiceType()%2 == 1) {
 					// Check if cont has position
-					
-					// Send to mc
-					Map<String, Long> map = new HashMap<>();
-					map.put("pickupHistoryId", pickup.getPickupId());
-					try {
-						mqttService.sendMessageToMc(map.toString());
-					} catch (MqttException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+					if (checkContHasPosition(pickup)) {
+						// Send to mc
+						Map<String, Long> map = new HashMap<>();
+						map.put("pickupHistoryId", pickup.getPickupId());
+						try {
+							mqttService.sendMessageToMc(map.toString());
+						} catch (MqttException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}					
 				}
 			}
 		}
@@ -335,7 +336,7 @@ public class TransportController extends BaseController {
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("domain", configService.selectConfigByKey("driver.connection.domain"));
 		ajaxResult.put("port", configService.selectConfigByKey("driver.connection.port"));
-		ajaxResult.put("topic", configService.selectConfigByKey("driver.topic"));
+		ajaxResult.put("topic", configService.selectConfigByKey("driver.topic").replace("+", getSession().getId()));
 		return ajaxResult;
 	}
 	
@@ -349,7 +350,7 @@ public class TransportController extends BaseController {
 	 * 
 	 * @returns Distance in Meters
 	 */
-	public static double distance(double lat1, double lat2, double lon1, double lon2, double el1, double el2) {
+	private double distance(double lat1, double lat2, double lon1, double lon2, double el1, double el2) {
 
 		final int R = 6371; // Radius of the earth
 
@@ -365,5 +366,16 @@ public class TransportController extends BaseController {
 		distance = Math.pow(distance, 2) + Math.pow(height, 2);
 
 		return Math.sqrt(distance);
+	}
+	
+	/**
+	 * Check container has position
+	 * 
+	 * @param pickup
+	 * @return Boolean
+	 */
+	private Boolean checkContHasPosition(Pickup pickup) {
+		// TODO : check cont has position
+		return true;
 	}
 }
