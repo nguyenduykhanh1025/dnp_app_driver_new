@@ -1,7 +1,10 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -87,12 +91,12 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
 
 		// Adding the additional parameters to the pdf.
-//        final Map<String, Object> parameters = new HashMap<>();
-//        parameters.put("createdBy", "javacodegeek.com");
+        final Map<String, Object> parameters = new HashMap<>();
+        parameters.put("user", getGroup().getGroupName());
 
 		// Filling the report with the shipmentDetail data and additional parameters
 		// information.
-		final JasperPrint print = JasperFillManager.fillReport(report, null, params);
+		final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
 
 		// Export DPF to output stream
 		JasperExportManager.exportReportToPdfStream(print, out);
