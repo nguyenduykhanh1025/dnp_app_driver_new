@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.common.utils.CacheUtils;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.ServletUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
@@ -75,15 +74,13 @@ public class LogisticLoginController extends LogisticBaseController {
 		return "error/unauth";
 	}
 
-	@Log(title = "Logistic Reset password", businessType = BusinessType.UPDATE)
 	@GetMapping("/resetPwd/{userId}")
 	public String resetPwd(@PathVariable("userId") Long userId, ModelMap mmap) {
 		mmap.put("user", logisticService.selectLogisticAccountById(userId));
 		return prefix + "/profile/resetPwd";
 	}
 
-	@RequiresPermissions("system:user:resetPwd")
-	@Log(title = "Reset password", businessType = BusinessType.UPDATE)
+	@Log(title = "Reset Mật Khẩu", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/resetPwd")
 	@ResponseBody
 	public AjaxResult resetPwdSave(LogisticAccount user) {
