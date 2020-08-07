@@ -89,6 +89,7 @@ laydate.render({
 
 // SEARCH INFO VESSEL AREA
 $(".c-search-box-vessel").select2({
+  theme: "bootstrap",
   placeholder: "Vessel",
   allowClear: true,
   minimumInputLength: 2,
@@ -118,6 +119,7 @@ $(".c-search-box-vessel").select2({
 });
 
 $(".c-search-box-vessel-code").select2({
+  theme: "bootstrap",
   placeholder: "Vessel Code",
   allowClear: true,
   minimumInputLength: 2,
@@ -147,6 +149,7 @@ $(".c-search-box-vessel-code").select2({
 });
 
 $(".c-search-box-voy-no").select2({
+  theme: "bootstrap",
   placeholder: "Voy No",
   allowClear: true,
   minimumInputLength: 2,

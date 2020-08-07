@@ -114,9 +114,21 @@ public class Edo extends BaseEntity {
 	@Excel(name = "File Create Time")
 	private Date fileCreateTime;
 
-	/** Sztp */
-	@Excel(name = "Unloading port")
+	/** Final port of discharge */
+	@Excel(name = "Final port of discharge")
 	private String unloadingPort;
+
+	/** Pick-up location */
+	@Excel(name = "Pick-up location")
+	private String pickUpLocation;
+
+	public String getPickUpLocation() {
+		return this.pickUpLocation;
+	}
+
+	public void setPickUpLocation(String pickUpLocation) {
+		this.pickUpLocation = pickUpLocation;
+	}
 
 	public void setUnloadingPort(String unloadingPort) {
 		this.unloadingPort = unloadingPort;

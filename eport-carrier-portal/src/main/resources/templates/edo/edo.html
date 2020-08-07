@@ -3,7 +3,8 @@
   <head>
     <th:block th:include="include :: header('DNP ePort: Danh Sách eDO')" />
     <th:block th:include="include :: easyui-css" />
-    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+    <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet"/>
+    <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet"/>
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
     <link rel="stylesheet" th:href="@{/css/edo/style.css}" />
   </head>
@@ -20,17 +21,17 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="voyNo">Vessel</label>
-          <div class="input-group width150" style="width: 120%;">
-            <select class="col-md-12 c-search-box-vessel"> 
+          <label class="sr-only col-md-12" for="voyNo">Vessel </label>
+          <div class="input-group width150" style="width: 110px;">
+            <select class=" c-search-box-vessel"> 
               <option selected="selected"></option>
             </select>
           </div>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="voyNo">Voy No</label>
-          <div class="input-group width150" style="width: 150%;">
-            <select class="col-md-12 c-search-box-voy-no"> 
+          <label class="sr-only" for="voyNo">Voy No </label>
+          <div class="input-group width150" style="width: 110%;">
+            <select class="c-search-box-voy-no"> 
               <option selected="selected"></option>
             </select>
           </div>
@@ -133,6 +134,14 @@
             <th data-options="field:'voyNo',align:'left'" width="90">
               VOY NO
             </th>
+            <th data-options="field:'unloadingPort',align:'left'" width="110">
+              UNLOADING <br>
+              PORT
+            </th>
+            <th data-options="field:'pickUpLocation',align:'left'" width="110">
+              PICKUP <br>
+              LOCATION
+            </th>
             <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
               STATUS
             </th>
@@ -140,7 +149,7 @@
               CREATE TIME
             </th>
             <th data-options="field:'createTime',align:'left'" width="115">
-              RECEIVER TIME
+              RECEIVE TIME
              </th> 
             <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="150">
               ACTION
@@ -152,7 +161,7 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: datetimepicker-js" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
     <script th:src="@{/eport/js/modules/edo/edo.js}"></script>
   </body>
 </html>

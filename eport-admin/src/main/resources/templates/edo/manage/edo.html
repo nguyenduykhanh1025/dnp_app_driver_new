@@ -3,7 +3,8 @@
   <head>
     <th:block th:include="include :: header('List Exchange Delivery Order')" />
     <th:block th:include="include :: easyui-css" />
-    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+    <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet"/>
+    <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet"/>
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}"/>
     <link th:href="@{/eport/css/edo/manage/edo.css}" rel="stylesheet" />
   </head>
@@ -20,15 +21,15 @@
         <div class="form-group">
           <label class="sr-only" for="OPR Code">OPR Code</label>
           <div class="input-group">
-            <select class="col-md-12 c-search-opr-code">
+            <select class="c-search-opr-code">
               <option selected="selected"></option>
             </select>
           </div>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="voyNo">Vessel</label>
-          <div class="input-group width150" style="width: 120%;">
-            <select class="col-md-12 c-search-box-vessel"> 
+          <label class="sr-only" for="voyNo">Vessel </label>
+          <div class="input-group width150" style="width: 110px;">
+            <select class="c-search-box-vessel"> 
               <option selected="selected"></option>
             </select>
           </div>
@@ -36,7 +37,7 @@
         <div class="form-group">
           <label class="sr-only" for="voyNo">Voy No</label>
           <div class="input-group width150" style="width: 150%;">
-            <select class="col-md-12 c-search-box-voy-no"> 
+            <select class="c-search-box-voy-no"> 
               <option selected="selected"></option>
             </select>
           </div>
@@ -130,6 +131,14 @@
             <th data-options="field:'voyNo',align:'left'" width="110">
               VOY NO
             </th>
+            <th data-options="field:'unloadingPort',align:'left'" width="110">
+              UNLOADING <br>
+              PORT
+            </th>
+            <th data-options="field:'pickUpLocation',align:'left'" width="110">
+              PICKUP <br>
+              LOCATION
+            </th>
             <th data-options="field:'status',align:'left',formatter:formatStatus" width="90">
               STATUS
             </th>
@@ -137,7 +146,7 @@
               CREATE TIME
             </th>
             <th data-options="field:'createTime',align:'left'" width="115">
-              RECEIVER TIME
+              RECEIVE TIME
              </th> 
             <th data-options="field:'id',align:'center',formatter: formatAction" fixed:true  width="150">
               ACTION
@@ -148,7 +157,7 @@
     </section>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
     <script th:src="@{/eport/js/modules/edo/manage/edo.js}"></script>
   </body>
 

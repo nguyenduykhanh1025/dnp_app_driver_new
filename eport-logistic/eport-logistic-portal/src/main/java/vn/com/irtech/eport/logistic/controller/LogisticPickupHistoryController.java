@@ -19,9 +19,9 @@ import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 @RequestMapping("/logistic/truck/history")
 public class LogisticPickupHistoryController extends LogisticBaseController {
 	
-  private final String PREFIX = "logistic/logisticTruck/history";
+	private final String PREFIX = "logistic/logisticTruck/history";
   
-  @Autowired
+  	@Autowired
 	private IPickupHistoryService pickupHistoryService;
 	
 	@GetMapping()

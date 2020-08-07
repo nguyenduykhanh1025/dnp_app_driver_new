@@ -159,6 +159,11 @@ function loadView() {
                 editor: false
             },
             {
+                data: 'pickUpLocation',
+                type: 'text',
+                editor: false
+            },
+            {
                 data: 'consignee',
                 type: 'text',
                 editor: false
@@ -196,6 +201,7 @@ function loadView() {
             'Mã tàu',
             'Số chuyến',
             'Cảng dỡ hàng',
+            'Cảng bốc hàng',
             'Người nhận hàng',
             'Ngày hết hạn lưu cont',
             'Ngày tạo file',

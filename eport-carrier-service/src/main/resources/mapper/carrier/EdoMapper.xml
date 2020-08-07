@@ -34,10 +34,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="numberContainer"    column="number_container"    />
+        <result property="unloadingPort"    column="unloading_port"    />
+        <result property="pickUpLocation"    column="pickup_location"    />
     </resultMap>
 
     <sql id="selectEdoVo">
-        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, vessel_no , voy_no, sztp, status, release_status, create_source, remark, del_flg, create_by, file_create_time, create_time, update_by, update_time, transaction_id from edo
+        select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number, expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, vessel_no , voy_no, sztp, status, release_status, create_source, remark, del_flg, create_by, file_create_time, create_time, update_by, update_time, transaction_id, unloading_port, pickup_location from edo
     </sql>
 
   
@@ -140,6 +142,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlg != null ">del_flg,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="fileCreateTime != null">file_create_time,</if>
+            <if test="unloadingPort != null  and unloadingPort != ''">unloading_port,</if>
+            <if test="pickUpLocation != null  and pickUpLocation != ''">pickup_location,</if>
             create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -168,6 +172,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="delFlg != null ">#{delFlg},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="fileCreateTime != null">#{fileCreateTime},</if>
+            <if test="unloadingPort != null  and unloadingPort != ''">#{unloadingPort},</if>
+            <if test="pickUpLocation != null  and pickUpLocation != ''">#{pickUpLocation},</if>
             sysdate
          </trim>
     </insert>
@@ -185,7 +191,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="vessel != null  and vessel != ''">vessel = #{vessel},</if>
             <if test="vesselNo != null  and vesselNo != ''">vessel_no = #{vesselNo},</if>
             <if test="voyNo != null  and voyNo != ''">voy_no = #{voyNo},</if>
-            <if test="sztp != null  and sztp != ''">voy_no = #{sztp},</if>
+            <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
             <if test="status != null  and status != ''">status = #{status},</if>
             <if test="releaseStatus != null  and releaseStatus != ''">release_status = #{releaseStatus},</if>
             <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>

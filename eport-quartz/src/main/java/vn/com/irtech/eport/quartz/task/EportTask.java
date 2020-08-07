@@ -111,7 +111,7 @@ public class EportTask {
                 edo.setCreateSource("serverFSTP");
                 edoHistory.setBillOfLading(edo.getBillOfLading());
                 edoHistory.setOrderNumber(edo.getOrderNumber());
-                edoHistory.setCarrierCode(edo.getCarrierCode());
+                edoHistory.setCarrierCode(groupCode);
                 edoHistory.setCarrierId(carrierGroup.getId());
                 edoHistory.setEdiContent(content);
                 edoHistory.setFileName(fileName);
