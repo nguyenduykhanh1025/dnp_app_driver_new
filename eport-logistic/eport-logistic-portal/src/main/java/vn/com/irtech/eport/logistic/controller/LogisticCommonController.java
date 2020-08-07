@@ -25,9 +25,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
@@ -139,14 +142,16 @@ public class LogisticCommonController extends LogisticBaseController {
 		cal.add(Calendar.MINUTE, +5);
 		otpCode.setExpiredTime(cal.getTime());
 		otpCodeService.insertSysOtp(otpCode);
-
+		// FIXME Get message template from SysConfigService, using String.format to replace place holders
 		String content = "TEST SMS   " + rD;
 		String response = "";
 		 try {
 		 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
 		 	System.out.println(response);
+		 	logger.debug("OTP Send Response: " + response);
 		 } catch (IOException ex) {
 		 	// process the exception
+			 logger.error(ex.getMessage());
 		 }
 		return AjaxResult.success();
 	}
@@ -241,6 +246,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		return PREFIX + "/napas/napasPaymentForm";
 	}
 
+	@Log(title = "Thanh Toán Napas", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@RequestMapping(value="/payment/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
 	@Transactional
 	public String getPaymentResult(@RequestParam("napasResult") String result, ModelMap mmap) {
