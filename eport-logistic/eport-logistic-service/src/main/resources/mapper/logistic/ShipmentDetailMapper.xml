@@ -627,4 +627,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{shipmentDetail.id}
         </foreach>
     </select>
+    <select id="getCommandListInBatch" parameterType="ShipmentDetail" resultType="Long">
+	    SELECT PROCESS_ORDER_ID FROM SHIPMENT_DETAIL
+		<where>
+			<if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+			<if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+			<if test="paymentStatus != null and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
+		</where>
+		GROUP BY PROCESS_ORDER_ID
+    </select>
 </mapper>

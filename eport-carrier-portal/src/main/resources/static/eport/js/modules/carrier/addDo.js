@@ -333,7 +333,7 @@ function saveDO() {
             },
           });
     },
-    {title:"Xác Nhận Gửi DO",btn:["Đồng Ý","Hủy Bỏ"]});
+    {title:"Xác Nhận Phát Hành DO",btn:["Đồng Ý","Hủy Bỏ"]});
   }
 }
 
@@ -348,7 +348,7 @@ function reload() {
       parent.$.modal.msgSuccess(result.msg);
       parent.$.treeTable.refresh();
   } else {
-      $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi refresh dữ liêu...", modal_status.SUCCESS);
+      $.modal.msgReload("Lưu thành công! Vui lòng chờ trong khi tải lại dữ liêu...", modal_status.SUCCESS);
   }
   $.modal.closeLoading();
   $.modal.enable();

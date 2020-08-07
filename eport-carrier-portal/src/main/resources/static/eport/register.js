@@ -33,7 +33,6 @@ function register() {
         	        title: "Hệ Thống"
         	    },
         	    function(index) {
-        	        //关闭弹窗
         	        layer.close(index);
         	        location.href = ctx + 'login';
         	    });

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.slf4j.Logger;
@@ -22,16 +21,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
-import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
+import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -205,6 +206,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error();
 	}
 
+	@Log(title = "Thêm Lô Bốc Hàng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment")
 	@ResponseBody
 	public AjaxResult addShipment(Shipment shipment) {
@@ -228,6 +230,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Thêm lô thất bại");
 	}
 
+	@Log(title = "Chỉnh Sửa Lô", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment/{shipmentId}")
 	@ResponseBody
 	public AjaxResult editShipment(Shipment shipment, @PathVariable Long shipmentId) {
@@ -251,7 +254,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Chỉnh sửa lô thất bại");
 	}
 
-	@SuppressWarnings("unchecked")
 	@GetMapping("/shipment/{shipmentId}/shipment-detail")
 	@ResponseBody
 	public AjaxResult listShipmentDetail(@PathVariable Long shipmentId) {
@@ -289,6 +291,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return ajaxResult;
 	}
 
+	@Log(title = "Khai Báo Cont", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment-detail")
 	@Transactional
 	@ResponseBody
@@ -374,6 +377,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Lưu khai báo thất bại");
 	}
 
+	@Log(title = "Xóa Khai Báo Cont", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
 	@DeleteMapping("/shipment/{shipmentId}/shipment-detail/{shipmentDetailIds}")
 	@Transactional
 	@ResponseBody
@@ -404,6 +408,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 	}
 
+	@Log(title = "Check Hải Quan", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/custom-status/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
 	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
@@ -430,6 +435,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error();
 	}
 
+	@Log(title = "Xác Nhận OTP", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
 	public AjaxResult verifyOtp(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("otp") String otp, boolean creditFlag, boolean isSendContEmpty) {
@@ -511,6 +517,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
 
+	@Log(title = "Bốc Chỉ Định", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment-detail/pickup-cont/{isCredit}")
 	@ResponseBody
 	public AjaxResult pickContOnDemand(@RequestBody List<ShipmentDetail> preorderPickupConts, @PathVariable("isCredit") Boolean isCredit) {

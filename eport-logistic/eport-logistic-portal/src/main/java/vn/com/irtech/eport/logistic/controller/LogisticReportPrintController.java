@@ -1,7 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +18,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.ExporterInputItem;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleExporterInputItem;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -88,17 +91,44 @@ public class LogisticReportPrintController extends LogisticBaseController {
 				.loadObject(this.getClass().getResourceAsStream("/report/equipment_interchange_order.jasper"));
 
 		// Fetching the shipmentDetails from the data source.
-		final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
+		List<ExporterInputItem> jpList = new ArrayList<>();
+		//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
+		ShipmentDetail shipmentDetail = new ShipmentDetail();
+		shipmentDetail.setShipmentId(shipmentDetails.get(0).getShipmentId());
+		shipmentDetail.setPaymentStatus("Y");
+		List<Long> commands = shipmentDetailService.getCommandListInBatch(shipmentDetail);
+		if(commands.size()>0) {
+			for(Long i : commands) {
+				List<ShipmentDetail> list = new ArrayList<ShipmentDetail>();
+				for(ShipmentDetail j : shipmentDetails) {
+					if(j.getProcessOrderId().equals(i)) {
+						list.add(j);
+					}
+				}
+				if(list.size()>0) {
+					final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(list);
+			        final Map<String, Object> parameters = new HashMap<>();
+			        parameters.put("user", getGroup().getGroupName());
+			        parameters.put("qrCode", getGroup().getGroupName());
+					final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
+					jpList.add(new SimpleExporterInputItem(print));
+				}
+			}
+		}
 
 		// Adding the additional parameters to the pdf.
-        final Map<String, Object> parameters = new HashMap<>();
-        parameters.put("user", getGroup().getGroupName());
-
+//        final Map<String, Object> parameters = new HashMap<>();
+//        parameters.put("user", getGroup().getGroupName());
 		// Filling the report with the shipmentDetail data and additional parameters
 		// information.
-		final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
-
+//		final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
 		// Export DPF to output stream
-		JasperExportManager.exportReportToPdfStream(print, out);
+		JRPdfExporter exporter = new JRPdfExporter(); 
+		//exporter.setParameter(JRPdfExporterParameter.JASPER_PRINT_LIST, jpList);
+		exporter.setExporterInput(new SimpleExporterInput(jpList));
+		//exporter.setParameter(JRPdfExporterParameter.OUTPUT_STREAM, out); 
+		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(out));
+		exporter.exportReport();
+		//JasperExportManager.exportReportToPdfStream(print, out);
 	}
 }

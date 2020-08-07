@@ -16,10 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
@@ -174,7 +177,8 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
     // ADD SHIPMENT
-    @PostMapping("/shipment")
+	@Log(title = "Thêm Lô Bốc Rỗng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/shipment")
     @ResponseBody
     @Transactional
     public AjaxResult addShipment(Shipment shipment) {
@@ -211,7 +215,8 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     }
 
     // EDIT SHIPMENT WITH SHIPMENT ID
-    @PostMapping("/shipment/{shipmentId}")
+	@Log(title = "Chỉnh Sửa Lô", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/shipment/{shipmentId}")
     @ResponseBody
     public AjaxResult editShipment(Shipment shipment) {
 		//check MST
@@ -253,6 +258,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// SAVE OR EDIT SHIPMENT DETAIL
+	@Log(title = "Lưu Khai Báo Cont", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment-detail")
 	@Transactional
 	@ResponseBody
@@ -297,6 +303,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// DELETE SHIPMENT DETAIL
+	@Log(title = "Xóa Khai Báo Cont", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
 	@DeleteMapping("/shipment/{shipmentId}/shipment-detail/{shipmentDetailIds}")
 	@Transactional
 	@ResponseBody
@@ -318,6 +325,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// VALIDATE OTP IS CORRECT THEN MAKE ORDER TO ROBOT
+	@Log(title = "Xác Nhận OTP", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
 	public AjaxResult verifyOtp(@PathVariable("otp") String otp, @PathVariable("shipmentDetailIds") String shipmentDetailIds, boolean creditFlag) {
@@ -387,6 +395,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// PAYMENT AFTER SHOW BILL
+	@Log(title = "Thanh Toán Bốc Rỗng Napas", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/payment")
 	@ResponseBody
 	public AjaxResult payment(String shipmentDetailIds) {
@@ -420,6 +429,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
             shipmentImageService.insertShipmentImage(shipmentImage);
         }
     }
+
 	@GetMapping("/berthplan/ope-code/list")
 	@ResponseBody
 	public AjaxResult getOpeCodeList() {

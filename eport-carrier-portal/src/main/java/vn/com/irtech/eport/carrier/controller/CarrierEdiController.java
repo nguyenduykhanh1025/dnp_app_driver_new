@@ -30,6 +30,9 @@ import vn.com.irtech.eport.carrier.dto.EdiReq;
 import vn.com.irtech.eport.carrier.dto.EdiRes;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdiService;
+import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.SignatureUtils;
 import vn.com.irtech.eport.framework.web.exception.EdiApiException;
 
@@ -46,6 +49,7 @@ public class CarrierEdiController {
 	@PostMapping("/sendarrayedidata")
 	@ResponseBody
 	@Transactional
+	@Log(title = "Gọ EDI API", businessType = BusinessType.INSERT, operatorType = OperatorType.SHIPPINGLINE)
 	public ResponseEntity<EdiRes> sendArrayEdiData(@RequestBody EdiReq ediReq) {
 		String transactionId = RandomStringUtils.randomAlphabetic(10);
 

@@ -1,7 +1,6 @@
 package vn.com.irtech.eport.carrier.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +20,12 @@ import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.service.ISysDictDataService;
 
@@ -32,18 +34,18 @@ import vn.com.irtech.eport.system.service.ISysDictDataService;
 @Transactional(rollbackFor = Exception.class)
 public class CarrierEdoController extends CarrierBaseController {
 
-    private final String PREFIX = "edo";
-	
+	private final String PREFIX = "edo";
+
 	@Autowired
 	private IEdoService edoService;
 
 	@Autowired
-    private ISysDictDataService dictDataService;
-	
+	private ISysDictDataService dictDataService;
+
 	@Autowired
 	private IEdoAuditLogService edoAuditLogService;
 
-    @GetMapping("/index")
+	@GetMapping("/index")
 	public String EquipmentDo() {
 		if (!hasEdoPermission()) {
 			return "error/404";
@@ -51,27 +53,25 @@ public class CarrierEdoController extends CarrierBaseController {
 		return PREFIX + "/edo";
 	}
 
-
 	@PostMapping("/billNo")
 	@ResponseBody
 	public TableDataInfo billNo(@RequestBody PageAble<Edo> param) {
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		Edo edo = param.getData();
-	  if (edo == null) {
-		edo = new Edo();
-	  }
-	  Map<String, Object> groupCodes = new HashMap<>();
-	  groupCodes.put("groupCode", super.getGroupCodes());
-	  edo.setParams(groupCodes);
-	  edo.setCarrierCode(null);
-	  List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
-	  return getDataTable(dataList);
+		if (edo == null) {
+			edo = new Edo();
+		}
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
+		edo.setParams(groupCodes);
+		edo.setCarrierCode(null);
+		List<Edo> dataList = edoService.selectEdoListByBillNo(edo);
+		return getDataTable(dataList);
 	}
 
 	@PostMapping("/edo")
 	@ResponseBody
-	public TableDataInfo edo(@RequestBody PageAble<Edo> param)
-	{
+	public TableDataInfo edo(@RequestBody PageAble<Edo> param) {
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		Edo edo = param.getData();
 		if (edo == null) {
@@ -80,32 +80,30 @@ public class CarrierEdoController extends CarrierBaseController {
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());
 		edo.setCarrierCode(null);
-	  	edo.setParams(groupCodes);
+		edo.setParams(groupCodes);
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}
- 
+
 	@GetMapping("/carrierCode")
 	@ResponseBody
-    public List<String> carrierCode()
-    {
-        return super.getGroupCodes();
+	public List<String> carrierCode() {
+		return super.getGroupCodes();
 	}
-	
+
 	@GetMapping("/update")
-	public String update()
-	{
+	public String update() {
 		return PREFIX + "/update";
 	}
 
 	@GetMapping("/history/{id}")
-	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
+	public String getHistory(@PathVariable("id") Long id, ModelMap map) {
 		map.put("edoId", id);
 		return PREFIX + "/history";
 	}
 
 	@GetMapping("/update/{id}")
-	public String getUpdate(@PathVariable("id") Long id,ModelMap map) {
+	public String getUpdate(@PathVariable("id") Long id, ModelMap map) {
 		map.put("id", id);
 		Edo edo = edoService.selectEdoById(id);
 		map.put("edo", edo);
@@ -113,10 +111,9 @@ public class CarrierEdoController extends CarrierBaseController {
 	}
 
 	@GetMapping("/multiUpdate/{ids}")
-	public String multiUpdate(@PathVariable("ids") String ids,ModelMap map)
-	{
+	public String multiUpdate(@PathVariable("ids") String ids, ModelMap map) {
 		map.put("ids", ids);
-		String [] idMap = ids.split(",");
+		String[] idMap = ids.split(",");
 		Long id = Long.parseLong(idMap[0]);
 		Edo edo = edoService.selectEdoById(id);
 		map.put("edo", edo);
@@ -124,46 +121,44 @@ public class CarrierEdoController extends CarrierBaseController {
 	}
 
 	@PostMapping("/update")
-	@ResponseBody 
-	public AjaxResult multiUpdate(String ids,Edo edo)
-	{
-		if(ids == null)
-		{
+	@ResponseBody
+	@Log(title = "Cập Nhật eDO", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
+	public AjaxResult multiUpdate(String ids, Edo edo) {
+		if (ids == null) {
 			ids = edo.getId().toString();
 		}
 		try {
 			String[] idsList = ids.split(",");
 			edo.setCarrierCode(super.getUserGroup().getGroupCode());
 			edo.setCarrierId(super.getUser().getGroupId());
-			for(String id : idsList)
-			{
+			for (String id : idsList) {
 				Edo edoCheck = new Edo();
 				edoCheck.setId(Long.parseLong(id));
 				edoCheck.setCarrierId(super.getUser().getGroupId());
-				if(edoService.selectFirstEdo(edoCheck) == null)
-				{
-					return AjaxResult.error("Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
-				}else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
-					return AjaxResult.error("Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
+				if (edoService.selectFirstEdo(edoCheck) == null) {
+					return AjaxResult.error(
+							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
+				} else if (edoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
+					return AjaxResult.error(
+							"Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
 				}
 			}
-			for(String id : idsList)
-			{	
+			for (String id : idsList) {
 				edo.setId(Long.parseLong(id));
 				edoService.updateEdo(edo);
 				edo.setCreateBy(super.getUser().getEmail());
-				edoAuditLogService.updateAuditLog(edo);	
+				edoAuditLogService.updateAuditLog(edo);
 			}
-		return AjaxResult.success("Update thành công");
-		}catch(Exception e) {
+			return AjaxResult.success("Update thành công");
+		} catch (Exception e) {
 			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
-		} 
-		
+		}
+
 	}
+
 	@PostMapping("/readEdiOnly")
 	@ResponseBody
-	public Object readEdi(String fileContent)
-	{
+	public Object readEdi(String fileContent) {
 		List<Edo> edo = new ArrayList<>();
 		String[] text = fileContent.split("'");
 		edo = edoService.readEdi(text);
@@ -172,8 +167,7 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@GetMapping("/auditLog/{edoId}")
 	@ResponseBody
-	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EdoAuditLog edoAuditLog)
-	{
+	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EdoAuditLog edoAuditLog) {
 		edoAuditLog.setEdoId(edoId);
 		List<EdoAuditLog> edoAuditLogsList = edoAuditLogService.selectEdoAuditLogList(edoAuditLog);
 		return getDataTable(edoAuditLogsList);
@@ -181,29 +175,25 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@GetMapping("/getVesselCode")
 	@ResponseBody
-	public List<String> lisVesselNo(String keyString)
-	{
+	public List<String> lisVesselNo(String keyString) {
 		return edoService.selectVesselNo(keyString);
 	}
 
 	@GetMapping("/getVoyNo")
 	@ResponseBody
-	public List<String> listVoyNo(String keyString)
-	{
+	public List<String> listVoyNo(String keyString) {
 		return edoService.selectVoyNo(keyString);
 	}
 
 	@GetMapping("/getVessel")
 	@ResponseBody
-	public List<String> listVessel(String keyString)
-	{
+	public List<String> listVessel(String keyString) {
 		return edoService.selectVesselList(keyString);
 	}
 
 	@GetMapping("/getEmptyContainerDeport")
 	@ResponseBody
-	public AjaxResult listEmptyContainerDeport()
-	{
+	public AjaxResult listEmptyContainerDeport() {
 		SysDictData dictData = new SysDictData();
 		dictData.setDictType("edo_empty_container_deport");
 		return AjaxResult.success(dictDataService.selectDictDataList(dictData));
@@ -219,20 +209,17 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@PostMapping("/edoReport")
 	@ResponseBody
-	public TableDataInfo edoReport(@RequestBody PageAble<Edo> param)
-	{
+	public TableDataInfo edoReport(@RequestBody PageAble<Edo> param) {
 		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
 		Edo edo = param.getData();
-		  if (edo == null) {
+		if (edo == null) {
 			edo = new Edo();
-		  }
+		}
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());
 		edo.setParams(groupCodes);
 		List<Edo> dataList = edoService.selectEdoList(edo);
 		return getDataTable(dataList);
 	}
-
-
 
 }

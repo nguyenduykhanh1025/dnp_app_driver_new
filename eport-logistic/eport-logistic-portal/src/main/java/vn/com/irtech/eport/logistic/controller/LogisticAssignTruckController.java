@@ -24,6 +24,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.DriverTruck;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -135,7 +136,8 @@ public class LogisticAssignTruckController extends LogisticBaseController{
         return driverList;
 	}
 	
-	@PostMapping("/savePickupAssignFollowBatch")
+    @Log(title = "Điều Xe", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+    @PostMapping("/savePickupAssignFollowBatch")
 	@Transactional
 	@ResponseBody
 	public AjaxResult savePickupAssignFollowBatch(@RequestBody List<PickupAssign> pickupAssigns){
@@ -206,6 +208,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		mmap.put("driverOwnerList", pickupAssignService.getDriverOwners(pickupAssign));
 		return PREFIX + "/preoderPickupAssign";
 	}
+
 	@GetMapping("/assignedDriverAccountListForPreoderPickup")
 	@ResponseBody
     public List<DriverAccount> assignedDriverAccountListForPreoderPickup(PickupAssign pickupAssign)
@@ -254,7 +257,8 @@ public class LogisticAssignTruckController extends LogisticBaseController{
         return driverList;
 	}
 	
-	@PostMapping("/savePickupAssignFollowContainer")
+    @Log(title = "Điều Xe Theo Cont", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
+    @PostMapping("/savePickupAssignFollowContainer")
 	@Transactional
 	@ResponseBody
 	public AjaxResult savePickupAssignFollowContainer(@RequestBody List<PickupAssign> pickupAssigns){
@@ -323,7 +327,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	/**
      * Update Save Driver login info
      */
-    @Log(title = "Driver login info", businessType = BusinessType.UPDATE)
+    @Log(title = "Cập Nhật Xe Tài Xế", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
     @PostMapping("/edit/driver")
     @ResponseBody
     public AjaxResult editSave(DriverAccount driverAccount)
@@ -336,6 +340,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
         }
         return toAjax(driverAccountService.updateDriverAccount(driverAccount));
 	}
+
 	/**
 	 * Load table truck assigned follow driver
 	*/
@@ -362,6 +367,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		}
 		return logisticTrucks;
 	}
+
 	/**
 	 * Load table truck not assigned follow driver
 	*/
@@ -389,6 +395,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	 * @param driverId
 	 * @return
 	 */
+	@Log(title = "Thêm Xe Cho Tài Xế", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/truck/assign/save")
 	@ResponseBody
 	@Transactional

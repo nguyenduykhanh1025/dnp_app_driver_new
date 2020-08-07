@@ -1,4 +1,5 @@
 var prefix = ctx + "logistic/send-cont-full";
+var prefix_main = ctx + "logistic/shipmentSeparating";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
@@ -287,4 +288,8 @@ function getSelected() {
         allChecked = false;
         loadShipmentDetail(row.id);
     }
+}
+
+function openFormSeparate() {
+  $.modal.open("Xác nhận làm lệnh", prefix_main + "/confirm");
 }

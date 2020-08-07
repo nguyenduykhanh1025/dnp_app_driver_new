@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
@@ -65,7 +66,7 @@ public class LogisticTruckController extends LogisticBaseController
     /**
      * Add or UpdateLogisticTruck
      */
-    @Log(title = "LogisticTruck", businessType = BusinessType.INSERT)
+    @Log(title = "Thêm Xe", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(LogisticTruck logisticTruck)
@@ -93,7 +94,7 @@ public class LogisticTruckController extends LogisticBaseController
     /**
      * Update SaveLogisticTruck
      */
-    @Log(title = "LogisticTruck", businessType = BusinessType.UPDATE)
+    @Log(title = "Chỉnh Sữa Xe", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(LogisticTruck logisticTruck)
@@ -107,7 +108,7 @@ public class LogisticTruckController extends LogisticBaseController
     /**
      * DeleteLogisticTruck
      */
-    @Log(title = "LogisticTruck", businessType = BusinessType.DELETE)
+    @Log(title = "Xóa Xe", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
     @PostMapping( "/remove")
     @ResponseBody
     public AjaxResult remove(String ids)
