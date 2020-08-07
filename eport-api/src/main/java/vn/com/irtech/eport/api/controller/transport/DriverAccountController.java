@@ -15,8 +15,11 @@ import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.util.SecurityUtils;
 import vn.com.irtech.eport.api.util.ShiroUtils;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.form.DriverInfo;
@@ -29,7 +32,7 @@ import vn.com.irtech.eport.system.service.IUserDevicesService;
 @RequestMapping("/transport/user")
 public class DriverAccountController extends BaseController {
 
-	private static final Logger log = LoggerFactory.getLogger(DriverAccountController.class);
+	private static final Logger logger = LoggerFactory.getLogger(DriverAccountController.class);
 
 	public static final String PHONE_PATTERN = "";
 
@@ -62,6 +65,7 @@ public class DriverAccountController extends BaseController {
 		return ajaxResult;
 	}
 
+	@Log(title = "Đăng ký tài xế", businessType = BusinessType.INSERT, operatorType = OperatorType.MOBILE)
 	@PostMapping("/register")
 	@ResponseBody
 	public AjaxResult register(@RequestBody DriverAccount driverAccountTemp) {
@@ -83,7 +87,8 @@ public class DriverAccountController extends BaseController {
 		return success();
     }
     
-    @PostMapping("/resetpwd")
+	@Log(title = "Reset mật khẩu tài xế", businessType = BusinessType.INSERT, operatorType = OperatorType.MOBILE)
+	@PostMapping("/resetpwd")
 	@ResponseBody
 	public AjaxResult resetPassword(String phoneNumber) {
 		// DriverAccount driverAccountParam = new DriverAccount();
