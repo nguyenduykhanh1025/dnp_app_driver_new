@@ -20,88 +20,71 @@ import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.FileUtils;
 
 /**
- * 通用请求处理
- * 
  * @author admin
  */
 @Controller
-public class CommonController
-{
-    private static final Logger log = LoggerFactory.getLogger(CommonController.class);
+public class CommonController {
+	private static final Logger log = LoggerFactory.getLogger(CommonController.class);
 
-    @Autowired
-    private ServerConfig serverConfig;
+	@Autowired
+	private ServerConfig serverConfig;
 
+	@GetMapping("common/download/{nameFile}")
+	public void fileDownload(@PathVariable("nameFile") String nameFile, String fileName, Boolean delete,
+			HttpServletResponse response, HttpServletRequest request) {
+		// fileName = "DanhSachContainer_"+ fileName;
+		try {
+			if (!FileUtils.isValidFilename(fileName)) {
+				throw new Exception(StringUtils.format("Tên file ko hợp lệ !  ", fileName));
+			}
+			String realFileName = nameFile + System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
+			String filePath = Global.getDownloadPath() + fileName;
 
-     
-    @GetMapping("common/download/{nameFile}")
-    public void fileDownload(@PathVariable("nameFile") String nameFile,String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request)
-    {
-        //fileName = "DanhSachContainer_"+ fileName;
-        try
-        {
-            if (!FileUtils.isValidFilename(fileName))
-            {
-                throw new Exception(StringUtils.format("Tên file ko hợp lệ !  ", fileName));
-            }
-            String realFileName = nameFile + System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
-            String filePath = Global.getDownloadPath() + fileName;
+			response.setCharacterEncoding("utf-8");
+			response.setContentType("multipart/form-data");
+			response.setHeader("Content-Disposition",
+					"attachment;fileName=" + FileUtils.setFileDownloadHeader(request, realFileName));
+			FileUtils.writeBytes(filePath, response.getOutputStream());
+			if (delete) {
+				FileUtils.deleteFile(filePath);
+			}
+		} catch (Exception e) {
+			log.error("Có lỗi xuất hiện, tải xuống thất bại!", e);
+		}
+	}
 
-            response.setCharacterEncoding("utf-8");
-            response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition",
-                    "attachment;fileName=" + FileUtils.setFileDownloadHeader(request, realFileName));
-            FileUtils.writeBytes(filePath, response.getOutputStream());
-            if (delete)
-            {
-                FileUtils.deleteFile(filePath);
-            }
-        }
-        catch (Exception e)
-        {
-            log.error("Có lỗi xuất hiện, tải xuống thất bại !", e);
-        }
-    }
+	@PostMapping("/common/upload")
+	@ResponseBody
+	public AjaxResult uploadFile(MultipartFile file) throws Exception {
+		try {
 
-    
-    @PostMapping("/common/upload")
-    @ResponseBody
-    public AjaxResult uploadFile(MultipartFile file) throws Exception
-    {
-        try
-        {
-           
-            String filePath = Global.getUploadPath();
-           
-            String fileName = FileUploadUtils.upload(filePath, file);
-            String url = serverConfig.getUrl() + fileName;
-            AjaxResult ajax = AjaxResult.success();
-            ajax.put("fileName", fileName);
-            ajax.put("url", url);
-            return ajax;
-        }
-        catch (Exception e)
-        {
-            return AjaxResult.error(e.getMessage());
-        }
-    }
+			String filePath = Global.getUploadPath();
 
-    
-    @GetMapping("/common/download/resource")
-    public void resourceDownload(String resource, HttpServletRequest request, HttpServletResponse response)
-            throws Exception
-    {
-       
-        String localPath = Global.getProfile();
-     
-        String downloadPath = localPath + StringUtils.substringAfter(resource, Constants.RESOURCE_PREFIX);
-      
-        String downloadName = StringUtils.substringAfterLast(downloadPath, "/");
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("multipart/form-data");
-        response.setHeader("Content-Disposition",
-                "attachment;fileName=" + FileUtils.setFileDownloadHeader(request, downloadName));
-        FileUtils.writeBytes(downloadPath, response.getOutputStream());
-    }
-   
+			String fileName = FileUploadUtils.upload(filePath, file);
+			String url = serverConfig.getUrl() + fileName;
+			AjaxResult ajax = AjaxResult.success();
+			ajax.put("fileName", fileName);
+			ajax.put("url", url);
+			return ajax;
+		} catch (Exception e) {
+			return AjaxResult.error(e.getMessage());
+		}
+	}
+
+	@GetMapping("/common/download/resource")
+	public void resourceDownload(String resource, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+
+		String localPath = Global.getProfile();
+
+		String downloadPath = localPath + StringUtils.substringAfter(resource, Constants.RESOURCE_PREFIX);
+
+		String downloadName = StringUtils.substringAfterLast(downloadPath, "/");
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("multipart/form-data");
+		response.setHeader("Content-Disposition",
+				"attachment;fileName=" + FileUtils.setFileDownloadHeader(request, downloadName));
+		FileUtils.writeBytes(downloadPath, response.getOutputStream());
+	}
+
 }
