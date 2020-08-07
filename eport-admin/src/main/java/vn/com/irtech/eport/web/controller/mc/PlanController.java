@@ -71,11 +71,10 @@ public class PlanController extends BaseController {
 			return AjaxResult.error("Lệnh không tồn tại!");
 		}
 		
-		if (pickupHistory.getStatus() > 1) {
+		if (pickupHistory.getStatus() > 0) {
 			return AjaxResult.error("Không thể sửa lệnh đã được gate in!");
 		}
 		
-		pickupHistory.setStatus(1);
 		if (StringUtils.isNotEmpty(data.getArea())) {
 			pickupHistory.setArea(data.getArea());
 		} else {

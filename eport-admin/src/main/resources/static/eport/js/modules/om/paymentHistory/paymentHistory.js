@@ -33,7 +33,7 @@ function loadTable() {
     url: PREFIX + "/shipments",
     method: "POST",
     singleSelect: true,
-    height: document.documentElement.clientHeight - 150,
+    height: document.documentElement.clientHeight - 70,
     clientPaging: false,
     pagination: true,
     rownumbers: true,

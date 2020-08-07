@@ -46,7 +46,7 @@ public abstract class AbstractQuartzJob implements Job
         }
         catch (Exception e)
         {
-            log.error("任务执行异常  - ：", e);
+            log.error("Task execution abnormal  - ：", e);
             after(context, sysJob, e);
         }
     }

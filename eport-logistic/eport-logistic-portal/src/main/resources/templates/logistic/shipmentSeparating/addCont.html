@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Thêm cont vào house bill')" />
+    <th:block th:include="include :: easyui-css" />
+    <th:block th:include="include :: datetimepicker-css" />
+    <link th:href="@{/css/logistic/shipmentSeparating/style.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container-fluid bg-white" >
+      <div class="row">
+        <div class="form group col-lg-6 col-md-6 col-sm-6 row pl0">
+          <label class="col-lg-2 col-md-2 col-sm-2 col-form-label" for="masterbill"><b>Master Bill</b></label>
+          <div class="col-lg-10 col-md-10 col-sm-10">
+            <input name="masterbill" class="form-control" type="text" />
+          </div>
+          <label class="col-lg-2 col-md-2 col-sm-2 col-form-label mt5" for="masterbill"><b>Hãng tàu</b></label>
+          <div class="col-lg-10 col-md-10 col-sm-10 mt5">
+            <input name="masterbill" class="form-control" type="text" />
+          </div>
+        </div>
+        <div class="form group col-lg-6 col-md-6 col-sm-6 row pl0">
+          <label class="col-lg-2 col-md-2 col-sm-2 col-form-label" for="masterbill"><b>Chủ hàng</b></label>
+          <div class="col-lg-10 col-md-10 col-sm-10">
+            <input name="masterbill" class="form-control" type="text" />
+          </div>
+          <label class="col-lg-2 col-md-2 col-sm-2 col-form-label mt5" for="masterbill"><b>Hạn lệnh</b></label>
+          <div class="col-lg-4 col-md-4 col-sm-4 mt5">
+            <input name="masterbill" class="form-control" type="date" />
+          </div>
+        </div>
+      </div>
+      <h3>Danh Sách Container <span class="small-text">(<i class="text-danger">*</i> Chọn container để tách house bill)</span></h3>
+      <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+        <thead>
+          <tr>
+            <th data-options="field:'id', fixed:true" width="1"></th>
+            <th data-options="field:'Contain', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Container No</th>
+            <th data-options="field:'taxCode', halign:'center', fixed:true" sortable="true" width="100">Company</th>
+            <th data-options="field:'containerAmount', align:'right', halign:'center', fixed:true" sortable="true" width="70">Expried Dem</th>
+            <th data-options="field:'remark',align:'right',halign:'center'" sortable="true" width="150">DET</th>
+            <th data-options="field:'createTime', align:'right', halign:'center', fixed:true" sortable="true" width="150">Empty Container depot</th>
+            <th data-options="field:'createTime', align:'right', halign:'center', fixed:true" sortable="true" width="150">Vessel</th>
+            <th data-options="field:'createTime', align:'right', halign:'center', fixed:true" sortable="true" width="150">Voyno</th>
+            <th data-options="field:'createTime', align:'right', halign:'center', fixed:true" sortable="true" width="150">Status</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script th:src="@{/js/logistic/shipmentSeparating/addCont.js}"></script>
+  </body>
+</html>

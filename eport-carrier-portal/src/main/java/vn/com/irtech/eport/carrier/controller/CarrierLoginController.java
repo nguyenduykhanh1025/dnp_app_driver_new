@@ -7,7 +7,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +21,7 @@ import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.ServletUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
@@ -62,7 +62,7 @@ public class CarrierLoginController extends CarrierBaseController {
 			subject.login(token);
 			return success();
 		} catch (AuthenticationException e) {
-			String msg = "User or password is wrong";
+			String msg = "Tên đăng nhập hoặc mật khẩu không đúng.";
 			if (StringUtils.isNotEmpty(e.getMessage())) {
 				msg = e.getMessage();
 			}
@@ -75,15 +75,14 @@ public class CarrierLoginController extends CarrierBaseController {
 		return "error/unauth";
 	}
 
-	@Log(title = "Carrier Reset password", businessType = BusinessType.UPDATE)
 	@GetMapping("/resetPwd/{userId}")
 	public String resetPwd(@PathVariable("userId") Long userId, ModelMap mmap) {
 		mmap.put("user", carrierService.selectCarrierAccountById(userId));
 		return prefix + "/profile/resetPwd";
 	}
 
+	@Log(title = "Reset Mật Khẩu", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
 	@RequiresPermissions("system:user:resetPwd")
-	@Log(title = "Reset password", businessType = BusinessType.UPDATE)
 	@PostMapping("/resetPwd")
 	@ResponseBody
 	public AjaxResult resetPwdSave(CarrierAccount user) {
