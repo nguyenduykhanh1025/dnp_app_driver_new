@@ -71,6 +71,7 @@ public class ExecuteCatosController extends AdminBaseController {
 		if (processOrder == null) {
 			processOrder = new ProcessOrder();
 		}
+		processOrder.setRunnable(true);
 		List<ProcessOrder> result = processOrderService.selectProcessOrderListForOmManagement(processOrder);
 		return getDataTable(result);
 	}

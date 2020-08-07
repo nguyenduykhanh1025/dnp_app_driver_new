@@ -14,14 +14,28 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								<span class="font-bold">UUID: </span><input type="text" name="uuId" />
+								<span class="font-bold">UUID: </span><input type="text" name="uuId" onkeyup=""/>
 							</li>
 							<li>
 								<span class="font-bold">Địa chỉ IP: </span><input type="text" name="ipAddress" />
 							</li>
 							<li>
+								<span class="font-bold">Loại dịch vụ: </span>
+								<select name="serviceType" onchange="$.table.search()">
+									<option value="">Tất cả</option>
+									<option value="1">Nhận container có hàng</option>
+									<option value="3">Nhận container rỗng</option>
+									<option value="4">Giao container có hàng</option>
+									<option value="2">Giao container rỗng</option>
+									<option value="5">Dịch chuyển container</option>
+									<option value="6">Đổi tàu/chuyến</option>
+									<option value="7">Tạo booking</option>
+									<option value="8">Gate in</option>
+								</select>
+							</li>
+							<li>
 								<span class="font-bold">Trạng thái: </span>
-								<select name="status">
+								<select name="status" onchange="$.table.search()">
 									<option value="">Tất cả</option>
 									<option value="0">Available</option>
 									<option value="1">Busy</option>

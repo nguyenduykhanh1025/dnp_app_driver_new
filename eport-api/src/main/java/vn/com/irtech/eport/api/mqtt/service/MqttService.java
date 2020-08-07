@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.mqtt.listener.CheckinHandler;
+import vn.com.irtech.eport.api.mqtt.listener.GatePassHandler;
 
 @Component
 public class MqttService implements MqttCallback {
@@ -30,6 +31,9 @@ public class MqttService implements MqttCallback {
 
 	@Autowired
 	private CheckinHandler checkinHandler;
+	
+	@Autowired
+	private GatePassHandler gatePassHandler;
 
 	@Value("${mqtt.root:'eport'}")
 	public void setBaseTopic(String baseTopic) {
@@ -104,9 +108,8 @@ public class MqttService implements MqttCallback {
 
 	private void subscribeToTopics() throws MqttException {
 		List<IMqttToken> tokens = new ArrayList<>();
-
 		tokens.add(mqttClient.subscribe(MqttConsts.SMART_GATE_REQ_TOPIC, 0, checkinHandler));
-
+		tokens.add(mqttClient.subscribe(MqttConsts.GATE_ROBOT_RES_TOPIC, 0, gatePassHandler));
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
 		}
@@ -202,4 +205,7 @@ public class MqttService implements MqttCallback {
 		this.publish(MqttConsts.MC_REQ_TOPIC, new MqttMessage(message.getBytes()));
 	}
 
+	public void sendMessageToRobot(String message, String gateId) throws MqttException {
+		this.publish(MqttConsts.GATE_ROBOT_REQ_TOPIC.replace("+", gateId), new MqttMessage(message.getBytes()));
+	}
 }

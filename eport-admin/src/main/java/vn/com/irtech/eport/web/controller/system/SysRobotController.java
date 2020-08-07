@@ -46,7 +46,41 @@ public class SysRobotController extends BaseController {
 	@ResponseBody
 	public TableDataInfo list(SysRobot robot) {
 		startPage();
-		List<SysRobot> list = robotService.selectRobotList(robot);
+		SysRobot robotParam = new SysRobot();
+		robotParam.setUuId(robot.getUuId());
+		robotParam.setIpAddress(robot.getIpAddress());
+		robotParam.setStatus(robot.getStatus());
+		if (robot.getServiceType() !=null ) {
+			switch (robot.getServiceType()) {
+				case 1:
+					robotParam.setIsReceiveContFullOrder(true);
+					break;
+				case 2:
+					robotParam.setIsSendContEmptyOrder(true);
+					break;
+				case 3:
+					robotParam.setIsReceiveContEmptyOrder(true);
+					break;
+				case 4:
+					robotParam.setIsSendContFullOrder(true);
+					break;
+				case 5:
+					robotParam.setIsShiftingContOrder(true);
+					break;
+				case 6:
+					robotParam.setIsChangeVesselOrder(true);
+					break;
+				case 7:
+					robotParam.setIsCreateBookingOrder(true);
+					break;
+				case 8:
+					robotParam.setIsReceiveContFullOrder(true);
+					break;
+				default:
+					break;
+			}
+		}
+		List<SysRobot> list = robotService.selectRobotList(robotParam);
 		return getDataTable(list);
 	}
 

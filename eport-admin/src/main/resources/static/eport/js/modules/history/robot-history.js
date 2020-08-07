@@ -2,26 +2,27 @@ const PREFIX = ctx + "history/robot";
 var processHistory = new Object();
 
 $(document).ready(function () {
+  let fromMonth = (new Date().getMonth()+1 < 10) ? "0" + (new Date().getMonth()+1) : new Date().getMonth()+1;
+  let toMonth = (new Date().getMonth() +2 < 10) ? "0" + (new Date().getMonth() +2 ): new Date().getMonth() +2;
+  $('#fromDate').val("01/"+ fromMonth + "/" + new Date().getFullYear());
+  $('#toDate').val("01/"+ (toMonth > 12 ? "01" +"/"+ (new Date().getFullYear()+1)  : toMonth + "/" + new Date().getFullYear()));
+  let fromDate = stringToDate($('#fromDate').val());
+  let toDate =  stringToDate($('#toDate').val());
+  fromDate.setHours(0,0,0);
+  toDate.setHours(23, 59, 59);
+  processHistory.fromDate = fromDate.getTime();
+  processHistory.toDate = toDate.getTime();
+
   loadTable();
 
-  $('#fromDate').datetimepicker({
-    language: 'en',
-    format: 'dd/mm/yyyy',
-    autoclose: true,
-    todayBtn: true,
-    todayHighlight: true,
-    pickTime: false,
-    minView: 2
+  laydate.render({
+    elem: '#fromDate',
+    format: "dd/MM/yyyy"
   });
 
-  $('#toDate').datetimepicker({
-    language: 'en',
-    format: 'dd/mm/yyyy',
-    autoclose: true,
-    todayBtn: true,
-    todayHighlight: true,
-    pickTime: false,
-    minView: 2
+  laydate.render({
+    elem: '#toDate',
+    format: "dd/MM/yyyy"
   });
 
   $('#searchAllInput').keyup(function (event) {
@@ -47,7 +48,6 @@ function formatNumber(number) {
 }
 
 function formatServiceType(value, row) {
-  console.log(row);
   switch (row.processOrder.serviceType) {
     case 1:
       return 'Bốc Hàng';
@@ -131,28 +131,52 @@ function changeResult() {
   loadTable();
 }
 
-function changeFromDate() {
-  let fromDate = stringToDate($('.from-date').val());
-  if ($('.to-date').val() != '' && stringToDate($('.to-date').val()).getTime() < fromDate.getTime()) {
+$.event.special.inputchange = {
+  setup: function () {
+    var self = this,
+      val;
+    $.data(
+      this,
+      "timer",
+      window.setInterval(function () {
+        val = self.value;
+        if ($.data(self, "cache") != val) {
+          $.data(self, "cache", val);
+          $(self).trigger("inputchange");
+        }
+      }, 20)
+    );
+  },
+  teardown: function () {
+    window.clearInterval($.data(this, "timer"));
+  },
+  add: function () {
+    $.data(this, "cache", this.value);
+  },
+};
+
+$("#fromDate").on("inputchange", function () {
+  let fromDate = stringToDate($('#fromDate').val());
+  if ($('#toDate').val() != '' && stringToDate($('#toDate').val()).getTime() < fromDate.getTime()) {
     $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
-    $('.from-date').val('');
+    $('#fromDate').val('');
   } else {
     processHistory.fromDate = fromDate.getTime();
     loadTable();
   }
-}
+});
 
-function changeToDate() {
-  let toDate = stringToDate($('.to-date').val());
-  if ($('.from-date').val() != '' && stringToDate($('.from-date').val()).getTime() > toDate.getTime()) {
-    $.modal.alertError('Quý khách không thể chọn đến ngày thấp hơn từ ngày.')
-    $('.to-date').val('');
+$("#toDate").on("inputchange", function () {
+  let toDate = stringToDate($("#toDate").val());
+  if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
+    $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
+    $("#toDate").val("");
   } else {
     toDate.setHours(23, 59, 59);
     processHistory.toDate = toDate.getTime();
     loadTable();
   }
-}
+});
 
 function stringToDate(dateStr) {
   let dateParts = dateStr.split('/');

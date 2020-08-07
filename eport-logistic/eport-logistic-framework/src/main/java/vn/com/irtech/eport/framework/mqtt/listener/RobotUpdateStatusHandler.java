@@ -81,7 +81,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		String status = map.get("status") == null ? null : map.get("status").toString();
 
 		// Get ip
-		String ipAddress = map.get("ip") == null ? null : map.get("ip").toString();
+		String ipAddress = map.get("ipAddress") == null ? null : map.get("ipAddress").toString();
 
 		// Get services robot support
 		Boolean isReceiveContFullOrder = "1".equals(
@@ -98,6 +98,15 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 		Boolean isShiftingContOrder = "1"
 				.equals(map.get("isShiftingContOrder") == null ? null : map.get("isShiftingContOrder").toString());
+		
+		Boolean isChangeVesselOrder = "1"
+				.equals(map.get("isChangeVesselOrder") == null ? null : map.get("isChangeVesselOrder").toString());
+		
+		Boolean isCreateBookingOrder = "1"
+				.equals(map.get("isCreateBookingOrder") == null ? null : map.get("isCreateBookingOrder").toString());
+		
+		Boolean isGateInOrder = "1"
+				.equals(map.get("isGateInOrder") == null ? null : map.get("isGateInOrder").toString());
 
 		String serviceTypes = "";
 
@@ -116,6 +125,15 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		if (isShiftingContOrder) {
 			serviceTypes += 5 + ",";
 		}
+		if (isChangeVesselOrder) {
+			serviceTypes += 6 + ",";
+		}
+		if (isCreateBookingOrder) {
+			serviceTypes += 7 + ",";
+		}
+		if (isGateInOrder) {
+			serviceTypes += 8 + ",";
+		}
 
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);
@@ -130,6 +148,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		sysRobot.setIsSendContFullOrder(isSendContFullOrder);
 		sysRobot.setIsSendContEmptyOrder(isSendContEmptyOrder);
 		sysRobot.setIsShiftingContOrder(isShiftingContOrder);
+		sysRobot.setIsChangeVesselOrder(isChangeVesselOrder);
+		sysRobot.setIsCreateBookingOrder(isCreateBookingOrder);
+		sysRobot.setIsGateInOrder(isGateInOrder);
 
 		// if robot is busying
 		if ("1".equals(status)) {
@@ -141,21 +162,26 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 			}
 		} else if ("0".equals(status)) {
-			ProcessOrder processOrder = processOrderService.getProcessOrderByUuid(uuId);
-			if (processOrder != null) {
-				processOrder.setStatus(0);
-				processOrderService.updateProcessOrder(processOrder);
+			List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(uuId);
 
-				// Send notification to logistics
-				AjaxResult ajaxResult= null;
-				ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
-				webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
-
-				// Send notification for OM
-				try {
-					mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
-				} catch (Exception e) {
-					logger.warn(e.getMessage());
+			if (processOrders != null && !processOrders.isEmpty()) {
+				for (ProcessOrder processOrder : processOrders) {
+					if (processOrder != null) {
+						processOrder.setStatus(0);
+						processOrderService.updateProcessOrder(processOrder);
+		
+						// Send notification to logistics
+						AjaxResult ajaxResult= null;
+						ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
+						webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
+		
+						// Send notification for OM
+						try {
+							mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+						} catch (Exception e) {
+							logger.warn(e.getMessage());
+						}
+					}
 				}
 			}
 			
@@ -211,23 +237,26 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			}
 
 		} else if ("2".equals(status)) {
-			ProcessOrder processOrder = processOrderService.getProcessOrderByUuid(uuId);
-			if (processOrder != null) {
-				processOrder.setRobotUuid(null);
-				processOrderService.updateProcessOrder(processOrder);
-
-				// Send notification to logistics
-				AjaxResult ajaxResult= null;
-				ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
-				webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
-
-				// Send notification for om
-				try {
-					mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
-				} catch (Exception e) {
-					logger.warn(e.getMessage());
+			List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(uuId);
+			if (processOrders != null && !processOrders.isEmpty()) {
+				for (ProcessOrder processOrder : processOrders) {
+					if (processOrder != null) {
+						processOrder.setRobotUuid(null);
+						processOrderService.updateProcessOrder(processOrder);
+		
+						// Send notification to logistics
+						AjaxResult ajaxResult= null;
+						ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
+						webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
+		
+						// Send notification for om
+						try {
+							mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+						} catch (Exception e) {
+							logger.warn(e.getMessage());
+						}
+					}
 				}
-
 			}
 
 			// Send notification for IT

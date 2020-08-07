@@ -4,7 +4,6 @@
 <head>
   <th:block th:include="include :: header('Robot History')" />
   <th:block th:include="include :: easyui-css" />
-  <th:block th:include="include :: datetimepicker-css" />
   <link th:href="@{/css/history/truck/style.css}" rel="stylesheet" />
 </head>
 
@@ -33,8 +32,8 @@
         </select>
       </div>
       <div class="form-group col-md-4 col-sm-4 col-xs-4">
-        <input class="date-input" type="text" id="fromDate" onchange="changeFromDate()" name="from-date" placeholder="Từ ngày" readOnly />
-        <input class="date-input" type="text" id="toDate" onchange="changeToDate()" name="to-date" placeholder="Đến ngày" readOnly />
+        <input class="date-input" id="fromDate" name="from-date" placeholder="Từ ngày" readOnly />
+        <input class="date-input" id="toDate" name="to-date" placeholder="Đến ngày" readOnly />
       </div>
       <div class="form-group col-md-2 col-sm-2 col-xs-2">
         <button class="btn btn-primary" title="Tìm kiếm" onclick="loadTable()">
@@ -64,7 +63,6 @@
   </section>
   <th:block th:include="include :: footer" />
   <th:block th:include="include :: easyui-js" />
-  <th:block th:include="include :: datetimepicker-js" />
   <script th:src="@{/eport/js/modules/history/robot-history.js}"></script>
 </body>
 

@@ -25,7 +25,6 @@ $(document).ready(function () {
         $('#serviceType').text("Hạ Hàng");
         break;
     }
-    console.log(processOrder);
     $('#consignee').text(processOrder.shipmentDetail.consignee);
     $('#taxCode').text(processOrder.taxCode);
     if (processOrder.blNo) {
@@ -42,8 +41,8 @@ $(document).ready(function () {
     $('#voyage').text(processOrder.voyage);
     $('#logisticGroup').text(processOrder.groupName);
     if (processOrder.status == 2) {
-      $(".div-toggle").hide();
       $(".toggle-section").hide();
+      $("#confirmBtn").hide();
     } else {
       if (processOrder.status != 0) {
         $("#toggle-status").bootstrapToggle({
@@ -70,24 +69,20 @@ $(document).ready(function () {
 
 function statusRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
-  $(td).addClass("htMiddle");
+  $(td).addClass("htCenter").addClass("htMiddle");
   switch (value) {
     case 0:
       if (orderList[row].robotUuid) {
-        $(td).html('Bị lỗi');
-        $(td).css("color", "#f35f3e");
+        $(td).html('<span class="badge badge-danger">Bị lỗi</span>');
       } else {
-        $(td).html('Đang chờ');
-        $(td).css("color", "rgb(38 77 152 / 1)");
+        $(td).html('<span class="badge badge-warning">Đang chờ</span>');
       }
       break;
     case 1:
-      $(td).html('Đang làm');
-      $(td).css("color", "#23c6c8");
+      $(td).html('<span class="badge badge-primary">Đang làm</span>');
       break;
     case 2:
-      $(td).html('Đã làm');
-      $(td).css("color", "#30d22d");
+      $(td).html('<span class="badge badge-success">Đã hoàn thành</span>');
       break;
   }
   return td;
@@ -96,7 +91,7 @@ function statusRenderer(instance, td, row, col, prop, value, cellProperties) {
 function idRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
   if (orderList[row].id) {
-    $(td).addClass("htMiddle").html(orderList[row].id);
+    $(td).addClass("htMiddle").addClass("htRight").html(orderList[row].id);
   }
   return td;
 }
@@ -104,7 +99,7 @@ function idRenderer(instance, td, row, col, prop, value, cellProperties) {
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
   if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.containerNo) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.containerNo);
+    $(td).addClass("htCenter").addClass("htMiddle").html(orderList[row].shipmentDetail.containerNo);
   }
   return td;
 }
@@ -112,7 +107,7 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
   if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.opeCode) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.opeCode);
+    $(td).addClass("htCenter").addClass("htMiddle").html(orderList[row].shipmentDetail.opeCode);
   }
   return td;
 }
@@ -120,7 +115,7 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
 function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
   if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.sztp) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.sztp);
+    $(td).addClass("htCenter").addClass("htMiddle").html(orderList[row].shipmentDetail.sztp);
   }
   return td;
 }
@@ -128,7 +123,7 @@ function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
 function feRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
   if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.fe) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.fe);
+    $(td).addClass("htCenter").addClass("htCenter").addClass("htMiddle").html(orderList[row].shipmentDetail.fe);
   }
   return td;
 }
@@ -136,7 +131,7 @@ function feRenderer(instance, td, row, col, prop, value, cellProperties) {
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
   if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.wgt) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.wgt);
+    $(td).addClass("htMiddle").addClass("htRight").html(orderList[row].shipmentDetail.wgt);
   }
   return td;
 }
@@ -144,7 +139,7 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
 function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
   if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.cargoType) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.cargoType);
+    $(td).addClass("htCenter").addClass("htMiddle").html(orderList[row].shipmentDetail.cargoType);
   }
   return td;
 }
@@ -152,7 +147,7 @@ function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) 
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
   cellProperties.readOnly = 'true';
   if (orderList[row].shipmentDetail && orderList[row].shipmentDetail.dischargePort) {
-    $(td).addClass("htMiddle").html(orderList[row].shipmentDetail.dischargePort);
+    $(td).addClass("htCenter").addClass("htMiddle").html(orderList[row].shipmentDetail.dischargePort);
   }
   return td;
 }
@@ -334,8 +329,17 @@ function confirm() {
       $.modal.closeLoading();
       if (res.code == 0) {
         $.modal.alertSuccess("Đồng bộ thành công.");
+        $.each(orderList, function() {
+          this.status = 2;
+        });
+        hot.destroy();
+        hot = new Handsontable(dogrid, config);
+        hot.loadData(orderList);
+        hot.render();
+        $(".toggle-section").hide();
+        $("#confirmBtn").hide();
       } else {
-        $.modal.alertWarn("Không tìm thấy dữ liệu trong catos để đồng bộ, bạn vui lòng kiểm trả lại lệnh đã làm.");
+        $.modal.alertWarning("Không tìm thấy dữ liệu trong catos để đồng bộ, bạn vui lòng kiểm trả lại lệnh đã làm.");
       }
     },
     error: function () {
@@ -373,5 +377,9 @@ function confirm() {
 }
 
 function closeForm() {
-  $.modal.closeTab();
+  try {
+    $.modal.closeTab();
+  } catch(err) {
+    window.top.close();
+  }
 }

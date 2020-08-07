@@ -51,7 +51,7 @@ spring:
     restart:
       enabled: true
   redis:
-    enabled: false
+    enabled: true
     database: 0
     password: 
     host: 127.0.0.1

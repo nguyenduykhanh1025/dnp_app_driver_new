@@ -26,6 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="gateoutDate" column="gateout_date" />
 		<result property="cancelDeceiptDate" column="cancel_receipt_date" />
 		<result property="planningDate" column="planning_date" />
+		<result property="processOrderId" column="process_order_id" />
 		<result property="remark" column="remark" />
 		<result property="createBy" column="create_by" />
 		<result property="createTime" column="create_time" />
@@ -67,6 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="planningDate != null "> and planning_date = #{planningDate}</if>
             <if test="fromDate != null ">and (gatein_date = #{fromDate} OR gatein_date > #{fromDate})</if>
             <if test="toDate != null ">and (gatein_date = #{toDate} OR gatein_date &lt; #{toDate})</if>
+            <if test="processOrderId != null ">and process_order_id = #{processOrderId}</if>
 		</where>
 	</select>
 	
@@ -161,6 +163,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="gateoutDate != null ">gateout_date,</if>
 			<if test="cancelDeceiptDate != null ">cancel_receipt_date,</if>
 			<if test="planningDate != null ">planning_date,</if>
+			<if test="processOrderId != null ">process_order_id,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -186,6 +189,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="gateoutDate != null ">#{gateoutDate},</if>
 			<if test="cancelDeceiptDate != null ">#{cancelDeceiptDate},</if>
 			<if test="planningDate != null ">#{planningDate},</if>
+			<if test="processOrderId != null ">#{processOrderId},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -214,6 +218,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="gateoutDate != null ">gateout_date = #{gateoutDate},</if>
 			<if test="cancelDeceiptDate != null ">cancel_receipt_date = #{cancelDeceiptDate},</if>
 			<if test="planningDate != null ">planning_date = #{planningDate},</if>
+			<if test="processOrderId != null ">process_order_id = #{processOrderId},</if>
 			<if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate

@@ -103,20 +103,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select h.id, h.process_order_id, h.robot_uuid, h.result, h.status, h.remark, h.create_by, h.create_time, h.update_by, h.update_time, p.service_type 
         from process_history h 
         left join process_order p on h.process_order_id = p.id
-        group by h.id, h.process_order_id, h.robot_uuid, h.result, h.status, h.remark, h.create_by, h.create_time, h.update_by, h.update_time, p.service_type
     </sql>
 
     <select id="selectRobotHistory" parameterType="ProcessHistory" resultMap="ProcessHistoryResult">
         <include refid="selectRobotHistoryVo"/>
         <where>
-            <!-- and h.robot_uuid != null
+            and h.robot_uuid is not null
             <if test="serviceType != null  and serviceType != ''"> and p.service_type = #{serviceType}</if>
             <if test="result != null  and result != ''"> and h.result = #{result}</if>
             <if test="fromDate != null ">and h.create_time &gt;= #{fromDate}</if>
             <if test="toDate != null ">and h.create_time &lt;= #{toDate}</if>
-            <if test="robotUuid != null  and robotUuid != ''"> and upper(h.robot_uuid) like concat(concat('%', #{robotUuid}), '%')</if> -->
+            <if test="robotUuid != null  and robotUuid != ''"> and upper(h.robot_uuid) like concat(concat('%', #{robotUuid}), '%')</if>
         </where>
-
+        group by h.id, h.process_order_id, h.robot_uuid, h.result, h.status, h.remark, h.create_by, h.create_time, h.update_by, h.update_time, p.service_type
+        order by h.create_time desc
     </select>
     
 </mapper>

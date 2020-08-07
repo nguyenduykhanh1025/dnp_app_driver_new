@@ -11,6 +11,8 @@ function edit() {
     isSendContFullOrder: $("input[name='isSendContFullOrder']").is(':checked') == true,
     isSendContEmptyOrder: $("input[name='isSendContEmptyOrder']").is(':checked') == true,
     isShiftingContOrder: $("input[name='isShiftingContOrder']").is(':checked') == true,
+    isChangeVesselOrder: $("input[name='isChangeVesselOrder']").is(':checked') == true,
+    isCreateBookingOrder: $("input[name='isCreateBookingOrder']").is(':checked') == true,
     isGateInOrder: $("input[name='isGateInOrder']").is(':checked') == true,
     remark: $("textarea[name='remark']").val()
   }
