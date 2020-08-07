@@ -12,6 +12,6 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
 	
 	@GetMapping()
 	public String getShipmentSeparatingView() {
-		return PREFIX + "/index";
+		return PREFIX + "/addCont";
 	}
 }
