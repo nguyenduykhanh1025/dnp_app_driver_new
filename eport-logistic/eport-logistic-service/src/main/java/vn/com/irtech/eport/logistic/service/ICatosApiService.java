@@ -56,4 +56,6 @@ public interface ICatosApiService {
 	public Integer checkBookingNoForSendFReceiveE(String bookingNo, String fe);
 	
 	public ShipmentDetail getInforSendFReceiveE(ShipmentDetail shipmentDetail);
+	
+	public Integer getIndexContForSSRByContainerNo(String containerNo);
 }
