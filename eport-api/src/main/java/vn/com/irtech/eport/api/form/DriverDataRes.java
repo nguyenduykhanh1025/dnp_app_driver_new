@@ -13,6 +13,7 @@ public class DriverDataRes implements Serializable {
 	private String fe;
 	private String truckNo;
 	private String chassisNo;
+	private String wgt;
 
 	public Long getPickupHistoryId() {
 		return pickupHistoryId;
@@ -68,6 +69,14 @@ public class DriverDataRes implements Serializable {
 
 	public void setChassisNo(String chassisNo) {
 		this.chassisNo = chassisNo;
+	}
+
+	public String getWgt() {
+		return wgt;
+	}
+
+	public void setWgt(String wgt) {
+		this.wgt = wgt;
 	}
 
 }

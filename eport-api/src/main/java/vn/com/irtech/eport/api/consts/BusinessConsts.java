@@ -10,5 +10,7 @@ public class BusinessConsts {
 	
 	public static final String FINISH = "FINISH";
 	
-	public static final String IN_PROGRESS = "IN_PROGRESS";
+	public static final String IN_PROGRESS = "PROCESSING";
+	
+	public static final String PASS = "PASS";
 }

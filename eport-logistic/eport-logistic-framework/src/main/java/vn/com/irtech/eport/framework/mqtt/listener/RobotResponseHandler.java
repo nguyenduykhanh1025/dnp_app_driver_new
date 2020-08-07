@@ -175,7 +175,6 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			// SET RESULT FOR HISTORY FAILED
 			processHistory.setResult("F");
 		}
-		processHistory.setCreateTime(new Date());
 		processHistoryService.insertProcessHistory(processHistory);
 	}
 
@@ -186,7 +185,6 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		processHistory.setRobotUuid(uuId);
 		processHistory.setStatus(1); // START
 		processHistory.setResult("S"); // RESULT SUCCESS
-		processHistory.setCreateTime(new Date());
 		processHistoryService.insertProcessHistory(processHistory);
 	}
 	

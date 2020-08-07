@@ -75,13 +75,13 @@ function formatStatus(value, row) {
   switch (value) {
     case 0:
       if (row.robotUuid) {
-        return 'Bị lỗi';
+        return '<span class="badge badge-danger">Bị lỗi</span>';
       }
-      return 'Đang chờ';
+      return '<span class="badge badge-warning">Đang chờ</span>';
     case 1:
-      return 'Đang làm';
+      return '<span class="badge badge-primary">Đang làm</span>';
     case 2:
-      return 'Đã hoàn thành';
+      return '<span class="badge badge-success">Đã hoàn thành</span>';
   }
 }
 

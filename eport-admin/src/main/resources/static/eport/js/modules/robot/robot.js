@@ -3,6 +3,14 @@ const PREFIX = ctx + "system/robot";
 // Init screen
 $(document).ready(function () {
   loadListRobot();
+
+  $("input").keyup(function(event){
+    if (event.keyCode == 13) {
+      $.table.search();
+      event.preventDefault();
+    }
+  });
+
 });
 
 function loadListRobot() {
@@ -76,6 +84,22 @@ function loadListRobot() {
         align: "center",
         formatter: function (value, row, index) {
           return isShiftingContOrderFormater(value, row, index);
+        },
+      },
+      {
+        field: "isChangeVesselOrder",
+        title: "Dịch chuyển container",
+        align: "center",
+        formatter: function (value, row, index) {
+          return isChangeVesselOrderFormater(value, row, index);
+        },
+      },
+      {
+        field: "isCreateBookingOrder",
+        title: "Dịch chuyển container",
+        align: "center",
+        formatter: function (value, row, index) {
+          return isCreateBookingOrderFormater(value, row, index);
         },
       },
       {
@@ -165,6 +189,24 @@ function isShiftingContOrderFormater(value, row, index) {
   }
 }
 
+/* formatter for shiftingContOrder column */
+function isChangeVesselOrderFormater(value, row, index) {
+  if (row.isChangeVesselOrder == true) {
+    return '<span class="badge badge-primary">Yes</span>';
+  } else {
+    return '<span class="badge badge-danger">No</span>';
+  }
+}
+
+/* formatter for shiftingContOrder column */
+function isCreateBookingOrderFormater(value, row, index) {
+  if (row.isCreateBookingOrder == true) {
+    return '<span class="badge badge-primary">Yes</span>';
+  } else {
+    return '<span class="badge badge-danger">No</span>';
+  }
+}
+
 /* formatter for Gate In column */
 function isGateInFormater(value, row, index) {
   if (row.isGateInOrder == true) {
@@ -173,3 +215,4 @@ function isGateInFormater(value, row, index) {
     return '<span class="badge badge-danger">No</span>';
   }
 }
+

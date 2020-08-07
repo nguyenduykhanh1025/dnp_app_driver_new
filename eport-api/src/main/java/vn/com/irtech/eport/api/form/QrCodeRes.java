@@ -11,7 +11,7 @@ public class QrCodeRes implements Serializable {
 	private String sessionId;
 
 	private List<PickupHistoryDataRes> data;
-	
+
 	public QrCodeRes() {
 		data = new ArrayList<PickupHistoryDataRes>();
 	}

@@ -30,14 +30,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectRobotList" parameterType="SysRobot" resultMap="RobotResult">
         <include refid="selectRobotVo"/>
         <where>  
-            <if test="uuId != null  and uuId != ''"> and uuid = #{uuId}</if>
+            <if test="uuId != null  and uuId != ''"> and uuid like concat(concat('%', #{uuId}), '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="isReceiveContFullOrder != null"> and is_receive_cont_full_order = #{isReceiveContFullOrder}</if>
             <if test="isReceiveContEmptyOrder != null"> and is_receive_cont_empty_order = #{isReceiveContEmptyOrder}</if>
             <if test="isSendContFullOrder != null"> and is_send_cont_full_order = #{isSendContFullOrder}</if>
             <if test="isSendContEmptyOrder != null"> and is_send_cont_empty_order = #{isSendContEmptyOrder}</if>
             <if test="isGateInOrder != null"> and is_gate_in_order = #{isGateInOrder}</if>
-            <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
+            <if test="ipAddress != null  and ipAddress != ''"> and ip_address like concat(concat('%', #{ipAddress}), '%')</if>
             <if test="isShiftingContOrder != null"> and is_shifting_cont_order = #{isShiftingContOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>

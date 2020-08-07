@@ -111,6 +111,18 @@ public class ProcessOrder extends BaseEntity
     @Excel(name = "SSR Code")
     private String ssrCode;
 
+    /** SSR Code */
+    @Excel(name = "Sys User Id")
+    private Long sysUserId;
+    
+    /** SSR Code */
+    @Excel(name = "postProcessId")
+    private Long postProcessId;
+
+    /** SSR Code */
+    @Excel(name = "Runnable")
+    private Boolean runnable;
+
     private String groupName;
 
     private ShipmentDetail shipmentDetail;
@@ -332,6 +344,30 @@ public class ProcessOrder extends BaseEntity
         this.ssrCode = ssrCode;
     }
 
+    public Long getSysUserId() {
+        return this.sysUserId;
+    }
+
+    public void setSysUserId(Long sysUserId) {
+        this.sysUserId = sysUserId;
+    }
+
+    public Long getPostProcessId() {
+        return this.postProcessId;
+    }
+
+    public void setPostProcessId(Long postProcessId) {
+        this.postProcessId = postProcessId;
+    }
+
+    public Boolean getRunnable() {
+        return this.runnable;
+    }
+
+    public void setRunnable(Boolean runnable) {
+        this.runnable = runnable;
+    }
+
     public String getGroupName() {
         return this.groupName;
     }
@@ -379,6 +415,9 @@ public class ProcessOrder extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("robotUuid", getRobotUuid())
             .append("ssrCode", getSsrCode())
+            .append("sysUserId", getSysUserId())
+            .append("postProcessId", getPostProcessId())
+            .append("runnable", getRunnable())
             .append("groupName", getGroupName())
             .append("shipmentDetail", getShipmentDetail())
             .toString();

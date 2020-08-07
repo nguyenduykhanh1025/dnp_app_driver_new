@@ -42,6 +42,15 @@ public class SysRobot extends BaseEntity {
 	@Excel(name = "Is Send Cont Full Order")
 	private Boolean isSendContEmptyOrder;
 
+	@Excel(name = "Is Shifting Cont Order")
+	private Boolean isShiftingContOrder;
+
+	@Excel(name = "Is Change Vessel Order")
+	private Boolean isChangeVesselOrder;
+
+	@Excel(name = "Is Create Booking Order")
+	private Boolean isCreateBookingOrder;
+
 	@Excel(name = "Is Gate in Order")
 	private Boolean isGateInOrder;
 	
@@ -49,11 +58,10 @@ public class SysRobot extends BaseEntity {
 	@Excel(name = "ip address")
 	private String ipAddress;
 
-	@Excel(name = "Is Shifting Cont Order")
-	private Boolean isShiftingContOrder;
-
 	@Excel(name = "Response Time")
 	private Date responseTime;
+
+	private Integer serviceType;
 
 	public Long getId() {
 		return id;
@@ -119,20 +127,36 @@ public class SysRobot extends BaseEntity {
 		this.isSendContFullOrder = isSendContFullOrder;
 	}
 	
-	public Boolean getIsGateInOrder() {
-		return isGateInOrder;
-	}
-
-	public void setIsGateInOrder(Boolean isGateInOrder) {
-		this.isGateInOrder = isGateInOrder;
-	}
-
 	public Boolean getIsShiftingContOrder() {
 		return this.isShiftingContOrder;
 	}
 
 	public void setIsShiftingContOrder(Boolean isShiftingContOrder) {
 		this.isShiftingContOrder = isShiftingContOrder;
+	}
+
+	public Boolean getIsChangeVesselOrder() {
+		return this.isChangeVesselOrder;
+	}
+
+	public void setIsChangeVesselOrder(Boolean isChangeVesselOrder) {
+		this.isChangeVesselOrder = isChangeVesselOrder;
+	}
+
+	public Boolean getIsCreateBookingOrder() {
+		return this.isCreateBookingOrder;
+	}
+
+	public void setIsCreateBookingOrder(Boolean isCreateBookingOrder) {
+		this.isCreateBookingOrder = isCreateBookingOrder;
+	}
+
+	public Boolean getIsGateInOrder() {
+		return isGateInOrder;
+	}
+
+	public void setIsGateInOrder(Boolean isGateInOrder) {
+		this.isGateInOrder = isGateInOrder;
 	}
 
 	public Date getResponseTime() {
@@ -143,6 +167,14 @@ public class SysRobot extends BaseEntity {
 		this.responseTime = responseTime;
 	}
 
+	public Integer getServiceType() {
+		return this.serviceType;
+	}
+
+	public void setServiceType(Integer serviceType) {
+		this.serviceType = serviceType;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -151,11 +183,14 @@ public class SysRobot extends BaseEntity {
 				.append("isReceiveContEmptyOrder", getIsReceiveContEmptyOrder())
 				.append("isSendContFullOrder", getIsSendContFullOrder())
 				.append("isSendContEmptyOrder", getIsSendContEmptyOrder())
+				.append("isShiftingContOrder", getIsShiftingContOrder())
+				.append("isChangeVesselOrder", getIsChangeVesselOrder())
+				.append("isCreateBookingOrder", getIsCreateBookingOrder())
 				.append("isGateInOrder", getIsGateInOrder())
 				.append("ipAddress", getIpAddress())
 				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
 				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("remark", getRemark())
-				.append("isShiftingContOrder", getIsShiftingContOrder()).append("responseTime", getResponseTime())
+				.append("responseTime", getResponseTime())
 				.toString();
 	}
 }

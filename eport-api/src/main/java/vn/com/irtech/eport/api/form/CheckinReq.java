@@ -10,7 +10,9 @@ public class CheckinReq implements Serializable {
 	private String sessionId;
 
 	private List<PickupHistoryDataRes> data;
-
+	
+	private List<MeasurementDataReq> input;
+	
 	public String getSessionId() {
 		return sessionId;
 	}
@@ -27,4 +29,11 @@ public class CheckinReq implements Serializable {
 		this.data = data;
 	}
 
+	public List<MeasurementDataReq> getInput() {
+		return input;
+	}
+
+	public void setInput(List<MeasurementDataReq> input) {
+		this.input = input;
+	}
 }

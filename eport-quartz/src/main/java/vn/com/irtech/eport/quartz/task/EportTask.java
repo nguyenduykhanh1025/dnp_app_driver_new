@@ -207,21 +207,9 @@ public class EportTask {
 
             for (SysRobot robot : robots) {
 
-                ProcessOrder processOrder = processOrderService.getProcessOrderByUuid(robot.getUuId());
-
-                // Response time exceed current time
-                if (robot.getResponseTime().getTime() < now.getTime()) {
-                    robot.setStatus("2");
-                    robotService.updateRobot(robot);
-                    
-                    // Send notification to IT
-                    try {
-                        mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + robot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/edit/" + robot.getId());
-                    } catch (Exception e) {
-                        logger.warn(e.getMessage());
-                    }
-
-                    if (processOrder != null) {
+                List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(robot.getUuId());
+                if (processOrders != null && !processOrders.isEmpty()) {
+                    for (ProcessOrder processOrder : processOrders) {
                         processOrder.setStatus(0);
                         processOrderService.updateProcessOrder(processOrder);
 
@@ -237,15 +225,20 @@ public class EportTask {
                             logger.warn(e.getMessage());
                         }
                     }
-                    continue;
+                }
+
+                // Response time exceed current time
+                if (robot.getResponseTime().getTime() < now.getTime()) {
+                    robot.setStatus("2");
+                    robotService.updateRobot(robot);
+                    
+                    // Send notification to IT
+                    try {
+                        mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + robot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/edit/" + robot.getId());
+                    } catch (Exception e) {
+                        logger.warn(e.getMessage());
+                    }
                 } 
-                // else {
-                //     try {
-                //         mqttService.pingRobot(robot.getUuId());
-                //     } catch (Exception e) {
-                //         logger.warn(e.getMessage());
-                //     }
-                // }
             }
         }
     }

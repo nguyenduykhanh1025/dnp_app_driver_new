@@ -38,8 +38,8 @@ public class RobotResponseHandler implements IMqttMessageListener {
 		}
 		String uuid = null;
 		String[] dataStrings = topic.split("/");
-		if (dataStrings.length > 2) {
-	        uuid = dataStrings[2];//String.valueOf(map.get("uuid"));
+		if (dataStrings.length > 3) {
+	        uuid = dataStrings[3];//String.valueOf(map.get("uuid"));
 		} 
         
         if (uuid == null) {
@@ -48,6 +48,7 @@ public class RobotResponseHandler implements IMqttMessageListener {
 
         SysRobot robot = new SysRobot();
         robot.setUuId(uuid);
-        robotService.updateRobot(robot);
+        robotService.updateRobotByUuId(robot);
+        logger.info("Robot " + uuid + " alive!");
 	}
 }
