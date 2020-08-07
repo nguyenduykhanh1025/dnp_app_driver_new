@@ -159,7 +159,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 				Long receiptId = Long.parseLong(receiptIdStr);
 				this.updateHistory(receiptId.toString(), uuId);
 			} catch (Exception ex) {
-
+				return;
 			}
 		} else if ("0".equals(status)) {
 			List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(uuId);
@@ -192,6 +192,10 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			} else {
 				// update status of robot
 				robotService.updateRobotByUuId(sysRobot);
+			}
+			
+			if (sysRobot.getIsGateInOrder()) {
+				return;
 			}
 
 			// Find process order for robot

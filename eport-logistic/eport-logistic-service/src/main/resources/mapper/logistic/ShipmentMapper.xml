@@ -37,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
         <include refid="selectShipmentVo"/>
         <where>  
+            <if test="id != null "> and id = #{id}</if>
             <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>

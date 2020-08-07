@@ -111,7 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		left join shipment_detail sd 
 		on p.shipment_detail_id = sd.id
 		WHERE 
-		p.status = 0
+		p.area is null and p.block is null and p.bay is null and p.line is null and p.tier is null
 		<include refid="search" />
 	</select>
 	
@@ -125,7 +125,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		p.shipment_id = s.id
 		left join shipment_detail sd 
 		on p.shipment_detail_id = sd.id
-		WHERE p.status &gt; 0
+		WHERE p.area is not null 
+		or (p.block is not null and p.bay is not null and p.line is not null and p.tier is not null)
 		<include refid="search" />
 		ORDER BY planning_date desc
 	</select>
