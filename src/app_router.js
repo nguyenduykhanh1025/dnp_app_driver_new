@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Alert, Platform, AppState } from 'react-native';
+import {
+    View,
+    Alert,
+    Platform,
+    AppState,
+    BackHandler,
+    DeviceEventEmitter,
+} from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import FlashMessage from 'react-native-flash-message';
@@ -18,6 +25,7 @@ import { getGPSEnable, getToken, getAccount, getPassword } from '@/stores';
 import { CheckInternetEvery } from '@/utils';
 import BackgroundTimer from 'react-native-background-timer';
 import PushNotification from 'react-native-push-notification';
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 class AppAppContainer extends React.Component {
     constructor(props) {
@@ -56,6 +64,44 @@ class AppAppContainer extends React.Component {
         // console.log('GPSEnable', GPSEnable)
         Geolocation.setRNConfiguration({
             authorizationLevel: 'always'
+        });
+
+        LocationServicesDialogBox.checkLocationServicesIsEnabled({
+            message: "<h2>Bạn đã bật GPS chưa ?</h2>Nếu chưa hãy bật GPS, Wi-Fi hoặc 3G,4G nhé!",
+            ok: "Có",
+            cancel: "Không",
+            enableHighAccuracy: true, // true => GPS AND NETWORK PROVIDER, false => GPS OR NETWORK PROVIDER
+            showDialog: true, // false => Opens the Location access page directly
+            openLocationServices: true, // false => Directly catch method is called if location services are turned off
+            preventOutSideTouch: false, //true => To prevent the location services popup from closing when it is clicked outside
+            preventBackClick: false, //true => To prevent the location services popup from closing when it is clicked back button
+            providerListener: true // true ==> Trigger "locationProviderStatusChange" listener when the location state changes
+        }).then(function (success) {
+            // success => {alreadyEnabled: true, enabled: true, status: "enabled"} 
+        }.bind(this)
+        ).catch((error) => {
+        });
+
+        DeviceEventEmitter.addListener('locationProviderStatusChange', status => { // only trigger when "providerListener" is enabled
+            status.enabled ?
+                null
+                :
+                LocationServicesDialogBox.checkLocationServicesIsEnabled({
+                    message: "<h2>Bạn đã bật GPS chưa ?</h2>Nếu chưa hãy bật GPS, Wi-Fi hoặc 3G,4G nhé!",
+                    ok: "Có",
+                    cancel: "Không",
+                    enableHighAccuracy: true, // true => GPS AND NETWORK PROVIDER, false => GPS OR NETWORK PROVIDER
+                    showDialog: true, // false => Opens the Location access page directly
+                    openLocationServices: true, // false => Directly catch method is called if location services are turned off
+                    preventOutSideTouch: false, //true => To prevent the location services popup from closing when it is clicked outside
+                    preventBackClick: false, //true => To prevent the location services popup from closing when it is clicked back button
+                    providerListener: true // true ==> Trigger "locationProviderStatusChange" listener when the location state changes
+                }).then(function (success) {
+                    // success => {alreadyEnabled: true, enabled: true, status: "enabled"} 
+                }.bind(this)
+                ).catch((error) => {
+                });
+
         });
         if (GPSEnable == 'true') {
             Geolocation.getCurrentPosition(
@@ -98,6 +144,7 @@ class AppAppContainer extends React.Component {
         PushNotification.popInitialNotification(notification => {
             // console.log('Initial notification: ', notification);
         });
+        LocationServicesDialogBox.stopListener()
     }
 
     render() {
