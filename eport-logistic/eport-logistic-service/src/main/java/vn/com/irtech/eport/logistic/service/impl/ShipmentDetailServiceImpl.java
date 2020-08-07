@@ -785,6 +785,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	@Override
 	public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.getShipmentDetailListForSendFReceiveE(shipmentDetail);
+	}
+
+	@Override
+	public List<Long> getCommandListInBatch(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.getCommandListInBatch(shipmentDetail);
 	} 
     
 }

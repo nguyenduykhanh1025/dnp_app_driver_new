@@ -147,4 +147,9 @@ public interface IShipmentDetailService
      * getShipmentDetail for SendContFull and receiveContEmpty
      */
     public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail);
+    
+    /***
+     * get command List of batch
+     */
+    public List<Long> getCommandListInBatch(ShipmentDetail shipmentDetail);
 }
