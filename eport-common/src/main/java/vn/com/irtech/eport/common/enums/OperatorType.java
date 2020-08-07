@@ -18,6 +18,14 @@ public enum OperatorType
     MANAGE,
 
     /**
+     * admin user
+     */
+    LOGISTIC,
+    /**
+     * admin user
+     */
+    SHIPPINGLINE,
+    /**
      * mobile
      */
     MOBILE

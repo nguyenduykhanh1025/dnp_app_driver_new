@@ -29,6 +29,7 @@ import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.AppToolUtils;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.equipment.domain.EquipmentDo;
@@ -46,12 +47,12 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 @RequestMapping("/carrier/do")
 @Transactional
 public class CarrierEquipmentDoController extends CarrierBaseController {
-	
-    private final String prefix = "carrier/do";
-    
-    private static final Pattern VALID_CONTAINER_NO_REGEX = Pattern.compile("^[A-Za-z]{4}[0-9]{7}$", Pattern.CASE_INSENSITIVE);
 
-  
+	private final String prefix = "carrier/do";
+
+	private static final Pattern VALID_CONTAINER_NO_REGEX = Pattern.compile("^[A-Za-z]{4}[0-9]{7}$",
+			Pattern.CASE_INSENSITIVE);
+
 	@Autowired
 	private IEquipmentDoService equipmentDoService;
 
@@ -71,8 +72,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 
 	@RequestMapping("/list")
 	@ResponseBody
-	public TableDataInfo list(EquipmentDo edo, Date fromDate, Date toDate, String vessel, String contNo,
-			String blNo) {
+	public TableDataInfo list(EquipmentDo edo, Date fromDate, Date toDate, String vessel, String contNo, String blNo) {
 		startPage();
 		edo.setCarrierId(ShiroUtils.getUserId());
 		if (vessel != null) {
@@ -106,7 +106,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		mmap.addAttribute("bl", equipmentDos);
 		return prefix + "/billInfo";
 	}
-	
+
 	@GetMapping("/searchCon")
 	@ResponseBody
 	public List<EquipmentDo> searchCon(String billOfLading, String contNo) {
@@ -129,21 +129,21 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	}
 
 	// update
-	@Log(title = "Update Expired Date", businessType = BusinessType.UPDATE)
+	@Log(title = "Gia Hạn DO", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
 	@PostMapping("/updateExpiredDate")
 	@ResponseBody
 	@Transactional
 	public AjaxResult updateExpiredDate(String billOfLading, String expiredDem) {
-    Date newExpiredDem = AppToolUtils.formatStringToDate(expiredDem, "dd/MM/yyyy");
+		Date newExpiredDem = AppToolUtils.formatStringToDate(expiredDem, "dd/MM/yyyy");
 		Date now = new Date();
 		newExpiredDem.setHours(23);
 		newExpiredDem.setMinutes(59);
 		newExpiredDem.setSeconds(59);
 		if (newExpiredDem.getTime() >= now.getTime()) {
 			EquipmentDo equipmentDo = new EquipmentDo();
-      equipmentDo.setBillOfLading(billOfLading);
-      equipmentDo.setNewExpiredDem(newExpiredDem);
-      return toAjax(equipmentDoService.updateEquipmentDoExpiredDem(equipmentDo));
+			equipmentDo.setBillOfLading(billOfLading);
+			equipmentDo.setNewExpiredDem(newExpiredDem);
+			return toAjax(equipmentDoService.updateEquipmentDoExpiredDem(equipmentDo));
 		} else {
 			return error("Ngày gia hạn lệnh không được trong quá khứ");
 		}
@@ -154,7 +154,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	 * Export Exchange Delivery Order List
 	 */
 
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.EXPORT)
+	@Log(title = "Export DO", businessType = BusinessType.EXPORT)
 	@PostMapping("/export")
 	@ResponseBody
 	public AjaxResult export(EquipmentDo equipmentDo) {
@@ -180,15 +180,15 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	 * @throws ParseException
 	 */
 
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.INSERT)
+	@Log(title = "Phát Hành DO", businessType = BusinessType.INSERT, operatorType = OperatorType.SHIPPINGLINE)
 	@PostMapping("/add")
 	@ResponseBody
 	@Transactional
 	public AjaxResult addSave(@RequestBody List<EquipmentDo> equipmentDos) {
-		//String message = userService.importUser(userList, updateSupport, operName);
-		//return AjaxResult.success(message);
+		// String message = userService.importUser(userList, updateSupport, operName);
+		// return AjaxResult.success(message);
 		if (!hasDoPermission()) {
-			return error("Tài khoản này không có quyền thêm DO");
+			return error("Tài khoản này không có quyền phát hành DO");
 		}
 		if (equipmentDos != null) {
 			String consignee = equipmentDos.get(0).getConsignee();
@@ -200,33 +200,39 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				e.setUpdateBy(getUser().getFullName());
 				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getBillOfLading())
 						|| StringUtils.isBlank(e.getContainerNumber()) || StringUtils.isBlank(e.getConsignee())) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
 				}
 				// Check if carrier group code is valid
-				if(!getGroupCodes().contains(e.getCarrierCode())) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã hãng tàu '"+e.getCarrierCode()+"' không đúng.");
+				if (!getGroupCodes().contains(e.getCarrierCode())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Mã hãng tàu '" + e.getCarrierCode() + "' không đúng.");
 				}
-				if(equipmentDoService.getBillOfLadingInfo(e.getBillOfLading()) != null) {
+				if (equipmentDoService.getBillOfLadingInfo(e.getBillOfLading()) != null) {
 					// exist B/L
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã vận đơn (B/L No.) " + e.getBillOfLading() +" đã tồn tại.");
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Mã vận đơn (B/L No.) " + e.getBillOfLading() + " đã tồn tại.");
 				}
-				if(!isContainerNumber(e.getContainerNumber())) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã container không đúng tiêu chuẩn.");
+				if (!isContainerNumber(e.getContainerNumber())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Mã container không đúng tiêu chuẩn.");
 				}
 				// trong 1 bill ton tai 2 container
-				
+
 				// Check expiredDem is future
 				Date expiredDem = e.getExpiredDem();
 				expiredDem.setHours(23);
 				expiredDem.setMinutes(59);
 				expiredDem.setSeconds(59);
 				e.setExpiredDem(expiredDem);
-				if(expiredDem.before(new Date())) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
+				if (expiredDem.before(new Date())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
 				}
 				// DEM Free date la so
-				if (e.getDetFreeTime() != null && e.getDetFreeTime() >= 10000 ) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
+				if (e.getDetFreeTime() != null && e.getDetFreeTime() >= 10000) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
 				}
 				// Consignee is the same
 				if (!e.getConsignee().equals(consignee)) {
@@ -235,13 +241,13 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				consignee = e.getConsignee();
 				// Container number is unique
 				if (e.getContainerNumber().equals(containerNumber)) {
-					return AjaxResult.error("Số container "+containerNumber+" bị trùng");
+					return AjaxResult.error("Số container " + containerNumber + " bị trùng");
 				}
 				containerNumber = e.getContainerNumber();
-				
+
 			}
 			// Do the insert to DB
-			for(EquipmentDo edo : equipmentDos) {
+			for (EquipmentDo edo : equipmentDos) {
 				equipmentDoService.insertEquipmentDo(edo);
 				edo.setCreateBy(super.getUser().getEmail());
 				equipmentEdoAuditLogService.addAuditLogFirst(edo);
@@ -260,12 +266,14 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 							conStr += eTemp.getContainerNumber() + ";";
 						} else {
 							Map<String, Object> variables = new HashMap<>();
-							variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
+							variables.put("updateTime",
+									AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 							variables.put("carrierCode", eTemp.getCarrierCode());
 							variables.put("billOfLading", eTemp.getBillOfLading());
 							variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 							variables.put("consignee", eTemp.getConsignee());
-							variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
+							variables.put("expiredDem",
+									AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 							variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 							variables.put("detFreeTime", eTemp.getDetFreeTime());
 							variables.put("vessel", eTemp.getVessel());
@@ -275,20 +283,23 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 							conStr = "" + eTemp.getContainerNumber() + ";";
 							// send email
 							try {
-								mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": thêm thành công", getUser().getEmail(), "", variables,
-										"dnpEmail");
+								mailService.prepareAndSend(
+										"Bill " + variables.get("billOfLading") + ": thêm thành công",
+										getUser().getEmail(), "", variables, "dnpEmail");
 							} catch (Exception exception) {
 								exception.printStackTrace();
 							}
 						}
 					}
 					Map<String, Object> variables = new HashMap<>();
-					variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
+					variables.put("updateTime",
+							AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 					variables.put("carrierCode", eTemp.getCarrierCode());
 					variables.put("billOfLading", eTemp.getBillOfLading());
 					variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 					variables.put("consignee", eTemp.getConsignee());
-					variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
+					variables.put("expiredDem",
+							AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 					variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 					variables.put("detFreeTime", eTemp.getDetFreeTime());
 					variables.put("vessel", eTemp.getVessel());
@@ -296,8 +307,8 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					variables.put("remark", eTemp.getRemark());
 					// send email
 					try {
-						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": thêm thành công", "", getUser().getEmail(), variables,
-								"dnpEmail");
+						mailService.prepareAndSend("Bill " + variables.get("billOfLading") + ": thêm thành công", "",
+								getUser().getEmail(), variables, "dnpEmail");
 					} catch (Exception exception) {
 						exception.printStackTrace();
 					}
@@ -305,12 +316,12 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			}.start();
 			// END SEND EMAIL
 			return AjaxResult.success("Đã lưu thành công " + equipmentDos.size() + " DO lên Web Portal.");
-    	}
-    	return AjaxResult.error("Không có dữ liệu để tạo DO, hãy kiểm tra lại");
+		}
+		return AjaxResult.error("Không có dữ liệu để tạo DO, hãy kiểm tra lại");
 	}
 
 	// update
-	@Log(title = "Update Delivery Order", businessType = BusinessType.UPDATE)
+	@Log(title = "Cập Nhật DO", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
 	@PostMapping("/update/{billOfLading}")
 	@ResponseBody
 	@Transactional
@@ -325,21 +336,24 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			String carrierCode = equipmentDos.get(0).getCarrierCode();
 			for (EquipmentDo e : equipmentDos) {
 				if (e.getStatus() == null) {
-					e.setStatus("0");	
+					e.setStatus("0");
 				}
 				if (e.getStatus().equals("1")) {
 					return AjaxResult.error("Bill này đã được làm lệnh, cập nhật thất bại");
 				}
-				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getContainerNumber()) 
-					|| StringUtils.isBlank(e.getConsignee())) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
+				if (StringUtils.isBlank(e.getCarrierCode()) || StringUtils.isBlank(e.getContainerNumber())
+						|| StringUtils.isBlank(e.getConsignee())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Hãy nhập đầy đủ các trường bắt buộc.");
 				}
 				// Check if carrier group code is valid
-				if(!getGroupCodes().contains(e.getCarrierCode())) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã hãng tàu '"+e.getCarrierCode()+"' không đúng.");
+				if (!getGroupCodes().contains(e.getCarrierCode())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Mã hãng tàu '" + e.getCarrierCode() + "' không đúng.");
 				}
-				if(!isContainerNumber(e.getContainerNumber())) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Mã container không đúng tiêu chuẩn.");
+				if (!isContainerNumber(e.getContainerNumber())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Mã container không đúng tiêu chuẩn.");
 				}
 				// Check expiredDem is future
 				Date expiredDem = e.getExpiredDem();
@@ -347,16 +361,18 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				expiredDem.setMinutes(59);
 				expiredDem.setSeconds(59);
 				e.setExpiredDem(expiredDem);
-				if(expiredDem.before(new Date())) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
+				if (expiredDem.before(new Date())) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Hạn lệnh không được phép là ngày quá khứ");
 				}
 				// DEM Free date la so
-				if (e.getDetFreeTime() != null && e.getDetFreeTime() >= 10000 ) {
-					return AjaxResult.error("Có lỗi xảy ra ở container '"+e.getContainerNumber()+"'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
+				if (e.getDetFreeTime() != null && e.getDetFreeTime() >= 10000) {
+					return AjaxResult.error("Có lỗi xảy ra ở container '" + e.getContainerNumber()
+							+ "'.<br/>Lỗi: Ngày miễn lưu không được lớn hơn 9999");
 				}
 				// Container number is unique
 				if (e.getContainerNumber().equals(containerNumber)) {
-					return AjaxResult.error("Số container "+containerNumber+" bị trùng");
+					return AjaxResult.error("Số container " + containerNumber + " bị trùng");
 				}
 				containerNumber = e.getContainerNumber();
 				// Consignee is the same
@@ -368,7 +384,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				e.setUpdateBy(ShiroUtils.getSysUser().getFullName());
 				e.setUpdateTime(new Date());
 			}
-			for(EquipmentDo edo : equipmentDos) {
+			for (EquipmentDo edo : equipmentDos) {
 				if (edo.getId() != null) {
 					equipmentDoService.updateEquipmentDo(edo);
 					edo.setCreateBy(super.getUser().getEmail());
@@ -380,7 +396,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					equipmentDoService.insertEquipmentDo(edo);
 					edo.setCreateBy(super.getUser().getEmail());
 					equipmentEdoAuditLogService.addAuditLogFirst(edo);
-				}				
+				}
 			}
 			// SEND EMAIL WHEN ADD SUCCESSFULLY
 			new Thread() {
@@ -394,12 +410,14 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 							conStr += eTemp.getContainerNumber() + ";";
 						} else {
 							Map<String, Object> variables = new HashMap<>();
-							variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
+							variables.put("updateTime",
+									AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 							variables.put("carrierCode", eTemp.getCarrierCode());
 							variables.put("billOfLading", eTemp.getBillOfLading());
 							variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 							variables.put("consignee", eTemp.getConsignee());
-							variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
+							variables.put("expiredDem",
+									AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 							variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 							variables.put("detFreeTime", eTemp.getDetFreeTime());
 							variables.put("vessel", eTemp.getVessel());
@@ -409,20 +427,23 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 							conStr = "" + eTemp.getContainerNumber() + ";";
 							// send email
 							try {
-								mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", "", getUser().getEmail(), variables,
-										"dnpEmail");
+								mailService.prepareAndSend(
+										"Bill " + variables.get("billOfLading") + ": cập nhật thành công", "",
+										getUser().getEmail(), variables, "dnpEmail");
 							} catch (Exception exception) {
 								exception.printStackTrace();
 							}
 						}
 					}
 					Map<String, Object> variables = new HashMap<>();
-					variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
+					variables.put("updateTime",
+							AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 					variables.put("carrierCode", eTemp.getCarrierCode());
 					variables.put("billOfLading", eTemp.getBillOfLading());
 					variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 					variables.put("consignee", eTemp.getConsignee());
-					variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
+					variables.put("expiredDem",
+							AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 					variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 					variables.put("detFreeTime", eTemp.getDetFreeTime());
 					variables.put("vessel", eTemp.getVessel());
@@ -430,8 +451,8 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 					variables.put("remark", eTemp.getRemark());
 					// send email
 					try {
-						mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", "", getUser().getEmail(), variables,
-								"dnpEmail");
+						mailService.prepareAndSend("Bill " + variables.get("billOfLading") + ": cập nhật thành công",
+								"", getUser().getEmail(), variables, "dnpEmail");
 					} catch (Exception exception) {
 						exception.printStackTrace();
 					}
@@ -439,8 +460,8 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			}.start();
 			// END SEND EMAIL
 			return AjaxResult.success("Đã cập nhật thành công " + equipmentDos.size() + " DO lên Web Portal.");
-    	}
-    	return AjaxResult.error("Không có dữ liệu để cập nhật DO, hãy kiểm tra lại");
+		}
+		return AjaxResult.error("Không có dữ liệu để cập nhật DO, hãy kiểm tra lại");
 	}
 
 	/**
@@ -460,7 +481,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	 * Update Save Exchange Delivery Order
 	 */
 
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.UPDATE)
+	@Log(title = "Cập Nhật DO", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
 	@PostMapping("/edit")
 	@ResponseBody
 	public AjaxResult editSave(EquipmentDo equipmentDo) {
@@ -471,7 +492,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	 * Delete Exchange Delivery Order
 	 */
 
-	@Log(title = "Exchange Delivery Order", businessType = BusinessType.DELETE)
+	@Log(title = "Xóa DO", businessType = BusinessType.DELETE, operatorType = OperatorType.SHIPPINGLINE)
 	@PostMapping("/remove")
 	@ResponseBody
 	public AjaxResult remove(String ids) {
@@ -484,6 +505,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		return equipmentDoService.getContainerListByIds(containerId);
 	}
 
+	@Log(title = "Gia Hạn DO", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
 	@PostMapping("/updateExpire")
 	@ResponseBody
 	public AjaxResult updateExprireDem(@RequestParam(value = "containerId[]") String containerId,
@@ -506,12 +528,14 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				conStr += eTemp.getContainerNumber() + ";";
 			} else {
 				Map<String, Object> variables = new HashMap<>();
-				variables.put("updateTime", AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
+				variables.put("updateTime",
+						AppToolUtils.formatDateToString(eTemp.getUpdateTime(), "dd/MM/yyyy HH:mm:ss"));
 				variables.put("carrierCode", eTemp.getCarrierCode());
 				variables.put("billOfLading", eTemp.getBillOfLading());
 				variables.put("containerNumber", conStr.substring(0, conStr.length() - 1));
 				variables.put("consignee", eTemp.getConsignee());
-				variables.put("expiredDem", AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
+				variables.put("expiredDem",
+						AppToolUtils.formatDateToString(eTemp.getExpiredDem(), "dd/MM/yyyy HH:mm:ss"));
 				variables.put("emptyContainerDepot", eTemp.getEmptyContainerDepot());
 				variables.put("detFreeTime", eTemp.getDetFreeTime());
 				variables.put("vessel", eTemp.getVessel());
@@ -523,8 +547,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				new Thread() {
 					public void run() {
 						try {
-							mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", "", getUser().getEmail(), variables,
-							"dnpEmail");
+							mailService.prepareAndSend(
+									"Bill " + variables.get("billOfLading") + ": cập nhật thành công", "",
+									getUser().getEmail(), variables, "dnpEmail");
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -548,8 +573,8 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		new Thread() {
 			public void run() {
 				try {
-					mailService.prepareAndSend("Bill "+variables.get("billOfLading")+": cập nhật thành công", "", getUser().getEmail(), variables,
-					"dnpEmail");
+					mailService.prepareAndSend("Bill " + variables.get("billOfLading") + ": cập nhật thành công", "",
+							getUser().getEmail(), variables, "dnpEmail");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -564,57 +589,58 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			// which is the name of Contact in my example scenario
 			return equipmentDo1.getBillOfLading().compareTo(equipmentDo2.getBillOfLading());
 		}
-  }
-  
-  @GetMapping("/getOperateCode")
-  @ResponseBody
-  public String[] getOperateCode() {
-    CarrierAccount carrierAccount = ShiroUtils.getSysUser();
-    String[] operateCodes = carrierAccount.getCarrierCode().split(",");
-    return operateCodes;
-  }
-
-  @GetMapping("/getListOptions")
-  @ResponseBody
-  public Map<String, List<String>> getListOptionsGrid() {
-    //Get distinct of consignee, distinct of empty container depot, distinct vessel 
-    //Only of current login user
-    //Return data Map<consigneeList: ListConsignee, emptyDepotList: ListEmptyDepot, vesselList: ListVessel>
-    Map<String, List<String>> optionsList = new HashMap<>();
-    optionsList.put("consigneeList", equipmentDoService.getConsignee(getUserId()));
-    optionsList.put("emptyDepotList", equipmentDoService.getEmptyContainerDepot(getUserId()));
-    optionsList.put("vesselList", equipmentDoService.getVessel(getUserId()));
-    return optionsList;
-  }
-
-  @GetMapping("/getInfoBl")
-  @ResponseBody
-  public List<EquipmentDo> getInfoBl(String blNo) {
-	List<EquipmentDo> doList = equipmentDoService.selectEquipmentDoVoByBillNo(blNo);
-	if (doList.size() !=0) {
-		if (doList.get(0).getCarrierId() == getUserId()) {
-			return doList;
-		}
 	}
-    return null;
-  }
-  
-  private boolean isContainerNumber(String input) {
-	  return VALID_CONTAINER_NO_REGEX.matcher(input).find();
-  }
 
-  @GetMapping("/history/{id}")
-	public String getHistory(@PathVariable("id") Long id,ModelMap map) {
+	@GetMapping("/getOperateCode")
+	@ResponseBody
+	public String[] getOperateCode() {
+		CarrierAccount carrierAccount = ShiroUtils.getSysUser();
+		String[] operateCodes = carrierAccount.getCarrierCode().split(",");
+		return operateCodes;
+	}
+
+	@GetMapping("/getListOptions")
+	@ResponseBody
+	public Map<String, List<String>> getListOptionsGrid() {
+		// Get distinct of consignee, distinct of empty container depot, distinct vessel
+		// Only of current login user
+		// Return data Map<consigneeList: ListConsignee, emptyDepotList: ListEmptyDepot,
+		// vesselList: ListVessel>
+		Map<String, List<String>> optionsList = new HashMap<>();
+		optionsList.put("consigneeList", equipmentDoService.getConsignee(getUserId()));
+		optionsList.put("emptyDepotList", equipmentDoService.getEmptyContainerDepot(getUserId()));
+		optionsList.put("vesselList", equipmentDoService.getVessel(getUserId()));
+		return optionsList;
+	}
+
+	@GetMapping("/getInfoBl")
+	@ResponseBody
+	public List<EquipmentDo> getInfoBl(String blNo) {
+		List<EquipmentDo> doList = equipmentDoService.selectEquipmentDoVoByBillNo(blNo);
+		if (doList.size() != 0) {
+			if (doList.get(0).getCarrierId() == getUserId()) {
+				return doList;
+			}
+		}
+		return null;
+	}
+
+	private boolean isContainerNumber(String input) {
+		return VALID_CONTAINER_NO_REGEX.matcher(input).find();
+	}
+
+	@GetMapping("/history/{id}")
+	public String getHistory(@PathVariable("id") Long id, ModelMap map) {
 		map.put("edoId", id);
 		return prefix + "/history";
 	}
 
 	@GetMapping("/auditLog/{edoId}")
 	@ResponseBody
-	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EquipmentEdoAuditLog edoAuditLog)
-	{
+	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EquipmentEdoAuditLog edoAuditLog) {
 		edoAuditLog.setEdoId(edoId);
-		List<EquipmentEdoAuditLog> edoAuditLogsList = equipmentEdoAuditLogService.selectEquipmentEdoAuditLogList(edoAuditLog);
+		List<EquipmentEdoAuditLog> edoAuditLogsList = equipmentEdoAuditLogService
+				.selectEquipmentEdoAuditLogList(edoAuditLog);
 		return getDataTable(edoAuditLogsList);
 	}
 

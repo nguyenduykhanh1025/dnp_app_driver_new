@@ -46,9 +46,7 @@ function confirm() {
         },
         success: function (data) {
           if (data.code == 0) {
-            layer.msg('Cập nhật thành công, đang reload lại dữ liệu! ', {
-              icon: 6
-            });
+            layer.msg('Cập nhật thành công! ', {icon: 1});
           } else {
             $.modal.alertError(data.msg);
             $.modal.closeLoading();
@@ -57,12 +55,10 @@ function confirm() {
           setTimeout(function () {
             parent.getSelectedRow();
             $.modal.close();
-          }, 2000)
+          }, 1000)
         },
         error: function (data) {
-          $.modal.alertError(
-            "Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin."
-          )
+          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.")
         },
       })
     }, {
@@ -105,7 +101,6 @@ $.ajax({
                                                   ${element['dictLabel']} 
                                                 </option>`);
     });
-
   }
 })
 

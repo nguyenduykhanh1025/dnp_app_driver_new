@@ -13,6 +13,7 @@ import vn.com.irtech.eport.carrier.service.ICarrierAccountService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
@@ -42,7 +43,7 @@ public class CarrierProfileController extends CarrierBaseController{
         mmap.put("user", carrierAccountService.selectCarrierAccountById(user.getId()));
         return prefix + "/resetPwd";
     }
-    @Log(title = "Profile", businessType = BusinessType.UPDATE)
+    @Log(title = "Cập Nhật Profile", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
     @PostMapping("/update")
     @ResponseBody
     public AjaxResult update(CarrierAccount user)
@@ -71,6 +72,7 @@ public class CarrierProfileController extends CarrierBaseController{
         return false;
     }
     
+    @Log(title = "Reset Mật Khẩu", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
     @PostMapping("/resetPwd")
     @ResponseBody
     public AjaxResult resetPwd(String oldPassword, String newPassword)
