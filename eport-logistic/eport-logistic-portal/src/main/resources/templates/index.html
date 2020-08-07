@@ -36,11 +36,8 @@
                 </div>
               </a>
             </li>
-            <li id="doTab">
-              <a title="Quản Lý DO" th:href="@{/carrier/do}" href="/carrier/do" class="menuItem"><i class="fa fa-ship"></i>&nbsp; Quản Lý DO</a>
-            </li>
             <li class="dropdown user-menu">
-              <a title="Tra cứu Container" class="menuItem"><i class="fa fa-calendar-check-o"></i>&nbsp; Đăng Ký Làm Lệnh</a>
+              <a title="Đăng ký làm lệnh" class="menuItem"><i class="fa fa-calendar-check-o"></i>&nbsp; Đăng Ký Làm Lệnh</a>
               <ul class="dropdown-menu">
                 <li><a class="menuItem" th:href="@{/logistic/receive-cont-full}">Nhận Cont Hàng Từ Cảng</a></li>
                 <li><a class="menuItem" th:href="@{/logistic/send-cont-empty}">Giao Cont Rỗng Cho Cảng</a></li>
@@ -72,6 +69,14 @@
               <ul class="dropdown-menu">
                 <li><a class="menuItem" th:href="@{/logistic/report/container}">Báo Cáo Nâng/Hạ container</a></li>
                 <li><a class="menuItem" th:href="@{/logistic/report/costs}">Báo Cáo Cước Phí</a></li>
+              </ul>
+            </li>
+            <li class="dropdown user-menu">
+              <a title="Hỗ trợ dịch vụ"  class="menuItem"><i class="fa fa-users"></i>&nbsp; Hỗ Trợ Dịch Vụ</a>
+              <ul class="dropdown-menu">
+                <li><a class="menuItem" th:href="@{/logistic/vessel-changing}">Dịch Vụ Đổi Tàu</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/shifting-cont}">Dịch Vụ Dịch Chuyển Container</a></li>
+                <li><a class="menuItem" th:href="@{/logistic/shipmentSeparating}">Tách Bill</a></li>
               </ul>
             </li>
           </ul>

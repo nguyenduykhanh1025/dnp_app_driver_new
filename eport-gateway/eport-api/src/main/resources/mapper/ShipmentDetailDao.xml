@@ -250,4 +250,8 @@
 		FROM TB_BOOKING BO
 		WHERE BO.BOOKING_NO = #{bookingNo} AND BO.SZTP2 = #{sztp} AND BO.PTNR_CODE = #{opeCode} AND BO.FE = #{fe}
 	</select>
+	<select id="getIndexContMasterForSSRByContainerNo" parameterType="String" resultType="Date">
+		SELECT IN_DATE FROM TB_MASTER
+		WHERE CNTR_NO = #{containerNo}
+	</select>
 </mapper>

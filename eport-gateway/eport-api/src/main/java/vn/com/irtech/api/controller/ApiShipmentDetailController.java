@@ -1,5 +1,7 @@
 package vn.com.irtech.api.controller;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,5 +129,14 @@ public class ApiShipmentDetailController {
 	@PostMapping("/shipmentDetail/infor/send-full-receive-e")
 	public ShipmentDetailEntity getInforSendFReceiveE(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
 		return shipmentDetailDao.getInforSendFReceiveE(shipmentDetailEntity);
+	}
+	
+	@GetMapping("/shipmentDetail/index/container-master-ssr/{containerNo}")
+	public Integer getIndexContMasterForSSRByContainerNo(@PathVariable String containerNo) {
+		List<Date> list = shipmentDetailDao.getIndexContMasterForSSRByContainerNo(containerNo);
+		if(list.size() > 0) {
+			return list.indexOf(Collections.max(list)) + 1;
+		}
+		return null;
 	}
 }

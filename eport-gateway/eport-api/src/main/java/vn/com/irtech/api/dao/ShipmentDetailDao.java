@@ -1,5 +1,6 @@
 package vn.com.irtech.api.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -49,4 +50,6 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public Integer checkBookingNoForSendFReceiveE(@Param("bookingNo") String bookingNo, @Param("fe") String fe);
 	
 	public ShipmentDetailEntity getInforSendFReceiveE(ShipmentDetailEntity shipmentDetailEntity);
+	
+	public List<Date> getIndexContMasterForSSRByContainerNo(String containerNo);
 }

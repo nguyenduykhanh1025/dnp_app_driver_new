@@ -20,11 +20,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
         <result property="remark"    column="remark"    />
         <result property="isShiftingContOrder"    column="is_shifting_cont_order"    />
+        <result property="isChangeVesselOrder"    column="is_change_vessel_order"    />
+        <result property="isCreateBookingOrder"    column="is_create_booking_order"    />
         <result property="responseTime"    column="response_time"    />
     </resultMap>
 
     <sql id="selectRobotVo">
-        select id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, response_time from sys_robot
+        select id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, is_change_vessel_order, is_create_booking_order, response_time from sys_robot
     </sql>
 
     <select id="selectRobotList" parameterType="SysRobot" resultMap="RobotResult">
@@ -39,6 +41,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isGateInOrder != null"> and is_gate_in_order = #{isGateInOrder}</if>
             <if test="ipAddress != null  and ipAddress != ''"> and ip_address like concat(concat('%', #{ipAddress}), '%')</if>
             <if test="isShiftingContOrder != null"> and is_shifting_cont_order = #{isShiftingContOrder}</if>
+            <if test="isChangeVesselOrder != null"> and is_change_vessel_order = #{isChangeVesselOrder}</if>
+            <if test="isCreateBookingOrder != null"> and is_create_booking_order = #{isCreateBookingOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
     </select>
@@ -66,6 +70,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isGateInOrder != null"> and is_gate_in_order = #{isGateInOrder}</if>
             <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
             <if test="isShiftingContOrder != null"> and is_shifting_cont_order = #{isShiftingContOrder}</if>
+            <if test="isChangeVesselOrder != null"> and is_change_vessel_order = #{isChangeVesselOrder}</if>
+            <if test="isCreateBookingOrder != null"> and is_create_booking_order = #{isCreateBookingOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
         OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
@@ -89,6 +95,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null  and createBy != ''">create_by,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="isShiftingContOrder != null">is_shifting_cont_order,</if>
+            <if test="isChangeVesselOrder != null">is_change_vessel_order,</if>
+            <if test="isCreateBookingOrder != null">is_create_booking_order,</if>
             response_time,
             create_time
          </trim>
@@ -105,6 +113,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="isShiftingContOrder != null">#{isShiftingContOrder},</if>
+            <if test="isChangeVesselOrder != null">#{isChangeVesselOrder},</if>
+            <if test="isCreateBookingOrder != null">#{isCreateBookingOrder},</if>
             sysdate,
             sysdate
          </trim>
@@ -124,6 +134,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="isShiftingContOrder != null">is_shifting_cont_order = #{isShiftingContOrder},</if>
+            <if test="isChangeVesselOrder != null">is_change_vessel_order = #{isChangeVesselOrder},</if>
+            <if test="isCreateBookingOrder != null">is_create_booking_order = #{isCreateBookingOrder},</if>
             <if test="responseTime != null"></if>
             response_time = sysdate,
             update_time = sysdate
@@ -167,6 +179,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="isShiftingContOrder != null">is_shifting_cont_order = #{isShiftingContOrder},</if>
+            <if test="isChangeVesselOrder != null">is_change_vessel_order = #{isChangeVesselOrder},</if>
+            <if test="isCreateBookingOrder != null">is_create_booking_order = #{isCreateBookingOrder},</if>
             response_time = sysdate,
             update_time = sysdate
         </trim>
@@ -189,6 +203,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isGateInOrder != null"> and is_gate_in_order = #{isGateInOrder}</if>
             <if test="ipAddress != null  and ipAddress != ''"> and ip_address = #{ipAddress}</if>
             <if test="isShiftingContOrder != null"> and is_shifting_cont_order = #{isShiftingContOrder}</if>
+            <if test="isChangeVesselOrder != null"> and is_change_vessel_order = #{isChangeVesselOrder}</if>
+            <if test="isCreateBookingOrder != null"> and is_create_booking_order = #{isCreateBookingOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
     </select>
