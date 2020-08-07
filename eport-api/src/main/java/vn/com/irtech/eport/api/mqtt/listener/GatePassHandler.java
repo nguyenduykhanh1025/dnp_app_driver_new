@@ -99,21 +99,28 @@ public class GatePassHandler implements IMqttMessageListener {
 	 */
 	@Transactional
 	private void updatePickupHistory(GateInFormData gateInFormData, String result) {
+		// List data response for driver
 		List<DriverDataRes> driverDataRes = new ArrayList<>();
 		DriverRes driverRes = new DriverRes();
 		driverRes.setStatus(BusinessConsts.FINISH);
 		
+		// Declare process order to update status
 		ProcessOrder processOrder = new ProcessOrder();
 		processOrder.setId(gateInFormData.getReceiptId());
 		processOrder.setStatus(2);
 		
+		// Declare process history to save history
 		ProcessHistory processHistory = new ProcessHistory();
 		processHistory.setProcessOrderId(gateInFormData.getReceiptId());
 		processHistory.setRobotUuid(gateInFormData.getGateId());
 		processHistory.setStatus(2); // FINISH
 		
+		// If Robot return success
 		if ("success".equalsIgnoreCase(result)) {
+			
 			if (CollectionUtils.isNotEmpty(gateInFormData.getPickupIn())) {
+				
+				// Iterate pickup in list
 				for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
 					pickupHistory.setStatus(1);
 					pickupHistoryService.updatePickupHistory(pickupHistory);
@@ -128,15 +135,16 @@ public class GatePassHandler implements IMqttMessageListener {
 						driverData.setFe("F");
 					}
 					driverData.setSztp(pickupHistory.getSztp());
-					driverData.setSztp(pickupHistory.getTruckNo());
+					driverData.setTruckNo(pickupHistory.getTruckNo());
 					driverData.setChassisNo(pickupHistory.getChassisNo());
-					driverData.setSztp(pickupHistory.getSztp());
 					driverData.setWgt(gateInFormData.getWgt());
-					driverDataRes.add(driverData);
 					driverDataRes.add(driverData);
 				}
 			}
+			
 			if (CollectionUtils.isNotEmpty(gateInFormData.getPickupOut())) {
+				
+				// Iterate pickup out list
 				for (PickupHistory pickupHistory : gateInFormData.getPickupOut()) {
 					pickupHistory.setStatus(1);
 					pickupHistoryService.updatePickupHistory(pickupHistory);
@@ -151,15 +159,16 @@ public class GatePassHandler implements IMqttMessageListener {
 						driverData.setFe("E");
 					}
 					driverData.setSztp(pickupHistory.getSztp());
-					driverData.setSztp(pickupHistory.getTruckNo());
+					driverData.setTruckNo(pickupHistory.getTruckNo());
 					driverData.setChassisNo(pickupHistory.getChassisNo());
-					driverData.setSztp(pickupHistory.getSztp());
 					driverData.setWgt(gateInFormData.getWgt());
 					driverDataRes.add(driverData);
 				}
 			}
+			
+			// Set data for response driver
 			driverRes.setData(driverDataRes);
-			driverRes.setStatus(BusinessConsts.FINISH);
+			driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
 			driverRes.setResult(BusinessConsts.PASS);;
 			processOrder.setResult("S");
 			processHistory.setResult("S");
@@ -171,8 +180,6 @@ public class GatePassHandler implements IMqttMessageListener {
 			}
 			
 		} else {
-			driverRes = new DriverRes();
-			driverRes.setStatus(BusinessConsts.FINISH);
 			driverRes.setResult(BusinessConsts.FAIL);
 			driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
 			try {
@@ -185,7 +192,9 @@ public class GatePassHandler implements IMqttMessageListener {
 			processHistory.setResult("F");
 		}
 		
+		// Update process order (S or F)
 		processOrderService.updateProcessOrder(processOrder);
+		
 		// Update History robot
 		processHistoryService.insertProcessHistory(processHistory);
 	}
