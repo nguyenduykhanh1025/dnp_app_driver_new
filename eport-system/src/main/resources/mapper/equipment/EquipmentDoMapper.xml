@@ -383,6 +383,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		        </foreach>
 		        AND process_status = 1) AS completedBl
             from equipment_do
+            FETCH NEXT 1 ROWS ONLY
 	</select>
 	
 	<select id="getReportForAdmin" parameterType="String" resultType="hashmap">
