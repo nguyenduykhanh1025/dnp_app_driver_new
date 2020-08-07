@@ -11,8 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 import vn.com.irtech.eport.api.domain.EportUserType;
 import vn.com.irtech.eport.api.form.LoginReq;
 import vn.com.irtech.eport.api.security.service.LoginService;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.system.domain.UserDevices;
 import vn.com.irtech.eport.system.service.IUserDevicesService;
 
@@ -26,6 +29,7 @@ public class TransportLoginController extends BaseController {
 	@Autowired
 	private IUserDevicesService userDevicesService;
 
+	@Log(title = "Tài xế login", businessType = BusinessType.INSERT, operatorType = OperatorType.MOBILE)
 	@PostMapping("/login")
 	@ResponseBody
 	public AjaxResult login(@Validated @RequestBody LoginReq loginForm) {
