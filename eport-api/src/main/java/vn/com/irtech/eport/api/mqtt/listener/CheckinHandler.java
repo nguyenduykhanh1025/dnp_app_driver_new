@@ -330,9 +330,9 @@ public class CheckinHandler implements IMqttMessageListener {
 				gateInFormData.setContNumberOut(pickupOut.size());
 			}
 			DriverDataRes driverData = driverDatareses.get(0);
-			gateInFormData.setGatePass(driverData.getTruckNo());
+			gateInFormData.setGatePass(driverData.getTruckNo().substring(driverData.getTruckNo().length()-5, driverData.getTruckNo().length()));
 			gateInFormData.setTruckNo(driverData.getTruckNo());
-			gateInFormData.setChassiNo(driverData.getChassisNo());
+			gateInFormData.setChassisNo(driverData.getChassisNo());
 			gateInFormData.setWgt(wgt.toString());
 			gateInFormData.setSessionId(sessionId);
 			gateInFormData.setGateId(gateId);

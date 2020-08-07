@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="include :: header('Xac Thuc OTP')" />
+    <link th:href="@{/css/logistic/verify-otp.css}" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <p>Nhập mã OTP để thực hiện dịch vụ đổi tàu.</p>
+        <p id="p1"></p>
+        <div class="otpInputForm">
+            <label class="col-md-1 col-sm-1 col-xs-4" style="margin-top: 4px;">Nhập OTP</label>
+            <div class="col-md-1 col-sm-1 col-xs-5">
+                <input id="otpInput" type="text" style="width: 100px;" />
+            </div>
+            <button class="createOtpBtn" onclick="getOtp()">Gửi lại OTP</button>
+        </div>
+        <p id="indicateTime" style="display: none;">OTP có hiệu lực trong <span id="timer"></span>.</p>
+        <p id="indicateAction">Nhấn tạo OTP để nhận mã OTP.</p>
+        <i><span style="color: red;">*</span>Lưu ý: Không nên chia sẻ mã này cho bất kỳ ai.</i>
+        <div class="btn">
+            <button class="confirmBtn" onclick="confirm()">Xác thực</a>
+            <button class="closeBtn" onclick="closeForm()">Hủy</a>
+        </div>
+    </div>
+</body>
+<th:block th:include="include :: footer" />
+<script type="text/javascript" th:inline="javascript">
+    var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
+</script>
+<script th:src="@{/js/logistic/vesselChanging/otp.js}"></script>
+
+</html>
