@@ -64,8 +64,8 @@ public class CarrierIndexController extends CarrierBaseController
     public String main(ModelMap mmap)
     {
     	CarrierAccount user = ShiroUtils.getSysUser();
-    	String opeCodes = groupService.selectCarrierGroupById(user.getGroupId()).getOperateCode();
-        Map<String, String> report = doService.getReportByCarrierGroup(opeCodes.split(","));
+        String opeCodes = groupService.selectCarrierGroupById(user.getGroupId()).getOperateCode();
+        Map<String, String> report = doService.getReportByCarrierGroup(super.getGroupCodes().toString().split(","));
         if (report == null) {
             report = new HashMap<>();
             report.put("totalBl", "0");
