@@ -10,7 +10,7 @@
 	<field name="id" class="java.lang.Long"/>
 	<field name="logisticGroupId" class="java.math.BigDecimal"/>
 	<field name="shipmentId" class="java.math.BigDecimal"/>
-	<field name="processOrderId" class="java.math.BigDecimal"/>
+	<field name="processOrderId" class="java.lang.Long"/>
 	<field name="registerNo" class="java.lang.String"/>
 	<field name="containerNo" class="java.lang.String"/>
 	<field name="containerStatus" class="java.lang.String"/>

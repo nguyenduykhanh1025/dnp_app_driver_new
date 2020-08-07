@@ -310,7 +310,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public Integer getIndexContForSSRByContainerNo(String containerNo) {
+	public Integer getIndexContForSsrByContainerNo(String containerNo) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/index/container-master-ssr/" + containerNo;
 			RestTemplate restTemplate = new RestTemplate();
