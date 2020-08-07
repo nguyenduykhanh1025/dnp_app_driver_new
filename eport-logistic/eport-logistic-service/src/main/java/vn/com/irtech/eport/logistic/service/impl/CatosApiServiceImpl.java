@@ -308,5 +308,18 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+
+	@Override
+	public Integer getIndexContForSSRByContainerNo(String containerNo) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/index/container-master-ssr/" + containerNo;
+			RestTemplate restTemplate = new RestTemplate();
+			Integer index = restTemplate.getForObject(url, Integer.class);
+			return index;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
 	
 }
