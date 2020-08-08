@@ -203,6 +203,8 @@ public class ShipmentDetail extends BaseEntity
     private String year;
     
     private String vslAndVoy;
+    
+    private String invoiceNo;
 
     public void setId(Long id) {
         this.id = id;
@@ -619,6 +621,14 @@ public class ShipmentDetail extends BaseEntity
 		this.vslAndVoy = vslAndVoy;
 	}
 
+	public String getInvoiceNo() {
+		return invoiceNo;
+	}
+
+	public void setInvoiceNo(String invoiceNo) {
+		this.invoiceNo = invoiceNo;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -679,6 +689,7 @@ public class ShipmentDetail extends BaseEntity
             .append("serviceType", getServiceType())
             .append("year", getYear())
             .append("vslAndVoy", getVslAndVoy())
+            .append("invoiceNo", getInvoiceNo())
             .toString();
     }
 }

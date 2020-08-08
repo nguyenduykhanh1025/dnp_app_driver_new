@@ -790,6 +790,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	@Override
 	public List<Long> getCommandListInBatch(ShipmentDetail shipmentDetail) {
 		return shipmentDetailMapper.getCommandListInBatch(shipmentDetail);
+	}
+
+	@Override
+	public List<ShipmentDetail> getShipmentDetailForPrint(ShipmentDetail shipmentDetail) {
+		return shipmentDetailMapper.getShipmentDetailForPrint(shipmentDetail);
 	} 
     
 }

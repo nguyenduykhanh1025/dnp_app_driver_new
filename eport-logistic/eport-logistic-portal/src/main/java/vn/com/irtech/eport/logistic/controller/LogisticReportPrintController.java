@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -75,7 +76,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		ShipmentDetail shipmentDetail = new ShipmentDetail();
 		shipmentDetail.setShipmentId(shipmentId);
 		shipmentDetail.setPaymentStatus("Y");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailForPrint(shipmentDetail);
 		try {
 			response.setContentType("application/pdf");
 			createPdfReport(shipmentDetails, response.getOutputStream());
@@ -106,11 +107,19 @@ public class LogisticReportPrintController extends LogisticBaseController {
 					}
 				}
 				if(list.size()>0) {
-					final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(list);
+					//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(list);
 			        final Map<String, Object> parameters = new HashMap<>();
 			        parameters.put("user", getGroup().getGroupName());
 			        parameters.put("qrCode", "123");
+			        parameters.put("billingBooking", (list.get(0).getBlNo() != null? list.get(0).getBlNo():"") +"/"+(list.get(0).getBookingNo() != null ? list.get(0).getBookingNo() : ""));
+			        parameters.put("consignee", list.get(0).getConsignee());
+			        parameters.put("vslName", list.get(0).getVslName());
+			        parameters.put("voyCarrier", list.get(0).getVoyCarrier());
+			        parameters.put("opeCode", list.get(0).getOpeCode());
+			        parameters.put("invoiceNo", list.get(0).getInvoiceNo());
+			        parameters.put("list", list);
 			        Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+			        parameters.put("remark", (shipment.getRemark() != null) ? shipment.getRemark() : "");
 			        if(shipment.getServiceType().intValue() == 1) {
 				        parameters.put("serviceType", "Truck Pickup");
 			        }
@@ -123,7 +132,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			        if(shipment.getServiceType().intValue() == 4) {
 				        parameters.put("serviceType", "Truck Full Drop");
 			        }
-					final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
+					final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
 					jpList.add(new SimpleExporterInputItem(print));
 				}
 			}
