@@ -6,10 +6,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import vn.com.irtech.eport.common.config.Global;
-import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
-import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 /**
@@ -22,8 +20,6 @@ public class LogisticIndexController extends LogisticBaseController
 
     @Autowired
     private ISysConfigService configService;
-    @Autowired
-    private ILogisticGroupService groupService;
 
     @GetMapping("/index")
     public String index(ModelMap mmap)
