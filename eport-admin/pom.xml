@@ -79,7 +79,17 @@
               <artifactId>ojdbc7</artifactId>
               <version>12.1.0.2</version>
         </dependency>
-        
+        <!-- Jasper reports dependency. -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>6.0.0</version>
+        </dependency>
     </dependencies>
     <repositories>
         <!-- Repository for ORACLE ojdbc7. -->

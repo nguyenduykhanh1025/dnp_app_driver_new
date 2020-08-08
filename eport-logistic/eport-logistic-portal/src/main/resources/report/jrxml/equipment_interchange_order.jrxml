@@ -2,8 +2,10 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order_report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3590fe74-00bf-4dec-a564-d54856adfe47">
 	<property name="ireport.zoom" value="1.3310000000000008"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="55"/>
+	<property name="ireport.y" value="89"/>
 	<parameter name="user" class="java.lang.String"/>
+	<parameter name="qrCode" class="java.lang.String"/>
+	<parameter name="serviceType" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -54,6 +56,10 @@
 	<field name="sztpDefine" class="java.lang.String"/>
 	<field name="voyCarrier" class="java.lang.String"/>
 	<field name="finishStatus" class="java.lang.String"/>
+	<variable name="STT" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$V{STT} + 1]]></variableExpression>
+		<initialValueExpression><![CDATA[1]]></initialValueExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -203,7 +209,7 @@
 				<textFieldExpression><![CDATA[$F{opeCode}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="132" y="53" width="300" height="20" uuid="ef70bef6-ffb7-4551-b5ee-4f3d8dcc9b87"/>
+				<reportElement x="132" y="53" width="264" height="20" uuid="ef70bef6-ffb7-4551-b5ee-4f3d8dcc9b87"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
@@ -222,6 +228,30 @@
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{voyCarrier}]]></textFieldExpression>
+			</textField>
+			<image onErrorType="Blank">
+				<reportElement x="427" y="53" width="100" height="50" uuid="d2c10a8d-dcf4-4b76-8e3d-f1f9258f5460"/>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+        $P{qrCode},
+        com.google.zxing.BarcodeFormat.QR_CODE, 300, 300
+    )
+)]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="279" y="213" width="129" height="20" uuid="6b682291-edcd-465c-b0c5-03cc206ede2b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Phương thức giao/nhận:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="279" y="233" width="129" height="20" uuid="97ab10cd-244c-466e-b3c9-efa51b715312"/>
+				<text><![CDATA[Delivering/Receiving Task:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="408" y="213" width="100" height="20" uuid="0b16a3ed-5a51-4d56-948d-038c82ad84ba"/>
+				<textFieldExpression><![CDATA[$P{serviceType}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -326,7 +356,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ID]]></text>
+				<text><![CDATA[STT]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -408,20 +438,6 @@
 				<textFieldExpression><![CDATA[$F{remark}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="1" width="32" height="20" uuid="eeac0804-c25d-4e4b-805d-6b82c106a767"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
 				<reportElement x="32" y="0" width="100" height="20" uuid="11c4f878-3e02-4fc0-a1ac-1a34febf7755"/>
 				<box topPadding="2" leftPadding="2">
 					<pen lineWidth="1.5"/>
@@ -434,6 +450,17 @@
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{containerNo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="32" height="20" uuid="5ebc54c4-bcb3-423f-b7a2-32e174d2345f"/>
+				<box topPadding="2" leftPadding="2">
+					<pen lineWidth="1.5"/>
+					<topPen lineWidth="1.5"/>
+					<leftPen lineWidth="1.5"/>
+					<bottomPen lineWidth="1.5"/>
+					<rightPen lineWidth="1.5"/>
+				</box>
+				<textFieldExpression><![CDATA[$V{STT}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
