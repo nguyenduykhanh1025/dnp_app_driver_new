@@ -239,7 +239,10 @@ $('#export-file').click(function() {
     //   }); 
 });
 function generatePDF() {
-	//$.modal.openTab("In phiếu", ctx +"edo/print/view");
+	if(!dataObj){
+		$.modal.alertError("Chưa có bill nào cả!");
+		return
+	}
     $.ajax({
         url : ctx + "edo/print/post-data",
         method : "POST",
