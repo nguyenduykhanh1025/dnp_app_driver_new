@@ -126,6 +126,8 @@ class LoginContainer extends PureComponent {
     }
 
     onLogin = async () => {
+        const fcmToken = await firebase.messaging().getToken();
+        console.log('token', fcmToken)
         Toast.showLoading()
         const { loginname, pwd } = this.state;
         const params = {
@@ -135,7 +137,7 @@ class LoginContainer extends PureComponent {
                 passWord: pwd,
                 deviceToken: 'ádasdadas'
             },
-            token: '',
+            token: fcmToken,
             method: 'POST'
         }
         var result = undefined;

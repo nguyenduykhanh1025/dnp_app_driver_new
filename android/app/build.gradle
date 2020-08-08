@@ -195,6 +195,9 @@ android {
 }
 
 dependencies {
+    compile(project(':react-native-firebase')) {   
+       transitive = false
+    }
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation 'com.android.support:multidex:1.0.3'
@@ -209,6 +212,7 @@ dependencies {
     implementation 'com.facebook.fresco:animated-gif:2.0.0'
     implementation 'com.facebook.fresco:animated-webp:2.0.0'
     implementation 'com.facebook.fresco:webpsupport:2.0.0'
+    implementation "com.google.android.gms:play-services-base:17.3.0"
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'

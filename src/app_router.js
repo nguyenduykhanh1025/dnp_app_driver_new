@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, Alert, Platform, AppState } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -18,6 +18,7 @@ import { getGPSEnable, getToken, getAccount, getPassword } from '@/stores';
 import { CheckInternetEvery } from '@/utils';
 import BackgroundTimer from 'react-native-background-timer';
 import PushNotification from 'react-native-push-notification';
+import firebase from 'react-native-firebase';
 
 class AppAppContainer extends React.Component {
     constructor(props) {
@@ -30,6 +31,59 @@ class AppAppContainer extends React.Component {
         };
         this.token = null;
     }
+
+    checkPermission = async () => {
+        const enabled = await firebase.messaging().hasPermission();
+        if (enabled) {
+            this.messageListener();
+        } else {
+            this.requestPermission();
+        }
+    }
+
+    requestPermission = async () => {
+        try {
+          await firebase.messaging().requestPermission();
+          // User has authorised
+        } catch (error) {
+            // User has rejected permissions
+        }
+    }
+
+    messageListener = async () => {
+        this.notificationListener = firebase.notifications().onNotification((notification) => {
+            const { title, body } = notification;
+            //console.log(notification)
+            //this.showAlert(title, body);
+        });
+      
+        this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+            const { title, body } = notificationOpen.notification;
+            //console.log(notificationOpen.notification)
+            NavigationService.navigate(homeTab.notification)
+        });
+      
+        const notificationOpen = await firebase.notifications().getInitialNotification();
+        if (notificationOpen) {
+            const { title, body } = notificationOpen.notification;
+            //this.showAlert(title, body);
+        }
+      
+        this.messageListener = firebase.messaging().onMessage((message) => {
+          //console.log(JSON.stringify(message));
+        });
+    }
+
+    showAlert = (title, message) => {
+        Alert.alert(
+          title,
+          message,
+          [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          {cancelable: false},
+        );
+      }
 
     onPushLocation = async (x, y) => {
         const params = {
@@ -47,6 +101,7 @@ class AppAppContainer extends React.Component {
     }
 
     componentDidMount = async () => {
+        this.checkPermission();
         this.token = await getToken();
         var x = null;
         var y = null;
