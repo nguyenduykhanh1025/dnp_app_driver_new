@@ -111,7 +111,18 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			        parameters.put("user", getGroup().getGroupName());
 			        parameters.put("qrCode", "123");
 			        Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			        parameters.put("serviceType", shipment.getServiceType().toString());
+			        if(shipment.getServiceType().intValue() == 1) {
+				        parameters.put("serviceType", "Truck Pickup");
+			        }
+			        if(shipment.getServiceType().intValue() == 2) {
+				        parameters.put("serviceType", "Truck Drop Off");
+			        }
+			        if(shipment.getServiceType().intValue() == 3) {
+				        parameters.put("serviceType", "Truck Empty Pickup");
+			        }
+			        if(shipment.getServiceType().intValue() == 4) {
+				        parameters.put("serviceType", "Truck Full Drop");
+			        }
 					final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
 					jpList.add(new SimpleExporterInputItem(print));
 				}
