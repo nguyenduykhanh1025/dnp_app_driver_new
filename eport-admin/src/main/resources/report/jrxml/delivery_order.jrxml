@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="delivery_order" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1f5ea28e-6470-4626-a275-304d837ca6c6">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="delivery_order" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1f5ea28e-6470-4626-a275-304d837ca6c6">
 	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -8,10 +8,10 @@
 	</queryString>
 	<field name="id" class="java.lang.Long"/>
 	<field name="carrierId" class="java.lang.Long"/>
-	<field name="CARRIER_CODE" class="java.lang.String"/>
+	<field name="carrierCode" class="java.lang.String"/>
 	<field name="orderNumber" class="java.lang.String"/>
 	<field name="billOfLading" class="java.lang.String"/>
-	<field name="bussinessUnit" class="java.lang.String"/>
+	<field name="businessUnit" class="java.lang.String"/>
 	<field name="consignee" class="java.lang.String"/>
 	<field name="containerNumber" class="java.lang.String"/>
 	<field name="expiredDem" class="oracle.sql.TIMESTAMP"/>
@@ -34,10 +34,7 @@
 	<field name="updateBy" class="java.lang.String"/>
 	<field name="updateTime" class="oracle.sql.TIMESTAMP"/>
 	<field name="fileCreateTime" class="oracle.sql.TIMESTAMP"/>
-	<field name="sealNo" class="java.lang.String"/>
-	<field name="weight" class="java.lang.String"/>
 	<field name="unloadingPort" class="java.lang.String"/>
-	<field name="pickupLocation" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -107,7 +104,7 @@
 	<columnHeader>
 		<band height="20" splitType="Stretch">
 			<staticText>
-				<reportElement x="127" y="0" width="100" height="20" uuid="34d4a86d-5d3e-45c8-9c26-074b7690d899"/>
+				<reportElement x="179" y="0" width="100" height="20" uuid="34d4a86d-5d3e-45c8-9c26-074b7690d899"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -121,7 +118,7 @@
 				<text><![CDATA[Equipment No]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="227" y="0" width="100" height="20" uuid="3e1aef22-b78c-44ed-a20b-4944edd27f3c"/>
+				<reportElement x="279" y="0" width="100" height="20" uuid="3e1aef22-b78c-44ed-a20b-4944edd27f3c"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -134,26 +131,12 @@
 				</textElement>
 				<text><![CDATA[Size/Type]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="327" y="0" width="100" height="20" uuid="2e717d1c-7d33-4aaa-ae9a-7e4cade0d8be"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[Tare Weight]]></text>
-			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="61" splitType="Stretch">
+		<band height="20" splitType="Stretch">
 			<textField isBlankWhenNull="true">
-				<reportElement x="127" y="0" width="100" height="20" uuid="608c3c06-abd3-40c9-827c-be916c664c6f"/>
+				<reportElement x="179" y="0" width="100" height="20" uuid="608c3c06-abd3-40c9-827c-be916c664c6f"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -167,7 +150,7 @@
 				<textFieldExpression><![CDATA[$F{containerNumber}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="227" y="0" width="100" height="20" uuid="0221e2b3-de11-4cc6-a238-e67d189842a9"/>
+				<reportElement x="279" y="0" width="100" height="20" uuid="0221e2b3-de11-4cc6-a238-e67d189842a9"/>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -179,20 +162,6 @@
 					<paragraph leftIndent="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{sztp}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="327" y="0" width="100" height="20" uuid="1a64d318-0010-467c-8123-b5718eeca209"/>
-				<box>
-					<pen lineWidth="1.0"/>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement>
-					<paragraph leftIndent="10"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{weight}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

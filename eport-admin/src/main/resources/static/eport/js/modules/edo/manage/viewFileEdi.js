@@ -239,13 +239,18 @@ $('#export-file').click(function() {
     //   }); 
 });
 function generatePDF() {
-	$.modal.openTab("In phiếu", ctx +"edo/print/view");
+	//$.modal.openTab("In phiếu", ctx +"edo/print/view");
     $.ajax({
-        url : ctx + "edo/print/deliveryOrder",
+        url : ctx + "edo/print/post-data",
         method : "POST",
         contentType: "application/json",
-        dataType: 'json',
-        data: dataObj
-    }).done(function(result){
-    });
+        data: JSON.stringify(dataObj),
+        success: function (result) {
+            if (result.code == 0) {
+            	$.modal.openTab("In phiếu", ctx + "edo/print/view/"+ result.key)
+            } else {
+                $.modal.alertError(result.msg);
+            }
+        }
+    })
 }
