@@ -238,4 +238,14 @@ $('#export-file').click(function() {
     //     filename: filename + day + monthText + year 
     //   }); 
 });
-
+function generatePDF() {
+	$.modal.openTab("In phiếu", ctx +"edo/print/view");
+    $.ajax({
+        url : ctx + "edo/print/deliveryOrder",
+        method : "POST",
+        contentType: "application/json",
+        dataType: 'json',
+        data: dataObj
+    }).done(function(result){
+    });
+}

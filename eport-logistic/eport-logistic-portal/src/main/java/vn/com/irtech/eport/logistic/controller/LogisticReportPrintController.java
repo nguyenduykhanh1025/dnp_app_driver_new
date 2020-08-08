@@ -109,7 +109,9 @@ public class LogisticReportPrintController extends LogisticBaseController {
 					final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(list);
 			        final Map<String, Object> parameters = new HashMap<>();
 			        parameters.put("user", getGroup().getGroupName());
-			        parameters.put("qrCode", getGroup().getGroupName());
+			        parameters.put("qrCode", "123");
+			        Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
+			        parameters.put("serviceType", shipment.getServiceType().toString());
 					final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
 					jpList.add(new SimpleExporterInputItem(print));
 				}
