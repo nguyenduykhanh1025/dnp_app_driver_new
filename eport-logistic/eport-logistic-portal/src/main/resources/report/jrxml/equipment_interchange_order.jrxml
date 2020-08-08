@@ -239,19 +239,22 @@
 )]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="279" y="213" width="129" height="20" uuid="6b682291-edcd-465c-b0c5-03cc206ede2b"/>
+				<reportElement x="279" y="213" width="148" height="20" uuid="6b682291-edcd-465c-b0c5-03cc206ede2b"/>
 				<textElement>
-					<font isBold="true"/>
+					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Phương thức giao/nhận:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="279" y="233" width="129" height="20" uuid="97ab10cd-244c-466e-b3c9-efa51b715312"/>
+				<reportElement x="279" y="233" width="148" height="20" uuid="97ab10cd-244c-466e-b3c9-efa51b715312"/>
+				<textElement>
+					<font fontName="DejaVu Sans"/>
+				</textElement>
 				<text><![CDATA[Delivering/Receiving Task:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="408" y="213" width="100" height="20" uuid="0b16a3ed-5a51-4d56-948d-038c82ad84ba"/>
-				<textFieldExpression><![CDATA[$P{serviceType}]]></textFieldExpression>
+				<reportElement x="428" y="213" width="100" height="20" uuid="0b16a3ed-5a51-4d56-948d-038c82ad84ba"/>
+				<textFieldExpression><![CDATA[$P{serviceType} ]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
