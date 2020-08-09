@@ -238,7 +238,7 @@ $('#export-file').click(function() {
     //     filename: filename + day + monthText + year 
     //   }); 
 });
-function generatePDF() {
+function printEdoPDF() {
 	if(!dataObj){
 		$.modal.alertError("Chưa có bill nào cả!");
 		return

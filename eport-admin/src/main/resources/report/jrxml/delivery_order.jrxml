@@ -34,7 +34,7 @@
 	<field name="updateBy" class="java.lang.String"/>
 	<field name="updateTime" class="oracle.sql.TIMESTAMP"/>
 	<field name="fileCreateTime" class="oracle.sql.TIMESTAMP"/>
-	<field name="unloadingPort" class="java.lang.String"/>
+	<field name="pol" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
