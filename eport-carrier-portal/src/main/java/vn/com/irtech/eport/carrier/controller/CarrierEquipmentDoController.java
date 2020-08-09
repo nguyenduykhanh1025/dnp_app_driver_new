@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
-import vn.com.irtech.eport.carrier.domain.EquipmentEdoAuditLog;
-import vn.com.irtech.eport.carrier.service.IEquipmentEdoAuditLogService;
+import vn.com.irtech.eport.carrier.domain.EquipmentDoAuditLog;
+import vn.com.irtech.eport.carrier.service.IEquipmentDoAuditLogService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -60,7 +60,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	private MailService mailService;
 
 	@Autowired
-	private IEquipmentEdoAuditLogService equipmentEdoAuditLogService;
+	private IEquipmentDoAuditLogService equipmentDoAuditLogService;
 
 	@GetMapping()
 	public String EquipmentDo() {
@@ -250,7 +250,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			for (EquipmentDo edo : equipmentDos) {
 				equipmentDoService.insertEquipmentDo(edo);
 				edo.setCreateBy(super.getUser().getEmail());
-				equipmentEdoAuditLogService.addAuditLogFirst(edo);
+				equipmentDoAuditLogService.addAuditLogFirst(edo);
 			}
 			// return toAjax(equipmentDoService.insertEquipmentDoList(doList));
 
@@ -388,14 +388,14 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				if (edo.getId() != null) {
 					equipmentDoService.updateEquipmentDo(edo);
 					edo.setCreateBy(super.getUser().getEmail());
-					equipmentEdoAuditLogService.updateAuditLog(edo);
+					equipmentDoAuditLogService.updateAuditLog(edo);
 				} else {
 					edo.setCarrierId(getUserId());
 					edo.setBillOfLading(billOfLading);
 					edo.setCarrierCode(carrierCode);
 					equipmentDoService.insertEquipmentDo(edo);
 					edo.setCreateBy(super.getUser().getEmail());
-					equipmentEdoAuditLogService.addAuditLogFirst(edo);
+					equipmentDoAuditLogService.addAuditLogFirst(edo);
 				}
 			}
 			// SEND EMAIL WHEN ADD SUCCESSFULLY
@@ -637,10 +637,10 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 
 	@GetMapping("/auditLog/{edoId}")
 	@ResponseBody
-	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EquipmentEdoAuditLog edoAuditLog) {
-		edoAuditLog.setEdoId(edoId);
-		List<EquipmentEdoAuditLog> edoAuditLogsList = equipmentEdoAuditLogService
-				.selectEquipmentEdoAuditLogList(edoAuditLog);
+	public TableDataInfo edoAuditLog(@PathVariable("edoId") Long edoId, EquipmentDoAuditLog edoAuditLog) {
+		edoAuditLog.setDoId(edoId);
+		List<EquipmentDoAuditLog> edoAuditLogsList = equipmentDoAuditLogService
+				.selectEquipmentDoAuditLogList(edoAuditLog);
 		return getDataTable(edoAuditLogsList);
 	}
 

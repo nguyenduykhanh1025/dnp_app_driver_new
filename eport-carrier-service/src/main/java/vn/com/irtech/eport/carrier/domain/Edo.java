@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 /**
  * Exchange Delivery Order Object edo
  * 
- * @author ruoyi
+ * @author admin
  * @date 2020-06-26
  */
 public class Edo extends BaseEntity {
@@ -21,7 +21,7 @@ public class Edo extends BaseEntity {
 	private Long id;
 
 	/** ID Nhan Vien Hang Tau */
-	@Excel(name = "ID Nhan Vien Hang Tau")
+	@Excel(name = "ID Nhan Vien")
 	private Long carrierId;
 
 	/** Ma Hang Tau */
@@ -29,27 +29,27 @@ public class Edo extends BaseEntity {
 	private String carrierCode;
 
 	/** So Lenh (Optional) */
-	@Excel(name = "So Lenh (Optional)")
+	@Excel(name = "Order Number")
 	private String orderNumber;
 
 	/** So B/L */
-	@Excel(name = "So B/L")
+	@Excel(name = "B/L No")
 	private String billOfLading;
 
 	/** Don Vi Khai Thac (Optional) */
-	@Excel(name = "Don Vi Khai Thac (Optional)")
+	@Excel(name = "Don Vi Khai Thac")
 	private String businessUnit;
 
 	/** Chu Hang */
-	@Excel(name = "Chu Hang")
+	@Excel(name = "Consignee")
 	private String consignee;
 
 	/** So Cont */
-	@Excel(name = "So Cont")
+	@Excel(name = "Container No")
 	private String containerNumber;
 
 	/** Han Lenh */
-	@Excel(name = "Han Lenh", width = 30, dateFormat = "yyyy-MM-dd")
+	@Excel(name = "Expired DEM", width = 30, dateFormat = "yyyy-MM-dd")
 	private Date expiredDem;
 
 	/** Noi Ha Rong */
@@ -57,11 +57,11 @@ public class Edo extends BaseEntity {
 	private String emptyContainerDepot;
 
 	/** So Ngay Mien Luu Vo Cont */
-	@Excel(name = "So Ngay Mien Luu Vo Cont")
+	@Excel(name = "So Ngay Mien Luu")
 	private Integer detFreeTime;
 
 	/** Ma Bao Mat (optional) */
-	@Excel(name = "Ma Bao Mat (optional)")
+	@Excel(name = "Ma Nhan Cont")
 	private String secureCode;
 
 	/** Ngay Release */
@@ -77,19 +77,18 @@ public class Edo extends BaseEntity {
 	private String voyNo;
 
 	/** eDO Status (new, đã khai báo, đã làm lệnh, gatein, gateout) */
-	@Excel(name = "eDO Status (new, đã khai báo, đã làm lệnh, gatein, gateout)")
+	@Excel(name = "Status")
 	private String status;
 
 	/** Release Status (0:tren bai cang, 1: released) */
-	@Excel(name = "Release Status (0:tren bai cang, 1: released)")
+	@Excel(name = "Release Status")
 	private String releaseStatus;
 
 	/** Nguon Tao: web, edi, api */
-	@Excel(name = "Nguon Tao: web, edi, api")
+	@Excel(name = "Nguon Tao")
 	private String createSource;
 
 	/** Delete Flag */
-	@Excel(name = "Delete Flag")
 	private Integer delFlg;
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -103,39 +102,39 @@ public class Edo extends BaseEntity {
 	private String numberContainer;
 
 	/** Tau */
-	@Excel(name = "So Tau")
+	@Excel(name = "Ma Tau")
 	private String vesselNo;
 
 	/** Sztp */
-	@Excel(name = "Size / Type")
+	@Excel(name = "Sztp")
 	private String sztp;
 
 	// File Create Time
-	@Excel(name = "File Create Time")
+	@Excel(name = "Ngay Tao File EDI")
 	private Date fileCreateTime;
 
 	/** Final port of discharge */
-	@Excel(name = "Final port of discharge")
-	private String unloadingPort;
+	@Excel(name = "Port Of Loading")
+	private String pol;
 
 	/** Pick-up location */
-	@Excel(name = "Pick-up location")
-	private String pickUpLocation;
+	@Excel(name = "Port Of Discharged")
+	private String pod;
 
-	public String getPickUpLocation() {
-		return this.pickUpLocation;
+	public String getPod() {
+		return this.pod;
 	}
 
-	public void setPickUpLocation(String pickUpLocation) {
-		this.pickUpLocation = pickUpLocation;
+	public void setPod(String pod) {
+		this.pod = pod;
 	}
 
-	public void setUnloadingPort(String unloadingPort) {
-		this.unloadingPort = unloadingPort;
+	public void setPol(String pol) {
+		this.pol = pol;
 	}
 
-	public String getUnloadingPort() {
-		return unloadingPort;
+	public String getPol() {
+		return pol;
 	}
 
 	public void setFileCreateTime(Date fileCreateTime)
