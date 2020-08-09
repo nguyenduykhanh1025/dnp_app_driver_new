@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/vessel-changing";
+var prefix = ctx + "logistic/order/extension";
 var interval;
 var minutes = 0, seconds = 0;
 
@@ -9,7 +9,7 @@ function confirm() {
             method: "post",
             data: {
                 shipmentDetailIds : shipmentDetailIds,
-                vessel : vessel
+                expiredDem : expiredDem
             },
             success: function (data) {
                 if (data.code != 0 && data.code != 301) {

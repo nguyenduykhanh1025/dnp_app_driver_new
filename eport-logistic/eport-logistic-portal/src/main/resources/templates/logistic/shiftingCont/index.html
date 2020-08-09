@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Dịch Chuyển Container')" />
+    <th:block th:include="include :: handsontable-css" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/receiveContFull/style.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="wrapper">
+        <div class="left-side">
+            <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
+            <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
+            <div class="title-top">
+                <span style="color: black;"><b> DỊCH VỤ BỐC CONTAINER CHỈ ĐỊNH </b></span>
+            </div>
+            <div class="left-infor-top" style="display: flex;height: 20px;">
+                <div class="form-group col-md-4 col-sm-4 col-xs-4">
+                    <input type="text" class="form-control" id="blSearch" placeholder="B/L No.">
+                </div>
+            </div>
+            <hr />
+            <div class="table-content">
+                <div class="row col-sm-12">
+                    <span class="title col-sm-8">Danh sách lô</span>
+                </div>
+                <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'id', fixed:true" width="1"></th>
+                            <th data-options="field:'blNo', halign:'center', resizable:true, fixed:true" sortable="true"
+                                width="150">B/L No.</th>
+                            <th data-options="field:'taxCode', halign:'center', fixed:true" sortable="true" width="100">
+                                MST</th>
+                            <th data-options="field:'containerAmount', align:'right', halign:'center', fixed:true"
+                                sortable="true" width="70">Số Cont</th>
+                            <th data-options="field:'createTime', align:'right', halign:'center', formatter: formatDate, fixed:true"
+                                sortable="true" width="150">Ngày tạo</th>
+                            <th data-options="field:'remark',align:'right',halign:'center', formatter: formatRemark"
+                                sortable="true" width="150">Ghi chú</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="right-side">
+            <div class="step-progress">
+                <div id="step-area">
+                    <div class="left-info">
+                        <div>
+                            <span class="label-title">Mã Lô: </span>
+                            <span id="loCode"></span>
+                        </div>
+                        <div>
+                            <span class="label-title">Mã Số Thuế: </span>
+                            <span id="taxCode"></span>
+                        </div>
+                        <div>
+                            <span class="label-title">Số Lượng: </span>
+                            <span id="quantity"></span>
+                        </div>
+                        <div>
+                            <span class="label-title">Loại Lệnh: </span>
+                            <span id="dotype"></span>
+                        </div>
+                        <div>
+                            <span class="label-title">B/L No: </span>
+                            <span id="blNo"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="title-top">
+                <div class="left-button-bar">
+                    <button id="pickContBtn" class="btn btn-sm btn-primary" onclick="pickContForm()" disabled>Bốc chỉ đinh</button>
+                    <button id="paymentCont" class="btn btn-sm btn-primary" onclick="payment()" disabled>Thanh toán</button>
+                </div>
+            </div>
+            <hr />
+            <div id="container-grid" class="hot handsontable htColumnHeaders"></div>
+            <div class="progress-wrapper">
+                <p class="text-white" id="titleProgress"></p>
+                <div class="progress">
+                    <span class="percent-text"></span>
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" id="progressBar" aria-valuenow="0"
+                        aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="dim-bg"></div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: handsontable-js" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: websocket" />
+    <script th:src="@{/js/logistic/shiftingCont/index.js}"></script>
+</body>
+
+</html>

@@ -63,7 +63,7 @@ public interface ShipmentDetailMapper
      */
     public int deleteShipmentDetailByIds(String[] ids);
 
-    public List<ShipmentDetail> selectShipmentDetailByIds(String[] ids);
+    public List<ShipmentDetail> selectShipmentDetailByIds(@Param("shipmentDetailIds") String[] ids, @Param("logisticGroupId") Long logisticGroupId);
 
     public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 

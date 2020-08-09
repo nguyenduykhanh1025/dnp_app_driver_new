@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="container">
-        <p>Nhập mã OTP để thực hiện dịch vụ đổi tàu.</p>
+        <p>Nhập mã OTP để thực hiện dịch vụ gia hạn lệnh.</p>
         <p id="p1"></p>
         <div class="otpInputForm">
             <label class="col-md-1 col-sm-1 col-xs-4" style="margin-top: 4px;">Nhập OTP</label>
@@ -28,9 +28,9 @@
 <th:block th:include="include :: footer" />
 <script type="text/javascript" th:inline="javascript">
     var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
-    var vessel = /*[[${vessel}]]*/;
+    var expiredDem = /*[[${expiredDem}]]*/;
     var numberPhone = /*[[${numberPhone}]]*/;
 </script>
-<script th:src="@{/js/logistic/vesselChanging/otp.js}"></script>
+<script th:src="@{/js/logistic/extension/otp.js}"></script>
 
 </html>

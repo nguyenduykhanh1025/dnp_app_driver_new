@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,9 +91,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@GetMapping("/otp/cont-list/confirmation/{shipmentDetailIds}")
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		mmap.put("creditFlag", getGroup().getCreditFlag());
-		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
 		return PREFIX + "/checkContListBeforeVerify";
@@ -285,8 +286,8 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) != 1) {
 			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 		}
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails != null && shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) { 
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			if (!"3".equals(shipment.getStatus())) {
@@ -329,8 +330,8 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@PostMapping("/payment/{shipmentDetailIds}")
 	@ResponseBody
 	public AjaxResult payment(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds);
-		if (shipmentDetails != null && shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setStatus(3);
 				shipmentDetail.setPaymentStatus("Y");
