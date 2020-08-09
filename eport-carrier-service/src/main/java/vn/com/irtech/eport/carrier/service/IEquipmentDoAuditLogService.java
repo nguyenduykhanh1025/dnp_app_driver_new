@@ -8,7 +8,7 @@ import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 /**
  * Do Audit Trail LogService Interface
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-07-31
  */
 public interface IEquipmentDoAuditLogService 

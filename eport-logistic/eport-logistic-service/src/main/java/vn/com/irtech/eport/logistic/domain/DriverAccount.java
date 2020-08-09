@@ -15,7 +15,7 @@ import javax.validation.constraints.Pattern;
 /**
  * Driver login info Object transport_account
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-05-19
  */
 public class DriverAccount extends BaseEntity {

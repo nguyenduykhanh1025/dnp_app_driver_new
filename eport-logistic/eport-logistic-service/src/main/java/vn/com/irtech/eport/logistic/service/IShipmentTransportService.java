@@ -6,7 +6,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentTransport;
 /**
  * Thong tin dieu xeService Interface
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-05-26
  */
 public interface IShipmentTransportService 

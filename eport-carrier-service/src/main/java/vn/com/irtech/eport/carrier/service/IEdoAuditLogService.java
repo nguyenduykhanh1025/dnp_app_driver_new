@@ -9,7 +9,7 @@ import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 /**
  * eDO Audit Trail LogService Interface
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-07-07
  */
 public interface IEdoAuditLogService 

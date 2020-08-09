@@ -8,7 +8,7 @@ import vn.com.irtech.eport.carrier.domain.EdoHistory;
 /**
  * eDO Action HistoryService Interface
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-06-26
  */
 public interface IEdoHistoryService 
