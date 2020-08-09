@@ -6,7 +6,7 @@ import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
 /**
  * eDO Audit Trail LogMapper Interface
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-07-07
  */
 public interface EdoAuditLogMapper 

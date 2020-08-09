@@ -40,23 +40,11 @@ public abstract class CarrierBaseController extends BaseController {
 
 	public boolean hasDoPermission() {
 		CarrierGroup userGroup = getUserGroup();
-		if(userGroup != null) {
-			return "1".equals(userGroup.getDoFlag());
-		}
-		return false;
+		return (userGroup != null && "1".equals(userGroup.getDoFlag()));
 	}
 
 	public boolean hasEdoPermission() {
 		CarrierGroup userGroup = getUserGroup();
-		if(userGroup != null) {
-			return "1".equals(userGroup.getEdoFlag());
-		}
-		return false;
+		return (userGroup != null && "1".equals(userGroup.getEdoFlag()));
 	}
-
-	public String folderUpLoad() {
-		CarrierGroup userGroup = getUserGroup();
-		return userGroup.getPathEdiBackup();
-	}
-
 }

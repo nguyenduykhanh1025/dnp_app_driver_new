@@ -2,16 +2,16 @@ package vn.com.irtech.eport.carrier.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import vn.com.irtech.eport.common.annotation.Excel;
+
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
- * eDO Audit Trail Log Object equipment_edo_audit_log
+ * DO Audit Trail Log Object equipment_do_audit_log
  * 
- * @author ruoyi
+ * @author admin
  * @date 2020-07-31
  */
-public class EquipmentEdoAuditLog extends BaseEntity
+public class EquipmentDoAuditLog extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
@@ -19,31 +19,24 @@ public class EquipmentEdoAuditLog extends BaseEntity
     private Long id;
 
     /** ID Nhan Vien Hang Tau */
-    @Excel(name = "ID Nhan Vien Hang Tau")
     private Long carrierId;
 
     /** Ma Hang Tau */
-    @Excel(name = "Ma Hang Tau")
     private String carrierCode;
 
-    /** EDO ID */
-    @Excel(name = "EDO ID")
-    private Long edoId;
+    /** DO ID */
+    private Long doId;
 
     /** Sequence Number 1->n */
-    @Excel(name = "Sequence Number 1->n")
     private Long seqNo;
 
     /** Data Field Name */
-    @Excel(name = "Data Field Name")
     private String fieldName;
 
     /** Old Value */
-    @Excel(name = "Old Value")
     private String oldValue;
 
     /** New Value */
-    @Excel(name = "New Value")
     private String newValue;
 
     public void setId(Long id) 
@@ -73,14 +66,14 @@ public class EquipmentEdoAuditLog extends BaseEntity
     {
         return carrierCode;
     }
-    public void setEdoId(Long edoId) 
+    public void setDoId(Long doId) 
     {
-        this.edoId = edoId;
+        this.doId = doId;
     }
 
-    public Long getEdoId() 
+    public Long getDoId() 
     {
-        return edoId;
+        return doId;
     }
     public void setSeqNo(Long seqNo) 
     {
@@ -125,7 +118,7 @@ public class EquipmentEdoAuditLog extends BaseEntity
             .append("id", getId())
             .append("carrierId", getCarrierId())
             .append("carrierCode", getCarrierCode())
-            .append("edoId", getEdoId())
+            .append("doId", getDoId())
             .append("seqNo", getSeqNo())
             .append("fieldName", getFieldName())
             .append("oldValue", getOldValue())

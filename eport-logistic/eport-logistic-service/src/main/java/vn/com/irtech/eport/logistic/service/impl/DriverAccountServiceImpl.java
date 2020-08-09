@@ -14,7 +14,7 @@ import vn.com.irtech.eport.common.core.text.Convert;
 /**
  * Driver login infoService Business Processing
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-05-19
  */
 @Service

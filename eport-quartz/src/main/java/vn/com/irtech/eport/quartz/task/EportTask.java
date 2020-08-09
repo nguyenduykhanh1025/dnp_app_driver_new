@@ -76,7 +76,7 @@ public class EportTask {
     @Autowired
     private ConfigService configService;
 
-    public void readFileFromFolder(String groupCode) throws IOException {
+    public void readFileFromFolder(String groupCode, String edoPath, String backupPath) throws IOException {
         System.out.print("Đọc file EDI from folder .... " + groupCode);
         CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupByGroupCode(groupCode);
         if(carrierGroup == null)
@@ -84,11 +84,12 @@ public class EportTask {
             return;
             //TODO Return error 
         }
-        final File receiveFolder = new File(carrierGroup.getPathEdiReceive());
+//        final File receiveFolder = new File(carrierGroup.getPathEdiReceive());
+        final File receiveFolder = new File(edoPath);
         if (!receiveFolder.exists()) {
             receiveFolder.mkdirs();
         }
-        final File destinationFolder = edoService.getFolderUploadByTime(carrierGroup.getPathEdiBackup());
+        final File destinationFolder = edoService.getFolderUploadByTime(backupPath);
         List<Edo> listEdo = new ArrayList<>();
         for (final File fileEntry : receiveFolder.listFiles()) {
             String path = fileEntry.getAbsolutePath();

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-	<th:block th:include="include :: header('操作日志列表')" />
+	<th:block th:include="include :: header('Lịch Sử Thao Tác')" />
 	<th:block th:include="include :: bootstrap-select-css" />
 </head>
 <body class="gray-bg">
@@ -11,28 +11,31 @@
 				<form id="operlog-form">
 					<div class="select-list">
 						<ul>
+						    <li>
+                                <label>Hệ Thống:</label>
+                                <select name="operatorType" th:with="type=${@dict.getType('sys_system_type')}">
+                                    <option value="" th:text="#{login.all}"></option>
+                                    <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                                </select>
+                            </li>
 							<li>
-								Mô đun hệ thống:<input type="text" name="title"/>
-							</li>
-							<li>
-								Người thực hiện:<input type="text" name="operName"/>
+								Từ Khóa:<input type="text" name="title" placeholder="Tìm kiếm..."/>
 							</li>
 							<li class="select-selectpicker">
-								<label>Hành động:</label><select id="businessTypes" th:with="type=${@dict.getType('sys_oper_type')}" class="selectpicker" data-none-selected-text="Please choose" multiple>
+								<label>Loại:</label><select id="businessTypes" th:with="type=${@dict.getType('sys_oper_type')}" class="selectpicker" data-none-selected-text="Tất cả" multiple>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li>
-								<label>Trạng thái hành động:</label><select name="status" th:with="type=${@dict.getType('sys_common_status')}">
+								<label style="width:70px">Trạng Thái:</label><select name="status" th:with="type=${@dict.getType('sys_common_status')}">
 									<option value="" th:text="#{log.operator.all}"></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li class="select-time">
-								<label>Ngày thực hiện:</label>
-								<input type="text" class="time-input" id="startTime" placeholder="Từ" name="params[beginTime]"/>
+								<input type="text" class="time-input" id="startTime" placeholder="Từ Ngày" name="params[beginTime]"/>
 								<span>-</span>
-								<input type="text" class="time-input" id="endTime" placeholder="Đến" name="params[endTime]"/>
+								<input type="text" class="time-input" id="endTime" placeholder="Đến Ngày" name="params[endTime]"/>
 							</li>
 							<li>
 								<a class="btn btn-primary btn-rounded btn-sm" onclick="searchPre()"><i class="fa fa-search">Tìm kiếm</i>&nbsp;</a>
@@ -50,9 +53,9 @@
 		        <a class="btn btn-danger" onclick="$.operate.clean()" shiro:hasPermission="monitor:operlog:remove">
 	                <i class="fa fa-trash">Xóa tất cả</i >
 	            </a>
-	            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="monitor:operlog:export">
+	        <!--/*/    <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="monitor:operlog:export">
 		            <i class="fa fa-download">Xuất</i> 
-		        </a>
+		        </a> /*/-->
 	        </div>
 	        
 			<div class="col-sm-12 select-table table-striped">
@@ -66,6 +69,7 @@
 	<script th:inline="javascript">
 		var detailFlag = [[${@permission.hasPermi('monitor:operlog:detail')}]];
 		var datas = [[${@dict.getType('sys_oper_type')}]];
+		var dataSys = [[${@dict.getType('sys_system_type')}]];
 		var prefix = ctx + "monitor/operlog";
 
 		$(function() {
@@ -77,7 +81,7 @@
 		        exportUrl: prefix + "/export",
 		        sortName: "operTime",
 		        sortOrder: "desc",
-		        modalName: "Operation log",
+		        modalName: "Log",
 		        escape: true,
 		        showPageGo: true,
 		        rememberSelected: true,
@@ -89,13 +93,21 @@
 		            field: 'operId',
 		            title: /*[[#{log.operator.table.id}]]*/
 		        },
+                {
+                    field: 'operatorType',
+                    title: 'Hệ thống',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        return $.table.selectDictLabel(dataSys, value);
+                    }
+                },
 		        {
 		            field: 'title',
-		            title: "Mô đun hệ thống"
+		            title: "Thao tác"
 		        },
 		        {
 		            field: 'businessType',
-		            title: "Hành động",
+		            title: "Phân loại",
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	return $.table.selectDictLabel(datas, value);
@@ -120,7 +132,7 @@
 		        },
 		        {
 		            field: 'status',
-		            title: "Trạng thái thực hiện",
+		            title: "Trạng thái",
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		                if (value == 0) {
@@ -140,7 +152,7 @@
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		                var actions = [];
-		                actions.push('<a class="btn btn-warning btn-xs ' + detailFlag + '" href="javascript:void(0)" onclick="$.operate.detail(\'' + row.operId + '\')"><i class="fa fa-search"></i>detailed</a>');
+		                actions.push('<a class="btn btn-warning btn-xs ' + detailFlag + '" href="javascript:void(0)" onclick="$.operate.detail(\'' + row.operId + '\')"><i class="fa fa-search"></i> Chi Tiết</a>');
 		                return actions.join('');
 		            }
 		        }]

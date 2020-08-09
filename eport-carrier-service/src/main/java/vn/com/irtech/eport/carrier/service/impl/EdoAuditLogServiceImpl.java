@@ -19,7 +19,7 @@ import vn.com.irtech.eport.common.core.text.Convert;
 /**
  * eDO Audit Trail LogService Business Processing
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-07-07
  */
 @Service

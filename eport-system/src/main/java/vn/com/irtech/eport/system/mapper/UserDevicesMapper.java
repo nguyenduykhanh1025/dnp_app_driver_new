@@ -6,7 +6,7 @@ import vn.com.irtech.eport.system.domain.UserDevices;
 /**
  * 【请填写功能名称】Mapper Interface
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-07-06
  */
 public interface UserDevicesMapper 

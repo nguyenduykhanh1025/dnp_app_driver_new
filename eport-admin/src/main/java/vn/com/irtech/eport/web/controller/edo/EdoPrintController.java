@@ -75,13 +75,14 @@ public class EdoPrintController extends BaseController{
 		try {
 			List<Edo> edos = (List<Edo>) CacheUtils.get(key);
 			if(edos.size() > 0) {
-				CacheUtils.remove(key);
 				response.setContentType("application/pdf");
 				createPdfReport(edos, response.getOutputStream());
 			}
 		} catch (final Exception e) {
 			logger.debug(e.getMessage());
 			e.printStackTrace();
+		} finally {
+			CacheUtils.remove(key);
 		}
 	}
 	private void createPdfReport(final List<Edo> edoList, OutputStream out) throws JRException {
