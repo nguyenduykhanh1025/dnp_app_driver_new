@@ -141,7 +141,6 @@ public class EdoServiceImpl implements IEdoService
         Edo edi = new Edo();
 		ZoneId defaultZoneId = ZoneId.systemDefault();
 		List<Edo> listEdi = new ArrayList<>();
-		System.out.print(text.toString());
 		String business = "";
 		Date fileCreateTime = new Date();
 		for(String s : text)
@@ -257,8 +256,12 @@ public class EdoServiceImpl implements IEdoService
 			{
 				String[] unloadingPorts = s.split("\\+");
 				if(unloadingPorts.length >= 4){
-					String[] unloadingPort = unloadingPorts[3].split(":");
-					edi.setUnloadingPort(unloadingPort[0]);
+					// Split POL: LOC+170+VNDAD:139:6+DA NANG:TER:ZZZ
+					String pol = unloadingPorts[2].split(":")[0]; // VNDAD
+//					String polName = unloadingPorts[3].split(":")[0];
+					edi.setPol(pol);
+					//String[] unloadingPort = unloadingPorts[3].split(":");
+					//edi.setPol(unloadingPort[0]);
 				}
 				continue;		
 			}
@@ -267,8 +270,11 @@ public class EdoServiceImpl implements IEdoService
 			{
 				String[] pickUpLocations = s.split("\\+");
 				if(pickUpLocations.length >= 4){
-					String[] pickUpLocation = pickUpLocations[3].split(":");
-					edi.setPickUpLocation(pickUpLocation[0]);
+					// LOC+176+VNDAD:139:6+DA NANG:TER:ZZZ
+					String pod = pickUpLocations[2].split(":")[0];  // VNDAD
+					edi.setPod(pod);
+					//String[] pickUpLocation = pickUpLocations[3].split(":");
+					//edi.setPod(pickUpLocation[0]);
 				}
 				continue;		
 			}
@@ -276,16 +282,15 @@ public class EdoServiceImpl implements IEdoService
 			if(s.contains("FTX+AAI"))
 			{
 				String[] haulage = s.split("\\+");
+				// TODO check null
 				haulage[4] = haulage[4].substring(0, haulage[4].length());
-                if(!haulage[4].isEmpty()){
+				if (!haulage[4].isEmpty()) {
 					try{
 						int i = Integer.parseInt(haulage[4]);
 						edi.setDetFreeTime(i);
-					}catch (Exception e)
-					{
+					}catch (Exception e) {
 						e.printStackTrace();
 					}
-					
 				}
 				continue; 
 			}
@@ -303,7 +308,6 @@ public class EdoServiceImpl implements IEdoService
 					edi.setVesselNo(vessel[0]);
 					edi.setVessel(vessel[3]); 
 				}
-				
 				continue; 
 			}
 
@@ -312,7 +316,6 @@ public class EdoServiceImpl implements IEdoService
 				listEdi.add(edi);
 			}
 
-			
 		}
 		return listEdi;
 	}
