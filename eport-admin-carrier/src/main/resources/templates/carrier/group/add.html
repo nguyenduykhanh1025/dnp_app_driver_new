@@ -32,18 +32,28 @@
             </div>
             <div class="form-group">
 	            <label class="col-sm-2 col-xs-3 col-md-1 control-label">Loại DO:</label>
-	            <div class="col-sm-9 col-xs-8 col-md-10">
-	                <input style="margin-top: 6px;" type="radio" name="doType" value="0" checked/>
-	                <label style="margin-right: 5px;">Lệnh giao hàng (DO)</label>
-	                <input style="margin-top: 6px;" type="radio" name="doType" value="1"/>
-	                <label>Lệnh giao hàng điện tử (eDO)</label>
+	            <div class="col-sm-10 col-xs-9 col-md-11">
+	                <label class="radio-box"> <input type="radio" name="doType" value="0" checked/> Lệnh giao hàng (DO) </label>
+	                <label class="radio-box"> <input type="radio" name="doType" value="1"/> Lệnh giao hàng điện tử (eDO)</label>
 	            </div>
             </div>
             <div class="form-group">
                 <input type="hidden" name="doFlag" id="doFlag">
-                <label class="col-sm-2 col-xs-3 col-md-1 control-label">Quyền phát hành DO</label>
+                <label class="col-sm-2 col-xs-3 col-md-1 control-label">Phát hành DO</label>
                 <div id="doToggle" class="col-sm-9 col-xs-8 col-md-10">
                     <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleDoFlag()"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 col-xs-3 col-md-1 control-label">Sử dụng eDO</label>
+                <div id="edoToggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleEdoFlag()"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 col-xs-3 col-md-1 control-label">Sử dụng API</label>
+                <div id="apiToggle" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleApiFlag()"></i>
                 </div>
             </div>
         </form>
@@ -69,6 +79,25 @@
             } else {
                 document.getElementById("doToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleDoFlag()"></span>';
                 $("#doFlag").val(1);
+            }
+        }
+
+        function clickToggleEdoFlag() {
+            if ($("#edoFlag").val() == 1) {
+                document.getElementById("edoToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleEdoFlag()"></span>';
+                $("#edoFlag").val(0);
+            } else {
+                document.getElementById("edoToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleEdoFlag()"></span>';
+                $("#edoFlag").val(1);
+            }
+        }
+        function clickToggleApiFlag() {
+            if ($("#apiFlag").val() == 1) {
+                document.getElementById("apiToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleApiFlag()"></span>';
+                $("#apiFlag").val(0);
+            } else {
+                document.getElementById("apiToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleApiFlag()"></span>';
+                $("#apiFlag").val(1);
             }
         }
     </script>

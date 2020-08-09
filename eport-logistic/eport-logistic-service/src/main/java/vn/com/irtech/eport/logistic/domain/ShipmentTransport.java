@@ -8,7 +8,7 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
 /**
  * Thong tin dieu xe Object shipment_transport
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-05-26
  */
 public class ShipmentTransport extends BaseEntity

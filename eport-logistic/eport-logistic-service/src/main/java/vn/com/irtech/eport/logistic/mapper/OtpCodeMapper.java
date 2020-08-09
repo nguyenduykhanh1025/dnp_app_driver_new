@@ -7,7 +7,7 @@ import vn.com.irtech.eport.logistic.domain.OtpCode;
 /**
  * otp CodeMapper Interface
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-06-05
  */
 public interface OtpCodeMapper 

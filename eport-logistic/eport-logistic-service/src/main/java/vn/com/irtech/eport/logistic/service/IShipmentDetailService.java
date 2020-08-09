@@ -152,4 +152,8 @@ public interface IShipmentDetailService
      * get command List of batch
      */
     public List<Long> getCommandListInBatch(ShipmentDetail shipmentDetail);
+    /***
+     * get shipmentDetail for Print
+     */
+    public List<ShipmentDetail> getShipmentDetailForPrint(ShipmentDetail shipmentDetail);
 }

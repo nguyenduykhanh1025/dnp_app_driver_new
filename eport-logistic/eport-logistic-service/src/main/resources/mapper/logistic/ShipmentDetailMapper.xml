@@ -637,4 +637,74 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</where>
 		GROUP BY PROCESS_ORDER_ID
     </select>
+    <select id="getShipmentDetailForPrint" parameterType="ShipmentDetail" resultType="ShipmentDetail">
+		select id, shipment_id as shipmentId, logistic_group_id as logisticGroupId,
+		        register_no as registerNo, container_no as containerNo, container_status as containerStatus, sztp, sztp_define as sztpDefine,
+		        temperature, fe, booking_no as bookingNo, bl_no as blNo, seal_no as sealNo, consignee, expired_dem as expiredDem,
+		        wgt,
+		        (vsl_name || ' - ' || voy_carrier) as vslName,
+		        vsl_nm as vslNm, voy_no as voyNo, voy_carrier as voyCarrier, ope_code as opeCode, carrier_name as carrierName,
+		        loading_port as loadingPort, discharge_port as dischargePort, transport_type as transportType, empty_depot as emptyDepot,
+		        CASE
+		            WHEN cargo_type = 'AK' THEN 'Over Dimension'
+		            WHEN cargo_type = 'BB' THEN 'Break Bulk'
+		            WHEN cargo_type = 'BN' THEN 'Bundle'
+		            WHEN cargo_type = 'DG' THEN 'Dangerous'
+		            WHEN cargo_type = 'DR' THEN 'Reefer and DG'
+		            WHEN cargo_type = 'DE' THEN 'Dangerous Empty'
+		            WHEN cargo_type = 'FR' THEN 'Fragile'
+		            WHEN cargo_type = 'GP' THEN 'General'
+		            WHEN cargo_type = 'MT' THEN 'Empty'
+		            WHEN cargo_type = 'RF' THEN 'Reefer'
+		            ELSE cargo_type
+		        END AS cargoType,           
+		        vgm_chk as vgmChk, vgm, vgm_person_info as vgmPersonInfo, preorder_pickup as preorderPickup, pre_pickup_payment_status as prePickupPaymentStatus,
+		        custom_status as customStatus, payment_status as paymenStatus, process_status as processStatus, do_status as doStatus, do_received_time as doReceivedTime,
+		        user_verify_status as userVerifyStatus, finish_status as finishStatus, status, remark, create_by as createBy, create_time as createTime,
+		        update_by as updateBy, update_time as updateTime, process_order_id as processOrderId,
+		        (select p.reference_no from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.reference_no) as invoiceNo,
+		        (select p.vat_after_fee from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.vat_after_fee) as vatAfterFee
+		from shipment_detail s
+		<where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="processOrderId != null"> and process_order_id = #{processOrderId}</if>
+            <if test="registerNo != null  and registerNo != ''"> and register_no = #{registerNo}</if>
+            <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
+            <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="temperature != null "> and temperature = #{temperature}</if>
+            <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
+            <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="voyCarrier != null  and voyCarrier != ''"> and voy_carrier = #{voyCarrier}</if>
+            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="carrierName != null  and carrierName != ''"> and carrier_name = #{carrierName}</if>
+            <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
+            <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
+            <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
+            <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
+            <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
+            <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
+            <if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
+            <if test="prePickupPaymentStatus != null"> and pre_pickup_payment_status = #{prePickupPaymentStatus}</if>
+            <if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
+            <if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
+            <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
+            <if test="doStatus != null  and doStatus != ''"> and do_status = #{doStatus}</if>
+            <if test="doReceivedTime != null  and doReceivedTime != ''"> and do_received_time = #{doReceivedTime}</if>
+            <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
 </mapper>

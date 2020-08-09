@@ -2,6 +2,7 @@ package vn.com.irtech.eport.carrier.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
@@ -43,30 +44,32 @@ public class CarrierGroup extends BaseEntity {
 	/** Edo Permission */
 
 	private String edoFlag;
+	
+	private String apiFlag;
 
-	private String pathEdiBackup;
-
-	private String pathEdiReceive;
-
-	private String apiPrivateKey;
+//	private String pathEdiBackup;
+//	private String pathEdiReceive;
 
 	private String apiPublicKey;
+	
+	private String apiPrivateKey;
 
-	public void setPathEdiReceive(String pathEdiReceive) {
-		this.pathEdiReceive = pathEdiReceive;
-	}
 
-	public String getPathEdiReceive() {
-		return pathEdiReceive;
-	}
-
-	public void setPathEdiBackup(String pathEdiBackup) {
-		this.pathEdiBackup = pathEdiBackup;
-	}
-
-	public String getPathEdiBackup() {
-		return pathEdiBackup;
-	}
+//	public void setPathEdiReceive(String pathEdiReceive) {
+//		this.pathEdiReceive = pathEdiReceive;
+//	}
+//
+//	public String getPathEdiReceive() {
+//		return pathEdiReceive;
+//	}
+//
+//	public void setPathEdiBackup(String pathEdiBackup) {
+//		this.pathEdiBackup = pathEdiBackup;
+//	}
+//
+//	public String getPathEdiBackup() {
+//		return pathEdiBackup;
+//	}
 
 	public void setId(Long id) {
 		this.id = id;
@@ -132,6 +135,14 @@ public class CarrierGroup extends BaseEntity {
 		return edoFlag;
 	}
 
+	public void setApiFlag(String apiFlag) {
+		this.apiFlag = apiFlag;
+	}
+
+	public String getApiFlag() {
+		return apiFlag;
+	}
+
 	public String getApiPrivateKey() {
 		return apiPrivateKey;
 	}
@@ -150,11 +161,20 @@ public class CarrierGroup extends BaseEntity {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
-				.append("groupCode", getGroupCode()).append("groupName", getGroupName())
-				.append("operateCode", getOperateCode()).append("mainEmail", getMainEmail())
-				.append("doType", getDoType()).append("createBy", getCreateBy()).append("createTime", getCreateTime())
-				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("doFlag", getDoFlag())
-				.append("edoFlag", getEdoFlag()).append("pathEdiFile", getPathEdiBackup()).toString();
+		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+				.append("id", getId())
+				.append("groupCode", getGroupCode())
+				.append("groupName", getGroupName())
+				.append("operateCode", getOperateCode())
+				.append("mainEmail", getMainEmail())
+				.append("doType", getDoType())
+				.append("createBy", getCreateBy())
+				.append("createTime", getCreateTime())
+				.append("updateBy", getUpdateBy())
+				.append("updateTime", getUpdateTime())
+				.append("doFlag", getDoFlag())
+				.append("edoFlag", getEdoFlag())
+				.append("apiFlag", getApiFlag())
+				.toString();
 	}
 }

@@ -2,63 +2,75 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order_report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3590fe74-00bf-4dec-a564-d54856adfe47">
 	<property name="ireport.zoom" value="1.3310000000000008"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="55"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="table" uuid="1314ac9c-e256-4fec-b346-84b2047da844">
+		<parameter name="stt" class="java.lang.Integer"/>
+		<field name="containerNo" class="java.lang.String"/>
+		<field name="sealNo" class="java.lang.String"/>
+		<field name="sztp" class="java.lang.String"/>
+		<field name="wgt" class="java.lang.Long"/>
+		<field name="cargoType" class="java.lang.String"/>
+		<field name="remark" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="qrCode" class="java.lang.String"/>
 	<parameter name="user" class="java.lang.String"/>
+	<parameter name="serviceType" class="java.lang.String"/>
+	<parameter name="list" class="java.util.Collection"/>
+	<parameter name="consignee" class="java.lang.String"/>
+	<parameter name="vslName" class="java.lang.String"/>
+	<parameter name="opeCode" class="java.lang.String"/>
+	<parameter name="voyCarrier" class="java.lang.String"/>
+	<parameter name="invoiceNo" class="java.lang.String"/>
+	<parameter name="remark" class="java.lang.String"/>
+	<parameter name="billingBooking" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="id" class="java.lang.Long"/>
-	<field name="logisticGroupId" class="java.math.BigDecimal"/>
-	<field name="shipmentId" class="java.math.BigDecimal"/>
-	<field name="processOrderId" class="java.lang.Long"/>
-	<field name="registerNo" class="java.lang.String"/>
-	<field name="containerNo" class="java.lang.String"/>
-	<field name="containerStatus" class="java.lang.String"/>
-	<field name="sztp" class="java.lang.String"/>
-	<field name="fe" class="java.lang.String"/>
-	<field name="blNo" class="java.lang.String"/>
-	<field name="bookingNo" class="java.lang.String"/>
-	<field name="sealNo" class="java.lang.String"/>
-	<field name="consignee" class="java.lang.String"/>
-	<field name="expiredDem" class="oracle.sql.TIMESTAMP"/>
-	<field name="wgt" class="java.lang.Long"/>
-	<field name="vslNm" class="java.lang.String"/>
-	<field name="voyNo" class="java.lang.String"/>
-	<field name="opeCode" class="java.lang.String"/>
-	<field name="loadingPort" class="java.lang.String"/>
-	<field name="dischargePort" class="java.lang.String"/>
-	<field name="transportType" class="java.lang.String"/>
-	<field name="emptyDepot" class="java.lang.String"/>
-	<field name="cargoType" class="java.lang.String"/>
-	<field name="vgmChk" class="java.math.BigDecimal"/>
-	<field name="vgm" class="java.lang.String"/>
-	<field name="vgmPersonInfo" class="java.lang.String"/>
-	<field name="preorderPickup" class="java.lang.String"/>
-	<field name="prePickupPaymentStatus" class="java.lang.String"/>
-	<field name="customStatus" class="java.lang.String"/>
-	<field name="paymentStatus" class="java.lang.String"/>
-	<field name="processStatus" class="java.lang.String"/>
-	<field name="doStatus" class="java.lang.String"/>
-	<field name="doReceivedTime" class="oracle.sql.TIMESTAMP"/>
-	<field name="userVerifyStatus" class="java.lang.String"/>
-	<field name="status" class="java.math.BigDecimal"/>
-	<field name="remark" class="java.lang.String"/>
-	<field name="createBy" class="java.lang.String"/>
-	<field name="createTime" class="oracle.sql.TIMESTAMP"/>
-	<field name="updateBy" class="java.lang.String"/>
-	<field name="updateTime" class="oracle.sql.TIMESTAMP"/>
-	<field name="vslName" class="java.lang.String"/>
-	<field name="carrierName" class="java.lang.String"/>
-	<field name="detFreeTime" class="java.math.BigDecimal"/>
-	<field name="temperature" class="java.math.BigDecimal"/>
-	<field name="sztpDefine" class="java.lang.String"/>
-	<field name="voyCarrier" class="java.lang.String"/>
-	<field name="finishStatus" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="263" splitType="Stretch">
+		<band height="270" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="22" width="557" height="19" uuid="dcbbf11b-4b40-4b91-81c3-a917ef6ba9af"/>
 				<textElement textAlignment="Center">
@@ -181,47 +193,63 @@
 				</textElement>
 				<text><![CDATA[Invoice:]]></text>
 			</staticText>
-			<textField isBlankWhenNull="true">
-				<reportElement x="143" y="93" width="147" height="20" uuid="0433c2a9-305e-4c0f-8992-d3f153382e32"/>
+			<image onErrorType="Blank">
+				<reportElement x="432" y="53" width="121" height="80" uuid="d2c10a8d-dcf4-4b76-8e3d-f1f9258f5460"/>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
+    new com.google.zxing.qrcode.QRCodeWriter().encode(
+        $P{qrCode},
+        com.google.zxing.BarcodeFormat.QR_CODE, 300, 300
+    )
+)]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="279" y="213" width="148" height="20" uuid="6b682291-edcd-465c-b0c5-03cc206ede2b"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Phương thức giao/nhận:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="279" y="233" width="148" height="20" uuid="97ab10cd-244c-466e-b3c9-efa51b715312"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{blNo}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="143" y="93" width="156" height="20" uuid="1f90a864-598b-49fd-931a-60dbff9fdcbb"/>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{bookingNo}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="68" y="173" width="100" height="20" uuid="49edc06c-4279-428e-8bef-750ec1d5c2ab"/>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{opeCode}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="132" y="53" width="300" height="20" uuid="ef70bef6-ffb7-4551-b5ee-4f3d8dcc9b87"/>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{consignee}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="66" y="133" width="100" height="20" uuid="e8802511-d6c9-4f0d-b658-f05a214e1835"/>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{vslName}]]></textFieldExpression>
-			</textField>
+				<text><![CDATA[Delivering/Receiving Task:]]></text>
+			</staticText>
 			<textField>
-				<reportElement x="332" y="133" width="100" height="20" uuid="f00d3f17-b9d8-49d9-a087-58c4c3a757b9"/>
+				<reportElement x="427" y="213" width="126" height="20" uuid="79885c24-e3cd-4b24-bff8-a434464d0844"/>
+				<textFieldExpression><![CDATA[$P{serviceType}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="132" y="53" width="280" height="20" uuid="053495c3-042d-4ada-bbb7-9a97d92cf328"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{voyCarrier}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{consignee}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="143" y="93" width="200" height="20" uuid="e39ce8f8-58cb-4361-aea2-042391f1b0f4"/>
+				<textFieldExpression><![CDATA[$P{billingBooking}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="68" y="133" width="164" height="20" uuid="014bfa32-e412-4f89-bb43-4154fca9d25a"/>
+				<textFieldExpression><![CDATA[$P{vslName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="110" y="213" width="159" height="40" uuid="ad77e24b-bb05-477b-ad63-2fe832dc621a"/>
+				<textFieldExpression><![CDATA[$P{remark}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="342" y="173" width="181" height="20" uuid="666fffd3-3765-4f24-a1d8-2018354789ae"/>
+				<textFieldExpression><![CDATA[$P{invoiceNo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="332" y="133" width="129" height="20" uuid="2dbc5a4e-f285-4d9e-a33e-880d72256a9b"/>
+				<textFieldExpression><![CDATA[$P{voyCarrier}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="68" y="173" width="100" height="20" uuid="09c591c9-aa1a-4022-a5fb-f4cc47792bea"/>
+				<textFieldExpression><![CDATA[$P{opeCode}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
@@ -229,212 +257,167 @@
 		<band splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="20" splitType="Stretch">
-			<staticText>
-				<reportElement x="32" y="0" width="100" height="20" uuid="cde74cfc-0bbe-41f1-83c0-337083be3341"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="DejaVu Sans" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
-				</textElement>
-				<text><![CDATA[Số container]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="132" y="0" width="88" height="20" uuid="e65ec0b5-2127-4595-b64f-e1fadc81c8a0"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="DejaVu Sans" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Số chì]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="220" y="0" width="59" height="20" uuid="8d78a117-4948-4b3d-9f02-c9f0c3454130"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="DejaVu Sans" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Kích cỡ]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="279" y="0" width="76" height="20" uuid="fda1eb49-50be-41e8-aeff-095488fb9c98"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="DejaVu Sans" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Trọng lượng]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="355" y="0" width="73" height="20" uuid="15c3b37d-5424-4931-877f-b4e22d49b74b"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="DejaVu Sans" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Loại hàng]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="427" y="0" width="127" height="20" uuid="f80a9b7c-44da-4392-944e-1f28ba36a09e"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="DejaVu Sans" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Ghi chú]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="0" y="0" width="32" height="20" uuid="caaa6064-5062-4be6-8a22-4fde351d880d"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="DejaVu Sans" isBold="true"/>
-				</textElement>
-				<text><![CDATA[ID]]></text>
-			</staticText>
-		</band>
+		<band/>
 	</columnHeader>
 	<detail>
-		<band height="21" splitType="Stretch">
-			<textField isBlankWhenNull="true">
-				<reportElement x="132" y="0" width="88" height="20" uuid="c5f4f147-b127-4e9a-acc8-e971515263fb"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-					<paragraph leftIndent="2"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{sealNo}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="220" y="0" width="59" height="20" uuid="44381b02-222a-4537-8a76-3e3e0d3bce68"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-					<paragraph leftIndent="2"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{sztp}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="279" y="0" width="76" height="20" uuid="e8ccf8bd-aa3b-4461-9d61-10e68dd3fbcf"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-					<paragraph leftIndent="2"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{wgt}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="355" y="0" width="73" height="20" uuid="b9f385f0-8fd3-456b-8e95-b97f70dc713e"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-					<paragraph leftIndent="2"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{cargoType}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="428" y="0" width="126" height="20" uuid="15a57407-2458-4f29-8cac-db7cf6bb84b7"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-					<paragraph leftIndent="2"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{remark}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="0" y="1" width="32" height="20" uuid="eeac0804-c25d-4e4b-805d-6b82c106a767"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="32" y="0" width="100" height="20" uuid="11c4f878-3e02-4fc0-a1ac-1a34febf7755"/>
-				<box topPadding="2" leftPadding="2">
-					<pen lineWidth="1.5"/>
-					<topPen lineWidth="1.5"/>
-					<leftPen lineWidth="1.5"/>
-					<bottomPen lineWidth="1.5"/>
-					<rightPen lineWidth="1.5"/>
-				</box>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{containerNo}]]></textFieldExpression>
-			</textField>
+		<band height="51" splitType="Stretch">
+			<componentElement>
+				<reportElement key="table 1" style="table 1" x="0" y="0" width="555" height="51" uuid="d333c4f1-638c-4da3-bcfb-d0857d19b5ca"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
+					<datasetRun subDataset="table" uuid="c7ee454e-afb4-45ed-84ee-9f1472bd90fc">
+						<datasetParameter name="stt">
+							<datasetParameterExpression><![CDATA[$V{COLUMN_COUNT}]]></datasetParameterExpression>
+						</datasetParameter>
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{list})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="37" uuid="844cfe89-b8e6-495d-a66c-4bc6a68db277">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="37" height="30" uuid="76210d72-a8fe-4813-a9f2-504c893e0a20"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" isBold="true"/>
+								</textElement>
+								<text><![CDATA[STT]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="37" height="20" uuid="d903efe3-0634-4109-8ecb-d57340646daf"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{COLUMN_COUNT}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="95" uuid="b0400be2-8134-4096-b5fd-169227bd8a0d">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="95" height="30" uuid="eb4100c1-3813-464b-8025-51760de4bb84"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Số container]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="95" height="20" isPrintWhenDetailOverflows="true" uuid="c4464074-e746-4f6f-b33a-8db89270e852"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans"/>
+									<paragraph leftIndent="3"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{containerNo}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="69" uuid="5a66152f-b81d-4638-b942-ce6d7b5f921c">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="69" height="30" uuid="d8fd8653-34c8-4510-90b5-9ff689f384b2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Số chì]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="69" height="20" isPrintWhenDetailOverflows="true" uuid="c7ee99e0-e7b5-49c4-af58-62cc778f4f8c"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans"/>
+									<paragraph leftIndent="3"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{sealNo}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="68" uuid="7aa48156-efc8-4539-8349-391a2357c107">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="68" height="30" uuid="f3fdfdc1-0dbf-40ba-b2e2-6d254edc08b7"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Kích thước]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="68" height="20" isPrintWhenDetailOverflows="true" uuid="23d259da-1980-4dc2-80d8-e1092270d513"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans"/>
+									<paragraph leftIndent="3"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{sztp}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="67" uuid="19953324-acb9-4e8c-8179-d2aa632af4e7">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="67" height="30" uuid="321d5d0d-53f7-43d8-9bed-93062c602994"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Khối lượng]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="67" height="20" isPrintWhenDetailOverflows="true" uuid="a6fe501e-2f7e-4c90-845f-529f41086228"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans"/>
+									<paragraph leftIndent="3"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{wgt}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="107" uuid="56b60999-5c87-4701-8649-fde3dd8c0dba">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="107" height="30" uuid="c29f85a3-97b8-42e9-88c7-5c45c284feb7"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Loại hàng]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="107" height="20" isPrintWhenDetailOverflows="true" uuid="91407195-b6be-4b83-b431-666f124ac62f"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans"/>
+									<paragraph leftIndent="3"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{cargoType}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="116" uuid="b5d4b554-2bb1-4b47-ab1a-d0028153c0aa">
+						<jr:columnHeader style="table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="116" height="30" uuid="e9b91561-0089-4b77-9f7d-01ed9cbec2b7"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="DejaVu Sans" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Ghi chú]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 1_TD" height="20" rowSpan="1">
+							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="116" height="20" isPrintWhenDetailOverflows="true" uuid="b0a846a9-1c66-400a-bd7b-20c09c45a56f"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="DejaVu Sans"/>
+									<paragraph leftIndent="3"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{remark}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
 		</band>
 	</detail>
 	<columnFooter>
@@ -444,7 +427,7 @@
 		<band splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="92" splitType="Stretch">
+		<band height="122" splitType="Stretch">
 			<staticText>
 				<reportElement x="99" y="15" width="67" height="20" uuid="00a77d3b-1090-452c-a238-45bbe4b701f9"/>
 				<textElement>
@@ -474,7 +457,7 @@
 				<text><![CDATA[Customer]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="342" y="72" width="100" height="20" uuid="1d04d208-974b-43e5-87f7-721e083adf49"/>
+				<reportElement x="342" y="90" width="100" height="20" uuid="f8cc19ea-bb95-4e03-b365-6f6d3ac85f89"/>
 				<textFieldExpression><![CDATA[$P{user}]]></textFieldExpression>
 			</textField>
 		</band>

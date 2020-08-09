@@ -1,7 +1,7 @@
 $(function () {
     loadTable(blNo = null);
 });
-var prefix = "/dailyPlan";
+var prefix = ctx + "/dailyPlan";
 $(".c-search-box").select2({
   placeholder: "Nhập BL No",
   allowClear: true,
