@@ -205,6 +205,8 @@ public class ShipmentDetail extends BaseEntity
     private String vslAndVoy;
     
     private String invoiceNo;
+    
+    private Long vatAfterFee; 
 
     public void setId(Long id) {
         this.id = id;
@@ -629,6 +631,14 @@ public class ShipmentDetail extends BaseEntity
 		this.invoiceNo = invoiceNo;
 	}
 
+	public Long getVatAfterFee() {
+		return vatAfterFee;
+	}
+
+	public void setVatAfterFee(Long vatAfterFee) {
+		this.vatAfterFee = vatAfterFee;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -690,6 +700,7 @@ public class ShipmentDetail extends BaseEntity
             .append("year", getYear())
             .append("vslAndVoy", getVslAndVoy())
             .append("invoiceNo", getInvoiceNo())
+            .append("vatAfterFee", getVatAfterFee())
             .toString();
     }
 }

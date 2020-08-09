@@ -659,6 +659,7 @@ function reloadShipmentDetail() {
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
     setLayoutRegisterStatus();
     loadShipmentDetail(shipmentSelected.id);
 }
@@ -942,6 +943,7 @@ function setLayoutRegisterStatus() {
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
 }
 
 function setLayoutVerifyUserStatus() {
@@ -952,6 +954,7 @@ function setLayoutVerifyUserStatus() {
     $("#verifyBtn").prop("disabled", false);
     $("#payBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
 }
 
 function setLayoutPaymentStatus() {
@@ -963,6 +966,7 @@ function setLayoutPaymentStatus() {
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", false);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
 }
 
 function setLayoutFinishStatus() {
@@ -974,6 +978,7 @@ function setLayoutFinishStatus() {
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", false);
+    $("#exportReceiptBtn").prop("disabled", false);
 }
 
 function finishForm(result) {
@@ -1087,4 +1092,11 @@ function setProgressPercent(percent) {
 function hideProgress() {
     $('.progress-wrapper').hide();
     $('.dim-bg').hide();
+}
+function exportReceipt(){
+	if(!shipmentSelected){
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}
+    $.modal.openTab("In Biên Nhận", ctx +"logistic/print/receipt/shipment/"+shipmentSelected.id);
 }

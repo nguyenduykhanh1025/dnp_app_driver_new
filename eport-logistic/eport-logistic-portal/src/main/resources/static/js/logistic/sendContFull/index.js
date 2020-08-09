@@ -810,11 +810,12 @@ function reloadShipmentDetail() {
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
     setLayoutRegisterStatus();
     loadShipmentDetail(shipmentSelected.id);
 }
 
-// GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
+// GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = truex
 function getDataSelectedFromTable(isValidate) {
     let myTableData = hot.getSourceData();
     let errorFlg = false;
@@ -1125,6 +1126,7 @@ function setLayoutRegisterStatus() {
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
 }
 
 function setLayoutVerifyUserStatus() {
@@ -1137,6 +1139,7 @@ function setLayoutVerifyUserStatus() {
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
 }
 
 function setLayoutPaymentStatus() {
@@ -1150,6 +1153,7 @@ function setLayoutPaymentStatus() {
     $("#payBtn").prop("disabled", false);
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
 }
 
 function setLayoutCustomStatus() {
@@ -1163,6 +1167,7 @@ function setLayoutCustomStatus() {
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", false);
     $("#exportBillBtn").prop("disabled", false);
+    $("#exportReceiptBtn").prop("disabled", false);
 }
 
 function setLayoutFinishStatus() {
@@ -1176,6 +1181,7 @@ function setLayoutFinishStatus() {
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", false);
+    $("#exportReceiptBtn").prop("disabled", false);
 }
 
 function finishForm(result) {
@@ -1289,3 +1295,11 @@ function hideProgress() {
     $('.progress-wrapper').hide();
     $('.dim-bg').hide();
 }
+function exportReceipt(){
+	if(!shipmentSelected){
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}
+    $.modal.openTab("In Biên Nhận", ctx +"logistic/print/receipt/shipment/"+shipmentSelected.id);
+}
+

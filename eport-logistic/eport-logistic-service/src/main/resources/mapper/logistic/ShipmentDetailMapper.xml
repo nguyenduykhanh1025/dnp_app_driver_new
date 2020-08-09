@@ -640,7 +640,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select id, shipment_id as shipmentId, logistic_group_id as logisticGroupId,
 		        register_no as registerNo, container_no as containerNo, container_status as containerStatus, sztp, sztp_define as sztpDefine,
 		        temperature, fe, booking_no as bookingNo, bl_no as blNo, seal_no as sealNo, consignee, expired_dem as expiredDem,
-		        wgt, vsl_name as vslName, vsl_nm as vslNm, voy_no as voyNo, voy_carrier as voyCarrier, ope_code as opeCode, carrier_name as carrierName,
+		        wgt,
+		        (vsl_name || ' - ' || voy_carrier) as vslName,
+		        vsl_nm as vslNm, voy_no as voyNo, voy_carrier as voyCarrier, ope_code as opeCode, carrier_name as carrierName,
 		        loading_port as loadingPort, discharge_port as dischargePort, transport_type as transportType, empty_depot as emptyDepot,
 		        CASE
 		            WHEN cargo_type = 'AK' THEN 'Over Dimension'
@@ -659,7 +661,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		        custom_status as customStatus, payment_status as paymenStatus, process_status as processStatus, do_status as doStatus, do_received_time as doReceivedTime,
 		        user_verify_status as userVerifyStatus, finish_status as finishStatus, status, remark, create_by as createBy, create_time as createTime,
 		        update_by as updateBy, update_time as updateTime, process_order_id as processOrderId,
-		        (select p.reference_no from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.reference_no) as invoiceNo
+		        (select p.reference_no from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.reference_no) as invoiceNo,
+		        (select p.vat_after_fee from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.vat_after_fee) as vatAfterFee
 		from shipment_detail s
 		<where>  
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
