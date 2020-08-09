@@ -7,8 +7,10 @@ eport:
   addressEnabled: true
   cacheExpireTime: 3600
   #EDO Monitor Folders
-  edoRootPath: D:/eport/upload/edo
-  edoBackupPath: D:/eport/upload/backup
+  edi:
+     rootPath: D:/eport/upload/edo
+     backupPath: D:/eport/upload/backup
+     enabled: false
 
 server:
   port: 7071
@@ -43,7 +45,7 @@ spring:
     time-zone: GMT+7
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
-    active: test
+    active: uat
   servlet:
     multipart:
       max-file-size:  10MB
