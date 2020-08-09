@@ -8,7 +8,7 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
 /**
  * 【请填写功能名称】 Object notifications
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-07-06
  */
 public class Notifications extends BaseEntity

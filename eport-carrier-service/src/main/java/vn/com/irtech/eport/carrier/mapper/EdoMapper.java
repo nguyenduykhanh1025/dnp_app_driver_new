@@ -9,7 +9,7 @@ import vn.com.irtech.eport.carrier.domain.Edo;
 /**
  * Exchange Delivery OrderMapper Interface
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-06-26
  */
 public interface EdoMapper 

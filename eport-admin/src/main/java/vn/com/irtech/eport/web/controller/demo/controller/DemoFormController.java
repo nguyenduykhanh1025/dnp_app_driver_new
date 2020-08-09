@@ -193,7 +193,7 @@ public class DemoFormController
     @ResponseBody
     public AjaxResult collection()
     {
-        String[] array = {"ruoyi 1", "ruoyi 2", "ruoyi 3", "ruoyi 4", "ruoyi 5" };
+        String[] array = {"irtech 1", "irtech 2", "irtech 3", "irtech 4", "irtech 5" };
         AjaxResult ajax = new AjaxResult();
         ajax.put("value", array);
         return ajax;
