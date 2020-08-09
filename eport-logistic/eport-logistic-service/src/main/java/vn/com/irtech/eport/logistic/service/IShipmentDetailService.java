@@ -71,7 +71,7 @@ public interface IShipmentDetailService
      */
     public int deleteShipmentDetailById(Long id);
 
-    public List<ShipmentDetail> selectShipmentDetailByIds(String ids);
+    public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId);
 
     public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 

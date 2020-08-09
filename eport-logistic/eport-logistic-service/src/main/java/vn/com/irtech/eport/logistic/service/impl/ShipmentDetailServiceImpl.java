@@ -64,6 +64,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     
     @Autowired
     private ISysDictTypeService dictTypeService;
+
+    @Autowired
+    private ICatosApiService catosApiService;
     
     class BayComparator implements Comparator<ShipmentDetail> {
         public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
@@ -150,8 +153,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public List<ShipmentDetail> selectShipmentDetailByIds(String ids) {
-        return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids));
+    public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId) {
+        return shipmentDetailMapper.selectShipmentDetailByIds(Convert.toStrArray(ids), logisticGroupId);
     }
 
     @Override
@@ -218,7 +221,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
         // Mapping container to matrix by location row, tier, bay
         Collections.sort(shipmentDetails, new BayComparator());
-        ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][6];
+        ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][7];
         String currentBay = shipmentDetails.get(0).getBay();
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             if (currentBay.equals(shipmentDetail.getBay())) {
@@ -226,7 +229,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             } else {
                 bayList.add(shipmentDetailMatrix);
                 currentBay = shipmentDetail.getBay();
-                shipmentDetailMatrix = new ShipmentDetail[5][6];
+                shipmentDetailMatrix = new ShipmentDetail[5][7];
                 shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
             }
         }
@@ -266,7 +269,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
             // Mapping container to matrix by location row, tier, bay
             Collections.sort(shipmentDetails, new BayComparator());
-            ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][6];
+            ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][7];
             String currentBay = shipmentDetails.get(0).getBay();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (currentBay.equals(shipmentDetail.getBay())) {
@@ -274,7 +277,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 } else {
                     bayList.add(shipmentDetailMatrix);
                     currentBay = shipmentDetail.getBay();
-                    shipmentDetailMatrix = new ShipmentDetail[5][6];
+                    shipmentDetailMatrix = new ShipmentDetail[5][7];
                     shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
                 }
             }
@@ -284,7 +287,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             List<ShipmentDetail> shiftingContList = new ArrayList<>();
             for (int b = 0; b < bayList.size(); b++) {
                 List<ShipmentDetail> tempShiftingContList = new ArrayList<>();
-                for (int row = 0; row < 6; row++) {
+                for (int row = 0; row < 7; row++) {
                     for (int tier = 4; tier >= 0; tier--) {
                         if (bayList.get(b)[tier][row] != null) {
                             Boolean needMoving = true;
@@ -315,6 +318,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                     serviceRobotReq.add(groupShipmentDetailByShiftingContOrder(shipmentOrderList, shipment, isCredit));
                     shipmentOrderList = new ArrayList<>();
                 }
+                Integer index = catosApiService.getIndexContForSsrByContainerNo(shipmentDetail.getContainerNo());
+                if (index == null) {
+                    index = 1;
+                }
+                shipmentDetail.setIndex(index);
                 shipmentOrderList.add(shipmentDetail);
             }
             serviceRobotReq.add(groupShipmentDetailByShiftingContOrder(shipmentOrderList, shipment, isCredit));

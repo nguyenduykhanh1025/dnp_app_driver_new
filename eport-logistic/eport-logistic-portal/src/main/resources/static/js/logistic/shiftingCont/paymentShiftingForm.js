@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/receive-cont-full";
+var prefix = ctx + "logistic/shiftingCont";
 
 var processOrderIds = '';
 

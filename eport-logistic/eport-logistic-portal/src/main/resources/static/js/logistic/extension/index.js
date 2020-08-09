@@ -1,4 +1,4 @@
-var prefix = ctx + "logistic/vessel-changing";
+var prefix = ctx + "logistic/order/extension";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetailIds, sourceData, currentProcessId;
@@ -21,10 +21,10 @@ $(document).ready(function () {
     });
 });
 
-document.getElementById("bookingSearch").addEventListener("keyup", function (event) {
+document.getElementById("blSearch").addEventListener("keyup", function (event) {
     event.preventDefault();
     if (event.keyCode === 13) {
-        shipmentSearch.bookingNo = $('#bookingSearch').val().toUpperCase();
+        shipmentSearch.blNo = $('#blSearch').val().toUpperCase();
         loadTable();
     }
 });
@@ -126,7 +126,12 @@ function getSelected() {
         $("#loCode").text(row.id);
         $("#taxCode").text(row.taxCode);
         $("#quantity").text(row.containerAmount);
-        $("#bookingNo").text(row.bookingNo);
+        $("#blNo").text(row.blNo);
+        if (row.edoFlg == "0") {
+            $("#dotype").text("DO");
+        } else {
+            $("#dotype").text("eDO");
+        }
         loadShipmentDetail(row.id);
     }
 }
@@ -149,7 +154,30 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
     $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
+function detFreeTimeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).addClass("htMiddle").addClass("htCenter");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).addClass("htMiddle").addClass("htCenter");
+    if (value) {
+        $(td).html(value.substring(8, 10) + "/" + value.substring(5, 7) + "/" + value.substring(0, 4));
+    }
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
 function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).addClass("htMiddle");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
+function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).addClass("htMiddle");
     $(td).html(value);
     cellProperties.readOnly = 'true';
@@ -170,6 +198,13 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
+function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).addClass("htMiddle").addClass("htCenter");
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
+    return td;
+}
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).addClass("htMiddle");
     $(td).html(value);
@@ -177,15 +212,13 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
-
-function temperatureRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).addClass("htMiddle").addClass("htRight");
+function sealNoRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).addClass("htMiddle");
     $(td).html(value);
     cellProperties.readOnly = 'true';
-    $(td).css("background-color", "rgb(232, 232, 232)"); 
+    $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
-
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).addClass("htMiddle").addClass("htRight");
     $(td).html(value);
@@ -193,8 +226,8 @@ function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
-function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).addClass("htMiddle").addClass("htCenter");
+function loadingPortRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).addClass("htMiddle");
     $(td).html(value);
     cellProperties.readOnly = 'true';
     $(td).css("background-color", "rgb(232, 232, 232)");
@@ -241,32 +274,38 @@ function configHandson() {
                 case 1:
                     return 'Container No';
                 case 2:
-                    return 'Kích Thước';
+                    return 'Hạn Lệnh';
                 case 3:
-                    return 'Chủ Hàng';
+                    return 'Số Ngày Miễn Lưu Vỏ';
                 case 4:
-                    return 'Hãng Tàu';
+                    return 'Chủ Hàng';
                 case 5:
-                    return 'Tàu và Chuyến';
+                    return 'Nơi Hạ Vỏ';
                 case 6:
-                    return "Nhiệt Độ";
+                    return 'Hãng Tàu';
                 case 7:
-                    return 'Trọng Lượng';
+                    return 'Tàu';
                 case 8:
-                    return 'Loại Hàng';
+                    return 'Chuyến';
                 case 9:
-                    return 'Cảng Dỡ Hàng';
+                    return "Kích Thước";
                 case 10:
+                    return "Seal No";
+                case 11:
+                    return "Trọng Tải";
+                case 12:
+                    return 'Cảng Xếp Hàng';
+                case 13:
+                    return "Cảng Dỡ Hàng";
+                case 14:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 200, 200, 150, 220, 100, 100, 150, 150, 200],
+        colWidths: [50, 100, 100, 150, 150, 100, 150, 200, 100, 100, 100, 100, 120, 100, 200],
         filter: "true",
         columns: [
             {
                 data: "active",
-                type: "checkbox",
-                className: "htCenter",
                 renderer: checkBoxRenderer
             },
             {
@@ -274,13 +313,21 @@ function configHandson() {
                 renderer: containerNoRenderer,
             },
             {
-                data: "sztp",
-                renderer: sizeRenderer
+                data: "expiredDem",
+                renderer: expiredDemRenderer
+            },
+            {
+                data: "detFreeTime",
+                renderer: detFreeTimeRenderer
             },
             {
                 data: "consignee",
                 renderer: consigneeRenderer
-              },
+            },
+            {
+                data: "emptyDepot",
+                renderer: emptyDepotRenderer
+            },
             {
                 data: "opeCode",
                 renderer: opeCodeRenderer
@@ -290,16 +337,24 @@ function configHandson() {
                 renderer: vslNmRenderer
             },
             {
-                data: "temperature",
-                renderer: temperatureRenderer
+                data: "voyNo",
+                renderer: voyNoRenderer
+            },
+            {
+                data: "sztp",
+                renderer: sizeRenderer
+            },
+            {
+                data: "sealNo",
+                renderer: sealNoRenderer
             },
             {
                 data: "wgt",
                 renderer: wgtRenderer
             },
             {
-                data: "cargoType",
-                renderer: cargoTypeRenderer
+                data: "loadingPort",
+                renderer: loadingPortRenderer
             },
             {
                 data: "dischargePort",
@@ -386,7 +441,7 @@ function loadShipmentDetail(id) {
                 hot.loadData(sourceData);
                 hot.render();
                 if (rowAmount == null || rowAmount == 0) {
-                    $.modal.alertWarning("Hiện tại không có container nào để đổi tàu.")
+                    $.modal.alertWarning("Hiện tại không có container nào để gia hạn lệnh.")
                 }
             }
         },
@@ -417,30 +472,8 @@ function getDataSelectedFromTable() {
         }
     }
 
-    let opecode, vessel, voyage;
-    if (cleanedGridData.length > 0) {
-        opecode = cleanedGridData[0].opeCode;
-        vessel = cleanedGridData[0].vslNm;
-        voyage = cleanedGridData[0].voyNo;
-    }
     shipmentDetailIds = '';
     $.each(cleanedGridData, function (index, object) {
-        if (opecode != object["opeCode"]) {
-            $.modal.alertError("Hãng tàu không được khác nhau!");
-            errorFlg = true;
-            return false;
-        } else if (vessel != object["vslNm"]) {
-            $.modal.alertError("Tàu và Chuyến không được khác nhau!");
-            errorFlg = true;
-            return false;
-        } else if (voyage != object["voyNo"]) {
-            $.modal.alertError("Số chuyến không được khác nhau!");
-            errorFlg = true;
-            return false;
-        }
-        opecode = object["opeCode"];
-        vessel = object["vslNm"];
-        voyage = object["voyNo"];
         shipmentDetailIds += object["id"] + ",";
     });
 
@@ -466,14 +499,14 @@ function finishForm(result) {
     reloadShipmentDetail();
 }
 
-function changeVessel() {
+function changeExpiredDem() {
     if (getDataSelectedFromTable()) {
-        $.modal.openCustomForm("Gia hạn lệnh", prefix + "/shipment-detail-ids/" + shipmentDetailIds + "/form", 800, 380);
+        $.modal.openCustomForm("Gia hạn lệnh", prefix + "/shipment-detail-ids/" + shipmentDetailIds + "/form", 800, 400);
     }
 }
 
-function otp(vessel) {
-    $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/shipment-detail-ids/" + shipmentDetailIds + "/vessel/" + vessel, 600, 350);
+function otp(expiredDem) {
+    $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/shipment-detail-ids/" + shipmentDetailIds + "/expiredDem/" + expiredDem, 600, 350);
 }
 
 function finishVerifyForm(result) {

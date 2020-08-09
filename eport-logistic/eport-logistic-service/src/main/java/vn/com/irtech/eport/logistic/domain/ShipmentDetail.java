@@ -208,6 +208,9 @@ public class ShipmentDetail extends BaseEntity
     
     private Long vatAfterFee; 
 
+    /** info for robot to know the index of record in catos */
+    private Integer index;
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -621,7 +624,15 @@ public class ShipmentDetail extends BaseEntity
 
 	public void setVslAndVoy(String vslAndVoy) {
 		this.vslAndVoy = vslAndVoy;
-	}
+    }
+    
+    public Integer getIndex() {
+        return this.index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
 
 	public String getInvoiceNo() {
 		return invoiceNo;
