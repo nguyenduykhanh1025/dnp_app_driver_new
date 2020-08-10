@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.apache.commons.beanutils.BeanUtils;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
@@ -135,24 +134,5 @@ public class EdoManageController extends BaseController {
 	public List<String> listVessel(String keyString)
 	{
 		return edoService.selectVesselList(keyString);
-  }
-  
-  @Log(title = "Export Excel Infomation File EDI", businessType = BusinessType.EXPORT)
-  @PostMapping("/export")
-  @ResponseBody
-  public AjaxResult export(@RequestBody List<Edo> dataObj) throws Exception
-  {
-    // List list = new ArrayList();
-    // Edo ctnr = null;
-    // convert to list entity before export
-    // for(Map<String, JSONObject> item : requestParams) {
-    //   ctnr = new Edo();
-    //   BeanUtils.copyProperties(ctnr, item);
-    //     list.add(ctnr);
-    // }
-    // ExcelUtil<Edo> util = new ExcelUtil<Edo>(Edo.class);
-    // return util.exportExcel(list, EXPORT_SHEET_NAME);
-    System.out.print(dataObj);
-    return null;
   }
 }

@@ -225,17 +225,5 @@ $('#export-file').click(function() {
     }).done(function(result){
         console.log(result);
     });
-    
-    // let filename = "InfoEDIFile";
-    // let date = new Date();
-    // let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    // let month = date.getMonth() + 1;
-    // let monthText = month < 10 ? "0" + month : month;
-    // let year = date.getFullYear();
-    // $("#viewEdi").table2excel({
-    //     exclude: ".csv",
-    //     name: "Worksheet Name",
-    //     filename: filename + day + monthText + year 
-    //   }); 
 });
 
