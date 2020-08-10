@@ -33,7 +33,7 @@ public class ProcessOrder extends BaseEntity
 
     /** Mã Tham Chiếu */
     @Excel(name = "Mã Tham Chiếu")
-    private String referenceNo;
+    private String invoiceNo;
 
     /** PT thanh toán */
     @Excel(name = "PT thanh toán")
@@ -123,6 +123,9 @@ public class ProcessOrder extends BaseEntity
     @Excel(name = "Runnable")
     private Boolean runnable;
 
+    /** Order No */
+    private String orderNo;
+
     private String groupName;
 
     private ShipmentDetail shipmentDetail;
@@ -165,14 +168,14 @@ public class ProcessOrder extends BaseEntity
     {
         return serviceType;
     }
-    public void setReferenceNo(String referenceNo) 
+    public void setInvoiceNo(String invoiceNo) 
     {
-        this.referenceNo = referenceNo;
+        this.invoiceNo = invoiceNo;
     }
 
-    public String getReferenceNo() 
+    public String getInvoiceNo() 
     {
-        return referenceNo;
+        return invoiceNo;
     }
     public void setPayType(String payType) 
     {
@@ -368,6 +371,14 @@ public class ProcessOrder extends BaseEntity
         this.runnable = runnable;
     }
 
+    public String getOrderNo() {
+        return this.orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
     public String getGroupName() {
         return this.groupName;
     }
@@ -391,7 +402,7 @@ public class ProcessOrder extends BaseEntity
             .append("logisticGroupId", getLogisticGroupId())
             .append("shipmentId", getShipmentId())
             .append("serviceType", getServiceType())
-            .append("referenceNo", getReferenceNo())
+            .append("invoiceNo", getInvoiceNo())
             .append("payType", getPayType())
             .append("sztp", getSztp())
             .append("modee", getModee())
@@ -418,6 +429,7 @@ public class ProcessOrder extends BaseEntity
             .append("sysUserId", getSysUserId())
             .append("postProcessId", getPostProcessId())
             .append("runnable", getRunnable())
+            .append("orderNo", getOrderNo())
             .append("groupName", getGroupName())
             .append("shipmentDetail", getShipmentDetail())
             .toString();

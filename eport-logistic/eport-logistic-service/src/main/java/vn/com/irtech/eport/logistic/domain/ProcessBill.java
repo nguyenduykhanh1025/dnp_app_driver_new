@@ -42,7 +42,7 @@ public class ProcessBill extends BaseEntity
 
     /** Mã Tham Chiếu */
     @Excel(name = "Mã Tham Chiếu")
-    private String referenceNo;
+    private String invoiceNo;
     
     /** PT thanh toán */
     @Excel(name = "PT Thanh Toán")
@@ -172,14 +172,14 @@ public class ProcessBill extends BaseEntity
         return paymentTime;
     }
 
-    public void setReferenceNo(String referenceNo) 
+    public void setInvoiceNo(String invoiceNo) 
     {
-        this.referenceNo = referenceNo;
+        this.invoiceNo = invoiceNo;
     }
 
-    public String getReferenceNo() 
+    public String getInvoiceNo() 
     {
-        return referenceNo;
+        return invoiceNo;
     }
     public void setSztp(String sztp) 
     {
@@ -278,7 +278,7 @@ public class ProcessBill extends BaseEntity
             .append("serviceType", getServiceType())
             .append("payType", getPayType())
             .append("paymentStatus", getPaymentStatus())
-            .append("referenceNo", getReferenceNo())
+            .append("invoiceNo", getInvoiceNo())
             .append("sztp", getSztp())
             .append("exchangeFee", getExchangeFee())
             .append("vatRate", getVatRate())

@@ -142,12 +142,12 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
      * Check pickup history exists
      * 
      * @param shipmentId
-     * @param containerNo
+     * @param shipmentDetailId
      * @return  int
      */
     @Override
-    public int checkPickupHistoryExists(Long shipmentId, String containerNo) {
-        return pickupHistoryMapper.checkPickupHistoryExists(shipmentId, containerNo);
+    public int checkPickupHistoryExists(Long shipmentId, Long shipmentDetailId) {
+        return pickupHistoryMapper.checkPickupHistoryExists(shipmentId, shipmentDetailId);
     }
 
     /**

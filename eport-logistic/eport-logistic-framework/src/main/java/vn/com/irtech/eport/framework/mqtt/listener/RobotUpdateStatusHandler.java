@@ -193,15 +193,12 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 				// update status of robot
 				robotService.updateRobotByUuId(sysRobot);
 			}
-			
-			if (sysRobot.getIsGateInOrder()) {
-				return;
-			}
 
 			// Find process order for robot
 			ProcessOrder reqProcessOrder = processOrderService.findProcessOrderForRobot(serviceTypes);
 			if (reqProcessOrder != null) {
 				reqProcessOrder.setStatus(1);
+				reqProcessOrder.setRobotUuid(sysRobot.getUuId());
 				if (processOrderService.updateProcessOrder(reqProcessOrder) == 1) {
 					ShipmentDetail shipmentDetail = new ShipmentDetail();
 					shipmentDetail.setProcessOrderId(reqProcessOrder.getId());
@@ -217,6 +214,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 						robotService.insertRobot(sysRobot);
 					} else {
 						// update status of robot
+						sysRobot.setStatus("1");
 						robotService.updateRobotByUuId(sysRobot);
 					}
 

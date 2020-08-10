@@ -662,7 +662,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		        custom_status as customStatus, payment_status as paymenStatus, process_status as processStatus, do_status as doStatus, do_received_time as doReceivedTime,
 		        user_verify_status as userVerifyStatus, finish_status as finishStatus, status, remark, create_by as createBy, create_time as createTime,
 		        update_by as updateBy, update_time as updateTime, process_order_id as processOrderId,
-		        (select p.reference_no from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.reference_no) as invoiceNo,
+		        (select p.invoice_no from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.invoice_no) as invoiceNo,
 		        (select p.vat_after_fee from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.vat_after_fee) as vatAfterFee
 		from shipment_detail s
 		<where>  
@@ -706,5 +706,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
             <if test="status != null "> and status = #{status}</if>
         </where>
+    </select>
+
+    <select id="selectShipmentDetailForDriverShipmentAssign" resultType="vn.com.irtech.eport.logistic.form.PickupAssignForm">
+        select sh.id as shipmentDetailId, sh.container_no as containerNo, sh.wgt as wgt, sh.sztp as sztp, a.id as pickupAssignId
+        from shipment_detail sh
+        left join pickup_assign a on sh.shipment_id = a.shipment_id
+        left join pickup_history p on sh.id = p.shipment_detail_id
+        where 
+            a.shipment_detail_id is null
+            and a.driver_id = #{driverId}
+            and sh.shipment_id = #{shipmentId}
+            and p.shipment_detail_id is null
+            and sh.payment_status = 'Y'
+        group by sh.id, sh.container_no, sh.wgt, sh.sztp, a.id, a.create_time 
+        order by a.create_time desc
     </select>
 </mapper>

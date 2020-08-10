@@ -3,6 +3,7 @@ package vn.com.irtech.eport.framework.mqtt.listener;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Flow.Processor;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -82,6 +83,9 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			return;
 		}
 
+		String orderNo = map.get("orderNo") == null ? null : map.get("orderNo").toString();
+
+
 		SysRobot sysRobot = robotService.selectRobotByUuId(uuId);
 
 		if (sysRobot == null) {
@@ -95,7 +99,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 
 		if (receiptId != null) {
 			if ("0".equals(status)) {
-				this.updateShipmentDetail(result, receiptId, invoiceNo, uuId);
+				this.updateShipmentDetail(result, receiptId, invoiceNo, uuId, orderNo);
 				this.sendMessageWebsocket(result, receiptId);
 				status = this.assignNewProcessOrder(sysRobot);
 			} else if ("1".equals(status)) {
@@ -115,7 +119,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 * @param receiptId
 	 */
 	@Transactional
-	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String uuId) {
+	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String uuId, String orderNo) {
 		// INIT PROCESS HISTORY
 		Long id = Long.parseLong(receiptId);
 		ProcessHistory processHistory = new ProcessHistory();
@@ -138,7 +142,8 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				logger.warn(e.getMessage());
 			}
 			
-			processOrder.setReferenceNo(invoiceNo);
+			processOrder.setOrderNo(orderNo);
+			processOrder.setInvoiceNo(invoiceNo);
 			processOrder.setStatus(2); // FINISH		
 			processOrder.setResult("S"); // RESULT SUCESS	
 			processOrderService.updateProcessOrder(processOrder);
@@ -170,6 +175,9 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			processOrder.setId(id);
 			processOrder.setResult("F"); // RESULT FAILED
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			if (orderNo != null) {
+				processOrder.setOrderNo(orderNo);
+			}
 			processOrderService.updateProcessOrder(processOrder);
 
 			// SET RESULT FOR HISTORY FAILED

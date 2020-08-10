@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,10 +34,12 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
+import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
@@ -67,6 +70,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Autowired
     private ICatosApiService catosApiService;
+
+    @Autowired
+    private IShipmentService shipmentService;
     
     class BayComparator implements Comparator<ShipmentDetail> {
         public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
@@ -805,4 +811,97 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return shipmentDetailMapper.getShipmentDetailForPrint(shipmentDetail);
 	} 
     
+    /**
+     * Get container with yard position
+     * 
+     * @param shipmentId
+     * @return ShipmentDetail
+     */
+    @Override
+    public ShipmentDetail getContainerWithYardPosition(Long shipmentId) {
+        // Get Shipment
+        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+
+        // Get shipment detail by shipment id
+        ShipmentDetail shipmentDetail = new ShipmentDetail();
+        shipmentDetail.setShipmentId(shipmentId);
+        List<ShipmentDetail> shipmentDetails = shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
+
+        // Get coordinate by bill
+        List<ShipmentDetail> coordinateList = catosApiService.getCoordinateOfContainers(shipmentDetails.get(0).getBlNo());
+        List<ShipmentDetail[][]> bayList = new ArrayList<>();
+        bayList = getContPosition(coordinateList, shipmentDetails);
+
+        // Get container from top to bottom
+        for (int b = 0; b < bayList.size(); b++) {
+            for (int row = 0; row < 3; row++) {
+                boolean stack1 = false;
+                boolean stack2 = false;
+                for (int tier = 4; tier >= 0; tier--) {
+                    ShipmentDetail shipmentDetail1 = bayList.get(b)[tier][row];
+                    // validate
+                    if (shipmentDetail1 != null) {
+                    	if (validateAutoPickupCont(shipmentDetail1, stack1)) {
+                            return shipmentDetail1;
+                        }
+                    	stack1 = true;
+                    }
+                    
+                    ShipmentDetail shipmentDetail2 = bayList.get(b)[tier][5-row];
+                    if (shipmentDetail2 != null) {
+                    	if (validateAutoPickupCont(shipmentDetail2, stack2)) {
+                            return shipmentDetail2;
+                        }
+                    	stack2 = true;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Boolean validateAutoPickupCont (ShipmentDetail shipmentDetail, boolean stack) {	
+        if (shipmentDetail.getId() == null) {
+            return false;
+        } 
+
+        // Not received DO
+        if (!"Y".equals(shipmentDetail.getDoStatus())) {
+            return false;
+        }
+        
+        // Exceed expired dem
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        if (shipmentDetail.getExpiredDem().compareTo(now) < 0) {
+            return false;
+        }
+
+        if ("N".equals(shipmentDetail.getPaymentStatus())) {
+            return false;
+        }
+
+        if (stack && "N".equals(shipmentDetail.getPrePickupPaymentStatus())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Select shipment detail for driver shipment assign
+     * 
+     * @param shipmentId
+     * @param driverId
+     * @return List<PickupAssignForm>
+     */
+    public List<PickupAssignForm> selectShipmentDetailForDriverShipmentAssign(Long shipmentId, Long driverId) {
+        return shipmentDetailMapper.selectShipmentDetailForDriverShipmentAssign(shipmentId, driverId);
+    }
+
 }

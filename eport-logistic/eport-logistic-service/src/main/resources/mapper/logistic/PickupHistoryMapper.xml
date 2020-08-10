@@ -27,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="cancelDeceiptDate" column="cancel_receipt_date" />
 		<result property="planningDate" column="planning_date" />
 		<result property="processOrderId" column="process_order_id" />
+		<result property="gatePass" column="gate_pass" />
 		<result property="remark" column="remark" />
 		<result property="createBy" column="create_by" />
 		<result property="createTime" column="create_time" />
@@ -165,6 +166,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="cancelDeceiptDate != null ">cancel_receipt_date,</if>
 			<if test="planningDate != null ">planning_date,</if>
 			<if test="processOrderId != null ">process_order_id,</if>
+			<if test="gatePass != null and gatePass != ''">gate_pass,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -191,6 +193,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="cancelDeceiptDate != null ">#{cancelDeceiptDate},</if>
 			<if test="planningDate != null ">#{planningDate},</if>
 			<if test="processOrderId != null ">#{processOrderId},</if>
+			<if test="gatePass != null and gatePass != ''">#{gatePass},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -220,6 +223,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="cancelDeceiptDate != null ">cancel_receipt_date = #{cancelDeceiptDate},</if>
 			<if test="planningDate != null ">planning_date = #{planningDate},</if>
 			<if test="processOrderId != null ">process_order_id = #{processOrderId},</if>
+			<if test="gatePass != null and gatePass">gate_pass = #{gatePass},</if>
 			<if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
@@ -423,11 +427,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select count(*) from pickup_history 
 		where
 			shipment_id = #{shipmentId}
-			and container_no = #{containerNo}
+			and shipment_detail_id = #{shipmentDetailId}
 	</select>
 
 	<select id="selectPickupHistoryDetailById" resultType="vn.com.irtech.eport.logistic.form.PickupHistoryDetail">
-		select p.id as pickupHistoryId, p.container_no as containerNo, p.gatein_date as gateInDate, p.shipment_id as batchId, p.truck_no as truckNo, 
+		select p.id as pickupHistoryId, p.container_no as containerNo, P.gate_pass as gatePass, p.gatein_date as gateInDate, p.shipment_id as batchId, p.truck_no as truckNo, 
 		p.status as status, p.chassis_no as chassisNo, sh.sztp as sztp, sh.consignee as consignee, concat(concat(concat(p.block, concat('-', p.bay)), concat('-', p.line)), concat('-', p.tier)) as yardPosition
 		from pickup_history p
 		left join shipment s on p.shipment_id = s.id
@@ -435,7 +439,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where 
 		p.id = #{pickupId}
 		and p.driver_id = #{driverId}
-		group by p.id, p.container_no, p.gatein_date, p.shipment_id, p.truck_no, 
+		group by p.id, p.container_no, p.gate_pass, p.gatein_date, p.shipment_id, p.truck_no, 
 		p.status, p.chassis_no, sh.sztp, sh.consignee, p.block, p.bay, p.line, p.tier
 	</select>
 

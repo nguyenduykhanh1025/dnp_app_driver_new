@@ -14,6 +14,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
+import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 
 /**
  * Shipment DetailsService Interface
@@ -156,4 +157,21 @@ public interface IShipmentDetailService
      * get shipmentDetail for Print
      */
     public List<ShipmentDetail> getShipmentDetailForPrint(ShipmentDetail shipmentDetail);
+
+    /**
+     * Get container with yard position
+     * 
+     * @param shipmentId
+     * @return ShipmentDetail
+     */
+    public ShipmentDetail getContainerWithYardPosition(Long shipmentId);
+
+    /**
+     * Select shipment detail for driver shipment assign
+     * 
+     * @param shipmentId
+     * @param driverId
+     * @return List<PickupAssignForm>
+     */
+    public List<PickupAssignForm> selectShipmentDetailForDriverShipmentAssign(Long shipmentId, Long driverId);
 }

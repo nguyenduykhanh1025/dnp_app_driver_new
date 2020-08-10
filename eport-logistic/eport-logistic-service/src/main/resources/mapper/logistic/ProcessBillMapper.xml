@@ -13,7 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="payType"    column="pay_type"    />
         <result property="paymentStatus"    column="payment_status"    />
         <result property="paymentTime"    column="payment_time"    />
-        <result property="referenceNo"    column="reference_no"    />
+        <result property="invoiceNo"    column="invoice_no"    />
         <result property="sztp"    column="sztp"    />
         <result property="exchangeFee"    column="exchange_fee"    />
         <result property="vatRate"    column="vat_rate"    />
@@ -37,11 +37,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectProcessBillVo">
-        select id, shipment_id, logistic_group_id, process_order_id, service_type, pay_type, payment_status, payment_time, reference_no, sztp, exchange_fee, vat_rate, vat_after_fee, container_no, remark, create_by, create_time, update_by, update_time from process_bill
+        select id, shipment_id, logistic_group_id, process_order_id, service_type, pay_type, payment_status, payment_time, invoice_no, sztp, exchange_fee, vat_rate, vat_after_fee, container_no, remark, create_by, create_time, update_by, update_time from process_bill
     </sql>
 
     <sql id="selectBillReport">
-        select b.id, b.shipment_id, b.logistic_group_id, b.process_order_id, b.service_type, b.pay_type, b.payment_status, b.payment_time, b.reference_no, b.sztp, b.exchange_fee, b.vat_rate, b.vat_after_fee, b.container_no, 
+        select b.id, b.shipment_id, b.logistic_group_id, b.process_order_id, b.service_type, b.pay_type, b.payment_status, b.payment_time, b.invoice_no, b.sztp, b.exchange_fee, b.vat_rate, b.vat_after_fee, b.container_no, 
         b.remark, b.create_by, b.create_time, b.update_by, b.update_time, o.tax_code, o.bl_no, o.booking_no, o.vessel, o.voyage
         from process_bill b left join process_order o on b.process_order_id = o.id
     </sql>
@@ -55,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
             <if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
+            <if test="invoiceNo != null  and invoiceNo != ''"> and invoice_no = #{invoiceNo}</if>
             <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
             <if test="exchangeFee != null "> and exchange_fee = #{exchangeFee}</if>
             <if test="vatRate != null "> and vat_rate = #{vatRate}</if>
@@ -83,7 +83,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceType != null ">service_type,</if>
             <if test="payType != null  and payType != ''">pay_type,</if>
             <if test="paymentStatus != null  and paymentStatus != ''">payment_status,</if>
-            <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
+            <if test="invoiceNo != null  and invoiceNo != ''">invoice_no,</if>
             <if test="sztp != null  and sztp != ''">sztp,</if>
             <if test="exchangeFee != null ">exchange_fee,</if>
             <if test="vatRate != null ">vat_rate,</if>
@@ -101,7 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceType != null ">#{serviceType},</if>
             <if test="payType != null  and payType != ''">#{payType},</if>
             <if test="paymentStatus != null  and paymentStatus != ''">#{paymentStatus},</if>
-            <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
+            <if test="invoiceNo != null  and invoiceNo != ''">#{invoiceNo},</if>
             <if test="sztp != null  and sztp != ''">#{sztp},</if>
             <if test="exchangeFee != null ">#{exchangeFee},</if>
             <if test="vatRate != null ">#{vatRate},</if>
@@ -122,7 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="serviceType != null ">service_type = #{serviceType},</if>
             <if test="payType != null  and payType != ''">pay_type = #{payType},</if>
             <if test="paymentStatus != null  and paymentStatus != ''">payment_status = #{paymentStatus},</if>
-            <if test="referenceNo != null  and referenceNo != ''">reference_no = #{referenceNo},</if>
+            <if test="invoiceNo != null  and invoiceNo != ''">invoice_no = #{invoiceNo},</if>
             <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
             <if test="exchangeFee != null ">exchange_fee = #{exchangeFee},</if>
             <if test="vatRate != null ">vat_rate = #{vatRate},</if>
@@ -168,7 +168,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null  and taxCode != ''"> and ( upper(o.tax_code) like concat(concat('%', #{taxCode}), '%')</if>
             <if test="blNo != null  and blNo != ''"> or upper(o.bl_no) like concat(concat('%', #{blNo}), '%')</if>
             <if test="bookingNo != null  and bookingNo != ''"> or upper(o.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
-            <if test="referenceNo != null  and referenceNo != ''"> or upper(b.reference_no) like concat(concat('%', #{referenceNo}), '%')</if>
+            <if test="invoiceNo != null  and invoiceNo != ''"> or upper(b.invoice_no) like concat(concat('%', #{invoiceNo}), '%')</if>
             <if test="sztp != null  and sztp != ''"> or upper(b.sztp) like concat(concat('%', #{sztp}), '%')</if>
             <if test="containerNo != null  and containerNo != ''"> or upper(b.container_no) like concat(concat('%', #{containerNo}), '%'))</if>
         </where>
@@ -188,7 +188,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="taxCode != null  and taxCode != ''"> and ( upper(o.tax_code) like concat(concat('%', #{taxCode}), '%')</if>
             <if test="blNo != null  and blNo != ''"> or upper(o.bl_no) like concat(concat('%', #{blNo}), '%')</if>
             <if test="bookingNo != null  and bookingNo != ''"> or upper(o.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
-            <if test="referenceNo != null  and referenceNo != ''"> or upper(b.reference_no) like concat(concat('%', #{referenceNo}), '%')</if>
+            <if test="invoiceNo != null  and invoiceNo != ''"> or upper(b.invoice_no) like concat(concat('%', #{invoiceNo}), '%')</if>
             <if test="sztp != null  and sztp != ''"> or upper(b.sztp) like concat(concat('%', #{sztp}), '%')</if>
             <if test="containerNo != null  and containerNo != ''"> or upper(b.container_no) like concat(concat('%', #{containerNo}), '%'))</if>
         </where>
