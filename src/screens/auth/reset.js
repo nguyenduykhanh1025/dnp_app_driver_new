@@ -405,12 +405,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state) => {
-    return {
-        loginname: state.loginReducers.toJS().loginname,
-        pwd: state.loginReducers.toJS().pwd,
-        userID: state.loginReducers.toJS().userID,
-        isLoading: state.loginReducers.toJS().isLoading,
-    };
+    return null
 };
 
 export default connect(mapStateToProps)(LoginContainer);

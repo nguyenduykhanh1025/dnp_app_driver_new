@@ -8,6 +8,7 @@ export const rootSwitch = {
 export const authStack = {
     login: 'LoginScreen',
     signup: 'SignUpScreen',
+    reset: 'ResetScreen',
 };
 
 export const mainStack = {

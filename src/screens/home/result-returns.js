@@ -59,7 +59,7 @@ export default class ResultScreen extends Component {
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('resultonGetDetailInfo', result)
+    console.log('resultonGetDetailInfo', result)
     if (result.code == 0) {
       await this.setState({
         data: result.data
@@ -77,6 +77,24 @@ export default class ResultScreen extends Component {
   onCancel = async (pickupId) => {
     const params = {
       api: 'pickup/' + pickupId + '/cancel',
+      param: '',
+      token: this.token,
+      method: 'POST'
+    }
+    var result = undefined;
+    result = await callApi(params);
+    // console.log('resultonCancel', result)
+    if (result.code == 0) {
+      NavigationService.navigate(homeTab.home, { update: 1 })
+    }
+    else {
+      Alert.alert('Thông báo!', result.msg)
+    }
+  }
+
+  onFinish = async (pickupId) => {
+    const params = {
+      api: 'pickup/' + pickupId + '/complete',
       param: '',
       token: this.token,
       method: 'POST'
@@ -180,8 +198,25 @@ export default class ResultScreen extends Component {
                         fontSize: fs(16),
                         color: Colors.white,
                         fontWeight: 'bold',
-                        marginTop: hs(31)
-                      }}>Bốc công hàng từ Cảng</Text>
+                        marginTop: hs(31),
+                        width: ws(345),
+                      }}>
+                      {
+                        this.props.navigation.state.params.serviceType == 1 ?
+                          'Bốc container hàng từ cảng'
+                          :
+                          this.props.navigation.state.params.serviceType == 2 ?
+                            'Hạ container rỗng cho cảng'
+                            :
+                            this.props.navigation.state.params.serviceType == 3 ?
+                              'Bốc container rỗng từ cảng'
+                              :
+                              this.props.navigation.state.params.serviceType == 4 ?
+                                'Giao container hàng cho cảng'
+                                :
+                                ''
+                      }
+                    </Text>
                     <View style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
@@ -318,9 +353,34 @@ export default class ResultScreen extends Component {
                   onPress={
                     () => {
                       this.state.data.status == 0 ?
-                        this.onCancel(this.props.navigation.state.params.pickupId)
+                        Alert.alert(
+                          "Thông báo xác nhận!",
+                          "Bạn có chắc chắn hủy không?",
+                          [
+                            { text: "Có", onPress: () => this.onCancel(this.props.navigation.state.params.pickupId) },
+                            {
+                              text: "Không",
+                              style: "cancel"
+                            },
+                          ],
+                          { cancelable: false }
+                        )
                         :
-                        null
+                        this.state.data.status == 1 ?
+                          Alert.alert(
+                            "Thông báo xác nhận!",
+                            "Bạn có chắc chắn trả hàng không?",
+                            [
+                              { text: "Có", onPress: () => this.onFinish(this.props.navigation.state.params.pickupId) },
+                              {
+                                text: "Không",
+                                style: "cancel"
+                              },
+                            ],
+                            { cancelable: false }
+                          )
+                          :
+                          null
                     }
                   }
                 />

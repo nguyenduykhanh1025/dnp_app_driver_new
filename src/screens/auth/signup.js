@@ -1,26 +1,47 @@
 import React, { Component } from 'react';
 import {
-    View, 
-    Text, 
-    StyleSheet, 
-    ImageBackground, 
-    TouchableOpacity, 
-    KeyboardAvoidingView,
+    View,
+    StyleSheet,
+    Text,
+    Button,
+    Dimensions,
     Platform,
+    KeyboardAvoidingView,
+    TouchableOpacity,
+    Image,
+    ImageBackground,
+    AsyncStorage,
     ScrollView,
-    StatusBar,
     Keyboard,
-    Image
+    TextInput,
+    Alert
 } from 'react-native';
-import {sizeHeight, sizeWidth} from '@/commons/Spanding';
-import { commonStyles, Colors, Fonts, colorOpacityMaker} from '@/commons';
+import { sizeHeight, sizeWidth } from '@/commons/Spanding';
+import {
+    Colors,
+    fontSizeValue as fs,
+    widthPercentageToDP as ws,
+    heightPercentageToDP as hs,
+} from '@/commons';
+import {
+    callApi
+} from '@/requests';
 import AuthInput from '@/components/auth/AuthInput';
 import AuthButton from '@/components/auth/AuthButton';
-import {user_icon, password_icon, phone_icon} from '@/assets/icons/index';
-import { authStack } from '@/config/navigator';
+import {
+    user_icon,
+    password_icon,
+    phone_icon
+} from '@/assets/icons/index';
+import {
+    authStack
+} from '@/config/navigator';
+
+const ibg = require('@/assets/images/auth_bg.png');
+const hicon = require('@/assets/images/logo.png');
 
 export default class SignUpScreen extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             name: '',
@@ -33,205 +54,213 @@ export default class SignUpScreen extends Component {
             phoneFocused: false,
         }
     }
-    render () {
+
+    render() {
         return (
-            <ScrollView 
-                style = {styles.container}
-                showsVerticalScrollIndicator = {false}    
+            <KeyboardAvoidingView
+                behavior={Platform.OS == 'ios' ? 'padding' : null}
+                style={styles.container}
             >
-                <KeyboardAvoidingView 
-                    style = {styles.keyboardAvoidingView}
-                    behavior= {(Platform.OS === 'ios')? "padding" : null}
-                >
-                    <StatusBar
-                        translucent
-                        barStyle = {"default"}
-                        backgroundColor = 'transparent'
-                    />
-                    <ImageBackground
-                        source = {require('@/assets/images/auth_bg.png')}
-                        style = {styles.imageBg}
-                    >
-                        <View style = {styles.bgRow}>
-                            <View>
-                                <Text style = {styles.bgText}>Ứng dụng tài xế</Text>
-                                <Text style = {styles.bgBoldText}>CẢNG ĐÀ NẴNG</Text>
+                <View style={styles.ImageContainer}>
+                    <Image source={ibg} style={styles.image} />
+                    <View style={styles.Frame0}>
+                        <View style={styles.HeaderContainer}>
+                            <View style={styles.HeaderText}>
+                                <Text style={styles.HeaderTextUp}>Ứng dụng tài xế</Text>
+                                <Text style={styles.HeaderTextDown}>CẢNG ĐÀ NẴNG</Text>
                             </View>
-                            <Image
-                                source = {require('@/assets/images/logo.png')}
-                                style = {styles.logo}
-                                resizeMode = 'contain'
-                            />
+                            <View style={styles.HeaderIcon}>
+                                <Image source={hicon} style={styles.HeaderIconImage} />
+                            </View>
                         </View>
-                    </ImageBackground>
-                    <View style = {styles.signupArea}>
-                        <View style = {styles.titleContainer}>
-                            <Text style = {styles.title}>Đăng ký</Text>
-                        </View>
-                        <View style = {styles.inputContainer}>
+                    </View>
+                </View>
+                <View style={styles.Frame1}>
+                    <View style={styles.Frame2}>
+                        <View style={styles.Frame3}>
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.title}>Đăng ký</Text>
+                            </View>
                             <AuthInput
-                                title = 'Họ và tên'
-                                placeholder = {this.state.nameFocused ? '' : 'Nhập họ và tên ...'}
-                                icon = {user_icon}
-                                value = {this.state.name}
-                                onFocus = {() => this.setState({nameFocused: true})}
-                                onBlur = {() => this.setState({nameFocused: false})}
-                                onChangeText = {text => this.setState({name: text})}
-                                returnKeyType = 'next'
-                                onSubmitEditing={() =>
-                                    !!this.phoneRef && this.phoneRef.focus()
-                                }
-                                focusValue = {this.state.nameFocused}
-                            />
-                            <AuthInput
-                                title = 'Số điện thoại'
-                                placeholder = {this.state.phoneFocused ? '' : 'Nhập số điện thoại ...'}
-                                icon = {phone_icon}
-                                value = {this.state.phone}
-                                onFocus = {() => this.setState({phoneFocused: true})}
-                                onBlur = {() => this.setState({phoneFocused: false})}
-                                onChangeText = {text => this.setState({phone: text})}
-                                returnKeyType = 'next'
+                                title='Họ và tên'
+                                placeholder={this.state.nameFocused ? '' : 'Nhập họ và tên ...'}
+                                icon={user_icon}
+                                value={this.state.name}
+                                onFocus={() => this.setState({ nameFocused: true })}
+                                onBlur={() => this.setState({ nameFocused: false })}
+                                onChangeText={text => this.setState({ name: text })}
+                                returnKeyType='next'
                                 inputRef={ref => (this.phoneRef = ref)}
                                 onSubmitEditing={() =>
                                     !!this.passwordRef && this.passwordRef.focus()
                                 }
-                                keyboardType = 'numeric'
-                                focusValue = {this.state.phoneFocused}
+                                keyboardType='numeric'
+                                focusValue={this.state.nameFocused}
                             />
                             <AuthInput
-                                title = 'Mật khẩu'
-                                placeholder = {this.state.passwordFocused ? '': 'Nhập mật khẩu ...'}
-                                icon = {password_icon}
-                                value = {this.state.password}
-                                onFocus = {() => this.setState({passwordFocused: true})}
-                                onBlur = {() => this.setState({passwordFocused: false})}
-                                onChangeText = {text => this.setState({password: text})}
-                                returnKeyType = 'next'
-                                inputRef={ref => (this.passwordRef = ref)}
+                                title='Số điện thoại'
+                                placeholder={this.state.phoneFocused ? '' : 'Nhập số điện thoại ...'}
+                                icon={phone_icon}
+                                value={this.state.phone}
+                                onFocus={() => this.setState({ phoneFocused: true })}
+                                onBlur={() => this.setState({ phoneFocused: false })}
+                                onChangeText={text => this.setState({ phone: text })}
+                                returnKeyType='next'
+                                inputRef={ref => (this.phoneRef = ref)}
                                 onSubmitEditing={() =>
-                                    !!this.password2Ref && this.password2Ref.focus()
+                                    !!this.passwordRef && this.passwordRef.focus()
                                 }
-                                secureTextEntry = {true}
-                                showPassword = {true}
-                                focusValue = {this.state.passwordFocused}
+                                keyboardType='numeric'
+                                focusValue={this.state.phoneFocused}
                             />
                             <AuthInput
-                                title = 'Xác nhận mật khẩu'
-                                placeholder = {this.state.password2Focused ? '' : 'Nhập lại mật khẩu ...'}
-                                icon = {password_icon}
-                                value = {this.state.password2}
-                                onFocus = {() => this.setState({password2Focused: true})}
-                                onBlur = {() => this.setState({password2Focused: false})}
-                                onChangeText = {text => this.setState({password2: text})}
-                                returnKeyType = 'done'
-                                inputRef={ref => (this.password2Ref = ref)}
-                                secureTextEntry = {true}
-                                showPassword = {true}
-                                onSubmitEditing = {() => Keyboard.dismiss()}
-                                focusValue = {this.state.password2Focused}
+                                title='Mật khẩu'
+                                placeholder={this.state.passwordFocused ? '' : 'Nhập mật khẩu ...'}
+                                icon={password_icon}
+                                value={this.state.password}
+                                onFocus={() => this.setState({ passwordFocused: true })}
+                                onBlur={() => this.setState({ passwordFocused: false })}
+                                onChangeText={text => this.setState({ password: text })}
+                                returnKeyType='done'
+                                inputRef={ref => (this.passwordRef = ref)}
+                                onSubmitEditing={() => {
+                                    Keyboard.dismiss();
+                                    this.onLogin();
+                                }}
+                                secureTextEntry={true}
+                                showPassword={true}
+                                focusValue={this.state.passwordFocused}
                             />
-                        </View>
-                        <AuthButton
-                            onPress = {() => console.log('ok')}
-                            title = 'Đăng Ký'
-                        />
-                        <View style = {styles.noteContainer}>
-                            <Text style = {styles.noteText}>Đã có tài khoản? </Text>
-                            <TouchableOpacity
-                                style = {styles.noteButton}
-                                onPress = {() => this.props.navigation.navigate(authStack.login)}
-                            >
-                                <Text style = {styles.noteButtonText}>Đăng Nhập</Text>
-                            </TouchableOpacity>
+                            <AuthInput
+                                title='Xác nhận mật khẩu'
+                                placeholder={this.state.password2Focused ? '' : 'Nhập mật khẩu ...'}
+                                icon={password_icon}
+                                value={this.state.password2}
+                                onFocus={() => this.setState({ password2Focused: true })}
+                                onBlur={() => this.setState({ password2Focused: false })}
+                                onChangeText={text => this.setState({ password2: text })}
+                                returnKeyType='done'
+                                inputRef={ref => (this.passwordRef = ref)}
+                                onSubmitEditing={() => {
+                                    Keyboard.dismiss();
+                                    this.onLogin();
+                                }}
+                                secureTextEntry={true}
+                                showPassword={true}
+                                focusValue={this.state.password2Focused}
+                            />
+                            <View style={{ marginTop: hs(28) }}>
+                                <AuthButton
+                                    onPress={() => this.onLogin(this.state.loginname, this.state.pwd)}
+                                    title='Đăng Ký'
+                                />
+                            </View>
+                            <View style={styles.noteContainer}>
+                                <Text style={styles.text}>Đã có tài khoản? </Text>
+                                <TouchableOpacity
+                                    style={styles.noteButton}
+                                    onPress={() => this.props.navigation.navigate(authStack.login)}
+                                >
+                                    <Text style={styles.noteButtonText}>Đăng nhập</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
-                </KeyboardAvoidingView>
-            </ScrollView>
+                </View>
+            </KeyboardAvoidingView>
         );
     };
 };
 
 const styles = StyleSheet.create({
     container: {
-        height: sizeHeight(100),
+        flex: 1,
+        backgroundColor: Colors.white,
     },
-    titleContainer: {
-        marginHorizontal: sizeWidth(8),
-        marginTop: sizeHeight(3),
+    ImageContainer: {
+
     },
-    inputContainer: {
-        marginTop: sizeHeight(3),
-        marginHorizontal: sizeWidth(8),
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    imageBg: {  
-        height: sizeHeight(60),
-        width: sizeWidth(100),
+    image: {
+        width: ws(375),
+        height: hs(424),
         position: 'absolute',
-        paddingLeft: sizeWidth(5),
-        paddingTop: sizeHeight(6),
     },
-    signupArea: {
-        backgroundColor: '#FFFFFF',
-        height: sizeHeight(75),
-        bottom: 0,
-        top: sizeHeight(30),
+    HeaderContainer: {
+        flexDirection: 'row',
+        marginHorizontal: ws(25),
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: hs(58),
+    },
+    HeaderText: {
+
+    },
+    HeaderIcon: {
+
+    },
+    HeaderTextUp: {
+        fontFamily: null,
+        color: Colors.white,
+        fontSize: fs(18),
+        fontWeight: 'bold'
+    },
+    HeaderTextDown: {
+        fontFamily: null,
+        color: Colors.white,
+        fontSize: fs(25),
+        fontWeight: 'bold',
+    },
+    HeaderIconImage: {
+        width: ws(75),
+        height: hs(46),
+    },
+    Frame0: {
+        width: ws(375),
+    },
+    Frame1: {
+        flex: 1,
+        justifyContent: 'flex-end'
+    },
+    Frame2: {
+        width: ws(375),
+        height: hs(624),
+        backgroundColor: Colors.white,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    Frame3: {
+        width: ws(325),
+        height: hs(441),
     },
     title: {
         color: Colors.maincolor,
-        fontSize: 22,
+        fontSize: fs(22),
         lineHeight: 26,
         fontWeight: 'bold',
     },
-    noteContainer: {
-        flexDirection: 'row',
-        alignSelf: 'center',
-        marginVertical: sizeHeight(5),
+    titleContainer: {
+        marginTop: hs(35),
+        marginLeft: ws(8),
     },
-    noteText: {
+    text: {
         color: Colors.tinyTextGrey,
-        fontSize: 15,
+        fontSize: fs(15),
         lineHeight: 18,
     },
     noteButtonText: {
         color: Colors.maincolor,
-        fontSize: 15,
+        fontSize: fs(15),
         lineHeight: 18,
     },
     noteButton: {
         borderBottomWidth: 1,
         borderBottomColor: Colors.maincolor,
     },
-    keyboardAvoidingView: {
-        height: sizeHeight(110),
-        backgroundColor: '#FFFFFF'
-    },
-    bgText: {
-        fontSize: 18,
-        lineHeight: 21,
-        color: '#FFFFFF',
-        marginBottom: sizeHeight(1),
-    },
-    bgBoldText: {
-        fontSize: 24,
-        lineHeight: 34,
-        color: '#FFFFFF',
-        fontWeight: 'bold',
-    },
-    bgRow: {
+    noteContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: sizeWidth(90),
-        height: sizeHeight(12),
-        paddingHorizontal: sizeWidth(2),
+        alignSelf: 'center',
+        marginVertical: sizeHeight(5),
     },
-    logo: {
-        height: sizeHeight(20),
-        width: sizeWidth(25)
-    }
 })

@@ -159,7 +159,18 @@ export default class DetailScreen extends Component {
               onPress={
                 () => {
                   // NavigationService.navigate(homeTab.home)
-                  this.onPickupContainer()
+                  Alert.alert(
+                    "Thông báo xác nhận!",
+                    "Bạn có chắc chắn xác nhận không?",
+                    [
+                      { text: "Có", onPress: () => this.onPickupContainer() },
+                      {
+                        text: "Không",
+                        style: "cancel"
+                      },
+                    ],
+                    { cancelable: false }
+                  );
                 }
               }
             />
