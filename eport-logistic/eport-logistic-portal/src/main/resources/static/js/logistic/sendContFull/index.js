@@ -579,26 +579,26 @@ function onChange(changes, source) {
    	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
        if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
            //hot.setDataAtCell(change[0], 6, '');//vessel and voyage reset
-       	$.modal.loading("Đang xử lý ...");
-           $.ajax({
-               url: prefix + "/berthplan/ope-code/"+ change[3].split(": ")[0] +"/vessel-voyage/list",
-               method: "GET",
-               success: function (data) {
-               	$.modal.closeLoading();
-                   if (data.code == 0) {
-                       hot.updateSettings({
-                           cells: function (row, col, prop) {
-                               if (row == change[0] && col == 6) {
-                                   let cellProperties = {};
-                                   berthplanList = data.berthplanList;
-                                   cellProperties.source = data.vesselAndVoyages;
-                                   return cellProperties;
-                               }
-                           }
-                       });
-                   }
-               }
-           });
+       	    $.modal.loading("Đang xử lý ...");
+            $.ajax({
+                url: prefix + "/berthplan/ope-code/"+ change[3].split(": ")[0] +"/vessel-voyage/list",
+                method: "GET",
+                success: function (data) {
+                    $.modal.closeLoading();
+                    if (data.code == 0) {
+                        hot.updateSettings({
+                            cells: function (row, col, prop) {
+                                if (row == change[0] && col == 6) {
+                                    let cellProperties = {};
+                                    berthplanList = data.berthplanList;
+                                    cellProperties.source = data.vesselAndVoyages;
+                                    return cellProperties;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
        } 
        // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
        else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
@@ -650,7 +650,6 @@ function onChange(changes, source) {
                     }
                 });
             } else {
-                console.log(change[0],"disalbe)");
                 temperatureDisable[change[0]] = 1;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
@@ -810,11 +809,12 @@ function reloadShipmentDetail() {
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
     setLayoutRegisterStatus();
     loadShipmentDetail(shipmentSelected.id);
 }
 
-// GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = true
+// GET CHECKED SHIPMENT DETAIL LIST, VALIDATE FIELD WHEN isValidate = truex
 function getDataSelectedFromTable(isValidate) {
     let myTableData = hot.getSourceData();
     let errorFlg = false;
@@ -1125,6 +1125,7 @@ function setLayoutRegisterStatus() {
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
 }
 
 function setLayoutVerifyUserStatus() {
@@ -1137,6 +1138,7 @@ function setLayoutVerifyUserStatus() {
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
 }
 
 function setLayoutPaymentStatus() {
@@ -1150,6 +1152,7 @@ function setLayoutPaymentStatus() {
     $("#payBtn").prop("disabled", false);
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
 }
 
 function setLayoutCustomStatus() {
@@ -1163,6 +1166,7 @@ function setLayoutCustomStatus() {
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", false);
     $("#exportBillBtn").prop("disabled", false);
+    $("#exportReceiptBtn").prop("disabled", false);
 }
 
 function setLayoutFinishStatus() {
@@ -1176,6 +1180,7 @@ function setLayoutFinishStatus() {
     $("#payBtn").prop("disabled", true);
     $("#customBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", false);
+    $("#exportReceiptBtn").prop("disabled", false);
 }
 
 function finishForm(result) {
@@ -1272,7 +1277,9 @@ function showProgress(title) {
     $('.percent-text').text("0%");
     currentPercent = 0;
     interval = setInterval(function() {
-        setProgressPercent(++currentPercent);
+        if (currentPercent <=99) {
+            setProgressPercent(++currentPercent);
+        }
         if (currentPercent >= 99) {
             clearInterval(interval);
         }
@@ -1288,4 +1295,15 @@ function setProgressPercent(percent) {
 function hideProgress() {
     $('.progress-wrapper').hide();
     $('.dim-bg').hide();
+    currentPercent = 0;
+    $('.percent-text').text("0%");
+    setProgressPercent(0);
 }
+function exportReceipt(){
+	if(!shipmentSelected){
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}
+    $.modal.openTab("In Biên Nhận", ctx +"logistic/print/receipt/shipment/"+shipmentSelected.id);
+}
+

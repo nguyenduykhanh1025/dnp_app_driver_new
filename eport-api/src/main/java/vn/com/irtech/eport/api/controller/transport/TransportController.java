@@ -20,8 +20,11 @@ import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.api.util.SecurityUtils;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
@@ -30,7 +33,6 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.NotificationForm;
 import vn.com.irtech.eport.logistic.form.Pickup;
-import vn.com.irtech.eport.logistic.form.PickupHistoryForm;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
@@ -156,7 +158,8 @@ public class TransportController extends BaseController {
 	 * @param pickupHistoryTemp
 	 * @return AjaxResult
 	 */
-    @PostMapping("/pickup")
+	@Log(title = "Tài xế nhận cuốc", businessType = BusinessType.INSERT, operatorType = OperatorType.MOBILE)
+	@PostMapping("/pickup")
 	@ResponseBody
 	public AjaxResult pickup(@RequestBody PickupHistory pickupHistoryTemp) {
 		PickupAssign pickupAssign = pickupAssignService.selectPickupAssignById(pickupHistoryTemp.getPickupAssignId());
@@ -214,7 +217,8 @@ public class TransportController extends BaseController {
 	 * @param pickupHistoryId
 	 * @return AjaxResult
 	 */
-    @PostMapping("/pickup/{pickupHistoryId}/complete")
+	@Log(title = "Hoàn thành giao nhận", businessType = BusinessType.INSERT, operatorType = OperatorType.MOBILE)
+	@PostMapping("/pickup/{pickupHistoryId}/complete")
 	@ResponseBody
 	public AjaxResult finishPickup(@PathVariable Long pickupHistoryId) {
 		PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickupHistoryId);
@@ -226,6 +230,7 @@ public class TransportController extends BaseController {
 		return success();
 	}
 	
+	@Log(title = "Hủy nhận cuốc", businessType = BusinessType.INSERT, operatorType = OperatorType.MOBILE)
 	@PostMapping("/pickup/{pickupId}/cancel")
 	@ResponseBody
 	public AjaxResult cancelPickup(@PathVariable Long pickupId) {

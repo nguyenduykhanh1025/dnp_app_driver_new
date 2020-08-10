@@ -8,7 +8,7 @@ import vn.com.irtech.eport.logistic.form.DriverInfo;
 /**
  * Driver login infoMapper Interface
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-05-19
  */
 public interface DriverAccountMapper 

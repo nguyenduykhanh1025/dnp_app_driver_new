@@ -20,25 +20,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import vn.com.irtech.eport.common.annotation.Log;
-import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.logistic.domain.DriverTruck;
-import vn.com.irtech.eport.logistic.domain.LogisticAccount;
-import vn.com.irtech.eport.logistic.domain.LogisticGroup;
-import vn.com.irtech.eport.logistic.domain.DriverAccount;
-import vn.com.irtech.eport.logistic.service.IDriverTruckService;
-import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
-import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.logistic.domain.DriverAccount;
+import vn.com.irtech.eport.logistic.domain.DriverTruck;
+import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.service.IDriverAccountService;
+import vn.com.irtech.eport.logistic.service.IDriverTruckService;
+import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 
 /**
  * Driver login infoController
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-05-19
  */
 @Controller
@@ -91,7 +91,7 @@ public class DriverAccountController extends LogisticBaseController
      * Export Driver login info List
      */
     @RequiresPermissions("system:account:export")
-    @Log(title = "Driver login info", businessType = BusinessType.EXPORT)
+    @Log(title = "Export DS Tài Xế", businessType = BusinessType.EXPORT, operatorType = OperatorType.LOGISTIC)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(DriverAccount driverAccount)
@@ -113,7 +113,7 @@ public class DriverAccountController extends LogisticBaseController
     /**
      * Add or Update Driver login info
      */
-    @Log(title = "Driver login info", businessType = BusinessType.INSERT)
+    @Log(title = "Tạo Tài Xế", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(DriverAccount driverAccount)
@@ -149,7 +149,7 @@ public class DriverAccountController extends LogisticBaseController
     /**
      * Update Save Driver login info
      */
-    @Log(title = "Driver login info", businessType = BusinessType.UPDATE)
+    @Log(title = "Cập Nhật Tài Xế", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(DriverAccount driverAccount)
@@ -166,13 +166,14 @@ public class DriverAccountController extends LogisticBaseController
     /**
      * Delete Driver login info
      */
-    @Log(title = "Driver login info", businessType = BusinessType.DELETE)
+    @Log(title = "Xóa Tài Xế", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
     @PostMapping( "/remove")
     @ResponseBody
     public AjaxResult remove(Long id)
     {
         return toAjax(driverAccountService.deleteDriverAccountById(id));
     }
+    
     @Log(title = "Reset password", businessType = BusinessType.UPDATE)
     @GetMapping("/resetPwd/{id}")
     public String resetPwd(@PathVariable("id") Long id, ModelMap mmap)
@@ -180,7 +181,8 @@ public class DriverAccountController extends LogisticBaseController
         mmap.put("driverAccount", driverAccountService.selectDriverAccountById(id));
         return prefix + "/resetPwd";
     }
-    @Log(title = "Reset password", businessType = BusinessType.UPDATE)
+    
+    @Log(title = "Reset Mật Khẩu Tài Xế", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
     @PostMapping("/resetPwd")
     @ResponseBody
     public AjaxResult resetPwdSave(DriverAccount driverAccount)
@@ -192,6 +194,7 @@ public class DriverAccountController extends LogisticBaseController
         	return success();
         return error();
     }
+    
     /**
      * Search Carrier Group Name
      */
@@ -212,6 +215,7 @@ public class DriverAccountController extends LogisticBaseController
 		}
         return result;
     }
+    
     @RequestMapping("/getGroupNameById")
     @ResponseBody
     public String getGroupNameById(long id) {
@@ -228,6 +232,7 @@ public class DriverAccountController extends LogisticBaseController
         return driverAccountService.selectDriverAccountList(driverAccount);
     }
 
+    @Log(title = "Thêm Thuê Ngoài", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
     @PostMapping("/saveExternalDriverAccount")
     @ResponseBody
     public List<DriverAccount> saveExternalDriverAccount(@RequestBody List<DriverAccount> driverAccounts) {
@@ -266,6 +271,7 @@ public class DriverAccountController extends LogisticBaseController
         return prefix + "/driverTruck";
     }
 
+    @Log(title = "Thêm Xe Cho Tài Xế", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
     @PostMapping("/truckAssign")
     @ResponseBody
     @Transactional

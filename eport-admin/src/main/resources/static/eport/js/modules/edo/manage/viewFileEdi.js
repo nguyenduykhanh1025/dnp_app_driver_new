@@ -226,4 +226,22 @@ $('#export-file').click(function() {
         console.log(result);
     });
 });
-
+function printEdoPDF() {
+	if(!dataObj){
+		$.modal.alertError("Chưa có bill nào cả!");
+		return
+	}
+    $.ajax({
+        url : ctx + "edo/print/post-data",
+        method : "POST",
+        contentType: "application/json",
+        data: JSON.stringify(dataObj),
+        success: function (result) {
+            if (result.code == 0) {
+            	$.modal.openTab("In phiếu", ctx + "edo/print/view/"+ result.key)
+            } else {
+                $.modal.alertError(result.msg);
+            }
+        }
+    })
+}

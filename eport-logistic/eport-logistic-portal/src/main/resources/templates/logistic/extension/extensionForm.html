@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="include :: header('Form Gia Hạn Lênh')" />
+    <link th:href="@{/css/logistic/add-shipment.css}" rel="stylesheet" />
+    <link th:href="@{/css/logistic/extension/style.css}" rel="stylesheet" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <div class="form-group row">
+                <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">
+                    <span style="color: red;">*</span>Hạn lệnh mới</label>
+                <div class="col-md-10 col-sm-9 col-xs-7">
+                    <input name="expiredDem"  id="expiredDem" type="text" class="form-control" onfocus="removeExpiredDemError()" placeholder="dd/MM/yyyy" readonly/>
+                </div>
+            </div>
+        </div>
+        <div class="layui-layer-btn footer">
+            <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+            <a class="layui-layer-btn1" onclick="closeForm()">Hủy bỏ</a>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <script type="text/javascript" th:inline="javascript">
+        var shipmentDetailIds = /*[[${shipmentDetailIds}]]*/;
+    </script>
+    <script th:src="@{/js/logistic/extension/extensionForm.js}"></script>
+</body>
+
+</html>

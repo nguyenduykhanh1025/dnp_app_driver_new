@@ -57,5 +57,5 @@ public interface ICatosApiService {
 	
 	public ShipmentDetail getInforSendFReceiveE(ShipmentDetail shipmentDetail);
 	
-	public Integer getIndexContForSSRByContainerNo(String containerNo);
+	public Integer getIndexContForSsrByContainerNo(String containerNo);
 }

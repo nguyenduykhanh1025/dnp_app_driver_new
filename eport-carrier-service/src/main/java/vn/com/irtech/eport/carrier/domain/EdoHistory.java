@@ -10,7 +10,7 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
 /**
  * eDO Action History Object edo_history
  * 
- * @author ruoyi
+ * @author admin
  * @date 2020-06-26
  */
 public class EdoHistory extends BaseEntity

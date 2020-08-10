@@ -71,7 +71,7 @@ public interface IShipmentDetailService
      */
     public int deleteShipmentDetailById(Long id);
 
-    public List<ShipmentDetail> selectShipmentDetailByIds(String ids);
+    public List<ShipmentDetail> selectShipmentDetailByIds(String ids, Long logisticGroupId);
 
     public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 
@@ -147,4 +147,13 @@ public interface IShipmentDetailService
      * getShipmentDetail for SendContFull and receiveContEmpty
      */
     public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail);
+    
+    /***
+     * get command List of batch
+     */
+    public List<Long> getCommandListInBatch(ShipmentDetail shipmentDetail);
+    /***
+     * get shipmentDetail for Print
+     */
+    public List<ShipmentDetail> getShipmentDetailForPrint(ShipmentDetail shipmentDetail);
 }

@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Logistic Group Object logistic_group
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-05-26
  */
 public class LogisticGroup extends BaseEntity

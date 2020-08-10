@@ -63,7 +63,7 @@ public interface ShipmentDetailMapper
      */
     public int deleteShipmentDetailByIds(String[] ids);
 
-    public List<ShipmentDetail> selectShipmentDetailByIds(String[] ids);
+    public List<ShipmentDetail> selectShipmentDetailByIds(@Param("shipmentDetailIds") String[] ids, @Param("logisticGroupId") Long logisticGroupId);
 
     public List<ShipmentDetail> selectShipmentDetailByBlno(String Blno);
 
@@ -106,4 +106,14 @@ public interface ShipmentDetailMapper
      * getShipmentDetail for SendContFull and receiveContEmpty
      */
     public List<ShipmentDetail> getShipmentDetailListForSendFReceiveE(ShipmentDetail shipmentDetail);
+    
+    /***
+     * get command List of batch
+     */
+    public List<Long> getCommandListInBatch(ShipmentDetail shipmentDetail);
+    
+    /***
+     * get shipmentDetail for Print
+     */
+    public List<ShipmentDetail> getShipmentDetailForPrint(ShipmentDetail shipmentDetail);
 }

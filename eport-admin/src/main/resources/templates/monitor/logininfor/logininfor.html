@@ -11,19 +11,19 @@
 					<div class="select-list">
 						<ul>
 							<li>
-								Địa chỉ đăng nhập:<input type="text" name="ipaddr"/>
+								IP Đăng Nhập:<input type="text" name="ipaddr"/>
 							</li>
 							<li>
-								Tên đăng nhập:<input type="text" name="loginName"/>
+								Tên Đăng Nhập:<input type="text" name="loginName"/>
 							</li>
 							<li>
-								Trạng thái đăng nhập:<select name="status" th:with="type=${@dict.getType('sys_common_status')}">
+								Trạng Thái:<select name="status" th:with="type=${@dict.getType('sys_common_status')}">
 									<option value="" th:text="#{login.all}"></option>
 									<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
 								</select>
 							</li>
 							<li class="select-time">
-								<label>Ngày đăng nhập</label>
+								<label style="width:100px">Ngày Đăng Nhập</label>
 								<input type="text" class="time-input" id="startTime" placeholder="Từ" name="params[beginTime]"/>
 								<span>-</span>
 								<input type="text" class="time-input" id="endTime" placeholder="Đến" name="params[endTime]"/>
@@ -39,17 +39,17 @@
 			
 			<div class="btn-group-sm" id="toolbar" role="group">
 				<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="monitor:logininfor:remove">
-		            <i class="fa fa-remove">Xóa</i>
+		            <i class="fa fa-remove">&nbsp;Xóa</i>
 		        </a>
 		        <a class="btn btn-danger" onclick="$.operate.clean()" shiro:hasPermission="monitor:logininfor:remove">
-	                <i class="fa fa-trash">Xóa tất cả</i>
+	                <i class="fa fa-trash">&nbsp;Xóa tất cả</i>
 	            </a>
 				<a class="btn btn-primary single disabled" onclick="unlock()" shiro:hasPermission="monitor:logininfor:unlock">
-					<i class="fa fa-unlock">Mở khóa</i>
+					<i class="fa fa-unlock">&nbsp;Mở khóa</i>
 				</a>
-	            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="monitor:logininfor:export">
-		            <i class="fa fa-download">Xuất</i>
-		        </a>
+	     <!--/*/    <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="monitor:logininfor:export">
+		            <i class="fa fa-download">&nbsp;Xuất</i>
+		        </a>  /*/-->
 	        </div>
         
 	        <div class="col-sm-12 select-table table-striped">
@@ -106,7 +106,7 @@
 		        },
 		        {
 		            field: 'status',
-		            title: "Trạng thái đăng nhập",
+		            title: "Trạng thái",
 		            align: 'center',
 		            formatter: function(value, row, index) {
 		            	return $.table.selectDictLabel(datas, value);

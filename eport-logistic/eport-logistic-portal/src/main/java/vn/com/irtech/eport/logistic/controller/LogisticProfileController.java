@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.shiro.service.SysPasswordService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
@@ -42,7 +43,7 @@ public class LogisticProfileController extends LogisticBaseController{
         mmap.put("user", logisticAccountService.selectLogisticAccountById(user.getId()));
         return prefix + "/resetPwd";
     }
-    @Log(title = "Profile", businessType = BusinessType.UPDATE)
+    @Log(title = "Cập Nhật Profile", businessType = BusinessType.UPDATE)
     @PostMapping("/update")
     @ResponseBody
     public AjaxResult update(LogisticAccount user)
@@ -71,7 +72,8 @@ public class LogisticProfileController extends LogisticBaseController{
         return false;
     }
     
-    @PostMapping("/resetPwd")
+    @Log(title = "Đổi Mật Khẩu", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/resetPwd")
     @ResponseBody
     public AjaxResult resetPwd(String oldPassword, String newPassword)
     {

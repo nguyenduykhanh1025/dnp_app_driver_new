@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
@@ -139,14 +143,16 @@ public class LogisticCommonController extends LogisticBaseController {
 		cal.add(Calendar.MINUTE, +5);
 		otpCode.setExpiredTime(cal.getTime());
 		otpCodeService.insertSysOtp(otpCode);
-
+		// FIXME Get message template from SysConfigService, using String.format to replace place holders
 		String content = "TEST SMS   " + rD;
 		String response = "";
 		 try {
 		 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
 		 	System.out.println(response);
+		 	logger.debug("OTP Send Response: " + response);
 		 } catch (IOException ex) {
 		 	// process the exception
+			 logger.error(ex.getMessage());
 		 }
 		return AjaxResult.success();
 	}
@@ -216,7 +222,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		paymentHistoryParam.setStatus("1");
 		List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
 		PaymentHistory paymentHistory;
-		if (paymentHistories.isEmpty()) {
+		if (CollectionUtils.isEmpty(paymentHistories)) {
 			paymentHistory = new PaymentHistory();
 			paymentHistory.setUserId(getUserId());
 			paymentHistory.setProccessOrderIds(processOrderIds);
@@ -227,9 +233,6 @@ public class LogisticCommonController extends LogisticBaseController {
 			paymentHistory.setCreateBy(getUser().getFullName());
 			paymentHistoryService.insertPaymentHistory(paymentHistory);
 		} else {
-			// paymentHistory = paymentHistories.get(0);
-			// paymentHistory.setOrderId(orderId);
-			// paymentHistoryService.updatePaymentHistory(paymentHistory);
 			return "error/unauth";
 		}
 
@@ -241,6 +244,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		return PREFIX + "/napas/napasPaymentForm";
 	}
 
+	@Log(title = "Thanh Toán Napas", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@RequestMapping(value="/payment/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
 	@Transactional
 	public String getPaymentResult(@RequestParam("napasResult") String result, ModelMap mmap) {
@@ -269,14 +273,9 @@ public class LogisticCommonController extends LogisticBaseController {
 					PaymentHistory paymentHistory = paymentHistories.get(0);
 
 					// Update payment history
-					if ("1".equals(paymentHistory.getStatus())) {
-						paymentHistory.setId(null);
-						paymentHistoryService.insertPaymentHistory(paymentHistory);
-					} else {
-						paymentHistory.setUpdateBy(getUser().getFullName());
-						paymentHistory.setStatus("1");
-						paymentHistoryService.updatePaymentHistory(paymentHistory);
-					}
+					paymentHistory.setUpdateBy(getUser().getFullName());
+					paymentHistory.setStatus("1");
+					paymentHistoryService.updatePaymentHistory(paymentHistory);
 
 					// Update shipment detail
 					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(paymentHistory.getProcessOrderIds());
@@ -359,24 +358,16 @@ public class LogisticCommonController extends LogisticBaseController {
 		PaymentHistory paymentHistoryParam = new PaymentHistory();
 		paymentHistoryParam.setProccessOrderIds(processOrderIds);
 		paymentHistoryParam.setStatus("0");
-		List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
 		PaymentHistory paymentHistory;
-		if (paymentHistories.isEmpty()) {
-			paymentHistory = new PaymentHistory();
-			paymentHistory.setUserId(getUserId());
-			paymentHistory.setProccessOrderIds(processOrderIds);
-			paymentHistory.setShipmentId(shipmentId);
-			paymentHistory.setAmount(total);
-			paymentHistory.setStatus("0");
-			paymentHistory.setOrderId(orderId);
-			paymentHistory.setCreateBy(getUser().getFullName());
-			paymentHistoryService.insertPaymentHistory(paymentHistory);
-		} else {
-			paymentHistory = paymentHistories.get(0);
-			paymentHistory.setOrderId(orderId);
-			paymentHistoryService.updatePaymentHistory(paymentHistory);
-		}
-
+		paymentHistory = new PaymentHistory();
+		paymentHistory.setUserId(getUserId());
+		paymentHistory.setProccessOrderIds(processOrderIds);
+		paymentHistory.setShipmentId(shipmentId);
+		paymentHistory.setAmount(total);
+		paymentHistory.setStatus("0");
+		paymentHistory.setOrderId(orderId);
+		paymentHistory.setCreateBy(getUser().getFullName());
+		paymentHistoryService.insertPaymentHistory(paymentHistory);
 		mmap.put("resultUrl", configService.getKey("napas.payment.shifting.result"));
 		mmap.put("referenceOrder", "Thanh toan " + orderId);
 		mmap.put("clientIp", getUserIp());
@@ -409,18 +400,13 @@ public class LogisticCommonController extends LogisticBaseController {
 				PaymentHistory paymentHistoryParam = new PaymentHistory();
 				paymentHistoryParam.setOrderId(orderId);
 				List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
-				if (!paymentHistories.isEmpty()) {
+				if (CollectionUtils.isNotEmpty(paymentHistories)) {
 					PaymentHistory paymentHistory = paymentHistories.get(0);
 
 					// Update payment history
-					if ("1".equals(paymentHistory.getStatus())) {
-						paymentHistory.setId(null);
-						paymentHistoryService.insertPaymentHistory(paymentHistory);
-					} else {
-						paymentHistory.setUpdateBy(getUser().getFullName());
-						paymentHistory.setStatus("1");
-						paymentHistoryService.updatePaymentHistory(paymentHistory);
-					}
+					paymentHistory.setUpdateBy(getUser().getFullName());
+					paymentHistory.setStatus("1");
+					paymentHistoryService.updatePaymentHistory(paymentHistory);
 
 					// Update shipment detail
 					ShipmentDetail shipmentDetailParam = new ShipmentDetail();

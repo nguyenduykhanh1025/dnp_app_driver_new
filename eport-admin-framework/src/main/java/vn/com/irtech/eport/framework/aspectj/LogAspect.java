@@ -24,7 +24,7 @@ import vn.com.irtech.eport.system.domain.SysOperLog;
 import vn.com.irtech.eport.system.domain.SysUser;
 
 /**
- * 操作日志记录处理
+ * Operation log record processing
  * 
  * @author admin
  */
@@ -34,16 +34,16 @@ public class LogAspect
 {
     private static final Logger log = LoggerFactory.getLogger(LogAspect.class);
 
-    // 配置织入点
+    // Configure weaving point
     @Pointcut("@annotation(vn.com.irtech.eport.common.annotation.Log)")
     public void logPointCut()
     {
     }
 
     /**
-     * 处理完请求后执行
+     * Execute after processing the request
      *
-     * @param joinPoint 切点
+     * @param joinPoint join point
      */
     @AfterReturning(pointcut = "logPointCut()", returning = "jsonResult")
     public void doAfterReturning(JoinPoint joinPoint, Object jsonResult)
@@ -52,10 +52,10 @@ public class LogAspect
     }
 
     /**
-     * 拦截异常操作
+     * Intercept abnormal operations
      * 
-     * @param joinPoint 切点
-     * @param e 异常
+     * @param joinPoint cut point
+     * @param e exception
      */
     @AfterThrowing(value = "logPointCut()", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, Exception e)
@@ -67,23 +67,23 @@ public class LogAspect
     {
         try
         {
-            // 获得注解
+            // Get comments
             Log controllerLog = getAnnotationLog(joinPoint);
             if (controllerLog == null)
             {
                 return;
             }
 
-            // 获取当前的用户
+            // Get current user
             SysUser currentUser = ShiroUtils.getSysUser();
 
-            // *========数据库日志=========*//
+            // *========Database log=========*//
             SysOperLog operLog = new SysOperLog();
             operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
-            // 请求的地址
+            // Requested address
             String ip = ShiroUtils.getIp();
             operLog.setOperIp(ip);
-            // 返回参数
+            // Return parameter
             operLog.setJsonResult(JSON.marshal(jsonResult));
 
             operLog.setOperUrl(ServletUtils.getRequest().getRequestURI());
@@ -102,20 +102,20 @@ public class LogAspect
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
                 operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
             }
-            // 设置方法名称
+            // Setting method name
             String className = joinPoint.getTarget().getClass().getName();
             String methodName = joinPoint.getSignature().getName();
             operLog.setMethod(className + "." + methodName + "()");
-            // 设置请求方式
+            // Set request method
             operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
-            // 处理设置注解上的参数
+            // Process the parameters on the setting annotation
             getControllerMethodDescription(controllerLog, operLog);
-            // 保存数据库
+            // Save database
             AsyncManager.me().execute(AsyncFactory.recordOper(operLog));
         }
         catch (Exception exp)
         {
-            // 记录本地异常日志
+            // Record local exception log
             log.error("==Pre-notification exception==");
             log.error("Exception information: {}", exp.getMessage());
             exp.printStackTrace();
@@ -123,33 +123,33 @@ public class LogAspect
     }
 
     /**
-     * 获取注解中对方法的描述信息 用于Controller层注解
+     * Get the description of the method in the annotation for the Controller layer annotation
      * 
-     * @param log 日志
-     * @param operLog 操作日志
+     * @param log Log
+     * @param operLog Operation log
      * @throws Exception
      */
     public void getControllerMethodDescription(Log log, SysOperLog operLog) throws Exception
     {
-        // 设置action动作
+        // Set action
         operLog.setBusinessType(log.businessType().ordinal());
-        // 设置标题
+        // Set title
         operLog.setTitle(log.title());
-        // 设置操作人类别
+        // Set operator category
         operLog.setOperatorType(log.operatorType().ordinal());
-        // 是否需要保存request，参数和值
+        // Do you need to save request, parameters and values
         if (log.isSaveRequestData())
         {
-            // 获取参数的信息，传入到数据库中。
+            // Get the parameter information and transfer it to the database.
             setRequestValue(operLog);
         }
     }
 
     /**
-     * 获取请求的参数，放到log中
+     * Get the requested parameters and put them in the log
      * 
-     * @param operLog 操作日志
-     * @throws Exception 异常
+     * @param operLog Operation log
+     * @throws Exception abnormal
      */
     private void setRequestValue(SysOperLog operLog) throws Exception
     {
@@ -159,7 +159,7 @@ public class LogAspect
     }
 
     /**
-     * 是否存在注解，如果存在就获取
+     * Whether there is an annotation, get it if it exists
      */
     private Log getAnnotationLog(JoinPoint joinPoint) throws Exception
     {

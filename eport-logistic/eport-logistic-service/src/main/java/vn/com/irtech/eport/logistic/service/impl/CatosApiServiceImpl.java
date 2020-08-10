@@ -215,7 +215,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/shipmentDetail/berthplan/ope-code/"+ opeCode +"/vessel-voyage/list" ;
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
-			List<ShipmentDetail> vesselAndVoyages= response.getBody();
+			List<ShipmentDetail> vesselAndVoyages = response.getBody();
 			return vesselAndVoyages;
 		} catch (Exception e) {
 			e.getStackTrace();
@@ -310,7 +310,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public Integer getIndexContForSSRByContainerNo(String containerNo) {
+	public Integer getIndexContForSsrByContainerNo(String containerNo) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/index/container-master-ssr/" + containerNo;
 			RestTemplate restTemplate = new RestTemplate();

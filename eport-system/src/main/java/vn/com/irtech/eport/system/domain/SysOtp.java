@@ -8,7 +8,7 @@ import vn.com.irtech.eport.common.core.domain.BaseEntity;
 /**
  * otp Code Object otp_code
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-06-05
  */
 public class SysOtp extends BaseEntity

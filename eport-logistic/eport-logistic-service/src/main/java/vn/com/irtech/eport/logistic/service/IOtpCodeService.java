@@ -8,7 +8,7 @@ import vn.com.irtech.eport.logistic.domain.OtpCode;
 /**
  * otp CodeService Interface
  * 
- * @author ruoyi
+ * @author irtech
  * @date 2020-06-05
  */
 public interface IOtpCodeService 

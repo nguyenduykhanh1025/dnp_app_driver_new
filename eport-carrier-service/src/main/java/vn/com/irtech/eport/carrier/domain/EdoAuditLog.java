@@ -4,13 +4,13 @@ import java.util.Date;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import vn.com.irtech.eport.common.annotation.Excel;
+
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
  * eDO Audit Trail Log Object edo_audit_log
  * 
- * @author ruoyi
+ * @author admin
  * @date 2020-07-07
  */
 public class EdoAuditLog extends BaseEntity
@@ -21,34 +21,26 @@ public class EdoAuditLog extends BaseEntity
     private Long id;
 
     /** ID Nhan Vien Hang Tau */
-    @Excel(name = "ID Nhan Vien Hang Tau")
     private Long carrierId;
 
     /** Ma Hang Tau */
-    @Excel(name = "Ma Hang Tau")
     private String carrierCode;
 
     /** EDO ID */
-    @Excel(name = "EDO ID")
     private Long edoId;
 
     /** Sequence Number 1->n */
-    @Excel(name = "Sequence Number 1->n")
     private Long seqNo;
 
     /** Data Field Name */
-    @Excel(name = "Data Field Name")
     private String fieldName;
 
     /** Old Value */
-    @Excel(name = "Old Value")
     private String oldValue;
 
     /** New Value */
-    @Excel(name = "New Value")
     private String newValue;
 
-    @Excel(name = "Thời gian tạo", dateFormat = "yyyy-MM-dd")
     private Date createTime;
 
     public void setCreateTime(Date createTime) 

@@ -16,7 +16,7 @@ public class GateInFormData {
 	
 	private String truckNo;
 	
-	private String chassiNo;
+	private String chassisNo;
 	
 	private String wgt;
 	
@@ -70,12 +70,12 @@ public class GateInFormData {
 		this.truckNo = truckNo;
 	}
 
-	public String getChassiNo() {
-		return chassiNo;
+	public String getChassisNo() {
+		return chassisNo;
 	}
 
-	public void setChassiNo(String chassiNo) {
-		this.chassiNo = chassiNo;
+	public void setChassisNo(String chassisNo) {
+		this.chassisNo = chassisNo;
 	}
 
 	public String getWgt() {
@@ -125,4 +125,5 @@ public class GateInFormData {
 	public void setReceiptId(Long receiptId) {
 		this.receiptId = receiptId;
 	}
+
 }

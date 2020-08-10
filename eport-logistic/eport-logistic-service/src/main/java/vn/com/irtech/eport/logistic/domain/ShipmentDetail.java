@@ -203,6 +203,13 @@ public class ShipmentDetail extends BaseEntity
     private String year;
     
     private String vslAndVoy;
+    
+    private String invoiceNo;
+    
+    private Long vatAfterFee; 
+
+    /** info for robot to know the index of record in catos */
+    private Integer index;
 
     public void setId(Long id) {
         this.id = id;
@@ -617,6 +624,30 @@ public class ShipmentDetail extends BaseEntity
 
 	public void setVslAndVoy(String vslAndVoy) {
 		this.vslAndVoy = vslAndVoy;
+    }
+    
+    public Integer getIndex() {
+        return this.index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
+    }
+
+	public String getInvoiceNo() {
+		return invoiceNo;
+	}
+
+	public void setInvoiceNo(String invoiceNo) {
+		this.invoiceNo = invoiceNo;
+	}
+
+	public Long getVatAfterFee() {
+		return vatAfterFee;
+	}
+
+	public void setVatAfterFee(Long vatAfterFee) {
+		this.vatAfterFee = vatAfterFee;
 	}
 
 	@Override
@@ -679,6 +710,8 @@ public class ShipmentDetail extends BaseEntity
             .append("serviceType", getServiceType())
             .append("year", getYear())
             .append("vslAndVoy", getVslAndVoy())
+            .append("invoiceNo", getInvoiceNo())
+            .append("vatAfterFee", getVatAfterFee())
             .toString();
     }
 }

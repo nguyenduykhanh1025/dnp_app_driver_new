@@ -6,7 +6,7 @@ $(document).ready(function () {
     if (billList == null || billList.length == 0) {
         let res = new Object();
         res.code = 500;
-        res.msg = "Quý khách không có phí dịch chuyển container nào cần thanh toán.";
+        res.msg = "Quý khách không có container nào cần thanh toán phí dịch chuyển.";
         parent.finishForm(res);
         $.modal.close();
     }
