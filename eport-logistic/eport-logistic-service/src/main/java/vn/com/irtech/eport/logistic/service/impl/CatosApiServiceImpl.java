@@ -364,5 +364,21 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	/***
+	 * input: containerNo, blNo, bookingNo, vslNm, voyNo, sztp, opeCode, fe
+	 */
+
+	@Override
+	public String checkContainerStatus(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/container-status";
+			RestTemplate restTemplate = new RestTemplate();
+			String containerStatus = restTemplate.postForObject(url, shipmentDetail, String.class);
+			return containerStatus;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
 	
 }

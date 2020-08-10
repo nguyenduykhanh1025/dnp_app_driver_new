@@ -57,4 +57,6 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	
 	public ShipmentDetailEntity getLocationForReceiveF(@Param("blNo") String blNo, @Param("containerNo") String containerNo);
 	
+	public String checkContainerStatus(ShipmentDetailEntity shipmentDetailEntity);
+	
 }

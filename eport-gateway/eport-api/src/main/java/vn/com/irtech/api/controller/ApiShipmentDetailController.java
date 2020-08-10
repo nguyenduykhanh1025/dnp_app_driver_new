@@ -157,4 +157,9 @@ public class ApiShipmentDetailController {
 	public ShipmentDetailEntity getLocationForReceiveF(@PathVariable String blNo, @PathVariable String containerNo) {
 		return shipmentDetailDao.getLocationForReceiveF(blNo, containerNo);
 	}
+	
+	@PostMapping("/shipmentDetail/container-status")
+	public String checkContainerStatus(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		return shipmentDetailDao.checkContainerStatus(shipmentDetailEntity);
+	}
 }
