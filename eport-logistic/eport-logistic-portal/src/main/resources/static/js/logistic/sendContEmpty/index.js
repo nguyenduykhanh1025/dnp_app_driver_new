@@ -1076,7 +1076,9 @@ function showProgress(title) {
     $('.percent-text').text("0%");
     currentPercent = 0;
     interval = setInterval(function() {
-        setProgressPercent(++currentPercent);
+        if (currentPercent <=99) {
+            setProgressPercent(++currentPercent);
+        }
         if (currentPercent >= 99) {
             clearInterval(interval);
         }
@@ -1092,7 +1094,11 @@ function setProgressPercent(percent) {
 function hideProgress() {
     $('.progress-wrapper').hide();
     $('.dim-bg').hide();
+    currentPercent = 0;
+    $('.percent-text').text("0%");
+    setProgressPercent(0);
 }
+
 function exportReceipt(){
 	if(!shipmentSelected){
 		$.modal.alertError("Bạn chưa chọn Lô!");

@@ -428,12 +428,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
 
-    <select id="selectShipmentDetailByIds" parameterType="String" resultMap="ShipmentDetailResult">
+    <select id="selectShipmentDetailByIds" resultMap="ShipmentDetailResult">
         <include refid="selectShipmentDetailVo"/>
         where id in 
-        <foreach item="id" collection="array" open="(" separator="," close=")">
+        <foreach item="id" collection="shipmentDetailIds" open="(" separator="," close=")">
             #{id}
         </foreach>
+        and logistic_group_id = #{logisticGroupId}
     </select>
 
     <select id="selectShipmentDetailByBlno" parameterType="String" resultMap="ShipmentDetailResult">

@@ -215,7 +215,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String url = Global.getApiUrl() + "/shipmentDetail/berthplan/ope-code/"+ opeCode +"/vessel-voyage/list" ;
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
-			List<ShipmentDetail> vesselAndVoyages= response.getBody();
+			List<ShipmentDetail> vesselAndVoyages = response.getBody();
 			return vesselAndVoyages;
 		} catch (Exception e) {
 			e.getStackTrace();

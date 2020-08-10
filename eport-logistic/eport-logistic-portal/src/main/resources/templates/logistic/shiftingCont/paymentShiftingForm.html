@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <th:block th:include="include :: header('Thanh toan')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/css/logistic/payment-form.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <div class="unloadContCosts">
+                <div class="table-content customTable">
+                    <table id="billDatagrid" style="width: 100%;" fitColumns="true">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'referenceNo', halign:'center', resizable:true, fixed:true"
+                                    width="190">Invoice No.</th>
+                                <th data-options="field:'containerNo', halign:'center', resizable:true, fixed:true"
+                                    width="120">Container No.</th>
+                                <th data-options="field:'sztp', halign:'center', resizable:true, fixed:true"
+                                    width="120">Kích Thước</th>
+                                <th data-options="field:'exchangeFee', align:'right', halign:'center', resizable:true, fixed:true, formatter: formatMoney"
+                                    width="120">Đơn Giá(VND)</th>
+                                <th data-options="field:'vatRate', align:'right', halign:'center', resizable:true, fixed:true"
+                                    width="80">Thuế(%)</th>
+                                <th data-options="field:'vatAfterFee', align:'right', halign:'center', resizable:true, formatter: formatMoney"
+                                    width="120">Tổng Tiền(VND)</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="total">
+                <b>Tổng cộng: <span id="total"></span><span> đồng.</span></b>
+            </div>
+        </div>
+        <div class="layui-layer-btn footer">
+            <a class="layui-layer-btn0" onclick="confirm()">Thanh toán</a>
+            <a class="layui-layer-btn1" onclick="closeForm()">Hủy bỏ</a>
+        </div>
+    </div>
+</body>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: easyui-js" />
+<script type="text/javascript" th:inline="javascript">
+    var billList = /*[[${billList}]]*/;
+</script>
+<script th:src="@{/js/logistic/shiftingCont/paymentShiftingForm.js}"></script>
+
+</html>

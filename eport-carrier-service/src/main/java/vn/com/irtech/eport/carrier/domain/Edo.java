@@ -114,12 +114,40 @@ public class Edo extends BaseEntity {
 	private Date fileCreateTime;
 
 	/** Final port of discharge */
-	@Excel(name = "Port Of Loading")
 	private String pol;
 
+	@Excel(name = "Port Of Loading")
+	private String polName;
+
 	/** Pick-up location */
-	@Excel(name = "Port Of Discharged")
 	private String pod;
+
+	@Excel(name = "Port Of Discharged")
+	private String podName;
+
+	public String getPolName() {
+		return polName;
+	}
+
+	public void setPolName(String polName) {
+		this.polName = polName;
+	}
+
+	public String getPol() {
+		return pol;
+	}
+
+	public void setPol(String pol) {
+		this.pol = pol;
+	}
+
+	public String getPodName() {
+		return this.podName;
+	}
+
+	public void setPodName(String podName) {
+		this.podName = podName;
+	}
 
 	public String getPod() {
 		return this.pod;
@@ -127,14 +155,6 @@ public class Edo extends BaseEntity {
 
 	public void setPod(String pod) {
 		this.pod = pod;
-	}
-
-	public void setPol(String pol) {
-		this.pol = pol;
-	}
-
-	public String getPol() {
-		return pol;
 	}
 
 	public void setFileCreateTime(Date fileCreateTime)
