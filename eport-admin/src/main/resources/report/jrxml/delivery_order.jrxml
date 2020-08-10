@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="delivery_order" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1f5ea28e-6470-4626-a275-304d837ca6c6">
 	<property name="ireport.zoom" value="1.4641000000000006"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="21"/>
+	<property name="ireport.y" value="213"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -88,42 +88,42 @@
 			<staticText>
 				<reportElement x="341" y="137" width="89" height="20" uuid="cd5e3e34-7326-4b7f-86f1-709be29728e1"/>
 				<textElement>
-					<font fontName="DejaVu Sans" isBold="false"/>
+					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(Print Date)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="341" y="177" width="89" height="20" uuid="aa94c149-5629-465e-8633-0bf1a13decd0"/>
 				<textElement>
-					<font fontName="DejaVu Sans" isBold="false"/>
+					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(Order Number)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="24" y="137" width="92" height="20" uuid="15ce894b-fba6-45a5-a1fd-af14ac6007a0"/>
 				<textElement>
-					<font fontName="DejaVu Sans" isBold="false"/>
+					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(Bussiness Unit)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="24" y="177" width="92" height="20" uuid="00e826e6-c200-4303-a6a1-550cb17e5832"/>
 				<textElement>
-					<font fontName="DejaVu Sans" isBold="false"/>
+					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(Vessel / voy)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="24" y="217" width="45" height="20" uuid="53c054dd-5952-4d1c-b21d-8c573ebd5b11"/>
 				<textElement>
-					<font fontName="DejaVu Sans" isBold="false"/>
+					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(From)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="341" y="217" width="63" height="20" uuid="9fd29be9-b07f-4f18-8524-3419c0584f3a"/>
 				<textElement>
-					<font fontName="DejaVu Sans" isBold="false"/>
+					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(Terminal)]]></text>
 			</staticText>
@@ -193,7 +193,7 @@
 			<staticText>
 				<reportElement x="24" y="257" width="76" height="20" uuid="9364720b-0a51-43a4-97a7-f436d4035c5c"/>
 				<textElement>
-					<font fontName="DejaVu Sans"/>
+					<font fontName="DejaVu Sans" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(Bill of Lading)]]></text>
 			</staticText>
