@@ -2,16 +2,28 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { commonStyles, Colors, sizeWidth, sizeHeight } from '@/commons';
 import moment from 'moment';
+import NotifyDetailModal from './notifi-detail-modal';
 
 const ic_c = require('@/assets/icons/Group-c.png')
 const ic_l = require('@/assets/icons/Group-l.png')
 
 export default class Item extends Component {
+  constructor (props) {
+    super(props);
+    this.state = {
+      modalVisible: false
+    }
+  }
+
+  onClose = () => {
+    this.setState({modalVisible: false})
+  }
+
   render() {
     var { data, onPress, index } = this.props;
     var date = moment(data.createTime).format('DD-MM-YYYY')
     return (
-      <TouchableOpacity onPress={onPress} style={styles.itemContainer}>
+      <TouchableOpacity onPress={() => this.setState({modalVisible: true})} style={styles.itemContainer}>
         <View style={styles.imageView}>
           {
             index % 2 == 0 ?
@@ -21,10 +33,16 @@ export default class Item extends Component {
           }
         </View>
         <View style={styles.ContentView}>
-          <Text style={styles.title}>{data.title}</Text>
+          <Text style={[styles.title, index % 2 == 0 ? {fontWeight: 'bold'} : null]}>{data.title}</Text>
           <Text style={styles.description}>{data.content}</Text>
           <Text style={styles.datetime}>{date}</Text>
         </View>
+        <NotifyDetailModal
+          onClose = {this.onClose}
+          visible = {this.state.modalVisible}
+          data = {data}
+          index = {index}
+        />
       </TouchableOpacity>
     )
   }

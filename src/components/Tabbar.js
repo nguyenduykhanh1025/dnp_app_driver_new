@@ -28,6 +28,12 @@ import {
     fontSizeValue as fs,
 } from '@/commons'
 
+let unseen = 0;
+
+const getUnseenNumber = () => {
+    unseen = 6;
+    return unseen;
+}
 
 const Tabbar = (props) => {
     const { navigation } = props;
@@ -110,7 +116,13 @@ const Tabbar = (props) => {
 
                             </View>)
                     }
-
+                    {
+                        tab.name == 'Thông báo' && getUnseenNumber() != 0 ?
+                        <View style = {styles.notifyNumber}>
+                            <Text style = {styles.number}>{getUnseenNumber() > 99 ? '99+' : getUnseenNumber()}</Text>
+                        </View>
+                        : null
+                    }
                 </TouchableOpacity>
             ) :
                 null)}
@@ -193,6 +205,22 @@ const styles = StyleSheet.create({
     badgeText: {
         marginVertical: hs(1),
         marginHorizontal: ws(5)
+    },
+    notifyNumber: {
+        height: hs(18),
+        width: hs(18),
+        borderRadius: hs(25),
+        backgroundColor: '#FF6060',
+        position: 'absolute',
+        top: hs(12),
+        right: ws(47),
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    number: {
+        color: 'white',
+        fontSize: fs(13),
+        fontWeight: 'bold'
     }
 });
 
