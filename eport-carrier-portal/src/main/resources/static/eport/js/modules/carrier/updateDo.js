@@ -326,7 +326,7 @@ function updateDO() {
               title: "Thông báo",
               btn: ["Đồng Ý"],
             })
-            reload()
+            loadTable();
           } else {
             $.modal.alertError(result.msg)
           }

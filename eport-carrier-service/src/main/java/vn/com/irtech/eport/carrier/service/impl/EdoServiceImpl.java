@@ -221,7 +221,8 @@ public class EdoServiceImpl implements IEdoService
 				if(!releaseTo[3].isEmpty())
 				{
 					releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length());
-					edi.setConsignee(releaseTo[3]);
+					String rs = releaseTo[3].replace(":", "");
+					edi.setConsignee(rs);
 				}
 				continue;
 			}
