@@ -1,0 +1,7 @@
+gen: 
+  author: irtehc
+  packageName: vn.com.irtech.eport.system
+  # Automatically remove table prefix, default is false
+  autoRemovePre: false
+  # Table prefix (the generated class name will not contain the table prefix, multiples are separated by commas)
+  tablePrefix: sys_

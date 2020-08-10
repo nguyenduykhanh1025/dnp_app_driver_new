@@ -1,11 +1,7 @@
-
-# 代码生成
 gen: 
-  # 作者
-  author: ruoyi
-  # 默认生成包路径 system 需改成自己的模块名称 如 system monitor tool
+  author: irtech
   packageName: vn.com.irtech.eport.system
-  # 自动去除表前缀，默认是false
+  # Automatically remove table prefix, default is false
   autoRemovePre: false
-  # 表前缀（生成类名不会包含表前缀，多个用逗号分隔）
+  # Table prefix (the generated class name will not contain the table prefix, multiples are separated by commas)
   tablePrefix: sys_
