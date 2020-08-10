@@ -137,9 +137,9 @@ class LoginContainer extends PureComponent {
             param: {
                 userName: loginname,
                 passWord: pwd,
-                deviceToken: 'ádasdadas'
+                deviceToken: fcmToken,
             },
-            token: fcmToken,
+            token: '',
             method: 'POST'
         }
         var result = undefined;
