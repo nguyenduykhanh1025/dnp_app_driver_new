@@ -4,7 +4,7 @@ spring:
         driverClassName: oracle.jdbc.OracleDriver
         druid:
             master:
-                url: jdbc:oracle:thin:@192.168.0.29:1521/EPORT
+                url: jdbc:oracle:thin:@117.3.52.70:41521/EPORT
                 username: EPORT_TEST
                 password: WINNER
             slave:

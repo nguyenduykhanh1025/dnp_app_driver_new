@@ -154,12 +154,12 @@ function loadView() {
                 editor: false
             },
             {
-                data: 'unloadingPort',
+                data: 'pol',
                 type: 'text',
                 editor: false
             },
             {
-                data: 'pickUpLocation',
+                data: 'pod',
                 type: 'text',
                 editor: false
             },
@@ -200,8 +200,8 @@ function loadView() {
             'Tên tàu',
             'Mã tàu',
             'Số chuyến',
+            'Cảng xếp hàng',
             'Cảng dỡ hàng',
-            'Cảng bốc hàng',
             'Người nhận hàng',
             'Ngày hết hạn lưu cont',
             'Ngày tạo file',
