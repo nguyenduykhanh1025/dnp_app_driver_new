@@ -31,6 +31,7 @@ import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -424,10 +425,5 @@ public class LogisticSendContFullController extends LogisticBaseController {
 //		return error();
 //	}
 //	
-//	@PostMapping("/abc")
-//	@ResponseBody
-//	public Integer abc(@RequestBody ShipmentDetail shipmentDetail){
-//		Integer index = catosApiService.getIndexBooking(shipmentDetail);
-//		return index;
-//	}
+
 }

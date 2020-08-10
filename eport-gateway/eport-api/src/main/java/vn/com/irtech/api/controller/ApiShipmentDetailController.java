@@ -152,4 +152,9 @@ public class ApiShipmentDetailController {
 		}
 		return null;
 	}
+	
+	@GetMapping("/shipmentDetail/location/bl-no/{blNo}/container-no/{containerNo}")
+	public ShipmentDetailEntity getLocationForReceiveF(@PathVariable String blNo, @PathVariable String containerNo) {
+		return shipmentDetailDao.getLocationForReceiveF(blNo, containerNo);
+	}
 }

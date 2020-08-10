@@ -2,6 +2,7 @@ package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
 
+import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -65,4 +66,9 @@ public interface ICatosApiService {
 	 * @return
 	 */
 	public Integer getIndexBooking(ShipmentDetail shipmentDetail);
+	
+	/***
+	 * input: blNo, containerNo
+	 */
+	public PickupHistory getLocationForReceiveF(PickupHistory pickupHistory);
 }

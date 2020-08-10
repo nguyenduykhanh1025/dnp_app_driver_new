@@ -54,4 +54,7 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public List<Date> getIndexContMasterForSSRByContainerNo(String containerNo);
 	
 	public List<ShipmentDetailEntity> getIndexBooking(ShipmentDetailEntity shipmentDetailEntity);
+	
+	public ShipmentDetailEntity getLocationForReceiveF(@Param("blNo") String blNo, @Param("containerNo") String containerNo);
+	
 }

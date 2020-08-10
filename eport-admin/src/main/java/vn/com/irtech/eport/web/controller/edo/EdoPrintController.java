@@ -98,7 +98,8 @@ public class EdoPrintController extends BaseController{
 			String blNo = edoList.get(0).getBillOfLading();
 			blNoList.add(blNo);
 			for(Edo i: edoList) {
-				if(!i.getBillOfLading().equals(blNo)) {
+				//i.getBill != pre blNo  && i.getBill not contains in blNoList
+				if(!i.getBillOfLading().equals(blNo) && blNoList.indexOf(i.getBillOfLading()) == -1 ) {
 					blNoList.add(i.getBillOfLading());
 					blNo = i.getBillOfLading();
 				}
