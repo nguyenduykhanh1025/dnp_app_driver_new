@@ -425,5 +425,4 @@ public class LogisticSendContFullController extends LogisticBaseController {
 //		return error();
 //	}
 //	
-
 }

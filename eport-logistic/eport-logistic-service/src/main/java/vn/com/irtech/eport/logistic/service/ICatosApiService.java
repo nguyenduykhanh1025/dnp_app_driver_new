@@ -71,4 +71,9 @@ public interface ICatosApiService {
 	 * input: blNo, containerNo
 	 */
 	public PickupHistory getLocationForReceiveF(PickupHistory pickupHistory);
+	
+	/***
+	 * input: containerNo, blNo, bookingNo, vslNm, voyNo, sztp, opeCode, fe
+	 */
+	public String checkContainerStatus(ShipmentDetail shipmentDetail);
 }
