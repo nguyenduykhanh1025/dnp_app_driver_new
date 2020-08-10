@@ -268,7 +268,21 @@ class HomeScreen extends PureComponent {
                 <HeaderMain
                     backgroundColor={Colors.white}
                     renderLeft={this.renderLeft()}
-                    onPressLeft={() => { this.props.navigation.goBack() }}
+                    onPressLeft={() => {
+                        Alert.alert(
+                            "Thông báo xác nhận!",
+                            "Bạn chưa quét mã, bạn chắc chắn muốn thoát?",
+                            [
+                                { text: "Có", onPress: () => this.props.navigation.goBack() },
+                                {
+                                    text: "Không",
+                                    style: "cancel"
+                                },
+                            ],
+                            { cancelable: false }
+                        )
+
+                    }}
                     disableBG
                     disableStep
                 />

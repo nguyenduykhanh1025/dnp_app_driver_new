@@ -5,6 +5,7 @@ import {
     StyleSheet,
     Image,
     ActivityIndicator,
+    ImageBackground,
 } from 'react-native';
 import NavigationService from '@/utils/navigation';
 import {
@@ -28,6 +29,7 @@ import {
 import {
     callApi
 } from '@/requests';
+import Geolocation from '@react-native-community/geolocation';
 
 const splash_bg = require('@/assets/images/splash-bg.png');
 const logo = require('@/assets/images/logo.png');
@@ -37,6 +39,7 @@ class ProfileScreen extends Component {
         super(props);
         this.state = {
         }
+        this.token = null;
     };
 
     onLogin = async (loginname, pwd) => {
@@ -55,11 +58,55 @@ class ProfileScreen extends Component {
         console.log('autologin', result)
         if (result.code == 0) {
             saveToken(result.token)
+            this.token = result.token;
+            this.onShareLocation()
             NavigationService.navigate(homeTab.home, {})
         }
         else {
             NavigationService.navigate(authStack.login, {})
         }
+    }
+
+    onShareLocation = async () => {
+        Geolocation.setRNConfiguration({
+            authorizationLevel: 'always'
+        });
+        Geolocation.getCurrentPosition(
+            info => {
+                // Alert.alert('GPS location', JSON.stringify(info))
+                var GPS = info.coords;
+                x = GPS.latitude;
+                y = GPS.longitude;
+                speed = GPS.speed;
+                this.onPushLocation(GPS.latitude, GPS.longitude)
+            },
+            error => {
+                // Alert.alert('Error', JSON.stringify(error))
+            },
+            Platform.OS === 'android' ? {}
+                :
+                {
+                    enableHighAccuracy: true,
+                    timeout: 200,
+                    distanceFilter: 0.5,
+                    useSignificantChanges: true,
+                },
+        )
+    }
+
+    onPushLocation = async (x, y) => {
+        const params = {
+            api: 'location',
+            param: {
+                x: x,
+                y: y
+            },
+            token: this.token,
+            method: 'POST'
+        }
+        var result = undefined;
+        result = await callApi(params);
+        console.log('splash.resultonPushLocation', result)
     }
 
     componentDidMount = async () => {
@@ -76,16 +123,14 @@ class ProfileScreen extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <Image
-                    source={splash_bg}
-                    style={styles.bg}
-                    resizeMode={'stretch'}
-                />
+            <ImageBackground
+                style={styles.container}
+                source={splash_bg}
+            >
                 <View style={{ position: 'absolute' }}>
                     <ActivityIndicator size="large" color={Colors.white} />
                 </View>
-            </View>
+            </ImageBackground>
         )
     }
 }
@@ -104,4 +149,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    bg: {
+        width: ws(375),
+        height: hs(812),
+    }
 })

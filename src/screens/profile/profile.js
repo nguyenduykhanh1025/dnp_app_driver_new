@@ -232,7 +232,7 @@ class ProfileScreen extends Component {
               onSelect={(item) => { 
                 console.log('BSX Rơ Mooc', item) }}
             />
-            <View style={{
+            {/* <View style={{
               flexDirection: 'row',
               width: ws(315),
               marginTop: 20,
@@ -257,7 +257,7 @@ class ProfileScreen extends Component {
                 onValueChange={this.toggleSwitch}
                 value={this.state.isEnabled}
               />
-            </View>
+            </View> */}
           </View>
         </View>
       </ScrollView>

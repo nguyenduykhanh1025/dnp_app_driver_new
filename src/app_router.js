@@ -51,7 +51,7 @@ class AppAppContainer extends React.Component {
         }
         var result = undefined;
         result = await callApi(params);
-        console.log('resultonPushLocation', result)
+        console.log('App-router.resultonPushLocation', result)
     }
 
     componentDidMount = async () => {
@@ -60,14 +60,14 @@ class AppAppContainer extends React.Component {
         var y = null;
         var speed = null;
         CheckInternetEvery();
-        var GPSEnable = await getGPSEnable();
+        // var GPSEnable = await getGPSEnable();
         // console.log('GPSEnable', GPSEnable)
         Geolocation.setRNConfiguration({
             authorizationLevel: 'always'
         });
 
         LocationServicesDialogBox.checkLocationServicesIsEnabled({
-            message: "<h2>Bạn đã bật GPS chưa ?</h2>Nếu chưa hãy bật GPS, Wi-Fi hoặc 3G,4G nhé!",
+            message: "<h2>Tính năng chia sẻ vị trí của thiết bị bạn đã tắt !</h2>Vui lòng bật chia sẻ vị trí, Wi-Fi hoặc 3G,4G!",
             ok: "Có",
             cancel: "Không",
             enableHighAccuracy: true, // true => GPS AND NETWORK PROVIDER, false => GPS OR NETWORK PROVIDER
@@ -103,41 +103,39 @@ class AppAppContainer extends React.Component {
                 });
 
         });
-        if (GPSEnable == 'true') {
-            Geolocation.getCurrentPosition(
-                info => {
-                    // Alert.alert('GPS location', JSON.stringify(info))
-                    var GPS = info.coords;
-                    // console.log('GPS', GPS)
-                    x = GPS.latitude;
-                    y = GPS.longitude;
-                    speed = GPS.speed;
-                    this.token != null ?
-                        this.onPushLocation(GPS.latitude, GPS.longitude)
-                        :
-                        null
-                },
-                error => {
-                    // Alert.alert('Error', JSON.stringify(error))
-                },
-                Platform.OS === 'android' ? {}
-                    :
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 200,
-                        distanceFilter: 0.5,
-                        useSignificantChanges: true,
-                    },
-            )
-
-            BackgroundTimer.runBackgroundTimer(() => {
+        // if (GPSEnable == 'true') {
+        Geolocation.getCurrentPosition(
+            info => {
+                var GPS = info.coords;
+                x = GPS.latitude;
+                y = GPS.longitude;
+                speed = GPS.speed;
                 this.token != null ?
-                    this.onPushLocation(x, y)
+                    this.onPushLocation(GPS.latitude, GPS.longitude)
                     :
                     null
             },
-                120000);
-        }
+            error => {
+                // Alert.alert('Error', JSON.stringify(error))
+            },
+            Platform.OS === 'android' ? {}
+                :
+                {
+                    enableHighAccuracy: true,
+                    timeout: 200,
+                    distanceFilter: 0.5,
+                    useSignificantChanges: true,
+                },
+        )
+
+        BackgroundTimer.runBackgroundTimer(() => {
+            this.token != null ?
+                this.onPushLocation(x, y)
+                :
+                null
+        },
+            120000);
+        // }
     }
 
     componentWillMount() {
