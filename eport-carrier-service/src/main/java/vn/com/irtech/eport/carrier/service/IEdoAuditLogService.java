@@ -4,7 +4,6 @@ import java.util.List;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
-import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 
 /**
  * eDO Audit Trail LogService Interface

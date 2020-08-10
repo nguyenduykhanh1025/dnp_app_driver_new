@@ -17,9 +17,6 @@ function loadTable() {
         height: $(document).height() - 65,
         pagination: true,
         pageSize: 20,
-        onClickRow: function () {
-            getSelectedRow();
-        },
         nowrap: false,
         striped: true,
         loader: function(param, success, error) {

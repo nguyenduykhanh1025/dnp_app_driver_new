@@ -28,6 +28,30 @@ $(function() {
             })
         })
 	}
+	
+	// 气泡弹出框特效（移到元素时）
+	$(document).on("mouseenter", '.table [data-toggle="popover"]', function() {
+		var _this = this;
+		$(this).popover("show");
+		$(".popover").on("mouseleave", function() {
+			$(_this).popover('hide');
+		});
+	})
+
+	// 气泡弹出框特效（离开元素时）
+	$(document).on("mouseleave", '.table [data-toggle="popover"]', function() {
+		var _this = this;
+		setTimeout(function() {
+			if (!$(".popover:hover").length) $(_this).popover("hide");
+		}, 100);
+	});
+	
+	// 取消回车自动提交表单
+	$(document).on("keypress", ":input:not(textarea):not([type=submit])", function(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+        }
+    });
 	 
 	if ($(".select-time").length > 0) {
 		layui.use('laydate', function() {
@@ -281,6 +305,43 @@ var storage = {
     }
 };
 
+// 主子表操作封装处理
+var sub = {
+    editColumn: function() {
+    	var count = $("#" + table.options.id).bootstrapTable('getData').length;
+    	var params = new Array();
+    	for (var dataIndex = 0; dataIndex <= count; dataIndex++) {
+    		var columns = $('#' + table.options.id + ' tr[data-index="' + dataIndex + '"] td');
+    		var obj = new Object();
+    		for (var i = 0; i < columns.length; i++) {
+    			var inputValue = $(columns[i]).find('input');
+    			var selectValue = $(columns[i]).find('select');
+    			var key = table.options.columns[i].field;
+    			if ($.common.isNotEmpty(inputValue.val())) {
+    				obj[key] = inputValue.val();
+    			} else if ($.common.isNotEmpty(selectValue.val())) {
+    				obj[key] = selectValue.val();
+    			} else {
+    				obj[key] = "";
+    			}
+    		}
+    		params.push({ index: dataIndex, row: obj });
+    	}
+    	$("#" + table.options.id).bootstrapTable("updateRow", params);
+    },
+    delColumn: function(column) {
+    	sub.editColumn();
+    	var subColumn = $.common.isEmpty(column) ? "index" : column;
+    	var ids = $.table.selectColumns(subColumn);
+        if (ids.length == 0) {
+            $.modal.alertWarning("请至少选择一条记录");
+            return;
+        }
+        $("#" + table.options.id).bootstrapTable('remove', { field: subColumn, values: ids });
+    }
+};
+
+/** 设置全局ajax处理 */
 $.ajaxSetup({
     complete: function(XMLHttpRequest, textStatus) {
         if (textStatus == 'timeout') {

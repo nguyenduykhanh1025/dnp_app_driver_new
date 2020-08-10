@@ -221,7 +221,8 @@ public class EdoServiceImpl implements IEdoService
 				if(!releaseTo[3].isEmpty())
 				{
 					releaseTo[3] = releaseTo[3].substring(0, releaseTo[3].length());
-					edi.setConsignee(releaseTo[3]);
+					String rs = releaseTo[3].replace(":", "");
+					edi.setConsignee(rs);
 				}
 				continue;
 			}
@@ -258,8 +259,9 @@ public class EdoServiceImpl implements IEdoService
 				if(unloadingPorts.length >= 4){
 					// Split POL: LOC+170+VNDAD:139:6+DA NANG:TER:ZZZ
 					String pol = unloadingPorts[2].split(":")[0]; // VNDAD
-//					String polName = unloadingPorts[3].split(":")[0];
+					String polName = unloadingPorts[3].split(":")[0];
 					edi.setPol(pol);
+					edi.setPolName(polName);
 					//String[] unloadingPort = unloadingPorts[3].split(":");
 					//edi.setPol(unloadingPort[0]);
 				}
@@ -272,7 +274,9 @@ public class EdoServiceImpl implements IEdoService
 				if(pickUpLocations.length >= 4){
 					// LOC+176+VNDAD:139:6+DA NANG:TER:ZZZ
 					String pod = pickUpLocations[2].split(":")[0];  // VNDAD
+					String podName = pickUpLocations[3].split(":")[0];
 					edi.setPod(pod);
+					edi.setPodName(podName);
 					//String[] pickUpLocation = pickUpLocations[3].split(":");
 					//edi.setPod(pickUpLocation[0]);
 				}

@@ -154,12 +154,12 @@ function loadView() {
                 editor: false
             },
             {
-                data: 'unloadingPort',
+                data: 'pol',
                 type: 'text',
                 editor: false
             },
             {
-                data: 'pickUpLocation',
+                data: 'pod',
                 type: 'text',
                 editor: false
             },
@@ -200,8 +200,8 @@ function loadView() {
             'Tên tàu',
             'Mã tàu',
             'Số chuyến',
+            'Cảng xếp hàng',
             'Cảng dỡ hàng',
-            'Cảng bốc hàng',
             'Người nhận hàng',
             'Ngày hết hạn lưu cont',
             'Ngày tạo file',
@@ -225,18 +225,6 @@ $('#export-file').click(function() {
     }).done(function(result){
         console.log(result);
     });
-    
-    // let filename = "InfoEDIFile";
-    // let date = new Date();
-    // let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    // let month = date.getMonth() + 1;
-    // let monthText = month < 10 ? "0" + month : month;
-    // let year = date.getFullYear();
-    // $("#viewEdi").table2excel({
-    //     exclude: ".csv",
-    //     name: "Worksheet Name",
-    //     filename: filename + day + monthText + year 
-    //   }); 
 });
 function printEdoPDF() {
 	if(!dataObj){

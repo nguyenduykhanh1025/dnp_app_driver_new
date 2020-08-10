@@ -70,25 +70,24 @@
         </div>
         <div>
           <div class="form-group">
-            <label class="sr-only" for="voyNo">OPR Code</label>
+            <label class="sr-only" for="searchAll">Search All</label>
             <div class="input-group">
               <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
             </div>
           </div>
           <div class="form-group">
-            <label class="sr-only" for="voyNo">OPR Code</label>
+            <label class="sr-only" for="fromDate">From Date</label>
             <div class="input-group">
               <input class="form-control time-input" id="fromDate" name="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" />
             </div>
           </div>
           <div class="form-group">
-            <label class="sr-only" for="voyNo">OPR Code</label>
+            <label class="sr-only" for="toDate">To Date</label>
             <div class="input-group">
               <input class="form-control time-input" id="toDate" name="toDate" onchange="changeToDate()" placeholder="Đến ngày" />
             </div>
           </div>
           <div class="form-group">
-            <label class="sr-only" for="voyNo">OPR Code</label>
             <div class="input-group">
               <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
             </div>
@@ -135,12 +134,10 @@
               VOY NO
             </th>
             <th data-options="field:'pol',align:'left'" width="110">
-              UNLOADING <br>
-              PORT
+              POL
             </th>
             <th data-options="field:'pod',align:'left'" width="110">
-              PICKUP <br>
-              LOCATION
+              POD
             </th>
             <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
               STATUS

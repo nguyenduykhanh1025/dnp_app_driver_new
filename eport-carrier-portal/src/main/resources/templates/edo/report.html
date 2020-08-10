@@ -20,6 +20,7 @@
               <ul>
                 <li>
                     <div class="form-group">
+                      <label class="sr-only" for="vessel">Vessel</label>
                       <div class="input-group width150">
                       <select class="c-search-box-vessel"> 
                         <option selected="selected"></option>
@@ -29,6 +30,7 @@
                 </li>
                 <li>
                   <div class="form-group">
+                    <label class="sr-only" for="vessel-code">Vessel Code </label>
                     <div class="input-group width150">
                       <select class="c-search-box-vessel-code"> 
                         <option selected="selected"></option>
@@ -48,7 +50,7 @@
             </li>
                 <li>
                   <div class="form-group">
-                    <label class="sr-only" for="voyNo">OPR Code</label>
+                    <label class="sr-only" for="search-All">Seacrh All</label>
                     <div class="input-group">
                       <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
                     </div>
@@ -56,7 +58,7 @@
                 </li>
                 <li>
                   <div class="form-group">
-                    <label class="sr-only" for="voyNo">OPR Code</label>
+                    <label class="sr-only" for="from-Date">From Date</label>
                     <div class="input-group">
                       <input class="time-input" id="fromDate" name="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" />
                     </div>
@@ -64,7 +66,7 @@
                 </li>
                 <li>
                   <div class="form-group">
-                    <label class="sr-only" for="voyNo">OPR Code</label>
+                    <label class="sr-only" for="to-Date">To Date</label>
                     <div class="input-group">
                       <input class="time-input" id="toDate" name="toDate" onchange="changeToDate()" placeholder="Đến ngày" />
                     </div>
@@ -106,11 +108,14 @@
                 <th data-options="field:'vessel',align:'left'" width="110">
                   VESSEL
                 </th>
-                <th data-options="field:'vesselNo',align:'left'" width="110">
-                  VESSEL NO
-                </th>
                 <th data-options="field:'voyNo',align:'left'" width="110">
                   VOY NO
+                </th>
+                <th data-options="field:'pol',align:'left'" width="110">
+                  POL
+                </th>
+                <th data-options="field:'pod',align:'left'" width="110">
+                  POD
                 </th>
                 <th data-options="field:'status',align:'left',formatter:formatStatus" width="80">
                   STATUS
