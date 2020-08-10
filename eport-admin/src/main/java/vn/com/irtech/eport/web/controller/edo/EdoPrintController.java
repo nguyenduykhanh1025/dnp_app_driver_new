@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -112,9 +113,17 @@ public class EdoPrintController extends BaseController{
 						}
 					}
 					if(list.size() > 0) {
-						final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(list);
+						//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(list);
 						final Map<String, Object> parameters = new HashMap<>();
-						final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
+						parameters.put("consignee", list.get(0).getConsignee());
+						parameters.put("businessUnit", list.get(0).getBusinessUnit());
+						parameters.put("vessel/voy", list.get(0).getVessel() + " / " + list.get(0).getVoyNo());
+						parameters.put("orderNumber", list.get(0).getOrderNumber());
+						parameters.put("pol", list.get(0).getPol());
+						parameters.put("pod", list.get(0).getPod());
+						parameters.put("billOfLading", list.get(0).getBillOfLading());
+						parameters.put("list", list);
+						final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
 						jpList.add(new SimpleExporterInputItem(print));
 					}
 				}
