@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.config.Global;
+import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.json.JSONObject;
+import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -316,6 +318,47 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			RestTemplate restTemplate = new RestTemplate();
 			Integer index = restTemplate.getForObject(url, Integer.class);
 			return index;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+	/***
+	 * input: vslNm, voyNo, year, sztp,booking
+	 * @param shipmentDetail
+	 * @return
+	 */
+	@Override
+	public Integer getIndexBooking(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/booking/index";
+			RestTemplate restTemplate = new RestTemplate();
+			Integer index = restTemplate.postForObject(url, shipmentDetail, Integer.class);
+			return index;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
+	/***
+	 * input: blNo, containerNo
+	 */
+
+	@Override
+	public PickupHistory getLocationForReceiveF(PickupHistory pickupHistory) {
+		try {
+			String blNo = pickupHistory.getBlNo();
+			String containerNo = pickupHistory.getContainerNo();
+			String url = Global.getApiUrl() + "/shipmentDetail/location/bl-no/" + blNo +"/container-no/" + containerNo;
+			RestTemplate restTemplate = new RestTemplate();
+			ShipmentDetail location = restTemplate.getForObject(url, ShipmentDetail.class);
+			if(location != null) {
+				pickupHistory.setBlock(location.getBlock());
+				pickupHistory.setBay(location.getBay());
+				pickupHistory.setLine(String.valueOf(location.getRow()));
+				pickupHistory.setTier(String.valueOf(location.getTier()));
+			}
+			return pickupHistory;
 		} catch (Exception e) {
 			e.getStackTrace();
 			return null;
