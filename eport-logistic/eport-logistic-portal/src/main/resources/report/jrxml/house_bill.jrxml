@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="house_bill" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="befdddb3-593e-4d04-a960-dcbbebcf0bf8">
-	<property name="ireport.zoom" value="1.7715610000000013"/>
-	<property name="ireport.x" value="11"/>
-	<property name="ireport.y" value="402"/>
+	<property name="ireport.zoom" value="1.7715610000000017"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="144"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -47,78 +47,71 @@
 	</background>
 	<title>
 		<band height="309" splitType="Stretch">
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="390" y="207" width="151" height="20" uuid="1cee733a-4340-4d94-b3a5-bcfab22c0810"/>
-				<textElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="359" y="245" width="196" height="20" isPrintWhenDetailOverflows="true" uuid="1cee733a-4340-4d94-b3a5-bcfab22c0810"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pod}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="126" y="69" width="415" height="42" uuid="038a491b-af50-4be0-8e57-955b95ff54a3"/>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{consignee}]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement x="327" y="207" width="63" height="20" uuid="ad131965-4be5-4283-88d0-d31a7920cc13"/>
-				<textElement>
+				<reportElement x="296" y="245" width="63" height="20" uuid="ad131965-4be5-4283-88d0-d31a7920cc13"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Đến Cảng:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="327" y="127" width="52" height="20" uuid="6f1c3e65-4789-47c2-b9fb-1c8b64d6c334"/>
-				<textElement>
+				<reportElement x="296" y="82" width="52" height="20" uuid="6f1c3e65-4789-47c2-b9fb-1c8b64d6c334"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ngày in:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="10" y="247" width="104" height="20" uuid="88ee138d-447d-4927-9dad-01543f4e6e4a"/>
-				<textElement>
+				<reportElement x="20" y="122" width="104" height="20" uuid="88ee138d-447d-4927-9dad-01543f4e6e4a"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Vận đơn chính số:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="10" y="207" width="27" height="20" uuid="386dd96d-9d4d-4da6-a26c-5771d8fe7f04"/>
-				<textElement>
+				<reportElement x="20" y="245" width="27" height="20" uuid="386dd96d-9d4d-4da6-a26c-5771d8fe7f04"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Từ:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="327" y="227" width="63" height="20" uuid="29138042-e869-4d1f-a8b7-78e2bc051c60"/>
+				<reportElement x="296" y="265" width="63" height="20" uuid="29138042-e869-4d1f-a8b7-78e2bc051c60"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(Terminal)]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="102" y="167" width="173" height="40" uuid="5f55d07a-5413-41cb-b393-ec5cf8c6c3fb"/>
-				<textElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="205" width="152" height="20" isPrintWhenDetailOverflows="true" uuid="5f55d07a-5413-41cb-b393-ec5cf8c6c3fb"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{vessel/voy}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="10" y="267" width="76" height="20" uuid="dd1c5d08-455d-45bd-a2f2-b7581bf2edbc"/>
+				<reportElement x="20" y="142" width="76" height="20" uuid="dd1c5d08-455d-45bd-a2f2-b7581bf2edbc"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(M- B/L)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="10" y="147" width="92" height="20" uuid="7d87ac49-5ac1-497f-8b6c-3cbca1e9d85e"/>
+				<reportElement x="20" y="102" width="92" height="20" uuid="7d87ac49-5ac1-497f-8b6c-3cbca1e9d85e"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(Bussiness Unit)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="327" y="147" width="89" height="20" uuid="7c4ff2eb-8390-4678-84d8-2aab4104ee42"/>
+				<reportElement x="296" y="102" width="89" height="20" uuid="7c4ff2eb-8390-4678-84d8-2aab4104ee42"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
@@ -132,57 +125,50 @@
 				<text><![CDATA[(DELIVERY ORDER)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="55" y="69" width="71" height="20" uuid="4fa005e4-bd3e-4e88-82b4-4e5486313cb5"/>
-				<textElement>
-					<font fontName="DejaVu Sans" isBold="true"/>
-				</textElement>
-				<text><![CDATA[Consignee:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="10" y="167" width="92" height="20" uuid="32417b2d-c9d4-40e4-a2a5-3886f7b25a0a"/>
-				<textElement>
+				<reportElement x="20" y="205" width="92" height="20" uuid="32417b2d-c9d4-40e4-a2a5-3886f7b25a0a"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Tàu / chuyến:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="327" y="187" width="89" height="20" uuid="e5f081c0-d62e-4e34-a3f8-b650522cabac"/>
+				<reportElement x="296" y="225" width="89" height="20" uuid="e5f081c0-d62e-4e34-a3f8-b650522cabac"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(Order Number)]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="37" y="207" width="206" height="20" uuid="625b726f-1f01-41e3-ac10-ab36cfb4c71d"/>
-				<textElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="47" y="245" width="217" height="20" isPrintWhenDetailOverflows="true" uuid="625b726f-1f01-41e3-ac10-ab36cfb4c71d"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{pol}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="379" y="127" width="162" height="20" uuid="dc23d218-5da9-4777-a076-77552de97be8"/>
-				<textElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="348" y="82" width="207" height="20" isPrintWhenDetailOverflows="true" uuid="dc23d218-5da9-4777-a076-77552de97be8"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{printDate}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="102" y="127" width="100" height="20" uuid="9fdf30cf-2d45-4c9b-b8c2-22e37da6aa92"/>
-				<textElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="112" y="82" width="152" height="20" isPrintWhenDetailOverflows="true" uuid="9fdf30cf-2d45-4c9b-b8c2-22e37da6aa92"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{businessUnit}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="10" y="127" width="92" height="20" uuid="1c06b1a8-a485-474f-af7e-3ae664a0777a"/>
-				<textElement>
+				<reportElement x="20" y="82" width="92" height="20" uuid="1c06b1a8-a485-474f-af7e-3ae664a0777a"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Chủ khai thác:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="327" y="167" width="63" height="20" uuid="d837faad-911e-4684-a56a-074fac69e3a7"/>
-				<textElement>
+				<reportElement x="296" y="205" width="63" height="20" uuid="d837faad-911e-4684-a56a-074fac69e3a7"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Số order:]]></text>
@@ -195,54 +181,75 @@
 				<text><![CDATA[LỆNH GIAO HÀNG]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="10" y="187" width="92" height="20" uuid="94f2f09b-5347-48bf-8fa3-bf0b00720ffc"/>
+				<reportElement x="20" y="225" width="92" height="20" uuid="94f2f09b-5347-48bf-8fa3-bf0b00720ffc"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(Vessel / voy)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="10" y="227" width="45" height="20" uuid="28969e62-99e8-479f-a587-a24cf8e668b6"/>
+				<reportElement x="20" y="265" width="45" height="20" uuid="28969e62-99e8-479f-a587-a24cf8e668b6"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(From)]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="390" y="167" width="100" height="20" uuid="5a6c3d04-26c5-4428-b779-e18ac8319be1"/>
-				<textElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="359" y="205" width="196" height="20" isPrintWhenDetailOverflows="true" uuid="5a6c3d04-26c5-4428-b779-e18ac8319be1"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{orderNumber}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="327" y="247" width="100" height="20" uuid="dbbfd40f-e3cc-43f3-9126-e32ce37c9f2d"/>
-				<textElement>
+				<reportElement x="296" y="122" width="100" height="20" uuid="dbbfd40f-e3cc-43f3-9126-e32ce37c9f2d"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Vận đơn phụ số:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="327" y="267" width="100" height="20" uuid="85d51416-e134-41b6-b044-30c606c9cb10"/>
+				<reportElement x="296" y="142" width="100" height="20" uuid="85d51416-e134-41b6-b044-30c606c9cb10"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(H- B/L)]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="114" y="247" width="180" height="20" uuid="435b12bb-e92c-49c4-88cb-5d7cb3074537"/>
-				<textElement>
+			<textField isBlankWhenNull="true">
+				<reportElement x="124" y="122" width="140" height="20" isPrintWhenDetailOverflows="true" uuid="435b12bb-e92c-49c4-88cb-5d7cb3074537"/>
+				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{masterBillNo}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="427" y="247" width="128" height="20" uuid="75d63dc9-a46a-4552-acb9-4dbdcc48c1a4"/>
-				<textElement>
-					<font fontName="DejaVu Sans"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="396" y="122" width="159" height="20" isPrintWhenDetailOverflows="true" uuid="75d63dc9-a46a-4552-acb9-4dbdcc48c1a4"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{houseBillNo}]]></textFieldExpression>
 			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="95" y="162" width="460" height="20" isPrintWhenDetailOverflows="true" uuid="4ae782e2-b2fd-43d8-82e5-21c5177b1c6f"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="DejaVu Sans"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{consignee}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="20" y="182" width="76" height="20" uuid="0a01e9c4-fa3c-4cef-a641-4d5d3ca5d01e"/>
+				<textElement>
+					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Consignee:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="162" width="75" height="20" uuid="b13b6572-0af8-4fc8-862d-9fcf3f5213a6"/>
+				<textElement verticalAlignment="Bottom">
+					<font fontName="DejaVu Sans" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Khách hàng:]]></text>
+			</staticText>
 		</band>
 	</title>
 	<detail>
