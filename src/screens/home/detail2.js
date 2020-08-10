@@ -76,14 +76,15 @@ export default class DetailScreen extends Component {
         "pickupAssignId": this.props.navigation.state.params.data.pickupAssignId,
         "containerNo": this.props.navigation.state.params.data.containerNo,
         "truckNo": this.state.truckNo,
-        "chassisNo": this.state.chassisNo
+        "chassisNo": this.state.chassisNo,
+        "shipmentDetailId": this.props.navigation.state.params.data.shipmentDetailId
       },
       token: this.token,
       method: 'POST'
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('resultonPickupContainer', result)
+    console.log('resultonPickupContainer', result)
     if (result.code == 0) {
       NavigationService.navigate(homeTab.home, { update: 1 })
     }

@@ -82,8 +82,8 @@ class LoginContainer extends PureComponent {
         this.state = {
             // loginname: this.props.loginname != undefined || this.props.loginname != null ? this.props.loginname : '',
             // pwd: this.props.pwd != undefined || this.props.pwd != null ? this.props.pwd : '',
-            loginname: '0935802290',
-            pwd: '123456',
+            loginname: '',
+            pwd: '',
             showpassword: 1,
             onFocusu: false,
             onFocusp: false,
@@ -285,7 +285,7 @@ class LoginContainer extends PureComponent {
                                         <Text style={styles.noteButtonText}>Đăng ký ngay</Text>
                                     </TouchableOpacity>
                                 </View>
-                                <View style={{
+                                {/* <View style={{
                                     width: ws(200),
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -302,7 +302,7 @@ class LoginContainer extends PureComponent {
                                             color: Colors.subColor,
                                         }]}>Quên mật khẩu?</Text>
                                     </TouchableOpacity>
-                                </View>
+                                </View> */}
                             </View>
                         </View>
                     </View>

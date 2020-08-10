@@ -153,7 +153,7 @@ export default class DetailScreen extends Component {
           :
           NavigationService.navigate(mainStack.detail2, { data: item.item })
       }}
-      disabled={item.item.clickable ? true : false}
+      disabled={!item.item.clickable ? true : false}
     />
   )
 

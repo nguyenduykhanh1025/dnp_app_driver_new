@@ -176,7 +176,7 @@ class HomeScreen extends PureComponent {
         mqtt.createClient({
             // uri: 'mqtt://' + settings.mqttServerUrl + ":" + settings.port,
             uri: settings.mqttServerUrl + ":" + settings.port,
-            clientId: this.state.deviceId,
+            clientId: "DriverApp-" + this.state.sessionId,
         }).then((client) => {
             client.on('connect', () => {
                 // console.log('connected');
