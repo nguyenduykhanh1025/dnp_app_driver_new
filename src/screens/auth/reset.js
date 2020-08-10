@@ -82,8 +82,8 @@ class LoginContainer extends PureComponent {
         this.state = {
             // loginname: this.props.loginname != undefined || this.props.loginname != null ? this.props.loginname : '',
             // pwd: this.props.pwd != undefined || this.props.pwd != null ? this.props.pwd : '',
-            loginname: '0935802290',
-            pwd: '123456',
+            loginname: '',
+            pwd: '',
             showpassword: 1,
             onFocusu: false,
             onFocusp: false,
@@ -128,8 +128,6 @@ class LoginContainer extends PureComponent {
     }
 
     onLogin = async () => {
-        const fcmToken = await firebase.messaging().getToken();
-        console.log('token', fcmToken)
         Toast.showLoading()
         const { loginname, pwd } = this.state;
         const params = {
@@ -139,7 +137,7 @@ class LoginContainer extends PureComponent {
                 passWord: pwd,
                 deviceToken: 'ádasdadas'
             },
-            token: fcmToken,
+            token: '',
             method: 'POST'
         }
         var result = undefined;
@@ -224,7 +222,7 @@ class LoginContainer extends PureComponent {
                                 <Text style={styles.HeaderTextDown}>CẢNG ĐÀ NẴNG</Text>
                             </View>
                             <View style={styles.HeaderIcon}>
-                                <Image resizeMode = 'contain' source={hicon} style={styles.HeaderIconImage} />
+                                <Image source={hicon} style={styles.HeaderIconImage} />
                             </View>
                         </View>
                     </View>
@@ -407,12 +405,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state) => {
-    return {
-        loginname: state.loginReducers.toJS().loginname,
-        pwd: state.loginReducers.toJS().pwd,
-        userID: state.loginReducers.toJS().userID,
-        isLoading: state.loginReducers.toJS().isLoading,
-    };
+    return null
 };
 
 export default connect(mapStateToProps)(LoginContainer);

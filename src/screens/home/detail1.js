@@ -86,9 +86,21 @@ export default class DetailScreen extends Component {
     result = await callApi(params);
     // console.log('resultonGetContainerList', result)
     if (result.code == 0) {
-      await this.setState({
-        data: result.shipmentList,
-      })
+      if (result.shipmentList.length > 0) {
+        await this.setState({
+          data: result.shipmentList,
+        })
+      }
+      else {
+        Alert.alert(
+          "Thông báo!",
+          "Hiện tại không có công nào!",
+          [
+            { text: "OK", onPress: () => this.props.navigation.goBack() }
+          ],
+          { cancelable: false }
+        );
+      }
     }
     else {
       Alert.alert('Thông báo!', result.msg)
@@ -133,7 +145,12 @@ export default class DetailScreen extends Component {
               />
             }
           >
-            <Text style={styles.TitleLine}>Bốc công từ cảng</Text>
+            <Text style={styles.TitleLine}>{
+              this.props.navigation.state.params.serviceType % 2 == 0 ?
+                'Hạ công từ cảng'
+                :
+                'Bốc công từ cảng'
+            }</Text>
 
             {/*
   ---------------------------------------------------- 

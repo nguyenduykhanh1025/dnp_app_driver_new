@@ -366,11 +366,16 @@ export default class HomeScreen extends Component {
                           </View>
 
                           <TouchableOpacity
-                            onPress={() => { NavigationService.navigate(mainStack.resultReturn, { pickupId: item.pickupId }) }}
+                            onPress={() => { NavigationService.navigate(mainStack.resultReturn, { pickupId: item.pickupId, serviceType: item.serviceType }) }}
                           >
                             <View style={styles.PorterItemContainer}>
                               <View style={styles.PorterItemLeft}>
-                                <Image source={icCont1} style={styles.PorterIcon} />
+                                {
+                                  item.serviceType % 2 == 0 ?
+                                    <Image source={icCont2} style={styles.PorterIcon} />
+                                    :
+                                    <Image source={icCont1} style={styles.PorterIcon} />
+                                }
                               </View>
                               <View style={styles.PorterItemRight}>
                                 <View style={styles.PorterItemRightUp}>
@@ -382,7 +387,21 @@ export default class HomeScreen extends Component {
                                     <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
                                     <Text style={styles.PorterItemValue}>{item.sztp}</Text>
                                   </View>
-                                  <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                                  <Text style={styles.PorterItemRightDownStatus}>{
+                                    item.serviceType == 1 ?
+                                      'Công hàng'
+                                      :
+                                      item.serviceType == 2 ?
+                                        'Công rỗng'
+                                        :
+                                        item.serviceType == 3 ?
+                                          'Công rỗng'
+                                          :
+                                          item.serviceType == 4 ?
+                                            'Công hàng'
+                                            :
+                                            null
+                                  }</Text>
                                 </View>
                               </View>
                             </View>

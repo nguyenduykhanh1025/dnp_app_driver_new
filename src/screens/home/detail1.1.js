@@ -94,9 +94,21 @@ export default class DetailScreen extends Component {
     result = await callApi(params);
     // console.log('resultonGetPickupList', result)
     if (result.code == 0) {
-      await this.setState({
-        data: result.data,
-      })
+      if (result.data.length > 0) {
+        await this.setState({
+          data: result.data,
+        })
+      }
+      else {
+        Alert.alert(
+          "Thông báo!",
+          "Hiện tại không có cont nào!",
+          [
+            { text: "OK", onPress: () => this.props.navigation.goBack() }
+          ],
+          { cancelable: false }
+        );
+      }
     }
     else {
       Alert.alert('Thông báo!', result.msg)
