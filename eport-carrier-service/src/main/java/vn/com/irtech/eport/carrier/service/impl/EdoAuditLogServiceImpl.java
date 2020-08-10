@@ -144,7 +144,7 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
         edoAuditLog.setCarrierCode(edo.getCarrierCode());
         if(edo.getCreateBy() == null)
         {
-            edo.setCreateBy("FPT Folder");
+            edo.setCreateBy("EDI File");
         }
         edoAuditLog.setCreateBy(edo.getCreateBy());
         edoAuditLog.setEdoId(edo.getId());
@@ -212,7 +212,7 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
         edoAuditLog.setCarrierCode(edo.getCarrierCode());
         if(edo.getCreateBy() == null)
         {
-            edo.setCreateBy("FPT Folder");
+            edo.setCreateBy("EDI File");
         }
         edoAuditLog.setCreateBy(edo.getCreateBy());
         edoAuditLog.setEdoId(edo.getId());

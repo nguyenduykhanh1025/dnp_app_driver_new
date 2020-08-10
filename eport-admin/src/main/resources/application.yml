@@ -10,6 +10,7 @@ eport:
   edi:
      rootPath: D:/eport/upload/edo
      backupPath: D:/eport/upload/backup
+     interval: 5000
      enabled: false
 
 server:
