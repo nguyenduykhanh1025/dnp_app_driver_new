@@ -321,5 +321,22 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	/***
+	 * input: vslNm, voyNo, year, sztp,booking
+	 * @param shipmentDetail
+	 * @return
+	 */
+	@Override
+	public Integer getIndexBooking(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/booking/index";
+			RestTemplate restTemplate = new RestTemplate();
+			Integer index = restTemplate.postForObject(url, shipmentDetail, Integer.class);
+			return index;
+		} catch (Exception e) {
+			e.getStackTrace();
+			return null;
+		}
+	}
 	
 }

@@ -254,4 +254,16 @@
 		SELECT IN_DATE FROM TB_MASTER
 		WHERE CNTR_NO = #{containerNo}
 	</select>
+	<select id="getIndexBooking" parameterType="ShipmentDetailEntity" resultType="ShipmentDetailEntity">
+		SELECT 
+		    VSL_CD AS vslNm,
+		    CALL_SEQ AS voyNo,
+		    BOOKING_NO AS bookingNo,
+		    PTNR_CODE AS opeCode,
+		    SZTP2 AS sztp
+		FROM TB_BOOKING
+		WHERE VSL_CD = #{vslNm} AND
+		      CALL_SEQ = #{voyNo} AND
+		      CALL_YEAR = #{year}
+	</select>
 </mapper>

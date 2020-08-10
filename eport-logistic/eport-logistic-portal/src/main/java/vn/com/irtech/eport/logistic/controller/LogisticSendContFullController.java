@@ -426,8 +426,8 @@ public class LogisticSendContFullController extends LogisticBaseController {
 //	
 //	@PostMapping("/abc")
 //	@ResponseBody
-//	public List<ProcessBill> abc(@RequestBody ShipmentDetail shipmentDetail){
-//		shipmentDetail.setServiceType(Constants.SEND_CONT_FULL);
-//		return processBillService.getBillByShipmentDetail(shipmentDetail);
+//	public Integer abc(@RequestBody ShipmentDetail shipmentDetail){
+//		Integer index = catosApiService.getIndexBooking(shipmentDetail);
+//		return index;
 //	}
 }

@@ -139,4 +139,17 @@ public class ApiShipmentDetailController {
 		}
 		return null;
 	}
+	
+	@PostMapping("/shipmentDetail/booking/index")
+	public Integer getIndexBooking(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		List<ShipmentDetailEntity> list = shipmentDetailDao.getIndexBooking(shipmentDetailEntity);
+		if(list.size() > 0) {
+			for(ShipmentDetailEntity i : list) {
+				if(i.getBookingNo().equals(shipmentDetailEntity.getBookingNo()) && i.getSztp().equals(shipmentDetailEntity.getSztp())) {
+					return list.indexOf(i) + 1;
+				}
+			}
+		}
+		return null;
+	}
 }

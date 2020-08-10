@@ -58,4 +58,11 @@ public interface ICatosApiService {
 	public ShipmentDetail getInforSendFReceiveE(ShipmentDetail shipmentDetail);
 	
 	public Integer getIndexContForSsrByContainerNo(String containerNo);
+	
+	/***
+	 * input: vslNm, voyNo, year, sztp,booking
+	 * @param shipmentDetail
+	 * @return
+	 */
+	public Integer getIndexBooking(ShipmentDetail shipmentDetail);
 }
