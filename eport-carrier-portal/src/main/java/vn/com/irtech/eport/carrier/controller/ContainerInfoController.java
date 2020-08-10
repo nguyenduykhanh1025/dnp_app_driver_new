@@ -141,87 +141,94 @@ public class ContainerInfoController extends CarrierBaseController {
 	public AjaxResult export(ContainerInfo containerInfo, String toDate, String fromDate, String contFE,
 			String carrierCode, String orderByColumn, String isAsc, String cntrNo) throws Exception {
 		// Cont FE
-		Map<String, Object> pageInfo = new HashMap<>();
-		if (carrierCode.equals("") || carrierCode == null) {
-			pageInfo.put("prntCodes", super.getGroupCodes());
-		} else {
-			for (String carrierStr : super.getGroupCodes()) {
-				if (!carrierCode.equals(carrierStr)) {
-					pageInfo.put("prntCodes", super.getGroupCodes());
+		try {
+			Map<String, Object> pageInfo = new HashMap<>();
+			if (carrierCode.equals("") || carrierCode == null) {
+				pageInfo.put("prntCodes", super.getGroupCodes());
+			} else {
+				for (String carrierStr : super.getGroupCodes()) {
+					if (!carrierCode.equals(carrierStr)) {
+						pageInfo.put("prntCodes", super.getGroupCodes());
+					}
 				}
 			}
-		}
-		containerInfo.setParams(pageInfo);
-		containerInfo.setPtnrCode(carrierCode);
+			containerInfo.setParams(pageInfo);
+			containerInfo.setPtnrCode(carrierCode);
 
-		if (cntrNo != null) {
-			containerInfo.setCntrNo(cntrNo.toLowerCase());
-		}
+			if (cntrNo != null) {
+				containerInfo.setCntrNo(cntrNo.toLowerCase());
+			}
 
-		// SEARCH CONT
-		if (fromDate != null) {
-			containerInfo.setFromDate(fromDate);
-		} else {
-			fromDate = "";
-			containerInfo.setFromDate(fromDate);
-		}
-		if (toDate != null) {
-			containerInfo.setToDate(toDate);
-		} else {
-			toDate = "";
-			containerInfo.setToDate(toDate);
-		}
-		if (contFE.equals("F")) {
-			containerInfo.setFe("F");
-			containerInfo.setCntrState("");
-			containerInfo.setToDate("");
-			containerInfo.setFromDate("");
-			pageInfo.put("orderByColumn", "inDays");
-			pageInfo.put("isAsc", "desc");
-		}
-		if (contFE.equals("E")) {
-			containerInfo.setFe("E");
-			containerInfo.setCntrState("");
-			containerInfo.setToDate("");
-			containerInfo.setFromDate("");
-			pageInfo.put("orderByColumn", "inDays");
-			pageInfo.put("isAsc", "desc");
-		}
-		if (orderByColumn != null && isAsc != null) {
-			pageInfo.put("orderByColumn", orderByColumn);
-			pageInfo.put("isAsc", isAsc);
-		} else if (contFE.equals("")) {
-			pageInfo.put("orderByColumn", "days");
-			pageInfo.put("isAsc", "asc");
-		}
-		final String uri = Global.getApiUrl() + "/container/export";
+			// SEARCH CONT
+			if (fromDate != null) {
+				containerInfo.setFromDate(fromDate);
+			} else {
+				fromDate = "";
+				containerInfo.setFromDate(fromDate);
+			}
+			if (toDate != null) {
+				containerInfo.setToDate(toDate);
+			} else {
+				toDate = "";
+				containerInfo.setToDate(toDate);
+			}
+			if (contFE.equals("F")) {
+				containerInfo.setFe("F");
+				containerInfo.setCntrState("");
+				containerInfo.setToDate("");
+				containerInfo.setFromDate("");
+				pageInfo.put("orderByColumn", "inDays");
+				pageInfo.put("isAsc", "desc");
+			}
+			if (contFE.equals("E")) {
+				containerInfo.setFe("E");
+				containerInfo.setCntrState("");
+				containerInfo.setToDate("");
+				containerInfo.setFromDate("");
+				pageInfo.put("orderByColumn", "inDays");
+				pageInfo.put("isAsc", "desc");
+			}
+			if (orderByColumn != null && isAsc != null) {
+				pageInfo.put("orderByColumn", orderByColumn);
+				pageInfo.put("isAsc", isAsc);
+			} else if (contFE.equals("")) {
+				pageInfo.put("orderByColumn", "days");
+				pageInfo.put("isAsc", "asc");
+			}
+			final String uri = Global.getApiUrl() + "/container/export";
 
-		RestTemplate restTemplate = new RestTemplate();
-		R r = restTemplate.postForObject(uri, containerInfo, R.class);
-		List<Map<String, Object>> listJson = (List) r.get("data");
-		// Create list to export
-		List list = new ArrayList();
-		if (contFE.equals("E")) {
-			ContainerInfoEmpty ctnr = null;
+			RestTemplate restTemplate = new RestTemplate();
+			R r = restTemplate.postForObject(uri, containerInfo, R.class);
+			List<Map<String, Object>> listJson = (List) r.get("data");
+			// Create list to export
+			List list = new ArrayList();
+			if (contFE.equals("E")) {
+				ContainerInfoEmpty ctnr = null;
+				// convert to list entity before export
+				for (Map<String, Object> item : listJson) {
+					ctnr = new ContainerInfoEmpty();
+					BeanUtils.copyProperties(ctnr, item);
+					list.add(ctnr);
+				}
+				ExcelUtil<ContainerInfoEmpty> util = new ExcelUtil<ContainerInfoEmpty>(ContainerInfoEmpty.class);
+				return util.exportExcel(list, EXPORT_SHEET_NAME);
+			}
+			// if not Empty
+			ContainerInfo ctnr = null;
 			// convert to list entity before export
 			for (Map<String, Object> item : listJson) {
-				ctnr = new ContainerInfoEmpty();
+				ctnr = new ContainerInfo();
 				BeanUtils.copyProperties(ctnr, item);
 				list.add(ctnr);
 			}
-			ExcelUtil<ContainerInfoEmpty> util = new ExcelUtil<ContainerInfoEmpty>(ContainerInfoEmpty.class);
+			ExcelUtil<ContainerInfo> util = new ExcelUtil<ContainerInfo>(ContainerInfo.class);
 			return util.exportExcel(list, EXPORT_SHEET_NAME);
 		}
-		// if not Empty
-		ContainerInfo ctnr = null;
-		// convert to list entity before export
-		for (Map<String, Object> item : listJson) {
-			ctnr = new ContainerInfo();
-			BeanUtils.copyProperties(ctnr, item);
-			list.add(ctnr);
+		catch (Exception e)
+		{
+			return AjaxResult.error("Có lỗi không xác định! <br> Vui lòng liên hệ admin để được giải quyết");
 		}
-		ExcelUtil<ContainerInfo> util = new ExcelUtil<ContainerInfo>(ContainerInfo.class);
-		return util.exportExcel(list, EXPORT_SHEET_NAME);
+		
 	}
 
 	@GetMapping("/listCarrierCode")

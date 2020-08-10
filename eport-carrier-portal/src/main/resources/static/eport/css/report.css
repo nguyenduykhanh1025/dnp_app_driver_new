@@ -5,4 +5,8 @@
 .width150 {
     width: 150%;
     margin-bottom: 15px;
+    border-radius: 0px;
+}
+.c-search-box-vessel {
+  border-radius: 0px;
 }
