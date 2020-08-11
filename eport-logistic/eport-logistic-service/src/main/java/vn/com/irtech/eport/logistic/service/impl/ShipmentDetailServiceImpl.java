@@ -1000,6 +1000,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     	List<Long> shipmentDetailIds = new ArrayList<>();
     	for (ShipmentDetail shipmentDetail : shipmentDetails) {
     		shipmentDetailIds.add(shipmentDetail.getId());
+    		shipmentDetail.setDoStatus("N");
+    		shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
     	}
     	processOrder.setProcessData(new Gson().toJson(shipmentDetailIds));
     	processOrderService.insertProcessOrder(processOrder);
