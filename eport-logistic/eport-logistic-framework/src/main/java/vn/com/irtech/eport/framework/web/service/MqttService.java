@@ -257,7 +257,7 @@ public class MqttService implements MqttCallback {
 	}
 
 	public enum EServiceRobot {
-		RECEIVE_CONT_FULL, RECEIVE_CONT_EMPTY, SEND_CONT_FULL, SEND_CONT_EMPTY, SHIFTING_CONT
+		RECEIVE_CONT_FULL, RECEIVE_CONT_EMPTY, SEND_CONT_FULL, SEND_CONT_EMPTY, SHIFTING_CONT, CHANGE_VESSEL, CREATE_BOOKING, EXTENSION_DATE
 	}
 
 	@Transactional
@@ -320,6 +320,15 @@ public class MqttService implements MqttCallback {
 			break;
 		case SHIFTING_CONT:
 			sysRobot.setIsShiftingContOrder(true);
+			break;
+		case CHANGE_VESSEL:
+			sysRobot.setIsChangeVesselOrder(true);
+			break;
+		case CREATE_BOOKING:
+			sysRobot.setIsCreateBookingOrder(true);
+			break;
+		case EXTENSION_DATE:
+			sysRobot.setIsExtensionDateOrder(true);
 			break;
 		}
 		return robotService.findFirstRobot(sysRobot);

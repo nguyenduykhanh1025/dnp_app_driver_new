@@ -146,7 +146,7 @@ public class ShipmentServiceImpl implements IShipmentService {
      * @return List<ShipmentForm>
      */
     @Override
-    public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long logisticGroupId) {
-        return shipmentMapper.selectShipmentListForDriver(serviceType, logisticGroupId);
+    public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long driverId) {
+        return shipmentMapper.selectShipmentListForDriver(serviceType, driverId);
     }
 }

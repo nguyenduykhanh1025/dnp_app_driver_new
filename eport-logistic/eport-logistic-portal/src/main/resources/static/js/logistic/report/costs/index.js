@@ -43,7 +43,7 @@ $(document).ready(function() {
             processBill.taxCode = $('#searchAllInput').val().toUpperCase();
             processBill.containerNo = $('#searchAllInput').val().toUpperCase();
             processBill.sztp = $('#searchAllInput').val().toUpperCase();
-            processBill.referenceNo = $('#searchAllInput').val().toUpperCase();
+            processBill.invoiceNo = $('#searchAllInput').val().toUpperCase();
             loadTable();
         }
     });

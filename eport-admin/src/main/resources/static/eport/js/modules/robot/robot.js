@@ -95,6 +95,14 @@ function loadListRobot() {
         },
       },
       {
+        field: "isExtensionDateOrder",
+        title: "Gia hạn lệnh",
+        align: "center",
+        formatter: function (value, row, index) {
+          return isExtensionDateOrderFormater(value, row, index);
+        },
+      },
+      {
         field: "isCreateBookingOrder",
         title: "Dịch chuyển container",
         align: "center",
@@ -192,6 +200,15 @@ function isShiftingContOrderFormater(value, row, index) {
 /* formatter for shiftingContOrder column */
 function isChangeVesselOrderFormater(value, row, index) {
   if (row.isChangeVesselOrder == true) {
+    return '<span class="badge badge-primary">Yes</span>';
+  } else {
+    return '<span class="badge badge-danger">No</span>';
+  }
+}
+
+/* formatter for isExtensionDateOrder column */
+function isExtensionDateOrderFormater(value, row, index) {
+  if (row.isExtensionDateOrder == true) {
     return '<span class="badge badge-primary">Yes</span>';
   } else {
     return '<span class="badge badge-danger">No</span>';

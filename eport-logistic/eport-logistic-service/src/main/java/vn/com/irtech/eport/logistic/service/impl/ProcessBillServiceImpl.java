@@ -123,8 +123,8 @@ public class ProcessBillServiceImpl implements IProcessBillService
     @Override
     @Transactional
     public boolean saveProcessBillByInvoiceNo(ProcessOrder processOrder) {
-    	if (processOrder.getReferenceNo() != null) {
-    		List<ProcessBill> processBills = getUnitBillList(processOrder.getReferenceNo());
+    	if (processOrder.getInvoiceNo() != null) {
+    		List<ProcessBill> processBills = getUnitBillList(processOrder.getInvoiceNo());
         	if (processBills != null) {
         		for (ProcessBill processBill : processBills) {
         			processBill.setProcessOrderId(processOrder.getId());

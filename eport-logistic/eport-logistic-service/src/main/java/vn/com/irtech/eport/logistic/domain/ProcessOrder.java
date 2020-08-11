@@ -33,7 +33,7 @@ public class ProcessOrder extends BaseEntity
 
     /** Mã Tham Chiếu */
     @Excel(name = "Mã Tham Chiếu")
-    private String referenceNo;
+    private String invoiceNo;
 
     /** PT thanh toán */
     @Excel(name = "PT thanh toán")
@@ -123,9 +123,21 @@ public class ProcessOrder extends BaseEntity
     @Excel(name = "Runnable")
     private Boolean runnable;
 
+    /** Order No */
+    @Excel(name = "Order No")
+    private String orderNo;
+
+    /** Process Data */
+    @Excel(name = "Process Data")
+    private String processData;
+
     private String groupName;
 
     private ShipmentDetail shipmentDetail;
+    
+    private String oldVessel;
+
+	private String oldVoyAge;
 
     public void setId(Long id) 
     {
@@ -165,14 +177,14 @@ public class ProcessOrder extends BaseEntity
     {
         return serviceType;
     }
-    public void setReferenceNo(String referenceNo) 
+    public void setInvoiceNo(String invoiceNo) 
     {
-        this.referenceNo = referenceNo;
+        this.invoiceNo = invoiceNo;
     }
 
-    public String getReferenceNo() 
+    public String getInvoiceNo() 
     {
-        return referenceNo;
+        return invoiceNo;
     }
     public void setPayType(String payType) 
     {
@@ -368,6 +380,23 @@ public class ProcessOrder extends BaseEntity
         this.runnable = runnable;
     }
 
+    public String getOrderNo() {
+        return this.orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public String getProcessData() {
+        return this.processData;
+    }
+
+    public void setProcessData(String processData) {
+        this.processData = processData;
+    }
+
+
     public String getGroupName() {
         return this.groupName;
     }
@@ -383,6 +412,22 @@ public class ProcessOrder extends BaseEntity
     public ShipmentDetail getShipmentDetail() {
         return shipmentDetail;
     }
+    
+    public String getOldVessel() {
+		return oldVessel;
+	}
+
+	public void setOldVessel(String oldVessel) {
+		this.oldVessel = oldVessel;
+	}
+
+	public String getOldVoyAge() {
+		return oldVoyAge;
+	}
+
+	public void setOldVoyAge(String oldVoyAge) {
+		this.oldVoyAge = oldVoyAge;
+	}
 
     @Override
     public String toString() {
@@ -391,7 +436,7 @@ public class ProcessOrder extends BaseEntity
             .append("logisticGroupId", getLogisticGroupId())
             .append("shipmentId", getShipmentId())
             .append("serviceType", getServiceType())
-            .append("referenceNo", getReferenceNo())
+            .append("invoiceNo", getInvoiceNo())
             .append("payType", getPayType())
             .append("sztp", getSztp())
             .append("modee", getModee())
@@ -418,6 +463,8 @@ public class ProcessOrder extends BaseEntity
             .append("sysUserId", getSysUserId())
             .append("postProcessId", getPostProcessId())
             .append("runnable", getRunnable())
+            .append("orderNo", getOrderNo())
+            .append("processData", getProcessData())
             .append("groupName", getGroupName())
             .append("shipmentDetail", getShipmentDetail())
             .toString();

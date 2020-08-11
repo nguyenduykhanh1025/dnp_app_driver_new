@@ -98,10 +98,10 @@ public interface PickupHistoryMapper
      * Check pickup history exists
      * 
      * @param shipmentId
-     * @param containerNo
+     * @param shipmentDetailId
      * @return  int
      */
-    public int checkPickupHistoryExists(@Param("shipmentId") Long shipmentId, @Param("containerNo") String containerNo);
+    public int checkPickupHistoryExists(@Param("shipmentId") Long shipmentId, @Param("shipmentDetailId") Long shipmentDetailId);
 
       /**
      * Select Delievering Driver Info

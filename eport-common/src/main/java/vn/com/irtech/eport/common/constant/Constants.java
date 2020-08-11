@@ -1,5 +1,7 @@
 package vn.com.irtech.eport.common.constant;
 
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
+
 /**
  * 
  * @author admin
@@ -47,4 +49,14 @@ public class Constants
 	public static final Integer RECEIVE_CONT_EMPTY = 3;
 
 	public static final Integer SEND_CONT_FULL = 4;
+	
+	public static final Integer CHANGE_VESSEL = 6;
+	
+	public static final Integer GATE_IN_ORDER = 8;
+	
+	public static final Integer SHIFTING_CONT_ORDER = 5;
+	
+	public static final Integer CREATE_BOOKING_ORDER = 7;
+	
+	public static final Integer EXTENSION_DATE_ORDER = 9;
 }

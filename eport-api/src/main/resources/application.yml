@@ -6,6 +6,7 @@ eport:
   profile: /home/eport/uat/api/upload
   addressEnabled: true
   cacheExpireTime: 3600
+  apiUrl: http://127.0.0.1:9090/api
 
 server:
   port: 7073

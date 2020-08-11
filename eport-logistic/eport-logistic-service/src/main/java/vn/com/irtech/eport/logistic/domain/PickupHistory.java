@@ -107,6 +107,10 @@ public class PickupHistory extends BaseEntity {
 	@Excel(name = "Process Order Id")
 	private Long processOrderId;
 
+	/** Gate Pass */
+	@Excel(name = "Gate Pass")
+	private String gatePass;
+
 	private Shipment shipment;
 
 	private ShipmentDetail shipmentDetail;
@@ -440,6 +444,14 @@ public class PickupHistory extends BaseEntity {
 	public void setProcessOrderId(Long processOrderId) {
 		this.processOrderId = processOrderId;
 	}
+
+	public String getGatePass() {
+		return this.gatePass;
+	}
+
+	public void setGatePass(String gatePass) {
+		this.gatePass = gatePass;
+	}
 	
 	public void setX(Double x) {
 		this.x = x;
@@ -471,7 +483,7 @@ public class PickupHistory extends BaseEntity {
 				.append("bookingNo", getBookingNo()).append("sztp", getSztp()).append("vslNm", getVslNm())
 				.append("voyNo", getVoyNo()).append("driverName", getDriverName())
 				.append("driverPhoneNumber", getDriverPhoneNumber()).append("logisticGroupName", getLogisticGroupName())
-				.append("processOrderId", getProcessOrderId())
+				.append("processOrderId", getProcessOrderId()).append("gatePass",getGatePass())
 				.toString();
 	}
 }

@@ -183,7 +183,11 @@ public class ShipmentDetail extends BaseEntity
     /** Status */
     @Excel(name = "Status")
     private Integer status;
-    
+
+    /** Order No */
+    @Excel(name = "Order No")
+    private String orderNo;
+
     private String block;
 
     private String bay;
@@ -546,6 +550,14 @@ public class ShipmentDetail extends BaseEntity
         return status;
     }
 
+    public String getOrderNo() {
+        return this.orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+    
     public String getBlock() {
 		return block;
 	}
@@ -695,6 +707,7 @@ public class ShipmentDetail extends BaseEntity
             .append("userVerifyStatus", getUserVerifyStatus())
             .append("finishStatus", getFinishStatus())
             .append("status", getStatus())
+            .append("orderNo", getOrderNo())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

@@ -78,8 +78,8 @@ public interface IShipmentService
      * Select Shipment List For Driver App
      * 
      * @param serviceType
-     * @param logisticGroupId
+     * @param driverId
      * @return List<ShipmentForm>
      */
-    public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long logisticGroupId);
+    public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long driverId);
 }

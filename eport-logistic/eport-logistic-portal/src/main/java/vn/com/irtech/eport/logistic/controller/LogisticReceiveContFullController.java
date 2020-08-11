@@ -503,6 +503,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						return ajaxResult;
 					}
 				} catch (Exception e) {
+					logger.warn(e.getMessage());
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
 				ajaxResult = AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");

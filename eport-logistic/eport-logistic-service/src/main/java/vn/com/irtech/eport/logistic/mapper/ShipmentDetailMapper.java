@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
+import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 
 /**
  * Shipment DetailsMapper Interface
@@ -116,4 +117,13 @@ public interface ShipmentDetailMapper
      * get shipmentDetail for Print
      */
     public List<ShipmentDetail> getShipmentDetailForPrint(ShipmentDetail shipmentDetail);
+
+    /**
+     * Select shipment detail for driver shipment assign
+     * 
+     * @param shipmentId
+     * @param driverId
+     * @return List<PickupAssignForm>
+     */
+    public List<PickupAssignForm> selectShipmentDetailForDriverShipmentAssign(@Param("shipmentId") Long shipmentId, @Param("driverId") Long driverId);
 }

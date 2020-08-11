@@ -107,6 +107,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		
 		Boolean isGateInOrder = "1"
 				.equals(map.get("isGateInOrder") == null ? null : map.get("isGateInOrder").toString());
+		
+		Boolean isExtensionDateOrder = "1"
+				.equals(map.get("isExtensionDateOrder") == null ? null : map.get("isExtensionDateOrder").toString());
 
 		String serviceTypes = "";
 
@@ -134,7 +137,10 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		if (isGateInOrder) {
 			serviceTypes += 8 + ",";
 		}
-
+		if (isExtensionDateOrder) {
+			serviceTypes += 9 + ",";
+		}
+		
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);
 		}
@@ -151,6 +157,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		sysRobot.setIsChangeVesselOrder(isChangeVesselOrder);
 		sysRobot.setIsCreateBookingOrder(isCreateBookingOrder);
 		sysRobot.setIsGateInOrder(isGateInOrder);
+		sysRobot.setIsExtensionDateOrder(isExtensionDateOrder);
 
 		// if robot is busying
 		if ("1".equals(status)) {
@@ -193,15 +200,12 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 				// update status of robot
 				robotService.updateRobotByUuId(sysRobot);
 			}
-			
-			if (sysRobot.getIsGateInOrder()) {
-				return;
-			}
 
 			// Find process order for robot
 			ProcessOrder reqProcessOrder = processOrderService.findProcessOrderForRobot(serviceTypes);
 			if (reqProcessOrder != null) {
 				reqProcessOrder.setStatus(1);
+				reqProcessOrder.setRobotUuid(sysRobot.getUuId());
 				if (processOrderService.updateProcessOrder(reqProcessOrder) == 1) {
 					ShipmentDetail shipmentDetail = new ShipmentDetail();
 					shipmentDetail.setProcessOrderId(reqProcessOrder.getId());
@@ -217,6 +221,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 						robotService.insertRobot(sysRobot);
 					} else {
 						// update status of robot
+						sysRobot.setStatus("1");
 						robotService.updateRobotByUuId(sysRobot);
 					}
 

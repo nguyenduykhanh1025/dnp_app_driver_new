@@ -94,10 +94,10 @@ public interface IPickupHistoryService
      * Check pickup history exists
      * 
      * @param shipmentId
-     * @param containerNo
+     * @param shipmentDetailId
      * @return  int
      */
-    public int checkPickupHistoryExists(Long shipmentId, String containerNo);
+    public int checkPickupHistoryExists(Long shipmentId, Long shipmentDetailId);
 
     /**
      * Check possible pickup
