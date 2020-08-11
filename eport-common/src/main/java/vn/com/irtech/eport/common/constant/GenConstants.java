@@ -1,17 +1,18 @@
 package vn.com.irtech.eport.common.constant;
 
 /**
- * 代码生成通用常量
+ * Code generation general constants
  * 
  * @author admin
  */
 public class GenConstants
 {
-    /** 单表（增删改查） */
+    /** Single table (CRUD) */
     public static final String TPL_CRUD = "crud";
-
-    /** 树表（增删改查） */
+    /** Tree table (CRUD)*/
     public static final String TPL_TREE = "tree";
+    /** Main and sub-table (addition, deletion, modification, and check) */
+    public static final String TPL_SUB = "sub";
 
     /** 树编码字段 */
     public static final String TREE_CODE = "treeCode";
@@ -21,6 +22,12 @@ public class GenConstants
 
     /** 树名称字段 */
     public static final String TREE_NAME = "treeName";
+    
+    /** 上级菜单ID字段 */
+    public static final String PARENT_MENU_ID = "parentMenuId";
+    
+    /** 上级菜单名称字段 */
+    public static final String PARENT_MENU_NAME = "parentMenuName";
 
     /** 数据库字符串类型 */
     public static final String[] COLUMNTYPE_STR = { "char", "varchar", "narchar", "varchar2", "tinytext", "text",
@@ -67,6 +74,9 @@ public class GenConstants
 
     /** 日期控件 */
     public static final String HTML_DATETIME = "datetime";
+
+    /** 上传控件 */
+    public static final String HTML_UPLOAD = "upload";
 
     /** 字符串类型 */
     public static final String TYPE_STRING = "String";

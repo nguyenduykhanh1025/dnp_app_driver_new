@@ -31,6 +31,7 @@ import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -424,10 +425,4 @@ public class LogisticSendContFullController extends LogisticBaseController {
 //		return error();
 //	}
 //	
-//	@PostMapping("/abc")
-//	@ResponseBody
-//	public List<ProcessBill> abc(@RequestBody ShipmentDetail shipmentDetail){
-//		shipmentDetail.setServiceType(Constants.SEND_CONT_FULL);
-//		return processBillService.getBillByShipmentDetail(shipmentDetail);
-//	}
 }

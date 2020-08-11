@@ -71,7 +71,7 @@
         </dependency>
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-generator</artifactId>
+            <artifactId>eport-generator-oracle</artifactId>
         </dependency>
         <!-- Oracle DB -->
         <dependency>

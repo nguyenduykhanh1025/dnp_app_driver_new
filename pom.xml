@@ -159,6 +159,11 @@
 				<artifactId>eport-generator</artifactId>
 				<version>${eport.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>vn.com.irtech.eport</groupId>
+                <artifactId>eport-generator-oracle</artifactId>
+                <version>${eport.version}</version>
+            </dependency>
 
 			<!-- <dependency>
 				<groupId>vn.com.irtech.eport</groupId>
@@ -236,7 +241,8 @@
 		<module>eport-admin-framework</module>
 		<module>eport-system</module>
 		<module>eport-quartz</module>
-		<module>eport-generator</module>
+<!-- 		<module>eport-generator</module> -->
+        <module>eport-generator-oracle</module>
 		<module>eport-common</module>
 		<module>eport-admin-carrier</module>
 		<module>eport-carrier-portal</module>

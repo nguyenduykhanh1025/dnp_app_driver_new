@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+	<th:block th:include="include :: header('代码生成列表')" />
+</head>
+<body class="gray-bg">
+    <div class="container-div">
+		<div class="row">
+			<div class="col-sm-12 search-collapse">
+				<form id="gen-form">
+					<div class="select-list">
+						<ul>
+							<li>
+								Table Name: <input type="text" name="tableName"/>
+							</li>
+							<li>
+								Table Comment: <input type="text" name="tableComment"/>
+							</li>
+							<li class="select-time">
+								<label>Table Time:</label>
+								<input type="text" class="time-input" id="startTime" placeholder="Start Time" name="params[beginTime]"/>
+								<span>-</span>
+								<input type="text" class="time-input" id="endTime" placeholder="End Time" name="params[endTime]"/>
+							</li>
+							<li>
+								<a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;Search</a>
+								<a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;Reset</a>
+							</li>
+						</ul>
+					</div>
+				</form>
+			</div>
+			
+			<div class="btn-group-sm" id="toolbar" role="group">
+			     <a class="btn btn-success multiple disabled" onclick="javascript:batchGenCode()" shiro:hasPermission="tool:gen:code">
+			        <i class="fa fa-download"></i> Generate
+			    </a>
+				<a class="btn btn-info" onclick="importTable()">
+			        <i class="fa fa-upload"></i> Import
+			    </a>
+			    <a class="btn btn-primary single disabled" onclick="$.operate.editTab()" shiro:hasPermission="tool:gen:edit">
+		            <i class="fa fa-edit"></i> Edit
+		        </a>
+			    <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="tool:gen:remove">
+		            <i class="fa fa-remove"></i> Delete
+		        </a>
+		    </div>
+		
+		    <div class="col-sm-12 select-table table-striped">
+			    <table id="bootstrap-table"></table>
+			</div>
+		</div>
+	</div>
+	<th:block th:include="include :: footer" />
+	<th:block th:include="include :: bootstrap-table-export-js" />
+	<script th:inline="javascript">
+		var prefix = ctx + "tool/gen";
+		var editFlag = [[${@permission.hasPermi('tool:gen:edit')}]];
+		var removeFlag = [[${@permission.hasPermi('tool:gen:remove')}]];
+		var previewFlag = [[${@permission.hasPermi('tool:gen:preview')}]];
+		var codeFlag = [[${@permission.hasPermi('tool:gen:code')}]];
+	
+		$(function() {
+		    var options = {
+		        url: prefix + "/list",
+		        updateUrl: prefix + "/edit/{id}",
+		        removeUrl: prefix + "/remove",
+		        sortName: "createTime",
+		        sortOrder: "desc",
+		        showExport: true,
+		        modalName: "Generate Configs",
+		        rememberSelected: true,
+		        uniqueId: "tableId",
+		        columns: [{
+		        	field: 'state',
+		            checkbox: true
+		        },
+		        {
+		            field: 'tableId',
+		            title: 'Table ID',
+		            visible: false
+		        },
+		        {
+                    title: "ID",
+                    formatter: function (value, row, index) {
+                 	    return $.table.serialNumber(index);
+                    }
+                },
+		        {
+		            field: 'tableName',
+		            title: 'Table Name',
+		            sortable: true,
+		            formatter: function(value, row, index) {
+                    	return $.table.tooltip(value);
+                    }
+		        },
+		        {
+		            field: 'tableComment',
+		            title: 'Table Comment',
+		            sortable: true,
+		            formatter: function(value, row, index) {
+                    	return $.table.tooltip(value, 15);
+                    }
+		        },
+		        {
+		            field: 'className',
+		            title: 'Class Name',
+		            sortable: true
+		        },
+		        {
+		            field: 'createTime',
+		            title: 'Create Time',
+		            sortable: true
+		        },
+		        {
+		            field: 'updateTime',
+		            title: 'Update Time',
+		            sortable: true
+		        },
+		        {
+		            title: 'Action',
+		            align: 'center',
+		            formatter: function(value, row, index) {
+		                var actions = [];
+		                actions.push('<a class="btn btn-info btn-xs ' + previewFlag + '" href="javascript:void(0)" onclick="preview(\'' + row.tableId + '\')"><i class="fa fa-search"></i>Preview</a> ');
+		                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.editTab(\'' + row.tableId + '\')"><i class="fa fa-edit"></i>Edit</a> ');
+		                actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.tableId + '\')"><i class="fa fa-remove"></i>Delete</a> ');
+		                actions.push('<a class="btn btn-primary btn-xs ' + codeFlag + '" href="javascript:void(0)" onclick="genCode(\'' + row.tableName + '\',\'' + row.genType + '\')"><i class="fa fa-bug"></i>Gen Code</a> ');
+		                return actions.join('');
+		            }
+		        }]
+		    };
+		    $.table.init(options);
+		});
+		
+		// Preview code
+		function preview(tableId) {
+			var preViewUrl = prefix + "/preview/" + tableId;
+			$.modal.loading("Loading data, please wait...");
+			$.get(preViewUrl, function(result) {
+				if (result.code == web_status.SUCCESS) {
+					 var items = [];
+		                $.each(result.data, function(index, value) {
+		                	value = value.replace(/</g, "&lt;");
+		                	value = value.replace(/>/g, "&gt;");
+		                    var templateName = index.substring(index.lastIndexOf("/") + 1, index.length).replace(/\.vm/g, "");
+		                    if(!$.common.equals("sql", templateName) && !$.common.equals("tree.html", templateName) && !$.common.equals("sub-domain.java", templateName)){
+			                    items.push({
+			                        title: templateName , content: "<pre class=\"layui-code\">" + value + "</pre>"
+			                    })
+		                    }
+		                });
+		                top.layer.tab({
+		                    area: ['90%', '90%'],
+		                    shadeClose: true,
+		                    tab: items
+		                });
+				} else {
+					$.modal.alertError(result.msg);
+				}
+				$.modal.closeLoading();
+			});
+		}
+	
+		// Generate code
+		function genCode(tableName, genType) {
+		    $.modal.confirm("Confirm generate code for table: " + tableName + " ?", function() {
+		    	if(genType === "0") {
+			    	location.href = prefix + "/download/" + tableName;
+			        layer.msg('The execution is successful, the code is being generated, please wait...', { icon: 1 });
+				} else if(genType === "1") {
+					$.operate.get(prefix + "/genCode/" + tableName);
+				}
+		    })
+		}
+	
+		//Generate code in batches
+		function batchGenCode() {
+		    var rows = $.table.selectColumns("tableName");
+		    if (rows.length == 0) {
+		        $.modal.alertWarning("Please select the data to be generated");
+		        return;
+		    }
+		    $.modal.confirm("Do you want generate code for selected " + rows.length + " items?", function() {
+		    	location.href = prefix + "/batchGenCode?tables=" + rows;
+		        layer.msg('Execution succeeded, code is being generated, please wait ...', { icon: 1 });
+		    });
+		}
+		
+		// Import table
+		function importTable() {
+			var importTableUrl = prefix + "/importTable";
+			$.modal.open("Import Table", importTableUrl);
+		}
+	</script>
+</body>
+</html>

@@ -98,7 +98,8 @@ public class EdoPrintController extends BaseController{
 			String blNo = edoList.get(0).getBillOfLading();
 			blNoList.add(blNo);
 			for(Edo i: edoList) {
-				if(!i.getBillOfLading().equals(blNo)) {
+				//i.getBill != pre blNo  && i.getBill not contains in blNoList
+				if(!i.getBillOfLading().equals(blNo) && blNoList.indexOf(i.getBillOfLading()) == -1 ) {
 					blNoList.add(i.getBillOfLading());
 					blNo = i.getBillOfLading();
 				}
@@ -122,6 +123,7 @@ public class EdoPrintController extends BaseController{
 						parameters.put("pol", list.get(0).getPol());
 						parameters.put("pod", list.get(0).getPod());
 						parameters.put("billOfLading", list.get(0).getBillOfLading());
+						parameters.put("fileCreateTime", list.get(0).getFileCreateTime());
 						parameters.put("list", list);
 						final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
 						jpList.add(new SimpleExporterInputItem(print));
