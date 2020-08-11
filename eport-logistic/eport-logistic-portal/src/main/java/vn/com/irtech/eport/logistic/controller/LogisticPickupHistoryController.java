@@ -37,7 +37,7 @@ public class LogisticPickupHistoryController extends LogisticBaseController {
 		if (pickupHistory == null) {
 			pickupHistory = new PickupHistory();
 		}
-		pickupHistory.setStatus(2);
+//		pickupHistory.setStatus(2);
 		pickupHistory.setLogisticGroupId(getUser().getGroupId());
 		List<PickupHistory> pickupHistorys = pickupHistoryService.selectPickupHistoryListForHistory(pickupHistory);
 		return getDataTable(pickupHistorys);
