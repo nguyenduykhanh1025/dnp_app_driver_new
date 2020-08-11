@@ -270,7 +270,20 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
   let content = '';
   switch (value) {
     case 1:
-      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
+      switch (sourceData[row].customStatus) {
+        case 'R':
+          content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+          break;
+        case 'Y':
+          content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
+          break;
+        case 'N':
+          content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
+          break;
+        default:
+          content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
+          break;
+      }
       content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
       content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
       content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Nhận Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';

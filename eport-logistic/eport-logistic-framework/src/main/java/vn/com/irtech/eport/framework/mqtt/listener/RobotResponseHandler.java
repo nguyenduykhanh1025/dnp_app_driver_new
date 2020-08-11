@@ -1,9 +1,7 @@
 package vn.com.irtech.eport.framework.mqtt.listener;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Flow.Processor;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -20,9 +18,9 @@ import com.google.gson.Gson;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
-import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.framework.web.service.MqttService.NotificationCode;
+import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -84,8 +82,8 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		}
 
 		String orderNo = map.get("orderNo") == null ? null : map.get("orderNo").toString();
-		Integer serviceType = map.get("serviceType") == null ? null : (Integer) map.get("serviceType");
-
+		String orderType = map.get("serviceType") == null ? null : map.get("serviceType").toString();
+		Integer serviceType = Integer.parseInt(orderType);
 		SysRobot sysRobot = robotService.selectRobotByUuId(uuId);
 
 		if (sysRobot == null) {
@@ -194,6 +192,13 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				processOrder.setOrderNo(orderNo);
 			}
 			processOrderService.updateProcessOrder(processOrder);
+			
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setProcessOrderId(Long.parseLong(receiptId));
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+				shipmentDetail2.setProcessStatus("E");
+			}
 
 			// SET RESULT FOR HISTORY FAILED
 			processHistory.setResult("F");

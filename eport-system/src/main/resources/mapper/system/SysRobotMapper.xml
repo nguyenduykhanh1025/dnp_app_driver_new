@@ -22,11 +22,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="isShiftingContOrder"    column="is_shifting_cont_order"    />
         <result property="isChangeVesselOrder"    column="is_change_vessel_order"    />
         <result property="isCreateBookingOrder"    column="is_create_booking_order"    />
+        <result property="isExtensionDateOrder"    column="is_extension_date_order"    />
         <result property="responseTime"    column="response_time"    />
     </resultMap>
 
     <sql id="selectRobotVo">
-        select id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, is_change_vessel_order, is_create_booking_order, response_time from sys_robot
+        select id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, is_change_vessel_order, is_create_booking_order, is_extension_date_order, response_time from sys_robot
     </sql>
 
     <select id="selectRobotList" parameterType="SysRobot" resultMap="RobotResult">
@@ -43,6 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isShiftingContOrder != null"> and is_shifting_cont_order = #{isShiftingContOrder}</if>
             <if test="isChangeVesselOrder != null"> and is_change_vessel_order = #{isChangeVesselOrder}</if>
             <if test="isCreateBookingOrder != null"> and is_create_booking_order = #{isCreateBookingOrder}</if>
+            <if test="isExtensionDateOrder != null"> and is_extension_date_order = #{isExtensionDateOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
     </select>
@@ -72,6 +74,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isShiftingContOrder != null"> and is_shifting_cont_order = #{isShiftingContOrder}</if>
             <if test="isChangeVesselOrder != null"> and is_change_vessel_order = #{isChangeVesselOrder}</if>
             <if test="isCreateBookingOrder != null"> and is_create_booking_order = #{isCreateBookingOrder}</if>
+            <if test="isExtensionDateOrder != null"> and is_extension_date_order = #{isExtensionDateOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
         OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
@@ -97,6 +100,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isShiftingContOrder != null">is_shifting_cont_order,</if>
             <if test="isChangeVesselOrder != null">is_change_vessel_order,</if>
             <if test="isCreateBookingOrder != null">is_create_booking_order,</if>
+            <if test="isExtensionDateOrder != null">is_extension_date_order,</if>
             response_time,
             create_time
          </trim>
@@ -115,6 +119,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isShiftingContOrder != null">#{isShiftingContOrder},</if>
             <if test="isChangeVesselOrder != null">#{isChangeVesselOrder},</if>
             <if test="isCreateBookingOrder != null">#{isCreateBookingOrder},</if>
+            <if test="isExtensionDateOrder != null">#{isExtensionDateOrder},</if>
             sysdate,
             sysdate
          </trim>
@@ -136,6 +141,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isShiftingContOrder != null">is_shifting_cont_order = #{isShiftingContOrder},</if>
             <if test="isChangeVesselOrder != null">is_change_vessel_order = #{isChangeVesselOrder},</if>
             <if test="isCreateBookingOrder != null">is_create_booking_order = #{isCreateBookingOrder},</if>
+            <if test="isExtensionDateOrder != null">is_extension_date_order = #{isExtensionDateOrder},</if>
             <if test="responseTime != null"></if>
             response_time = sysdate,
             update_time = sysdate
@@ -181,6 +187,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isShiftingContOrder != null">is_shifting_cont_order = #{isShiftingContOrder},</if>
             <if test="isChangeVesselOrder != null">is_change_vessel_order = #{isChangeVesselOrder},</if>
             <if test="isCreateBookingOrder != null">is_create_booking_order = #{isCreateBookingOrder},</if>
+            <if test="isExtensionDateOrder != null">is_extension_date_order = #{isExtensionDateOrder},</if>
             response_time = sysdate,
             update_time = sysdate
         </trim>
@@ -205,6 +212,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="isShiftingContOrder != null"> and is_shifting_cont_order = #{isShiftingContOrder}</if>
             <if test="isChangeVesselOrder != null"> and is_change_vessel_order = #{isChangeVesselOrder}</if>
             <if test="isCreateBookingOrder != null"> and is_create_booking_order = #{isCreateBookingOrder}</if>
+            <if test="isExtensionDateOrder != null"> and is_extension_date_order = #{isExtensionDateOrder}</if>
             <if test="responseTime != null"> and response_time = #{responseTime}</if>
         </where>
     </select>
