@@ -50,7 +50,6 @@ public class LogisticProfileController extends LogisticBaseController{
     {
         LogisticAccount currentUser = ShiroUtils.getSysUser();
         currentUser.setFullName(user.getFullName());
-        currentUser.setGroupId(user.getGroupId());
         currentUser.setRemark(user.getRemark());
         if (logisticAccountService.updateLogisticAccount(currentUser) > 0)
         {
