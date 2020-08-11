@@ -32,8 +32,8 @@
 	</subDataset>
 	<parameter name="consignee" class="java.lang.String"/>
 	<parameter name="businessUnit" class="java.lang.String"/>
-	<parameter name="printDate" class="java.lang.String">
-		<defaultValueExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date().getTime())]]></defaultValueExpression>
+	<parameter name="createdTime" class="java.lang.String">
+		<defaultValueExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format($P{fileCreateTime})]]></defaultValueExpression>
 	</parameter>
 	<parameter name="vessel/voy" class="java.lang.String"/>
 	<parameter name="orderNumber" class="java.lang.String"/>
@@ -41,6 +41,7 @@
 	<parameter name="pod" class="java.lang.String"/>
 	<parameter name="billOfLading" class="java.lang.String"/>
 	<parameter name="list" class="java.util.Collection"/>
+	<parameter name="fileCreateTime" class="java.util.Date"/>
 	<queryString>
 		<![CDATA[select * from edo]]>
 	</queryString>
@@ -86,11 +87,11 @@
 				<text><![CDATA[(DELIVERY ORDER)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="89" width="89" height="20" uuid="cd5e3e34-7326-4b7f-86f1-709be29728e1"/>
+				<reportElement x="300" y="89" width="79" height="20" uuid="cd5e3e34-7326-4b7f-86f1-709be29728e1"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
-				<text><![CDATA[(Print Date)]]></text>
+				<text><![CDATA[(Created Time)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="300" y="129" width="89" height="20" uuid="aa94c149-5629-465e-8633-0bf1a13decd0"/>
@@ -149,11 +150,11 @@
 				<text><![CDATA[Chủ khai thác:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="300" y="69" width="52" height="20" uuid="7d8c582a-67bb-4819-a7cf-19d0dd6dd4ce"/>
+				<reportElement x="300" y="69" width="79" height="20" uuid="7d8c582a-67bb-4819-a7cf-19d0dd6dd4ce"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Ngày in:]]></text>
+				<text><![CDATA[Ngày tạo file:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="25" y="189" width="92" height="20" uuid="b4deebfd-b43e-4d98-8b3c-826a45b5e4b6"/>
@@ -219,11 +220,11 @@
 				<textFieldExpression><![CDATA[$P{orderNumber}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="352" y="69" width="162" height="20" isPrintWhenDetailOverflows="true" uuid="01f2c07c-ee36-4eea-a6c3-a935440ca85e"/>
+				<reportElement x="379" y="69" width="176" height="20" isPrintWhenDetailOverflows="true" uuid="01f2c07c-ee36-4eea-a6c3-a935440ca85e"/>
 				<textElement verticalAlignment="Bottom">
 					<font fontName="DejaVu Sans"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{printDate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{createdTime}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="117" y="189" width="166" height="20" isPrintWhenDetailOverflows="true" uuid="a8f4bf83-d133-4730-8515-fe061ab5811b"/>
