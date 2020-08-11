@@ -9,7 +9,7 @@ function loadTable(edo) {
   $("#dg").datagrid({
     url: PREFIX + "/edoReport",
     method: "POST",
-    height: $(document).height() - 70,
+    height: $(document).height() - 55,
     clientPaging: true,
     pagination: true,
     pageSize: 20,

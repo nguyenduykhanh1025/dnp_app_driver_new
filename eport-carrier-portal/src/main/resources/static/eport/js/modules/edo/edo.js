@@ -391,3 +391,4 @@ $(".c-search-box-voy-no").change(function () {
   loadTable(edo);
 });
 
+$(".pagination-info").hide();

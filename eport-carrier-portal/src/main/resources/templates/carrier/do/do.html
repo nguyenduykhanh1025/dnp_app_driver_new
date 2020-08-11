@@ -7,7 +7,7 @@
   <th:block th:include="include :: datetimepicker-css" />
 </head>
 
-<body class="gray-bg">
+<body class="while-bg">
   <div id="wrapper">
     <div class="row">
       <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
@@ -53,16 +53,12 @@
           <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead>
               <tr>
-                <!-- <th data-options="field:'id',checkbox:true"></th> -->
                 <th data-options="field:'carrierCode',halign:'center',resizable:true" width="80">
                   Hãng tàu <br />Carrier
                 </th>
                 <th data-options="field:'billOfLading',halign:'center',formatter: formatBL" sortable="true" width="110">
                   Số vận đơn<br />B/L No
                 </th>
-                <!-- <th data-options="field:'containerNumber',align:'right',halign:'center'" width="100">
-                  Số lượng <br />container
-                </th> -->
                 <th data-options="field:'consignee',halign:'center'" width="250">
                   Tên khách hàng<br />Consignee
                 </th>

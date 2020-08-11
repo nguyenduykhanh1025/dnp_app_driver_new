@@ -91,7 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
-            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
+            <if test="emptyContainerDepot != null "> and empty_container_depot = #{emptyContainerDepot}</if>
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
             <if test="secureCode != null  and secureCode != ''"> and secure_code = #{secureCode}</if>
             <if test="releaseDate != null "> and release_date = #{releaseDate}</if>
@@ -104,9 +104,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee  = #{consignee}</if>
             <if test="containerNumber != null  and containerNumber != ''">and container_number = #{containerNumber}</if>
             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
-             <if test="vesselNo != null  and vesselNo != ''"> and vessel_no = #{vesselNo}</if>
+            <if test="vesselNo != null  and vesselNo != ''"> and vessel_no = #{vesselNo}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
-            <if test="sztp != null  and sztp != ''"> and voy_no = #{sztp}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
         </where>
          FETCH NEXT 1 ROWS ONLY
     </select>

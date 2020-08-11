@@ -10,12 +10,12 @@
   <link rel="stylesheet" th:href="@{/eport/css/report.css}" />
 </head>
 
-<body class="gray-bg">
+<body class="while-bg">
   <div id="wrapper">
     <div class="row">
       <div class="col-md-12 select-table" style="margin-top: 0px; padding-bottom:5px">
         <div class="col-md-12" style="height: 44px;">
-          <div class="columns columns-right btn-group pull-right" style="margin-bottom: 0px;margin-top:0px">
+          <div class="columns columns-right btn-group pull-right" style="margin-bottom: 5px;margin-top:0px">
             <div class="select-list">
               <ul>
                 <li>
@@ -72,15 +72,16 @@
                     </div>
                   </div>
                 </li>
+                <li>
                 <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
-                    class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
+                    class="glyphicon glyphicon-search"></i> Tìm Kiếm</a></li>
                 </li>
               </ul>
             </div>
           </div>
         </div>
         <div class="col-md-12 table-container">
-          <table id="dg" style="width: auto;" fitColumns="true">
+          <table id="dg" style="width: auto;height: auto;" fitColumns="true">
             <thead>
               <tr>
                 <th data-options="field:'containerNumber',align:'left'" width="120">
@@ -117,7 +118,7 @@
                 <th data-options="field:'pod',align:'left'" width="110">
                   POD
                 </th>
-                <th data-options="field:'status',align:'left',formatter:formatStatus" width="80">
+                <th data-options="field:'status',align:'left',formatter:formatStatus" width="90">
                   STATUS
                 </th>
                 <th data-options="field:'createTime',align:'center'" width="110">
