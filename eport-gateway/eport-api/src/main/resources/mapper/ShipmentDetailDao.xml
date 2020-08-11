@@ -202,6 +202,12 @@
 		       t.vsl_cd || ' - ' || (select vsl_nm from tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
 		 FROM tb_berthplan t
 		 where t.ptnr_code = #{opeCode}
+		 		 			    AND   t.vsl_cd NOT IN ('DBO','EMPTY',
+			                            'STRG',
+			                            'TBA',
+			                            'DUMY')
+			       AND t.longterm_eta IS NOT NULL
+			       AND t.atc IS NULL
 	</select>
 	<select id="getYearByVslCodeAndVoyNo" resultType="String">
 		SELECT CALL_YEAR
