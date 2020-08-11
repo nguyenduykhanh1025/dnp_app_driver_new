@@ -5,13 +5,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -22,13 +21,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.mapper.EdoMapper;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
-import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -87,6 +89,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             // In the following line you set the criterion,
             // which is the name of Contact in my example scenario
             return shipmentDetail1.getSztp().compareTo(shipmentDetail2.getSztp());
+        }
+    }
+    
+    class OrderNoComparator implements Comparator<ShipmentDetail> {
+        public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
+            // In the following line you set the criterion,
+            // which is the name of Contact in my example scenario
+            return shipmentDetail1.getOrderNo().compareTo(shipmentDetail2.getOrderNo());
         }
     }
 
@@ -552,6 +562,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             ProcessOrder processOrder) {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessStatus(status);
+            shipmentDetail.setOrderNo(processOrder.getOrderNo());
             if ("Y".equalsIgnoreCase(status)) {
                 if ("Credit".equalsIgnoreCase(processOrder.getPayType())) {
                     shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);
@@ -903,5 +914,96 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     public List<PickupAssignForm> selectShipmentDetailForDriverShipmentAssign(Long shipmentId, Long driverId) {
         return shipmentDetailMapper.selectShipmentDetailForDriverShipmentAssign(shipmentId, driverId);
     }
+    
+    /**
+     * Make change vessel order
+     * 
+     * @param shipmentDetails
+     * @param vessel
+     * @param voyage
+     * @param groupId
+     * @return ServiceSendFullRobotReq
+     */
+    @Override
+    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String vessel, String voyage, Long groupId) {
+    	ProcessOrder processOrder = new ProcessOrder();
+    	if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+    		ShipmentDetail shipmentDt = shipmentDetails.get(0);
+    		processOrder.setServiceType(Constants.CHANGE_VESSEL);
+    		processOrder.setShipmentId(shipmentDt.getShipmentId());
+    		processOrder.setBookingNo(shipmentDt.getBookingNo());
+    		processOrder.setStatus(0);
+    		ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+            if (tempProcessOrder != null) {
+                processOrder.setYear(tempProcessOrder.getYear());
+                processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
+            } else {
+                processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
+                processOrder.setBeforeAfter("Before");
+            }
+    		processOrder.setOldVessel(shipmentDt.getVslNm());
+    		processOrder.setOldVoyAge(shipmentDt.getVoyNo());
+    		processOrder.setVessel(vessel);
+    		processOrder.setVoyage(voyage);
+    		List<Long> shipmentDetailIds = new ArrayList<>();
+    		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+    			shipmentDetail.setVslNm(vessel);
+    			shipmentDetail.setVoyNo(voyage);
+    			shipmentDetailIds.add(shipmentDetail.getId());
+    		}
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("shipmentDetailIds", shipmentDetailIds);
+    		processOrder.setProcessData(new Gson().toJson(map));
+    		processOrder.setLogisticGroupId(groupId);
+    		processOrderService.insertProcessOrder(processOrder);
+    		ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+    		return serviceRobotReq;
+    	}
+    	return null;
+    }
 
+    /**
+     * Make extension date order
+     * 
+     * @param shipmentDetails
+     * @param expiredDem
+     * @param groupId
+     * @return ServiceSendFullRobotReq
+     */
+    @Override
+    public List<ServiceSendFullRobotReq> makeExtensionDateOrder(List<ShipmentDetail> shipmentDetails, Date expiredDem, Long groupId) {
+    	Collections.sort(shipmentDetails, new OrderNoComparator());
+    	List<ServiceSendFullRobotReq> serviceRobotReqs = new ArrayList<>();
+    	String currentOrderNo = shipmentDetails.get(0).getOrderNo();
+    	List<ShipmentDetail> shipmentDetailList = new ArrayList<>();
+    	for (ShipmentDetail shipmentDetail : shipmentDetails) {
+    		if (!currentOrderNo.equals(shipmentDetail.getOrderNo())) {
+    			shipmentDetailList.add(shipmentDetail);
+    		} else {
+    			serviceRobotReqs.add(separateExtensionOrderByOrderNo(shipmentDetailList, expiredDem, groupId));
+    			shipmentDetailList = new ArrayList<>();
+    			shipmentDetailList.add(shipmentDetail);
+    			currentOrderNo = shipmentDetail.getOrderNo();
+    		}
+    	}
+    	serviceRobotReqs.add(separateExtensionOrderByOrderNo(shipmentDetailList, expiredDem, groupId));
+    	return serviceRobotReqs;
+    }
+    
+    private ServiceSendFullRobotReq separateExtensionOrderByOrderNo(List<ShipmentDetail> shipmentDetails, Date expiredDem, Long groupId) {
+    	ProcessOrder processOrder = new ProcessOrder();
+    	processOrder.setPickupDate(expiredDem);
+    	processOrder.setServiceType(Constants.EXTENSION_DATE_ORDER);
+    	processOrder.setLogisticGroupId(groupId);
+    	processOrder.setShipmentId(shipmentDetails.get(0).getShipmentId());
+    	processOrder.setOrderNo(shipmentDetails.get(0).getOrderNo());
+    	List<Long> shipmentDetailIds = new ArrayList<>();
+    	for (ShipmentDetail shipmentDetail : shipmentDetails) {
+    		shipmentDetailIds.add(shipmentDetail.getId());
+    	}
+    	processOrder.setProcessData(new Gson().toJson(shipmentDetailIds));
+    	processOrderService.insertProcessOrder(processOrder);
+    	ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+    	return serviceRobotReq;
+    }
 }

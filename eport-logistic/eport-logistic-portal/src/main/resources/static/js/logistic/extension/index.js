@@ -1,7 +1,7 @@
 var prefix = ctx + "logistic/order/extension";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
-var shipmentSelected, shipmentDetailIds, sourceData, currentProcessId;
+var shipmentSelected, shipmentDetailIds, sourceData, currentProcessId, orderNumber, orders;
 var allChecked = false;
 var checkList = [];
 var rowAmount = 0;
@@ -510,12 +510,12 @@ function otp(expiredDem) {
 }
 
 function finishVerifyForm(result) {
-    if (result.code == 0 || result.code == 301){
-        // $.modal.loading(result.msg);
-        currentProcessId = result.processId;
+    if (result.code == 0 || result.code == 301) {
+        //$.modal.loading(result.msg);
+        orders = result.processIds;
+        orderNumber = result.orderNumber;
         // CONNECT WEB SOCKET
         connectToWebsocketServer();
-
         showProgress("Đang xử lý ...");
         timeout = setTimeout(() => {
             setTimeout(() => {
@@ -536,8 +536,10 @@ function connectToWebsocketServer(){
 }
 
 function onConnected() {
-    console.log('Connect socket.')
-    currentSubscription = $.websocket.subscribe(currentProcessId + '/response', onMessageReceived);
+    for (let i=0; i<orders.length; i++) {
+        console.log('Connect socket.')
+        $.websocket.subscribe(orders[i] + '/response', onMessageReceived);
+    }
 }
 
 function onError(error) {
@@ -551,32 +553,47 @@ function onError(error) {
 }
 
 function onMessageReceived(payload) {
-    clearTimeout(timeout);
-    setProgressPercent(currentPercent=100);
-    setTimeout(() => {
-        hideProgress();
+    let message = JSON.parse(payload.body);
+    if (message.code != 0) {
 
-        let message = JSON.parse(payload.body);
+        clearTimeout(timeout);
 
-        reloadShipmentDetail();
+        setProgressPercent(currentPercent = 100);
+        setTimeout(() => {
+            hideProgress();
 
-        if (message.code == 0){
-            $.modal.alertSuccess(message.msg);
-        }else{
+            reloadShipmentDetail();
+
             $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
+
+            // Close loading
+            //$.modal.closeLoading();
+
+            // Close websocket connection 
+            $.websocket.disconnect(onDisconnected);
+        }, 1000);
+    } else {
+        orderNumber--;
+        if (orderNumber == 0) {
+
+            clearTimeout(timeout);
+
+            setProgressPercent(currentPercent = 100);
+            setTimeout(() => {
+                hideProgress();
+
+                reloadShipmentDetail();
+
+                $.modal.alertSuccess(message.msg);
+
+                // Close loading
+                //$.modal.closeLoading();
+
+                // Close websocket connection 
+                $.websocket.disconnect(onDisconnected);
+            }, 1000);
         }
-
-        // Close loading
-        //$.modal.closeLoading();
-
-        // Unsubscribe destination
-        if (currentSubscription){
-            currentSubscription.unsubscribe();
-        }
-
-        // Close websocket connection 
-        $.websocket.disconnect(onDisconnected);
-    }, 1000);
+    }
 }
 
 function onDisconnected(){

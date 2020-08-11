@@ -152,7 +152,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	<select id="getCarrierGroupByOpeCode" parameterType="String" resultMap="CarrierGroupResult">
 		<include refid="selectCarrierGroupVo" />
-		where operate_code like
-				concat(concat('%', #{operateCode}), '%')
+		where operate_code like concat(concat('%', #{operateCode}), '%')
+		FETCH NEXT 1 ROWS ONLY
 	</select>
 </mapper>

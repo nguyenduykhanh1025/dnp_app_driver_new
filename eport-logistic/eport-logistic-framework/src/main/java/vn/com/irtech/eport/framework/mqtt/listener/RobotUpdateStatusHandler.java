@@ -107,6 +107,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		
 		Boolean isGateInOrder = "1"
 				.equals(map.get("isGateInOrder") == null ? null : map.get("isGateInOrder").toString());
+		
+		Boolean isExtensionDateOrder = "1"
+				.equals(map.get("isExtensionDateOrder") == null ? null : map.get("isExtensionDateOrder").toString());
 
 		String serviceTypes = "";
 
@@ -134,7 +137,10 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		if (isGateInOrder) {
 			serviceTypes += 8 + ",";
 		}
-
+		if (isExtensionDateOrder) {
+			serviceTypes += 9 + ",";
+		}
+		
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);
 		}
@@ -151,6 +157,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		sysRobot.setIsChangeVesselOrder(isChangeVesselOrder);
 		sysRobot.setIsCreateBookingOrder(isCreateBookingOrder);
 		sysRobot.setIsGateInOrder(isGateInOrder);
+		sysRobot.setIsExtensionDateOrder(isExtensionDateOrder);
 
 		// if robot is busying
 		if ("1".equals(status)) {

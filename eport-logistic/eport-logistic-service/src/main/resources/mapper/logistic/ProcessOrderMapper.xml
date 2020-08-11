@@ -37,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="postProcessId"    column="post_process_id"    />
         <result property="runnable"    column="runnable"    />
         <result property="orderNo"    column="order_no"    />
+        <result property="processData"    column="process_data"    />
         <result property="groupName"    column="group_name"    />
         <association property="shipmentDetail"    column="id" javaType="ShipmentDetail" resultMap="ShipmentDetailResult" />
     </resultMap>
@@ -56,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectProcessOrderVo">
         select id, shipment_id, logistic_group_id, service_type, invoice_no, pay_type, sztp, modee, consignee, truck_co, 
         tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, 
-        result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, post_process_id, runnable, order_no from process_order
+        result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, post_process_id, runnable, order_no, process_data from process_order
     </sql>
 
     <select id="selectProcessOrderList" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
@@ -130,6 +131,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="postProcessId != null">post_process_id,</if>
             <if test="runnable != null">runnable,</if>
             <if test="orderNo != null and orderNo != ''">order_no,</if>
+            <if test="processData != null and processData != ''">process_data,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
          </trim>
@@ -162,6 +164,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="postProcessId != null">#{postProcessId},</if>
             <if test="runnable != null">#{runnable},</if>
             <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
+            <if test="processData != null and processData != ''">#{processData},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
          </trim>
@@ -198,6 +201,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="postProcessId != null">post_process_id = #{postProcessId},</if>
             <if test="runnable != null">runnable = #{runnable},</if>
             <if test="orderNo != null and orderNo != ''">order_no = #{orderNo},</if>
+            <if test="processData != null and processData != ''">process_data = #{processData},</if>
             update_time = sysdate
         </trim>
         where id = #{id}

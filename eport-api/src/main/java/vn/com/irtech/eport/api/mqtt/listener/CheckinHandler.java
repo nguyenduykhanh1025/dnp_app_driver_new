@@ -97,6 +97,18 @@ public class CheckinHandler implements IMqttMessageListener {
 			
 			// Compare contNo, truckNo, chassisNo, weight 
 			if (validateDataWithInput(checkinReq, gateId)) {
+				
+				// Check if container is deliverable
+				if (!checkGateOrderDoable(checkinReq)) {
+					driverRes = new DriverRes();
+					driverRes.setStatus(BusinessConsts.FINISH);
+					driverRes.setResult(BusinessConsts.FAIL);
+					driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
+					responseDriver(driverRes, checkinReq.getSessionId());
+
+					responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0021));
+				}
+				
 				// Get yard position or area, request to mc if not
 				List<DriverDataRes> data = getDriverDataResponse(checkinReq);
 
@@ -208,7 +220,7 @@ public class CheckinHandler implements IMqttMessageListener {
 			// Get position for send container case
 			if (pickupHistory.getShipment().getServiceType() == 1) {
 				// TODO : Get position
-				
+				pickupHistory = catosApiService.getLocationForReceiveF(pickupHistory);
 			}
 			
 			DriverDataRes driverDataRes = new DriverDataRes();
@@ -380,9 +392,8 @@ public class CheckinHandler implements IMqttMessageListener {
 			gateInFormData.setWgt(wgt.toString());
 			gateInFormData.setSessionId(sessionId);
 			gateInFormData.setGateId(gateId);
-			if (!checkGateOrderDoable(gateInFormData)) {
-				return false;
-			}
+			
+			
 			ProcessOrder processOrder = new ProcessOrder();
 			processOrder.setShipmentId(pickupTemp.getShipmentId());
 			processOrder.setServiceType(8);
@@ -390,6 +401,8 @@ public class CheckinHandler implements IMqttMessageListener {
 			processOrder.setStatus(1);
 			processOrder.setRobotUuid(gateId);
 			processOrderService.insertProcessOrder(processOrder);
+			
+			
 			gateInFormData.setReceiptId(processOrder.getId());
 			for (DriverDataRes driverDataRes : driverDatareses) {
 				PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(driverDataRes.getPickupHistoryId());
@@ -430,7 +443,7 @@ public class CheckinHandler implements IMqttMessageListener {
 		return false;
 	}
 	
-	private Boolean checkGateOrderDoable(GateInFormData gateInFormData) {
+	private Boolean checkGateOrderDoable(CheckinReq checkinReq) {
 		// TODO : Validate on the things need to make a gate-in order
 		return true;
 	}

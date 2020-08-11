@@ -1,11 +1,13 @@
 package vn.com.irtech.eport.logistic.controller;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -19,10 +21,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.framework.web.service.MqttService;
+import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -33,6 +38,8 @@ public class LogisticExtensionOrderController extends LogisticBaseController {
 
 	private final String PREFIX = "logistic/extension";
 	
+	private static final Logger logger = LoggerFactory.getLogger(LogisticExtensionOrderController.class);
+	
 	@Autowired
 	private IShipmentService shipmentService;
 
@@ -41,6 +48,9 @@ public class LogisticExtensionOrderController extends LogisticBaseController {
 
 	@Autowired
 	private IOtpCodeService otpCodeService;
+	
+	@Autowired
+	private MqttService mqttService;
 	
 	/**
 	 * Get main view for extend expired dem
@@ -165,7 +175,33 @@ public class LogisticExtensionOrderController extends LogisticBaseController {
 		Date expiredDemDate = new Date(expiredDem);
 		
 		// Make order send to robot
-		
-		return error("Có lỗi xảy ra trong quá trình xác thực!");
+		List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeExtensionDateOrder(shipmentDetails, expiredDemDate, getUser().getGroupId());
+		if (CollectionUtils.isEmpty(serviceRobotReqs)) {
+			return error("Có lỗi xảy ra trong quá trình chuẩn bị dữ liệu làm lệnh.");
+		}
+		AjaxResult ajaxResult = null;
+		List<Long> processIds = new ArrayList<>();
+		boolean robotBusy = false;
+		try {
+			for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
+				processIds.add(serviceRobotReq.processOrder.getId());
+				if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.EXTENSION_DATE)) {
+					robotBusy = true;
+				}			
+			}
+			if (robotBusy) {
+				ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
+				ajaxResult.put("processIds", processIds);
+				ajaxResult.put("orderNumber", serviceRobotReqs.size());
+				return ajaxResult;
+			}
+		} catch (Exception e) {
+			logger.warn(e.getMessage());
+			return error("Có lỗi xảy ra trong quá trình xác thực!");
+		}
+		ajaxResult = AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
+		ajaxResult.put("processIds", processIds);
+		ajaxResult.put("orderNumber", serviceRobotReqs.size());
+		return ajaxResult;
 	}
 }
