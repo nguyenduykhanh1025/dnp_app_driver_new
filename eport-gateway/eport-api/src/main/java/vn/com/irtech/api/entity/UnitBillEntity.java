@@ -5,7 +5,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class UnitBillEntity {
 
-	private String referenceNo;
+	private String invoiceNo;
 
 	private Long exchangeFee;
 	
@@ -17,12 +17,13 @@ public class UnitBillEntity {
 	
 	private String sztp;
 	
-	public String getReferenceNo() {
-		return referenceNo;
+
+	public String getInvoiceNo() {
+		return invoiceNo;
 	}
 
-	public void setReferenceNo(String referenceNo) {
-		this.referenceNo = referenceNo;
+	public void setInvoiceNo(String invoiceNo) {
+		this.invoiceNo = invoiceNo;
 	}
 
 	public Long getExchangeFee() {
@@ -68,7 +69,7 @@ public class UnitBillEntity {
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-				.append("referenceNo", getReferenceNo())
+				.append("invoiceNo", getInvoiceNo())
 	            .append("exchangeFee", getExchangeFee())
 	            .append("vatRate", getVatRate())
 	            .append("vatAfterFee", getVatAfterFee())

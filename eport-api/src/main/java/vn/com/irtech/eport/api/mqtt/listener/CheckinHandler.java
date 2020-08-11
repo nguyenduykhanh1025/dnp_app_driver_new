@@ -31,9 +31,11 @@ import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
-import vn.com.irtech.eport.logistic.form.Pickup;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
@@ -51,7 +53,14 @@ public class CheckinHandler implements IMqttMessageListener {
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
 	
-	@Autowired ISysRobotService robotService;
+	@Autowired 
+	private ISysRobotService robotService;
+
+	@Autowired
+	private IShipmentDetailService shipmentDetailService;
+	
+	@Autowired
+	private ICatosApiService catosApiService;
 
 	// time wait mc input postion
 	private static final Long TIME_OUT_WAIT_MC = 6000L;
@@ -73,7 +82,7 @@ public class CheckinHandler implements IMqttMessageListener {
 			checkinReq = new Gson().fromJson(messageContent, CheckinReq.class);
 		} catch (Exception ex) {
 			logger.warn(ex.getMessage());
-			responseSmartGate(gateId, BusinessConsts.FAIL);
+			responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0022));
 			return;
 		}
 
@@ -87,18 +96,22 @@ public class CheckinHandler implements IMqttMessageListener {
 			responseDriver(driverRes, checkinReq.getSessionId());
 			
 			// Compare contNo, truckNo, chassisNo, weight 
-			if (!validateDataWithInput(checkinReq)) {
-				driverRes = new DriverRes();
-				driverRes.setStatus(BusinessConsts.FINISH);
-				driverRes.setResult(BusinessConsts.FAIL);
-				driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
-				responseDriver(driverRes, checkinReq.getSessionId());
+			if (validateDataWithInput(checkinReq, gateId)) {
+				
+				// Check if container is deliverable
+				if (!checkGateOrderDoable(checkinReq)) {
+					driverRes = new DriverRes();
+					driverRes.setStatus(BusinessConsts.FINISH);
+					driverRes.setResult(BusinessConsts.FAIL);
+					driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
+					responseDriver(driverRes, checkinReq.getSessionId());
 
-				responseSmartGate(gateId, BusinessConsts.FAIL);
-			} else {
+					responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0021));
+				}
+				
 				// Get yard position or area, request to mc if not
 				List<DriverDataRes> data = getDriverDataResponse(checkinReq);
-				
+
 				// Call and wait robot
 				if (CollectionUtils.isNotEmpty(data)) {
 					data.get(0).setWgt(checkinReq.getInput().get(0).getWeight());
@@ -109,7 +122,7 @@ public class CheckinHandler implements IMqttMessageListener {
 						driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
 						responseDriver(driverRes, checkinReq.getSessionId());
 
-						responseSmartGate(gateId, BusinessConsts.FAIL);
+						responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0021));
 					}
 				} else {
 					driverRes = new DriverRes();
@@ -126,7 +139,7 @@ public class CheckinHandler implements IMqttMessageListener {
 			driverRes.setMsg(e.getMessage());
 			responseDriver(driverRes, checkinReq.getSessionId());
 
-			responseSmartGate(gateId, BusinessConsts.FAIL);
+			responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0024));
 		}
 	}
 
@@ -148,9 +161,10 @@ public class CheckinHandler implements IMqttMessageListener {
 	 * @param result
 	 * @throws Exception
 	 */
-	private void responseSmartGate(String gateId, String result) throws Exception {
+	private void responseSmartGate(String gateId, String result, String message) throws Exception {
 		Map<String, Object> map = new HashMap<>();
 		map.put("result", result);
+		map.put("message", message);
 		String msg = new Gson().toJson(map);
 		mqttService.publish(MqttConsts.SMART_GATE_RES_TOPIC.replace("+", gateId), new MqttMessage(msg.getBytes()));
 	}
@@ -201,6 +215,12 @@ public class CheckinHandler implements IMqttMessageListener {
 			// pickup is not exist
 			if (pickupHistory == null) {
 				throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0007));
+			}
+			
+			// Get position for send container case
+			if (pickupHistory.getShipment().getServiceType() == 1) {
+				// TODO : Get position
+				pickupHistory = catosApiService.getLocationForReceiveF(pickupHistory);
 			}
 			
 			DriverDataRes driverDataRes = new DriverDataRes();
@@ -264,14 +284,40 @@ public class CheckinHandler implements IMqttMessageListener {
 	 * @param checkinReq
 	 * @return Boolean
 	 */
-	private Boolean validateDataWithInput(CheckinReq checkinReq) {
+	private Boolean validateDataWithInput(CheckinReq checkinReq, String gateId) {
+		DriverRes driverRes = new DriverRes();
+		
 		int contValidate = checkinReq.getData().size();
 		boolean validTruckNo = false;
 		boolean validChasissNo = false;
-		// TODO Check weight
+
+		// TODO : Check weight
 		for (PickupHistoryDataRes pickupHistoryDataRes : checkinReq.getData()) {
 			for (MeasurementDataReq measurementDataReq : checkinReq.getInput()) {
-				if (pickupHistoryDataRes.getContNo().equalsIgnoreCase(measurementDataReq.getContNo())) {
+
+				// Get Pickup History
+				PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickupHistoryDataRes.getPickupHistoryId());
+				if (pickupHistory.getShipmentDetailId() == null) {
+
+					// Auto pickup
+					ShipmentDetail shipmentDetail = shipmentDetailService.getContainerWithYardPosition(pickupHistory.getShipmentId());
+					if (shipmentDetail == null) {
+						driverRes.setStatus(BusinessConsts.FINISH);
+						driverRes.setResult(BusinessConsts.FAIL);
+						driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0025));
+						try {
+							responseDriver(driverRes, checkinReq.getSessionId());
+							responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0025));
+						} catch (Exception e) {
+							logger.warn(e.getMessage());
+						}
+
+						return false;
+					} else {
+						contValidate--;
+					}
+
+				} else if (pickupHistoryDataRes.getContNo().equalsIgnoreCase(measurementDataReq.getContNo())) {
 					contValidate--;
 				}
 				if (pickupHistoryDataRes.getTruckNo().equalsIgnoreCase(measurementDataReq.getTruckNo())) {
@@ -284,6 +330,16 @@ public class CheckinHandler implements IMqttMessageListener {
 		}
 		if (contValidate <= 0 && validTruckNo && validChasissNo) {
 			return true;
+		}
+
+		driverRes.setStatus(BusinessConsts.FINISH);
+		driverRes.setResult(BusinessConsts.FAIL);
+		driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0023));
+		try {
+			responseDriver(driverRes, checkinReq.getSessionId());
+			responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0023));
+		} catch (Exception e) {
+			logger.warn(e.getMessage());
 		}
 		return false;
 	}
@@ -330,15 +386,14 @@ public class CheckinHandler implements IMqttMessageListener {
 				gateInFormData.setContNumberOut(pickupOut.size());
 			}
 			DriverDataRes driverData = driverDatareses.get(0);
-			gateInFormData.setGatePass(driverData.getTruckNo().substring(driverData.getTruckNo().length()-5, driverData.getTruckNo().length()));
+			gateInFormData.setGatePass(pickupTemp.getGatePass());
 			gateInFormData.setTruckNo(driverData.getTruckNo());
 			gateInFormData.setChassisNo(driverData.getChassisNo());
 			gateInFormData.setWgt(wgt.toString());
 			gateInFormData.setSessionId(sessionId);
 			gateInFormData.setGateId(gateId);
-			if (!checkGateOrderDoable(gateInFormData)) {
-				return false;
-			}
+			
+			
 			ProcessOrder processOrder = new ProcessOrder();
 			processOrder.setShipmentId(pickupTemp.getShipmentId());
 			processOrder.setServiceType(8);
@@ -346,6 +401,8 @@ public class CheckinHandler implements IMqttMessageListener {
 			processOrder.setStatus(1);
 			processOrder.setRobotUuid(gateId);
 			processOrderService.insertProcessOrder(processOrder);
+			
+			
 			gateInFormData.setReceiptId(processOrder.getId());
 			for (DriverDataRes driverDataRes : driverDatareses) {
 				PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(driverDataRes.getPickupHistoryId());
@@ -357,11 +414,11 @@ public class CheckinHandler implements IMqttMessageListener {
 			robot.setStatus("0");
 			robot.setIsGateInOrder(true);
 			SysRobot sysRobot = robotService.findFirstRobot(robot);
-			if (sysRobot == null) {
-				return false;
+			if (sysRobot != null) {
+				robotService.updateRobotStatusByUuId(sysRobot.getUuId(), "1");
+				mqttService.sendMessageToRobot(msg, sysRobot.getUuId());
 			}
-			robotService.updateRobotStatusByUuId(sysRobot.getUuId(), "1");
-			mqttService.sendMessageToRobot(msg, sysRobot.getUuId());
+			
 		} catch (Exception e) {
 			logger.warn(e.getMessage());
 			return false;
@@ -386,7 +443,7 @@ public class CheckinHandler implements IMqttMessageListener {
 		return false;
 	}
 	
-	private Boolean checkGateOrderDoable(GateInFormData gateInFormData) {
+	private Boolean checkGateOrderDoable(CheckinReq checkinReq) {
 		// TODO : Validate on the things need to make a gate-in order
 		return true;
 	}

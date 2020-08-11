@@ -12,7 +12,7 @@ import vn.com.irtech.api.entity.UnitBillEntity;
 @Mapper
 public interface UnitBillDao extends BaseMapper<UnitBillDao>{
 
-	public List<UnitBillEntity> selectUnitBillByInvNo(String invNo);
+	public List<UnitBillEntity> selectUnitBillByInvNo(String invoiceNo);
 	
 	public List<UnitBillEntity> getUnitBillByShipmentDetailsForReserve(ShipmentDetailEntity shipmentDetailEntity);
 	

@@ -9,7 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="shipmentId"    column="shipment_id"    />
         <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="serviceType"    column="service_type"    />
-        <result property="referenceNo"    column="reference_no"    />
+        <result property="invoiceNo"    column="invoice_no"    />
         <result property="payType"    column="pay_type"    />
         <result property="sztp"    column="sztp"    />
         <result property="modee"    column="modee"    />
@@ -36,6 +36,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="sysUserId"    column="sys_user_id"    />
         <result property="postProcessId"    column="post_process_id"    />
         <result property="runnable"    column="runnable"    />
+        <result property="orderNo"    column="order_no"    />
+        <result property="processData"    column="process_data"    />
         <result property="groupName"    column="group_name"    />
         <association property="shipmentDetail"    column="id" javaType="ShipmentDetail" resultMap="ShipmentDetailResult" />
     </resultMap>
@@ -53,9 +55,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectProcessOrderVo">
-        select id, shipment_id, logistic_group_id, service_type, reference_no, pay_type, sztp, modee, consignee, truck_co, 
+        select id, shipment_id, logistic_group_id, service_type, invoice_no, pay_type, sztp, modee, consignee, truck_co, 
         tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, 
-        result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, post_process_id, runnable from process_order
+        result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, post_process_id, runnable, order_no, process_data from process_order
     </sql>
 
     <select id="selectProcessOrderList" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
@@ -64,7 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
-            <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo}</if>
+            <if test="invoiceNo != null  and invoiceNo != ''"> and invoice_no = #{invoiceNo}</if>
             <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
             <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
             <if test="modee != null  and modee != ''"> and modee = #{modee}</if>
@@ -105,7 +107,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="shipmentId != null ">shipment_id,</if>
             <if test="logisticGroupId != null ">logistic_group_id,</if>
             <if test="serviceType != null ">service_type,</if>
-            <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
+            <if test="invoiceNo != null  and invoiceNo != ''">invoice_no,</if>
             <if test="payType != null  and payType != ''">pay_type,</if>
             <if test="sztp != null  and sztp != ''">sztp,</if>
             <if test="modee != null  and modee != ''">modee,</if>
@@ -128,6 +130,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysUserId != null">sys_user_id,</if>
             <if test="postProcessId != null">post_process_id,</if>
             <if test="runnable != null">runnable,</if>
+            <if test="orderNo != null and orderNo != ''">order_no,</if>
+            <if test="processData != null and processData != ''">process_data,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
          </trim>
@@ -136,7 +140,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="shipmentId != null ">#{shipmentId},</if>
             <if test="logisticGroupId != null ">#{logisticGroupId},</if>
             <if test="serviceType != null ">#{serviceType},</if>
-            <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
+            <if test="invoiceNo != null  and invoiceNo != ''">#{invoiceNo},</if>
             <if test="payType != null  and payType != ''">#{payType},</if>
             <if test="sztp != null  and sztp != ''">#{sztp},</if>
             <if test="modee != null  and modee != ''">#{modee},</if>
@@ -159,6 +163,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysUserId != null">#{sysUserId},</if>
             <if test="postProcessId != null">#{postProcessId},</if>
             <if test="runnable != null">#{runnable},</if>
+            <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
+            <if test="processData != null and processData != ''">#{processData},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
          </trim>
@@ -170,7 +176,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="shipmentId != null ">shipment_id = #{shipmentId},</if>
             <if test="logisticGroupId != null ">logistic_group_id = #{logisticGroupId},</if>
             <if test="serviceType != null ">service_type = #{serviceType},</if>
-            <if test="referenceNo != null  and referenceNo != ''">reference_no = #{referenceNo},</if>
+            <if test="invoiceNo != null  and invoiceNo != ''">invoice_no = #{invoiceNo},</if>
             <if test="payType != null  and payType != ''">pay_type = #{payType},</if>
             <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
             <if test="modee != null  and modee != ''">modee = #{modee},</if>
@@ -194,6 +200,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="sysUserId != null">sys_user_id = #{sysUserId},</if>
             <if test="postProcessId != null">post_process_id = #{postProcessId},</if>
             <if test="runnable != null">runnable = #{runnable},</if>
+            <if test="orderNo != null and orderNo != ''">order_no = #{orderNo},</if>
+            <if test="processData != null and processData != ''">process_data = #{processData},</if>
             update_time = sysdate
         </trim>
         where id = #{id}
@@ -212,7 +220,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectOrderListForOmSupport" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
         select p.id, p.shipment_id, p.logistic_group_id, p.service_type, p.pay_type, p.tax_code, p.bl_no, p.booking_no, p.pickup_date, p.robot_uuid,
-        p.vessel, p.voyage, p.cont_number, p.status, p.result, p.reference_no, s.container_no, s.sztp, s.fe, s.cargo_type, s.discharge_port, 
+        p.vessel, p.voyage, p.cont_number, p.status, p.result, p.invoice_no, s.container_no, s.sztp, s.fe, s.cargo_type, s.discharge_port, 
         s.ope_code, s.wgt, s.consignee, l.group_name as group_name
         from process_order p
         left join shipment_detail s on p.id = s.process_order_id
@@ -266,7 +274,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="runnable != null "> and runnable = #{runnable}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="robotUuid != null and robotUuid != ''"> and robot_uuid is not null</if>
-            <if test="robotUuid == null or robotUuid == ''"> and (robot_uuid = null or status != 0)</if>
+            <if test="robotUuid == null or robotUuid == ''"> and (robot_uuid is null or status != 0)</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="status != null "> and status = #{status}</if>
             <if test="result != null  and result != ''"> and result = #{result}</if>

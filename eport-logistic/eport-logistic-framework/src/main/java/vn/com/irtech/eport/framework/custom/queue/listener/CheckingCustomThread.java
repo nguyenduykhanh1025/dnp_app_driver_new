@@ -48,7 +48,10 @@ public class CheckingCustomThread {
 								shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
 								shipmentDetail.setCustomStatus("R");
 								shipmentDetailService.updateShipmentDetail(shipmentDetail);
-							} 
+							} else {
+								shipmentDetail.setCustomStatus("Y");
+								shipmentDetailService.updateShipmentDetail(shipmentDetail);
+							}
 							ajaxResult = AjaxResult.success();
 							ajaxResult.put("shipmentDetail", shipmentDetail);
 							webSocketService.sendMessage("/" + shipmentDetail.getContainerNo() + "/response", ajaxResult);

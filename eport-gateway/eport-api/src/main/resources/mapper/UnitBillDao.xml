@@ -3,18 +3,18 @@
 <mapper namespace="vn.com.irtech.api.dao.UnitBillDao">
 	<select id="selectUnitBillByInvNo" parameterType="String" resultType="vn.com.irtech.api.entity.UnitBillEntity">
 		SELECT 
-		    INV_NO AS REFERENCE_NO,
+		    INV_NO AS INVOICE_NO,
 		    NET_AMT AS EXCHANGE_FEE,
 		    VAT_RATE AS VAT_RATE,
 		    AMT AS VAT_AFTER_FEE,
 		    CNTR_NO AS CONTAINER_NO,
 		    SZTP2 AS SZTP
 		FROM TB_INVOICE_UNIT
-		WHERE INV_NO = #{referenceNo}
+		WHERE INV_NO = #{invoiceNo}
 	</select>
 	<select id="getUnitBillByShipmentDetailsForReserve" parameterType="vn.com.irtech.api.entity.ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.UnitBillEntity">
 		SELECT 
-		    INV_NO AS REFERENCE_NO,
+		    INV_NO AS INVOICE_NO,
 		    NET_AMT AS EXCHANGE_FEE,
 		    VAT_RATE AS VAT_RATE,
 		    AMT AS VAT_AFTER_FEE,
@@ -35,7 +35,7 @@
 	</select>
 	<select id="getUnitBillByShipmentDetailsForInventory" parameterType="vn.com.irtech.api.entity.ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.UnitBillEntity">
 		SELECT 
-		    INV_NO AS REFERENCE_NO,
+		    INV_NO AS INVOICE_NO,
 		    NET_AMT AS EXCHANGE_FEE,
 		    VAT_RATE AS VAT_RATE,
 		    AMT AS VAT_AFTER_FEE,
@@ -56,7 +56,7 @@
 	</select>
 	<select id="getUnitBillByShipmentDetailsForReceiveSSR" parameterType="vn.com.irtech.api.entity.ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.UnitBillEntity">
 		SELECT 
-		    INV_NO AS REFERENCE_NO,
+		    INV_NO AS INVOICE_NO,
 		    NET_AMT AS EXCHANGE_FEE,
 		    VAT_RATE AS VAT_RATE,
 		    AMT AS VAT_AFTER_FEE,
@@ -77,7 +77,7 @@
 	</select>
 	<select id="getUnitBillByShipmentDetailsForSendSSR" parameterType="vn.com.irtech.api.entity.ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.UnitBillEntity">
 		SELECT 
-		    INV_NO AS REFERENCE_NO,
+		    INV_NO AS INVOICE_NO,
 		    NET_AMT AS EXCHANGE_FEE,
 		    VAT_RATE AS VAT_RATE,
 		    AMT AS VAT_AFTER_FEE,

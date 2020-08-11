@@ -76,5 +76,5 @@ public interface ShipmentMapper
      * @param logisticGroupId
      * @return List<ShipmentForm>
      */
-    public List<ShipmentForm> selectShipmentListForDriver(@Param("serviceType") Integer serviceType, @Param("logisticGroupId") Long logisticGroupId);
+    public List<ShipmentForm> selectShipmentListForDriver(@Param("serviceType") Integer serviceType, @Param("driverId") Long driverId);
 }

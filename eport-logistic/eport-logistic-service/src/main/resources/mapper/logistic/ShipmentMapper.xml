@@ -165,24 +165,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (select sh.vsl_nm from shipment_detail sh where sh.shipment_id = s.id FETCH NEXT 1 ROWS ONLY) as vsl_nm,
         (select sh.voy_no from shipment_detail sh where sh.shipment_id = s.id FETCH NEXT 1 ROWS ONLY) as voy_no,
         (select count(*) from shipment_detail sh where sh.shipment_id = s.id) as container_amount
-        <!-- l.group_name as logistic_name, sh.vsl_nm as vsl_nm, sh.voy_no as voy_no -->
         from shipment s
-        <!-- left join logistic_group l on s.logistic_group_id = l.id
-        left join shipment_detail sh on s.id = sh.shipment_id -->
         <where>
             status != 1
             and status != 4
             <if test="id != null "> and s.id = #{id}</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
-            <if test="logisticAccountId != null and logisticAccountId != ''"> and logistic_account_id = #{logisticAccountId}</if>
+            <if test="logisticGroupId != null and logisticGroupId != ''"> and logistic_group_id = #{logisticGroupId}</if>
             <if test="fromDate != null">and s.create_time &gt;= #{fromDate}</if>
             <if test="toDate != null">and s.create_time &lt;= #{toDate}</if>
             <if test="containerAmount != null">and s.container_amount = #{containerAmount}</if>
-            <if test="blNo != null and blNo != ''"> and (upper(s.bl_no) like concat(concat('%', #{blNo}), '%')</if>
-            <if test="bookingNo != null and bookingNo != ''"> or upper(s.booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
-            <if test="vslNm != null and vslNm != ''"> or upper(sh.vsl_nm) like concat(concat('%', #{vslNm}), '%')</if>
-            <if test="voyNo != null and voyNo != ''"> or upper(sh.voy_no) like concat(concat('%', #{voyNo}), '%')</if>
-            <if test="taxCode != null and taxCode != ''"> or upper(s.tax_code) like concat(concat('%', #{taxCode}), '%'))</if>
+            <if test="blNo != null and blNo != ''"> and (upper(bl_no) like concat(concat('%', #{blNo}), '%')</if>
+            <if test="bookingNo != null and bookingNo != ''"> or upper(booking_no) like concat(concat('%', #{bookingNo}), '%')</if>
+            <if test="taxCode != null and taxCode != ''"> or upper(tax_code) like concat(concat('%', #{taxCode}), '%'))</if>
         </where>
         GROUP BY id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, tax_code, status, create_time
     </select>
@@ -217,14 +212,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectShipmentListForDriver" resultType="vn.com.irtech.eport.logistic.form.ShipmentForm">
         select s.id as batchId, s.bl_no as blNo, s.booking_no as bookingNo, sh.fe as fe, (select count(sh.id) from shipment_detail sh where sh.shipment_id = s.id) as contAmount
         from shipment s
-        left join shipment_detail sh on 
-        s.id = sh.shipment_id 
+        left join shipment_detail sh on s.id = sh.shipment_id 
+        left join pickup_assign p on s.id = p.shipment_id
         <where>
-            and sh.process_status = 'Y'
-            <if test="logisticGroupId != null"> and s.logistic_group_id = #{logisticGroupId}</if>
+            and sh.payment_status = 'Y'
+            and p.shipment_id is not null
+            and p.driver_id = #{driverId}
             <if test="serviceType != null"> and s.service_type = #{serviceType}</if>
         </where>
         group by s.id, s.bl_no, s.booking_no, sh.fe, s.create_time
         order by s.create_time desc
     </select>
+
+    
 </mapper>
