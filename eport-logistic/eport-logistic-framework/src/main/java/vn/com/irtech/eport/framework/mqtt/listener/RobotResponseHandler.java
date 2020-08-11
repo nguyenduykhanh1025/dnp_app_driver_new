@@ -84,8 +84,8 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		}
 
 		String orderNo = map.get("orderNo") == null ? null : map.get("orderNo").toString();
-		Integer serviceType = map.get("serviceType") == null ? null : (Integer) map.get("serviceType");
-
+		String orderType = map.get("serviceType") == null ? null : map.get("serviceType").toString();
+		Integer serviceType = Integer.parseInt(orderType);
 		SysRobot sysRobot = robotService.selectRobotByUuId(uuId);
 
 		if (sysRobot == null) {
@@ -194,6 +194,13 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				processOrder.setOrderNo(orderNo);
 			}
 			processOrderService.updateProcessOrder(processOrder);
+			
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setProcessOrderId(Long.parseLong(receiptId));
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+				shipmentDetail2.setProcessStatus("E");
+			}
 
 			// SET RESULT FOR HISTORY FAILED
 			processHistory.setResult("F");

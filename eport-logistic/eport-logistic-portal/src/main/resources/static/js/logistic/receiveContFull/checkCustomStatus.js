@@ -108,11 +108,13 @@ $("#declareNoAmount").keypress(function (event) {
 function formatStatus(value) {
     switch (value) {
         case "R":
-            return "Đã thông quan";
+            return '<span class="label label-success">Đã thông quan</span>';
         case "N":
-            return "Chưa thông quan";
+            return '<span class="label label-warning">Đang chờ</span>';
+        case "Y":
+            return '<span class="label label-danger">Chưa thông quan</span>';
         default :
-            return' <span class="label label-success">Đang chờ</span>';
+            return'';
     }
 }
 
