@@ -57,6 +57,16 @@ function formatServiceType(value, row) {
       return 'Bốc Rỗng';
     case 4:
       return 'Hạ Hàng';
+    case 5:
+      return 'Dịch chuyển container';
+    case 6:
+      return 'Đổi tàu/chuyến';
+    case 7:
+      return 'Tạo booking';
+    case 8:
+      return 'Gate-in';
+    case 9:
+      return 'Gia hạn lệnh';
   }
 }
 

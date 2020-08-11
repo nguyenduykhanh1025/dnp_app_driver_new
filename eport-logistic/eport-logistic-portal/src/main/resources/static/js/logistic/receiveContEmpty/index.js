@@ -903,7 +903,6 @@ function getDataFromTable(isValidate) {
 //        voyage = object["voyNo"];
         pod = object["dischargePort"];
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
-        shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
         let sizeType = object["sztp"].split(": ");
@@ -928,6 +927,7 @@ function getDataFromTable(isValidate) {
             }
         }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
+        shipmentDetail.bookingNo = shipmentSelected.blNo;
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);

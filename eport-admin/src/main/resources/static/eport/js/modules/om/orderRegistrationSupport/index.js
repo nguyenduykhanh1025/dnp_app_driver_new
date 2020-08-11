@@ -249,9 +249,10 @@ function logisticInfo(id, logistics) {
 
 $('#logistic').change(function() {
   if (0 != $('#logistic option:selected').val()) {
-    shipment.logisticName = $('#logistic option:selected').val();
+    shipment.logisticGroupId = $('#logistic option:selected').val();
   } else {
-    shipment.logisticName = '';
+    shipment.logisticGroupId = '';
   }
+  console.log($('#logistic option:selected').val());
   loadTable();
 });

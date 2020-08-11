@@ -274,7 +274,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="runnable != null "> and runnable = #{runnable}</if>
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="robotUuid != null and robotUuid != ''"> and robot_uuid is not null</if>
-            <if test="robotUuid == null or robotUuid == ''"> and (robot_uuid = null or status != 0)</if>
+            <if test="robotUuid == null or robotUuid == ''"> and (robot_uuid is null or status != 0)</if>
             <if test="serviceType != null "> and service_type = #{serviceType}</if>
             <if test="status != null "> and status = #{status}</if>
             <if test="result != null  and result != ''"> and result = #{result}</if>
