@@ -3,6 +3,7 @@ package vn.com.irtech.eport.carrier.task;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +38,8 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 public class CarrierEdoFolderMonitorTask {
 
 	private static final Logger logger = LoggerFactory.getLogger(CarrierEdoFolderMonitorTask.class);
+	
+	private static final String BACKUP_EXTENSION = ".backup";
 
 	@Autowired
 	private IEdoService edoService;
@@ -131,15 +134,30 @@ public class CarrierEdoFolderMonitorTask {
 			logger.error("Error when read EDI File. Carrier Group is not exist: " + groupCode);
 			return;
 		}
-		// Create folder for backup
-		
-
+		// Read file content
 		String content = FileUtils.readFileToString(ediFile, StandardCharsets.UTF_8);
 		content = content.replaceAll("\r\n|\r|\n", "");
 		String[] text = content.split("'");
 		EdoHistory edoHistory = new EdoHistory();
 		EdoAuditLog edoAuditLog = new EdoAuditLog();
 		Date timeNow = new Date();
+
+		// Create backup folder: $backupRootPath /{carrierCode}/YYYYMM
+		String backupFolder = edoBackupPath + File.separator + groupCode + File.separator + new SimpleDateFormat("yyyyMM").format(new Date());
+		File backupDir = new File(backupFolder);
+		if(!backupDir.exists()) {
+			backupDir.mkdirs();
+		}
+		// backup file path: backupFolder / edi.file.backup
+		File backupFile = new File(backupFolder + File.separator + ediFile.getName() + BACKUP_EXTENSION);
+		// If previous version is exist, rename with timestamp
+		if(backupFile.exists()) {
+			backupFile = new File(backupFolder + File.separator + ediFile.getName() + BACKUP_EXTENSION + "." + String.valueOf(System.currentTimeMillis()));
+		}
+		// Move file to backup folder
+		Files.move(ediFile, backupFile);
+		
+		// Insert to edo table
 		List<Edo> listEdo = edoService.readEdi(text);
 		for (Edo edo : listEdo) {
 			edo.setCarrierId(carrierGroup.getId());
@@ -191,77 +209,4 @@ public class CarrierEdoFolderMonitorTask {
 		}
 		return null;
 	}
-
-//	public void readFileFromFolder(String groupCode) throws IOException {
-//		logger.info("Begin read file");
-//		// System.out.print("Đọc file EDI from folder .... " + groupCode);
-//		CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupByGroupCode(groupCode);
-//		if (carrierGroup == null) {
-//			return;
-//			// TODO Return error
-//		}
-//		final File receiveFolder = new File(carrierGroup.getPathEdiReceive());
-//		if (!receiveFolder.exists()) {
-//			receiveFolder.mkdirs();
-//		}
-//		final File destinationFolder = edoService.getFolderUploadByTime(carrierGroup.getPathEdiBackup());
-//		List<Edo> listEdo = new ArrayList<>();
-//		for (final File fileEntry : receiveFolder.listFiles()) {
-//			String path = fileEntry.getAbsolutePath();
-//			String fileName = fileEntry.getName();
-//			if (edoHistoryService.selectEdoHistoryByFileName(fileName) != null) {
-//				fileEntry.delete();
-//				continue;
-//			}
-//			String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
-//			content = content.replace("\n", "");
-//			content = content.replace("\r", "");
-//			String[] text = content.split("'");
-//			EdoHistory edoHistory = new EdoHistory();
-//			EdoAuditLog edoAuditLog = new EdoAuditLog();
-//			Date timeNow = new Date();
-//			listEdo = edoService.readEdi(text);
-//			for (Edo edo : listEdo) {
-//				edo.setCarrierId(carrierGroup.getId());
-//				edo.setCreateSource("serverFSTP");
-//				edoHistory.setBillOfLading(edo.getBillOfLading());
-//				edoHistory.setOrderNumber(edo.getOrderNumber());
-//				edoHistory.setCarrierCode(edo.getCarrierCode());
-//				edoHistory.setCarrierId(carrierGroup.getId());
-//				edoHistory.setEdiContent(content);
-//				edoHistory.setFileName(fileName);
-//				edoHistory.setCreateSource("serverFSTP");
-//				edoHistory.setContainerNumber(edo.getContainerNumber());
-//				edoHistory.setCreateBy(carrierGroup.getGroupCode());
-//
-//				Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(), edo.getBillOfLading());
-//				if (edoCheck != null) {
-//					edo.setId(edoCheck.getId());
-//					edo.setUpdateTime(timeNow);
-//					edo.setUpdateBy(carrierGroup.getGroupCode());
-//					edoService.updateEdo(edo); // TODO
-//					edoHistory.setEdoId(edo.getId());
-//					edoHistory.setAction("update");
-//					edoHistoryService.insertEdoHistory(edoHistory);
-//					edoAuditLog.setEdoId(edo.getId());
-//					edoAuditLogService.updateAuditLog(edo);
-//				} else {
-//					edo.setCreateTime(timeNow);
-//					edo.setCreateBy(carrierGroup.getGroupCode());
-//					edoService.insertEdo(edo);
-//					edoHistory.setEdoId(edo.getId());
-//					edoHistory.setAction("add");
-//					edoHistoryService.insertEdoHistory(edoHistory);
-//					edoAuditLog.setEdoId(edo.getId());
-//					edoAuditLogService.addAuditLogFirst(edo);
-//				}
-//			}
-//			// Move file to distination folder
-//			fileEntry.renameTo(new File(destinationFolder + File.separator + fileEntry.getName()));
-//			fileEntry.delete();
-//		}
-//		System.out.print("Thành công .... " + groupCode);
-//
-//	}
-
 }
