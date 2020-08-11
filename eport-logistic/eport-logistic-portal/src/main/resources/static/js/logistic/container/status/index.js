@@ -140,6 +140,7 @@ function formatDo(value) {
 }
 
 function formatBlBooking(value, row) {
+    console.log(row);
     if (row.blNo) {
         return row.blNo;
     }

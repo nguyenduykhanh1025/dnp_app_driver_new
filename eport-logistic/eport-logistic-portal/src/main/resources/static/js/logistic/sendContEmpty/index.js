@@ -250,7 +250,7 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
             case 2:
-                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
+                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
                 content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
                 content += '<i id="finish" class="fa fa-check-square-o easyui-tooltip" title="Chưa Hạ Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
                 break;
@@ -799,6 +799,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.sztp = sizeType[0];
         shipmentDetail.sztpDefine = sizeType[1];
         shipmentDetail.remark = object["remark"];
+        shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);

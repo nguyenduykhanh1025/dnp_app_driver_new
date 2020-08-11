@@ -176,7 +176,14 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 					if (processOrder != null) {
 						processOrder.setStatus(0);
 						processOrderService.updateProcessOrder(processOrder);
-		
+						try {
+							List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrder.getId().toString());
+							updateErrorShipmentDetail(shipmentDetails);
+						} catch (Exception e) {
+							logger.warn(e.getMessage());
+						}
+						
+
 						// Send notification to logistics
 						AjaxResult ajaxResult= null;
 						ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
@@ -252,7 +259,12 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 					if (processOrder != null) {
 						processOrder.setRobotUuid(null);
 						processOrderService.updateProcessOrder(processOrder);
-		
+						try {
+							List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrder.getId().toString());
+							updateErrorShipmentDetail(shipmentDetails);
+						} catch (Exception e) {
+							logger.warn(e.getMessage());
+						}
 						// Send notification to logistics
 						AjaxResult ajaxResult= null;
 						ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
@@ -295,5 +307,13 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		processHistory.setResult("S"); // RESULT SUCCESS
 		processHistory.setCreateTime(new Date());
 		processHistoryService.insertProcessHistory(processHistory);
+	}
+
+	@Transactional
+	private void updateErrorShipmentDetail(List<ShipmentDetail> shipmentDetails) {
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetail.setProcessStatus("E");
+			shipmentDetailService.updateShipmentDetail(shipmentDetail);
+		}
 	}
 }
