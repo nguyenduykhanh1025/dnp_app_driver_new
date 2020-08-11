@@ -123,6 +123,7 @@ public class EdoPrintController extends BaseController{
 						parameters.put("pol", list.get(0).getPol());
 						parameters.put("pod", list.get(0).getPod());
 						parameters.put("billOfLading", list.get(0).getBillOfLading());
+						parameters.put("fileCreateTime", list.get(0).getFileCreateTime());
 						parameters.put("list", list);
 						final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
 						jpList.add(new SimpleExporterInputItem(print));
