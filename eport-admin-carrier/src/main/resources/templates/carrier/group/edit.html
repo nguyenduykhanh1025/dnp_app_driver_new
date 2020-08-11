@@ -87,12 +87,8 @@
                 document.getElementById("doToggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleDoFlag()"></i>';
             }
             if ($("#edoFlag").val() == 1) {
-//                 $("#pathEdiReceive").prop("disabled", false)
-//                 $("#pathEdiBackup").prop("disabled", false)
                 document.getElementById("edoToggle").innerHTML = '<i class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleEdoFlag()"></i>';
-            } else {
-//                 $("#pathEdiReceive").prop("disabled", true)
-//                 $("#pathEdiBackup").prop("disabled", true)
+            } else { 
                 document.getElementById("edoToggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleEdoFlag()"></i>';
             }
             if ($("#apiFlag").val() == 1) {
@@ -124,13 +120,9 @@
 
         function clickToggleEdoFlag() {
             if ($("#edoFlag").val() == 1) {
-//                 $("#pathEdiReceive").prop("disabled", true)
-//                 $("#pathEdiBackup").prop("disabled", true)
                 document.getElementById("edoToggle").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleEdoFlag()"></span>';
                 $("#edoFlag").val(0);
             } else {
-//                 $("#pathEdiReceive").prop("disabled", false)
-//                 $("#pathEdiBackup").prop("disabled", false)
                 document.getElementById("edoToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleEdoFlag()"></span>';
                 $("#edoFlag").val(1);
             }

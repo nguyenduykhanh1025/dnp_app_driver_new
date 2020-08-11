@@ -1094,7 +1094,7 @@ var table = {
       },
       addGroup: function (id) {
         table.set();
-        $.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 600, 440);
+        $.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), 700, 440);
       },
       addCarrierAccount: function (id) {
         table.set();
@@ -1150,9 +1150,9 @@ var table = {
             return;
           }
           var url = table.options.updateUrl.replace("{id}", row[table.options.uniqueId]);
-          $.modal.open("Chỉnh Sửa " + table.options.modalName, url, 500, 380);
+          $.modal.open("Chỉnh Sửa " + table.options.modalName, url, 700, 380);
         } else {
-          $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 600, 440);
+          $.modal.open("Chỉnh Sửa " + table.options.modalName, $.operate.editUrl(id), 700, 440);
         }
       },
       editCarrierAccount: function (id) {

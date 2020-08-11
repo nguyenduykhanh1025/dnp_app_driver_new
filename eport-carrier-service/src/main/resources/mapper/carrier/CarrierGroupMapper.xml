@@ -17,6 +17,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="updateTime" column="update_time" />
 		<result property="doFlag" column="do_flag" />
 		<result property="edoFlag" column="edo_flag" />
+		<result property="apiFlag" column="api_flag" />
 		<result property="apiPrivateKey" column="api_private_key" />
 		<result property="apiPublicKey" column="api_public_key" />
 		<result property="pathEdiReceive" column="path_edi_receive" />
@@ -75,6 +76,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createBy != null  and createBy != ''">create_by,</if>
 			<if test="doFlag != null  and doFlag != ''">do_flag,</if>
 			<if test="edoFlag != null  and edoFlag != ''">edo_flag,</if>
+			<if test="apiFlag != null  and apiFlag != ''">api_flag,</if>
 			<if test="apiPrivateKey != null  and apiPrivateKey != ''">api_private_key,</if>
 			<if test="apiPublicKey != null  and apiPublicKey != ''">api_public_key,</if>
 			create_time
@@ -89,6 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="createBy != null  and createBy != ''">#{createBy},</if>
 			<if test="doFlag != null  and doFlag != ''">#{doFlag},</if>
 			<if test="edoFlag != null  and edoFlag != ''">#{edoFlag},</if>
+			<if test="apiFlag != null  and apiFlag != ''">#{apiFlag},</if>
 			<if test="apiPrivateKey != null  and apiPrivateKey != ''">#{apiPrivateKey},</if>
             <if test="apiPublicKey != null  and apiPublicKey != ''">#{apiPublicKey},</if>
 			sysdate
@@ -106,8 +109,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
 			<if test="doFlag != null  and doFlag != ''">do_flag = #{doFlag},</if>
 			<if test="edoFlag != null  and edoFlag != ''">edo_flag = #{edoFlag},</if>
-			<if test="pathEdiReceive != null  and pathEdiReceive != ''">path_edi_receive = #{pathEdiReceive},</if>
-			<if test="pathEdiBackup != null  and pathEdiBackup != ''">path_edi_backup = #{pathEdiBackup},</if>
+			<if test="apiFlag != null  and apiFlag != ''">api_flag = #{apiFlag},</if>
 			<if test="apiPrivateKey != null  and apiPrivateKey != ''">api_private_key = #{apiPrivateKey},</if>
             <if test="apiPublicKey != null  and apiPublicKey != ''">api_public_key = #{apiPublicKey},</if>
 			update_time = sysdate
