@@ -47,6 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="userVerifyStatus"    column="user_verify_status"    />
         <result property="finishStatus"    column="finish_status"    />
         <result property="status"    column="status"    />
+        <result property="orderNo"    column="order_no"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -58,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
-        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name, vsl_nm, voy_no, voy_carrier, ope_code, carrier_name, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, finish_status, status, remark, create_by, create_time, update_by, update_time from shipment_detail
+        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name, vsl_nm, voy_no, voy_carrier, ope_code, carrier_name, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, finish_status, status, order_no, remark, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -103,6 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
             <if test="finishStatus != null  and finishStatus != ''"> and finish_status = #{finishStatus}</if>
             <if test="status != null "> and status = #{status}</if>
+            <if test="orderNo != null and orderNo != ''"> and order_no = #{orderNo}</if>
         </where>
     </select>
     <select id="selectShipmentDetailList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
@@ -313,6 +315,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userVerifyStatus != null  and userVerifyStatus != ''">user_verify_status,</if>
             <if test="finishStatus != null  and finishStatus != ''">finish_status,</if>
             <if test="status != null ">status,</if>
+            <if test="orderNo != null and orderNo != ''">order_no,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -360,6 +363,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userVerifyStatus != null  and userVerifyStatus != ''">#{userVerifyStatus},</if>
             <if test="finishStatus != null  and finishStatus != ''">#{finishStatus},</if>
             <if test="status != null ">#{status},</if>
+            <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -410,6 +414,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userVerifyStatus != null  and userVerifyStatus != ''">user_verify_status = #{userVerifyStatus},</if>
             <if test="finishStatus != null  and finishStatus != ''">finish_status = #{finishStatus},</if>
             <if test="status != null ">status = #{status},</if>
+            <if test="orderNo != null and orderNo != ''">order_no = #{orderNo},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
@@ -662,7 +667,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		        custom_status as customStatus, payment_status as paymenStatus, process_status as processStatus, do_status as doStatus, do_received_time as doReceivedTime,
 		        user_verify_status as userVerifyStatus, finish_status as finishStatus, status, remark, create_by as createBy, create_time as createTime,
 		        update_by as updateBy, update_time as updateTime, process_order_id as processOrderId,
-		        (select p.reference_no from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.reference_no) as invoiceNo,
+		        (select p.invoice_no from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.invoice_no) as invoiceNo,
 		        (select p.vat_after_fee from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.vat_after_fee) as vatAfterFee
 		from shipment_detail s
 		<where>  
@@ -706,5 +711,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
             <if test="status != null "> and status = #{status}</if>
         </where>
+    </select>
+
+    <select id="selectShipmentDetailForDriverShipmentAssign" resultType="vn.com.irtech.eport.logistic.form.PickupAssignForm">
+        select sh.id as shipmentDetailId, sh.container_no as containerNo, sh.wgt as wgt, sh.sztp as sztp, a.id as pickupAssignId
+        from shipment_detail sh
+        left join pickup_assign a on sh.shipment_id = a.shipment_id
+        left join pickup_history p on sh.id = p.shipment_detail_id
+        where 
+            a.shipment_detail_id is null
+            and a.driver_id = #{driverId}
+            and sh.shipment_id = #{shipmentId}
+            and p.shipment_detail_id is null
+            and sh.payment_status = 'Y'
+        group by sh.id, sh.container_no, sh.wgt, sh.sztp, a.id, a.create_time 
+        order by a.create_time desc
     </select>
 </mapper>

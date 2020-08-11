@@ -50,15 +50,21 @@ public class DriverCheckinServiceImpl implements IDriverCheckinService{
 			
 			PickupHistoryDataRes pickupHistoryDataRes = new PickupHistoryDataRes();
 			pickupHistoryDataRes.setPickupHistoryId(id);
-			pickupHistoryDataRes.setContNo(pickupHistory.getContainerNo());
-			pickupHistoryDataRes.setShipmentId(pickupHistory.getShipmentId());
-			pickupHistoryDataRes.setShipmentDetailId(pickupHistory.getShipmentDetailId());
-			pickupHistoryDataRes.setVessel(pickupHistory.getShipmentDetail().getVslNm());
-			pickupHistoryDataRes.setVoyage(pickupHistory.getShipmentDetail().getVoyNo());
-			pickupHistoryDataRes.setSztp(pickupHistory.getShipmentDetail().getSztp());
-			pickupHistoryDataRes.setFe(pickupHistory.getShipmentDetail().getFe());
+			if (pickupHistory.getShipmentDetailId() != null) {
+				pickupHistoryDataRes.setContNo(pickupHistory.getContainerNo());
+				pickupHistoryDataRes.setShipmentDetailId(pickupHistory.getShipmentDetailId());
+				pickupHistoryDataRes.setVessel(pickupHistory.getShipmentDetail().getVslNm());
+				pickupHistoryDataRes.setVoyage(pickupHistory.getShipmentDetail().getVoyNo());
+				pickupHistoryDataRes.setSztp(pickupHistory.getShipmentDetail().getSztp());
+				pickupHistoryDataRes.setWeight(pickupHistory.getShipmentDetail().getWgt());
+			}	
+			if (pickupHistory.getShipment().getServiceType() == 1 || pickupHistory.getShipment().getServiceType() == 4) {
+				pickupHistoryDataRes.setFe("F");
+			} else {
+				pickupHistoryDataRes.setFe("E");
+			}
+			pickupHistoryDataRes.setShipmentId(pickupHistory.getShipmentId());			
 			pickupHistoryDataRes.setServiceType(pickupHistory.getShipment().getServiceType());
-			pickupHistoryDataRes.setWeight(pickupHistory.getShipmentDetail().getWgt());
 			pickupHistoryDataRes.setChassisNo(pickupHistory.getChassisNo());
 			pickupHistoryDataRes.setTruckNo(pickupHistory.getTruckNo());
 			

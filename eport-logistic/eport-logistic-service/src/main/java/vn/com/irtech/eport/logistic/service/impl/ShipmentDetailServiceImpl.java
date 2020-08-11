@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -21,22 +21,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.mapper.EdoMapper;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
-import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
+import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysDictData;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
@@ -67,6 +72,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Autowired
     private ICatosApiService catosApiService;
+
+    @Autowired
+    private IShipmentService shipmentService;
     
     class BayComparator implements Comparator<ShipmentDetail> {
         public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
@@ -81,6 +89,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             // In the following line you set the criterion,
             // which is the name of Contact in my example scenario
             return shipmentDetail1.getSztp().compareTo(shipmentDetail2.getSztp());
+        }
+    }
+    
+    class OrderNoComparator implements Comparator<ShipmentDetail> {
+        public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
+            // In the following line you set the criterion,
+            // which is the name of Contact in my example scenario
+            return shipmentDetail1.getOrderNo().compareTo(shipmentDetail2.getOrderNo());
         }
     }
 
@@ -546,6 +562,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             ProcessOrder processOrder) {
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessStatus(status);
+            shipmentDetail.setOrderNo(processOrder.getOrderNo());
             if ("Y".equalsIgnoreCase(status)) {
                 if ("Credit".equalsIgnoreCase(processOrder.getPayType())) {
                     shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);
@@ -805,4 +822,188 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		return shipmentDetailMapper.getShipmentDetailForPrint(shipmentDetail);
 	} 
     
+    /**
+     * Get container with yard position
+     * 
+     * @param shipmentId
+     * @return ShipmentDetail
+     */
+    @Override
+    public ShipmentDetail getContainerWithYardPosition(Long shipmentId) {
+        // Get Shipment
+        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+
+        // Get shipment detail by shipment id
+        ShipmentDetail shipmentDetail = new ShipmentDetail();
+        shipmentDetail.setShipmentId(shipmentId);
+        List<ShipmentDetail> shipmentDetails = shipmentDetailMapper.selectShipmentDetailList(shipmentDetail);
+
+        // Get coordinate by bill
+        List<ShipmentDetail> coordinateList = catosApiService.getCoordinateOfContainers(shipmentDetails.get(0).getBlNo());
+        List<ShipmentDetail[][]> bayList = new ArrayList<>();
+        bayList = getContPosition(coordinateList, shipmentDetails);
+
+        // Get container from top to bottom
+        for (int b = 0; b < bayList.size(); b++) {
+            for (int row = 0; row < 3; row++) {
+                boolean stack1 = false;
+                boolean stack2 = false;
+                for (int tier = 4; tier >= 0; tier--) {
+                    ShipmentDetail shipmentDetail1 = bayList.get(b)[tier][row];
+                    // validate
+                    if (shipmentDetail1 != null) {
+                    	if (validateAutoPickupCont(shipmentDetail1, stack1)) {
+                            return shipmentDetail1;
+                        }
+                    	stack1 = true;
+                    }
+                    
+                    ShipmentDetail shipmentDetail2 = bayList.get(b)[tier][5-row];
+                    if (shipmentDetail2 != null) {
+                    	if (validateAutoPickupCont(shipmentDetail2, stack2)) {
+                            return shipmentDetail2;
+                        }
+                    	stack2 = true;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Boolean validateAutoPickupCont (ShipmentDetail shipmentDetail, boolean stack) {	
+        if (shipmentDetail.getId() == null) {
+            return false;
+        } 
+
+        // Not received DO
+        if (!"Y".equals(shipmentDetail.getDoStatus())) {
+            return false;
+        }
+        
+        // Exceed expired dem
+        Date now = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        if (shipmentDetail.getExpiredDem().compareTo(now) < 0) {
+            return false;
+        }
+
+        if ("N".equals(shipmentDetail.getPaymentStatus())) {
+            return false;
+        }
+
+        if (stack && "N".equals(shipmentDetail.getPrePickupPaymentStatus())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Select shipment detail for driver shipment assign
+     * 
+     * @param shipmentId
+     * @param driverId
+     * @return List<PickupAssignForm>
+     */
+    public List<PickupAssignForm> selectShipmentDetailForDriverShipmentAssign(Long shipmentId, Long driverId) {
+        return shipmentDetailMapper.selectShipmentDetailForDriverShipmentAssign(shipmentId, driverId);
+    }
+    
+    /**
+     * Make change vessel order
+     * 
+     * @param shipmentDetails
+     * @param vessel
+     * @param voyage
+     * @param groupId
+     * @return ServiceSendFullRobotReq
+     */
+    @Override
+    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String vessel, String voyage, Long groupId) {
+    	ProcessOrder processOrder = new ProcessOrder();
+    	if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+    		ShipmentDetail shipmentDt = shipmentDetails.get(0);
+    		processOrder.setServiceType(Constants.CHANGE_VESSEL);
+    		processOrder.setShipmentId(shipmentDt.getShipmentId());
+    		processOrder.setBookingNo(shipmentDt.getBookingNo());
+    		processOrder.setStatus(0);
+    		ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+            if (tempProcessOrder != null) {
+                processOrder.setYear(tempProcessOrder.getYear());
+                processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
+            } else {
+                processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
+                processOrder.setBeforeAfter("Before");
+            }
+    		processOrder.setOldVessel(shipmentDt.getVslNm());
+    		processOrder.setOldVoyAge(shipmentDt.getVoyNo());
+    		processOrder.setVessel(vessel);
+    		processOrder.setVoyage(voyage);
+    		List<Long> shipmentDetailIds = new ArrayList<>();
+    		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+    			shipmentDetail.setVslNm(vessel);
+    			shipmentDetail.setVoyNo(voyage);
+    			shipmentDetailIds.add(shipmentDetail.getId());
+    		}
+    		Map<String, Object> map = new HashMap<>();
+    		map.put("shipmentDetailIds", shipmentDetailIds);
+    		processOrder.setProcessData(new Gson().toJson(map));
+    		processOrder.setLogisticGroupId(groupId);
+    		processOrderService.insertProcessOrder(processOrder);
+    		ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+    		return serviceRobotReq;
+    	}
+    	return null;
+    }
+
+    /**
+     * Make extension date order
+     * 
+     * @param shipmentDetails
+     * @param expiredDem
+     * @param groupId
+     * @return ServiceSendFullRobotReq
+     */
+    @Override
+    public List<ServiceSendFullRobotReq> makeExtensionDateOrder(List<ShipmentDetail> shipmentDetails, Date expiredDem, Long groupId) {
+    	Collections.sort(shipmentDetails, new OrderNoComparator());
+    	List<ServiceSendFullRobotReq> serviceRobotReqs = new ArrayList<>();
+    	String currentOrderNo = shipmentDetails.get(0).getOrderNo();
+    	List<ShipmentDetail> shipmentDetailList = new ArrayList<>();
+    	for (ShipmentDetail shipmentDetail : shipmentDetails) {
+    		if (!currentOrderNo.equals(shipmentDetail.getOrderNo())) {
+    			shipmentDetailList.add(shipmentDetail);
+    		} else {
+    			serviceRobotReqs.add(separateExtensionOrderByOrderNo(shipmentDetailList, expiredDem, groupId));
+    			shipmentDetailList = new ArrayList<>();
+    			shipmentDetailList.add(shipmentDetail);
+    			currentOrderNo = shipmentDetail.getOrderNo();
+    		}
+    	}
+    	serviceRobotReqs.add(separateExtensionOrderByOrderNo(shipmentDetailList, expiredDem, groupId));
+    	return serviceRobotReqs;
+    }
+    
+    private ServiceSendFullRobotReq separateExtensionOrderByOrderNo(List<ShipmentDetail> shipmentDetails, Date expiredDem, Long groupId) {
+    	ProcessOrder processOrder = new ProcessOrder();
+    	processOrder.setPickupDate(expiredDem);
+    	processOrder.setServiceType(Constants.EXTENSION_DATE_ORDER);
+    	processOrder.setLogisticGroupId(groupId);
+    	processOrder.setShipmentId(shipmentDetails.get(0).getShipmentId());
+    	processOrder.setOrderNo(shipmentDetails.get(0).getOrderNo());
+    	List<Long> shipmentDetailIds = new ArrayList<>();
+    	for (ShipmentDetail shipmentDetail : shipmentDetails) {
+    		shipmentDetailIds.add(shipmentDetail.getId());
+    	}
+    	processOrder.setProcessData(new Gson().toJson(shipmentDetailIds));
+    	processOrderService.insertProcessOrder(processOrder);
+    	ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
+    	return serviceRobotReq;
+    }
 }

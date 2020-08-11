@@ -1,26 +1,15 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.alibaba.fastjson.JSON;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
-
-import org.apache.poi.ss.usermodel.Header;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import vn.com.irtech.eport.common.config.Global;
-import vn.com.irtech.eport.common.core.text.Convert;
-import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -347,7 +336,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public PickupHistory getLocationForReceiveF(PickupHistory pickupHistory) {
 		try {
-			String blNo = pickupHistory.getBlNo();
+			String blNo = pickupHistory.getShipment().getBlNo();
 			String containerNo = pickupHistory.getContainerNo();
 			String url = Global.getApiUrl() + "/shipmentDetail/location/bl-no/" + blNo +"/container-no/" + containerNo;
 			RestTemplate restTemplate = new RestTemplate();

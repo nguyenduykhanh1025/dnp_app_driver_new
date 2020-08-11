@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.framework.web.service.MqttService;
+import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -45,6 +48,9 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 
 	@Autowired
 	private ICatosApiService catosApiService;
+	
+	@Autowired
+	private MqttService mqttService;
 	
 	/**
 	 * Get main view for change vessel
@@ -199,9 +205,24 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 		String voyAge = vesselArr[2];
 
 		// Make order send to robot
-
+		ServiceSendFullRobotReq serviceRobotReq = shipmentDetailService.makeChangeVesselOrder(shipmentDetails, vslNm, voyAge, getUser().getGroupId());
+		if (serviceRobotReq == null) {
+			return error("Có lỗi xảy ra trong quá trình tạo lệnh để thực thi!");
+		}
+		AjaxResult ajaxResult = null;
+		try {
+			if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.CHANGE_VESSEL)) {
+				ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
+				ajaxResult.put("processId", serviceRobotReq.processOrder.getId());
+				return ajaxResult;
+			}
+		} catch (Exception e) {
+			return error("Có lỗi xảy ra trong quá trình xác thực!");
+		}
 		
-		return error("Có lỗi xảy ra trong quá trình xác thực!");
+		ajaxResult =  AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
+		ajaxResult.put("processId", serviceRobotReq.processOrder.getId());
+		return ajaxResult;
 	}
 
 	@GetMapping("/berthplan/ope-code/{opeCode}/vessel-voyage/list")

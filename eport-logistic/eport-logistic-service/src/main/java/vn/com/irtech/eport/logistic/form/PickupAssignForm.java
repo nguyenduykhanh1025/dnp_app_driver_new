@@ -10,6 +10,10 @@ public class PickupAssignForm {
 
     private Long wgt;
 
+    private Long shipmentDetailId;
+
+    private Boolean clickable = true;
+
     public Long getPickupAssignId() {
         return this.pickupAssignId;
     }
@@ -42,4 +46,19 @@ public class PickupAssignForm {
         this.wgt = wgt;
     }
     
+    public Long getShipmentDetailId() {
+        return this.shipmentDetailId;
+    }
+
+    public void setShipmentDetailId(Long shipmentDetailId) {
+        this.shipmentDetailId = shipmentDetailId;
+    }
+
+    public Boolean getClickable() {
+        return this.clickable;
+    }
+
+    public void setClickable(Boolean clickable) {
+        this.clickable = clickable;
+    }
 }

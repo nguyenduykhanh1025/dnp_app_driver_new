@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
+import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 
 /**
  * Shipment DetailsService Interface
@@ -156,4 +158,42 @@ public interface IShipmentDetailService
      * get shipmentDetail for Print
      */
     public List<ShipmentDetail> getShipmentDetailForPrint(ShipmentDetail shipmentDetail);
+
+    /**
+     * Get container with yard position
+     * 
+     * @param shipmentId
+     * @return ShipmentDetail
+     */
+    public ShipmentDetail getContainerWithYardPosition(Long shipmentId);
+
+    /**
+     * Select shipment detail for driver shipment assign
+     * 
+     * @param shipmentId
+     * @param driverId
+     * @return List<PickupAssignForm>
+     */
+    public List<PickupAssignForm> selectShipmentDetailForDriverShipmentAssign(Long shipmentId, Long driverId);
+    
+    /**
+     * Make change vessel order
+     * 
+     * @param shipmentDetails
+     * @param vessel
+     * @param voyage
+     * @param groupId
+     * @return ServiceSendFullRobotReq
+     */
+    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String vessel, String voyage, Long groupId);
+
+    /**
+     * Make extension date order
+     * 
+     * @param shipmentDetails
+     * @param expiredDem
+     * @param groupId
+     * @return ServiceSendFullRobotReq
+     */
+    public List<ServiceSendFullRobotReq> makeExtensionDateOrder(List<ShipmentDetail> shipmentDetails, Date expiredDem, Long groupId);
 }

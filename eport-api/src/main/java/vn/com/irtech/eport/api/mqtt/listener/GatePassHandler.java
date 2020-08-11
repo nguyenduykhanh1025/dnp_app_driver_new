@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.api.mqtt.listener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +29,13 @@ import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
@@ -53,6 +58,12 @@ public class GatePassHandler implements IMqttMessageListener {
 	
 	@Autowired
 	private MqttService mqttService;
+	
+	@Autowired
+	private IShipmentDetailService shipmentDetailService;
+	
+	@Autowired
+	private IShipmentService shipmentService;
 	
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -122,8 +133,25 @@ public class GatePassHandler implements IMqttMessageListener {
 				
 				// Iterate pickup in list
 				for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
+					
+					pickupHistory.setGateinDate(new Date());
 					pickupHistory.setStatus(1);
 					pickupHistoryService.updatePickupHistory(pickupHistory);
+					
+					ShipmentDetail shipmentDetail = new ShipmentDetail();
+					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
+					shipmentDetail.setFinishStatus("Y");
+					// Update shipment status if all shipment detail is finish
+					shipmentDetail.setId(null);
+					shipmentDetail.setFinishStatus("N");
+					if (CollectionUtils.isEmpty(shipmentDetailService.selectShipmentDetailList(shipmentDetail))) {
+						Shipment shipment = new Shipment();
+						shipment.setStatus("4");
+						shipment.setId(pickupHistory.getShipmentId());
+						shipmentService.updateShipment(shipment);
+					}
+					
+					
 					DriverDataRes driverData = new DriverDataRes();
 					driverData.setPickupHistoryId(pickupHistory.getId());
 					driverData.setContNo(pickupHistory.getContainerNo());

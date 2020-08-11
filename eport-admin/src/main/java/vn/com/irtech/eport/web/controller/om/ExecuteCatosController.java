@@ -177,7 +177,7 @@ public class ExecuteCatosController extends AdminBaseController {
 			processOrderService.updateProcessOrder(processOrder);
 
 			// UPDATE SHIPMENT DETAIL
-			shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", processOrder.getReferenceNo(),
+			shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", processOrder.getInvoiceNo(),
 					processOrder);
 
 			// SAVE HISTORY

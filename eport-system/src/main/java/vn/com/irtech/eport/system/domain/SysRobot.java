@@ -54,6 +54,9 @@ public class SysRobot extends BaseEntity {
 	@Excel(name = "Is Gate in Order")
 	private Boolean isGateInOrder;
 	
+	@Excel(name = "Extension Date Order")
+	private Boolean isExtensionDateOrder;
+
 	/** ip address */
 	@Excel(name = "ip address")
 	private String ipAddress;
@@ -158,6 +161,14 @@ public class SysRobot extends BaseEntity {
 	public void setIsGateInOrder(Boolean isGateInOrder) {
 		this.isGateInOrder = isGateInOrder;
 	}
+	
+	public Boolean getIsExtensionDateOrder() {
+		return isExtensionDateOrder;
+	}
+
+	public void setIsExtensionDateOrder(Boolean isExtensionDateOrder) {
+		this.isExtensionDateOrder = isExtensionDateOrder;
+	}
 
 	public Date getResponseTime() {
 		return this.responseTime;
@@ -187,6 +198,7 @@ public class SysRobot extends BaseEntity {
 				.append("isChangeVesselOrder", getIsChangeVesselOrder())
 				.append("isCreateBookingOrder", getIsCreateBookingOrder())
 				.append("isGateInOrder", getIsGateInOrder())
+				.append("isExtensionDateOrder", getIsExtensionDateOrder())
 				.append("ipAddress", getIpAddress())
 				.append("createBy", getCreateBy()).append("createTime", getCreateTime())
 				.append("updateBy", getUpdateBy()).append("updateTime", getUpdateTime()).append("remark", getRemark())

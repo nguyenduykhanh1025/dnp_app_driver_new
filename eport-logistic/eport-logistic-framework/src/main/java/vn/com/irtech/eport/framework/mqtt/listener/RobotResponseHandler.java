@@ -3,6 +3,7 @@ package vn.com.irtech.eport.framework.mqtt.listener;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Flow.Processor;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -82,6 +83,9 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			return;
 		}
 
+		String orderNo = map.get("orderNo") == null ? null : map.get("orderNo").toString();
+		Integer serviceType = map.get("serviceType") == null ? null : (Integer) map.get("serviceType");
+
 		SysRobot sysRobot = robotService.selectRobotByUuId(uuId);
 
 		if (sysRobot == null) {
@@ -95,7 +99,22 @@ public class RobotResponseHandler implements IMqttMessageListener{
 
 		if (receiptId != null) {
 			if ("0".equals(status)) {
-				this.updateShipmentDetail(result, receiptId, invoiceNo, uuId);
+				if (serviceType == 1 || serviceType == 2 || serviceType == 3 || serviceType == 4 || serviceType == 5) {
+					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId, orderNo);
+				}	
+				switch (serviceType) {
+					case 6:
+						this.updateChangeVesselOrder(result, receiptId, uuId);
+						break;
+					case 7:
+						this.updateCreateBookingOrder(result, receiptId, uuId);
+						break;
+					case 9:
+						this.updateExtensionDateOrder(result, receiptId, uuId);
+						break;
+					default:
+						break;
+				}
 				this.sendMessageWebsocket(result, receiptId);
 				status = this.assignNewProcessOrder(sysRobot);
 			} else if ("1".equals(status)) {
@@ -115,7 +134,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 * @param receiptId
 	 */
 	@Transactional
-	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String uuId) {
+	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String uuId, String orderNo) {
 		// INIT PROCESS HISTORY
 		Long id = Long.parseLong(receiptId);
 		ProcessHistory processHistory = new ProcessHistory();
@@ -138,7 +157,8 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				logger.warn(e.getMessage());
 			}
 			
-			processOrder.setReferenceNo(invoiceNo);
+			processOrder.setOrderNo(orderNo);
+			processOrder.setInvoiceNo(invoiceNo);
 			processOrder.setStatus(2); // FINISH		
 			processOrder.setResult("S"); // RESULT SUCESS	
 			processOrderService.updateProcessOrder(processOrder);
@@ -170,6 +190,9 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			processOrder.setId(id);
 			processOrder.setResult("F"); // RESULT FAILED
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			if (orderNo != null) {
+				processOrder.setOrderNo(orderNo);
+			}
 			processOrderService.updateProcessOrder(processOrder);
 
 			// SET RESULT FOR HISTORY FAILED
@@ -218,6 +241,15 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		if (robot.getIsShiftingContOrder()) {
 			serviceTypes += 5 + ",";
 		}
+		if (robot.getIsChangeVesselOrder()) {
+			serviceTypes += 6 + ",";
+		}
+		if (robot.getIsCreateBookingOrder()) {
+			serviceTypes += 7 + ",";
+		}
+		if (robot.getIsExtensionDateOrder()) {
+			serviceTypes += 9 + ",";
+		}
 
 		if (serviceTypes.length() > 0) {
 			serviceTypes = serviceTypes.substring(0, serviceTypes.length()-1);
@@ -249,10 +281,113 @@ public class RobotResponseHandler implements IMqttMessageListener{
 					case 5:
 						mqttService.publicMessageToDemandRobot(req, EServiceRobot.SHIFTING_CONT, robot.getUuId());
 						break;
+					case 6:
+						mqttService.publicMessageToDemandRobot(req, EServiceRobot.CHANGE_VESSEL, robot.getUuId());
+						break;
+					case 7:
+						mqttService.publicMessageToDemandRobot(req, EServiceRobot.CREATE_BOOKING, robot.getUuId());
+						break;
+					case 9:
+						mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DATE, robot.getUuId());
+						break;
 				}
 				return "1";
 			} 
 		}
 		return "0";
+	}
+	
+	@Transactional
+	private void updateChangeVesselOrder(String result, String receiptId, String uuId) {
+		// INIT PROCESS HISTORY
+		Long id = Long.parseLong(receiptId);
+		ProcessHistory processHistory = new ProcessHistory();
+		processHistory.setProcessOrderId(id);
+		processHistory.setRobotUuid(uuId);
+		processHistory.setStatus(2); // FINISH
+
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
+		if ("success".equalsIgnoreCase(result)) {
+			Map<String, Object> map = new Gson().fromJson(processOrder.getProcessData(), Map.class);
+			List<Long> shipmentDetailIds = (List<Long>) map.get("shipmentDetailIds");
+			for (Long shipmentDetailId : shipmentDetailIds) {
+				ShipmentDetail shipmentDetail = new ShipmentDetail();
+				shipmentDetail.setId(shipmentDetailId);
+				shipmentDetail.setVslNm(processOrder.getVessel());
+				shipmentDetail.setVoyNo(processOrder.getVoyage());
+				// TODO : Update carrier code
+				
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+			processOrder.setStatus(2); // FINISH		
+			processOrder.setResult("S"); // RESULT SUCESS	
+			processOrderService.updateProcessOrder(processOrder);
+			processHistory.setResult("S");
+		} else {
+			// Send notification for om
+			try {
+				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + receiptId, configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + receiptId);
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
+
+			// INIT PROCESS ORDER TO UPDATE
+			processOrder = new ProcessOrder();
+			processOrder.setId(id);
+			processOrder.setResult("F"); // RESULT FAILED
+			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrderService.updateProcessOrder(processOrder);
+
+			// SET RESULT FOR HISTORY FAILED
+			processHistory.setResult("F");
+		}
+		processHistoryService.insertProcessHistory(processHistory);
+	}
+	
+	private void updateCreateBookingOrder(String result, String receiptId, String uuId) {
+		
+	}
+	
+	private void updateExtensionDateOrder(String result, String receiptId, String uuId) {
+		// INIT PROCESS HISTORY
+		Long id = Long.parseLong(receiptId);
+		ProcessHistory processHistory = new ProcessHistory();
+		processHistory.setProcessOrderId(id);
+		processHistory.setRobotUuid(uuId);
+		processHistory.setStatus(2); // FINISH
+
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
+		if ("success".equalsIgnoreCase(result)) {
+			Map<String, Object> map = new Gson().fromJson(processOrder.getProcessData(), Map.class);
+			List<Long> shipmentDetailIds = (List<Long>) map.get("shipmentDetailIds");
+			for (Long shipmentDetailId : shipmentDetailIds) {
+				ShipmentDetail shipmentDetail = new ShipmentDetail();
+				shipmentDetail.setId(shipmentDetailId);
+				shipmentDetail.setExpiredDem(processOrder.getPickupDate());
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+			processOrder.setStatus(2); // FINISH		
+			processOrder.setResult("S"); // RESULT SUCESS	
+			processOrderService.updateProcessOrder(processOrder);
+			processHistory.setResult("S");
+		} else {
+			// Send notification for om
+			try {
+				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + receiptId, configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + receiptId);
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
+
+			// INIT PROCESS ORDER TO UPDATE
+			processOrder = new ProcessOrder();
+			processOrder.setId(id);
+			processOrder.setResult("F"); // RESULT FAILED
+			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrderService.updateProcessOrder(processOrder);
+
+			// SET RESULT FOR HISTORY FAILED
+			processHistory.setResult("F");
+		}
+		processHistoryService.insertProcessHistory(processHistory);
 	}
 }

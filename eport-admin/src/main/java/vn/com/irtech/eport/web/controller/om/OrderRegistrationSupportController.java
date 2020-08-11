@@ -202,7 +202,7 @@ public class OrderRegistrationSupportController extends AdminBaseController {
     if (processOrders != null && processOrders.size() > 0) {
       SysUser user = getUser();
       for (ProcessOrder processOrder : processOrders) {
-        if ((processOrder.getReferenceNo() != null && !"".equals(processOrder.getReferenceNo())) || "Credit".equals(processOrder.getPayType())) {
+        if ((processOrder.getInvoiceNo() != null && !"".equals(processOrder.getInvoiceNo())) || "Credit".equals(processOrder.getPayType())) {
           ShipmentDetail shipmentDetail = new ShipmentDetail();
 			    shipmentDetail.setProcessOrderId(processOrder.getId());
 			    List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
@@ -222,7 +222,7 @@ public class OrderRegistrationSupportController extends AdminBaseController {
           processOrderService.updateProcessOrder(processOrder);
 
           // UPDATE SHIPMENT DETAIL
-          shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", processOrder.getReferenceNo(), processOrder);
+          shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", processOrder.getInvoiceNo(), processOrder);
 
           // SAVE HISTORY
           ProcessHistory processHistory = new ProcessHistory();
