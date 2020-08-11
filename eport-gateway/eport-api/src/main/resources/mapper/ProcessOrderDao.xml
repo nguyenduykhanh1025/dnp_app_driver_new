@@ -10,5 +10,11 @@
 			    END AS BEFORE_AFTER
 			FROM TB_BERTHPLAN
 			WHERE VSL_CD = #{vesselCode} AND CALL_SEQ = #{voyageNo}
+					       AND vsl_cd NOT IN ('DBO','EMTY',
+		                            'STRG',
+		                            'TBA',
+		                            'DUMY')
+		       AND longterm_eta IS NOT NULL
+		       AND atc IS NULL
 	</select>
 </mapper>
