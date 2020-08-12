@@ -219,18 +219,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 					ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(reqProcessOrder, shipmentDetails);
 
-					// Send order to robot
-					status = "1";
-
-					// check robot exists in db
-					if (robotService.selectRobotByUuId(uuId) == null) {
-						// insert robot to db
-						robotService.insertRobot(sysRobot);
-					} else {
-						// update status of robot
-						sysRobot.setStatus("1");
-						robotService.updateRobotByUuId(sysRobot);
-					}
+					// update status of robot
+					sysRobot.setStatus("1");
+					robotService.updateRobotByUuId(sysRobot);
 
 					switch (reqProcessOrder.getServiceType()) {
 						case 1:

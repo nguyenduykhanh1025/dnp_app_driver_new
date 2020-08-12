@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
@@ -23,12 +25,15 @@ import vn.com.irtech.eport.framework.web.service.MqttService.NotificationCode;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
@@ -60,6 +65,12 @@ public class RobotResponseHandler implements IMqttMessageListener{
 
 	@Autowired
 	private ConfigService configService;
+	
+	@Autowired
+	private IEdoService edoService;
+	
+	@Autowired
+	private IShipmentService shipmentService;
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -98,7 +109,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		if (receiptId != null) {
 			if ("0".equals(status)) {
 				if (serviceType == 1 || serviceType == 2 || serviceType == 3 || serviceType == 4 || serviceType == 5) {
-					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId, orderNo);
+					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId, orderNo, serviceType);
 				}	
 				switch (serviceType) {
 					case 6:
@@ -132,7 +143,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	 * @param receiptId
 	 */
 	@Transactional
-	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String uuId, String orderNo) {
+	private void updateShipmentDetail(String result, String receiptId, String invoiceNo, String uuId, String orderNo, Integer serviceType) {
 		// INIT PROCESS HISTORY
 		Long id = Long.parseLong(receiptId);
 		ProcessHistory processHistory = new ProcessHistory();
@@ -166,11 +177,32 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				processBillService.saveProcessBillByInvoiceNo(processOrder);
 			} else if (processOrder.getServiceType() != 5) {
 				processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
+			} else if (processOrder.getProcessData() != null) {
+				ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+				// TODO : save bill 
+				processBillService.saveShiftingBillWithCredit(processJsonData.getShipmentDetailIds(), processOrder);
+				
+				for (Long shipmentDetailId : processJsonData.getPrePickupContIds()) {
+					ShipmentDetail prePickupShipmentDetail = new ShipmentDetail();
+					prePickupShipmentDetail.setId(shipmentDetailId);
+					prePickupShipmentDetail.setPrePickupPaymentStatus("Y");
+					shipmentDetailService.updateShipmentDetail(prePickupShipmentDetail);
+				}
 			}
 
 			// UPDATE STATUS OF SHIPMENT DETAIL AFTER MAKE ORDER SUCCESS
 			if (processOrder.getServiceType() != 5) {
 				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo, processOrder);
+				Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
+				if (processOrder.getServiceType() == 1 && "1".equals(shipment.getEdoFlg())) {
+					for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
+						Edo edo = new Edo();
+						edo.setBillOfLading(shipment.getBlNo());
+						edo.setContainerNumber(shipmentDetail2.getContainerNo());
+						edo.setStatus("2");
+						edoService.updateEdoByBlCont(edo);
+					}
+				}
 			}
 
 			// SET RESULT FOR HISTORY SUCCESS
@@ -198,6 +230,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 			for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
 				shipmentDetail2.setProcessStatus("E");
+				shipmentDetailService.updateShipmentDetail(shipmentDetail2);
 			}
 
 			// SET RESULT FOR HISTORY FAILED
@@ -395,4 +428,5 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		}
 		processHistoryService.insertProcessHistory(processHistory);
 	}
+	
 }

@@ -88,7 +88,7 @@ function loadListRobot() {
       },
       {
         field: "isChangeVesselOrder",
-        title: "Dịch chuyển container",
+        title: "Đổi tàu/chuyến",
         align: "center",
         formatter: function (value, row, index) {
           return isChangeVesselOrderFormater(value, row, index);
@@ -104,7 +104,7 @@ function loadListRobot() {
       },
       {
         field: "isCreateBookingOrder",
-        title: "Dịch chuyển container",
+        title: "Tạo Booking",
         align: "center",
         formatter: function (value, row, index) {
           return isCreateBookingOrderFormater(value, row, index);

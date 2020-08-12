@@ -2,7 +2,11 @@ package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import vn.com.irtech.eport.common.utils.DateUtils;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -17,6 +21,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
+import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.text.Convert;
@@ -35,6 +40,9 @@ public class ProcessBillServiceImpl implements IProcessBillService
     
     @Autowired
     private ICatosApiService catosApiService;
+    
+    @Autowired
+    private IShipmentDetailService shipmentDetailService;
 
     /**
      * Get Process billing
@@ -247,4 +255,25 @@ public class ProcessBillServiceImpl implements IProcessBillService
 		}
 		return null;
 	} 
+	
+	@Override
+	public void saveShiftingBillWithCredit(List<Long> shipmentDetailIds, ProcessOrder processOrder) {
+		String shipmentDetailIdsStr = shipmentDetailIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIdsStr, null);
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+            for (ShipmentDetail shipmentDetail: shipmentDetails) {
+                ProcessBill processBill = new ProcessBill();
+                processBill.setProcessOrderId(shipmentDetail.getProcessOrderId());
+                processBill.setLogisticGroupId(shipmentDetail.getLogisticGroupId());
+                processBill.setShipmentId(shipmentDetail.getShipmentId());
+                processBill.setSztp(shipmentDetail.getSztp());
+                processBill.setContainerNo(shipmentDetail.getContainerNo());
+                processBill.setServiceType(processOrder.getServiceType());
+                processBill.setPayType("Credit");
+                processBill.setPaymentStatus("Y");
+                processBill.setPaymentTime(new Date());
+                processBill.setCreateTime(new Date());
+            }
+        }
+	}
 }
