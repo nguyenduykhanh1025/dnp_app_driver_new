@@ -320,6 +320,7 @@ function confirm() {
   } else {
     $.modal.loading("Đang đồng bộ dữ liệu...");
   }
+  processOrder.pickupDate = null;
   $.ajax({
     url: PREFIX + "/sync",
     method: "POST",
