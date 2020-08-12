@@ -91,4 +91,11 @@ public interface IEdoService {
 
 	public List<String> selectVesselList(String keyString);
 
+	/**
+     * Update edo by bill of lading and container no
+     * 
+     * @param edo
+     * @return
+     */
+    public int updateEdoByBlCont(Edo edo);
 }

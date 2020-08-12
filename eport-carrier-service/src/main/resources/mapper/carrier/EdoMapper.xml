@@ -291,4 +291,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	from edo where vessel like concat(concat('%', #{keyString}), '%')
      </select>
      
+     <update id="updateEdoByBlCont" parameterType="Edo" >
+        update edo
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
+            <if test="containerNumber != null  and containerNumber != ''">container_number = #{containerNumber},</if>
+            <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">empty_container_depot = #{emptyContainerDepot},</if>
+            <if test="detFreeTime != null ">det_free_time = #{detFreeTime},</if>
+            <if test="secureCode != null  and secureCode != ''">secure_code = #{secureCode},</if>
+            <if test="releaseDate != null ">release_date = #{releaseDate},</if>
+            <if test="vessel != null  and vessel != ''">vessel = #{vessel},</if>
+            <if test="vesselNo != null  and vesselNo != ''">vessel_no = #{vesselNo},</if>
+            <if test="voyNo != null  and voyNo != ''">voy_no = #{voyNo},</if>
+            <if test="sztp != null  and sztp != ''">sztp = #{sztp},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="releaseStatus != null  and releaseStatus != ''">release_status = #{releaseStatus},</if>
+            <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>
+            <if test="transactionId != null  and transactionId != ''">transaction_id = #{transactionId},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="delFlg != null ">del_flg = #{delFlg},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate
+        </trim>
+        where bill_of_lading = #{billOfLading} and container_number = #{containerNumber}
+    </update>
 </mapper>

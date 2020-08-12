@@ -40,8 +40,8 @@ bayList.forEach(function(bay) {
                     // Container has already been pre-order pickup
                     if (bay[row][col].preorderPickup == "Y") {
                         str += '<div id="cell'+ bay[row][col].id +'" style="background-color: #72ecea;" class="cellDiv" onclick="pickCont('+ bay[row][col].id +', '+ row +','+ col + ',' + index + ',' + true +')">'+ bay[row][col].containerNo +'</div>';
-                        let tableRow = '<tr id="row'+ bay[row][col].id +'"><td width="330px">' + bay[row][col].containerNo + '</td><td width="165px">' + bay[row][col].sztp + '</td><td width="165px">' + bay[row][col].block + "-" + bay[row][col].bay + "-" + bay[row][col].row + "-" + bay[row][col].tier + '</td></tr>';
-                        $("#pickedContList").append(tableRow);
+                        // let tableRow = '<tr id="row'+ bay[row][col].id +'"><td width="330px">' + bay[row][col].containerNo + '</td><td width="165px">' + bay[row][col].sztp + '</td><td width="165px">' + bay[row][col].block + "-" + bay[row][col].bay + "-" + bay[row][col].row + "-" + bay[row][col].tier + '</td></tr>';
+                        // $("#pickedContList").append(tableRow);
                     
                     // Container can be ready to pre-order pickup
                     } else {
@@ -98,7 +98,7 @@ function calculateMovingCont() {
         for (let j=0; j<6; j++) {
             for (let i=4; i>=0; i--) {
                 if (bayList[b][i][j] != null) {
-                    if (bayList[b][i][j].preorderPickup == "Y") {
+                    if (bayList[b][i][j].preorderPickup == "Y" && "N" !=  bayList[b][i][j].prePickupPaymentStatus) {
                         shipmentDetailIds += bayList[b][i][j].id + ",";
                         moveContAmount += moveContAmountTemp;
                         moveContAmountTemp = 0;
