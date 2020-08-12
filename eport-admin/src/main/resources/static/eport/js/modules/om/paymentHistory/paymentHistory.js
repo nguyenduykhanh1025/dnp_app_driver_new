@@ -1,6 +1,6 @@
 "use strict";
-const PREFIX = ctx + "om/support";
-var shipment = new Object();
+const PREFIX = ctx + "om/paymentHistory";
+var paymentHistory = new Object();
 
 $(document).ready(function () {
   loadTable();
@@ -17,11 +17,11 @@ $(document).ready(function () {
 
   $("#searchBox").keyup(function (event) {
     if (event.keyCode == 13) {
-      shipment.blNo = $("#searchBox").val().toUpperCase();
-      shipment.bookingNo = $("#searchBox").val().toUpperCase();
-      shipment.vslNm = $("#searchBox").val().toUpperCase();
-      shipment.voyNo = $("#searchBox").val().toUpperCase();
-      shipment.taxCode = $("#searchBox").val().toUpperCase();
+      paymentHistory.blNo = $("#searchBox").val().toUpperCase();
+      paymentHistory.bookingNo = $("#searchBox").val().toUpperCase();
+      paymentHistory.vslNm = $("#searchBox").val().toUpperCase();
+      paymentHistory.voyNo = $("#searchBox").val().toUpperCase();
+      paymentHistory.taxCode = $("#searchBox").val().toUpperCase();
       loadTable();
     }
   });
@@ -30,7 +30,7 @@ $(document).ready(function () {
 
 function loadTable() {
   $("#dg").datagrid({
-    url: PREFIX + "/shipments",
+    url: PREFIX + "/list",
     method: "POST",
     singleSelect: true,
     height: document.documentElement.clientHeight - 70,
@@ -55,7 +55,7 @@ function loadTable() {
           pageSize: param.rows,
           orderByColumn: param.sort,
           isAsc: param.order,
-          data: shipment,
+          data: paymentHistory,
         }),
         success: function (data) {
           success(JSON.parse(data));
@@ -153,7 +153,7 @@ $("#fromDate").on("inputchange", function () {
     $.modal.alertError('Quý khách không thể chọn từ ngày cao hơn đến ngày.')
     $('#fromDate').val('');
   } else {
-    shipment.fromDate = fromDate.getTime();
+    paymentHistory.fromDate = fromDate.getTime();
     loadTable();
   }
 });
@@ -165,33 +165,7 @@ $("#toDate").on("inputchange", function () {
     $("#toDate").val("");
   } else {
     toDate.setHours(23, 59, 59);
-    shipment.toDate = toDate.getTime();
+    paymentHistory.toDate = toDate.getTime();
     loadTable();
   }
 });
-
-function openCustomSupport(id) {
-  $.modal.openTab("Hỗ trợ Hải Quan cho [BillNo/Booking No]", PREFIX + "/custom/" + id, null, null);
-}
-
-function openPaymentSupport(id) {
-  $.modal.openWithOneButton("Thanh toán", PREFIX + "/payment/" + id, null, null);
-}
-
-function openReceiverDOSupport(id) {
-  $.modal.openWithOneButton("DO gốc", PREFIX + "/do/" + id);
-}
-
-function openDriverSupport(id) {
-  $.modal.openWithOneButton("Tài xế", PREFIX + "/driver/" + id, null, null);
-}
-
-
-function finishForm(res) {
-  if (res.code == 0) {
-    $.modal.msgSuccess(res.msg);
-  } else {
-    $.modal.msgError(res.msg);
-  }
-  loadTable();
-}
