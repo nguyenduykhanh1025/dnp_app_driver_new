@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="edo" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ac50139c-1c7e-4a8b-857c-48a5052fe870">
 	<property name="ireport.zoom" value="1.7715610000000013"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="281"/>
+	<property name="ireport.y" value="48"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -76,7 +76,7 @@
 				<textFieldExpression><![CDATA[$P{createdTime}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="180" y="31" width="168" height="20" uuid="ff46ae35-577f-4be9-a762-b027d1f74658"/>
+				<reportElement x="193" y="31" width="168" height="20" uuid="ff46ae35-577f-4be9-a762-b027d1f74658"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" size="14" isBold="true"/>
 				</textElement>
@@ -153,7 +153,7 @@
 				<text><![CDATA[Đến Cảng:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="190" y="10" width="149" height="20" uuid="af4cbae5-e278-400c-bc48-86df005f64f5"/>
+				<reportElement x="203" y="10" width="149" height="20" uuid="af4cbae5-e278-400c-bc48-86df005f64f5"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="DejaVu Sans" size="14" isBold="true"/>
 				</textElement>
