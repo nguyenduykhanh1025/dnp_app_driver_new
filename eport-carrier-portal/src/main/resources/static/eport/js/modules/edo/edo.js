@@ -110,10 +110,16 @@ function searchDo() {
 }
 
 function formatToYDM(date) {
+  if(date == null || date == undefined) {
+	return "-";
+  }
   return date.split("/").reverse().join("/");
 }
 
 function formatToYDMHMS(date) {
+  if(date == null || date == undefined) {
+	return "-";
+  }
   let temp = date.substring(0, 10);
   return temp.split("-").reverse().join("/") + date.substring(10, 19);
 }

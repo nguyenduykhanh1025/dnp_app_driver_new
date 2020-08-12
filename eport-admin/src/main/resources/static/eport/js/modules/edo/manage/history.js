@@ -39,11 +39,13 @@ function loadTable() {
 
 
 function formatToYDMHMS(date) {
+	if(date == null || data == undefined) {
+		return "-";
+	}
     let temp = date.substring(0,10);
     return temp.split("-").reverse().join("/") + date.substring(10,19);
 }
 
-function formatField(value)
-{
+function formatField(value) {
   return "<span class='label label-success'>"+value+"</span>";
 }

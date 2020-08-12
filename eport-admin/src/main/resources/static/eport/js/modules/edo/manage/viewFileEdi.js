@@ -18,10 +18,10 @@ var myAvatarzone = new Dropzone("#bannarzone", {
     acceptedFiles: ".edi,.TO_VN,.evu,.txt,",
     parallelUploads: 100,
     addRemoveLinks: true,
-    dictDefaultMessage: 'Choose a file EDI, or drag it here !',
-    dictResponseError: 'Upload error!',
-    dictInvalidFileType: "Invalid EDI file. Please upload txt file only.",
-    dictFileTooBig: "File max size!",
+    dictDefaultMessage: 'Click để chọn file, hoặc kéo thả file vào đây',
+    dictResponseError: 'Upload lỗi!',
+    dictInvalidFileType: "File EDI không đúng. Hãy chọn file được hỗ trợ.",
+    dictFileTooBig: "Dung lượng file quá lớn!",
     init: function() {
         this.on("addedfile", function(file) {
             checkFileInDropZone += 1;
@@ -58,16 +58,12 @@ var myAvatarzone = new Dropzone("#bannarzone", {
                     loadView();
                 });
             };
-            reader.onabort = () => console.log('file reading was aborted');
-            reader.onerror = () => console.log('file reading has failed');
-    
+            //reader.onabort = () => console.log('file reading was aborted');
+            //reader.onerror = () => console.log('file reading has failed');
             reader.readAsBinaryString(file);
-           
-           
-       
         });
         this.on("maxfilesexceeded", function(file){
-            $.modal.alertWarning("Bạn chỉ được nhập 10 file mỗi lần upload!");
+            $.modal.alertWarning("Hãy chọn 10 file mỗi lần upload!");
             this.removeFile(file);
         });
         this.on('sending',function(data){
@@ -77,7 +73,7 @@ var myAvatarzone = new Dropzone("#bannarzone", {
             temp += 1;
             if(temp >= countFile)
             {
-                $.modal.alertSuccess("Import thành công");
+                $.modal.alertSuccess("Nhập thành công");
                 setTimeout(function(){
                     $.modal.reload();
                 },1000);
@@ -202,13 +198,12 @@ function loadView() {
             'Số chuyến',
             'Cảng xếp hàng',
             'Cảng dỡ hàng',
-            'Người nhận hàng',
+            'Chủ hàng',
             'Ngày hết hạn lưu cont',
             'Ngày tạo file',
             'Nơi hạ rỗng',
             'Số ngày miễn lưu vỏ'
         ],
-
     });
     statusTable = true;
   
@@ -228,7 +223,7 @@ $('#export-file').click(function() {
 });
 function printEdoPDF() {
 	if(!dataObj){
-		$.modal.alertError("Chưa có bill nào cả!");
+		$.modal.alertError("Hãy chọn file để in.");
 		return
 	}
     $.ajax({
@@ -238,7 +233,7 @@ function printEdoPDF() {
         data: JSON.stringify(dataObj),
         success: function (result) {
             if (result.code == 0) {
-            	$.modal.openTab("In phiếu", ctx + "edo/print/view/"+ result.key)
+            	$.modal.openTab("In Phiếu eDO", ctx + "edo/print/view/"+ result.key)
             } else {
                 $.modal.alertError(result.msg);
             }
