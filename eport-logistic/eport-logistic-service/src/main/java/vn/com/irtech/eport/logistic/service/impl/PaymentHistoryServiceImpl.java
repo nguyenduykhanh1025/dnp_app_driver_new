@@ -46,4 +46,15 @@ public class PaymentHistoryServiceImpl implements IPaymentHistoryService
     public int deletePaymentHistoryById(Long id) {
 		return paymentHistoryMapper.deletePaymentHistoryById(id);
 	}
+	
+	/**
+     * Select payment history list om
+     * 
+     * @param paymentHistory
+     * @return List<PaymentHistory>
+     */
+	@Override
+    public List<PaymentHistory> selectPaymentHistoryListOm(PaymentHistory paymentHistory) {
+		return paymentHistoryMapper.selectPaymentHistoryListOm(paymentHistory);
+	}
 }
