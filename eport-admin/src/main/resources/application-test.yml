@@ -4,7 +4,7 @@ spring:
         driverClassName: oracle.jdbc.OracleDriver
         druid:
             master:
-                url: jdbc:oracle:thin:@117.3.52.70:41521/EPORT
+                url: jdbc:oracle:thin:@192.168.0.29:1521/EPORT
                 username: EPORT_TEST
                 password: WINNER
             slave:
@@ -62,4 +62,10 @@ spring:
                         port: 465
                         fallback: true
                         class: javax.net.ssl.SSLSocketFactory
+    redis:
+        enabled: false
+#Eport Config
+eport:
+    profile: /home/eport/uat/upload
+    apiUrl: http://127.0.0.1:9090/api
         
