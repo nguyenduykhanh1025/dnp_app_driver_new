@@ -309,6 +309,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                             Boolean needMoving = true;
                             for (ShipmentDetail shipmentDetail : preorderPickupConts) {
                                 if (Objects.equals(bayList.get(b)[tier][row].getId(), shipmentDetail.getId())) {
+                                    shipmentDetail.setPreorderPickup("Y");
+                                    shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
                                     shiftingContList.addAll(tempShiftingContList);
                                     tempShiftingContList.clear();
                                     needMoving = false;
@@ -364,10 +366,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setSsrCode(getSSR(shipmentDetails.get(0).getSztp()));
         processOrderService.insertProcessOrder(processOrder);
-        for (ShipmentDetail shipmentDetail : shipmentDetails) {
-            shipmentDetail.setPreorderPickup("Y");
-            shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
-        }
         return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
     }
 
