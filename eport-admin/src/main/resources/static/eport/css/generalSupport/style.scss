@@ -1,0 +1,29 @@
+.content {
+  .left {
+    width: 50%;
+    position: relative;
+    margin-right: 10px;
+    border-right: 1px solid #ccc;
+    .fixed {
+      position: absolute;
+      top: 45%;
+      right: 0;
+      width: 10px;
+      height: 60px;
+      line-height: 60px;
+      background-color: #e5e5e5;
+      text-align: center;
+    }
+    #btn-uncollapse {
+      display: none;
+    }
+    
+    #btn-collapse,
+    #btn-uncollapse {
+      cursor: pointer;
+    }
+  }
+  .right {
+    width: 50%;
+  }
+}
