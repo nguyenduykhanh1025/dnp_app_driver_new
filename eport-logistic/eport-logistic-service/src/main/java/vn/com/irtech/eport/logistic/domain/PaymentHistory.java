@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.domain;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import vn.com.irtech.eport.common.annotation.Excel;
@@ -42,9 +44,26 @@ public class PaymentHistory extends BaseEntity
     
     /** STATUS */
     @Excel(name = "STATUS")
-    private String status;
+	private String status;
+	
+	/** LOGISTIC GROUP ID */
+	@Excel(name = "LOGISTIC GROUP ID")
+	private Long logisticGroupId;
+	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private Date fromDate;
 
-    
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date toDate;
+	
+	private String logisticName;
+
+	private Integer serviceType;
+
+	private String blNo;
+
+	private String bookingNo;
+
     public Long getId() {
 		return id;
 	}
@@ -115,7 +134,63 @@ public class PaymentHistory extends BaseEntity
 
 	/** EXPIRE TIME */
     @Excel(name = "EXPIRE TIME")
-    private Date expireTime;
+	private Date expireTime;
+	
+	public Long getLogisticGroupId() {
+		return this.logisticGroupId;
+	}
+
+	public void setLogisticGroupId(Long logisticGroupId) {
+		this.logisticGroupId = logisticGroupId;
+	}
+
+	public Date getFromDate() {
+		return this.fromDate;
+	}
+
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getToDate() {
+		return this.toDate;
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+
+	public String getLogisticName() {
+		return this.logisticName;
+	}
+
+	public void setLogisticName(String logisticName) {
+		this.logisticName = logisticName;
+	}
+
+	public Integer getServiceType() {
+		return this.serviceType;
+	}
+
+	public void setServiceType(Integer serviceType) {
+		this.serviceType = serviceType;
+	}
+
+	public String getBlNo() {
+		return this.blNo;
+	}
+
+	public void setBlNo(String blNo) {
+		this.blNo = blNo;
+	}
+
+	public String getBookingNo() {
+		return this.bookingNo;
+	}
+
+	public void setBookingNo(String bookingNo) {
+		this.bookingNo = bookingNo;
+	}
 
     @Override
     public String toString() {
@@ -132,6 +207,13 @@ public class PaymentHistory extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+			.append("logisticGroupId", getLogisticGroupId())
+			.append("fromDate", getFromDate())
+			.append("toDate", getToDate())
+			.append("logisticName", getLogisticName())
+			.append("serviceType", getServiceType())
+			.append("blNo", getBlNo())
+			.append("bookingNo", getBookingNo())
             .toString();
     }
 }

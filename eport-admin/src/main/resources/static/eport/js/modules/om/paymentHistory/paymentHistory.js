@@ -17,11 +17,9 @@ $(document).ready(function () {
 
   $("#searchBox").keyup(function (event) {
     if (event.keyCode == 13) {
+      paymentHistory.orderId = $("#searchBox").val().toUpperCase();
       paymentHistory.blNo = $("#searchBox").val().toUpperCase();
       paymentHistory.bookingNo = $("#searchBox").val().toUpperCase();
-      paymentHistory.vslNm = $("#searchBox").val().toUpperCase();
-      paymentHistory.voyNo = $("#searchBox").val().toUpperCase();
-      paymentHistory.taxCode = $("#searchBox").val().toUpperCase();
       loadTable();
     }
   });
@@ -69,27 +67,25 @@ function loadTable() {
   });
 }
 
-function formatCustom(value, row, index) {
-  if (row.serviceType == 1 || row.serviceType == 4) {
-    return '<a class="btn btn-primary btn-xs" onclick="openCustomSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Hải quan</a> ';
+function formatLogistic(value, row, index) {
+  return '<a onclick="logisticInfo(' + row.logisticGroupId + ',' + '\'' + value + '\')"> '+ value + '</a>'
+}
+
+function formatBlBooking(value, row, index) {
+  if (row.blNo) {
+    return row.blNo;
+  }
+  if (row.bookingNo) {
+    return row.bookingNo;
   }
   return '';
 }
 
-
-function formatPayment(value, row, index) {
-  return '<a class="btn btn-default btn-xs" onclick="openPaymentSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Thanh toán</a> ';
-}
-
-function formatDo(value, row, index) {
-  if (row.serviceType == 1) {
-    return '<a class="btn btn-danger btn-xs" onclick="openReceiverDOSupport(\'' + row.id + '\')"><i class="fa fa-check-circle"></i> Thu Chứng Từ</a> ';
+function formatStatus(value, row, index) {
+  if ('1' == value) {
+    return 'Đã thanh toán';
   }
-  return '<span style="color: #333333; font-size: 12px;">Đầy đủ chứng từ</span>';
-}
-
-function formatDriver(value, row, index) {
-  return '<a class="btn btn-warning btn-xs" onclick="openDriverSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Vận tải</a> ';
+  return 'Chưa thanh toán';
 }
 
 function formatServiceType(value) {
@@ -109,12 +105,19 @@ function formatDate(value) {
   return value.substring(8, 10)+'/'+value.substring(5, 7)+'/'+value.substring(0, 4)+value.substring(10, 19);
 }
 
-function formatText(value) {
-  return '<div class="easyui-tooltip" title="' + (value != null ? value : "Trống") + '" style="width: 80; text-align: center;"><span>' + (value != null ? value : "") + '</span></div>';
+function formatMoney(value) {
+  return value.format(2, 3, ',', '.');
 }
 
+Number.prototype.format = function (n, x, s, c) {
+  var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\D' : '$') + ')',
+    num = this.toFixed(Math.max(0, ~~n));
+
+  return (c ? num.replace('.', c) : num).replace(new RegExp(re, 'g'), '$&' + (s || ','));
+};
+
 function changeServiceType() {
-  shipment.serviceType = $('#serviceType').val();
+  paymentHistory.serviceType = $('#serviceType').val();
   loadTable();
 }
 
@@ -168,4 +171,19 @@ $("#toDate").on("inputchange", function () {
     paymentHistory.toDate = toDate.getTime();
     loadTable();
   }
+});
+
+function logisticInfo(id, logistics) {
+  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function() {
+    $.modal.close();
+  });
+}
+
+$('#logistic').change(function() {
+  if (0 != $('#logistic option:selected').val()) {
+    paymentHistory.logisticGroupId = $('#logistic option:selected').val();
+  } else {
+    paymentHistory.logisticGroupId = '';
+  }
+  loadTable();
 });
