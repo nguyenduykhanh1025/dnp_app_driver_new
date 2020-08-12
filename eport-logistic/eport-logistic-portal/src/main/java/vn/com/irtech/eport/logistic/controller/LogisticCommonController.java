@@ -231,6 +231,7 @@ public class LogisticCommonController extends LogisticBaseController {
 			paymentHistory.setStatus("0");
 			paymentHistory.setOrderId(orderId);
 			paymentHistory.setCreateBy(getUser().getFullName());
+			paymentHistory.setLogisticGroupId(getUser().getGroupId());
 			paymentHistoryService.insertPaymentHistory(paymentHistory);
 		} else {
 			return "error/unauth";
@@ -367,6 +368,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		paymentHistory.setStatus("0");
 		paymentHistory.setOrderId(orderId);
 		paymentHistory.setCreateBy(getUser().getFullName());
+		paymentHistory.setLogisticGroupId(getUser().getGroupId());
 		paymentHistoryService.insertPaymentHistory(paymentHistory);
 		mmap.put("resultUrl", configService.getKey("napas.payment.shifting.result"));
 		mmap.put("referenceOrder", "Thanh toan " + orderId);
