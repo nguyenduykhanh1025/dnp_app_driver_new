@@ -50,7 +50,6 @@ public class CarrierProfileController extends CarrierBaseController{
     {
         CarrierAccount currentUser = ShiroUtils.getSysUser();
         currentUser.setFullName(user.getFullName());
-        currentUser.setGroupId(user.getGroupId());
         currentUser.setRemark(user.getRemark());
         if (carrierAccountService.updateCarrierAccount(currentUser) > 0)
         {

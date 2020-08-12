@@ -1,3 +1,7 @@
+server:
+  servlet:
+    context-path: /admin
+
 spring:
     datasource:
         type: com.alibaba.druid.pool.DruidDataSource
@@ -68,4 +72,21 @@ spring:
 eport:
     profile: /home/eport/uat/upload
     apiUrl: http://127.0.0.1:9090/api
-        
+    edi:
+        rootPath: /mnt/nfs/var/sftp #/home/eport/uat/edo/upload
+        backupPath: /mnt/nfs/var/sftp/backup #/home/eport/uat/edo/backup
+        interval: 1000
+        enabled: true
+
+#Websocket
+websocket:
+    endpoint: /eport_admin
+    app-destination-prefix: /eport_admin
+    message-broker: /admin/eport_admin
+
+#MQTT Config
+mqtt:
+    username: admin
+    password: public 
+    host-url: tcp://127.0.0.1:1883    
+
