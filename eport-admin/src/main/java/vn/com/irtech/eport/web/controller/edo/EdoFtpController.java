@@ -60,17 +60,11 @@ public class EdoFtpController extends BaseController{
             edo = edoService.readEdi(text);
             for(Edo Edo : edo)
             {
-
-                Edo.setCarrierCode("MCA");
-				Edo.setCarrierId((long) 1);
-                Edo.setSecureCode("web");
                 if(edoService.checkContainerAvailable(Edo.getContainerNumber(),Edo.getBillOfLading()) != null)
                 {
                     edoService.updateEdo(Edo);
                     edoHistory.setBillOfLading(Edo.getBillOfLading());
                     edoHistory.setCarrierCode(Edo.getCarrierCode());
-                    edoHistory.setCarrierId((long) 1);
-                    edoHistory.setEdoId((long) 1);
                     edoHistory.setContainerNumber(Edo.getContainerNumber());
                     edoHistory.setAction("update");
                     edoHistory.setEdiContent(content);
@@ -79,8 +73,6 @@ public class EdoFtpController extends BaseController{
                     edoService.insertEdo(Edo);
                     edoHistory.setBillOfLading(Edo.getBillOfLading());
                     edoHistory.setCarrierCode(Edo.getCarrierCode());
-                    edoHistory.setCarrierId((long) 1);
-                    edoHistory.setEdoId((long) 1);
                     edoHistory.setContainerNumber(Edo.getContainerNumber());
                     edoHistory.setAction("add");
                     edoHistory.setEdiContent(content);

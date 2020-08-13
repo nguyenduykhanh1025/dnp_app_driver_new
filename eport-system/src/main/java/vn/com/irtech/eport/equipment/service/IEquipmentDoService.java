@@ -138,4 +138,17 @@ public interface IEquipmentDoService {
 
 	public List<String> getEmptyContainerDepot(Long id);
 
+	//
+	public List<EquipmentDo> selectEdoListByBillNo(EquipmentDo edo);
+
+
+
+	public List<String> selectVoyNos(EquipmentDo edo);
+
+	public List<String> selectVessels(EquipmentDo edo);
+
+	public EquipmentDo selectFirstEdo(EquipmentDo edo);
+
+	public int updateEquipmentDo2(EquipmentDo edo);
+
 }

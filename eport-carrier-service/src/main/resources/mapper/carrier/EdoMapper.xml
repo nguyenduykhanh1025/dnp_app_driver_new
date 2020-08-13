@@ -87,7 +87,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          <where>  
             <if test="id != null "> and id = #{id}</if>
             <if test="carrierId != null "> and carrier_id = #{carrierId}</if>
-            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
+            <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+            </if> 
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
@@ -237,7 +242,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
-         SELECT bill_of_lading, carrier_code, business_unit, vessel, vessel_no, voy_no,(SELECT create_time from edo e2 where e1.bill_of_lading = e2.bill_of_lading ORDER BY create_time DESC FETCH NEXT 1 ROWS ONLY ) as create_time, (SELECT COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
+         SELECT bill_of_lading, carrier_code, vessel, vessel_no, voy_no,(SELECT create_time from edo e2 where e1.bill_of_lading = e2.bill_of_lading ORDER BY create_time DESC FETCH NEXT 1 ROWS ONLY ) as create_time, (SELECT COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
         <where> 
             <if test="params.groupCode != null"> 
                 and carrier_code in 
@@ -268,12 +273,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				and date_format(expired_dem,'%y%m%d') &gt;= date_format(#{params.fromDate},'%y%m%d')
 			</if>
         </where>
-            GROUP BY bill_of_lading, carrier_code, business_unit,vessel , vessel_no, voy_no
+            GROUP BY bill_of_lading, carrier_code, vessel, vessel_no, voy_no
+            ORDER BY create_time DESC
     </select>
 
-     <select id="selectVoyNo" parameterType="String" resultType="String">
+     <select id="selectVoyNos" parameterType="Edo" resultType="String">
     	select distinct voy_no 
-    	from edo where voy_no like concat(concat('%', #{keyString}), '%')
+    	from edo
+         <where> 
+            <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+            </if>
+             <if test="voyNo != null  and voyNo != ''"> and lower(voy_no) like concat(concat('%', #{voyNo}), '%')</if> 
+         </where>
      </select>
 
      <select id="selectOprCode" parameterType="String" resultType="String">
@@ -281,14 +296,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     	from edo where carrier_code like concat(concat('%', #{keyString}), '%')
      </select>
 
-      <select id="selectVesselNo" parameterType="String" resultType="String">
+      <select id="selectVesselNo" parameterType="Edo" resultType="String">
     	select distinct vessel_no
-    	from edo where vessel_no like concat(concat('%', #{keyString}), '%')
+    	from edo
+        <where> 
+         <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+        </if> 
+        <if test="VesselNo != null  and VesselNo != ''"> and vessel_no like concat(concat('%', #{VesselNo}), '%')</if>
+        </where> 
      </select>
 
-      <select id="selectVesselList" parameterType="String" resultType="String">
+      <select id="selectVessels" parameterType="Edo" resultType="String">
     	select distinct vessel
-    	from edo where vessel like concat(concat('%', #{keyString}), '%')
+    	from edo 
+        <where> 
+         <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+                <if test="vessel != null  and vessel != ''"> and vessel like concat(concat('%', #{vessel}), '%')</if> 
+        </if> 
+        </where> 
      </select>
      
      <update id="updateEdoByBlCont" parameterType="Edo" >
