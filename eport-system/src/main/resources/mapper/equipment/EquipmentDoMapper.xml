@@ -424,4 +424,122 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getEmptyContainerDepot" parameterType="Long" resultType="String">
       select DISTINCT empty_container_depot from equipment_do where carrier_id = #{id}
     </select>
+
+    
+     <select id="selectEdoListByBillNo" parameterType="EquipmentDo" resultMap="EquipmentDoResult">
+         SELECT bill_of_lading, carrier_code, vessel, voy_no,(SELECT create_time from edo e2 where e1.bill_of_lading = e2.bill_of_lading ORDER BY create_time DESC FETCH NEXT 1 ROWS ONLY ) as create_time, (SELECT COUNT(*) FROM equipment_do e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from equipment_do e1
+        <where> 
+            <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+            </if> 
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading like concat(concat('%', #{billOfLading}), '%')</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
+            <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="containerNumber != null  and containerNumber != ''"> and container_number = #{containerNumber}</if>
+            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''"> and empty_container_depot = #{emptyContainerDepot}</if>
+            <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="secureCode != null  and secureCode != ''"> and secure_code = #{secureCode}</if>
+            <if test="releaseDate != null "> and release_date = #{releaseDate}</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
+            <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
+            <if test="params.toDate != null and params.toDate != ''">
+				and date_format(expired_dem,'%y%m%d') &lt;= date_format(#{params.toDate},'%y%m%d')
+			</if>
+             <if test="params.fromDate != null and params.fromDate != ''">
+				and date_format(expired_dem,'%y%m%d') &gt;= date_format(#{params.fromDate},'%y%m%d')
+			</if>
+        </where>
+            GROUP BY bill_of_lading, carrier_code, vessel, voy_no
+            ORDER BY create_time DESC
+    </select>
+
+
+      <select id="selectVessels" parameterType="EquipmentDo" resultType="String">
+    	select distinct vessel
+    	from equipment_do 
+        <where> 
+         <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+                <if test="vessel != null  and vessel != ''"> and vessel like concat(concat('%', #{vessel}), '%')</if> 
+        </if> 
+        </where> 
+     </select>
+
+      <select id="selectVoyNos" parameterType="EquipmentDo" resultType="String">
+    	select distinct voy_no
+    	from equipment_do
+        <where> 
+         <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+        </if> 
+        <if test="voyNo != null  and voyNo != ''"> and voy_no like concat(concat('%', #{voyNo}), '%')</if>
+        </where> 
+     </select>
+
+    <select id="selectFirstEdo" parameterType="EquipmentDo" resultMap="EquipmentDoResult">
+        <include refid="selectEquipmentDoVo"/>
+         <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="carrierId != null "> and carrier_id = #{carrierId}</if>
+             <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+            </if> 
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
+            <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
+            <if test="emptyContainerDepot != null "> and empty_container_depot = #{emptyContainerDepot}</if>
+            <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="secureCode != null  and secureCode != ''"> and secure_code = #{secureCode}</if>
+            <if test="releaseDate != null "> and release_date = #{releaseDate}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
+            <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
+            <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
+            <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
+            <if test="consignee != null  and consignee != ''"> and consignee  = #{consignee}</if>
+            <if test="containerNumber != null  and containerNumber != ''">and container_number = #{containerNumber}</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+        </where>
+         FETCH NEXT 1 ROWS ONLY
+    </select>
+    <update id="updateEquipmentDo2" parameterType="EquipmentDo" >
+        update equipment_do
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
+            <if test="containerNumber != null  and containerNumber != ''">container_number = #{containerNumber},</if>
+            <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
+            <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">empty_container_depot = #{emptyContainerDepot},</if>
+            <if test="detFreeTime != null ">det_free_time = #{detFreeTime},</if>
+            <if test="secureCode != null  and secureCode != ''">secure_code = #{secureCode},</if>
+            <if test="releaseDate != null ">release_date = #{releaseDate},</if>
+            <if test="vessel != null  and vessel != ''">vessel = #{vessel},</if>
+            <if test="voyNo != null  and voyNo != ''">voy_no = #{voyNo},</if>
+            <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="releaseStatus != null  and releaseStatus != ''">release_status = #{releaseStatus},</if>
+            <if test="createSource != null  and createSource != ''">create_source = #{createSource},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            update_time = sysdate
+        </trim>
+        where id = #{id}
+    </update>
+        
 </mapper>
