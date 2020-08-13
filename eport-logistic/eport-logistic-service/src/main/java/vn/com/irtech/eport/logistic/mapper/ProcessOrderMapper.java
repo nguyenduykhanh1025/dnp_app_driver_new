@@ -99,4 +99,12 @@ public interface ProcessOrderMapper
      * @return Process Order
      */
     public ProcessOrder findProcessOrderForRobot(String[] serviceTypes);
+    
+    /**
+     * Select orders by shipment id
+     * 
+     * @param shipmentId
+     * @return List<ProcessOrder>
+     */
+    public List<ProcessOrder> selectOrdersByShipmentId(ProcessOrder processOrder);
 }
