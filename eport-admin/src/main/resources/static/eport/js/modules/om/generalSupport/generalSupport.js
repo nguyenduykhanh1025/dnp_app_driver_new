@@ -74,11 +74,11 @@ function handleCollapse(status) {
     });
     return;
   }
-  $(".left").css("width", "50%");
+  $(".left").css("width", "40%");
   $(".left").children().show();
   $("#btn-collapse").show();
   $("#btn-uncollapse").hide();
-  $(".right").css("width", "50%");
+  $(".right").css("width", "60%");
   $('#dg-right').datagrid('resize',{
     width: document.getElementsByClassName("right").width,
     height: document.documentElement.clientHeight - 70
