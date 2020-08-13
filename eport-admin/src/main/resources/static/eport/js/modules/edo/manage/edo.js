@@ -271,14 +271,12 @@ $(".c-search-box-vessel").select2({
       };
     },
     processResults: function (data) {
-    console.log("data", data)
       let results = []
       data.forEach(function (element, i) {
         let obj = {};
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
       })
       return {
         results: results,
@@ -327,6 +325,7 @@ $(".c-search-box-voy-no").select2({
     data: function (params) {
       return {
         keyString: params.term,
+        vessel : edo.vessel,
       };
     },
     processResults: function (data) {

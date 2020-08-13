@@ -120,8 +120,9 @@ public class EdoManageController extends BaseController {
 
   @GetMapping("/getVoyNo")
 	@ResponseBody
-	public List<String> listVoyNos(String keyString) {
+	public List<String> listVoyNos(String keyString,String vessel) {
     Edo edo = new Edo();
+    edo.setVessel(vessel);
     edo.setVoyNo(keyString);
 		return edoService.selectVoyNos(edo);
 	}

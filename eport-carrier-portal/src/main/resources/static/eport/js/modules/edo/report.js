@@ -12,6 +12,7 @@ function loadTable(edo) {
     height: $(document).height() - 55,
     clientPaging: true,
     pagination: true,
+    singleSelect: true,
     pageSize: 20,
     nowrap: false,
     striped: true,

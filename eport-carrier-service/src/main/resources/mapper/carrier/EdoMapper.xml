@@ -287,6 +287,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                          #{carrier_code}
                 </foreach>
             </if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
              <if test="voyNo != null  and voyNo != ''"> and lower(voy_no) like concat(concat('%', #{voyNo}), '%')</if> 
          </where>
      </select>
