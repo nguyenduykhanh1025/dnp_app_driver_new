@@ -5,8 +5,8 @@
   <th:block th:include="include :: header('Danh sách DO')" />
   <th:block th:include="include :: easyui-css" />
   <th:block th:include="include :: datetimepicker-css" />
-  <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet"/>
-  <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet"/>
+  <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet" />
+  <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet" />
   <link rel="stylesheet" th:href="@{/eport/css/report.css}" />
 </head>
 
@@ -19,35 +19,25 @@
             <div class="select-list">
               <ul>
                 <li>
-                    <div class="form-group">
-                      <label class="sr-only" for="vessel">Vessel</label>
-                      <div class="input-group width150">
-                      <select class="c-search-box-vessel"> 
+                  <div class="form-group">
+                    <label class="sr-only" for="vessel">Vessel</label>
+                    <div class="input-group width150">
+                      <select class="c-search-box-vessel">
                         <option selected="selected"></option>
                       </select>
-                      </div>
                     </div>
+                  </div>
                 </li>
                 <li>
                   <div class="form-group">
-                    <label class="sr-only" for="vessel-code">Vessel Code </label>
-                    <div class="input-group width150">
-                      <select class="c-search-box-vessel-code"> 
+                    <label class="sr-only" for="voyNo">Voy No </label>
+                    <div class="input-group width150" style="width: 110%;">
+                      <select class="c-search-box-voy-no">
                         <option selected="selected"></option>
                       </select>
                     </div>
                   </div>
-              </li>
-              <li>
-                <div class="form-group">
-                  <label class="sr-only" for="voyNo">Voy No </label>
-                  <div class="input-group width150" style="width: 110%;">
-                    <select class="c-search-box-voy-no"> 
-                      <option selected="selected"></option>
-                    </select>
-                  </div>
-                </div>
-            </li>
+                </li>
                 <li>
                   <div class="form-group">
                     <label class="sr-only" for="search-All">Seacrh All</label>
@@ -60,21 +50,23 @@
                   <div class="form-group">
                     <label class="sr-only" for="from-Date">From Date</label>
                     <div class="input-group">
-                      <input class="time-input" id="fromDate" name="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" />
+                      <input class="time-input" id="fromDate" name="fromDate" onchange="changeFromDate()"
+                        placeholder="Từ ngày" />
                     </div>
-                  </div>   
+                  </div>
                 </li>
                 <li>
                   <div class="form-group">
                     <label class="sr-only" for="to-Date">To Date</label>
                     <div class="input-group">
-                      <input class="time-input" id="toDate" name="toDate" onchange="changeToDate()" placeholder="Đến ngày" />
+                      <input class="time-input" id="toDate" name="toDate" onchange="changeToDate()"
+                        placeholder="Đến ngày" />
                     </div>
                   </div>
                 </li>
                 <li>
-                <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
-                    class="glyphicon glyphicon-search"></i> Tìm Kiếm</a></li>
+                  <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
+                      class="glyphicon glyphicon-search"></i> Tìm Kiếm</a></li>
                 </li>
               </ul>
             </div>

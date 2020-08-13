@@ -173,22 +173,27 @@ public class CarrierEdoController extends CarrierBaseController {
 		return getDataTable(edoAuditLogsList);
 	}
 
-	@GetMapping("/getVesselCode")
-	@ResponseBody
-	public List<String> lisVesselNo(String keyString) {
-		return edoService.selectVesselNo(keyString);
-	}
 
 	@GetMapping("/getVoyNo")
 	@ResponseBody
-	public List<String> listVoyNo(String keyString) {
-		return edoService.selectVoyNo(keyString);
+	public List<String> listVoyNos(String keyString) {
+		Edo edo = new Edo();
+		edo.setVoyNo(keyString);
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
+		edo.setParams(groupCodes);
+		return edoService.selectVoyNos(edo);
 	}
 
 	@GetMapping("/getVessel")
 	@ResponseBody
-	public List<String> listVessel(String keyString) {
-		return edoService.selectVesselList(keyString);
+	public List<String> listVessels(String keyString) {
+		Edo edo = new Edo();
+		edo.setVessel(keyString);
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
+		edo.setParams(groupCodes);
+		return edoService.selectVessels(edo);
 	}
 
 	@GetMapping("/getEmptyContainerDeport")
