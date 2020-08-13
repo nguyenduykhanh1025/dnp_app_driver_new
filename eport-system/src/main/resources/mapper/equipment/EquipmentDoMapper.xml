@@ -458,6 +458,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
         </where>
             GROUP BY bill_of_lading, carrier_code, vessel, voy_no
+            ORDER BY create_time DESC
     </select>
 
 
