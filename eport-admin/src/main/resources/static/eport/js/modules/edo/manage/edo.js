@@ -148,6 +148,9 @@ function searchDo() {
 }
 
 function formatToYDM(date) {
+  if(date == null){
+    return;
+  }
   return date.split("-").reverse().join("-");
 }
 
@@ -219,8 +222,14 @@ function searchInfoEdo() {
 
 
 function formatToYDMHMS(date) {
-  let temp = date.substring(0, 10);
-  return temp.split("-").reverse().join("/") + date.substring(10, 19);
+  if(date == null){
+    return;
+  }
+  if(date.length < 10){
+    let temp = date.substring(0, 10);
+    return temp.split("-").reverse().join("/") + date.substring(10, 19);
+  }
+  return;
 }
 
 function formatStatus(value) {

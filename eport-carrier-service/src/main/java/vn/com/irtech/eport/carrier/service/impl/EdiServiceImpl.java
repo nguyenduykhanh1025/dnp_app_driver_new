@@ -63,7 +63,7 @@ public class EdiServiceImpl implements IEdiService {
 		this.settingEdoData(edoInsert, ediDataReq, partnerCode, transactionId);
 		edoInsert.setCreateBy(API);
 		edoInsert.setDelFlg(0);
-		edoInsert.setCarrierId(Long.valueOf(1));
+		// edoInsert.setCarrierId(Long.valueOf(1));
 		Date setTimeUpdatExpicedDem = edoInsert.getExpiredDem();
 		setTimeUpdatExpicedDem.setHours(23);
 		setTimeUpdatExpicedDem.setMinutes(59);

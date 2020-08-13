@@ -1,4 +1,4 @@
-const PREFIX = ctx + "edo";
+const PREFIX = ctx + "carrier/do";
 var bill;
 var edo = new Object();
 $(function () {
@@ -110,21 +110,12 @@ function searchDo() {
 }
 
 function formatToYDM(date) {
-  if(date == null){
-    return;
-  }
   return date.split("/").reverse().join("/");
 }
 
 function formatToYDMHMS(date) {
-  if(date == null){
-    return;
-  }
-  if(date.length < 10){
-    let temp = date.substring(0, 10);
-    return temp.split("-").reverse().join("/") + date.substring(10, 19);
-  }
-  return;
+  let temp = date.substring(0, 10);
+  return temp.split("-").reverse().join("/") + date.substring(10, 19);
 }
 
 function formatAction(value, row, index) {
@@ -149,7 +140,7 @@ function viewUpdateCont(id) {
 function loadTableByContainer(billOfLading) {
   edo.billOfLading = billOfLading
   $("#dgContainer").datagrid({
-    url: PREFIX + "/edo",
+    url: PREFIX + "/equipmentDo",
     method: "POST",
     singleSelect: false,
     clientPaging: true,
@@ -402,12 +393,7 @@ $(".c-search-box-voy-no").change(function () {
 
 $(".pagination-info").hide();
 
-function generatePDF() {
-	console.log(bill)
-	if(!bill){
-		$.modal.alertError("Bạn chưa chọn Bill!");
-		return
-	}
-    $.modal.openTab("In phiếu", ctx +"edo/print/bill/" + bill);
-	
+// add full size do
+function addDo(id) {
+  $.modal.openTab("Thêm DO", ctx + "carrier/do/add");
 }

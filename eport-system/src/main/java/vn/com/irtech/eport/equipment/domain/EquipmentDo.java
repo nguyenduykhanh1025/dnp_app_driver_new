@@ -117,6 +117,18 @@ public class EquipmentDo extends BaseEntity
 
     private String sealNo;
 
+    private String numberContainer;
+
+    public String getNumberContainer() {
+        return this.numberContainer;
+    }
+
+    public void setNumberContainer(String numberContainer) {
+        this.numberContainer = numberContainer;
+    }
+
+    
+
     public String getWeight() {
         return this.weight;
     }

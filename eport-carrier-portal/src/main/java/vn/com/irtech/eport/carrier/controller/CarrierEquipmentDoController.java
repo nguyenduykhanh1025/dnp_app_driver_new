@@ -27,6 +27,7 @@ import vn.com.irtech.eport.carrier.domain.EquipmentDoAuditLog;
 import vn.com.irtech.eport.carrier.service.IEquipmentDoAuditLogService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
@@ -36,6 +37,8 @@ import vn.com.irtech.eport.equipment.domain.EquipmentDo;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
+import vn.com.irtech.eport.system.domain.SysDictData;
+import vn.com.irtech.eport.system.service.ISysDictDataService;
 
 /**
  * Exchange Delivery OrderController
@@ -48,7 +51,7 @@ import vn.com.irtech.eport.framework.util.ShiroUtils;
 @Transactional
 public class CarrierEquipmentDoController extends CarrierBaseController {
 
-	private final String prefix = "carrier/do";
+	private final String PREFIX = "carrier/do";
 
 	private static final Pattern VALID_CONTAINER_NO_REGEX = Pattern.compile("^[A-Za-z]{4}[0-9]{7}$",
 			Pattern.CASE_INSENSITIVE);
@@ -62,12 +65,15 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@Autowired
 	private IEquipmentDoAuditLogService equipmentDoAuditLogService;
 
+	@Autowired
+	private ISysDictDataService dictDataService;
+
 	@GetMapping()
 	public String EquipmentDo() {
 		if (!hasDoPermission()) {
 			return "error/404";
 		}
-		return prefix + "/do";
+		return PREFIX + "/do";
 	}
 
 	@RequestMapping("/list")
@@ -104,7 +110,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		}
 		EquipmentDo equipmentDos = equipmentDoService.getBillOfLadingInfo(billOfLading);
 		mmap.addAttribute("bl", equipmentDos);
-		return prefix + "/billInfo";
+		return PREFIX + "/billInfo";
 	}
 
 	@GetMapping("/searchCon")
@@ -125,7 +131,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			return "error/404";
 		}
 		mmap.addAttribute("billOfLading", billOfLading);
-		return prefix + "/changeExpriedDate";
+		return PREFIX + "/changeExpriedDate";
 	}
 
 	// update
@@ -171,7 +177,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		if (!hasDoPermission()) {
 			return "error/404";
 		}
-		return prefix + "/addDo";
+		return PREFIX + "/addDo";
 	}
 
 	/**
@@ -194,7 +200,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			String consignee = equipmentDos.get(0).getConsignee();
 			String containerNumber = "";
 			for (EquipmentDo e : equipmentDos) {
-				e.setCarrierId(getUserId());
+				e.setCarrierId(super.getUser().getGroupId());
 				e.setCreateBy(getUser().getFullName());
 				e.setUpdateTime(new Date());
 				e.setUpdateBy(getUser().getFullName());
@@ -248,6 +254,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			}
 			// Do the insert to DB
 			for (EquipmentDo edo : equipmentDos) {
+				// edo.setCarrierId(super.getUser().getGroupId());
 				equipmentDoService.insertEquipmentDo(edo);
 				edo.setCreateBy(super.getUser().getEmail());
 				equipmentDoAuditLogService.addAuditLogFirst(edo);
@@ -474,7 +481,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		}
 		EquipmentDo equipmentDo = equipmentDoService.selectEquipmentDoById(id);
 		mmap.put("equipmentDo", equipmentDo);
-		return prefix + "/edit";
+		return PREFIX + "/edit";
 	}
 
 	/**
@@ -632,7 +639,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 	@GetMapping("/history/{id}")
 	public String getHistory(@PathVariable("id") Long id, ModelMap map) {
 		map.put("edoId", id);
-		return prefix + "/history";
+		return PREFIX + "/history";
 	}
 
 	@GetMapping("/auditLog/{edoId}")
@@ -643,5 +650,144 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 				.selectEquipmentDoAuditLogList(edoAuditLog);
 		return getDataTable(edoAuditLogsList);
 	}
+
+	// --------newStyle-----------
+
+	@GetMapping("/index")
+	public String EquipmentDo2() {
+		if (!hasDoPermission()) {
+			return "error/404";
+		}
+		return PREFIX + "/equipmentDo";
+	}
+
+	@PostMapping("/billNo")
+	@ResponseBody
+	public TableDataInfo billNo(@RequestBody PageAble<EquipmentDo> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		EquipmentDo edo = param.getData();
+		if (edo == null) {
+			edo = new EquipmentDo();
+		}
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
+		edo.setParams(groupCodes);
+		edo.setCarrierCode(null);
+		List<EquipmentDo> dataList = equipmentDoService.selectEdoListByBillNo(edo);
+		return getDataTable(dataList);
+	}
+
+	@PostMapping("/equipmentDo")
+	@ResponseBody
+	public TableDataInfo edo(@RequestBody PageAble<EquipmentDo> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		EquipmentDo edo = param.getData();
+		if (edo == null) {
+			edo = new EquipmentDo();
+		}
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
+		edo.setCarrierCode(null);
+		edo.setParams(groupCodes);
+		List<EquipmentDo> dataList = equipmentDoService.selectEquipmentDoList(edo);
+		return getDataTable(dataList);
+	}
+
+	@GetMapping("/carrierCode")
+	@ResponseBody
+	public List<String> carrierCode() {
+		return super.getGroupCodes();
+	}
+
+	@GetMapping("/getVoyNo")
+	@ResponseBody
+	public List<String> listVoyNo(String keyString) {
+		EquipmentDo edo = new EquipmentDo();
+		edo.setVoyNo(keyString);
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
+		edo.setParams(groupCodes);
+		return equipmentDoService.selectVoyNos(edo);
+	}
+
+	@GetMapping("/getVessel")
+	@ResponseBody
+	public List<String> listVessel(String keyString) {
+		EquipmentDo edo = new EquipmentDo();
+		edo.setVessel(keyString);
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
+		edo.setParams(groupCodes);
+		return equipmentDoService.selectVessels(edo);
+	}
+
+	@GetMapping("/update")
+	public String update() {
+		return PREFIX + "/update";
+	}
+
+	@GetMapping("/update/{id}")
+	public String getUpdate(@PathVariable("id") Long id, ModelMap map) {
+		map.put("id", id);
+		EquipmentDo edo = equipmentDoService.selectEquipmentDoById(id);
+		map.put("edo", edo);
+		return PREFIX + "/update";
+	}
+	@GetMapping("/multiUpdate/{ids}")
+	public String multiUpdate(@PathVariable("ids") String ids, ModelMap map) {
+		map.put("ids", ids);
+		String[] idMap = ids.split(",");
+		Long id = Long.parseLong(idMap[0]);
+		EquipmentDo edo = equipmentDoService.selectEquipmentDoById(id);
+		map.put("edo", edo);
+		return PREFIX + "/multiUpdate";
+	}
+
+	@PostMapping("/update")
+	@ResponseBody
+	@Log(title = "Cập Nhật Equipment DO", businessType = BusinessType.UPDATE, operatorType = OperatorType.SHIPPINGLINE)
+	public AjaxResult multiUpdate(String ids, EquipmentDo edo) {
+		if (ids == null) {
+			ids = edo.getId().toString();
+		}
+		try {
+			String[] idsList = ids.split(",");
+			edo.setCarrierCode(super.getUserGroup().getGroupCode());
+			edo.setCarrierId(super.getUser().getGroupId());
+			for (String id : idsList) {
+				EquipmentDo edoCheck = new EquipmentDo();
+				edoCheck.setId(Long.parseLong(id));
+				Map<String, Object> groupCodes = new HashMap<>();
+				groupCodes.put("groupCode", super.getGroupCodes());
+				edoCheck.setParams(groupCodes);
+				if (equipmentDoService.selectFirstEdo(edoCheck) == null) {
+					return AjaxResult.error(
+							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");
+				} else if (equipmentDoService.selectFirstEdo(edoCheck).getStatus().equals("3")) {
+					return AjaxResult.error(
+							"Bạn đã chọn container đã GATE-IN ra khỏi <br> cảng, vui lòng kiểm tra lại dữ liệu!");
+				}
+			}
+			for (String id : idsList) {
+				edo.setId(Long.parseLong(id));
+				equipmentDoService.updateEquipmentDo2(edo);
+				edo.setCreateBy(super.getUser().getEmail());
+				equipmentDoAuditLogService.updateAuditLog(edo);
+			}
+			return AjaxResult.success("Update thành công");
+		} catch (Exception e) {
+			return AjaxResult.error("Có lỗi xảy ra, vui lòng kiểm tra lại dữ liệu");
+		}
+
+	}
+	@GetMapping("/getEmptyContainerDeport")
+	@ResponseBody
+	public AjaxResult listEmptyContainerDeport() {
+		SysDictData dictData = new SysDictData();
+		dictData.setDictType("edo_empty_container_deport");
+		return AjaxResult.success(dictDataService.selectDictDataList(dictData));
+	}
+
+
 
 }
