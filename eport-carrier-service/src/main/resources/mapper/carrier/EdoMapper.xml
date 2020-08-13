@@ -274,6 +274,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
         </where>
             GROUP BY bill_of_lading, carrier_code, vessel, vessel_no, voy_no
+            ORDER BY create_time DESC
     </select>
 
      <select id="selectVoyNos" parameterType="Edo" resultType="String">
