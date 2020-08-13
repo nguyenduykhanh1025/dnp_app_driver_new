@@ -94,18 +94,18 @@ function formatLogistic(value, row, index) {
 }
 
 function formatPayment(value, row, index) {
-  return '<a class="btn btn-default btn-xs" onclick="openPaymentSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Thanh toán</a> ';
+  return '<a class="btn btn-default btn-xs" onclick="openPaymentSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Thanh toán</a>';
 }
 
 function formatDo(value, row, index) {
   if (row.serviceType == 1) {
-    return '<a class="btn btn-danger btn-xs" onclick="openReceiverDOSupport(\'' + row.id + '\')"><i class="fa fa-check-circle"></i> Thu Chứng Từ</a> ';
+    return '<a class="btn btn-danger btn-xs" onclick="openReceiverDOSupport(\'' + row.id + '\')"><i class="fa fa-check-circle"></i> Thu Chứng Từ</a>';
   }
   return '<span style="color: #333333; font-size: 12px;">Đầy đủ chứng từ</span>';
 }
 
 function formatDriver(value, row, index) {
-  return '<a class="btn btn-warning btn-xs" onclick="openDriverSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Vận tải</a> ';
+  return '<a class="btn btn-warning btn-xs" onclick="openDriverSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Vận tải</a>';
 }
 
 function formatServiceType(value) {

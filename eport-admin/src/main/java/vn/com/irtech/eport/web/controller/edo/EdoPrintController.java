@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,7 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleExporterInputItem;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
@@ -47,6 +49,8 @@ public class EdoPrintController extends BaseController{
 	private static final Logger logger = LoggerFactory.getLogger(EdoPrintController.class);
 	private String prefix = "edo/print";
 	
+	@Autowired
+	private IEdoService edoService;
 	/**
 	 * Print Delivery Order
 	 */
@@ -54,6 +58,14 @@ public class EdoPrintController extends BaseController{
 	public String view(@PathVariable("key") String key, ModelMap mmap) {
 		mmap.put("key", key);
 		return prefix + "/deliveryOrder";
+	}
+	/**
+	 * Print EDO
+	 */
+	@GetMapping("/bill/{billOfLading}")
+	public String edit(@PathVariable("billOfLading") String billOfLading, ModelMap mmap) {
+		mmap.put("billOfLading", billOfLading);
+		return prefix + "/printEdo";
 	}
 	/**
 	 * Print Delivery Order
@@ -137,5 +149,49 @@ public class EdoPrintController extends BaseController{
 		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(out));
 		exporter.exportReport();
 	}
+	@GetMapping("/report/{billOfLading}")
+	public void report(@PathVariable("billOfLading") String billOfLading, HttpServletResponse response) {
+		// First check permission for this shipmentId
+		if(billOfLading != null) {
+			Edo edo = new Edo();
+			edo.setBillOfLading(billOfLading);
+			List<Edo> edoList = edoService.selectEdoList(edo);
+			if(edoList.size() != 0) {
+				try {
+					response.setContentType("application/pdf");
+					createEdoReport(edoList, response.getOutputStream());
+				} catch (final Exception e) {
+					logger.debug(e.getMessage());
+					e.printStackTrace();
+				}
+			}
 
+		}
+	}
+	
+	private void createEdoReport(final List<Edo> edoList, OutputStream out) throws JRException {
+		// Fetching the report file from the resources folder.
+		final JasperReport report = (JasperReport) JRLoader
+				.loadObject(this.getClass().getResourceAsStream("/report/edo.jasper"));
+
+		// Fetching the shipmentDetails from the data source.
+		//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
+
+
+		// Adding the additional parameters to the pdf.
+		final Map<String, Object> parameters = new HashMap<>();
+		parameters.put("consignee", edoList.get(0).getConsignee());
+		parameters.put("businessUnit", edoList.get(0).getBusinessUnit());
+		parameters.put("vessel/voy", edoList.get(0).getVessel() + " / " + edoList.get(0).getVoyNo());
+		parameters.put("orderNumber", edoList.get(0).getOrderNumber());
+		parameters.put("pol", edoList.get(0).getPol());
+		parameters.put("pod", edoList.get(0).getPod());
+		parameters.put("billOfLading", edoList.get(0).getBillOfLading());
+		parameters.put("fileCreateTime", edoList.get(0).getFileCreateTime());
+		parameters.put("list", edoList);
+		final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
+//		final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
+		// Export DPF to output stream
+		JasperExportManager.exportReportToPdfStream(print, out);
+	}
 }

@@ -163,4 +163,14 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
     public ProcessOrder findProcessOrderForRobot(String serviceTypes) {
         return processOrderMapper.findProcessOrderForRobot(Convert.toStrArray(serviceTypes));
     }
+    
+    /**
+     * Select orders by shipment id
+     * 
+     * @param shipmentId
+     * @return List<ProcessOrder>
+     */
+    public List<ProcessOrder> selectOrdersByShipmentId(ProcessOrder processOrder) {
+    	return processOrderMapper.selectOrdersByShipmentId(processOrder);
+    }
 }

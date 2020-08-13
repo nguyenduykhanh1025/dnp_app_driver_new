@@ -137,7 +137,11 @@ public class ProcessOrder extends BaseEntity
     
     private String oldVessel;
 
-	private String oldVoyAge;
+    private String oldVoyAge;
+    
+    private String paymentStatus;
+
+    private String doStatus;
 
     public void setId(Long id) 
     {
@@ -427,7 +431,23 @@ public class ProcessOrder extends BaseEntity
 
 	public void setOldVoyAge(String oldVoyAge) {
 		this.oldVoyAge = oldVoyAge;
-	}
+    }
+    
+    public String getPaymentStatus() {
+        return this.paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public String getDoStatus() {
+        return this.doStatus;
+    }
+
+    public void setDoStatus(String doStatus) {
+        this.doStatus = doStatus;
+    }
 
     @Override
     public String toString() {
@@ -467,6 +487,8 @@ public class ProcessOrder extends BaseEntity
             .append("processData", getProcessData())
             .append("groupName", getGroupName())
             .append("shipmentDetail", getShipmentDetail())
+            .append("paymentStatus", getPaymentStatus())
+            .append("doStatus", getDoStatus())
             .toString();
     }
 }

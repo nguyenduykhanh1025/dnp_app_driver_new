@@ -12,22 +12,33 @@
     <section class="search-wrapper">
       <div class="form-inline mt10 mb10">
         <div class="form-group">
-          <label class="sr-only" for="Logistic">Logistic</label>
           <div class="input-group">
-            <select class="c-search-opr-code">
-              <option selected="selected"></option>
+            <input type="text" class="form-control" name="searchBox" id="searchBox" placeholder="Tìm kiếm" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="logistic">Logistic</label>
+          <div class="input-group">
+            <select class="form-control" id="logistic">
+              <option th:each="logistic, iterator : ${logisticsGroups}" th:value=${logistic.id} th:text=${logistic.groupName}>
+              </option>
             </select>
           </div>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="">Loại lệnh </label>
-          <div class="input-group width150" style="width: 110px;">
-            <select class="c-search-box-vessel">
-              <option selected="selected"></option>
+          <label class="sr-only" for="serviceType">Loại lệnh</label>
+          <div class="input-group">
+            <select class="form-control" id="serviceType" onchange="changeServiceType()">
+              <option value="" selected disabled>Chọn loại lệnh</option>
+              <option value="">Tất cả</option>
+              <option value="1">Bốc Hàng</option>
+              <option value="2">Hạ Rỗng</option>
+              <option value="3">Bốc Rỗng</option>
+              <option value="4">Hạ Hàng</option>
             </select>
           </div>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
           <div class="input-group">
             <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Mã lô" />
           </div>
@@ -36,31 +47,34 @@
           <div class="input-group">
             <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Số lệnh" />
           </div>
-        </div>
+        </div> -->
+        
         <div class="form-group">
           <div class="input-group">
-            <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Từ khóa" />
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="input-group">
-            <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Trạng thái lệnh" />
+            <select class="form-control" id="orderStatus" onchange="changeOrderStatus()">
+              <option value='' selected disabled>Trạng Thái Lệnh</option>
+              <option value=''>Tất cả</option>
+              <option value='0'>Đang chờ</option>
+              <option value='3'>Bị lỗi</option>
+              <option value='1'>Đang làm</option>
+              <option value='2'>Đã hoàn thành</option>
+            </select>
           </div>
         </div>
         <div class="form-group">
           <label class="sr-only" for="fromDate">Từ ngày</label>
           <div class="input-group">
-            <input class="form-control time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" />
+            <input class="form-control time-input" id="fromDate" name="fromDate" placeholder="Từ ngày" readonly/>
           </div>
         </div>
         <div class="form-group">
           <label class="sr-only" for="toDate">Đến ngày</label>
           <div class="input-group">
-            <input class="form-control time-input" id="toDate" name="toDate" placeholder="Đến ngày" />
+            <input class="form-control time-input" id="toDate" name="toDate" placeholder="Đến ngày" readonly/>
           </div>
         </div>
         <div class="form-group">
-          <button class="btn btn-primary"><i class="fa fa-search"></i> Tìm kiếm</button>
+          <button class="btn btn-primary" onclick="loadTable()"><i class="fa fa-search"></i> Tìm kiếm</button>
         </div>
       </div>
     </section>
@@ -73,28 +87,32 @@
             <tr>
               <th data-options="field: 'id', halign: 'center', align: 'left', resizable: true, fixed: 'true'" width="1" sortable="true"></th>
               <th data-options="field: 'logisticName', halign: 'center', align: 'left', resizable: true, formatter: formatLogistic" width="150" sortable="true">Logistics</th>
-              <th data-options="field: 'blNo', halign: 'center', align:'center', resizable:true, formatter: formatBlBooking" width="150" sortable="true">Bill/Booking No.</th>
+              <th data-options="field: 'blNo', halign: 'center', align:'center', resizable:true, formatter: formatBlBooking" width="150">Bill/Booking No.</th>
               <th data-options="field: 'serviceType', halign: 'center', align:'left', resizable: true, fixed:'true', formatter: formatServiceType" width="100" sortable="true">Hình Thức</th>
               <th data-options="field: 'taxCode', halign: 'center', align: 'center', resizable: true, fixed: 'true'" width="150" sortable="true">Mã Số Thuế</th>
               <th data-options="field: 'containerAmount', halign: 'center', align: 'right', resizable: true, fixed: 'true'" width="110" sortable="true">Số Container</th>
               <th data-options="field: 'createTime', halign: 'center', align: 'center', resizable: true, fixed: 'true', formatter: formatDate" width="150" sortable="true">Ngày Tạo</th>
-              <th data-options="field: 'remark', halign: 'center', align: 'left', resizable: true, fixed: 'true', formatter: formatText" width="150" sortable="true">Ghi Chú</th>
+              <th data-options="field: 'remark', halign: 'center', align: 'left', resizable: true, fixed: 'true', formatter: formatText" width="150">Ghi Chú</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
       <div class="right ml10">
-        <table id="dg-right" style="width: 100%;" title="DataGrid - SubGrid" singleSelect="true" fitColumns="true">
+        <table id="dg-right" style="width: 100%;" title="Chi Tiết Lô" singleSelect="true">
           <thead>
             <tr>
-              <th field="id" width="80">Item ID</th>
-              <th field="logisticName" width="100">Product ID</th>
-              <th field="blNo" align="right" width="80">List Price</th>
-              <th field="serviceType" align="right" width="80">Unit Cost</th>
-              <th field="containerAmount" width="220">Attribute</th>
-              <th field="taxCode" width="60" align="center">Status</th>
-            </tr>
+              <th data-options="field: 'id', halign: 'center', align: 'left', resizable: true, fixed: 'true'" width="100" sortable="true">Mã Lệnh</th>
+              <th data-options="field: 'orderNo', halign: 'center', align: 'left', resizable: true" width="150" sortable="true">Số Tham Chiếu</th>
+              <th data-options="field: 'invoiceNo', halign: 'center', align: 'left', resizable: true" width="150" sortable="true">Invoice No.</th>
+              <th data-options="field: 'contNumber', halign: 'center', align: 'center', resizable: true, fixed: 'true'" width="100">SL Container</th>
+              <th data-options="field: 'status', halign: 'center', align: 'center', resizable: true, fixed: 'true', formatter: formatStatus" width="110" sortable="true">T.T Lệnh</th>
+              <th data-options="field: 'payType', halign: 'center', align: 'center', resizable: true, fixed: 'true'" width="100" sortable="true">Cash/Credit</th>
+              <th data-options="field: 'taxCode', halign: 'center', align: 'left', resizable: true, formatter: formatTaxcode" width="200">MST</th>
+              <th data-options="field: 'paymentStatus', halign: 'center', align: 'center', resizable: true, fixed: 'true', formatter: formatPaymentStatus" width="130">T.T Thanh Toán</th>
+              <th data-options="field: 'doStatus', halign: 'center', align: 'center', resizable: true, fixed: 'true', formatter: formatDoStatus" width="150">Thu Chứng Từ</th>
+              <th data-options="field: 'createTime', halign: 'center', align: 'right', resizable: true, fixed: 'true', formatter: formatDate" width="150" sortable="true">Ngày Làm Lệnh</th>
+          </tr>
           </thead>
         </table>
       </div>
@@ -102,7 +120,7 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <script type="text/javascript" src="http://www.jeasyui.com/easyui/datagrid-detailview.js"></script>
-    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
+    <!-- <script th:src="@{/ajax/libs/select2/select2.min.js}"></script> -->
     <script th:src="@{/eport/js/modules/om/generalSupport/generalSupport.js}"></script>
   </body>
 </html>

@@ -39,6 +39,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="orderNo"    column="order_no"    />
         <result property="processData"    column="process_data"    />
         <result property="groupName"    column="group_name"    />
+        <result property="paymentStatus"    column="payment_status"    />
+        <result property="doStatus"    column="do_status"    />
         <association property="shipmentDetail"    column="id" javaType="ShipmentDetail" resultMap="ShipmentDetailResult" />
     </resultMap>
 
@@ -316,5 +318,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{serviceType}
         </foreach>
         order by create_time desc FETCH NEXT 1 ROWS ONLY
+    </select>
+
+    <select id="selectOrdersByShipmentId" resultMap="ProcessOrderResult" parameterType="ProcessOrder">
+        select p.id, p.shipment_id, p.logistic_group_id, p.service_type, p.order_no, p.invoice_no, p.cont_number, p.status, p.pay_type, p.create_time, p.robot_uuid,
+        (select sh.payment_status from shipment_detail sh where sh.process_order_id = p.id FETCH NEXT 1 ROWS ONLY) as payment_status, 
+        (select sh.do_status from shipment_detail sh where sh.process_order_id = p.id FETCH NEXT 1 ROWS ONLY) as do_status
+        from process_order p
+        <where>
+            p.service_type in (1, 2, 3, 4)
+            <if test="runnable != null"> and p.runnable = #{runnable}</if>
+            <if test="shipmentId != null"> and p.shipment_id = #{shipmentId}</if>
+            <if test="robotUuid != null and robotUuid != ''"> and p.robot_uuid is not null</if>
+            <if test="robotUuid == null or robotUuid == ''"> and (p.robot_uuid is null or p.status != 0)</if>
+            <if test="status != null "> and p.status = #{status}</if>
+        </where>
     </select>
 </mapper>

@@ -148,8 +148,8 @@ function searchDo() {
 }
 
 function formatToYDM(date) {
-  if(date == null){
-    return;
+  if(date == null || date == undefined) {
+	return "-";
   }
   return date.split("-").reverse().join("-");
 }
@@ -222,14 +222,11 @@ function searchInfoEdo() {
 
 
 function formatToYDMHMS(date) {
-  if(date == null){
-    return;
-  }
-  if(date.length < 10){
-    let temp = date.substring(0, 10);
-    return temp.split("-").reverse().join("/") + date.substring(10, 19);
-  }
-  return;
+	if(date == null || date == undefined) {
+		return "-";
+	}
+  let temp = date.substring(0, 10);
+  return temp.split("-").reverse().join("/") + date.substring(10, 19);
 }
 
 function formatStatus(value) {
@@ -402,3 +399,10 @@ $(".c-search-opr-code").change(function () {
 });
 
 
+function generatePDF() {
+	if(!bill){
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}
+    $.modal.openTab("In phiếu", ctx +"edo/print/bill/" + bill);
+}

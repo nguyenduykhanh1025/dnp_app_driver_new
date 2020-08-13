@@ -5,14 +5,12 @@
     <th:block th:include="include :: easyui-css" />
     <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet"/>
     <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet"/>
-    <link rel="stylesheet" th:href="@{/eport/css/eport.css}"/>
+    <link th:href="@{/eport/css/eport.css}" rel="stylesheet"/>
     <link th:href="@{/eport/css/edo/manage/edo.css}" rel="stylesheet" />
   </head>
-  <body class="container-fluid wrapper">
-    <section class="left">
-      <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
-      <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
-      <div class="form-inline mt10 mb10" >
+  <body class="bg-gray">
+    <div class="col-sm-12">
+        <div class="form-inline mt10 mb10" >
         <div class="form-group">
           <div class="input-group">
             <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" />
@@ -42,7 +40,37 @@
             </select>
           </div>
         </div>
-      </div>
+        <div class="form-group">
+          <label class="sr-only" for="searchBox">Tìm kiếm</label>
+          <div class="input-group">
+            <input type="text" class="form-control"  name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="fromDate">From Date</label>
+          <div class="input-group">
+            <input class="form-control time-input" id="fromDate" name="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="toDate">To Date</label>
+          <div class="input-group">
+            <input class="form-control time-input" id="toDate" name="toDate" onchange="changeToDate()" placeholder="Đến ngày" />
+          </div>
+        </div>
+        <div class="form-group">
+          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
+            class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
+        </div>
+        <div class="form-group" style="right: 5px;position: absolute;">
+          <button class="btn btn-rounder btn-default" onclick="generatePDF()"><i class="fa fa-print"></i>In EDO</button>
+        </div>
+      </div> <!-- //end form -->
+    </div>
+    <div class="col-sm-12 container-fluid wrapper">
+    <section class="left">
+      <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
+      <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
       <table id="dg">
         <thead>
             <tr>
@@ -70,30 +98,6 @@
       </table>
     </section>
     <section class="right ml10">
-      <form class="form-inline mt10 mb10">
-        <div class="form-group">
-          <label class="sr-only" for="searchBox">Tìm kiếm</label>
-          <div class="input-group">
-            <input type="text" class="form-control"  name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="sr-only" for="fromDate">From Date</label>
-          <div class="input-group">
-            <input class="form-control time-input" id="fromDate" name="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="sr-only" for="toDate">To Date</label>
-          <div class="input-group">
-            <input class="form-control time-input" id="toDate" name="toDate" onchange="changeToDate()" placeholder="Đến ngày" />
-          </div>
-        </div>
-        <div class="form-group">
-          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
-            class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
-        </div>
-      </form>
       <table id="dgContainer">
         <thead frozen="true">
           <tr>
@@ -153,6 +157,7 @@
         </thead>
       </table>
     </section>
+    </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
