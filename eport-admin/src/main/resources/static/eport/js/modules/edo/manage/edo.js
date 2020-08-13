@@ -395,3 +395,11 @@ $(".c-search-opr-code").change(function () {
   loadTable(edo);
 });
 
+function generatePDF() {
+	if(!bill){
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}
+    $.modal.openTab("In phiếu", ctx +"edo/print/bill/" + bill);
+	
+}
