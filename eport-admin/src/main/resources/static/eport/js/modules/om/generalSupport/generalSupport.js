@@ -74,11 +74,11 @@ function handleCollapse(status) {
     });
     return;
   }
-  $(".left").css("width", "40%");
+  $(".left").css("width", "30%");
   $(".left").children().show();
   $("#btn-collapse").show();
   $("#btn-uncollapse").hide();
-  $(".right").css("width", "60%");
+  $(".right").css("width", "70%");
   $('#dg-right').datagrid('resize',{
     width: document.getElementsByClassName("right").width,
     height: document.documentElement.clientHeight - 70
@@ -175,6 +175,7 @@ function loadTable() {
           data: shipment,
         }),
         success: function (data) {
+          console.log(JSON.parse(data));
           success(JSON.parse(data));
           $("#dg").datagrid("hideColumn", "id");
         },
@@ -265,7 +266,7 @@ function changeOrderStatus() {
   }
   loadRightTable();
 }
-
+loadRightTable();
 function loadRightTable() {
   $.modal.loading("Đang xử lý ...");
   $.ajax({
@@ -427,6 +428,7 @@ function formatStatus(value, row) {
 }
 
 function formatTaxcode(value, row) {
+  if (currentShipment == null) return false;
   return currentShipment.taxCode + ': ' + currentShipment.groupName;
 }
 
