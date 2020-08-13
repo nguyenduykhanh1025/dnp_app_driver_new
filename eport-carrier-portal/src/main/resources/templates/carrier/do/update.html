@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Cập nhật thông tin container')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/eport/css/update.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="content">
+        <!-- <div class="col-sm-12 table-container">
+          <h3 class="title-content-history">Cập nhật Container <span id="containerNumber"></span></h3>
+        </div> -->
+
+        <form class="form-horizontal m">
+          <div class="form-group">
+            <label class="col-sm-4 col-xs-3 col-md-2">Số container <br> (Container No)</label>
+            <div class="col-sm-8 col-xs-8 col-md-10">
+              <input class="form-control" id="containerNumber" disabled />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 col-xs-3 col-md-2">Hạn lệnh <br> (Expired Dem)</label>
+            <div class="col-sm-8 col-xs-8 col-md-10">
+              <input class="form-control time-input" id="expiredDem" name="fromDate" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 col-xs-3 col-md-2">Ngày miễn lưu vỏ <br> (Det Free Time)</label>
+            <div class="col-sm-8 col-xs-8 col-md-10">
+              <input type="number" name="detFreeTime" id="detFreeTime" class="form-control"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-4 col-xs-3 col-md-2">Nơi hạ rỗng <br> (Empty Container Depot)</label>
+            <div class="col-sm-8 col-xs-8 col-md-10">
+              <select class="form-control select-emptyContainerDeport" id="emptyContainerDepot"> 
+                <option selected="selected" th:text="${edo.emptyContainerDepot}"></option>
+              </select>
+            </div>
+          </div>
+        </form>
+        <div class="layui-layer-btn footer">
+          <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+          <a class="layui-layer-btn1" onclick="closeForm()">Hủy</a>
+        </div>
+      </div>
+    </div>
+  </body>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  
+  <th:block th:include="include :: datetimepicker-js" />
+  <script type="text/javascript" th:inline="javascript"></script>
+  <script type="text/javascript" th:inline="javascript">
+    var id = /*[[${id}]]*/ ;
+    var containerNumber = /*[[${edo.containerNumber}]]*/ ;
+    var expiredDem = /*[[${edo.expiredDem}]]*/ ;
+    var detFreeTime = /*[[${edo.detFreeTime}]]*/ ;
+    var emptyContainerDepot = /*[[${edo.emptyContainerDepot}]]*/ ;
+    var billOfLading = /*[[${edo.billOfLading}]]*/ ;
+  </script>
+  <script th:src="@{/eport/js/modules/carrier/update.js}"></script>
+</html>

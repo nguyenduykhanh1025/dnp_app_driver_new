@@ -134,66 +134,66 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
 
     @Override
     @Transactional
-    public boolean addAuditLogFirst(Edo edo)
+    public boolean addAuditLogFirst(Edo edoItem)
     {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date timeNow = new Date();
         int edoSeg = 1;
         EdoAuditLog edoAuditLog = new EdoAuditLog();
-        edoAuditLog.setCarrierId(edo.getCarrierId());
-        edoAuditLog.setCarrierCode(edo.getCarrierCode());
-        if(edo.getCreateBy() == null)
+        edoAuditLog.setCarrierId(edoItem.getCarrierId());
+        edoAuditLog.setCarrierCode(edoItem.getCarrierCode());
+        if(edoItem.getCreateBy() == null)
         {
-            edo.setCreateBy("EDI File");
+            edoItem.setCreateBy("EDI File");
         }
-        edoAuditLog.setCreateBy(edo.getCreateBy());
-        edoAuditLog.setEdoId(edo.getId());
-        if(edo.getExpiredDem() != null)
+        edoAuditLog.setCreateBy(edoItem.getCreateBy());
+        edoAuditLog.setEdoId(edoItem.getId());
+        if(edoItem.getExpiredDem() != null)
         {
             edoAuditLog.setSeqNo((long) edoSeg);
             edoAuditLog.setCreateTime(timeNow);
             edoAuditLog.setFieldName("Expired Dem");
-            edoAuditLog.setNewValue(formatter.format(edo.getExpiredDem()).toString());
+            edoAuditLog.setNewValue(formatter.format(edoItem.getExpiredDem()).toString());
             insertEdoAuditLogExpiredDem(edoAuditLog);
             edoSeg +=1;
         }
-        if(edo.getDetFreeTime() != null)
+        if(edoItem.getDetFreeTime() != null)
         {
             edoAuditLog.setSeqNo((long) edoSeg);
             edoAuditLog.setFieldName("Det Free Time");
-            edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
+            edoAuditLog.setNewValue(edoItem.getDetFreeTime().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
         }
-        if(edo.getEmptyContainerDepot() != null)
+        if(edoItem.getEmptyContainerDepot() != null)
         {   
             edoAuditLog.setSeqNo((long) edoSeg);
             edoAuditLog.setFieldName("Empty Container Depot");
-            edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
+            edoAuditLog.setNewValue(edoItem.getEmptyContainerDepot().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
         }
-        if(edo.getConsignee() != null)
+        if(edoItem.getConsignee() != null)
         {
             edoAuditLog.setSeqNo((long) edoSeg);
             edoAuditLog.setFieldName("Consignee");
-            edoAuditLog.setNewValue(edo.getConsignee().toString());
+            edoAuditLog.setNewValue(edoItem.getConsignee().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
         }
-        if(edo.getVesselNo() != null)
+        if(edoItem.getVesselNo() != null)
         {
             edoAuditLog.setSeqNo((long) edoSeg);
             edoAuditLog.setFieldName("Vessel No");
-            edoAuditLog.setNewValue(edo.getVesselNo().toString());
+            edoAuditLog.setNewValue(edoItem.getVesselNo().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
         }
-        if(edo.getVoyNo() != null) 
+        if(edoItem.getVoyNo() != null) 
         {
             edoAuditLog.setSeqNo((long) edoSeg);
             edoAuditLog.setFieldName("Voy No");
-            edoAuditLog.setNewValue(edo.getVoyNo().toString());
+            edoAuditLog.setNewValue(edoItem.getVoyNo().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             edoSeg +=1;
         }
@@ -202,65 +202,65 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
     }
     @Override
     @Transactional
-    public boolean updateAuditLog(Edo edo) 
+    public boolean updateAuditLog(Edo edoItem) 
     {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date timeNow = new Date();
         int segNo = 1;
         EdoAuditLog edoAuditLog = new EdoAuditLog();
-        edoAuditLog.setCarrierId(edo.getCarrierId());
-        edoAuditLog.setCarrierCode(edo.getCarrierCode());
-        if(edo.getCreateBy() == null)
+        edoAuditLog.setCarrierId(edoItem.getCarrierId());
+        edoAuditLog.setCarrierCode(edoItem.getCarrierCode());
+        if(edoItem.getCreateBy() == null)
         {
-            edo.setCreateBy("EDI File");
+            edoItem.setCreateBy("EDI File");
         }
-        edoAuditLog.setCreateBy(edo.getCreateBy());
-        edoAuditLog.setEdoId(edo.getId());
+        edoAuditLog.setCreateBy(edoItem.getCreateBy());
+        edoAuditLog.setEdoId(edoItem.getId());
         edoAuditLog.setCreateTime(timeNow);
-        String maxSegNo = selectEdoAuditLogByEdoId(edo.getId());
-        if(edo.getExpiredDem() != null)
+        String maxSegNo = selectEdoAuditLogByEdoId(edoItem.getId());
+        if(edoItem.getExpiredDem() != null )
         {
-            Date setTimeUpdatExpicedDem = edo.getExpiredDem();
+            Date setTimeUpdatExpicedDem = edoItem.getExpiredDem();
 			setTimeUpdatExpicedDem.setHours(23);
 			setTimeUpdatExpicedDem.setMinutes(59);
 			setTimeUpdatExpicedDem.setSeconds(59);
-			edo.setExpiredDem(setTimeUpdatExpicedDem);
+			edoItem.setExpiredDem(setTimeUpdatExpicedDem);
             edoAuditLog.setFieldName("Expired Dem");
             EdoAuditLog edoAuditLogCheck = selectEdoAuditLogByEdo(edoAuditLog);
             // check not default value
-            if(edoAuditLogCheck != null)
+            if(edoAuditLogCheck != null && !formatter.format(setTimeUpdatExpicedDem).toString().equals(edoAuditLogCheck.getNewValue()))
             {
                 edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
             }
             edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
-            edoAuditLog.setNewValue(formatter.format(edo.getExpiredDem()).toString());
+            edoAuditLog.setNewValue(formatter.format(edoItem.getExpiredDem()).toString());
             insertEdoAuditLogExpiredDem(edoAuditLog);
             segNo += 1;
         }
-        if(edo.getDetFreeTime() != null)
+        if(edoItem.getDetFreeTime() != null)
         {
             edoAuditLog.setFieldName("Det Free Time");
             EdoAuditLog edoAuditLogCheck = selectEdoAuditLogByEdo(edoAuditLog);
             // check not default value
-            if(edoAuditLogCheck != null )
+            if(edoAuditLogCheck != null && !edoAuditLog.getNewValue().equals(edoItem.getDetFreeTime().toString()))
             {
                 edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
             }
             edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
-            edoAuditLog.setNewValue(edo.getDetFreeTime().toString());
+            edoAuditLog.setNewValue(edoItem.getDetFreeTime().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
             segNo += 1;
         }
-        if(edo.getEmptyContainerDepot() != null && !edo.getEmptyContainerDepot().equals(""))
+        if(edoItem.getEmptyContainerDepot() != null && !edoItem.getEmptyContainerDepot().equals(""))
         {
             edoAuditLog.setFieldName("Empty Container Depot");
             EdoAuditLog edoAuditLogCheck = selectEdoAuditLogByEdo(edoAuditLog);
-            if(edoAuditLogCheck != null) 
+            if(edoAuditLogCheck != null && !edoItem.getEmptyContainerDepot().toString().equals(edoAuditLog.getNewValue())) 
             {
                 edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
             }
             edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
-            edoAuditLog.setNewValue(edo.getEmptyContainerDepot().toString());
+            edoAuditLog.setNewValue(edoItem.getEmptyContainerDepot().toString());
             insertEdoAuditLogDetFreeTime(edoAuditLog);
         }
         return true;

@@ -353,9 +353,9 @@ public class EdoServiceImpl implements IEdoService
 	}
 
 
-	public List<String> selectVesselNo(String keyString)
+	public List<String> selectVesselNo(Edo edo)
 	{
-		return edoMapper.selectVesselNo(keyString);
+		return edoMapper.selectVesselNo(edo);
 	}
 
 	public List<String> selectOprCode(String keyString)
@@ -363,14 +363,14 @@ public class EdoServiceImpl implements IEdoService
 		return edoMapper.selectOprCode(keyString);
 	} 
 
-	public List<String> selectVoyNo(String keyString)
+	public List<String> selectVoyNos(Edo edo)
 	{
-		return edoMapper.selectVoyNo(keyString);
+		return edoMapper.selectVoyNos(edo);
 	} 
 
-	public List<String> selectVesselList(String keyString)
+	public List<String> selectVessels(Edo edo)
 	{
-		return edoMapper.selectVesselList(keyString);
+		return edoMapper.selectVessels(edo);
 	}
 	
     /**

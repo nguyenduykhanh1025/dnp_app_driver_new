@@ -1,11 +1,9 @@
-const PREFIX = ctx + "edo/manage";
+const PREFIX = ctx + "carrier/do";
 var bill;
 var edo = new Object();
-var currentLeftWidth = $(".table-left").width();
-var currentRightWidth = $(".table-right").width();
-
-$(document).ready(function () {
+$(function () {
   $(".left").css("height", $(document).height());
+  $(".right").css("height", $(document).height());
   $("#btn-collapse").click(function () {
     handleCollapse(true);
   });
@@ -16,18 +14,20 @@ $(document).ready(function () {
   $("#dgContainer").height($(document).height() - 60);
   loadTable();
   loadTableByContainer();
-  $("#searchAll").keyup(function (event) {
+
+  $('#searchAll').keyup(function (event) {
     if (event.keyCode == 13) {
-      edo.containerNumber = $("#searchAll").val().toUpperCase();
-      edo.consignee = $("#searchAll").val().toUpperCase();
-      edo.vessel = $("#searchAll").val().toUpperCase();
-      edo.voyNo = $("#searchAll").val().toUpperCase();
+      edo.containerNumber = $('#searchAll').val().toUpperCase();
+      edo.consignee = $('#searchAll').val().toUpperCase();
+      edo.vessel = $('#searchAll').val().toUpperCase();
+      edo.voyNo = $('#searchAll').val().toUpperCase();
       loadTableByContainer(bill);
     }
+
   });
-  $("#searchBillNo").keyup(function (event) {
+  $('#searchBillNo').keyup(function (event) {
     if (event.keyCode == 13) {
-      billOfLading = $("#searchBillNo").val().toUpperCase();
+      billOfLading = $('#searchBillNo').val().toUpperCase();
       if (billOfLading == "") {
         loadTable(edo);
       }
@@ -80,6 +80,10 @@ function loadTable(edo) {
         accept: "text/plain",
         dataType: "text",
         data: JSON.stringify({
+          pageNum: param.page,
+          pageSize: param.rows,
+          orderByColumn: param.sort,
+          isAsc: param.order,
           data: edo,
         }),
         dataType: "json",
@@ -91,50 +95,8 @@ function loadTable(edo) {
         },
       });
     },
-  });
-}
-
-function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading;
-  $("#dgContainer").datagrid({
-    url: PREFIX + "/edo",
-    method: "POST",
-    singleSelect: true,
-    clientPaging: true,
-    pagination: true,
-    pageSize: 20,
-    nowrap: false,
-    striped: true,
-    rownumbers:true,
-    loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
-      if (billOfLading == null) {
-        return false;
-      }
-      if (!opts.url) return false;
-      $.ajax({
-        type: opts.method,
-        url: opts.url,
-        contentType: "application/json",
-        accept: "text/plain",
-        dataType: "text",
-        data: JSON.stringify({
-          pageNum: param.page,
-          pageSize: param.rows,
-          orderByColumn: param.sort,
-          isAsc: param.order,
-          data: edo,
-        }),
-        success: function (data) {
-          success(JSON.parse(data));
-          let dataTotal = JSON.parse(data);
-          $("#countContainer").text("Số lượng container : " + dataTotal.total);
-          $("#showBillNo").text("Bill No : " + bill);
-        },
-        error: function () {
-          error.apply(this, arguments);
-        },
-      });
+    error: function () {
+      error.apply(this, arguments);
     },
   });
 }
@@ -148,20 +110,74 @@ function searchDo() {
 }
 
 function formatToYDM(date) {
-  if(date == null || date == undefined) {
-	return "-";
-  }
-  return date.split("-").reverse().join("-");
+  return date.split("/").reverse().join("/");
+}
+
+function formatToYDMHMS(date) {
+  let temp = date.substring(0, 10);
+  return temp.split("-").reverse().join("/") + date.substring(10, 19);
 }
 
 function formatAction(value, row, index) {
-  var actions = [];
-  actions.push('<a class="btn btn btn-info btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch sử</a> ');
+  let actions = [];
+  let disabled = "";
+  if (row.status == '3') {
+    disabled = "disabled";
+  }
+  actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
+  actions.push('<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
   return actions.join("");
 }
 
 function viewHistoryCont(id) {
-  $.modal.openWithOneButton('Lịch sử thay đổi thông tin',PREFIX + "/history/" + id,1000,400);
+  $.modal.openWithOneButton('Lịch sử thay đổi thông tin', PREFIX + "/history/" + id, 1000, 400);
+}
+
+function viewUpdateCont(id) {
+  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 600, 400);
+}
+
+function loadTableByContainer(billOfLading) {
+  edo.billOfLading = billOfLading
+  $("#dgContainer").datagrid({
+    url: PREFIX + "/equipmentDo",
+    method: "POST",
+    singleSelect: false,
+    clientPaging: true,
+    pagination: true,
+    pageSize: 20,
+    nowrap: false,
+    striped: true,
+    rownumbers: true,
+    loader: function (param, success, error) {
+      var opts = $(this).datagrid("options");
+      if (billOfLading == null) {
+        return false;
+      }
+      if (!opts.url) return false;
+      $.ajax({
+        type: opts.method,
+        url: opts.url,
+        contentType: "application/json",
+        accept: 'text/plain',
+        dataType: 'text',
+        data: JSON.stringify({
+          pageNum: param.page,
+          pageSize: param.rows,
+          orderByColumn: param.sort,
+          isAsc: param.order,
+          data: edo
+        }),
+        success: function (data) {
+          success(JSON.parse(data));
+        },
+
+        error: function () {
+          error.apply(this, arguments);
+        },
+      });
+    },
+  });
 }
 
 function getSelectedRow() {
@@ -202,6 +218,16 @@ $.event.special.inputchange = {
   },
 };
 
+$('#searchAll').keyup(function (event) {
+  if (event.keyCode == 13) {
+    edo.containerNumber = $('#searchAll').val().toUpperCase();
+    edo.consignee = $('#searchAll').val().toUpperCase();
+    edo.vessel = $('#searchAll').val().toUpperCase();
+    edo.voyNo = $('#searchAll').val().toUpperCase();
+    loadTableByContainer(bill);
+  }
+});
+
 function searchInfoEdo() {
   edo.fromDate = stringToDate($("#fromDate").val()).getTime();
   let toDate = stringToDate($("#toDate").val());
@@ -221,14 +247,6 @@ function searchInfoEdo() {
 }
 
 
-function formatToYDMHMS(date) {
-	if(date == null || date == undefined) {
-		return "-";
-	}
-  let temp = date.substring(0, 10);
-  return temp.split("-").reverse().join("/") + date.substring(10, 19);
-}
-
 function formatStatus(value) {
   switch (value) {
     case '1':
@@ -236,27 +254,34 @@ function formatStatus(value) {
     case '2':
       return "<span class='label label-success'>Đã làm lệnh</span>";
     case '3':
-    return "<span class='label label-success'>Gate-in</span>";
+      return "<span class='label label-success'>Gate-in</span>";
   }
 }
 
-laydate.render({
-  elem: '#toDate',
-  format: 'dd/MM/yyyy'
-});
-laydate.render({
-  elem: '#fromDate',
-  format: 'dd/MM/yyyy'
-});
 
 
-$("#carrierCode").change(function() {
-   let edo = new Object();
-   edo.carrierCode = this.value;
-   loadTable(edo);
-});
+function multiUpdateEdo() {
+  let ids = [];
+  let rows = $('#dgContainer').datagrid('getSelections');
+  if (rows.length === 0) {
+    $.modal.alertWarning("Quý khách chưa chọn container để update, vui lòng kiểm tra lại !");
+    return;
+  }
+  for (let i = 0; i < rows.length; i++) {
+    let row = rows[i];
+    if(row.status == '3')
+    {
+      $.modal.alertError("Quý khách đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
+      return;
+    }
+    ids.push(row.id);
+  }
+  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 600, 400);
+}
 
 
+
+// SEARCH INFO VESSEL AREA
 $(".c-search-box-vessel").select2({
   theme: "bootstrap",
   placeholder: "Vessel",
@@ -278,7 +303,7 @@ $(".c-search-box-vessel").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
+
       })
       return {
         results: results,
@@ -308,7 +333,7 @@ $(".c-search-box-vessel-code").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
+
       })
       return {
         results: results,
@@ -338,36 +363,7 @@ $(".c-search-box-voy-no").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
-      })
-      return {
-        results: results,
-      };
-    },
-  },
-});
-$(".c-search-opr-code").select2({
-  theme: "bootstrap",
-  placeholder: "OPR Code",
-  allowClear: true,
-  minimumInputLength: 2,
-  ajax: {
-    url: PREFIX + "/getOprCode",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term,
-      };
-    },
-    processResults: function (data) {
-      let results = []
-      data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
-        
+
       })
       return {
         results: results,
@@ -394,18 +390,10 @@ $(".c-search-box-voy-no").change(function () {
   $(this).text(null);
   loadTable(edo);
 });
-$(".c-search-opr-code").change(function () {
-  edo = new Object();
-  edo.carrierCode = $(this).text().trim();
-  $(this).text(null);
-  loadTable(edo);
-});
 
-function generatePDF() {
-	if(!bill){
-		$.modal.alertError("Bạn chưa chọn Lô!");
-		return
-	}
-    $.modal.openTab("In phiếu", ctx +"edo/print/bill/" + bill);
-	
+$(".pagination-info").hide();
+
+// add full size do
+function addDo(id) {
+  $.modal.openTab("Thêm DO", ctx + "carrier/do/add");
 }

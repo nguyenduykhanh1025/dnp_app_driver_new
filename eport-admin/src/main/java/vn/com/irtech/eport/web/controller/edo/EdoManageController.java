@@ -115,24 +115,20 @@ public class EdoManageController extends BaseController {
       return edoService.selectOprCode(keyString);
   }
 
-  @GetMapping("/getVesselCode")
-	@ResponseBody
-	public List<String> lisVesselNo(String keyString)
-	{
-		return edoService.selectVesselNo(keyString);
-	}
 
-	@GetMapping("/getVoyNo")
+  @GetMapping("/getVoyNo")
 	@ResponseBody
-	public List<String> listVoyNo(String keyString)
-	{
-		return edoService.selectVoyNo(keyString);
+	public List<String> listVoyNos(String keyString) {
+    Edo edo = new Edo();
+    edo.setVoyNo(keyString);
+		return edoService.selectVoyNos(edo);
 	}
 
 	@GetMapping("/getVessel")
 	@ResponseBody
-	public List<String> listVessel(String keyString)
-	{
-		return edoService.selectVesselList(keyString);
-  }
+	public List<String> listVessels(String keyString) {
+		Edo edo = new Edo();
+		edo.setVessel(keyString);
+		return edoService.selectVessels(edo);
+	}
 }

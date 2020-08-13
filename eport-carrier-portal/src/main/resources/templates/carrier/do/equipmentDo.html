@@ -65,8 +65,15 @@
         <div class="form-group">
           <label class="sr-only">Tìm kiếm</label>
           <div class="input-group">
-            <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>
-            <!-- <button class="btn btn-rounder btn-default" onclick="generatePDF()"><i class="fa fa-print"></i>In EDO</button> -->
+            <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i class="fa fa-pencil-square-o"></i> Cập Nhật DO</button>
+          </div>
+          <div class="input-group">
+            
+            <div class="btn-group-sm" id="toolbar" role="group">
+              <a class="btn btn-success" onclick="addDo()">
+                <i class="fa fa-check-circle"></i> Phát hành DO
+              </a>
+            </div>
           </div>
         </div>
         <div>
@@ -106,9 +113,6 @@
         </thead>
         <thead>
           <tr>
-            <th data-options="field:'sztp',align:'left'" width="50">
-              SZTP
-            </th>
             <th data-options="field:'carrierCode',align:'center'" width="90">
               OPR <br />
               CODE
@@ -134,21 +138,12 @@
             <th data-options="field:'voyNo',align:'left'" width="90">
               VOY NO
             </th>
-            <th data-options="field:'pol',align:'left'" width="110">
-              POL
-            </th>
-            <th data-options="field:'pod',align:'left'" width="110">
-              POD
-            </th>
             <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
               STATUS
             </th>
             <th data-options="field:'createTime',align:'center',formatter:formatToYDMHMS" width="110">
               CREATE TIME
             </th>
-            <th data-options="field:'createTime',align:'left'" width="115">
-              RECEIVE TIME
-             </th> 
             <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="150">
               ACTION
             </th>
@@ -160,6 +155,6 @@
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: datetimepicker-js" />
     <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
-    <script th:src="@{/eport/js/modules/edo/edo.js}"></script>
+    <script th:src="@{/eport/js/modules/carrier/equipmentDo.js}"></script>
   </body>
 </html>
