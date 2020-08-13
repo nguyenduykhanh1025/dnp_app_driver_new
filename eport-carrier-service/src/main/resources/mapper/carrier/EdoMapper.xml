@@ -291,9 +291,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </where>
      </select>
 
-     <select id="selectOprCode" parameterType="String" resultType="String">
+     <select id="selectOprCode" parameterType="Edo" resultType="String">
     	select distinct carrier_code
-    	from edo where carrier_code like concat(concat('%', #{keyString}), '%')
+    	from edo
+        <where>
+            <if test="carrierCode != null  and carrierCode != ''">and carrier_code like concat(concat('%', #{carrierCode}), '%')</if>
+        </where>
      </select>
 
       <select id="selectVesselNo" parameterType="Edo" resultType="String">
@@ -318,9 +321,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 and carrier_code in 
                  <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
                          #{carrier_code}
-                </foreach>
-                <if test="vessel != null  and vessel != ''"> and vessel like concat(concat('%', #{vessel}), '%')</if> 
+                </foreach> 
         </if> 
+        <if test="vessel != null  and vessel != ''"> and vessel like concat(concat('%', #{vessel}), '%')</if>
         </where> 
      </select>
      
