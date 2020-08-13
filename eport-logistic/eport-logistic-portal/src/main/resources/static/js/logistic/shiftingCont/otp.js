@@ -1,7 +1,7 @@
 var prefix = ctx + "logistic/shifting-cont";
 var interval;
 var minutes = 0, seconds = 0;
-
+console.log(isCredit);
 function confirm() {
     if ($("#otpInput").val() !=null && $("#otpInput").val() != "") {
         $.ajax({

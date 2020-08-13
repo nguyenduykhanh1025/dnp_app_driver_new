@@ -89,4 +89,11 @@ public interface IEdoService {
 
 	public List<String> selectVessels(Edo edo);
 
+	/**
+     * Update edo by bill of lading and container no
+     * 
+     * @param edo
+     * @return
+     */
+    public int updateEdoByBlCont(Edo edo);
 }

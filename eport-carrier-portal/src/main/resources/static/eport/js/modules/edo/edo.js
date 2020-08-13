@@ -401,3 +401,13 @@ $(".c-search-box-voy-no").change(function () {
 });
 
 $(".pagination-info").hide();
+
+function generatePDF() {
+	console.log(bill)
+	if(!bill){
+		$.modal.alertError("Bạn chưa chọn Bill!");
+		return
+	}
+    $.modal.openTab("In phiếu", ctx +"edo/print/bill/" + bill);
+	
+}

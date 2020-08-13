@@ -1,0 +1,1 @@
+.content .left{width:50%;position:relative;margin-right:10px;border-right:1px solid #ccc}.content .left .fixed{position:absolute;top:45%;right:0;width:10px;height:60px;line-height:60px;background-color:#e5e5e5;text-align:center}.content .left #btn-uncollapse{display:none}.content .left #btn-collapse,.content .left #btn-uncollapse{cursor:pointer}.content .right{width:50%}

@@ -150,7 +150,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectCarrierGroupByGroupCode"
 		parameterType="String" resultMap="CarrierGroupResult">
 		<include refid="selectCarrierGroupVo" />
-		where group_code = #{groupCode}
+		where lower(group_code) = lower(#{groupCode})
 	</select>
 	<select id="getCarrierGroupByOpeCode" parameterType="String" resultMap="CarrierGroupResult">
 		<include refid="selectCarrierGroupVo" />

@@ -373,6 +373,15 @@ public class EdoServiceImpl implements IEdoService
 		return edoMapper.selectVessels(edo);
 	}
 	
-    
+    /**
+     * Update edo by bill of lading and container no
+     * 
+     * @param edo
+     * @return
+     */
+	@Override
+    public int updateEdoByBlCont(Edo edo) {
+		return edoMapper.updateEdoByBlCont(edo);
+	}
 
 }
