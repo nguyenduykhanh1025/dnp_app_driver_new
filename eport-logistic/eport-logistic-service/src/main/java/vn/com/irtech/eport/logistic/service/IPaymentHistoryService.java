@@ -47,4 +47,11 @@ public interface IPaymentHistoryService
      */
     public int deletePaymentHistoryById(Long id);
 
+    /**
+     * Select payment history list om
+     * 
+     * @param paymentHistory
+     * @return List<PaymentHistory>
+     */
+    public List<PaymentHistory> selectPaymentHistoryListOm(PaymentHistory paymentHistory);
 }

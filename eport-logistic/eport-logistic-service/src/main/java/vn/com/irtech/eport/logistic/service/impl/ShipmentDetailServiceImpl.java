@@ -237,7 +237,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
         // Mapping container to matrix by location row, tier, bay
         Collections.sort(shipmentDetails, new BayComparator());
-        ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][7];
+        ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][6];
         String currentBay = shipmentDetails.get(0).getBay();
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             if (currentBay.equals(shipmentDetail.getBay())) {
@@ -245,7 +245,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             } else {
                 bayList.add(shipmentDetailMatrix);
                 currentBay = shipmentDetail.getBay();
-                shipmentDetailMatrix = new ShipmentDetail[5][7];
+                shipmentDetailMatrix = new ShipmentDetail[5][6];
                 shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
             }
         }
@@ -285,7 +285,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
             // Mapping container to matrix by location row, tier, bay
             Collections.sort(shipmentDetails, new BayComparator());
-            ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][7];
+            ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][6];
             String currentBay = shipmentDetails.get(0).getBay();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (currentBay.equals(shipmentDetail.getBay())) {
@@ -293,23 +293,26 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 } else {
                     bayList.add(shipmentDetailMatrix);
                     currentBay = shipmentDetail.getBay();
-                    shipmentDetailMatrix = new ShipmentDetail[5][7];
+                    shipmentDetailMatrix = new ShipmentDetail[5][6];
                     shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
                 }
             }
             bayList.add(shipmentDetailMatrix);
 
             // Collect list cont need to shifting
+            List<Long> prePickupContIds = new ArrayList<>();
             List<ShipmentDetail> shiftingContList = new ArrayList<>();
             for (int b = 0; b < bayList.size(); b++) {
                 List<ShipmentDetail> tempShiftingContList = new ArrayList<>();
-                for (int row = 0; row < 7; row++) {
+                for (int row = 0; row < 6; row++) {
                     for (int tier = 4; tier >= 0; tier--) {
                         if (bayList.get(b)[tier][row] != null) {
                             Boolean needMoving = true;
                             for (ShipmentDetail shipmentDetail : preorderPickupConts) {
                                 if (Objects.equals(bayList.get(b)[tier][row].getId(), shipmentDetail.getId())) {
                                     shipmentDetail.setPreorderPickup("Y");
+                                    shipmentDetail.setPrePickupPaymentStatus("N");
+                                    prePickupContIds.add(shipmentDetail.getId());
                                     shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
                                     shiftingContList.addAll(tempShiftingContList);
                                     tempShiftingContList.clear();
@@ -333,7 +336,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
             for (ShipmentDetail shipmentDetail : shiftingContList) {
                 if (!sztp.equals(shipmentDetail.getSztp())) {
-                    serviceRobotReq.add(groupShipmentDetailByShiftingContOrder(shipmentOrderList, shipment, isCredit));
+                    serviceRobotReq.add(groupShipmentDetailByShiftingContOrder(shipmentOrderList, shipment, isCredit, prePickupContIds));
                     shipmentOrderList = new ArrayList<>();
                 }
                 Integer index = catosApiService.getIndexContForSsrByContainerNo(shipmentDetail.getContainerNo());
@@ -343,7 +346,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 shipmentDetail.setIndex(index);
                 shipmentOrderList.add(shipmentDetail);
             }
-            serviceRobotReq.add(groupShipmentDetailByShiftingContOrder(shipmentOrderList, shipment, isCredit));
+            serviceRobotReq.add(groupShipmentDetailByShiftingContOrder(shipmentOrderList, shipment, isCredit, prePickupContIds));
 
             return serviceRobotReq;
         } catch (Exception e) {
@@ -352,7 +355,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         }
     }
 
-    public ServiceSendFullRobotReq groupShipmentDetailByShiftingContOrder(List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit) {
+    public ServiceSendFullRobotReq groupShipmentDetailByShiftingContOrder(List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit, List<Long> prePickupContIds) {
         ProcessOrder processOrder = new ProcessOrder();
         processOrder.setTaxCode(shipment.getTaxCode());
         processOrder.setShipmentId(shipment.getId());
@@ -365,6 +368,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         }
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setSsrCode(getSSR(shipmentDetails.get(0).getSztp()));
+        List<Long> shipmentDetailIds = new ArrayList<>();
+        for (ShipmentDetail shipmentDetail : shipmentDetails) {
+        	shipmentDetailIds.add(shipmentDetail.getId());
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("shipmentDetailIds", shipmentDetailIds);
+        map.put("prePickupContIds", prePickupContIds);
+        processOrder.setProcessData(new Gson().toJson(map));
         processOrderService.insertProcessOrder(processOrder);
         return new ServiceSendFullRobotReq(processOrder, shipmentDetails);
     }
@@ -1003,7 +1014,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     		shipmentDetail.setDoStatus("N");
     		shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
     	}
-    	processOrder.setProcessData(new Gson().toJson(shipmentDetailIds));
+    	Map<String, Object> map = new HashMap<>();
+    	map.put("shipmentDetailIds", shipmentDetailIds);
+    	processOrder.setProcessData(new Gson().toJson(map));
     	processOrderService.insertProcessOrder(processOrder);
     	ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
     	return serviceRobotReq;

@@ -114,4 +114,12 @@ public interface IProcessBillService
      * @return
      */
     public List<ProcessBill> getBillByShipmentDetailForSSR(ShipmentDetail shipmentDetail);
+    
+    /**
+     * Save shifting bill with credit
+     * 
+     * @param shipmentDetailIds
+     * @param processOrder
+     */
+    public void saveShiftingBillWithCredit(List<Long> shipmentDetailIds, ProcessOrder processOrder);
 }

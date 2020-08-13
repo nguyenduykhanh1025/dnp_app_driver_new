@@ -105,7 +105,7 @@ public class LogisticShiftingContController extends LogisticBaseController {
 	}
 	
 	@GetMapping("/otp/shipment-detail-ids/{shipmentDetailIds}/credit/{isCredit}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, String isCredit ,ModelMap mmap) {
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds,@PathVariable("isCredit") String isCredit ,ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("isCredit", isCredit);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
