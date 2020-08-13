@@ -81,7 +81,7 @@ public interface EdoMapper
 
     public List<String> selectVesselNo(Edo edo);
 
-    public List<String> selectOprCode(String keyString);
+    public List<String> selectOprCode(Edo edo);
 
     public List<String> selectVoyNos(Edo edo);
 

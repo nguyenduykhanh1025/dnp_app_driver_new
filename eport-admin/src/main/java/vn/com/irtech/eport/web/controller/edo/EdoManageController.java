@@ -112,7 +112,9 @@ public class EdoManageController extends BaseController {
   @ResponseBody
   public List<String> lisOprCode(String keyString)
   {
-      return edoService.selectOprCode(keyString);
+      Edo edo = new Edo();
+      edo.setCarrierCode(keyString);
+      return edoService.selectOprCode(edo);
   }
 
 
