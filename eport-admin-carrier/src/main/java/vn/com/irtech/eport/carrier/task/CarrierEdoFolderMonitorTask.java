@@ -205,7 +205,15 @@ public class CarrierEdoFolderMonitorTask {
 	 */
 	private String getCarrierCode(File f) {
 		if(f != null && f.exists()) {
-			return f.getParentFile().getName();
+			// Folder structure  /OPE0001/EDI/file.edi
+			String folderName = f.getParentFile().getParentFile().getName(); // YML or YML0001
+			// Get first 3 CHAR
+			if(folderName != null) {
+				if (folderName.length() > 3) {
+					return folderName.substring(0, 3);
+				}
+				return folderName;
+			}
 		}
 		return null;
 	}

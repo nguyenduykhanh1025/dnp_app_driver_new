@@ -74,4 +74,5 @@ public interface IEquipmentDoAuditLogService
     public boolean addAuditLogFirst(EquipmentDo doItem);
 
     public boolean updateAuditLog(EquipmentDo doItem);
+
 }

@@ -222,5 +222,41 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
       return equipmentDoMapper.getEmptyContainerDepot(id);
     }
 
+    //
+    
+    public List<EquipmentDo> selectEdoListByBillNo(EquipmentDo edo)
+    {
+        return equipmentDoMapper.selectEdoListByBillNo(edo);
+    }
+ 
 
+	public List<String> selectVoyNos(EquipmentDo edo)
+	{
+		return equipmentDoMapper.selectVoyNos(edo);
+    } 
+    
+    public List<String> selectVessels(EquipmentDo edo)
+	{
+		return equipmentDoMapper.selectVessels(edo);
+    }
+    @Override
+	public EquipmentDo selectFirstEdo(EquipmentDo edo) {
+		return equipmentDoMapper.selectFirstEdo(edo);
+    }
+    
+    @Override
+    public int updateEquipmentDo2(EquipmentDo edo)
+    {
+		
+		edo.setUpdateTime(DateUtils.getNowDate());
+		if(edo.getExpiredDem() != null)
+		{
+			Date setTimeUpdatExpicedDem = edo.getExpiredDem();
+			setTimeUpdatExpicedDem.setHours(23);
+			setTimeUpdatExpicedDem.setMinutes(59);
+			setTimeUpdatExpicedDem.setSeconds(59);
+			edo.setExpiredDem(setTimeUpdatExpicedDem);
+		}
+        return equipmentDoMapper.updateEquipmentDo2(edo);
+    }
 }

@@ -43,6 +43,7 @@ function loadTable(edo) {
     },
   });
 }
+
 $('#searchAll').keyup(function (event) {
   if (event.keyCode == 13) {
     edo.containerNumber = $('#searchAll').val().toUpperCase();
