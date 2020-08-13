@@ -200,7 +200,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			String consignee = equipmentDos.get(0).getConsignee();
 			String containerNumber = "";
 			for (EquipmentDo e : equipmentDos) {
-				e.setCarrierId(getUserId());
+				e.setCarrierId(super.getUser().getGroupId());
 				e.setCreateBy(getUser().getFullName());
 				e.setUpdateTime(new Date());
 				e.setUpdateBy(getUser().getFullName());
@@ -757,8 +757,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			for (String id : idsList) {
 				EquipmentDo edoCheck = new EquipmentDo();
 				edoCheck.setId(Long.parseLong(id));
-				edoCheck.setCarrierId(super.getUser().getGroupId());
-				// check xem lúc tạo lệnh đã add carrierId hay chưa?
+				Map<String, Object> groupCodes = new HashMap<>();
+				groupCodes.put("groupCode", super.getGroupCodes());
+				edoCheck.setParams(groupCodes);
 				if (equipmentDoService.selectFirstEdo(edoCheck) == null) {
 					return AjaxResult.error(
 							"Bạn đã chọn container mà bạn không <br> có quyền cập nhật, vui lòng kiếm tra lại dữ liệu");

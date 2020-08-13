@@ -87,7 +87,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          <where>  
             <if test="id != null "> and id = #{id}</if>
             <if test="carrierId != null "> and carrier_id = #{carrierId}</if>
-            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
+            <if test="params.groupCode != null"> 
+                and carrier_code in 
+                 <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+                         #{carrier_code}
+                </foreach>
+            </if> 
             <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
             <if test="billOfLading != null  and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
             <if test="businessUnit != null  and businessUnit != ''"> and business_unit = #{businessUnit}</if>
