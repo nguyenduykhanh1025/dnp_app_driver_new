@@ -7,7 +7,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="LogisticGroup" id="LogisticGroupResult">
         <result property="id"    column="id"    />
         <result property="groupName"    column="group_name"    />
-        <result property="emailAddress"    column="email_address"    />
         <result property="address"    column="address"    />
         <result property="mst"    column="mst"    />
         <result property="phone"    column="phone"    />
@@ -34,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLogisticGroupVo">
-        select id, group_name, email_address, address, mst, phone, mobile_phone, credit_flag,fax, del_flag, business_registration_certificate, date_of_issue_registration, place_of_issue_registration, authorized_representative, representative_position, following_authorization_form_no, sign_date, owned, identify_card_no, date_of_issue_identify, place_of_issue_identify, email, create_by, create_time, update_by, update_time from logistic_group
+        select id, group_name, address, mst, phone, mobile_phone, credit_flag,fax, del_flag, business_registration_certificate, date_of_issue_registration, place_of_issue_registration, authorized_representative, representative_position, following_authorization_form_no, sign_date, owned, identify_card_no, date_of_issue_identify, place_of_issue_identify, email, create_by, create_time, update_by, update_time from logistic_group
     </sql>
 
     <select id="selectLogisticGroupList" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
@@ -65,7 +64,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null and id != 0">id,</if>
             <if test="groupName != null  and groupName != ''">group_name,</if>
-            <if test="emailAddress != null  and emailAddress != ''">email_address,</if>
             <if test="address != null  and address != ''">address,</if>
             <if test="mst != null  and mst != ''">mst,</if>
             <if test="phone != null  and phone != ''">phone,</if>
@@ -91,7 +89,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="values (" suffix=")" suffixOverrides=",">
  			<if test="id != null">#{id},</if>
             <if test="groupName != null  and groupName != ''">#{groupName},</if>
-            <if test="emailAddress != null  and emailAddress != ''">#{emailAddress},</if>
             <if test="address != null  and address != ''">#{address},</if>
             <if test="mst != null  and mst != ''">#{mst},</if>
             <if test="phone != null  and phone != ''">#{phone},</if>
@@ -120,7 +117,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update logistic_group
         <trim prefix="SET" suffixOverrides=",">
             <if test="groupName != null  and groupName != ''">group_name = #{groupName},</if>
-            <if test="emailAddress != null  and emailAddress != ''">email_address = #{emailAddress},</if>
             <if test="address != null  and address != ''">address = #{address},</if>
             <if test="mst != null  and mst != ''">mst = #{mst},</if>
             <if test="phone != null  and phone != ''">phone = #{phone},</if>
