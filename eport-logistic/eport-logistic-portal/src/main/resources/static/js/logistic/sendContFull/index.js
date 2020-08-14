@@ -419,6 +419,20 @@ function temperatureRenderer(instance, td, row, col, prop, value, cellProperties
     return td;
 }
 
+function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'wgt' + row).addClass("htMiddle").addClass("htCenter");
+    let containerNo = hot.getDataAtCell(row, 1);
+    let sztp = hot.getDataAtCell(row, 2);
+    if (sourceData && sourceData.length >= row && sourceData[row].id) {
+        value = '<a class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</a>';
+    } else {
+        value = '<a class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Khai báo</a>';
+    }
+    $(td).html(value);
+    cellProperties.readOnly = 'true';
+    return td;
+}
+
 function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'wgt' + row).addClass("htMiddle");
     $(td).html(value);
@@ -475,7 +489,7 @@ function configHandson() {
         manualRowResize: true,
         renderAllRows: true,
         rowHeaders: true,
-        className: "htMiddle",
+        className: "htMiddle htCenter",
         colHeaders: function (col) {
             switch (col) {
                 case 0:
@@ -498,16 +512,18 @@ function configHandson() {
                 case 7:
                     return "Nhiệt Độ";
                 case 8:
-                    return '<span>Trọng Lượng</span><span style="color: red;">(*)</span>';
+                    return "Chi tiết";
                 case 9:
-                    return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span>Trọng Lượng</span><span style="color: red;">(*)</span>';
                 case 10:
-                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
                 case 11:
+                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                case 12:
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 110, 100, 200, 200, 150, 220, 100, 100, 150, 150, 200],
+        colWidths: [50, 110, 100, 200, 200, 150, 220, 100, 100, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -560,6 +576,10 @@ function configHandson() {
                 strict: true,
                 readonly: true,
                 renderer: temperatureRenderer
+            },
+            {
+                data: "detailButton",
+                renderer: detailRenderer
             },
             {
                 data: "wgt",
@@ -645,7 +665,7 @@ function onChange(changes, source) {
                              if (data.code == 0) {
                                  hot.updateSettings({
                                      cells: function (row, col, prop) {
-                                         if (row == change[0] && col == 10) {
+                                         if (row == change[0] && col == 11) {
                                              let cellProperties = {};
                                              cellProperties.source = data.dischargePorts;
                                              return cellProperties;
@@ -1330,3 +1350,9 @@ function exportReceipt(){
     $.modal.openTab("In Biên Nhận", ctx +"logistic/print/receipt/shipment/"+shipmentSelected.id);
 }
 
+function openDetail(id, containerNo, sztp) {
+    if (!id) {
+        id = 0;
+    }
+    $.modal.openCustomForm("Khai báo chi tiết", prefix + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 500);
+}
