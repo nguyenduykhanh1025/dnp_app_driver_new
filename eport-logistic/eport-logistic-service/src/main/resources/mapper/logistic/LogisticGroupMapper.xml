@@ -7,7 +7,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="LogisticGroup" id="LogisticGroupResult">
         <result property="id"    column="id"    />
         <result property="groupName"    column="group_name"    />
-        <result property="emailAddress"    column="email_address"    />
         <result property="address"    column="address"    />
         <result property="mst"    column="mst"    />
         <result property="phone"    column="phone"    />
@@ -34,7 +33,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLogisticGroupVo">
-        select id, group_name, email_address, address, mst, phone, mobile_phone, credit_flag,fax, del_flag, business_registration_certificate, date_of_issue_registration, place_of_issue_registration, authorized_representative, representative_position, following_authorization_form_no, sign_date, owned, identify_card_no, date_of_issue_identify, place_of_issue_identify, email, create_by, create_time, update_by, update_time from logistic_group
+        select id, group_name, address, mst, phone, mobile_phone, credit_flag,fax, del_flag, business_registration_certificate, date_of_issue_registration, place_of_issue_registration, authorized_representative, representative_position, following_authorization_form_no, sign_date, owned, identify_card_no, date_of_issue_identify, place_of_issue_identify, email, create_by, create_time, update_by, update_time from logistic_group
     </sql>
 
     <select id="selectLogisticGroupList" parameterType="LogisticGroup" resultMap="LogisticGroupResult">
