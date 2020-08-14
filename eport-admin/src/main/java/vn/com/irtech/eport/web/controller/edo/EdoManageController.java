@@ -122,8 +122,8 @@ public class EdoManageController extends BaseController {
 	@ResponseBody
 	public List<String> listVoyNos(String keyString,String vessel) {
     Edo edo = new Edo();
-    edo.setVessel(vessel);
     edo.setVoyNo(keyString);
+    edo.setVessel(vessel);
 		return edoService.selectVoyNos(edo);
 	}
 

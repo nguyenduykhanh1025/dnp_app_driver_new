@@ -8,8 +8,9 @@ $(function () {
 })
 
 function formatDate(value) {
-  if (value == null) {
-    return;
+  if(value == null || value == undefined)
+  {
+      return;
   }
   var date = new Date(value)
   var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
@@ -73,7 +74,7 @@ function formatDateForSubmit(value) {
   if (checkDate == 1) {
     return;
   }
-  if (value == null) {
+  if (value == null || value == undefined) {
     return;
   }
   var newdate = value.split("/").reverse();
@@ -105,6 +106,10 @@ $.ajax({
 })
 
 function validateDateUpdate(toDate) {
+  if(toDate == null || toDate == undefined)
+  {
+      return;
+  }
   toDate = toDate.split("/").reverse().join("-");
   if (toDate == "") {
     return 1;

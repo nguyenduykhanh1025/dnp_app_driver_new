@@ -254,7 +254,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 			}
 			// Do the insert to DB
 			for (EquipmentDo edo : equipmentDos) {
-				// edo.setCarrierId(super.getUser().getGroupId());
+				edo.setStatus("1");
 				equipmentDoService.insertEquipmentDo(edo);
 				edo.setCreateBy(super.getUser().getEmail());
 				equipmentDoAuditLogService.addAuditLogFirst(edo);
@@ -701,8 +701,9 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 
 	@GetMapping("/getVoyNo")
 	@ResponseBody
-	public List<String> listVoyNo(String keyString) {
+	public List<String> listVoyNo(String keyString, String vessel) {
 		EquipmentDo edo = new EquipmentDo();
+		edo.setVessel(vessel);
 		edo.setVoyNo(keyString);
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());

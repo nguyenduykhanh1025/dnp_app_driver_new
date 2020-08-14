@@ -71,7 +71,8 @@ function closeForm() {
 }
 
 function formatDate(value) {
-  if (value == null) {
+  if (value == null || value == undefined) 
+  {
     return;
   }
   var date = new Date(value)
@@ -82,11 +83,12 @@ function formatDate(value) {
 }
 
 function formatDateForSubmit(value) {
-  let checkDate = validateUpdateDate(formatDate(expiredDem), $("#expiredDem").val());
-  if (checkDate == 1) {
+  if (value == null || value == undefined) 
+  {
     return;
   }
-  if (value == null) {
+  let checkDate = validateUpdateDate(formatDate(expiredDem), $("#expiredDem").val());
+  if (checkDate == 1) {
     return;
   }
   var newdate = value.split("/").reverse();
@@ -99,6 +101,14 @@ function formatDateForSubmit(value) {
 
 
 function validateUpdateDate(fromDate, toDate) {
+  if (fromDate == null || fromDate == undefined) 
+  {
+    return;
+  }
+  if (toDate == null || toDate == undefined) 
+  {
+    return;
+  }
   if (fromDate == toDate) {
     return 1;
   }
@@ -119,6 +129,10 @@ $.ajax({
 })
 
 function validateDateUpdate(toDate) {
+  if (toDate == null || toDate == undefined) 
+  {
+    return;
+  }
   toDate = toDate.split("/").reverse().join("-");
   if (toDate == "") {
     return 1;

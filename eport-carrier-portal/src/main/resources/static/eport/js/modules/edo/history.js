@@ -42,6 +42,10 @@ function formatField(value) {
 }
 
 function formatToYDMHMS(date) {
+    if(date == null || date == undefined)
+    {
+        return;
+    }
     let temp = date.substring(0, 10);
     return temp.split("-").reverse().join("/") + "</br>" + date.substring(10, 19);
 }
