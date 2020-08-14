@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>Da Nang Port - DO Web Portal: Login</title>
+    <title>DaNangPort:ePort - Web Portal: Login</title>
     <meta name="description" content="ePort">
     <link href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" rel="stylesheet"/>
     <link href="../static/css/font-awesome.min.css" th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
@@ -15,11 +15,6 @@
     <!-- Avoid IE using compatibility mode-->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="../static/favicon.ico" th:href="@{favicon.ico}"/>
-    <style type="text/css">label.error { position:inherit;  }</style>
-    <script>
-        if(window.top!==window.self){alert('Hết phiên làm việc, xin vui lòng login lại!');window.top.location=window.location};
-    </script>
-</head>
 <style type="text/css">
   label.error {
     position: inherit;
@@ -39,11 +34,9 @@
     }
   }
 </style>
+
 <script>
-  if (window.top !== window.self) {
-    alert("Not logged in or login timed out. please login again");
-    window.top.location = window.location;
-  }
+    if(window.top!==window.self){alert('Hết phiên làm việc, xin vui lòng đăng nhập lại!');window.top.location=window.location};
 </script>
 </head>
 
