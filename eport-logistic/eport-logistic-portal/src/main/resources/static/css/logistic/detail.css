@@ -1,0 +1,129 @@
+.tabs {
+    position: relative;
+    margin: 40px auto;
+}
+
+.tabs:after {
+    content: "";
+    width: 100%;
+    position: absolute;
+    bottom: 4px;
+    z-index: 9999;
+    border-bottom: 1px solid #cccccc;
+}
+
+.tabs > input {
+    position: absolute;
+    z-index: 999;
+    height: 40px;
+    left: 0px;
+    top: 0px;
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+    cursor: pointer;
+}
+
+.tabs > input:hover + label {
+    background: #cccccc;
+    color: #333333;
+}
+
+.tabs > input:checked + label {
+    background: #9dc3e6;
+    color: #333333;
+    z-index: 6;
+}
+
+.tabs > label {
+    background: #eeeeee;
+    font-size: 15px;
+    line-height: 40px;
+    height: 40px;
+    position: relative;
+    padding: 0 20px;
+    margin-left: 10px;
+    float: left;
+    display: block;
+    color: #333333;
+    letter-spacing: 1px;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.3);
+    border-radius: 3px 3px 0 0;
+    -webkit-box-shadow: 2px 0 2px rgba(0, 0, 0, 0.1), -2px 0 2px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 0 2px rgba(0, 0, 0, 0.1), -2px 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.tabs > label:after {
+    content: '';
+    background: #fff;
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    display: block;
+}
+
+.tabs > label:first-of-type {
+    z-index: 4;
+    -webkit-box-shadow: 2px 0 2px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.tabs .tab-label-2 {
+    z-index: 3;
+}
+
+.tabs .tab-label-3 {
+    z-index: 2;
+}
+
+.tabs .content {
+    background: #fff;
+    position: relative;
+    width: 100%;
+    z-index: 5;
+    -webkit-box-shadow: 0 -2px 3px -2px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 -2px 3px -2px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 0 3px 3px 3px;
+}
+
+.tabs .content > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    opacity: 0;
+    -webkit-transition: opacity linear 0.1s;
+    transition: opacity linear 0.1s;
+}
+
+.tabs .content .asterisk:after {
+    content: "*";
+    color: red;
+    position: absolute;
+    font-weight: bold;
+    right: 0;
+    top: 0;
+}
+
+.tabs .clear {
+    clear: both;
+}
+
+.tabs input.tab-selector-1:checked ~ .content .content-1,
+.tabs input.tab-selector-2:checked ~ .content .content-2,
+.tabs input.tab-selector-3:checked ~ .content .content-3 {
+    z-index: 99;
+    opacity: 1;
+    -webkit-transition: opacity ease-out 0.2s 0.1s;
+    transition: opacity ease-out 0.2s 0.1s;
+}
+
+.footer {
+    position: fixed; 
+    bottom: 10px;
+}

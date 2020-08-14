@@ -142,6 +142,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
 		}
 		return PREFIX + "/checkCustomStatus";
 	}
+	
+	@GetMapping("/shipment-detail/{shipmentDetailId}/cont/{containerNo}/sztp/{sztp}/detail")
+	public String getShipmentDetailInputForm(@PathVariable("shipmentDetailId") Long shipmentDetailId, @PathVariable("containerNo") String containerNo, @PathVariable("sztp") String sztp, ModelMap mmap) {
+		mmap.put("containerNo", containerNo);
+		mmap.put("sztp", sztp);
+		mmap.put("shipmentDetailId", shipmentDetailId);
+		return PREFIX + "/detail";
+	}
 
 	@Log(title = "Tạo Lô Hạ Hàng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment")
