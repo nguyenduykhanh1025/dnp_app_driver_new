@@ -118,8 +118,11 @@ public class LogisticReportPrintController extends LogisticBaseController {
 					//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(list);
 			        final Map<String, Object> parameters = new HashMap<>();
 			        parameters.put("user", getGroup().getGroupName());
-			        parameters.put("qrCode", "123");
-			        parameters.put("billingBooking", (list.get(0).getBlNo() != null? list.get(0).getBlNo():"") +"/"+(list.get(0).getBookingNo() != null ? list.get(0).getBookingNo() : ""));
+			        parameters.put("qrCode", list.get(0).getOrderNo());
+			        parameters.put("orderNo", list.get(0).getOrderNo());
+			        parameters.put("billingBooking", (list.get(0).getBlNo() != null? list.get(0).getBlNo():"") +"/"
+			        		+ (list.get(0).getBookingNo() != null ? list.get(0).getBookingNo() : "") + "/" +
+			        		(list.get(0).getOrderNo() != null ? list.get(0).getOrderNo() : ""));
 			        parameters.put("consignee", list.get(0).getConsignee());
 			        parameters.put("vslName", list.get(0).getVslName());
 			        parameters.put("voyCarrier", list.get(0).getVoyCarrier());
