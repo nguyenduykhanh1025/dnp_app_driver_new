@@ -52,10 +52,10 @@
         </encoder>
     </appender>
     
-    <logger name="vn.com.irtech.eport" level="info" />
+    <logger name="vn.com.irtech.api" level="debug" />
     <logger name="org.springframework" level="warn" />
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="console" />
     </root>
     
@@ -63,8 +63,5 @@
         <appender-ref ref="file_info" />
         <appender-ref ref="file_error" />
     </root>
-    
-    <logger name="eport-catos-user" level="info">
-        <appender-ref ref="eport-catos-user"/>
-    </logger>
+
 </configuration> 
