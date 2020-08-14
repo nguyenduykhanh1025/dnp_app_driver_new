@@ -16,6 +16,7 @@ import vn.com.irtech.eport.common.core.text.Convert;
  */
 @Service
 public class DriverTruckServiceImpl implements IDriverTruckService {
+
     @Autowired
     private DriverTruckMapper driverTruckMapper;
 

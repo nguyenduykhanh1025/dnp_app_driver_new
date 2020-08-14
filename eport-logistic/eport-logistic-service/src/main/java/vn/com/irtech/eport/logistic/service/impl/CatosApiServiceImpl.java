@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -18,10 +20,13 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 @Service
 public class CatosApiServiceImpl implements ICatosApiService {
-
+	
+	private static final Logger logger = LoggerFactory.getLogger(CatosApiServiceImpl.class);
+	
 	@Override
 	public Shipment getOpeCodeCatosByBlNo(String blNo) {
 		String url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeCatosByBlNo/" + blNo;
+		logger.debug("Call CATOS API :{}", url);
         RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(url, Shipment.class);
 	}
@@ -29,6 +34,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public Shipment getGroupNameByTaxCode(String taxCode) {
     	String url = Global.getApiUrl() + "/shipmentDetail/getGroupNameByTaxCode/"+taxCode;
+		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
 		Shipment shipment = restTemplate.getForObject(url, Shipment.class);
 		return  shipment;
@@ -37,6 +43,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public ProcessOrder getYearBeforeAfter(String vessel, String voyage) {
         String url = Global.getApiUrl() + "/processOrder/getYearBeforeAfter/"+vessel+"/"+voyage;
+		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
 		return restTemplate.getForObject(url, ProcessOrder.class);
 	}
@@ -44,6 +51,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public List<String> checkContainerReserved(String containerNos) {
 		String url = Global.getApiUrl() + "/shipmentDetail/checkContReserved/" + containerNos;
+		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 		List<String> listCont = response.getBody();
@@ -53,6 +61,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public List<String> getPODList(ShipmentDetail shipmentDetail) {
 		String url = Global.getApiUrl() + "/shipmentDetail/getPODList";
+		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<String>>(){});
@@ -63,6 +72,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public List<String> getVesselCodeList() {
 		String url = Global.getApiUrl() + "/shipmentDetail/getVesselCodeList";
+		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 		List<String> listVessel = response.getBody();
@@ -72,6 +82,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public List<String> getConsigneeList() {
 		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeList";
+		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 		List<String> listConsignee = response.getBody();
@@ -81,6 +92,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public List<String> getOpeCodeList() {
 		String url = Global.getApiUrl() + "/shipmentDetail/getOpeCodeList";
+		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 		List<String> listOpeCode = response.getBody();
@@ -90,6 +102,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public List<String> getVoyageNoList(String vesselCode) {
 		String url = Global.getApiUrl() + "/shipmentDetail/getVoyageNoList/" + vesselCode;
+		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 		List<String> listVoyage = response.getBody();
@@ -99,6 +112,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	@Override
 	public int getCountContByBlNo(String blNo) {
 		String url = Global.getApiUrl() + "/shipmentDetail/getCountContByBlNo/" + blNo;
+		logger.debug("Call CATOS API :{}", url);
 		RestTemplate restTemplate = new RestTemplate();
 		Integer count = restTemplate.getForObject(url, Integer.class);
 		return count.intValue();
@@ -108,10 +122,12 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public Boolean checkCustomStatus(String containerNo, String voyNo) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/check/custom/" + containerNo + "/" + voyNo;
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			Boolean rs = restTemplate.getForObject(url, Boolean.class);
 			return rs;
 		} catch (Exception e) {
+			logger.error("Error while call CATOS Api", e);
 			return false;
 		}
 	}
@@ -120,12 +136,14 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public List<ShipmentDetail> getCoordinateOfContainers(String blNo) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/getCoordinateOfContainers/" + blNo;
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
 			List<ShipmentDetail> coordinates = response.getBody();
 			return coordinates;
 		}catch (Exception e) {
-			e.getStackTrace();
+			e.printStackTrace();
+			logger.error("Error while call CATOS Api", e);
 			return null;
 		}
 	}
@@ -134,12 +152,14 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public List<ShipmentDetail> selectShipmentDetailsByBLNo(String blNo) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/list/" + blNo;
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
 			List<ShipmentDetail> shipmentDetails = response.getBody();
 			return shipmentDetails;
 		} catch (Exception e) {
-			e.getStackTrace();
+			e.printStackTrace();
+			logger.error("Error while call CATOS Api", e);
 			return null;
 		}
 
@@ -149,11 +169,13 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public ShipmentDetail selectShipmentDetailByContNo(String blNo, String containerNo) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/containerInfor/" + blNo + "/" + containerNo;
+			logger.debug("Call CATOS API: {}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ShipmentDetail shipmentDetail = restTemplate.getForObject(url, ShipmentDetail.class);
 			return shipmentDetail;
 		} catch (Exception e) {
-			e.getStackTrace();
+			e.printStackTrace();
+			logger.error("Error while call CATOS Api", e);
 			return null;
 		}
 	}
@@ -162,12 +184,14 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public List<String> selectVesselCodeBerthPlan(String opeCode) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/berthplan/vessel-code/list/ope-code/" + opeCode ;
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 			List<String> vslCodes = response.getBody();
 			return vslCodes;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 		
@@ -177,11 +201,13 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public String getYearByVslCodeAndVoyNo(String vslCode, String voyNo) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/vessel-code/"+ vslCode +"/voyage/" + voyNo + "/year" ;
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			String year = restTemplate.getForObject(url, String.class);
 			return year;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -190,12 +216,14 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public List<String> selectOpeCodeListInBerthPlan() {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/berthplan/ope-code/list" ;
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 			List<String> opeCodes = response.getBody();
 			return opeCodes;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -204,12 +232,14 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public List<ShipmentDetail> selectVesselVoyageBerthPlan(String opeCode) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/berthplan/ope-code/"+ opeCode +"/vessel-voyage/list" ;
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<List<ShipmentDetail>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ShipmentDetail>>() {});
 			List<ShipmentDetail> vesselAndVoyages = response.getBody();
 			return vesselAndVoyages;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -218,13 +248,15 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public List<ProcessBill> getUnitBillByShipmentDetailsForReserve(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/unit-bill/list/send-cont";
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
 			List<ProcessBill> bills= response.getBody();
 			return bills;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -233,13 +265,15 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public List<ProcessBill> getUnitBillByShipmentDetailsForInventory(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/unit-bill/list/receive-cont";
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
 			List<ProcessBill> bills= response.getBody();
 			return bills;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -248,13 +282,15 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public List<ProcessBill> getUnitBillByShipmentDetailsForReceiveSSR(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/unit-bill/list/receive-cont/ssr";
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
 			List<ProcessBill> bills= response.getBody();
 			return bills;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -263,13 +299,15 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public List<ProcessBill> getUnitBillByShipmentDetailsForSendSSR(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/unit-bill/list/send-cont/ssr";
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			HttpEntity httpEntity = new HttpEntity<ShipmentDetail>(shipmentDetail);
 			ResponseEntity<List<ProcessBill>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<ProcessBill>>() {});
 			List<ProcessBill> bills= response.getBody();
 			return bills;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -278,11 +316,13 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public Integer checkBookingNoForSendFReceiveE(String bookingNo, String fe) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/check/booking-no/"+ bookingNo + "/fe/" + fe;
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			Integer result = restTemplate.getForObject(url, Integer.class);
 			return result;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -291,11 +331,13 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public ShipmentDetail getInforSendFReceiveE(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/infor/send-full-receive-e";
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ShipmentDetail result = restTemplate.postForObject(url, shipmentDetail, ShipmentDetail.class);
 			return result;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -304,11 +346,13 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public Integer getIndexContForSsrByContainerNo(String containerNo) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/index/container-master-ssr/" + containerNo;
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			Integer index = restTemplate.getForObject(url, Integer.class);
 			return index;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -321,11 +365,13 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public Integer getIndexBooking(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/booking/index";
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			Integer index = restTemplate.postForObject(url, shipmentDetail, Integer.class);
 			return index;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -339,6 +385,7 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			String blNo = pickupHistory.getShipment().getBlNo();
 			String containerNo = pickupHistory.getContainerNo();
 			String url = Global.getApiUrl() + "/shipmentDetail/location/bl-no/" + blNo +"/container-no/" + containerNo;
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ShipmentDetail location = restTemplate.getForObject(url, ShipmentDetail.class);
 			if(location != null) {
@@ -349,7 +396,8 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			}
 			return pickupHistory;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -361,11 +409,13 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	public String checkContainerStatus(ShipmentDetail shipmentDetail) {
 		try {
 			String url = Global.getApiUrl() + "/shipmentDetail/container-status";
+			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			String containerStatus = restTemplate.postForObject(url, shipmentDetail, String.class);
 			return containerStatus;
 		} catch (Exception e) {
-			e.getStackTrace();
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
 			return null;
 		}
 	}
