@@ -477,17 +477,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
      </select>
 
       <select id="selectVoyNos" parameterType="EquipmentDo" resultType="String">
-    	select distinct voy_no
+    	select distinct voy_no 
     	from equipment_do
-        <where> 
-         <if test="params.groupCode != null"> 
+         <where> 
+            <if test="params.groupCode != null"> 
                 and carrier_code in 
                  <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
                          #{carrier_code}
                 </foreach>
-        </if> 
-        <if test="voyNo != null  and voyNo != ''"> and voy_no like concat(concat('%', #{voyNo}), '%')</if>
-        </where> 
+            </if>
+           <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="voyNo != null  and voyNo != ''"> and lower(voy_no) like concat(concat('%', #{voyNo}), '%')</if> 
+         </where>
      </select>
 
     <select id="selectFirstEdo" parameterType="EquipmentDo" resultMap="EquipmentDoResult">

@@ -178,7 +178,7 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@GetMapping("/getVoyNo")
 	@ResponseBody
-	public List<String> listVoyNos(String keyString,String vessel) {
+	public List<String> listVoyNos(String keyString, String vessel) {
 		Edo edo = new Edo();
 		edo.setVessel(vessel);
 		edo.setVoyNo(keyString);
