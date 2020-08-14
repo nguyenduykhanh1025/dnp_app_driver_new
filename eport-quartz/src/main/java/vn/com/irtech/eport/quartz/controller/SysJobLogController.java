@@ -24,7 +24,7 @@ import vn.com.irtech.eport.quartz.service.ISysJobLogService;
 import vn.com.irtech.eport.quartz.service.ISysJobService;
 
 /**
- * 调度日志操作处理
+ * Scheduling log operation processing
  * 
  * @author admin
  */
