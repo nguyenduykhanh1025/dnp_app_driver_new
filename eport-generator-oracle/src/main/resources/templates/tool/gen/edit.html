@@ -135,11 +135,11 @@
 					                </div>
 					                <div class="col-sm-6">
 					                    <div class="form-group">
-					                        <label class="col-sm-4 control-label is-required" title="分配到指定菜单下，例如 系统管理">上级菜单：<i class="fa fa-question-circle-o"></i></label>
+					                        <label class="col-sm-4 control-label is-required" title="Assigned to the designated menu, such as system management">Parent menu:<i class="fa fa-question-circle-o"></i></label>
 					                        <div class="col-sm-8">
 					                            <input id="parentMenuId" name="params[parentMenuId]" type="hidden" th:value="*{parentMenuId}"/>
 					                            <div class="input-group">
-												    <input id="parentMenuName" name="params[parentMenuName]" class="form-control" type="text" onclick="selectMenuTree()" placeholder="请选择上级菜单" maxlength="50" th:value="*{parentMenuName}" required>
+												    <input id="parentMenuName" name="params[parentMenuName]" class="form-control" type="text" onclick="selectMenuTree()" placeholder="Please select parent menu" maxlength="50" th:value="*{parentMenuName}" required>
 											        <span class="input-group-addon"><i class="fa fa-search"></i></span>
 											    </div>
 					                        </div>
@@ -149,10 +149,10 @@
 					            <div class="row">
 					                <div class="col-sm-6">
 					                    <div class="form-group">
-					                        <label class="col-sm-4 control-label" title="默认为zip压缩包下载，也可以自定义生成路径">生成代码方式：<i class="fa fa-question-circle-o"></i></label>
+					                        <label class="col-sm-4 control-label" title="The default is zip compression package download, you can also customize the generation path">Generate method:<i class="fa fa-question-circle-o"></i></label>
 					                        <div class="col-sm-8">
-                                                <label class="radio-box"> <input type="radio" name="genType" value="0" th:field="*{genType}" /> zip压缩包 </label> 
-                                                <label class="radio-box"> <input type="radio" name="genType" value="1" th:field="*{genType}" /> 自定义路径</label> 
+                                                <label class="radio-box"> <input type="radio" name="genType" value="0" th:field="*{genType}" /> Zip Archive </label> 
+                                                <label class="radio-box"> <input type="radio" name="genType" value="1" th:field="*{genType}" /> Custom path</label> 
 					                        </div>
 					                    </div>
 					                </div>
@@ -160,14 +160,14 @@
 					            <div class="hidden row" id="pathinfo">
 					                <div class="col-sm-12">
 					                    <div class="form-group">
-					                        <label class="col-xs-2 control-label" title="填写磁盘绝对路径，若不填写，则生成到当前Web项目下">生成基础路径：<i class="fa fa-question-circle-o"></i></label>
+					                        <label class="col-xs-2 control-label" title="Fill in the absolute path of the disk, if not filled, it will be generated under the current Web project">Generate base path:<i class="fa fa-question-circle-o"></i></label>
 						                    <div class="col-xs-10">
 						                        <div class="input-group input-group-sm">
-						                            <input id="genPath" name="genPath" class="form-control" type="text" th:field="*{genPath}" placeholder="请输入项目路径" maxlength="200">
+						                            <input id="genPath" name="genPath" class="form-control" type="text" th:field="*{genPath}" placeholder="Please enter the project path" maxlength="200">
 						                            <div class="input-group-btn">
-						                               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">最近路径快速选择 <span class="caret"></span></button>
+						                               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Quick selection of nearest path <span class="caret"></span></button>
 															<ul class="dropdown-menu dropdown-menu-right" role="menu">
-																<li><a href="javascript:$('#genPath').val('/')"><i class="fa fa-refresh"></i>恢复默认的生成基础路径</a></li>
+																<li><a href="javascript:$('#genPath').val('/')"><i class="fa fa-refresh"></i>Restore the default generation base path</a></li>
 															</ul>
 														</div>
 													</div>
@@ -176,24 +176,24 @@
 					                </div>
 					            </div>
 					            <div class="hidden" id="subInfo">
-					            <h4 class="form-header h4">关联信息</h4>
+					            <h4 class="form-header h4">Related information</h4>
 					            <div class="row">
 					                <div class="col-sm-6">
 					                    <div class="form-group">
-					                        <label class="col-sm-4 control-label is-required" title="关联子表的表名， 如：sys_user">关联子表的表名：<i class="fa fa-question-circle-o"></i></label>
+					                        <label class="col-sm-4 control-label is-required" title="The name of the associated child table, ex: sys_user">Child table:<i class="fa fa-question-circle-o"></i></label>
 					                        <div class="col-sm-8">
 					                            <select class='type form-control' id="subTableName" name='subTableName' th:attr='data-value=*{subTableName}' style="width: 100%">
-					                                <option value="">---请选择---</option>
+					                                <option value="">---Select---</option>
 												</select>
 					                        </div>
 					                    </div>
 					                </div>
 					                <div class="col-sm-6">
 					                    <div class="form-group">
-					                        <label class="col-sm-4 control-label is-required" title="子表关联的外键名， 如：user_id">子表关联的外键名：<i class="fa fa-question-circle-o"></i></label>
+					                        <label class="col-sm-4 control-label is-required" title="The name of the foreign key associated with the child table, ex: user_id">Foreign key associated with child table:<i class="fa fa-question-circle-o"></i></label>
 					                        <div class="col-sm-8">
 					                            <select class='router form-control' id="subTableFkName" name='subTableFkName' th:attr='data-value=*{subTableFkName}' style="width: 100%">
-					                                <option value="">---请选择---</option>
+					                                <option value="">---Select---</option>
 												</select>
 					                        </div>
 					                    </div>
@@ -531,7 +531,7 @@
         	var menuId = parentMenuId > 0 ? parentMenuId : 1;
         	var url = ctx + "system/menu/selectMenuTree/" + menuId;
 			var options = {
-				title: '菜单选择',
+				title: 'Menu selection',
 				width: "380",
 				url: url,
 				callBack: doMenuSubmit
