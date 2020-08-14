@@ -19,7 +19,7 @@
             <pattern>${log.pattern}</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
+            <level>DEBUG</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
@@ -57,11 +57,11 @@
 
     <root level="debug">
         <appender-ref ref="console" />
+        <appender-ref ref="file_info" />
     </root>
     
     <root level="info">
         <appender-ref ref="file_info" />
         <appender-ref ref="file_error" />
     </root>
-
 </configuration> 
