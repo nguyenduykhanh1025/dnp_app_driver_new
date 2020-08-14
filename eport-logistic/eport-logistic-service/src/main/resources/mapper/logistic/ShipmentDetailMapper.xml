@@ -667,7 +667,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		        vgm_chk as vgmChk, vgm, vgm_person_info as vgmPersonInfo, preorder_pickup as preorderPickup, pre_pickup_payment_status as prePickupPaymentStatus,
 		        custom_status as customStatus, payment_status as paymenStatus, process_status as processStatus, do_status as doStatus, do_received_time as doReceivedTime,
 		        user_verify_status as userVerifyStatus, finish_status as finishStatus, status, remark, create_by as createBy, create_time as createTime,
-		        update_by as updateBy, update_time as updateTime, process_order_id as processOrderId,
+		        update_by as updateBy, update_time as updateTime, process_order_id as processOrderId, order_no as orderNo,
 		        (select p.invoice_no from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.invoice_no) as invoiceNo,
 		        (select p.vat_after_fee from process_bill p where  s.PROCESS_ORDER_ID = p.process_order_id group by p.vat_after_fee) as vatAfterFee
 		from shipment_detail s

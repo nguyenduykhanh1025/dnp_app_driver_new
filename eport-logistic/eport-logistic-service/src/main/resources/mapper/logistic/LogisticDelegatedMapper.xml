@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.logistic.mapper.LogisticDelegatedMapper">
+    
+    <resultMap type="LogisticDelegated" id="LogisticDelegatedResult">
+        <result property="id"    column="id"    />
+        <result property="logisticGroupId"    column="logistic_group_id"    />
+        <result property="delegateTaxCode"    column="delegate_tax_code"    />
+        <result property="delegateCompany"    column="delegate_company"    />
+        <result property="validFrom"    column="valid_from"    />
+        <result property="validUntil"    column="valid_until"    />
+        <result property="validFlg"    column="valid_flg"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectLogisticDelegatedVo">
+        select id, logistic_group_id, delegate_tax_code, delegate_company, valid_from, valid_until, valid_flg, create_by, create_time, update_by, update_time from logistic_delegated
+    </sql>
+
+    <select id="selectLogisticDelegatedList" parameterType="LogisticDelegated" resultMap="LogisticDelegatedResult">
+        <include refid="selectLogisticDelegatedVo"/>
+        <where>  
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="delegateTaxCode != null  and delegateTaxCode != ''"> and delegate_tax_code = #{delegateTaxCode}</if>
+            <if test="delegateCompany != null  and delegateCompany != ''"> and delegate_company = #{delegateCompany}</if>
+            <if test="validFrom != null "> and valid_from = #{validFrom}</if>
+            <if test="validUntil != null "> and valid_until = #{validUntil}</if>
+            <if test="validFlg != null "> and valid_flg = #{validFlg}</if>
+        </where>
+    </select>
+    
+    <select id="selectLogisticDelegatedById" parameterType="Long" resultMap="LogisticDelegatedResult">
+        <include refid="selectLogisticDelegatedVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertLogisticDelegated" parameterType="LogisticDelegated">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT seq_logistic_delegated.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into logistic_delegated
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="logisticGroupId != null">logistic_group_id,</if>
+            <if test="delegateTaxCode != null and delegateTaxCode != ''">delegate_tax_code,</if>
+            <if test="delegateCompany != null and delegateCompany != ''">delegate_company,</if>
+            <if test="validFrom != null">valid_from,</if>
+            <if test="validUntil != null">valid_until,</if>
+            <if test="validFlg != null">valid_flg,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="logisticGroupId != null">#{logisticGroupId},</if>
+            <if test="delegateTaxCode != null and delegateTaxCode != ''">#{delegateTaxCode},</if>
+            <if test="delegateCompany != null and delegateCompany != ''">#{delegateCompany},</if>
+            <if test="validFrom != null">#{validFrom},</if>
+            <if test="validUntil != null">#{validUntil},</if>
+            <if test="validFlg != null">#{validFlg},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLogisticDelegated" parameterType="LogisticDelegated">
+        update logistic_delegated
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
+            <if test="delegateTaxCode != null and delegateTaxCode != ''">delegate_tax_code = #{delegateTaxCode},</if>
+            <if test="delegateCompany != null and delegateCompany != ''">delegate_company = #{delegateCompany},</if>
+            <if test="validFrom != null">valid_from = #{validFrom},</if>
+            <if test="validUntil != null">valid_until = #{validUntil},</if>
+            <if test="validFlg != null">valid_flg = #{validFlg},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLogisticDelegatedById" parameterType="Long">
+        delete from logistic_delegated where id = #{id}
+    </delete>
+
+    <delete id="deleteLogisticDelegatedByIds" parameterType="String">
+        delete from logistic_delegated where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

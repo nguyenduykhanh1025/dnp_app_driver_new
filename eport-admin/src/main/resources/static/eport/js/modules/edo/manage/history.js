@@ -39,7 +39,7 @@ function loadTable() {
 
 
 function formatToYDMHMS(date) {
-	if(date == null || data == undefined) {
+	if(date == null || date == undefined) {
 		return "-";
 	}
     let temp = date.substring(0,10);

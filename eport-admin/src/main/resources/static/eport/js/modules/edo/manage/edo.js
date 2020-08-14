@@ -261,7 +261,6 @@ $(".c-search-box-vessel").select2({
   theme: "bootstrap",
   placeholder: "Vessel",
   allowClear: true,
-  minimumInputLength: 2,
   ajax: {
     url: PREFIX + "/getVessel",
     dataType: "json",
@@ -278,7 +277,6 @@ $(".c-search-box-vessel").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
       })
       return {
         results: results,
@@ -291,7 +289,6 @@ $(".c-search-box-vessel-code").select2({
   theme: "bootstrap",
   placeholder: "Vessel Code",
   allowClear: true,
-  minimumInputLength: 2,
   ajax: {
     url: PREFIX + "/getVesselCode",
     dataType: "json",
@@ -321,7 +318,6 @@ $(".c-search-box-voy-no").select2({
   theme: "bootstrap",
   placeholder: "Voy No",
   allowClear: true,
-  minimumInputLength: 2,
   ajax: {
     url: PREFIX + "/getVoyNo",
     dataType: "json",
@@ -329,6 +325,7 @@ $(".c-search-box-voy-no").select2({
     data: function (params) {
       return {
         keyString: params.term,
+        vessel : edo.vessel,
       };
     },
     processResults: function (data) {
@@ -350,7 +347,6 @@ $(".c-search-opr-code").select2({
   theme: "bootstrap",
   placeholder: "OPR Code",
   allowClear: true,
-  minimumInputLength: 2,
   ajax: {
     url: PREFIX + "/getOprCode",
     dataType: "json",
@@ -401,11 +397,11 @@ $(".c-search-opr-code").change(function () {
   loadTable(edo);
 });
 
+
 function generatePDF() {
 	if(!bill){
 		$.modal.alertError("Bạn chưa chọn Lô!");
 		return
 	}
     $.modal.openTab("In phiếu", ctx +"edo/print/bill/" + bill);
-	
 }

@@ -322,7 +322,6 @@ $(".c-search-box-vessel-code").select2({
   theme: "bootstrap",
   placeholder: "Vessel Code",
   allowClear: true,
-  minimumInputLength: 2,
   ajax: {
     url: PREFIX + "/getVesselCode",
     dataType: "json",
@@ -352,7 +351,6 @@ $(".c-search-box-voy-no").select2({
   theme: "bootstrap",
   placeholder: "Voy No",
   allowClear: true,
-  minimumInputLength: 2,
   ajax: {
     url: PREFIX + "/getVoyNo",
     dataType: "json",
@@ -360,6 +358,7 @@ $(".c-search-box-voy-no").select2({
     data: function (params) {
       return {
         keyString: params.term,
+        vessel : edo.vessel,
       };
     },
     processResults: function (data) {

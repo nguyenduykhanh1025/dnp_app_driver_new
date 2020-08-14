@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order_report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3590fe74-00bf-4dec-a564-d54856adfe47">
-	<property name="ireport.zoom" value="1.3310000000000008"/>
+	<property name="ireport.zoom" value="1.7715610000000017"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="table">
@@ -63,6 +63,7 @@
 	<parameter name="invoiceNo" class="java.lang.String"/>
 	<parameter name="remark" class="java.lang.String"/>
 	<parameter name="billingBooking" class="java.lang.String"/>
+	<parameter name="orderNo" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -72,7 +73,7 @@
 	<title>
 		<band height="270" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="22" width="557" height="19" uuid="dcbbf11b-4b40-4b91-81c3-a917ef6ba9af"/>
+				<reportElement x="161" y="22" width="232" height="19" uuid="dcbbf11b-4b40-4b91-81c3-a917ef6ba9af"/>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="12" isBold="true" pdfEncoding="Cp1252"/>
 				</textElement>
@@ -89,7 +90,7 @@
 				<reportElement x="0" y="21" width="555" height="1" uuid="cd6a1add-58a6-4709-90bb-600dd55d64e7"/>
 			</line>
 			<staticText>
-				<reportElement x="0" y="41" width="554" height="12" uuid="c4ed22c6-d8df-4a41-bf61-ce4ab04e666f"/>
+				<reportElement x="161" y="41" width="232" height="12" uuid="c4ed22c6-d8df-4a41-bf61-ce4ab04e666f"/>
 				<textElement textAlignment="Center">
 					<font fontName="DejaVu Sans" size="9" isBold="true" isItalic="true"/>
 				</textElement>
@@ -194,11 +195,11 @@
 				<text><![CDATA[Invoice:]]></text>
 			</staticText>
 			<image onErrorType="Blank">
-				<reportElement x="432" y="53" width="121" height="80" uuid="d2c10a8d-dcf4-4b76-8e3d-f1f9258f5460"/>
+				<reportElement x="413" y="22" width="110" height="111" uuid="d2c10a8d-dcf4-4b76-8e3d-f1f9258f5460"/>
 				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(
     new com.google.zxing.qrcode.QRCodeWriter().encode(
         $P{qrCode},
-        com.google.zxing.BarcodeFormat.QR_CODE, 300, 300
+        com.google.zxing.BarcodeFormat.QR_CODE, 900, 900
     )
 )]]></imageExpression>
 			</image>
@@ -221,7 +222,7 @@
 				<textFieldExpression><![CDATA[$P{serviceType}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="132" y="53" width="280" height="20" uuid="053495c3-042d-4ada-bbb7-9a97d92cf328"/>
+				<reportElement x="132" y="53" width="261" height="20" uuid="053495c3-042d-4ada-bbb7-9a97d92cf328"/>
 				<textElement>
 					<font fontName="DejaVu Sans"/>
 				</textElement>
@@ -243,13 +244,17 @@
 				<reportElement x="342" y="173" width="181" height="20" uuid="666fffd3-3765-4f24-a1d8-2018354789ae"/>
 				<textFieldExpression><![CDATA[$P{invoiceNo}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="332" y="133" width="129" height="20" uuid="2dbc5a4e-f285-4d9e-a33e-880d72256a9b"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="332" y="133" width="81" height="20" isPrintWhenDetailOverflows="true" uuid="2dbc5a4e-f285-4d9e-a33e-880d72256a9b"/>
 				<textFieldExpression><![CDATA[$P{voyCarrier}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement x="68" y="173" width="100" height="20" uuid="09c591c9-aa1a-4022-a5fb-f4cc47792bea"/>
 				<textFieldExpression><![CDATA[$P{opeCode}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="428" y="123" width="95" height="20" isPrintWhenDetailOverflows="true" uuid="b8af8b73-8d0c-4fcf-ab56-abbb0facc0f5"/>
+				<textFieldExpression><![CDATA[$P{orderNo}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

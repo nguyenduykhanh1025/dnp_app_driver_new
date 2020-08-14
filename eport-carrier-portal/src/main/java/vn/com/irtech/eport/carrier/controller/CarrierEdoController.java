@@ -178,8 +178,9 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@GetMapping("/getVoyNo")
 	@ResponseBody
-	public List<String> listVoyNos(String keyString) {
+	public List<String> listVoyNos(String keyString,String vessel) {
 		Edo edo = new Edo();
+		edo.setVessel(vessel);
 		edo.setVoyNo(keyString);
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());

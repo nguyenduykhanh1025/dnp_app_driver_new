@@ -358,9 +358,9 @@ public class EdoServiceImpl implements IEdoService
 		return edoMapper.selectVesselNo(edo);
 	}
 
-	public List<String> selectOprCode(String keyString)
+	public List<String> selectOprCode(Edo edo)
 	{
-		return edoMapper.selectOprCode(keyString);
+		return edoMapper.selectOprCode(edo);
 	} 
 
 	public List<String> selectVoyNos(Edo edo)

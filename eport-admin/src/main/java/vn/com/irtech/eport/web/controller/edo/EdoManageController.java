@@ -112,14 +112,17 @@ public class EdoManageController extends BaseController {
   @ResponseBody
   public List<String> lisOprCode(String keyString)
   {
-      return edoService.selectOprCode(keyString);
+      Edo edo = new Edo();
+      edo.setCarrierCode(keyString);
+      return edoService.selectOprCode(edo);
   }
 
 
   @GetMapping("/getVoyNo")
 	@ResponseBody
-	public List<String> listVoyNos(String keyString) {
+	public List<String> listVoyNos(String keyString,String vessel) {
     Edo edo = new Edo();
+    edo.setVessel(vessel);
     edo.setVoyNo(keyString);
 		return edoService.selectVoyNos(edo);
 	}
