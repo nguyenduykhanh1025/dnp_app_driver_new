@@ -10,6 +10,7 @@ var rowAmount = 0;
 var shipmentSearch = new Object;
 shipmentSearch.serviceType = 1;
 var sizeList = [];
+var voyCarrier;
 //dictionary sizeList
 $.ajax({
 	  type: "GET",
@@ -712,6 +713,7 @@ function configHandson() {
                   hot.setDataAtCell(change[0], 13, shipmentDetail.loadingPort); //loadingPort
                   hot.setDataAtCell(change[0], 14, shipmentDetail.dischargePort); //dischargePort
                   hot.setDataAtCell(change[0], 15, shipmentDetail.remark); //remark
+                  voyCarrier = shipmentDetail.voyCarrier;
                 }
                 $.modal.closeLoading();
               });
@@ -839,6 +841,9 @@ function loadShipmentDetail(id) {
       $.modal.closeLoading();
       if (data.code == 0) {
         sourceData = data.shipmentDetails;
+    	if(data.shipmentDetails[0] != null){
+            voyCarrier = data.shipmentDetails[0].voyCarrier;
+    	}
         if (rowAmount < sourceData.length) {
           sourceData = sourceData.slice(0, rowAmount);
         }
@@ -1056,6 +1061,9 @@ function getDataFromTable(isValidate) {
     shipmentDetail.vslNm = vessel[0];
     shipmentDetail.vslName = vessel[1];
     shipmentDetail.voyNo = object["voyNo"];
+    if(voyCarrier){
+    	shipmentDetail.voyCarrier = voyCarrier;
+    }
     shipmentDetail.loadingPort = object["loadingPort"];
     shipmentDetail.dischargePort = object["dischargePort"];
     shipmentDetail.transportType = object["transportType"];

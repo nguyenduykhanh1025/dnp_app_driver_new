@@ -23,7 +23,7 @@ import vn.com.irtech.eport.quartz.domain.SysJob;
 import vn.com.irtech.eport.quartz.service.ISysJobService;
 
 /**
- * 调度任务信息操作处理
+ * Scheduling task information operation processing
  * 
  * @author admin
  */
@@ -53,7 +53,7 @@ public class SysJobController extends BaseController
         return getDataTable(list);
     }
 
-    @Log(title = "Job", businessType = BusinessType.EXPORT)
+    @Log(title = "Job: Export", businessType = BusinessType.EXPORT)
     @RequiresPermissions("monitor:job:export")
     @PostMapping("/export")
     @ResponseBody
@@ -64,7 +64,7 @@ public class SysJobController extends BaseController
         return util.exportExcel(list, "Jobs");
     }
 
-    @Log(title = "Job", businessType = BusinessType.DELETE)
+    @Log(title = "Job: Delete", businessType = BusinessType.DELETE)
     @RequiresPermissions("monitor:job:remove")
     @PostMapping("/remove")
     @ResponseBody
@@ -84,9 +84,9 @@ public class SysJobController extends BaseController
     }
 
     /**
-     * 任务调度状态修改
+     * Task scheduling status modification
      */
-    @Log(title = "Job", businessType = BusinessType.UPDATE)
+    @Log(title = "Job: Status", businessType = BusinessType.UPDATE)
     @RequiresPermissions("monitor:job:changeStatus")
     @PostMapping("/changeStatus")
     @ResponseBody
@@ -98,9 +98,9 @@ public class SysJobController extends BaseController
     }
 
     /**
-     * 任务调度立即执行一次
+     * Task scheduling is executed once immediately
      */
-    @Log(title = "Job", businessType = BusinessType.UPDATE)
+    @Log(title = "Job: Execute", businessType = BusinessType.UPDATE)
     @RequiresPermissions("monitor:job:changeStatus")
     @PostMapping("/run")
     @ResponseBody
@@ -111,7 +111,7 @@ public class SysJobController extends BaseController
     }
 
     /**
-     * 新增调度
+     * New schedule
      */
     @GetMapping("/add")
     public String add()
@@ -120,9 +120,9 @@ public class SysJobController extends BaseController
     }
 
     /**
-     * 新增保存调度
+     * Add save schedule
      */
-    @Log(title = "Job", businessType = BusinessType.INSERT)
+    @Log(title = "Job: Add", businessType = BusinessType.INSERT)
     @RequiresPermissions("monitor:job:add")
     @PostMapping("/add")
     @ResponseBody
@@ -132,7 +132,7 @@ public class SysJobController extends BaseController
     }
 
     /**
-     * 修改调度
+     * Modify schedule
      */
     @GetMapping("/edit/{jobId}")
     public String edit(@PathVariable("jobId") Long jobId, ModelMap mmap)
@@ -142,9 +142,9 @@ public class SysJobController extends BaseController
     }
 
     /**
-     * 修改保存调度
+     * Modify save schedule
      */
-    @Log(title = "Job", businessType = BusinessType.UPDATE)
+    @Log(title = "Job: Edit", businessType = BusinessType.UPDATE)
     @RequiresPermissions("monitor:job:edit")
     @PostMapping("/edit")
     @ResponseBody
@@ -154,7 +154,7 @@ public class SysJobController extends BaseController
     }
 
     /**
-     * 校验cron表达式是否有效
+     * Verify that the cron expression is valid
      */
     @PostMapping("/checkCronExpressionIsValid")
     @ResponseBody

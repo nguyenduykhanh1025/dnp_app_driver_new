@@ -23,10 +23,6 @@ public class LogisticGroup extends BaseEntity
     @Excel(name = "Tên doanh nghiệp")
     private String groupName;
 
-    /** Địa chỉ thư điện tử */
-    @Excel(name = "Địa chỉ thư điện tử")
-    private String emailAddress;
-
     /** Địa chỉ liên hệ */
     @Excel(name = "Địa chỉ liên hệ")
     private String address;
@@ -34,6 +30,10 @@ public class LogisticGroup extends BaseEntity
     /** Mã số thuế doanh nghiệp */
     @Excel(name = "Mã số thuế doanh nghiệp")
     private String mst;
+
+    /** Mã số thuế doanh nghiệp */
+    @Excel(name = "Tên doanh nghiệp")
+    private String companyName;
 
     /** Điện thoại cố định */
     @Excel(name = "Điện thoại cố định")
@@ -120,15 +120,6 @@ public class LogisticGroup extends BaseEntity
     {
         return groupName;
     }
-    public void setEmailAddress(String emailAddress) 
-    {
-        this.emailAddress = emailAddress;
-    }
-
-    public String getEmailAddress() 
-    {
-        return emailAddress;
-    }
     public void setAddress(String address) 
     {
         this.address = address;
@@ -147,7 +138,15 @@ public class LogisticGroup extends BaseEntity
     {
         return mst;
     }
-    public void setPhone(String phone) 
+    public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public void setPhone(String phone) 
     {
         this.phone = phone;
     }
@@ -309,9 +308,10 @@ public class LogisticGroup extends BaseEntity
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
             .append("groupName", getGroupName())
-            .append("emailAddress", getEmailAddress())
-            .append("address", getAddress())
             .append("mst", getMst())
+            .append("companyName", getCompanyName())
+            .append("address", getAddress())
+            .append("email", getEmail())
             .append("phone", getPhone())
             .append("mobilePhone", getMobilePhone())
             .append("creditFlag", getCreditFlag())
@@ -328,7 +328,6 @@ public class LogisticGroup extends BaseEntity
             .append("identifyCardNo", getIdentifyCardNo())
             .append("dateOfIssueIdentify", getDateOfIssueIdentify())
             .append("placeOfIssueIdentify", getPlaceOfIssueIdentify())
-            .append("email", getEmail())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
