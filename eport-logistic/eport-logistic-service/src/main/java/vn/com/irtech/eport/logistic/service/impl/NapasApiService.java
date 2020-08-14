@@ -1,10 +1,10 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
-import java.awt.List;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +18,8 @@ import vn.com.irtech.eport.system.service.ISysConfigService;
 
 @Service
 public class NapasApiService implements INapasApiService {
+
+	private static final Logger logger = LoggerFactory.getLogger(NapasApiService.class);
 	
 	@Autowired
 	private ISysConfigService configService;
@@ -29,6 +31,7 @@ public class NapasApiService implements INapasApiService {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = new HttpHeaders();
 		HttpEntity<String> requestEntity = new HttpEntity<String>(headers);
+		logger.debug("NAPAS: Get Access Token at :{}", urlString);
 		return restTemplate.postForObject(urlString,  requestEntity, JSONObject.class).getString("access_token");
 	}
 
@@ -57,6 +60,7 @@ public class NapasApiService implements INapasApiService {
 		
 		HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String,Object>>(data, headers);
 		RestTemplate restTemplate = new RestTemplate();
+		logger.debug("NAPAS: Get DataKey for Order: {}", orderId);
 		return  restTemplate.postForObject(urlString, requestEntity, JSONObject.class);
 	}
 	

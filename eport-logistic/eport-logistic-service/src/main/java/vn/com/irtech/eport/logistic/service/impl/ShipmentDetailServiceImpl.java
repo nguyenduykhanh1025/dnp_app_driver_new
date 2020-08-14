@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -55,6 +57,9 @@ import vn.com.irtech.eport.system.service.ISysDictTypeService;
  */
 @Service
 public class ShipmentDetailServiceImpl implements IShipmentDetailService {
+
+	private static final Logger logger = LoggerFactory.getLogger(ShipmentDetailServiceImpl.class);
+	
     @Autowired
     private ShipmentDetailMapper shipmentDetailMapper;
 
@@ -599,20 +604,20 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                     + "\"}}";
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/json");
-            headers.set("Authorization", "Basic RVBPUlQ6MTEx");
+            headers.set("Authorization", "Basic RVBPUlQ6MTEx"); // FIXME Get author from SysConfig
             RestTemplate restTemplate = new RestTemplate();
             // String result = restTemplate.getForObject(uri,HttpMethod.GET,
             // String.class,headers);
             HttpEntity<String> entity = new HttpEntity<String>(requestJson, headers);
             ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
             String stringJson = result.getBody();
+            logger.debug("Call ACISS, CntrNo:{}, Voy:{}, Response: {}", cntrNo, userVoy, stringJson);
             JsonObject convertedObject = new Gson().fromJson(stringJson, JsonObject.class);
             convertedObject = convertedObject.getAsJsonObject("response");
             JsonArray jarray = convertedObject.getAsJsonArray("data");
             if (jarray.size() > 0) {
                 convertedObject = jarray.get(0).getAsJsonObject();
                 String rs = convertedObject.get("customsStatus").toString();
-                System.out.print(rs);
                 if ("TQ".equals(rs.substring(1, rs.length() - 1))) {
                     return true;
                 } else {
@@ -621,6 +626,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             }
             return false;
         } catch (Exception e) {
+        	logger.error("Error while call ACISS",e);
             return false;
         }
     }

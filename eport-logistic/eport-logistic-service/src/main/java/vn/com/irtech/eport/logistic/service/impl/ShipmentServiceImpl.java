@@ -1,20 +1,20 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
-import vn.com.irtech.eport.common.utils.DateUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import vn.com.irtech.eport.logistic.mapper.ShipmentMapper;
-import vn.com.irtech.eport.logistic.domain.Shipment;
-import vn.com.irtech.eport.logistic.form.ShipmentForm;
-import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.carrier.mapper.CarrierGroupMapper;
 import vn.com.irtech.eport.carrier.mapper.EdoMapper;
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.form.ShipmentForm;
+import vn.com.irtech.eport.logistic.mapper.ShipmentMapper;
+import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 /**
  * ShipmentService Business Processing
