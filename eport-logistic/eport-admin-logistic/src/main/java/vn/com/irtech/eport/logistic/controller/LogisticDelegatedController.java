@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.logistic.controller;
 
 import java.util.List;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,14 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.core.controller.BaseController;
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.logistic.domain.LogisticDelegated;
 import vn.com.irtech.eport.logistic.service.ILogisticDelegatedService;
-import vn.com.irtech.eport.common.core.controller.BaseController;
-import vn.com.irtech.eport.common.core.domain.AjaxResult;
-import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
-import vn.com.irtech.eport.common.core.page.TableDataInfo;
 
 /**
  * DelegateController
@@ -44,7 +45,7 @@ public class LogisticDelegatedController extends BaseController
     /**
      * Get Delegate List
      */
-    @RequiresPermissions("logistic:delegate:list")
+    @RequiresPermissions("logistic:group:add")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(LogisticDelegated logisticDelegated)
@@ -52,20 +53,6 @@ public class LogisticDelegatedController extends BaseController
         startPage();
         List<LogisticDelegated> list = logisticDelegatedService.selectLogisticDelegatedList(logisticDelegated);
         return getDataTable(list);
-    }
-
-    /**
-     * Export Delegate List
-     */
-    @RequiresPermissions("logistic:delegate:export")
-    @Log(title = "Delegate", businessType = BusinessType.EXPORT)
-    @PostMapping("/export")
-    @ResponseBody
-    public AjaxResult export(LogisticDelegated logisticDelegated)
-    {
-        List<LogisticDelegated> list = logisticDelegatedService.selectLogisticDelegatedList(logisticDelegated);
-        ExcelUtil<LogisticDelegated> util = new ExcelUtil<LogisticDelegated>(LogisticDelegated.class);
-        return util.exportExcel(list, "delegate");
     }
 
     /**
@@ -77,10 +64,7 @@ public class LogisticDelegatedController extends BaseController
         return prefix + "/add";
     }
 
-    /**
-     * 新增保存Delegate
-     */
-    @RequiresPermissions("logistic:delegate:add")
+    @RequiresPermissions("logistic:group:add")
     @Log(title = "Delegate", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
@@ -103,7 +87,7 @@ public class LogisticDelegatedController extends BaseController
     /**
      * Update Save Delegate
      */
-    @RequiresPermissions("logistic:delegate:edit")
+    @RequiresPermissions("logistic:group:add")
     @Log(title = "Delegate", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
@@ -115,7 +99,7 @@ public class LogisticDelegatedController extends BaseController
     /**
      * Delete Delegate
      */
-    @RequiresPermissions("logistic:delegate:remove")
+    @RequiresPermissions("logistic:group:add")
     @Log(title = "Delegate", businessType = BusinessType.DELETE)
     @PostMapping( "/remove")
     @ResponseBody
