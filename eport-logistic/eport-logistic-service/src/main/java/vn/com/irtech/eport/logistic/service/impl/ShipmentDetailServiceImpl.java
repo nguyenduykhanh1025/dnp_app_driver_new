@@ -416,13 +416,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Transactional
     private ServiceSendFullRobotReq groupShipmentDetailByReceiveContFullOrder(Long registerNo,
             List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag, boolean orderByBl) {
+    	ShipmentDetail detail = shipmentDetails.get(0);
         ProcessOrder processOrder = new ProcessOrder();
         if (orderByBl) {
             processOrder.setModee("Pickup Order By BL");
         } else {
             processOrder.setModee("Truck Out");
         }
-        processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
+        processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
             processOrder.setTruckCo(shipment.getTaxCode() + " : " + getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName());
@@ -435,7 +436,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         } else {
             processOrder.setPayType("Cash");
         }
-        ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+        ProcessOrder tempProcessOrder = getYearBeforeAfter(detail.getVslNm(), detail.getVoyNo());
         if (tempProcessOrder != null) {
             processOrder.setYear(tempProcessOrder.getYear());
             processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
@@ -443,11 +444,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
-        processOrder.setBlNo(shipmentDetails.get(0).getBlNo());
-        processOrder.setPickupDate(shipmentDetails.get(0).getExpiredDem());
-        processOrder.setVessel(shipmentDetails.get(0).getVslNm());
-        processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-        processOrder.setSztp(shipmentDetails.get(0).getSztp());
+        processOrder.setBlNo(detail.getBlNo());
+        processOrder.setPickupDate(detail.getExpiredDem());
+        processOrder.setVessel(detail.getVslNm());
+        processOrder.setVoyage(detail.getVoyNo());
+        processOrder.setSztp(detail.getSztp());
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setShipmentId(shipment.getId());
         processOrder.setServiceType(1);
@@ -496,9 +497,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Transactional
     private ServiceSendFullRobotReq groupShipmentDetailByReceiveContEmptyOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
-        ProcessOrder processOrder = new ProcessOrder();
+        ShipmentDetail detail = shipmentDetails.get(0);
+    	ProcessOrder processOrder = new ProcessOrder();
         processOrder.setModee("Pickup By Booking");
-        processOrder.setConsignee(shipmentDetails.get(0).getConsignee());
+        processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         processOrder.setTruckCo(shipment.getTaxCode()+" : "+shipment.getGroupName());
         processOrder.setTaxCode(shipment.getTaxCode());
@@ -507,7 +509,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         } else {
             processOrder.setPayType("Cash");
         }
-        ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+        ProcessOrder tempProcessOrder = getYearBeforeAfter(detail.getVslNm(), detail.getVoyNo());
         if (tempProcessOrder != null) {
             processOrder.setYear(tempProcessOrder.getYear());
             processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
@@ -515,11 +517,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setYear(Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
             processOrder.setBeforeAfter("Before");
         }
-        processOrder.setBookingNo(shipmentDetails.get(0).getBookingNo());
-        processOrder.setPickupDate(shipmentDetails.get(0).getExpiredDem());
-        processOrder.setVessel(shipmentDetails.get(0).getVslNm());
-        processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
-        processOrder.setSztp(shipmentDetails.get(0).getSztp());
+        processOrder.setBookingNo(detail.getBookingNo());
+        processOrder.setPickupDate(detail.getExpiredDem());
+        processOrder.setVessel(detail.getVslNm());
+        processOrder.setVoyage(detail.getVoyNo());
+        processOrder.setSztp(detail.getSztp());
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setShipmentId(shipment.getId());
         processOrder.setServiceType(3);
@@ -535,13 +537,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
-        ProcessOrder processOrder = new ProcessOrder();
+        ShipmentDetail detail = shipmentDetails.get(0);
+    	ProcessOrder processOrder = new ProcessOrder();
         processOrder.setTaxCode(shipment.getTaxCode());
         processOrder.setContNumber(shipmentDetails.size());
-        processOrder.setVessel(shipmentDetails.get(0).getVslNm());
-        processOrder.setVoyage(shipmentDetails.get(0).getVoyNo());
+        processOrder.setVessel(detail.getVslNm());
+        processOrder.setVoyage(detail.getVoyNo());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
-        ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+        ProcessOrder tempProcessOrder = getYearBeforeAfter(detail.getVslNm(), detail.getVoyNo());
         if (tempProcessOrder != null) {
             processOrder.setYear(tempProcessOrder.getYear());
             processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
@@ -550,7 +553,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             processOrder.setBeforeAfter("Before");
         }
         processOrder.setShipmentId(shipment.getId());
-        if ("F".equalsIgnoreCase(shipmentDetails.get(0).getFe())) {
+        if ("F".equalsIgnoreCase(detail.getFe())) {
             processOrder.setServiceType(4);
         } else {
             processOrder.setServiceType(2);
@@ -563,7 +566,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrderService.insertProcessOrder(processOrder);
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessOrderId(processOrder.getId());
-            shipmentDetail.setRegisterNo(shipmentDetails.get(0).getId().toString());
+            shipmentDetail.setRegisterNo(detail.getId().toString());
             shipmentDetail.setUserVerifyStatus("Y");
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
         }
@@ -958,7 +961,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     		processOrder.setShipmentId(shipmentDt.getShipmentId());
     		processOrder.setBookingNo(shipmentDt.getBookingNo());
     		processOrder.setStatus(0);
-    		ProcessOrder tempProcessOrder = getYearBeforeAfter(processOrder.getVessel(), processOrder.getVoyage());
+    		ProcessOrder tempProcessOrder = getYearBeforeAfter(shipmentDt.getVslNm(), shipmentDt.getVoyNo());
             if (tempProcessOrder != null) {
                 processOrder.setYear(tempProcessOrder.getYear());
                 processOrder.setBeforeAfter(tempProcessOrder.getBeforeAfter());
