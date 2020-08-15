@@ -196,16 +196,13 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 			return error("Quý khách chưa chọn tàu/chuyến.");
 		}
 
-		String[] vesselArr = vessel.split(" - ");
-		if (vesselArr.length < 3) {
+		String[] vesselArr = vessel.split(",");
+		if (vesselArr.length < 4) {
 			return error("Thông tin tàu/chuyến không hợp lệ.");
 		}
 
-		String vslNm = vesselArr[0];
-		String voyAge = vesselArr[2];
-
 		// Make order send to robot
-		ServiceSendFullRobotReq serviceRobotReq = shipmentDetailService.makeChangeVesselOrder(shipmentDetails, vslNm, voyAge, getUser().getGroupId());
+		ServiceSendFullRobotReq serviceRobotReq = shipmentDetailService.makeChangeVesselOrder(shipmentDetails, vesselArr, getUser().getGroupId());
 		if (serviceRobotReq == null) {
 			return error("Có lỗi xảy ra trong quá trình tạo lệnh để thực thi!");
 		}
@@ -235,6 +232,7 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 			for(ShipmentDetail i : berthplanList) {
 				vesselAndVoyages.add(i.getVslAndVoy());
 			}
+			ajaxResult.put("berthplanList", berthplanList);
 			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
 			return ajaxResult;
 		}

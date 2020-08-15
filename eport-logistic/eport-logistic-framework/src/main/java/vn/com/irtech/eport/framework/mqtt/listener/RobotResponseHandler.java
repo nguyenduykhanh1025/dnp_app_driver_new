@@ -296,41 +296,39 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		// Find process order for robot
 		ProcessOrder reqProcessOrder = processOrderService.findProcessOrderForRobot(serviceTypes);
 		if (reqProcessOrder != null) {
-			if (processOrderService.updateProcessOrder(reqProcessOrder) == 1) {
-				ShipmentDetail shipmentDetail = new ShipmentDetail();
-				shipmentDetail.setProcessOrderId(reqProcessOrder.getId());
-				List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-				ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(reqProcessOrder, shipmentDetails);
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setProcessOrderId(reqProcessOrder.getId());
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(reqProcessOrder, shipmentDetails);
 
-				// Send order to robot
-				switch (reqProcessOrder.getServiceType()) {
-					case 1:
-						mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_FULL, robot.getUuId());
-						break;
-					case 2:
-						mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_EMPTY, robot.getUuId());
-						break;
-					case 3:
-						mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_EMPTY, robot.getUuId());
-						break;
-					case 4:
-						mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_FULL, robot.getUuId());
-						break;
-					case 5:
-						mqttService.publicMessageToDemandRobot(req, EServiceRobot.SHIFTING_CONT, robot.getUuId());
-						break;
-					case 6:
-						mqttService.publicMessageToDemandRobot(req, EServiceRobot.CHANGE_VESSEL, robot.getUuId());
-						break;
-					case 7:
-						mqttService.publicMessageToDemandRobot(req, EServiceRobot.CREATE_BOOKING, robot.getUuId());
-						break;
-					case 9:
-						mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DATE, robot.getUuId());
-						break;
-				}
-				return "1";
-			} 
+			// Send order to robot
+			switch (reqProcessOrder.getServiceType()) {
+				case 1:
+					mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_FULL, robot.getUuId());
+					break;
+				case 2:
+					mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_EMPTY, robot.getUuId());
+					break;
+				case 3:
+					mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_EMPTY, robot.getUuId());
+					break;
+				case 4:
+					mqttService.publicMessageToDemandRobot(req, EServiceRobot.SEND_CONT_FULL, robot.getUuId());
+					break;
+				case 5:
+					mqttService.publicMessageToDemandRobot(req, EServiceRobot.SHIFTING_CONT, robot.getUuId());
+					break;
+				case 6:
+					mqttService.publicMessageToDemandRobot(req, EServiceRobot.CHANGE_VESSEL, robot.getUuId());
+					break;
+				case 7:
+					mqttService.publicMessageToDemandRobot(req, EServiceRobot.CREATE_BOOKING, robot.getUuId());
+					break;
+				case 9:
+					mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DATE, robot.getUuId());
+					break;
+			}
+			return "1";
 		}
 		return "0";
 	}
@@ -343,7 +341,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		processHistory.setProcessOrderId(id);
 		processHistory.setRobotUuid(uuId);
 		processHistory.setStatus(2); // FINISH
-
+		
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
 		if ("success".equalsIgnoreCase(result)) {
 			ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
@@ -352,7 +350,8 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				shipmentDetail.setId(shipmentDetailId);
 				shipmentDetail.setVslNm(processOrder.getVessel());
 				shipmentDetail.setVoyNo(processOrder.getVoyage());
-				// TODO : Update carrier code
+				shipmentDetail.setVslName(processJsonData.getVslName());
+				shipmentDetail.setVoyCarrier(processJsonData.getVoyCarrier());
 				
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
@@ -395,9 +394,8 @@ public class RobotResponseHandler implements IMqttMessageListener{
 
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
 		if ("success".equalsIgnoreCase(result)) {
-			Map<String, Object> map = new Gson().fromJson(processOrder.getProcessData(), Map.class);
-			List<Long> shipmentDetailIds = (List<Long>) map.get("shipmentDetailIds");
-			for (Long shipmentDetailId : shipmentDetailIds) {
+			ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+			for (Long shipmentDetailId : processJsonData.getShipmentDetailIds()) {
 				ShipmentDetail shipmentDetail = new ShipmentDetail();
 				shipmentDetail.setId(shipmentDetailId);
 				shipmentDetail.setExpiredDem(processOrder.getPickupDate());
