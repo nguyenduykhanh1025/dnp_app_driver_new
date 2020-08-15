@@ -144,6 +144,7 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
     } else {
         content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
     }
+    cellProperties.readOnly = 'true';
     $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
     return td;
 }

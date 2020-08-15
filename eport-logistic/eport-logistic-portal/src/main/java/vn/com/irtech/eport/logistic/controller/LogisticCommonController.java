@@ -144,10 +144,13 @@ public class LogisticCommonController extends LogisticBaseController {
 		otpCode.setExpiredTime(cal.getTime());
 		otpCodeService.insertSysOtp(otpCode);
 		// FIXME Get message template from SysConfigService, using String.format to replace place holders
-		String content = "TEST SMS   " + rD;
+		String[] shipmentDetailIdArr = shipmentDetailIds.split(",");
+		ShipmentDetail shipmentDetail = shipmentDetailService.selectShipmentDetailById(Long.parseLong(shipmentDetailIdArr[0]));
+		String content = configService.getKey("otp.format");
+		content = content.replace("{shipmentId}", shipmentDetail.getShipmentId().toString()).replace("{otp}", tDCode);
 		String response = "";
 		 try {
-		 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(),content);
+		 	response = otpCodeService.postOtpMessage(lGroup.getMobilePhone(), content);
 		 	System.out.println(response);
 		 	logger.debug("OTP Send Response: " + response);
 		 } catch (IOException ex) {

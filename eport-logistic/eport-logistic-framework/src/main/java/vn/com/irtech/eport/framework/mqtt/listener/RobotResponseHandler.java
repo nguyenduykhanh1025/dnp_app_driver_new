@@ -346,9 +346,8 @@ public class RobotResponseHandler implements IMqttMessageListener{
 
 		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
 		if ("success".equalsIgnoreCase(result)) {
-			Map<String, Object> map = new Gson().fromJson(processOrder.getProcessData(), Map.class);
-			List<Long> shipmentDetailIds = (List<Long>) map.get("shipmentDetailIds");
-			for (Long shipmentDetailId : shipmentDetailIds) {
+			ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
+			for (Long shipmentDetailId : processJsonData.getShipmentDetailIds()) {
 				ShipmentDetail shipmentDetail = new ShipmentDetail();
 				shipmentDetail.setId(shipmentDetailId);
 				shipmentDetail.setVslNm(processOrder.getVessel());

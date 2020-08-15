@@ -1,7 +1,8 @@
 const PREFIX = ctx + "logistic/send-cont-full"
 
-$('#containerNo').text(containerNo);
-$('#sztp').text(sztp);
+console.log(containerNo, sztp);
+$('#containerNo').val(containerNo);
+$('#sztp').val(sztp);
 
 function confirm() {
     $.modal.close();
