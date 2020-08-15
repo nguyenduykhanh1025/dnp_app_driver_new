@@ -670,9 +670,17 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Override
     public ProcessOrder getYearBeforeAfter(String vessel, String voyage) {
-        String url = Global.getApiUrl() + "/processOrder/getYearBeforeAfter/" + vessel + "/" + voyage;
-        RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(url, ProcessOrder.class);
+    	try {
+            String url = Global.getApiUrl() + "/processOrder/getYearBeforeAfter/" + vessel + "/" + voyage;
+            logger.debug("Call CATOS API :{}", url);
+            RestTemplate restTemplate = new RestTemplate();
+            return restTemplate.getForObject(url, ProcessOrder.class);
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
+			return null;
+		}
+
     }
 
     @Override

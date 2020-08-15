@@ -419,5 +419,36 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+
+	@Override
+	public List<String> getBlockList() {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/block/list";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+			List<String> blockList = response.getBody();
+			return blockList;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public Boolean checkContReserved(ShipmentDetail shipmentDetail) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/check/reserved";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			Boolean rs = restTemplate.postForObject(url, shipmentDetail, Boolean.class);
+			return rs;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 }
