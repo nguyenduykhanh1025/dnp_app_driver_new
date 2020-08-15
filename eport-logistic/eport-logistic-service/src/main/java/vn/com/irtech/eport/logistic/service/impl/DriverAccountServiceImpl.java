@@ -19,6 +19,10 @@ import vn.com.irtech.eport.common.core.text.Convert;
  */
 @Service
 public class DriverAccountServiceImpl implements IDriverAccountService {
+
+    @Autowired
+    private DriverAccountMapper driverAccountMapper;
+
     @Override
     public int checkPhoneUnique(String phoneNumber) {
         int count = driverAccountMapper.checkPhoneUnique(phoneNumber);
@@ -27,9 +31,6 @@ public class DriverAccountServiceImpl implements IDriverAccountService {
         }
         return 0;
     }
-
-    @Autowired
-    private DriverAccountMapper driverAccountMapper;
 
     /**
      * Get Driver login info

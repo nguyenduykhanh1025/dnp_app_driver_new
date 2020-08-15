@@ -75,6 +75,10 @@ function searchInfoEdo() {
 }
 
 function stringToDate(dateStr) {
+  if(dateStr == null || dateStr == undefined)
+  {
+      return;
+  }
   let dateParts = dateStr.split("/");
   return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
 }
@@ -94,7 +98,6 @@ $(".c-search-box-vessel").select2({
   theme: "bootstrap",
   placeholder: "Vessel",
   allowClear: true,
-  minimumInputLength: 2,
   ajax: {
     url: PREFIX + "/getVessel",
     dataType: "json",
@@ -111,7 +114,6 @@ $(".c-search-box-vessel").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-
       })
       return {
         results: results,
@@ -124,7 +126,6 @@ $(".c-search-box-vessel-code").select2({
   theme: "bootstrap",
   placeholder: "Vessel Code",
   allowClear: true,
-  minimumInputLength: 2,
   ajax: {
     url: PREFIX + "/getVesselCode",
     dataType: "json",
@@ -154,14 +155,15 @@ $(".c-search-box-voy-no").select2({
   theme: "bootstrap",
   placeholder: "Voy No",
   allowClear: true,
-  minimumInputLength: 2,
   ajax: {
     url: PREFIX + "/getVoyNo",
     dataType: "json",
     method: "GET",
     data: function (params) {
+      console.log("edo.vessel", edo.vessel)
       return {
         keyString: params.term,
+        vessel : edo.vessel
       };
     },
     processResults: function (data) {

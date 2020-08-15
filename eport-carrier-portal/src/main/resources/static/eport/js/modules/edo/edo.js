@@ -110,15 +110,15 @@ function searchDo() {
 }
 
 function formatToYDM(date) {
-  if(date == null || date == undefined) {
-	return "-";
+  if (date == null || date == undefined) {
+    return "-";
   }
   return date.split("/").reverse().join("/");
 }
 
 function formatToYDMHMS(date) {
-  if(date == null || date == undefined) {
-	return "-";
+  if (date == null || date == undefined) {
+    return "-";
   }
   let temp = date.substring(0, 10);
   return temp.split("-").reverse().join("/") + date.substring(10, 19);
@@ -275,8 +275,7 @@ function multiUpdateEdo() {
   }
   for (let i = 0; i < rows.length; i++) {
     let row = rows[i];
-    if(row.status == '3')
-    {
+    if (row.status == '3') {
       $.modal.alertError("Quý khách đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
       return;
     }
@@ -292,7 +291,6 @@ $(".c-search-box-vessel").select2({
   theme: "bootstrap",
   placeholder: "Vessel",
   allowClear: true,
-  minimumInputLength: 2,
   ajax: {
     url: PREFIX + "/getVessel",
     dataType: "json",
@@ -338,7 +336,6 @@ $(".c-search-box-vessel-code").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-
       })
       return {
         results: results,
@@ -358,7 +355,7 @@ $(".c-search-box-voy-no").select2({
     data: function (params) {
       return {
         keyString: params.term,
-        vessel : edo.vessel,
+        vessel: edo.vessel,
       };
     },
     processResults: function (data) {
@@ -390,7 +387,6 @@ $(".c-search-box-vessel-code").change(function () {
   loadTable(edo);
 });
 $(".c-search-box-voy-no").change(function () {
-  edo = new Object();
   edo.voyNo = $(this).text().trim();
   $(this).text(null);
   loadTable(edo);
@@ -399,11 +395,11 @@ $(".c-search-box-voy-no").change(function () {
 $(".pagination-info").hide();
 
 function generatePDF() {
-	console.log(bill)
-	if(!bill){
-		$.modal.alertError("Bạn chưa chọn Bill!");
-		return
-	}
-    $.modal.openTab("In phiếu", ctx +"edo/print/bill/" + bill);
-	
+  console.log(bill)
+  if (!bill) {
+    $.modal.alertError("Bạn chưa chọn Bill!");
+    return
+  }
+  $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + bill);
+
 }

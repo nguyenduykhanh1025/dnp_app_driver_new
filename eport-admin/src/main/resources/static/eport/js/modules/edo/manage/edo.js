@@ -62,6 +62,7 @@ function loadTable(edo) {
     url: PREFIX + "/billNo",
     method: "POST",
     singleSelect: true,
+    height: $(document).height() - 115,
     clientPaging: true,
     pagination: true,
     pageSize: 20,
@@ -100,12 +101,13 @@ function loadTableByContainer(billOfLading) {
     url: PREFIX + "/edo",
     method: "POST",
     singleSelect: true,
+    height: $(document).height() - 115,
     clientPaging: true,
     pagination: true,
     pageSize: 20,
     nowrap: false,
     striped: true,
-    rownumbers:true,
+    rownumbers: true,
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
       if (billOfLading == null) {
@@ -148,8 +150,8 @@ function searchDo() {
 }
 
 function formatToYDM(date) {
-  if(date == null || date == undefined) {
-	return "-";
+  if (date == null || date == undefined) {
+    return "-";
   }
   return date.split("-").reverse().join("-");
 }
@@ -161,7 +163,7 @@ function formatAction(value, row, index) {
 }
 
 function viewHistoryCont(id) {
-  $.modal.openWithOneButton('Lịch sử thay đổi thông tin',PREFIX + "/history/" + id,1000,400);
+  $.modal.openWithOneButton('Lịch sử thay đổi thông tin', PREFIX + "/history/" + id, 1000, 400);
 }
 
 function getSelectedRow() {
@@ -222,9 +224,9 @@ function searchInfoEdo() {
 
 
 function formatToYDMHMS(date) {
-	if(date == null || date == undefined) {
-		return "-";
-	}
+  if (date == null || date == undefined) {
+    return "-";
+  }
   let temp = date.substring(0, 10);
   return temp.split("-").reverse().join("/") + date.substring(10, 19);
 }
@@ -236,7 +238,7 @@ function formatStatus(value) {
     case '2':
       return "<span class='label label-success'>Đã làm lệnh</span>";
     case '3':
-    return "<span class='label label-success'>Gate-in</span>";
+      return "<span class='label label-success'>Gate-in</span>";
   }
 }
 
@@ -250,10 +252,10 @@ laydate.render({
 });
 
 
-$("#carrierCode").change(function() {
-   let edo = new Object();
-   edo.carrierCode = this.value;
-   loadTable(edo);
+$("#carrierCode").change(function () {
+  let edo = new Object();
+  edo.carrierCode = this.value;
+  loadTable(edo);
 });
 
 
@@ -305,7 +307,7 @@ $(".c-search-box-vessel-code").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
+
       })
       return {
         results: results,
@@ -325,7 +327,7 @@ $(".c-search-box-voy-no").select2({
     data: function (params) {
       return {
         keyString: params.term,
-        vessel : edo.vessel,
+        vessel: edo.vessel,
       };
     },
     processResults: function (data) {
@@ -335,7 +337,7 @@ $(".c-search-box-voy-no").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
+
       })
       return {
         results: results,
@@ -363,7 +365,7 @@ $(".c-search-opr-code").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-        
+
       })
       return {
         results: results,
@@ -385,7 +387,6 @@ $(".c-search-box-vessel-code").change(function () {
   loadTable(edo);
 });
 $(".c-search-box-voy-no").change(function () {
-  edo = new Object();
   edo.voyNo = $(this).text().trim();
   $(this).text(null);
   loadTable(edo);
@@ -399,9 +400,9 @@ $(".c-search-opr-code").change(function () {
 
 
 function generatePDF() {
-	if(!bill){
-		$.modal.alertError("Bạn chưa chọn Lô!");
-		return
-	}
-    $.modal.openTab("In phiếu", ctx +"edo/print/bill/" + bill);
+  if (!bill) {
+    $.modal.alertError("Bạn chưa chọn Lô!");
+    return
+  }
+  $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + bill);
 }

@@ -19,7 +19,7 @@
             <pattern>${log.pattern}</pattern>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
+            <level>DEBUG</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
@@ -52,19 +52,16 @@
         </encoder>
     </appender>
     
-    <logger name="vn.com.irtech.eport" level="info" />
+    <logger name="vn.com.irtech.api" level="debug" />
     <logger name="org.springframework" level="warn" />
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="console" />
+        <appender-ref ref="file_info" />
     </root>
     
     <root level="info">
         <appender-ref ref="file_info" />
         <appender-ref ref="file_error" />
     </root>
-    
-    <logger name="eport-catos-user" level="info">
-        <appender-ref ref="eport-catos-user"/>
-    </logger>
 </configuration> 

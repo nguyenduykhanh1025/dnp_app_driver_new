@@ -70,8 +70,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
             <if test="consignee != null  and consignee != ''"> and (upper(consignee) like concat(concat('%', #{consignee}), '%')</if>
             <if test="containerNumber != null  and containerNumber != ''"> or upper(container_number) like concat(concat('%', #{containerNumber}), '%')</if>
-            <if test="vessel != null  and vessel != ''"> or upper(vessel) like concat(concat('%', #{vessel}), '%')</if>
-            <if test="voyNo != null  and voyNo != ''"> or upper(voy_no) like concat(concat('%', #{voyNo}), '%'))</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="sztp != null  and sztp != ''"> or upper(sztp) like concat(concat('%', #{sztp}), '%'))</if>
         </where>
             ORDER BY create_time DESC
@@ -261,7 +261,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="secureCode != null  and secureCode != ''"> and secure_code = #{secureCode}</if>
             <if test="releaseDate != null "> and release_date = #{releaseDate}</if>
             <if test="vesselNo != null  and vesselNo != ''"> and vessel_no = #{vesselNo}</if>
-             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
             <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
@@ -288,7 +288,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 </foreach>
             </if>
             <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
-             <if test="voyNo != null  and voyNo != ''"> and lower(voy_no) like concat(concat('%', #{voyNo}), '%')</if> 
+            <if test="voyNo != null  and voyNo != ''"> and lower(voy_no) like concat(concat('%', #{voyNo}), '%')</if> 
          </where>
      </select>
 
