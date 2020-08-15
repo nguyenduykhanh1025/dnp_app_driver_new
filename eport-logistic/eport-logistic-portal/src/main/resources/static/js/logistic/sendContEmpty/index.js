@@ -419,7 +419,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 100, 100, 120, 100, 200],
+        // colWidths: [50, 100, 100, 100, 120, 100, 200],
         filter: "true",
         columns: [
             {

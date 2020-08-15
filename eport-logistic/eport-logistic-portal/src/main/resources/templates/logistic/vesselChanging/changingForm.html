@@ -17,12 +17,6 @@
                         <input th:value="${bookingNo}" type="text" class="form-control" readonly />
                     </div>
                 </div>
-                <!-- <div class="form-group row">
-                    <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Booking No mới</label>
-                    <div class="col-md-10 col-sm-9 col-xs-7">
-                        <input id="bookingNo" name="bookingNo" type="text" class="form-control" />
-                    </div>
-                </div> -->
             </div>
             <div>
                 <div class="form-group row">
@@ -32,6 +26,14 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Tàu/chuyến cũ</label>
+                    <div class="col-md-10 col-sm-9 col-xs-7">
+                        <input th:value="${vessel}" type="text" class="form-control" readonly />
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="form-group row">
                     <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">
                         <span style="color: red;">*</span>Hãng tàu mới</label>
                     <div class="col-md-10 col-sm-9 col-xs-7">
@@ -39,14 +41,6 @@
                             <option th:each="opeCode, iterator : ${opeCodeList}" th:value=${opeCode} th:text=${opeCode}>
                             </option>
                         </select>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="form-group row">
-                    <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Tàu/chuyến cũ</label>
-                    <div class="col-md-10 col-sm-9 col-xs-7">
-                        <input th:value="${vessel}" type="text" class="form-control" readonly />
                     </div>
                 </div>
                 <div class="form-group row">

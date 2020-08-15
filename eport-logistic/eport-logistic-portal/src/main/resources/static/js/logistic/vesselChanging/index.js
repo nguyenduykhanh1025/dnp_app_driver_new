@@ -260,7 +260,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 100, 200, 200, 150, 220, 100, 100, 150, 150, 200],
+        // colWidths: [50, 100, 200, 200, 150, 220, 100, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -468,12 +468,12 @@ function finishForm(result) {
 
 function changeVessel() {
     if (getDataSelectedFromTable()) {
-        $.modal.openCustomForm("Gia hạn lệnh", prefix + "/shipment-detail-ids/" + shipmentDetailIds + "/form", 800, 380);
+        $.modal.openCustomForm("Đổi Tàu/Chuyến", prefix + "/shipment-detail-ids/" + shipmentDetailIds + "/form", 800, 380);
     }
 }
 
 function otp(vessel) {
-    $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/shipment-detail-ids/" + shipmentDetailIds + "/vessel/" + vessel, 600, 350);
+    $.modal.openCustomForm("Xác Thực OTP", prefix + "/otp/shipment-detail-ids/" + shipmentDetailIds + "/vessel/" + vessel, 600, 350);
 }
 
 function finishVerifyForm(result) {

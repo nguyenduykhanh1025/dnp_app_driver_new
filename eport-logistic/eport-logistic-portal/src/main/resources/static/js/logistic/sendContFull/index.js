@@ -1,6 +1,6 @@
 var prefix = ctx + "logistic/send-cont-full";
 var interval, currentPercent, timeout;
-var dogrid = document.getElementById("container-grid"), hot;
+var dogrid = document.getElementById("container-grid"), hot, isDestroy = false;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
 var contList = [], temperatureDisable = [];
 var conts = '';
@@ -421,8 +421,11 @@ function temperatureRenderer(instance, td, row, col, prop, value, cellProperties
 
 function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'wgt' + row).addClass("htMiddle").addClass("htCenter");
-    let containerNo = hot.getDataAtCell(row, 1);
-    let sztp = hot.getDataAtCell(row, 2);
+    let containerNo, sztp;
+    if (!isDestroy) {
+        containerNo = hot.getDataAtCell(row, 2);
+        sztp = hot.getDataAtCell(row, 3);
+    }
     if (sourceData && sourceData.length >= row && sourceData[row].id) {
         value = '<a class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</a>';
     } else {
@@ -523,7 +526,7 @@ function configHandson() {
                     return "Ghi Chú";
             }
         },
-        colWidths: [50, 110, 100, 200, 200, 150, 220, 100, 100, 100, 150, 150, 200],
+        // colWidths: [50, 110, 100, 200, 200, 150, 220, 100, 100, 100, 150, 150, 200],
         filter: "true",
         columns: [
             {
@@ -828,9 +831,11 @@ function loadShipmentDetail(id) {
                     sourceData = sourceData.slice(0, rowAmount);
                 }
                 hot.destroy();
+                isDestroy = true;
                 configHandson();
                 hot = new Handsontable(dogrid, config);
                 hot.loadData(sourceData);
+                isDestroy = false;
                 hot.render();
             }
         },
@@ -1354,5 +1359,5 @@ function openDetail(id, containerNo, sztp) {
     if (!id) {
         id = 0;
     }
-    $.modal.openCustomForm("Khai báo chi tiết", prefix + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 500);
+    $.modal.openCustomForm("Khai báo chi tiết", prefix + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 460);
 }

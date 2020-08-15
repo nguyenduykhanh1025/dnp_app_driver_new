@@ -150,7 +150,7 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 		shipmentDetail.setLogisticGroupId(getUser().getGroupId());
 		shipmentDetail.setProcessStatus("Y");
 		shipmentDetail.setFinishStatus("N");
-		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailListForSendFReceiveE(shipmentDetail);
 		AjaxResult ajaxResult = AjaxResult.success();
 		ajaxResult.put("shipmentDetails", shipmentDetails);
 		return ajaxResult;
