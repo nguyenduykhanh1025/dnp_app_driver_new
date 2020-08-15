@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Khai báo chung</title>
     <th:block th:include="include :: header('Khai báo chung')" />
-    <th:block th:include="include :: handsontable-css" />
     <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
     <link rel="stylesheet" th:href="@{/css/logistic/detail.css}" />
 </head>
@@ -16,8 +15,7 @@
     <div class="container-fluid">
         <div class="form-horizontal mt10">
             <div class="form-group col-sm-6">
-                <label class="control-label col-sm-4 col-xs-6" for="cont"><b class="text-black">Số
-                        container:</b></label>
+                <label class="control-label col-sm-4 col-xs-6" for="cont"><b class="text-black">Số container:</b></label>
                 <div class="col-sm-8 col-xs-6">
                     <input type="text" class="form-control" id="containerNo" readonly />
                 </div>
@@ -149,7 +147,7 @@
                                         hiểm:</b></label>
                                 <div class="col-sm-3 col-xs-2"><input type="radio" name="normal" />&nbsp;Cont bình
                                     thường</div>
-                                <div class="col-sm-2 col-xs-2"><input type="radio" name="normal" />&nbsp;Cont nguy hiểm
+                                <div class="col-sm-3 col-xs-3"><input type="radio" name="normal" />&nbsp;Cont nguy hiểm
                                 </div>
                             </div>
                             <div class="col-xs-12 p5" style="border-bottom: 1px dashed #ccc;">
@@ -198,7 +196,6 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: handsontable-js" />
     <script type="text/javascript" th:inline="javascript">
         var containerNo = /*[[${containerNo}]]*/;
         var sztp = /*[[${sztp}]]*/;

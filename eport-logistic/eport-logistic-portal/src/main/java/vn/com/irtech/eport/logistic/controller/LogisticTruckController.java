@@ -73,9 +73,6 @@ public class LogisticTruckController extends LogisticBaseController
     {
     	logisticTruck.setLogisticGroupId(getUser().getGroupId());
     	logisticTruck.setPlateNumber(logisticTruck.getPlateNumber().trim().toUpperCase());
-    	if(logisticTruckService.checkPlateNumberUnique(logisticTruck.getPlateNumber()) > 0) {
-    		error("Biển số xe này đã tồn tại!");
-    	}
     	logisticTruck.setCreateBy(getUser().getFullName());
         return toAjax(logisticTruckService.insertLogisticTruck(logisticTruck));
     }
@@ -101,7 +98,7 @@ public class LogisticTruckController extends LogisticBaseController
     {
     	logisticTruck.setPlateNumber(logisticTruck.getPlateNumber().trim().toUpperCase());
     	if(logisticTruckService.checkPlateNumberUnique(logisticTruck.getPlateNumber()) > 1) {
-    		error("Biển số xe này đã tồn tại!");
+    		return error("Biển số xe này đã tồn tại!");
     	}
         return toAjax(logisticTruckService.updateLogisticTruck(logisticTruck));
     }
@@ -179,5 +176,14 @@ public class LogisticTruckController extends LogisticBaseController
     	logisticTruck.setDelFlag(false);
     	logisticTruck.setType("1");
     	return logisticTruckService.selectLogisticTruckList(logisticTruck);
+    }
+    
+    @GetMapping("/unique/plate/{plate}")
+    @ResponseBody
+    public AjaxResult checkPlateUnique(@PathVariable("plate") String plate) {
+    	if(logisticTruckService.checkPlateNumberUnique(plate.trim().toUpperCase()) > 0) {
+    		return error("Biển số xe này đã tồn tại!");
+    	}
+    	return success();
     }
 }

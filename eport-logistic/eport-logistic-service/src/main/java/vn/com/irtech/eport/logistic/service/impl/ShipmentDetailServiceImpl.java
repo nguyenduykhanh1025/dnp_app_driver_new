@@ -962,6 +962,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     		processOrder.setOldVoyAge(shipmentDt.getVoyNo());
     		processOrder.setVessel(vessel);
     		processOrder.setVoyage(voyage);
+    		processOrder.setContNumber(shipmentDetails.size());
     		List<Long> shipmentDetailIds = new ArrayList<>();
     		for (ShipmentDetail shipmentDetail : shipmentDetails) {
     			shipmentDetail.setVslNm(vessel);
@@ -994,7 +995,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     	String currentOrderNo = shipmentDetails.get(0).getOrderNo();
     	List<ShipmentDetail> shipmentDetailList = new ArrayList<>();
     	for (ShipmentDetail shipmentDetail : shipmentDetails) {
-    		if (!currentOrderNo.equals(shipmentDetail.getOrderNo())) {
+    		if (currentOrderNo.equals(shipmentDetail.getOrderNo())) {
     			shipmentDetailList.add(shipmentDetail);
     		} else {
     			serviceRobotReqs.add(separateExtensionOrderByOrderNo(shipmentDetailList, expiredDem, groupId));
@@ -1014,6 +1015,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     	processOrder.setLogisticGroupId(groupId);
     	processOrder.setShipmentId(shipmentDetails.get(0).getShipmentId());
     	processOrder.setOrderNo(shipmentDetails.get(0).getOrderNo());
+    	processOrder.setContNumber(shipmentDetails.size());
     	List<Long> shipmentDetailIds = new ArrayList<>();
     	for (ShipmentDetail shipmentDetail : shipmentDetails) {
     		shipmentDetailIds.add(shipmentDetail.getId());

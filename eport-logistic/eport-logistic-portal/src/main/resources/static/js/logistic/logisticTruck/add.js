@@ -5,7 +5,16 @@ $("#form-truck-add").validate({
 
 function submitHandler() {
     if ($.validate.form()) {
-    	save(prefix + "/add", $('#form-truck-add').serialize())
+        $.ajax({
+            url: prefix + "/unique/plate/" + $('input[name=plateNumber]').val(),
+            method: 'GET'
+        }).done(function(res) {
+            if (res.code == 0) {
+                save(prefix + "/add", $('#form-truck-add').serialize())
+            } else {
+                $.modal.msgError(res.msg);
+            }
+        });
     }
 }
 
