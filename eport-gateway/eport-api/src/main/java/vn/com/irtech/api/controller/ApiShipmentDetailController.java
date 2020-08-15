@@ -162,4 +162,18 @@ public class ApiShipmentDetailController {
 	public String checkContainerStatus(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
 		return shipmentDetailDao.checkContainerStatus(shipmentDetailEntity);
 	}
+	
+	@GetMapping("/shipmentDetail/block/list")
+	public List<String> getBlockList(){
+		return shipmentDetailDao.getBlockList();
+	}
+	
+	@PostMapping("/shipmentDetail/check/reserved")
+	public Boolean checkContReserved(@RequestBody ShipmentDetailEntity shipmentDetailEntity) {
+		ShipmentDetailEntity ship = shipmentDetailDao.checkContReserved(shipmentDetailEntity);
+		if(ship != null) {
+			return true;
+		}
+		return false;
+	}
 }

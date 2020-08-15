@@ -76,4 +76,14 @@ public interface ICatosApiService {
 	 * input: containerNo, blNo, bookingNo, vslNm, voyNo, sztp, opeCode, fe
 	 */
 	public String checkContainerStatus(ShipmentDetail shipmentDetail);
+	
+	/***
+	 * get block list
+	 */
+	public List<String> getBlockList();
+	
+	/***
+	 * input: containerNo, bookingNo, vslNm, voyNo, sztp, opeCode
+	 */
+	public Boolean checkContReserved(ShipmentDetail shipmentDetail);
 }

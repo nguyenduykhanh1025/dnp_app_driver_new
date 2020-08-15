@@ -446,9 +446,9 @@ public class LogisticCommonController extends LogisticBaseController {
 		}
 		return error();
 	}
-//	@GetMapping("/abc")
-//	@ResponseBody
-//	public List<ProcessBill> abc(){
-//		return processBillService.getUnitBillList("INV20200811C013258");
-//	}
+	@PostMapping("/abc")
+	@ResponseBody
+	public Boolean abc(@RequestBody ShipmentDetail shipmentDetail){
+		return catosApiService.checkContReserved(shipmentDetail);
+	}
 }
