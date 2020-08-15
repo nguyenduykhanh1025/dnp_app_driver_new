@@ -14,7 +14,7 @@ import vn.com.irtech.eport.system.mapper.SysConfigMapper;
 import vn.com.irtech.eport.system.service.ISysConfigService;
 
 /**
- * 参数配置 服务层实现
+ * Parameter configuration service layer implementation
  * 
  * @author admin
  */
@@ -25,7 +25,7 @@ public class SysConfigServiceImpl implements ISysConfigService
     private SysConfigMapper configMapper;
 
     /**
-     * 项目启动时，初始化参数到缓存
+     * When the project starts, initialize the parameters to the cache
      */
     @PostConstruct
     public void init()
@@ -38,10 +38,10 @@ public class SysConfigServiceImpl implements ISysConfigService
     }
 
     /**
-     * 查询参数配置信息
+     * Query parameter configuration information
      * 
-     * @param configId 参数配置ID
-     * @return 参数配置信息
+     * @param configId Parameter configuration ID
+     * @return Parameter configuration information
      */
     @Override
     public SysConfig selectConfigById(Long configId)
@@ -52,10 +52,10 @@ public class SysConfigServiceImpl implements ISysConfigService
     }
 
     /**
-     * 根据键名查询参数配置信息
+     * Query parameter configuration information based on key name
      * 
-     * @param configKey 参数key
-     * @return 参数键值
+     * @param configKey Parameter key
+     * @return Parameter key value
      */
     @Override
     public String selectConfigByKey(String configKey)
@@ -77,10 +77,10 @@ public class SysConfigServiceImpl implements ISysConfigService
     }
 
     /**
-     * 查询参数配置列表
+     * Query parameter configuration list
      * 
-     * @param config 参数配置信息
-     * @return 参数配置集合
+     * @param config Parameter configuration information
+     * @return Parameter configuration collection
      */
     @Override
     public List<SysConfig> selectConfigList(SysConfig config)
@@ -89,10 +89,10 @@ public class SysConfigServiceImpl implements ISysConfigService
     }
 
     /**
-     * 新增参数配置
+     * New parameter configuration
      * 
-     * @param config 参数配置信息
-     * @return 结果
+     * @param config Parameter configuration information
+     * @return result
      */
     @Override
     public int insertConfig(SysConfig config)
@@ -106,10 +106,10 @@ public class SysConfigServiceImpl implements ISysConfigService
     }
 
     /**
-     * 修改参数配置
+     * Modify parameter configuration
      * 
-     * @param config 参数配置信息
-     * @return 结果
+     * @param config Parameter configuration information
+     * @return result
      */
     @Override
     public int updateConfig(SysConfig config)
@@ -123,10 +123,10 @@ public class SysConfigServiceImpl implements ISysConfigService
     }
 
     /**
-     * 批量删除参数配置对象
+     * Batch delete parameter configuration objects
      * 
-     * @param ids 需要删除的数据ID
-     * @return 结果
+     * @param ids ID of the data to be deleted
+     * @return result
      */
     @Override
     public int deleteConfigByIds(String ids)
@@ -141,7 +141,7 @@ public class SysConfigServiceImpl implements ISysConfigService
     }
 
     /**
-     * Clear缓存数据
+     * Clear cache data
      */
     public void clearCache()
     {
@@ -149,10 +149,10 @@ public class SysConfigServiceImpl implements ISysConfigService
     }
 
     /**
-     * 校验参数键名是否唯一
+     * Verify that the parameter key name is unique
      * 
-     * @param config 参数配置信息
-     * @return 结果
+     * @param config Parameter configuration information
+     * @return result
      */
     @Override
     public String checkConfigKeyUnique(SysConfig config)
@@ -167,9 +167,9 @@ public class SysConfigServiceImpl implements ISysConfigService
     }
 
     /**
-     * 获取cache name
+     * Get cache name
      * 
-     * @return 缓存名
+     * @return Cache name
      */
     private String getCacheName()
     {
@@ -177,10 +177,10 @@ public class SysConfigServiceImpl implements ISysConfigService
     }
 
     /**
-     * 设置cache key
+     * Set cache key
      * 
-     * @param configKey 参数键
-     * @return 缓存键key
+     * @param configKey Parameter key
+     * @return Cache key
      */
     private String getCacheKey(String configKey)
     {
