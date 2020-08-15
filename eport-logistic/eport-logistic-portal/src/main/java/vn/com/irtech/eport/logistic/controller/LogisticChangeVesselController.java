@@ -23,11 +23,13 @@ import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
@@ -51,6 +53,9 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	
 	@Autowired
 	private MqttService mqttService;
+	
+	@Autowired
+	private IProcessOrderService processOrderService;
 	
 	/**
 	 * Get main view for change vessel
@@ -237,5 +242,23 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 			return ajaxResult;
 		}
 		return AjaxResult.warn("Không tìm thấy tàu/chuyến nào cho hãng tàu này.");
+	}
+	
+	@GetMapping("/process-order/{processOrderId}/containers/failed")
+	@ResponseBody
+	public AjaxResult getListContainerFailed(@PathVariable Long processOrderId) {
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderId.toString());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			String containers = "";
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				if (!shipmentDetail.getVoyNo().equals(processOrder.getVoyage())) {
+					containers += shipmentDetail.getContainerNo() + ",";
+				}
+			}
+			containers.substring(0, containers.length()-1);
+			return success("Yêu cầu đổi tàu thực hiện đổi tàu của quý khách bị lỗi ở các container " + containers + ". Quý khách vui lòng thử lại hoặc liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
+		}
+		return error("Không tìm thấy dữ liệu.");
 	}
 }

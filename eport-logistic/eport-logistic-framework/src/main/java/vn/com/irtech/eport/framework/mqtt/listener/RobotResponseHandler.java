@@ -2,7 +2,9 @@ package vn.com.irtech.eport.framework.mqtt.listener;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -29,6 +31,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ProcessJsonData;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -71,6 +74,9 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	
 	@Autowired
 	private IShipmentService shipmentService;
+	
+	@Autowired
+	private ICatosApiService catosApiService;
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -179,9 +185,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				processBillService.saveProcessBillWithCredit(shipmentDetails, processOrder);
 			} else if (processOrder.getProcessData() != null) {
 				ProcessJsonData processJsonData = new Gson().fromJson(processOrder.getProcessData(), ProcessJsonData.class);
-				// TODO : save bill 
 				processBillService.saveShiftingBillWithCredit(processJsonData.getShipmentDetailIds(), processOrder);
-				
 				for (Long shipmentDetailId : processJsonData.getPrePickupContIds()) {
 					ShipmentDetail prePickupShipmentDetail = new ShipmentDetail();
 					prePickupShipmentDetail.setId(shipmentDetailId);
@@ -361,21 +365,37 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			processHistory.setResult("S");
 		} else {
 			// Send notification for om
-			try {
-				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + receiptId, configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + receiptId);
-			} catch (Exception e) {
-				logger.warn(e.getMessage());
-			}
+//			try {
+//				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + receiptId, configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + receiptId);
+//			} catch (Exception e) {
+//				logger.warn(e.getMessage());
+//			}
 
 			// INIT PROCESS ORDER TO UPDATE
+			
 			processOrder = new ProcessOrder();
 			processOrder.setId(id);
 			processOrder.setResult("F"); // RESULT FAILED
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrder.setRunnable(false);
 			processOrderService.updateProcessOrder(processOrder);
 
 			// SET RESULT FOR HISTORY FAILED
 			processHistory.setResult("F");
+			ProcessOrder processOrderRes = processOrderService.selectProcessOrderById(id);
+			ProcessJsonData processJsonData = new Gson().fromJson(processOrderRes.getProcessData(), ProcessJsonData.class);
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(id.toString());
+			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+				for (ShipmentDetail shipmentDetail : shipmentDetails) {
+					if (!catosApiService.checkContReserved(shipmentDetail)) {
+						shipmentDetail.setVslNm(processOrder.getVessel());
+						shipmentDetail.setVoyNo(processOrder.getVoyage());
+						shipmentDetail.setVslName(processJsonData.getVslName());
+						shipmentDetail.setVoyCarrier(processJsonData.getVoyCarrier());
+						shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					}
+				}
+			}
 		}
 		processHistoryService.insertProcessHistory(processHistory);
 	}
@@ -407,17 +427,18 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			processHistory.setResult("S");
 		} else {
 			// Send notification for om
-			try {
-				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + receiptId, configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + receiptId);
-			} catch (Exception e) {
-				logger.warn(e.getMessage());
-			}
+//			try {
+//				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + receiptId, configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + receiptId);
+//			} catch (Exception e) {
+//				logger.warn(e.getMessage());
+//			}
 
 			// INIT PROCESS ORDER TO UPDATE
 			processOrder = new ProcessOrder();
 			processOrder.setId(id);
 			processOrder.setResult("F"); // RESULT FAILED
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrder.setRunnable(false);
 			processOrderService.updateProcessOrder(processOrder);
 
 			// SET RESULT FOR HISTORY FAILED

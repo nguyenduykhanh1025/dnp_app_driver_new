@@ -365,6 +365,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				}
 			}
 			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails, shipment, creditFlag);
+			
 			if (serviceRobotReqs != null) {
 				List<Long> processIds = new ArrayList<>();
 				boolean robotBusy = false;
