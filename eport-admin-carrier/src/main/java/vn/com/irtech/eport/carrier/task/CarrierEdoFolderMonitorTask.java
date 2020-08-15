@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -19,7 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.google.common.io.Files;
@@ -38,8 +42,8 @@ import vn.com.irtech.eport.carrier.service.IEdoService;
 public class CarrierEdoFolderMonitorTask {
 
 	private static final Logger logger = LoggerFactory.getLogger(CarrierEdoFolderMonitorTask.class);
-	
-	private static final String BACKUP_EXTENSION = ".backup";
+
+	private BlockingQueue<String> ediFileQueue = new LinkedBlockingQueue<String>();
 
 	@Autowired
 	private IEdoService edoService;
@@ -53,63 +57,75 @@ public class CarrierEdoFolderMonitorTask {
 	@Autowired
 	private ICarrierGroupService carrierGroupService;
 
-//	@Autowired
-//	private ConfigService configService;
+	@Autowired
+	@Qualifier("threadPoolTaskExecutor")
+	private TaskExecutor taskExecutor;
 
 	@Value("${eport.edi.rootPath}")
 	private String edoRootPath;
 
 	@Value("${eport.edi.backupPath}")
 	private String edoBackupPath;
-	
+
 	@Value("${eport.edi.interval}")
 	private long interval = 3000;
-	
+
 	@Value("${eport.edi.enabled}")
 	private boolean enabled = false;
 
 	private FileAlterationMonitor monitor;
 
 	@PostConstruct
-	public void init() throws Exception {
-		if(enabled) {
+	private void init() throws Exception {
+		if (enabled) {
 			logger.info(String.format("---- Begin Monitor EDI [%s] ------", edoRootPath));
-	        final File directory = new File(edoRootPath);
-	        FileAlterationObserver fao = new FileAlterationObserver(directory);
-	        FileAlterationListener listener = new FileAlterationListenerAdaptor() {
-	            @Override
-	            public void onFileCreate(File file) {
-	            	// "file" is the reference to the newly created file
-                    logger.debug("Edi File created: "+ file.getAbsolutePath());
-                    try {
-						readEdiFile(file);
-					} catch (IOException e) {
-						e.printStackTrace();
-						logger.error("Error while read EDI File: " + e.getMessage());
-					}
-	            }
-	         
-	            @Override
-	            public void onFileDelete(File file) {
-	                // code for processing deletion event
+			final File directory = new File(edoRootPath);
+			FileAlterationObserver fao = new FileAlterationObserver(directory);
+			FileAlterationListener listener = new FileAlterationListenerAdaptor() {
+				@Override
+				public void onFileCreate(File file) {
+					logger.debug("New Edi: " + file.getAbsolutePath());
+					ediFileQueue.offer(file.getAbsolutePath());
+				}
+
+				@Override
+				public void onFileDelete(File file) {
+					// code for processing deletion event
 //	            	logger.info("File deleted: "+ file.getAbsolutePath());
-	            }
-	         
-	            @Override
-	            public void onFileChange(File file) {
-	                // code for processing change event
-//	            	logger.info("File Changed: "+ file.getAbsolutePath());
-	            }
-	        };
-	        fao.addListener(listener);
-	        monitor = new FileAlterationMonitor(interval);
-	        monitor.addObserver(fao);
-	        monitor.start();
+				}
+
+				@Override
+				public void onFileChange(File file) {
+					logger.info("EDI Changed: " + file.getAbsolutePath());
+				}
+			};
+			fao.addListener(listener);
+			monitor = new FileAlterationMonitor(interval);
+			monitor.addObserver(fao);
+			monitor.start();
+
+			// Start thread to queue process
+			taskExecutor.execute(new Runnable() {
+				@Override
+				public void run() {
+					logger.info("-------------Start Queue EDO File-------------");
+					while (true) {
+						try {
+							String filePath = ediFileQueue.take();
+							logger.info("Connect To Acciss.");
+							readEdiFile(new File(filePath));
+						} catch (Exception e) {
+							e.printStackTrace();
+							logger.error("Error while read EDI file", e);
+						}
+					}
+				}
+			});
 		}
 	}
 
 	@PreDestroy
-	public void stop() {
+	private void stop() {
 		if (enabled) {
 			logger.info(String.format("---- Stop Monitor EDI [%s] ------", edoRootPath));
 			try {
@@ -120,17 +136,26 @@ public class CarrierEdoFolderMonitorTask {
 		}
 	}
 
+	/**
+	 * Put list file to file queue to process EDI
+	 * 
+	 * @param filePath
+	 */
+	public void offerQueue(String filePath) {
+		ediFileQueue.offer(filePath);
+	}
+
 	private void readEdiFile(File ediFile) throws IOException {
 		logger.info("Begin read edi file: " + ediFile.getAbsolutePath());
 		String groupCode = getCarrierCode(ediFile);
 		// Check if carrier code is not null
-		if(groupCode == null) {
+		if (groupCode == null) {
 			logger.error("Error when read EDI File. Carrier is NULL");
 			return;
 		}
 		// Query carrier group
 		CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupByGroupCode(groupCode);
-		if(carrierGroup == null) {
+		if (carrierGroup == null) {
 			logger.error("Error when read EDI File. Carrier Group is not exist: " + groupCode);
 			return;
 		}
@@ -143,20 +168,22 @@ public class CarrierEdoFolderMonitorTask {
 		Date timeNow = new Date();
 
 		// Create backup folder: $backupRootPath /{carrierCode}/YYYYMM
-		String backupFolder = edoBackupPath + File.separator + groupCode + File.separator + new SimpleDateFormat("yyyyMM").format(new Date());
+		String backupFolder = edoBackupPath + File.separator + groupCode + File.separator
+				+ new SimpleDateFormat("yyyyMM").format(new Date());
 		File backupDir = new File(backupFolder);
-		if(!backupDir.exists()) {
+		if (!backupDir.exists()) {
 			backupDir.mkdirs();
 		}
 		// backup file path: backupFolder / edi.file.backup
-		File backupFile = new File(backupFolder + File.separator + ediFile.getName() + BACKUP_EXTENSION);
+		File backupFile = new File(backupFolder + File.separator + ediFile.getName());
 		// If previous version is exist, rename with timestamp
-		if(backupFile.exists()) {
-			backupFile = new File(backupFolder + File.separator + ediFile.getName() + BACKUP_EXTENSION + "." + String.valueOf(System.currentTimeMillis()));
+		if (backupFile.exists()) {
+			backupFile = new File(backupFolder + File.separator + ediFile.getName() + "."
+					+ String.valueOf(System.currentTimeMillis()));
 		}
 		// Move file to backup folder
 		Files.move(ediFile, backupFile);
-		
+
 		// Insert to edo table
 		List<Edo> listEdo = edoService.readEdi(text);
 		for (Edo edo : listEdo) {
@@ -204,11 +231,11 @@ public class CarrierEdoFolderMonitorTask {
 	 * @return
 	 */
 	private String getCarrierCode(File f) {
-		if(f != null && f.exists()) {
-			// Folder structure  /OPE0001/EDI/file.edi
+		if (f != null && f.exists()) {
+			// Folder structure /OPE0001/EDI/file.edi
 			String folderName = f.getParentFile().getParentFile().getName(); // YML or YML0001
 			// Get first 3 CHAR
-			if(folderName != null) {
+			if (folderName != null) {
 				if (folderName.length() > 3) {
 					return folderName.substring(0, 3);
 				}
