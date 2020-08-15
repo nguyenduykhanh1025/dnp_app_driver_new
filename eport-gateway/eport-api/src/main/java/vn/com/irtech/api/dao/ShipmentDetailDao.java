@@ -59,4 +59,8 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	
 	public String checkContainerStatus(ShipmentDetailEntity shipmentDetailEntity);
 	
+	public List<String> getBlockList();
+	
+	public ShipmentDetailEntity checkContReserved(ShipmentDetailEntity shipmentDetailEntity);
+	
 }
