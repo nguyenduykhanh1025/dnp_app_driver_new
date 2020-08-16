@@ -529,8 +529,17 @@ function onMessageReceived(payload) {
 
         if (message.code == 0){
             $.modal.alertSuccess(message.msg);
-        }else{
-            $.modal.alertWarning("Yêu cầu của quý khách đang được tiếp nhận. bộ phận thủ tục đang xử lý, xin quý khách vui lòng đợi.");
+        } else {
+            $.ajax({
+                url: prefix + "/process-order/" + currentProcessId + "/containers/failed",
+                method: "GET"
+            }).done(function(res) {
+                if (res.code == 0) {
+                    $.modal.alertWarning(res.msg);
+                } else {
+                    $.modal.alertError("Có lỗi xảy ra, vui lòng liên hệ admin.");
+                }
+            });
         }
 
         // Close loading
