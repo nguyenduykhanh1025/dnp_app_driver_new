@@ -18,6 +18,7 @@ import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.mapper.OtpCodeMapper;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.system.service.ISysConfigService;
 
 /**
  * otp CodeService Business Processing
@@ -32,6 +33,9 @@ public class OtpCodeServiceImpl implements IOtpCodeService {
 	
     @Autowired
     private OtpCodeMapper sysOtpMapper;
+    
+    @Autowired
+    private ISysConfigService configService;
 
      /**
      * Get otp Code
@@ -147,6 +151,8 @@ public class OtpCodeServiceImpl implements IOtpCodeService {
 				+ "<userName>danangportguitin</userName>"	// Username
 				+ "<password>568926</password>"			// Password
 				+ "</SendSMS></soap12:Body></soap12:Envelope>";	// End
+//		String xml = configService.selectConfigByKey("otp.config.xml");
+//		xml = xml.replace("{mobilePhone}", mobilePhone).replace("{content}", content);
 		con.setDoOutput(true);
 		DataOutputStream wr = new DataOutputStream(con.getOutputStream());
 		wr.writeBytes(xml);

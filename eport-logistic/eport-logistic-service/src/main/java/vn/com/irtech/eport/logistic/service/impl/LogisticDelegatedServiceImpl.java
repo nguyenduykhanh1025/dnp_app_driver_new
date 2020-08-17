@@ -96,4 +96,15 @@ public class LogisticDelegatedServiceImpl implements ILogisticDelegatedService
     {
         return logisticDelegatedMapper.deleteLogisticDelegatedById(id);
     }
+    
+    /**
+     * Update Del Flag By Group Ids
+     * 
+     * @param ids
+     * @return
+     */
+    @Override
+    public int updateDelFlgByGroupIds(String ids) {
+    	return logisticDelegatedMapper.updateDelFlgByGroupIds(Convert.toStrArray(ids));
+    }
 }

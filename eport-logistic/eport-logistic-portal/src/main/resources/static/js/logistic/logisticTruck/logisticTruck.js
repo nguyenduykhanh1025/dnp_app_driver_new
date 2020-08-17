@@ -80,10 +80,10 @@ function formatType(value) {
     return "Rơ mooc";
 }
 function formatAction(value, row, index) {
-	var actions = [];
-    actions.push('<a class="btn btn-success btn-xs" onclick="editt(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
-    actions.push('<a class="btn btn-danger btn-xs " onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
-    return actions.join('');
+	let actions = [];
+  actions.push('<a class="btn btn-success btn-xs" onclick="editt(\'' + row.id + '\')"><i class="fa fa-edit"></i>Sửa</a> ');
+  actions.push('<a class="btn btn-danger btn-xs " onclick="remove(\'' + row.id + '\')"><i class="fa fa-remove"></i>Xóa</a>');
+  return actions.join('');
 }
 //
 function remove(id){
