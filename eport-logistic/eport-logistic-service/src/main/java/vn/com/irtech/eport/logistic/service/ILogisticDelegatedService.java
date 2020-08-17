@@ -59,4 +59,12 @@ public interface ILogisticDelegatedService
      * @return result
      */
     public int deleteLogisticDelegatedById(Long id);
+    
+    /**
+     * Update Del Flag By Group Ids
+     * 
+     * @param ids
+     * @return
+     */
+    public int updateDelFlgByGroupIds(String ids);
 }

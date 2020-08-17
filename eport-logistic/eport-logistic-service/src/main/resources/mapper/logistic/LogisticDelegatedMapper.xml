@@ -98,4 +98,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <update id="updateDelFlgByGroupIds" parameterType="String">
+        update logistic_delegated set del_flg = 1 where logistic_group_id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

@@ -59,4 +59,12 @@ public interface LogisticDelegatedMapper
      * @return result
      */
     public int deleteLogisticDelegatedByIds(String[] ids);
+    
+    /**
+     * Update Del Flag By Group Ids
+     * 
+     * @param ids
+     * @return
+     */
+    public int updateDelFlgByGroupIds(String[] ids);
 }
