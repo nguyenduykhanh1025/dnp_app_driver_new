@@ -29,9 +29,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="logisticName"    column="logistic_name"    />
         <result property="vslNm"    column="vsl_nm"    />
         <result property="voyNo"    column="voy_no"    />
+        <result property="orderNumber"    column="order_number"    />
     </resultMap>
     <sql id="selectShipmentVo">
-        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, address, container_amount, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, create_by, create_time, update_by, update_time from shipment
+        select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, address, container_amount, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, order_number, create_by, create_time, update_by, update_time from shipment
     </sql>
 
     <select id="selectShipmentList" parameterType="Shipment" resultMap="ShipmentResult">
@@ -87,6 +88,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contSupplyStatus != null">cont_supply_status,</if>
             <if test="referenceNo != null  and referenceNo != ''">reference_no,</if>
             <if test="status != null  and status != ''">status,</if>
+            <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -108,6 +110,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contSupplyStatus != null">#{contSupplyStatus},</if>
             <if test="referenceNo != null  and referenceNo != ''">#{referenceNo},</if>
             <if test="status != null  and status != ''">#{status},</if>
+            <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -132,6 +135,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="contSupplyStatus != null">cont_supply_status = #{contSupplyStatus},</if>
             <if test="referenceNo != null  and referenceNo != ''"> and reference_no = #{referenceNo},</if>
             <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="orderNumber != null  and orderNumber != ''">order_number = #{orderNumber},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
