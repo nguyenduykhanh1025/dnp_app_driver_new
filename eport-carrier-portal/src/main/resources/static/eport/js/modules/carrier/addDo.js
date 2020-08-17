@@ -71,7 +71,7 @@ config = {
     "Số seal <br> Seal No",
     "Ghi chú",
   ],
-  colWidths: [10, 10, 10, 20, 8, 15, 8, 8, 8, 10, 10, 15],
+  colWidths: [10, 10, 10, 20, 12, 15, 8, 8, 8, 10, 10, 15],
   filter: "true",
   columns: [
     {
