@@ -101,6 +101,8 @@ public class Shipment extends BaseEntity
     private MultipartFile[] images;
 
     private List<String> attachedImageUrls;
+    
+    private String orderNumber;
 
     public void setId(Long id) {
         this.id = id;
@@ -278,7 +280,15 @@ public class Shipment extends BaseEntity
         this.images = images;
     }
 
-    @Override
+    public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
@@ -307,6 +317,7 @@ public class Shipment extends BaseEntity
             .append("voyNo", getVoyNo())
             .append("fromDate", getFromDate())
             .append("toDate", getToDate())
+            .append("orderNumber", getOrderNumber())
             .toString();
     }
 }

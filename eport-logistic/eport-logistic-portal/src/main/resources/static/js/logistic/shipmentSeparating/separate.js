@@ -71,7 +71,7 @@ function loadTable(dataSearch) {
 $("#btnSearch").on("click", function () {
   let dataSearch = {
     billOfLading: $("input[name='billOfLading']").val(),
-    consignee: $("input[name='consignee']").val(),
+    consignee: $("input[name='orderNumber']").val(),
     carrierCode: $("input[name='carrierCode']").val(),
     expiredDem: $("input[name='expiredDem']").val(),
   };

@@ -128,6 +128,14 @@ public class Edo extends BaseEntity {
 	@Excel(name = "House bill id")
 	private Long houseBillId;
 
+	/** Tax code */
+	@Excel(name = "TaxCode")
+	private String taxCode;
+
+	/** Consignee by tax code */
+	@Excel(name = "Consignee Tax Code")
+	private String consigneeByTaxCode;
+
 	public String getPolName() {
 		return polName;
 	}
@@ -160,16 +168,14 @@ public class Edo extends BaseEntity {
 		this.pod = pod;
 	}
 
-	public void setFileCreateTime(Date fileCreateTime)
-	{
+	public void setFileCreateTime(Date fileCreateTime) {
 		this.fileCreateTime = fileCreateTime;
 	}
 
-	public Date getFileCreateTime()
-	{
+	public Date getFileCreateTime() {
 		return fileCreateTime;
 	}
-	
+
 	public void setSztp(String sztp) {
 		this.sztp = sztp;
 	}
@@ -185,7 +191,6 @@ public class Edo extends BaseEntity {
 	public String getVesselNo() {
 		return vesselNo;
 	}
-
 
 	public void setNumberContainer(String numberContainer) {
 		this.numberContainer = numberContainer;
@@ -379,6 +384,22 @@ public class Edo extends BaseEntity {
 		this.houseBillId = houseBillId;
 	}
 
+	public String getTaxCode() {
+		return taxCode;
+	}
+
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
+	}
+
+	public String getConsigneeByTaxCode() {
+		return consigneeByTaxCode;
+	}
+
+	public void setConsigneeByTaxCode(String consigneeByTaxCode) {
+		this.consigneeByTaxCode = consigneeByTaxCode;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -390,7 +411,12 @@ public class Edo extends BaseEntity {
 				.append("secureCode", getSecureCode()).append("releaseDate", getReleaseDate())
 				.append("vessel", getVessel()).append("voyNo", getVoyNo()).append("status", getStatus())
 				.append("releaseStatus", getReleaseStatus()).append("createSource", getCreateSource())
-				.append("remark", getRemark()).append("delFlg", getDelFlg()).append("createBy", getCreateBy())
+				.append("remark", getRemark()).append("delFlg", getDelFlg())
+				.append("pol", getPol())
+				.append("pod", getPod())
+				.append("houseBillId", getHouseBillId())
+				.append("taxCode", getTaxCode())
+				.append("Consignee By TaxCode", getConsigneeByTaxCode())
 				.append("createTime", getCreateTime()).append("updateBy", getUpdateBy())
 				.append("updateTime", getUpdateTime()).append("fromDate", getFromDate()).append("toDate", getToDate())
 				.toString();

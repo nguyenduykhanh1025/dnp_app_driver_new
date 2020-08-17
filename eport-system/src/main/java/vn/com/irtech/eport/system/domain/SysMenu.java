@@ -63,8 +63,8 @@ public class SysMenu extends BaseEntity
         this.menuId = menuId;
     }
 
-    @NotBlank(message = "菜单名称不能为空")
-    @Size(min = 0, max = 50, message = "菜单名称长度不能超过50 ký tự")
+    @NotBlank(message = "Menu name cannot be empty")
+    @Size(min = 0, max = 50, message = "The length of the menu name cannot exceed 50 chars")
     public String getMenuName()
     {
         return menuName;
@@ -95,7 +95,7 @@ public class SysMenu extends BaseEntity
         this.parentId = parentId;
     }
 
-    @NotBlank(message = "显示顺序不能为空")
+    @NotBlank(message = "Display order cannot be empty")
     public String getOrderNum()
     {
         return orderNum;
@@ -106,7 +106,7 @@ public class SysMenu extends BaseEntity
         this.orderNum = orderNum;
     }
 
-    @Size(min = 0, max = 200, message = "请求地址不能超过200 ký tự")
+    @Size(min = 0, max = 200, message = "The requested address cannot exceed 200 chars")
     public String getUrl()
     {
         return url;
@@ -131,7 +131,7 @@ public class SysMenu extends BaseEntity
         this.target = target;
     }
 
-    @NotBlank(message = "菜单类型不能为空")
+    @NotBlank(message = "Menu type cannot be empty")
     public String getMenuType()
     {
         return menuType;
@@ -152,7 +152,7 @@ public class SysMenu extends BaseEntity
         this.visible = visible;
     }
 
-    @Size(min = 0, max = 100, message = "权限标识长度不能超过100 ký tự")
+    @Size(min = 0, max = 100, message = "The length of the authorization ID cannot exceed 100 chars")
     public String getPerms()
     {
         if (StringUtils.isEmpty(perms))
