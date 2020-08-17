@@ -449,9 +449,9 @@ public class LogisticCommonController extends LogisticBaseController {
 		}
 		return error();
 	}
-	@PostMapping("/abc")
-	@ResponseBody
-	public Boolean abc(@RequestBody ShipmentDetail shipmentDetail){
-		return catosApiService.checkContReserved(shipmentDetail);
-	}
+//	@GetMapping("/abc")
+//	@ResponseBody
+//	public Integer abc(){
+//		return catosApiService.checkTheNumberOfContainersNotOrderedForReceiveContEmpty("071005N", "22G0");
+//	}
 }

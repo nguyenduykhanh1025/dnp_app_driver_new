@@ -20,8 +20,6 @@ $(document).ready(function () {
     if (event.keyCode == 13) {
       edo.containerNumber = $("#searchAll").val().toUpperCase();
       edo.consignee = $("#searchAll").val().toUpperCase();
-      edo.vessel = $("#searchAll").val().toUpperCase();
-      edo.voyNo = $("#searchAll").val().toUpperCase();
       loadTableByContainer(bill);
     }
   });
@@ -64,6 +62,7 @@ function loadTable(edo) {
     singleSelect: true,
     height: $(document).height() - 115,
     clientPaging: true,
+    collapsible: true,
     pagination: true,
     pageSize: 20,
     onClickRow: function () {
@@ -81,6 +80,10 @@ function loadTable(edo) {
         accept: "text/plain",
         dataType: "text",
         data: JSON.stringify({
+          pageNum: param.page,
+          pageSize: param.rows,
+          orderByColumn: param.sort,
+          isAsc: param.order,
           data: edo,
         }),
         dataType: "json",

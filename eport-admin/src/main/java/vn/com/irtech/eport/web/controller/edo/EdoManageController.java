@@ -37,11 +37,6 @@ public class EdoManageController extends BaseController {
   @Autowired
   private IEdoService edoService;
 
-  private static final String EXPORT_SHEET_NAME = "EDI_INFO";
-
-  @Autowired
-  private ICarrierGroupService carrierGroupService;
-
   @Autowired
 	private IEdoAuditLogService edoAuditLogService;
 
@@ -53,7 +48,7 @@ public class EdoManageController extends BaseController {
   @PostMapping("/billNo")
   @ResponseBody
   public TableDataInfo billNo(@RequestBody PageAble<Edo> param) {
-    startPage();
+    startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
     Edo edo = param.getData();
     if (edo == null) {
       edo = new Edo();

@@ -49,8 +49,6 @@ $('#searchAll').keyup(function (event) {
   if (event.keyCode == 13) {
     edo.containerNumber = $('#searchAll').val().toUpperCase();
     edo.consignee = $('#searchAll').val().toUpperCase();
-    edo.vessel = $('#searchAll').val().toUpperCase();
-    edo.voyNo = $('#searchAll').val().toUpperCase();
     loadTable(edo)
   }
 
@@ -68,8 +66,6 @@ function searchInfoEdo() {
     loadTable(edo)
   };
   edo.containerNumber = $('#searchAll').val().toUpperCase();
-  edo.consignee = $('#searchAll').val().toUpperCase();
-  edo.vessel = $('#searchAll').val().toUpperCase();
   edo.voyNo = $('#searchAll').val().toUpperCase();
   loadTable(edo)
 }

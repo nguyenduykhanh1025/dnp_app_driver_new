@@ -86,4 +86,16 @@ public interface ICatosApiService {
 	 * input: containerNo, bookingNo, vslNm, voyNo, sztp, opeCode
 	 */
 	public Boolean checkContReserved(ShipmentDetail shipmentDetail);
+	
+	/***
+	 * check container amount have not ordered yet for receiveContEmpty
+	 * input: bookingNo, sztp
+	 */
+	public Integer checkTheNumberOfContainersNotOrderedForReceiveContEmpty(String bookingNo, String sztp);
+	
+	/***
+	 * check container amount have not ordered yet for sendContFull
+	 * input: bookingNo, sztp
+	 */
+	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(String bookingNo, String sztp);
 }

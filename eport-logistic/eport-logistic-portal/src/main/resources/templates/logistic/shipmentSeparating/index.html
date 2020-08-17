@@ -39,11 +39,10 @@
           <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
             <thead>
               <tr>
-                <th data-options="field:'id', fixed:true" width="1"></th>
-                <th data-options="field:'bookingNo', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Master Bill</th>
-                <th data-options="field:'taxCode', halign:'center', fixed:true" sortable="true" width="100">House Bill</th>
-                <th data-options="field:'containerAmount', align:'right', halign:'center', fixed:true" sortable="true" width="70">Hãng tàu</th>
-                <th data-options="field:'remark',align:'right',halign:'center', formatter: formatRemark" sortable="true" width="150">SL Cont</th>
+                <th data-options="field:'masterBillNo', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Master Bill</th>
+                <th data-options="field:'houseBillNo', halign:'center', fixed:true" sortable="true" width="100">House Bill</th>
+                <th data-options="field:'carrierCode', align:'right', halign:'center', fixed:true" sortable="true" width="70">Hãng tàu</th>
+                <th data-options="field:'contNumber',align:'right',halign:'center'" sortable="true" width="150">SL Cont</th>
                 <th data-options="field:'createTime', align:'right', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="150">Ngày tạo</th>
               </tr>
             </thead>
@@ -54,16 +53,16 @@
         <div class="left-infor-top row mt5 px5">
           <div class="form-group col-lg-4 col-sm-6 col-xs-6" style="height: 40px; line-height: 40px; margin-bottom: 0;">
             <span class="label-title">Master Bill:</span>
-              <span id="loCode">I488153626</span>
+              <span id="masterBillNo"></span>
           </div>
           <div class="form-group col-lg-4 col-sm-6 col-xs-6" style="height: 40px; line-height: 40px; margin-bottom: 0;">
             <span class="label-title">Chủ Hàng: </span>
-            <span id="taxCode">Start Light Transport Co.Ltd</span>
+            <span id="consignee"></span>
           </div>
         </div>
         <div class="title-top row px5" style="justify-content: start; margin-left: 0; margin-bottom: 15px;">
           <div class="left-button-bar">
-            <button id="saveShipmentDetailBtn" class="btn btn-rounder btn-primary"><i class="fa fa-plus"></i> Thêm Cont vào House Bill</button>
+            <button id="btnAddContToHouseBill" class="btn btn-rounder btn-primary" onclick="openFormAddCont()"><i class="fa fa-plus"></i> Thêm Cont vào House Bill</button>
             <button id="deleteBtn" class="btn btn-rounder btn-danger"><i class="fa fa-trash"></i> Xóa Cont</button>
             <button id="verifyBtn" class="btn btn-rounder btn-default"><i class="fa fa-print"></i> In House Bill</button>
           </div>
@@ -73,11 +72,28 @@
             <thead>
               <tr>
                 <th data-options="field:'id', fixed:true" width="1"></th>
-                <th data-options="field:'bookingNo', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Master Bill</th>
-                <th data-options="field:'taxCode', halign:'center', fixed:true" sortable="true" width="100">House Bill</th>
-                <th data-options="field:'containerAmount', align:'right', halign:'center', fixed:true" sortable="true" width="70">Hãng tàu</th>
-                <th data-options="field:'remark',align:'right',halign:'center', formatter: formatRemark" sortable="true" width="150">SL Cont</th>
-                <th data-options="field:'createTime', align:'right', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="150">Ngày tạo</th>
+                <th data-options="field:'ck', checkbox:true" width="50"></th>
+                <th data-options="field:'containerNumber', halign:'center', resizable:true, fixed:true" sortable="true"
+                    width="150">
+                  Container No
+                </th>
+                <th data-options="field:'sztp', align:'left', halign:'center', fixed:true" sortable="true"
+                    width="150">SZTP
+                </th>
+                <th data-options="field:'carrierCode', halign:'center', fixed:true" sortable="true" width="100">Hãng tàu</th>
+                <th data-options="field:'consignee2', halign:'center', fixed:true" sortable="true" width="180">Tên khách hàng</th>
+                <th data-options="field:'expiredDem', halign:'center', formatter: formatExpiredDem, fixed:true" sortable="true" width="180">Hạn lệnh</th>
+                <th data-options="field:'vessel', align:'left', halign:'center', fixed:true" sortable="true"
+                    width="150">Tàu
+                </th>
+                <th data-options="field:'voyNo', align:'left', halign:'center', fixed:true" sortable="true"
+                    width="150">Chuyến
+                </th>
+                <th data-options="field:'createTime', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="180">Ngày tách bill</th>
+                <th data-options="field:'status', align:'center', halign:'center', fixed:true, formatter: formatStatus"
+                    sortable="true" ,
+                    width="150">Trạng thái cont
+                </th>
               </tr>
             </thead>
           </table>
