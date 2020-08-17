@@ -336,4 +336,18 @@
             <if test="opeCode != null  and opeCode != ''"> and PTNR_CODE = #{opeCode}</if>
         </where>
 	</select>
+	<select id="checkTheNumberOfContainersNotOrderedForReceiveContEmpty" resultType="Integer">
+		SELECT
+		    (SELECT BOOK_QTY FROM TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}) - COUNT(*) AS RESULT
+		FROM TB_INVENTORY
+		WHERE BOOKING_NO = #{bookingNo} AND FE = 'E' AND SZTP2 = #{sztp} AND JOB_ODR_NO2 IS NOT NULL
+		GROUP BY BOOKING_NO
+	</select>
+	<select id="checkTheNumberOfContainersNotOrderedForSendContFull" resultType="Integer">
+		SELECT
+		    (SELECT BOOK_QTY FROM TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}) - COUNT(*) AS RESULT
+		FROM TB_RESERVE
+		WHERE BOOKING_NO = #{bookingNo} AND FE = 'F' AND SZTP2 = #{sztp} AND JOB_ODR_NO IS NOT NULL
+		GROUP BY BOOKING_NO
+	</select>
 </mapper>
