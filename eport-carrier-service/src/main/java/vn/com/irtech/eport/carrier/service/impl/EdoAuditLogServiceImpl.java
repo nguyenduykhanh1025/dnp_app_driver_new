@@ -243,7 +243,7 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
             edoAuditLog.setFieldName("Det Free Time");
             EdoAuditLog edoAuditLogCheck = selectEdoAuditLogByEdo(edoAuditLog);
             // check not default value
-            if(edoAuditLogCheck != null && !edoAuditLog.getNewValue().equals(edoItem.getDetFreeTime().toString()))
+            if(edoAuditLogCheck != null && !edoAuditLogCheck.getNewValue().equals(edoItem.getDetFreeTime().toString()))
             {
                 edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
                 edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
@@ -257,7 +257,7 @@ public class EdoAuditLogServiceImpl implements IEdoAuditLogService
         {
             edoAuditLog.setFieldName("Empty Container Depot");
             EdoAuditLog edoAuditLogCheck = selectEdoAuditLogByEdo(edoAuditLog);
-            if(edoAuditLogCheck != null && !edoItem.getEmptyContainerDepot().toString().equals(edoAuditLog.getNewValue())) 
+            if(edoAuditLogCheck != null && !edoItem.getEmptyContainerDepot().toString().equals(edoAuditLogCheck.getNewValue())) 
             {
                 edoAuditLog.setOldValue(edoAuditLogCheck.getNewValue());
                 edoAuditLog.setSeqNo(Long.parseLong(maxSegNo) + segNo);
