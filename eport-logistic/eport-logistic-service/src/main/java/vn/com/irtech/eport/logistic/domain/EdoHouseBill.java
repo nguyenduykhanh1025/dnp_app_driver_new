@@ -83,7 +83,10 @@ public class EdoHouseBill extends BaseEntity
     /** Carrier code */
     @Excel(name = "Carrier code")
     private String carrierCode;
-
+    /** null */
+    @Excel(name = "Tax Code")
+    private String consignee2TaxCode;
+    
     private Edo edo;
 
     public void setId(Long id) 
@@ -239,7 +242,15 @@ public class EdoHouseBill extends BaseEntity
         this.carrierCode = carrierCode;
     }
 
-    public Edo getEdo() {
+    public String getConsignee2TaxCode() {
+		return consignee2TaxCode;
+	}
+
+	public void setConsignee2TaxCode(String consignee2TaxCode) {
+		this.consignee2TaxCode = consignee2TaxCode;
+	}
+
+	public Edo getEdo() {
         return edo;
     }
 
@@ -266,6 +277,7 @@ public class EdoHouseBill extends BaseEntity
             .append("opr", getOpr())
             .append("vessel", getVessel())
             .append("voyNo", getVoyNo())
+            .append("taxCode", getConsignee2TaxCode())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
