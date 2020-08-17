@@ -286,12 +286,23 @@ function saveDO() {
       return false;
     }
     var regexNuber = /^[0-9]*$/;
-    if (item["detFreeTime"] != null && item["detFreeTime"] != "") {
+    if (item["detFreeTime"] != null && item["detFreeTime"] != "" && item["detFreeTime"] != undefined) {
       if (!regexNuber.test(item["detFreeTime"])) {
         $.modal.alertError(
           "Có lỗi tại hàng [" +
             (index + 1) +
             "].<br>Lỗi: Số ngày miễn lưu vỏ phải là số."
+        );
+        errorFlg = true;
+        return false;
+      }
+    }else {
+      if(item["emptyContainerDepot"] == "Cảng Đà Nẵng")
+      {
+        $.modal.alertError(
+          "Có lỗi tại hàng [" +
+            (index + 1) +
+            "].<br>Lỗi: Nếu chọn nơi hạ vỏ là Cảng Đà Nẵng <br> thì phải nhập số ngày miễn lưu vỏ."
         );
         errorFlg = true;
         return false;

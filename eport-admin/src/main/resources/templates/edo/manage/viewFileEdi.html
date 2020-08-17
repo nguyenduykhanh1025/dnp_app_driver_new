@@ -7,42 +7,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Update DO</title>
     <th:block th:include="include :: header('Xem Thông Tin DO')" />
-    <th:block th:include="include :: handsontable-css" />
+    <th:block th:include="include :: easyui-css" />
     <script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
     <link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet" />
 </head>
-
 <body class="gray-bg">
     <div id="wrapper">
         <div class="row">
-          <div class="col-sm-12 select-table" style="margin-top: 0px; padding-bottom:5px">
+            <div class="col-md-11 select-table" style="margin-top: 0px; padding-bottom:5px">
                 <div class="container-fluid">
                     <div class="panel panel-default" id="fileupload_main_panel">
                         <div class="panel-body">
                             <div class="row">
-                                <div class="col-md-12">
-                                    <div id="bannarzone" class="dropzone" style="min-height: 120px"></div>
-                                </div>
-                                <div class="col-md-12" style="padding: 10px 15px">
-                                    <button onclick="printEdoPDF()" class="btn btn-success intext-btn">In Lệnh Giao Hàng (eDO)</button>
-                                </div>
-                                <div class="col-md-12">
-                                    <div id="viewEdi" style="margin-bottom: 20px;"></div>
+                                <div class="col-md-12 " style="max-height: 220px;min-height: 220px">
+                                    <div id="bannarzone" class="dropzone" style="max-height: 220px;min-height: 220px">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-               
+                <div class="col-md-12" style="padding: 10px 15px">
+                    <button onclick="printEdoPDF()" class="btn btn-success intext-btn">In Lệnh Giao Hàng
+                        (eDO)</button>
+                </div>
+                <div class="col-md-12 table-container">
+                    <table id="dg" style="width: auto;height: auto;" fitColumns="true">
+                        <thead>
+                            <tr>
+                                <th data-options="field:'containerNumber',align:'left'" width="130">
+                                    CONTAINER NO
+                                </th>
+                                <th data-options="field:'sztp',align:'left'" width="60">
+                                    SZTP
+                                </th>
+                                <th data-options="field:'billOfLading',align:'left'" width="120">
+                                    BILL OF <br> LADING
+                                </th>
+                                <th data-options="field:'businessUnit',align:'center'" width="90">
+                                    BUSINESS <br />
+                                    UNIT
+                                </th>
+                                <th data-options="field:'carrierCode',align:'center'" width="90">
+                                    OPR <br />
+                                    CODE
+                                </th>
+                                <th data-options="field:'orderNumber',align:'left'" width="120">
+                                    ORDER <br /> NUMBER
+                                </th>
+                                <th data-options="field:'vessel',align:'left'" width="110">
+                                    VESSEL
+                                </th>
+                                <th data-options="field:'voyNo',align:'left'" width="110">
+                                    VOY NO
+                                </th>
+                                <th data-options="field:'pol',align:'left'" width="80">
+                                    POL
+                                </th>
+                                <th data-options="field:'pod',align:'left'" width="80">
+                                    POD
+                                </th>
+                                <th data-options="field:'consignee',align:'left'" width="220">
+                                    CONSIGNEE
+                                </th>
+                                <th data-options="field:'expiredDem',align:'left'" width="110">
+                                    EXPIRED <br />
+                                    DEM
+                                </th>
+                                <th data-options="field:'fileCreateTime',align:'left'" width="110">
+                                    FILE <br> CRETAE TIME
+                                </th>
+                                <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
+                                    EMPTY <br /> CONTAINER
+                                    DEPOT
+                                </th>
+                                <th data-options="field:'detFreeTime',align:'center'" width="80">
+                                    DET FREE <br />
+                                    TIME
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
     <th:block th:include="include :: footer" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <th:block th:include="include :: handsontable-js" />
-    <script th:src="@{/eport/js/modules/edo/manage/jquery.table2excel.min.js}"></script>
+    <th:block th:include="include :: easyui-js" />
     <script th:src="@{/eport/js/modules/edo/manage/viewFileEdi.js}"></script>
-    
 </body>
-
 </html>

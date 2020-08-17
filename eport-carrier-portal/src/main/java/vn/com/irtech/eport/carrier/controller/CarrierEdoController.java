@@ -226,7 +226,7 @@ public class CarrierEdoController extends CarrierBaseController {
 		Map<String, Object> groupCodes = new HashMap<>();
 		groupCodes.put("groupCode", super.getGroupCodes());
 		edo.setParams(groupCodes);
-		List<Edo> dataList = edoService.selectEdoList(edo);
+		List<Edo> dataList = edoService.selectEdoListForReport(edo);
 		return getDataTable(dataList);
 	}
 

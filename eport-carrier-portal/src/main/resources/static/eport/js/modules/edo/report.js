@@ -49,6 +49,7 @@ $('#searchAll').keyup(function (event) {
   if (event.keyCode == 13) {
     edo.containerNumber = $('#searchAll').val().toUpperCase();
     edo.consignee = $('#searchAll').val().toUpperCase();
+    edo.billOfLading = $('#searchAll').val().toUpperCase();
     loadTable(edo)
   }
 
