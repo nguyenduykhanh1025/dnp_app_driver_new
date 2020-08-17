@@ -148,7 +148,7 @@ public class LogisticGroupController extends BaseController
         		logisticDelegatedService.insertLogisticDelegated(logisticDelegated);
         	}
         }
-        return toAjax(logisticGroupService.insertLogisticGroup(logisticGroup));
+        return success();
     }
 
     /**
@@ -169,7 +169,7 @@ public class LogisticGroupController extends BaseController
     @Log(title = "Logistic Group", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(LogisticGroup logisticGroup)
+    public AjaxResult editSave(@RequestBody LogisticGroup logisticGroup)
     {
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, logisticGroup.getEmail())) {
             return error("Email không hợp lệ!");
@@ -177,15 +177,15 @@ public class LogisticGroupController extends BaseController
         if (!Pattern.matches(UserConstants.MST_PATTERN, logisticGroup.getMst())) {
         	return error("MST không hợp lệ. Từ 10 -> 15 số");
         }
-        if (!Pattern.matches(UserConstants.IDENTIFY_NO_PATTERN, logisticGroup.getIdentifyCardNo())){
-            return error("Chứng minh thư không hợp lệ. Từ 9->15 số");
-        }
-        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getPhone())){
-            return error("Điện thoại cố định phải là số");
-        }
-        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getFax())){
-            return error("Fax phải là số");
-        }
+//        if (!Pattern.matches(UserConstants.IDENTIFY_NO_PATTERN, logisticGroup.getIdentifyCardNo())){
+//            return error("Chứng minh thư không hợp lệ. Từ 9->15 số");
+//        }
+//        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getPhone())){
+//            return error("Điện thoại cố định phải là số");
+//        }
+//        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getFax())){
+//            return error("Fax phải là số");
+//        }
         // handle String mobile regex exclude (.,-,+,' ')
         String mobilePhone = logisticGroup.getMobilePhone();
         String replace = mobilePhone.replaceAll("[\\s,\\.,\\-,\\+]", "");
@@ -206,13 +206,11 @@ public class LogisticGroupController extends BaseController
     public AjaxResult remove(String ids)
     {
     	try {
-        	if(logisticGroupService.updateDelFlagLogisticGroupByIds(ids) == 1) {
+        		logisticGroupService.updateDelFlagLogisticGroupByIds(ids);
         		logisticAccountService.updateDelFlagLogisticAccountByGroupIds(ids);
+        		logisticDelegatedService.updateDelFlgByGroupIds(ids);
         		return success();
-        	}
-        	else {
-        		return error();
-        	}
+        	
     	}catch(Exception e) {
     		e.getStackTrace();
     		return error();
