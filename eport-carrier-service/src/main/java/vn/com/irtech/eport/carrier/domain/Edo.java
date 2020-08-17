@@ -125,6 +125,9 @@ public class Edo extends BaseEntity {
 	@Excel(name = "Port Of Discharged")
 	private String podName;
 
+	@Excel(name = "House bill id")
+	private Long houseBillId;
+
 	public String getPolName() {
 		return polName;
 	}
@@ -366,6 +369,14 @@ public class Edo extends BaseEntity {
 
 	public void setTransactionId(String transactionId) {
 		this.transactionId = transactionId;
+	}
+
+	public Long getHouseBillId() {
+		return houseBillId;
+	}
+
+	public void setHouseBillId(Long houseBillId) {
+		this.houseBillId = houseBillId;
 	}
 
 	@Override

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <th:block th:include="include :: header('Tách Lô từ Master Bill')"/>
+  <th:block th:include="include :: easyui-css"/>
+  <th:block th:include="include :: datetimepicker-css"/>
+  <link th:href="@{/css/logistic/shipmentSeparating/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="container-fluid bg-white">
+  <div class="row">
+    <div class="form-group col-lg-5 col-md-5 col-sm-5 row pl0">
+      <label class="col-lg-2 col-md-3 col-sm-4 col-form-label" for="billOfLading"><b>Master Bill</b></label>
+      <div class="col-lg-10 col-md-9 col-sm-8">
+        <input name="billOfLading" class="form-control" type="text"/>
+      </div>
+      <label class="col-lg-2 col-md-3 col-sm-4 col-form-label mt5" for="carrierCode"><b>Hãng tàu</b></label>
+      <div class="col-lg-10 col-md-9 col-sm-8 mt5">
+        <input name="carrierCode" class="form-control" type="text"/>
+      </div>
+    </div>
+    <div class="form-group col-lg-7 col-md-7 col-sm-7 row pl0">
+      <label class="col-lg-2 col-md-3 col-sm-3 col-form-label" for="consignee"><b>Chủ hàng</b></label>
+      <div class="col-lg-10 col-md-9 col-sm-9">
+        <input name="consignee" class="form-control" type="text"/>
+      </div>
+      <label class="col-lg-2 col-md-3 col-sm-3 col-form-label mt5" for="expiredDem"><b>Hạn lệnh</b></label>
+      <div class="col-lg-6 col-md-5 col-sm-5 mt5">
+        <input id="expiredDem" name="expiredDem" class="form-control date" type="text" placeholder="Hạn lệnh"/>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-4 mt5 pd0">
+        <button id="btnSearch" class="btn btn-success small-text-2">Lấy danh sách Cont</button>
+      </div>
+    </div>
+  </div>
+  <h3>Danh Sách Container <span class="small-text">(<i
+          class="text-danger">*</i> Chọn container để tách house bill)</span></h3>
+  <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
+    <thead>
+    <tr>
+      <th data-options="field:'id', fixed:true" width="1"></th>
+      <th data-options="field:'ck', checkbox:true" width="50"></th>
+      <th data-options="field:'containerNumber', halign:'center', resizable:true, fixed:true" sortable="true"
+          width="150">
+        Container No
+      </th>
+      <th data-options="field:'carrierCode', halign:'center', fixed:true" sortable="true" width="100">Company</th>
+      <th data-options="field:'expiredDem', align:'left', halign:'center', fixed:true" sortable="true"
+          width="150">Expried Dem
+      </th>
+      <th data-options="field:'detFreeTime',align:'right',halign:'center'" sortable="true" width="100">DET</th>
+      <th data-options="field:'emptyContainerDepot', align:'left', halign:'center', fixed:true" sortable="true"
+          width="150">Empty Container depot
+      </th>
+      <th data-options="field:'vessel', align:'left', halign:'center', fixed:true" sortable="true"
+          width="150">Vessel
+      </th>
+      <th data-options="field:'voyNo', align:'left', halign:'center', fixed:true" sortable="true"
+          width="150">Voyno
+      </th>
+      <th data-options="field:'status', align:'center', halign:'center', fixed:true, formatter: formatStatus"
+          sortable="true" ,
+          width="150">Status
+      </th>
+    </tr>
+    </thead>
+  </table>
+  <form id="formSeparate" name="formSeparate">
+    <h3 class="mt20">Thông Tin House Bill</h3>
+    <div class="row">
+      <div class="col-lg-5 col-md-5 col-sm-5 pl0">
+        <label class="col-lg-3 col-md-4 col-sm-4 col-form-label" for="houseBill"><b>House Bill <i
+                class="text-danger">*</i></b></label>
+        <div class="col-lg-9 col-md-8 col-sm-8">
+          <input name="houseBill" class="form-control" type="text" required/>
+        </div>
+      </div>
+      <div class="col-lg-7 col-md-7 col-sm-7 pl0">
+        <label class="col-lg-5 col-md-4 col-sm-4 col-form-label" for="consignee2"><b>Tên khách hàng <i
+                class="text-danger">*</i></b></label>
+        <div class="col-lg-7 col-md-8 col-sm-8">
+          <input name="consignee2" class="form-control" type="text" required/>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: easyui-js"/>
+<th:block th:include="include :: datetimepicker-js"/>
+<script th:src="@{/js/logistic/shipmentSeparating/separate.js}"></script>
+</body>
+</html>
