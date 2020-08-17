@@ -30,8 +30,11 @@ import net.sf.jasperreports.export.ExporterInputItem;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleExporterInputItem;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.service.IEdoHouseBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
@@ -54,6 +57,9 @@ public class LogisticReportPrintController extends LogisticBaseController {
 
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+	
+	@Autowired
+	private IEdoHouseBillService edoHouseBillService;
 
 	/**
 	 * Print Process Order
@@ -70,6 +76,14 @@ public class LogisticReportPrintController extends LogisticBaseController {
 	public String view(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
 		mmap.put("shipmentId", shipmentId);
 		return prefix + "/receipt";
+	}
+	/**
+	 * Print House Bill
+	 */
+	@GetMapping("/house-bill/{houseBillNo}")
+	public String viewHouseBill(@PathVariable("houseBillNo") String houseBillNo, ModelMap mmap) {
+		mmap.put("houseBillNo", houseBillNo);
+		return prefix + "/houseBill";
 	}
 	@GetMapping("/processOrder/{shipmentId}")
 	public void jasperReport(@PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
@@ -214,5 +228,56 @@ public class LogisticReportPrintController extends LogisticBaseController {
 	        final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
 	        JasperExportManager.exportReportToPdfStream(print, out);
 		}
+	}
+	
+	@GetMapping("create-house-bill/{houseBillNo}")
+	public void jasperReportHouseBill( @PathVariable("houseBillNo") String houseBillNo, HttpServletResponse response) {
+		EdoHouseBill edoHouseBill = new EdoHouseBill();
+		edoHouseBill.setHouseBillNo(houseBillNo);
+		edoHouseBill.setLogisticGroupId(getUser().getGroupId());
+		//edoHouseBill.setLogisticAccountId(getUser().getId());
+		List<EdoHouseBill> houseBillList = edoHouseBillService.selectEdoHouseBillList(edoHouseBill);
+		if(houseBillList.isEmpty()) {
+			logger.error("Error when print HouseBill: " + houseBillNo);
+			return;
+		}
+		try {
+			response.setContentType("application/pdf");
+			createHouseBillReport(houseBillList, response.getOutputStream());
+		} catch (final Exception e) {
+			logger.debug(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	private void createHouseBillReport(final List<EdoHouseBill> houseBillList, OutputStream out) throws JRException {
+		// Fetching the report file from the resources folder.
+		final JasperReport report = (JasperReport) JRLoader
+				.loadObject(this.getClass().getResourceAsStream("/report/house_bill.jasper"));
+
+		// Fetching the shipmentDetails from the data source.
+		//final JRBeanCollectionDataSource params = new JRBeanCollectionDataSource(shipmentDetails);
+
+
+		// Adding the additional parameters to the pdf.
+		final Map<String, Object> parameters = new HashMap<>();
+		parameters.put("consignee", houseBillList.get(0).getConsignee2());
+		parameters.put("businessUnit", houseBillList.get(0).getEdo().getBusinessUnit());
+		parameters.put("vessel/voy", houseBillList.get(0).getVessel() + " / " + houseBillList.get(0).getVoyNo());
+		parameters.put("orderNumber", houseBillList.get(0).getOrderNumber());
+		parameters.put("pol", houseBillList.get(0).getEdo().getPol());
+		parameters.put("pod", houseBillList.get(0).getEdo().getPod());
+		parameters.put("masterBillNo", houseBillList.get(0).getMasterBillNo());
+		parameters.put("houseBillNo", houseBillList.get(0).getHouseBillNo());
+		parameters.put("fileCreateTime", houseBillList.get(0).getEdo().getFileCreateTime());
+		List<Edo> edoList = new ArrayList<Edo>();
+		for(EdoHouseBill i : houseBillList) {
+			edoList.add(i.getEdo());
+		}
+		parameters.put("list", edoList);
+		final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
+//		final JasperPrint print = JasperFillManager.fillReport(report, parameters, params);
+		// Export DPF to output stream
+		JasperExportManager.exportReportToPdfStream(print, out);
 	}
 }

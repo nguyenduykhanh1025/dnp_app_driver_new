@@ -4,6 +4,6 @@
     <th:block th:include="include :: header('House Bill')" />
 </head>
     <body class="gray-bg">
-        <iframe id="document_frame" frameborder="0" th:src="@{|/logistic/print/create-house-bill/master-bill/${masterBillNo}/house-bill/{houseBillNo}|}" width='100%' height='100%' allowfullscreen webkitallowfullscreen></iframe>
+        <iframe id="document_frame" frameborder="0" th:src="@{|/logistic/print/create-house-bill/${houseBillNo}|}" width='100%' height='100%' allowfullscreen webkitallowfullscreen></iframe>
     </body>
 <script th:src="@{/ajax/libs/viewerjs/pdf.worker.js}"></script> 
