@@ -7,7 +7,8 @@ var shipmentSelected,
   shipmentDetails,
   shipmentDetailIds,
   sourceData,
-  processOrderIds;
+  processOrderIds,
+  houseBillSelected;
 var contList = [],
   temperatureDisable = [];
 var conts = "";
@@ -358,4 +359,13 @@ function formatStatus(value, row, index) {
 
 function formatExpiredDem(value, row, index) {
   return formatDate(row.edo.expiredDem);
+}
+
+function printHouseBill(){
+	if(!houseBillSelected){
+		console.log(houseBillSelected)
+		$.modal.alertError("Bạn chưa chọn House Bill!");
+		return
+	}
+	$.modal.openTab("In House Bill", ctx +"logistic/print/house-bill/" + houseBillSelected.houseBillNo);
 }

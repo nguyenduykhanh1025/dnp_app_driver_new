@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="receipt" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ac56fd89-896d-45e1-a703-5f0975f66a75">
 	<property name="ireport.zoom" value="1.7715610000000013"/>
 	<property name="ireport.x" value="11"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="207"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -46,7 +46,12 @@
 		<defaultValueExpression><![CDATA[new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date().getTime())]]></defaultValueExpression>
 	</parameter>
 	<background>
-		<band splitType="Stretch"/>
+		<band height="800" splitType="Stretch">
+			<image>
+				<reportElement x="56" y="229" width="442" height="343" uuid="68c198bb-68dc-461b-a8f1-638246a8417b"/>
+				<imageExpression><![CDATA["I:\\Irtech\\cangdanang\\eport\\eport-logistic\\eport-logistic-portal\\src\\main\\resources\\static\\img\\logo_gray.jpeg"]]></imageExpression>
+			</image>
+		</band>
 	</background>
 	<title>
 		<band height="210" splitType="Stretch">
@@ -159,7 +164,14 @@
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{list})]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="53" uuid="64464376-be63-4736-aa7c-8cb45a735760">
-						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<staticText>
 								<reportElement x="0" y="0" width="53" height="30" uuid="6151ad24-8174-4528-a96e-193958a3ce60"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -169,7 +181,14 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="30" rowSpan="1"/>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell height="20" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="53" height="20" uuid="ea808415-f0a0-421c-9fde-d7a8892b6285"/>
 								<textElement verticalAlignment="Middle">
@@ -181,7 +200,14 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="180ebe32-c4cd-4c7a-b438-61c2b4f6bf5e">
-						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<staticText>
 								<reportElement x="0" y="0" width="90" height="30" uuid="0cfd2672-8f2a-4b2f-ac1d-81c98a0ee3f3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -191,7 +217,14 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="30" rowSpan="1"/>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell height="20" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="20" uuid="71f33407-060a-4935-9691-6d6097cf49b4"/>
 								<textElement verticalAlignment="Middle">
@@ -203,7 +236,14 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="aef2aa78-af4a-42c7-bbbe-9db74cfa473b">
-						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<staticText>
 								<reportElement x="0" y="0" width="90" height="30" uuid="f8e8fc1f-792b-403b-aac7-33d72cf4d274"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -213,7 +253,14 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="30" rowSpan="1"/>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell height="20" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="20" uuid="717c95b7-cd04-416b-9dcf-2f277690e13b"/>
 								<textElement verticalAlignment="Middle">
@@ -226,7 +273,14 @@
 					</jr:column>
 					<jr:column width="141" uuid="63a6832e-e08c-45f3-bbbd-7f60af63893f">
 						<propertyExpression name="vslAndVoy"><![CDATA[]]></propertyExpression>
-						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<staticText>
 								<reportElement x="0" y="0" width="141" height="30" uuid="60f99f0d-ecd4-447f-b64f-c58e148f038c"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -236,7 +290,14 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:columnFooter height="30" rowSpan="1"/>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell height="20" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="141" height="20" uuid="3b656499-ea9f-47f9-834b-f1460b1a0ca4"/>
 								<textElement verticalAlignment="Middle">
@@ -247,7 +308,14 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="0cdcb11d-6856-49d3-b938-2181b3169290">
-						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<staticText>
 								<reportElement x="0" y="0" width="90" height="30" uuid="5110f0be-96fe-40ce-89f0-9e7472c9af94"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -256,7 +324,14 @@
 								<text><![CDATA[Mã thanh toán]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="table_CH" height="30" rowSpan="1">
+						<jr:columnFooter height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<staticText>
 								<reportElement x="0" y="0" width="90" height="30" uuid="3a61e936-fc2a-48e5-91cb-cf7aa9b7544d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -265,7 +340,14 @@
 								<text><![CDATA[Tổng tiền:]]></text>
 							</staticText>
 						</jr:columnFooter>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell height="20" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="20" uuid="87fb0296-3e1e-494d-80a1-13efd8107d9a"/>
 								<textElement verticalAlignment="Middle">
@@ -277,7 +359,14 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="90" uuid="637e2271-a7a6-4e2a-bb29-5aba9b4772f9">
-						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<staticText>
 								<reportElement x="0" y="0" width="90" height="30" uuid="146b543a-1075-4946-8148-c20e05317c2d"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -286,7 +375,14 @@
 								<text><![CDATA[Thành Tiền]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:columnFooter style="table_CH" height="30" rowSpan="1">
+						<jr:columnFooter height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="30" uuid="e5c54cc4-2f1d-4cb6-a803-dfaa761ecde0"/>
 								<textElement verticalAlignment="Middle">
@@ -296,7 +392,14 @@
 								<textFieldExpression><![CDATA[$V{total} + " VND"]]></textFieldExpression>
 							</textField>
 						</jr:columnFooter>
-						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+						<jr:detailCell height="20" rowSpan="1">
+							<box>
+								<pen lineWidth="1.0"/>
+								<topPen lineWidth="1.0"/>
+								<leftPen lineWidth="1.0"/>
+								<bottomPen lineWidth="1.0"/>
+								<rightPen lineWidth="1.0"/>
+							</box>
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="20" uuid="b15b48ab-17a6-4fc5-ba74-d0003745d5e9"/>
 								<textElement verticalAlignment="Middle">
@@ -311,15 +414,18 @@
 			</componentElement>
 		</band>
 	</detail>
-	<summary>
-		<band height="27" splitType="Stretch">
+	<columnFooter>
+		<band height="50">
 			<staticText>
-				<reportElement x="0" y="7" width="271" height="20" uuid="41781ffd-f93f-43cc-b786-9a7b13ee6fe9"/>
+				<reportElement x="0" y="30" width="271" height="20" uuid="41781ffd-f93f-43cc-b786-9a7b13ee6fe9"/>
 				<textElement>
 					<font fontName="DejaVu Sans" isBold="false" isItalic="true"/>
 				</textElement>
 				<text><![CDATA[(*) Chú ý biên nhận không phải là hóa đơn điện tử]]></text>
 			</staticText>
 		</band>
+	</columnFooter>
+	<summary>
+		<band splitType="Stretch"/>
 	</summary>
 </jasperReport>
