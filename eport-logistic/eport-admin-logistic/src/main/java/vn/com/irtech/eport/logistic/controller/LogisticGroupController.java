@@ -4,28 +4,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.UserConstants;
-import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.logistic.domain.LogisticGroup;
-import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
-import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
-import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.logistic.domain.LogisticDelegated;
+import vn.com.irtech.eport.logistic.domain.LogisticGroup;
+import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
+import vn.com.irtech.eport.logistic.service.ILogisticDelegatedService;
+import vn.com.irtech.eport.logistic.service.ILogisticGroupService;
 
 /**
  * Logistic GroupController
@@ -44,6 +55,12 @@ public class LogisticGroupController extends BaseController
     
     @Autowired
     private ILogisticAccountService logisticAccountService;
+    
+    @Autowired
+    private ILogisticDelegatedService logisticDelegatedService;
+
+    @Autowired
+    private ICatosApiService catosApiService;
 
     @RequiresPermissions("logistic:group:view")
     @GetMapping()
@@ -98,29 +115,38 @@ public class LogisticGroupController extends BaseController
     @Log(title = "Logistic Group", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(LogisticGroup logisticGroup)
+    public AjaxResult addSave(@RequestBody JSONObject requestParam)
     {
+    	LogisticGroup logisticGroup = new Gson().fromJson(requestParam.getString("logisticGroup"), LogisticGroup.class);
+    	List<LogisticDelegated> logisticDelegateds = new Gson().fromJson(requestParam.getString("delegatedLogistics"), new TypeToken<ArrayList<LogisticDelegated>>(){}.getType());
         if (!Pattern.matches(UserConstants.EMAIL_PATTERN, logisticGroup.getEmail())) {
             return error("Email không hợp lệ!");
         }
         if (!Pattern.matches(UserConstants.MST_PATTERN, logisticGroup.getMst())) {
         	return error("MST không hợp lệ. Từ 10 -> 15 số");
         }
-        if (!Pattern.matches(UserConstants.IDENTIFY_NO_PATTERN, logisticGroup.getIdentifyCardNo())){
-            return error("Chứng minh thư không hợp lệ. Từ 9->15 số");
-        }
-        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getPhone())){
-            return error("Điện thoại cố định phải là số");
-        }
-        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getFax())){
-            return error("Fax phải là số");
-        }
+//        if (!Pattern.matches(UserConstants.IDENTIFY_NO_PATTERN, logisticGroup.getIdentifyCardNo())){
+//            return error("Chứng minh thư không hợp lệ. Từ 9->15 số");
+//        }
+//        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getPhone())){
+//            return error("Điện thoại cố định phải là số");
+//        }
+//        if (!Pattern.matches(UserConstants.NUMBER_PATTERN, logisticGroup.getFax())){
+//            return error("Fax phải là số");
+//        }
         // handle String mobile regex exclude (.,-,+,' ')
         String mobilePhone = logisticGroup.getMobilePhone();
         String replace = mobilePhone.replaceAll("[\\s,\\.,\\-,\\+]", "");
         logisticGroup.setMobilePhone(replace);
         if (!Pattern.matches(UserConstants.MOBILE_PHONE_PATTERN, logisticGroup.getMobilePhone())) {
         	return error("Điện thoại di động không hợp lệ");
+        }
+        logisticGroupService.insertLogisticGroup(logisticGroup);
+        if (CollectionUtils.isNotEmpty(logisticDelegateds)) {
+        	for (LogisticDelegated logisticDelegated : logisticDelegateds) {
+        		logisticDelegated.setLogisticGroupId(logisticGroup.getId());
+        		logisticDelegatedService.insertLogisticDelegated(logisticDelegated);
+        	}
         }
         return toAjax(logisticGroupService.insertLogisticGroup(logisticGroup));
     }
@@ -219,5 +245,66 @@ public class LogisticGroupController extends BaseController
     public String getGroupNameById(long id) {
         LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(id);
         return logisticGroup.getGroupName();
+    }
+
+    @GetMapping("/company/{taxCode}")
+    @ResponseBody
+    public AjaxResult getCompanyInfoByTaxcode(@PathVariable String taxCode) {
+        AjaxResult ajaxResult = AjaxResult.success();
+		if (taxCode == null || "".equals(taxCode)) {
+			return error();
+		}
+		Shipment shipment = catosApiService.getGroupNameByTaxCode(taxCode);
+		String groupName = shipment.getGroupName();
+		String address = shipment.getAddress();
+		if (address != null) {
+			ajaxResult.put("address", address);
+		}
+		if (groupName != null) {
+			ajaxResult.put("groupName", groupName);
+		} else {
+			ajaxResult = AjaxResult.error();
+		}
+		return ajaxResult;
+    }
+   
+    @GetMapping("/delegate/edit/{delegateId}")
+    public String getDelegateEditForm(@PathVariable("delegateId") Long id, ModelMap mmap) {
+    	mmap.put("logisticDelegated", logisticDelegatedService.selectLogisticDelegatedById(id));
+    	return prefix + "/editDelegate";
+    }
+    
+    @PostMapping("/delegates")
+    @ResponseBody
+    public TableDataInfo getListLogisticDelegate(@RequestBody PageAble<LogisticDelegated> param) {
+    	startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+    	LogisticDelegated logisticDelegated = param.getData();
+    	if (logisticDelegated == null) {
+    		logisticDelegated = new LogisticDelegated();
+    	}
+    	logisticDelegated.setDelFlg(0);
+    	List<LogisticDelegated> logisticDelegateds = logisticDelegatedService.selectLogisticDelegatedList(logisticDelegated);
+    	return getDataTable(logisticDelegateds);
+    }
+    
+    @PostMapping("/delegate")
+    @ResponseBody
+    public AjaxResult addLogisticDelegate(@RequestBody @Validated LogisticDelegated delegatedLogistic) {
+    	return toAjax(logisticDelegatedService.insertLogisticDelegated(delegatedLogistic));
+    }
+    
+    @PostMapping("/delegate/edit")
+    @ResponseBody
+    public AjaxResult updateLogisticDelegate(@RequestBody LogisticDelegated logisticDelegated) {
+    	return toAjax(logisticDelegatedService.updateLogisticDelegated(logisticDelegated));
+    }
+    
+    @DeleteMapping("/delegate/{id}/delete")
+    @ResponseBody
+    public AjaxResult deleteLogisticDelegated(@PathVariable("id") Long id) {
+    	LogisticDelegated logisticDelegated = new LogisticDelegated();
+    	logisticDelegated.setId(id);
+    	logisticDelegated.setDelFlg(1);
+    	return toAjax(logisticDelegatedService.updateLogisticDelegated(logisticDelegated));
     }
 }

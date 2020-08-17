@@ -3,6 +3,9 @@ package vn.com.irtech.eport.logistic.domain;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -24,27 +27,36 @@ public class LogisticDelegated extends BaseEntity
 
     /** Logistic ID */
     @Excel(name = "Logistic ID")
+    @NotNull
     private Long logisticGroupId;
 
     /** MST Uy Quen */
     @Excel(name = "MST Uy Quen")
+    @NotBlank
     private String delegateTaxCode;
 
     /** Ten Cty Duoc Uy Quen */
     @Excel(name = "Ten Cty Duoc Uy Quen")
+    @NotBlank
     private String delegateCompany;
 
     /** Hieu Luc Tu Ngay */
     @Excel(name = "Hieu Luc Tu Ngay", width = 30, dateFormat = "yyyy-MM-dd")
+    @NotNull
     private Date validFrom;
 
     /** Den Ngay */
     @Excel(name = "Den Ngay", width = 30, dateFormat = "yyyy-MM-dd")
+    @NotNull
     private Date validUntil;
 
     /** Hieu Luc: 0:Invalid, 1:valid */
     @Excel(name = "Hieu Luc: 0:Invalid, 1:valid")
     private Long validFlg;
+
+    /** Del Flag: 0: Not delete, 1: delete */
+    @Excel(name = "Del Flag: 0: Not delete, 1: delete")
+    private Integer delFlg;
 
     public void setId(Long id) 
     {
@@ -110,6 +122,14 @@ public class LogisticDelegated extends BaseEntity
         return validFlg;
     }
 
+    public Integer getDelFlg() {
+        return this.delFlg;
+    }
+
+    public void setDelFlg(Integer delFlg) {
+        this.delFlg = delFlg;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -124,6 +144,7 @@ public class LogisticDelegated extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
+            .append("delFlg", getDelFlg())
             .toString();
     }
 }
