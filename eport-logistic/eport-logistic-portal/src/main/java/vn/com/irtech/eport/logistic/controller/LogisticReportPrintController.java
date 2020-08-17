@@ -32,6 +32,7 @@ import net.sf.jasperreports.export.SimpleExporterInputItem;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
+import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.IEdoHouseBillService;
@@ -143,6 +144,8 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			        parameters.put("opeCode", list.get(0).getOpeCode());
 			        parameters.put("invoiceNo", list.get(0).getInvoiceNo());
 			        parameters.put("list", list);
+			        LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(getUser().getGroupId());
+			        parameters.put("groupName", logisticGroup.getGroupName());
 			        Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			        parameters.put("remark", (shipment.getRemark() != null) ? shipment.getRemark() : "");
 			        if(shipment.getServiceType().intValue() == 1) {
