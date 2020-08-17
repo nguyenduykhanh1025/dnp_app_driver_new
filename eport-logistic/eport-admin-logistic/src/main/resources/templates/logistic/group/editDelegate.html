@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <th:block th:include="include :: header('Edit Logistic Delegate')" />
+    <th:block th:include="include :: easyui-css" />
+    <style type="text/css">
+      .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1000;
+        display: none;
+        float: left;
+        min-width: 118px;
+        padding: 5px 0;
+        margin: 2px 0 0;
+        font-size: 14px;
+        text-align: left;
+        list-style: none;
+        background-color: #f5f5f5 !important;
+        -webkit-background-clip: padding-box;
+        background-clip: padding-box;
+        border: 1px solid #ccc;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        border-radius: 4px;
+        -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+      }
+      .col-lg-1,
+      .col-lg-10,
+      .col-lg-11,
+      .col-lg-12,
+      .col-lg-2,
+      .col-lg-3,
+      .col-lg-4,
+      .col-lg-5,
+      .col-lg-6,
+      .col-lg-7,
+      .col-lg-8,
+      .col-lg-9,
+      .col-md-1,
+      .col-md-10,
+      .col-md-11,
+      .col-md-12,
+      .col-md-2,
+      .col-md-3,
+      .col-md-4,
+      .col-md-5,
+      .col-md-6,
+      .col-md-7,
+      .col-md-8,
+      .col-md-9,
+      .col-sm-1,
+      .col-sm-10,
+      .col-sm-11,
+      .col-sm-12,
+      .col-sm-2,
+      .col-sm-3,
+      .col-sm-4,
+      .col-sm-5,
+      .col-sm-6,
+      .col-sm-7,
+      .col-sm-8,
+      .col-sm-9,
+      .col-xs-1,
+      .col-xs-10,
+      .col-xs-11,
+      .col-xs-12,
+      .col-xs-2,
+      .col-xs-3,
+      .col-xs-4,
+      .col-xs-5,
+      .col-xs-6,
+      .col-xs-7,
+      .col-xs-8,
+      .col-xs-9 {
+        position: relative;
+        min-height: 1px;
+        padding-right: 1px !important;
+        padding-left: 1px !important;
+      }
+      .row {
+        margin-right: 0px !important;
+        margin-left: 0px !important;
+      }
+      .error-input {
+        background-color: #fbe2e2;
+        border-color: #c66161;
+        color: #c00;
+      }
+    </style>
+  </head>
+  <body class="white-bg">
+    <div class="main-content">
+        <div class="col-sm-6">
+            <form class="form-horizontal m" id="form-delegate-add" style="height: calc(100% - 36px);">
+                <div class="row">
+                    <h2>Danh sách ủy quyền</h2>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label is-required">Mã số thuế：</label>
+                            <div class="col-sm-2" style="display: relative;">
+                                <input name="delegateTaxcode" th:value=${logisticDelegated.delegateTaxCode} class="form-control" onfocus="removeTaxCodeError()"
+                                    onfocusout="loadGroupNameForDelegated()" type="text" />
+                            </div>
+                            <label class="col-sm-2 control-label is-required">Tên doanh nghiệp: </label>
+                            <div class="col-sm-5">
+                                <input name="delegateCompany" class="form-control" onfocus="removeGroupError()"
+                                    type="text" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label is-required">Hiệu lực từ ngày：</label>
+                            <div class="col-sm-2" style="display: relative;">
+                                <input name="validFrom"  class="form-control" type="text" readonly />
+                            </div>
+                            <label class="col-sm-2 control-label is-required">Đến ngày: </label>
+                            <div class="col-sm-2">
+                                <input name="validUntil" class="form-control" type="text" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2 control-label">Trạng thái：</label>
+                    <input style="margin-top: 10px;" type="radio" name="validFlg" id="valid" value="1" checked />
+                    <label style="margin-left: 5px;">Hiệu lực</label>
+                    <input style="margin-top: 10px; margin-left: 20px;" type="radio" id="notValid" name="validFlg" value="0" />
+                    <label style="margin-left: 5px;">Vô hiệu</label>
+                </div>
+            </form>
+        </div>
+        <div class="layui-layer-btn">
+            <a class="layui-layer-btn0" onclick="confirm()">Xác nhận</a>
+            <a class="layui-layer-btn1" onclick="closeForm()">Hủy bỏ</a>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script type="text/javascript" th:inline="javascript">
+        var logisticDelegated = /*[[${logisticDelegated}]]*/ ;
+		const PREFIX = ctx + "logistic/group";
+
+        var delegatedLogistic = new Object();
+
+        if (logisticDelegated.validFlg == 1) {
+            $('#valid').prop('checked', true);
+        } else {
+            $('#notValid').prop('checked', true);
+        }
+
+        $('input[name=delegateCompany]').val(logisticDelegated.delegateCompany);
+
+        function formatDate(value) {
+			if (value == null) return "";
+			var date = new Date(value);
+			return formatNumber(date.getDate())
+			+ "/" + formatNumber(date.getMonth() + 1)
+			+ "/" + date.getFullYear()
+		}
+
+		function formatNumber(number) {
+			return number < 10 ? "0" + number : number;
+        }
+        
+        $('input[name=validFrom]').val(formatDate(logisticDelegated.validFrom));
+        $('input[name=validUntil]').val(formatDate(logisticDelegated.validUntil));
+
+        laydate.render({
+			elem: 'input[name=validFrom]',
+			format: "dd/MM/yyyy"
+		});
+
+      	laydate.render({
+			elem: 'input[name=validUntil]',
+			format: "dd/MM/yyyy"
+		});
+
+		function loadGroupName() {
+			if ($('input[name=mst]').val() != null && $('input[name=mst]').val() != '') {
+				$.ajax({
+					url: PREFIX + "/company/" + $('input[name=mst]').val(),
+					method: "get"
+				}).done(function (result) {
+					if (result.code == 0) {
+					$('input[name=groupName]').val(result.groupName);
+					$('input[name=address]').val(result.address);
+					} else {
+					$('input[name=groupName]').val('');
+					$('input[name=address]').val('');
+					}
+				});
+			} else {
+				$('input[name=groupName]').val('');
+				$('input[name=address]').val('');
+			}
+		}
+
+        function loadGroupNameForDelegated() {
+			if ($('input[name=delegateTaxcode]').val() != null && $('input[name=delegateTaxcode]').val() != '') {
+				$('input[name=delegateTaxcode]').removeClass('error-input');
+				$.ajax({
+					url: PREFIX + "/company/" + $('input[name=delegateTaxcode]').val(),
+					method: "get"
+				}).done(function (result) {
+					if (result.code == 0) {
+						$('input[name=delegateCompany]').val(result.groupName);
+						$('input[name=delegateCompany]').removeClass('error-input');
+					} else {
+						$('input[name=delegateCompany]').val('');
+					}
+				});
+			} else {
+				$('input[name=delegateCompany]').val('');
+			}
+		}
+
+		function removeGroupError() {
+			$('input[name=delegateCompany]').removeClass('error-input');
+		}
+
+		function removeTaxCodeError() {
+			$('input[name=delegateTaxcode]').removeClass('error-input');
+		}
+
+        $.event.special.inputchange = {
+			setup: function () {
+				var self = this, val;
+				$.data(
+					this,
+					"timer",
+					window.setInterval(function () {
+						val = self.value;
+						if ($.data(self, "cache") != val) {
+							$.data(self, "cache", val);
+							$(self).trigger("inputchange");
+						}
+					}, 20)
+				);
+			},
+			teardown: function () {
+				window.clearInterval($.data(this, "timer"));
+			},
+			add: function () {
+				$.data(this, "cache", this.value);
+			}
+		};
+
+		$("input[name=validFrom]").on("inputchange", function () {
+			let validFrom = stringToDate($('input[name=validFrom]').val());
+			let now = new Date();
+			now.setHours(0, 0, 0, 0);
+			$("input[name=validFrom]").removeClass('error-input');
+			if ($('input[name=validUntil]').val() != '' && stringToDate($('input[name=validUntil]').val()).getTime() < validFrom.getTime()) {
+				$.modal.alertError('Bạn không thể chọn từ ngày cao hơn đến ngày.')
+				$('input[name=validFrom]').val('');
+			} else if (validFrom.getTime() < now.getTime()) {
+				$.modal.alertError("Bạn không thể chọn từ ngày trong quá khứ.");
+				$('input[name=validFrom]').val('');
+			} else {
+				delegatedLogistic.validFrom = validFrom.getTime();
+			}
+		});
+
+		$("input[name=validUntil]").on("inputchange", function () {
+			let validUntil = stringToDate($("input[name=validUntil]").val());
+			let now = new Date();
+			now.setHours(0, 0, 0, 0);
+			$("input[name=validUntil]").removeClass('error-input');
+			if ($("input[name=validFrom]").val() != "" && stringToDate($("input[name=validFrom]").val()).getTime() > validUntil.getTime()) {
+				$.modal.alertError("Bạn không thể chọn đến ngày thấp hơn từ ngày.");
+				$("input[name=validUntil]").val("");
+			} else if (validUntil.getTime() < now.getTime()) {
+				$.modal.alertError("Bạn không thể chọn đến ngày trong quá khứ.");
+				$("input[name=validUntil]").val("");
+			} else {
+				validUntil.setHours(23, 59, 59);
+				delegatedLogistic.validUntil = validUntil.getTime();
+			}
+		});
+
+		function stringToDate(dateStr) {
+			let dateParts = dateStr.split('/');
+			return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+		}
+        
+        function closeForm() {
+            $.modal.close();
+        }
+
+        function confirm() {
+			let errorFlg = false;
+			if (!$("input[name=validFrom]").val()) {
+				$("input[name=validFrom]").addClass('error-input');
+				errorFlg = true;
+			}
+			if (!$("input[name=validUntil]").val()) {
+				$("input[name=validUntil]").addClass('error-input');
+				errorFlg = true;
+			}
+			if (!$("input[name=delegateTaxcode]").val()) {
+				$("input[name=delegateTaxcode]").addClass('error-input');
+				errorFlg = true;
+			}
+			if (!$("input[name=delegateCompany]").val()) {
+				$("input[name=delegateCompany]").addClass('error-input');
+				errorFlg = true;
+			}
+
+			if (!errorFlg) {
+				delegatedLogistic.delegateTaxCode = $("input[name=delegateTaxcode]").val();
+				delegatedLogistic.delegateCompany = $("input[name=delegateCompany]").val();
+				delegatedLogistic.validFlg = $('#valid').prop('checked')?1:0;
+                delegatedLogistic.logisticGroupId = logisticDelegated.logisticGroupId;
+                delegatedLogistic.id = logisticDelegated.id;
+				layer.confirm("Xác nhận thay đổi thông tin ủy quyền.", {
+					icon: 3,
+					title: "Xác Nhận",
+					btn: ['Đồng Ý', 'Hủy Bỏ']
+				}, function () {
+                    layer.close(layer.index);
+					$.ajax({
+						url: PREFIX + "/delegate/edit",
+						method: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(delegatedLogistic)
+					}).done(function (res) {
+						if (res.code == 0) {
+							parent.finishForm(res);
+                            $.modal.close();
+						} else {
+							$.modal.alertError("Chỉnh sửa ủy quyền thất bại.");
+						}
+					});
+				}, function () {
+                    // close;
+                });
+			}
+        }
+    </script>
+  </body>
+</html>

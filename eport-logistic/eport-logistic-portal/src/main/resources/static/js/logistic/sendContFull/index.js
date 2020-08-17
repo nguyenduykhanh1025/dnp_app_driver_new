@@ -426,13 +426,15 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
         containerNo = hot.getDataAtCell(row, 2);
         sztp = hot.getDataAtCell(row, 3);
     }
-    if (sourceData) {
+    if (sourceData && sourceData.length > 0) {
         if (sourceData.length >= row && sourceData[row].id) {
-            value = '<a class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</a>';
+            value = '<button class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
+        } else if (containerNo && sztp) {
+            value = '<button class="btn btn-success btn-xs" id="detailBtn '+ row +'" onclick="openDetail(' + null + ',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Khai báo</button>';
         } else {
-            value = '<a class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Khai báo</a>';
+            value = '<button class="btn btn-success btn-xs" id="detailBtn '+ row +'" onclick="openDetail(' + null + ',\'' + containerNo + '\',' + '\'' + sztp + '\')" disabled><i class="fa fa-check-circle"></i>Khai báo</button>';
         }
-    }
+    } 
     $(td).html(value);
     cellProperties.readOnly = 'true';
     return td;
@@ -685,6 +687,13 @@ function onChange(changes, source) {
          }
             // check to input temperature
         } else if (change[1] == "sztp") {
+
+            if (change[3] && hot.getDataAtCell(change[0], 2)) {
+                $('#detailBtn' + change[0]).prop('disabled', false);
+            } else {
+                $('#detailBtn' + change[0]).prop('disabled', true);
+            }
+
         	hot.setDataAtCell(change[0], 5, '');//opeCode reset
             if (change[3] && change[3].length > 3 && change[3].substring(0,4).includes("R")) {
                 temperatureDisable[change[0]] = 0;
@@ -709,6 +718,12 @@ function onChange(changes, source) {
                         }
                     }
                 });
+            }
+        } else if (change[1] == "containerNo") {
+            if (change[3] && hot.getDataAtCell(change[0], 3)) {
+                $('#detailBtn' + change[0]).prop('disabled', false);
+            } else {
+                $('#detailBtn' + change[0]).prop('disabled', true);
             }
         }
     });
