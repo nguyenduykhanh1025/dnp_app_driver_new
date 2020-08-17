@@ -12,6 +12,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="validFrom"    column="valid_from"    />
         <result property="validUntil"    column="valid_until"    />
         <result property="validFlg"    column="valid_flg"    />
+        <result property="delFlg"    column="del_flg"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
@@ -19,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLogisticDelegatedVo">
-        select id, logistic_group_id, delegate_tax_code, delegate_company, valid_from, valid_until, valid_flg, create_by, create_time, update_by, update_time from logistic_delegated
+        select id, logistic_group_id, delegate_tax_code, delegate_company, valid_from, valid_until, valid_flg, del_flg, create_by, create_time, update_by, update_time from logistic_delegated
     </sql>
 
     <select id="selectLogisticDelegatedList" parameterType="LogisticDelegated" resultMap="LogisticDelegatedResult">
@@ -31,6 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validFrom != null "> and valid_from = #{validFrom}</if>
             <if test="validUntil != null "> and valid_until = #{validUntil}</if>
             <if test="validFlg != null "> and valid_flg = #{validFlg}</if>
+            <if test="delFlg != null "> and del_flg = #{delFlg}</if>
         </where>
     </select>
     
@@ -52,10 +54,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validFrom != null">valid_from,</if>
             <if test="validUntil != null">valid_until,</if>
             <if test="validFlg != null">valid_flg,</if>
+            <if test="delFlg != null">del_flg,</if>
             <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -65,10 +66,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validFrom != null">#{validFrom},</if>
             <if test="validUntil != null">#{validUntil},</if>
             <if test="validFlg != null">#{validFlg},</if>
+            <if test="delFlg != null">#{delFlg},</if>
             <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -81,10 +81,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="validFrom != null">valid_from = #{validFrom},</if>
             <if test="validUntil != null">valid_until = #{validUntil},</if>
             <if test="validFlg != null">valid_flg = #{validFlg},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="delFlg != null">del_flg = #{delFlg},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
@@ -99,4 +98,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <update id="updateDelFlgByGroupIds" parameterType="String">
+        update logistic_delegated set del_flg = 1 where logistic_group_id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
 </mapper>

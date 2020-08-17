@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.dto.EdoWithoutHouseBillReq;
 import vn.com.irtech.eport.carrier.mapper.EdoMapper;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.text.Convert;
@@ -382,6 +383,17 @@ public class EdoServiceImpl implements IEdoService
 	@Override
     public int updateEdoByBlCont(Edo edo) {
 		return edoMapper.updateEdoByBlCont(edo);
+	}
+
+	/**
+	 * Get list Edo without house bill id
+	 * @param edo
+	 * @return
+	 */
+	@Override
+	public List<Edo> selectListEdoWithoutHouseBillId(EdoWithoutHouseBillReq edo)
+	{
+		return edoMapper.selectListEdoWithoutHouseBillId(edo);
 	}
 
 }

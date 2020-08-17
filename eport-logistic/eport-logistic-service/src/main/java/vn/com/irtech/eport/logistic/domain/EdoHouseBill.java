@@ -3,6 +3,7 @@ package vn.com.irtech.eport.logistic.domain;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
@@ -78,6 +79,12 @@ public class EdoHouseBill extends BaseEntity
     /** Voyage No */
     @Excel(name = "Voyage No")
     private String voyNo;
+
+    /** Carrier code */
+    @Excel(name = "Carrier code")
+    private String carrierCode;
+
+    private Edo edo;
 
     public void setId(Long id) 
     {
@@ -222,6 +229,22 @@ public class EdoHouseBill extends BaseEntity
     public String getVoyNo() 
     {
         return voyNo;
+    }
+
+    public String getCarrierCode() {
+        return carrierCode;
+    }
+
+    public void setCarrierCode(String carrierCode) {
+        this.carrierCode = carrierCode;
+    }
+
+    public Edo getEdo() {
+        return edo;
+    }
+
+    public void setEdo(Edo edo) {
+        this.edo = edo;
     }
 
     @Override

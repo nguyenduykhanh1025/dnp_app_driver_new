@@ -23,11 +23,13 @@ import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
@@ -51,6 +53,9 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 	
 	@Autowired
 	private MqttService mqttService;
+	
+	@Autowired
+	private IProcessOrderService processOrderService;
 	
 	/**
 	 * Get main view for change vessel
@@ -196,16 +201,13 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 			return error("Quý khách chưa chọn tàu/chuyến.");
 		}
 
-		String[] vesselArr = vessel.split(" - ");
-		if (vesselArr.length < 3) {
+		String[] vesselArr = vessel.split(",");
+		if (vesselArr.length < 4) {
 			return error("Thông tin tàu/chuyến không hợp lệ.");
 		}
 
-		String vslNm = vesselArr[0];
-		String voyAge = vesselArr[2];
-
 		// Make order send to robot
-		ServiceSendFullRobotReq serviceRobotReq = shipmentDetailService.makeChangeVesselOrder(shipmentDetails, vslNm, voyAge, getUser().getGroupId());
+		ServiceSendFullRobotReq serviceRobotReq = shipmentDetailService.makeChangeVesselOrder(shipmentDetails, vesselArr, getUser().getGroupId());
 		if (serviceRobotReq == null) {
 			return error("Có lỗi xảy ra trong quá trình tạo lệnh để thực thi!");
 		}
@@ -235,9 +237,28 @@ public class LogisticChangeVesselController extends LogisticBaseController {
 			for(ShipmentDetail i : berthplanList) {
 				vesselAndVoyages.add(i.getVslAndVoy());
 			}
+			ajaxResult.put("berthplanList", berthplanList);
 			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
 			return ajaxResult;
 		}
 		return AjaxResult.warn("Không tìm thấy tàu/chuyến nào cho hãng tàu này.");
+	}
+	
+	@GetMapping("/process-order/{processOrderId}/containers/failed")
+	@ResponseBody
+	public AjaxResult getListContainerFailed(@PathVariable Long processOrderId) {
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(processOrderId);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderId.toString());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			String containers = "";
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				if (!shipmentDetail.getVoyNo().equals(processOrder.getVoyage())) {
+					containers += shipmentDetail.getContainerNo() + ",";
+				}
+			}
+			containers.substring(0, containers.length()-1);
+			return success("Yêu cầu đổi tàu thực hiện đổi tàu của quý khách bị lỗi ở các container " + containers + ". Quý khách vui lòng thử lại hoặc liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
+		}
+		return error("Không tìm thấy dữ liệu.");
 	}
 }

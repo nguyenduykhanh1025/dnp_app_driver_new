@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.dto.EdoWithoutHouseBillReq;
 
 /**
  * Exchange Delivery OrderService Interface
@@ -96,4 +97,11 @@ public interface IEdoService {
      * @return
      */
     public int updateEdoByBlCont(Edo edo);
+
+	/**
+	 * Get list Edo without house bill id
+	 * @param edo
+	 * @return
+	 */
+	public List<Edo> selectListEdoWithoutHouseBillId(EdoWithoutHouseBillReq edo);
 }

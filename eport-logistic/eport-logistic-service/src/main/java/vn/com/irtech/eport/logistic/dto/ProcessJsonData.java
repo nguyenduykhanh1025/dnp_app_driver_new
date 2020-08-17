@@ -10,6 +10,10 @@ public class ProcessJsonData implements Serializable {
 	private List<Long> shipmentDetailIds;
 	
 	private List<Long> prePickupContIds;
+	
+	private String vslName;
+	
+	private String voyCarrier;
 
 	public List<Long> getShipmentDetailIds() {
 		return shipmentDetailIds;
@@ -25,6 +29,23 @@ public class ProcessJsonData implements Serializable {
 
 	public void setPrePickupContIds(List<Long> prePickupContIds) {
 		this.prePickupContIds = prePickupContIds;
+	}
+
+	public String getVslName() {
+		return vslName;
+	}
+
+	public void setVslName(String vslName) {
+		this.vslName = vslName;
+	}
+
+	public String getVoyCarrier() {
+		return voyCarrier;
+	}
+
+	public void setVoyCarrier(String voyCarrier) {
+		this.voyCarrier = voyCarrier;
 	} 
+	
 	
 }

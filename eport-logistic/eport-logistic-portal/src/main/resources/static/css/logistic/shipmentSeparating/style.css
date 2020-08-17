@@ -3,3 +3,11 @@
   font-weight: normal;
   font-style: italic;
 }
+
+.pd0{
+  padding: 0px!important;
+}
+
+.small-text-2{
+  font-size: 12px;
+}

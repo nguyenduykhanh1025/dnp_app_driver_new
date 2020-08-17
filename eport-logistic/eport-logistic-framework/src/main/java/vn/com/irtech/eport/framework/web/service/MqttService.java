@@ -273,6 +273,9 @@ public class MqttService implements MqttCallback {
 		processOrder.setId(payLoad.processOrder.getId());
 		processOrder.setRobotUuid(sysRobot.getUuId()); // robot uuid in charge of process order
 		processOrder.setStatus(1); // on progress
+		if (serviceRobot.equals(EServiceRobot.CHANGE_VESSEL) || serviceRobot.equals(EServiceRobot.EXTENSION_DATE)) {
+			processOrder.setRunnable(false);
+		}
 		processOrderService.updateProcessOrder(processOrder);
 		robotService.updateRobotStatusByUuId(sysRobot.getUuId(), "1");
 		return true;
@@ -293,6 +296,9 @@ public class MqttService implements MqttCallback {
 		processOrder.setId(payLoad.processOrder.getId());
 		processOrder.setRobotUuid(uuid); // robot uuid in charge of process order
 		processOrder.setStatus(1); // on progress
+		if (serviceRobot.equals(EServiceRobot.CHANGE_VESSEL) || serviceRobot.equals(EServiceRobot.EXTENSION_DATE)) {
+			processOrder.setRunnable(false);
+		}
 		processOrderService.updateProcessOrder(processOrder);
 	}
 

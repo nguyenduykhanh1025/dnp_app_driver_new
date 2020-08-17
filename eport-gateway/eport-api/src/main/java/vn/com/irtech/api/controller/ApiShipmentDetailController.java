@@ -176,4 +176,22 @@ public class ApiShipmentDetailController {
 		}
 		return false;
 	}
+	
+	@GetMapping("/shipmentDetail/receive-cont-empty/container-amount/booking-no/{bookingNo}/sztp/{sztp}/check/not-ordered")
+	public Integer checkTheNumberOfContainersNotOrderedForReceiveContEmpty(@PathVariable String bookingNo, @PathVariable String sztp) {
+		Integer result = shipmentDetailDao.checkTheNumberOfContainersNotOrderedForReceiveContEmpty(bookingNo, sztp);
+		if(result == null) {
+			return 0;
+		}
+		return result;
+	}
+	
+	@GetMapping("/shipmentDetail/send-cont-full/container-amount/booking-no/{bookingNo}/sztp/{sztp}/check/not-ordered")
+	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(@PathVariable String bookingNo, @PathVariable String sztp) {
+		Integer result = shipmentDetailDao.checkTheNumberOfContainersNotOrderedForSendContFull(bookingNo, sztp);
+		if(result == null) {
+			return 0;
+		}
+		return result;
+	}
 }
