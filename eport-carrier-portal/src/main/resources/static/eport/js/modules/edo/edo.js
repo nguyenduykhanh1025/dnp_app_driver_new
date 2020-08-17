@@ -388,8 +388,6 @@ $(".c-search-box-voy-no").change(function () {
   loadTable(edo);
 });
 
-$(".pagination-info").hide();
-
 function generatePDF() {
   console.log(bill)
   if (!bill) {
@@ -399,3 +397,10 @@ function generatePDF() {
   $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + bill);
 
 }
+
+$('#btnRefresh').click(function(){
+  $(".c-search-box-vessel").text(null);
+  $(".c-search-box-voy-no").text(null);
+  edo.vessel = null;
+  loadTable();
+});

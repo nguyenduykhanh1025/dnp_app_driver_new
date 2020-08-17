@@ -396,4 +396,10 @@ public class EdoServiceImpl implements IEdoService
 		return edoMapper.selectListEdoWithoutHouseBillId(edo);
 	}
 
+
+    public List<Edo> selectEdoListForReport(Edo edo)
+    {
+        return edoMapper.selectEdoListForReport(edo);
+    }
+
 }

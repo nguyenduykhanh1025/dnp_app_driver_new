@@ -102,4 +102,6 @@ public interface EdoMapper
      * @return
      */
     public List<Edo> selectListEdoWithoutHouseBillId(EdoWithoutHouseBillReq edo);
+
+    public List<Edo> selectEdoListForReport(Edo edo);
 }

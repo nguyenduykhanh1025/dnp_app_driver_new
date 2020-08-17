@@ -82,6 +82,48 @@
       <if test="containerNumber != null  and containerNumber != ''">or upper(container_number) like concat(concat('%',
         #{containerNumber}), '%'))
       </if>
+      
+      <if test="houseBillId != null">and house_bill_id = #{houseBillId}</if>
+    </where>
+    ORDER BY create_time DESC
+  </select>
+
+   <select id="selectEdoListForReport" parameterType="Edo" resultMap="EdoResult">
+    <include refid="selectEdoVo"/>
+    <where>
+      <if test="params.groupCode != null">
+        and carrier_code in
+        <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
+          #{carrier_code}
+        </foreach>
+      </if>
+      <if test="carrierId != null ">and carrier_id = #{carrierId}</if>
+      <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
+      <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
+      <if test="businessUnit != null  and businessUnit != ''">and business_unit = #{businessUnit}</if>
+      <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">and empty_container_depot =
+        #{emptyContainerDepot}
+      </if>
+      <if test="detFreeTime != null ">and det_free_time = #{detFreeTime}</if>
+      <if test="secureCode != null  and secureCode != ''">and secure_code = #{secureCode}</if>
+      <if test="releaseDate != null ">and release_date = #{releaseDate}</if>
+      <if test="status != null  and status != ''">and status = #{status}</if>
+      <if test="vessel != null  and vessel != ''">and vessel like concat(concat('%', #{vessel}), '%')</if>
+      <if test="voyNo != null  and voyNo != ''">and voy_no like concat(concat('%', #{voyNo}), '%')</if>
+      <if test="releaseStatus != null  and releaseStatus != ''">and release_status = #{releaseStatus}</if>
+      <if test="createSource != null  and createSource != ''">and create_source = #{createSource}</if>
+      <if test="delFlg != null  and delFlg != ''">and del_flg = #{delFlg}</if>
+      <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
+      <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
+      <if test="consignee != null  and consignee != ''">and (upper(consignee) like concat(concat('%', #{consignee}),
+        '%')
+      </if>
+      <if test="billOfLading != null  and billOfLading != ''">or upper(bill_of_lading) like concat(concat('%', #{billOfLading}), '%')</if>
+      <if test="sztp != null  and sztp != ''">or upper(sztp) like concat(concat('%', #{sztp}), '%'))</if>
+      <if test="containerNumber != null  and containerNumber != ''">or upper(container_number) like concat(concat('%',
+        #{containerNumber}), '%'))
+      </if>
+      
       <if test="houseBillId != null">and house_bill_id = #{houseBillId}</if>
     </where>
     ORDER BY create_time DESC
