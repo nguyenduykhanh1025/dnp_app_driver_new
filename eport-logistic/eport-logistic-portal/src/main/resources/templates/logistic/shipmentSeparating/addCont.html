@@ -12,44 +12,62 @@
     <div class="container-fluid bg-white" >
       <div class="row">
         <div class="form group col-lg-6 col-md-6 col-sm-6 row pl0">
-          <label class="col-lg-2 col-md-2 col-sm-2 col-form-label" for="masterbill"><b>Master Bill</b></label>
-          <div class="col-lg-10 col-md-10 col-sm-10">
-            <input name="masterbill" class="form-control" type="text" />
+          <label class="col-lg-3 col-md-4 col-sm-4 col-form-label" for="masterBillNo"><b>Master Bill</b></label>
+          <div class="col-lg-9 col-md-8 col-sm-8">
+            <input disabled name="masterBillNo" class="form-control" type="text" th:value="${houseBill.masterBillNo}" />
           </div>
-          <label class="col-lg-2 col-md-2 col-sm-2 col-form-label mt5" for="masterbill"><b>Hãng tàu</b></label>
-          <div class="col-lg-10 col-md-10 col-sm-10 mt5">
-            <input name="masterbill" class="form-control" type="text" />
+          <label class="col-lg-3 col-md-4 col-sm-4 col-form-label mt5" for="carrierCode"><b>Hãng tàu</b></label>
+          <div class="col-lg-9 col-md-8 col-sm-8 mt5">
+            <input disabled name="carrierCode" class="form-control" type="text" th:value="${houseBill.carrierCode}" />
           </div>
         </div>
         <div class="form group col-lg-6 col-md-6 col-sm-6 row pl0">
-          <label class="col-lg-2 col-md-2 col-sm-2 col-form-label" for="masterbill"><b>Chủ hàng</b></label>
-          <div class="col-lg-10 col-md-10 col-sm-10">
-            <input name="masterbill" class="form-control" type="text" />
+          <label class="col-lg-3 col-md-4 col-sm-4 col-form-label" for="consignee"><b>Chủ hàng</b></label>
+          <div class="col-lg-9 col-md-8 col-sm-8">
+            <input disabled name="consignee" class="form-control" type="text" th:value="${houseBill.consignee2}"/>
           </div>
-          <label class="col-lg-2 col-md-2 col-sm-2 col-form-label mt5" for="masterbill"><b>Hạn lệnh</b></label>
-          <div class="col-lg-4 col-md-4 col-sm-4 mt5">
-            <input name="masterbill" class="form-control" type="date" />
+          <label class="col-lg-3 col-md-4 col-sm-4 col-form-label mt5" for="expiredDem"><b>Hạn lệnh</b></label>
+          <div class="col-lg-9 col-md-8 col-sm-8 mt5">
+            <input disabled name="expiredDem" class="form-control" type="text" th:value="${houseBill.edo.expiredDem}"/>
           </div>
         </div>
       </div>
-      <h3>Danh Sách Container <span class="small-text">(<i class="text-danger">*</i> Chọn container để tách house bill)</span></h3>
+      <h3>Danh Sách Container <span class="small-text">(<i class="text-danger">*</i> Chọn container để thêm vào house bill)</span></h3>
       <table id="dg" style="width: 100%;" pageList="[20,50,100,150,200]">
         <thead>
           <tr>
             <th data-options="field:'id', fixed:true" width="1"></th>
-            <th data-options="field:'Contain', halign:'center', resizable:true, fixed:true" sortable="true" width="150">Container No</th>
-            <th data-options="field:'taxCode', halign:'center', fixed:true" sortable="true" width="100">Company</th>
-            <th data-options="field:'containerAmount', align:'right', halign:'center', fixed:true" sortable="true" width="70">Expried Dem</th>
-            <th data-options="field:'remark',align:'right',halign:'center'" sortable="true" width="150">DET</th>
-            <th data-options="field:'createTime', align:'right', halign:'center', fixed:true" sortable="true" width="150">Empty Container depot</th>
-            <th data-options="field:'createTime', align:'right', halign:'center', fixed:true" sortable="true" width="150">Vessel</th>
-            <th data-options="field:'createTime', align:'right', halign:'center', fixed:true" sortable="true" width="150">Voyno</th>
-            <th data-options="field:'createTime', align:'right', halign:'center', fixed:true" sortable="true" width="150">Status</th>
+            <th data-options="field:'ck', checkbox:true" width="50"></th>
+            <th data-options="field:'containerNumber', halign:'center', resizable:true, fixed:true" sortable="true"
+                width="150">
+              Container No
+            </th>
+            <th data-options="field:'carrierCode', halign:'center', fixed:true" sortable="true" width="100">Company</th>
+            <th data-options="field:'expiredDem', align:'left', halign:'center', fixed:true" sortable="true"
+                width="150">Expried Dem
+            </th>
+            <th data-options="field:'detFreeTime',align:'right',halign:'center'" sortable="true" width="100">DET</th>
+            <th data-options="field:'emptyContainerDepot', align:'left', halign:'center', fixed:true" sortable="true"
+                width="150">Empty Container depot
+            </th>
+            <th data-options="field:'vessel', align:'left', halign:'center', fixed:true" sortable="true"
+                width="150">Vessel
+            </th>
+            <th data-options="field:'voyNo', align:'left', halign:'center', fixed:true" sortable="true"
+                width="150">Voyno
+            </th>
+            <th data-options="field:'status', align:'center', halign:'center', fixed:true, formatter: formatStatus"
+                sortable="true" ,
+                width="150">Status
+            </th>
           </tr>
         </thead>
       </table>
     </div>
     <th:block th:include="include :: footer" />
+    <script type="text/javascript" th:inline="javascript">
+        var houseBill = /*[[${houseBill}]]*/;
+    </script>
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: datetimepicker-js" />
     <script th:src="@{/js/logistic/shipmentSeparating/addCont.js}"></script>
