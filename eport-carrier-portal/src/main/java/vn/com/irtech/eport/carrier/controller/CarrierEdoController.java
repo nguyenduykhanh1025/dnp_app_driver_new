@@ -31,7 +31,7 @@ import vn.com.irtech.eport.system.service.ISysDictDataService;
 
 @Controller
 @RequestMapping("/edo")
-@Transactional(rollbackFor = Exception.class)
+// @Transactional(rollbackFor = Exception.class)
 public class CarrierEdoController extends CarrierBaseController {
 
 	private final String PREFIX = "edo";
@@ -148,7 +148,7 @@ public class CarrierEdoController extends CarrierBaseController {
 			for (String id : idsList) {
 				edo.setId(Long.parseLong(id));
 				edoService.updateEdo(edo);
-				edo.setCreateBy(super.getUser().getEmail());
+				edo.setUpdateBy(super.getUser().getEmail());
 				edoAuditLogService.updateAuditLog(edo);
 			}
 			return AjaxResult.success("Update thành công");
@@ -209,7 +209,7 @@ public class CarrierEdoController extends CarrierBaseController {
 
 	@GetMapping("/report")
 	public String report() {
-		if (!hasDoPermission()) {
+		if (!hasEdoPermission()) {
 			return "error/404";
 		}
 		return PREFIX + "/report";

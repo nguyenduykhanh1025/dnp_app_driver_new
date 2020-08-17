@@ -98,9 +98,12 @@ $.ajax({
   url: PREFIX + "/getEmptyContainerDeport",
   success(data) {
     data.data.forEach(element => {
-      $('.select-emptyContainerDeport').append(`<option value="${element['dictLabel']}"> 
+      if(element['dictLabel'] != emptyContainerDepot)
+      {
+        $('.select-emptyContainerDeport').append(`<option value="${element['dictLabel']}"> 
                                                   ${element['dictLabel']} 
                                                 </option>`);
+      }
     });
   }
 })
