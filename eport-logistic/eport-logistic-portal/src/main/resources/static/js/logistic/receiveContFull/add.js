@@ -34,6 +34,7 @@ async function submitHandler() {
                 if (res.shipment.edoFlg == "1") {
                     $('#edoFlg').val(res.shipment.edoFlg).text("Lệnh giao hàng điện tử (eDO)");
                     $('#edoFlgInput').val(res.shipment.edoFlg);
+                    $('#orderNumberDiv').show();
                 } else {
                     $('#edoFlg').val(res.shipment.edoFlg).text("Lệnh giao hàng (DO)");
                     $('#edoFlgInput').val(res.shipment.edoFlg);
@@ -73,6 +74,7 @@ function checkBlNoUnique() {
                 if (result.shipment.edoFlg == "1") {
                     $('#edoFlg').val(result.shipment.edoFlg).text("Lệnh giao hàng điện tử (eDO)");
                     $('#edoFlgInput').val(result.shipment.edoFlg);
+                    $('#orderNumberDiv').show();
                 } else {
                     $('#edoFlg').val(result.shipment.edoFlg).text("Lệnh giao hàng (DO)");
                     $('#edoFlgInput').val(result.shipment.edoFlg);
