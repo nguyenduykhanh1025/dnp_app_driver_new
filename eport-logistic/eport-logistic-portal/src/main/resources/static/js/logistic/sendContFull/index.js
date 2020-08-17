@@ -426,10 +426,12 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
         containerNo = hot.getDataAtCell(row, 2);
         sztp = hot.getDataAtCell(row, 3);
     }
-    if (sourceData && sourceData.length >= row && sourceData[row].id) {
-        value = '<a class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</a>';
-    } else {
-        value = '<a class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Khai báo</a>';
+    if (sourceData) {
+        if (sourceData.length >= row && sourceData[row].id) {
+            value = '<a class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</a>';
+        } else {
+            value = '<a class="btn btn-success btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Khai báo</a>';
+        }
     }
     $(td).html(value);
     cellProperties.readOnly = 'true';

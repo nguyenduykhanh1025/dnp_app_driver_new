@@ -953,7 +953,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
      * @return ServiceSendFullRobotReq
      */
     @Override
-    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String vessel, String voyage, Long groupId) {
+    public ServiceSendFullRobotReq makeChangeVesselOrder(List<ShipmentDetail>shipmentDetails, String[] vesselArr, Long groupId) {
     	ProcessOrder processOrder = new ProcessOrder();
     	if (CollectionUtils.isNotEmpty(shipmentDetails)) {
     		ShipmentDetail shipmentDt = shipmentDetails.get(0);
@@ -971,17 +971,19 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             }
     		processOrder.setOldVessel(shipmentDt.getVslNm());
     		processOrder.setOldVoyAge(shipmentDt.getVoyNo());
-    		processOrder.setVessel(vessel);
-    		processOrder.setVoyage(voyage);
+    		processOrder.setVessel(vesselArr[0]);
+    		processOrder.setVoyage(vesselArr[1]);
     		processOrder.setContNumber(shipmentDetails.size());
     		List<Long> shipmentDetailIds = new ArrayList<>();
     		for (ShipmentDetail shipmentDetail : shipmentDetails) {
-    			shipmentDetail.setVslNm(vessel);
-    			shipmentDetail.setVoyNo(voyage);
+    			shipmentDetail.setVslNm(vesselArr[0]);
+    			shipmentDetail.setVoyNo(vesselArr[1]);
     			shipmentDetailIds.add(shipmentDetail.getId());
     		}
     		Map<String, Object> map = new HashMap<>();
     		map.put("shipmentDetailIds", shipmentDetailIds);
+    		map.put("vslName", vesselArr[2]);
+    		map.put("voyCarrier", vesselArr[3]);
     		processOrder.setProcessData(new Gson().toJson(map));
     		processOrder.setLogisticGroupId(groupId);
     		processOrderService.insertProcessOrder(processOrder);

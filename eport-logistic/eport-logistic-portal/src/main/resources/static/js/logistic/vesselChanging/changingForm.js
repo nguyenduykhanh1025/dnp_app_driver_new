@@ -1,4 +1,5 @@
 var prefix = ctx + "logistic/vessel-changing";
+var berthplanList;
 
 $('#opeCodeList').change(function() {
     let vesselOption = '<option value="" selected>Chọn tàu/chuyến</option>';
@@ -10,7 +11,8 @@ $('#opeCodeList').change(function() {
             success: function (data) {
                 $.modal.closeLoading();
                 if (data.code == 0) {
-                    $.each(data.vesselAndVoyages , function(index, value) {
+                    berthplanList = data.berthplanList;
+                    $.each(data.vesselAndVoyages, function(index, value) {
                         vesselOption += '<option value="' + value + '" selected>' + value + '</option>';
                     });
                     $("#vesselList").html(vesselOption);
@@ -39,8 +41,18 @@ function confirm() {
         $("#vesselList").addClass("error-input");
         $.modal.alertError("Quý khách chựa chọn tàu/chuyến.");
     } else {
+        let vslNm, voyNo, vslName, voyCarrier;
+        $.each(berthplanList, function(index, value) {
+            if ($("#vesselList").val() == value.vslAndVoy) {
+                vslNm = value.vslNm;
+                voyNo = value.voyNo;
+                vslName = value.vslAndVoy.split(" - ")[1];
+                voyCarrier = value.voyCarrier;
+                return false;
+            }
+        });
         $.modal.close();
-        parent.otp($("#vesselList").val());
+        parent.otp(vslNm + "," + voyNo + "," +vslName + "," + voyCarrier);
     }
 }
 
