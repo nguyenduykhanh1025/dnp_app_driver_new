@@ -6,7 +6,6 @@ import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
- * 【请填写功能名称】 Object notifications
  * 
  * @author irtech
  * @date 2020-07-06
@@ -15,15 +14,10 @@ public class Notifications extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** $column.columnComment */
     private Long id;
 
-    /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
     private String title;
 
-    /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
     private String content;
 
     private Integer seenAmount;
