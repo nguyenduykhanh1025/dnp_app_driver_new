@@ -16,24 +16,19 @@ public class SysConfig extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 参数主键 */
-    @Excel(name = "参数主键", cellType = ColumnType.NUMERIC)
+    @Excel(name = "Config ID", cellType = ColumnType.NUMERIC)
     private Long configId;
 
-    /** 参数名称 */
-    @Excel(name = "参数名称")
+    @Excel(name = "Config Name")
     private String configName;
 
-    /** 参数键名 */
-    @Excel(name = "参数键名")
+    @Excel(name = "Config Key")
     private String configKey;
 
-    /** 参数键值 */
-    @Excel(name = "参数键值")
+    @Excel(name = "Config Value")
     private String configValue;
 
-    /** 系统内置（Y是 N否） */
-    @Excel(name = "系统内置", readConverterExp = "Y=是,N=否")
+    @Excel(name = "System Default", readConverterExp = "Y=Yes,N=No")
     private String configType;
 
     public Long getConfigId()
