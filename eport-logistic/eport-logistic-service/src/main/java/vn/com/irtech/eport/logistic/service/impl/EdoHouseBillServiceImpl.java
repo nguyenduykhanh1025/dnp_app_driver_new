@@ -12,6 +12,7 @@ import vn.com.irtech.eport.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.mapper.EdoHouseBillMapper;
 import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
 import vn.com.irtech.eport.logistic.service.IEdoHouseBillService;
@@ -135,7 +136,7 @@ public class EdoHouseBillServiceImpl implements IEdoHouseBillService
      * @return
      */
     @Override
-    public int insertListEdoHouseBill(List<Edo> edos, String houseBill, String consignee2, LogisticAccount user) {
+    public int insertListEdoHouseBill(List<Edo> edos, String houseBill, String consignee2, String taxCode, String orderNumber, LogisticAccount user) {
         if (edos == null){
             return 0;
         }
@@ -146,11 +147,12 @@ public class EdoHouseBillServiceImpl implements IEdoHouseBillService
             edoHouseBill.setLogisticAccountId(user.getId());
             edoHouseBill.setEdoId(edo.getId());
             edoHouseBill.setBillOfLading(edo.getBillOfLading());
-            edoHouseBill.setOrderNumber(edo.getOrderNumber());
+            edoHouseBill.setOrderNumber(orderNumber);
             edoHouseBill.setMasterBillNo(edo.getBillOfLading());
             edoHouseBill.setConsignee(edo.getConsignee());
             edoHouseBill.setHouseBillNo(houseBill);
             edoHouseBill.setConsignee2(consignee2);
+            edoHouseBill.setConsignee2TaxCode(taxCode);
             edoHouseBill.setContainerNumber(edo.getContainerNumber());
             edoHouseBill.setSztp(edo.getSztp());
             edoHouseBill.setVessel(edo.getVessel());
@@ -160,6 +162,11 @@ public class EdoHouseBillServiceImpl implements IEdoHouseBillService
 
             edoHouseBillMapper.insertEdoHouseBill(edoHouseBill);
 
+            
+            EdoHouseBill edoHouseBill2 = edoHouseBillMapper.selectEdoHouseBillById(edo.getHouseBillId());
+            edoHouseBill2.setHouseBillNo2(edoHouseBill.getHouseBillNo());
+            edoHouseBillMapper.updateEdoHouseBill(edoHouseBill2);
+            
             Edo edoUpdate = new Edo();
             edoUpdate.setId(edo.getId());
             edoUpdate.setUpdateBy(user.getUserName());
@@ -179,4 +186,35 @@ public class EdoHouseBillServiceImpl implements IEdoHouseBillService
         return edoHouseBillMapper.selectListHouseBillRes(houseBillSearchReq);
     }
 
+    /**
+     * Get Edo House Bill By Bl No
+     * 
+     * @param blNo
+     * @return EdoHouseBill
+     */
+    public EdoHouseBill getEdoHouseBillByBlNo(String blNo) {
+    	return edoHouseBillMapper.getEdoHouseBillByBlNo(blNo);
+    }
+    
+    /**
+     * Get container amount with order number
+     * 
+     * @param shipment
+     * @return String
+     */
+    @Override
+    public int getContainerAmountWithOrderNumber(String blNo, String orderNumber) {
+    	return edoHouseBillMapper.getContainerAmountWithOrderNumber(blNo, orderNumber);
+    }
+    
+    /**
+     * Select house bill for shipment
+     * 
+     * @param blNo
+     * @return List<EdoHouseBill>
+     */
+    @Override
+    public List<EdoHouseBill> selectHouseBillForShipment(String blNo) {
+    	return edoHouseBillMapper.selectHouseBillForShipment(blNo);
+    }
 }

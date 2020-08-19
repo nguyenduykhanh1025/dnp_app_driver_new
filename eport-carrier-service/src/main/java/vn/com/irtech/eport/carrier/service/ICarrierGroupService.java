@@ -97,4 +97,10 @@ public interface ICarrierGroupService
     
     public CarrierGroup getCarrierGroupByOpeCode(String operateCode);
 
+    /**
+     * Select carrier group name
+     * 
+     * @return List<String>
+     */
+    public List<CarrierGroup> selectCarrierGroupName();
 }

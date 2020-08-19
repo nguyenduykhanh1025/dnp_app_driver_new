@@ -396,10 +396,42 @@ public class EdoServiceImpl implements IEdoService
 		return edoMapper.selectListEdoWithoutHouseBillId(edo);
 	}
 
+	/**
+     * Get container amount with order number
+     * 
+     * @param blNo
+     * @param orderNumber
+     * @return int
+     */
+	@Override
+    public int getContainerAmountWithOrderNumber(String blNo, String orderNumber) {
+		return edoMapper.getContainerAmountWithOrderNumber(blNo, orderNumber);
+	}
+	
+	/**
+     * Get bill of lading by house bill id
+     * 
+     * @param houseBillId
+     * @return String
+     */
+	@Override
+    public String getBlNoByHouseBillId(Long houseBillId) {
+		return edoMapper.getBlNoByHouseBillId(houseBillId);
+	}
 
     public List<Edo> selectEdoListForReport(Edo edo)
     {
         return edoMapper.selectEdoListForReport(edo);
     }
 
+    /**
+	 * Select list edo with house bill req
+	 * 
+	 * @param edo
+	 * @return List<Edo>
+	 */
+    @Override
+	public List<Edo> selectListEdoWithHouseBill(EdoWithoutHouseBillReq edo) {
+		return edoMapper.selectListEdoWithHouseBill(edo);
+	}
 }

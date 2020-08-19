@@ -187,6 +187,14 @@ public class ShipmentDetail extends BaseEntity
     /** Order No */
     @Excel(name = "Order No")
     private String orderNo;
+    
+    /** Tax Code */
+    @Excel(name = "Tax Code")
+    private String taxCode;
+    
+    /** Consignee By Tax Code */
+    @Excel(name = "Consignee By Tax Code")
+    private String consigneeByTaxCode;
 
     private String block;
 
@@ -662,6 +670,22 @@ public class ShipmentDetail extends BaseEntity
 		this.vatAfterFee = vatAfterFee;
 	}
 
+	public String getConsigneeByTaxCode() {
+		return consigneeByTaxCode;
+	}
+
+	public void setConsigneeByTaxCode(String consigneeByTaxCode) {
+		this.consigneeByTaxCode = consigneeByTaxCode;
+	}
+	
+	public String getTaxCode() {
+		return taxCode;
+	}
+
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -725,6 +749,8 @@ public class ShipmentDetail extends BaseEntity
             .append("vslAndVoy", getVslAndVoy())
             .append("invoiceNo", getInvoiceNo())
             .append("vatAfterFee", getVatAfterFee())
+            .append("taxCode", getTaxCode())
+            .append("consigneeByTaxCode", getConsigneeByTaxCode())
             .toString();
     }
 }

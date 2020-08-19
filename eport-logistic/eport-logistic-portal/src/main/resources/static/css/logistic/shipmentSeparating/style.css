@@ -11,3 +11,9 @@
 .small-text-2{
   font-size: 12px;
 }
+
+.error-input {
+  background-color: #fbe2e2;
+  border-color: #c66161;
+  color: #c00;
+}

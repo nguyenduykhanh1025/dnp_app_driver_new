@@ -2,7 +2,7 @@ var prefix = ctx + "logistic/receive-cont-full";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, orderNumber = 0, isChange;
-var contList = [], orders = [], processOrderIds;
+var contList = [], orders = [], processOrderIds, taxCodeArr;
 var conts = '';
 var allChecked = false, dnDepot = false;
 var checkList = [];
@@ -28,12 +28,25 @@ $.ajax({
   url: ctx + "logistic/source/option",
   method: "GET",
   success: function (data) {
-      if (data.code == 0) {
-          dischargePortList = data.dischargePortList;
-          opeCodeList = data.opeCodeList;
-          vslNmList = data.vslNmList;
-          consigneeList = data.consigneeList;
-      }
+    if (data.code == 0) {
+      dischargePortList = data.dischargePortList;
+      opeCodeList = data.opeCodeList;
+      vslNmList = data.vslNmList;
+      consigneeList = [];
+      data.consigneeList.forEach(function iterate(value) {
+        consigneeList.push([value]);
+      });
+      // let consignee, consigneeList = [];
+      // while (consignee = data.consigneeList.shift()) {
+      //   consigneeList.push([
+      //     [consignee]
+      //   ]);
+      // }
+      // consigneeList = new Object;
+      // consigneeList.consignees = new Object;
+      // consigneeList.consignees = data.consigneeList;
+      // console.log(consigneeList);
+    }
   }
 });
 // $.ajax({
@@ -213,6 +226,13 @@ function formatDate(value) {
   let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
   let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
   return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes + ":" + seconds;
+}
+
+function formatBlNo(value, row) {
+  if (row.houseBill) {
+    return row.houseBill;
+  }
+  return value;
 }
 
 // FORMAT REMARK FOR SHIPMENT LIST
@@ -512,6 +532,11 @@ function configHandson() {
     manualRowResize: true,
     renderAllRows: true,
     rowHeaders: true,
+    hiddenColumns: {
+      columns: [16, 17],
+      indicators: true,
+      copyPasteEnabled: true
+    },
     className: "htMiddle",
     colHeaders: function (col) {
       switch (col) {
@@ -550,6 +575,10 @@ function configHandson() {
           return "Cảng Dỡ Hàng";
         case 15:
           return "Ghi Chú";
+        // case 16:
+        //   return "Mã Số Thuế";
+        // case 17:
+        //   return "Chủ Hàng Theo Mã Số Thuế";
       }
     },
     // colWidths: [50, 100, 100, 100, 150, 150, 100, 150, 200, 100, 100, 100, 100, 120, 100, 200],
@@ -579,15 +608,23 @@ function configHandson() {
         renderer: expiredDemRenderer
       },
       {
-          data: "detFreeTime",
-          type: "numeric",
-          renderer: detFreeTimeRenderer
+        data: "detFreeTime",
+        type: "numeric",
+        renderer: detFreeTimeRenderer
       },
       {
-        data: "consignee",
         strict: true,
         type: "autocomplete",
         source: consigneeList,
+        data: "consignee",
+        // type: 'handsontable',
+        // handsontable: {
+        //   colHeaders: false,
+        //   data: consigneeList,
+        //   autoColumnSize: true,
+        //   height: 300,
+        //   width: 500,
+        // },
         renderer: consigneeRenderer
       },
       {
@@ -648,6 +685,14 @@ function configHandson() {
         data: "remark",
         renderer: remarkRenderer
       },
+      // {
+      //   data: "taxCode",
+      //   renderer: remarkRenderer
+      // },
+      // {
+      //   data: "consigneeByTaxCode",
+      //   renderer: remarkRenderer
+      // },
     ],
     // beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
     //   if (coords.col == 0 && coords.row == 0) event.stopImmediatePropagation();
@@ -848,14 +893,17 @@ function loadShipmentDetail(id) {
           sourceData = sourceData.slice(0, rowAmount);
         }
         let saved = true;
-        let shiftingFee = false;
-        sourceData.forEach(function iterate(shipmentDetail) {
+        // let shiftingFee = false;
+        taxCodeArr = Array(rowAmount).fill(new Object);
+        sourceData.forEach(function iterate(shipmentDetail, index) {
           if (shipmentDetail.id == null) {
             saved = false;
           }
-          if (shipmentDetail.preorderPickup == 'Y' && shipmentDetail.prePickupPaymentStatus == "N") {
-            shiftingFee = true;
-          }
+          taxCodeArr[index].taxCode = shipmentDetail.taxCode;
+          taxCodeArr[index].consigneeByTaxCode = shipmentDetail.consigneeByTaxCode;
+          // if (shipmentDetail.preorderPickup == 'Y' && shipmentDetail.prePickupPaymentStatus == "N") {
+          //   shiftingFee = true;
+          // }
         });
         if (saved) {
           $('#pickContOnDemandBtn').prop('disabled', false);
@@ -863,9 +911,9 @@ function loadShipmentDetail(id) {
           $('#pickContOnDemandBtn').prop('disabled', true);
         }
 
-        if (shiftingFee) {
-          $('#payShiftingBtn').prop('disabled', false);
-        }
+        // if (shiftingFee) {
+        //   $('#payShiftingBtn').prop('disabled', false);
+        // }
 
         hot.destroy();
         configHandson();
@@ -1020,6 +1068,18 @@ function getDataFromTable(isValidate) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn nơi hạ vỏ!");
         errorFlg = true;
         return false;
+      } else if (!object["opeCode"]) {
+        $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn hãng tàu!");
+        errorFlg = true;
+        return false;
+      } else if (!object["vslNm"]) {
+        $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu!");
+        errorFlg = true;
+        return false;
+      } else if (!object["voyNo"]) {
+        $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chuyến!");
+        errorFlg = true;
+        return false;
       } else if (!object["loadingPort"]) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Cảng xếp hàng!");
         errorFlg = true;
@@ -1061,6 +1121,8 @@ function getDataFromTable(isValidate) {
     shipmentDetail.vslNm = vessel[0];
     shipmentDetail.vslName = vessel[1];
     shipmentDetail.voyNo = object["voyNo"];
+    shipmentDetail.taxCode = taxCodeArr[index].taxCode;
+    shipmentDetail.consigneeByTaxCode = taxCodeArr[index].consigneeByTaxCode;
     if(voyCarrier){
     	shipmentDetail.voyCarrier = voyCarrier;
     }
@@ -1069,6 +1131,8 @@ function getDataFromTable(isValidate) {
     shipmentDetail.transportType = object["transportType"];
     shipmentDetail.emptyDepot = object["emptyDepot"];
     shipmentDetail.remark = object["remark"];
+    shipmentDetail.taxCode = object["taxCode"];
+    shipmentDetail.consigneeByTaxCode = object["consigneeByTaxCode"];
     shipmentDetail.shipmentId = shipmentSelected.id;
     shipmentDetail.id = object["id"];
     shipmentDetail.processStatus = shipmentSelected.taxCode;

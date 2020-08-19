@@ -154,4 +154,13 @@ public class CarrierGroupServiceImpl implements ICarrierGroupService
 		return carrierGroupMapper.getCarrierGroupByOpeCode(operateCode);
 	}
 	
+	/**
+     * Select carrier group name
+     * 
+     * @return List<String>
+     */
+	@Override
+    public List<CarrierGroup> selectCarrierGroupName() {
+		return carrierGroupMapper.selectCarrierGroupName();
+	}
 }

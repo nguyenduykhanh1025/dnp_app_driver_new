@@ -288,7 +288,7 @@
   <select id="getOpeCodeByBlNo" parameterType="String" resultType="String">
     select carrier_code
     from edo
-    where bill_of_lading = #{blNo}
+    where bill_of_lading = #{blNo} and house_bill_id is null
     group by carrier_code
   </select>
   <select id="getCountContainerAmountByBlNo" parameterType="String" resultType="Long">
@@ -299,7 +299,7 @@
   </select>
   <select id="selectEdoListByBlNo" parameterType="String" resultMap="EdoResult">
     <include refid="selectEdoVo"/>
-    where bill_of_lading = #{blNo}
+    where bill_of_lading = #{blNo} and house_bill_id is null
   </select>
 
   <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
@@ -436,7 +436,32 @@
       <if test="billOfLading != null  and billOfLading != ''">and bill_of_lading = #{billOfLading}</if>
       <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
       <if test="expiredDem != null and expiredDem != ''">and TO_CHAR(expired_dem, 'DD/MM/YYYY') = #{expiredDem}</if>
-      <if test="consignee != null  and consignee != ''">and consignee = #{consignee}</if>
+      <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="getContainerAmountWithOrderNumber" resultType="int">
+    select count(*) from edo
+    where bill_of_lading = #{blNo} and order_number = #{orderNumber} and house_bill_id is null
+  </select>
+
+  <select id="getBlNoByHouseBillId" parameterType="Long" resultType="String">
+    select bill_of_lading from edo
+    where house_bill_id = #{id}
+    FETCH NEXT 1 ROWS ONLY
+  </select>
+
+  <select id="selectListEdoWithHouseBill" parameterType="vn.com.irtech.eport.carrier.dto.EdoWithoutHouseBillReq" resultMap="EdoResult">
+    select e.id, e.carrier_id, e.carrier_code, e.order_number, b.house_bill_no as bill_of_lading, e.business_unit, e.consignee, e.container_number,
+    e.expired_dem, e.empty_container_depot, e.det_free_time, e.secure_code, e.release_date, e.vessel, e.vessel_no , e.voy_no, e.sztp,
+    e.status, e.release_status, e.create_source, e.remark, e.del_flg, e.create_by, e.file_create_time, e.create_time, e.update_by,
+    e.update_time, e.transaction_id, e.pol, e.pod, e.house_bill_id, e.consignee_by_tax_code, e.tax_code from edo e
+    right join edo_house_bill b on e.house_bill_id = b.id
+    WHERE
+      b.house_bill_no = #{billOfLading}
+      and e.carrier_code = #{carrierCode}
+      and TO_CHAR(e.expired_dem, 'DD/MM/YYYY') = #{expiredDem}
+      and b.order_number = #{orderNumber}
     ORDER BY create_time DESC
   </select>
 </mapper>
