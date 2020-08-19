@@ -6,7 +6,6 @@ import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
 /**
- * 【请填写功能名称】 Object notification_receiver
  * 
  * @author irtech
  * @date 2020-07-06
@@ -19,11 +18,11 @@ public class NotificationReceiver extends BaseEntity
     private Long id;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "ID")
     private Long notificationId;
 
     /** $column.columnComment */
-    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+    @Excel(name = "Device ID")
     private Long userDeviceId;
 
     private Long seenFlg;

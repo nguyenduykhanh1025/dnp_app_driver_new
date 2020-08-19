@@ -44,8 +44,8 @@ public class SysNotice extends BaseEntity
         this.noticeTitle = noticeTitle;
     }
 
-    @NotBlank(message = "公告标题不能为空")
-    @Size(min = 0, max = 50, message = "公告标题不能超过50 ký tự")
+    @NotBlank(message = "Announcement title cannot be empty")
+    @Size(min = 0, max = 50, message = "The title of the announcement cannot exceed 50 chars")
     public String getNoticeTitle()
     {
         return noticeTitle;

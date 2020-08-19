@@ -418,4 +418,10 @@ public class EdoServiceImpl implements IEdoService
     public String getBlNoByHouseBillId(Long houseBillId) {
 		return edoMapper.getBlNoByHouseBillId(houseBillId);
 	}
+
+    public List<Edo> selectEdoListForReport(Edo edo)
+    {
+        return edoMapper.selectEdoListForReport(edo);
+    }
+
 }

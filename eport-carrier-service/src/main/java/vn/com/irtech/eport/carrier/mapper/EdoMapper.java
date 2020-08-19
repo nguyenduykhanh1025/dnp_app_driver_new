@@ -119,4 +119,6 @@ public interface EdoMapper
      * @return String
      */
     public String getBlNoByHouseBillId(Long houseBillId);
+
+    public List<Edo> selectEdoListForReport(Edo edo);
 }
