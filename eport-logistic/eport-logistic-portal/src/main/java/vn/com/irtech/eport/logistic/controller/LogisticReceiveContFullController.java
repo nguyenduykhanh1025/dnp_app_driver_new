@@ -222,7 +222,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			}
 		}
 		
-		if (shipment.getHouseBill() != null && !shipment.getHouseBill().isBlank()) {
+		if (shipment.getHouseBill() != null && shipment.getHouseBill() != null) {
 			if (edoHouseBillService.getContainerAmountWithOrderNumber(shipment.getHouseBill(), shipment.getOrderNumber()) == 0) {
 				return error("Thêm lô thất bại");
 			}
@@ -279,7 +279,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			shipmentDetail.setShipmentId(shipmentId);
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
 			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) {
-				if (shipment.getHouseBill() != null && !shipment.getHouseBill().isBlank()) {
+				if (shipment.getHouseBill() != null && shipment.getHouseBill() != null) {
 					shipmentDetails = shipmentDetailService.getShipmentDetailFromHouseBill(shipment.getHouseBill());
 					
 				} else {
@@ -664,7 +664,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@ResponseBody
 	public AjaxResult checkOrderNumber(@RequestBody Shipment shipment) {
 		int containerAmount = 0;
-		if (shipment.getHouseBill() != null && !shipment.getHouseBill().isBlank()) {
+		if (shipment.getHouseBill() != null && shipment.getHouseBill() != null) {
 			containerAmount = edoHouseBillService.getContainerAmountWithOrderNumber(shipment.getHouseBill(), shipment.getOrderNumber());
 		} else {
 			containerAmount = edoService.getContainerAmountWithOrderNumber(shipment.getBlNo(), shipment.getOrderNumber());
