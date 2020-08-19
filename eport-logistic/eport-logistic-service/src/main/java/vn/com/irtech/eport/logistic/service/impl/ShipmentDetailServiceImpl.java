@@ -817,6 +817,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                  ship.setDischargePort(edoHouseBill.getEdo().getPod());
                  ship.setTaxCode(edoHouseBill.getConsignee2TaxCode());
                  ship.setConsigneeByTaxCode(edoHouseBill.getConsignee2());
+                 ship.setConsignee(edoHouseBill.getConsignee2());
                  shipmentDetails.add(ship);
     		 }
     	 }

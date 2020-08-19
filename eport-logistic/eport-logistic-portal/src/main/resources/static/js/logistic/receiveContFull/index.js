@@ -28,12 +28,25 @@ $.ajax({
   url: ctx + "logistic/source/option",
   method: "GET",
   success: function (data) {
-      if (data.code == 0) {
-          dischargePortList = data.dischargePortList;
-          opeCodeList = data.opeCodeList;
-          vslNmList = data.vslNmList;
-          consigneeList = data.consigneeList;
-      }
+    if (data.code == 0) {
+      dischargePortList = data.dischargePortList;
+      opeCodeList = data.opeCodeList;
+      vslNmList = data.vslNmList;
+      consigneeList = [];
+      data.consigneeList.forEach(function iterate(value) {
+        consigneeList.push([value]);
+      });
+      // let consignee, consigneeList = [];
+      // while (consignee = data.consigneeList.shift()) {
+      //   consigneeList.push([
+      //     [consignee]
+      //   ]);
+      // }
+      // consigneeList = new Object;
+      // consigneeList.consignees = new Object;
+      // consigneeList.consignees = data.consigneeList;
+      // console.log(consigneeList);
+    }
   }
 });
 // $.ajax({
@@ -595,15 +608,23 @@ function configHandson() {
         renderer: expiredDemRenderer
       },
       {
-          data: "detFreeTime",
-          type: "numeric",
-          renderer: detFreeTimeRenderer
+        data: "detFreeTime",
+        type: "numeric",
+        renderer: detFreeTimeRenderer
       },
       {
-        data: "consignee",
         strict: true,
         type: "autocomplete",
         source: consigneeList,
+        data: "consignee",
+        // type: 'handsontable',
+        // handsontable: {
+        //   colHeaders: false,
+        //   data: consigneeList,
+        //   autoColumnSize: true,
+        //   height: 300,
+        //   width: 500,
+        // },
         renderer: consigneeRenderer
       },
       {

@@ -30,6 +30,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.CacheUtils;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
@@ -222,7 +223,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			}
 		}
 		
-		if (shipment.getHouseBill() != null && shipment.getHouseBill() != null) {
+		if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
 			if (edoHouseBillService.getContainerAmountWithOrderNumber(shipment.getHouseBill(), shipment.getOrderNumber()) == 0) {
 				return error("Thêm lô thất bại");
 			}
@@ -279,7 +280,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			shipmentDetail.setShipmentId(shipmentId);
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
 			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) {
-				if (shipment.getHouseBill() != null && shipment.getHouseBill() != null) {
+				if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
 					shipmentDetails = shipmentDetailService.getShipmentDetailFromHouseBill(shipment.getHouseBill());
 					
 				} else {
@@ -619,6 +620,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		//check opeCode
 		String opeCode = edoService.getOpeCodeByBlNo(blNo);
 		// Long containerAmount = edoService.getCountContainerAmountByBlNo(blNo);
+		
+		// Check edo with master bill
 		if(opeCode != null) {
 			shipment.setEdoFlg("1");
 			shipment.setOpeCode(opeCode);
@@ -627,6 +630,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			ajaxResult.put("shipment", shipment);
 			return ajaxResult;
 		} else {
+			// Check edo with house bill
 			EdoHouseBill edoHouseBill = edoHouseBillService.getEdoHouseBillByBlNo(blNo);
 			if (edoHouseBill != null) {
 				shipment.setEdoFlg("1");
@@ -638,6 +642,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				ajaxResult.put("shipment", shipment);
 				return ajaxResult;
 			} else {
+				// check do
 				Shipment shipCatos = shipmentService.getOpeCodeCatosByBlNo(blNo);
 				if (shipCatos != null) {
 					String edoFlg = carrierGroupService.getDoTypeByOpeCode(shipCatos.getOpeCode());
@@ -660,13 +665,21 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return ajaxResult;
 	}
 
+	/**
+	 * Check order number match with bl no for edo (master bill, house bill)
+	 * 
+	 * @param shipment
+	 * @return AjaxResult
+	 */
 	@PostMapping("/orderNumber/check")
 	@ResponseBody
 	public AjaxResult checkOrderNumber(@RequestBody Shipment shipment) {
 		int containerAmount = 0;
-		if (shipment.getHouseBill() != null && shipment.getHouseBill() != null) {
+		// Check for house bill case
+		if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
 			containerAmount = edoHouseBillService.getContainerAmountWithOrderNumber(shipment.getHouseBill(), shipment.getOrderNumber());
 		} else {
+			// Check for master bill case
 			containerAmount = edoService.getContainerAmountWithOrderNumber(shipment.getBlNo(), shipment.getOrderNumber());
 		}
 		if (containerAmount != 0) {

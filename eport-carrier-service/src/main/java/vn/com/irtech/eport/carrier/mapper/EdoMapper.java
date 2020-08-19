@@ -121,4 +121,12 @@ public interface EdoMapper
     public String getBlNoByHouseBillId(Long houseBillId);
 
     public List<Edo> selectEdoListForReport(Edo edo);
+    
+    /**
+	 * Select list edo with house bill req
+	 * 
+	 * @param edo
+	 * @return List<Edo>
+	 */
+	public List<Edo> selectListEdoWithHouseBill(EdoWithoutHouseBillReq edo); 
 }

@@ -424,4 +424,14 @@ public class EdoServiceImpl implements IEdoService
         return edoMapper.selectEdoListForReport(edo);
     }
 
+    /**
+	 * Select list edo with house bill req
+	 * 
+	 * @param edo
+	 * @return List<Edo>
+	 */
+    @Override
+	public List<Edo> selectListEdoWithHouseBill(EdoWithoutHouseBillReq edo) {
+		return edoMapper.selectListEdoWithHouseBill(edo);
+	}
 }
