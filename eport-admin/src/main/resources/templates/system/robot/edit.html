@@ -24,9 +24,9 @@
       <div class="form-group">
         <label class="col-sm-3 control-label">Trạng thái</label>
         <div class="col-sm-8">
-          <label class="radio-inline text-info"><input type="radio" name="status" th:checked="${robot.status == '0'}" value="0">Available</label>
-          <label class="radio-inline text-warning"><input type="radio" name="status" th:checked="${robot.status == '1'}" value="1">Busy</label>
-          <label class="radio-inline text-danger"><input type="radio" name="status" th:checked="${robot.status == '2'}" value="2">Offline</label>
+          <label class="radio-inline text-info"><input type="radio" name="status" th:checked="${robot.status == '0'}" id="availableRadio" value="0">Available</label>
+          <label class="radio-inline text-warning"><input type="radio" name="status" th:checked="${robot.status == '1'}" id="busyRadio" value="1">Busy</label>
+          <label class="radio-inline text-danger"><input type="radio" name="status" th:checked="${robot.status == '2'}" id="offlineRadio" value="2">Offline</label>
         </div>
       </div>
       <div class="form-group">

@@ -152,6 +152,21 @@ function onMessageReceived(payload) {
         changeTextLoading("Đang kiểm tra trạng thái thông quan: "+(contList.length-contAmount)+"/"+contList.length);
         if (contAmount == 0) {
             //$.modal.closeLoading();
+            let shipmentId;
+            contResult.forEach(function(value) {
+                if (value.customStatus != 'R') {
+                    shipmentId = value.shipmentId;
+                    return false;
+                }
+            });
+            if (shipmentId) {
+                $.ajax({
+                    url: prefix + "/shipment/" + shipmentId + "/custom/notification",
+                    method: "GET"
+                }).done(function(res) {
+                    // done
+                });
+            }
             closeLoading();
             $("#contTable").datagrid({
                 loadMsg: " Đang xử lý...",

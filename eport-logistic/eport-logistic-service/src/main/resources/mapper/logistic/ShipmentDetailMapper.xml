@@ -736,4 +736,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         group by sh.id, sh.container_no, sh.wgt, sh.sztp, a.id, a.create_time 
         order by a.create_time desc
     </select>
+
+    <select id="selectConsigneeTaxCodeByShipmentId" resultType="String" parameterType="Long">
+        select tax_code from shipment_detail
+        where shipment_id = #{shipmentId}
+        fetch next 1 rows only
+    </select>
+
 </mapper>

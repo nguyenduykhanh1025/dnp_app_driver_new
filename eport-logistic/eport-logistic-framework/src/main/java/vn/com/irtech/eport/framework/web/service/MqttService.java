@@ -341,7 +341,7 @@ public class MqttService implements MqttCallback {
 	}
 
 	public enum NotificationCode {
-		NOTIFICATION_OM, NOTIFICATION_IT, NOTIFICATION_CONT
+		NOTIFICATION_OM, NOTIFICATION_OM_CUSTOM, NOTIFICATION_IT, NOTIFICATION_CONT
 	}
 
 	/**
@@ -357,6 +357,10 @@ public class MqttService implements MqttCallback {
 			case NOTIFICATION_OM:
 				topic = NOTIFICATION_OM_TOPIC;
 				title = "Lỗi làm lệnh!";
+				break;
+			case NOTIFICATION_OM_CUSTOM:
+				topic = NOTIFICATION_OM_TOPIC;
+				title = "Lỗi hải quan!";
 				break;
 			case NOTIFICATION_IT:
 				topic = NOTIFICATION_IT_TOPIC;

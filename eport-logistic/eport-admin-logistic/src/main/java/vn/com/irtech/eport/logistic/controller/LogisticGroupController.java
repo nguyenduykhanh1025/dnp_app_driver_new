@@ -226,6 +226,7 @@ public class LogisticGroupController extends BaseController
     public List<JSONObject> searchGroupNameByKeyword(String keyword, Long groupId) {
         LogisticGroup logisticGroup = new LogisticGroup();
         logisticGroup.setGroupName(keyword.toLowerCase());
+        logisticGroup.setDelFlag("0");
         List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupListByName(logisticGroup);
         List<JSONObject> result = new ArrayList<>();
 		for (LogisticGroup i : logisticGroups) {

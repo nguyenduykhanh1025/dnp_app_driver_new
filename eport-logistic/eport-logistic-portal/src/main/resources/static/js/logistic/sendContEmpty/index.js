@@ -407,7 +407,10 @@ function configHandson() {
                 case 4:
                     return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
                 case 5:
-                    return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+                    if (shipmentSelected && shipmentSelected.blNo) {
+                        return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+                    }
+                    return 'Hạn Lệnh';
 //                case 5:
 //                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
 //                case 6:
@@ -758,7 +761,7 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Hãng tàu!");
                 errorFlg = true;
                 return false;
-            } else if (!object["expiredDem"]) {
+            } else if (!object["expiredDem"] && shipmentSelected.blNo) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
                 errorFlg = true;
                 return false;
@@ -791,7 +794,18 @@ function getDataFromTable(isValidate) {
         opecode = object["opeCode"];
 //        vessel = object["vslNm"];
 //        voyage = object["voyNo"];
-        var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
+        let expiredDem;
+        if (shipmentSelected.blNo || object["expiredDem"]) {
+            expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
+            let now = new Date();
+            now.setHours(0, 0, 0);
+            expiredDem.setHours(23, 59, 59);
+            if (expiredDem.getTime() < now.getTime() && isValidate && shipmentSelected.blNo) {
+                errorFlg = true;
+                $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được trong quá khứ!")
+            }
+            shipmentDetail.expiredDem = expiredDem.getTime();
+        }
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
         if (object["status"] == 1 || object["status"] == null) {
@@ -800,7 +814,6 @@ function getDataFromTable(isValidate) {
         let carrier = object["opeCode"].split(": ");
         shipmentDetail.opeCode = carrier[0];
         shipmentDetail.carrierName = carrier[1];
-        shipmentDetail.expiredDem = expiredDem.getTime();
 //        shipmentDetail.vslNm = object["vslNm"];
 //        shipmentDetail.voyNo = object["voyNo"];
         let sizeType = object["sztp"].split(": ");
@@ -811,13 +824,6 @@ function getDataFromTable(isValidate) {
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
-        var now = new Date();
-        now.setHours(0, 0, 0);
-        expiredDem.setHours(23, 59, 59);
-        if (expiredDem.getTime() < now.getTime() && isValidate && object["delFlag"] == null) {
-            errorFlg = true;
-            $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được trong quá khứ!")
-        }
     });
 
     conts.substring(0, conts.length-1);

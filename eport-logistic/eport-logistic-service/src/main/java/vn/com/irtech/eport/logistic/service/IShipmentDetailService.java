@@ -204,4 +204,12 @@ public interface IShipmentDetailService
      * @return ServiceSendFullRobotReq
      */
     public List<ServiceSendFullRobotReq> makeExtensionDateOrder(List<ShipmentDetail> shipmentDetails, Date expiredDem, Long groupId);
+    
+    /**
+     * Select consignee tax code by shipment id
+     * 
+     * @param shipmentId
+     * @return String
+     */
+    public String selectConsigneeTaxCodeByShipmentId(Long shipmentId);
 }

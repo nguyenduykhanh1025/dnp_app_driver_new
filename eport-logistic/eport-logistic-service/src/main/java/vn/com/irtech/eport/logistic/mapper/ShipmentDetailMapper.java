@@ -126,4 +126,12 @@ public interface ShipmentDetailMapper
      * @return List<PickupAssignForm>
      */
     public List<PickupAssignForm> selectShipmentDetailForDriverShipmentAssign(@Param("shipmentId") Long shipmentId, @Param("driverId") Long driverId);
+    
+    /**
+     * Select consignee tax code by shipment id
+     * 
+     * @param shipmentId
+     * @return String
+     */
+    public String selectConsigneeTaxCodeByShipmentId(Long shipmentId);
 }

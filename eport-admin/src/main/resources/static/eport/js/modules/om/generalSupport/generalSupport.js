@@ -260,9 +260,11 @@ function changeOrderStatus() {
   if ($('#orderStatus').val() == 3) {
     processOrder.status = 0;
     processOrder.robotUuid = 'blank';
-  } else {
+  } else if ($('#orderStatus').val() != '') {
     processOrder.status = $('#orderStatus').val();
     processOrder.robotUuid = '';
+  } else {
+    processOrder.robotUuid = null;
   }
   loadRightTable();
 }

@@ -32,10 +32,11 @@ $.ajax({
       dischargePortList = data.dischargePortList;
       opeCodeList = data.opeCodeList;
       vslNmList = data.vslNmList;
-      consigneeList = [];
-      data.consigneeList.forEach(function iterate(value) {
-        consigneeList.push([value]);
-      });
+      consigneeList = data.consigneeList;
+      // consigneeList = [];
+      // data.consigneeList.forEach(function iterate(value) {
+      //   consigneeList.push([value]);
+      // });
       // let consignee, consigneeList = [];
       // while (consignee = data.consigneeList.shift()) {
       //   consigneeList.push([
@@ -533,11 +534,6 @@ function configHandson() {
     manualRowResize: true,
     renderAllRows: true,
     rowHeaders: true,
-    hiddenColumns: {
-      columns: [16, 17],
-      indicators: true,
-      copyPasteEnabled: true
-    },
     className: "htMiddle",
     colHeaders: function (col) {
       switch (col) {
@@ -614,10 +610,10 @@ function configHandson() {
         renderer: detFreeTimeRenderer
       },
       {
-        strict: true,
+        data: "consignee",
         type: "autocomplete",
         source: consigneeList,
-        data: "consignee",
+        strict: true,
         // type: 'handsontable',
         // handsontable: {
         //   colHeaders: false,
@@ -729,7 +725,7 @@ function configHandson() {
               isChange = false;
             }
             if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
-
+              $.modal.loading("Đang xử lý...");
               // CLEAR DATA
               hot.setDataAtCell(change[0], 5, ''); //consignee
               hot.setDataAtCell(change[0], 7, ''); //sztp
@@ -743,7 +739,6 @@ function configHandson() {
               hot.setDataAtCell(change[0], 15, ''); //remark
 
               // Call data to auto-fill
-              $.modal.loading("Đang xử lý...");
               $.ajax({
                 url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
                 type: "GET"
@@ -761,11 +756,11 @@ function configHandson() {
                   hot.setDataAtCell(change[0], 15, shipmentDetail.remark); //remark
                   voyCarrier = shipmentDetail.voyCarrier;
                 }
-                $.modal.closeLoading();
               });
             }
           }
         });
+        $.modal.closeLoading();
       }
     },
   };
@@ -1288,10 +1283,23 @@ function checkCustomStatus() {
 }
 
 function verify() {
-  getDataSelectedFromTable(true, true);
-  if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 500);
-  }
+  $.ajax({
+    url: prefix + "/shipment/" + shipmentSelected.id + "/delegate/permission",
+    method: "GET",
+    success: function(res) {
+      if (res.code == 0) {
+        getDataSelectedFromTable(true, true);
+        if (shipmentDetails.length > 0) {
+          $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 500);
+        }
+      } else {
+        $.modal.alertWarning("Qúy khách không có quyền làm lệnh cho bill này.");
+      }
+    },
+    error: function(err) {
+      $.modal.alertError("Lỗi server, vui lòng liên hệ admin.");
+    }
+  });
 }
 
 function verifyOtp(shipmentDtIds, creditFlag, isSendContEmpty) {

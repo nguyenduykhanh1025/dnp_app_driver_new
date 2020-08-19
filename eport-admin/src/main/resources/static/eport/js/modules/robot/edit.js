@@ -1,11 +1,19 @@
 const PREFIX = ctx + "system/robot";
 
 function edit() {
+  let status;
+  if ($('#availableRadio').prop('checked')) {
+    status = 0;
+  } else if ($('#busyRadio').prop('checked')) {
+    status = 1;
+  } else {
+    status = 2;
+  }
   let data = {
     id: robot.id,
     uuId: robot.uuId,
     ipAddress: $("input[name='ipAddress']").val(),
-    status: $("input[name='status']").val(),
+    status: status,
     isReceiveContFullOrder: $("input[name='isReceiveContFullOrder']").is(':checked') == true,
     isReceiveContEmptyOrder: $("input[name='isReceiveContEmptyOrder']").is(':checked') == true,
     isSendContFullOrder: $("input[name='isSendContFullOrder']").is(':checked') == true,

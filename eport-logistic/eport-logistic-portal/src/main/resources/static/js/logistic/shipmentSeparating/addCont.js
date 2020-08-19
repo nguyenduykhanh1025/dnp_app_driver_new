@@ -1,4 +1,4 @@
-
+const PREFIX = ctx + "logistic/shipmentSeparating";
 
 $(document).ready(function () {
   let dataSearch = {
