@@ -151,4 +151,6 @@ public interface IEquipmentDoService {
 
 	public int updateEquipmentDo2(EquipmentDo edo);
 
+	public List<EquipmentDo> selectEdoListForReport(EquipmentDo edo);
+
 }

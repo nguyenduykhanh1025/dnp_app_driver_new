@@ -60,6 +60,7 @@ function loadTable(edo) {
     url: PREFIX + "/billNo",
     method: "POST",
     singleSelect: true,
+    height: $(document).height() - 145,
     clientPaging: true,
     pagination: true,
     pageSize: 20,
@@ -100,11 +101,17 @@ function loadTable(edo) {
 }
 
 function searchDo() {
-  let containerNumber = $("#containerNumber").val() == null ? "" : $("#containerNumber").val();
-  let billOfLading = $("#billOfLading").val() == null ? "" : $("#billOfLading").val();
-  let fromDate = formatToYDM($("#fromDate").val() == null ? "" : $("#fromDate").val());
-  let toDate = formatToYDM($("#toDate").val() == null ? "" : $("#toDate").val());
-  loadTable(containerNumber, billOfLading, fromDate, toDate);
+  edo.fromDate = stringToDate($("#fromDate").val()).getTime();
+  let toDate = stringToDate($("#toDate").val());
+  if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
+    $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
+    $("#toDate").val("");
+  } else {
+    toDate.setHours(23, 59, 59);
+    edo.toDate = toDate.getTime();
+    loadTable(edo);
+  };
+  loadTable(edo);
 }
 
 function formatToYDM(date) {
@@ -138,7 +145,7 @@ function viewHistoryCont(id) {
 }
 
 function viewUpdateCont(id) {
-  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 600, 400);
+  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 500, 380);
 }
 
 function loadTableByContainer(billOfLading) {
@@ -148,6 +155,7 @@ function loadTableByContainer(billOfLading) {
     method: "POST",
     singleSelect: false,
     clientPaging: true,
+    height: $(document).height() - 145,
     pagination: true,
     pageSize: 20,
     nowrap: false,
@@ -266,7 +274,7 @@ function multiUpdateEdo() {
   let ids = [];
   let rows = $('#dgContainer').datagrid('getSelections');
   if (rows.length === 0) {
-    $.modal.alertWarning("Quý khách chưa chọn container để update, vui lòng kiểm tra lại !");
+    $.modal.alertWarning("Quý khách chưa chọn container để update <br>, vui lòng kiểm tra lại !");
     return;
   }
   for (let i = 0; i < rows.length; i++) {
@@ -277,16 +285,19 @@ function multiUpdateEdo() {
     }
     ids.push(row.id);
   }
-  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 600, 400);
+  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 500, 320);
 }
 
 
 
 // SEARCH INFO VESSEL AREA
+$('.c-search-box-vessel').on('select2:open', function (e) {
+  $(this).text(null);
+});
 $(".c-search-box-vessel").select2({
   theme: "bootstrap",
-  placeholder: "Vessel",
-  allowClear: true,
+
+  delay: 250,
   ajax: {
     url: PREFIX + "/getVessel",
     dataType: "json",
@@ -303,88 +314,60 @@ $(".c-search-box-vessel").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-
       })
       return {
         results: results,
       };
     },
   },
+  placeholder: "Vessel",
 });
 
-$(".c-search-box-vessel-code").select2({
-  theme: "bootstrap",
-  placeholder: "Vessel Code",
-  allowClear: true,
-  ajax: {
-    url: PREFIX + "/getVesselCode",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term,
-      };
-    },
-    processResults: function (data) {
-      let results = []
-      data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
-      })
-      return {
-        results: results,
-      };
-    },
-  },
+$('.c-search-box-voy-no').on('select2:open', function (e) {
+      $(this).text(null);
 });
-
-$(".c-search-box-voy-no").select2({
-  theme: "bootstrap",
-  placeholder: "Voy No",
-  allowClear: true,
-  ajax: {
-    url: PREFIX + "/getVoyNo",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term,
-        vessel: edo.vessel,
-      };
+  $(".c-search-box-voy-no").select2({
+    theme: "bootstrap",
+   
+    delay: 250,
+    ajax: {
+      url: PREFIX + "/getVoyNo",
+      dataType: "json",
+      method: "GET",
+      data: function (params) {
+        return {
+          keyString: params.term,
+          vessel: edo.vessel,
+        };
+      },
+      processResults: function (data) {
+        let results = []
+        data.forEach(function (element, i) {
+          let obj = {};
+          obj.id = i;
+          obj.text = element;
+          results.push(obj);
+  
+        })
+        return {
+          results: results,
+        };
+      },
     },
-    processResults: function (data) {
-      let results = []
-      data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
+    placeholder: "Voy No",
+  });
 
-      })
-      return {
-        results: results,
-      };
-    },
-  },
-});
+
 // For submit search
 $(".c-search-box-vessel").change(function () {
   edo = new Object();
   edo.vessel = $(this).text().trim();
-  $(this).text(null);
   loadTable(edo);
+ 
 });
-$(".c-search-box-vessel-code").change(function () {
-  edo = new Object();
-  edo.vesselNo = $(this).text().trim();
-  $(this).text(null);
-  loadTable(edo);
-});
+
 $(".c-search-box-voy-no").change(function () {
   edo.voyNo = $(this).text().trim();
-  $(this).text(null);
   loadTable(edo);
 });
 
@@ -401,6 +384,9 @@ function generatePDF() {
 $('#btnRefresh').click(function(){
   $(".c-search-box-vessel").text(null);
   $(".c-search-box-voy-no").text(null);
+  $("#fromDate").val(null);
+  $("#toDate").val(null)
   edo.vessel = null;
   loadTable();
 });
+

@@ -10,32 +10,28 @@
   <body>
     <div class="container">
       <div class="content">
-        <!-- <div class="col-sm-12 table-container">
-          <h3 class="title-content-history">Cập nhật Container <span id="containerNumber"></span></h3>
-        </div> -->
-
         <form class="form-horizontal m">
           <div class="form-group">
-            <label class="col-sm-4 col-xs-3 col-md-2">Số container <br> (Container No)</label>
-            <div class="col-sm-8 col-xs-8 col-md-10">
+            <label class="col-sm-5 col-xs-5 col-md-5 label-style">Số container : <br> (Container No) : </label>
+            <div class="col-sm-7 col-xs-7 col-md-7">
               <input class="form-control" id="containerNumber" disabled />
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-4 col-xs-3 col-md-2">Hạn lệnh <br> (Expired Dem)</label>
-            <div class="col-sm-8 col-xs-8 col-md-10">
+            <label class="col-sm-5 col-xs-5 col-md-5 label-style">Hạn lệnh : <br> (Expired Dem) :</label>
+            <div class="col-sm-7 col-xs-7 col-md-7">
               <input class="form-control time-input" id="expiredDem" name="fromDate" />
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-4 col-xs-3 col-md-2">Ngày miễn lưu vỏ <br> (Det Free Time)</label>
-            <div class="col-sm-8 col-xs-8 col-md-10">
+            <label class="col-sm-5 col-xs-5 col-md-5 label-style">Ngày miễn lưu vỏ : <br> (Det Free Time) : </label>
+            <div class="col-sm-7 col-xs-7 col-md-7">
               <input type="number" name="detFreeTime" id="detFreeTime" class="form-control"/>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-4 col-xs-3 col-md-2">Nơi hạ rỗng <br> (Empty Container Depot)</label>
-            <div class="col-sm-8 col-xs-8 col-md-10">
+            <label class="col-sm-5 col-xs-5 col-md-5 label-style">Nơi hạ rỗng : <br> (Empty Container Depot) : </label>
+            <div class="col-sm-7 col-xs-7 col-md-7">
               <select class="form-control select-emptyContainerDeport" id="emptyContainerDepot"> 
                 <option selected="selected" th:text="${edo.emptyContainerDepot}"></option>
               </select>

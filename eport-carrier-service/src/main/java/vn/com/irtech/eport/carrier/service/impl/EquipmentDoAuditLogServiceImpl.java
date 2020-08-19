@@ -221,7 +221,7 @@ public class EquipmentDoAuditLogServiceImpl implements IEquipmentDoAuditLogServi
         EquipmentDoAuditLog doAuditLog = new EquipmentDoAuditLog();
         doAuditLog.setCarrierId(doItem.getCarrierId());
         doAuditLog.setCarrierCode(doItem.getCarrierCode());
-        doAuditLog.setCreateBy(doItem.getCarrierCode());
+        doAuditLog.setCreateBy(doItem.getCreateBy());
         doAuditLog.setDoId(doItem.getId());
         doAuditLog.setCreateTime(timeNow);
         String maxSegNo = selectDoAuditLogByDoId(doItem.getId());
