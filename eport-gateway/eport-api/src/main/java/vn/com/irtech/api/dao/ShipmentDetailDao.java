@@ -66,4 +66,12 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public Integer checkTheNumberOfContainersNotOrderedForReceiveContEmpty(@Param("bookingNo") String bookingNo, @Param("sztp") String sztp);
 	
 	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(@Param("bookingNo") String bookingNo, @Param("sztp") String sztp);
+	
+	/**
+	 * Select Consignee And TaxCode List
+	 * 
+	 * @param shipmentEntity
+	 * @return	List<ShipmentEntity>
+	 */
+	public List<ShipmentEntity> selectConsigneeTaxCode(ShipmentEntity shipmentEntity);
 }

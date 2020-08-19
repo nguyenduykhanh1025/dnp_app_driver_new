@@ -481,4 +481,26 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		}
 	}
 	
+	/**
+	 * Get list consignee with tax code
+	 * 
+	 * @param shipment
+	 * @return	List<shipment>
+	 */
+	@Override
+	public List<Shipment> getListConsigneeWithTaxCode(Shipment shipment) {
+		try {
+			String url = Global.getApiUrl() + "/consignee/list";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity httpEntity = new HttpEntity<Shipment>(shipment);
+			ResponseEntity<List<Shipment>> response = restTemplate.exchange(url, HttpMethod.POST, httpEntity, new ParameterizedTypeReference<List<Shipment>>() {});
+			List<Shipment> shipments= response.getBody();
+			return shipments;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

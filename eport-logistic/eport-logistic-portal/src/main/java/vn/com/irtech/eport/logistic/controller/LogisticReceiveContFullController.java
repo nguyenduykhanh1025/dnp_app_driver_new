@@ -34,12 +34,14 @@ import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
+import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.IEdoHouseBillService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
@@ -86,6 +88,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Autowired
 	private WebSocketService webSocketService;
+	
+	@Autowired
+	private IEdoHouseBillService edoHouseBillService;
 	
 	@GetMapping()
 	public String receiveContFull(ModelMap mmap) {
@@ -216,6 +221,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				error("Mã số thuế không tồn tại");
 			}
 		}
+		
+		if (shipment.getHouseBill() != null && !shipment.getHouseBill().isBlank()) {
+			if (edoHouseBillService.getContainerAmountWithOrderNumber(shipment.getHouseBill(), shipment.getOrderNumber()) == 0) {
+				return error("Thêm lô thất bại");
+			}
+		} else {
+			if (edoService.getContainerAmountWithOrderNumber(shipment.getBlNo(), shipment.getOrderNumber()) == 0) {
+				return error("Thêm lô thất bại");
+			}
+		}
+		
 		LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
 		shipment.setLogisticGroupId(user.getGroupId());
@@ -263,14 +279,20 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			shipmentDetail.setShipmentId(shipmentId);
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.getShipmentDetailList(shipmentDetail);
 			if (shipment.getEdoFlg().equals("1") && shipmentDetails.size() == 0) {
-				shipmentDetails = new ArrayList<>();
-				//get infor from edi
-				shipmentDetails = shipmentDetailService.getShipmentDetailsFromEDIByBlNo(shipment.getBlNo());
+				if (shipment.getHouseBill() != null && !shipment.getHouseBill().isBlank()) {
+					shipmentDetails = shipmentDetailService.getShipmentDetailFromHouseBill(shipment.getHouseBill());
+					
+				} else {
+					shipmentDetails = new ArrayList<>();
+					//get infor from edi
+					shipmentDetails = shipmentDetailService.getShipmentDetailsFromEDIByBlNo(shipment.getBlNo());
+				}
 				//get infor from catos
 				List<ShipmentDetail> shipmentDetailsCatos = catosApiService.selectShipmentDetailsByBLNo(shipment.getBlNo());
 				//Get opecode, sealNo, wgt, pol,pod
 				if(shipmentDetailsCatos != null) {
 					for(ShipmentDetail i : shipmentDetails) {
+						i.setVoyNo(i.getVoyCarrier());
 						for(ShipmentDetail j : shipmentDetailsCatos) {
 							if(i.getContainerNo().equals(j.getContainerNo())) {
 //								i.setOpeCode(j.getOpeCode());
@@ -596,35 +618,63 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		//check opeCode
 		String opeCode = edoService.getOpeCodeByBlNo(blNo);
-		Long containerAmount = edoService.getCountContainerAmountByBlNo(blNo);
+		// Long containerAmount = edoService.getCountContainerAmountByBlNo(blNo);
 		if(opeCode != null) {
 			shipment.setEdoFlg("1");
-			ajaxResult = success();
 			shipment.setOpeCode(opeCode);
-			shipment.setContainerAmount(containerAmount);
+			// shipment.setContainerAmount(containerAmount);
+			ajaxResult = success();
 			ajaxResult.put("shipment", shipment);
 			return ajaxResult;
 		} else {
-			Shipment shipCatos = shipmentService.getOpeCodeCatosByBlNo(blNo);
-			if (shipCatos != null) {
-				String edoFlg = carrierGroupService.getDoTypeByOpeCode(shipCatos.getOpeCode());
-				if(edoFlg == null){
-					return error("Mã hãng tàu:"+ shipCatos.getOpeCode() +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
-				}
-//				if(edoFlg.equals("1")){
-//					return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng liên hệ Cảng!");
-//				}
-				shipment.setEdoFlg(edoFlg);
+			EdoHouseBill edoHouseBill = edoHouseBillService.getEdoHouseBillByBlNo(blNo);
+			if (edoHouseBill != null) {
+				shipment.setEdoFlg("1");
+				shipment.setOpeCode(edoHouseBill.getCarrierCode());
+				shipment.setHouseBill(blNo);
+				shipment.setBlNo(edoService.getBlNoByHouseBillId(edoHouseBill.getId()));
+				// shipment.setContainerAmount(containerAmount);
 				ajaxResult = success();
-				shipment.setOpeCode(shipCatos.getOpeCode());
-				shipment.setContainerAmount(shipCatos.getContainerAmount());
 				ajaxResult.put("shipment", shipment);
 				return ajaxResult;
+			} else {
+				Shipment shipCatos = shipmentService.getOpeCodeCatosByBlNo(blNo);
+				if (shipCatos != null) {
+					String edoFlg = carrierGroupService.getDoTypeByOpeCode(shipCatos.getOpeCode());
+					if(edoFlg == null){
+						return error("Mã hãng tàu:"+ shipCatos.getOpeCode() +" không có trong hệ thống. Vui lòng liên hệ Cảng!");
+					}
+//					if(edoFlg.equals("1")){
+//						return error("Bill này là eDO nhưng không có dữ liệu trong eport. Vui lòng liên hệ Cảng!");
+//					}
+					shipment.setEdoFlg(edoFlg);
+					ajaxResult = success();
+					shipment.setOpeCode(shipCatos.getOpeCode());
+					shipment.setContainerAmount(shipCatos.getContainerAmount());
+					ajaxResult.put("shipment", shipment);
+					return ajaxResult;
+				}
 			}
-		}
+		} 
 		ajaxResult = error("Số bill không tồn tại!");
 		return ajaxResult;
 	}
 
+	@PostMapping("/orderNumber/check")
+	@ResponseBody
+	public AjaxResult checkOrderNumber(@RequestBody Shipment shipment) {
+		int containerAmount = 0;
+		if (shipment.getHouseBill() != null && !shipment.getHouseBill().isBlank()) {
+			containerAmount = edoHouseBillService.getContainerAmountWithOrderNumber(shipment.getHouseBill(), shipment.getOrderNumber());
+		} else {
+			containerAmount = edoService.getContainerAmountWithOrderNumber(shipment.getBlNo(), shipment.getOrderNumber());
+		}
+		if (containerAmount != 0) {
+			AjaxResult ajaxResult = AjaxResult.success();
+			ajaxResult.put("containerAmount", containerAmount);
+			return ajaxResult;
+		}
+		return error("Mã nhận container không chính xác.");
+	}
 }
 

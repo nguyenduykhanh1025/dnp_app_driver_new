@@ -234,4 +234,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select * from edo
         where id = #{id}
     </select>
+
+    <select id="getOpeCodeByBlNo" parameterType="EdoHouseBill" resultType="String"> 
+        select opr, id
+        from edo_house_bill
+        where house_bill_no = #{blNo} and house_bill_no2 is null
+        FETCH NEXT 1 ROWS ONLY
+    </select>
+
+    <select id="getContainerAmountWithOrderNumber" resultType="int">
+        select count(*)
+        from edo_house_bill
+        where house_bill_no = #{blNo} and order_number = #{orderNumber} and house_bill_no2 is null
+    </select>
+
+    <select id="selectHouseBillForShipment" parameterType="String" resultMap="EdoHouseBillResult">
+        select * from edo_house_bill e left join edo d on e.edo_id = d.id
+        where e.house_bill_no2 is null and e.house_bill_no = #{blNo}
+    </select>
+
+    <select id="getEdoHouseBillByBlNo" resultMap="EdoHouseBillResult" parameterType="String">
+        select * from edo_house_bill
+        where house_bill_no = #{blNo} and house_bill_no2 is null
+        FETCH NEXT 1 ROWS ONLY
+    </select>
 </mapper>

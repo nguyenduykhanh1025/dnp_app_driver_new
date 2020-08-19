@@ -194,4 +194,9 @@ public class ApiShipmentDetailController {
 		}
 		return result;
 	}
+	
+	@PostMapping("/consignee/list")
+	public List<ShipmentEntity> getconsigneeList(@RequestBody ShipmentEntity shipmentEntity) {
+		return shipmentDetailDao.selectConsigneeTaxCode(shipmentEntity);
+	}
 }

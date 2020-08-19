@@ -246,7 +246,7 @@
   <select id="getOpeCodeByBlNo" parameterType="String" resultType="String">
     select carrier_code
     from edo
-    where bill_of_lading = #{blNo}
+    where bill_of_lading = #{blNo} and house_bill_id is null
     group by carrier_code
   </select>
   <select id="getCountContainerAmountByBlNo" parameterType="String" resultType="Long">
@@ -257,7 +257,7 @@
   </select>
   <select id="selectEdoListByBlNo" parameterType="String" resultMap="EdoResult">
     <include refid="selectEdoVo"/>
-    where bill_of_lading = #{blNo}
+    where bill_of_lading = #{blNo} and house_bill_id is null
   </select>
 
   <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
@@ -392,7 +392,18 @@
       <if test="billOfLading != null  and billOfLading != ''">and bill_of_lading = #{billOfLading}</if>
       <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
       <if test="expiredDem != null and expiredDem != ''">and TO_CHAR(expired_dem, 'DD/MM/YYYY') = #{expiredDem}</if>
-      <if test="consignee != null  and consignee != ''">and consignee = #{consignee}</if>
+      <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
     ORDER BY create_time DESC
+  </select>
+
+  <select id="getContainerAmountWithOrderNumber" resultType="int">
+    select count(*) from edo
+    where bill_of_lading = #{blNo} and order_number = #{orderNumber} and house_bill_id is null
+  </select>
+
+  <select id="getBlNoByHouseBillId" parameterType="Long" resultType="String">
+    select bill_of_lading from edo
+    where house_bill_id = #{id}
+    FETCH NEXT 1 ROWS ONLY
   </select>
 </mapper>

@@ -7,6 +7,7 @@ import vn.com.irtech.eport.carrier.dto.HouseBillRes;
 import vn.com.irtech.eport.carrier.dto.HouseBillSearchReq;
 import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.domain.Shipment;
 
 /**
  * Master BillService Interface
@@ -86,7 +87,7 @@ public interface IEdoHouseBillService
      * @param user
      * @return
      */
-    public int insertListEdoHouseBill(List<Edo> edos, String houseBill, String consignee2, LogisticAccount user);
+    public int insertListEdoHouseBill(List<Edo> edos, String houseBill, String consignee2, String taxCode, String orderNumber, LogisticAccount user);
 
     /**
      * select list house bill response
@@ -94,4 +95,28 @@ public interface IEdoHouseBillService
      * @return
      */
     public List<HouseBillRes> selectListHouseBillRes(HouseBillSearchReq houseBillSearchReq);
+    
+    /**
+     * Get Edo House Bill By Bl No
+     * 
+     * @param blNo
+     * @return EdoHouseBill
+     */
+    public EdoHouseBill getEdoHouseBillByBlNo(String blNo);
+    
+    /**
+     * Get container amount with order number
+     * 
+     * @param shipment
+     * @return String
+     */
+    public int getContainerAmountWithOrderNumber(String blNo, String orderNumber);
+    
+    /**
+     * Select house bill for shipment
+     * 
+     * @param blNo
+     * @return List<EdoHouseBill>
+     */
+    public List<EdoHouseBill> selectHouseBillForShipment(String blNo);
 }

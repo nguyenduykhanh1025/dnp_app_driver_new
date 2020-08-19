@@ -104,4 +104,21 @@ public interface IEdoService {
 	 * @return
 	 */
 	public List<Edo> selectListEdoWithoutHouseBillId(EdoWithoutHouseBillReq edo);
+	
+	/**
+     * Get container amount with order number
+     * 
+     * @param blNo
+     * @param orderNumber
+     * @return String
+     */
+    public int getContainerAmountWithOrderNumber(String blNo, String orderNumber);
+    
+    /**
+     * Get bill of lading by house bill id
+     * 
+     * @param houseBillId
+     * @return String
+     */
+    public String getBlNoByHouseBillId(Long houseBillId);
 }
