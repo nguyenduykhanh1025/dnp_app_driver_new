@@ -105,7 +105,10 @@ public class Shipment extends BaseEntity
     private String orderNumber;
     
     private String houseBill;
-
+    
+    /** Số lương process bill: dùng để ẩn button thanh toán om nếu null */
+    private Integer amountBill;
+    
     public void setId(Long id) {
         this.id = id;
     }
@@ -298,6 +301,14 @@ public class Shipment extends BaseEntity
 		this.houseBill = houseBill;
 	}
 
+	public Integer getAmountBill() {
+		return amountBill;
+	}
+
+	public void setAmountBill(Integer amountBill) {
+		this.amountBill = amountBill;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -329,6 +340,7 @@ public class Shipment extends BaseEntity
             .append("toDate", getToDate())
             .append("orderNumber", getOrderNumber())
             .append("houseBill",getHouseBill())
+            .append("amountBill", getAmountBill())
             .toString();
     }
 }

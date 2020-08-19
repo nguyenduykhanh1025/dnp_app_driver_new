@@ -789,6 +789,29 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 		return AjaxResult.success(dictDataService.selectDictDataList(dictData));
 	}
 
+	@GetMapping("/report")
+	public String report() {
+		if (!hasDoPermission()) {
+			return "error/404";
+		}
+		return PREFIX + "/report";
+	}
+
+	@PostMapping("/equipmentDoReport")
+	@ResponseBody
+	public TableDataInfo edoReport(@RequestBody PageAble<EquipmentDo> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		EquipmentDo edo = param.getData();
+		if (edo == null) {
+			edo = new EquipmentDo();
+		}
+		Map<String, Object> groupCodes = new HashMap<>();
+		groupCodes.put("groupCode", super.getGroupCodes());
+		edo.setParams(groupCodes);
+		List<EquipmentDo> dataList = equipmentDoService.selectEdoListForReport(edo);
+		return getDataTable(dataList);
+	}
+
 
 
 }

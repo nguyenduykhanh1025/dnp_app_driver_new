@@ -31,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="voyNo"    column="voy_no"    />
         <result property="orderNumber"    column="order_number"    />
         <result property="houseBill"    column="house_bill"    />
+        <result property="amountBill"    column="amount_bill"    />
     </resultMap>
     <sql id="selectShipmentVo">
         select id, logistic_account_id, logistic_group_id, service_type, bl_no, booking_no, ope_code, tax_code, group_name, address, container_amount, edo_flg, specific_cont_flg, cont_supply_status, reference_no, status, remark, order_number, house_bill, create_by, create_time, update_by, update_time from shipment
@@ -172,7 +173,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logistic_name,
         (select sh.vsl_nm from shipment_detail sh where sh.shipment_id = s.id FETCH NEXT 1 ROWS ONLY) as vsl_nm,
         (select sh.voy_no from shipment_detail sh where sh.shipment_id = s.id FETCH NEXT 1 ROWS ONLY) as voy_no,
-        (select count(*) from shipment_detail sh where sh.shipment_id = s.id) as container_amount
+        (select count(*) from shipment_detail sh where sh.shipment_id = s.id) as container_amount,
+        (select count(*) from process_bill b left join process_order o on b.process_order_id = o.id where b.shipment_id = s.id) as amount_bill
         from shipment s
         <where>
             status != 1

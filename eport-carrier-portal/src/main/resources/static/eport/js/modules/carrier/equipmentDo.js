@@ -61,6 +61,7 @@ function loadTable(edo) {
     method: "POST",
     singleSelect: true,
     clientPaging: true,
+    height: $(document).height() - 145,
     pagination: true,
     pageSize: 20,
     onClickRow: function () {
@@ -100,11 +101,17 @@ function loadTable(edo) {
 }
 
 function searchDo() {
-  let containerNumber = $("#containerNumber").val() == null ? "" : $("#containerNumber").val();
-  let billOfLading = $("#billOfLading").val() == null ? "" : $("#billOfLading").val();
-  let fromDate = formatToYDM($("#fromDate").val() == null ? "" : $("#fromDate").val());
-  let toDate = formatToYDM($("#toDate").val() == null ? "" : $("#toDate").val());
-  loadTable(containerNumber, billOfLading, fromDate, toDate);
+  edo.fromDate = stringToDate($("#fromDate").val()).getTime();
+  let toDate = stringToDate($("#toDate").val());
+  if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
+    $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
+    $("#toDate").val("");
+  } else {
+    toDate.setHours(23, 59, 59);
+    edo.toDate = toDate.getTime();
+    loadTable(edo);
+  };
+  loadTable(edo);
 }
 
 function formatToYDM(date) {
@@ -140,7 +147,7 @@ function viewHistoryCont(id) {
 }
 
 function viewUpdateCont(id) {
-  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 600, 400);
+  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 500, 380);
 }
 
 function loadTableByContainer(billOfLading) {
@@ -150,6 +157,7 @@ function loadTableByContainer(billOfLading) {
     method: "POST",
     singleSelect: false,
     clientPaging: true,
+    height: $(document).height() - 145,
     pagination: true,
     pageSize: 20,
     nowrap: false,
@@ -285,7 +293,7 @@ function multiUpdateEdo() {
     }
     ids.push(row.id);
   }
-  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 600, 400);
+  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 500, 320);
 }
 
 
@@ -401,3 +409,11 @@ $(".pagination-info").hide();
 function addDo(id) {
   $.modal.openTab("Thêm DO", ctx + "carrier/do/add");
 }
+$('#btnRefresh').click(function(){
+  $(".c-search-box-vessel").text(null);
+  $(".c-search-box-voy-no").text(null);
+  $("#fromDate").val(null);
+  $("#toDate").val(null)
+  edo.vessel = null;
+  loadTable();
+});

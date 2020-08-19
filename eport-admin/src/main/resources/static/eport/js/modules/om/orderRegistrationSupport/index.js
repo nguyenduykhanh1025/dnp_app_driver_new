@@ -94,7 +94,10 @@ function formatLogistic(value, row, index) {
 }
 
 function formatPayment(value, row, index) {
-  return '<a class="btn btn-default btn-xs" onclick="openPaymentSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Thanh toán</a>';
+	if(row.amountBill != 0 ){
+		return '<a class="btn btn-default btn-xs" onclick="openPaymentSupport(\'' + row.id + '\')"><i class="fa fa-view"></i>Thanh toán</a>';
+	}
+	return '';
 }
 
 function formatDo(value, row, index) {

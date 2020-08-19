@@ -529,6 +529,7 @@ function configHandson() {
     minSpareRows: 0,
     rowHeights: 30,
     fixedColumnsLeft: 3,
+    trimDropdown: false,
     manualColumnResize: true,
     manualRowResize: true,
     renderAllRows: true,
@@ -548,19 +549,19 @@ function configHandson() {
         case 3:
           return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
         case 4:
-          return '<span>Số Ngày Miễn Lưu Vỏ</span><span style="color: red;">(*)</span>';
+          return '<span>Miễn<br/>Lưu<br/>Bãi</span><span style="color: red;">(*) </span>';
         case 5:
           return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
         case 6:
           return '<span>Nơi Hạ Vỏ</span><span style="color: red;">(*)</span>';
         case 7:
-          return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+            return "Kích Thước";
         case 8:
-          return '<span>Tàu</span><span style="color: red;">(*)</span>';
+          return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
         case 9:
-          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
+          return '<span>Tàu</span><span style="color: red;">(*)</span>';
         case 10:
-          return "Kích Thước";
+          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
         case 11:
           return "Seal No";
         case 12:
@@ -631,6 +632,13 @@ function configHandson() {
         renderer: emptyDepotRenderer
       },
       {
+          data: "sztp",
+          type: "autocomplete",
+          source: sizeList,
+          strict: true,
+          renderer: sizeRenderer
+      },
+      {
         data: "opeCode",
         type: "autocomplete",
         source: opeCodeList,
@@ -649,13 +657,6 @@ function configHandson() {
         type: "autocomplete",
         strict: true,
         renderer: voyNoRenderer
-      },
-      {
-        data: "sztp",
-        type: "autocomplete",
-        source: sizeList,
-        strict: true,
-        renderer: sizeRenderer
       },
       {
         data: "sealNo",
@@ -705,7 +706,7 @@ function configHandson() {
                 if (data.code == 0) {
                   hot.updateSettings({
                     cells: function (row, col, prop) {
-                      if (row == change[0] && col == 9) {
+                      if (row == change[0] && col == 10) {
                         let cellProperties = {};
                         cellProperties.source = data.voyages;
                         return cellProperties;
@@ -727,10 +728,10 @@ function configHandson() {
               $.modal.loading("Đang xử lý...");
               // CLEAR DATA
               hot.setDataAtCell(change[0], 5, ''); //consignee
-              hot.setDataAtCell(change[0], 7, ''); //opeCode
-              hot.setDataAtCell(change[0], 8, ''); //vslNm
-              hot.setDataAtCell(change[0], 9, ''); //voyNo
-              hot.setDataAtCell(change[0], 10, ''); //sztp
+              hot.setDataAtCell(change[0], 7, ''); //sztp
+              hot.setDataAtCell(change[0], 8, ''); //opeCode
+              hot.setDataAtCell(change[0], 9, ''); //vslNm
+              hot.setDataAtCell(change[0], 10, ''); //voyNo
               hot.setDataAtCell(change[0], 11, ''); //sealNo
               hot.setDataAtCell(change[0], 12, ''); //wgt
               hot.setDataAtCell(change[0], 13, ''); //loadingPort
@@ -744,10 +745,10 @@ function configHandson() {
               }).done(function (shipmentDetail) {
                 if (shipmentDetail != null) {
                   hot.setDataAtCell(change[0], 5, shipmentDetail.consignee); //consignee
-                  hot.setDataAtCell(change[0], 7, shipmentDetail.opeCode); //opeCode
-                  hot.setDataAtCell(change[0], 8, shipmentDetail.vslNm); //vslNm
-                  hot.setDataAtCell(change[0], 9, shipmentDetail.voyNo); //voyNo
-                  hot.setDataAtCell(change[0], 10, shipmentDetail.sztp); //sztp
+                  hot.setDataAtCell(change[0], 7, shipmentDetail.sztp); //sztp
+                  hot.setDataAtCell(change[0], 8, shipmentDetail.opeCode); //opeCode
+                  hot.setDataAtCell(change[0], 9, shipmentDetail.vslNm); //vslNm
+                  hot.setDataAtCell(change[0], 10, shipmentDetail.voyNo); //voyNo
                   hot.setDataAtCell(change[0], 11, shipmentDetail.sealNo); //sealNo
                   hot.setDataAtCell(change[0], 12, shipmentDetail.wgt); //wgt
                   hot.setDataAtCell(change[0], 13, shipmentDetail.loadingPort); //loadingPort

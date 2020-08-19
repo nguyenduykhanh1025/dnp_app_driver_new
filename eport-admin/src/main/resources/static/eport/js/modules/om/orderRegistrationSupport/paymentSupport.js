@@ -34,7 +34,7 @@ $(document).ready(function () {
     $('#vessel').text(bill.processOrder.vessel);
     $('#voyage').text(bill.processOrder.voyage);
 
-    let invoiceNo = bill.referenceNo;
+    let invoiceNo = bill.invoiceNo;
 
     // PAYMENT STATUS
     let paymentStatus = bill.paymentStatus;

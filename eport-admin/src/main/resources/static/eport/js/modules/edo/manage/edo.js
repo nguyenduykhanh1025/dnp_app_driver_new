@@ -145,11 +145,17 @@ function loadTableByContainer(billOfLading) {
 }
 
 function searchDo() {
-  let containerNumber = $("#containerNumber").val() == null ? "" : $("#containerNumber").val();
-  let billOfLading = $("#billOfLading").val() == null ? "" : $("#billOfLading").val();
-  let fromDate = formatToYDM($("#fromDate").val() == null ? "" : $("#fromDate").val());
-  let toDate = formatToYDM($("#toDate").val() == null ? "" : $("#toDate").val());
-  loadTable(containerNumber, billOfLading, fromDate, toDate);
+  edo.fromDate = stringToDate($("#fromDate").val()).getTime();
+  let toDate = stringToDate($("#toDate").val());
+  if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
+    $.modal.alertError("Quý khách không thể chọn đến ngày thấp hơn từ ngày.");
+    $("#toDate").val("");
+  } else {
+    toDate.setHours(23, 59, 59);
+    edo.toDate = toDate.getTime();
+    loadTable(edo);
+  };
+  loadTable(edo);
 }
 
 function formatToYDM(date) {

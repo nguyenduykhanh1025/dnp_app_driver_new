@@ -15,10 +15,9 @@ var myAvatarzone = new Dropzone("#bannarzone", {
     maxFiles: 100,
     maxFilesize: 10, //MB
     autoProcessQueue: false,
-    acceptedFiles: ".edi,.TO_VN,.evu,.txt,",
     parallelUploads: 100,
     addRemoveLinks: true,
-    dictDefaultMessage: 'Click để chọn file, hoặc kéo thả file vào đây',
+    dictDefaultMessage: 'Click để chọn file, hoặc kéo thả file vào đây.',
     dictResponseError: 'Upload lỗi!',
     dictInvalidFileType: "File EDI không đúng. Hãy chọn file được hỗ trợ.",
     dictFileTooBig: "Dung lượng file quá lớn!",

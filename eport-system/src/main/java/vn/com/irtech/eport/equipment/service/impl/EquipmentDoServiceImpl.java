@@ -259,4 +259,8 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
 		}
         return equipmentDoMapper.updateEquipmentDo2(edo);
     }
+    public List<EquipmentDo> selectEdoListForReport(EquipmentDo edo)
+    {
+        return equipmentDoMapper.selectEdoListForReport(edo);
+    }
 }

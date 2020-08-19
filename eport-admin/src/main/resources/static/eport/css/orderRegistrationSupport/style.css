@@ -1,2 +1,91 @@
-.page-verification .content-body{margin-bottom:60px}.page-verification .content-body .header .checkbox-inline{padding-left:0}.page-verification .content-body .content{max-height:200px}.page-verification .content-body .content-bottom .panel-body{max-height:200px;overflow-y:scroll}h4{margin-right:20px;display:inline-block}h4 label{width:100px}.page-payment .content{margin-bottom:60px}.page-payment .content .clone-zone{overflow-x:hidden;border-bottom:1px solid #000}.page-payment .content .clone-zone:first-child{display:none}.page-payment .content .clone-zone:last-child{border-color:transparent}.page-payment .content .clone-zone .content__footer{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between}.page-payment .content .clone-zone .content__footer .price-label{height:34px;line-height:34px}.page-driver .footer,.page-receiveDO .footer,.page-payment .footer,.page-custom .footer,.page-verification .footer{background-color:#f0f4f7;height:55px;padding:10px 30px 12px 15px !important;overflow:unset;position:fixed;width:100%;bottom:0}.content-footer{position:fixed;bottom:0;padding:10px;background-color:#fff;left:0;width:100%;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:end;-ms-flex-pack:end;justify-content:flex-end}.content-footer a{margin-top:10px !important;width:10%}.logistics-info-body{padding-top:20px}
+.page-verification .content-body {
+  margin-bottom: 60px;
+}
+
+.page-verification .content-body .header .checkbox-inline {
+  padding-left: 0;
+}
+
+.page-verification .content-body .content {
+  max-height: 200px;
+}
+
+.page-verification .content-body .content-bottom .panel-body {
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+h4 {
+  margin-right: 20px;
+  display: inline-block;
+}
+
+h4 label {
+  width: 100px;
+}
+
+.page-payment .content {
+  margin-bottom: 60px;
+}
+
+.page-payment .content .clone-zone {
+  overflow-x: hidden;
+  border-bottom: 1px solid #000000;
+}
+
+.page-payment .content .clone-zone:first-child {
+  display: none;
+}
+
+.page-payment .content .clone-zone:last-child {
+  border-color: transparent;
+}
+
+.page-payment .content .clone-zone .content__footer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.page-payment .content .clone-zone .content__footer .price-label {
+  height: 34px;
+  line-height: 34px;
+}
+
+.page-driver .footer, .page-receiveDO .footer, .page-payment .footer, .page-custom .footer, .page-verification .footer {
+  background-color: #f0f4f7;
+  height: 55px;
+  padding: 10px 30px 12px 15px !important;
+  overflow: unset;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+.content-footer {
+  position: fixed;
+  bottom: 0;
+  padding: 10px;
+  background-color: #fff;
+  left: 0;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+.content-footer a {
+  margin-top: 10px !important;
+  width: 10%;
+}
+
+.logistics-info-body {
+  padding-top: 20px;
+}
 /*# sourceMappingURL=style.css.map */
