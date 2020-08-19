@@ -552,7 +552,7 @@ function configHandson() {
         case 3:
           return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
         case 4:
-          return '<span>Số Ngày Miễn Lưu Vỏ</span><span style="color: red;">(*)</span>';
+          return '<span>Miễn<br/>Lưu<br/>Bãi</span><span style="color: red;">(*) </span>';
         case 5:
           return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
         case 6:
