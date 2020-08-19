@@ -103,6 +103,8 @@ public class Shipment extends BaseEntity
     private List<String> attachedImageUrls;
     
     private String orderNumber;
+    
+    private String houseBill;
 
     public void setId(Long id) {
         this.id = id;
@@ -288,6 +290,14 @@ public class Shipment extends BaseEntity
 		this.orderNumber = orderNumber;
 	}
 
+	public String getHouseBill() {
+		return houseBill;
+	}
+
+	public void setHouseBill(String houseBill) {
+		this.houseBill = houseBill;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -318,6 +328,7 @@ public class Shipment extends BaseEntity
             .append("fromDate", getFromDate())
             .append("toDate", getToDate())
             .append("orderNumber", getOrderNumber())
+            .append("houseBill",getHouseBill())
             .toString();
     }
 }

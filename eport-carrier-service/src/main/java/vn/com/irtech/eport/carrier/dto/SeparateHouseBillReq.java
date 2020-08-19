@@ -1,46 +1,67 @@
 package vn.com.irtech.eport.carrier.dto;
 
-import vn.com.irtech.eport.carrier.domain.Edo;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 public class SeparateHouseBillReq implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  @NotBlank
-  private String houseBill;
+	@NotBlank
+	private String houseBill;
 
-  @NotBlank
-  private String consignee2;
+	@NotBlank
+	private String consignee2;
 
-  @NotEmpty
-  private List<Long> edoIds;
+	@NotBlank
+	private String consignee2TaxCode;
 
-  public String getHouseBill() {
-    return houseBill;
-  }
+	@NotEmpty
+	private List<Long> edoIds;
+	
+	@NotBlank
+	private String orderNumber;
 
-  public void setHouseBill(String houseBill) {
-    this.houseBill = houseBill;
-  }
+	public String getHouseBill() {
+		return houseBill;
+	}
 
-  public String getConsignee2() {
-    return consignee2;
-  }
+	public void setHouseBill(String houseBill) {
+		this.houseBill = houseBill;
+	}
 
-  public void setConsignee2(String consignee2) {
-    this.consignee2 = consignee2;
-  }
+	public String getConsignee2() {
+		return consignee2;
+	}
 
-  public List<Long> getEdoIds() {
-    return edoIds;
-  }
+	public void setConsignee2(String consignee2) {
+		this.consignee2 = consignee2;
+	}
 
-  public void setEdoIds(List<Long> edoIds) {
-    this.edoIds = edoIds;
-  }
+	public String getConsignee2TaxCode() {
+		return consignee2TaxCode;
+	}
+
+	public void setConsignee2TaxCode(String consignee2TaxCode) {
+		this.consignee2TaxCode = consignee2TaxCode;
+	}
+
+	public List<Long> getEdoIds() {
+		return edoIds;
+	}
+
+	public void setEdoIds(List<Long> edoIds) {
+		this.edoIds = edoIds;
+	}
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 }

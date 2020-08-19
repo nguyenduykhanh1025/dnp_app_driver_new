@@ -322,6 +322,7 @@ function openFormSeparate() {
   const options = {
     url: prefix_main + "/separate",
     title: "Tách Lô Từ Master Bill",
+    width: '1200',
     skin: "custom-modal",
     btn: ["Xác Nhận Tách Bill", "Đóng"],
     yes: function (index, layero) {

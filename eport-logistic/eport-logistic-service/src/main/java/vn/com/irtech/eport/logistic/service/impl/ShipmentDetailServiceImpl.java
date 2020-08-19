@@ -33,12 +33,14 @@ import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
+import vn.com.irtech.eport.logistic.mapper.EdoHouseBillMapper;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -65,6 +67,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Autowired
     private EdoMapper edoMapper;
+    
+    @Autowired
+    private EdoHouseBillMapper edoHouseBillMapper;
 
     @Autowired
     private IProcessOrderService processOrderService;
@@ -783,11 +788,39 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 ship.setSztp(i.getSztp());
                 ship.setLoadingPort(i.getPol());
                 ship.setDischargePort(i.getPod());
+                ship.setTaxCode(i.getTaxCode());
+                ship.setConsigneeByTaxCode(i.getConsigneeByTaxCode());
                 listShip.add(ship);
             }
             return listShip;
         }
         return null;
+    }
+    
+    @Override
+    public List<ShipmentDetail> getShipmentDetailFromHouseBill(String houseBl) {
+    	 List<EdoHouseBill> edoHouseBills = edoHouseBillMapper.selectHouseBillForShipment(houseBl);
+    	 List<ShipmentDetail> shipmentDetails = new ArrayList<>();
+    	 if (CollectionUtils.isNotEmpty(edoHouseBills)) {
+    		 for (EdoHouseBill edoHouseBill : edoHouseBills) {
+    			 ShipmentDetail ship = new ShipmentDetail();
+                 ship.setContainerNo(edoHouseBill.getContainerNumber());
+                 ship.setExpiredDem(edoHouseBill.getEdo().getExpiredDem());
+                 ship.setDetFreeTime(edoHouseBill.getEdo().getDetFreeTime());
+                 ship.setEmptyDepot(edoHouseBill.getEdo().getEmptyContainerDepot());
+                 ship.setOpeCode(edoHouseBill.getEdo().getCarrierCode());
+                 ship.setVslNm(edoHouseBill.getEdo().getVesselNo()+": "+edoHouseBill.getEdo().getVessel());
+                 ship.setVslName(edoHouseBill.getEdo().getVessel());
+                 ship.setVoyCarrier(edoHouseBill.getEdo().getVoyNo());
+                 ship.setSztp(edoHouseBill.getEdo().getSztp());
+                 ship.setLoadingPort(edoHouseBill.getEdo().getPol());
+                 ship.setDischargePort(edoHouseBill.getEdo().getPod());
+                 ship.setTaxCode(edoHouseBill.getConsignee2TaxCode());
+                 ship.setConsigneeByTaxCode(edoHouseBill.getConsignee2());
+                 shipmentDetails.add(ship);
+    		 }
+    	 }
+    	 return shipmentDetails;
     }
 
     @Override

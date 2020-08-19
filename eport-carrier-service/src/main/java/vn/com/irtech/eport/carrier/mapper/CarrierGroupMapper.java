@@ -95,4 +95,11 @@ public interface CarrierGroupMapper
     public CarrierGroup selectCarrierGroupByGroupCode(String groupCode);
     
     public CarrierGroup getCarrierGroupByOpeCode(String operateCode);
+    
+    /**
+     * Select carrier group name
+     * 
+     * @return List<String>
+     */
+    public List<CarrierGroup> selectCarrierGroupName();
 }

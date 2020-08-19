@@ -350,4 +350,17 @@
 		WHERE BOOKING_NO = #{bookingNo} AND FE = 'F' AND SZTP2 = #{sztp} AND JOB_ODR_NO IS NOT NULL
 		GROUP BY BOOKING_NO
 	</select>
+	
+	<select id="selectConsigneeTaxCode" parameterType="ShipmentEntity" resultType="vn.com.irtech.api.entity.ShipmentEntity">
+		SELECT
+	    	CONCAT(REG_NO ,CONCAT(': ',ENG_LNM)) as groupName,
+	    	REG_NO AS taxCode
+		FROM TB_PTNR
+		<where>
+			REG_NO IS NOT NULL
+			<if test="groupName != null  and groupName != ''"> AND UPPER(CONCAT(REG_NO ,CONCAT(': ',ENG_LNM))) LIKE CONCAT(CONCAT('%', #{groupName}), '%')</if>
+		</where>
+		GROUP BY ENG_LNM, REG_NO
+		<!-- FETCH NEXT #{containerAmount} ROWS ONLY -->
+	</select>
 </mapper>

@@ -157,4 +157,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where operate_code like concat(concat('%', #{operateCode}), '%')
 		FETCH NEXT 1 ROWS ONLY
 	</select>
+
+	<select id="selectCarrierGroupName" resultMap="CarrierGroupResult">
+		select group_code, group_name from carrier_group
+		where do_type = 1
+	</select>
 </mapper>

@@ -98,4 +98,12 @@ public interface ICatosApiService {
 	 * input: bookingNo, sztp
 	 */
 	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(String bookingNo, String sztp);
+	
+	/**
+	 * Get list consignee with tax code
+	 * 
+	 * @param shipment
+	 * @return	List<shipment>
+	 */
+	public List<Shipment> getListConsigneeWithTaxCode(Shipment shipment);
 }

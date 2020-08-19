@@ -15,19 +15,31 @@
           <input name="shipmentCode" id="shipmentCode" type="text" class="form-control" disabled />
         </div>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" style="margin-bottom: 0;">
         <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>B/L
           No</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <input name="blNo" id="blNo" type="text" class="form-control" onfocusout="checkBlNoUnique()" required />
+          <input name="blNoTemp" id="blNoTemp" type="text" class="form-control" onfocusout="checkBlNoUnique()" required />
+          <input type="hidden" name="blNo" id="blNo" />
         </div>
+      </div>
+      <div class="form-group row">
+        <i class="col-md-2 col-sm-3 col-xs-4"></i>
+        <i class="col-md-10 col-sm-9 col-xs-7">*Master bill, House bill đối với lô hàng tách bill</i>
       </div>
       <div class="form-group row">
         <label style="margin-top: 4px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Loại
           lệnh</label>
         <div class="col-md-10 col-sm-9 col-xs-7">
-          <label style="margin-right: 30px;" id="edoFlg" name="edoFlg" value=""></label>
+          <label style="margin-right: 30px; margin-top: 4px;" id="edoFlg" name="edoFlg" value=""></label>
           <input type="hidden" name="edoFlg" id="edoFlgInput" class="form-control">
+        </div>
+      </div>
+      <div class="form-group row" id="orderNumberDiv" style="display: none;">
+        <label style="margin-top: 4px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Mã nhận container:</label>
+        <div class="col-md-10 col-sm-9 col-xs-7">
+          <input name="orderNumber" id="orderNumber" onfocusout="checkOrderNumber()" class="form-control" required readonly >
+          <input type="hidden" name="houseBill" id="houseBill" >
         </div>
       </div>
       <div class="form-group row">

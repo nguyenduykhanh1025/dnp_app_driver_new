@@ -14,6 +14,19 @@ $(document).ready(function () {
   loadTable(null);
 
   $("#formSeparate").hide();
+
+  $("select[name='carrierCode']").select2({
+    closeOnSelect: true,
+    placeholder :'Chọn hãng tàu',
+    allowClear: true
+  });
+  $("select[name='carrierCode']").val(null).trigger("change"); 
+
+  // $("select[name='consignee2']").select2({
+  //   closeOnSelect: true,
+  //   placeholder :'Chọn chủ hàng',
+  //   allowClear: true
+  // });
 });
 
 function loadTable(dataSearch) {
@@ -68,14 +81,65 @@ function loadTable(dataSearch) {
   }
 }
 
+function checkTaxCodeExists() {
+  if ($("input[name='taxCode']").val()) {
+    $.ajax({
+      url: PREFIX + "/taxcode/" + $("input[name='taxCode']").val() + "/consignee",
+      method: "get",
+      success: function(res) {
+        if (res.code == 0) {
+          return true;
+        } else {
+          $.modal.alertWarning("Mã số thuế không tồn tại.");
+          return false;
+        }
+      },
+      error: function(err) {
+        $.modal.msgError("Có lỗi xảy ra.");
+        return false;
+      }
+    });
+  }
+}
+
+function checkTaxCodeExistsRes() {
+  return $.ajax({
+    url: PREFIX + "/taxcode/" + $("input[name='taxCode']").val() + "/consignee",
+    method: "get"
+  });
+}
+
+function removeError(element) {
+  $(element).removeClass("error-input");
+}
+
 $("#btnSearch").on("click", function () {
   let dataSearch = {
     billOfLading: $("input[name='billOfLading']").val(),
-    consignee: $("input[name='orderNumber']").val(),
-    carrierCode: $("input[name='carrierCode']").val(),
+    orderNumber: $("input[name='orderNumber']").val(),
+    carrierCode: $("select[name='carrierCode']").val(),
     expiredDem: $("input[name='expiredDem']").val(),
   };
-  loadTable(dataSearch);
+  let errorFlg = false;
+  if (!$("input[name='billOfLading']").val()) {
+    errorFlg = true;
+    $("input[name='billOfLading']").addClass("error-input");
+  }
+  if (!$("input[name='orderNumber']").val()) {
+    errorFlg = true;
+    $("input[name='orderNumber']").addClass("error-input");
+  }
+  if (!$("select[name='carrierCode']").val()) {
+    errorFlg = true;
+    // $($("select[name='carrierCode']").select2("container")).addClass("error-input").trigger("change");
+  }
+  if (!$("input[name='expiredDem']").val()) {
+    errorFlg = true;
+    $("input[name='expiredDem']").addClass("error-input");
+  }
+  if (!errorFlg) {
+    loadTable(dataSearch);
+  }
 });
 
 function formatStatus(value) {
@@ -86,7 +150,7 @@ function formatStatus(value) {
   }
 }
 
-function submitHandler(index, layer, dg) {
+async function submitHandler(index, layer, dg) {
   let rows = $("#dg").datagrid("getSelections");
   if (rows == null || rows.length == 0) {
     $.modal.alertWarning("Không có cont để tách, vui lòng kiểm tra lại.");
@@ -96,34 +160,39 @@ function submitHandler(index, layer, dg) {
   let edoIds = rows.map((e) => e.id);
 
   if ($.validate.form()) {
-    let reqData = {
-      houseBill: $("input[name='houseBill']").val(),
-      consignee2: $("input[name='consignee2']").val(),
-      edoIds: edoIds,
-    };
-
-    $.ajax({
-      cache: true,
-      type: "POST",
-      url: PREFIX + "/separate/execute",
-      contentType: "application/json",
-      data: JSON.stringify(reqData),
-      async: false,
-      error: function (request) {
-        $.modal.alertError("System error");
-      },
-      success: function (result) {
-        if (result.code == web_status.SUCCESS) {
-          $.modal.alert("Thành công!");
-          layer.close(index);
-          dg.datagrid("reload");
-        } else if (result.code == web_status.WARNING) {
-          $.modal.alertWarning(result.msg);
-        } else {
-          $.modal.alertError(result.msg);
-        }
-      },
-    });
+    let res = await checkTaxCodeExistsRes();
+    if (res.code == 0) {
+      let reqData = {
+        houseBill: $("input[name='houseBill']").val(),
+        orderNumber: $("input[name='orderNumberRegister']").val(),
+        consignee2TaxCode: $("input[name='taxCode']").val(),
+        edoIds: edoIds,
+      };
+      $.ajax({
+        cache: true,
+        type: "POST",
+        url: PREFIX + "/separate/execute",
+        contentType: "application/json",
+        data: JSON.stringify(reqData),
+        async: false,
+        error: function (request) {
+          $.modal.alertError("System error");
+        },
+        success: function (result) {
+          if (result.code == web_status.SUCCESS) {
+            $.modal.alert("Thành công!");
+            layer.close(index);
+            dg.datagrid("reload");
+          } else if (result.code == web_status.WARNING) {
+            $.modal.alertWarning(result.msg);
+          } else {
+            $.modal.alertError(result.msg);
+          }
+        },
+      });
+    } else {
+      $.modal.alertWarning("Mã số thuế không tồn tại.");
+    }
   } else {
     return false;
   }

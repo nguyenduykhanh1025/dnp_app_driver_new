@@ -2,9 +2,12 @@ package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.carrier.dto.HouseBillRes;
 import vn.com.irtech.eport.carrier.dto.HouseBillSearchReq;
 import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
+import vn.com.irtech.eport.logistic.domain.Shipment;
 
 /**
  * Master BillMapper Interface
@@ -82,4 +85,29 @@ public interface EdoHouseBillMapper
      * @return
      */
     public List<HouseBillRes> selectListHouseBillRes(HouseBillSearchReq houseBillSearchReq);
+    
+    /**
+     * Get Edo House Bill By Bl No
+     * 
+     * @param blNo
+     * @return EdoHouseBill
+     */
+    public EdoHouseBill getEdoHouseBillByBlNo(String blNo);
+    
+    /**
+     * Get container amount with order number
+     * 
+     * @param blNo
+     * @param orderNumber
+     * @return String
+     */
+    public int getContainerAmountWithOrderNumber(@Param("blNo") String blNo, @Param("orderNumber") String orderNumber);
+    
+    /**
+     * Select house bill for shipment
+     * 
+     * @param blNo
+     * @return List<EdoHouseBill>
+     */
+    public List<EdoHouseBill> selectHouseBillForShipment(String blNo);
 }

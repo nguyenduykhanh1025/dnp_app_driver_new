@@ -1,10 +1,6 @@
 package vn.com.irtech.eport.carrier.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.io.Serializable;
-import java.util.Date;
 
 public class EdoWithoutHouseBillReq implements Serializable {
 
@@ -12,7 +8,7 @@ public class EdoWithoutHouseBillReq implements Serializable {
 
   private String billOfLading;
 
-  private String consignee;
+  private String orderNumber;
 
   private String carrierCode;
 
@@ -26,12 +22,12 @@ public class EdoWithoutHouseBillReq implements Serializable {
     this.billOfLading = billOfLading;
   }
 
-  public String getConsignee() {
-    return consignee;
+  public String getOrderNumber() {
+    return orderNumber;
   }
 
-  public void setConsignee(String consignee) {
-    this.consignee = consignee;
+  public void setOrderNumber(String orderNumber) {
+    this.orderNumber = orderNumber;
   }
 
   public String getCarrierCode() {

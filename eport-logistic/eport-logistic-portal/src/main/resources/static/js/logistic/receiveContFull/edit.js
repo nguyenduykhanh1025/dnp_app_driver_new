@@ -1,5 +1,10 @@
 var prefix = ctx + "logistic/receive-cont-full";
-var currentBill = shipment.blNo;
+var currentBill;
+if (shipment.houseBill) {
+    currentBill = shipment.houseBill;
+} else {
+    currentBill = shipment.blNo;
+}
 
 // Map data to form
 if (shipment != null) {
@@ -23,14 +28,21 @@ if (shipment != null) {
         $('#edoFlgInput').val(shipment.edoFlg);
     }
     $('#opeCode').val(shipment.opeCode);
-    $("#blNo").val(shipment.blNo);
+    if (shipment.houseBill) {
+        $("#blNoTemp").val(shipment.houseBill);
+        $("#orderNumber").val(shipment.orderNumber);
+        $("#blNoTemp").prop('disabled', true);
+        $('#orderNumberDiv').show();
+    } else {
+        $("#blNoTemp").val(shipment.blNo);
+    }
+    
     if (shipment.status > 1) {
-        $("#blNo").prop('disabled', true);
+        $("#blNoTemp").prop('disabled', true);
     }
     if (shipment.status > 2) {
         $('input:radio[name="taxCodeDefault"]').prop('disabled', true);
         $("#taxCode").prop('disabled', true);
-        $("#containerAmount").prop('disabled', true);
     }
 }
 
@@ -76,16 +88,16 @@ function loadGroupName() {
 async function submitHandler() {
     if ($.validate.form()) {
         if ($("#groupName").val() != null && $("#groupName").val() != '') {
-            if ($("#blNo").val() != currentBill) {
+            if ($("#blNoTemp").val() != currentBill) {
                 let res = await getBillNoUnique();
                 if (res.code == 500) {
                     $.modal.alertError(result.msg);
-                    $("#blNo").addClass("error-input");
+                    $("#blNoTemp").addClass("error-input");
                     $('#opeCode').val("");
                     $('#containerAmount').val("");
                     $('#edoFlg').val(null).text("");
                 } else {
-            	    $("#blNo").removeClass("error-input");
+            	    $("#blNoTemp").removeClass("error-input");
                     $('#opeCode').val(res.shipment.opeCode);
                     $('#containerAmount').val(res.shipment.containerAmount);
                     if (res.shipment.edoFlg == "1") {
@@ -108,26 +120,26 @@ async function submitHandler() {
 
 function getBillNoUnique() {
     return $.ajax({
-        url: prefix + "/shipment/bl-no/" + $("#blNo").val(),
+        url: prefix + "/shipment/bl-no/" + $("#blNoTemp").val(),
         method: "GET",
     });
 }
 
 function checkBlNoUnique() {
-    if ($("#blNo").val() != null && $("#blNo").val() != '' && $("#blNo").val() != currentBill) {
+    if ($("#blNoTemp").val() != null && $("#blNoTemp").val() != '' && $("#blNoTemp").val() != currentBill) {
         //check bill unique, opeCode,edoFlag, containerAmount trong db edo, catos
         $.ajax({
-            url: prefix + "/shipment/bl-no/" + $("#blNo").val(),
+            url: prefix + "/shipment/bl-no/" + $("#blNoTemp").val(),
             method: "GET",
         }).done(function (result) {
             if (result.code == 500) {
                 $.modal.alertError(result.msg);
-                $("#blNo").addClass("error-input");
+                $("#blNoTemp").addClass("error-input");
                 $('#opeCode').val("");
                 $('#containerAmount').val("");
                 $('#edoFlg').val(null).text("");
             } else {
-            	$("#blNo").removeClass("error-input");
+            	$("#blNoTemp").removeClass("error-input");
                 $('#opeCode').val(result.shipment.opeCode);
                 $('#containerAmount').val(result.shipment.containerAmount);
                 if (result.shipment.edoFlg == "1") {
