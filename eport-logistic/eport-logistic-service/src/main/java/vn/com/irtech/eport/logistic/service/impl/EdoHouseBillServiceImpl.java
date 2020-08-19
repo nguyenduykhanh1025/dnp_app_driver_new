@@ -162,6 +162,11 @@ public class EdoHouseBillServiceImpl implements IEdoHouseBillService
 
             edoHouseBillMapper.insertEdoHouseBill(edoHouseBill);
 
+            
+            EdoHouseBill edoHouseBill2 = edoHouseBillMapper.selectEdoHouseBillById(edo.getHouseBillId());
+            edoHouseBill2.setHouseBillNo2(edoHouseBill.getHouseBillNo());
+            edoHouseBillMapper.updateEdoHouseBill(edoHouseBill2);
+            
             Edo edoUpdate = new Edo();
             edoUpdate.setId(edo.getId());
             edoUpdate.setUpdateBy(user.getUserName());

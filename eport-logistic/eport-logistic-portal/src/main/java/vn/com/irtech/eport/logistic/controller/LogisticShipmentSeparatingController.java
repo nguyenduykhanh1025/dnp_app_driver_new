@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +86,9 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
       return getDataTable(dataList);
     }
     dataList = edoService.selectListEdoWithoutHouseBillId(dataSearch);
+    if (CollectionUtils.isEmpty(dataList)) {
+    	dataList = edoService.selectListEdoWithHouseBill(dataSearch);
+    }
     return getDataTable(dataList);
   }
 
