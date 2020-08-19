@@ -10,17 +10,18 @@
     <th:block th:include="include :: easyui-css" />
     <script th:src="@{/ajax/libs/dropzone/dropzone.min.js}"></script>
     <link th:href="@{/ajax/libs/dropzone/dropzone.min.css}" rel="stylesheet" />
+    <link th:href="@{/eport/css/edo/manage/upLoadFile.css}" rel="stylesheet" />
 </head>
 <body class="gray-bg">
     <div id="wrapper">
         <div class="row">
             <div class="col-md-11 select-table" style="margin-top: 0px; padding-bottom:5px">
-                <div class="container-fluid">
-                    <div class="panel panel-default" id="fileupload_main_panel">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12 " style="max-height: 220px;min-height: 220px">
-                                    <div id="bannarzone" class="dropzone" style="max-height: 220px;min-height: 220px">
+                <div class="container-fluid top-boder" >
+                    <div class="panel panel-default"  id="fileupload_main_panel">
+                        <div class="panel-body" >
+                            <div class="row" style="width: 100%">
+                                <div class="col-md-12 dropzoneStyle">
+                                    <div id="bannarzone" class="dropzone">
                                     </div>
                                 </div>
                             </div>

@@ -791,7 +791,7 @@ public class CarrierEquipmentDoController extends CarrierBaseController {
 
 	@GetMapping("/report")
 	public String report() {
-		if (!hasEdoPermission()) {
+		if (!hasDoPermission()) {
 			return "error/404";
 		}
 		return PREFIX + "/report";

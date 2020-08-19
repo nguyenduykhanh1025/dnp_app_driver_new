@@ -8,64 +8,66 @@
   <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet" />
   <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
   <link rel="stylesheet" th:href="@{/css/edo/style.css}" />
+  <link rel="stylesheet" th:href="@{/eport/css/edo.css}" />
 </head>
 
 <body class="white-bg container-fluid ">
   <div class="col-sm-12 wrapper">
     <div class="form-inline mt10 mb10">
-      <div class="form-group searchBill">
+      <div class="form-group searchBill" style="width:150px">
         <label class="sr-only" for="searchBillNo">Tìm kiếm</label>
         <div class="input-group">
           <input type="text" class="form-control" name="searchBillNo" id="searchBillNo"
             placeholder="Tìm kiếm Bill No" />
         </div>
       </div>
+      
       <div class="form-group">
         <label class="sr-only col-md-12" for="voyNo">Vessel </label>
-        <div class="input-group width150" style="width: 110px;">
-          <select class=" c-search-box-vessel">
-            <option selected="selected"></option>
+        <div class="input-group width150" style="width: 150px;">
+          <select class="c-search-box-vessel">
           </select>
         </div>
       </div>
       <div class="form-group">
         <label class="sr-only" for="voyNo">Voy No </label>
-        <div class="input-group width150" style="width: 110%;">
+        <div class="input-group width150" style="width: 150%;">
           <select class="c-search-box-voy-no">
-            <option selected="selected"></option>
           </select>
         </div>
       </div>
-      <div class="form-group margin-input">
-        <label class="sr-only">Tìm kiếm</label>
-        <div class="input-group">
-          <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i
-              class="fa fa-pencil-square-o"></i> Cập Nhật</button>
-        </div>
-      </div>
-      <div class="form-group">
+      
+      <div class="form-group width100px margin-left-46">
         <label class="sr-only" for="fromDate">From Date</label>
         <div class="input-group">
           <input class="form-control time-input" id="fromDate" name="fromDate" onchange="changeFromDate()"
             placeholder="Từ ngày" />
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group width100px">
         <label class="sr-only" for="toDate">To Date</label>
         <div class="input-group">
           <input class="form-control time-input" id="toDate" name="toDate" onchange="changeToDate()"
             placeholder="Đến ngày" />
         </div>
       </div>
-      <div class="form-group">
+      
+      <div class="form-group ">
         <div class="input-group">
-          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
+          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchInfoEdo"><i
               class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
         </div>
       </div>
-      <div class="form-group" style="margin-left: 10px;">
-        <a class="btn btn-warning btn-rounded btn-sm" id="btnRefresh"><i class="fa fa-refresh"> Làm
+      <div class="form-group ">
+        <a class="btn btn-warning btn-rounded btn-sm margin-botton-5" id="btnRefresh"><i class="fa fa-refresh"> Làm
             mới</i>&nbsp;</a>
+      </div>
+      <div class="form-group margin-input">
+        <label class="sr-only">Cập Nhật</label>
+        <div class="input-group">
+          <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i
+              class="fa fa-pencil-square-o"></i> Cập Nhật eDO</button>
+        </div>
       </div>
     </div> <!-- //end form -->
   </div>
@@ -96,7 +98,7 @@
         </thead>
       </table>
     </section>
-  <section class="right" style="max-height:654px;">
+  <section class="right">
     <table id="dgContainer">
       <thead data-options="frozen:true">
         <tr>

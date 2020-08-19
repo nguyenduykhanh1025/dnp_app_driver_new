@@ -30,6 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
+        <result property="numberContainer" column="number_container"/>
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="processRemark"    column="process_remark"    />
@@ -423,7 +424,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     
      <select id="selectEdoListByBillNo" parameterType="EquipmentDo" resultMap="EquipmentDoResult">
-         SELECT bill_of_lading, carrier_code, vessel, voy_no,(SELECT create_time from edo e2 where e1.bill_of_lading = e2.bill_of_lading ORDER BY create_time DESC FETCH NEXT 1 ROWS ONLY ) as create_time, (SELECT COUNT(*) FROM equipment_do e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from equipment_do e1
+         SELECT bill_of_lading, carrier_code, vessel, voy_no,(SELECT create_time from equipment_do e2 where
+    e1.bill_of_lading = e2.bill_of_lading ORDER BY create_time DESC FETCH NEXT 1 ROWS ONLY ) as create_time, (SELECT
+    COUNT(*) FROM equipment_do e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from equipment_do e1
         <where> 
             <if test="params.groupCode != null"> 
                 and carrier_code in 
@@ -446,12 +449,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null  and status != ''"> and status = #{status}</if>
             <if test="releaseStatus != null  and releaseStatus != ''"> and release_status = #{releaseStatus}</if>
             <if test="createSource != null  and createSource != ''"> and create_source = #{createSource}</if>
-            <if test="params.toDate != null and params.toDate != ''">
-				and date_format(expired_dem,'%y%m%d') &lt;= date_format(#{params.toDate},'%y%m%d')
-			</if>
-             <if test="params.fromDate != null and params.fromDate != ''">
-				and date_format(expired_dem,'%y%m%d') &gt;= date_format(#{params.fromDate},'%y%m%d')
-			</if>
+           <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
+            <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
         </where>
             GROUP BY bill_of_lading, carrier_code, vessel, voy_no
             ORDER BY create_time DESC

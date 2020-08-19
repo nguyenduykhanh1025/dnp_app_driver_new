@@ -6,10 +6,18 @@
     margin-bottom: 20px;
 }
 .dropzone {
-    background: white;
-    border-radius: 5px;
-    border: 2px dashed rgb(0, 135, 247);
-    border-image: none;
-    margin-left: auto;
-    margin-right: auto;
+    border: 0px solid rgba(0,0,0,0.3);
+}
+.dropzoneStyle {
+    max-height: 220px;
+    min-height: 220px;
+    align-items: center;
+}
+.panel-body {
+    border-top: 1px solid #95B8E7;
+    font-size: 20px;
+    color: #3C8DBC;
+}
+.dz-button {
+    margin-top: 22px;
 }
