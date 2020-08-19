@@ -128,4 +128,6 @@ public interface EquipmentDoMapper {
 
 	public int updateEquipmentDo2(EquipmentDo edo);
 
+	public List<EquipmentDo> selectEdoListForReport(EquipmentDo edo);
+
 }

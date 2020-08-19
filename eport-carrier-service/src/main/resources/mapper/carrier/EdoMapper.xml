@@ -75,6 +75,7 @@
       <if test="releaseStatus != null  and releaseStatus != ''">and release_status = #{releaseStatus}</if>
       <if test="createSource != null  and createSource != ''">and create_source = #{createSource}</if>
       <if test="delFlg != null  and delFlg != ''">and del_flg = #{delFlg}</if>
+      <if test="delFlg = null  or delFlg = ''">and del_flg != 1</if>
       <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
       <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
       <if test="consignee != null  and consignee != ''">and (upper(consignee) like concat(concat('%', #{consignee}),
@@ -305,7 +306,7 @@
   <select id="selectEdoListByBillNo" parameterType="Edo" resultMap="EdoResult">
     SELECT bill_of_lading, carrier_code, vessel, vessel_no, voy_no,(SELECT create_time from edo e2 where
     e1.bill_of_lading = e2.bill_of_lading ORDER BY create_time DESC FETCH NEXT 1 ROWS ONLY ) as create_time, (SELECT
-    COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading) AS number_container from edo e1
+    COUNT(*) FROM edo e2 WHERE e1.bill_of_lading = e2.bill_of_lading and del_flg != 1) AS number_container from edo e1
     <where>
       <if test="params.groupCode != null">
         and carrier_code in

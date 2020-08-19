@@ -1,50 +1,85 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
-  <head>
-    <th:block th:include="include :: header('DNP ePort: Danh Sách eDO')" />
-    <th:block th:include="include :: easyui-css" />
-    <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet"/>
-    <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet"/>
-    <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
-    <link rel="stylesheet" th:href="@{/css/edo/style.css}" />
-  </head>
 
-  <body class="white-bg container-fluid wrapper">
-    <!-- <section class="left">
-      <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
-      <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div> -->
-      <div class="col-md-4">
-      <div class="form-inline mt10 mb10" >
-        <div class="form-group searchBill">
-          <label class="sr-only" for="searchBillNo">Tìm kiếm</label>
-          <div class="input-group">
-            <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="sr-only col-md-12" for="voyNo">Vessel </label>
-          <div class="input-group width150" style="width: 110px;">
-            <select class=" c-search-box-vessel"> 
-              <option selected="selected"></option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="sr-only" for="voyNo">Voy No </label>
-          <div class="input-group width150" style="width: 110%;">
-            <select class="c-search-box-voy-no"> 
-              <option selected="selected"></option>
-            </select>
-          </div>
+<head>
+  <th:block th:include="include :: header('DNP ePort: Danh Sách eDO')" />
+  <th:block th:include="include :: easyui-css" />
+  <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet" />
+  <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet" />
+  <link rel="stylesheet" th:href="@{/eport/css/eport.css}" />
+  <link rel="stylesheet" th:href="@{/css/edo/style.css}" />
+</head>
+
+<body class="white-bg container-fluid ">
+  <div class="col-sm-12 wrapper">
+    <div class="form-inline mt10 mb10">
+      <div class="form-group searchBill">
+        <label class="sr-only" for="searchBillNo">Tìm kiếm</label>
+        <div class="input-group">
+          <input type="text" class="form-control" name="searchBillNo" id="searchBillNo"
+            placeholder="Tìm kiếm Bill No" />
         </div>
       </div>
-      <table id="dg">
+      <div class="form-group">
+        <label class="sr-only col-md-12" for="voyNo">Vessel </label>
+        <div class="input-group width150" style="width: 110px;">
+          <select class=" c-search-box-vessel">
+            <option selected="selected"></option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="voyNo">Voy No </label>
+        <div class="input-group width150" style="width: 110%;">
+          <select class="c-search-box-voy-no">
+            <option selected="selected"></option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group margin-input">
+        <label class="sr-only">Tìm kiếm</label>
+        <div class="input-group">
+          <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i
+              class="fa fa-pencil-square-o"></i> Cập Nhật</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="fromDate">From Date</label>
+        <div class="input-group">
+          <input class="form-control time-input" id="fromDate" name="fromDate" onchange="changeFromDate()"
+            placeholder="Từ ngày" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="toDate">To Date</label>
+        <div class="input-group">
+          <input class="form-control time-input" id="toDate" name="toDate" onchange="changeToDate()"
+            placeholder="Đến ngày" />
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="input-group">
+          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i
+              class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
+        </div>
+      </div>
+      <div class="form-group" style="margin-left: 10px;">
+        <a class="btn btn-warning btn-rounded btn-sm" id="btnRefresh"><i class="fa fa-refresh"> Làm
+            mới</i>&nbsp;</a>
+      </div>
+    </div> <!-- //end form -->
+  </div>
+  <div class="col-sm-12 container-fluid wrapper">
+  <section class="left">
+    <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
+    <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
+    <table id="dg">
         <thead>
           <tr>
             <th data-options="field:'billOfLading',align:'left'" width="130">
               BILL OF LADING
             </th>
-             <th data-options="field:'vessel',align:'left'" width="110">
+            <th data-options="field:'vessel',align:'left'" width="110">
               VESSEL
             </th>
             <th data-options="field:'voyNo',align:'left'" width="110">
@@ -60,114 +95,75 @@
           </tr>
         </thead>
       </table>
-    <!-- </section> -->
-      </div>
-      
-    <section class="right">
-      <div class="form-inline mt10 mb10 form-right">
-        <div class="form-group" style="margin-left: 10px;">
-          <a class="btn btn-warning btn-rounded btn-sm" id="btnRefresh"><i class="fa fa-refresh"> Làm
-            mới</i>&nbsp;</a>
-          </div>
-        <div class="form-group">
-          <label class="sr-only">Tìm kiếm</label>
-          <div class="input-group">
-            <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>
-          </div>
-        </div>
-        <div>
-          <div class="form-group">
-            <label class="sr-only" for="searchAll">Search All</label>
-            <div class="input-group">
-              <input class="form-control" type="text" name="searchAll" id="searchAll" placeholder="Tìm kiếm" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="sr-only" for="fromDate">From Date</label>
-            <div class="input-group">
-              <input class="form-control time-input" id="fromDate" name="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="sr-only" for="toDate">To Date</label>
-            <div class="input-group">
-              <input class="form-control time-input" id="toDate" name="toDate" onchange="changeToDate()" placeholder="Đến ngày" />
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="input-group">
-              <a class="btn btn-primary btn-rounded btn-sm" onclick="searchInfoEdo()" id="searchInfoEdo"><i class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-12">
-      <table id="dgContainer">
-        <thead data-options="frozen:true">
-          <tr>
-            <th data-options="field:'id',checkbox:true"></th>
-            <th data-options="field:'containerNumber',align:'left'" width="120">
-              CONTAINER NO
-            </th>
-          </tr>
-        </thead>
-        <thead>
-          <tr>
-            <th data-options="field:'sztp',align:'left'" width="50">
-              SZTP
-            </th>
-            <th data-options="field:'carrierCode',align:'center'" width="90">
-              OPR <br />
-              CODE
-            </th>
-            <th data-options="field:'consignee',align:'left'" width="250">
-              CONSIGNEE
-            </th>
-            <th data-options="field:'expiredDem',align:'left',formatter:formatToYDMHMS" width="110">
-              EXPIRED <br />
-              DEM
-            </th>
-            <th data-options="field:'detFreeTime',align:'center'" width="80">
-              DET FREE <br />
-              TIME
-            </th>
-            <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
-              EMPTY CONTAINER <br />
-              DEPOT
-            </th>
-            <th data-options="field:'vessel',align:'left'" width="110">
-              VESSEL
-            </th>
-            <th data-options="field:'voyNo',align:'left'" width="90">
-              VOY NO
-            </th>
-            <th data-options="field:'pol',align:'left'" width="110">
-              POL
-            </th>
-            <th data-options="field:'pod',align:'left'" width="110">
-              POD
-            </th>
-            <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
-              STATUS
-            </th>
-            <th data-options="field:'createTime',align:'center',formatter:formatToYDMHMS" width="110">
-              CREATE TIME
-            </th>
-            <th data-options="field:'createTime',align:'left'" width="115">
-              RECEIVE TIME
-             </th> 
-            <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="150">
-              ACTION
-            </th>
-          </tr>
-        </thead>
-      </table>
     </section>
+  <section class="right" style="max-height:654px;">
+    <table id="dgContainer">
+      <thead data-options="frozen:true">
+        <tr>
+          <th data-options="field:'id',checkbox:true"></th>
+          <th data-options="field:'containerNumber',align:'left'" width="120">
+            CONTAINER NO
+          </th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th data-options="field:'sztp',align:'left'" width="50">
+            SZTP
+          </th>
+          <th data-options="field:'carrierCode',align:'center'" width="90">
+            OPR <br />
+            CODE
+          </th>
+          <th data-options="field:'consignee',align:'left'" width="250">
+            CONSIGNEE
+          </th>
+          <th data-options="field:'expiredDem',align:'left',formatter:formatToYDMHMS" width="110">
+            EXPIRED <br />
+            DEM
+          </th>
+          <th data-options="field:'detFreeTime',align:'center'" width="80">
+            DET FREE <br />
+            TIME
+          </th>
+          <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
+            EMPTY CONTAINER <br />
+            DEPOT
+          </th>
+          <th data-options="field:'vessel',align:'left'" width="110">
+            VESSEL
+          </th>
+          <th data-options="field:'voyNo',align:'left'" width="90">
+            VOY NO
+          </th>
+          <th data-options="field:'pol',align:'left'" width="110">
+            POL
+          </th>
+          <th data-options="field:'pod',align:'left'" width="110">
+            POD
+          </th>
+          <th data-options="field:'status',align:'left',formatter:formatStatus" width="91">
+            STATUS
+          </th>
+          <th data-options="field:'createTime',align:'center',formatter:formatToYDMHMS" width="110">
+            CREATE TIME
+          </th>
+          <th data-options="field:'createTime',align:'left'" width="115">
+            RECEIVE TIME
+          </th>
+          <th data-options="field:'action',align:'center',formatter: formatAction" fixed:true width="150">
+            ACTION
+          </th>
+        </tr>
+      </thead>
+    </table>
+  </section>
   </div>
-    <th:block th:include="include :: footer" />
-    <th:block th:include="include :: easyui-js" />
-    <th:block th:include="include :: datetimepicker-js" />
-    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
-    <script th:src="@{/eport/js/modules/edo/edo.js}"></script>
-  </body>
+  <th:block th:include="include :: footer" />
+  <th:block th:include="include :: easyui-js" />
+  <th:block th:include="include :: datetimepicker-js" />
+  <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
+  <script th:src="@{/eport/js/modules/edo/edo.js}"></script>
+</body>
+
 </html>
