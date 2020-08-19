@@ -34,6 +34,7 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
+import vn.com.irtech.eport.framework.web.service.MqttService.NotificationCode;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -226,12 +227,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		if (StringUtils.isNotEmpty(shipment.getHouseBill())) {
 			if (edoHouseBillService.getContainerAmountWithOrderNumber(shipment.getHouseBill(), shipment.getOrderNumber()) == 0) {
 				return error("Thêm lô thất bại");
+			} else {
+				if (edoService.getContainerAmountWithOrderNumber(shipment.getBlNo(), shipment.getOrderNumber()) == 0) {
+					return error("Thêm lô thất bại");
+				}
 			}
-		} else {
-			if (edoService.getContainerAmountWithOrderNumber(shipment.getBlNo(), shipment.getOrderNumber()) == 0) {
-				return error("Thêm lô thất bại");
-			}
-		}
+		} 
 		
 		LogisticAccount user = getUser();
 		shipment.setLogisticAccountId(user.getId());
@@ -688,6 +689,39 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			return ajaxResult;
 		}
 		return error("Mã nhận container không chính xác.");
+	}
+	
+	@GetMapping("/shipment/{shipmentId}/delegate/permission")
+	@ResponseBody
+	public AjaxResult checkDelegatePermission(@PathVariable Long shipmentId) {
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		// check DO or eDO (0 is DO no need to validate 
+		if ("0".equals(shipment.getEdoFlg())) {
+			return success();
+		} else {
+			// Get tax code of consignee own this shipment
+			String taxCode = shipmentDetailService.selectConsigneeTaxCodeByShipmentId(shipmentId);
+			if (taxCode == null) {
+				return error();
+			}
+			
+			// Check if logistic can make order for this shipment
+			if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst()) > 0) {
+				return success();
+			}
+		}
+		return error();
+	}
+	
+	@GetMapping("/shipment/{shipmentId}/custom/notification")
+	@ResponseBody
+	public AjaxResult sendNotificationCustomError(@PathVariable("shipmentId") String shipmentId) {
+		try {
+			mqttService.sendNotification(NotificationCode.NOTIFICATION_OM_CUSTOM, "Lỗi hải quan lô " + shipmentId, configService.selectConfigByKey("domain.admin.name") + "/om/support/custom/" + shipmentId);
+		} catch (MqttException e) {
+			logger.error("Gửi thông báo lỗi hải quan cho om: " + e);
+		}
+		return success();
 	}
 }
 

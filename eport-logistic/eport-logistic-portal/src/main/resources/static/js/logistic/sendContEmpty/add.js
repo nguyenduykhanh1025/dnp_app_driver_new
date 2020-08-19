@@ -20,12 +20,16 @@ $('input:radio[name="taxCodeDefault"]').change(function() {
 async function submitHandler() {
     if ($.validate.form()) {
         if ($("#groupName").val() != null && $("#groupName").val() != '') {
-        	let res = await getBillNoUnique();
-            if (res.code == 500) {
-                $.modal.alertError(res.msg);
-                $("#blNo").addClass("error-input");
+            if ($("#blNo").val()) {
+                let res = await getBillNoUnique();
+                if (res.code == 500) {
+                    $.modal.alertError(res.msg);
+                    $("#blNo").addClass("error-input");
+                } else {
+                    $("#blNo").removeClass("error-input");
+                    save(prefix + "/shipment", $('#form-add-shipment').serialize());
+                }
             } else {
-                $("#blNo").removeClass("error-input");
                 save(prefix + "/shipment", $('#form-add-shipment').serialize());
             }
         } else {

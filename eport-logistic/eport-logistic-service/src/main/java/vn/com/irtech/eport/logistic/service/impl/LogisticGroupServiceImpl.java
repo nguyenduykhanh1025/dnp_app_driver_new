@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
 import vn.com.irtech.eport.common.utils.DateUtils;
+
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.logistic.mapper.LogisticGroupMapper;
@@ -103,5 +105,17 @@ public class LogisticGroupServiceImpl implements ILogisticGroupService
     public int deleteLogisticGroupById(Long id)
     {
         return logisticGroupMapper.deleteLogisticGroupById(id);
+    }
+    
+    /**
+     * Check delegate permission
+     * 
+     * @param consigneeTaxCode
+     * @param logisticTaxCode
+     * @return	int
+     */
+    @Override
+    public int checkDelegatePermission(@Param("consigneeTaxCode") String consigneeTaxCode, @Param("logisticTaxCode") String logisticTaxCode) {
+    	return logisticGroupMapper.checkDelegatePermission(consigneeTaxCode, logisticTaxCode);
     }
 }

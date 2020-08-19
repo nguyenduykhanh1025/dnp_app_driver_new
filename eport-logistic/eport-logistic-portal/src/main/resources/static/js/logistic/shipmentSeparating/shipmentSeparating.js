@@ -160,11 +160,11 @@ function stringToDate(dateStr) {
 }
 
 document
-  .getElementById("bookingSearch")
+  .getElementById("search")
   .addEventListener("keyup", function (event) {
     event.preventDefault();
     if (event.keyCode === 13) {
-      shipmentSearch.bookingNo = $("#bookingSearch").val().toUpperCase();
+      shipmentSearch.bookingNo = $("#search").val().toUpperCase();
       loadTable();
     }
   });
@@ -228,7 +228,7 @@ function loadTable(msg) {
         }),
         success: function (data) {
           success(data);
-          $("#dg").datagrid("hideColumn", "id");
+          // $("#dg").datagrid("hideColumn", "id");
         },
         error: function () {
           error.apply(this, arguments);
@@ -285,9 +285,6 @@ function loadHouseBillDetail(houseBillNo) {
     clientPaging: false,
     pagination: true,
     rownumbers: true,
-    onClickRow: function () {
-      getSelected();
-    },
     pageSize: 50,
     nowrap: true,
     striped: true,

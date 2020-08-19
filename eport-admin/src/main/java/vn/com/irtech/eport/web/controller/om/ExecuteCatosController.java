@@ -23,6 +23,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.utils.bean.BeanUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -88,7 +89,18 @@ public class ExecuteCatosController extends AdminBaseController {
 	public String edit(@PathVariable("processOrderId") Long processOrderId, ModelMap mmap) {
 		ProcessOrder processOrder = new ProcessOrder();
     	processOrder.setId(processOrderId);
-    	mmap.put("orderList", processOrderService.selectOrderListForOmSupport(processOrder));
+    	processOrder.setRunnable(true);
+    	List<ProcessOrder> processOrders = processOrderService.selectOrderListForOmSupport(processOrder);
+    	processOrder = processOrders.get(0);
+    	List<ProcessOrder> processOrderList = new ArrayList<>();
+    	List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderId.toString());
+    	for (ShipmentDetail shipmentDetail : shipmentDetails) {
+    		processOrder.setShipmentDetail(shipmentDetail);
+    		ProcessOrder processOrderDes = new ProcessOrder();
+    		BeanUtils.copyBeanProp(processOrderDes, processOrder);
+    		processOrderList.add(processOrderDes);
+    	}
+    	mmap.put("orderList", processOrderList);
 		return prefix + "/edit";
 	}
 

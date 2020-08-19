@@ -222,20 +222,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectOrderListForOmSupport" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
         select p.id, p.shipment_id, p.logistic_group_id, p.service_type, p.pay_type, p.tax_code, p.bl_no, p.booking_no, p.pickup_date, p.robot_uuid,
-        p.vessel, p.voyage, p.cont_number, p.status, p.result, p.invoice_no, s.container_no, s.sztp, s.fe, s.cargo_type, s.discharge_port, 
-        s.ope_code, s.wgt, s.consignee, l.group_name as group_name
+        p.vessel, p.voyage, p.cont_number, p.status, p.result, p.invoice_no, l.group_name as group_name
         from process_order p
-        left join shipment_detail s on p.id = s.process_order_id
+        right join shipment_detail s on p.id = s.process_order_id
         left join logistic_group l on p.logistic_group_id = l.id
         <where>
             <if test="runnable != null"> and p.runnable = #{runnable}</if>
             <if test="sysUserId != null"> and p.sys_user_id = #{sysUserId}</if>
             <if test="shipmentId != null "> and p.shipment_id = #{shipmentId}</if>
-            <if test="id != null "> and p.id = #{id}</if>
+            <if test="id != null "> and s.process_order_id = #{id}</if>
             <if test="status != null "> and (p.status = #{status}</if>
             <if test="result != null  and result != ''"> or p.result = #{result})</if>
         </where>
-        order by p.id asc
     </select>
 
     <select id="countProcessOrderDoing" parameterType="String" resultType="int">
@@ -330,7 +328,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="runnable != null"> and p.runnable = #{runnable}</if>
             <if test="shipmentId != null"> and p.shipment_id = #{shipmentId}</if>
             <if test="robotUuid != null and robotUuid != ''"> and p.robot_uuid is not null</if>
-            <if test="robotUuid == null or robotUuid == ''"> and (p.robot_uuid is null or p.status != 0)</if>
+            <if test="robotUuid == ''"> and (p.robot_uuid is null or p.status != 0)</if>
             <if test="status != null "> and p.status = #{status}</if>
         </where>
     </select>

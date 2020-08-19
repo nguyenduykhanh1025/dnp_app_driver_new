@@ -2,6 +2,8 @@ package vn.com.irtech.eport.logistic.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 
 /**
@@ -60,5 +62,15 @@ public interface ILogisticGroupService
      * @return result
      */
     public int deleteLogisticGroupById(Long id);
+    
     public List<LogisticGroup> selectLogisticGroupListByName(LogisticGroup logisticGroup);
+    
+    /**
+     * Check delegate permission
+     * 
+     * @param consigneeTaxCode
+     * @param logisticTaxCode
+     * @return	int
+     */
+    public int checkDelegatePermission(@Param("consigneeTaxCode") String consigneeTaxCode, @Param("logisticTaxCode") String logisticTaxCode);
 }

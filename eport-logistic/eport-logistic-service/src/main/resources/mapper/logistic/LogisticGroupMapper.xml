@@ -49,6 +49,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectLogisticGroupVo"/>
         <where>  
             <if test="groupName != null  and groupName != ''"> and lower(group_name) like concat(concat('%', #{groupName}), '%')</if>
+            <if test="delFlag != null"> and del_flag = #{delFlag}</if>
         </where>
     </select>
     <select id="selectLogisticGroupById" parameterType="Long" resultMap="LogisticGroupResult">
@@ -159,4 +160,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </update>
     
+    <select id="checkDelegatePermission" resultType="int">
+        select count(*) from logistic_group g
+        left join logistic_delegated d on g.id = d.logistic_group_id
+        where  
+            g.mst = #{consigneeTaxCode}
+            and d.delegate_tax_code = #{logisticTaxCode}
+            and d.valid_flg = 1
+            and TO_CHAR(d.valid_from, 'DD/MM/YYYY') &lt;= TO_CHAR(sysdate, 'DD/MM/YYYY')
+            and TO_CHAR(d.valid_until, 'DD/MM/YYYY') &gt;= TO_CHAR(sysdate, 'DD/MM/YYYY')
+            and del_flg = 0 
+            and g.del_flag = '0'
+    </select>
 </mapper>

@@ -13,8 +13,6 @@ $(document).ready(function () {
 
   loadTable(null);
 
-  $("#formSeparate").hide();
-
   $("select[name='carrierCode']").select2({
     closeOnSelect: true,
     placeholder :'Chọn hãng tàu',
@@ -31,7 +29,20 @@ $(document).ready(function () {
 
 function loadTable(dataSearch) {
   if (dataSearch == null) {
-    $("#dg").datagrid({});
+    $("#dg").datagrid({
+      height: document.documentElement.clientHeight - 230,
+      collapsible: true,
+      clientPaging: false,
+      pagination: true,
+      rownumbers: true,
+      pageSize: 50,
+      nowrap: true,
+      striped: true,
+      loadMsg: " Đang xử lý...",
+      loader: function (param, success, error) {
+        success([]);
+      }
+    });
   } else {
     $("#dg").datagrid({
       url: PREFIX + "/separate/search",
@@ -64,12 +75,9 @@ function loadTable(dataSearch) {
               $.modal.alertWarning(
                 "Không tìm thấy data, vui lòng kiểm tra lại"
               );
-              $("#formSeparate").hide();
-            } else {
-              $("#formSeparate").show();
             }
             success(data);
-            $("#dg").datagrid("hideColumn", "id");
+            // $("#dg").datagrid("hideColumn", "id");
           },
           error: function () {
             $("#formSeparate").hide();

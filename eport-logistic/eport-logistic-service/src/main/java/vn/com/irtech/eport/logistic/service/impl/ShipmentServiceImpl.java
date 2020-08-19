@@ -149,4 +149,5 @@ public class ShipmentServiceImpl implements IShipmentService {
     public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long driverId) {
         return shipmentMapper.selectShipmentListForDriver(serviceType, driverId);
     }
+    
 }
