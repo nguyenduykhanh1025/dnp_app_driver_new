@@ -9,7 +9,7 @@
 		    AMT AS VAT_AFTER_FEE,
 		    CNTR_NO AS CONTAINER_NO,
 		    SZTP2 AS SZTP
-		FROM TB_INVOICE_UNIT
+		FROM DNP_UAT.TB_INVOICE_UNIT
 		WHERE INV_NO = #{invoiceNo}
 	</select>
 	<select id="getUnitBillByShipmentDetailsForReserve" parameterType="vn.com.irtech.api.entity.ShipmentDetailEntity" resultType="vn.com.irtech.api.entity.UnitBillEntity">
@@ -20,8 +20,8 @@
 		    AMT AS VAT_AFTER_FEE,
 		    CNTR_NO AS CONTAINER_NO,
 		    SZTP2 AS SZTP
-		FROM TB_INVOICE_UNIT
-		WHERE ORDER_NO = (SELECT JOB_ODR_NO FROM TB_RESERVE 
+		FROM DNP_UAT.TB_INVOICE_UNIT
+		WHERE ORDER_NO = (SELECT JOB_ODR_NO FROM DNP_UAT.TB_RESERVE 
 				<where>
 						<if test="containerNo != null  and containerNo != ''"> CNTR_NO = #{containerNo}</if>
 						<if test="blNo != null  and blNo != ''"> AND BL_NO = #{blNo}</if>
@@ -41,8 +41,8 @@
 		    AMT AS VAT_AFTER_FEE,
 		    CNTR_NO AS CONTAINER_NO,
 		    SZTP2 AS SZTP
-		FROM TB_INVOICE_UNIT
-		WHERE ORDER_NO = (SELECT JOB_ODR_NO2 FROM TB_INVENTORY 
+		FROM DNP_UAT.TB_INVOICE_UNIT
+		WHERE ORDER_NO = (SELECT JOB_ODR_NO2 FROM DNP_UAT.TB_INVENTORY 
 				<where>
 						<if test="containerNo != null  and containerNo != ''"> CNTR_NO = #{containerNo}</if>
 						<if test="blNo != null  and blNo != ''"> AND BL_NO = #{blNo}</if>
@@ -62,8 +62,8 @@
 		    AMT AS VAT_AFTER_FEE,
 		    CNTR_NO AS CONTAINER_NO,
 		    SZTP2 AS SZTP
-		FROM TB_INVOICE_UNIT
-		WHERE ORDER_NO = (SELECT JOB_ODR_NO2 FROM TB_SSR 
+		FROM DNP_UAT.TB_INVOICE_UNIT
+		WHERE ORDER_NO = (SELECT JOB_ODR_NO2 FROM DNP_UAT.TB_SSR 
 				<where>
 						<if test="containerNo != null  and containerNo != ''"> CNTR_NO = #{containerNo}</if>
 						<if test="blNo != null  and blNo != ''"> AND BL_NO = #{blNo}</if>
@@ -83,8 +83,8 @@
 		    AMT AS VAT_AFTER_FEE,
 		    CNTR_NO AS CONTAINER_NO,
 		    SZTP2 AS SZTP
-		FROM TB_INVOICE_UNIT
-		WHERE ORDER_NO = (SELECT JOB_ODR_NO FROM TB_SSR 
+		FROM DNP_UAT.TB_INVOICE_UNIT
+		WHERE ORDER_NO = (SELECT JOB_ODR_NO FROM DNP_UAT.TB_SSR 
 				<where>
 						<if test="containerNo != null  and containerNo != ''"> CNTR_NO = #{containerNo}</if>
 						<if test="blNo != null  and blNo != ''"> AND BL_NO = #{blNo}</if>
