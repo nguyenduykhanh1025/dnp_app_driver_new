@@ -1303,7 +1303,7 @@ function verify() {
           $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 500);
         }
       } else {
-        $.modal.alertWarning("Qúy khách không có quyền làm lệnh cho lô này.");
+        $.modal.alertWarning("Quý khách chưa có ủy quyền từ chủ hàng để thực hiện lô hàng này <br>Hãy liên hệ với Cảng để thêm ủy quyền.");
       }
     },
     error: function(err) {

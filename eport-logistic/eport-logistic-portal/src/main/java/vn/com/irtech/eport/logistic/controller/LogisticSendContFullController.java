@@ -440,7 +440,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	
 	@GetMapping("/containerNo/{containerNo}/sztp")
 	@ResponseBody
-	public String getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
-		return catosApiService.getSztpByContainerNo(containerNo);
+	public AjaxResult getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
+		String sztp = catosApiService.getSztpByContainerNo(containerNo);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("sztp", sztp);
+		return ajaxResult;
 	}
 }
