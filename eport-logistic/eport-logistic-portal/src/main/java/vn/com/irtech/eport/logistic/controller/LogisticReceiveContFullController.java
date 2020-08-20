@@ -297,13 +297,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						i.setVoyNo(i.getVoyCarrier());
 						for(ShipmentDetail j : shipmentDetailsCatos) {
 							if(i.getContainerNo().equals(j.getContainerNo())) {
+								// Overwrite information from CATOS
 //								i.setOpeCode(j.getOpeCode());
-//								i.setVslNm(j.getVslNm());
+								i.setVslNm(j.getVslNm());					// overwrite VSL_CD:VSL_NM from CATOS
 								i.setVoyNo(j.getVoyNo());
 								i.setSealNo(j.getSealNo());
 								i.setWgt(j.getWgt());
-//								i.setLoadingPort(j.getLoadingPort());
-//								i.setDischargePort(j.getDischargePort());
+								i.setLoadingPort(j.getLoadingPort());		// overwrite from CATOS
+								i.setDischargePort(j.getDischargePort());	// overwrite from CATOS
 								i.setYear(j.getYear());
 							}
 						}
