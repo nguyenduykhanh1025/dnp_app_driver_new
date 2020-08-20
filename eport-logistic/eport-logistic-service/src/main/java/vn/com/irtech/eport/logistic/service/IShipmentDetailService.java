@@ -1,18 +1,11 @@
 package vn.com.irtech.eport.logistic.service;
 
-import java.io.IOException;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
@@ -103,7 +96,7 @@ public interface IShipmentDetailService
     
     public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status, String invoiceNo, ProcessOrder processOrder);
 
-    public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
+//    public boolean checkCustomStatus(String userVoy,String cntrNo) throws IOException;
 
     public Shipment getGroupNameByTaxCode(String taxCode) throws Exception;
 

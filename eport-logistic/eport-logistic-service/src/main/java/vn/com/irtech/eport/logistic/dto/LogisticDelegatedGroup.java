@@ -1,11 +1,12 @@
 package vn.com.irtech.eport.logistic.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 import vn.com.irtech.eport.logistic.domain.LogisticDelegated;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 
-public class LogisticDelegatedGroup {
+public class LogisticDelegatedGroup implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
