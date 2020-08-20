@@ -98,6 +98,7 @@ function loadTable() {
     $('#dg').datagrid({
         clientPaging: true,
         collapsible: true,
+        singleSelect: true,
         height: $(document).height() - 295,
     });
 }
