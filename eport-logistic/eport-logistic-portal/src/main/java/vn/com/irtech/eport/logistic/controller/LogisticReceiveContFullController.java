@@ -206,6 +206,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBlNo(blNo);
+		shipment.setLogisticGroupId(getUser().getGroupId());
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
@@ -433,9 +434,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	}
 
 	@Log(title = "Check Hải Quan", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/custom-status/shipment-detail/{shipmentDetailIds}")
+	@PostMapping("/custom-status/shipment-detail")
 	@ResponseBody
-	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNos") String declareNoList, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
+	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNos") String declareNoList, @RequestParam(value = "shipmentDetailIds") String shipmentDetailIds) {
 		if (StringUtils.isNotEmpty(declareNoList)) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {

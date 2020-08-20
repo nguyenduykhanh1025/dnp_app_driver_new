@@ -376,9 +376,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	}
 
 	@Log(title = "Khai Báo Hải Quan", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/custom-status/shipment-detail/{shipmentDetailIds}")
+	@PostMapping("/custom-status/shipment-detail")
 	@ResponseBody
-	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNos") String declareNoList, @PathVariable String shipmentDetailIds) {
+	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNos") String declareNoList, @RequestParam(value = "shipmentDetailIds") String shipmentDetailIds) {
 		if (StringUtils.isNotEmpty(declareNoList)) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
@@ -437,4 +437,10 @@ public class LogisticSendContFullController extends LogisticBaseController {
 //		return error();
 //	}
 //	
+	
+	@GetMapping("/containerNo/{containerNo}/sztp")
+	@ResponseBody
+	public String getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
+		return catosApiService.getSztpByContainerNo(containerNo);
+	}
 }
