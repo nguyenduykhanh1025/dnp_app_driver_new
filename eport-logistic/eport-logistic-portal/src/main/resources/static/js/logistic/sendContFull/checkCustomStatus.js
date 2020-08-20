@@ -21,14 +21,14 @@ function checkCustomStatus() {
         if (number == 0) {
             $.modal.alertError("Bạn chưa nhập số lượng tờ khai!");
         } else {
-            var declareNoList = [];
+            var declareNoList = '';
             var completeInput = true;
             for (var i = 0; i < number; i++) {
                 if ($("#declareNo" + i).val() == null || $("#declareNo" + i).val() == "") {
                     completeInput = false;
                     break;
                 } else {
-                    declareNoList.push($("#declareNo" + i).val());
+                    declareNoList += $("#declareNo" + i).val() + ',';
                 }
             }
             if (!completeInput) {
@@ -46,21 +46,24 @@ function checkCustomStatus() {
                     connectToWebsocketServer();
                     //$.modal.loading("Đang kiểm tra trạng thái thông quan: 0/"+contList.length);
                     openLoading("Đang kiểm tra trạng thái thông quan: 0/"+contList.length);
-                    asked = true;
-                    $.ajax({
-                        url: prefix + "/custom-status/shipment-detail/" + shipmentDetailIds.substring(0, shipmentDetailIds.length - 1),
-                        method: "post",
-                        data: {
-                            declareNoList: declareNoList
-                        },
-                            success: function (data) {
-                        },
-                        error: function (result) {
-                            $("#checkBtn").html("Kết thúc");
-                            $.modal.closeLoading();
-                            $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
-                        }
-                    });
+                    setTimeout(() => {
+                        asked = true;
+                        $.ajax({
+                            url: prefix + "/custom-status/shipment-detail",
+                            method: "post",
+                            data: {
+                                declareNos: declareNoList.substring(0, declareNoList.length-1),
+                                shipmentDetailIds: shipmentDetailIds.substring(0, shipmentDetailIds.length - 1)
+                            },
+                                success: function (data) {
+                            },
+                            error: function (result) {
+                                $("#checkBtn").html("Kết thúc");
+                                $.modal.closeLoading();
+                                $.modal.alertError("Có lỗi trong quá trình xử lý dữ liệu, vui lòng liên hệ admin.");
+                            }
+                        });
+                    }, 2000);
                 } else {
                     $.modal.alertError("Số tờ khai không hợp lệ.");
                 }

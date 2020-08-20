@@ -26,6 +26,7 @@ import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
+import vn.com.irtech.eport.common.constant.SystemConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
@@ -206,6 +207,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		shipment.setLogisticGroupId(getUser().getGroupId());
 		shipment.setBlNo(blNo);
+		shipment.setLogisticGroupId(getUser().getGroupId());
 		if (shipmentService.checkBillBookingNoUnique(shipment) == 0) {
 			return success();
 		}
@@ -297,13 +299,14 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						i.setVoyNo(i.getVoyCarrier());
 						for(ShipmentDetail j : shipmentDetailsCatos) {
 							if(i.getContainerNo().equals(j.getContainerNo())) {
+								// Overwrite information from CATOS
 //								i.setOpeCode(j.getOpeCode());
-//								i.setVslNm(j.getVslNm());
+								i.setVslNm(j.getVslNm());					// overwrite VSL_CD:VSL_NM from CATOS
 								i.setVoyNo(j.getVoyNo());
 								i.setSealNo(j.getSealNo());
 								i.setWgt(j.getWgt());
-//								i.setLoadingPort(j.getLoadingPort());
-//								i.setDischargePort(j.getDischargePort());
+								i.setLoadingPort(j.getLoadingPort());		// overwrite from CATOS
+								i.setDischargePort(j.getDischargePort());	// overwrite from CATOS
 								i.setYear(j.getYear());
 							}
 						}
@@ -432,14 +435,19 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	}
 
 	@Log(title = "Check Hải Quan", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/custom-status/shipment-detail/{shipmentDetailIds}")
+	@PostMapping("/custom-status/shipment-detail")
 	@ResponseBody
-	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
-		if (declareNoList != null) {
+	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNos") String declareNoList, @RequestParam(value = "shipmentDetailIds") String shipmentDetailIds) {
+		if (StringUtils.isNotEmpty(declareNoList)) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+			boolean customsNoMappingFlg = "1".equals(configService.selectConfigByKey(SystemConstants.ACCIS_CUSTOM_MAPPING_FLG_KEY));
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
-					if (catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
+					// Save declareNoList to shipment detail
+					shipmentDetail.setCustomsNo(declareNoList);
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					// Neu bat buoc check to khai thi phai goi lai acciss
+					if (!customsNoMappingFlg && catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
 						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
 						shipmentDetail.setCustomStatus("R");
 						shipmentDetailService.updateShipmentDetail(shipmentDetail);

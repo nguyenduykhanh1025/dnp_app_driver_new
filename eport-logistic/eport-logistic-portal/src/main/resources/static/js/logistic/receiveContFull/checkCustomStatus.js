@@ -21,14 +21,14 @@ function checkCustomStatus() {
         if (number == 0) {
             $.modal.alertError("Bạn chưa nhập số lượng tờ khai!");
         } else {
-            var declareNoList = [];
-            var completeInput = true;
+            let declareNoList = '';
+            let completeInput = true;
             for (var i = 0; i < number; i++) {
                 if ($("#declareNo" + i).val() == null || $("#declareNo" + i).val() == "") {
                     completeInput = false;
                     break;
                 } else {
-                    declareNoList.push($("#declareNo" + i).val());
+                    declareNoList += $("#declareNo" + i).val() + ',';
                 }
             }
             if (!completeInput) {
@@ -49,10 +49,11 @@ function checkCustomStatus() {
                     setTimeout(() => {
                         asked = true;
                         $.ajax({
-                            url: prefix + "/custom-status/shipment-detail/" + shipmentDetailIds.substring(0, shipmentDetailIds.length - 1),
+                            url: prefix + "/custom-status/shipment-detail",
                             method: "post",
                             data: {
-                                declareNoList: declareNoList,
+                                declareNos: declareNoList.substring(0, declareNoList.length-1),
+                                shipmentDetailIds: shipmentDetailIds.substring(0, shipmentDetailIds.length - 1)
                             },
                                 success: function (data) {
                             },

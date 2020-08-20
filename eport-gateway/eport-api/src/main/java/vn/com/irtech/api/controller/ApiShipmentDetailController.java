@@ -210,4 +210,9 @@ public class ApiShipmentDetailController {
 	public List<ShipmentEntity> getconsigneeList(@RequestBody ShipmentEntity shipmentEntity) {
 		return shipmentDetailDao.selectConsigneeTaxCode(shipmentEntity);
 	}
+	
+	@GetMapping("/containerNo/{containerNo}/sztp")
+	public String getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
+		return shipmentDetailDao.getSztpByContainerNo(containerNo);
+	}
 }

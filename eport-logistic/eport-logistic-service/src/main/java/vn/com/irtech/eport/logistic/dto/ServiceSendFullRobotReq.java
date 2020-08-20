@@ -7,7 +7,9 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 
 public class ServiceSendFullRobotReq extends ServiceRobotReq {
 
-    public ProcessOrder processOrder;
+	private static final long serialVersionUID = 1L;
+
+	public ProcessOrder processOrder;
     public List<ShipmentDetail> containers;
 
     public ServiceSendFullRobotReq(ProcessOrder processOrder, List<ShipmentDetail> containers) {

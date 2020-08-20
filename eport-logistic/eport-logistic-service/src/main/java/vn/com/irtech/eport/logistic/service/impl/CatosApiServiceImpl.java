@@ -519,4 +519,19 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	
+	@Override
+	public String getSztpByContainerNo(String containerNo) {
+		try {
+			String url = Global.getApiUrl() + "/containerNo/" + containerNo + "/sztp";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String rs = restTemplate.getForObject(url, String.class);
+			return rs;
+		} catch (Exception e) {
+			logger.error("CATOS Api get sztp by container no error: ", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

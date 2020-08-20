@@ -113,4 +113,12 @@ public interface ICatosApiService {
 	 * @return	List<shipment>
 	 */
 	public List<Shipment> getListConsigneeWithTaxCode(Shipment shipment);
+	
+	/**
+	 * Get sztp by container no
+	 * 
+	 * @param containerNo
+	 * @return String
+	 */
+	public String getSztpByContainerNo(String containerNo);
 }
