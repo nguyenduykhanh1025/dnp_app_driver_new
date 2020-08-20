@@ -2,7 +2,7 @@ var prefix = ctx + "logistic/send-cont-full";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot, isDestroy = false;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
-var contList = [], temperatureDisable = [];
+var contList = [], temperatureDisable = [], sztpListDisable = [];
 var conts = '';
 var allChecked = false;
 var checkList = [];
@@ -244,6 +244,7 @@ function getSelected() {
         rowAmount = row.containerAmount;
         checkList = Array(rowAmount).fill(0);
         temperatureDisable = Array(rowAmount).fill(1);
+        sztpListDisable = Array(rowAmount).fill(0);
         allChecked = false;
         loadShipmentDetail(row.id);
     }
@@ -262,65 +263,71 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
-    let content = '';
-        switch (value) {
-            case 1:
-                if ('E' == sourceData[row].processStatus) {
-                    content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Làm Lệnh Bị Lỗi" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #ed5565;"></i>';
-                } else {
-                    content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
-                }
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
-                content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+    if (sourceData[row] && sourceData[row].dischargePort && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].customStatus && sourceData[row].finishStatus) {
+        // Command process status
+        let process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+        switch (sourceData[row].processStatus) {
+            case 'E':
+                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
                 break;
-            case 2:
-                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
-                if ('E' == sourceData[row].paymentStatus) {
-                    content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
-                } else {
-                    content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-                }
-                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
-                content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
+            case 'Y':
+                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
                 break;
-            case 3:
-                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-                switch (sourceData[row].customStatus) {
-                    case 'R':
-                        content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-                        break;
-                    case 'Y':
-                        content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
-                        break;
-                    case 'N':
-                        content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
-                        break;
-                    default:
-                        content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
-                        break;
-                }
-                if ('Y' == sourceData[row].finishStatus) {
-                    content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i></div>';
-                } else {
-                    content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i></div>';
-                }
-                break;
-            case 4:
-                content += '<div><i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
-                content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-                content += '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-                if ('Y' == sourceData[row].finishStatus) {
-                    content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i></div>';
-                } else {
-                    content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i></div>';
-                }
-                break;
-            default:
+            case 'N':
+                process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
                 break;
         }
+        // Payment status
+        let payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+        switch (sourceData[row].paymentStatus) {
+            case 'E':
+                payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
+                break;
+            case 'Y':
+                payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+                break;
+            case 'N':
+                if(value > 1) {
+                    payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                }
+                break;
+        }
+        // Customs Status
+        let customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+        switch (sourceData[row].customStatus) {
+            case 'R':
+                customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+                break;
+            case 'Y':
+                customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
+                break;
+            case 'N':
+                customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                break;
+        }
+        // released status
+        let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+        switch (sourceData[row].finishStatus) {
+            case 'Y':
+                released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+                break;
+            case 'N':
+                if(sourceData[row].paymentStatus == 'Y') {
+                    released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                }
+                break;
+        }
+        // Return the content
+        let content = '<div>';
+        
+        content += process + payment 
+        // Domestic cont: VN --> not show
+        if(sourceData[row].dischargePort.substring(0,2) != 'VN') {
+            content += customs;
+        }
+        content += released + '</div>';
         $(td).html(content);
+    }
     return td;
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -399,6 +406,10 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
             cellProperties.readOnly = 'true';
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
+    }
+    if (sztpListDisable[row] == 1) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
     }
     $(td).html(value);
     return td;
@@ -721,15 +732,32 @@ function onChange(changes, source) {
                 });
             }
         } else if (change[1] == "containerNo") {
-            $.ajax({
-                url: prefix + "/containerNo/" + change[3] + "/sztp",
-                method: "GET",
-                success: function (data) {
-                    if (data) {
-                        hot.setDataAtCell(change[0], 3, data);
+            if (!change[3]) {
+                sztpListDisable[change[0]] = 0;
+                hot.setDataAtCell(change[0], 3, '');
+            } else {
+                $.ajax({
+                    url: prefix + "/containerNo/" + change[3] + "/sztp",
+                    method: "GET",
+                    success: function (data) {
+                        if (data.code == 0) {
+                            sizeList.forEach(element => {
+                                if (data.sztp == element.substring(0, 4)) {
+                                    data.sztp = element;
+                                    return false;
+                                }
+                            });
+                            sztpListDisable[change[0]] = 1;
+                            hot.setDataAtCell(change[0], 3, data.sztp);
+                        } else {
+                            sztpListDisable[change[0]] = 0;
+                        }
+                    },
+                    error: function(err) {
+                        sztpListDisable[change[0]] = 0;
                     }
-                }
-            });
+                });
+            }
             if (change[3] && hot.getDataAtCell(change[0], 3)) {
                 $('#detailBtn' + change[0]).prop('disabled', false);
             } else {

@@ -368,5 +368,6 @@
 		SELECT SZTP
 		FROM DNP_UAT.TB_MASTER
 		WHERE CNTR_NO = #{containerNo}
+		fetch next 1 rows only
 	</select>
 </mapper>
