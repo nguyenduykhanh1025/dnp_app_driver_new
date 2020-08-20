@@ -78,9 +78,16 @@ public interface ICatosApiService {
 	public String checkContainerStatus(ShipmentDetail shipmentDetail);
 	
 	/***
+	 * input: keyword (empty = '')
 	 * get block list
 	 */
-	public List<String> getBlockList();
+	public List<String> getBlockList(String keyword);
+	
+	/***
+	 * input: keyword (empty = '')
+	 * get Area list
+	 */
+	public List<String> getAreaList(String keyword);
 	
 	/***
 	 * input: containerNo, bookingNo, vslNm, voyNo, sztp, opeCode

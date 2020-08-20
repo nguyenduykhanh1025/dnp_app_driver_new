@@ -314,8 +314,14 @@
             <if test="opeCode != null  and opeCode != ''"> and PTNR_CODE = #{opeCode}</if>
         </where>
 	</select>
-	<select id="getBlockList" resultType="String">
+	<select id="getBlockList" parameterType="String" resultType="String">
 		SELECT BLOCK FROM TB_BLOCK
+        WHERE BLOCK like concat(concat('%', #{keyword}), '%')
+	</select>
+	<select id="getAreaList" parameterType="String" resultType="String">
+		SELECT AREA FROM TB_AREA
+        WHERE AREA like concat(concat('%', #{keyword}), '%')
+        ORDER BY AREA
 	</select>
 	<select id="checkContReserved" parameterType="ShipmentDetailEntity" resultType="ShipmentDetailEntity">
 		SELECT 
