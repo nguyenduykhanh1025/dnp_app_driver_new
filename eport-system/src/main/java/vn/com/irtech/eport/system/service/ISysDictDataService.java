@@ -58,4 +58,9 @@ public interface ISysDictDataService
      * @return 结果
      */
     public int updateDictData(SysDictData dictData);
+    
+    /***
+     * input:DictType
+     */
+    public List<SysDictData> selectDictDataByType(String dictType);
 }
