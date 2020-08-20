@@ -50,6 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="orderNo"    column="order_no"    />
         <result property="taxCode"    column="tax_code"    />
         <result property="consigneeByTaxCode"    column="consignee_by_tax_code"    />
+        <result property="customsNo"    column="customs_no"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -320,6 +321,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNo != null and orderNo != ''">order_no,</if>
             <if test="taxCode != null and taxCode != ''">tax_code,</if>
             <if test="consigneeByTaxCode != null and consigneeByTaxCode != ''">consignee_by_tax_code,</if>
+            <if test="customsNo != null and customsNo != ''">customs_no,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -370,6 +372,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
             <if test="taxCode != null and taxCode != ''">#{taxCode},</if>
             <if test="consigneeByTaxCode != null and consigneeByTaxCode != ''">#{consigneeByTaxCode},</if>
+            <if test="customsNo != null and customsNo != ''">#{customsNo},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -423,6 +426,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNo != null and orderNo != ''">order_no = #{orderNo},</if>
             <if test="taxCode != null and taxCode != ''">tax_code = #{taxCode},</if>
             <if test="consigneeByTaxCode != null and consigneeByTaxCode != ''">consignee_by_tax_code = #{consigneeByTaxCode},</if>
+            <if test="customsNo != null and customsNo != ''">customs_no = #{customsNo},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate

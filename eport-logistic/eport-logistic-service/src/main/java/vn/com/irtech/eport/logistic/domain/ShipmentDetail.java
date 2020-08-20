@@ -196,6 +196,10 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Consignee By Tax Code")
     private String consigneeByTaxCode;
 
+    /** Consignee By Tax Code */
+    @Excel(name = "Customs Numbers")
+    private String customsNo;
+
     private String block;
 
     private String bay;
@@ -686,6 +690,14 @@ public class ShipmentDetail extends BaseEntity
 		this.taxCode = taxCode;
 	}
 
+	public String getCustomsNo() {
+		return customsNo;
+	}
+
+	public void setCustomsNo(String customsNo) {
+		this.customsNo = customsNo;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -751,6 +763,7 @@ public class ShipmentDetail extends BaseEntity
             .append("vatAfterFee", getVatAfterFee())
             .append("taxCode", getTaxCode())
             .append("consigneeByTaxCode", getConsigneeByTaxCode())
+            .append("customsNo", getCustomsNo())
             .toString();
     }
 }
