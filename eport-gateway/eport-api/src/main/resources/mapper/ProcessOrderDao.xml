@@ -8,7 +8,7 @@
 			        WHEN ATD IS NULL THEN 'Before'
 			        WHEN ATB IS NOT NULL THEN 'After'
 			    END AS BEFORE_AFTER
-			FROM TB_BERTHPLAN
+			FROM DNP_UAT.TB_BERTHPLAN
 			WHERE VSL_CD = #{vesselCode} AND CALL_SEQ = #{voyageNo}
 	</select>
 </mapper>

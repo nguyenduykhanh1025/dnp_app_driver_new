@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import vn.com.irtech.eport.common.constant.SystemConstants;
 import vn.com.irtech.eport.common.json.JSONObject;
 import vn.com.irtech.eport.common.json.JSONObject.JSONArray;
-import vn.com.irtech.eport.common.utils.bean.BeanUtils;
 import vn.com.irtech.eport.logistic.dto.CustomsCheckResultDto;
 import vn.com.irtech.eport.logistic.service.ICustomCheckService;
 import vn.com.irtech.eport.system.service.ISysConfigService;
@@ -58,7 +57,14 @@ public class CustomCheckServiceImpl implements ICustomCheckService {
 			if (jarray.size() > 0) {
 				JSONObject data = (JSONObject) jarray.get(0);
 				CustomsCheckResultDto resultDto = new CustomsCheckResultDto();
-				BeanUtils.copyBeanProp(resultDto, data);
+				// BeanUtils.copyBeanProp(resultDto, data);
+				// Copy to result
+				resultDto.setUserVoy(data.getStr("userVoy"));
+				resultDto.setCntrNo(data.getStr("cntrNo"));
+				resultDto.setCustomsStatus(data.getStr("customsStatus"));
+				resultDto.setCustomsAppNo(data.getStr("customsAppNo"));
+				resultDto.setCustomsRemark(data.getStr("customsRemark"));
+				resultDto.setMsgRecvContent(data.getStr("msgRecvContent"));
 				// String rs = data.get("customsStatus").toString();
 				return resultDto;
 			}
