@@ -103,6 +103,7 @@ function loadTable(edo) {
 }
 
 function searchDo() {
+  edo.billOfLading = $('#searchBillNo').val().toUpperCase();
   edo.fromDate = stringToDate($("#fromDate").val()).getTime();
   let toDate = stringToDate($("#toDate").val());
   if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
@@ -303,6 +304,9 @@ function multiUpdateEdo() {
 
 
 // SEARCH INFO VESSEL AREA
+$('.c-search-box-vessel').on('select2:open', function (e) {
+  $(this).text(null);
+});
 $(".c-search-box-vessel").select2({
   theme: "bootstrap",
   placeholder: "Vessel",
@@ -331,35 +335,9 @@ $(".c-search-box-vessel").select2({
   },
 });
 
-$(".c-search-box-vessel-code").select2({
-  theme: "bootstrap",
-  placeholder: "Vessel Code",
-  allowClear: true,
-  ajax: {
-    url: PREFIX + "/getVesselCode",
-    dataType: "json",
-    method: "GET",
-    data: function (params) {
-      return {
-        keyString: params.term,
-      };
-    },
-    processResults: function (data) {
-      let results = []
-      data.forEach(function (element, i) {
-        let obj = {};
-        obj.id = i;
-        obj.text = element;
-        results.push(obj);
-
-      })
-      return {
-        results: results,
-      };
-    },
-  },
+$('.c-search-box-voy-no').on('select2:open', function (e) {
+  $(this).text(null);
 });
-
 $(".c-search-box-voy-no").select2({
   theme: "bootstrap",
   placeholder: "Voy No",
@@ -392,18 +370,11 @@ $(".c-search-box-voy-no").select2({
 $(".c-search-box-vessel").change(function () {
   edo = new Object();
   edo.vessel = $(this).text().trim();
-  $(this).text(null);
   loadTable(edo);
 });
-$(".c-search-box-vessel-code").change(function () {
-  edo = new Object();
-  edo.vesselNo = $(this).text().trim();
-  $(this).text(null);
-  loadTable(edo);
-});
+
 $(".c-search-box-voy-no").change(function () {
   edo.voyNo = $(this).text().trim();
-  $(this).text(null);
   loadTable(edo);
 });
 

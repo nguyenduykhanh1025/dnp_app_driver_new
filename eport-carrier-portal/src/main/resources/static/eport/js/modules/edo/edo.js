@@ -103,6 +103,7 @@ function loadTable(edo) {
 }
 
 function searchDo() {
+  edo.billOfLading = $('#searchBillNo').val().toUpperCase();
   edo.fromDate = stringToDate($("#fromDate").val()).getTime();
   let toDate = stringToDate($("#toDate").val());
   if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
@@ -300,7 +301,7 @@ $('.c-search-box-vessel').on('select2:open', function (e) {
 });
 $(".c-search-box-vessel").select2({
   theme: "bootstrap",
-
+  allowClear: true,
   delay: 250,
   ajax: {
     url: PREFIX + "/getVessel",
@@ -332,7 +333,7 @@ $('.c-search-box-voy-no').on('select2:open', function (e) {
 });
   $(".c-search-box-voy-no").select2({
     theme: "bootstrap",
-   
+    allowClear: true,
     delay: 250,
     ajax: {
       url: PREFIX + "/getVoyNo",
