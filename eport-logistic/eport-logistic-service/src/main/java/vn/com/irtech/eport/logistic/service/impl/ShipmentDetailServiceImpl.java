@@ -1076,4 +1076,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     	ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
     	return serviceRobotReq;
     }
+    
+    /**
+     * Select consignee tax code by shipment id
+     * 
+     * @param shipmentId
+     * @return String
+     */
+    public String selectConsigneeTaxCodeByShipmentId(Long shipmentId) {
+    	return shipmentDetailMapper.selectConsigneeTaxCodeByShipmentId(shipmentId);
+    }
 }

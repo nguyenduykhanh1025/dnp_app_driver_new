@@ -321,6 +321,7 @@ function confirm() {
     $.modal.loading("Đang đồng bộ dữ liệu...");
   }
   processOrder.pickupDate = null;
+  processOrder.shipmentDetail = null;
   $.ajax({
     url: PREFIX + "/sync",
     method: "POST",

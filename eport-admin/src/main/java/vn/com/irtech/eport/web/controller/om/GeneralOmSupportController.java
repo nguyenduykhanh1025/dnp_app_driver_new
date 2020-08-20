@@ -51,7 +51,9 @@ public class GeneralOmSupportController extends AdminBaseController {
 		LogisticGroup logisticGroup = new LogisticGroup();
 	    logisticGroup.setGroupName("Chọn đơn vị Logistics");
 	    logisticGroup.setId(0L);
-	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(new LogisticGroup());
+	    LogisticGroup logisticGroupParam = new LogisticGroup();
+	    logisticGroupParam.setDelFlag("0");
+	    List<LogisticGroup> logisticGroups = logisticGroupService.selectLogisticGroupList(logisticGroupParam);
 	    logisticGroups.add(0, logisticGroup);
 	    mmap.put("logisticsGroups", logisticGroups);
 		return PREFIX + "/index";

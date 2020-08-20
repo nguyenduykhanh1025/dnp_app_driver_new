@@ -32,10 +32,11 @@ $.ajax({
       dischargePortList = data.dischargePortList;
       opeCodeList = data.opeCodeList;
       vslNmList = data.vslNmList;
-      consigneeList = [];
-      data.consigneeList.forEach(function iterate(value) {
-        consigneeList.push([value]);
-      });
+      consigneeList = data.consigneeList;
+      // consigneeList = [];
+      // data.consigneeList.forEach(function iterate(value) {
+      //   consigneeList.push([value]);
+      // });
       // let consignee, consigneeList = [];
       // while (consignee = data.consigneeList.shift()) {
       //   consigneeList.push([
@@ -528,15 +529,11 @@ function configHandson() {
     minSpareRows: 0,
     rowHeights: 30,
     fixedColumnsLeft: 3,
+    trimDropdown: false,
     manualColumnResize: true,
     manualRowResize: true,
     renderAllRows: true,
     rowHeaders: true,
-    hiddenColumns: {
-      columns: [16, 17],
-      indicators: true,
-      copyPasteEnabled: true
-    },
     className: "htMiddle",
     colHeaders: function (col) {
       switch (col) {
@@ -552,19 +549,19 @@ function configHandson() {
         case 3:
           return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
         case 4:
-          return '<span>Số Ngày Miễn Lưu Vỏ</span><span style="color: red;">(*)</span>';
+          return '<span>Miễn<br/>Lưu<br/>Bãi</span><span style="color: red;">(*) </span>';
         case 5:
           return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
         case 6:
           return '<span>Nơi Hạ Vỏ</span><span style="color: red;">(*)</span>';
         case 7:
-          return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+            return "Kích Thước";
         case 8:
-          return '<span>Tàu</span><span style="color: red;">(*)</span>';
+          return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
         case 9:
-          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
+          return '<span>Tàu</span><span style="color: red;">(*)</span>';
         case 10:
-          return "Kích Thước";
+          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
         case 11:
           return "Seal No";
         case 12:
@@ -613,10 +610,10 @@ function configHandson() {
         renderer: detFreeTimeRenderer
       },
       {
-        strict: true,
+        data: "consignee",
         type: "autocomplete",
         source: consigneeList,
-        data: "consignee",
+        strict: true,
         // type: 'handsontable',
         // handsontable: {
         //   colHeaders: false,
@@ -633,6 +630,13 @@ function configHandson() {
         source: emptyDepots,
         strict: true,
         renderer: emptyDepotRenderer
+      },
+      {
+          data: "sztp",
+          type: "autocomplete",
+          source: sizeList,
+          strict: true,
+          renderer: sizeRenderer
       },
       {
         data: "opeCode",
@@ -653,13 +657,6 @@ function configHandson() {
         type: "autocomplete",
         strict: true,
         renderer: voyNoRenderer
-      },
-      {
-        data: "sztp",
-        type: "autocomplete",
-        source: sizeList,
-        strict: true,
-        renderer: sizeRenderer
       },
       {
         data: "sealNo",
@@ -709,7 +706,7 @@ function configHandson() {
                 if (data.code == 0) {
                   hot.updateSettings({
                     cells: function (row, col, prop) {
-                      if (row == change[0] && col == 9) {
+                      if (row == change[0] && col == 10) {
                         let cellProperties = {};
                         cellProperties.source = data.voyages;
                         return cellProperties;
@@ -728,13 +725,13 @@ function configHandson() {
               isChange = false;
             }
             if (containerNo != null && isChange && shipmentSelected.edoFlg == "0" && /[A-Z]{4}[0-9]{7}/g.test(containerNo)) {
-
+              $.modal.loading("Đang xử lý...");
               // CLEAR DATA
               hot.setDataAtCell(change[0], 5, ''); //consignee
-              hot.setDataAtCell(change[0], 7, ''); //opeCode
-              hot.setDataAtCell(change[0], 8, ''); //vslNm
-              hot.setDataAtCell(change[0], 9, ''); //voyNo
-              hot.setDataAtCell(change[0], 10, ''); //sztp
+              hot.setDataAtCell(change[0], 7, ''); //sztp
+              hot.setDataAtCell(change[0], 8, ''); //opeCode
+              hot.setDataAtCell(change[0], 9, ''); //vslNm
+              hot.setDataAtCell(change[0], 10, ''); //voyNo
               hot.setDataAtCell(change[0], 11, ''); //sealNo
               hot.setDataAtCell(change[0], 12, ''); //wgt
               hot.setDataAtCell(change[0], 13, ''); //loadingPort
@@ -742,17 +739,16 @@ function configHandson() {
               hot.setDataAtCell(change[0], 15, ''); //remark
 
               // Call data to auto-fill
-              $.modal.loading("Đang xử lý...");
               $.ajax({
                 url: prefix + "/shipment-detail/bl-no/" + shipmentSelected.blNo + "/cont/" + containerNo,
                 type: "GET"
               }).done(function (shipmentDetail) {
                 if (shipmentDetail != null) {
                   hot.setDataAtCell(change[0], 5, shipmentDetail.consignee); //consignee
-                  hot.setDataAtCell(change[0], 7, shipmentDetail.opeCode); //opeCode
-                  hot.setDataAtCell(change[0], 8, shipmentDetail.vslNm); //vslNm
-                  hot.setDataAtCell(change[0], 9, shipmentDetail.voyNo); //voyNo
-                  hot.setDataAtCell(change[0], 10, shipmentDetail.sztp); //sztp
+                  hot.setDataAtCell(change[0], 7, shipmentDetail.sztp); //sztp
+                  hot.setDataAtCell(change[0], 8, shipmentDetail.opeCode); //opeCode
+                  hot.setDataAtCell(change[0], 9, shipmentDetail.vslNm); //vslNm
+                  hot.setDataAtCell(change[0], 10, shipmentDetail.voyNo); //voyNo
                   hot.setDataAtCell(change[0], 11, shipmentDetail.sealNo); //sealNo
                   hot.setDataAtCell(change[0], 12, shipmentDetail.wgt); //wgt
                   hot.setDataAtCell(change[0], 13, shipmentDetail.loadingPort); //loadingPort
@@ -760,11 +756,11 @@ function configHandson() {
                   hot.setDataAtCell(change[0], 15, shipmentDetail.remark); //remark
                   voyCarrier = shipmentDetail.voyCarrier;
                 }
-                $.modal.closeLoading();
               });
             }
           }
         });
+        $.modal.closeLoading();
       }
     },
   };
@@ -1287,10 +1283,23 @@ function checkCustomStatus() {
 }
 
 function verify() {
-  getDataSelectedFromTable(true, true);
-  if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 500);
-  }
+  $.ajax({
+    url: prefix + "/shipment/" + shipmentSelected.id + "/delegate/permission",
+    method: "GET",
+    success: function(res) {
+      if (res.code == 0) {
+        getDataSelectedFromTable(true, true);
+        if (shipmentDetails.length > 0) {
+          $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 500);
+        }
+      } else {
+        $.modal.alertWarning("Qúy khách không có quyền làm lệnh cho bill này.");
+      }
+    },
+    error: function(err) {
+      $.modal.alertError("Lỗi server, vui lòng liên hệ admin.");
+    }
+  });
 }
 
 function verifyOtp(shipmentDtIds, creditFlag, isSendContEmpty) {
