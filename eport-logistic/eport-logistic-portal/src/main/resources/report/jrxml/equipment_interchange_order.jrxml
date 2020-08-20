@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="order_report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3590fe74-00bf-4dec-a564-d54856adfe47">
 	<property name="ireport.zoom" value="1.7715610000000017"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="576"/>
+	<property name="ireport.y" value="1523"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -65,6 +65,7 @@
 	<parameter name="billingBooking" class="java.lang.String"/>
 	<parameter name="orderNo" class="java.lang.String"/>
 	<parameter name="groupName" class="java.lang.String"/>
+	<parameter name="pathBackground" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -72,7 +73,7 @@
 		<band height="800" splitType="Stretch">
 			<image>
 				<reportElement x="56" y="229" width="442" height="343" uuid="2731536d-477d-4edc-8d41-523b6daaf2ba"/>
-				<imageExpression><![CDATA["I:\\Irtech\\cangdanang\\eport\\eport-logistic\\eport-logistic-portal\\src\\main\\resources\\static\\img\\logo_gray.jpeg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{pathBackground}]]></imageExpression>
 			</image>
 		</band>
 	</background>

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="house_bill" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="befdddb3-593e-4d04-a960-dcbbebcf0bf8">
 	<property name="ireport.zoom" value="1.6105100000000014"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="105"/>
+	<property name="ireport.y" value="1257"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -42,11 +42,12 @@
 	<parameter name="masterBillNo" class="java.lang.String"/>
 	<parameter name="list" class="java.util.Collection"/>
 	<parameter name="houseBillNo" class="java.lang.String"/>
+	<parameter name="pathBackground" class="java.lang.String"/>
 	<background>
 		<band height="800" splitType="Stretch">
 			<image>
 				<reportElement x="56" y="229" width="442" height="343" uuid="7ba6bc82-ac4e-4ba7-a145-14670fd5fece"/>
-				<imageExpression><![CDATA["I:\\Irtech\\cangdanang\\eport\\eport-logistic\\eport-logistic-portal\\src\\main\\resources\\static\\img\\logo_gray.jpeg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{pathBackground}]]></imageExpression>
 			</image>
 		</band>
 	</background>
