@@ -383,7 +383,9 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
-					//TODO : save declare no list to shipment detail
+					// Save declare no list to shipment detail
+					shipmentDetail.setCustomsNo(declareNoList);
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					customQueueService.offerShipmentDetail(shipmentDetail);
 				}
 				return success();

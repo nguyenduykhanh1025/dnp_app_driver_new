@@ -440,7 +440,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
-					// TODO : save declareNoList to shipment detail
+					// Save declareNoList to shipment detail
+					shipmentDetail.setCustomsNo(declareNoList);
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					if (catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
 						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
 						shipmentDetail.setCustomStatus("R");
