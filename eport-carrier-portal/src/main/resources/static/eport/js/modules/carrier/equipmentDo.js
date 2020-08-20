@@ -2,6 +2,8 @@ const PREFIX = ctx + "carrier/do";
 var bill;
 var edo = new Object();
 $(function () {
+  $("#updateEdo").attr("disabled", true);
+  var onCheck = 0;
   $(".left").css("height", $(document).height());
   $(".right").css("height", $(document).height());
   $("#btn-collapse").click(function () {
@@ -195,6 +197,8 @@ function loadTableByContainer(billOfLading) {
 }
 
 function getSelectedRow() {
+  onCheck = 0;
+  $("#updateEdo").attr("disabled", true);
   var row = $("#dg").datagrid("getSelected");
   if (row) {
     bill = row.billOfLading;
@@ -417,3 +421,24 @@ $('#btnRefresh').click(function(){
   edo.vessel = null;
   loadTable();
 });
+
+$('#dgContainer').datagrid({
+  onCheck: function(){
+    onCheck += 1;
+    $("#updateEdo").attr("disabled", false);
+  },
+  onCheckAll: function(index){
+    onCheck = index.length;
+    $("#updateEdo").attr("disabled", false);
+  },
+  onUncheck: function(){
+    onCheck = onCheck - 1;
+    if(onCheck == 0)
+    {
+      $("#updateEdo").attr("disabled", true);
+    }
+  },
+  onUncheckAll: function(){
+    $("#updateEdo").attr("disabled", true);
+  },
+})

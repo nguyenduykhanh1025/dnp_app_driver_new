@@ -2,6 +2,8 @@ const PREFIX = ctx + "edo";
 var bill;
 var edo = new Object();
 $(function () {
+  $("#updateEdo").attr("disabled", true);
+  var onCheck = 0;
   $(".left").css("height", $(document).height());
   $(".right").css("height", $(document).height());
   $("#btn-collapse").click(function () {
@@ -60,7 +62,7 @@ function loadTable(edo) {
     url: PREFIX + "/billNo",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 145,
+    height: $(document).height() - 165,
     clientPaging: true,
     pagination: true,
     pageSize: 20,
@@ -155,7 +157,7 @@ function loadTableByContainer(billOfLading) {
     method: "POST",
     singleSelect: false,
     clientPaging: true,
-    height: $(document).height() - 145,
+    height: $(document).height() - 165,
     pagination: true,
     pageSize: 20,
     nowrap: false,
@@ -193,6 +195,8 @@ function loadTableByContainer(billOfLading) {
 }
 
 function getSelectedRow() {
+  onCheck = 0;
+  $("#updateEdo").attr("disabled", true);
   var row = $("#dg").datagrid("getSelected");
   if (row) {
     bill = row.billOfLading;
@@ -390,3 +394,25 @@ $('#btnRefresh').click(function(){
   loadTable();
 });
 
+
+
+$('#dgContainer').datagrid({
+  onCheck: function(){
+    onCheck += 1;
+    $("#updateEdo").attr("disabled", false);
+  },
+  onCheckAll: function(index){
+    onCheck = index.length;
+    $("#updateEdo").attr("disabled", false);
+  },
+  onUncheck: function(){
+    onCheck = onCheck - 1;
+    if(onCheck == 0)
+    {
+      $("#updateEdo").attr("disabled", true);
+    }
+  },
+  onUncheckAll: function(){
+    $("#updateEdo").attr("disabled", true);
+  },
+})

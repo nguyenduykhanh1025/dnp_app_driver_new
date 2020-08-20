@@ -415,3 +415,4 @@ function generatePDF() {
   }
   $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + bill);
 }
+
