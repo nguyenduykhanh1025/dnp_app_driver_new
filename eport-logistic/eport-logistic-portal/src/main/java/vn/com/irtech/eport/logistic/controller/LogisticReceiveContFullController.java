@@ -434,11 +434,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	@Log(title = "Check Hải Quan", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/custom-status/shipment-detail/{shipmentDetailIds}")
 	@ResponseBody
-	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
-		if (declareNoList != null) {
+	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNos") String declareNoList, @PathVariable("shipmentDetailIds") String shipmentDetailIds) {
+		if (StringUtils.isNotEmpty(declareNoList)) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
+					// TODO : save declareNoList to shipment detail
 					if (catosApiService.checkCustomStatus(shipmentDetail.getContainerNo(), shipmentDetail.getVoyNo())) {
 						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
 						shipmentDetail.setCustomStatus("R");
