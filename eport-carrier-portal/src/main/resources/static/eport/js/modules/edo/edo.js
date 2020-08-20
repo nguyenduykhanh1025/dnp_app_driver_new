@@ -407,12 +407,14 @@ $('#dgContainer').datagrid({
   },
   onUncheck: function(){
     onCheck = onCheck - 1;
+    console.log("onCheck", onCheck)
     if(onCheck == 0)
     {
       $("#updateEdo").attr("disabled", true);
     }
   },
   onUncheckAll: function(){
+    onCheck = 0;
     $("#updateEdo").attr("disabled", true);
   },
 })

@@ -439,6 +439,7 @@ $('#dgContainer').datagrid({
     }
   },
   onUncheckAll: function(){
+    onCheck = 0;
     $("#updateEdo").attr("disabled", true);
   },
 })
