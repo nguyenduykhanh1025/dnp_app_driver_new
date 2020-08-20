@@ -49,10 +49,11 @@ function checkCustomStatus() {
                     setTimeout(() => {
                         asked = true;
                         $.ajax({
-                            url: prefix + "/custom-status/shipment-detail/" + shipmentDetailIds.substring(0, shipmentDetailIds.length - 1),
+                            url: prefix + "/custom-status/shipment-detail",
                             method: "post",
                             data: {
-                                declareNos: declareNoList.substring(0, declareNoList.length-1)
+                                declareNos: declareNoList.substring(0, declareNoList.length-1),
+                                shipmentDetailIds: shipmentDetailIds.substring(0, shipmentDetailIds.length - 1)
                             },
                                 success: function (data) {
                             },

@@ -129,7 +129,7 @@
 	
 	<select id="selectConsigneeList" resultType="String">
 		SELECT 
-	    	ENG_LNM AS CONSIGNEE
+	    	ENG_SNM AS CONSIGNEE
 		FROM DNP_UAT.TB_PTNR 
 		WHERE PTNR_TYPE = 'CNS'
 	</select>
@@ -151,7 +151,7 @@
 	
 	<select id="getGroupNameByTaxCode" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentEntity">
 		SELECT
-	    	ENG_LNM as groupName,
+	    	ENG_SNM as groupName,
 	    	ADDR as address
 		FROM DNP_UAT.TB_PTNR
 		WHERE REG_NO = #{taxCode} AND ROWNUM = 1
@@ -362,5 +362,11 @@
 		</where>
 		GROUP BY ENG_LNM, REG_NO
 		<!-- FETCH NEXT #{containerAmount} ROWS ONLY -->
+	</select>
+
+	<select id="getSztpByContainerNo" parameterType="String" resultType="String">
+		SELECT SZTP
+		FROM DNP_UAT.TB_MASTER
+		WHERE CNTR_NO = #{containerNo}
 	</select>
 </mapper>
