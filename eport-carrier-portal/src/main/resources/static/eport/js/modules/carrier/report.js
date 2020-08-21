@@ -94,6 +94,11 @@ laydate.render({
 $('.c-search-box-vessel').on('select2:open', function (e) {
   $(this).text(null);
 });
+$('.c-search-box-vessel').on("select2:opening", function(e) {
+  $('.c-search-box-vessel').text(null);
+  edo = new Object();
+  loadTable(edo);
+});
 $(".c-search-box-vessel").select2({
   theme: "bootstrap",
   placeholder: "Vessel",
@@ -125,6 +130,13 @@ $(".c-search-box-vessel").select2({
 $('.c-search-box-voy-no').on('select2:open', function (e) {
   $(this).text(null);
 });
+$('.c-search-box-voy-no').on("select2:opening", function(e) {
+  $(".c-search-box-voy-no").text(null);
+  edo.vessel = $(".c-search-box-vessel").text();
+  console.log("edo.vessel", edo.vessel)
+  loadTable(edo);
+  
+});
 $(".c-search-box-voy-no").select2({
   theme: "bootstrap",
   placeholder: "Voy No",
@@ -134,7 +146,6 @@ $(".c-search-box-voy-no").select2({
     dataType: "json",
     method: "GET",
     data: function (params) {
-      console.log("edo.vessel", edo.vessel)
       return {
         keyString: params.term,
         vessel : edo.vessel

@@ -327,7 +327,11 @@ $(".c-search-box-vessel").select2({
   },
   placeholder: "Vessel",
 });
-
+$('.c-search-box-vessel').on("select2:opening", function(e) {
+  $('.c-search-box-vessel').text(null);
+  edo = new Object();
+  loadTable(edo);
+});
 $('.c-search-box-voy-no').on('select2:open', function (e) {
       $(this).text(null);
 });
@@ -361,7 +365,13 @@ $('.c-search-box-voy-no').on('select2:open', function (e) {
     },
     placeholder: "Voy No",
   });
-
+  $('.c-search-box-voy-no').on("select2:opening", function(e) {
+      edo = new Object();
+      $(".c-search-box-voy-no").text(null);
+      edo.vessel = $(".c-search-box-vessel").text();
+      loadTable(edo);
+      
+  });
 
 // For submit search
 $(".c-search-box-vessel").change(function () {
