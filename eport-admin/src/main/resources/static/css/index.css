@@ -16,13 +16,14 @@
   background-color: #3c8dbc !important;
   cursor: default;
 }
+/*
 body {
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   color: #f5f5f5 !important;
   overflow-x: hidden;
 }
-
+*/
 .more-menu {
   display: none;
   flex-direction: column;
