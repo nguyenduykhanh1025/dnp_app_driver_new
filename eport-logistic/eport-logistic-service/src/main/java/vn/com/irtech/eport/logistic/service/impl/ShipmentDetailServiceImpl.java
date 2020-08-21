@@ -521,7 +521,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setShipmentId(shipment.getId());
         processOrder.setServiceType(3);
-        processOrder.setRemark(detail.getEmptyDepotLocation());
         processOrderService.insertProcessOrder(processOrder);
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             shipmentDetail.setProcessOrderId(processOrder.getId());
@@ -566,6 +565,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             shipmentDetail.setRegisterNo(detail.getId().toString());
             shipmentDetail.setUserVerifyStatus("Y");
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+            if (processOrder.getServiceType() == 2) {
+            	shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());
+            }
         }
         return processOrder;
     }
