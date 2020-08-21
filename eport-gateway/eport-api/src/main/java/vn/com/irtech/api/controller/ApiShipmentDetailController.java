@@ -215,4 +215,9 @@ public class ApiShipmentDetailController {
 	public String getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
 		return shipmentDetailDao.getSztpByContainerNo(containerNo);
 	}
+	
+	@GetMapping("/consignee/{consignee}/taxCode")
+	public String getTaxCodeBySnmGroupName(@PathVariable("consignee") String consignee) {
+		return shipmentDetailDao.getTaxCodeBySnmGroupName(consignee);
+	}
 }

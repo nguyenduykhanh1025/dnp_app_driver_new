@@ -349,6 +349,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					isCreated = false;
 				}
 			}
+			String taxCode = catosApiService.getTaxCodeBySnmGroupName(shipmentDt.getConsignee());
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setProcessStatus(null);
 				shipmentDetail.setCustomStatus(null);
@@ -364,6 +365,8 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 					shipmentDetail.setDoStatus("N");
 					shipmentDetail.setPreorderPickup("N");
 					shipmentDetail.setFinishStatus("N");
+					shipmentDetail.setTaxCode(taxCode);
+					shipmentDetail.setConsigneeByTaxCode(shipmentDetail.getConsignee());
 					if ("VN".equalsIgnoreCase(shipmentDetail.getLoadingPort().substring(0, 2))) {
 						shipmentDetail.setCustomStatus("R");
 						shipmentDetail.setStatus(2);
@@ -704,19 +707,15 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public AjaxResult checkDelegatePermission(@PathVariable Long shipmentId) {
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 		// check DO or eDO (0 is DO no need to validate 
-		if ("0".equals(shipment.getEdoFlg())) {
+		// Get tax code of consignee own this shipment
+		String taxCode = shipmentDetailService.selectConsigneeTaxCodeByShipmentId(shipmentId);
+		if (taxCode == null) {
+			return error();
+		}
+		
+		// Check if logistic can make order for this shipment
+		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst()) > 0) {
 			return success();
-		} else {
-			// Get tax code of consignee own this shipment
-			String taxCode = shipmentDetailService.selectConsigneeTaxCodeByShipmentId(shipmentId);
-			if (taxCode == null) {
-				return error();
-			}
-			
-			// Check if logistic can make order for this shipment
-			if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst()) > 0) {
-				return success();
-			}
 		}
 		return error();
 	}

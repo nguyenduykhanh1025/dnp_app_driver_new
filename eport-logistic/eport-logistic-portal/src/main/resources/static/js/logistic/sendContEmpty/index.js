@@ -2,7 +2,7 @@ var prefix = ctx + "logistic/send-cont-empty";
 var interval, currentPercent, timeout;
 var dogrid = document.getElementById("container-grid"), hot;
 var shipmentSelected, shipmentDetails, shipmentDetailIds, sourceData, processOrderIds;
-var contList = [];
+var contList = [], sztpListDisable = [];
 var conts = '';
 var allChecked = false;
 var checkList = [];
@@ -224,6 +224,7 @@ function getSelected() {
         $("#quantity").text(row.containerAmount);
         rowAmount = row.containerAmount;
         checkList = Array(rowAmount).fill(0);
+        sztpListDisable = Array(rowAmount).fill(0);
         allChecked = false;
         loadShipmentDetail(row.id);
     }
@@ -311,8 +312,8 @@ function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
     }
     return td;
 }
-function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'expiredDem' + row).addClass("htMiddle");
+function emptyExpiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'emptyExpiredDem' + row).addClass("htMiddle");
     $(td).html(value);
     if (value != null && value != '') {
         if (value.substring(2, 3) != "/") {
@@ -354,6 +355,10 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
             $(td).css("background-color", "rgb(232, 232, 232)");
         }
     }
+    if (sztpListDisable[row] == 1) {
+        cellProperties.readOnly = 'true';
+        $(td).css("background-color", "rgb(232, 232, 232)");
+    }
     $(td).html(value);
     return td;
 }
@@ -380,6 +385,19 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
 //     $(td).html(value);
 //     return td;
 // }
+
+function emptyDepotLocationRenderer(instance, td, row, col, prop, value, cellProperties)  {
+    $(td).attr('id', 'emptyDepotLocation' + row).addClass("htMiddle");
+    $(td).html(value);
+    if (value != null && value != '') {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    return td;
+}
+
 function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'remark' + row).addClass("htMiddle");
     $(td).html(value);
@@ -419,19 +437,10 @@ function configHandson() {
                 case 4:
                     return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
                 case 5:
-                    if (shipmentSelected && shipmentSelected.blNo) {
-                        return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
-                    }
-                    return 'Hạn Lệnh';
-//                case 5:
-//                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
-//                case 6:
-//                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
-                // case 8:
-                //     return '<span>Trọng Tải</span><span style="color: red;">(*)</span>';
-                // case 9:
-                //     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span>Hạn Trả Vỏ</span><span style="color: red;">(*)</span>';
                 case 6:
+                    return '<span>Bãi Hạ Vỏ</span><span style="color: red;">(*)</span>';
+                case 7:
                     return "Ghi Chú";
             }
         },
@@ -469,39 +478,17 @@ function configHandson() {
                 renderer: opeCodeRenderer
             },
             {
-                data: "expiredDem",
+                data: "emptyExpiredDem",
                 type: "date",
                 dateFormat: "DD/MM/YYYY",
                 correctFormat: true,
                 defaultDate: new Date(),
-                renderer: expiredDemRenderer
+                renderer: emptyExpiredDemRenderer
             },
-//            {
-//                data: "vslNm",
-//                type: "autocomplete",
-//                source: vslNmList,
-//                strict: true,
-//                renderer: vslNmRenderer
-//            },
-//            {
-//                data: "voyNo",
-//                type: "autocomplete",
-//                strict: true,
-//                renderer: voyNoRenderer
-//            },
-            // {
-            //     data: "wgt",
-            //     type: "numeric",
-            //     strict: true,
-            //     renderer: wgtRenderer
-            // },
-            // {
-            //     data: "dischargePort",
-            //     strict: true,
-            //     type: "autocomplete",
-            //     source: dischargePortList,
-            //     renderer: dischargePortRenderer
-            // },
+            {
+                data: "emptyDepotLocation",
+                renderer: emptyDepotLocationRenderer
+            },
             {
                 data: "remark",
                 renderer: remarkRenderer
@@ -520,26 +507,56 @@ function onChange(changes, source) {
         return;
     }
     changes.forEach(function (change) {
-//        if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-//            hot.setDataAtCell(change[0], 6, '');//voyNo reset
-//            $.ajax({
-//                url: "/logistic/vessel/" + change[3] + "/voyages",
-//                method: "GET",
-//                success: function (data) {
-//                    if (data.code == 0) {
-//                        hot.updateSettings({
-//                            cells: function (row, col, prop) {
-//                                if (row == change[0] && col == 6) {
-//                                    let cellProperties = {};
-//                                    cellProperties.source = data.voyages;
-//                                    return cellProperties;
-//                                }
-//                            }
-//                        });
-//                    }
-//                }
-//            });
-//        }
+        if (change[1] == "vslNm" && change[3]) {
+            hot.setDataAtCell(change[0], 6, ''); // empty depot location
+            $.ajax({
+                url: prefix + "/opr/" + change[3].split(":")[0] + "/emptyDepotLocation",
+                method: "GET",
+                success: function (data) {
+                    if (data.code == 0 && data.emptyDepotLocation) {
+                        hot.updateSettings({
+                            cells: function (row, col, prop) {
+                                if (row == change[0] && col == 6) {
+                                    let cellProperties = {};
+                                    cellProperties.source = data.emptyDepotLocation;
+                                    return cellProperties;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        } else if (change[1] == "containerNo") {
+            if (!change[3]) {
+                sztpListDisable[change[0]] = 0;
+                hot.setDataAtCell(change[0], 3, '');
+            } else {
+                $.ajax({
+                    url: prefix + "/containerNo/" + change[3] + "/sztp",
+                    method: "GET",
+                    success: function (data) {
+                        if (data.code == 0) {
+                           
+                            if (data.sztp) {
+                                sizeList.forEach(element => {
+                                    if (data.sztp == element.substring(0, 4)) {
+                                        data.sztp = element;
+                                        return false;
+                                    }
+                                });
+                                sztpListDisable[change[0]] = 1;
+                                hot.setDataAtCell(change[0], 3, data.sztp);
+                            }
+                        } else {
+                            sztpListDisable[change[0]] = 0;
+                        }
+                    },
+                    error: function(err) {
+                        sztpListDisable[change[0]] = 0;
+                    }
+                });
+            }
+        }
     });
 }
 
@@ -745,7 +762,7 @@ function getDataFromTable(isValidate) {
     let cleanedGridData = [];
     for (let i=0; i<checkList.length; i++) {
         if (Object.keys(myTableData[i]).length > 0) {
-            if (myTableData[i].containerNo || myTableData[i].opeCode || myTableData[i].expiredDem ||
+            if (myTableData[i].containerNo || myTableData[i].opeCode || myTableData[i].emptyExpiredDem ||
                 myTableData[i].sztp || myTableData[i].remark) {
                 cleanedGridData.push(myTableData[i]);
             }
@@ -775,50 +792,36 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Hãng tàu!");
                 errorFlg = true;
                 return false;
-            } else if (!object["expiredDem"] && shipmentSelected.blNo) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
+            } else if (!object["emptyExpiredDem"]) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn trả vỏ!");
                 errorFlg = true;
                 return false;
-//            } else if (!object["vslNm"]) {
-//                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn tàu!");
-//                errorFlg = true;
-//                return false;
-//            } else if (!object["voyNo"]) {
-//                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chuyến!");
-//                errorFlg = true;
-//                return false;
             } else if (!object["sztp"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
+                errorFlg = true;
+                return false;
+            } else if (!object["emptyDepotLocation"]) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập nơi hạ vỏ!");
                 errorFlg = true;
                 return false;
             } else if (opecode != object["opeCode"]) {
                 $.modal.alertError("Hãng tàu không được khác nhau!");
                 errorFlg = true;
                 return false;
-//            } else if (vessel != object["vslNm"]) {
-//                $.modal.alertError("Tàu không được khác nhau!");
-//                errorFlg = true;
-//                return false;
-//            } else if (voyage != object["voyNo"]) {
-//                $.modal.alertError("Số chuyến không được khác nhau!");
-//                errorFlg = true;
-//                return false;
             }
         }
         opecode = object["opeCode"];
-//        vessel = object["vslNm"];
-//        voyage = object["voyNo"];
-        let expiredDem;
-        if (shipmentSelected.blNo || object["expiredDem"]) {
-            expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
+        let emptyExpiredDem;
+        if (object["emptyExpiredDem"]) {
+            emptyExpiredDem = new Date(object["emptyExpiredDem"].substring(6, 10) + "/" + object["emptyExpiredDem"].substring(3, 5) + "/" + object["emptyExpiredDem"].substring(0, 2));
             let now = new Date();
             now.setHours(0, 0, 0);
-            expiredDem.setHours(23, 59, 59);
-            if (expiredDem.getTime() < now.getTime() && isValidate && shipmentSelected.blNo) {
+            emptyExpiredDem.setHours(23, 59, 59);
+            if (emptyExpiredDem.getTime() < now.getTime() && isValidate) {
                 errorFlg = true;
-                $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được trong quá khứ!")
+                $.modal.alertError("Hàng " + (index + 1) + ": Hạn trả vỏ không được trong quá khứ!")
             }
-            shipmentDetail.expiredDem = expiredDem.getTime();
+            shipmentDetail.emptyExpiredDem = emptyExpiredDem.getTime();
         }
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
@@ -828,10 +831,9 @@ function getDataFromTable(isValidate) {
         let carrier = object["opeCode"].split(": ");
         shipmentDetail.opeCode = carrier[0];
         shipmentDetail.carrierName = carrier[1];
-//        shipmentDetail.vslNm = object["vslNm"];
-//        shipmentDetail.voyNo = object["voyNo"];
         let sizeType = object["sztp"].split(": ");
         shipmentDetail.sztp = sizeType[0];
+        shipmentDetail.emptyDepotLocation = object["emptyDepotLocation"];
         shipmentDetail.sztpDefine = sizeType[1];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
