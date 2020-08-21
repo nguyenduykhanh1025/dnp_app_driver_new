@@ -128,6 +128,14 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Nơi Ha Vo")
     private String emptyDepot;
 
+    /** Han Lenh */
+    @Excel(name = "Han Tra Vo", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date emptyExpiredDem;
+
+    /** Empty depot */
+    @Excel(name = "Bai Ha Vo")
+    private String emptyDepotLocation;
+    
     /** Cargo Type */
     @Excel(name = "Loại Hang")
     private String cargoType;
@@ -449,6 +457,22 @@ public class ShipmentDetail extends BaseEntity
     public String getEmptyDepot() {
         return emptyDepot;
     }
+
+	public Date getEmptyExpiredDem() {
+		return emptyExpiredDem;
+	}
+
+	public void setEmptyExpiredDem(Date emptyExpiredDem) {
+		this.emptyExpiredDem = emptyExpiredDem;
+	}
+
+    public String getEmptyDepotLocation() {
+		return emptyDepotLocation;
+	}
+
+	public void setEmptyDepotLocation(String emptyDepotLocation) {
+		this.emptyDepotLocation = emptyDepotLocation;
+	}
 
     public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
