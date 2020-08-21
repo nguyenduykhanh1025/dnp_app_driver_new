@@ -507,25 +507,36 @@ function onChange(changes, source) {
         return;
     }
     changes.forEach(function (change) {
-        if (change[1] == "vslNm" && change[3]) {
-            hot.setDataAtCell(change[0], 6, ''); // empty depot location
-            $.ajax({
-                url: prefix + "/opr/" + change[3].split(":")[0] + "/emptyDepotLocation",
-                method: "GET",
-                success: function (data) {
-                    if (data.code == 0 && data.emptyDepotLocation) {
-                        hot.updateSettings({
-                            cells: function (row, col, prop) {
-                                if (row == change[0] && col == 6) {
-                                    let cellProperties = {};
-                                    cellProperties.source = data.emptyDepotLocation;
-                                    return cellProperties;
-                                }
-                            }
-                        });
+        if (change[1] == "opeCode") {
+            if (change[3] && hot.getDataAtCell(change[0], 3)) {
+                hot.setDataAtCell(change[0], 6, ''); // empty depot location
+                $.ajax({
+                    url: prefix + "/opr/" + change[3].split(":")[0] + "/sztp/" + hot.getDataAtCell(change[0], 3).split(":")[0] + "/emptyDepotLocation",
+                    method: "GET",
+                    success: function (data) {
+                        if (data.code == 0 && data.emptyDepotLocation) {
+                            hot.setDataAtCell(change[0], 6, data.emptyDepotLocation);
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                hot.setDataAtCell(change[0], 6, ''); // empty depot location
+            }
+        } else if (change[1] == "sztp") {
+            if (change[3] && hot.getDataAtCell(change[0], 4)) {
+                hot.setDataAtCell(change[0], 6, ''); // empty depot location
+                $.ajax({
+                    url: prefix + "/opr/" + hot.getDataAtCell(change[0], 4).split(":")[0] + "/sztp/" + change[3].split(":")[0] + "/emptyDepotLocation",
+                    method: "GET",
+                    success: function (data) {
+                        if (data.code == 0 && data.emptyDepotLocation) {
+                            hot.setDataAtCell(change[0], 6, data.emptyDepotLocation);
+                        }
+                    }
+                });
+            } else {
+                hot.setDataAtCell(change[0], 6, ''); // empty depot location
+            }
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
                 sztpListDisable[change[0]] = 0;
