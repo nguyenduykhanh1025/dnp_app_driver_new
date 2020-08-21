@@ -534,4 +534,25 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	
+	/**
+	 * Get tax code by snm group name
+	 * 
+	 * @param consignee
+	 * @return String
+	 */
+	@Override
+	public String getTaxCodeBySnmGroupName(String consignee) {
+		try {
+			String url = Global.getApiUrl() + "/consignee/" + consignee + "/taxCode";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String rs = restTemplate.getForObject(url, String.class);
+			return rs;
+		} catch (Exception e) {
+			logger.error("CATOS Api get sztp by container no error: ", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

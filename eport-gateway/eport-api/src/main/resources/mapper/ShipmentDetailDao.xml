@@ -132,6 +132,7 @@
 	    	ENG_SNM AS CONSIGNEE
 		FROM DNP_UAT.TB_PTNR 
 		WHERE PTNR_TYPE = 'CNS'
+		AND REG_NO IS NOT NULL
 	</select>
 	
 	<select id="selectVoyageNoListByVesselCode" parameterType="String" resultType="String">
@@ -375,5 +376,13 @@
 		FROM DNP_UAT.TB_MASTER
 		WHERE CNTR_NO = #{containerNo}
 		fetch next 1 rows only
+	</select>
+
+	<select id="getTaxCodeBySnmGroupName" parameterType="String" resultType="String">
+		SELECT 
+	    	REG_NO AS TAXCODE
+		FROM DNP_UAT.TB_PTNR 
+		WHERE PTNR_TYPE = 'CNS'
+		AND ENG_SNM = #{consignee}
 	</select>
 </mapper>

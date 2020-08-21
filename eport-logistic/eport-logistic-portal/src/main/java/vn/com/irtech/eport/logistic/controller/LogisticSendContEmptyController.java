@@ -355,4 +355,21 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		}
 		return success();
 	}
+	
+	@GetMapping("/containerNo/{containerNo}/sztp")
+	@ResponseBody
+	public AjaxResult getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
+		String sztp = catosApiService.getSztpByContainerNo(containerNo);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("sztp", sztp);
+		return ajaxResult;
+	}
+	
+	@GetMapping("/opr/{opr}/emptyDepotLocation")
+	@ResponseBody
+	public AjaxResult getEmptyDepotLocation(@PathVariable("opr") String opr) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("emptyDepotLocation", "");
+		return ajaxResult;
+	}
 }
