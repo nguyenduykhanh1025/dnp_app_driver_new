@@ -542,7 +542,7 @@ function configHandson() {
     manualRowResize: true,
     renderAllRows: true,
     rowHeaders: true,
-    className: "htMiddle",
+    className: "htCenter",
     colHeaders: function (col) {
       switch (col) {
         case 0:
@@ -1014,6 +1014,8 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   }
   if (errorFlg) {
     return false;
+  } else {
+    return true;
   }
 }
 

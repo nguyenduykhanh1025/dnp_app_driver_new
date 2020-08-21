@@ -306,14 +306,14 @@ function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties
                 break;
         }
         // released status
-        let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+        let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
         switch (sourceData[row].finishStatus) {
             case 'Y':
-                released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+                released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Giao Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
                 break;
             case 'N':
                 if(sourceData[row].paymentStatus == 'Y') {
-                    released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+                    released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Giao Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
                 }
                 break;
         }
@@ -438,7 +438,7 @@ function detailRenderer(instance, td, row, col, prop, value, cellProperties) {
         sztp = hot.getDataAtCell(row, 3);
     }
     if (sourceData && sourceData.length > 0) {
-        if (sourceData.length >= row && sourceData[row].id) {
+        if (sourceData.length > row && sourceData[row].id) {
             value = '<button class="btn btn-default btn-xs" onclick="openDetail(\'' + sourceData[row].id + '\',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Chi tiết</button>';
         } else if (containerNo && sztp) {
             value = '<button class="btn btn-success btn-xs" id="detailBtn '+ row +'" onclick="openDetail(' + null + ',\'' + containerNo + '\',' + '\'' + sztp + '\')"><i class="fa fa-check-circle"></i>Khai báo</button>';
@@ -741,14 +741,17 @@ function onChange(changes, source) {
                     method: "GET",
                     success: function (data) {
                         if (data.code == 0) {
-                            sizeList.forEach(element => {
-                                if (data.sztp == element.substring(0, 4)) {
-                                    data.sztp = element;
-                                    return false;
-                                }
-                            });
-                            sztpListDisable[change[0]] = 1;
-                            hot.setDataAtCell(change[0], 3, data.sztp);
+                           
+                            if (data.sztp) {
+                                sizeList.forEach(element => {
+                                    if (data.sztp == element.substring(0, 4)) {
+                                        data.sztp = element;
+                                        return false;
+                                    }
+                                });
+                                sztpListDisable[change[0]] = 1;
+                                hot.setDataAtCell(change[0], 3, data.sztp);
+                            }
                         } else {
                             sztpListDisable[change[0]] = 0;
                         }
@@ -963,6 +966,8 @@ function getDataSelectedFromTable(isValidate) {
     }
     if (errorFlg) {
         return false;
+    } else {
+        return true;
     }
 }
 
@@ -1078,6 +1083,11 @@ function getDataFromTable(isValidate) {
             		shipmentDetail.voyCarrier = berthplanList[i].voyCarrier;
             	}
             }
+        }
+        if (!shipmentDetail.vslNm || !shipmentDetail.voyNo || !shipmentDetail.year || !shipmentDetail.vslName || !shipmentDetail.voyCarrier) {
+            $.modal.alertError("Tàu chuyến không thuộc hãng tàu " + shipmentDetail.opeCode + ", quý <br>khách vui lòng chọn tàu chuyến hoặc hãng tàu chính xác.");
+            errorFlg = true;
+            return false;
         }
         shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);
