@@ -387,10 +387,14 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
 // }
 
 function emptyDepotLocationRenderer(instance, td, row, col, prop, value, cellProperties)  {
-    $(td).attr('id', 'remark' + row).addClass("htMiddle");
+    $(td).attr('id', 'emptyDepotLocation' + row).addClass("htMiddle");
     $(td).html(value);
-    // cellProperties.readOnly = 'true';
-    // $(td).css("background-color", "rgb(232, 232, 232)");
+    if (value != null && value != '') {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
     return td;
 }
 
@@ -436,14 +440,6 @@ function configHandson() {
                     return '<span>Hạn Trả Vỏ</span><span style="color: red;">(*)</span>';
                 case 6:
                     return '<span>Bãi Hạ Vỏ</span><span style="color: red;">(*)</span>';
-//                case 5:
-//                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
-//                case 6:
-//                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
-                // case 8:
-                //     return '<span>Trọng Tải</span><span style="color: red;">(*)</span>';
-                // case 9:
-                //     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
                 case 7:
                     return "Ghi Chú";
             }
@@ -493,32 +489,6 @@ function configHandson() {
                 data: "emptyDepotLocation",
                 renderer: emptyDepotLocationRenderer
             },
-//            {
-//                data: "vslNm",
-//                type: "autocomplete",
-//                source: vslNmList,
-//                strict: true,
-//                renderer: vslNmRenderer
-//            },
-//            {
-//                data: "voyNo",
-//                type: "autocomplete",
-//                strict: true,
-//                renderer: voyNoRenderer
-//            },
-            // {
-            //     data: "wgt",
-            //     type: "numeric",
-            //     strict: true,
-            //     renderer: wgtRenderer
-            // },
-            // {
-            //     data: "dischargePort",
-            //     strict: true,
-            //     type: "autocomplete",
-            //     source: dischargePortList,
-            //     renderer: dischargePortRenderer
-            // },
             {
                 data: "remark",
                 renderer: remarkRenderer
