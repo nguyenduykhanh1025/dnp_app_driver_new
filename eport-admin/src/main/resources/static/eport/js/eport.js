@@ -377,7 +377,7 @@ var table = {
           btn1: function (index, layero) {
             var file = layero.find("#file").val();
             if (file == "" || (!$.common.endWith(file, ".xls") && !$.common.endWith(file, ".xlsx"))) {
-              $.modal.msgWarning("Hãy chọn file Excel có đuôi “xls” hoạc “xlsx”");
+              $.modal.msgWarning("Hãy chọn file Excel có đuôi “xls” hoặc “xlsx”");
               return false;
             }
             var index = layer.load(2, { shade: false });

@@ -59,7 +59,9 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	
 	public String checkContainerStatus(ShipmentDetailEntity shipmentDetailEntity);
 	
-	public List<String> getBlockList();
+	public List<String> getBlockList(String keyword);
+	
+	public List<String> getAreaList(String keyword);
 	
 	public ShipmentDetailEntity checkContReserved(ShipmentDetailEntity shipmentDetailEntity);
 	
@@ -74,4 +76,20 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return	List<ShipmentEntity>
 	 */
 	public List<ShipmentEntity> selectConsigneeTaxCode(ShipmentEntity shipmentEntity);
+	
+	/**
+	 * Get sztp by container no
+	 * 
+	 * @param containerNo
+	 * @return String
+	 */
+	public String getSztpByContainerNo(String containerNo);
+	
+	/**
+	 * Get tax code by snm group name
+	 * 
+	 * @param consignee
+	 * @return String
+	 */
+	public String getTaxCodeBySnmGroupName(String consignee);
 }

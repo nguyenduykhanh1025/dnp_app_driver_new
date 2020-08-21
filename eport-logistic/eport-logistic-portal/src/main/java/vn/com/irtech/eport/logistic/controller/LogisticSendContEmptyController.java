@@ -24,6 +24,8 @@ import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
+import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -64,6 +66,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	
 	@Autowired
 	private ICarrierGroupService carrierService;
+	
+	@Autowired
+	private DictService dictService;
 	
 	// @Autowired
 	// private CustomQueueService customQueueService;
@@ -354,5 +359,33 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 			return error("Số bill đã tồn tại");
 		}
 		return success();
+	}
+	
+	@GetMapping("/containerNo/{containerNo}/sztp")
+	@ResponseBody
+	public AjaxResult getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
+		String sztp = catosApiService.getSztpByContainerNo(containerNo);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("sztp", sztp);
+		return ajaxResult;
+	}
+	
+	@GetMapping("/opr/{opr}/sztp/{sztp}/emptyDepotLocation")
+	@ResponseBody
+	public AjaxResult getEmptyDepotLocation(@PathVariable("opr") String opr, @PathVariable("sztp") String sztp) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		String emptyDepotRule = dictService.getLabel("empty_depot_location", opr);
+		if (StringUtils.isNotEmpty((emptyDepotRule))) {
+			String[] emptyDepotArr = emptyDepotRule.split(",");
+			int length = emptyDepotArr.length;
+			for (int i = 0; i < length; i++) {
+				if (sztp.equalsIgnoreCase(emptyDepotArr[i])) {
+					String emptyDepotLocation = emptyDepotArr[length - 1];
+					ajaxResult.put("emptyDepotLocation", emptyDepotLocation);
+					return ajaxResult;
+				}
+			}
+		}
+		return error();
 	}
 }

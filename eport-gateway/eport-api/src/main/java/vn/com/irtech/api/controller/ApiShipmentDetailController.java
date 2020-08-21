@@ -163,9 +163,20 @@ public class ApiShipmentDetailController {
 		return shipmentDetailDao.checkContainerStatus(shipmentDetailEntity);
 	}
 	
-	@GetMapping("/shipmentDetail/block/list")
-	public List<String> getBlockList(){
-		return shipmentDetailDao.getBlockList();
+	@GetMapping("/shipmentDetail/block/list/keyword/{keyword}")
+	public List<String> getBlockList(@PathVariable("keyword") String keyword){
+		if(keyword.equals("empty")) {
+			keyword = "";
+		}
+		return shipmentDetailDao.getBlockList(keyword.toUpperCase());
+	}
+	
+	@GetMapping("/shipmentDetail/area/list/keyword/{keyword}")
+	public List<String> getAreaList(@PathVariable("keyword") String keyword){
+		if(keyword.equals("empty")) {
+			keyword = "";
+		}
+		return shipmentDetailDao.getAreaList(keyword.toUpperCase());
 	}
 	
 	@PostMapping("/shipmentDetail/check/reserved")
@@ -198,5 +209,15 @@ public class ApiShipmentDetailController {
 	@PostMapping("/consignee/list")
 	public List<ShipmentEntity> getconsigneeList(@RequestBody ShipmentEntity shipmentEntity) {
 		return shipmentDetailDao.selectConsigneeTaxCode(shipmentEntity);
+	}
+	
+	@GetMapping("/containerNo/{containerNo}/sztp")
+	public String getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
+		return shipmentDetailDao.getSztpByContainerNo(containerNo);
+	}
+	
+	@GetMapping("/consignee/{consignee}/taxCode")
+	public String getTaxCodeBySnmGroupName(@PathVariable("consignee") String consignee) {
+		return shipmentDetailDao.getTaxCodeBySnmGroupName(consignee);
 	}
 }

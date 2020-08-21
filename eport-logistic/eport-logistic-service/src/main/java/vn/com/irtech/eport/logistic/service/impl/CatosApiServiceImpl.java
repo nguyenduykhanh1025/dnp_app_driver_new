@@ -421,14 +421,30 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	}
 
 	@Override
-	public List<String> getBlockList() {
+	public List<String> getBlockList(String keyword) {
 		try {
-			String url = Global.getApiUrl() + "/shipmentDetail/block/list";
+			String url = Global.getApiUrl() + "/shipmentDetail/block/list/keyword/" + keyword;
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
 			List<String> blockList = response.getBody();
 			return blockList;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public List<String> getAreaList(String keyword) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/area/list/keyword/" + keyword;
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<String>>() {});
+			List<String> areaList = response.getBody();
+			return areaList;
 		} catch (Exception e) {
 			logger.error("Error while call CATOS Api", e);
 			e.printStackTrace();
@@ -499,6 +515,42 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return shipments;
 		} catch (Exception e) {
 			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	@Override
+	public String getSztpByContainerNo(String containerNo) {
+		try {
+			String url = Global.getApiUrl() + "/containerNo/" + containerNo + "/sztp";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String rs = restTemplate.getForObject(url, String.class);
+			return rs;
+		} catch (Exception e) {
+			logger.error("CATOS Api get sztp by container no error: ", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Get tax code by snm group name
+	 * 
+	 * @param consignee
+	 * @return String
+	 */
+	@Override
+	public String getTaxCodeBySnmGroupName(String consignee) {
+		try {
+			String url = Global.getApiUrl() + "/consignee/" + consignee + "/taxCode";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String rs = restTemplate.getForObject(url, String.class);
+			return rs;
+		} catch (Exception e) {
+			logger.error("CATOS Api get sztp by container no error: ", e);
 			e.printStackTrace();
 			return null;
 		}

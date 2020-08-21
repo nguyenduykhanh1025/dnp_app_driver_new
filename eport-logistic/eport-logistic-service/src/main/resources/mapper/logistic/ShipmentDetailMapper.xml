@@ -22,6 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="consignee"    column="consignee"    />
         <result property="expiredDem"    column="expired_dem"    />
         <result property="detFreeTime"    column="det_free_time"    />
+        <result property="emptyExpiredDem"    column="empty_expired_dem"    />
         <result property="wgt"    column="wgt"    />
         <result property="vslName"    column="vsl_name"    />
         <result property="vslNm"    column="vsl_nm"    />
@@ -33,6 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="dischargePort"    column="discharge_port"    />
         <result property="transportType"    column="transport_type"    />
         <result property="emptyDepot"    column="empty_depot"    />
+        <result property="emptyDepotLocation"    column="empty_depot_location"    />
         <result property="cargoType"    column="cargo_type"    />
         <result property="vgmChk"    column="vgm_chk"    />
         <result property="vgm"    column="vgm"    />
@@ -50,6 +52,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="orderNo"    column="order_no"    />
         <result property="taxCode"    column="tax_code"    />
         <result property="consigneeByTaxCode"    column="consignee_by_tax_code"    />
+        <result property="customsNo"    column="customs_no"    />
         <result property="remark"    column="remark"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
@@ -61,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectShipmentDetailVo">
-        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, wgt, vsl_name, vsl_nm, voy_no, voy_carrier, ope_code, carrier_name, loading_port, discharge_port, transport_type, empty_depot, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, finish_status, status, order_no, tax_code, consignee_by_tax_code, remark, create_by, create_time, update_by, update_time from shipment_detail
+        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, container_status, sztp, sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, empty_expired_dem, wgt, vsl_name, vsl_nm, voy_no, voy_carrier, ope_code, carrier_name, loading_port, discharge_port, transport_type, empty_depot, empty_depot_location, cargo_type, vgm_chk, vgm, vgm_person_info, preorder_pickup, pre_pickup_payment_status, custom_status, payment_status, process_status, do_status, do_received_time, user_verify_status, finish_status, status, order_no, tax_code, consignee_by_tax_code, remark, create_by, create_time, update_by, update_time from shipment_detail
     </sql>
      <select id="countShipmentDetailList" parameterType="ShipmentDetail" resultType="Long">
         select count(*) from shipment_detail
@@ -81,6 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="emptyExpiredDem != null "> and empty_expired_dem = #{emptyExpiredDem}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
@@ -92,6 +96,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
             <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
@@ -127,6 +132,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="emptyExpiredDem != null "> and empty_expired_dem = #{emptyExpiredDem}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
@@ -138,6 +144,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
             <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
@@ -156,7 +163,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
        
     </select>
     <select id="getShipmentDetailList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
-        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, 
+        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, empty_expired_dem, empty_depot_location,
         	container_status, sztp, sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name,
         	vsl_nm || ': '|| vsl_name as vsl_nm,
         	voy_no, voy_carrier,
@@ -181,6 +188,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="emptyExpiredDem != null "> and empty_expired_dem = #{emptyExpiredDem}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
@@ -192,6 +200,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
             <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
@@ -209,7 +218,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
     </select>
     <select id="getShipmentDetailListForSendFReceiveE" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
-        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, 
+        select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, empty_expired_dem, empty_depot_location,
         	container_status,
         	sztp || ': ' || sztp_define as sztp,
         	sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name, voy_no, voy_carrier,
@@ -236,6 +245,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="emptyExpiredDem != null "> and empty_expired_dem = #{emptyExpiredDem}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
@@ -247,6 +257,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
             <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
@@ -292,6 +303,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''">consignee,</if>
             <if test="expiredDem != null ">expired_dem,</if>
             <if test="detFreeTime != null ">det_free_time,</if>
+            <if test="emptyExpiredDem != null ">empty_expired_dem,</if>
             <if test="wgt != null ">wgt,</if>
             <if test="vslName != null  and vslName != ''">vsl_name,</if>
             <if test="vslNm != null  and vslNm != ''">vsl_nm,</if>
@@ -303,6 +315,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dischargePort != null  and dischargePort != ''">discharge_port,</if>
             <if test="transportType != null  and transportType != ''">transport_type,</if>
             <if test="emptyDepot != null  and emptyDepot != ''">empty_depot,</if>
+            <if test="emptyDepotLocation != null  and emptyDepotLocation != ''">empty_depot_location,</if>
             <if test="cargoType != null  and cargoType != ''">cargo_type,</if>
             <if test="vgmChk != null ">vgm_chk,</if>
             <if test="vgm != null  and vgm != ''">vgm,</if>
@@ -320,6 +333,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNo != null and orderNo != ''">order_no,</if>
             <if test="taxCode != null and taxCode != ''">tax_code,</if>
             <if test="consigneeByTaxCode != null and consigneeByTaxCode != ''">consignee_by_tax_code,</if>
+            <if test="customsNo != null and customsNo != ''">customs_no,</if>
             <if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -342,6 +356,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''">#{consignee},</if>
             <if test="expiredDem != null ">#{expiredDem},</if>
             <if test="detFreeTime != null ">#{detFreeTime},</if>
+            <if test="emptyExpiredDem != null ">#{emptyExpiredDem},</if>
             <if test="wgt != null ">#{wgt},</if>
             <if test="vslName != null  and vslName != ''">#{vslName},</if>
             <if test="vslNm != null  and vslNm != ''">#{vslNm},</if>
@@ -353,6 +368,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dischargePort != null  and dischargePort != ''">#{dischargePort},</if>
             <if test="transportType != null  and transportType != ''">#{transportType},</if>
             <if test="emptyDepot != null  and emptyDepot != ''">#{emptyDepot},</if>
+            <if test="emptyDepotLocation != null  and emptyDepotLocation != ''">#{emptyDepotLocation},</if>
             <if test="cargoType != null  and cargoType != ''">#{cargoType},</if>
             <if test="vgmChk != null ">#{vgmChk},</if>
             <if test="vgm != null  and vgm != ''">#{vgm},</if>
@@ -370,6 +386,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
             <if test="taxCode != null and taxCode != ''">#{taxCode},</if>
             <if test="consigneeByTaxCode != null and consigneeByTaxCode != ''">#{consigneeByTaxCode},</if>
+            <if test="customsNo != null and customsNo != ''">#{customsNo},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -395,6 +412,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''">consignee = #{consignee},</if>
             <if test="expiredDem != null ">expired_dem = #{expiredDem},</if>
             <if test="detFreeTime != null ">det_free_time = #{detFreeTime},</if>
+            <if test="emptyExpiredDem != null ">empty_expired_dem = #{emptyExpiredDem},</if>
             <if test="wgt != null ">wgt = #{wgt},</if>
             <if test="vslName != null  and vslName != ''">vsl_name = #{vslName},</if>
             <if test="vslNm != null  and vslNm != ''">vsl_nm = #{vslNm},</if>
@@ -406,6 +424,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dischargePort != null  and dischargePort != ''">discharge_port = #{dischargePort},</if>
             <if test="transportType != null  and transportType != ''">transport_type = #{transportType},</if>
             <if test="emptyDepot != null  and emptyDepot != ''">empty_depot = #{emptyDepot},</if>
+            <if test="emptyDepotLocation != null  and emptyDepotLocation != ''">empty_depot_location = #{emptyDepotLocation},</if>
             <if test="cargoType != null  and cargoType != ''">cargo_type = #{cargoType},</if>
             <if test="vgmChk != null ">vgm_chk = #{vgmChk},</if>
             <if test="vgm != null  and vgm != ''">vgm = #{vgm},</if>
@@ -423,6 +442,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="orderNo != null and orderNo != ''">order_no = #{orderNo},</if>
             <if test="taxCode != null and taxCode != ''">tax_code = #{taxCode},</if>
             <if test="consigneeByTaxCode != null and consigneeByTaxCode != ''">consignee_by_tax_code = #{consigneeByTaxCode},</if>
+            <if test="customsNo != null and customsNo != ''">customs_no = #{customsNo},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
@@ -528,6 +548,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         consignee,
         expired_dem as expiredDem,
         det_free_time as detFreeTime,
+        empty_expired_dem as emptyExpiredDem,
         wgt,
         vsl_name as vslName,
         vsl_nm as vslNm,
@@ -539,6 +560,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         discharge_port as dischargePort,
         transport_type as transportType,
         empty_depot emptyDepot,
+        empty_depot_location emptyDepotLocation,
         cargo_type cargoType,
         vgm_chk as vgmChk,
         vgm,
@@ -575,6 +597,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="emptyExpiredDem != null "> and empty_expired_dem = #{emptyExpiredDem}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
@@ -586,6 +609,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
             <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
@@ -654,11 +678,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getShipmentDetailForPrint" parameterType="ShipmentDetail" resultType="ShipmentDetail">
 		select id, shipment_id as shipmentId, logistic_group_id as logisticGroupId,
 		        register_no as registerNo, container_no as containerNo, container_status as containerStatus, sztp, sztp_define as sztpDefine,
-		        temperature, fe, booking_no as bookingNo, bl_no as blNo, seal_no as sealNo, consignee, expired_dem as expiredDem,
+		        temperature, fe, booking_no as bookingNo, bl_no as blNo, seal_no as sealNo, consignee, expired_dem as expiredDem, empty_expired_dem as emptyExpiredDem,
 		        wgt,
 		        (vsl_name || ' - ' || voy_carrier) as vslName,
 		        vsl_nm as vslNm, voy_no as voyNo, voy_carrier as voyCarrier, ope_code as opeCode, carrier_name as carrierName,
-		        loading_port as loadingPort, discharge_port as dischargePort, transport_type as transportType, empty_depot as emptyDepot,
+		        loading_port as loadingPort, discharge_port as dischargePort, transport_type as transportType, empty_depot as emptyDepot, empty_depot_location as emptyDepotLocation,
 		        CASE
 		            WHEN cargo_type = 'AK' THEN 'Over Dimension'
 		            WHEN cargo_type = 'BB' THEN 'Break Bulk'
@@ -695,6 +719,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
             <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
             <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="emptyExpiredDem != null "> and empty_expired_dem = #{emptyExpiredDem}</if>
             <if test="wgt != null "> and wgt = #{wgt}</if>
             <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
             <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
@@ -706,6 +731,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
             <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
             <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
             <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
             <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
             <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>

@@ -289,61 +289,71 @@ function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
 }
 function statusIconsRenderer(instance, td, row, col, prop, value, cellProperties) {
   $(td).attr('id', 'statusIcon' + row).addClass("htCenter").addClass("htMiddle");
-  let content = '';
-  switch (value) {
-    case 1:
-      switch (sourceData[row].customStatus) {
-        case 'R':
-          content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-          break;
-        case 'Y':
-          content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
-          break;
-        case 'N':
-          content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
-          break;
-        default:
-          content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px;"></i>';
-          break;
+  if (sourceData[row] && sourceData[row].dischargePort && sourceData[row].processStatus && sourceData[row].paymentStatus && sourceData[row].customStatus && sourceData[row].finishStatus) {
+    // Customs Status
+    let customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+    switch (sourceData[row].customStatus) {
+      case 'R':
+        customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+      case 'Y':
+        customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chưa Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #ed5565;"></i>';
+        break;
+      case 'N':
+        customs = '<i id="custom" class="fa fa-shield easyui-tooltip" title="Chờ Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
+        break;
+    }
+    // Command process status
+    let process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Chưa xác nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #666"></i>';
+    switch (sourceData[row].processStatus) {
+      case 'E':
+        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đang chờ kết quả" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #f8ac59;"></i>';
+        break;
+    case 'Y':
+      process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Đã làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
+        break;
+    case 'N':
+      if(value > 1) {
+        process = '<i id="verify" class="fa fa-windows easyui-tooltip" title="Có thể làm lệnh" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #3498db;"></i>';
       }
-      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
-      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-      content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa Thể Nhận Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-      break;
-    case 2:
-      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-      if ('E' == sourceData[row].processStatus) {
-        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Làm Lệnh Bị Lỗi" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color : #ed5565;"></i>';
-      } else {
-        content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Chưa Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px;"></i>';
+        break;
+    }
+    // Payment status
+    let payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #666"></i>';
+    switch (sourceData[row].paymentStatus) {
+      case 'E':
+        payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
+        break;
+    case 'Y':
+      payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+    case 'N':
+      if(value > 2) {
+        payment = '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chờ Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
       }
-      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
-      content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa Thể Nhận Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-      break;
-    case 3:
-      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Thực" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
-      if ('E' == sourceData[row].paymentStatus) {
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Lỗi Thanh Toán" aria-hidden="true" style="margin-left: 8px; color : #ed5565;"></i>';
-      } else {
-        content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Chưa Thanh Toán" aria-hidden="true" style="margin-left: 8px;"></i>';
+        break;
+    }
+    // released status
+    let released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa thể nhận container" aria-hidden="true" style="margin-left: 8px; color: #666;"></i>';
+    switch (sourceData[row].finishStatus) {
+    case 'Y':
+      released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
+        break;
+    case 'N':
+      if(sourceData[row].paymentStatus == 'Y') {
+        released = '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i>';
       }
-      content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Chưa Thể Nhận Container" aria-hidden="true" style="margin-left: 8px;"></i></div>';
-      break;
-    case 4:
-      content += '<div><i id="custom" class="fa fa-shield easyui-tooltip" title="Đã Thông Quan" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-      content += '<i id="verify" class="fa fa-mobile easyui-tooltip" title="Đã Xác Nhận" aria-hidden="true" style="margin-left: 8px; font-size: 15px; color: #1ab394;"></i>';
-      content += '<i id="payment" class="fa fa-credit-card-alt easyui-tooltip" title="Đã Thanh Toán" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i>';
-      if ('Y' == sourceData[row].finishStatus) {
-        content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Đã Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #1ab394;"></i></div>';
-      } else {
-        content += '<i id="finish" class="fa fa-truck fa-flip-horizontal easyui-tooltip" title="Có Thể Nhận Container" aria-hidden="true" style="margin-left: 8px; color: #3498db;"></i></div>';
-      }
-      break;
-    default:
-      break;
+        break;
+    }
+    // Return the content
+    let content = '<div>';
+    // Domestic cont: VN --> not show
+    if(sourceData[row].loadingPort.substring(0,2) != 'VN') {
+      content += customs;
+    }
+    content += process + payment + released + '</div>';
+    $(td).html(content);
   }
-  $(td).html(content);
   return td;
 }
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
@@ -534,7 +544,7 @@ function configHandson() {
     manualRowResize: true,
     renderAllRows: true,
     rowHeaders: true,
-    className: "htMiddle",
+    className: "htCenter",
     colHeaders: function (col) {
       switch (col) {
         case 0:
@@ -545,29 +555,29 @@ function configHandson() {
         case 1:
           return "Trạng Thái";
         case 2:
-          return '<span>Container No</span><span style="color: red;">(*)</span>';
+          return '<span>Container No</span><span style="color: red;"> *</span>';
         case 3:
-          return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+          return '<span>Hạn Lệnh</span><span style="color: red;"> *</span>';
         case 4:
-          return '<span>Miễn<br/>Lưu<br/>Bãi</span><span style="color: red;">(*) </span>';
+          return '<span>Ngày Miễn<br>Lưu Bãi</span><span style="color: red;"> *</span>';
         case 5:
-          return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
+          return '<span>Chủ Hàng</span><span style="color: red;"> *</span>';
         case 6:
-          return '<span>Nơi Hạ Vỏ</span><span style="color: red;">(*)</span>';
+          return '<span>Nơi Hạ Vỏ</span><span style="color: red;"> *</span>';
         case 7:
             return "Kích Thước";
         case 8:
-          return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+          return '<span>Hãng Tàu</span><span style="color: red;"> *</span>';
         case 9:
-          return '<span>Tàu</span><span style="color: red;">(*)</span>';
+          return '<span>Tàu</span><span style="color: red;"> *</span>';
         case 10:
-          return '<span>Chuyến</span><span style="color: red;">(*)</span>';
+          return '<span>Chuyến</span><span style="color: red;"> *</span>';
         case 11:
           return "Seal No";
         case 12:
           return "Trọng Tải";
         case 13:
-          return '<span>Cảng Xếp Hàng</span><span style="color: red;">(*)</span>';
+          return '<span>Cảng Xếp Hàng</span><span style="color: red;"> *</span>';
         case 14:
           return "Cảng Dỡ Hàng";
         case 15:
@@ -917,9 +927,9 @@ function loadShipmentDetail(id) {
         hot.loadData(sourceData);
         hot.render();
         setLayoutRegisterStatus();
-        if (!saved) {
-          $.modal.alert("Thông tin container đã được hệ thống tự<br>động điền, quý khách vui lòng kiểm tra lại<br>thông tin và lưu khai báo.");
-        }
+//        if (!saved) {
+//          $.modal.alert("Thông tin container đã được hệ thống tự<br>động điền, quý khách vui lòng kiểm tra lại<br>thông tin và lưu khai báo.");
+//        }
       }
     },
     error: function (data) {
@@ -1006,6 +1016,8 @@ function getDataSelectedFromTable(isValidate, isNeedPickedCont) {
   }
   if (errorFlg) {
     return false;
+  } else {
+    return true;
   }
 }
 
@@ -1084,11 +1096,13 @@ function getDataFromTable(isValidate) {
         $.modal.alertError("Tên chủ hàng không được khác nhau!");
         errorFlg = true;
         return false;
-      } else if (emptydepot != object["emptyDepot"]) {
+      } 
+      // Noi ha vo co the khac nhau
+/*      else if (emptydepot != object["emptyDepot"]) {
         $.modal.alertError("Nơi hạ vỏ không được khác nhau!");
         errorFlg = true;
         return false;
-      }
+      }  */
     }
 
     // $.ajax({
@@ -1143,16 +1157,16 @@ function getDataFromTable(isValidate) {
     expiredDem.setHours(23, 59, 59);
     if (expiredDem.getTime() < now.getTime() && isValidate && !errorFlg) {
       errorFlg = true;
-      $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được trong quá khứ!")
+      $.modal.alertError("Hàng " + (index + 1) + ": Hạn lệnh không được là ngày quá khứ!")
       return false;
     }
-
+/*
     if (currentEmptyDepot != '' && currentEmptyDepot != object["emptyDepot"] && !errorFlg) {
       errorFlg = true;
       $.modal.alertError("Nơi hạ vỏ không được khác nhau!");
       return false;
     }
-
+*/
     currentEmptyDepot = object["emptyDepot"];
   });
 
@@ -1161,7 +1175,7 @@ function getDataFromTable(isValidate) {
     let contTemp = "";
     $.each(contList, function (index, cont) {
       if (cont != "" && cont == contTemp) {
-        $.modal.alertError("Số container không được giống nhau!");
+        $.modal.alertError("Có container trong lô khai báo bị trùng.");
         errorFlg = true;
         return false;
       }
@@ -1189,7 +1203,7 @@ function getDataFromTable(isValidate) {
 // SAVE/EDIT/DELETE SHIPMENT DETAIL
 function saveShipmentDetail() {
   if (shipmentSelected == null) {
-    $.modal.alertError("Bạn cần chọn lô trước");
+    $.modal.alertError("Hãy chọn lô để thực hiện");
     return;
   } else {
     hot.deselectCell();
@@ -1197,12 +1211,12 @@ function saveShipmentDetail() {
       if (getDataFromTable(true)) {
         if (shipmentDetails.length > 0 && shipmentDetails.length <= shipmentSelected.containerAmount) {
           if (dnDepot) {
-            layer.confirm("Quý khách đã chọn nơi hạ container ở cảng Tiên Sa, hệ thống sẽ tự động tạo lô và thông tin giao container rỗng.", {
+            layer.confirm("Quý khách đã chọn nơi hạ container ở Cảng Tiên Sa, hệ thống sẽ tự động tạo lô và thông tin giao container rỗng.", {
               icon: 3,
               title: "Xác Nhận",
               btn: ['Đồng Ý', 'Hủy Bỏ']
             }, function () {
-              save(true);
+              save(true)
               layer.close(layer.index);
             }, function () {
               save(false);
@@ -1211,7 +1225,7 @@ function saveShipmentDetail() {
             save(false);
           }
         } else if (shipmentDetails.length > shipmentSelected.containerAmount) {
-          $.modal.alertError("Số container nhập vào vượt quá số container<br>của lô.");
+          $.modal.alertError("Số lượng container nhập vào vượt quá số container của lô.");
         } else {
           $.modal.alertError("Quý khách chưa nhập thông tin chi tiết lô.");
         }
@@ -1242,7 +1256,7 @@ function save(isSendEmpty) {
       $.modal.closeLoading();
     },
     error: function (result) {
-      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+      $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại.");
       $.modal.closeLoading();
     },
   });
@@ -1266,7 +1280,7 @@ function deleteShipmentDetail() {
           $.modal.closeLoading();
         },
         error: function (result) {
-          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+          $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, xin vui lòng thử lại sau.");
           $.modal.closeLoading();
         },
       });
@@ -1293,11 +1307,11 @@ function verify() {
           $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 500);
         }
       } else {
-        $.modal.alertWarning("Qúy khách không có quyền làm lệnh cho bill này.");
+        $.modal.alertWarning("Quý khách chưa có ủy quyền từ chủ hàng để thực hiện lô hàng này <br>Hãy liên hệ với Cảng để thêm ủy quyền.");
       }
     },
     error: function(err) {
-      $.modal.alertError("Lỗi server, vui lòng liên hệ admin.");
+      $.modal.alertError("Có lỗi xảy ra, vui lòng thử lại sau.");
     }
   });
 }

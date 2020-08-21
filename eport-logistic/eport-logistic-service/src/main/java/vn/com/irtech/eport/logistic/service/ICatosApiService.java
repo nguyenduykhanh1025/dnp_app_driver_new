@@ -78,9 +78,16 @@ public interface ICatosApiService {
 	public String checkContainerStatus(ShipmentDetail shipmentDetail);
 	
 	/***
+	 * input: keyword (empty = '')
 	 * get block list
 	 */
-	public List<String> getBlockList();
+	public List<String> getBlockList(String keyword);
+	
+	/***
+	 * input: keyword (empty = '')
+	 * get Area list
+	 */
+	public List<String> getAreaList(String keyword);
 	
 	/***
 	 * input: containerNo, bookingNo, vslNm, voyNo, sztp, opeCode
@@ -106,4 +113,20 @@ public interface ICatosApiService {
 	 * @return	List<shipment>
 	 */
 	public List<Shipment> getListConsigneeWithTaxCode(Shipment shipment);
+	
+	/**
+	 * Get sztp by container no
+	 * 
+	 * @param containerNo
+	 * @return String
+	 */
+	public String getSztpByContainerNo(String containerNo);
+	
+	/**
+	 * Get tax code by snm group name
+	 * 
+	 * @param consignee
+	 * @return String
+	 */
+	public String getTaxCodeBySnmGroupName(String consignee);
 }

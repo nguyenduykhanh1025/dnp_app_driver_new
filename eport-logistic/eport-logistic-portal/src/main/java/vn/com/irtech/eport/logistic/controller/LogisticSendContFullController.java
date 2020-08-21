@@ -26,6 +26,7 @@ import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
@@ -375,13 +376,16 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	}
 
 	@Log(title = "Khai Báo Hải Quan", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/custom-status/shipment-detail/{shipmentDetailIds}")
+	@PostMapping("/custom-status/shipment-detail")
 	@ResponseBody
-	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNoList[]") String[] declareNoList, @PathVariable String shipmentDetailIds) {
-		if (declareNoList != null) {
+	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNos") String declareNoList, @RequestParam(value = "shipmentDetailIds") String shipmentDetailIds) {
+		if (StringUtils.isNotEmpty(declareNoList)) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 				for (ShipmentDetail shipmentDetail : shipmentDetails) {
+					// Save declare no list to shipment detail
+					shipmentDetail.setCustomsNo(declareNoList);
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					customQueueService.offerShipmentDetail(shipmentDetail);
 				}
 				return success();
@@ -433,4 +437,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 //		return error();
 //	}
 //	
+	
+	@GetMapping("/containerNo/{containerNo}/sztp")
+	@ResponseBody
+	public AjaxResult getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
+		String sztp = catosApiService.getSztpByContainerNo(containerNo);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("sztp", sztp);
+		return ajaxResult;
+	}
 }

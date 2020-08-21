@@ -1,41 +1,49 @@
 package vn.com.irtech.eport.carrier.dto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.List;
 
 public class HouseBillSearchReq implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  private String keyWord;
+	private String keyWord;
 
-  private String fromDate;
+	private String fromDate;
 
-  private String toDate;
+	private String toDate;
 
-  public String getKeyWord() {
-    return keyWord;
-  }
+	private Long logisticGroupId;
 
-  public void setKeyWord(String keyWord) {
-    this.keyWord = keyWord;
-  }
+	public String getKeyWord() {
+		return keyWord;
+	}
 
-  public String getFromDate() {
-    return fromDate;
-  }
+	public void setKeyWord(String keyWord) {
+		this.keyWord = keyWord;
+	}
 
-  public void setFromDate(String fromDate) {
-    this.fromDate = fromDate;
-  }
+	public String getFromDate() {
+		return fromDate;
+	}
 
-  public String getToDate() {
-    return toDate;
-  }
+	public void setFromDate(String fromDate) {
+		this.fromDate = fromDate;
+	}
 
-  public void setToDate(String toDate) {
-    this.toDate = toDate;
-  }
+	public String getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(String toDate) {
+		this.toDate = toDate;
+	}
+
+	public Long getLogisticGroupId() {
+		return logisticGroupId;
+	}
+
+	public void setLogisticGroupId(Long logisticGroupId) {
+		this.logisticGroupId = logisticGroupId;
+	}
+
 }

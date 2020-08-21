@@ -189,6 +189,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             count(*) as cont_number
         FROM
             edo_house_bill
+        <where>
+            <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
+        </where>
         GROUP BY
             house_bill_no, master_bill_no, create_time, consignee2, carrier_code
         ORDER BY

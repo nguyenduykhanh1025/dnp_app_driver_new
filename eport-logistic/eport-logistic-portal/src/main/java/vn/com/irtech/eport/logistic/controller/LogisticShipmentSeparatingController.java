@@ -133,7 +133,12 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
   @ResponseBody
   public TableDataInfo listHouseBill(@RequestBody PageAble<HouseBillSearchReq> param) {
     startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
-    List<HouseBillRes> dataList = edoHouseBillService.selectListHouseBillRes(param.getData());
+    HouseBillSearchReq houseBillSearchReq = param.getData();
+    if (houseBillSearchReq == null) {
+    	houseBillSearchReq = new HouseBillSearchReq();
+    }
+    houseBillSearchReq.setLogisticGroupId(getUser().getGroupId());
+    List<HouseBillRes> dataList = edoHouseBillService.selectListHouseBillRes(houseBillSearchReq);
     return getDataTable(dataList);
   }
 

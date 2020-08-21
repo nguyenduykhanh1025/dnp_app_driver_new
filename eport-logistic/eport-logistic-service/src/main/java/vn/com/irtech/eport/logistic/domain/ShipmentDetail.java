@@ -128,6 +128,14 @@ public class ShipmentDetail extends BaseEntity
     @Excel(name = "Nơi Ha Vo")
     private String emptyDepot;
 
+    /** Han Lenh */
+    @Excel(name = "Han Tra Vo", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date emptyExpiredDem;
+
+    /** Empty depot */
+    @Excel(name = "Bai Ha Vo")
+    private String emptyDepotLocation;
+    
     /** Cargo Type */
     @Excel(name = "Loại Hang")
     private String cargoType;
@@ -195,6 +203,10 @@ public class ShipmentDetail extends BaseEntity
     /** Consignee By Tax Code */
     @Excel(name = "Consignee By Tax Code")
     private String consigneeByTaxCode;
+
+    /** Consignee By Tax Code */
+    @Excel(name = "Customs Numbers")
+    private String customsNo;
 
     private String block;
 
@@ -446,6 +458,22 @@ public class ShipmentDetail extends BaseEntity
         return emptyDepot;
     }
 
+	public Date getEmptyExpiredDem() {
+		return emptyExpiredDem;
+	}
+
+	public void setEmptyExpiredDem(Date emptyExpiredDem) {
+		this.emptyExpiredDem = emptyExpiredDem;
+	}
+
+    public String getEmptyDepotLocation() {
+		return emptyDepotLocation;
+	}
+
+	public void setEmptyDepotLocation(String emptyDepotLocation) {
+		this.emptyDepotLocation = emptyDepotLocation;
+	}
+
     public void setCargoType(String cargoType) {
         this.cargoType = cargoType;
     }
@@ -686,6 +714,14 @@ public class ShipmentDetail extends BaseEntity
 		this.taxCode = taxCode;
 	}
 
+	public String getCustomsNo() {
+		return customsNo;
+	}
+
+	public void setCustomsNo(String customsNo) {
+		this.customsNo = customsNo;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -751,6 +787,7 @@ public class ShipmentDetail extends BaseEntity
             .append("vatAfterFee", getVatAfterFee())
             .append("taxCode", getTaxCode())
             .append("consigneeByTaxCode", getConsigneeByTaxCode())
+            .append("customsNo", getCustomsNo())
             .toString();
     }
 }

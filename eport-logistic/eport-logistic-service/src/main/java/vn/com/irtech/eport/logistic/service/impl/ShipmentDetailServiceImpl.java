@@ -15,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.mapper.EdoMapper;
@@ -45,9 +41,7 @@ import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
-import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysDictData;
-import vn.com.irtech.eport.system.service.ISysConfigService;
 import vn.com.irtech.eport.system.service.ISysDictTypeService;
 
 
@@ -73,9 +67,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Autowired
     private IProcessOrderService processOrderService;
-
-    @Autowired
-    private ISysConfigService configService;
     
     @Autowired
     private ISysDictTypeService dictTypeService;
@@ -83,8 +74,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Autowired
     private ICatosApiService catosApiService;
 
-    @Autowired
-    private IShipmentService shipmentService;
+//    @Autowired
+//    private IShipmentService shipmentService;
     
     class BayComparator implements Comparator<ShipmentDetail> {
         public int compare(ShipmentDetail shipmentDetail1, ShipmentDetail shipmentDetail2) {
@@ -574,6 +565,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             shipmentDetail.setRegisterNo(detail.getId().toString());
             shipmentDetail.setUserVerifyStatus("Y");
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
+            if (processOrder.getServiceType() == 2) {
+            	shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());
+            }
         }
         return processOrder;
     }
@@ -598,44 +592,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 shipmentDetail.setStatus(shipmentDetail.getStatus() + 1);
             }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
-        }
-    }
-
-    @Override
-    public boolean checkCustomStatus(String userVoy, String cntrNo) {
-        try {
-            // "http://192.168.0.36:8060/ACCIS-Web/rest/v1/eportcontroller/getCustomsStatus/"
-            String uri = configService.selectConfigByKey("acciss.api.uri");
-            // URI uri = new URI(uri);
-
-            String requestJson = "{\"RequestCntrStatus\": {\"UserVoy\": \"" + userVoy + "\",\"CntrNo\": \"" + cntrNo
-                    + "\"}}";
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Content-Type", "application/json");
-            headers.set("Authorization", "Basic RVBPUlQ6MTEx"); // FIXME Get author from SysConfig
-            RestTemplate restTemplate = new RestTemplate();
-            // String result = restTemplate.getForObject(uri,HttpMethod.GET,
-            // String.class,headers);
-            HttpEntity<String> entity = new HttpEntity<String>(requestJson, headers);
-            ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
-            String stringJson = result.getBody();
-            logger.debug("Call ACISS, CntrNo:{}, Voy:{}, Response: {}", cntrNo, userVoy, stringJson);
-            JsonObject convertedObject = new Gson().fromJson(stringJson, JsonObject.class);
-            convertedObject = convertedObject.getAsJsonObject("response");
-            JsonArray jarray = convertedObject.getAsJsonArray("data");
-            if (jarray.size() > 0) {
-                convertedObject = jarray.get(0).getAsJsonObject();
-                String rs = convertedObject.get("customsStatus").toString();
-                if ("TQ".equals(rs.substring(1, rs.length() - 1))) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-            return false;
-        } catch (Exception e) {
-        	logger.error("Error while call ACISS",e);
-            return false;
         }
     }
 
@@ -893,7 +849,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Override
     public ShipmentDetail getContainerWithYardPosition(Long shipmentId) {
         // Get Shipment
-        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+//        Shipment shipment = shipmentService.selectShipmentById(shipmentId);
 
         // Get shipment detail by shipment id
         ShipmentDetail shipmentDetail = new ShipmentDetail();
