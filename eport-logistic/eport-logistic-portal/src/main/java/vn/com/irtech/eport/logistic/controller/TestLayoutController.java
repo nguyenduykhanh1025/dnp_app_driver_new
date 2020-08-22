@@ -19,4 +19,9 @@ public class TestLayoutController extends LogisticBaseController {
 	public String layout2() {
 		return PREFIX + "/layout2LeftRight";
 	}
+
+	@GetMapping("/layout3")
+	public String layout3() {
+		return PREFIX + "/layout3LeftRightWithTab";
+	}
 }
