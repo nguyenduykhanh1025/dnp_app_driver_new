@@ -304,11 +304,10 @@ function multiUpdateEdo() {
 
 
 // SEARCH INFO VESSEL AREA
-$('.c-search-box-vessel').on('select2:open', function (e) {
-  $(this).text(null);
-});
+
 $('.c-search-box-vessel').on("select2:opening", function(e) {
   $('.c-search-box-vessel').text(null);
+  $('.c-search-box-voy-no').text(null);
   edo = new Object();
   loadTable(edo);
 });
@@ -374,9 +373,8 @@ $(".c-search-box-voy-no").select2({
 $('.c-search-box-voy-no').on("select2:opening", function(e) {
   edo = new Object();
   $(".c-search-box-voy-no").text(null);
-  edo.vessel = $(".c-search-box-vessel").text();
+  edo.vessel = $(".c-search-box-vessel").text().trim();
   loadTable(edo);
-  console.log("edo", edo)
 });
 // For submit search
 $(".c-search-box-vessel").change(function () {
@@ -394,7 +392,7 @@ $(".pagination-info").hide();
 
 // add full size do
 function addDo(id) {
-  $.modal.openTab("Thêm DO", ctx + "carrier/do/add");
+  $.modal.openTab("Phát Hành DO", ctx + "carrier/do/add");
 }
 $('#btnRefresh').click(function(){
   $(".c-search-box-vessel").text(null);

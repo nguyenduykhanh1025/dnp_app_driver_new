@@ -130,7 +130,7 @@ function viewBL(value) {
 
 // add full size do
 function addDo(id) {
-  $.modal.openTab("Thêm DO", ctx + "carrier/do/add");
+  $.modal.openTab("Phát Hành DO", ctx + "carrier/do/add");
 }
 
 function addChangeExpired(id) {

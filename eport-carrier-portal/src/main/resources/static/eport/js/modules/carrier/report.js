@@ -91,11 +91,10 @@ laydate.render({
 
 
 // SEARCH INFO VESSEL AREA
-$('.c-search-box-vessel').on('select2:open', function (e) {
-  $(this).text(null);
-});
+
 $('.c-search-box-vessel').on("select2:opening", function(e) {
   $('.c-search-box-vessel').text(null);
+  $('.c-search-box-voy-no').text(null);
   edo = new Object();
   loadTable(edo);
 });
@@ -127,13 +126,9 @@ $(".c-search-box-vessel").select2({
   },
 });
 
-$('.c-search-box-voy-no').on('select2:open', function (e) {
-  $(this).text(null);
-});
 $('.c-search-box-voy-no').on("select2:opening", function(e) {
   $(".c-search-box-voy-no").text(null);
-  edo.vessel = $(".c-search-box-vessel").text();
-  console.log("edo.vessel", edo.vessel)
+  edo.vessel = $(".c-search-box-vessel").text().trim();
   loadTable(edo);
   
 });
@@ -173,8 +168,7 @@ $(".c-search-box-vessel").change(function () {
   loadTable(edo);
 });
 $(".c-search-box-voy-no").change(function () {
-  edo = new Object();
-  edo.voyNo = $(this).text().trim();
+  edo.voyNo = $(this).text().trim(); 
   loadTable(edo);
 });
 
