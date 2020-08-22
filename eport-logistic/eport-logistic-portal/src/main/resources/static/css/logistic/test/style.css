@@ -1,0 +1,114 @@
+body {
+  height: 98%;
+}
+
+.mb-2 {
+  margin-bottom: 2em;
+}
+
+.grey-background {
+  color: #000000;
+  background: #f3f7fa;
+}
+
+.grey-background .main-body {
+  margin: 10px;
+  margin-bottom: 0;
+}
+
+.grey-background .main-body .main-body__search-wrapper {
+  border-radius: 3px;
+  background: #ffffff;
+  padding: 10px;
+  padding-bottom: 0;
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  -webkit-transition: 0.3s all;
+  transition: 0.3s all;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.grey-background .main-body .main-body__search-wrapper .btn-collapse {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.5em;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.grey-background .main-body .main-body__search-wrapper .btn-collapse:hover {
+  border: 1px solid #ccc;
+}
+
+.grey-background .main-body .main-body__search-wrapper .uncollapse {
+  display: none;
+}
+
+.grey-background .main-body .main-body__search-wrapper .collapse {
+  display: block;
+}
+
+.grey-background .main-body .main-body__search-wrapper form {
+  display: inline-block;
+  width: 80%;
+}
+
+.grey-background .main-body .main-body__search-wrapper form .form-inline {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.grey-background .main-body .main-body__search-wrapper form .form-inline label.textbox-label {
+  width: auto;
+}
+
+.grey-background .main-body .main-body__search-wrapper form .form-inline .textbox {
+  border: none;
+  border-bottom: 1px solid #D4D4D4;
+  border-radius: 0;
+  line-height: 1;
+}
+
+.grey-background .main-body .main-body__search-wrapper form .form-inline .textbox-focused {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+
+.grey-background .main-body .main-body__search-wrapper form .form-inline .textbox-text {
+  height: 12px;
+  line-height: 12px;
+}
+
+.grey-background .main-body .main-body__search-wrapper form .form-inline .combo {
+  width: 110px !important;
+  line-height: 1;
+}
+
+.grey-background .main-body .main-body__search-wrapper form .form-inline .validatebox-text {
+  width: -webkit-max-content !important;
+  width: -moz-max-content !important;
+  width: max-content !important;
+}
+
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--btn-group {
+  float: right;
+  width: 20%;
+}
+
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--btn-group .btn {
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.clear {
+  clear: both;
+}
