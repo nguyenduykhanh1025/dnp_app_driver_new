@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+  <head>
+    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet"/>
+    <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/eport/css/eport.css}" rel="stylesheet"/>
+    <link th:href="@{/eport/css/edo/manage/edo.css}" rel="stylesheet" />
+  </head>
+  <body class="bg-gray">
+    <div class="col-sm-12">
+        <div class="form-inline mt10 mb10" >
+        <div class="form-group">
+          <div class="input-group">
+            <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="voyNo">Voy No</label>
+          <div class="input-group width150" style="width: 150%;">
+            <select class="c-search-box-voy-no"> 
+              <option selected="selected"></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-left: 70px;">
+          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchInfoEdo"><i
+            class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
+        </div>
+        <div class="form-group" style="right: 5px;position: absolute;">
+          <button class="btn btn-rounder btn-default" onclick="generatePDF()"><i class="fa fa-print"></i>In EDO</button>
+        </div>
+        <div class="form-group margin-input">
+            <label class="sr-only">Cập Nhật</label>
+            <div class="input-group">
+              <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i
+                  class="fa fa-pencil-square-o"></i> Cập Nhật Hải Quan</button>
+            </div>
+          </div>
+          <div class="form-group margin-input">
+            <label class="sr-only">Cập Nhật</label>
+            <div class="input-group">
+              <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i
+                  class="fa fa-pencil-square-o"></i> Cập Nhật Trạng Thái</button>
+            </div>
+          </div>
+          <div class="form-group margin-input">
+            <label class="sr-only">Cập Nhật</label>
+            <div class="input-group">
+              <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i
+                  class="fa fa-pencil-square-o"></i> Cập Nhật Thanh Toán</button>
+            </div>
+          </div>
+      </div> <!-- //end form -->
+    </div>
+    <div class="col-sm-12 container-fluid wrapper">
+    <section class="left">
+      <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
+      <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
+      <table id="dg">
+        <thead>
+            <tr>
+              <th data-options="field:'billOfLading',align:'left'" width="120">
+                Số phút
+              </th>
+              <th data-options="field:'vessel',align:'left'" width="110">
+                Số lệnh
+              </th>
+              <th data-options="field:'voyNo',align:'left'" width="110">
+                Logistic
+              </th>
+              <th data-options="field:'carrierCode',align:'center'" width="100">
+                Số bill
+              </th>
+              <th data-options="field:'numberContainer',align:'center'" width="90">
+                Số lượng cont
+              </th>
+              <th data-options="field:'createTime',align:'left'" width="130">
+                Ngày tạo
+              </th>
+            </tr>
+        </thead>
+      </table>
+    </section>
+    <section class="right ml10">
+      <table id="dgContainer">
+        <thead frozen="true">
+          <tr>
+            <th data-options="field:'id',checkbox:true"></th>
+            <th data-options="field:'containerNumber',align:'left'" width="120">
+              Số cont
+            </th>
+          </tr>
+      </thead>
+        <thead>
+            <th data-options="field:'sztp',align:'left'" width="50">
+              Sztp
+            </th>
+            <th data-options="field:'carrierCode',align:'center',formatter:formatStatus2" width="150">
+              Trại thái <br> hải quan
+            </th>
+            <th data-options="field:'consignee',align:'left',formatter:formatStatus2" width="150">
+                Trại thái <br> làm lệnh
+            </th>
+            <th data-options="field:'expiredDem',align:'left',formatter:formatStatus2" width="150">
+                Trại thái <br> thanh toán
+            </th>
+            <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
+              Chủ hàng
+            </th>
+            <th data-options="field:'detFreeTime',align:'center'" width="80">
+              Hạn lệnh
+            </th>
+            <th data-options="field:'vessel',align:'left'" width="110">
+             Hãng tàu
+            </th>
+            <th data-options="field:'voyNo',align:'left'" width="90">
+                Tàu chuyến
+            </th>
+            <th data-options="field:'pol',align:'left'" width="110">
+                Nơi trả vỏ
+            </th>
+            <th data-options="field:'status',align:'left',formatter:formatStatus" width="90">
+                Cảng xếp
+            </th>
+        
+            <!-- <th data-options="field:'createTime',align:'left'" width="115">
+              RECEIVE TIME
+             </th> 
+            <th data-options="field:'id',align:'center',formatter: formatAction" fixed:true  width="150">
+              ACTION
+            </th> -->
+          </tr>
+        </thead>
+      </table>
+    </section>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
+    <script th:src="@{/eport/js/modules/om/supportReceiveFull/index.js}"></script>
+  </body>
+
+</html>

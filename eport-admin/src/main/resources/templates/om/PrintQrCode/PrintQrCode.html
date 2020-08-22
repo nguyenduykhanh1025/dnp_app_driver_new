@@ -67,7 +67,7 @@
     </div>
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
   </body>
   <script th:src="@{/eport/js/modules/om/printQrCode/printQrCode.js}"></script>
 
