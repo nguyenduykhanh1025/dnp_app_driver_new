@@ -65,6 +65,7 @@ function loadTable(edo) {
     collapsible: true,
     pagination: true,
     pageSize: 20,
+    rownumbers: true,
     onClickRow: function () {
       getSelectedRow();
     },
@@ -103,7 +104,6 @@ function loadTableByContainer(billOfLading) {
   $("#dgContainer").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
-    singleSelect: true,
     height: $(document).height() - 115,
     clientPaging: true,
     pagination: true,
@@ -251,6 +251,10 @@ function formatStatus(value) {
   }
 }
 
+function formatStatus2() {
+    return '<span class="label label-success">Trạng thái</span>  <a class="btn btn-danger btn-xs"><i class="fa fa-view"></i>Action</a>';
+}
+
 laydate.render({
   elem: '#toDate',
   format: 'dd/MM/yyyy'
@@ -261,13 +265,13 @@ laydate.render({
 });
 
 
-
-
-$('.c-search-box-vessel').on('select2:open', function (e) {
-  $('.c-search-box-vessel').text(null);
-  $('.c-search-box-voy-no').text(null);
-  $(this).text(null);
+$("#carrierCode").change(function () {
+  let edo = new Object();
+  edo.carrierCode = this.value;
+  loadTable(edo);
 });
+
+
 $(".c-search-box-vessel").select2({
   theme: "bootstrap",
   placeholder: "Vessel",
@@ -296,10 +300,38 @@ $(".c-search-box-vessel").select2({
   },
 });
 
+$(".c-search-box-vessel-code").select2({
+  theme: "bootstrap",
+  placeholder: "Vessel Code",
+  allowClear: true,
+  ajax: {
+    url: PREFIX + "/getVesselCode",
+    dataType: "json",
+    method: "GET",
+    data: function (params) {
+      return {
+        keyString: params.term,
+      };
+    },
+    processResults: function (data) {
+      let results = []
+      data.forEach(function (element, i) {
+        let obj = {};
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
+
+      })
+      return {
+        results: results,
+      };
+    },
+  },
+});
 
 $(".c-search-box-voy-no").select2({
   theme: "bootstrap",
-  placeholder: "Voy No",
+  placeholder: "Đơn vị logictis",
   allowClear: true,
   ajax: {
     url: PREFIX + "/getVoyNo",
@@ -325,14 +357,6 @@ $(".c-search-box-voy-no").select2({
       };
     },
   },
-});
-$('.c-search-box-vessel').on("select2:opening", function(e) {
-  $('.c-search-box-vessel').text(null);
-  edo = new Object();
-  loadTable(edo);
-});
-$('.c-search-box-voy-no').on('select2:open', function (e) {
-      $(this).text(null);
 });
 $(".c-search-opr-code").select2({
   theme: "bootstrap",
@@ -362,31 +386,28 @@ $(".c-search-opr-code").select2({
     },
   },
 });
-
-$('.c-search-box-voy-no').on("select2:opening", function(e) {
-  edo = new Object();
-  $(".c-search-box-voy-no").text(null);
-  edo.vessel = $(".c-search-box-vessel").text().trim();
-  loadTable(edo);
-  
-});
 // For submit search
 $(".c-search-box-vessel").change(function () {
   edo = new Object();
   edo.vessel = $(this).text().trim();
+  $(this).text(null);
   loadTable(edo);
 });
-
+$(".c-search-box-vessel-code").change(function () {
+  edo = new Object();
+  edo.vesselNo = $(this).text().trim();
+  $(this).text(null);
+  loadTable(edo);
+});
 $(".c-search-box-voy-no").change(function () {
   edo.voyNo = $(this).text().trim();
+  $(this).text(null);
   loadTable(edo);
 });
-$(".c-search-opr-code").on('select2:open', function (e) {
-  $(this).text(null);
-});
-$("#carrierCode").change(function () {
+$(".c-search-opr-code").change(function () {
   edo = new Object();
   edo.carrierCode = $(this).text().trim();
+  $(this).text(null);
   loadTable(edo);
 });
 
