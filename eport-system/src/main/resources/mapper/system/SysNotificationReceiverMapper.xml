@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.system.mapper.SysNotificationReceiverMapper">
+    
+    <resultMap type="SysNotificationReceiver" id="SysNotificationReceiverResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userType"    column="user_type"    />
+        <result property="notificationId"    column="notification_id"    />
+        <result property="notificationType"    column="notification_type"    />
+        <result property="seenFlg"    column="seen_flg"    />
+        <result property="seenTime"    column="seen_time"    />
+        <result property="sentFlg"    column="sent_flg"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectSysNotificationReceiverVo">
+        select id, user_id, user_type, notification_id, notification_type, seen_flg, seen_time, sent_flg, create_time, create_by, update_time, update_by from sys_notification_receiver
+    </sql>
+
+    <select id="selectSysNotificationReceiverList" parameterType="SysNotificationReceiver" resultMap="SysNotificationReceiverResult">
+        <include refid="selectSysNotificationReceiverVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="userType != null "> and user_type = #{userType}</if>
+            <if test="notificationId != null "> and notification_id = #{notificationId}</if>
+            <if test="notificationType != null  and notificationType != ''"> and notification_type = #{notificationType}</if>
+            <if test="seenFlg != null "> and seen_flg = #{seenFlg}</if>
+            <if test="seenTime != null "> and seen_time = #{seenTime}</if>
+            <if test="sentFlg != null "> and sent_flg = #{sentFlg}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysNotificationReceiverById" parameterType="Long" resultMap="SysNotificationReceiverResult">
+        <include refid="selectSysNotificationReceiverVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysNotificationReceiver" parameterType="SysNotificationReceiver">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT seq_sys_notification_receiver.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into sys_notification_receiver
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userType != null">user_type,</if>
+            <if test="notificationId != null">notification_id,</if>
+            <if test="notificationType != null">notification_type,</if>
+            <if test="seenFlg != null">seen_flg,</if>
+            <if test="seenTime != null">seen_time,</if>
+            <if test="sentFlg != null">sent_flg,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userType != null">#{userType},</if>
+            <if test="notificationId != null">#{notificationId},</if>
+            <if test="notificationType != null">#{notificationType},</if>
+            <if test="seenFlg != null">#{seenFlg},</if>
+            <if test="seenTime != null">#{seenTime},</if>
+            <if test="sentFlg != null">#{sentFlg},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysNotificationReceiver" parameterType="SysNotificationReceiver">
+        update sys_notification_receiver
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userType != null">user_type = #{userType},</if>
+            <if test="notificationId != null">notification_id = #{notificationId},</if>
+            <if test="notificationType != null">notification_type = #{notificationType},</if>
+            <if test="seenFlg != null">seen_flg = #{seenFlg},</if>
+            <if test="seenTime != null">seen_time = #{seenTime},</if>
+            <if test="sentFlg != null">sent_flg = #{sentFlg},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysNotificationReceiverById" parameterType="Long">
+        delete from sys_notification_receiver where id = #{id}
+    </delete>
+
+    <delete id="deleteSysNotificationReceiverByIds" parameterType="String">
+        delete from sys_notification_receiver where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
