@@ -142,6 +142,8 @@ public class ProcessOrder extends BaseEntity
     private String paymentStatus;
 
     private String doStatus;
+    
+    private Boolean domesticFlg;
 
     public void setId(Long id) 
     {
@@ -448,8 +450,16 @@ public class ProcessOrder extends BaseEntity
     public void setDoStatus(String doStatus) {
         this.doStatus = doStatus;
     }
+    
+    public Boolean getDomesticFlg() {
+		return domesticFlg;
+	}
 
-    @Override
+	public void setDomesticFlg(Boolean domesticFlg) {
+		this.domesticFlg = domesticFlg;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())

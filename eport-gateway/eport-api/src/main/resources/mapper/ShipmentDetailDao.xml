@@ -371,9 +371,16 @@
 		<!-- FETCH NEXT #{containerAmount} ROWS ONLY -->
 	</select>
 
-	<select id="getSztpByContainerNo" parameterType="String" resultType="String">
+	<select id="getSztpByContainerNoMaster" parameterType="String" resultType="String">
 		SELECT SZTP
 		FROM DNP_UAT.TB_MASTER
+		WHERE CNTR_NO = #{containerNo}
+		fetch next 1 rows only
+	</select>
+
+	<select id="getSztpByContainerNoInventory" parameterType="String" resultType="String">
+		SELECT SZTP
+		FROM DNP_UAT.TB_INVENTORY
 		WHERE CNTR_NO = #{containerNo}
 		fetch next 1 rows only
 	</select>

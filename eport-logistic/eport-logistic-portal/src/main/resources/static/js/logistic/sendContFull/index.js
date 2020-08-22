@@ -624,9 +624,37 @@ function configHandson() {
                 renderer: remarkRenderer
             },
         ],
-        // beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
-        //     if(coords.col == 0) event.stopImmediatePropagation();
-        // },
+        beforeKeyDown: function (e) {
+            let selected = hot.getSelected()[0];
+            switch (e.keyCode) {
+                // Arrow Left
+                case 37:
+                    if (selected[3] == 0) {
+                        e.stopImmediatePropagation();
+                    } 
+                    break;
+                // Arrow Up
+                case 38:
+                    if (selected[2] == 0) {
+                        e.stopImmediatePropagation();
+                    } 
+                    break;
+                // Arrow Right
+                case 39:
+                    if (selected[3] == 12) {
+                        e.stopImmediatePropagation();
+                    } 
+                    break
+                // Arrow Down
+                case 40:
+                    if (selected[2] == rowAmount-1) {
+                        e.stopImmediatePropagation();
+                    } 
+                    break
+                default:
+                    break;
+            }
+        },
         afterChange: onChange
     };
 }
@@ -735,13 +763,21 @@ function onChange(changes, source) {
             if (!change[3]) {
                 sztpListDisable[change[0]] = 0;
                 hot.setDataAtCell(change[0], 3, '');
+                hot.updateSettings({
+                    cells: function (row, col, prop) {
+                        if (row == change[0] && col == 3) {
+                            let cellProperties = {};
+                            cellProperties.source = sizeList;
+                            return cellProperties;
+                        }
+                    }
+                });
             } else {
                 $.ajax({
                     url: prefix + "/containerNo/" + change[3] + "/sztp",
                     method: "GET",
                     success: function (data) {
                         if (data.code == 0) {
-                           
                             if (data.sztp) {
                                 sizeList.forEach(element => {
                                     if (data.sztp == element.substring(0, 4)) {

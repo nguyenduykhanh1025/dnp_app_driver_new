@@ -25,6 +25,7 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
@@ -70,11 +71,14 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	@Autowired
 	private DictService dictService;
 	
+	@Autowired
+	private ConfigService configService;
+	
 	// @Autowired
 	// private CustomQueueService customQueueService;
 	
     @GetMapping()
-	public String sendContEmpty() {
+	public String sendContEmpty() {    	
 		return PREFIX + "/index";
 	}
 
@@ -386,6 +390,8 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 				}
 			}
 		}
-		return error();
+		String danangDepotName = configService.getKey("danang.depot.name");
+		ajaxResult.put("emptyDepotLocation", danangDepotName);
+		return ajaxResult;
 	}
 }
