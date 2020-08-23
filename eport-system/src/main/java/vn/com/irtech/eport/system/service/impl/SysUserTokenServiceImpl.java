@@ -94,4 +94,15 @@ public class SysUserTokenServiceImpl implements ISysUserTokenService
     {
         return sysUserTokenMapper.deleteSysUserTokenById(id);
     }
+    
+    /**
+     * Delete User Token By User Token
+     * 
+     * @param userLoginToken
+     * @return int
+     */
+    @Override
+    public int deleteUserTokenByUserToken(String userLoginToken) {
+    	return sysUserTokenMapper.deleteUserTokenByUserToken(userLoginToken);
+    }
 }

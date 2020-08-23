@@ -538,16 +538,7 @@ function onChange(changes, source) {
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
                 sztpListDisable[change[0]] = 0;
-                hot.setDataAtCell(change[0], 3, '');
-                hot.updateSettings({
-                    cells: function (row, col, prop) {
-                        if (row == change[0] && col == 3) {
-                            let cellProperties = {};
-                            cellProperties.source = sizeList;
-                            return cellProperties;
-                        }
-                    }
-                });
+                cleanCell(change[0], 3, sizeList);
             } else {
                 $.ajax({
                     url: prefix + "/containerNo/" + change[3] + "/sztp",
@@ -563,15 +554,33 @@ function onChange(changes, source) {
                                 });
                                 sztpListDisable[change[0]] = 1;
                                 hot.setDataAtCell(change[0], 3, data.sztp);
+                            } else {
+                                sztpListDisable[change[0]] = 0;
+                                cleanCell(change[0], 3, sizeList);
                             }
                         } else {
                             sztpListDisable[change[0]] = 0;
+                            cleanCell(change[0], 3, sizeList);
                         }
                     },
                     error: function(err) {
                         sztpListDisable[change[0]] = 0;
+                        cleanCell(change[0], 3, sizeList);
                     }
                 });
+            }
+        }
+    });
+}
+
+function cleanCell(roww, coll, src) {
+    hot.setDataAtCell(roww, coll, '');
+    hot.updateSettings({
+        cells: function (row, col, prop) {
+            if (row == roww && col == coll) {
+                let cellProperties = {};
+                cellProperties.source = src;
+                return cellProperties;
             }
         }
     });

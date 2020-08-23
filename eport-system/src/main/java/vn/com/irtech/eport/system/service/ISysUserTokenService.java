@@ -58,4 +58,12 @@ public interface ISysUserTokenService
      * @return result
      */
     public int deleteSysUserTokenById(Long id);
+    
+    /**
+     * Delete User Token By User Token
+     * 
+     * @param userLoginToken
+     * @return int
+     */
+    public int deleteUserTokenByUserToken(String userLoginToken);
 }

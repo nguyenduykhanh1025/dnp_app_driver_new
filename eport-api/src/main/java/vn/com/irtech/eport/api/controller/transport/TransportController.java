@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
@@ -37,13 +38,15 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.NotificationForm;
 import vn.com.irtech.eport.logistic.form.Pickup;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
-import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
+import vn.com.irtech.eport.system.dto.NotificationRes;
 import vn.com.irtech.eport.system.service.ISysConfigService;
+import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
 
 @RestController
 @RequestMapping("/transport")
@@ -59,9 +62,6 @@ public class TransportController extends BaseController {
 	private IPickupAssignService pickupAssignService;
 
 	@Autowired
-	private IDriverAccountService driverAccountService;
-
-	@Autowired
 	private IShipmentService shipmentService;
 
 	@Autowired
@@ -72,6 +72,9 @@ public class TransportController extends BaseController {
 	
 	@Autowired
 	private MqttService mqttService;
+	
+	@Autowired
+	private ISysNotificationReceiverService sysNotificationReceiverService;
 	
 	/**
 	 * Get pickup history
@@ -301,17 +304,12 @@ public class TransportController extends BaseController {
 	@ResponseBody
 	public AjaxResult getNotifyList() {
 		startPage();
-		List<NotificationForm> notificationForms = new ArrayList<>();
-		for (int i=0; i<10; i++) {
-			NotificationForm notificationForm = new NotificationForm();
-			notificationForm.setNotificationId(Long.valueOf(i));
-			notificationForm.setTitle("Title " + i);
-			notificationForm.setContent("Content " + i);
-			notificationForm.setCreateTime(new Date());
-			notificationForms.add(notificationForm);
-		}
+		SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
+		sysNotificationReceiver.setUserId(SecurityUtils.getCurrentUser().getUser().getUserId());
+		sysNotificationReceiver.setUserType(BusinessConsts.DRIVER_USER_TYPE);
+		List<NotificationRes> notificationReses = sysNotificationReceiverService.getNotificationList(sysNotificationReceiver);
 		AjaxResult ajaxResult = AjaxResult.success();
-		ajaxResult.put("notificationList", notificationForms);
+		ajaxResult.put("notificationList", notificationReses);
 		return ajaxResult;
     }
 	
@@ -352,8 +350,7 @@ public class TransportController extends BaseController {
 						try {
 							mqttService.sendMessageToMc(map.toString());
 						} catch (MqttException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							logger.error("Api Driver Error Update Location: " + e);
 						}
 					}					
 				}

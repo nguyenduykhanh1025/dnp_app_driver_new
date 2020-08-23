@@ -17,6 +17,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createBy"    column="create_by"    />
         <result property="updateTime"    column="update_time"    />
         <result property="updateBy"    column="update_by"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="notifyLink"    column="notify_link"    />
     </resultMap>
 
     <sql id="selectSysNotificationReceiverVo">
@@ -55,10 +58,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="seenFlg != null">seen_flg,</if>
             <if test="seenTime != null">seen_time,</if>
             <if test="sentFlg != null">sent_flg,</if>
-            <if test="createTime != null">create_time,</if>
             <if test="createBy != null">create_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="updateBy != null">update_by,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -69,10 +70,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="seenFlg != null">#{seenFlg},</if>
             <if test="seenTime != null">#{seenTime},</if>
             <if test="sentFlg != null">#{sentFlg},</if>
-            <if test="createTime != null">#{createTime},</if>
             <if test="createBy != null">#{createBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -86,10 +85,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="seenFlg != null">seen_flg = #{seenFlg},</if>
             <if test="seenTime != null">seen_time = #{seenTime},</if>
             <if test="sentFlg != null">sent_flg = #{sentFlg},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
@@ -104,4 +101,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{id}
         </foreach>
     </delete>
+
+    <select id="getNotificationList" parameterType="SysNotificationReceiver" resultType="vn.com.irtech.eport.system.dto.NotificationRes">
+        select r.notification_type as notificationType, r.seen_flg as seenFlg, n.title as title, n.content as content, 
+        n.notify_link as notifyLink, n.create_time as createTime 
+        from sys_notification_receiver r
+        left join sys_notification n on r.notification_id = n.id
+        <where>
+            r.sent_flg = 1
+            <if test="userId != null "> and r.user_id = #{userId}</if>
+            <if test="userType != null "> and r.user_type = #{userType}</if>
+            <if test="notificationId != null "> and r.notification_id = #{notificationId}</if>
+            <if test="notificationType != null  and notificationType != ''"> and r.notification_type = #{notificationType}</if>
+            <if test="seenFlg != null "> and r.seen_flg = #{seenFlg}</if>
+            <if test="createTime != null "> and TO_CHAR(n.createTime, 'DD/MM/YYYY') = #{createTime}</if>
+        </where>
+    </select>
 </mapper>

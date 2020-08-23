@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vn.com.irtech.eport.system.mapper.SysNotificationReceiverMapper;
 import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
+import vn.com.irtech.eport.system.dto.NotificationRes;
 import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
 import vn.com.irtech.eport.common.core.text.Convert;
 
@@ -93,5 +94,16 @@ public class SysNotificationReceiverServiceImpl implements ISysNotificationRecei
     public int deleteSysNotificationReceiverById(Long id)
     {
         return sysNotificationReceiverMapper.deleteSysNotificationReceiverById(id);
+    }
+    
+    /**
+     * Get notification list
+     * 
+     * @param notificationRes
+     * @return	List<NotificationRes>
+     */
+    @Override
+    public List<NotificationRes> getNotificationList(SysNotificationReceiver sysNotificationReceiver) {
+    	return sysNotificationReceiverMapper.getNotificationList(sysNotificationReceiver);
     }
 }

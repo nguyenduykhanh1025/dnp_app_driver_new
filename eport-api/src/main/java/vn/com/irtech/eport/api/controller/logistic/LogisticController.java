@@ -64,7 +64,7 @@ public class LogisticController extends BaseController {
 		shipmentParam.setLogisticGroupId(logisticAccount.getGroupId());
 		List<Shipment> shipments = shipmentService.selectShipmentList(shipmentParam);
 		if (CollectionUtils.isEmpty(shipments)) {
-			// TODO : Add messeage text
+			// Add messeage text
 			return error();
 			// return "error/unauth";
 		}
@@ -80,13 +80,13 @@ public class LogisticController extends BaseController {
 			// return "error/404";
 		}
 		
-		// TODO : Sort processBills by processOrderId
+		// Sort processBills by processOrderId
 		Collections.sort(processBills, new ProcessIdComparator());
 		
-		// TODO : count Total
+		// count Total
 		Long total = 0L;	
 		
-		// TODO : Create order id for transaction
+		// Create order id for transaction
 		String orderId = "Order-" + processBills.get(0).getProcessOrderId();
 		Long currentProcessId = processBills.get(0).getProcessOrderId();
 				

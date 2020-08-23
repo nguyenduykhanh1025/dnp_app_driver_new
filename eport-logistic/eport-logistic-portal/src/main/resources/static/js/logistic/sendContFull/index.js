@@ -666,8 +666,8 @@ function onChange(changes, source) {
     }
     changes.forEach(function (change) {
 
-   	 // Trigger when opeCode no change, get list vessel-voyage by opeCode
-       if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
+   	    // Trigger when opeCode no change, get list vessel-voyage by opeCode
+        if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
            //hot.setDataAtCell(change[0], 6, '');//vessel and voyage reset
        	    $.modal.loading("Đang xử lý ...");
             $.ajax({
@@ -689,43 +689,43 @@ function onChange(changes, source) {
                     }
                 }
             });
-       } 
-       // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
-       else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-         let vesselAndVoy = hot.getDataAtCell(change[0], 6);
-         //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
-         if (vesselAndVoy) {
-             let shipmentDetail = new Object();
-             for (let i= 0; i < berthplanList.length;i++){
-             	if(vesselAndVoy == berthplanList[i].vslAndVoy){
-             		shipmentDetail.vslNm = berthplanList[i].vslNm;
-             		shipmentDetail.voyNo = berthplanList[i].voyNo;
-             		shipmentDetail.year = berthplanList[i].year;
-             		$.modal.loading("Đang xử lý ...");
-                    $.ajax({
-                        url: ctx + "/logistic/pods",
-                        method: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(shipmentDetail),
-                        success: function (data) {
-                        $.modal.closeLoading();
-                            if (data.code == 0) {
-                                hot.updateSettings({
-                                    cells: function (row, col, prop) {
-                                        if (row == change[0] && col == 11) {
-                                            let cellProperties = {};
-                                            cellProperties.source = data.dischargePorts;
-                                            return cellProperties;
+        } 
+        // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
+        else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+            let vesselAndVoy = hot.getDataAtCell(change[0], 6);
+            //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
+            if (vesselAndVoy) {
+                let shipmentDetail = new Object();
+                for (let i = 0; i < berthplanList.length; i++) {
+                    if (vesselAndVoy == berthplanList[i].vslAndVoy) {
+                        shipmentDetail.vslNm = berthplanList[i].vslNm;
+                        shipmentDetail.voyNo = berthplanList[i].voyNo;
+                        shipmentDetail.year = berthplanList[i].year;
+                        $.modal.loading("Đang xử lý ...");
+                        $.ajax({
+                            url: ctx + "/logistic/pods",
+                            method: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(shipmentDetail),
+                            success: function (data) {
+                                $.modal.closeLoading();
+                                if (data.code == 0) {
+                                    hot.updateSettings({
+                                        cells: function (row, col, prop) {
+                                            if (row == change[0] && col == 11) {
+                                                let cellProperties = {};
+                                                cellProperties.source = data.dischargePorts;
+                                                return cellProperties;
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+                                }
                             }
-                        }
-                    });
-             	}
-             }
-         }
-            // check to input temperature
+                        });
+                    }
+                }
+            }
+        // check to input temperature
         } else if (change[1] == "sztp") {
 
             if (change[3] && hot.getDataAtCell(change[0], 2)) {
@@ -734,8 +734,7 @@ function onChange(changes, source) {
                 $('#detailBtn' + change[0]).prop('disabled', true);
             }
 
-        	hot.setDataAtCell(change[0], 5, '');//opeCode reset
-            if (change[3] && change[3].length > 3 && change[3].substring(0,4).includes("R")) {
+            if (change[3] && change[3].length > 3 && change[3].substring(0, 4).includes("R")) {
                 temperatureDisable[change[0]] = 0;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
@@ -762,16 +761,7 @@ function onChange(changes, source) {
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
                 sztpListDisable[change[0]] = 0;
-                hot.setDataAtCell(change[0], 3, '');
-                hot.updateSettings({
-                    cells: function (row, col, prop) {
-                        if (row == change[0] && col == 3) {
-                            let cellProperties = {};
-                            cellProperties.source = sizeList;
-                            return cellProperties;
-                        }
-                    }
-                });
+                cleanCell(change[0], 3, sizeList);
             } else {
                 $.ajax({
                     url: prefix + "/containerNo/" + change[3] + "/sztp",
@@ -787,13 +777,18 @@ function onChange(changes, source) {
                                 });
                                 sztpListDisable[change[0]] = 1;
                                 hot.setDataAtCell(change[0], 3, data.sztp);
+                            } else {
+                                sztpListDisable[change[0]] = 0;
+                                cleanCell(change[0], 3, sizeList);
                             }
                         } else {
                             sztpListDisable[change[0]] = 0;
+                            cleanCell(change[0], 3, sizeList);
                         }
                     },
-                    error: function(err) {
+                    error: function (err) {
                         sztpListDisable[change[0]] = 0;
+                        cleanCell(change[0], 3, sizeList);
                     }
                 });
             }
@@ -801,6 +796,19 @@ function onChange(changes, source) {
                 $('#detailBtn' + change[0]).prop('disabled', false);
             } else {
                 $('#detailBtn' + change[0]).prop('disabled', true);
+            }
+        }
+    });
+}
+
+function cleanCell(roww, coll, src) {
+    hot.setDataAtCell(roww, coll, '');
+    hot.updateSettings({
+        cells: function (row, col, prop) {
+            if (row == roww && col == coll) {
+                let cellProperties = {};
+                cellProperties.source = src;
+                return cellProperties;
             }
         }
     });
