@@ -112,3 +112,7 @@ body {
 .clear {
   clear: both;
 }
+
+.tabs-container .panel-body {
+  padding: 0 !important;
+}
