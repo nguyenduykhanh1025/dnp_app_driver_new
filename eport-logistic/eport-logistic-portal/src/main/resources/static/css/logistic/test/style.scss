@@ -1,109 +1,148 @@
+@import "utilities/display";
+@import "mixin";
+
 $white: #ffffff;
 $black: #000000;
 $lightblue: #f3f7fa;
-$lightgrey: #f3f3f4;
 body {
-    height: 98%;
+  height: 98%;
 }
 .mb-2 {
-    margin-bottom: 2em;
+  margin-bottom: 2em;
 }
 .grey-background {
-    color: $black;
-    background: $lightblue;
-    .main-body {
-        margin: 10px;
-        margin-bottom: 0;
-        .main-body__search-wrapper {
-            border-radius: 3px;
-            background: $white;
-            padding: 10px;
-            padding-bottom: 0;
-            height: max-content;
-            display: flex;
-            position: relative;
-            transition: 0.3s all;
-            overflow: hidden;
-            margin-bottom: 10px;
-            .btn-collapse {
-                position: absolute;
-                top: 0;
-                right: 0;
-                font-size: 1.5em;
-                width: 25px;
-                height: 25px;
-                text-align: center;
-                cursor: pointer;
-                &:hover {
-                    border: 1px solid #ccc;
-                }
-            }
-            .uncollapse {
-                display: none;
-            }
-            .collapse {
-                display: block;
-            }
-            form {
-                display: inline-block;
-                width: 80%;
-                .form-inline {
-                    display: inline-block;
-                    margin-bottom: 10px;
-                    label.textbox-label {
-                        width: auto;
-                    }
-                    .textbox {
-                        border: none;
-                        border-bottom: 1px solid #D4D4D4;
-                        border-radius: 0;
-                        line-height: 1;
-                    }
-                    .textbox-focused {
-                        box-shadow: none;
-                    }
-                    .textbox-text {
-                        height: 12px;
-                        line-height: 12px;
-                    }
-                    .combo {
-                        width: 110px !important;
-                        line-height: 1;
-                    }
-                    .validatebox-text {
-                        width: max-content !important;
-                    }
-                }
-            }
-            .main-body__search-wrapper--btn-group {
-                float: right;
-                width: 20%;
-                .btn {
-                    font-size: 12px;
-                    margin-bottom: 5px;
-                }
-            }
-            .main-body__table-wrapper {
-            }
+  color: $black;
+  background: $lightblue;
+  .main-body {
+    margin: 10px;
+    margin-bottom: 0;
+    .main-body__search-wrapper {
+      border-radius: 3px;
+      background: $white;
+      padding: 10px;
+      padding-bottom: 0;
+      height: max-content;
+      display: flex;
+      position: relative;
+      transition: 0.1s all;
+      overflow: hidden;
+      margin-bottom: 10px;
+      .btn-collapse {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 1.5em;
+        width: 25px;
+        height: 25px;
+        text-align: center;
+        cursor: pointer;
+        &:hover {
+          border: 1px solid #ccc;
         }
+      }
+      .uncollapse {
+        display: none;
+      }
+      .collapse {
+        display: block;
+      }
+      .main-body__search-wrapper--container {
+        display: flex;
+        form {
+          display: inline-block;
+          .form-inline {
+            display: inline-block;
+            margin-bottom: 10px;
+            label.textbox-label {
+              width: auto;
+            }
+            .textbox {
+              border: none;
+              border-bottom: 1px solid #d4d4d4;
+              border-radius: 0;
+              line-height: 1;
+            }
+            .textbox-focused {
+              box-shadow: none;
+            }
+            .textbox-text {
+              height: 12px;
+              line-height: 12px;
+            }
+            .combo {
+              width: 110px !important;
+              line-height: 1;
+            }
+            .validatebox-text {
+              width: max-content !important;
+            }
+          }
+        }
+        .main-body__search-wrapper--btn-group {
+          float: right;
+          width: 20%;
+          .btn {
+            font-size: 12px;
+            margin-bottom: 5px;
+          }
+        }
+      }
+
+      .main-body__table-wrapper {
+      }
     }
+    .main-body__table-wrapper {
+      .left-side {
+        position: relative;
+        .left-side__collapse {
+          @include btn-collapse-col;
+          &:hover {
+            cursor: w-resize;
+          }
+        }
+        .left-side__uncollapse {
+          @include btn-collapse-col;
+          display: none;  
+          &:hover {
+            cursor: e-resize;
+          }
+        }
+      }
+      .right-side {
+        .handsontable th {
+          color: #333;
+          font-size: 12px;
+          background-color: #f5f5f5;
+        }
+        .ht_clone_top_left_corner th,
+        .ht_clone_left th,
+        .ht_clone_top th,
+        .ht_clone_top_left_corner th {
+          @include border-dotted;
+        }
+        .ht_master tr:nth-of-type(odd) > td,
+        .htCore tr:nth-of-type(odd) > td {
+          background-color: #fff;
+          @include border-dotted;
+        }
+        .ht_master tr:nth-of-type(even) > td,
+        .htCore tr:nth-of-type(even) > td {
+          background-color: #f5f5f5;
+          @include border-dotted;
+        }
+      }
+    }
+  }
 }
 
 .clear {
-    clear: both;
+  clear: both;
 }
-
 
 .tabs-container .panel-body {
-    padding: 0 !important;
+  padding: 0 !important;
 }
-// .datagrid-toolbar {
-//     background: #99bce8;
-// }
 
-// .datagrid-btn-separator {
-//     color: $lightgrey;
-//     border-color: $lightgrey;
-// }
-
-
+.text-uppercase {
+  font-style: uppercase;
+}
