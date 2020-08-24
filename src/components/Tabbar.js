@@ -31,7 +31,7 @@ import {
 let unseen = 0;
 
 const getUnseenNumber = () => {
-    unseen = 6;
+    unseen = 0;
     return unseen;
 }
 

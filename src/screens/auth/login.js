@@ -130,33 +130,38 @@ class LoginContainer extends PureComponent {
     onLogin = async () => {
         const fcmToken = await firebase.messaging().getToken();
         console.log('token', fcmToken)
-        Toast.showLoading()
         const { loginname, pwd } = this.state;
-        const params = {
-            api: 'login',
-            param: {
-                userName: loginname,
-                passWord: pwd,
-                deviceToken: fcmToken,
-            },
-            token: '',
-            method: 'POST'
-        }
-        var result = undefined;
-        result = await callApi(params);
-        if (result.code == 0) {
-            Toast.hide()
-            this.token = result.token;
-            this.onShareLocation()
-            saveAccount(loginname);
-            savePassword(pwd);
-            saveToken(result.token)
-            FlashMessage('Đăng nhập thành công', 'success')
-            NavigationService.navigate(mainStack.home_tab)
+        if (!loginname == '' || !pwd == '') {
+            Toast.showLoading()
+            const params = {
+                api: 'login',
+                param: {
+                    userName: loginname,
+                    passWord: pwd,
+                    deviceToken: fcmToken,
+                },
+                token: '',
+                method: 'POST'
+            }
+            var result = undefined;
+            result = await callApi(params);
+            if (result.code == 0) {
+                Toast.hide()
+                this.token = result.token;
+                this.onShareLocation()
+                saveAccount(loginname);
+                savePassword(pwd);
+                saveToken(result.token)
+                FlashMessage('Đăng nhập thành công', 'success')
+                NavigationService.navigate(mainStack.home_tab)
+            }
+            else {
+                Toast.hide()
+                Alert.alert('Thông báo!', result.msg)
+            }
         }
         else {
-            Toast.hide()
-            Alert.alert('Thông báo!', result.msg)
+            Alert.alert('Thông báo!', 'Không để trống số điện thoại hoặc mật khẩu!')
         }
     }
 
@@ -224,7 +229,7 @@ class LoginContainer extends PureComponent {
                                 <Text style={styles.HeaderTextDown}>CẢNG ĐÀ NẴNG</Text>
                             </View>
                             <View style={styles.HeaderIcon}>
-                                <Image resizeMode = 'contain' source={hicon} style={styles.HeaderIconImage} />
+                                <Image resizeMode='contain' source={hicon} style={styles.HeaderIconImage} />
                             </View>
                         </View>
                     </View>

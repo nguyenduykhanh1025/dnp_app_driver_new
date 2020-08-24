@@ -124,7 +124,7 @@ export default class HomeScreen extends Component {
     if (PickupList.length < 4) {
       PickupList.map((item, index) => {
         if (item.serviceType % 2 == 0) {
-          if (item.sztp != null && item.sztp.slice(0, 2) == '20') {
+          if (item.sztp != null && item.sztp.slice(0, 2) == '22') {
             downEnable++
 
           }
@@ -133,7 +133,7 @@ export default class HomeScreen extends Component {
           }
         }
         else {
-          if (item.sztp != null && item.sztp.slice(0, 2) == '20') {
+          if (item.sztp != null && item.sztp.slice(0, 2) == '22') {
             upEnable++
           }
           else {

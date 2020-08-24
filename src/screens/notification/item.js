@@ -8,7 +8,7 @@ const ic_c = require('@/assets/icons/Group-c.png')
 const ic_l = require('@/assets/icons/Group-l.png')
 
 export default class Item extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       modalVisible: false
@@ -16,32 +16,40 @@ export default class Item extends Component {
   }
 
   onClose = () => {
-    this.setState({modalVisible: false})
+    this.setState({ modalVisible: false })
   }
 
   render() {
     var { data, onPress, index } = this.props;
     var date = moment(data.createTime).format('DD-MM-YYYY')
     return (
-      <TouchableOpacity onPress={() => this.setState({modalVisible: true})} style={styles.itemContainer}>
+      <TouchableOpacity onPress={() => this.setState({ modalVisible: true })} style={styles.itemContainer}>
         <View style={styles.imageView}>
           {
-            index % 2 == 0 ?
+            data.notificationType == 'RM' ?
               <Image source={ic_c} style={styles.image} />
               :
               <Image source={ic_l} style={styles.image} />
           }
         </View>
-        <View style={styles.ContentView}>
-          <Text style={[styles.title, index % 2 == 0 ? {fontWeight: 'bold'} : null]}>{data.title}</Text>
+        <View style={[styles.ContentView]}>
+          <Text style={[styles.title, !data.seenFlg ? { fontWeight: 'bold' } : null]}>{data.title}</Text>
           <Text style={styles.description}>{data.content}</Text>
-          <Text style={styles.datetime}>{date}</Text>
+          <View style={{
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexDirection: 'row',
+            width: sizeWidth(70),
+          }}>
+            <Text style={styles.datetime}>{date}</Text>
+            <Text style={styles.datetime}>{data.seenFlg ? 'Đã xem' : 'Chưa xem'}</Text>
+          </View>
         </View>
         <NotifyDetailModal
-          onClose = {this.onClose}
-          visible = {this.state.modalVisible}
-          data = {data}
-          index = {index}
+          onClose={this.onClose}
+          visible={this.state.modalVisible}
+          data={data}
+          index={index}
         />
       </TouchableOpacity>
     )
@@ -80,7 +88,6 @@ const styles = StyleSheet.create({
     color: Colors.tinyTextGrey,
   },
   datetime: {
-    width: sizeWidth(70),
     fontSize: 12,
     color: Colors.tinyTextGrey,
     marginTop: sizeHeight(0.5)
