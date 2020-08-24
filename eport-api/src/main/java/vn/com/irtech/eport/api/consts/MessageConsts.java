@@ -52,4 +52,7 @@ public class MessageConsts {
 
 	public static final String E0025 = "E0025";
 
+	public static final String E0026 = "E0026";
+	
+	public static final String E0027 = "E0027";
 }

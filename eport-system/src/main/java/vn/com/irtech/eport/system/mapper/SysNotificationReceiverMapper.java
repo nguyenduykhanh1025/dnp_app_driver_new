@@ -2,6 +2,7 @@ package vn.com.irtech.eport.system.mapper;
 
 import java.util.List;
 import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
+import vn.com.irtech.eport.system.dto.NotificationRes;
 
 /**
  * NotificationMapper Interface
@@ -58,4 +59,12 @@ public interface SysNotificationReceiverMapper
      * @return result
      */
     public int deleteSysNotificationReceiverByIds(String[] ids);
+    
+    /**
+     * Get notification list
+     * 
+     * @param notificationRes
+     * @return	List<NotificationRes>
+     */
+    public List<NotificationRes> getNotificationList(SysNotificationReceiver sysNotificationReceiver);
 }

@@ -11,15 +11,15 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 
 
 @Controller
-@RequestMapping("/om/support/receiveFull")
+@RequestMapping("/om/support")
 public class SupportReceiveFullController extends BaseController{
 
-    private final String PREFIX = "om/SupportReceiveFull"; 
+    private final String PREFIX = "om/support"; 
 
-    @GetMapping()
+    @GetMapping("/receiveFull")
     public String getViewSupportReceiveFull()
     {
-        return PREFIX + "/index";
+        return PREFIX + "/receiveFull";
     }
 
 }

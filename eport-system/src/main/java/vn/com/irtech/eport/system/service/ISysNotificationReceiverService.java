@@ -2,6 +2,7 @@ package vn.com.irtech.eport.system.service;
 
 import java.util.List;
 import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
+import vn.com.irtech.eport.system.dto.NotificationRes;
 
 /**
  * NotificationService Interface
@@ -58,4 +59,12 @@ public interface ISysNotificationReceiverService
      * @return result
      */
     public int deleteSysNotificationReceiverById(Long id);
+    
+    /**
+     * Get notification list
+     * 
+     * @param notificationRes
+     * @return	List<NotificationRes>
+     */
+    public List<NotificationRes> getNotificationList(SysNotificationReceiver sysNotificationReceiver);
 }

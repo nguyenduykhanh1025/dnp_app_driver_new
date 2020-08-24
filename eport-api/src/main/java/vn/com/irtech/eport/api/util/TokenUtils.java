@@ -27,6 +27,8 @@ public class TokenUtils {
 
 	private static String SIGNING_KEY;
 
+	private static Date EXPIRATION_DATE;
+
 	@Value("${jwt.token-expiration-time:0}")
 	public void setExpirationTime(int expirationTime) {
 		EXPIRATION_TIME = expirationTime;
@@ -44,9 +46,9 @@ public class TokenUtils {
 
 	public static String generateToken(CustomUserDetails userDetails) {
 		Date now = new Date();
-		Date expiryDate = DateUtils.addSeconds(now, EXPIRATION_TIME);
+		EXPIRATION_DATE = DateUtils.addSeconds(now, EXPIRATION_TIME);
 		return Jwts.builder().setIssuer(ISSUER).setSubject(userDetails.getUser().getSubject())
-				.setIssuedAt(now).setExpiration(expiryDate).signWith(SignatureAlgorithm.HS512, SIGNING_KEY).compact();
+				.setIssuedAt(now).setExpiration(EXPIRATION_DATE).signWith(SignatureAlgorithm.HS512, SIGNING_KEY).compact();
 	}
 
 	public static String getSubjectFromToken(String token) {
@@ -74,5 +76,9 @@ public class TokenUtils {
 			logger.warn(ex.getMessage());
 		}
 		return false;
+	}
+
+	public static Date getExpirationDate() {
+		return EXPIRATION_DATE;
 	}
 }
