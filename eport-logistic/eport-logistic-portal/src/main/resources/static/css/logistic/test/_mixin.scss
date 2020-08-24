@@ -46,4 +46,19 @@ $colors: ("red", "green", "blue", "grey", "white", "black");
   border-style: dotted;
 }
 
+@mixin btn-collapse-col {
+  border: 1px solid #cccccc;
+  font-size: 0.5em;
+  background: #cccccc;
+  opacity: 0.6;
+  height: 50px;
+  line-height: 50px;
+  position: absolute;
+  top: 40%;
+  right: 0;
+  z-index: 1406;
+  &:hover {
+    opacity: 1;
+  }
+}
 @include generate();

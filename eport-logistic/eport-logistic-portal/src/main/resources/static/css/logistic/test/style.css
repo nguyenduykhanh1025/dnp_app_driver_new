@@ -297,8 +297,8 @@ body {
   display: -ms-flexbox;
   display: flex;
   position: relative;
-  -webkit-transition: 0.3s all;
-  transition: 0.3s all;
+  -webkit-transition: 0.1s all;
+  transition: 0.1s all;
   overflow: hidden;
   margin-bottom: 10px;
 }
@@ -326,54 +326,59 @@ body {
   display: block;
 }
 
-.grey-background .main-body .main-body__search-wrapper form {
-  display: inline-block;
-  width: 80%;
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
 }
 
-.grey-background .main-body .main-body__search-wrapper form .form-inline {
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container form {
+  display: inline-block;
+}
+
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container form .form-inline {
   display: inline-block;
   margin-bottom: 10px;
 }
 
-.grey-background .main-body .main-body__search-wrapper form .form-inline label.textbox-label {
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container form .form-inline label.textbox-label {
   width: auto;
 }
 
-.grey-background .main-body .main-body__search-wrapper form .form-inline .textbox {
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container form .form-inline .textbox {
   border: none;
   border-bottom: 1px solid #d4d4d4;
   border-radius: 0;
   line-height: 1;
 }
 
-.grey-background .main-body .main-body__search-wrapper form .form-inline .textbox-focused {
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container form .form-inline .textbox-focused {
   -webkit-box-shadow: none;
           box-shadow: none;
 }
 
-.grey-background .main-body .main-body__search-wrapper form .form-inline .textbox-text {
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container form .form-inline .textbox-text {
   height: 12px;
   line-height: 12px;
 }
 
-.grey-background .main-body .main-body__search-wrapper form .form-inline .combo {
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container form .form-inline .combo {
   width: 110px !important;
   line-height: 1;
 }
 
-.grey-background .main-body .main-body__search-wrapper form .form-inline .validatebox-text {
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container form .form-inline .validatebox-text {
   width: -webkit-max-content !important;
   width: -moz-max-content !important;
   width: max-content !important;
 }
 
-.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--btn-group {
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container .main-body__search-wrapper--btn-group {
   float: right;
   width: 20%;
 }
 
-.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--btn-group .btn {
+.grey-background .main-body .main-body__search-wrapper .main-body__search-wrapper--container .main-body__search-wrapper--btn-group .btn {
   font-size: 12px;
   margin-bottom: 5px;
 }
@@ -397,7 +402,32 @@ body {
 
 .grey-background .main-body .main-body__table-wrapper .left-side .left-side__collapse:hover {
   opacity: 1;
+}
+
+.grey-background .main-body .main-body__table-wrapper .left-side .left-side__collapse:hover {
   cursor: w-resize;
+}
+
+.grey-background .main-body .main-body__table-wrapper .left-side .left-side__uncollapse {
+  border: 1px solid #cccccc;
+  font-size: 0.5em;
+  background: #cccccc;
+  opacity: 0.6;
+  height: 50px;
+  line-height: 50px;
+  position: absolute;
+  top: 40%;
+  right: 0;
+  z-index: 1406;
+  display: none;
+}
+
+.grey-background .main-body .main-body__table-wrapper .left-side .left-side__uncollapse:hover {
+  opacity: 1;
+}
+
+.grey-background .main-body .main-body__table-wrapper .left-side .left-side__uncollapse:hover {
+  cursor: e-resize;
 }
 
 .grey-background .main-body .main-body__table-wrapper .right-side .handsontable th {
@@ -415,14 +445,16 @@ body {
   border-style: dotted;
 }
 
-.grey-background .main-body .main-body__table-wrapper .right-side .ht_master tr:nth-of-type(odd) > td, .grey-background .main-body .main-body__table-wrapper .right-side .htCore tr:nth-of-type(odd) > td {
+.grey-background .main-body .main-body__table-wrapper .right-side .ht_master tr:nth-of-type(odd) > td,
+.grey-background .main-body .main-body__table-wrapper .right-side .htCore tr:nth-of-type(odd) > td {
   background-color: #fff;
   border-color: #ccc;
   border-width: 0 1px 1px 0;
   border-style: dotted;
 }
 
-.grey-background .main-body .main-body__table-wrapper .right-side .ht_master tr:nth-of-type(even) > td, .grey-background .main-body .main-body__table-wrapper .right-side .htCore tr:nth-of-type(even) > td {
+.grey-background .main-body .main-body__table-wrapper .right-side .ht_master tr:nth-of-type(even) > td,
+.grey-background .main-body .main-body__table-wrapper .right-side .htCore tr:nth-of-type(even) > td {
   background-color: #f5f5f5;
   border-color: #ccc;
   border-width: 0 1px 1px 0;

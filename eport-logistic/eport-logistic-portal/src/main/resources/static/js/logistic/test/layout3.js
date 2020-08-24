@@ -1,32 +1,23 @@
 const SEARCH_HEIGHT = $(".main-body__search-wrapper").height();
 var toolbar = [
   {
-    text: "Thêm",
+    text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-plus text-success"></i> Thêm</a>',
     handler: function () {
       alert("them");
     },
   },
-  "-",
   {
-    text: "Sửa",
+    text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-trash text-danger"></i> Xóa</a>',
     handler: function () {
       alert("sua");
     },
   },
-  "-",
   {
-    text: "Xóa",
+    text: '<a href="#" class="btn btn-sm btn-default"><i class="fa fa-refresh text-success"></i> Làm mới</a>',
     handler: function () {
       alert("xoa");
     },
   },
-  "-",
-  {
-    text: "Đặt lại mật khẩu",
-    handle: function () {
-        alert("reset");
-    }
-  }
 ];
 
 
@@ -37,19 +28,21 @@ loadTable("#dg-left");
 loadTable("#dg-right-tab1");
 loadTable("#dg-right-tab2");
 $(".collapse").click(function () {
-    $(".main-body__search-wrapper").height(5);
-    $(".main-body__search-wrapper form").hide();
-    $(".main-body__search-wrapper--btn-group").hide();
+    $(".main-body__search-wrapper").height(15);
+    $(".main-body__search-wrapper--container").hide();
     $(this).hide();
     $(".uncollapse").show();
 })
 
 $(".uncollapse").click(function() {
     $(".main-body__search-wrapper").height(SEARCH_HEIGHT);
-    $(".main-body__search-wrapper form").show();
-    $(".main-body__search-wrapper--btn-group").show();
+    $(".main-body__search-wrapper--container").show();
     $(this).hide();
     $(".collapse").show();
+})
+
+$(".left-side__collapse").click(function() {
+  $('#main-layout').layout('collapse','west');
 })
 
 function loadTable(div) {

@@ -24,7 +24,7 @@ body {
       height: max-content;
       display: flex;
       position: relative;
-      transition: 0.3s all;
+      transition: 0.1s all;
       overflow: hidden;
       margin-bottom: 10px;
       .btn-collapse {
@@ -46,45 +46,48 @@ body {
       .collapse {
         display: block;
       }
-      form {
-        display: inline-block;
-        width: 80%;
-        .form-inline {
+      .main-body__search-wrapper--container {
+        display: flex;
+        form {
           display: inline-block;
-          margin-bottom: 10px;
-          label.textbox-label {
-            width: auto;
+          .form-inline {
+            display: inline-block;
+            margin-bottom: 10px;
+            label.textbox-label {
+              width: auto;
+            }
+            .textbox {
+              border: none;
+              border-bottom: 1px solid #d4d4d4;
+              border-radius: 0;
+              line-height: 1;
+            }
+            .textbox-focused {
+              box-shadow: none;
+            }
+            .textbox-text {
+              height: 12px;
+              line-height: 12px;
+            }
+            .combo {
+              width: 110px !important;
+              line-height: 1;
+            }
+            .validatebox-text {
+              width: max-content !important;
+            }
           }
-          .textbox {
-            border: none;
-            border-bottom: 1px solid #d4d4d4;
-            border-radius: 0;
-            line-height: 1;
-          }
-          .textbox-focused {
-            box-shadow: none;
-          }
-          .textbox-text {
-            height: 12px;
-            line-height: 12px;
-          }
-          .combo {
-            width: 110px !important;
-            line-height: 1;
-          }
-          .validatebox-text {
-            width: max-content !important;
+        }
+        .main-body__search-wrapper--btn-group {
+          float: right;
+          width: 20%;
+          .btn {
+            font-size: 12px;
+            margin-bottom: 5px;
           }
         }
       }
-      .main-body__search-wrapper--btn-group {
-        float: right;
-        width: 20%;
-        .btn {
-          font-size: 12px;
-          margin-bottom: 5px;
-        }
-      }
+
       .main-body__table-wrapper {
       }
     }
@@ -92,19 +95,16 @@ body {
       .left-side {
         position: relative;
         .left-side__collapse {
-          border: 1px solid #cccccc;
-          font-size: 0.5em;
-          background: #cccccc;
-          opacity: 0.6;
-          height: 50px;
-          line-height: 50px;
-          position: absolute;
-          top: 40%;
-          right: 0;
-          z-index: 1406;
+          @include btn-collapse-col;
           &:hover {
-            opacity: 1;
             cursor: w-resize;
+          }
+        }
+        .left-side__uncollapse {
+          @include btn-collapse-col;
+          display: none;  
+          &:hover {
+            cursor: e-resize;
           }
         }
       }
@@ -120,11 +120,13 @@ body {
         .ht_clone_top_left_corner th {
           @include border-dotted;
         }
-        .ht_master tr:nth-of-type(odd) > td, .htCore tr:nth-of-type(odd) > td {
+        .ht_master tr:nth-of-type(odd) > td,
+        .htCore tr:nth-of-type(odd) > td {
           background-color: #fff;
           @include border-dotted;
         }
-        .ht_master tr:nth-of-type(even) > td, .htCore tr:nth-of-type(even) > td {
+        .ht_master tr:nth-of-type(even) > td,
+        .htCore tr:nth-of-type(even) > td {
           background-color: #f5f5f5;
           @include border-dotted;
         }
