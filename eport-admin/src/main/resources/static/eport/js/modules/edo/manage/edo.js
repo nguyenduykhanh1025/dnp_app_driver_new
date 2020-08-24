@@ -5,15 +5,12 @@ var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
 
 $(document).ready(function () {
-  $(".left").css("height", $(document).height());
   $("#btn-collapse").click(function () {
     handleCollapse(true);
   });
   $("#btn-uncollapse").click(function () {
     handleCollapse(false);
   });
-  $("#dg").height($(document).height() - 60);
-  $("#dgContainer").height($(document).height() - 60);
   loadTable();
   loadTableByContainer();
   $("#searchAll").keyup(function (event) {
@@ -31,6 +28,17 @@ $(document).ready(function () {
       }
       edo = new Object();
       edo.billOfLading = billOfLading;
+      loadTable(edo);
+    }
+  });
+  $("#searchContNo").keyup(function (event) {
+    if (event.keyCode == 13) {
+      containerNumber = $("#searchContNo").val().toUpperCase();
+      if (containerNumber == "") {
+        loadTable(edo);
+      }
+      edo = new Object();
+      edo.containerNumber = containerNumber;
       loadTable(edo);
     }
   });
@@ -60,7 +68,7 @@ function loadTable(edo) {
     url: PREFIX + "/billNo",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 115,
+    height: $(document).height() - 60,
     clientPaging: true,
     collapsible: true,
     pagination: true,
@@ -104,7 +112,7 @@ function loadTableByContainer(billOfLading) {
     url: PREFIX + "/edo",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 115,
+    height: $(document).height() - 60,
     clientPaging: true,
     pagination: true,
     pageSize: 20,
@@ -145,6 +153,8 @@ function loadTableByContainer(billOfLading) {
 }
 
 function searchDo() {
+  edo.billOfLading = $('#searchBillNo').val().toUpperCase();
+  edo.containerNumber = $('#searchContNo').val().toUpperCase();
   edo.fromDate = stringToDate($("#fromDate").val()).getTime();
   let toDate = stringToDate($("#toDate").val());
   if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {

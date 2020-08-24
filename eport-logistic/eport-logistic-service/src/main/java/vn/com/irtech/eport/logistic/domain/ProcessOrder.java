@@ -145,6 +145,16 @@ public class ProcessOrder extends BaseEntity
     
     private Boolean domesticFlg;
 
+    private String logisticName;
+
+    public String getLogisticName() {
+		return this.logisticName;
+	}
+
+	public void setLogisticName(String logisticName) {
+		this.logisticName = logisticName;
+	}
+
     public void setId(Long id) 
     {
         this.id = id;
@@ -499,6 +509,7 @@ public class ProcessOrder extends BaseEntity
             .append("shipmentDetail", getShipmentDetail())
             .append("paymentStatus", getPaymentStatus())
             .append("doStatus", getDoStatus())
+            .append("logisticName", getLogisticName())
             .toString();
     }
 }
