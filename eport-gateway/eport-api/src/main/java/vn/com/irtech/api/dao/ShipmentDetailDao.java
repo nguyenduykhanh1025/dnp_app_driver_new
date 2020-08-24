@@ -78,12 +78,20 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public List<ShipmentEntity> selectConsigneeTaxCode(ShipmentEntity shipmentEntity);
 	
 	/**
-	 * Get sztp by container no
+	 * Get sztp by container no from table TB_MASTER
 	 * 
 	 * @param containerNo
 	 * @return String
 	 */
-	public String getSztpByContainerNo(String containerNo);
+	public String getSztpByContainerNoMaster(String containerNo);
+	
+	/**
+	 * Get sztp by container no from table TB_INVENTORY
+	 * 
+	 * @param containerNo
+	 * @return
+	 */
+	public String getSztpByContainerNoInventory(String containerNo);
 	
 	/**
 	 * Get tax code by snm group name

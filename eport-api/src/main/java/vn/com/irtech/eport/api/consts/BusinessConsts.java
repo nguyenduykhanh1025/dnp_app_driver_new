@@ -13,4 +13,10 @@ public class BusinessConsts {
 	public static final String IN_PROGRESS = "PROCESSING";
 	
 	public static final String PASS = "PASS";
+	
+	public static final Long LOGISTIC_USER_TYPE = 1L;
+	
+	public static final Long DRIVER_USER_TYPE = 2L;
+	
+	public static final Long ADMIN_USER_TYPE = 3L;
 }

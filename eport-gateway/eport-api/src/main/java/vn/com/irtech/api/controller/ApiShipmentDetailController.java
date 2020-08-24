@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import vn.com.irtech.api.common.utils.Convert;
 import vn.com.irtech.api.common.utils.R;
+import vn.com.irtech.api.common.utils.StringUtils;
 import vn.com.irtech.api.dao.ShipmentDetailDao;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
 import vn.com.irtech.api.entity.ShipmentEntity;
@@ -213,7 +214,11 @@ public class ApiShipmentDetailController {
 	
 	@GetMapping("/containerNo/{containerNo}/sztp")
 	public String getSztpByContainerNo(@PathVariable("containerNo") String containerNo) {
-		return shipmentDetailDao.getSztpByContainerNo(containerNo);
+		String sztp = shipmentDetailDao.getSztpByContainerNoMaster(containerNo);
+		if (StringUtils.isEmpty(sztp)) {
+			sztp = shipmentDetailDao.getSztpByContainerNoInventory(containerNo);
+		}
+		return sztp;
 	}
 	
 	@GetMapping("/consignee/{consignee}/taxCode")

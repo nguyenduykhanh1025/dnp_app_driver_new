@@ -69,7 +69,6 @@ public class CheckinHandler implements IMqttMessageListener {
 	
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-		DriverRes driverRes;
 
 		logger.info("Receive message subject : " + topic);
 		String messageContent = new String(message.getPayload());
@@ -89,24 +88,25 @@ public class CheckinHandler implements IMqttMessageListener {
 		try {
 			checkinReq = new Gson().fromJson(messageContent, CheckinReq.class);
 			
+			if (vn.com.irtech.eport.common.utils.StringUtils.isEmpty(checkinReq.getSessionId())) {
+				List<PickupHistoryDataRes> pickupHistoryDataRes = autoRecognizePickup(checkinReq.getInput());
+				if (CollectionUtils.isNotEmpty(pickupHistoryDataRes)) {
+					checkinReq.setData(pickupHistoryDataRes);
+				} else {
+					sendMessageResult(BusinessConsts.FINISH, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0026), checkinReq.getSessionId(), gateId);
+					return;
+				}
+			}
+			
 			// Response to driver for waiting in progress
-			driverRes = new DriverRes();
-			driverRes.setStatus(BusinessConsts.IN_PROGRESS);
-			driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0020));
-			responseDriver(driverRes, checkinReq.getSessionId());
+			sendMessageResult(BusinessConsts.IN_PROGRESS, null, MessageHelper.getMessage(MessageConsts.E0020), checkinReq.getSessionId(), null);
 			
 			// Compare contNo, truckNo, chassisNo, weight 
 			if (validateDataWithInput(checkinReq, gateId)) {
 				
 				// Check if container is deliverable
 				if (!checkGateOrderDoable(checkinReq)) {
-					driverRes = new DriverRes();
-					driverRes.setStatus(BusinessConsts.FINISH);
-					driverRes.setResult(BusinessConsts.FAIL);
-					driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
-					responseDriver(driverRes, checkinReq.getSessionId());
-
-					responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0021));
+					sendMessageResult(BusinessConsts.FINISH, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0021), checkinReq.getSessionId(), gateId);
 				}
 				
 				// Get yard position or area, request to mc if not
@@ -116,30 +116,14 @@ public class CheckinHandler implements IMqttMessageListener {
 				if (CollectionUtils.isNotEmpty(data)) {
 					data.get(0).setWgt(checkinReq.getInput().get(0).getWeight());
 					if (!sendGateInOrderToRobot(data, checkinReq.getSessionId(), gateId)) {
-						driverRes = new DriverRes();
-						driverRes.setStatus(BusinessConsts.FINISH);
-						driverRes.setResult(BusinessConsts.FAIL);
-						driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
-						responseDriver(driverRes, checkinReq.getSessionId());
-
-						responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0021));
+						sendMessageResult(BusinessConsts.FINISH, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0021), checkinReq.getSessionId(), gateId);
 					}
 				} else {
-					driverRes = new DriverRes();
-					driverRes.setStatus(BusinessConsts.FINISH);
-					driverRes.setResult(BusinessConsts.FAIL);
-					driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
-					responseDriver(driverRes, checkinReq.getSessionId());
+					sendMessageResult(BusinessConsts.FINISH, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0021), checkinReq.getSessionId(), gateId);
 				}
 			}
 		} catch (Exception e) {
-			driverRes = new DriverRes();
-			driverRes.setStatus(BusinessConsts.FINISH);
-			driverRes.setResult(BusinessConsts.FAIL);
-			driverRes.setMsg(e.getMessage());
-			responseDriver(driverRes, checkinReq.getSessionId());
-
-			responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0024));
+			sendMessageResult(BusinessConsts.FINISH, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0024), checkinReq.getSessionId(), gateId);
 		}
 	}
 
@@ -285,8 +269,6 @@ public class CheckinHandler implements IMqttMessageListener {
 	 * @return Boolean
 	 */
 	private Boolean validateDataWithInput(CheckinReq checkinReq, String gateId) {
-		DriverRes driverRes = new DriverRes();
-		
 		int contValidate = checkinReq.getData().size();
 		boolean validTruckNo = false;
 		boolean validChasissNo = false;
@@ -302,16 +284,7 @@ public class CheckinHandler implements IMqttMessageListener {
 					// Auto pickup
 					ShipmentDetail shipmentDetail = shipmentDetailService.getContainerWithYardPosition(pickupHistory.getShipmentId());
 					if (shipmentDetail == null) {
-						driverRes.setStatus(BusinessConsts.FINISH);
-						driverRes.setResult(BusinessConsts.FAIL);
-						driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0025));
-						try {
-							responseDriver(driverRes, checkinReq.getSessionId());
-							responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0025));
-						} catch (Exception e) {
-							logger.warn(e.getMessage());
-						}
-
+						sendMessageResult(BusinessConsts.FINISH, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0025), checkinReq.getSessionId(), gateId);
 						return false;
 					} else {
 						contValidate--;
@@ -331,16 +304,7 @@ public class CheckinHandler implements IMqttMessageListener {
 		if (contValidate <= 0 && validTruckNo && validChasissNo) {
 			return true;
 		}
-
-		driverRes.setStatus(BusinessConsts.FINISH);
-		driverRes.setResult(BusinessConsts.FAIL);
-		driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0023));
-		try {
-			responseDriver(driverRes, checkinReq.getSessionId());
-			responseSmartGate(gateId, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0023));
-		} catch (Exception e) {
-			logger.warn(e.getMessage());
-		}
+		sendMessageResult(BusinessConsts.FINISH, BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0023), checkinReq.getSessionId(), gateId);
 		return false;
 	}
 	
@@ -420,7 +384,7 @@ public class CheckinHandler implements IMqttMessageListener {
 			}
 			
 		} catch (Exception e) {
-			logger.warn(e.getMessage());
+			logger.error("Error when send order gate in: " + e);
 			return false;
 		}
 		return true;
@@ -446,5 +410,114 @@ public class CheckinHandler implements IMqttMessageListener {
 	private Boolean checkGateOrderDoable(CheckinReq checkinReq) {
 		// TODO : Validate on the things need to make a gate-in order
 		return true;
+	}
+	
+	/**
+	 * Send message result for driver and smart app (Progress/Finish)
+	 * 
+	 * @param status
+	 * @param result
+	 * @param message
+	 * @param sessionId
+	 * @param gateId
+	 */
+	private void sendMessageResult(String status, String result, String message, String sessionId, String gateId) {
+		if (sessionId != null) {
+			DriverRes driverRes = new DriverRes();
+			driverRes.setStatus(status);
+			driverRes.setMsg(message);
+			try {
+				responseDriver(driverRes, sessionId);
+			} catch (Exception e) {
+				logger.error("Error send message to driver: " + e);
+			}
+		}
+		if (gateId != null) {
+			try {
+				responseSmartGate(gateId, result, message);
+			} catch (Exception e) {
+				logger.error("Error send message to smart app: " + e);
+			}
+		}
+	}
+	
+	/**
+	 * Get pickup history when not scan qr code
+	 * 
+	 * @param measurementDataReqs
+	 * @return List<PickupHistoryDataRes>
+	 */
+	private List<PickupHistoryDataRes> autoRecognizePickup(List<MeasurementDataReq> measurementDataReqs) {
+		List<PickupHistoryDataRes> pickupHistoryDataReses = new ArrayList<>();
+		for (MeasurementDataReq measurementDataReq : measurementDataReqs) {
+			if (vn.com.irtech.eport.common.utils.StringUtils.isNotEmpty(measurementDataReq.getContNo())) {
+				// Send container
+				// Case driver has picked up
+				PickupHistory pickupHistoryParam = new PickupHistory();
+				pickupHistoryParam.setStatus(0);
+				pickupHistoryParam.setTruckNo(measurementDataReq.getTruckNo());
+				pickupHistoryParam.setChassisNo(measurementDataReq.getChassisNo());
+				pickupHistoryParam.setContainerNo(measurementDataReq.getContNo());
+				// Get pickup history by container no, truck no, chassis no
+				List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
+				if (CollectionUtils.isNotEmpty(pickupHistories)) {
+					// Add pickup history info to list data return
+					PickupHistory pickupHistory = pickupHistories.get(0);
+					PickupHistoryDataRes pickupHistoryDataRes = new PickupHistoryDataRes();
+					pickupHistoryDataRes.setChassisNo(pickupHistory.getChassisNo());
+					pickupHistoryDataRes.setTruckNo(pickupHistory.getTruckNo());
+					pickupHistoryDataRes.setServiceType(pickupHistory.getShipment().getServiceType());
+					pickupHistoryDataRes.setContNo(pickupHistory.getContainerNo());
+					if (pickupHistoryDataRes.getServiceType() == 1 || pickupHistoryDataRes.getServiceType() == 4) {
+						pickupHistoryDataRes.setFe("F");
+					} else {
+						pickupHistoryDataRes.setFe("E");
+					}
+					pickupHistoryDataRes.setPickupHistoryId(pickupHistory.getId());
+					pickupHistoryDataRes.setShipmentDetailId(pickupHistory.getShipmentDetailId());
+					pickupHistoryDataRes.setShipmentId(pickupHistory.getShipmentId());
+					pickupHistoryDataRes.setSztp(pickupHistory.getShipmentDetail().getSztp());
+					pickupHistoryDataRes.setVessel(pickupHistory.getShipmentDetail().getVslNm());
+					pickupHistoryDataRes.setVoyage(pickupHistory.getShipmentDetail().getVoyNo());
+					pickupHistoryDataRes.setWeight(pickupHistory.getShipmentDetail().getWgt());
+					pickupHistoryDataReses.add(pickupHistoryDataRes);
+				} else {
+					// TODO : Case driver has not picked up
+					return null;
+				}
+				
+			}
+		}
+		
+		// Check receive container by shipment id
+		PickupHistory pickupHistoryParam = new PickupHistory();
+		pickupHistoryParam.setStatus(0);
+		pickupHistoryParam.setTruckNo(measurementDataReqs.get(0).getTruckNo());
+		pickupHistoryParam.setChassisNo(measurementDataReqs.get(0).getChassisNo());
+		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistoryParam);
+		if (CollectionUtils.isNotEmpty(pickupHistories)) {
+			for (PickupHistory pickupHistory : pickupHistories) {
+				// Check to filter pickup history that not have container no yet
+				if (pickupHistory.getShipmentDetailId() == null) {
+					// Add pickup history info to list data return
+					PickupHistoryDataRes pickupHistoryDataRes = new PickupHistoryDataRes();
+					pickupHistoryDataRes.setChassisNo(pickupHistory.getChassisNo());
+					pickupHistoryDataRes.setTruckNo(pickupHistory.getTruckNo());
+					pickupHistoryDataRes.setServiceType(pickupHistory.getShipment().getServiceType());
+					if (pickupHistoryDataRes.getServiceType() == 1) {
+						pickupHistoryDataRes.setFe("F");
+					} else {
+						pickupHistoryDataRes.setFe("E");
+					}
+					pickupHistoryDataRes.setPickupHistoryId(pickupHistory.getId());
+					pickupHistoryDataRes.setShipmentId(pickupHistory.getShipmentId());
+					pickupHistoryDataRes.setVessel(pickupHistory.getShipmentDetail().getVslNm());
+					pickupHistoryDataRes.setVoyage(pickupHistory.getShipmentDetail().getVoyNo());
+					pickupHistoryDataRes.setWeight(pickupHistory.getShipmentDetail().getWgt());
+					pickupHistoryDataReses.add(pickupHistoryDataRes);
+				}
+			}
+		}
+		return pickupHistoryDataReses;
 	}
 }

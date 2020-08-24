@@ -29,6 +29,7 @@ import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -539,6 +540,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setVessel(detail.getVslNm());
         processOrder.setVoyage(detail.getVoyNo());
+        processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         ProcessOrder tempProcessOrder = getYearBeforeAfter(detail.getVslNm(), detail.getVoyNo());
         if (tempProcessOrder != null) {
@@ -550,9 +552,15 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         }
         processOrder.setShipmentId(shipment.getId());
         if ("F".equalsIgnoreCase(detail.getFe())) {
-            processOrder.setServiceType(4);
+            processOrder.setServiceType(Constants.SEND_CONT_FULL);
+            if (StringUtils.isNotEmpty(detail.getDischargePort()) && "VN".equalsIgnoreCase(detail.getDischargePort().substring(0, 2))) {
+            	processOrder.setDomesticFlg(true);
+            } else {
+            	processOrder.setDomesticFlg(false);
+            }
         } else {
-            processOrder.setServiceType(2);
+        	processOrder.setDomesticFlg(false);
+            processOrder.setServiceType(Constants.SEND_CONT_EMPTY);
         }
         if (creditFlag) {
             processOrder.setPayType("Credit");

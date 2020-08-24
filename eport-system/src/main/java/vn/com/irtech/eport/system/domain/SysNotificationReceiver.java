@@ -38,7 +38,7 @@ public class SysNotificationReceiver extends BaseEntity
 
     /** Seen Flag */
     @Excel(name = "Seen Flag")
-    private Long seenFlg;
+    private Boolean seenFlg;
 
     /** Seen Time */
     @Excel(name = "Seen Time", width = 30, dateFormat = "yyyy-MM-dd")
@@ -46,8 +46,14 @@ public class SysNotificationReceiver extends BaseEntity
 
     /** Sent Flag */
     @Excel(name = "Sent Flag")
-    private Long sentFlg;
+    private Boolean sentFlg;
 
+    private String title;
+    
+    private String content;
+    
+    private String notifyLink;
+    
     public void setId(Long id) 
     {
         this.id = id;
@@ -93,12 +99,12 @@ public class SysNotificationReceiver extends BaseEntity
     {
         return notificationType;
     }
-    public void setSeenFlg(Long seenFlg) 
+    public void setSeenFlg(Boolean seenFlg) 
     {
         this.seenFlg = seenFlg;
     }
 
-    public Long getSeenFlg() 
+    public Boolean getSeenFlg() 
     {
         return seenFlg;
     }
@@ -111,17 +117,41 @@ public class SysNotificationReceiver extends BaseEntity
     {
         return seenTime;
     }
-    public void setSentFlg(Long sentFlg) 
+    public void setSentFlg(Boolean sentFlg) 
     {
         this.sentFlg = sentFlg;
     }
 
-    public Long getSentFlg() 
+    public Boolean getSentFlg() 
     {
         return sentFlg;
     }
+    
+    public String getTitle() {
+		return title;
+	}
 
-    @Override
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getNotifyLink() {
+		return notifyLink;
+	}
+
+	public void setNotifyLink(String notifyLink) {
+		this.notifyLink = notifyLink;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
@@ -136,6 +166,9 @@ public class SysNotificationReceiver extends BaseEntity
             .append("createBy", getCreateBy())
             .append("updateTime", getUpdateTime())
             .append("updateBy", getUpdateBy())
+            .append("title", getTitle())
+            .append("content", getContent())
+            .append("notifyLink", getNotifyLink())
             .toString();
     }
 }

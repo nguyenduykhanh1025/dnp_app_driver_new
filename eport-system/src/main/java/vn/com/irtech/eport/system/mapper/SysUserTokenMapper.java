@@ -58,4 +58,12 @@ public interface SysUserTokenMapper
      * @return result
      */
     public int deleteSysUserTokenByIds(String[] ids);
+    
+    /**
+     * Delete User Token By User Token
+     * 
+     * @param userLoginToken
+     * @return int
+     */
+    public int deleteUserTokenByUserToken(String userLoginToken);
 }

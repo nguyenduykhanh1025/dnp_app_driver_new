@@ -49,10 +49,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="notifyLevel != null">notify_level,</if>
             <if test="notifyLink != null">notify_link,</if>
             <if test="status != null">status,</if>
-            <if test="createTime != null">create_time,</if>
             <if test="createBy != null">create_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="updateBy != null">update_by,</if>
+            create_time
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -61,10 +59,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="notifyLevel != null">#{notifyLevel},</if>
             <if test="notifyLink != null">#{notifyLink},</if>
             <if test="status != null">#{status},</if>
-            <if test="createTime != null">#{createTime},</if>
             <if test="createBy != null">#{createBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
+            sysdate
          </trim>
     </insert>
 
@@ -76,10 +72,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="notifyLevel != null">notify_level = #{notifyLevel},</if>
             <if test="notifyLink != null">notify_link = #{notifyLink},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="createTime != null">create_time = #{createTime},</if>
-            <if test="createBy != null">create_by = #{createBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = sysdate
         </trim>
         where id = #{id}
     </update>
