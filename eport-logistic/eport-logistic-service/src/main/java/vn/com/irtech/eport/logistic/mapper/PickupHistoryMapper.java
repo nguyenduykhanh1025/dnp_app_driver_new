@@ -104,9 +104,17 @@ public interface PickupHistoryMapper
     public int checkPickupHistoryExists(@Param("shipmentId") Long shipmentId, @Param("shipmentDetailId") Long shipmentDetailId);
 
       /**
-     * Select Delievering Driver Info
+     * Select Delivering Driver Info
      * 
      * @return PickupHistory
      */
     public List<PickupHistory> selectDeliveringDriverInfo(PickupHistory pickupHistory);
+    
+    /**
+     * Check plate number is unavailable
+     * 
+     * @param driverId
+     * @return int
+     */
+    public int checkPlateNumberIsUnavailable(PickupHistory pickupHistory);
 }

@@ -301,6 +301,17 @@ function containerNoRenderer(instance, td, row, col, prop, value, cellProperties
     }
     return td;
 }
+function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'consignee' + row).addClass("htMiddle");
+    $(td).html(value);
+    if (value != null && value != '') {
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    return td;
+}
 function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
     $(td).html(value);
@@ -325,28 +336,6 @@ function emptyExpiredDemRenderer(instance, td, row, col, prop, value, cellProper
     }
     return td;
 }
-//function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
-//    $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
-//    $(td).html(value);
-//    if (value != null && value != '') {
-//        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-//            cellProperties.readOnly = 'true';
-//            $(td).css("background-color", "rgb(232, 232, 232)");
-//        }
-//    }
-//    return td;
-//}
-//function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-//    $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
-//    $(td).html(value);
-//    if (value != null && value != '') {
-//        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-//            cellProperties.readOnly = 'true';
-//            $(td).css("background-color", "rgb(232, 232, 232)");
-//        }
-//    }
-//    return td;
-//}
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
@@ -362,39 +351,11 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
-// function wgtRenderer(instance, td, row, col, prop, value, cellProperties) {
-//     $(td).attr('id', 'wgt' + row).addClass("htMiddle");
-//     $(td).html(value);
-//     if (value != null && value != '') {
-//         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-//             cellProperties.readOnly = 'true';
-//             $(td).css("background-color", "rgb(232, 232, 232)");
-//         }
-//     }
-//     return td;
-// }
-// function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
-//     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
-//     if (value != null && value != '') {
-//         value = value.split(':')[0];
-//         if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-//             cellProperties.readOnly = 'true';
-//             $(td).css("background-color", "rgb(232, 232, 232)");
-//         }
-//     }
-//     $(td).html(value);
-//     return td;
-// }
-
 function emptyDepotLocationRenderer(instance, td, row, col, prop, value, cellProperties)  {
     $(td).attr('id', 'emptyDepotLocation' + row).addClass("htMiddle");
     $(td).html(value);
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    }
+    cellProperties.readOnly = 'true';
+    $(td).css("background-color", "rgb(232, 232, 232)");
     return td;
 }
 
@@ -435,12 +396,14 @@ function configHandson() {
                 case 3:
                     return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
                 case 4:
-                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+                    return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
                 case 5:
-                    return '<span>Hạn Trả Vỏ</span><span style="color: red;">(*)</span>';
+                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
                 case 6:
-                    return '<span>Bãi Hạ Vỏ</span><span style="color: red;">(*)</span>';
+                    return '<span>Hạn Trả Vỏ</span><span style="color: red;">(*)</span>';
                 case 7:
+                    return '<span>Bãi Hạ Vỏ</span><span style="color: red;">(*)</span>';
+                case 8:
                     return "Ghi Chú";
             }
         },
@@ -471,6 +434,13 @@ function configHandson() {
                 renderer: sizeRenderer
             },
             {
+                data: "consignee",
+                type: "autocomplete",
+                source: consigneeList,
+                strict: true,
+                renderer: consigneeRenderer
+            },
+            {
                 data: "opeCode",
                 type: "autocomplete",
                 source: opeCodeList,
@@ -494,9 +464,37 @@ function configHandson() {
                 renderer: remarkRenderer
             },
         ],
-        // beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
-        //     if(coords.col == 0) event.stopImmediatePropagation();
-        // },
+        beforeKeyDown: function (e) {
+            let selected = hot.getSelected()[0];
+            switch (e.keyCode) {
+                // Arrow Left
+                case 37:
+                    if (selected[3] == 0) {
+                        e.stopImmediatePropagation();
+                    } 
+                    break;
+                // Arrow Up
+                case 38:
+                    if (selected[2] == 0) {
+                        e.stopImmediatePropagation();
+                    } 
+                    break;
+                // Arrow Right
+                case 39:
+                    if (selected[3] == 8) {
+                        e.stopImmediatePropagation();
+                    } 
+                    break
+                // Arrow Down
+                case 40:
+                    if (selected[2] == rowAmount-1) {
+                        e.stopImmediatePropagation();
+                    } 
+                    break
+                default:
+                    break;
+            }
+        },
         afterChange: onChange
     };
 }
@@ -509,45 +507,44 @@ function onChange(changes, source) {
     changes.forEach(function (change) {
         if (change[1] == "opeCode") {
             if (change[3] && hot.getDataAtCell(change[0], 3)) {
-                hot.setDataAtCell(change[0], 6, ''); // empty depot location
+                hot.setDataAtCell(change[0], 7, ''); // empty depot location
                 $.ajax({
                     url: prefix + "/opr/" + change[3].split(":")[0] + "/sztp/" + hot.getDataAtCell(change[0], 3).split(":")[0] + "/emptyDepotLocation",
                     method: "GET",
                     success: function (data) {
                         if (data.code == 0 && data.emptyDepotLocation) {
-                            hot.setDataAtCell(change[0], 6, data.emptyDepotLocation);
+                            hot.setDataAtCell(change[0], 7, data.emptyDepotLocation);
                         }
                     }
                 });
             } else {
-                hot.setDataAtCell(change[0], 6, ''); // empty depot location
+                hot.setDataAtCell(change[0], 7, ''); // empty depot location
             }
         } else if (change[1] == "sztp") {
             if (change[3] && hot.getDataAtCell(change[0], 4)) {
-                hot.setDataAtCell(change[0], 6, ''); // empty depot location
+                hot.setDataAtCell(change[0], 7, ''); // empty depot location
                 $.ajax({
-                    url: prefix + "/opr/" + hot.getDataAtCell(change[0], 4).split(":")[0] + "/sztp/" + change[3].split(":")[0] + "/emptyDepotLocation",
+                    url: prefix + "/opr/" + hot.getDataAtCell(change[0], 5).split(":")[0] + "/sztp/" + change[3].split(":")[0] + "/emptyDepotLocation",
                     method: "GET",
                     success: function (data) {
                         if (data.code == 0 && data.emptyDepotLocation) {
-                            hot.setDataAtCell(change[0], 6, data.emptyDepotLocation);
+                            hot.setDataAtCell(change[0], 7, data.emptyDepotLocation);
                         }
                     }
                 });
             } else {
-                hot.setDataAtCell(change[0], 6, ''); // empty depot location
+                hot.setDataAtCell(change[0], 7, ''); // empty depot location
             }
         } else if (change[1] == "containerNo") {
             if (!change[3]) {
                 sztpListDisable[change[0]] = 0;
-                hot.setDataAtCell(change[0], 3, '');
+                cleanCell(change[0], 3, sizeList);
             } else {
                 $.ajax({
                     url: prefix + "/containerNo/" + change[3] + "/sztp",
                     method: "GET",
                     success: function (data) {
                         if (data.code == 0) {
-                           
                             if (data.sztp) {
                                 sizeList.forEach(element => {
                                     if (data.sztp == element.substring(0, 4)) {
@@ -557,15 +554,33 @@ function onChange(changes, source) {
                                 });
                                 sztpListDisable[change[0]] = 1;
                                 hot.setDataAtCell(change[0], 3, data.sztp);
+                            } else {
+                                sztpListDisable[change[0]] = 0;
+                                cleanCell(change[0], 3, sizeList);
                             }
                         } else {
                             sztpListDisable[change[0]] = 0;
+                            cleanCell(change[0], 3, sizeList);
                         }
                     },
                     error: function(err) {
                         sztpListDisable[change[0]] = 0;
+                        cleanCell(change[0], 3, sizeList);
                     }
                 });
+            }
+        }
+    });
+}
+
+function cleanCell(roww, coll, src) {
+    hot.setDataAtCell(roww, coll, '');
+    hot.updateSettings({
+        cells: function (row, col, prop) {
+            if (row == roww && col == coll) {
+                let cellProperties = {};
+                cellProperties.source = src;
+                return cellProperties;
             }
         }
     });
@@ -799,8 +814,12 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Số container không hợp lệ!");
                 errorFlg = true;
                 return false;
+            } else if (!object["consignee"]) {
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
+                errorFlg = true;
+                return false;
             } else if (!object["opeCode"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Hãng tàu!");
+                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn hãng tàu!");
                 errorFlg = true;
                 return false;
             } else if (!object["emptyExpiredDem"]) {
@@ -848,6 +867,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.sztpDefine = sizeType[1];
         shipmentDetail.remark = object["remark"];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
+        shipmentDetail.consignee = object["consignee"];
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);

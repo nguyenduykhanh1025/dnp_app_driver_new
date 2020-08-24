@@ -26,6 +26,14 @@ public interface IPickupHistoryService
      * @return Pickup history
      */
     public PickupHistory selectPickupHistoryById(Long id);
+    
+    /**
+     * Get Pickup history List
+     * 
+     * @param pickupHistory Pickup history
+     * @return Pickup history List
+     */
+    public List<PickupHistory> selectPickupHistoryList(PickupHistory pickupHistory);
 
     /**
      * Get Pickup history without yard position List
@@ -110,10 +118,18 @@ public interface IPickupHistoryService
     public Boolean checkPossiblePickup(Long driverId, Integer serviceType, ShipmentDetail shipmentDetail);
 
     /**
-     * Select Delievering Driver Info
+     * Select Delivering Driver Info
      * 
      * @return PickupHistory
      */
     public List<PickupHistory> selectDeliveringDriverInfo(PickupHistory pickupHistory);
+    
+    /**
+     * Check plate number is unavailable
+     * 
+     * @param driverId
+     * @return int
+     */
+    public int checkPlateNumberIsUnavailable(PickupHistory pickupHistory);
 
 }

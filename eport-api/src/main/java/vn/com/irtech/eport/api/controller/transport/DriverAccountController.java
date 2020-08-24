@@ -26,7 +26,7 @@ import vn.com.irtech.eport.logistic.form.DriverInfo;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.system.service.ISysConfigService;
-import vn.com.irtech.eport.system.service.IUserDevicesService;
+import vn.com.irtech.eport.system.service.ISysUserTokenService;
 
 @RestController
 @RequestMapping("/transport/user")
@@ -40,17 +40,17 @@ public class DriverAccountController extends BaseController {
 	private IDriverAccountService driverAccountService;
 
 	@Autowired
-	private IUserDevicesService userDevicesService;
-
-	@Autowired
 	private ILogisticTruckService logisticTruckService;
 
 	@Autowired
 	private ISysConfigService sysConfigService;
+	
+	@Autowired
+	private ISysUserTokenService userTokenService;
 
 	@PostMapping("/logout")
 	public AjaxResult logout(@RequestHeader("Authorization") String token) {
-		userDevicesService.deleteUserDevicesByUserToken(token);
+		userTokenService.deleteUserTokenByUserToken(token);
 		return success();
 	}
 

@@ -582,10 +582,6 @@ function configHandson() {
           return "Cảng Dỡ Hàng";
         case 15:
           return "Ghi Chú";
-        // case 16:
-        //   return "Mã Số Thuế";
-        // case 17:
-        //   return "Chủ Hàng Theo Mã Số Thuế";
       }
     },
     // colWidths: [50, 100, 100, 100, 150, 150, 100, 150, 200, 100, 100, 100, 100, 120, 100, 200],
@@ -624,14 +620,6 @@ function configHandson() {
         type: "autocomplete",
         source: consigneeList,
         strict: true,
-        // type: 'handsontable',
-        // handsontable: {
-        //   colHeaders: false,
-        //   data: consigneeList,
-        //   autoColumnSize: true,
-        //   height: 300,
-        //   width: 500,
-        // },
         renderer: consigneeRenderer
       },
       {
@@ -692,18 +680,7 @@ function configHandson() {
         data: "remark",
         renderer: remarkRenderer
       },
-      // {
-      //   data: "taxCode",
-      //   renderer: remarkRenderer
-      // },
-      // {
-      //   data: "consigneeByTaxCode",
-      //   renderer: remarkRenderer
-      // },
     ],
-    // beforeOnCellMouseDown: function restrictSelectionToWholeRowColumn(event, coords) {
-    //   if (coords.col == 0 && coords.row == 0) event.stopImmediatePropagation();
-    // },
     afterChange: function (changes, src) {
       //Get data change in cell to render another column
       if (src !== "loadData") {
@@ -771,6 +748,37 @@ function configHandson() {
           }
         });
         $.modal.closeLoading();
+      }
+    },
+    beforeKeyDown: function (e) {
+      let selected = hot.getSelected()[0];
+      switch (e.keyCode) {
+        // Arrow Left
+        case 37:
+          if (selected[3] == 0) {
+            e.stopImmediatePropagation();
+          }
+          break;
+        // Arrow Up
+        case 38:
+          if (selected[2] == 0) {
+            e.stopImmediatePropagation();
+          }
+          break;
+        // Arrow Right
+        case 39:
+          if (selected[3] == 15) {
+            e.stopImmediatePropagation();
+          }
+          break
+        // Arrow Down
+        case 40:
+          if (selected[2] == rowAmount - 1) {
+            e.stopImmediatePropagation();
+          }
+          break
+        default:
+          break;
       }
     },
   };
