@@ -20,6 +20,11 @@ public class TestLayoutController extends LogisticBaseController {
 		return PREFIX + "/layout2LeftRight";
 	}
 
+	@GetMapping("/layout2handsond")
+	public String layout2handsond() {
+		return PREFIX + "/layoutWithHandsond";
+	}
+
 	@GetMapping("/layout3")
 	public String layout3() {
 		return PREFIX + "/layout3LeftRightWithTab";
