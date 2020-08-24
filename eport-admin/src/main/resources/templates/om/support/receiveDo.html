@@ -33,17 +33,10 @@
           <button class="btn btn-rounder btn-default" onclick="generatePDF()"><i class="fa fa-print"></i>In EDO</button>
         </div>
         <div class="form-group margin-input">
-            <label class="sr-only"> Đồng Bộ Hải Quan</label>
+            <label class="sr-only">  Đồng Bộ Chứng Từ Do Gốc</label>
             <div class="input-group">
-              <button class="btn btn-success btn-sm" id="checkCustomStatusByProcessOrderId" onclick="checkCustomStatusByProcessOrderId() "><i
-                  class="fa fa-pencil-square-o"></i> Đồng Bộ Hải Quan</button>
-            </div>
-          </div>
-          <div class="form-group margin-input">
-            <label class="sr-only">Đồng Bộ Trạng Thái Làm Lệnh</label>
-            <div class="input-group">
-              <button class="btn btn-success btn-sm" id="checkProcessStatusByProcessOrderId" onclick="checkCustomStatusByProcessOrderId() "><i
-                  class="fa fa-pencil-square-o"></i> Đồng Bộ Trạng Thái Làm Lệnh</button>
+              <button class="btn btn-success btn-sm" id="checkDoStatus" onclick="checkDoStatus() "><i
+                  class="fa fa-pencil-square-o"></i> Đồng Bộ Chứng Từ Do Gốc</button>
             </div>
           </div>
       </div> <!-- //end form -->
@@ -90,11 +83,8 @@
             <th data-options="field:'sztp',align:'left'" width="50">
               Sztp
             </th>
-            <th data-options="field:'customStatus',align:'center',formatter: formatCustomStatus" width="100">
-              Trại thái <br> hải quan
-            </th>
-            <th data-options="field:'processStatus',align:'center', formatter: formatStatus" width="100">
-                Trại thái <br> làm lệnh
+            <th data-options="field:'doStatus',align:'center',formatter: formatDoStatus" width="100">
+              Trại thái <br> Nộp Do Gốc
             </th>
             <th data-options="field:'consignee',align:'left'" width="230">
               Chủ hàng
@@ -126,7 +116,7 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
-    <script th:src="@{/eport/js/modules/om/support/receiveFull.js}"></script>
+    <script th:src="@{/eport/js/modules/om/support/receiveDo.js}"></script>
   </body>
 
 </html>

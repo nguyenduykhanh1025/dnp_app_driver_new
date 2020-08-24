@@ -107,4 +107,6 @@ public interface ProcessOrderMapper
      * @return List<ProcessOrder>
      */
     public List<ProcessOrder> selectOrdersByShipmentId(ProcessOrder processOrder);
+
+    public List<ProcessOrder> selectProcessOrderListWithLogisticName(ProcessOrder processOrder);
 }

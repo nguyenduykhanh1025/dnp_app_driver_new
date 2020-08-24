@@ -173,4 +173,9 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
     public List<ProcessOrder> selectOrdersByShipmentId(ProcessOrder processOrder) {
     	return processOrderMapper.selectOrdersByShipmentId(processOrder);
     }
+
+    public List<ProcessOrder> selectProcessOrderListWithLogisticName(ProcessOrder processOrder) 
+    {
+        return processOrderMapper.selectProcessOrderListWithLogisticName(processOrder);
+    }
 }
