@@ -336,7 +336,7 @@ $('.c-search-box-voy-no').on('select2:open', function (e) {
 });
 $(".c-search-opr-code").select2({
   theme: "bootstrap",
-  placeholder: "OPR Code",
+  placeholder: "Mã vận hành",
   allowClear: true,
   ajax: {
     url: PREFIX + "/getOprCode",
@@ -379,6 +379,11 @@ $(".c-search-box-vessel").change(function () {
 
 $(".c-search-box-voy-no").change(function () {
   edo.voyNo = $(this).text().trim();
+  loadTable(edo);
+});
+
+$(".c-search-opr-code").change(function () {
+  edo.carrierCode = $(this).text().trim();
   loadTable(edo);
 });
 $(".c-search-opr-code").on('select2:open', function (e) {
