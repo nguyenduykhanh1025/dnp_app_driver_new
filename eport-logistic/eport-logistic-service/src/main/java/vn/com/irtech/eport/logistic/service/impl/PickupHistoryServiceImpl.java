@@ -41,6 +41,17 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     }
 
     /**
+     * Get Pickup history List
+     * 
+     * @param pickupHistory Pickup history
+     * @return Pickup history List
+     */
+    @Override
+    public List<PickupHistory> selectPickupHistoryList(PickupHistory pickupHistory) {
+    	return pickupHistoryMapper.selectPickupHistoryList(pickupHistory);
+    }
+    
+    /**
      * Get list Pickup history without yard position
      * 
      * @return Pickup history List
@@ -175,8 +186,8 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
         int countCont20 = 0;
         for (Pickup pickup: pickups) {
             if ((pickup.getServiceType() % 2) == (serviceType % 2)) {
-                if (pickup.getSztp() == null || !"20".equals(pickup.getSztp().substring(0, 2)) || shipmentDetail == null
-                        || !"20".equals(shipmentDetail.getSztp().substring(0, 2))) {
+                if (pickup.getSztp() == null || !"22".equals(pickup.getSztp().substring(0, 2)) || shipmentDetail == null
+                        || !"22".equals(shipmentDetail.getSztp().substring(0, 2))) {
                     countCont20 += 2;
                 } else {
                     countCont20++;
@@ -196,12 +207,23 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     }
 
       /**
-     * Select Delievering Driver Info
+     * Select Delivering Driver Info
      * 
      * @return PickupHistory
      */
     @Override
     public List<PickupHistory> selectDeliveringDriverInfo(PickupHistory pickupHistory) {
         return pickupHistoryMapper.selectDeliveringDriverInfo(pickupHistory);
+    }
+    
+    /**
+     * Check plate number is unavailable
+     * 
+     * @param driverId
+     * @return int
+     */
+    @Override
+    public int checkPlateNumberIsUnavailable(PickupHistory pickupHistory) {
+    	return pickupHistoryMapper.checkPlateNumberIsUnavailable(pickupHistory);
     }
 }

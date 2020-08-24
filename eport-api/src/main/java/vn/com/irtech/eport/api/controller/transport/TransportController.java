@@ -210,18 +210,24 @@ public class TransportController extends BaseController {
 			pickupHistory.setShipmentDetailId(pickupHistoryTemp.getShipmentDetailId());
 		}
 		
+		// Check max pickup driver can pick
 		Shipment shipment = shipmentService.selectShipmentById(pickupAssign.getShipmentId());
 		if (!pickupHistoryService.checkPossiblePickup(pickupAssign.getDriverId(), shipment.getServiceType(), shipmentDetail)) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0016));
 		}
 		
+		pickupHistory.setDriverId(pickupAssign.getDriverId());
+		pickupHistory.setTruckNo(pickupHistoryTemp.getTruckNo());
+		pickupHistory.setChassisNo(pickupHistoryTemp.getChassisNo());
+		// Check plate number
+		if (pickupHistoryService.checkPlateNumberIsUnavailable(pickupHistory) > 0) {
+			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0027));
+		}
+		
 		pickupHistory.setLogisticGroupId(pickupAssign.getLogisticGroupId());
 		pickupHistory.setShipmentId(pickupAssign.getShipmentId());
 		pickupHistory.setDriverPhoneNumber(pickupAssign.getPhoneNumber());
-		pickupHistory.setDriverId(pickupAssign.getDriverId());
 		pickupHistory.setPickupAssignId(pickupAssign.getId());
-		pickupHistory.setTruckNo(pickupHistoryTemp.getTruckNo());
-		pickupHistory.setChassisNo(pickupHistoryTemp.getChassisNo());
 		pickupHistory.setGatePass(pickupHistory.getTruckNo().substring(0, 5));
 		pickupHistory.setStatus(0);
 		pickupHistoryService.insertPickupHistory(pickupHistory);
