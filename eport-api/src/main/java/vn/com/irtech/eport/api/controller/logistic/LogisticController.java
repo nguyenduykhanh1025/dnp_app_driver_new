@@ -20,7 +20,6 @@ import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
-import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
 import vn.com.irtech.eport.logistic.service.INapasApiService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
@@ -31,7 +30,7 @@ import vn.com.irtech.eport.system.service.ISysConfigService;
 @RequestMapping("/logistic")
 public class LogisticController extends BaseController {
 
-	private static final Logger log = LoggerFactory.getLogger(LogisticController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LogisticController.class);
 
 	@Autowired
 	private IShipmentService shipmentService;
@@ -112,8 +111,5 @@ public class LogisticController extends BaseController {
 		return ajaxResult;
 	}
 
-	
-	
-	
 	
 }

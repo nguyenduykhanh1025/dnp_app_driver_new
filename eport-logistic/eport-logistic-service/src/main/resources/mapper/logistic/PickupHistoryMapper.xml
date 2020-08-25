@@ -449,17 +449,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from pickup_history p
 		left join driver_account d on p.driver_id = d.id
 		<where>
+			p.status != 2
 			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
 		</where>
 		group by p.id, p.logistic_group_id, p.shipment_id, p.shipment_detail_id, p.driver_id, p.pickup_assign_id, 
 		p.container_no, p.truck_no, p.chassis_no, p.status, p.gatein_date, d.mobile_number, d.full_name
 	</select>
 
-	<select id="checkPlateNumberIsUnavailable" parameterType="Long" resultType="int">
+	<select id="checkPlateNumberIsUnavailable" parameterType="PickupHistory" resultType="int">
 		select count(*) from pickup_history
 		where driver_id != #{driverId}
 		and truck_no = #{truckNo}
 		and chassis_no = #{chassisNo}
 		and status != 2
 	</select>
+
+	
 </mapper>

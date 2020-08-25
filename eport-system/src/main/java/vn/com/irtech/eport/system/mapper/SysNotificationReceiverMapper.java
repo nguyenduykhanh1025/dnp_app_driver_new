@@ -67,4 +67,12 @@ public interface SysNotificationReceiverMapper
      * @return	List<NotificationRes>
      */
     public List<NotificationRes> getNotificationList(SysNotificationReceiver sysNotificationReceiver);
+    
+    /**
+     * Get notification list not sent yet
+     * 
+     * @param sysNotificationReceiver
+     * @return List<SysNotificationReceiver
+     */
+    public List<SysNotificationReceiver> getNotificationListNotSentYet(SysNotificationReceiver sysNotificationReceiver);
 }

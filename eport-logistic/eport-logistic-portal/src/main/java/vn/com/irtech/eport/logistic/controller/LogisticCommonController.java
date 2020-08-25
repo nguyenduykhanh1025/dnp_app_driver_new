@@ -161,16 +161,38 @@ public class LogisticCommonController extends LogisticBaseController {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@GetMapping("/source/taxCode/consignee")
+	@ResponseBody
+	public AjaxResult getConsigneeList() {
+		AjaxResult ajaxResult = success();
+		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeListTaxCode");
+		if (listConsignee == null) {
+			listConsignee = shipmentDetailService.getConsigneeList();
+			CacheUtils.put("consigneeListTaxCode", listConsignee);
+		}
+		ajaxResult.put("consigneeList", listConsignee);
+		return ajaxResult;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@GetMapping("/source/consignee")
+	@ResponseBody
+	public AjaxResult getConsigneeListWithoutTaxCode() {
+		AjaxResult ajaxResult = success();
+		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
+		if (listConsignee == null) {
+			listConsignee = shipmentDetailService.getConsigneeListWithoutTaxCode();
+			CacheUtils.put("consigneeList", listConsignee);
+		}
+		ajaxResult.put("consigneeList", listConsignee);
+		return ajaxResult;
+	}
+	
+	@SuppressWarnings("unchecked")
 	@GetMapping("/source/option")
 	@ResponseBody
 	public AjaxResult getField() {
 		AjaxResult ajaxResult = success();
-		List<String> listConsignee = (List<String>) CacheUtils.get("consigneeList");
-		if (listConsignee == null) {
-			listConsignee = shipmentDetailService.getConsigneeList();
-			CacheUtils.put("consigneeList", listConsignee);
-		}
-		ajaxResult.put("consigneeList", listConsignee);
 		
 		List<String> listVessel = (List<String>) CacheUtils.get("vslNmList");
 		if (listVessel == null) {

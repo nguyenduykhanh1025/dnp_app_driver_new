@@ -54,6 +54,8 @@ public class SysNotificationReceiver extends BaseEntity
     
     private String notifyLink;
     
+    private SysNotification sysNotification;
+    
     public void setId(Long id) 
     {
         this.id = id;
@@ -151,6 +153,14 @@ public class SysNotificationReceiver extends BaseEntity
 		this.notifyLink = notifyLink;
 	}
 
+	public SysNotification getSysNotification() {
+		return sysNotification;
+	}
+
+	public void setSysNotification(SysNotification sysNotification) {
+		this.sysNotification = sysNotification;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -169,6 +179,7 @@ public class SysNotificationReceiver extends BaseEntity
             .append("title", getTitle())
             .append("content", getContent())
             .append("notifyLink", getNotifyLink())
+            .append("sysNotification", getSysNotification())
             .toString();
     }
 }

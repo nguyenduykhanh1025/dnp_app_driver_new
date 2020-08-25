@@ -1,9 +1,7 @@
 package vn.com.irtech.eport.api.controller.transport;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
+
 import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.consts.MessageConsts;
 import vn.com.irtech.eport.api.message.MessageHelper;
@@ -31,11 +31,11 @@ import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.CacheUtils;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.form.NotificationForm;
 import vn.com.irtech.eport.logistic.form.Pickup;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
@@ -197,17 +197,29 @@ public class TransportController extends BaseController {
 		if (pickupAssign == null) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0007));
 		}
-		if (userId != pickupAssign.getDriverId() || 
+		if (!userId.equals(pickupAssign.getDriverId()) ||
 				(pickupHistoryTemp.getShipmentDetailId() != null && pickupHistoryService.checkPickupHistoryExists(pickupAssign.getShipmentId(), pickupHistoryTemp.getShipmentDetailId()) > 0)) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0009));
 		}
 		PickupHistory pickupHistory = new PickupHistory();
 		ShipmentDetail shipmentDetail = null;
+		List<ShipmentDetail> shipmentDetails = null;
+		if (StringUtils.isNotEmpty(pickupHistoryTemp.getContainerNo())) {
+			shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setShipmentId(pickupAssign.getShipmentId());
+			shipmentDetail.setContainerNo(pickupHistoryTemp.getContainerNo());
+			shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+				shipmentDetail = shipmentDetails.get(0);
+			} else {
+				shipmentDetail = null;
+			}
+		}
+		
 		// Case shipmentDetailId != null
-		if (pickupHistoryTemp.getShipmentDetailId() != null) {
-			shipmentDetail = shipmentDetailService.selectShipmentDetailById(pickupHistoryTemp.getShipmentDetailId());
+		if (shipmentDetail != null) {
 			pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
-			pickupHistory.setShipmentDetailId(pickupHistoryTemp.getShipmentDetailId());
+			pickupHistory.setShipmentDetailId(shipmentDetail.getId());
 		}
 		
 		// Check max pickup driver can pick
@@ -228,7 +240,7 @@ public class TransportController extends BaseController {
 		pickupHistory.setShipmentId(pickupAssign.getShipmentId());
 		pickupHistory.setDriverPhoneNumber(pickupAssign.getPhoneNumber());
 		pickupHistory.setPickupAssignId(pickupAssign.getId());
-		pickupHistory.setGatePass(pickupHistory.getTruckNo().substring(0, 5));
+		pickupHistory.setGatePass(pickupHistory.getTruckNo().substring(pickupHistory.getTruckNo().length()-5, pickupHistory.getTruckNo().length()));
 		pickupHistory.setStatus(0);
 		pickupHistoryService.insertPickupHistory(pickupHistory);
 		return success();
@@ -340,25 +352,31 @@ public class TransportController extends BaseController {
 
 		CacheUtils.put("driver-" + SecurityUtils.getCurrentUser().getUser().getUserId(), location);
 		
-		if (distanceRequire > distance(location.get("x"), latEport, location.get("y"), lonEport, 0.0, 0.0)) {
-			
-			List<Pickup> pickups = pickupHistoryService.selectPickupListByDriverId(SecurityUtils.getCurrentUser().getUser().getUserId());
-			
-			for (Pickup pickup : pickups) {
+		double x = location.get("x");
+		
+		double y = location.get("y");
+		
+		if (x != 0 && y != 0) {
+			if (distanceRequire > distance(x, latEport, y, lonEport, 0.0, 0.0)) {
 				
-				// Check if service is send cont
-				if (pickup.getServiceType()%2 == 0) {
-					// Check if cont has position
-					if (checkContHasPosition(pickup)) {
-						// Send to mc
-						Map<String, Long> map = new HashMap<>();
-						map.put("pickupHistoryId", pickup.getPickupId());
-						try {
-							mqttService.sendMessageToMc(map.toString());
-						} catch (MqttException e) {
-							logger.error("Api Driver Error Update Location: " + e);
-						}
-					}					
+				List<Pickup> pickups = pickupHistoryService.selectPickupListByDriverId(SecurityUtils.getCurrentUser().getUser().getUserId());
+				
+				for (Pickup pickup : pickups) {
+					
+					// Check if service is send cont
+					if (pickup.getServiceType()%2 == 0) {
+						// Check if cont has position
+						if (!checkContHasPosition(pickup)) {
+							// Send to mc
+							Map<String, Object> map = new HashMap<>();
+							map.put("pickupHistoryId", pickup.getPickupId().toString());
+							try {
+								mqttService.sendMessageToMc(new Gson().toJson(map));
+							} catch (MqttException e) {
+								logger.error("Api Driver Error Update Location: " + e);
+							}
+						}					
+					}
 				}
 			}
 		}

@@ -39,7 +39,7 @@ public class DriverCheckinServiceImpl implements IDriverCheckinService{
 			}
 			
 			// pickup is not of driver
-			if (pickupHistory.getDriverId() != SecurityUtils.getCurrentUser().getUser().getUserId()) {
+			if (!pickupHistory.getDriverId().equals(SecurityUtils.getCurrentUser().getUser().getUserId())) {
 				throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0001));
 			}
 			

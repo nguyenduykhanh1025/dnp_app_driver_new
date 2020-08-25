@@ -20,6 +20,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="title"    column="title"    />
         <result property="content"    column="content"    />
         <result property="notifyLink"    column="notify_link"    />
+        <association property="sysNotification"    column="notification_id" javaType="SysNotification" resultMap="sysNotificationResult" />
+    </resultMap>
+
+    <resultMap type="SysNotification" id="sysNotificationResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="notifyLevel"    column="notify_level"    />
+        <result property="notifyLink"    column="notify_link"    />
+        <result property="status"    column="status"    />
+        <result property="createTime"    column="create_time"    />
     </resultMap>
 
     <sql id="selectSysNotificationReceiverVo">
@@ -114,6 +125,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="notificationId != null "> and r.notification_id = #{notificationId}</if>
             <if test="notificationType != null  and notificationType != ''"> and r.notification_type = #{notificationType}</if>
             <if test="seenFlg != null "> and r.seen_flg = #{seenFlg}</if>
+            <if test="createTime != null "> and TO_CHAR(n.createTime, 'DD/MM/YYYY') = #{createTime}</if>
+        </where>
+    </select>
+
+    <select id="getNotificationListNotSentYet" parameterType="SysNotificationReceiver" resultType="SysNotificationReceiver">
+        select *
+        from sys_notification_receiver r
+        left join sys_notification n on r.notification_id = n.id
+        <where>
+            <if test="userId != null "> and r.user_id = #{userId}</if>
+            <if test="userType != null "> and r.user_type = #{userType}</if>
+            <if test="notificationId != null "> and r.notification_id = #{notificationId}</if>
+            <if test="notificationType != null  and notificationType != ''"> and r.notification_type = #{notificationType}</if>
+            <if test="seenFlg != null "> and r.seen_flg = #{seenFlg}</if>
+            <if test="sentFlg != null"> and sent_flg = #{sentFlg}</if>
+            <if test="sysNotification.status != null"> and n.status = #{sysNotification.status}</if>
             <if test="createTime != null "> and TO_CHAR(n.createTime, 'DD/MM/YYYY') = #{createTime}</if>
         </where>
     </select>
