@@ -449,6 +449,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from pickup_history p
 		left join driver_account d on p.driver_id = d.id
 		<where>
+			p.status != 2
 			<if test="logisticGroupId != null "> and p.logistic_group_id = #{logisticGroupId}</if>
 		</where>
 		group by p.id, p.logistic_group_id, p.shipment_id, p.shipment_detail_id, p.driver_id, p.pickup_assign_id, 
