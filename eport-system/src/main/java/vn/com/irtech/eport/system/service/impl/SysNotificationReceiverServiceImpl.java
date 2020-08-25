@@ -106,4 +106,15 @@ public class SysNotificationReceiverServiceImpl implements ISysNotificationRecei
     public List<NotificationRes> getNotificationList(SysNotificationReceiver sysNotificationReceiver) {
     	return sysNotificationReceiverMapper.getNotificationList(sysNotificationReceiver);
     }
+    
+    /**
+     * Get notification list not sent yet
+     * 
+     * @param sysNotificationReceiver
+     * @return List<SysNotificationReceiver
+     */
+    @Override
+    public List<SysNotificationReceiver> getNotificationListNotSentYet(SysNotificationReceiver sysNotificationReceiver) {
+    	return sysNotificationReceiverMapper.getNotificationListNotSentYet(sysNotificationReceiver);
+    }
 }

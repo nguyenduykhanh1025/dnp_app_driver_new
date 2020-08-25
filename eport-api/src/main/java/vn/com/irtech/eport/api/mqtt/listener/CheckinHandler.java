@@ -516,23 +516,25 @@ public class CheckinHandler implements IMqttMessageListener {
 			for (PickupHistory pickupHistory : pickupHistories) {
 				// Check to filter pickup history that not have container no yet
 				// Add pickup history info to list data return
-				PickupHistoryDataRes pickupHistoryDataRes = new PickupHistoryDataRes();
-				pickupHistoryDataRes.setChassisNo(pickupHistory.getChassisNo());
-				pickupHistoryDataRes.setTruckNo(pickupHistory.getTruckNo());
-				pickupHistoryDataRes.setServiceType(pickupHistory.getShipment().getServiceType());
-				if (pickupHistoryDataRes.getServiceType() == 1) {
-					pickupHistoryDataRes.setFe("F");
-				} else {
-					pickupHistoryDataRes.setFe("E");
+				if (pickupHistory.getShipmentDetailId() == null) {
+					PickupHistoryDataRes pickupHistoryDataRes = new PickupHistoryDataRes();
+					pickupHistoryDataRes.setChassisNo(pickupHistory.getChassisNo());
+					pickupHistoryDataRes.setTruckNo(pickupHistory.getTruckNo());
+					pickupHistoryDataRes.setServiceType(pickupHistory.getShipment().getServiceType());
+					if (pickupHistoryDataRes.getServiceType() == 1) {
+						pickupHistoryDataRes.setFe("F");
+					} else {
+						pickupHistoryDataRes.setFe("E");
+					}
+					pickupHistoryDataRes.setPickupHistoryId(pickupHistory.getId());
+					pickupHistoryDataRes.setShipmentId(pickupHistory.getShipmentId());
+					if (pickupHistory.getShipmentDetailId() != null) {
+						pickupHistoryDataRes.setVessel(pickupHistory.getShipmentDetail().getVslNm());
+						pickupHistoryDataRes.setVoyage(pickupHistory.getShipmentDetail().getVoyNo());
+						pickupHistoryDataRes.setWeight(pickupHistory.getShipmentDetail().getWgt());
+					}
+					pickupHistoryDataReses.add(pickupHistoryDataRes);
 				}
-				pickupHistoryDataRes.setPickupHistoryId(pickupHistory.getId());
-				pickupHistoryDataRes.setShipmentId(pickupHistory.getShipmentId());
-				if (pickupHistory.getShipmentDetailId() != null) {
-					pickupHistoryDataRes.setVessel(pickupHistory.getShipmentDetail().getVslNm());
-					pickupHistoryDataRes.setVoyage(pickupHistory.getShipmentDetail().getVoyNo());
-					pickupHistoryDataRes.setWeight(pickupHistory.getShipmentDetail().getWgt());
-				}
-				pickupHistoryDataReses.add(pickupHistoryDataRes);
 			}
 		}
 		return pickupHistoryDataReses;

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.firebase.messaging.FirebaseMessagingException;
 
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
@@ -42,6 +45,7 @@ import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysNotification;
 import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
+import vn.com.irtech.eport.system.domain.SysUserToken;
 import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
 import vn.com.irtech.eport.system.service.ISysNotificationService;
 import vn.com.irtech.eport.system.service.ISysUserTokenService;
@@ -76,7 +80,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	private ISysNotificationService sysNotificationService;
 	
 	@Autowired
-	private ISysNotificationReceiverService sysnotificationReceiverService;
+	private ISysNotificationReceiverService sysNotificationReceiverService;
 	
 	@Autowired
 	private ISysUserTokenService sysUserTokenService;
@@ -227,17 +231,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 				sysNotificationReceiver.setUserId(pickupAssigns.get(i).getDriverId());
 				sysNotificationReceiver.setNotificationId(sysNotification.getId());
 				sysNotificationReceiver.setUserType(2L);
-				sysnotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
-				
-				// Get device token to send notify
-//				SysUserToken sysUserToken = new SysUserToken();
-//				sysUserToken.setUserId(pickupAssigns.get(i).getDriverId());;
-//				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(pickupAssigns.get(i).getDriverId());
-//				try {
-//					firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
-//				} catch (FirebaseMessagingException e) {
-//					logger.error("Error send notification assign driver: " + e);
-//				}
+				sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
 			}
 			return success();
 		}
