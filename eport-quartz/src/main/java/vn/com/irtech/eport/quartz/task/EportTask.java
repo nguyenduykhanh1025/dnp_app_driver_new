@@ -281,12 +281,12 @@ public class EportTask {
         	for (SysNotificationReceiver sysNotificationReceiver2 : notificationReceivers) {
         		SysUserToken sysUserToken = new SysUserToken();
 				sysUserToken.setUserId(sysNotificationReceiver2.getUserId());;
+				sysNotificationReceiver2.setSentFlg(true);
+        		sysNotificationReceiverService.updateSysNotificationReceiver(sysNotificationReceiver2);
 				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(sysNotificationReceiver2.getUserId());
 				if (CollectionUtils.isNotEmpty(sysUserTokens)) {
 					try {
 						firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
-						sysNotificationReceiver2.setSentFlg(true);
-		        		sysNotificationReceiverService.updateSysNotificationReceiver(sysNotificationReceiver2);
 					} catch (FirebaseMessagingException e) {
 						logger.error("Error send notification: " + e);
 					}
