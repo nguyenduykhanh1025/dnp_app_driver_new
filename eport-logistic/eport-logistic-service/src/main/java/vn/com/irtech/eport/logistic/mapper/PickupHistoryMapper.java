@@ -117,4 +117,5 @@ public interface PickupHistoryMapper
      * @return int
      */
     public int checkPlateNumberIsUnavailable(PickupHistory pickupHistory);
+   
 }

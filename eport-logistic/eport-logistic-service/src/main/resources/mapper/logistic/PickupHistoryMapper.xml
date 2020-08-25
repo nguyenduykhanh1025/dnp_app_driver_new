@@ -455,11 +455,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		p.container_no, p.truck_no, p.chassis_no, p.status, p.gatein_date, d.mobile_number, d.full_name
 	</select>
 
-	<select id="checkPlateNumberIsUnavailable" parameterType="Long" resultType="int">
+	<select id="checkPlateNumberIsUnavailable" parameterType="PickupHistory" resultType="int">
 		select count(*) from pickup_history
 		where driver_id != #{driverId}
 		and truck_no = #{truckNo}
 		and chassis_no = #{chassisNo}
 		and status != 2
 	</select>
+
+	
 </mapper>

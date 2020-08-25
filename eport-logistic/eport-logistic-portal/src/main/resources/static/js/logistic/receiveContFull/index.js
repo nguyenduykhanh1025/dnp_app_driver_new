@@ -32,33 +32,19 @@ $.ajax({
       dischargePortList = data.dischargePortList;
       opeCodeList = data.opeCodeList;
       vslNmList = data.vslNmList;
-      consigneeList = data.consigneeList;
-      // consigneeList = [];
-      // data.consigneeList.forEach(function iterate(value) {
-      //   consigneeList.push([value]);
-      // });
-      // let consignee, consigneeList = [];
-      // while (consignee = data.consigneeList.shift()) {
-      //   consigneeList.push([
-      //     [consignee]
-      //   ]);
-      // }
-      // consigneeList = new Object;
-      // consigneeList.consignees = new Object;
-      // consigneeList.consignees = data.consigneeList;
-      // console.log(consigneeList);
     }
   }
 });
-// $.ajax({
-//   url: prefix + "/consignees",
-//   method: "GET",
-//   success: function (data) {
-//     if (data.code == 0) {
-//       consigneeList = data.consigneeList;
-//     }
-//   }
-// });
+
+$.ajax({
+  url: ctx + "logistic/source/taxCode/consignee",
+  method: "GET",
+  success: function (data) {
+    if (data.code == 0) {
+      consigneeList = data.consigneeList;
+    }
+  }
+});
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {

@@ -20,9 +20,19 @@ function closeForm() {
 
 var index = 0;
 bayList.forEach(function(bay) {
+    let level = 1;
     let str = '<div class="bayPosition">';
     let bayName = "";
-    for (let col=0; col<6; col++) {
+    for (let col=0; col<bay[0].length; col++) {
+        if (col > 5 && level == 1) {
+            level++;
+            str += '</div><div style="margin-bottom: 10px;"><b>'+ bayName +'</b></div>';
+            if (bayName) {
+                $(".contListPosition").append(str);
+            }
+            str = '<div class="bayPosition">';
+            bayName = "";
+        }
         str += '<div class="columnDiv">';
         for (let row=4; row>=0; row--) {
             if (bay[row][col] != null) {
@@ -60,8 +70,8 @@ bayList.forEach(function(bay) {
     str += '</div><div style="margin-bottom: 10px;"><b>'+ bayName +'</b></div>';
     $(".contListPosition").append(str);
     index++;
-    calculateMovingCont();
 });
+calculateMovingCont();
 
 function pickCont(id, row, col, index, isPicked) {
     if (bayList[index][row][col].containerNo == null) {
@@ -95,7 +105,12 @@ function calculateMovingCont() {
     moveContAmount = 0;
     for (let b=0; b<bayList.length; b++) {
         let moveContAmountTemp = 0;
-        for (let j=0; j<6; j++) {
+        let level = 1;
+        for (let j=0; j<bayList[b][0].length; j++) {
+            if (j > 5 && level == 1) {
+                level++;
+                moveContAmountTemp = 0;
+            }
             for (let i=4; i>=0; i--) {
                 if (bayList[b][i][j] != null) {
                     if (bayList[b][i][j].preorderPickup == "Y" && "N" !=  bayList[b][i][j].prePickupPaymentStatus) {

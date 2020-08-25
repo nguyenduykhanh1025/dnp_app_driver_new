@@ -13,25 +13,23 @@ var sizeList = [];
 var berthplanList;// get infor
 //dictionary sizeList
 $.ajax({
-	  type: "GET",
-	  url: ctx + "logistic/size/container/list",
-	  success(data) {
-		  if(data.code == 0){
-		      data.data.forEach(element => {
-		    	  sizeList.push(element['dictLabel']);
-		      })
-		  }
-	  }
+    type: "GET",
+    url: ctx + "logistic/size/container/list",
+    success(data) {
+        if (data.code == 0) {
+            data.data.forEach(element => {
+                sizeList.push(element['dictLabel']);
+            })
+        }
+    }
 })
 var consigneeList, opeCodeList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({
-    url: ctx + "logistic/source/option",
+    url: ctx + "logistic/source/consignee",
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
-//            opeCodeList = data.opeCodeList;
-//            vslNmList = data.vslNmList;
             consigneeList = data.consigneeList;
         }
     }

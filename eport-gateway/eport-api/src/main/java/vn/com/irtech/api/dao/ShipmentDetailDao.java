@@ -25,6 +25,13 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	
 	public List<String> selectConsigneeList();
 	
+	/**
+	 * Select consignee list both has and has not taxcode
+	 * 
+	 * @return List<String>
+	 */
+	public List<String> selectConsigneeListWithoutTaxCode();
+	
 	public List<String> selectVoyageNoListByVesselCode(String vesselCode);
 	
 	public List<String> selectOpeCodeList();

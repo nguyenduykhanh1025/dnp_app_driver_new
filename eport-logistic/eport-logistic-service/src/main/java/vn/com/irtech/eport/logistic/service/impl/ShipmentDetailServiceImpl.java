@@ -213,8 +213,8 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     @Override
     public List<ShipmentDetail[][]> getContPosition(List<ShipmentDetail> coordinateOfList,
             List<ShipmentDetail> shipmentDetails) {
-        // simulating the location of container in da nang port, mapping to matrix
-        List<ShipmentDetail[][]> bayList = new ArrayList<>();
+        // simulating the location of container in da nang port, mapping to matrix     
+        // Update yard position for list container
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             for (int i = 0; i < coordinateOfList.size(); i++) {
                 if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).getContainerNo())) {
@@ -228,6 +228,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             }
         }
 
+        // Add the rest unknown container in list 
         for (int i = 0; i < coordinateOfList.size(); i++) {
             ShipmentDetail shipmentDetail2 = new ShipmentDetail();
             shipmentDetail2.setBlock(coordinateOfList.get(i).getBlock());
@@ -237,17 +238,41 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             shipmentDetails.add(shipmentDetail2);
         }
 
-        // Mapping container to matrix by location row, tier, bay
+        // Sorting list container by bay
         Collections.sort(shipmentDetails, new BayComparator());
-        ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][6];
+        
+        // List that store the max value index row.
+        List<Integer> maxRowList = new ArrayList<>();
+
+        // Set the max value of each bay into maxRowList
         String currentBay = shipmentDetails.get(0).getBay();
+        Integer maxRow = shipmentDetails.get(0).getRow();
+        for (ShipmentDetail shipmentDetail : shipmentDetails) {
+        	if (currentBay.equals(shipmentDetail.getBay())) {
+                if (maxRow < shipmentDetail.getRow()) {
+                	maxRow = shipmentDetail.getRow();
+                }
+            } else {
+                maxRowList.add(maxRow);
+                currentBay = shipmentDetail.getBay();
+                maxRow = shipmentDetail.getRow();
+            }
+        }
+        maxRowList.add(maxRow);
+        
+        // Declare bayList to store multiple matrix of position for each bay
+        List<ShipmentDetail[][]> bayList = new ArrayList<>();
+        ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][maxRowList.get(0)];
+        
+        int i = 0;
+        currentBay = shipmentDetails.get(0).getBay();
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
             if (currentBay.equals(shipmentDetail.getBay())) {
                 shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
             } else {
                 bayList.add(shipmentDetailMatrix);
                 currentBay = shipmentDetail.getBay();
-                shipmentDetailMatrix = new ShipmentDetail[5][6];
+                shipmentDetailMatrix = new ShipmentDetail[5][maxRowList.get(++i)];
                 shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
             }
         }
@@ -262,11 +287,12 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit) {
         try {
 
-            // Apply yard position for shipment detail list
-            List<ShipmentDetail[][]> bayList = new ArrayList<>();
+        	// simulating the location of container in da nang port, mapping to matrix     
+            // Update yard position for list container
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 for (int i = 0; i < coordinateOfList.size(); i++) {
                     if (shipmentDetail.getContainerNo().equals(coordinateOfList.get(i).getContainerNo())) {
+                        shipmentDetail.setBlock(coordinateOfList.get(i).getBlock());
                         shipmentDetail.setBay(coordinateOfList.get(i).getBay());
                         shipmentDetail.setRow(coordinateOfList.get(i).getRow());
                         shipmentDetail.setTier(coordinateOfList.get(i).getTier());
@@ -276,26 +302,51 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 }
             }
 
-            // 
+            // Add the rest unknown container in list 
             for (int i = 0; i < coordinateOfList.size(); i++) {
                 ShipmentDetail shipmentDetail2 = new ShipmentDetail();
+                shipmentDetail2.setBlock(coordinateOfList.get(i).getBlock());
                 shipmentDetail2.setBay(coordinateOfList.get(i).getBay());
                 shipmentDetail2.setRow(coordinateOfList.get(i).getRow());
                 shipmentDetail2.setTier(coordinateOfList.get(i).getTier());
                 shipmentDetails.add(shipmentDetail2);
             }
 
-            // Mapping container to matrix by location row, tier, bay
+            // Sorting list container by bay
             Collections.sort(shipmentDetails, new BayComparator());
-            ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][6];
+            
+         // List that store the max value index row.
+            List<Integer> maxRowList = new ArrayList<>();
+
+            // Set the max value of each bay into maxRowList
             String currentBay = shipmentDetails.get(0).getBay();
+            Integer maxRow = shipmentDetails.get(0).getRow();
+            for (ShipmentDetail shipmentDetail : shipmentDetails) {
+            	if (currentBay.equals(shipmentDetail.getBay())) {
+                    if (maxRow < shipmentDetail.getRow()) {
+                    	maxRow = shipmentDetail.getRow();
+                    }
+                } else {
+                    maxRowList.add(maxRow);
+                    currentBay = shipmentDetail.getBay();
+                    maxRow = shipmentDetail.getRow();
+                }
+            }
+            maxRowList.add(maxRow);
+            
+            // Declare bayList to store multiple matrix of position for each bay
+            List<ShipmentDetail[][]> bayList = new ArrayList<>();
+            ShipmentDetail[][] shipmentDetailMatrix = new ShipmentDetail[5][maxRowList.get(0)];
+            
+            int i = 0;
+            currentBay = shipmentDetails.get(0).getBay();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (currentBay.equals(shipmentDetail.getBay())) {
                     shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
                 } else {
                     bayList.add(shipmentDetailMatrix);
                     currentBay = shipmentDetail.getBay();
-                    shipmentDetailMatrix = new ShipmentDetail[5][6];
+                    shipmentDetailMatrix = new ShipmentDetail[5][maxRowList.get(++i)];
                     shipmentDetailMatrix[shipmentDetail.getTier() - 1][shipmentDetail.getRow() - 1] = shipmentDetail;
                 }
             }
@@ -306,7 +357,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             List<ShipmentDetail> shiftingContList = new ArrayList<>();
             for (int b = 0; b < bayList.size(); b++) {
                 List<ShipmentDetail> tempShiftingContList = new ArrayList<>();
-                for (int row = 0; row < 6; row++) {
+                int level = 1;
+                for (int row = 0; row < bayList.get(b)[0].length; row++) {
+                	if (row > 5 && level == 1) {
+                		tempShiftingContList = new ArrayList<>();
+                	}
                     for (int tier = 4; tier >= 0; tier--) {
                         if (bayList.get(b)[tier][row] != null) {
                             Boolean needMoving = true;
@@ -698,6 +753,17 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         List<String> consignees = response.getBody();
         return consignees;
     }
+    
+    @Override
+    public List<String> getConsigneeListWithoutTaxCode() {
+        String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeListWithoutTaxCode";
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<List<String>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<String>>() {
+                });
+        List<String> consignees = response.getBody();
+        return consignees;
+    }
 
     @Override
     public List<String> getOpeCodeList() {
@@ -871,7 +937,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
         // Get container from top to bottom
         for (int b = 0; b < bayList.size(); b++) {
-            for (int row = 0; row < 3; row++) {
+        	int rowMax = bayList.get(b)[0].length;
+        	int rowTemp = 0;
+        	if (rowMax%2 == 1) {
+        		rowMax++;
+        		rowTemp++;
+        	}
+            for (int row = 0; row < rowMax/2; row++) {
                 boolean stack1 = false;
                 boolean stack2 = false;
                 for (int tier = 4; tier >= 0; tier--) {
@@ -884,7 +956,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                     	stack1 = true;
                     }
                     
-                    ShipmentDetail shipmentDetail2 = bayList.get(b)[tier][5-row];
+                    ShipmentDetail shipmentDetail2 = bayList.get(b)[tier][rowMax-row-1-rowTemp];
                     if (shipmentDetail2 != null) {
                     	if (validateAutoPickupCont(shipmentDetail2, stack2)) {
                             return shipmentDetail2;
@@ -925,6 +997,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
         if (stack && "N".equals(shipmentDetail.getPrePickupPaymentStatus())) {
             return false;
+        }
+        
+        if (!"N".equals(shipmentDetail.getFinishStatus())) {
+        	return false;
         }
 
         return true;

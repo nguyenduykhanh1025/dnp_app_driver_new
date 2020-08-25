@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
+import vn.com.irtech.eport.framework.firebase.service.FirebaseService;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.DriverTruck;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -38,10 +40,17 @@ import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysNotification;
+import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
+import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
+import vn.com.irtech.eport.system.service.ISysNotificationService;
+import vn.com.irtech.eport.system.service.ISysUserTokenService;
 
 @Controller
 @RequestMapping("/logistic/assignTruck")
 public class LogisticAssignTruckController extends LogisticBaseController{
+	
+	private static final Logger logger = LoggerFactory.getLogger(LogisticAssignTruckController.class);
 
 	private final String PREFIX = "logistic/assignTruck";
 	
@@ -62,6 +71,18 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 	
 	@Autowired
 	private ILogisticTruckService logisticTruckService;
+	
+	@Autowired
+	private ISysNotificationService sysNotificationService;
+	
+	@Autowired
+	private ISysNotificationReceiverService sysnotificationReceiverService;
+	
+	@Autowired
+	private ISysUserTokenService sysUserTokenService;
+	
+	@Autowired
+	private FirebaseService firebaseService;
 	
 	@GetMapping
     public String assignTruck(ModelMap mmap) {
@@ -185,11 +206,38 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 					}
 				}
 			}
+			
+			// Create info notification
+			SysNotification sysNotification = new SysNotification();
+			sysNotification.setTitle("Thông báo điều xe.");
+			sysNotification.setNotifyLevel(2L);
+			sysNotification.setContent("Bạn đã được chỉ định điều xe cho lô " + shipment.getId());
+			sysNotification.setNotifyLink("");
+			sysNotification.setStatus(1L);
+			sysNotificationService.insertSysNotification(sysNotification);
+			
 			// add custom assign follow batch
 			for(int i = 0 ; i< pickupAssigns.size(); i ++){
 				pickupAssigns.get(i).setCreateBy(getUser().getFullName());
 				pickupAssigns.get(i).setCreateTime(new Date());
 				pickupAssignService.insertPickupAssign(pickupAssigns.get(i));
+				
+				// Notification receiver
+				SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
+				sysNotificationReceiver.setUserId(pickupAssigns.get(i).getDriverId());
+				sysNotificationReceiver.setNotificationId(sysNotification.getId());
+				sysNotificationReceiver.setUserType(2L);
+				sysnotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
+				
+				// Get device token to send notify
+//				SysUserToken sysUserToken = new SysUserToken();
+//				sysUserToken.setUserId(pickupAssigns.get(i).getDriverId());;
+//				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(pickupAssigns.get(i).getDriverId());
+//				try {
+//					firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
+//				} catch (FirebaseMessagingException e) {
+//					logger.error("Error send notification assign driver: " + e);
+//				}
 			}
 			return success();
 		}

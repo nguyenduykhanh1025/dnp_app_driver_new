@@ -26,12 +26,10 @@ $.ajax({
 });
 
 $.ajax({
-    url: ctx + "logistic/source/option",
+    url: ctx + "logistic/source/consignee",
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
-//            opeCodeList = data.opeCodeList;
-//            vslNmList = data.vslNmList;
             consigneeList = data.consigneeList;
         }
     }
