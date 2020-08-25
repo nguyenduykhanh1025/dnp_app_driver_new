@@ -1,5 +1,8 @@
 package vn.com.irtech.eport.api.controller.gate.detection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
@@ -15,11 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 
 import vn.com.irtech.eport.api.consts.MqttConsts;
+import vn.com.irtech.eport.api.form.CheckinReq;
 import vn.com.irtech.eport.api.form.DetectionInfo;
+import vn.com.irtech.eport.api.form.MeasurementDataReq;
+import vn.com.irtech.eport.api.form.PickupHistoryDataRes;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
+import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.common.utils.bean.BeanUtils;
 
 @RestController
 @RequestMapping("/gate")
@@ -34,8 +42,23 @@ public class GateDetectionController extends BaseController {
 	@ResponseBody
 	public AjaxResult submitDectionInfo(@Validated @RequestBody DetectionInfo detectionInfo) {
 		CacheUtils.put("detectionInfo_" + detectionInfo.getGateId(), detectionInfo);
+		CheckinReq checkinReq = new CheckinReq();
+		List<MeasurementDataReq> measurementDataReqs = new ArrayList<>();
+		MeasurementDataReq measurementDataReq = new MeasurementDataReq();
+		measurementDataReq.setTruckNo(detectionInfo.getTruckNo());
+		measurementDataReq.setChassisNo(detectionInfo.getChassisNo());
+		if (StringUtils.isNotEmpty(detectionInfo.getContainerNo1())) {
+			measurementDataReq.setContNo(detectionInfo.getContainerNo1());
+		}
+		measurementDataReqs.add(measurementDataReq);
+		if (StringUtils.isNotEmpty(detectionInfo.getContainerNo2())) {
+			MeasurementDataReq measurementDataReq2 = new MeasurementDataReq();
+			BeanUtils.copyBeanProp(measurementDataReq2, measurementDataReq);
+			measurementDataReqs.add(measurementDataReq2);
+		}
+		checkinReq.setInput(measurementDataReqs);
 		try {
-			mqttService.publish(MqttConsts.SMART_GATE_RES_TOPIC.replace("+", detectionInfo.getGateId()), new MqttMessage(new Gson().toJson(detectionInfo).getBytes()));
+			mqttService.publish(MqttConsts.SMART_GATE_RES_TOPIC.replace("+", detectionInfo.getGateId()), new MqttMessage(new Gson().toJson(checkinReq).getBytes()));
 		} catch (MqttException e) {
 			logger.error("Error send detection info: " + e);
 		}

@@ -110,6 +110,13 @@ public interface IShipmentDetailService
     
     public List<String> getConsigneeList();
     
+    /**
+     * Get consignee list without tax code
+     * 
+     * @return List<String>
+     */
+    public List<String> getConsigneeListWithoutTaxCode();
+    
     public List<String> getVoyageNoList(String vesselCode);
     
     public List<String> getOpeCodeList();

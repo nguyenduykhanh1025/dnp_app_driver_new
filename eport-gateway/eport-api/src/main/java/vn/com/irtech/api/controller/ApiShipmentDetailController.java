@@ -63,6 +63,11 @@ public class ApiShipmentDetailController {
 		return shipmentDetailDao.selectConsigneeList();
 	}
 	
+	@GetMapping("/shipmentDetail/getConsigneeListWithoutTaxCode")
+	public List<String> getConsigneeListWithoutTaxCode() {
+		return shipmentDetailDao.selectConsigneeListWithoutTaxCode();
+	}
+	
 	@GetMapping("/shipmentDetail/getVoyageNoList/{vesselCode}")
 	public List<String> getVoyageNoList(@PathVariable String vesselCode){
 		return shipmentDetailDao.selectVoyageNoListByVesselCode(vesselCode);

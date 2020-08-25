@@ -26,6 +26,7 @@ import vn.com.irtech.eport.api.form.DriverRes;
 import vn.com.irtech.eport.api.form.GateInFormData;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -141,6 +142,7 @@ public class GatePassHandler implements IMqttMessageListener {
 					ShipmentDetail shipmentDetail = new ShipmentDetail();
 					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
 					shipmentDetail.setFinishStatus("Y");
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					// Update shipment status if all shipment detail is finish
 					shipmentDetail.setId(null);
 					shipmentDetail.setFinishStatus("N");
@@ -175,7 +177,12 @@ public class GatePassHandler implements IMqttMessageListener {
 				// Iterate pickup out list
 				for (PickupHistory pickupHistory : gateInFormData.getPickupOut()) {
 					pickupHistory.setStatus(1);
+					pickupHistory.setGateinDate(new Date());
 					pickupHistoryService.updatePickupHistory(pickupHistory);
+					ShipmentDetail shipmentDetail = new ShipmentDetail();
+					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
+					shipmentDetail.setFinishStatus("Y");
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
 					DriverDataRes driverData = new DriverDataRes();
 					driverData.setPickupHistoryId(pickupHistory.getId());
 					driverData.setContNo(pickupHistory.getContainerNo());
@@ -201,20 +208,55 @@ public class GatePassHandler implements IMqttMessageListener {
 			processOrder.setResult("S");
 			processHistory.setResult("S");
 			try {
-				responseDriver(driverRes, gateInFormData.getSessionId());
-				responseSmartGate(gateInFormData.getGateId(), BusinessConsts.SUCCESS);
+				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
+					responseDriver(driverRes, gateInFormData.getSessionId());
+				}
 			} catch (Exception e) {
-				logger.warn(e.getMessage());
+				logger.error("Error send result gate in for driver: " + e);
+			}
+			try {
+				responseSmartGate(gateInFormData.getGateId(), BusinessConsts.SUCCESS, MessageHelper.getMessage(MessageConsts.E0028));
+			} catch (Exception e) {
+				logger.error("Error send result gate in for smart app: " + e);
 			}
 			
 		} else {
+			
+			if (CollectionUtils.isNotEmpty(gateInFormData.getPickupIn())) {
+				
+				// Iterate pickup in list
+				for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
+					ShipmentDetail shipmentDetail = new ShipmentDetail();
+					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
+					shipmentDetail.setFinishStatus("E");
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+				}
+			}
+			
+			if (CollectionUtils.isNotEmpty(gateInFormData.getPickupOut())) {
+				
+				// Iterate pickup out list
+				for (PickupHistory pickupHistory : gateInFormData.getPickupOut()) {
+					ShipmentDetail shipmentDetail = new ShipmentDetail();
+					shipmentDetail.setId(pickupHistory.getShipmentDetailId());
+					shipmentDetail.setFinishStatus("E");
+					shipmentDetailService.updateShipmentDetail(shipmentDetail);
+				}
+			}
+			
 			driverRes.setResult(BusinessConsts.FAIL);
 			driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
 			try {
-				responseDriver(driverRes, gateInFormData.getSessionId());
-				responseSmartGate(gateInFormData.getGateId(), BusinessConsts.FAIL);
+				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
+					responseDriver(driverRes, gateInFormData.getSessionId());
+				}
 			} catch (Exception e) {
-				logger.warn(e.getMessage());
+				logger.error("Error send result gate in for driver: " + e);
+			}
+			try {
+				responseSmartGate(gateInFormData.getGateId(), BusinessConsts.FAIL, MessageHelper.getMessage(MessageConsts.E0024));
+			} catch (Exception e) {
+				logger.error("Error send result gate in for smart app: " + e);
 			}
 			processOrder.setResult("F");
 			processHistory.setResult("F");
@@ -234,9 +276,10 @@ public class GatePassHandler implements IMqttMessageListener {
 	 * @param result
 	 * @throws Exception
 	 */
-	private void responseSmartGate(String gateId, String result) throws Exception {
+	private void responseSmartGate(String gateId, String result, String message) throws Exception {
 		Map<String, Object> map = new HashMap<>();
 		map.put("result", result);
+		map.put("message", message);
 		String msg = new Gson().toJson(map);
 		mqttService.publish(MqttConsts.SMART_GATE_RES_TOPIC.replace("+", gateId), new MqttMessage(msg.getBytes()));
 	}

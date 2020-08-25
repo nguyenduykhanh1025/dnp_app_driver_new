@@ -1,9 +1,7 @@
 package vn.com.irtech.eport.api.controller.transport;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +33,6 @@ import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
-import vn.com.irtech.eport.logistic.form.NotificationForm;
 import vn.com.irtech.eport.logistic.form.Pickup;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
@@ -197,7 +194,7 @@ public class TransportController extends BaseController {
 		if (pickupAssign == null) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0007));
 		}
-		if (userId != pickupAssign.getDriverId() || 
+		if (!userId.equals(pickupAssign.getDriverId()) ||
 				(pickupHistoryTemp.getShipmentDetailId() != null && pickupHistoryService.checkPickupHistoryExists(pickupAssign.getShipmentId(), pickupHistoryTemp.getShipmentDetailId()) > 0)) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0009));
 		}
@@ -228,7 +225,7 @@ public class TransportController extends BaseController {
 		pickupHistory.setShipmentId(pickupAssign.getShipmentId());
 		pickupHistory.setDriverPhoneNumber(pickupAssign.getPhoneNumber());
 		pickupHistory.setPickupAssignId(pickupAssign.getId());
-		pickupHistory.setGatePass(pickupHistory.getTruckNo().substring(0, 5));
+		pickupHistory.setGatePass(pickupHistory.getTruckNo().substring(pickupHistory.getTruckNo().length()-5, pickupHistory.getTruckNo().length()));
 		pickupHistory.setStatus(0);
 		pickupHistoryService.insertPickupHistory(pickupHistory);
 		return success();

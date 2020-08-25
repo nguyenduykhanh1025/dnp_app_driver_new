@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
-import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.framework.web.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.framework.web.service.MqttService.NotificationCode;
+import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -34,6 +35,8 @@ import vn.com.irtech.eport.system.service.ISysRobotService;
 public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(RobotUpdateStatusHandler.class);
+	
+	private static final String GATE_ROBOT_REQ_TOPIC = "eport/robot/gate/+/request";
 
 	@Autowired
 	private ISysRobotService robotService;
@@ -239,6 +242,8 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 						case 5:
 							mqttService.publicMessageToDemandRobot(req, EServiceRobot.SHIFTING_CONT, uuId);
 							break;
+						case 8:
+							sendGateInOrderToRobot(reqProcessOrder, sysRobot.getUuId());
 					}
 				}
 			}
@@ -305,6 +310,14 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		for (ShipmentDetail shipmentDetail : shipmentDetails) {
 			shipmentDetail.setProcessStatus("E");
 			shipmentDetailService.updateShipmentDetail(shipmentDetail);
+		}
+	}
+	
+	private void sendGateInOrderToRobot(ProcessOrder processOrder, String uuid) {
+		try {
+			mqttService.publish(GATE_ROBOT_REQ_TOPIC.replace("+", uuid), new MqttMessage(processOrder.getProcessData().getBytes()));		
+		} catch (MqttException e) {
+			logger.error("Error when send order gate in: " + e);
 		}
 	}
 }

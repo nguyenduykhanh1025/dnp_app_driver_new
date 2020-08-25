@@ -102,4 +102,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <delete id="deleteUserTokenByUserToken" parameterType="String">
         delete from sys_user_token where user_login_token = #{userLoginToken}
     </delete>
+
+    <select id="getListDeviceTokenByUserId" parameterType="Long" resultType="String">
+        select device_token from sys_user_token
+        where user_id = #{userId} and (expire_flg = 1 or expire_time < sysdate)
+    </select>
 </mapper>

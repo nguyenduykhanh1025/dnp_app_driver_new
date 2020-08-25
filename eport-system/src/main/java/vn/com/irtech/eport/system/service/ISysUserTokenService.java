@@ -66,4 +66,12 @@ public interface ISysUserTokenService
      * @return int
      */
     public int deleteUserTokenByUserToken(String userLoginToken);
+    
+    /**
+     * Get list device token by user id
+     * 
+     * @param userId
+     * @return List<String>
+     */
+    public List<String> getListDeviceTokenByUserId(Long userId); 
 }

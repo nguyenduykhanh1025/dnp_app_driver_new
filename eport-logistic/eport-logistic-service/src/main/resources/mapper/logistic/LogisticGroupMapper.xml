@@ -167,8 +167,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             g.mst = #{consigneeTaxCode}
             and d.delegate_tax_code = #{logisticTaxCode}
             and d.valid_flg = 1
-            and TO_CHAR(d.valid_from, 'DD/MM/YYYY') &lt;= TO_CHAR(sysdate, 'DD/MM/YYYY')
-            and TO_CHAR(d.valid_until, 'DD/MM/YYYY') &gt;= TO_CHAR(sysdate, 'DD/MM/YYYY')
+            and d.valid_from &lt;= sysdate
+            and d.valid_until &gt;= sysdate
             and del_flg = 0 
             and g.del_flag = '0'
     </select>

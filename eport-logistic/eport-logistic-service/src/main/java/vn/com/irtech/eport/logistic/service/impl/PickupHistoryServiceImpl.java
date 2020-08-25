@@ -226,4 +226,5 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
     public int checkPlateNumberIsUnavailable(PickupHistory pickupHistory) {
     	return pickupHistoryMapper.checkPlateNumberIsUnavailable(pickupHistory);
     }
+   
 }
