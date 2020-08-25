@@ -37,7 +37,11 @@ import vn.com.irtech.eport.logistic.service.IProcessHistoryService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysNotification;
+import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
 import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
+import vn.com.irtech.eport.system.service.ISysNotificationService;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
 @Component
@@ -65,6 +69,12 @@ public class GatePassHandler implements IMqttMessageListener {
 	
 	@Autowired
 	private IShipmentService shipmentService;
+	
+	@Autowired
+	private ISysNotificationService sysNotificationService;
+	
+	@Autowired
+	private ISysNotificationReceiverService sysNotificationReceiverService;
 	
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -169,6 +179,8 @@ public class GatePassHandler implements IMqttMessageListener {
 					driverData.setChassisNo(pickupHistory.getChassisNo());
 					driverData.setWgt(gateInFormData.getWgt());
 					driverDataRes.add(driverData);
+					
+					sendNotificationToDriver(pickupHistory, shipmentDetail);
 				}
 			}
 			
@@ -198,6 +210,9 @@ public class GatePassHandler implements IMqttMessageListener {
 					driverData.setChassisNo(pickupHistory.getChassisNo());
 					driverData.setWgt(gateInFormData.getWgt());
 					driverDataRes.add(driverData);
+					
+
+					sendNotificationToDriver(pickupHistory, shipmentDetail);
 				}
 			}
 			
@@ -219,6 +234,7 @@ public class GatePassHandler implements IMqttMessageListener {
 			} catch (Exception e) {
 				logger.error("Error send result gate in for smart app: " + e);
 			}
+			
 			
 		} else {
 			
@@ -294,5 +310,25 @@ public class GatePassHandler implements IMqttMessageListener {
 	private void responseDriver(DriverRes driverRes, String sessionId) throws Exception {
 		String msg = new Gson().toJson(driverRes);
 		mqttService.publish(MqttConsts.DRIVER_RES_TOPIC.replace("+", sessionId), new MqttMessage(msg.getBytes()));
+	}
+	
+	private void sendNotificationToDriver(PickupHistory pickupHistory, ShipmentDetail shipmentDetail) {
+		// Create info notification
+		if (pickupHistory.getDriverId() != null) {
+			SysNotification sysNotification = new SysNotification();
+			sysNotification.setTitle("Thông báo vào cổng.");
+			sysNotification.setNotifyLevel(2L);
+			sysNotification.setContent("Xác thực tại cổng thành công cho container  " + shipmentDetail.getContainerNo());
+			sysNotification.setNotifyLink("");
+			sysNotification.setStatus(1L);
+			sysNotificationService.insertSysNotification(sysNotification);
+			
+			// Notification receiver
+			SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
+			sysNotificationReceiver.setUserId(pickupHistory.getDriverId());
+			sysNotificationReceiver.setNotificationId(sysNotification.getId());
+			sysNotificationReceiver.setUserType(2L);
+			sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
+		}
 	}
 }

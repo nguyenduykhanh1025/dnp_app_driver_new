@@ -1,7 +1,10 @@
 package vn.com.irtech.eport.api.controller.transport;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,17 +48,20 @@ public class TransportLoginController extends BaseController {
 		String token = loginService.login(loginForm, EportUserType.TRANSPORT);
 		ajaxResult.put("token", token);
 		SysUserToken sysUserToken = new SysUserToken();
-		sysUserToken.setUserLoginToken(token);		
 		// Set firebase device token for notification
-		sysUserToken.setDeviceToken(loginForm.getDeviceToken());		
-		// Set login ip user
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-                .getRequestAttributes()).getRequest();
-		sysUserToken.setLoginIp(request.getRemoteAddr());		
-		sysUserToken.setUserType(BusinessConsts.DRIVER_USER_TYPE);
-		sysUserToken.setUserId(SecurityUtils.getCurrentUser().getUser().getUserId());
-		sysUserToken.setExpireTime(TokenUtils.getExpirationDate());
-		sysUserTokenService.insertSysUserToken(sysUserToken);
+		sysUserToken.setDeviceToken(loginForm.getDeviceToken());
+		List<SysUserToken> sysUserTokens = sysUserTokenService.selectSysUserTokenList(sysUserToken);
+		sysUserToken.setUserLoginToken(token);
+		if (CollectionUtils.isEmpty(sysUserTokens)) {
+			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
+	                .getRequestAttributes()).getRequest();
+			sysUserToken.setLoginIp(request.getRemoteAddr());		
+			sysUserToken.setUserType(BusinessConsts.DRIVER_USER_TYPE);
+			sysUserToken.setUserId(SecurityUtils.getCurrentUser().getUser().getUserId());
+			sysUserToken.setExpireTime(TokenUtils.getExpirationDate());
+			sysUserTokenService.insertSysUserToken(sysUserToken);
+		}
+		
 		return ajaxResult;
 	}
 }

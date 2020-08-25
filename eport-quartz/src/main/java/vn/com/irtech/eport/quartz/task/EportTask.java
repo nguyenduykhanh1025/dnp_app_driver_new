@@ -9,6 +9,7 @@ import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.framework.firebase.service.FirebaseService;
 import vn.com.irtech.eport.framework.mail.service.MailService;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.MqttService;
@@ -16,8 +17,14 @@ import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.framework.web.service.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.system.domain.SysNotification;
+import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
 import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.domain.SysUserToken;
+import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
+import vn.com.irtech.eport.system.service.ISysNotificationService;
 import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.system.service.ISysUserTokenService;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,11 +42,14 @@ import java.util.Map;
 
 import javax.mail.MessagingException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.google.firebase.messaging.FirebaseMessagingException;
 
 @Component("eportTask")
 public class EportTask {
@@ -75,6 +85,18 @@ public class EportTask {
 
     @Autowired
     private ConfigService configService;
+    
+    @Autowired
+    private FirebaseService firebaseService;
+    
+    @Autowired
+    private ISysNotificationReceiverService sysNotificationReceiverService;
+    
+    @Autowired
+    private ISysNotificationService sysNotificationrService;
+    
+    @Autowired
+    private ISysUserTokenService sysUserTokenService;
 
     public void readFileFromFolder(String groupCode, String edoPath, String backupPath) throws IOException {
         System.out.print("Đọc file EDI from folder .... " + groupCode);
@@ -244,4 +266,33 @@ public class EportTask {
         }
     }
    
+    /**
+     * Send Notification
+     * 
+     */
+    public void sendNotification() {
+    	SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
+    	sysNotificationReceiver.setSentFlg(false);
+    	SysNotification sysNotification = new SysNotification();
+    	sysNotification.setStatus(1L);
+    	sysNotificationReceiver.setSysNotification(sysNotification);
+        List<SysNotificationReceiver> notificationReceivers = sysNotificationReceiverService.getNotificationListNotSentYet(sysNotificationReceiver);
+        if (CollectionUtils.isNotEmpty(notificationReceivers)) {
+        	for (SysNotificationReceiver sysNotificationReceiver2 : notificationReceivers) {
+        		SysUserToken sysUserToken = new SysUserToken();
+				sysUserToken.setUserId(sysNotificationReceiver2.getUserId());;
+				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(sysNotificationReceiver2.getUserId());
+				if (CollectionUtils.isNotEmpty(sysUserTokens)) {
+					try {
+						firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
+						sysNotificationReceiver2.setSentFlg(true);
+		        		sysNotificationReceiverService.updateSysNotificationReceiver(sysNotificationReceiver2);
+					} catch (FirebaseMessagingException e) {
+						logger.error("Error send notification: " + e);
+					}
+				}
+        	}
+        }
+        
+    }
 }
