@@ -198,7 +198,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		}
 		//check shipmentId of current logistic
 		Shipment shipment = shipmentService.selectShipmentById(pickupAssigns.get(0).getShipmentId());
-		if(shipment != null && shipment.getLogisticAccountId().equals(getUser().getId())){
+		if(shipment != null && shipment.getLogisticGroupId().equals(getUser().getGroupId())){
 			//delete last assign follow batch
 			PickupAssign assignBatch = new PickupAssign();
 			assignBatch.setShipmentId(shipment.getId());
@@ -235,7 +235,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			}
 			return success();
 		}
-		return error();
+		return error("Bạn không có quyền điều xe cho lô này.");
 	}
 
 	@GetMapping("preoderPickupAssign/{shipmentDetailId}")
@@ -336,7 +336,7 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		}
 		//check shipmentId of current logistic
 		Shipment shipment  = shipmentService.selectShipmentById(pickupAssigns.get(0).getShipmentId());
-		if(shipment != null && shipment.getLogisticAccountId().equals(getUser().getId())){
+		if(shipment != null && shipment.getLogisticGroupId().equals(getUser().getGroupId())){
 			//delete last assign follow container
 			PickupAssign assignContainer = new PickupAssign();
 			assignContainer.setShipmentId(shipment.getId());
