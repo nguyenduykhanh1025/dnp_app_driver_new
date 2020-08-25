@@ -186,8 +186,8 @@ public class PickupHistoryServiceImpl implements IPickupHistoryService
         int countCont20 = 0;
         for (Pickup pickup: pickups) {
             if ((pickup.getServiceType() % 2) == (serviceType % 2)) {
-                if (pickup.getSztp() == null || !"22".equals(pickup.getSztp().substring(0, 2)) || shipmentDetail == null
-                        || !"22".equals(shipmentDetail.getSztp().substring(0, 2))) {
+                if (pickup.getSztp() == null || !"2".equals(pickup.getSztp().substring(0, 1)) || shipmentDetail == null
+                        || !"2".equals(shipmentDetail.getSztp().substring(0, 1))) {
                     countCont20 += 2;
                 } else {
                     countCont20++;
