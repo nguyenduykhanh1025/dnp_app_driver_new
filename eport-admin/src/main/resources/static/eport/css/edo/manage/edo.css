@@ -1,7 +1,7 @@
-.datagrid-header-row > td {
+/* .datagrid-header-row > td {
   color: #1c84c6;
   font-weight: bold;
-}
+} */
 
 .textTitle {
   text-align: center;
@@ -56,4 +56,3 @@
 .wrapper .dgContainer {
   height: 90%;
 }
-/*# sourceMappingURL=edo.css.map */

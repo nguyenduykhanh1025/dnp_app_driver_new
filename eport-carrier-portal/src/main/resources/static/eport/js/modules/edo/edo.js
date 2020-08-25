@@ -4,16 +4,12 @@ var edo = new Object();
 $(function () {
   $("#updateEdo").attr("disabled", true);
   var onCheck = 0;
-  $(".left").css("height", $(document).height());
-  $(".right").css("height", $(document).height());
   $("#btn-collapse").click(function () {
     handleCollapse(true);
   });
   $("#btn-uncollapse").click(function () {
     handleCollapse(false);
   });
-  $("#dg").height($(document).height() - 60);
-  $("#dgContainer").height($(document).height() - 60);
   loadTable();
   loadTableByContainer();
 
@@ -33,6 +29,17 @@ $(function () {
       }
       edo = new Object();
       edo.billOfLading = billOfLading;
+      loadTable(edo);
+    }
+  });
+  $("#searchContNo").keyup(function (event) {
+    if (event.keyCode == 13) {
+      containerNumber = $("#searchContNo").val().toUpperCase();
+      if (containerNumber == "") {
+        loadTable(edo);
+      }
+      edo = new Object();
+      edo.containerNumber = containerNumber;
       loadTable(edo);
     }
   });
@@ -62,7 +69,7 @@ function loadTable(edo) {
     url: PREFIX + "/billNo",
     method: "POST",
     singleSelect: true,
-    height: $(document).height() - 165,
+    height: $(document).height() - 60,
     clientPaging: true,
     pagination: true,
     pageSize: 20,
@@ -104,6 +111,7 @@ function loadTable(edo) {
 
 function searchDo() {
   edo.billOfLading = $('#searchBillNo').val().toUpperCase();
+  edo.containerNumber = $('#searchContNo').val().toUpperCase();
   edo.fromDate = stringToDate($("#fromDate").val()).getTime();
   let toDate = stringToDate($("#toDate").val());
   if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
@@ -158,7 +166,7 @@ function loadTableByContainer(billOfLading) {
     method: "POST",
     singleSelect: false,
     clientPaging: true,
-    height: $(document).height() - 165,
+    height: $(document).height() - 60,
     pagination: true,
     pageSize: 20,
     nowrap: false,

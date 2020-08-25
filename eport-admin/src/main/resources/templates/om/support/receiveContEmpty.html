@@ -13,43 +13,37 @@
         <div class="form-inline mt10 mb10" >
         <div class="form-group">
           <div class="input-group">
-            <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm" />
+            <input type="text" class="form-control" name="searchInfoProcessOrder" id="searchInfoProcessOrder" placeholder="Tìm kiếm" />
           </div>
         </div>
         <div class="form-group">
-          <label class="sr-only" for="voyNo">Voy No</label>
-          <div class="input-group width150" style="width: 150%;">
-            <select class="c-search-box-voy-no"> 
-              <option selected="selected"></option>
+          <label class="sr-only" for="logistic">Logistic</label>
+          <div class="input-group">
+            <select class="form-control" id="logistic">
+              <option th:each="logistic, iterator : ${logisticsGroups}" th:value=${logistic.id} th:text=${logistic.groupName}>
+              </option>
             </select>
           </div>
         </div>
         <div class="form-group" style="margin-left: 70px;">
-          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchInfoEdo"><i
+          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchInfoProcessOrder"><i
             class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
         </div>
         <div class="form-group" style="right: 5px;position: absolute;">
           <button class="btn btn-rounder btn-default" onclick="generatePDF()"><i class="fa fa-print"></i>In EDO</button>
         </div>
         <div class="form-group margin-input">
-            <label class="sr-only">Cập Nhật</label>
+            <label class="sr-only"> Đồng Bộ Hải Quan</label>
             <div class="input-group">
-              <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i
-                  class="fa fa-pencil-square-o"></i> Cập Nhật Hải Quan</button>
+              <button class="btn btn-success btn-sm" id="checkCustomStatusByProcessOrderId" onclick="checkCustomStatusByProcessOrderId() "><i
+                  class="fa fa-pencil-square-o"></i> Đồng Bộ Hải Quan</button>
             </div>
           </div>
           <div class="form-group margin-input">
-            <label class="sr-only">Cập Nhật</label>
+            <label class="sr-only">Đồng Bộ Trạng Thái Làm Lệnh</label>
             <div class="input-group">
-              <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i
-                  class="fa fa-pencil-square-o"></i> Cập Nhật Trạng Thái</button>
-            </div>
-          </div>
-          <div class="form-group margin-input">
-            <label class="sr-only">Cập Nhật</label>
-            <div class="input-group">
-              <button class="btn btn-success btn-sm" id="updateEdo" onclick="multiUpdateEdo() "><i
-                  class="fa fa-pencil-square-o"></i> Cập Nhật Thanh Toán</button>
+              <button class="btn btn-success btn-sm" id="checkProcessStatusByProcessOrderId" onclick="checkCustomStatusByProcessOrderId() "><i
+                  class="fa fa-pencil-square-o"></i> Đồng Bộ Trạng Thái Làm Lệnh</button>
             </div>
           </div>
       </div> <!-- //end form -->
@@ -61,19 +55,19 @@
       <table id="dg">
         <thead>
             <tr>
-              <th data-options="field:'billOfLading',align:'left'" width="120">
+              <th data-options="field:'id',align:'center'" width="70">
                 Số phút
               </th>
-              <th data-options="field:'vessel',align:'left'" width="110">
+              <th data-options="field:'id',align:'center'" width="70">
                 Số lệnh
               </th>
-              <th data-options="field:'voyNo',align:'left'" width="110">
-                Logistic
+              <th data-options="field: 'logisticName', halign: 'center', align: 'left', resizable: true, formatter: formatLogistic" width="120" sortable="true">
+                Logistics
               </th>
-              <th data-options="field:'carrierCode',align:'center'" width="100">
-                Số bill
+              <th data-options="field: 'blNo', halign: 'center', align:'center', resizable:true" width="110">
+                Bill of landing
               </th>
-              <th data-options="field:'numberContainer',align:'center'" width="90">
+              <th data-options="field:'contNumber',align:'center'" width="90">
                 Số lượng cont
               </th>
               <th data-options="field:'createTime',align:'left'" width="130">
@@ -87,8 +81,7 @@
       <table id="dgContainer">
         <thead frozen="true">
           <tr>
-            <th data-options="field:'id',checkbox:true"></th>
-            <th data-options="field:'containerNumber',align:'left'" width="120">
+            <th data-options="field:'containerNo',align:'left'" width="120">
               Số cont
             </th>
           </tr>
@@ -97,31 +90,25 @@
             <th data-options="field:'sztp',align:'left'" width="50">
               Sztp
             </th>
-            <th data-options="field:'carrierCode',align:'center',formatter:formatStatus2" width="150">
+            <th data-options="field:'customStatus',align:'center',formatter: formatCustomStatus" width="100">
               Trại thái <br> hải quan
             </th>
-            <th data-options="field:'consignee',align:'left',formatter:formatStatus2" width="150">
+            <th data-options="field:'processStatus',align:'center', formatter: formatStatus" width="100">
                 Trại thái <br> làm lệnh
             </th>
-            <th data-options="field:'expiredDem',align:'left',formatter:formatStatus2" width="150">
-                Trại thái <br> thanh toán
-            </th>
-            <th data-options="field:'emptyContainerDepot',align:'left'" width="150">
+            <th data-options="field:'consignee',align:'left'" width="230">
               Chủ hàng
             </th>
             <th data-options="field:'detFreeTime',align:'center'" width="80">
               Hạn lệnh
             </th>
-            <th data-options="field:'vessel',align:'left'" width="110">
-             Hãng tàu
+            <th data-options="field:'vessel',align:'left',formatter: formatVessel" width="215">
+                Tàu / Chuyến
             </th>
-            <th data-options="field:'voyNo',align:'left'" width="90">
-                Tàu chuyến
-            </th>
-            <th data-options="field:'pol',align:'left'" width="110">
+            <th data-options="field:'emptyDepot',align:'left'" width="110">
                 Nơi trả vỏ
             </th>
-            <th data-options="field:'status',align:'left',formatter:formatStatus" width="90">
+            <th data-options="field:'loadingPort',align:'left'" width="90">
                 Cảng xếp
             </th>
         
@@ -139,7 +126,7 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: easyui-js" />
     <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
-    <script th:src="@{/eport/js/modules/om/supportReceiveFull/index.js}"></script>
+    <script th:src="@{/eport/js/modules/om/support/receiveContEmpty.js}"></script>
   </body>
 
 </html>
