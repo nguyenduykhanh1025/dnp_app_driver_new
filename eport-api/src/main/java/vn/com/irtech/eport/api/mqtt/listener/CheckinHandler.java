@@ -223,7 +223,7 @@ public class CheckinHandler implements IMqttMessageListener {
 			DriverDataRes driverDataRes = new DriverDataRes();
 			driverDataRes.setPickupHistoryId(pickupHistory.getId());
 			driverDataRes.setContNo(pickupHistory.getContainerNo());
-			if (pickupHistory.getShipmentDetail() != null) {
+			if (pickupHistory.getShipmentDetail() == null) {
 				driverDataRes.setSztp(shipmentDetail.getSztp());
 				driverDataRes.setFe(shipmentDetail.getFe());
 			} else {
@@ -236,12 +236,11 @@ public class CheckinHandler implements IMqttMessageListener {
 
 			// pickup has not position
 			if (!checkPickupHistoryHasPosition(pickupHistory)) {
-				dataWithoutYardPostion.add(driverDataRes);
+//				dataWithoutYardPostion.add(driverDataRes);
+//				driverDataRes.setYardPosition(getYardPostion(pickupHistory));
+			} else {
 				driverDataRes.setYardPosition(getYardPostion(pickupHistory));
 			}
-//			else {
-//				driverDataRes.setYardPosition(getYardPostion(pickupHistory));
-//			}
 			
 			result.add(driverDataRes);
 		}
