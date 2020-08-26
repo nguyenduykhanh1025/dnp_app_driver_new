@@ -26,6 +26,9 @@ public class LogisticTruck extends BaseEntity
     /** Bien So Xe */
     @Excel(name = "Bien So Xe")
     private String plateNumber;
+    
+    @Excel(name = "Gatepass")
+    private String gatepass;
 
     /** 0:đầu kéo, 1:rơ mooc */
     @Excel(name = "type")
@@ -73,7 +76,15 @@ public class LogisticTruck extends BaseEntity
     {
         return plateNumber;
     }
-    public void setType(String type) 
+    public String getGatepass() {
+		return gatepass;
+	}
+
+	public void setGatepass(String gatepass) {
+		this.gatepass = gatepass;
+	}
+
+	public void setType(String type) 
     {
         this.type = type;
     }
