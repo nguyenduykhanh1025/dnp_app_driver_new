@@ -15,10 +15,10 @@ public class DetectionInfo implements Serializable {
 	
 	private String containerNo2;
 	
-	@NotEmpty
+//	@NotEmpty
 	private String truckNo;
 	
-	@NotEmpty
+//	@NotEmpty
 	private String chassisNo;
 	
 	private Boolean detectionFlg = true;

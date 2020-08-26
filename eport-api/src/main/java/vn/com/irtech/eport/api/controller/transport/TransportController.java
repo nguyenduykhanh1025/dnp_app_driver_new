@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.google.gson.Gson;
 
 import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.consts.MessageConsts;
@@ -150,16 +147,20 @@ public class TransportController extends BaseController {
     @GetMapping("/shipment/{shipmentId}/pickup")
 	@ResponseBody
 	public AjaxResult getContainerList(@PathVariable Long shipmentId) {
-		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
 		if (shipmentId == null) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0015));
 		}
+		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
 		AjaxResult ajaxResult = AjaxResult.success();
+		// get shipment
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		// get assign list for current user
 		List<PickupAssignForm> pickupAssigns = shipmentDetailService.selectShipmentDetailForDriverShipmentAssign(shipmentId, userId);
+		// ??
 		if (CollectionUtils.isEmpty(pickupAssigns)) {
 			pickupAssigns = pickupAssignService.selectPickupAssignListByDriverId(userId, shipmentId);
 		}
+		// TODO logic %2 kho hieu
 		if (shipment.getServiceType() % 2 == 1 && CollectionUtils.isNotEmpty(pickupAssigns)) {
 			List<PickupAssignForm> pickupAssign = pickupAssignService.selectPickupAssignListByDriverId(userId, shipmentId);
 			if (CollectionUtils.isNotEmpty(pickupAssign)) {
@@ -194,12 +195,13 @@ public class TransportController extends BaseController {
 	@ResponseBody
 	public AjaxResult pickup(@RequestBody PickupHistory pickupHistoryTemp) {
 		PickupAssign pickupAssign = pickupAssignService.selectPickupAssignById(pickupHistoryTemp.getPickupAssignId());
-		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
 		if (pickupAssign == null) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0007));
 		}
-		if (!userId.equals(pickupAssign.getDriverId()) ||
-				(pickupHistoryTemp.getShipmentDetailId() != null && pickupHistoryService.checkPickupHistoryExists(pickupAssign.getShipmentId(), pickupHistoryTemp.getShipmentDetailId()) > 0)) {
+		Long userId = SecurityUtils.getCurrentUser().getUser().getUserId();
+		if (!userId.equals(pickupAssign.getDriverId()) || (pickupHistoryTemp.getShipmentDetailId() != null
+				&& pickupHistoryService.checkPickupHistoryExists(pickupAssign.getShipmentId(),
+						pickupHistoryTemp.getShipmentDetailId()) > 0)) {
 			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0009));
 		}
 		PickupHistory pickupHistory = new PickupHistory();
@@ -349,26 +351,23 @@ public class TransportController extends BaseController {
 		if (location == null) {
 			return error();
 		}
-
+		logger.debug("Receive GPS location: " + location);
+		
 		double distanceRequire = Double.parseDouble(configService.selectConfigByKey("driver.distance.port"));
-
 		double latEport = Double.parseDouble(configService.selectConfigByKey("location.port.lat"));
-
 		double lonEport = Double.parseDouble(configService.selectConfigByKey("location.port.long"));
 
-		CacheUtils.put("driver-" + SecurityUtils.getCurrentUser().getUser().getUserId(), location);
+		Double x = location.get("x");
+		Double y = location.get("y");
 		
-		double x = location.get("x");
-		
-		double y = location.get("y");
-		
-		if (x != 0 && y != 0) {
+		if (x!= null && y != null && x != 0 && y != 0) {
+			// Update location to cache
+			CacheUtils.put("driver-" + SecurityUtils.getCurrentUser().getUser().getUserId(), location);
+			// Check distance to request MC request yard position
 			if (distanceRequire > distance(x, latEport, y, lonEport, 0.0, 0.0)) {
-				
 				List<Pickup> pickups = pickupHistoryService.selectPickupListByDriverId(SecurityUtils.getCurrentUser().getUser().getUserId());
 				
 				for (Pickup pickup : pickups) {
-					
 					// Check if service is send cont
 					if (pickup.getServiceType()%2 == 0) {
 						// Check if cont has position
@@ -376,11 +375,13 @@ public class TransportController extends BaseController {
 							// Send to mc
 							Map<String, Object> map = new HashMap<>();
 							map.put("pickupHistoryId", pickup.getPickupId().toString());
-							try {
-								mqttService.sendMessageToMc(new Gson().toJson(map));
-							} catch (MqttException e) {
-								logger.error("Api Driver Error Update Location: " + e);
-							}
+//							try {
+							logger.debug("Received GPS location. Request MC to plan for pickupId " + pickup.getPickupId());
+								// FIXME Tam thoi khong bung len
+								// mqttService.sendMessageToMc(new Gson().toJson(map));
+//							} catch (MqttException e) {
+//								logger.error("Api Driver Error Update Location: " + e);
+//							}
 						}					
 					}
 				}
@@ -440,21 +441,21 @@ public class TransportController extends BaseController {
 	 */
 	private Boolean checkContHasPosition(Pickup pickup) {
 		PickupHistory pickupHistory = pickupHistoryService.selectPickupHistoryById(pickup.getPickupId());
-		if (pickupHistory.getArea() != null) {
-			return true;
-		}
 
-		if (pickupHistory.getBlock() != null && pickupHistory.getBay() != null && pickupHistory.getLine() != null && pickupHistory.getTier() != null) {
+		if (StringUtils.isNotBlank(pickupHistory.getArea()) || StringUtils.isNotBlank(pickupHistory.getBlock())
+				&& StringUtils.isNotBlank(pickupHistory.getBay()) && StringUtils.isNotBlank(pickupHistory.getLine())
+				&& StringUtils.isNotBlank(pickupHistory.getTier())) {
 			return true;
 		}
 		return false;
 	}
 	
 	class AssignContComparator implements Comparator<PickupAssignForm> {
-        public int compare(PickupAssignForm pickupAssignForm1, PickupAssignForm pickupAssignForm2) {
-            // In the following line you set the criterion,
-            // which is the name of Contact in my example scenario
-            return pickupAssignForm1.getClickable().compareTo(pickupAssignForm2.getClickable());
-        }
-    }
+		public int compare(PickupAssignForm pickupAssignForm1, PickupAssignForm pickupAssignForm2) {
+			// In the following line you set the criterion,
+			// which is the name of Contact in my example scenario
+			return pickupAssignForm1.getClickable().compareTo(pickupAssignForm2.getClickable());
+		}
+	}
+
 }
