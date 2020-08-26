@@ -81,7 +81,7 @@ function loadTable(processOrder) {
         dataType: "json",
         success: function (data) {
           success(data);
-         
+
         },
         error: function () {
           error.apply(this, arguments);
@@ -91,6 +91,7 @@ function loadTable(processOrder) {
   });
 }
 loadTableByContainer();
+
 function loadTableByContainer(shipmentDetails) {
   $("#dgContainer").datagrid({
     url: PREFIX + "/shipmentDetails",
@@ -105,9 +106,9 @@ function loadTableByContainer(shipmentDetails) {
     rownumbers: true,
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
-      // if (shipmentDetails.processOrderId == null) {
-      //   return false;
-      // }
+      if (shipmentDetails == null) {
+        return false;
+      }
       $.ajax({
         type: opts.method,
         url: opts.url,
@@ -156,7 +157,7 @@ function formatLogistic(value, row, index) {
 }
 
 function logisticInfo(id, logistics) {
-  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function() {
+  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function () {
     $.modal.close();
   });
 }
@@ -164,7 +165,7 @@ function logisticInfo(id, logistics) {
 function formatCustomStatus(value, row) {
   switch (value) {
     case 'R':
-      return '<span class="badge badge-success">Yes</span>'; 
+      return '<span class="badge badge-success">Yes</span>';
     case 'Y':
       return '<span class="badge badge-danger">No</span>';
     case 'N':
@@ -178,7 +179,7 @@ function formatCustomStatus(value, row) {
 function formatStatus(value, row) {
   switch (value) {
     case 'R':
-      return '<span class="badge badge-success">Yes</span>'; 
+      return '<span class="badge badge-success">Yes</span>';
     case 'Y':
       return '<span class="badge badge-danger">No</span>';
     case 'N':
@@ -190,9 +191,8 @@ function formatStatus(value, row) {
 
 
 function checkCustomStatusByProcessOrderId(processOrderId) {
-  processOrderId =  shipmentDetails.processOrderId;
-  if(processOrderId == null || processOrder == undefined)
-  {
+  processOrderId = shipmentDetails.processOrderId;
+  if (processOrderId == null || processOrder == undefined) {
     $.modal.alertWarning("Bạn chưa chọn lệnh <br> Vui lòng kiểm tra dữ liệu.");
   }
   console.log("checkCustomStatusByProcessOrderId -> processOrderId", processOrderId)
@@ -231,7 +231,7 @@ function formatVessel(value, row) {
   return row.vslNm + " - " + row.vslName + " - " + row.voyNo;
 }
 
-$('#logistic').change(function() {
+$('#logistic').change(function () {
   if (0 != $('#logistic option:selected').val()) {
     processOrder.logisticGroupId = $('#logistic option:selected').val();
   } else {
@@ -239,3 +239,11 @@ $('#logistic').change(function() {
   }
   loadTable(processOrder);
 });
+
+function formatUpdateTime(value) {
+  let updateTime = new Date(value);
+  let now = new Date();
+  let offset = now.getTime() - updateTime.getTime();
+  let totalMinutes = Math.round(offset / 1000 / 60);
+  return totalMinutes;
+}

@@ -1,7 +1,7 @@
-const PREFIX = ctx + "om/support";
+const PREFIX = ctx + "accountant/support";
 var bill;
 var processOrder = new Object();
-processOrder.serviceType = 1;
+processOrder.serviceType = 2;
 var shipmentDetails = new Object();
 var currentLeftWidth = $(".table-left").width();
 var currentRightWidth = $(".table-right").width();
@@ -14,8 +14,7 @@ $(document).ready(function () {
     handleCollapse(false);
   });
   loadTable(processOrder);
-  $('#checkCustomStatusByProcessOrderId').attr("disabled", true);
-  $('#checkProcessStatusByProcessOrderId').attr("disabled", true);
+  $('#openPaymentSupport').attr("disabled", true);
 
   $("#searchInfoProcessOrder").keyup(function (event) {
     if (event.keyCode == 13) {
@@ -138,7 +137,7 @@ function getSelectedRow() {
   var row = $("#dg").datagrid("getSelected");
   if (row) {
     shipmentDetails.processOrderId = row.id;
-    $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
+    $('#openPaymentSupport').attr("disabled", false);
     loadTableByContainer(shipmentDetails);
   }
 }
@@ -240,6 +239,21 @@ $('#logistic').change(function () {
   }
   loadTable(processOrder);
 });
+
+function formatPaymentStatus(value) {
+  if ('Y' == value) {
+    return 'Đã Thanh Toán';
+  }
+  return 'Chưa Thanh Toán';
+}
+
+function openPaymentSupport(processOrderId) {
+  processOrderId = shipmentDetails.processOrderId;
+  if (processOrderId == null || processOrder == undefined) {
+    $.modal.alertWarning("Bạn chưa chọn lệnh <br> Vui lòng kiểm tra dữ liệu.");
+  }
+  $.modal.openCustomForm("Thanh toán", PREFIX + "/processOrderId/" + processOrderId + "/payment", 800, 400);
+}
 
 function formatUpdateTime(value) {
   let updateTime = new Date(value);
