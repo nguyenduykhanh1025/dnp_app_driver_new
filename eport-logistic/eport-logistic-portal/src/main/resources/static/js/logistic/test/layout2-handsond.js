@@ -98,7 +98,7 @@ $(".left-side__collapse").click(function () {
 function loadTable(div) {
   $(div).datagrid({
     url: ctx + "logistic/transport/list",
-    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+    height: 100,
     singleSelect: true,
     toolbar: toolbar,
     collapsible: true,
