@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.api.controller.logistic;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -13,13 +14,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import vn.com.irtech.eport.api.form.ShipmentForm;
 import vn.com.irtech.eport.api.util.SecurityUtils;
-import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.common.utils.bean.BeanUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.ILogisticAccountService;
 import vn.com.irtech.eport.logistic.service.INapasApiService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
@@ -28,9 +31,9 @@ import vn.com.irtech.eport.system.service.ISysConfigService;
 
 @RestController
 @RequestMapping("/logistic")
-public class LogisticController extends BaseController {
+public class LogisticCommonController extends LogisticBaseController {
 
-	private static final Logger logger = LoggerFactory.getLogger(LogisticController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LogisticCommonController.class);
 
 	@Autowired
 	private IShipmentService shipmentService;
@@ -47,13 +50,62 @@ public class LogisticController extends BaseController {
 	@Autowired
 	private ISysConfigService configService;
 	
+	@Autowired
+	private ICatosApiService catosApiService;
+	
 	class ProcessIdComparator implements Comparator<ProcessBill> {
         public int compare(ProcessBill processBill1, ProcessBill processBill2) {
-            // In the following line you set the criterion,
-            // which is the name of Contact in my example scenario
             return processBill1.getProcessOrderId().compareTo(processBill2.getProcessOrderId());
         }
     }
+	
+	/**
+	 * Get shipment list by service type
+	 * 
+	 * @param serviceType
+	 * @return List<ShipmentForm>
+	 */
+	@GetMapping("/serviceType/{serviceType}/shipments")
+	public List<ShipmentForm> getShipmentList(@PathVariable("serviceType") Integer serviceType) {
+		Shipment shipmentParam = new Shipment();
+		shipmentParam.setServiceType(serviceType);
+		shipmentParam.setLogisticGroupId(getGroupLogisticId());
+		startPage();
+		List<Shipment> shipments = shipmentService.selectShipmentList(shipmentParam);
+		List<ShipmentForm> shipmentForms = new ArrayList<>();
+		if (CollectionUtils.isNotEmpty(shipments)) {
+			for (Shipment shipment : shipments) {
+				ShipmentForm shipmentForm = new ShipmentForm();
+				BeanUtils.copyBeanProp(shipmentForm, shipment);
+				shipmentForm.setFe("F");
+				shipmentForms.add(shipmentForm);
+			}
+		}
+		return shipmentForms;
+	}
+	
+	/**
+	 * Get company information by tax code
+	 * 
+	 * @param taxCode
+	 * @return AjaxResult
+	 */
+	@GetMapping("/taxCode/{taxCode}/company")
+	public AjaxResult getCompanyInfor(@PathVariable("taxCode") String taxCode) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		Shipment shipment = catosApiService.getGroupNameByTaxCode(taxCode);
+		String groupName = shipment.getGroupName();
+		String address = shipment.getAddress();
+		if (address != null) {
+			ajaxResult.put("address", address);
+		}
+		if (groupName != null) {
+			ajaxResult.put("companyName", groupName);
+		} else {
+			ajaxResult = AjaxResult.error();
+		}
+		return ajaxResult;
+	}
 	
 	@GetMapping("/shipment/{shipmentId}/payment")
 	public AjaxResult paymentForm(@PathVariable Long shipmentId) {
