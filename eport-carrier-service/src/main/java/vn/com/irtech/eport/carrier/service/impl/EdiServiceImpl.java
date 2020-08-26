@@ -133,15 +133,17 @@ public class EdiServiceImpl implements IEdiService {
 		edo.setCarrierCode(partnerCode);
 		edo.setBusinessUnit(ediDataReq.getLineOper());
 		edo.setConsignee(ediDataReq.getConsignee());
-		edo.setSecureCode(ediDataReq.getSecureCode());
+		edo.setSecureCode(ediDataReq.getOrderNumber());
+		edo.setOrderNumber(ediDataReq.getOrderNumber());
 		edo.setContainerNumber(ediDataReq.getContainerNo());
-		edo.setOrderNumber(ediDataReq.getReleaseNo());
+		edo.setReleaseNo(ediDataReq.getReleaseNo());
 		edo.setDetFreeTime(ediDataReq.getDetFreeDays());
 		edo.setExpiredDem(ediDataReq.getExpiryTs());
 		edo.setEmptyContainerDepot(ediDataReq.getTerOfMtReturn());
 		edo.setVessel(ediDataReq.getModTransName());
 		edo.setVoyNo(ediDataReq.getModTransVoyage());
 		edo.setBillOfLading(ediDataReq.getBillOfLading());
+		edo.setTaxCode(ediDataReq.getConsigneeTaxcode());
 		edo.setTransactionId(transactionId);
 	}
 

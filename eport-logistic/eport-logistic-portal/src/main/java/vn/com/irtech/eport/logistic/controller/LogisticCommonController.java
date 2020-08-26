@@ -332,6 +332,68 @@ public class LogisticCommonController extends LogisticBaseController {
 		return PREFIX + "/napas/resultForm";
 	}
 
+	@Log(title = "Thanh Toán Napas", businessType = BusinessType.INSERT, operatorType = OperatorType.MOBILE)
+	@RequestMapping(value="/payment/mobile/result", consumes = "application/x-www-form-urlencoded;charset=UTF-8")
+	@Transactional
+	public String getPaymentMobileResult(@RequestParam("napasResult") String result, ModelMap mmap) {
+		JSONObject json = JSONObject.parseObject(result);
+		String dataBase64 = json.getString("data");
+
+		boolean isError = true;
+		
+		//checksum
+		String  checksumString = json.getString("checksum");
+		if (checksumString.equalsIgnoreCase(DigestUtils.sha256Hex(dataBase64+configService.getKey("napas.client.secret")))) {
+			
+			//decode base
+			JSONObject decodeData = JSONObject.parseObject(new String(Base64.getDecoder().decode(dataBase64)));
+			
+			// result (Success or Failed)
+			String resultStatus = decodeData.getJSONObject("paymentResult").getString("result");
+			
+			if ("SUCCESS".equalsIgnoreCase(resultStatus)) {
+				// order id
+				String orderId = decodeData.getJSONObject("paymentResult").getJSONObject("order").getString("id");
+				PaymentHistory paymentHistoryParam = new PaymentHistory();
+				paymentHistoryParam.setOrderId(orderId);
+				List<PaymentHistory> paymentHistories = paymentHistoryService.selectPaymentHistoryList(paymentHistoryParam);
+				if (!paymentHistories.isEmpty()) {
+					PaymentHistory paymentHistory = paymentHistories.get(0);
+
+					// Update payment history
+					paymentHistory.setUpdateBy(getUser().getFullName());
+					paymentHistory.setStatus("1");
+					paymentHistoryService.updatePaymentHistory(paymentHistory);
+
+					// Update shipment detail
+					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(paymentHistory.getProcessOrderIds());
+					for (ShipmentDetail shipmentDetail : shipmentDetails) {
+						shipmentDetail.setPaymentStatus("Y");
+						shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+						if (shipmentDetail.getCustomStatus() != null && "N".equals(shipmentDetail.getCustomStatus()) && 
+						shipmentDetail.getDischargePort() != null && shipmentDetail.getDischargePort().length() > 2 && 
+						"VN".equals(shipmentDetail.getDischargePort().substring(0, 2))) {
+							shipmentDetail.setCustomStatus("R");
+							shipmentDetail.setStatus(shipmentDetail.getStatus()+1);
+						}
+						shipmentDetailService.updateShipmentDetail(shipmentDetail);
+					}
+
+					// Update bill
+					processBillService.updateBillListByProcessOrderIds(paymentHistory.getProcessOrderIds());
+
+					isError = false;
+				}
+			}
+		}
+		if (isError) {
+			mmap.put("result", "ERROR");
+		} else {
+			mmap.put("result", "SUCCESS");
+		}
+		return PREFIX + "/napas/resultMobiletForm";
+	}
+	
 	@PostMapping("/pods")
 	@ResponseBody
 	public AjaxResult getPODs(@RequestBody ShipmentDetail shipmentDetail){

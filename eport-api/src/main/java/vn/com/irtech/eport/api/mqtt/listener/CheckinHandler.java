@@ -204,7 +204,7 @@ public class CheckinHandler implements IMqttMessageListener {
 			ShipmentDetail shipmentDetail = null;
 			// Get position for send container case
 			if (pickupHistory.getShipment().getServiceType() == 1) {
-				// TODO : Get position
+				//  Get position
 				if (pickupHistory.getShipmentDetailId() == null) {
 					// Auto pickup
 					
@@ -217,8 +217,6 @@ public class CheckinHandler implements IMqttMessageListener {
 					pickupHistory.setLine(String.valueOf(shipmentDetail.getRow()));
 					pickupHistory.setTier(String.valueOf(shipmentDetail.getTier()));
 					pickupHistoryService.updatePickupHistory(pickupHistory);
-				} else {
-					pickupHistory = catosApiService.getLocationForReceiveF(pickupHistory);
 				}
 			}
 			
@@ -238,46 +236,47 @@ public class CheckinHandler implements IMqttMessageListener {
 
 			// pickup has not position
 			if (!checkPickupHistoryHasPosition(pickupHistory)) {
-				dataWithoutYardPostion.add(driverDataRes);
-			}else {
+//				dataWithoutYardPostion.add(driverDataRes);
+//				driverDataRes.setYardPosition(getYardPostion(pickupHistory));
+			} else {
 				driverDataRes.setYardPosition(getYardPostion(pickupHistory));
 			}
 			
 			result.add(driverDataRes);
 		}
 		
-		if (!CollectionUtils.isEmpty(dataWithoutYardPostion)) {
-			for (DriverDataRes data : dataWithoutYardPostion) {
-				// Request MC input position
-				requestMC(data.getPickupHistoryId());
-			}
-		} else {
-			return result;
-		}
-		
-		// wait MC
-		for (int i = 1; i<= RETRY_WAIT_MC; i++) {
-			logger.debug("Wait " + TIME_OUT_WAIT_MC  + " miliseconds");
-			Thread.sleep(TIME_OUT_WAIT_MC);
-			logger.debug("Check db");
-			for (int j = 0; j < dataWithoutYardPostion.size(); j ++) {
-				DriverDataRes data = dataWithoutYardPostion.get(j);
-				PickupHistory pickupHistory = pickupHistoryService
-						.selectPickupHistoryById(data.getPickupHistoryId());
-				if (checkPickupHistoryHasPosition(pickupHistory)) {
-					data.setYardPosition(getYardPostion(pickupHistory));
-					dataWithoutYardPostion.remove(j);
-				}
-			}
-			
-			if (dataWithoutYardPostion.size() == 0) {
-				break;
-			}
-		}
-		
-		if (dataWithoutYardPostion.size() > 0) {
-			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0019));
-		}
+//		if (!CollectionUtils.isEmpty(dataWithoutYardPostion)) {
+//			for (DriverDataRes data : dataWithoutYardPostion) {
+//				// Request MC input position
+//				requestMC(data.getPickupHistoryId());
+//			}
+//		} else {
+//			return result;
+//		}
+//		
+//		// wait MC
+//		for (int i = 1; i<= RETRY_WAIT_MC; i++) {
+//			logger.debug("Wait " + TIME_OUT_WAIT_MC  + " miliseconds");
+//			Thread.sleep(TIME_OUT_WAIT_MC);
+//			logger.debug("Check db");
+//			for (int j = 0; j < dataWithoutYardPostion.size(); j ++) {
+//				DriverDataRes data = dataWithoutYardPostion.get(j);
+//				PickupHistory pickupHistory = pickupHistoryService
+//						.selectPickupHistoryById(data.getPickupHistoryId());
+//				if (checkPickupHistoryHasPosition(pickupHistory)) {
+//					data.setYardPosition(getYardPostion(pickupHistory));
+//					dataWithoutYardPostion.remove(j);
+//				}
+//			}
+//			
+//			if (dataWithoutYardPostion.size() == 0) {
+//				break;
+//			}
+//		}
+//		
+//		if (dataWithoutYardPostion.size() > 0) {
+//			throw new BusinessException(MessageHelper.getMessage(MessageConsts.E0019));
+//		}
 		
 		return result;
 	}
@@ -393,12 +392,10 @@ public class CheckinHandler implements IMqttMessageListener {
 			if (sysRobot != null) {
 				processOrder.setStatus(1);
 				processOrder.setRobotUuid(sysRobot.getUuId());
+				processOrder.setProcessData(msg);
 				processOrderService.updateProcessOrder(processOrder);
 				robotService.updateRobotStatusByUuId(sysRobot.getUuId(), "1");
 				mqttService.sendMessageToRobot(msg, sysRobot.getUuId());
-			} else {
-				processOrder.setProcessData(msg);
-				processOrderService.updateProcessOrder(processOrder);
 			}
 		} catch (Exception e) {
 			logger.error("Error when send order gate in: " + e);

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,11 @@ public class GatePassHandler implements IMqttMessageListener {
 	@Autowired
 	private ISysNotificationReceiverService sysNotificationReceiverService;
 	
+	// time wait mc input postion
+	private static final Long TIME_OUT_WAIT_MC = 6000L;
+	
+	private static final Integer RETRY_WAIT_MC = 20;
+	
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
 		logger.info("Receive message subject : " + topic);
@@ -107,10 +113,8 @@ public class GatePassHandler implements IMqttMessageListener {
 		
 		GateInFormData gateInFormData = new Gson().fromJson(dataString, GateInFormData.class);
 		if (gateInFormData != null && gateInFormData.getReceiptId() != null) {
-			this.updatePickupHistory(gateInFormData, result);
+			this.updatePickupHistory(gateInFormData, result, uuId, status);
 		}
-		
-		robotService.updateRobotStatusByUuId(uuId, status);
 	}
 	
 	/**
@@ -120,15 +124,14 @@ public class GatePassHandler implements IMqttMessageListener {
 	 * @param result
 	 */
 	@Transactional
-	private void updatePickupHistory(GateInFormData gateInFormData, String result) {
+	private void updatePickupHistory(GateInFormData gateInFormData, String result, String uuId, String status) {
 		// List data response for driver
 		List<DriverDataRes> driverDataRes = new ArrayList<>();
 		DriverRes driverRes = new DriverRes();
 		driverRes.setStatus(BusinessConsts.FINISH);
 		
 		// Declare process order to update status
-		ProcessOrder processOrder = new ProcessOrder();
-		processOrder.setId(gateInFormData.getReceiptId());
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(gateInFormData.getReceiptId());
 		processOrder.setStatus(2);
 		
 		// Declare process history to save history
@@ -235,6 +238,61 @@ public class GatePassHandler implements IMqttMessageListener {
 				logger.error("Error send result gate in for smart app: " + e);
 			}
 			
+			robotService.updateRobotStatusByUuId(uuId, status);
+		} else if("position_failed".equalsIgnoreCase(result)) {
+			//gateInFormData 
+			for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
+				if (!checkPickupHistoryHasPosition(pickupHistory)) {
+					Map<String, Object> map = new HashMap<>();
+					map.put("pickupHistoryId", pickupHistory.getId().toString());
+					String msg = new Gson().toJson(map);
+					try {
+						mqttService.sendMessageToMc(msg);
+					} catch (MqttException e) {
+						logger.error("Erorr request yard position from mc: " + e);
+					}
+					
+					for (int i = 1; i<= RETRY_WAIT_MC; i++) {
+						logger.debug("Wait " + TIME_OUT_WAIT_MC  + " miliseconds");
+						try {
+							Thread.sleep(TIME_OUT_WAIT_MC);
+						} catch (InterruptedException e) {
+							logger.error("Error sleep to wait mc: " + e);
+						}
+						logger.debug("Check db");
+						pickupHistory = pickupHistoryService .selectPickupHistoryById(pickupHistory.getId());
+						gateInFormData.getPickupIn().set(0, pickupHistory);
+						if (checkPickupHistoryHasPosition(pickupHistory)) {
+							break;
+						}
+					}
+				}
+			}
+			
+			// re-try gate order with yard position
+			ProcessOrder processOrderNew = new ProcessOrder();
+			processOrderNew.setShipmentId(processOrder.getShipmentId());
+			processOrderNew.setServiceType(8);
+			processOrderNew.setLogisticGroupId(processOrder.getLogisticGroupId());
+			processOrderNew.setStatus(0);
+			processOrderService.insertProcessOrder(processOrderNew);
+			
+			gateInFormData.setReceiptId(processOrder.getId());
+			for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
+				pickupHistory.setProcessOrderId(processOrderNew.getId());
+				pickupHistoryService.updatePickupHistory(pickupHistory);
+			}
+			String msg = new Gson().toJson(gateInFormData);
+			processOrderNew.setStatus(1);
+			processOrderNew.setRobotUuid(uuId);
+			processOrderNew.setProcessData(msg);
+			processOrderService.updateProcessOrder(processOrderNew);
+			try {
+				mqttService.sendMessageToRobot(msg, uuId);
+			} catch (MqttException e) {
+				logger.error("Error send gate order to robot: " + e);
+			}
+			processOrder.setResult("F");
 			
 		} else {
 			
@@ -276,6 +334,7 @@ public class GatePassHandler implements IMqttMessageListener {
 			}
 			processOrder.setResult("F");
 			processHistory.setResult("F");
+			robotService.updateRobotStatusByUuId(uuId, status);
 		}
 		
 		// Update process order (S or F)
@@ -330,5 +389,22 @@ public class GatePassHandler implements IMqttMessageListener {
 			sysNotificationReceiver.setUserType(2L);
 			sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
 		}
+	}
+	
+	/**
+	 * Check pickup history has position
+	 * 
+	 * @param pickupHistory
+	 * @return Boolean
+	 */
+	private Boolean checkPickupHistoryHasPosition(PickupHistory pickupHistory) {
+		if (pickupHistory.getArea() != null) {
+			return true;
+		}
+		if (pickupHistory.getBlock() != null && pickupHistory.getBay() != null
+			&& pickupHistory.getLine() != null && pickupHistory.getTier() != null) {
+				return true;
+			}
+		return false;
 	}
 }

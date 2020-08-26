@@ -398,17 +398,6 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     }
     return td;
 }
-//function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-//    $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
-//    $(td).html(value);
-//    if (value != null && value != '') {
-//        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-//            cellProperties.readOnly = 'true';
-//            $(td).css("background-color", "rgb(232, 232, 232)");
-//        }
-//    }
-//    return td;
-//}
 
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
@@ -978,7 +967,6 @@ function getDataFromTable(isValidate) {
             }
         }
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
-        shipmentDetail.bookingNo = shipmentSelected.blNo;
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
