@@ -22,7 +22,10 @@ public class EdiDataReq implements Serializable {
 	private String consignee;
 
 	@NotBlank
-	private String secureCode;
+	private String consigneeTaxcode;
+
+	@NotBlank
+	private String orderNumber;
 
 	@NotBlank
 	private String containerNo;
@@ -33,7 +36,7 @@ public class EdiDataReq implements Serializable {
 	private Integer detFreeDays;
 
 	@NotNull
-	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="dd/MM/yyyy")
+	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
 	private Date expiryTs;
 
 	private String terOfMtReturn;
@@ -41,13 +44,14 @@ public class EdiDataReq implements Serializable {
 	@NotBlank
 	private String modTransName;
 
+	@NotBlank
 	private String modTransVoyage;
 
 	@NotBlank
 	private String billOfLading;
 
 	@NotBlank
-	@AcceptedValues(values = {"N", "U", "D"}, message = "must be any of {'N', 'U', 'D'}")
+	@AcceptedValues(values = {"N", "U", "D"}, message = "Must be any of {'N', 'U', 'D'}")
 	private String msgFunc;
 
 	public String getLineOper() {
@@ -66,12 +70,20 @@ public class EdiDataReq implements Serializable {
 		this.consignee = consignee;
 	}
 
-	public String getSecureCode() {
-		return secureCode;
+	public String getConsigneeTaxcode() {
+		return consigneeTaxcode;
 	}
 
-	public void setSecureCode(String secureCode) {
-		this.secureCode = secureCode;
+	public void setConsigneeTaxcode(String consigneeTaxcode) {
+		this.consigneeTaxcode = consigneeTaxcode;
+	}
+
+	public String getOrderNumber() {
+		return orderNumber;
+	}
+
+	public void setOrderNumber(String orderNumber) {
+		this.orderNumber = orderNumber;
 	}
 
 	public String getContainerNo() {

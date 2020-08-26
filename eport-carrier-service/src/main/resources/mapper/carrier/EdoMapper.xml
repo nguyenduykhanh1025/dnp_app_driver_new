@@ -9,6 +9,7 @@
     <result property="carrierId" column="carrier_id"/>
     <result property="carrierCode" column="carrier_code"/>
     <result property="orderNumber" column="order_number"/>
+    <result property="releaseNo" column="release_no"/>
     <result property="billOfLading" column="bill_of_lading"/>
     <result property="businessUnit" column="business_unit"/>
     <result property="consignee" column="consignee"/>
@@ -42,7 +43,7 @@
   </resultMap>
 
   <sql id="selectEdoVo">
-    select id, carrier_id, carrier_code, order_number, bill_of_lading, business_unit, consignee, container_number,
+    select id, carrier_id, carrier_code, order_number, release_no, bill_of_lading, business_unit, consignee, container_number,
     expired_dem, empty_container_depot, det_free_time, secure_code, release_date, vessel, vessel_no , voy_no, sztp,
     status, release_status, create_source, remark, del_flg, create_by, file_create_time, create_time, update_by,
     update_time, transaction_id, pol, pod, house_bill_id, consignee_by_tax_code, tax_code from edo
@@ -61,6 +62,7 @@
       <if test="carrierId != null ">and carrier_id = #{carrierId}</if>
       <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
+      <if test="releaseNo != null  and releaseNo != ''">and release_no = #{releaseNo}</if>
       <if test="billOfLading != null  and billOfLading != ''">and bill_of_lading = #{billOfLading}</if>
       <if test="businessUnit != null  and businessUnit != ''">and business_unit = #{businessUnit}</if>
       <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">and empty_container_depot =
@@ -102,6 +104,7 @@
       <if test="carrierId != null ">and carrier_id = #{carrierId}</if>
       <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
+      <if test="releaseNo != null  and releaseNo != ''">and release_no = #{releaseNo}</if>
       <if test="businessUnit != null  and businessUnit != ''">and business_unit = #{businessUnit}</if>
       <if test="emptyContainerDepot != null  and emptyContainerDepot != ''">and empty_container_depot =
         #{emptyContainerDepot}
@@ -148,6 +151,7 @@
         </foreach>
       </if>
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
+      <if test="releaseNo != null  and releaseNo != ''">and release_no = #{releaseNo}</if>
       <if test="billOfLading != null  and billOfLading != ''">and bill_of_lading = #{billOfLading}</if>
       <if test="businessUnit != null  and businessUnit != ''">and business_unit = #{businessUnit}</if>
       <if test="emptyContainerDepot != null ">and empty_container_depot = #{emptyContainerDepot}</if>
@@ -180,6 +184,7 @@
       <if test="carrierId != null ">carrier_id,</if>
       <if test="carrierCode != null  and carrierCode != ''">carrier_code,</if>
       <if test="orderNumber != null  and orderNumber != ''">order_number,</if>
+      <if test="releaseNo != null  and releaseNo != ''">release_no,</if>
       <if test="billOfLading != null  and billOfLading != ''">bill_of_lading,</if>
       <if test="businessUnit != null  and businessUnit != ''">business_unit,</if>
       <if test="consignee != null  and consignee != ''">consignee,</if>
@@ -212,6 +217,7 @@
       <if test="carrierId != null ">#{carrierId},</if>
       <if test="carrierCode != null  and carrierCode != ''">#{carrierCode},</if>
       <if test="orderNumber != null  and orderNumber != ''">#{orderNumber},</if>
+      <if test="releaseNo != null  and releaseNo != ''">#{releaseNo},</if>
       <if test="billOfLading != null  and billOfLading != ''">#{billOfLading},</if>
       <if test="businessUnit != null  and businessUnit != ''">#{businessUnit},</if>
       <if test="consignee != null  and consignee != ''">#{consignee},</if>
@@ -314,6 +320,7 @@
         </foreach>
       </if>
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
+      <if test="releaseNo != null  and releaseNo != ''">and release_no = #{releaseNo}</if>
       <if test="billOfLading != null  and billOfLading != ''">and bill_of_lading like concat(concat('%',
         #{billOfLading}), '%')
       </if>
@@ -437,6 +444,7 @@
       <if test="carrierCode != null  and carrierCode != ''">and carrier_code = #{carrierCode}</if>
       <if test="expiredDem != null and expiredDem != ''">and TO_CHAR(expired_dem, 'DD/MM/YYYY') = #{expiredDem}</if>
       <if test="orderNumber != null  and orderNumber != ''">and order_number = #{orderNumber}</if>
+      <if test="releaseNo != null  and releaseNo != ''">and release_no = #{releaseNo}</if>
     ORDER BY create_time DESC
   </select>
 
