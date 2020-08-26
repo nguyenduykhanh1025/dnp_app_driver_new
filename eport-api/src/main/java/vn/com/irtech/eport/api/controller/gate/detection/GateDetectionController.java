@@ -21,13 +21,11 @@ import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.form.CheckinReq;
 import vn.com.irtech.eport.api.form.DetectionInfo;
 import vn.com.irtech.eport.api.form.MeasurementDataReq;
-import vn.com.irtech.eport.api.form.PickupHistoryDataRes;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
-import vn.com.irtech.eport.common.utils.bean.BeanUtils;
 
 @RestController
 @RequestMapping("/gate")
@@ -41,23 +39,34 @@ public class GateDetectionController extends BaseController {
 	@PostMapping("/detection")
 	@ResponseBody
 	public AjaxResult submitDectionInfo(@Validated @RequestBody DetectionInfo detectionInfo) {
+		
+		String detectJson = new Gson().toJson(detectionInfo);
+		logger.debug(">>>> Receive detection info:" + detectJson);
+		// Save detection info to cache
 		CacheUtils.put("detectionInfo_" + detectionInfo.getGateId(), detectionInfo);
-		CheckinReq checkinReq = new CheckinReq();
+		// Prepare request for check-in
 		List<MeasurementDataReq> measurementDataReqs = new ArrayList<>();
 		MeasurementDataReq measurementDataReq = new MeasurementDataReq();
 		measurementDataReq.setTruckNo(detectionInfo.getTruckNo());
 		measurementDataReq.setChassisNo(detectionInfo.getChassisNo());
+		// If detect container 1
 		if (StringUtils.isNotEmpty(detectionInfo.getContainerNo1())) {
 			measurementDataReq.setContNo(detectionInfo.getContainerNo1());
 		}
+		// add the first container
 		measurementDataReqs.add(measurementDataReq);
+		// If detect 2 containers
 		if (StringUtils.isNotEmpty(detectionInfo.getContainerNo2())) {
 			MeasurementDataReq measurementDataReq2 = new MeasurementDataReq();
-			BeanUtils.copyBeanProp(measurementDataReq2, measurementDataReq);
+			measurementDataReq2.setTruckNo(detectionInfo.getTruckNo());
+			measurementDataReq2.setChassisNo(detectionInfo.getChassisNo());
+			measurementDataReq2.setContNo(detectionInfo.getContainerNo2());
 			measurementDataReqs.add(measurementDataReq2);
 		}
+		CheckinReq checkinReq = new CheckinReq();
 		checkinReq.setInput(measurementDataReqs);
 		try {
+			logger.debug("Publish smart gate app request: " + new Gson().toJson(checkinReq));
 			mqttService.publish(MqttConsts.SMART_GATE_RES_TOPIC.replace("+", detectionInfo.getGateId()), new MqttMessage(new Gson().toJson(checkinReq).getBytes()));
 		} catch (MqttException e) {
 			logger.error("Error send detection info: " + e);
