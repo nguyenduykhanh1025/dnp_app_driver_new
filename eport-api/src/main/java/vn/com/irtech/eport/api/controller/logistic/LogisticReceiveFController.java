@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.api.controller.logistic;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -12,19 +13,19 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import vn.com.irtech.eport.api.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.api.form.ProcessBillForm;
 import vn.com.irtech.eport.api.form.ShipmentDetailForm;
+import vn.com.irtech.eport.api.mqtt.service.MqttService;
+import vn.com.irtech.eport.api.mqtt.service.MqttService.EServiceRobot;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
@@ -37,11 +38,14 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.common.utils.bean.BeanUtils;
 import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
+import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IEdoHouseBillService;
+import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -79,6 +83,12 @@ public class LogisticReceiveFController extends LogisticBaseController {
 	
 	@Autowired
 	private CustomQueueService customQueueService;
+	
+	@Autowired
+	private IOtpCodeService otpCodeService;
+	
+	@Autowired
+	private MqttService mqttService;
 	
 	class StatusComparator implements Comparator<ShipmentDetailForm> {
         public int compare(ShipmentDetailForm shipmentDetail1, ShipmentDetailForm shipmentDetail2) {
@@ -309,6 +319,13 @@ public class LogisticReceiveFController extends LogisticBaseController {
 		return error("Lỗi dữ liệu.");
 	}
 	
+	/**
+	 * Get pre-information for container before add
+	 * 
+	 * @param shipmentId
+	 * @param contNo
+	 * @return AjaxResult
+	 */
 	@GetMapping("/shipment/{shipmentId}/contNo/{contNo}/shipment-detail")
 	public AjaxResult getShipmentDetailByBlNo(@PathVariable("shipmentId") Long shipmentId, @PathVariable("contNo") String contNo) {
 		
@@ -381,7 +398,6 @@ public class LogisticReceiveFController extends LogisticBaseController {
 	
 	@Log(title = "Check Hải Quan", businessType = BusinessType.UPDATE, operatorType = OperatorType.MOBILE)
 	@PostMapping("/custom-status/shipment-detail")
-	@ResponseBody
 	public AjaxResult checkCustomStatus(@RequestParam(value = "declareNos") String declareNoList, @RequestParam(value = "shipmentDetailIds") String shipmentDetailIds) {
 		if (StringUtils.isNotEmpty(declareNoList)) {
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getGroupLogisticId());
@@ -408,5 +424,114 @@ public class LogisticReceiveFController extends LogisticBaseController {
 		return error();
 	}
 	
+	/**
+	 * Check custom response frequently
+	 * 
+	 * @param shipmentId
+	 * @return
+	 */
+	@GetMapping("/shipment/{shipmentId}/custom/response")
+	public AjaxResult checkCustomResponse(@PathVariable("shipmentId") Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+		shipmentDetailParam.setShipmentId(shipmentId);
+		shipmentDetailParam.setLogisticGroupId(getGroupLogisticId());
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetailParam);
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				if (!"R".equals(shipmentDetail.getCustomStatus())) {
+					ajaxResult.put("stopFlag", "0");
+					return ajaxResult;
+				}
+			}
+		}
+		ajaxResult.put("stopFlag", "1");
+		return ajaxResult;
+	}
 	
+	/**
+	 * Verify Otp
+	 * 
+	 * @param shipmentId
+	 * @param otp
+	 * @param creditFlag
+	 * @return AjaxResult
+	 */
+	@Log(title = "Xác Nhận OTP", businessType = BusinessType.UPDATE, operatorType = OperatorType.MOBILE)
+	@PostMapping("/shipment/{shipmentId}/otp/{otp}")
+	public AjaxResult verifyOtp(@PathVariable("shipmentId") Long shipmentId, @PathVariable("otp") String otp, Boolean creditFlag) {
+		try {
+			Long.parseLong(otp);
+		} catch (Exception e) {
+			return error("Mã OTP nhập vào không hợp lệ!");
+		}
+		
+		// Get list shipment need to make order
+		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+		shipmentDetailParam.setProcessStatus("N");
+		shipmentDetailParam.setUserVerifyStatus("N");
+		shipmentDetailParam.setCustomStatus("R");
+		shipmentDetailParam.setShipmentId(shipmentId);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetailParam);
+		String shipmentDetailIds = "";
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetailIds += shipmentDetail.getId() + ",";
+		}
+		shipmentDetailIds.substring(0, shipmentDetailIds.length()-1);
+		
+		OtpCode otpCode = new OtpCode();
+		otpCode.setTransactionId(shipmentDetailIds);
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		cal.add(Calendar.MINUTE, -5);
+		otpCode.setCreateTime(cal.getTime());
+		otpCode.setOtpCode(otp);
+		if (otpCodeService.verifyOtpCodeAvailable(otpCode) != 1) {
+			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
+		}
+		
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		if (!"3".equals(shipment.getStatus())) {
+			shipment.setStatus("3");
+			shipment.setUpdateTime(new Date());
+			shipmentService.updateShipment(shipment);
+		}
+		List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, creditFlag);
+		if (serviceRobotReqs != null) {
+			
+			// MAKE ORDER RECEIVE CONT FULL
+			try {
+				for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
+					mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_FULL);
+				}
+			} catch (Exception e) {
+				logger.error("Lỗi xác thực otp: " + e);
+				return error("Có lỗi xảy ra trong quá trình xác thực!");
+			}
+			return success();
+		}
+		return error("Có lỗi xảy ra trong quá trình xác thực!");
+	}
+	
+	/**
+	 * Check process is done (stopFlg(1) = done)
+	 * 
+	 * @param shipmentId
+	 * @return AjaxResult
+	 */
+	@GetMapping("/shipment/{shipmentId}/process")
+	public AjaxResult checkProcessStatus(@PathVariable("shipmentId") Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+		shipmentDetailParam.setShipmentId(shipmentId);
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetailParam);
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				
+			}
+		}
+		ajaxResult.put("stopFlag", "1");
+		return ajaxResult;
+	}
 }

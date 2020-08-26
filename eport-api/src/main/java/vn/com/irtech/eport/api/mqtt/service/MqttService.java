@@ -18,22 +18,38 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.google.gson.Gson;
 
 import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.mqtt.listener.CheckinHandler;
 import vn.com.irtech.eport.api.mqtt.listener.GatePassHandler;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.service.ISysRobotService;
 
 @Component
 public class MqttService implements MqttCallback {
 	private static final Logger logger = LoggerFactory.getLogger(MqttService.class);
 
 	public static String BASE_TOPIC;
+	
+	public static String ROBOT_TOPIC = "eport/robot/+/request";
 
 	@Autowired
 	private CheckinHandler checkinHandler;
 	
 	@Autowired
 	private GatePassHandler gatePassHandler;
+	
+	@Autowired
+	private IProcessOrderService processOrderService;
+	
+	@Autowired
+	private ISysRobotService robotService;
 
 	@Value("${mqtt.root:'eport'}")
 	public void setBaseTopic(String baseTopic) {
@@ -207,5 +223,53 @@ public class MqttService implements MqttCallback {
 
 	public void sendMessageToRobot(String message, String gateId) throws MqttException {
 		this.publish(MqttConsts.GATE_ROBOT_REQ_TOPIC.replace("+", gateId), new MqttMessage(message.getBytes()));
+	}
+	
+	public enum EServiceRobot {
+		RECEIVE_CONT_FULL, RECEIVE_CONT_EMPTY, SEND_CONT_FULL, SEND_CONT_EMPTY
+	}
+	
+	@Transactional
+	public boolean publishMessageToRobot(ServiceSendFullRobotReq payLoad, EServiceRobot serviceRobot) throws MqttException {
+		SysRobot sysRobot = this.getAvailableRobot(serviceRobot);
+		if (sysRobot == null) {
+			return false;
+		}
+		String msg = new Gson().toJson(payLoad);
+		String topic = ROBOT_TOPIC.replace("+", sysRobot.getUuId());
+		publish(topic, new MqttMessage(msg.getBytes()));
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setId(payLoad.processOrder.getId());
+		processOrder.setRobotUuid(sysRobot.getUuId()); // robot uuid in charge of process order
+		processOrder.setStatus(1); // on progress
+		processOrderService.updateProcessOrder(processOrder);
+		robotService.updateRobotStatusByUuId(sysRobot.getUuId(), "1");
+		return true;
+	}
+	
+	/**
+	 * Get a robot already to execute service
+	 * 
+	 * @param service
+	 * @return
+	 */
+	public SysRobot getAvailableRobot(EServiceRobot serviceRobot) {
+		SysRobot sysRobot = new SysRobot();
+		sysRobot.setStatus("0");
+		switch (serviceRobot) {
+			case RECEIVE_CONT_FULL:
+				sysRobot.setIsReceiveContFullOrder(true);
+				break;
+			case RECEIVE_CONT_EMPTY:
+				sysRobot.setIsReceiveContEmptyOrder(true);
+				break;
+			case SEND_CONT_FULL:
+				sysRobot.setIsSendContFullOrder(true);
+				break;
+			case SEND_CONT_EMPTY:
+				sysRobot.setIsSendContEmptyOrder(true);
+				break;
+		}
+		return robotService.findFirstRobot(sysRobot);
 	}
 }
