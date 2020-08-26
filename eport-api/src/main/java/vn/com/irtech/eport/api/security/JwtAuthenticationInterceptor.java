@@ -36,7 +36,9 @@ public class JwtAuthenticationInterceptor extends HandlerInterceptorAdapter {
 		String requestURI = request.getRequestURI();
 
 		if (requestURI != null && (requestURI.contains("/login") || requestURI.contains("/error")
-				|| StringUtils.isBlank(requestURI) || requestURI.contains("/gate/detection"))) {
+				|| requestURI.contains("/transport/user/register") || requestURI.contains("/gate/detection")
+				|| requestURI.contains("/transport/user/resetpwd") || requestURI.contains("/logistic/user/register")
+				|| requestURI.contains("/logistic/user/resetpwd"))) {
 			return true;
 		}
 

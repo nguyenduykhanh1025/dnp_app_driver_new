@@ -61,7 +61,6 @@ public class TransportLoginController extends BaseController {
 			sysUserToken.setExpireTime(TokenUtils.getExpirationDate());
 			sysUserTokenService.insertSysUserToken(sysUserToken);
 		}
-		
 		return ajaxResult;
 	}
 }
