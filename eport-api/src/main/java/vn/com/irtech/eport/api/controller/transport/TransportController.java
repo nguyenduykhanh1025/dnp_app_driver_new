@@ -318,7 +318,7 @@ public class TransportController extends BaseController {
 	 * 
 	 * @return AjaxResult
 	 */
-    @PostMapping("/notify")
+    @GetMapping("/notify")
 	@ResponseBody
 	public AjaxResult getNotifyList() {
 		startPage();
