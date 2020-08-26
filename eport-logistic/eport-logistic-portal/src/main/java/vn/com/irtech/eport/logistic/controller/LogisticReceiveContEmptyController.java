@@ -460,16 +460,4 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		}
 		return error();
 	}
-//	@PostMapping("berthplan/container/infor")
-//	@ResponseBody
-//	public AjaxResult getInforContainer(@RequestBody ShipmentDetail shipmentDetail) {
-//		AjaxResult ajaxResult = success();
-//		shipmentDetail.setFe("E");
-//		ShipmentDetail rs = catosApiService.getInforSendFReceiveE(shipmentDetail);
-//		if(rs != null) {
-//			ajaxResult.put("shipmentDetail", rs);
-//			return ajaxResult;
-//		}
-//		return error();
-//	}
 }
