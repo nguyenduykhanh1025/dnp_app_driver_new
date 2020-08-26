@@ -32,6 +32,9 @@ public class Edo extends BaseEntity {
 	@Excel(name = "Order Number")
 	private String orderNumber;
 
+	@Excel(name = "Release No")
+	private String releaseNo;
+
 	/** So B/L */
 	@Excel(name = "B/L No")
 	private String billOfLading;
@@ -238,6 +241,14 @@ public class Edo extends BaseEntity {
 
 	public String getBillOfLading() {
 		return billOfLading;
+	}
+
+	public String getReleaseNo() {
+		return releaseNo;
+	}
+
+	public void setReleaseNo(String releaseNo) {
+		this.releaseNo = releaseNo;
 	}
 
 	public void setBusinessUnit(String businessUnit) {
