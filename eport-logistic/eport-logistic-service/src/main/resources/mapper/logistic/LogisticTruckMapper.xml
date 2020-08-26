@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLogisticTruckVo">
-        select id, logistic_group_id, plate_number, type, self_wgt, wgt, registry_expiry_date, del_flag, remark, create_by, create_time, update_by, update_time from logistic_truck
+        select id, logistic_group_id, plate_number, gatepass, type, self_wgt, wgt, registry_expiry_date, del_flag, remark, create_by, create_time, update_by, update_time from logistic_truck
     </sql>
 
     <select id="selectLogisticTruckList" parameterType="LogisticTruck" resultMap="LogisticTruckResult">

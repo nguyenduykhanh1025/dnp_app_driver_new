@@ -32,6 +32,7 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -240,7 +241,12 @@ public class TransportController extends BaseController {
 		pickupHistory.setShipmentId(pickupAssign.getShipmentId());
 		pickupHistory.setDriverPhoneNumber(pickupAssign.getPhoneNumber());
 		pickupHistory.setPickupAssignId(pickupAssign.getId());
-		pickupHistory.setGatePass(pickupHistory.getTruckNo().substring(pickupHistory.getTruckNo().length()-5, pickupHistory.getTruckNo().length()));
+		LogisticTruck logisticTruck = new LogisticTruck();
+		logisticTruck.setPlateNumber(pickupHistoryTemp.getTruckNo());
+		List<LogisticTruck> logisticTrucks = logisticTruckService.selectLogisticTruckList(logisticTruck);
+		if (CollectionUtils.isNotEmpty(logisticTrucks)) {
+			pickupHistory.setGatePass(logisticTrucks.get(0).getGatepass());
+		}
 		pickupHistory.setStatus(0);
 		pickupHistoryService.insertPickupHistory(pickupHistory);
 		return success();
