@@ -36,7 +36,7 @@ public class DriverAccountController extends BaseController {
 
 	public static final String PHONE_PATTERN = "";
 
-	@Autowired()
+	@Autowired
 	private IDriverAccountService driverAccountService;
 
 	@Autowired
