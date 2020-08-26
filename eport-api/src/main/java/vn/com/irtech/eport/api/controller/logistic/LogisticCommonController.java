@@ -17,12 +17,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.form.ShipmentForm;
 import vn.com.irtech.eport.api.util.SecurityUtils;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -41,7 +43,10 @@ import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
+import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
+import vn.com.irtech.eport.system.dto.NotificationRes;
 import vn.com.irtech.eport.system.service.ISysConfigService;
+import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
 
 @RestController
 @RequestMapping("/logistic")
@@ -69,6 +74,9 @@ public class LogisticCommonController extends LogisticBaseController {
 	
 	@Autowired 
 	private IOtpCodeService otpCodeService;
+	
+	@Autowired
+	private ISysNotificationReceiverService sysNotificationReceiverService;
 	
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
@@ -230,5 +238,21 @@ public class LogisticCommonController extends LogisticBaseController {
 		return ajaxResult;
 	}
 
-	
+	/**
+	 * Get list notification
+	 * 
+	 * @return AjaxResult
+	 */
+    @PostMapping("/notify")
+	@ResponseBody
+	public AjaxResult getNotifyList() {
+		startPage();
+		SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
+		sysNotificationReceiver.setUserId(SecurityUtils.getCurrentUser().getUser().getUserId());
+		sysNotificationReceiver.setUserType(BusinessConsts.LOGISTIC_USER_TYPE);
+		List<NotificationRes> notificationReses = sysNotificationReceiverService.getNotificationList(sysNotificationReceiver);
+		AjaxResult ajaxResult = AjaxResult.success();
+		ajaxResult.put("notificationList", notificationReses);
+		return ajaxResult;
+    }
 }
