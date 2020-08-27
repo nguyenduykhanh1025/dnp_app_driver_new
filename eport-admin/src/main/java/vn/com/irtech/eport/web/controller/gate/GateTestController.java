@@ -149,6 +149,7 @@ public class GateTestController extends BaseController {
 				BeanUtils.copyBeanProp(shipment1, shipment);
 				shipment1.setBookingNo("test");
 				shipment1.setServiceType(EportConstants.SERVICE_DROP_FULL);
+				logger.debug("Create shipment for drop cont 1: " + new Gson().toJson(shipment1));
 				shipmentService.insertShipment(shipment1);
 				
 				ShipmentDetail shipmentDetail1 = new ShipmentDetail();
@@ -156,6 +157,7 @@ public class GateTestController extends BaseController {
 				shipmentDetail1.setContainerNo(gateInTestDataReq.getContainerSend1());
 				shipmentDetail1.setBookingNo("test");
 				shipmentDetail1.setShipmentId(shipment1.getId());
+				logger.debug("Create shipment detail for drop cont 1: " + new Gson().toJson(shipmentDetail1));
 				shipmentDetailService.insertShipmentDetail(shipmentDetail1);
 				
 				PickupAssign pickupAssign1 = new PickupAssign();
@@ -165,7 +167,7 @@ public class GateTestController extends BaseController {
 				pickupAssign1.setShipmentDetailId(shipmentDetail1.getId());
 				pickupAssign1.setTruckNo(gateInTestDataReq.getTruckNo());
 				pickupAssign1.setChassisNo(gateInTestDataReq.getChassisNo());
-				
+				logger.debug("Create pickup assign for drop cont 1: " + new Gson().toJson(pickupAssign1));
 				pickupAssignService.insertPickupAssign(pickupAssign1);
 				
 				PickupHistory pickupHistory1 = new PickupHistory();
@@ -177,8 +179,9 @@ public class GateTestController extends BaseController {
 				pickupHistory1.setChassisNo(gateInTestDataReq.getChassisNo());
 				pickupHistory1.setContainerNo(gateInTestDataReq.getContainerSend1());
 				pickupHistory1.setStatus(0);
-				pickupHistory1.setShipmentId(shipmentDetail1.getId());
+				pickupHistory1.setShipmentDetailId(shipmentDetail1.getId());
 				pickupHistory1.setGatePass(gateInTestDataReq.getGatePass());
+				logger.debug("Create pickup history for drop cont 1: " + new Gson().toJson(pickupHistory1));
 				pickupHistoryService.insertPickupHistory(pickupHistory1);
 				
 				logger.debug("Complete prepare data for drop container 1");
@@ -189,20 +192,24 @@ public class GateTestController extends BaseController {
 					shipmentDetail2.setContainerNo(gateInTestDataReq.getContainerSend2());
 					shipmentDetail2.setShipmentId(shipment1.getId());
 					shipmentDetail2.setBookingNo("test");
+					logger.debug("Create shipment detail for drop cont 2: " + new Gson().toJson(shipmentDetail2));
 					shipmentDetailService.insertShipmentDetail(shipmentDetail2);
 					
 					PickupAssign pickupAssign2 = new PickupAssign();
 					BeanUtils.copyBeanProp(pickupAssign2, pickupAssign1);
 					pickupAssign2.setShipmentDetailId(shipmentDetail2.getId());
 					pickupAssign2.setId(null);
+					logger.debug("Create pickup assign for drop cont 2: " + new Gson().toJson(pickupAssign2));
 					pickupAssignService.insertPickupAssign(pickupAssign2);
 					
 					PickupHistory pickupHistory2 = new PickupHistory();
 					BeanUtils.copyBeanProp(pickupHistory2, pickupHistory1);
-					pickupHistory2.setShipmentDetailId(shipmentDetail2.getShipmentId());
+					pickupHistory2.setShipmentDetailId(shipmentDetail2.getId());
 					pickupHistory2.setId(null);
 					pickupHistory2.setContainerNo(gateInTestDataReq.getContainerSend2());
 					pickupHistory2.setPickupAssignId(pickupAssign2.getId());
+					pickupHistory2.setGatePass(gateInTestDataReq.getGatePass());
+					logger.debug("Create pickup history for drop cont 2: " + new Gson().toJson(pickupHistory2));
 					pickupHistoryService.insertPickupHistory(pickupHistory2);
 					
 					logger.debug("Complete prepare data for drop container 2");
@@ -220,7 +227,10 @@ public class GateTestController extends BaseController {
 			shipmentService.insertShipment(shipment2);
 			Long contId1 = 0L;
 			Long contId2 = 0L;
+			
+			logger.debug("Get container list by B/L No ");
 			List<ShipmentDetail> shipmentDetails = catosApiService.selectShipmentDetailsByBLNo(gateInTestDataReq.getBlNo());
+			logger.debug("List container: " + new Gson().toJson(shipmentDetails));
 			for (ShipmentDetail shipmentDetail1 : shipmentDetails) {
 				ShipmentDetail shipmentDetail2 = new ShipmentDetail();
 				BeanUtils.copyBeanProp(shipmentDetail2, shipmentDetail1);
@@ -266,6 +276,7 @@ public class GateTestController extends BaseController {
 			}
 			
 			if ("1".equals(gateInTestDataReq.getContainerFlg())) {
+				
 				if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive1())) {
 					logger.debug("Pick container 1: " + gateInTestDataReq.getContainerReceive1());
 					
@@ -288,7 +299,7 @@ public class GateTestController extends BaseController {
 					pickupHistory1.setChassisNo(gateInTestDataReq.getChassisNo());
 					pickupHistory1.setContainerNo(gateInTestDataReq.getContainerReceive1());
 					pickupHistory1.setStatus(0);
-					pickupHistory1.setShipmentId(contId1);
+					pickupHistory1.setShipmentDetailId(contId1);
 					pickupHistory1.setGatePass(gateInTestDataReq.getGatePass());
 					pickupHistoryService.insertPickupHistory(pickupHistory1);
 					

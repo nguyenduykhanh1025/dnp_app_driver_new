@@ -130,9 +130,12 @@
                                         <input class="easyui-textbox " id="containerAmount" data-options="prompt: 'S/L Container'" />
                                     </div>
                                 </div>
-                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
-                                    <a class="btn btn-primary btn-xs" style="font-size: larger;" onclick="gateIn()">Gate In</a>
-                                </div>   
+                                <div class="col-sm-4 col-md-4 col-lg-3 col-xl-3">
+                                    <a class="btn btn-primary btn-xs" style="font-size: larger;" onclick="gateIn()">Tạo Pick up</a>
+                                </div> 
+                                <div class="col-sm-3 col-md-3 col-lg-3 col-xl-3">
+                                    <a class="btn btn-primary btn-xs" style="font-size: larger;" onclick="checkIn()">Gate In</a>
+                                </div>  
                             </div>
                         </div>
                         <div title="Settings">
@@ -148,6 +151,14 @@
                                     <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Tài Xế</label>
                                     <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
                                         <input id="drivers" class="easyui-combobox" data-options="prompt: 'Chọn tài xế'">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row mt-10">
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Gate Id</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox " id="gateId" data-options="prompt: 'GateId' " />
                                     </div>
                                 </div>
                             </div>
