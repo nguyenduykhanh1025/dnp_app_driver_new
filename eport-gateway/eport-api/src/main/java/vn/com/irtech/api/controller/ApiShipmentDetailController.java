@@ -230,4 +230,9 @@ public class ApiShipmentDetailController {
 	public String getTaxCodeBySnmGroupName(@PathVariable("consignee") String consignee) {
 		return shipmentDetailDao.getTaxCodeBySnmGroupName(consignee);
 	}
+	
+	@GetMapping("/jobOrder/{jobOrder}/blNo")
+	public String getblNoByJobOrderNo(@PathVariable("jobOrder") String jobOrder) {
+		return shipmentDetailDao.getblNoByJobOrderNo(jobOrder);
+	}
 }

@@ -553,6 +553,25 @@ public class CheckinHandler implements IMqttMessageListener {
 						pickupHistoryDataRes.setWeight(pickupHistory.getShipmentDetail().getWgt());
 					}
 					pickupHistoryDataReses.add(pickupHistoryDataRes);
+				} else {
+					PickupHistoryDataRes pickupHistoryDataRes = new PickupHistoryDataRes();
+					pickupHistoryDataRes.setChassisNo(pickupHistory.getChassisNo());
+					pickupHistoryDataRes.setTruckNo(pickupHistory.getTruckNo());
+					pickupHistoryDataRes.setServiceType(pickupHistory.getShipment().getServiceType());
+					pickupHistoryDataRes.setContNo(pickupHistory.getContainerNo());
+					if (pickupHistoryDataRes.getServiceType() == 1) {
+						pickupHistoryDataRes.setFe("F");
+					} else {
+						pickupHistoryDataRes.setFe("E");
+					}
+					pickupHistoryDataRes.setPickupHistoryId(pickupHistory.getId());
+					pickupHistoryDataRes.setShipmentDetailId(pickupHistory.getShipmentDetailId());
+					pickupHistoryDataRes.setShipmentId(pickupHistory.getShipmentId());
+					pickupHistoryDataRes.setSztp(pickupHistory.getShipmentDetail().getSztp());
+					pickupHistoryDataRes.setVessel(pickupHistory.getShipmentDetail().getVslNm());
+					pickupHistoryDataRes.setVoyage(pickupHistory.getShipmentDetail().getVoyNo());
+					pickupHistoryDataRes.setWeight(pickupHistory.getShipmentDetail().getWgt());
+					pickupHistoryDataReses.add(pickupHistoryDataRes);
 				}
 			}
 		}

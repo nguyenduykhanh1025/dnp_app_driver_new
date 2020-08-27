@@ -555,4 +555,23 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	
+	/**
+	 * Get Coordinat Of Containers list by job order no
+	 * 
+	 * @param jobOrder
+	 */
+	public List<ShipmentDetail> getCoordinateOfContainersByJobOrderNo(String jobOrder) {
+		try {
+			String url = Global.getApiUrl() + "/jobOrder/" + jobOrder + "/blNo";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String blNo = restTemplate.getForObject(url, String.class);
+			return getCoordinateOfContainers(blNo);
+		} catch (Exception e) {
+			logger.error("CATOS Api get coordinate by job order no: ", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
