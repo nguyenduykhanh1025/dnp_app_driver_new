@@ -149,7 +149,7 @@ export default class DetailScreen extends Component {
               this.props.navigation.state.params.serviceType % 2 == 0 ?
                 'Hạ công từ cảng'
                 :
-                'Bốc công từ cảng'
+                'Bốc container từ cảng'
             }</Text>
 
             {/*

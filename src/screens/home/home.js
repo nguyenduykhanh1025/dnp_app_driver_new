@@ -124,7 +124,7 @@ export default class HomeScreen extends Component {
     if (PickupList.length < 4) {
       PickupList.map((item, index) => {
         if (item.serviceType % 2 == 0) {
-          if (item.sztp != null && item.sztp.slice(0, 2) == '22') {
+          if (item.sztp != null && item.sztp.slice(0, 1) == '2') {
             downEnable++
 
           }
@@ -133,7 +133,7 @@ export default class HomeScreen extends Component {
           }
         }
         else {
-          if (item.sztp != null && item.sztp.slice(0, 2) == '22') {
+          if (item.sztp != null && item.sztp.slice(0, 1) == '2') {
             upEnable++
           }
           else {
@@ -389,16 +389,16 @@ export default class HomeScreen extends Component {
                                   </View>
                                   <Text style={styles.PorterItemRightDownStatus}>{
                                     item.serviceType == 1 ?
-                                      'Công hàng'
+                                      'container hàng'
                                       :
                                       item.serviceType == 2 ?
-                                        'Công rỗng'
+                                        'container rỗng'
                                         :
                                         item.serviceType == 3 ?
-                                          'Công rỗng'
+                                          'container rỗng'
                                           :
                                           item.serviceType == 4 ?
-                                            'Công hàng'
+                                            'container hàng'
                                             :
                                             null
                                   }</Text>
@@ -423,7 +423,7 @@ export default class HomeScreen extends Component {
                                     <Text style={styles.PorterItemLabel}>Kích cỡ</Text>
                                     <Text style={styles.PorterItemValue}>2020</Text>
                                   </View>
-                                  <Text style={styles.PorterItemRightDownStatus}>Công hàng</Text>
+                                  <Text style={styles.PorterItemRightDownStatus}>container hàng</Text>
                                 </View>
                               </View>
                             </View>

@@ -204,7 +204,7 @@ export default class DetailScreen extends Component {
                           color: Colors["96ABE1"]
                         },
                     ]}>
-                      Bốc công hàng
+                      Bốc container hàng
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -253,7 +253,7 @@ export default class DetailScreen extends Component {
                           color: Colors["96ABE1"]
                         }
                     ]}>
-                      Hạ công hàng
+                      Hạ container hàng
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -304,7 +304,7 @@ export default class DetailScreen extends Component {
                           color: Colors["96ABE1"]
                         },
                     ]}>
-                      Bốc công rỗng
+                      Bốc container rỗng
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -353,7 +353,7 @@ export default class DetailScreen extends Component {
                           color: Colors["96ABE1"]
                         }
                     ]}>
-                      Hạ công rỗng
+                      Hạ container rỗng
                     </Text>
                   </View>
                 </TouchableOpacity>
