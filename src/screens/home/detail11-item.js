@@ -31,8 +31,8 @@ export default class Item extends Component {
                   flexDirection: 'row',
                   alignItems: 'center'
                 }}>
-                  <Text style={[styles.TextLabel, { width: ws(40) }]}>
-                    Số cont
+                  <Text style={[styles.TextLabel, { width: ws(70) }]}>
+                    Số container
                   </Text>
                   <Text style={styles.TextValue1}>
                     {data.containerNo}

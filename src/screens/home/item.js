@@ -28,7 +28,7 @@ export default class Item extends Component {
                 <View style={styles.ItemRightText}>
                   <View style={styles.ItemLineText}>
                     <Text style={styles.ItemLineLabel}>
-                      Công
+                      Container
                   </Text>
                     <Text style={styles.ItemLineValue}>
                       {data.containerNo}
