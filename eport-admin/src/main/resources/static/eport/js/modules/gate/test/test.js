@@ -176,3 +176,36 @@ function showYardPosition(bayList) {
   });
 }
 
+function checkIn() {
+  let reqData = {
+    gateId: $('#gateId').val(),
+    truckNo: $('#truckNo').val(),
+    chassisNo: $("#chassisNo").val(),
+    containerNo1: $("#containerSend1").val(),
+    containerNo2: $("#containerSend2").val(),
+  };
+  $.modal.loading("Đang xử lý...");
+  $.ajax({
+    cache: true,
+    type: "POST",
+    url: "http://app.danangport.com/api/gate/detection",
+    contentType: "application/json",
+    data: JSON.stringify(reqData),
+    async: false,
+    error: function (request) {
+      $.modal.closeLoading();
+      $.modal.alertError("System error");
+    },
+    success: function (result) {
+      $.modal.closeLoading();
+      if (result.code == web_status.SUCCESS) {
+        $.modal.alert("Thành công!");
+      } else if (result.code == web_status.WARNING) {
+        $.modal.alertWarning(result.msg);
+      } else {
+        $.modal.alertError(result.msg);
+      }
+    },
+  });
+}
+
