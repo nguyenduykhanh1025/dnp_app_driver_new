@@ -27,18 +27,26 @@ function onMessageReceived(payload) {
   if (message) {
     if (message.containerNo1) {
       $('#container1').html(message.containerNo1);
+    } else {
+      $('#container1').html("empty");
     }
 
     if (message.containerNo2) {
       $('#container2').html(message.containerNo2);
+    } else {
+      $('#container2').html("empty");
     }
 
     if (message.truckNo) {
       $('#truckNoDetection').html(message.truckNo);
+    } else {
+      $('#truckNoDetection').html("empty");
     }
 
     if (message.chassisNo) {
       $('#chassisNoDetection').html(message.chassisNo);
+    } else {
+      $('#chassisNoDetection').html("empty");
     }
   }
 }
@@ -183,6 +191,7 @@ function checkIn() {
     chassisNo: $("#chassisNo").val(),
     containerNo1: $("#containerSend1").val(),
     containerNo2: $("#containerSend2").val(),
+    w
   };
   $.modal.loading("Đang xử lý...");
   $.ajax({
