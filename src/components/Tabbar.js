@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {useSelector} from 'react-redux'
 
 import {
     TouchableOpacity,
@@ -36,6 +37,7 @@ const getUnseenNumber = () => {
 }
 
 const Tabbar = (props) => {
+    const state = useSelector(state => state.notifyReducers)
     const { navigation } = props;
     const data = [
         {
@@ -117,9 +119,9 @@ const Tabbar = (props) => {
                             </View>)
                     }
                     {
-                        tab.name == 'Thông báo' && getUnseenNumber() != 0 ?
-                        <View style = {styles.notifyNumber}>
-                            <Text style = {styles.number}>{getUnseenNumber() > 99 ? '99+' : getUnseenNumber()}</Text>
+                        tab.name == 'Thông báo' && state.unseen != 0?
+                        <View style = {[styles.notifyNumber]}>
+                            <Text style = {[styles.number, state.unseen > 99 ? {fontSize: fs(11)}: null]}>{state.unseen > 99 ? '99+' : state.unseen}</Text>
                         </View>
                         : null
                     }

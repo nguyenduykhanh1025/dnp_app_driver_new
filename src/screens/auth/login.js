@@ -82,8 +82,8 @@ class LoginContainer extends PureComponent {
         this.state = {
             // loginname: this.props.loginname != undefined || this.props.loginname != null ? this.props.loginname : '',
             // pwd: this.props.pwd != undefined || this.props.pwd != null ? this.props.pwd : '',
-            loginname: '',
-            pwd: '',
+            loginname: '0935802290',
+            pwd: '123456',
             showpassword: 1,
             onFocusu: false,
             onFocusp: false,
