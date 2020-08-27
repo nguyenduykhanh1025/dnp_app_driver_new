@@ -1,0 +1,64 @@
+$widths: (10, 20, 30, 40, 50, 60, 70, 80, 90, 100);
+
+@each $width in $widths {
+  .w-#{$width} {
+    width: percentage($width / 100);
+  }
+}
+
+$margins: (0, 5, 10, 20);
+$sides: ("top", "right", "bottom", "left");
+@mixin margin-class($side, $number) {
+  $firstLetter: str-slice($side, 0, 1);
+  .m#{$firstLetter}-#{$number} {
+    margin-#{$side}: #{$number}px;
+  }
+}
+
+$fontweights: (100, 200, 300, 400, 500, 600, 700, 800, 900);
+@mixin fontweight-class($number) {
+  .fw-#{$number} {
+    font-weight: #{$number};
+  }
+}
+
+$colors: ("red", "green", "blue", "grey", "white", "black");
+@mixin textcolor-class($color) {
+  .text-#{color} {
+    color: #{$color};
+  }
+}
+
+@mixin generate() {
+  @each $margin in $margins {
+    @each $side in $sides {
+      @include margin-class($side, $margin);
+    }
+  }
+  @each $weight in $fontweights {
+    @include fontweight-class($weight);
+  }
+}
+
+@mixin border-dotted {
+  border-color: #ccc;
+  border-width: 0 1px 1px 0;
+  border-style: dotted;
+}
+
+@mixin btn-collapse-col {
+  border: 1px solid #cccccc;
+  font-size: 0.5em;
+  background: #cccccc;
+  opacity: 0.6;
+  height: 50px;
+  line-height: 50px;
+  position: absolute;
+  top: 40%;
+  right: 0;
+  z-index: 1406;
+  &:hover {
+    opacity: 1;
+  }
+}
+@include generate();
