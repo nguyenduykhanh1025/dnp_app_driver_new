@@ -32,7 +32,7 @@ spring:
 #        username: EPORT_TEST
 #        password: WINNER
     profiles:
-        active: test
+        active: uat
     redis:
         enabled: true
         database: 0

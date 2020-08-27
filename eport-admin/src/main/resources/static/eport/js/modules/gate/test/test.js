@@ -58,27 +58,37 @@ function onError(error) {
 }
 
 function loadYardPosition() {
-  $.ajax({
-    cache: true,
-    type: "GET",
-    url: PREFIX + "/blNo/" + $("#blNo").val() + "/yardPosition",
-    async: false,
-    error: function (request) {
-      $.modal.closeLoading();
-      $.modal.alertError("System error");
-    },
-    success: function (result) {
-      $.modal.closeLoading();
-      if (result.code == web_status.SUCCESS) {
-        $.modal.msgSuccess("Thành công!");
-        showYardPosition(result.bayList);
-      } else if (result.code == web_status.WARNING) {
-        $.modal.msgWarning(result.msg);
-      } else {
-        $.modal.msgError(result.msg);
-      }
-    },
-  });
+  let url = '';
+  if ($("#blNo").val()) {
+    url = PREFIX + "/blNo/" + $("#blNo").val() + "/yardPosition";
+  } else if ($("#refNo").val()) {
+    url = PREFIX + "/jobOrder/" + $("#refNo").val() + "/yardPosition";
+  }
+  if (url) {
+    $.ajax({
+      cache: true,
+      type: "GET",
+      url: url,
+      async: false,
+      error: function (request) {
+        $.modal.closeLoading();
+        $.modal.alertError("System error");
+      },
+      success: function (result) {
+        $.modal.closeLoading();
+        if (result.code == web_status.SUCCESS) {
+          $.modal.msgSuccess("Thành công!");
+          showYardPosition(result.bayList);
+        } else if (result.code == web_status.WARNING) {
+          $.modal.msgWarning(result.msg);
+        } else {
+          $.modal.msgError(result.msg);
+        }
+      },
+    });
+  } else {
+    $.modal.alertWarning("Bạn chưa nhập thông tin.");
+  }
 }
 
 function gateIn() {
@@ -191,7 +201,7 @@ function checkIn() {
     chassisNo: $("#chassisNo").val(),
     containerNo1: $("#containerSend1").val(),
     containerNo2: $("#containerSend2").val(),
-    w
+    wgt : $("#wgt").val()
   };
   $.modal.loading("Đang xử lý...");
   $.ajax({

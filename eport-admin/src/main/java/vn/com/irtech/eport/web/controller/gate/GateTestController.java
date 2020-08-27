@@ -224,14 +224,19 @@ public class GateTestController extends BaseController {
 			shipment2.setBlNo("test");
 			shipment2.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
 			shipment2.setEdoFlg("0");
-			shipmentService.insertShipment(shipment2);
+			
 			Long contId1 = 0L;
 			Long contId2 = 0L;
 			
 			logger.debug("Get container list by B/L No ");
 			List<ShipmentDetail> shipmentDetails = catosApiService.selectShipmentDetailsByBLNo(gateInTestDataReq.getBlNo());
+			shipment2.setBlNo(gateInTestDataReq.getBlNo());
+			shipment2.setContainerAmount(Long.valueOf(shipmentDetails.size()));
+			shipmentService.insertShipment(shipment2);
 			logger.debug("List container: " + new Gson().toJson(shipmentDetails));
 			for (ShipmentDetail shipmentDetail1 : shipmentDetails) {
+				shipmentDetail1.setContainerStatus("");
+				shipmentDetail1.setOpeCode(shipmentDetail1.getOpeCode().substring(0, 3));
 				ShipmentDetail shipmentDetail2 = new ShipmentDetail();
 				BeanUtils.copyBeanProp(shipmentDetail2, shipmentDetail1);
 				shipmentDetail2.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
@@ -347,16 +352,28 @@ public class GateTestController extends BaseController {
 				}
 			}
 		}
-		
-		
 		return success();
 	}
 	
 	@GetMapping("/blNo/{blNo}/yardPosition")
 	@ResponseBody
-	public AjaxResult getYardPosition(@PathVariable String blNo) {
+	public AjaxResult getYardPositionByBlNo(@PathVariable String blNo) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainers(blNo);
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			List<ShipmentDetail> coordinates = new ArrayList<>(shipmentDetails);
+			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(coordinates, shipmentDetails);
+			ajaxResult.put("bayList", bay);
+			return ajaxResult;
+		}
+		return AjaxResult.warn("Không tìm thấy tọa độ.");
+	}
+	
+	@GetMapping("/jobOrder/{jobOrder}/yardPosition")
+	@ResponseBody
+	public AjaxResult getYardPositionByJobOrder(@PathVariable("jobOrder") String jobOrder) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainersByJobOrderNo(jobOrder);
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			List<ShipmentDetail> coordinates = new ArrayList<>(shipmentDetails);
 			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(coordinates, shipmentDetails);
