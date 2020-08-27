@@ -769,7 +769,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         fetch next 1 rows only
     </select>
 
-    <select id="selectEdoListByBlNo"  parameterType="String" resultType="ShipmentDetailResult">
+    <select id="selectEdoListByBlNo"  parameterType="String" resultMap="ShipmentDetailResult">
         select container_number as container_no, expired_dem, det_free_time, empty_container_depot as empty_depot, carrier_code as ope_code,
         concat(vessel_no, concat(': ', vessel)) as vsl_nm, vessel as vsl_name, voy_no as voy_carrier, sztp, pol as loading_port, pod as discharge_port,
         tax_code, consignee_by_tax_code
@@ -777,7 +777,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where bill_of_lading = #{blNo} and house_bill_id is null 
     </select>
 
-    <select id="selectHouseBillForShipment" parameterType="String" resultType="ShipmentDetailResult">
+    <select id="selectHouseBillForShipment" parameterType="String" resultMap="ShipmentDetailResult">
         select e.container_number as container_no, d.expired_dem, d.det_free_time, d.empty_container_depot as empty_depot, 
         d.carrier_code as ope_code, concat(d.vessel_no, concat(': ', d.vessel)) as vsl_nm, d.vessel as vsl_name, d.voy_no as voy_carrier,
         d.sztp, d.pol as loading_port, d.pod as discharge_port, e.consignee2_tax_code as tax_code, e.consignee2 as consignee_by_tax_code,
