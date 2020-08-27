@@ -24,9 +24,9 @@ var toolbar = [
 $(".main-body").layout();
 
 loadTable("#dg-right", rightHeight - 30);
-loadTable("#dg-left", leftHeight - 135);
-loadTable("#dg-right-tab1", rightHeight / 2 - 5);
-loadTable("#dg-right-tab2", rightHeight / 2 - 5);
+loadTable("#dg-left", leftHeight - 90);
+loadTable("#dg-right-tab1", rightHeight / 2);
+loadTable("#dg-right-tab2", rightHeight / 2);
 $(".collapse").click(function () {
     $(".main-body__search-wrapper").height(15);
     $(".main-body__search-wrapper--container").hide();
@@ -46,6 +46,15 @@ $(".left-side__collapse").click(function() {
 })
 $(".right-side__collapse").click(function() {
   $('#right-layout').layout('collapse','south');
+  loadTable("#dg-right", rightHeight + 50);
+})
+
+$('#right-layout').layout({
+  onExpand: function(region){
+      if (region == "south") {
+        loadTable("#dg-right", rightHeight - 30);
+      }
+  }
 })
 
 function loadTable(div, height) {

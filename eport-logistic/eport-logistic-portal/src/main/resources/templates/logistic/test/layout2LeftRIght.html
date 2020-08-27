@@ -14,7 +14,7 @@
         <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
         <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
           <div class="flex__left w-20 text-uppercase">
-            <h2 class="mt-10 fw-400">Tiêu đề cho panel</h2>
+            <h3 class="mt-10">Tiêu đề cho panel</h3>
           </div>
           <div class="flex__right w-80 justify-content-around align-items-center d-flex">
             <form id="ff" method="post">
@@ -138,8 +138,8 @@
     
     <th:block th:include="include :: footer" />
     <script>
-      $(".main-body").height($(document).innerHeight() - 10);
-      $(".easyui-layout").height($(document).innerHeight() - 100);
+      $(".main-body").height($(document).height() - 10);
+      $(".easyui-layout").height($('.main-body').height() - 50);
     </script>
     <th:block th:include="include :: easyui-js" />
     <script th:src="@{/js/logistic/test/layout2.js}"></script>

@@ -15,17 +15,17 @@
         <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
         <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
             <div class="flex__left w-20 text-uppercase">
-              <h2 class="mt-10 fw-400">Tiêu đề cho panel</h2>
+              <h3 class="mt-10">Tiêu đề cho panel</h3>
             </div>
             <div class="flex__right w-80 justify-content-around align-items-center d-flex">
               <form id="ff" method="post">
-                <div class="form-inline">
+                <div class="d-inline">
                   <input class="easyui-textbox" name="name" placeholder="Name" data-options="prompt: 'Name' " />
                 </div>
-                <div class="form-inline">
+                <div class="d-inline">
                   <input class="easyui-textbox" name="email" data-options="prompt:'Email:',validType:'email'" />
                 </div>
-                <div class="form-inline">
+                <div class="d-inline">
                   <select class="easyui-combobox" name="language" prompt="Language:" style="width: max-content;"
                     ><option value="ar">Arabic</option
                     ><option value="bg">Bulgarian</option
@@ -67,7 +67,7 @@
                     ><option value="vi">Vietnamese</option></select
                   >
                 </div>
-                <div class="form-inline">
+                <div class="d-inline">
                   <input class="easyui-textbox" name="subject" data-options="prompt:'Subject:'" />
                 </div>
               </form>
@@ -153,12 +153,12 @@
 
     <th:block th:include="include :: footer" />
     <script>
-      $(".main-body").height($(document).innerHeight() - 10);
-      $(".easyui-layout").height($(document).innerHeight() - 100);
+      $(".main-body").height($(document).height() - 10);
+      $(".easyui-layout").height($('.main-body').height() - 60);
     </script>
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: handsontable-js" />
-    <script th:src="@{/js/logistic/test/layout2-handsond.js?v=123345123}"></script>
+    <script th:src="@{/js/logistic/test/layout2-handsond.js?v=3}"></script>
   </body>
 </html>
 
