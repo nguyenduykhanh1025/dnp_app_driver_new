@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.framework.web.service;
+package vn.com.irtech.eport.logistic.listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,13 +23,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
-import vn.com.irtech.eport.common.exception.BusinessException;
-import vn.com.irtech.eport.framework.mqtt.listener.RobotResponseHandler;
-import vn.com.irtech.eport.framework.mqtt.listener.RobotUpdateStatusHandler;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
-import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.system.domain.SysRobot;
@@ -61,16 +56,16 @@ public class MqttService implements MqttCallback {
 	private String password;
 
 	@Autowired
-	private RobotUpdateStatusHandler robotUpdateStatusHandler;
-
-	@Autowired
-	private RobotResponseHandler robotResponseHandler;
-
-	@Autowired
 	private ISysRobotService robotService;
 
 	@Autowired
 	private IProcessOrderService processOrderService;
+	
+	// Handlers
+	@Autowired
+	private RobotResponseHandler robotResponseHandler;
+	@Autowired
+	private RobotUpdateStatusHandler robotUpdateStatusHandler; 
 
 	private Boolean isReconnecting = false;
 
@@ -156,9 +151,9 @@ public class MqttService implements MqttCallback {
 	private void subscribeToTopics() throws MqttException {
 		List<IMqttToken> tokens = new ArrayList<>();
 		// subscribe default topics when connect
-		System.out.println("Subscribe to topic: " + BASE);
+		logger.debug("Subsribe Topic: " + BASE);
 		tokens.add(mqttClient.subscribe(BASE, 0, robotUpdateStatusHandler));
-		System.out.println("Subscribe to topic: " + RESPONSE_TOPIC);
+		logger.debug("Subsribe Topic: " + RESPONSE_TOPIC);
 		tokens.add(mqttClient.subscribe(RESPONSE_TOPIC, 0, robotResponseHandler));
 		// Wait for subscribe complete
 		for (IMqttToken token : tokens) {
@@ -184,14 +179,15 @@ public class MqttService implements MqttCallback {
 		return new MqttAsyncClient(host, this.getComputerName(), new MemoryPersistence());
 	}
 
-	public String getComputerName() {
+	private String getComputerName() {
 		Map<String, String> env = System.getenv();
-		if (env.containsKey("COMPUTERNAME"))
+		if (env.containsKey("COMPUTERNAME")) {
 			return "Logistic-" + env.get("COMPUTERNAME");
-		else if (env.containsKey("HOSTNAME"))
+		}
+		if (env.containsKey("HOSTNAME")) {
 			return "Logistic-" + env.get("HOSTNAME");
-		else
-			return "Logistic-Unknown Computer";
+		}
+		return "Logistic-" + System.currentTimeMillis();
 	}
 
 	@Override
@@ -205,21 +201,19 @@ public class MqttService implements MqttCallback {
 				}
 				return;
 			} catch (MqttException e) {
-				e.printStackTrace();
-				logger.warn(e.getMessage());
+				logger.error("Error while reconnect MQ", e);
 			}
 			try {
 				Thread.sleep(3000); // wait 3s before reconnect
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-				logger.warn(e.getMessage());
 			}
 		}
 	}
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-		logger.info("Message arrived: " + topic + "," + message.getPayload().toString());
+		logger.info("Logistic Message arrived: " + topic + "," + message.getPayload().toString());
 	}
 
 	@Override
@@ -239,7 +233,7 @@ public class MqttService implements MqttCallback {
 	}
 
 	public void publish(String topic, MqttMessage msg) throws MqttException {
-		logger.info("Send topic: " + topic);
+		logger.debug("Send message to MQ, topic: " + topic);
 		try {
 			mqttClient.publish(topic, msg, null, new IMqttActionListener() {
 				@Override
@@ -251,13 +245,21 @@ public class MqttService implements MqttCallback {
 				}
 			});
 		} catch (MqttException e) {
-			logger.warn(e.getMessage());
+			logger.error("Error while publish message to MQ", e);
 			throw e;
 		}
 	}
 
 	public enum EServiceRobot {
-		RECEIVE_CONT_FULL, RECEIVE_CONT_EMPTY, SEND_CONT_FULL, SEND_CONT_EMPTY, SHIFTING_CONT, CHANGE_VESSEL, CREATE_BOOKING, EXTENSION_DATE, GATE_IN
+		RECEIVE_CONT_FULL, // Boc hang
+		RECEIVE_CONT_EMPTY, // Boc rong
+		SEND_CONT_FULL, // Ha hang
+		SEND_CONT_EMPTY, // Ha rong
+		SHIFTING_CONT, // Dich chuyen
+		CHANGE_VESSEL, // Doi tau chuyen
+		CREATE_BOOKING, // Tao booking
+		EXTENSION_DATE, // Gia han lenh
+		GATE_IN // Gate in
 	}
 
 	@Transactional
@@ -341,7 +343,10 @@ public class MqttService implements MqttCallback {
 	}
 
 	public enum NotificationCode {
-		NOTIFICATION_OM, NOTIFICATION_OM_CUSTOM, NOTIFICATION_IT, NOTIFICATION_CONT
+		NOTIFICATION_OM, // OM ho tro
+		NOTIFICATION_OM_CUSTOM, // OM ho tro khach hang
+		NOTIFICATION_IT, 	// IT ho tro robot
+		NOTIFICATION_CONT	// Notify boc cont
 	}
 
 	/**

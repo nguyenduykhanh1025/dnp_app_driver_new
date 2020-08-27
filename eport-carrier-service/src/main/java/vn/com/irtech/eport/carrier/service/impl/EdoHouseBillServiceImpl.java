@@ -1,22 +1,19 @@
-package vn.com.irtech.eport.logistic.service.impl;
+package vn.com.irtech.eport.carrier.service.impl;
 
 import java.util.List;
 
-import vn.com.irtech.eport.carrier.domain.Edo;
-import vn.com.irtech.eport.carrier.dto.HouseBillRes;
-import vn.com.irtech.eport.carrier.dto.HouseBillSearchReq;
-import vn.com.irtech.eport.carrier.dto.SeparateHouseBillReq;
-import vn.com.irtech.eport.carrier.mapper.EdoMapper;
-import vn.com.irtech.eport.carrier.service.IEdoService;
-import vn.com.irtech.eport.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vn.com.irtech.eport.logistic.domain.LogisticAccount;
-import vn.com.irtech.eport.logistic.domain.Shipment;
-import vn.com.irtech.eport.logistic.mapper.EdoHouseBillMapper;
-import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
-import vn.com.irtech.eport.logistic.service.IEdoHouseBillService;
+
+import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
+import vn.com.irtech.eport.carrier.dto.HouseBillRes;
+import vn.com.irtech.eport.carrier.dto.HouseBillSearchReq;
+import vn.com.irtech.eport.carrier.mapper.EdoHouseBillMapper;
+import vn.com.irtech.eport.carrier.mapper.EdoMapper;
+import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.DateUtils;
 
 /**
  * Master BillService Business Processing
@@ -136,15 +133,15 @@ public class EdoHouseBillServiceImpl implements IEdoHouseBillService
      * @return
      */
     @Override
-    public int insertListEdoHouseBill(List<Edo> edos, String houseBill, String consignee2, String taxCode, String orderNumber, LogisticAccount user) {
+    public int insertListEdoHouseBill(List<Edo> edos, String houseBill, String consignee2, String taxCode, String orderNumber, Long logisticGroupId, Long logisticAccountId, String creator) {
         if (edos == null){
             return 0;
         }
 
         for (Edo edo : edos){
             EdoHouseBill edoHouseBill = new EdoHouseBill();
-            edoHouseBill.setLogisticGroupId(user.getGroupId());
-            edoHouseBill.setLogisticAccountId(user.getId());
+            edoHouseBill.setLogisticGroupId(logisticGroupId);
+            edoHouseBill.setLogisticAccountId(logisticAccountId);
             edoHouseBill.setEdoId(edo.getId());
             edoHouseBill.setBillOfLading(edo.getBillOfLading());
             edoHouseBill.setOrderNumber(orderNumber);
@@ -157,7 +154,7 @@ public class EdoHouseBillServiceImpl implements IEdoHouseBillService
             edoHouseBill.setSztp(edo.getSztp());
             edoHouseBill.setVessel(edo.getVessel());
             edoHouseBill.setVoyNo(edo.getVoyNo());
-            edoHouseBill.setCreateBy(user.getUserName());
+            edoHouseBill.setCreateBy(creator);
             edoHouseBill.setCarrierCode(edo.getCarrierCode());
 
             edoHouseBillMapper.insertEdoHouseBill(edoHouseBill);
@@ -170,7 +167,7 @@ public class EdoHouseBillServiceImpl implements IEdoHouseBillService
            
             Edo edoUpdate = new Edo();
             edoUpdate.setId(edo.getId());
-            edoUpdate.setUpdateBy(user.getUserName());
+            edoUpdate.setUpdateBy(creator);
             edoUpdate.setHouseBillId(edoHouseBill.getId());
             edoMapper.updateEdo(edoUpdate);
         }

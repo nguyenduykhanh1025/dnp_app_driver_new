@@ -81,6 +81,11 @@
 		</dependency>
 
         <dependency>
+            <groupId>vn.com.irtech.eport</groupId>
+            <artifactId>eport-carrier-service</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-ehcache</artifactId>
             <version>${shiro.version}</version>
