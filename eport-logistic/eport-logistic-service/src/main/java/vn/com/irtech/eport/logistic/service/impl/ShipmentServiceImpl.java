@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.ShipmentForm;
 import vn.com.irtech.eport.logistic.mapper.ShipmentMapper;
 import vn.com.irtech.eport.logistic.service.IShipmentService;

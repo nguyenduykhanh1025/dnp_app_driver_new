@@ -9,6 +9,7 @@ import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
+import vn.com.irtech.eport.logistic.form.ShipmentForm;
 
 /**
  * Shipment DetailsService Interface
@@ -213,4 +214,20 @@ public interface IShipmentDetailService
      * @return String
      */
     public String selectConsigneeTaxCodeByShipmentId(Long shipmentId);
+   
+	/**
+	 * Get Shipment detail from house bill
+	 * 
+	 * @param houseBill
+	 * @return List<ShipmentDetail>
+	 */
+	public List<ShipmentDetail> getShipmentDetailFromHouseBill(String houseBill);
+	
+	/**
+	 * Get shipment detail from edi by blNo
+	 * 
+	 * @param blNo
+	 * @return List<ShipmentDetail>
+	 */
+	public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo);
 }
