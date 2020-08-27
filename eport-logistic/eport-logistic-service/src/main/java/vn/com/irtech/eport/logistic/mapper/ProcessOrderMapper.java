@@ -109,4 +109,6 @@ public interface ProcessOrderMapper
     public List<ProcessOrder> selectOrdersByShipmentId(ProcessOrder processOrder);
 
     public List<ProcessOrder> selectProcessOrderListWithLogisticName(ProcessOrder processOrder);
+
+    public List<String> selectProcessOrderOnlyLogisticName(ProcessOrder processOrder);
 }

@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -48,7 +51,10 @@ public class SupportController extends BaseController{
     @GetMapping("/receiveFull")
     public String getViewSupportReceiveFull(ModelMap mmap)
     {
-        LogisticGroup logisticGroup = new LogisticGroup();
+		// ProcessOrder processOrder = new ProcessOrder();
+	    // List<String> logisticsGroups = processOrderService.selectProcessOrderOnlyLogisticName(processOrder);
+		// mmap.put("logisticsGroups", logisticsGroups);
+		LogisticGroup logisticGroup = new LogisticGroup();
 	    logisticGroup.setGroupName("Chọn đơn vị Logistics");
 	    logisticGroup.setId(0L);
 	    LogisticGroup logisticGroupParam = new LogisticGroup();
@@ -85,7 +91,8 @@ public class SupportController extends BaseController{
         TableDataInfo dataList = getDataTable(shipmentDetails);
 		return dataList;
     }
-    
+	
+	@Log(title = "Đồng bộ trạng thái Hải Quan", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/customStatus")
 	@ResponseBody
 	public AjaxResult updateCustomStatus(String processOrderId) {
@@ -130,6 +137,7 @@ public class SupportController extends BaseController{
         return PREFIX + "/receiveDo";
     }
 
+	@Log(title = "Đồng bộ trạng thái nộp DO gốc", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/doStatus")
 	@ResponseBody
 	public AjaxResult updateDoStatus(String processOrderId) {
@@ -138,6 +146,20 @@ public class SupportController extends BaseController{
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
 				shipmentDetail.setDoReceivedTime(new Date());
 				shipmentDetail.setDoStatus("Y");
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+		}
+		return success();
+	}
+
+	@Log(title = "Đồng bộ trạng thái Container", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
+    @PostMapping("/containerStatus")
+	@ResponseBody
+	public AjaxResult updateContainerStatus(String processOrderId) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderId);
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			    shipmentDetail.setContainerStatus(catosService.checkContainerStatus(shipmentDetail));
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
 		}
