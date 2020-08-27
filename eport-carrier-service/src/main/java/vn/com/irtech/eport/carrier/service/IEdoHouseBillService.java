@@ -1,13 +1,11 @@
-package vn.com.irtech.eport.logistic.service;
+package vn.com.irtech.eport.carrier.service;
 
 import java.util.List;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
 import vn.com.irtech.eport.carrier.dto.HouseBillRes;
 import vn.com.irtech.eport.carrier.dto.HouseBillSearchReq;
-import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
-import vn.com.irtech.eport.logistic.domain.LogisticAccount;
-import vn.com.irtech.eport.logistic.domain.Shipment;
 
 /**
  * Master BillService Interface
@@ -87,7 +85,7 @@ public interface IEdoHouseBillService
      * @param user
      * @return
      */
-    public int insertListEdoHouseBill(List<Edo> edos, String houseBill, String consignee2, String taxCode, String orderNumber, LogisticAccount user);
+    public int insertListEdoHouseBill(List<Edo> edos, String houseBill, String consignee2, String taxCode, String orderNumber, Long logisticGroupId, Long logisticAccountId, String creator);
 
     /**
      * select list house bill response
