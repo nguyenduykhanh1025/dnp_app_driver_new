@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="vn.com.irtech.eport.system.mapper.SysEdiHistoryMapper">
     
-    <resultMap type="SysEdiHistory" id="SysEdiHistoryResult">
+    <!-- <resultMap type="SysEdiHistory" id="SysEdiHistoryResult">
         <result property="ediId"    column="edi_id"    />
         <result property="validtoDay"    column="validto_day"    />
         <result property="emptycontDepot"    column="emptycont_depot"    />
@@ -73,6 +73,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <foreach item="ediId" collection="array" open="(" separator="," close=")">
             #{ediId}
         </foreach>
-    </delete>
+    </delete> -->
     
 </mapper>
