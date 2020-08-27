@@ -30,9 +30,11 @@ import {
     callApi
 } from '@/requests';
 import Geolocation from '@react-native-community/geolocation';
+import firebase from 'react-native-firebase';
 
 const splash_bg = require('@/assets/images/splash-bg.png');
 const logo = require('@/assets/images/logo.png');
+
 
 class ProfileScreen extends Component {
     constructor(props) {
@@ -43,12 +45,14 @@ class ProfileScreen extends Component {
     };
 
     onLogin = async (loginname, pwd) => {
+        const fcmToken = await firebase.messaging().getToken();
+        console.log('splash.fcmtoken', fcmToken)
         const params = {
             api: 'login',
             param: {
                 userName: loginname,
                 passWord: pwd,
-                deviceToken: 'sss'
+                deviceToken: fcmToken
             },
             token: '',
             method: 'POST'

@@ -148,12 +148,12 @@ export default class DetailScreen extends Component {
     <Item
       data={item.item}
       onPress={() => {
-        this.DownEnable == '1' || this.upEnable == '1' && item.item.sztp.slice(0, 2) != '20' ?
+        this.DownEnable == '1' || this.upEnable == '1' && item.item.sztp.slice(0, 1) != '2' ?
           Alert.alert('Thông báo !', 'Không thể chọn.')
           :
           NavigationService.navigate(mainStack.detail2, { data: item.item })
       }}
-      disabled={item.item.clickable ? true : false}
+      disabled={!item.item.clickable ? true : false}
     />
   )
 
@@ -191,7 +191,7 @@ export default class DetailScreen extends Component {
               styles.TitleLine,
               { marginTop: hs(25) }
             ]}>
-              Cont chỉ định
+              Container chỉ định
           </Text>
             {/*
             ---------------------------------------------------- 

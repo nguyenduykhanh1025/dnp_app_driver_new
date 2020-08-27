@@ -28,7 +28,24 @@ export default class ListScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
+      data: [
+        // {
+        //   "notificationType": "RM",
+        //   "seenFlg": true,
+        //   "title": "sdfsd",
+        //   "content": "sdfsd",
+        //   "notifyLink": "dsfsdf",
+        //   "createTime": '2020-08-24T15:27:08'
+        // },
+        // {
+        //   "notificationType": "LM",
+        //   "seenFlg": false,
+        //   "title": "sdfsd",
+        //   "content": "sdfsd",
+        //   "notifyLink": "dsfsdf",
+        //   "createTime": '2020-08-24T15:27:08'
+        // },
+      ],
       visible: false,
       refreshing: false,
     }
@@ -49,11 +66,11 @@ export default class ListScreen extends Component {
       api: 'notify',
       param: '',
       token: this.token,
-      method: 'POST'
+      method: 'GET'
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('resultonGetNotificationList', result)
+    console.log('resultonGetNotificationList', result)
     if (result.code == 0) {
       await this.setState({
         data: result.notificationList,

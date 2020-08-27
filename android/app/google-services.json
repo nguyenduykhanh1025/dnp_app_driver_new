@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "693797084864",
-    "firebase_url": "https://dnp-driver.firebaseio.com",
-    "project_id": "dnp-driver",
-    "storage_bucket": "dnp-driver.appspot.com"
+    "project_number": "202345796819",
+    "firebase_url": "https://eport-89c50.firebaseio.com",
+    "project_id": "eport-89c50",
+    "storage_bucket": "eport-89c50.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:693797084864:android:c809ee4214cf0f7d399725",
+        "mobilesdk_app_id": "1:202345796819:android:dab08dfb0001dc39087026",
         "android_client_info": {
           "package_name": "vn.com.irtech.mobile.eport.driver"
         }
       },
       "oauth_client": [
         {
-          "client_id": "693797084864-he8f85sk29blu1brp7fve9d9b7h1eaci.apps.googleusercontent.com",
+          "client_id": "202345796819-tiavn49u5ftiiel7plj4igpc7avvb01s.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDMqKFll6-y9sQm4y3Yqq9lO34YzyP9HFo"
+          "current_key": "AIzaSyAE-ggXw2Wepsu4IwDYaQ8WeD5cwvEH5go"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "693797084864-he8f85sk29blu1brp7fve9d9b7h1eaci.apps.googleusercontent.com",
+              "client_id": "202345796819-tiavn49u5ftiiel7plj4igpc7avvb01s.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

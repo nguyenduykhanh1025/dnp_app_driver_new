@@ -151,7 +151,7 @@ export default class ResultScreen extends Component {
                         color: Colors.white,
                         fontWeight: 'bold',
                         marginTop: hs(31)
-                      }}>Bốc công hàng từ Cảng</Text>
+                      }}>Bốc container hàng từ Cảng</Text>
                     <View style={styles.frame1}>
                       <Text style={styles.txtLabel}>Cont</Text>
                       <Text style={styles.txtValue}>{this.state.contNo}</Text>
