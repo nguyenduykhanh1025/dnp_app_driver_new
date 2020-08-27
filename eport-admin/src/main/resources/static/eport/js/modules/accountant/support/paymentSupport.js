@@ -5,7 +5,6 @@ $(document).ready(function () {
         singleSelect: true,
         loadMsg: " Đang xử lý...",
         loader: function (param, success, error) {
-            console.log("processBills", processBills)
             success(processBills);
         },
     });

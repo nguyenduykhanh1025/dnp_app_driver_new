@@ -32,9 +32,9 @@ spring:
 #        username: EPORT_TEST
 #        password: WINNER
     profiles:
-        active: uat #test
+        active: test
     redis:
-        enabled: false #true
+        enabled: true
         database: 0
         password: 
         host: 127.0.0.1
@@ -63,6 +63,6 @@ logging:
     org.springframework: warn
     
 mqtt:
-  username: admin             
-  password: public            
-  host-url: tcp://113.176.195.221:1883    #tcp://127.0.0.1:1883              # The address and port of your own server need to be changed
+  username: admin2
+  password: public
+  host-url: tcp://127.0.0.1:1883       #tcp://113.176.195.221:1883                      # The address and port of your own server need to be changed
