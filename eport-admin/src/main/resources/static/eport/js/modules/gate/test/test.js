@@ -10,6 +10,8 @@ $(".left-side__collapse").click(function () {
   }, 200);
 });
 
+connectToWebsocketServer();
+
 function connectToWebsocketServer() {
   // Connect to WebSocket Server.
   $.websocket.connect({}, onConnected, onError);
