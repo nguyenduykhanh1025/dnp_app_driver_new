@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.web.controller.AdminBaseController;
+import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.enums.BusinessType;
+import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.PaymentHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessBill;
@@ -100,6 +103,7 @@ public class accountantSupportController extends AdminBaseController{
 		return PREFIX + "/paymentSupport";
     }
     
+    @Log(title = "Cập nhật trạng thái thanh toán", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @GetMapping("/payment")
     @Transactional
     @ResponseBody

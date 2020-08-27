@@ -178,4 +178,9 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
     {
         return processOrderMapper.selectProcessOrderListWithLogisticName(processOrder);
     }
+
+    public List<String> selectProcessOrderOnlyLogisticName(ProcessOrder processOrder) 
+    {
+        return processOrderMapper.selectProcessOrderOnlyLogisticName(processOrder);
+    }
 }

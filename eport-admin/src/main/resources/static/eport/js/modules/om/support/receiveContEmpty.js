@@ -138,6 +138,7 @@ function getSelectedRow() {
   if (row) {
     shipmentDetails.processOrderId = row.id;
     $('#checkCustomStatusByProcessOrderId').attr("disabled", false);
+    $('#checkProcessStatusByProcessOrderId').attr("disabled", false);
     loadTableByContainer(shipmentDetails);
   }
 }
@@ -195,7 +196,6 @@ function checkCustomStatusByProcessOrderId(processOrderId) {
   if (processOrderId == null || processOrder == undefined) {
     $.modal.alertWarning("Bạn chưa chọn lệnh <br> Vui lòng kiểm tra dữ liệu.");
   }
-  console.log("checkCustomStatusByProcessOrderId -> processOrderId", processOrderId)
   layer.confirm("Xác nhận đồng bộ dữ liệu thông quan với <br>catos.", {
     icon: 3,
     title: "Xác Nhận",
@@ -205,6 +205,42 @@ function checkCustomStatusByProcessOrderId(processOrderId) {
     $.modal.loading("Đang xử lý...");
     $.ajax({
       url: PREFIX + "/customStatus",
+      method: "POST",
+      data: {
+        processOrderId: processOrderId
+      },
+      success: function (data) {
+        $.modal.closeLoading();
+        if (data.code == 0) {
+          $.modal.alertSuccess("Đồng bộ dữ liệu thành công.");
+        } else {
+          $.modal.alertWarning("Đồng bộ dữ liệu thất bại.");
+        }
+      },
+      error: function (data) {
+        $.modal.alertWarning("Đồng bộ dữ liệu thất bại.");
+        $.modal.closeLoading();
+      }
+    });
+  }, function () {
+    // DO NOTHING
+  });
+}
+
+function checkProcessStatusByProcessOrderId(processOrderId) {
+  processOrderId = shipmentDetails.processOrderId;
+  if (processOrderId == null || processOrder == undefined) {
+    $.modal.alertWarning("Bạn chưa chọn lệnh <br> Vui lòng kiểm tra dữ liệu.");
+  }
+  layer.confirm("Xác nhận đồng bộ trạng thái container với <br>catos.", {
+    icon: 3,
+    title: "Xác Nhận",
+    btn: ['Đồng Ý', 'Hủy Bỏ']
+  }, function () {
+    layer.close(layer.index);
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+      url: PREFIX + "/containerStatus",
       method: "POST",
       data: {
         processOrderId: processOrderId

@@ -129,6 +129,38 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         order by update_time asc
     </select>
+
+    <select id="selectProcessOrderOnlyLogisticName" parameterType="ProcessOrder" resultType="String">
+        select distinct (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logistic_name from process_order s
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="serviceType != null "> and service_type = #{serviceType}</if>
+            <if test="invoiceNo != null  and invoiceNo != ''"> and invoice_no = #{invoiceNo}</if>
+            <if test="payType != null  and payType != ''"> and pay_type = #{payType}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="modee != null  and modee != ''"> and modee = #{modee}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="truckCo != null  and truckCo != ''"> and truck_co = #{truckCo}</if>
+            <if test="taxCode != null  and taxCode != ''"> and tax_code = #{taxCode}</if>
+            <if test="blNo != null  and blNo != ''"> and bl_no = #{blNo}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="pickupDate != null "> and pickup_date = #{pickupDate}</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="voyage != null  and voyage != ''"> and voyage = #{voyage}</if>
+            <if test="beforeAfter != null  and beforeAfter != ''"> and before_after = #{beforeAfter}</if>
+            <if test="year != null  and year != ''"> and year = #{year}</if>
+            <if test="contNumber != null "> and cont_number = #{contNumber}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="result != null  and result != ''"> and result = #{result}</if>
+            <if test="data != null  and data != ''"> and data = #{data}</if>
+            <if test="robotUuid != null  and robotUuid != ''"> and robot_uuid = #{robotUuid}</if>
+            <if test="ssrCode != null  and ssrCode != ''"> and ssr_code = #{ssrCode}</if>
+            <if test="sysUserId != null"> and sys_user_id = #{sysUserId}</if>
+            <if test="postProcessId != null"> and post_process_id = #{postProcessId}</if>
+            <if test="runnable != null"> and runnable = #{runnable}</if>
+        </where>
+    </select>
     
     <select id="selectProcessOrderById" parameterType="Long" resultMap="ProcessOrderResult">
         <include refid="selectProcessOrderVo"/>

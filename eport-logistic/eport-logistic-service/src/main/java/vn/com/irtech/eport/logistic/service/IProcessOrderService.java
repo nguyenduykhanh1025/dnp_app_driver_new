@@ -119,4 +119,6 @@ public interface IProcessOrderService
 
     public List<ProcessOrder> selectProcessOrderListWithLogisticName(ProcessOrder processOrder);
     
+    public List<String> selectProcessOrderOnlyLogisticName(ProcessOrder processOrder);
+    
 }

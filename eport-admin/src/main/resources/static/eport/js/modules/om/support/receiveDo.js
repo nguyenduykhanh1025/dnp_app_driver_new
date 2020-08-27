@@ -194,7 +194,6 @@ function checkCustomStatusByProcessOrderId(processOrderId) {
   if (processOrderId == null || processOrder == undefined) {
     $.modal.alertWarning("Bạn chưa chọn lệnh <br> Vui lòng kiểm tra dữ liệu.");
   }
-  console.log("checkCustomStatusByProcessOrderId -> processOrderId", processOrderId)
   layer.confirm("Xác nhận đồng bộ dữ liệu thông quan với <br>catos.", {
     icon: 3,
     title: "Xác Nhận",
