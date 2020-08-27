@@ -1,13 +1,12 @@
-package vn.com.irtech.eport.logistic.mapper;
+package vn.com.irtech.eport.carrier.mapper;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
 import vn.com.irtech.eport.carrier.dto.HouseBillRes;
 import vn.com.irtech.eport.carrier.dto.HouseBillSearchReq;
-import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
-import vn.com.irtech.eport.logistic.domain.Shipment;
 
 /**
  * Master BillMapper Interface

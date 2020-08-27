@@ -23,21 +23,17 @@ import org.springframework.web.client.RestTemplate;
 
 import com.google.gson.Gson;
 
-import vn.com.irtech.eport.carrier.domain.Edo;
-import vn.com.irtech.eport.carrier.mapper.EdoMapper;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
-import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
-import vn.com.irtech.eport.logistic.mapper.EdoHouseBillMapper;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -59,12 +55,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	
     @Autowired
     private ShipmentDetailMapper shipmentDetailMapper;
-
-    @Autowired
-    private EdoMapper edoMapper;
-    
-    @Autowired
-    private EdoHouseBillMapper edoHouseBillMapper;
 
     @Autowired
     private IProcessOrderService processOrderService;
@@ -800,59 +790,59 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         return shipmentDetailMapper.selectShipmentDetailByProcessIds(Convert.toStrArray(processOrderIds));
     }
 
-    @Override
-    public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo) {
-        List<Edo> listEdo = edoMapper.selectEdoListByBlNo(blNo);
-        List<ShipmentDetail> listShip = new ArrayList<ShipmentDetail>();
-        if (listEdo != null) {
-            for (Edo i : listEdo) {
-                ShipmentDetail ship = new ShipmentDetail();
-                ship.setContainerNo(i.getContainerNumber());
-                ship.setExpiredDem(i.getExpiredDem());
-                ship.setDetFreeTime(i.getDetFreeTime());
-                ship.setEmptyDepot(i.getEmptyContainerDepot());
-                ship.setOpeCode(i.getCarrierCode());
-                ship.setVslNm(i.getVesselNo()+": "+i.getVessel());
-                ship.setVslName(i.getVessel());
-                ship.setVoyCarrier(i.getVoyNo());
-                ship.setSztp(i.getSztp());
-                ship.setLoadingPort(i.getPol());
-                ship.setDischargePort(i.getPod());
-                ship.setTaxCode(i.getTaxCode());
-                ship.setConsigneeByTaxCode(i.getConsigneeByTaxCode());
-                listShip.add(ship);
-            }
-            return listShip;
-        }
-        return null;
-    }
-    
-    @Override
-    public List<ShipmentDetail> getShipmentDetailFromHouseBill(String houseBl) {
-    	 List<EdoHouseBill> edoHouseBills = edoHouseBillMapper.selectHouseBillForShipment(houseBl);
-    	 List<ShipmentDetail> shipmentDetails = new ArrayList<>();
-    	 if (CollectionUtils.isNotEmpty(edoHouseBills)) {
-    		 for (EdoHouseBill edoHouseBill : edoHouseBills) {
-    			 ShipmentDetail ship = new ShipmentDetail();
-                 ship.setContainerNo(edoHouseBill.getContainerNumber());
-                 ship.setExpiredDem(edoHouseBill.getEdo().getExpiredDem());
-                 ship.setDetFreeTime(edoHouseBill.getEdo().getDetFreeTime());
-                 ship.setEmptyDepot(edoHouseBill.getEdo().getEmptyContainerDepot());
-                 ship.setOpeCode(edoHouseBill.getEdo().getCarrierCode());
-                 ship.setVslNm(edoHouseBill.getEdo().getVesselNo()+": "+edoHouseBill.getEdo().getVessel());
-                 ship.setVslName(edoHouseBill.getEdo().getVessel());
-                 ship.setVoyCarrier(edoHouseBill.getEdo().getVoyNo());
-                 ship.setSztp(edoHouseBill.getEdo().getSztp());
-                 ship.setLoadingPort(edoHouseBill.getEdo().getPol());
-                 ship.setDischargePort(edoHouseBill.getEdo().getPod());
-                 ship.setTaxCode(edoHouseBill.getConsignee2TaxCode());
-                 ship.setConsigneeByTaxCode(edoHouseBill.getConsignee2());
-                 ship.setConsignee(edoHouseBill.getConsignee2());
-                 shipmentDetails.add(ship);
-    		 }
-    	 }
-    	 return shipmentDetails;
-    }
+//    @Override
+//    public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo) {
+//        List<ShipmentDetail> listShip = new ArrayList<ShipmentDetail>();
+//        List<Edo> listEdo = edoMapper.selectEdoListByBlNo(blNo);
+//        if (listEdo != null) {
+//            for (Edo i : listEdo) {
+//                ShipmentDetail ship = new ShipmentDetail();
+//                ship.setContainerNo(i.getContainerNumber());
+//                ship.setExpiredDem(i.getExpiredDem());
+//                ship.setDetFreeTime(i.getDetFreeTime());
+//                ship.setEmptyDepot(i.getEmptyContainerDepot());
+//                ship.setOpeCode(i.getCarrierCode());
+//                ship.setVslNm(i.getVesselNo()+": "+i.getVessel());
+//                ship.setVslName(i.getVessel());
+//                ship.setVoyCarrier(i.getVoyNo());
+//                ship.setSztp(i.getSztp());
+//                ship.setLoadingPort(i.getPol());
+//                ship.setDischargePort(i.getPod());
+//                ship.setTaxCode(i.getTaxCode());
+//                ship.setConsigneeByTaxCode(i.getConsigneeByTaxCode());
+//                listShip.add(ship);
+//            }
+//            return listShip;
+//        }
+//        return null;
+//    }
+//    
+//    @Override
+//    public List<ShipmentDetail> getShipmentDetailFromHouseBill(String houseBl) {
+//    	 List<ShipmentDetail> shipmentDetails = new ArrayList<>();
+//    	 List<EdoHouseBill> edoHouseBills = edoHouseBillMapper.selectHouseBillForShipment(houseBl);
+//    	 if (CollectionUtils.isNotEmpty(edoHouseBills)) {
+//    		 for (EdoHouseBill edoHouseBill : edoHouseBills) {
+//    			 ShipmentDetail ship = new ShipmentDetail();
+//                 ship.setContainerNo(edoHouseBill.getContainerNumber());
+//                 ship.setExpiredDem(edoHouseBill.getEdo().getExpiredDem());
+//                 ship.setDetFreeTime(edoHouseBill.getEdo().getDetFreeTime());
+//                 ship.setEmptyDepot(edoHouseBill.getEdo().getEmptyContainerDepot());
+//                 ship.setOpeCode(edoHouseBill.getEdo().getCarrierCode());
+//                 ship.setVslNm(edoHouseBill.getEdo().getVesselNo()+": "+edoHouseBill.getEdo().getVessel());
+//                 ship.setVslName(edoHouseBill.getEdo().getVessel());
+//                 ship.setVoyCarrier(edoHouseBill.getEdo().getVoyNo());
+//                 ship.setSztp(edoHouseBill.getEdo().getSztp());
+//                 ship.setLoadingPort(edoHouseBill.getEdo().getPol());
+//                 ship.setDischargePort(edoHouseBill.getEdo().getPod());
+//                 ship.setTaxCode(edoHouseBill.getConsignee2TaxCode());
+//                 ship.setConsigneeByTaxCode(edoHouseBill.getConsignee2());
+//                 ship.setConsignee(edoHouseBill.getConsignee2());
+//                 shipmentDetails.add(ship);
+//    		 }
+//    	 }
+//    	 return shipmentDetails;
+//    }
 
     @Override
     public List<ShipmentDetail> getShipmentDetailListForAssign(ShipmentDetail shipmentDetail) {

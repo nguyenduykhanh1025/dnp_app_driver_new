@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.framework.config;
+package vn.com.irtech.eport.logistic.listener;
 
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.slf4j.Logger;
@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-
-import vn.com.irtech.eport.framework.web.service.MqttService;
 
 /**
  * @Classname MqttConfig

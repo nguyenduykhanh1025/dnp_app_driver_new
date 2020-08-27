@@ -1,0 +1,92 @@
+server:
+  servlet:
+    context-path: /admin
+
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: oracle.jdbc.OracleDriver
+        druid:
+            master:
+                url: jdbc:oracle:thin:@192.168.0.29:1521/EPORT
+                username: EPORT_TEST
+                password: WINNER
+            slave:
+                enabled: false
+                url: 
+                username: 
+                password: 
+            initialSize: 10
+            minIdle: 10
+            maxActive: 100
+            maxWait: 60000
+            timeBetweenEvictionRunsMillis: 60000
+            minEvictableIdleTimeMillis: 300000
+            maxEvictableIdleTimeMillis: 900000
+            validationQuery: SELECT 1 FROM DUAL
+            testWhileIdle: true
+            testOnBorrow: false
+            testOnReturn: false
+            webStatFilter: 
+                enabled: true
+            statViewServlet:
+                enabled: true
+                allow:
+                url-pattern: /druid/*
+                login-username: 
+                login-password: 
+            filter:
+                stat:
+                    enabled: true
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: true
+                wall:
+                    config:
+                        multi-statement-allow: true
+    #Email Setting
+    mail:
+        protocol: smtp
+        host: smtp.gmail.com
+        port: 587
+        username: accSendNotice
+        password: 123abc!@#
+        properties:
+            mail:
+                store:
+                    protocol: pop3
+                smtp:
+                    auth: true
+                    ssl:
+                        enable: true
+                    starttls:
+                        enable: true
+                        required: true
+                    socketFactory:
+                        port: 465
+                        fallback: true
+                        class: javax.net.ssl.SSLSocketFactory
+    redis:
+        enabled: true
+#Eport Config
+eport:
+    profile: /home/eport/uat/upload
+    apiUrl: http://127.0.0.1:9090/api
+    edi:
+        rootPath: D:/eport/edo/home
+        backupPath: D:/eport/edo/backup
+        interval: 3000
+        enabled: true
+
+#Websocket
+websocket:
+    endpoint: /eport_admin
+    app-destination-prefix: /eport_admin
+    message-broker: /admin/eport_admin
+
+#MQTT Config
+mqtt:
+    username: admin
+    password: public 
+    host-url: tcp://127.0.0.1:1883    
+
