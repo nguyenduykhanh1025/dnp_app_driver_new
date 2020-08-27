@@ -1,0 +1,3 @@
+export const INCREASENOTI = 'INCREASENOTI';
+export const DECREASENOTI = 'DECREASENOTI';
+export const SETNOTI = 'SETNOTI';

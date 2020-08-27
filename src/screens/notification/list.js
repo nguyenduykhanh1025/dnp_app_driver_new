@@ -66,11 +66,11 @@ export default class ListScreen extends Component {
       api: 'notify',
       param: '',
       token: this.token,
-      method: 'POST'
+      method: 'GET'
     }
     var result = undefined;
     result = await callApi(params);
-    // console.log('resultonGetNotificationList', result)
+    console.log('resultonGetNotificationList', result)
     if (result.code == 0) {
       await this.setState({
         data: result.notificationList,
