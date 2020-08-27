@@ -1,8 +1,10 @@
 package vn.com.irtech.eport.web.controller.gate;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -337,5 +339,19 @@ public class GateTestController extends BaseController {
 		
 		
 		return success();
+	}
+	
+	@GetMapping("/blNo/{blNo}/yardPosition")
+	@ResponseBody
+	public AjaxResult getYardPosition(@PathVariable String blNo) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainers(blNo);
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			List<ShipmentDetail> coordinates = new ArrayList<>(shipmentDetails);
+			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(coordinates, shipmentDetails);
+			ajaxResult.put("bayList", bay);
+			return ajaxResult;
+		}
+		return AjaxResult.warn("Không tìm thấy tọa độ.");
 	}
 }

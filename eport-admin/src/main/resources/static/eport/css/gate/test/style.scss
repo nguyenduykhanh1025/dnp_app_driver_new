@@ -151,3 +151,58 @@ body {
   font-weight: bold;
 }
 
+.contListPosition {
+  height: 200px;
+  /* width: 760px; */
+  overflow-y: scroll;
+  text-align: center;
+}
+
+.bayPosition {
+  display: flex;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.contListPicked {
+  margin-top: 12px;
+  height: 185px;
+  width: fit-content;
+}
+
+.columnDiv {
+  margin-right: 10px;
+}
+
+.cellDiv {
+  text-align: center;
+  border: solid black 1px;
+  width: 100px;
+  height: 20px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.cellDivDisable {
+  border: solid black 1px;
+  width: 100px;
+  height: 20px;
+  margin-bottom: 5px;
+  background-color: grey;
+}
+
+table tbody,
+table thead {
+  display: block;
+}
+
+table tbody {
+  overflow: auto;
+  height: 120px;
+}
+
+table {
+  margin-bottom: 0 !important;
+}
+
