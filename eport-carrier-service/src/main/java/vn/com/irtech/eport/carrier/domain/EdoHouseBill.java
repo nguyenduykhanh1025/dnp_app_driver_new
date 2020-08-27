@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.logistic.domain;
+package vn.com.irtech.eport.carrier.domain;
 
 
 import org.apache.commons.lang3.builder.ToStringBuilder;

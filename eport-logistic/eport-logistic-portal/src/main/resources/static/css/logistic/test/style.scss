@@ -14,8 +14,9 @@ body {
   color: $black;
   background: $lightblue;
   .main-body {
-    margin: 10px;
+    margin: 5px;
     margin-bottom: 0;
+    border: 1px solid #cccccc;
     .main-body__search-wrapper {
       border-radius: 3px;
       background: $white;
@@ -26,7 +27,7 @@ body {
       position: relative;
       transition: 0.1s all;
       overflow: hidden;
-      margin-bottom: 10px;
+      margin-bottom: 0;
       .btn-collapse {
         position: absolute;
         top: 0;
@@ -57,9 +58,8 @@ body {
               width: auto;
             }
             .textbox {
-              border: none;
-              border-bottom: 1px solid #d4d4d4;
-              border-radius: 0;
+              padding: 3px;
+              border: 1px solid #d4d4d4;
               line-height: 1;
             }
             .textbox-focused {
@@ -113,6 +113,7 @@ body {
           color: #333;
           font-size: 12px;
           background-color: #f5f5f5;
+          font-weight: bold !important;
         }
         .ht_clone_top_left_corner th,
         .ht_clone_left th,
@@ -129,6 +130,21 @@ body {
         .htCore tr:nth-of-type(even) > td {
           background-color: #f5f5f5;
           @include border-dotted;
+        }
+        .right-side__collapse {
+          position: absolute;
+          top: 0;
+          left: 45%;
+          font-size: 0.5em;
+          background: #cccccc;
+          opacity: 0.6;
+          width: 60px;
+          border: none;
+          text-align: center;
+          z-index: 1406;
+          &:hover {
+            opacity: 1;
+          }
         }
       }
     }

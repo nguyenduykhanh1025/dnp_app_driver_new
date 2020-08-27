@@ -1816,7 +1816,7 @@
 }
 .datagrid-header-row,
 .datagrid-row {
-  height: 32px;
+  height: 25px;
 }
 .datagrid-header td,
 .datagrid-body td,
@@ -1841,6 +1841,7 @@
 }
 .datagrid-header .datagrid-cell {
   height: auto;
+  font-weight: bold;
 }
 .datagrid-header .datagrid-cell span {
   font-size: 12px;
@@ -1956,7 +1957,7 @@
 }
 .datagrid-header,
 .datagrid-td-rownumber {
-  background-color: #f5f5f5;
+  background-color: #eeeeee;
   /* background-color: #1c84c652; */
   /* background: -webkit-linear-gradient(top,#ffffff 0,#F2F2F2 100%);
   background: -moz-linear-gradient(top,#ffffff 0,#F2F2F2 100%);
@@ -1979,7 +1980,7 @@
 }
 .datagrid-toolbar,
 .datagrid-pager {
-  background: #F5F5F5;
+  background: #FFFFFF;
 }
 .datagrid-header,
 .datagrid-toolbar,
@@ -2008,7 +2009,7 @@
   cursor: default;
 }
 .datagrid-row-selected {
-  background: #0081c2;
+  background: #00bbee;
   color: #fff;
 }
 .datagrid-row-editing .textbox,

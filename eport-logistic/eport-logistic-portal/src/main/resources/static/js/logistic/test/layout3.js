@@ -23,10 +23,10 @@ var toolbar = [
 
 $(".main-body").layout();
 
-loadTable("#dg-right");
-loadTable("#dg-left");
-loadTable("#dg-right-tab1");
-loadTable("#dg-right-tab2");
+loadTable("#dg-right", rightHeight - 30);
+loadTable("#dg-left", leftHeight - 135);
+loadTable("#dg-right-tab1", rightHeight / 2 - 5);
+loadTable("#dg-right-tab2", rightHeight / 2 - 5);
 $(".collapse").click(function () {
     $(".main-body__search-wrapper").height(15);
     $(".main-body__search-wrapper--container").hide();
@@ -44,11 +44,14 @@ $(".uncollapse").click(function() {
 $(".left-side__collapse").click(function() {
   $('#main-layout').layout('collapse','west');
 })
+$(".right-side__collapse").click(function() {
+  $('#right-layout').layout('collapse','south');
+})
 
-function loadTable(div) {
+function loadTable(div, height) {
   $(div).datagrid({
     url: ctx + "logistic/transport/list",
-    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+    height: height,
     singleSelect: true,
     toolbar: toolbar,
     collapsible: true,

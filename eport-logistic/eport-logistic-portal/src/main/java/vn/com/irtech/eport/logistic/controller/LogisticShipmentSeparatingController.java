@@ -1,33 +1,37 @@
 package vn.com.irtech.eport.logistic.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 
 import vn.com.irtech.eport.carrier.domain.CarrierGroup;
 import vn.com.irtech.eport.carrier.domain.Edo;
+import vn.com.irtech.eport.carrier.domain.EdoHouseBill;
+import vn.com.irtech.eport.carrier.dto.EdoWithoutHouseBillReq;
 import vn.com.irtech.eport.carrier.dto.HouseBillRes;
 import vn.com.irtech.eport.carrier.dto.HouseBillSearchReq;
 import vn.com.irtech.eport.carrier.dto.SeparateHouseBillReq;
 import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.carrier.dto.EdoWithoutHouseBillReq;
-import vn.com.irtech.eport.logistic.domain.EdoHouseBill;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
-import vn.com.irtech.eport.logistic.service.IEdoHouseBillService;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 @RequestMapping("/logistic/shipmentSeparating")
@@ -123,8 +127,10 @@ public class LogisticShipmentSeparatingController extends LogisticBaseController
       edos.add(edo);
     }
 
-    // Insert data to edo house bill
-    edoHouseBillService.insertListEdoHouseBill(edos, req.getHouseBill(), req.getConsignee2(), req.getConsignee2TaxCode(), req.getOrderNumber(), getUser());
+		// Insert data to edo house bill
+		edoHouseBillService.insertListEdoHouseBill(edos, req.getHouseBill(), req.getConsignee2(),
+				req.getConsignee2TaxCode(), req.getOrderNumber(), getUser().getGroupId(), getUser().getId(),
+				getUser().getUserName());
 
     return success();
   }

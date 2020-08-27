@@ -78,9 +78,9 @@ public class GatePassHandler implements IMqttMessageListener {
 	private ISysNotificationReceiverService sysNotificationReceiverService;
 	
 	// time wait mc input postion
-	private static final Long TIME_OUT_WAIT_MC = 6000L;
+	private static final Long TIME_OUT_WAIT_MC = 2000L;
 	
-	private static final Integer RETRY_WAIT_MC = 20;
+	private static final Integer RETRY_WAIT_MC = 60;
 	
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -247,6 +247,7 @@ public class GatePassHandler implements IMqttMessageListener {
 					map.put("pickupHistoryId", pickupHistory.getId().toString());
 					String msg = new Gson().toJson(map);
 					try {
+						logger.debug("Received Position failed from Robot. Send MC request: " + msg);
 						mqttService.sendMessageToMc(msg);
 					} catch (MqttException e) {
 						logger.error("Erorr request yard position from mc: " + e);
@@ -259,10 +260,11 @@ public class GatePassHandler implements IMqttMessageListener {
 						} catch (InterruptedException e) {
 							logger.error("Error sleep to wait mc: " + e);
 						}
-						logger.debug("Check db");
+						logger.debug("Check db for position");
 						pickupHistory = pickupHistoryService .selectPickupHistoryById(pickupHistory.getId());
 						gateInFormData.getPickupIn().set(0, pickupHistory);
 						if (checkPickupHistoryHasPosition(pickupHistory)) {
+							logger.debug("Pickup has been updated position. Continue to gate-in");
 							break;
 						}
 					}
@@ -287,6 +289,7 @@ public class GatePassHandler implements IMqttMessageListener {
 			processOrderNew.setRobotUuid(uuId);
 			processOrderNew.setProcessData(msg);
 			processOrderService.updateProcessOrder(processOrderNew);
+			logger.debug("Send request to robot after failed location: " + uuId + ", content: " + msg);
 			try {
 				mqttService.sendMessageToRobot(msg, uuId);
 			} catch (MqttException e) {
@@ -356,6 +359,7 @@ public class GatePassHandler implements IMqttMessageListener {
 		map.put("result", result);
 		map.put("message", message);
 		String msg = new Gson().toJson(map);
+		logger.debug("Send result to SmartGate App: " + msg);
 		mqttService.publish(MqttConsts.SMART_GATE_RES_TOPIC.replace("+", gateId), new MqttMessage(msg.getBytes()));
 	}
 	
@@ -398,13 +402,14 @@ public class GatePassHandler implements IMqttMessageListener {
 	 * @return Boolean
 	 */
 	private Boolean checkPickupHistoryHasPosition(PickupHistory pickupHistory) {
-		if (pickupHistory.getArea() != null) {
+		if (StringUtils.isNotBlank(pickupHistory.getArea())) {
 			return true;
 		}
-		if (pickupHistory.getBlock() != null && pickupHistory.getBay() != null
-			&& pickupHistory.getLine() != null && pickupHistory.getTier() != null) {
+		if (StringUtils.isNotBlank(pickupHistory.getBlock()) && StringUtils.isNotBlank(pickupHistory.getBay())
+			&& StringUtils.isNotBlank(pickupHistory.getLine()) && StringUtils.isNotBlank(pickupHistory.getTier())) {
 				return true;
 			}
+		logger.debug("No position for pickup: " + pickupHistory.getContainerNo());
 		return false;
 	}
 }

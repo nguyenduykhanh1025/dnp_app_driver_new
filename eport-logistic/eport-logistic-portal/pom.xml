@@ -38,7 +38,7 @@
         </dependency>
         <dependency>
             <groupId>vn.com.irtech.eport</groupId>
-            <artifactId>eport-common</artifactId>
+            <artifactId>eport-carrier-service</artifactId>
         </dependency>
 
         <!-- Oracle DB -->
