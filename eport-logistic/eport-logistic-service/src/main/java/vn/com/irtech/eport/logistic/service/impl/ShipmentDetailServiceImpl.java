@@ -1116,4 +1116,24 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     public String selectConsigneeTaxCodeByShipmentId(Long shipmentId) {
     	return shipmentDetailMapper.selectConsigneeTaxCodeByShipmentId(shipmentId);
     }
+    
+    /**
+	 * Get Shipment detail from house bill
+	 * 
+	 * @param houseBill
+	 * @return List<ShipmentDetail>
+	 */
+	public List<ShipmentDetail> getShipmentDetailFromHouseBill(String houseBill) {
+		return shipmentDetailMapper.selectHouseBillForShipment(houseBill);
+	}
+	
+	/**
+	 * Get shipment detail from edi by blNo
+	 * 
+	 * @param blNo
+	 * @return List<ShipmentDetail>
+	 */
+	public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo) {
+		return shipmentDetailMapper.selectEdoListByBlNo(blNo);
+	}
 }
