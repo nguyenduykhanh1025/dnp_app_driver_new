@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.firebase.messaging.FirebaseMessagingException;
 
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
@@ -227,7 +230,17 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 				sysNotificationReceiver.setUserId(pickupAssigns.get(i).getDriverId());
 				sysNotificationReceiver.setNotificationId(sysNotification.getId());
 				sysNotificationReceiver.setUserType(2L);
+				sysNotificationReceiver.setSentFlg(true);
 				sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
+				
+				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(pickupAssigns.get(i).getDriverId());
+				if (CollectionUtils.isNotEmpty(sysUserTokens)) {
+					try {
+						firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
+					} catch (FirebaseMessagingException e) {
+						logger.error("Error send notification: " + e);
+					}
+				}
 			}
 			return success();
 		}
@@ -343,11 +356,38 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 						pickupAssignService.deletePickupAssignById(i.getId());
 				}
 			}
+			
+			// Create info notification
+			SysNotification sysNotification = new SysNotification();
+			sysNotification.setTitle("Thông báo điều xe.");
+			sysNotification.setNotifyLevel(2L);
+			sysNotification.setContent("Bạn đã được chỉ định điều xe theo container cho lô " + shipment.getId());
+			sysNotification.setNotifyLink("");
+			sysNotification.setStatus(1L);
+			sysNotificationService.insertSysNotification(sysNotification);
+			
 			// add  assign follow container (preoderPickup: receiveContFull)
 			for(int i = 0; i < pickupAssigns.size(); i ++){
 				pickupAssigns.get(i).setCreateBy(getUser().getFullName());
 				pickupAssigns.get(i).setCreateTime(new Date());
 				pickupAssignService.insertPickupAssign(pickupAssigns.get(i));
+				
+				// Notification receiver
+				SysNotificationReceiver sysNotificationReceiver = new SysNotificationReceiver();
+				sysNotificationReceiver.setUserId(pickupAssigns.get(i).getDriverId());
+				sysNotificationReceiver.setNotificationId(sysNotification.getId());
+				sysNotificationReceiver.setUserType(2L);
+				sysNotificationReceiver.setSentFlg(true);
+				sysNotificationReceiverService.insertSysNotificationReceiver(sysNotificationReceiver);
+				
+				List<String> sysUserTokens = sysUserTokenService.getListDeviceTokenByUserId(pickupAssigns.get(i).getDriverId());
+				if (CollectionUtils.isNotEmpty(sysUserTokens)) {
+					try {
+						firebaseService.sendNotification(sysNotification.getTitle(), sysNotification.getContent(), sysUserTokens);
+					} catch (FirebaseMessagingException e) {
+						logger.error("Error send notification: " + e);
+					}
+				}
 			}
 			return success();
 		}

@@ -134,4 +134,20 @@ public interface ShipmentDetailMapper
      * @return String
      */
     public String selectConsigneeTaxCodeByShipmentId(Long shipmentId);
+    
+    /**
+	 * Get Shipment detail from house bill
+	 * 
+	 * @param houseBill
+	 * @return List<ShipmentDetail>
+	 */
+	public List<ShipmentDetail> selectHouseBillForShipment(String houseBill);
+	
+	/**
+	 * Get shipment detail from edi by blNo
+	 * 
+	 * @param blNo
+	 * @return List<ShipmentDetail>
+	 */
+	public List<ShipmentDetail> selectEdoListByBlNo(String blNo);
 }

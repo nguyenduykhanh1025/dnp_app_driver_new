@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.carrier.mapper.EdoHouseBillMapper">
+
+	<resultMap type="EdoHouseBill" id="EdoHouseBillResult">
+        <result property="id" column="id" />
+        <result property="logisticGroupId" column="logistic_group_id" />
+        <result property="logisticAccountId" column="logistic_account_id" />
+        <result property="edoId" column="edo_id" />
+        <result property="billOfLading" column="bill_of_lading" />
+        <result property="orderNumber" column="order_number" />
+        <result property="masterBillNo" column="master_bill_no" />
+        <result property="consignee" column="consignee" />
+        <result property="houseBillNo" column="house_bill_no" />
+        <result property="houseBillNo2" column="house_bill_no2" />
+        <result property="consignee2" column="consignee2" />
+        <result property="containerNumber" column="container_number" />
+        <result property="sztp" column="sztp" />
+        <result property="opr" column="opr" />
+        <result property="vessel" column="vessel" />
+        <result property="voyNo" column="voy_no" />
+        <result property="createBy" column="create_by" />
+        <result property="createTime" column="create_time" />
+        <result property="updateBy" column="update_by" />
+        <result property="updateTime" column="update_time" />
+        <result property="carrierCode" column="carrier_code" />
+        <result property="consignee2TaxCode" column="consignee2_tax_code" />
+        <association property="edo" column="edo_id" javaType="Edo" select="selectEdo" />
+    </resultMap>
+
+    <sql id="selectEdoHouseBillVo">
+        select id, logistic_group_id, logistic_account_id, edo_id, bill_of_lading, order_number, master_bill_no, consignee, house_bill_no, house_bill_no2, consignee2, container_number, sztp, opr, vessel, voy_no, create_by, create_time, update_by, update_time, carrier_code from edo_house_bill
+    </sql>
+
+    <select id="selectEdoHouseBillList" parameterType="EdoHouseBill" resultMap="EdoHouseBillResult">
+        <include refid="selectEdoHouseBillVo"/>
+        <where>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
+            <if test="edoId != null "> and edo_id = #{edoId}</if>
+            <if test="billOfLading != null and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
+            <if test="orderNumber != null and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="houseBillNo != null and houseBillNo != ''"> and house_bill_no = #{houseBillNo}</if>
+            <if test="houseBillNo2 != null and houseBillNo2 != ''"> and house_bill_no2 = #{houseBillNo2}</if>
+            <if test="consignee2TaxCode != null and consignee2TaxCode != ''"> and consignee2_tax_code = #{consignee2TaxCode}</if>
+        </where>
+    </select>
+
+    <select id="selectFirstEdoHouseBill" parameterType="EdoHouseBill" resultMap="EdoHouseBillResult">
+        <include refid="selectEdoHouseBillVo"/>
+        <where>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="logisticAccountId != null "> and logistic_account_id = #{logisticAccountId}</if>
+            <if test="edoId != null "> and edo_id = #{edoId}</if>
+            <if test="billOfLading != null and billOfLading != ''"> and bill_of_lading = #{billOfLading}</if>
+            <if test="orderNumber != null and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="houseBillNo != null and houseBillNo != ''"> and house_bill_no = #{houseBillNo}</if>
+            <if test="houseBillNo2 != null and houseBillNo2 != ''"> and house_bill_no2 = #{houseBillNo2}</if>
+        </where>
+        FETCH NEXT 1 ROWS ONLY
+    </select>
+
+    <select id="selectEdoHouseBillById" parameterType="Long" resultMap="EdoHouseBillResult">
+        <include refid="selectEdoHouseBillVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertEdoHouseBill" parameterType="EdoHouseBill" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT seq_edo_house_bill.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into edo_house_bill
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="logisticGroupId != null">logistic_group_id,</if>
+            <if test="logisticAccountId != null">logistic_account_id,</if>
+            <if test="edoId != null">edo_id,</if>
+            <if test="billOfLading != null">bill_of_lading,</if>
+            <if test="orderNumber != null">order_number,</if>
+            <if test="masterBillNo != null and masterBillNo != ''">master_bill_no,</if>
+            <if test="consignee != null and consignee != ''">consignee,</if>
+            <if test="houseBillNo != null and houseBillNo != ''">house_bill_no,</if>
+            <if test="houseBillNo2 != null">house_bill_no2,</if>
+            <if test="consignee2 != null and consignee2 != ''">consignee2,</if>
+            <if test="containerNumber != null and containerNumber != ''">container_number,</if>
+            <if test="sztp != null and sztp != ''">sztp,</if>
+            <if test="opr != null and opr != ''">opr,</if>
+            <if test="vessel != null and vessel != ''">vessel,</if>
+            <if test="voyNo != null and voyNo != ''">voy_no,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="carrierCode != null">carrier_code,</if>
+            <if test="consignee2TaxCode != null">consignee2_tax_code,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="logisticGroupId != null">#{logisticGroupId},</if>
+            <if test="logisticAccountId != null">#{logisticAccountId},</if>
+            <if test="edoId != null">#{edoId},</if>
+            <if test="billOfLading != null">#{billOfLading},</if>
+            <if test="orderNumber != null">#{orderNumber},</if>
+            <if test="masterBillNo != null and masterBillNo != ''">#{masterBillNo},</if>
+            <if test="consignee != null and consignee != ''">#{consignee},</if>
+            <if test="houseBillNo != null and houseBillNo != ''">#{houseBillNo},</if>
+            <if test="houseBillNo2 != null">#{houseBillNo2},</if>
+            <if test="consignee2 != null and consignee2 != ''">#{consignee2},</if>
+            <if test="containerNumber != null and containerNumber != ''">#{containerNumber},</if>
+            <if test="sztp != null and sztp != ''">#{sztp},</if>
+            <if test="opr != null and opr != ''">#{opr},</if>
+            <if test="vessel != null and vessel != ''">#{vessel},</if>
+            <if test="voyNo != null and voyNo != ''">#{voyNo},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="carrierCode != null">#{carrierCode},</if>
+            <if test="consignee2TaxCode != null">#{consignee2TaxCode},</if>
+            SYSDATE
+        </trim>
+    </insert>
+
+    <update id="updateEdoHouseBill" parameterType="EdoHouseBill">
+        update edo_house_bill
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
+            <if test="logisticAccountId != null">logistic_account_id = #{logisticAccountId},</if>
+            <if test="edoId != null">edo_id = #{edoId},</if>
+            <if test="billOfLading != null">bill_of_lading = #{billOfLading},</if>
+            <if test="orderNumber != null">order_number = #{orderNumber},</if>
+            <if test="masterBillNo != null and masterBillNo != ''">master_bill_no = #{masterBillNo},</if>
+            <if test="consignee != null and consignee != ''">consignee = #{consignee},</if>
+            <if test="houseBillNo != null and houseBillNo != ''">house_bill_no = #{houseBillNo},</if>
+            <if test="houseBillNo2 != null">house_bill_no2 = #{houseBillNo2},</if>
+            <if test="consignee2 != null and consignee2 != ''">consignee2 = #{consignee2},</if>
+            <if test="containerNumber != null and containerNumber != ''">container_number = #{containerNumber},</if>
+            <if test="sztp != null and sztp != ''">sztp = #{sztp},</if>
+            <if test="opr != null and opr != ''">opr = #{opr},</if>
+            <if test="vessel != null and vessel != ''">vessel = #{vessel},</if>
+            <if test="voyNo != null and voyNo != ''">voy_no = #{voyNo},</if>
+            <if test="createBy != null and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="carrierCode != null and carrierCode != ''">carrier_code = #{carrierCode},</if>
+            <if test="consignee2TaxCode != null">consignee2_tax_code = #{consignee2TaxCode},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEdoHouseBillById" parameterType="Long">
+        delete from edo_house_bill where id = #{id}
+    </delete>
+
+    <delete id="deleteEdoHouseBillByIds" parameterType="String">
+        delete from edo_house_bill where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="checkExistHouseBill" parameterType="EdoHouseBill" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM
+        edo_house_bill
+        WHERE
+        logistic_group_id = #{logisticGroupId}
+        and (house_bill_no = #{houseBillNo} or house_bill_no2 = #{houseBillNo2})
+    </select>
+
+    <resultMap type="vn.com.irtech.eport.carrier.dto.HouseBillRes" id="HouseBillResResult">
+        <result property="masterBillNo" column="master_bill_no" />
+        <result property="houseBillNo" column="house_bill_no" />
+        <result property="contNumber" column="cont_number" />
+        <result property="createTime" column="create_time" />
+        <result property="carrierCode" column="carrier_code" />
+    </resultMap>
+
+    <select id="selectListHouseBillRes" parameterType="vn.com.irtech.eport.carrier.dto.HouseBillSearchReq" resultMap="HouseBillResResult">
+        SELECT
+        master_bill_no,
+        house_bill_no,
+        create_time,
+        carrier_code,
+        consignee2,
+        count(*) as cont_number
+        FROM
+        edo_house_bill
+        <where>
+            <if test="logisticGroupId != null"> and logistic_group_id = #{logisticGroupId}</if>
+        </where>
+        GROUP BY
+        house_bill_no, master_bill_no, create_time, consignee2, carrier_code
+        ORDER BY
+        create_time desc
+    </select>
+
+    <resultMap type="Edo" id="EdoResult">
+        <result property="id" column="id"/>
+        <result property="carrierId" column="carrier_id"/>
+        <result property="carrierCode" column="carrier_code"/>
+        <result property="orderNumber" column="order_number"/>
+        <result property="billOfLading" column="bill_of_lading"/>
+        <result property="businessUnit" column="business_unit"/>
+        <result property="consignee" column="consignee"/>
+        <result property="containerNumber" column="container_number"/>
+        <result property="expiredDem" column="expired_dem"/>
+        <result property="emptyContainerDepot" column="empty_container_depot"/>
+        <result property="detFreeTime" column="det_free_time"/>
+        <result property="secureCode" column="secure_code"/>
+        <result property="releaseDate" column="release_date"/>
+        <result property="vessel" column="vessel"/>
+        <result property="vesselNo" column="vessel_no"/>
+        <result property="voyNo" column="voy_no"/>
+        <result property="sztp" column="sztp"/>
+        <result property="status" column="status"/>
+        <result property="releaseStatus" column="release_status"/>
+        <result property="createSource" column="create_source"/>
+        <result property="transactionId" column="transaction_id"/>
+        <result property="remark" column="remark"/>
+        <result property="delFlg" column="del_flg"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="fileCreateTime" column="file_create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="numberContainer" column="number_container"/>
+        <result property="pol" column="pol"/>
+        <result property="pod" column="pod"/>
+        <result property="houseBillId" column="house_bill_id"/>
+    </resultMap>
+
+    <select id="selectEdo" resultMap="EdoResult">
+        select * from edo
+        where id = #{id}
+    </select>
+
+    <select id="getOpeCodeByBlNo" parameterType="EdoHouseBill" resultType="String">
+        select opr, id
+        from edo_house_bill
+        where house_bill_no = #{blNo} and house_bill_no2 is null
+        FETCH NEXT 1 ROWS ONLY
+    </select>
+
+    <select id="getContainerAmountWithOrderNumber" resultType="int">
+        select count(*)
+        from edo_house_bill
+        where house_bill_no = #{blNo} and order_number = #{orderNumber} and house_bill_no2 is null
+    </select>
+
+    <select id="selectHouseBillForShipment" parameterType="String" resultMap="EdoHouseBillResult">
+        select * from edo_house_bill e left join edo d on e.edo_id = d.id
+        where e.house_bill_no2 is null and e.house_bill_no = #{blNo}
+    </select>
+
+    <select id="getEdoHouseBillByBlNo" resultMap="EdoHouseBillResult" parameterType="String">
+        select * from edo_house_bill
+        where house_bill_no = #{blNo} and house_bill_no2 is null
+        FETCH NEXT 1 ROWS ONLY
+    </select>
+</mapper>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <th:block th:include="include :: header('Gate Test')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/eport/css/gate/test/style.css}" rel="stylesheet" />
+</head>
+
+<body class="grey-background">
+    <div class="main-body">
+        <div class="main-body__search-wrapper mb-2">
+            <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+                <div class="flex__left w-20 text-uppercase">
+                    <h2 class="mt-10 fw-400">GATE-IN TEST</h2>
+                </div>
+            </div>
+        </div>
+        <div class="main-body__table-wrapper">
+            <div class="easyui-layout" id="main-layout" style="width: 100%;">
+                <div class="left-side" data-options="region:'west',split:true" style="width: 50%;">
+                    <span class="left-side__collapse"><i class="fa fa-chevron-left"></i></span>
+                    <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
+                        <div title="Gate In">
+                            <label class="mt-10 ml-10 text-bold">Thông Tin Xe</label>
+                            <div class="form-group row mt-10">
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Truck No</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox" id="truckNo" data-options="prompt: 'Truck No' " />
+                                    </div>
+                                    <span class="col-sm-1 col-md-5 col-lg-4 col-xl-3 mt-5"></span>
+                                    <span class="col-sm-12 col-md-7 col-lg-8 col-xl-9 mt-5" id="truckNoDetection"></span>
+                                </div>
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Chassis No</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox " id="chassisNo" data-options="prompt: 'Chassis No' " />
+                                    </div>
+                                    <span class="col-sm-1 col-md-5 col-lg-4 col-xl-3 mt-5"></span>
+                                    <span class="col-sm-12 col-md-7 col-lg-8 col-xl-9 mt-5" id="chassisNoDetection"></span>
+                                </div>
+                            </div>
+                            <div class="form-group row mt-10">
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Gate Pass</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox" id="gatePass" data-options="prompt: 'Gate Pass' " />
+                                    </div>
+                                </div>
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Weight</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox " id="wgt" data-options="prompt: 'Kg' " />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-10 ml-10">
+                                <input type="checkbox" id="sendOption" />
+                                <label class="mt-10 ml-10 text-bold">Hạ Container</label>
+                            </div>
+                            <div class="form-group row mt-10">
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Container 1</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox" id="containerSend1" data-options="prompt: 'Container 1' " />
+                                    </div>
+                                    <span class="col-sm-1 col-md-5 col-lg-4 col-xl-3 mt-5"></span>
+                                    <span class="col-sm-12 col-md-7 col-lg-8 col-xl-9 mt-5" id="container1"></span>
+                                </div>
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Container 2</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox " id="containerSend2" data-options="prompt: 'Container 2' " />
+                                    </div>
+                                    <span class="col-sm-1 col-md-5 col-lg-4 col-xl-3 mt-5"></span>
+                                    <span class="col-sm-12 col-md-7 col-lg-8 col-xl-9 mt-5" id="container2"></span>
+                                </div>
+                            </div>
+                            <div class="row mt-10 ml-10">
+                                <input type="checkbox" id="receiveOption" />
+                                <label class="mt-10 ml-10 text-bold">Bốc Container</label>
+                            </div>
+                            <div class="form-group row mt-10">
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">B/L No</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox" id="blNo" data-options="prompt: 'B/L No' " />
+                                    </div>
+                                </div>
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Ref No</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox " id="refNo" data-options="prompt: 'Ref No' " />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <span class="col-sm-2 col-md-8 col-lg-9 col-xl-10"></span>
+                                <div class="col-sm-10 col-md-4 col-lg-3 col-xl-2">
+                                    <a class="btn btn-success btn-xs" onclick="loadYardPosition()">Xem Sơ Dồ Bãi</a>
+                                </div>
+                            </div>
+                            <div class="form-group row mt-10">
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <div class="col-sm-7 col-md-5 col-lg-4 col-xl-3">
+                                        <input class="mt-5" type="radio" name="containerFlg" value="1" checked />
+                                        <label class="mt-5">Container 1</label>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox " id="containerReceive1" data-options="prompt: 'Container 1'" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Container 2</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox " id="containerReceive2" data-options="prompt: 'Container 2' " />
+                                    </div>
+                                </div>   
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <div class="col-sm-7 col-md-5 col-lg-4 col-xl-3">
+                                        <input class="mt-5" type="radio" name="containerFlg" value="0" />
+                                        <label class="mt-5">S/L Container</label>
+                                    </div>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input class="easyui-textbox " id="containerAmount" data-options="prompt: 'S/L Container'" />
+                                    </div>
+                                </div>
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <a class="btn btn-primary btn-xs" style="font-size: larger;" onclick="gateIn()">Gate In</a>
+                                </div>   
+                            </div>
+                        </div>
+                        <div title="Settings">
+                            <label class="mt-10 ml-10 text-bold">Thông Tin Tài Khoản</label>
+                            <div class="form-group row mt-10">
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Logistics</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input id="logistics" class="easyui-combobox">
+                                    </div>
+                                </div>
+                                <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
+                                    <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Tài Xế</label>
+                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                        <input id="drivers" class="easyui-combobox" data-options="prompt: 'Chọn tài xế'">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="right-side" data-options="region:'center'" style="width: 100%;">
+                    <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
+                        <div title="Tọa Độ Bãi">
+                            <div class="contListPosition"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <th:block th:include="include :: websocket" />
+    <script>
+        $(".main-body").height($(document).innerHeight() - 10);
+        $(".easyui-layout").height($(document).innerHeight() - 100);
+        // $(".grey-background").height($(document).innerHeight() - 100);
+    </script>
+    <script th:src="@{/eport/js/modules/gate/test/test.js}"></script>
+</body>
+
+</html>

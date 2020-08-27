@@ -3,6 +3,7 @@ package vn.com.irtech.eport.logistic.service;
 import java.util.List;
 
 import vn.com.irtech.eport.logistic.domain.Shipment;
+import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.ShipmentForm;
 
 /**
@@ -67,14 +68,12 @@ public interface IShipmentService {
 	public List<Shipment> selectShipmentListForOm(Shipment shipment);
 
 	public List<Shipment> getShipmentListForAssign(Shipment shipment);
-
-	/**
-	 * Select Shipment List For Driver App
-	 * 
-	 * @param serviceType
-	 * @param driverId
-	 * @return List<ShipmentForm>
-	 */
-	public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long driverId);
-
+	   /**
+		 * Select Shipment List For Driver App
+		 * 
+		 * @param serviceType
+		 * @param driverId
+		 * @return List<ShipmentForm>
+		 */
+		public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long driverId);
 }
