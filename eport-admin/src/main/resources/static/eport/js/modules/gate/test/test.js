@@ -1,6 +1,15 @@
 const PREFIX = ctx + "gate/test"
 const WEB_SOCKET_TOPIC = "gate/detection/monitor";
 
+$(".main-body").height($(window).height() - 10);
+$(".easyui-layout").height($(window).height() - 15);
+// $(".grey-background").height($(document).innerHeight() - 100);
+$(window).resize(function () {
+  $(".main-body").height($(window).height() - 10);
+  $(".easyui-layout").height($(window).height() - 15);
+});
+
+
 $(".main-body").layout();
 
 $(".left-side__collapse").click(function () {
@@ -9,6 +18,10 @@ $(".left-side__collapse").click(function () {
     hot.render();
   }, 200);
 });
+
+$(".right-side__collapse").click(function() {
+  $('#right-layout').layout('collapse','south');
+})
 
 connectToWebsocketServer();
 

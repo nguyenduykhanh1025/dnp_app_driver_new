@@ -405,6 +405,6 @@
 			BL_NO
 		FROM DNP_UAT.TB_INVENTORY
 		WHERE JOB_ODR_NO2 = #{jobOrdNo2}
-
+		FETCH NEXT 1 ROWS ONLY
 	</select>
 </mapper>

@@ -12,11 +12,11 @@
 <body class="grey-background">
     <div class="main-body">
         <div class="main-body__search-wrapper mb-2">
-            <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
+            <!-- <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
                 <div class="flex__left w-20 text-uppercase">
                     <h2 class="mt-10 fw-400">GATE-IN TEST</h2>
                 </div>
-            </div>
+            </div> -->
         </div>
         <div class="main-body__table-wrapper">
             <div class="easyui-layout" id="main-layout" style="width: 100%;">
@@ -164,9 +164,20 @@
                     </div>
                 </div>
                 <div class="right-side" data-options="region:'center'" style="width: 100%;">
-                    <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
-                        <div title="Tọa Độ Bãi">
-                            <div class="contListPosition"></div>
+                    <div class="easyui-layout" id="right-layout" data-options="fit:true" style="position: relative;">
+                        <div data-options="region:'south', split:true" style="height: 50%;">
+                            <span class="right-side__collapse"><i class="fa fa-chevron-down"></i></span>
+                            <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
+                                <div title="Tọa Độ Bãi">
+                                    <div class="contListPosition"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-options="region:'center'">
+                            <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
+                                <div title="Thông Tin Pickup">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
