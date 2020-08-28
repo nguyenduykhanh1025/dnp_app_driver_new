@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.system.domain.SysRobot;
 import vn.com.irtech.eport.system.service.ISysRobotService;
 
@@ -36,6 +37,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
             logger.warn(e.getMessage());
             return;
 		}
+		
+		String status = map.get("status") == null ? null : map.get("status").toString();
+		
 		String uuid = null;
 		String[] dataStrings = topic.split("/");
 		if (dataStrings.length > 3) {
@@ -47,6 +51,9 @@ public class RobotResponseHandler implements IMqttMessageListener {
         }
 
         SysRobot robot = new SysRobot();
+        if (StringUtils.isNotEmpty(status)) {
+        	robot.setStatus(status);
+        }
         robot.setUuId(uuid);
         robotService.updateRobotByUuId(robot);
         logger.info("Robot " + uuid + " alive!");

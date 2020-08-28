@@ -28,6 +28,7 @@ import vn.com.irtech.eport.api.form.MeasurementDataReq;
 import vn.com.irtech.eport.api.form.PickupHistoryDataRes;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.exception.BusinessException;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
@@ -553,7 +554,7 @@ public class CheckinHandler implements IMqttMessageListener {
 						pickupHistoryDataRes.setWeight(pickupHistory.getShipmentDetail().getWgt());
 					}
 					pickupHistoryDataReses.add(pickupHistoryDataRes);
-				} else {
+				} else if (pickupHistory.getShipment().getServiceType() == EportConstants.SERVICE_PICKUP_FULL) {
 					PickupHistoryDataRes pickupHistoryDataRes = new PickupHistoryDataRes();
 					pickupHistoryDataRes.setChassisNo(pickupHistory.getChassisNo());
 					pickupHistoryDataRes.setTruckNo(pickupHistory.getTruckNo());
