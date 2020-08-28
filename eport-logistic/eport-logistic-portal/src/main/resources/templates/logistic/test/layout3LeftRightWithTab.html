@@ -14,7 +14,7 @@
         <span class="btn-collapse uncollapse"><i class="fa fa-angle-double-down" aria-hidden="true"></i></span>
         <div class="main-body__search-wrapper--container justify-content-between align-items-center w-100">
           <div class="flex__left w-20 text-uppercase">
-            <h2 class="mt-10 fw-400">Tiêu đề cho panel</h2>
+            <h3 class="mt-10">Tiêu đề cho panel</h3>
           </div>
           <div class="flex__right w-80 justify-content-around align-items-center d-flex">
             <form id="ff" method="post">
@@ -107,35 +107,10 @@
             </table>
           </div>
           <div class="right-side" data-options="region:'center'" title="Thông tin chi tiết" style="width: 100%;">
-            <div class="easyui-layout" id="right-layout" data-options="fit:true">
-              <div data-options="region:'north'" style="height: 60%; ">
-                <table id="dg-right" style="width: 100%;" pageList="[20,50,100,150,200]">
-                  <thead>
-                    <tr>
-                      <th data-options="field:'id',align:'right',halign:'center'" width="5%">
-                        ID
-                      </th>
-                      <th data-options="field:'fullName',halign:'center',resizable:true" sortable="true" width="20%">
-                        Tên tài xế
-                      </th>
-                      <th data-options="field:'mobileNumber',align:'right',halign:'center'" sortable="true" width="15%">
-                        Số điện thoại
-                      </th>
-                      <th data-options="field:'createTime',align:'center',formatter: formatDate" sortable="true" width="20%">
-                        Ngày tạo
-                      </th>
-                      <th data-options="field:'status',align:'center',formatter: formatStatus" sortable="true" width="15%">
-                        Khóa tài khoản
-                      </th>
-                      <th data-options="field:'value' ,align:'center',formatter: formatAction" width="25%">
-                        Action
-                      </th>
-                    </tr>
-                  </thead>
-                </table>
-              </div>
-              <div data-options="region:'center',split:true" style="position: relative;">
+            <div class="easyui-layout" id="right-layout" data-options="fit:true"  style="position: relative;">
+              <div data-options="region:'south', split:true" style="height: 40%;">
                 <span class="right-side__collapse"><i class="fa fa-chevron-down"></i></span>
+
                 <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
                   <div title="A Grid">
                     <table id="dg-right-tab1" style="width: 100%;" pageList="[20,50,100,150,200]">
@@ -185,6 +160,32 @@
                   </div>
                 </div>
               </div>
+              <div data-options="region:'center'">
+                <table id="dg-right" style="width: 100%;" pageList="[20,50,100,150,200]">
+                  <thead>
+                    <tr>
+                      <th data-options="field:'id',align:'right',halign:'center'" width="5%">
+                        ID
+                      </th>
+                      <th data-options="field:'fullName',halign:'center',resizable:true" sortable="true" width="20%">
+                        Tên tài xế
+                      </th>
+                      <th data-options="field:'mobileNumber',align:'right',halign:'center'" sortable="true" width="15%">
+                        Số điện thoại
+                      </th>
+                      <th data-options="field:'createTime',align:'center',formatter: formatDate" sortable="true" width="20%">
+                        Ngày tạo
+                      </th>
+                      <th data-options="field:'status',align:'center',formatter: formatStatus" sortable="true" width="15%">
+                        Khóa tài khoản
+                      </th>
+                      <th data-options="field:'value' ,align:'center',formatter: formatAction" width="25%">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -193,12 +194,12 @@
 
     <th:block th:include="include :: footer" />
     <script>
-      $(".main-body").height($(document).outerHeight());
-      $(".main-body__table--layout").height($('.main-body').height() -100);
+      $(".main-body").height($(document).height() -10);
+      $(".main-body__table--layout").height($('.main-body').height() - 50);
       var leftHeight = $('.main-body').height();
       var rightHeight = leftHeight / 2;
     </script>
     <th:block th:include="include :: easyui-js" />
-    <script th:src="@{/js/logistic/test/layout3.js?v=1231}"></script>
+    <script th:src="@{/js/logistic/test/layout3.js?v=3}"></script>
   </body>
 </html>
