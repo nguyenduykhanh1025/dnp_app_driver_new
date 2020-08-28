@@ -137,4 +137,12 @@ public interface ICatosApiService {
 	 * @return List<ShipmentDetail>
 	 */
 	public List<ShipmentDetail> getCoordinateOfContainersByJobOrderNo(String jobOrder);
+	
+	/**
+	 * Select shipment detail by job order
+	 * 
+	 * @param jobOrder
+	 * @return List<ShipmentDetail>
+	 */
+	public List<ShipmentDetail> selectShipmentDetailByJobOrder(String jobOrder);
 }

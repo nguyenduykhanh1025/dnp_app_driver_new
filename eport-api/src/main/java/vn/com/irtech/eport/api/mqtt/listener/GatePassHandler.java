@@ -262,6 +262,12 @@ public class GatePassHandler implements IMqttMessageListener {
 						}
 						logger.debug("Check db for position");
 						pickupHistory = pickupHistoryService .selectPickupHistoryById(pickupHistory.getId());
+						if (StringUtils.isNotEmpty(pickupHistory.getArea())) {
+							pickupHistory.setArea("");
+						}
+						if (StringUtils.isNotEmpty(pickupHistory.getBlock())) {
+							pickupHistory.setBlock("");
+						}
 						gateInFormData.getPickupIn().set(0, pickupHistory);
 						if (checkPickupHistoryHasPosition(pickupHistory)) {
 							logger.debug("Pickup has been updated position. Continue to gate-in");

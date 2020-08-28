@@ -574,4 +574,25 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	
+	/**
+	 * Select shipment detail by job order
+	 * 
+	 * @param jobOrder
+	 * @return List<ShipmentDetail>
+	 */
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailByJobOrder(String jobOrder) {
+		try {
+			String url = Global.getApiUrl() + "/jobOrder/" + jobOrder + "/blNo";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String blNo = restTemplate.getForObject(url, String.class);
+			return selectShipmentDetailsByBLNo(blNo);
+		} catch (Exception e) {
+			logger.error("CATOS Api get shipment dettail by job order no: ", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
