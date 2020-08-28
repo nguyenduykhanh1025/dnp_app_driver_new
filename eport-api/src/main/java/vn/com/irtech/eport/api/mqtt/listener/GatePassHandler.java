@@ -275,6 +275,8 @@ public class GatePassHandler implements IMqttMessageListener {
 						}
 					}
 					count++;
+				} else {
+					count++;
 				}
 			}
 			
