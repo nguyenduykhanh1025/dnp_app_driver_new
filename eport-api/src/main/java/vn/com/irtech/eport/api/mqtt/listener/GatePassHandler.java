@@ -123,7 +123,6 @@ public class GatePassHandler implements IMqttMessageListener {
 	 * @param gateInFormData
 	 * @param result
 	 */
-	@Transactional
 	private void updatePickupHistory(GateInFormData gateInFormData, String result, String uuId, String status) {
 		// List data response for driver
 		List<DriverDataRes> driverDataRes = new ArrayList<>();

@@ -36,8 +36,11 @@
                                 </div>
                                 <div class="col-sm-7 col-md-7 col-lg-6 col-xl-6">
                                     <label class="col-sm-7 col-md-5 col-lg-4 col-xl-3 mt-5">Chassis No</label>
-                                    <div class="col-sm-6 col-md-7 col-lg-8 col-xl-9">
+                                    <div class="col-sm-6 col-md-7 col-lg-6 col-xl-7">
                                         <input class="easyui-textbox " id="chassisNo" data-options="prompt: 'Chassis No' " />
+                                    </div>
+                                    <div class="col-sm-1 col-md-1 col-lg-2 col-xl-2">
+                                        <a class="btn btn-success btn-xs" onclick="searchPickup()">Tìm Kiếm</a>
                                     </div>
                                     <span class="col-sm-1 col-md-5 col-lg-4 col-xl-3 mt-5"></span>
                                     <span class="col-sm-12 col-md-7 col-lg-8 col-xl-9 mt-5" id="chassisNoDetection"></span>
@@ -176,6 +179,30 @@
                         <div data-options="region:'center'">
                             <div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
                                 <div title="Thông Tin Pickup">
+                                    <table id="dg" style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th data-options="field:'id',align:'right',halign:'center'" width="5%">
+                                                    ID
+                                                </th>
+                                                <th data-options="field:'containerNo',align:'right',halign:'center'" width="5%">
+                                                    Container
+                                                </th>
+                                                <th data-options="field:'truckNo',halign:'center',resizable:true" sortable="true" width="20%">
+                                                    Xe Đầu Kéo
+                                                </th>
+                                                <th data-options="field:'chassisNo',align:'right',halign:'center'" sortable="true" width="15%">
+                                                    Xe Rơ Moóc
+                                                </th>
+                                                <th data-options="field:'gatePass',align:'center'" sortable="true" width="20%">
+                                                    Gate Pass
+                                                </th>
+                                                <th data-options="field:'serviceType',align:'center',formatter: formatServiceType" sortable="true" width="20%">
+                                                    Dịch Vụ
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
                                 </div>
                             </div>
                         </div>
