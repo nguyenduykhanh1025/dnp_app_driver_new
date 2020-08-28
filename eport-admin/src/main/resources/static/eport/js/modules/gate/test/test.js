@@ -23,6 +23,10 @@ $(".right-side__collapse").click(function() {
   $('#right-layout').layout('collapse','south');
 })
 
+$('#dg').datagrid({
+  height: rightHeight - 60
+});
+
 connectToWebsocketServer();
 
 function connectToWebsocketServer() {
@@ -121,7 +125,9 @@ function gateIn() {
     logisticGroupId: $("#logistics").val(),
     driverId: $("#drivers").val(),
     sendOption: $("#sendOption").prop("checked"),
-    receiveOption: $("#receiveOption").prop("checked")
+    receiveOption: $("#receiveOption").prop("checked"),
+    yardPosition1: $("#yardPosition1").val(),
+    yardPosition2: $("#yardPosition2").val(),
   };
   $.modal.loading("Đang tạo dữ liệu mẫu gate-in...");
   $.ajax({
@@ -241,3 +247,82 @@ function checkIn() {
   });
 }
 
+
+function loadTable() {
+  $('#dg').datagrid({
+    url: PREFIX + "/pickupList",
+    method: "POST",
+    height: rightHeight - 60,
+    singleSelect: true,
+    collapsible: true,
+    clientPaging: false,
+    pagination: false,
+    pageSize: 50,
+    nowrap: false,
+    striped: true,
+    loadMsg: " Đang xử lý...",
+    loader: function (param, success, error) {
+      var opts = $(this).datagrid("options");
+      if (!opts.url) return false;
+      $.ajax({
+        type: opts.method,
+        url: opts.url,
+        contentType: "application/json",
+        data: JSON.stringify({
+          truckNo: $('#truckNo').val(),
+          chassisNo: $("#chassisNo").val(),
+        }),
+        success: function (data) {
+          if (data.code == 0) {
+            success(data.pickupList);
+          } else if (data.code == 301) {
+            $.modal.alertWarning(data.msg);
+          } else {
+            $.modal.alertError(data.msg);
+          }
+        },
+        error: function () {
+          error.apply(this, arguments);
+        },
+      });
+    },
+  });
+}
+
+function searchPickup() {
+  loadTable();
+}
+
+function formatServiceType(value, row) {
+  if (row && row.shipment && row.shipment.serviceType) {
+    switch (row.shipment.serviceType) {
+      case 1:
+        return 'Bốc Hàng';
+      case 2:
+        return 'Hạ Rỗng';
+      case 3:
+        return 'Bốc Rỗng';
+      case 4:
+        return 'Hạ Hàng';
+    }
+  } 
+  return '';
+}
+
+function passDataDetection() {
+  if ($("#truckNoDetection").text() && 'empty' != $("#truckNoDetection").text()) {
+    $("#truckNo").val($("#truckNoDetection").text());
+  }
+  
+  if ($("#chassisNoDetection").text() && 'empty' != $("#chassisNoDetection").text()) {
+    $("#chassisNo").val($("#chassisNoDetection").text());
+  }
+  
+  if ($("#container1").text() && 'empty' != $("#container1").text()) {
+    $("#containerSend1").val($("#container1").text());
+  }
+
+  if ($("#container2").text() && 'empty' != $("#container2").text()) {
+    $("#containerSend2").val($("#container2").val());
+  }
+}
