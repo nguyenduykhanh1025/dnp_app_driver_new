@@ -228,6 +228,11 @@ public class GateTestController extends BaseController {
 							pickupHistory2.setLine(positionArr[2]);
 							pickupHistory2.setTier(positionArr[3]);
 						}
+					} else {
+						pickupHistory2.setBlock("");
+						pickupHistory2.setBay("");
+						pickupHistory2.setLine("");
+						pickupHistory2.setTier("");
 					}
 					logger.debug("Create pickup history for drop cont 2: " + new Gson().toJson(pickupHistory2));
 					pickupHistoryService.insertPickupHistory(pickupHistory2);
