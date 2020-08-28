@@ -311,18 +311,18 @@ function formatServiceType(value, row) {
 
 function passDataDetection() {
   if ($("#truckNoDetection").text() && 'empty' != $("#truckNoDetection").text()) {
-    $("#truckNo").val($("#truckNoDetection").text());
+    $("#truckNo").textbox("setText", $("#truckNoDetection").text());
   }
   
   if ($("#chassisNoDetection").text() && 'empty' != $("#chassisNoDetection").text()) {
-    $("#chassisNo").val($("#chassisNoDetection").text());
+    $("#chassisNo").textbox("setText", $("#chassisNoDetection").text());
   }
   
   if ($("#container1").text() && 'empty' != $("#container1").text()) {
-    $("#containerSend1").val($("#container1").text());
+    $("#containerSend1").textbox("setText", $("#container1").text());
   }
 
   if ($("#container2").text() && 'empty' != $("#container2").text()) {
-    $("#containerSend2").val($("#container2").val());
+    $("#containerSend2").textbox("setText", $("#container2").text());
   }
 }
