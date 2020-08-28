@@ -244,6 +244,13 @@ public class GateTestController extends BaseController {
 		
 		if (gateInTestDataReq.getReceiveOption()) {
 			
+			if (StringUtils.isEmpty(gateInTestDataReq.getBlNo())) {
+				String blNo = catosApiService.getBlNoByOrderJobNo(gateInTestDataReq.getOrderJobNo());
+				if (StringUtils.isNotEmpty(blNo)) {
+					gateInTestDataReq.setBlNo(blNo);
+				}
+			}
+			
 			Shipment shipment2 = new Shipment();
 			shipment2.setBlNo(gateInTestDataReq.getBlNo());
 			shipment2.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());

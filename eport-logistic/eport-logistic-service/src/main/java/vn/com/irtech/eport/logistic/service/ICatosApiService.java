@@ -145,4 +145,12 @@ public interface ICatosApiService {
 	 * @return List<ShipmentDetail>
 	 */
 	public List<ShipmentDetail> selectShipmentDetailByJobOrder(String jobOrder);
+	
+	/**
+	 * Get bl no by order job no
+	 * 
+	 * @param jobOrder
+	 * @return
+	 */
+	public String getBlNoByOrderJobNo(String jobOrder);
 }
