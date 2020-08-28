@@ -181,6 +181,17 @@ public class GateTestController extends BaseController {
 				pickupHistory1.setStatus(0);
 				pickupHistory1.setShipmentDetailId(shipmentDetail1.getId());
 				pickupHistory1.setGatePass(gateInTestDataReq.getGatePass());
+				
+				if (StringUtils.isNotEmpty(gateInTestDataReq.getYardPosition1())) {
+					String[] positionArr = gateInTestDataReq.getYardPosition1().split("-");
+					if (positionArr.length == 4) {
+						pickupHistory1.setBlock(positionArr[0]);
+						pickupHistory1.setBay(positionArr[1]);
+						pickupHistory1.setLine(positionArr[2]);
+						pickupHistory1.setTier(positionArr[3]);
+					}
+				}
+				
 				logger.debug("Create pickup history for drop cont 1: " + new Gson().toJson(pickupHistory1));
 				pickupHistoryService.insertPickupHistory(pickupHistory1);
 				
@@ -209,6 +220,15 @@ public class GateTestController extends BaseController {
 					pickupHistory2.setContainerNo(gateInTestDataReq.getContainerSend2());
 					pickupHistory2.setPickupAssignId(pickupAssign2.getId());
 					pickupHistory2.setGatePass(gateInTestDataReq.getGatePass());
+					if (StringUtils.isNotEmpty(gateInTestDataReq.getYardPosition2())) {
+						String[] positionArr = gateInTestDataReq.getYardPosition2().split("-");
+						if (positionArr.length == 4) {
+							pickupHistory2.setBlock(positionArr[0]);
+							pickupHistory2.setBay(positionArr[1]);
+							pickupHistory2.setLine(positionArr[2]);
+							pickupHistory2.setTier(positionArr[3]);
+						}
+					}
 					logger.debug("Create pickup history for drop cont 2: " + new Gson().toJson(pickupHistory2));
 					pickupHistoryService.insertPickupHistory(pickupHistory2);
 					
@@ -411,5 +431,21 @@ public class GateTestController extends BaseController {
 			return ajaxResult;
 		}
 		return AjaxResult.warn("Không tìm thấy tọa độ.");
+	}
+	
+	@PostMapping("/pickupList")
+	@ResponseBody
+	public AjaxResult getPickupList(@RequestBody GateInTestDataReq gateInTestDataReq) {
+		if (StringUtils.isNotEmpty(gateInTestDataReq.getTruckNo()) && StringUtils.isNotEmpty(gateInTestDataReq.getChassisNo())) {
+			PickupHistory pickupHistory = new PickupHistory();
+			pickupHistory.setTruckNo(gateInTestDataReq.getTruckNo());
+			pickupHistory.setChassisNo(gateInTestDataReq.getChassisNo());
+			pickupHistory.setStatus(0);
+			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistory);
+			AjaxResult ajaxResult = AjaxResult.success();
+			ajaxResult.put("pickupList", getDataTable(pickupHistories));
+			return ajaxResult;
+ 		}
+		return AjaxResult.warn("Bạn chưa nhập đủ thông tin tìm kiếm.");
 	}
 }
