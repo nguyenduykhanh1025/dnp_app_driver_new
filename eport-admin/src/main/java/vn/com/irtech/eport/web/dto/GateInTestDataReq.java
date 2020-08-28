@@ -51,6 +51,8 @@ public class GateInTestDataReq  implements Serializable {
     private String yardPosition1;
     
     private String yardPosition2;
+    
+    private String orderJobNo;
 
 	public String getTruckNo() {
 		return truckNo;
@@ -194,6 +196,14 @@ public class GateInTestDataReq  implements Serializable {
 
 	public void setYardPosition2(String yardPosition2) {
 		this.yardPosition2 = yardPosition2;
+	}
+
+	public String getOrderJobNo() {
+		return orderJobNo;
+	}
+
+	public void setOrderJobNo(String orderJobNo) {
+		this.orderJobNo = orderJobNo;
 	}
 	
 }
