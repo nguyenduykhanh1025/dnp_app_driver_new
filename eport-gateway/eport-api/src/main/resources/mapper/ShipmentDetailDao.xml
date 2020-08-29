@@ -399,4 +399,12 @@
 		WHERE PTNR_TYPE = 'CNS'
 		AND ENG_SNM = #{consignee}
 	</select>
+
+	<select id="getblNoByJobOrderNo" parameterType="String" resultType="String">
+		SELECT 
+			BL_NO
+		FROM DNP_UAT.TB_INVENTORY
+		WHERE JOB_ODR_NO2 = #{jobOrdNo2}
+		FETCH NEXT 1 ROWS ONLY
+	</select>
 </mapper>

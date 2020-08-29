@@ -80,12 +80,12 @@ public interface PickupAssignMapper
     /**
      * Get remark pickup_assgin follow batch
      */
-    public String getRemarkFollowBatchByShipmentId(PickupAssign pickupAssign);
+    public PickupAssign getRemarkFollowBatchByShipmentId(PickupAssign pickupAssign);
 
     /**
      * Get remark pickup_assgin follow container
      */
-    public String getRemarkFollowContainerByShipmentDetailId(PickupAssign pickupAssign);
+    public PickupAssign getRemarkFollowContainerByShipmentDetailId(PickupAssign pickupAssign);
 
     /**
      * Select Pickup Assign By Shipment Id

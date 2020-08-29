@@ -95,10 +95,18 @@ $(".left-side__collapse").click(function () {
   }, 200);
 });
 
+
+$('#main-layout').layout({
+  onExpand: function(region){
+      if (region == "west") {
+        hot.render();
+      }
+  }
+})
 function loadTable(div) {
   $(div).datagrid({
     url: ctx + "logistic/transport/list",
-    height: 100,
+    height: $('.main-body').height() - 65,
     singleSelect: true,
     toolbar: toolbar,
     collapsible: true,
@@ -345,7 +353,7 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
 function configHandson() {
   config = {
     stretchH: "all",
-    height: $(document).height() - $(".main-body__search-wrapper").height() - 70,
+    height: $('.main-body').height() - 100,
     minRows: rowAmount,
     maxRows: rowAmount,
     width: "100%",

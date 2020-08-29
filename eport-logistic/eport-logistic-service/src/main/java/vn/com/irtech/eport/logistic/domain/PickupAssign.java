@@ -61,6 +61,14 @@ public class PickupAssign extends BaseEntity
     /** Biển số xe rơ mooc (thuê ngoài) */
     @Excel(name = "Biển số xe rơ mooc (thuê ngoài)")
     private String chassisNo;
+    
+    /** Địa chỉ giao/nhận */
+    @Excel(name = "Địa chỉ giao")
+    private String deliveryAddress;
+    
+    /** Số điện thoại giao/nhận */
+    @Excel(name = "Số điện thoại giao")
+    private String deliveryPhoneNumber;
 
     public void setId(Long id) 
     {
@@ -173,7 +181,23 @@ public class PickupAssign extends BaseEntity
         return chassisNo;
     }
 
-    @Override
+    public String getDeliveryAddress() {
+		return deliveryAddress;
+	}
+
+	public void setDeliveryAddress(String deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
+	}
+
+	public String getDeliveryPhoneNumber() {
+		return deliveryPhoneNumber;
+	}
+
+	public void setDeliveryPhoneNumber(String deliveryPhoneNumber) {
+		this.deliveryPhoneNumber = deliveryPhoneNumber;
+	}
+
+	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
@@ -189,6 +213,8 @@ public class PickupAssign extends BaseEntity
             .append("truckNo", getTruckNo())
             .append("chassisNo", getChassisNo())
             .append("remark", getRemark())
+            .append("deliveryAddress", getDeliveryAddress())
+            .append("deliveryPhoneNumber", getDeliveryPhoneNumber())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())

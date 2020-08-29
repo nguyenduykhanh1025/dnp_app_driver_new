@@ -555,4 +555,65 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	
+	/**
+	 * Get Coordinat Of Containers list by job order no
+	 * 
+	 * @param jobOrder
+	 */
+	public List<ShipmentDetail> getCoordinateOfContainersByJobOrderNo(String jobOrder) {
+		try {
+			String url = Global.getApiUrl() + "/jobOrder/" + jobOrder + "/blNo";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String blNo = restTemplate.getForObject(url, String.class);
+			return getCoordinateOfContainers(blNo);
+		} catch (Exception e) {
+			logger.error("CATOS Api get coordinate by job order no: ", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Select shipment detail by job order
+	 * 
+	 * @param jobOrder
+	 * @return List<ShipmentDetail>
+	 */
+	@Override
+	public List<ShipmentDetail> selectShipmentDetailByJobOrder(String jobOrder) {
+		try {
+			String url = Global.getApiUrl() + "/jobOrder/" + jobOrder + "/blNo";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String blNo = restTemplate.getForObject(url, String.class);
+			return selectShipmentDetailsByBLNo(blNo);
+		} catch (Exception e) {
+			logger.error("CATOS Api get shipment dettail by job order no: ", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Get bl no by order job no
+	 * 
+	 * @param jobOrder
+	 * @return
+	 */
+	@Override
+	public String getBlNoByOrderJobNo(String jobOrder) {
+		try {
+			String url = Global.getApiUrl() + "/jobOrder/" + jobOrder + "/blNo";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			String rs = restTemplate.getForObject(url, String.class);
+			return rs;
+		} catch (Exception e) {
+			logger.error("CATOS Api get shipment dettail by job order no: ", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

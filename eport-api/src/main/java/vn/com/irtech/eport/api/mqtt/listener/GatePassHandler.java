@@ -123,7 +123,6 @@ public class GatePassHandler implements IMqttMessageListener {
 	 * @param gateInFormData
 	 * @param result
 	 */
-	@Transactional
 	private void updatePickupHistory(GateInFormData gateInFormData, String result, String uuId, String status) {
 		// List data response for driver
 		List<DriverDataRes> driverDataRes = new ArrayList<>();
@@ -241,6 +240,7 @@ public class GatePassHandler implements IMqttMessageListener {
 			robotService.updateRobotStatusByUuId(uuId, status);
 		} else if("position_failed".equalsIgnoreCase(result)) {
 			//gateInFormData 
+			int count = 0;
 			for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
 				if (!checkPickupHistoryHasPosition(pickupHistory)) {
 					Map<String, Object> map = new HashMap<>();
@@ -262,12 +262,21 @@ public class GatePassHandler implements IMqttMessageListener {
 						}
 						logger.debug("Check db for position");
 						pickupHistory = pickupHistoryService .selectPickupHistoryById(pickupHistory.getId());
-						gateInFormData.getPickupIn().set(0, pickupHistory);
+						if (StringUtils.isEmpty(pickupHistory.getArea())) {
+							pickupHistory.setArea("");
+						}
+						if (StringUtils.isEmpty(pickupHistory.getBlock())) {
+							pickupHistory.setBlock("");
+						}
+						gateInFormData.getPickupIn().set(count, pickupHistory);
 						if (checkPickupHistoryHasPosition(pickupHistory)) {
 							logger.debug("Pickup has been updated position. Continue to gate-in");
 							break;
 						}
 					}
+					count++;
+				} else {
+					count++;
 				}
 			}
 			

@@ -149,6 +149,7 @@ public class GateTestController extends BaseController {
 				BeanUtils.copyBeanProp(shipment1, shipment);
 				shipment1.setBookingNo("test");
 				shipment1.setServiceType(EportConstants.SERVICE_DROP_FULL);
+				logger.debug("Create shipment for drop cont 1: " + new Gson().toJson(shipment1));
 				shipmentService.insertShipment(shipment1);
 				
 				ShipmentDetail shipmentDetail1 = new ShipmentDetail();
@@ -156,6 +157,7 @@ public class GateTestController extends BaseController {
 				shipmentDetail1.setContainerNo(gateInTestDataReq.getContainerSend1());
 				shipmentDetail1.setBookingNo("test");
 				shipmentDetail1.setShipmentId(shipment1.getId());
+				logger.debug("Create shipment detail for drop cont 1: " + new Gson().toJson(shipmentDetail1));
 				shipmentDetailService.insertShipmentDetail(shipmentDetail1);
 				
 				PickupAssign pickupAssign1 = new PickupAssign();
@@ -165,7 +167,7 @@ public class GateTestController extends BaseController {
 				pickupAssign1.setShipmentDetailId(shipmentDetail1.getId());
 				pickupAssign1.setTruckNo(gateInTestDataReq.getTruckNo());
 				pickupAssign1.setChassisNo(gateInTestDataReq.getChassisNo());
-				
+				logger.debug("Create pickup assign for drop cont 1: " + new Gson().toJson(pickupAssign1));
 				pickupAssignService.insertPickupAssign(pickupAssign1);
 				
 				PickupHistory pickupHistory1 = new PickupHistory();
@@ -177,8 +179,20 @@ public class GateTestController extends BaseController {
 				pickupHistory1.setChassisNo(gateInTestDataReq.getChassisNo());
 				pickupHistory1.setContainerNo(gateInTestDataReq.getContainerSend1());
 				pickupHistory1.setStatus(0);
-				pickupHistory1.setShipmentId(shipmentDetail1.getId());
+				pickupHistory1.setShipmentDetailId(shipmentDetail1.getId());
 				pickupHistory1.setGatePass(gateInTestDataReq.getGatePass());
+				
+				if (StringUtils.isNotEmpty(gateInTestDataReq.getYardPosition1())) {
+					String[] positionArr = gateInTestDataReq.getYardPosition1().split("-");
+					if (positionArr.length == 4) {
+						pickupHistory1.setBlock(positionArr[0]);
+						pickupHistory1.setBay(positionArr[1]);
+						pickupHistory1.setLine(positionArr[2]);
+						pickupHistory1.setTier(positionArr[3]);
+					}
+				}
+				
+				logger.debug("Create pickup history for drop cont 1: " + new Gson().toJson(pickupHistory1));
 				pickupHistoryService.insertPickupHistory(pickupHistory1);
 				
 				logger.debug("Complete prepare data for drop container 1");
@@ -189,20 +203,38 @@ public class GateTestController extends BaseController {
 					shipmentDetail2.setContainerNo(gateInTestDataReq.getContainerSend2());
 					shipmentDetail2.setShipmentId(shipment1.getId());
 					shipmentDetail2.setBookingNo("test");
+					logger.debug("Create shipment detail for drop cont 2: " + new Gson().toJson(shipmentDetail2));
 					shipmentDetailService.insertShipmentDetail(shipmentDetail2);
 					
 					PickupAssign pickupAssign2 = new PickupAssign();
 					BeanUtils.copyBeanProp(pickupAssign2, pickupAssign1);
 					pickupAssign2.setShipmentDetailId(shipmentDetail2.getId());
 					pickupAssign2.setId(null);
+					logger.debug("Create pickup assign for drop cont 2: " + new Gson().toJson(pickupAssign2));
 					pickupAssignService.insertPickupAssign(pickupAssign2);
 					
 					PickupHistory pickupHistory2 = new PickupHistory();
 					BeanUtils.copyBeanProp(pickupHistory2, pickupHistory1);
-					pickupHistory2.setShipmentDetailId(shipmentDetail2.getShipmentId());
+					pickupHistory2.setShipmentDetailId(shipmentDetail2.getId());
 					pickupHistory2.setId(null);
 					pickupHistory2.setContainerNo(gateInTestDataReq.getContainerSend2());
 					pickupHistory2.setPickupAssignId(pickupAssign2.getId());
+					pickupHistory2.setGatePass(gateInTestDataReq.getGatePass());
+					if (StringUtils.isNotEmpty(gateInTestDataReq.getYardPosition2())) {
+						String[] positionArr = gateInTestDataReq.getYardPosition2().split("-");
+						if (positionArr.length == 4) {
+							pickupHistory2.setBlock(positionArr[0]);
+							pickupHistory2.setBay(positionArr[1]);
+							pickupHistory2.setLine(positionArr[2]);
+							pickupHistory2.setTier(positionArr[3]);
+						}
+					} else {
+						pickupHistory2.setBlock("");
+						pickupHistory2.setBay("");
+						pickupHistory2.setLine("");
+						pickupHistory2.setTier("");
+					}
+					logger.debug("Create pickup history for drop cont 2: " + new Gson().toJson(pickupHistory2));
 					pickupHistoryService.insertPickupHistory(pickupHistory2);
 					
 					logger.debug("Complete prepare data for drop container 2");
@@ -212,60 +244,106 @@ public class GateTestController extends BaseController {
 		
 		if (gateInTestDataReq.getReceiveOption()) {
 			
+			if (StringUtils.isEmpty(gateInTestDataReq.getBlNo())) {
+				String blNo = catosApiService.getBlNoByOrderJobNo(gateInTestDataReq.getOrderJobNo());
+				if (StringUtils.isNotEmpty(blNo)) {
+					gateInTestDataReq.setBlNo(blNo);
+				}
+			}
+			
 			Shipment shipment2 = new Shipment();
-			BeanUtils.copyBeanProp(shipment2, shipment);
-			shipment2.setBlNo("test");
+			shipment2.setBlNo(gateInTestDataReq.getBlNo());
+			shipment2.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
 			shipment2.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
-			shipment2.setEdoFlg("0");
-			shipmentService.insertShipment(shipment2);
+			
+			
 			Long contId1 = 0L;
 			Long contId2 = 0L;
-			List<ShipmentDetail> shipmentDetails = catosApiService.selectShipmentDetailsByBLNo(gateInTestDataReq.getBlNo());
-			for (ShipmentDetail shipmentDetail1 : shipmentDetails) {
-				ShipmentDetail shipmentDetail2 = new ShipmentDetail();
-				BeanUtils.copyBeanProp(shipmentDetail2, shipmentDetail1);
-				shipmentDetail2.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-				shipmentDetail2.setFe("F");
-				if (StringUtils.isEmpty(shipmentDetail2.getVslNm())) {
-					shipmentDetail2.setVslNm("test");
-				}
-				
-				if (StringUtils.isEmpty(shipmentDetail2.getVoyNo())) {
-					shipmentDetail2.setVoyNo("test");
-				}
-				
-				if (StringUtils.isEmpty(shipmentDetail2.getOpeCode())) {
-					shipmentDetail2.setOpeCode("test");
-				}
-				
-				if (StringUtils.isEmpty(shipmentDetail2.getSztp())) {
-					shipmentDetail2.setSztp("22G0");
-				}
-				shipmentDetail2.setPaymentStatus("Y");
-				shipmentDetail2.setProcessStatus("Y");
-				shipmentDetail2.setUserVerifyStatus("Y");
-				shipmentDetail2.setStatus(4);
-				shipmentDetail2.setCustomStatus("Y");
-				shipmentDetail2.setDoReceivedTime(new Date());
-				shipmentDetail2.setPreorderPickup("Y");
-				shipmentDetail2.setPrePickupPaymentStatus("Y");
-				shipmentDetail2.setDoStatus("Y");
-				shipmentDetail2.setBlNo(gateInTestDataReq.getBlNo());
-				shipmentDetail2.setShipmentId(shipment2.getId());
-				shipmentDetailService.insertShipmentDetail(shipmentDetail2);
-				if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive1())) {
-					if (shipmentDetail2.getContainerNo().equals(gateInTestDataReq.getContainerReceive1())) {
-						contId1 = shipmentDetail2.getId();
+			Boolean shipmentFound = false;
+			
+			// Check shipment exists
+			List<Shipment> shipments = shipmentService.selectShipmentList(shipment2);
+			if (CollectionUtils.isNotEmpty(shipments)) {
+				shipment2 = shipments.get(0);
+				ShipmentDetail shipmentDetailParam = new ShipmentDetail();
+				shipmentDetailParam.setShipmentId(shipment2.getId());
+				List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetailParam);
+				if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+					for (ShipmentDetail shipmentDetail1 : shipmentDetails) {
+						if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive1())) {
+							if (shipmentDetail1.getContainerNo().equals(gateInTestDataReq.getContainerReceive1())) {
+								contId1 = shipmentDetail1.getId();
+							}
+						}
+						if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive2())) {
+							if (shipmentDetail1.getContainerNo().equals(gateInTestDataReq.getContainerReceive2())) {
+								contId2 = shipmentDetail1.getId();
+							}
+						}
 					}
+					shipmentFound = true;
 				}
-				if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive2())) {
-					if (shipmentDetail2.getContainerNo().equals(gateInTestDataReq.getContainerReceive2())) {
-						contId2 = shipmentDetail2.getId();
+			}
+			
+			if (!shipmentFound) {
+				shipment2.setTaxCode("3123123123");
+				shipment2.setLogisticAccountId(1L);
+				shipment2.setEdoFlg("0");
+				logger.debug("Get container list by B/L No ");
+				List<ShipmentDetail> shipmentDetails = catosApiService.selectShipmentDetailsByBLNo(gateInTestDataReq.getBlNo());
+				shipment2.setContainerAmount(Long.valueOf(shipmentDetails.size()));
+				shipmentService.insertShipment(shipment2);
+				logger.debug("List container: " + new Gson().toJson(shipmentDetails));
+				for (ShipmentDetail shipmentDetail1 : shipmentDetails) {
+					shipmentDetail1.setContainerStatus("");
+					shipmentDetail1.setOpeCode(shipmentDetail1.getOpeCode().substring(0, 3));
+					ShipmentDetail shipmentDetail2 = new ShipmentDetail();
+					BeanUtils.copyBeanProp(shipmentDetail2, shipmentDetail1);
+					shipmentDetail2.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
+					shipmentDetail2.setFe("F");
+					if (StringUtils.isEmpty(shipmentDetail2.getVslNm())) {
+						shipmentDetail2.setVslNm("test");
+					}
+					
+					if (StringUtils.isEmpty(shipmentDetail2.getVoyNo())) {
+						shipmentDetail2.setVoyNo("test");
+					}
+					
+					if (StringUtils.isEmpty(shipmentDetail2.getOpeCode())) {
+						shipmentDetail2.setOpeCode("test");
+					}
+					
+					if (StringUtils.isEmpty(shipmentDetail2.getSztp())) {
+						shipmentDetail2.setSztp("22G0");
+					}
+					shipmentDetail2.setPaymentStatus("Y");
+					shipmentDetail2.setProcessStatus("Y");
+					shipmentDetail2.setUserVerifyStatus("Y");
+					shipmentDetail2.setStatus(4);
+					shipmentDetail2.setCustomStatus("Y");
+					shipmentDetail2.setDoReceivedTime(new Date());
+					shipmentDetail2.setPreorderPickup("Y");
+					shipmentDetail2.setPrePickupPaymentStatus("Y");
+					shipmentDetail2.setDoStatus("Y");
+					shipmentDetail2.setBlNo(gateInTestDataReq.getBlNo());
+					shipmentDetail2.setShipmentId(shipment2.getId());
+					shipmentDetailService.insertShipmentDetail(shipmentDetail2);
+					if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive1())) {
+						if (shipmentDetail2.getContainerNo().equals(gateInTestDataReq.getContainerReceive1())) {
+							contId1 = shipmentDetail2.getId();
+						}
+					}
+					if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive2())) {
+						if (shipmentDetail2.getContainerNo().equals(gateInTestDataReq.getContainerReceive2())) {
+							contId2 = shipmentDetail2.getId();
+						}
 					}
 				}
 			}
 			
+			
 			if ("1".equals(gateInTestDataReq.getContainerFlg())) {
+				
 				if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive1())) {
 					logger.debug("Pick container 1: " + gateInTestDataReq.getContainerReceive1());
 					
@@ -288,7 +366,7 @@ public class GateTestController extends BaseController {
 					pickupHistory1.setChassisNo(gateInTestDataReq.getChassisNo());
 					pickupHistory1.setContainerNo(gateInTestDataReq.getContainerReceive1());
 					pickupHistory1.setStatus(0);
-					pickupHistory1.setShipmentId(contId1);
+					pickupHistory1.setShipmentDetailId(contId1);
 					pickupHistory1.setGatePass(gateInTestDataReq.getGatePass());
 					pickupHistoryService.insertPickupHistory(pickupHistory1);
 					
@@ -309,7 +387,7 @@ public class GateTestController extends BaseController {
 						pickupHistory2.setPickupAssignId(pickupAssign2.getId());
 						pickupHistoryService.insertPickupHistory(pickupHistory2);
 						
-						logger.debug("Complete prepare data for drop container 2");
+						logger.debug("Complete prepare data for pick container 2");
 					}
 				}
 			} else {
@@ -336,14 +414,12 @@ public class GateTestController extends BaseController {
 				}
 			}
 		}
-		
-		
 		return success();
 	}
 	
 	@GetMapping("/blNo/{blNo}/yardPosition")
 	@ResponseBody
-	public AjaxResult getYardPosition(@PathVariable String blNo) {
+	public AjaxResult getYardPositionByBlNo(@PathVariable String blNo) {
 		AjaxResult ajaxResult = AjaxResult.success();
 		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainers(blNo);
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
@@ -353,5 +429,35 @@ public class GateTestController extends BaseController {
 			return ajaxResult;
 		}
 		return AjaxResult.warn("Không tìm thấy tọa độ.");
+	}
+	
+	@GetMapping("/jobOrder/{jobOrder}/yardPosition")
+	@ResponseBody
+	public AjaxResult getYardPositionByJobOrder(@PathVariable("jobOrder") String jobOrder) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		List<ShipmentDetail> shipmentDetails = catosApiService.getCoordinateOfContainersByJobOrderNo(jobOrder);
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			List<ShipmentDetail> coordinates = new ArrayList<>(shipmentDetails);
+			List<ShipmentDetail[][]> bay = shipmentDetailService.getContPosition(coordinates, shipmentDetails);
+			ajaxResult.put("bayList", bay);
+			return ajaxResult;
+		}
+		return AjaxResult.warn("Không tìm thấy tọa độ.");
+	}
+	
+	@PostMapping("/pickupList")
+	@ResponseBody
+	public AjaxResult getPickupList(@RequestBody GateInTestDataReq gateInTestDataReq) {
+		if (StringUtils.isNotEmpty(gateInTestDataReq.getTruckNo()) && StringUtils.isNotEmpty(gateInTestDataReq.getChassisNo())) {
+			PickupHistory pickupHistory = new PickupHistory();
+			pickupHistory.setTruckNo(gateInTestDataReq.getTruckNo());
+			pickupHistory.setChassisNo(gateInTestDataReq.getChassisNo());
+			pickupHistory.setStatus(0);
+			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistory);
+			AjaxResult ajaxResult = AjaxResult.success();
+			ajaxResult.put("pickupList", getDataTable(pickupHistories));
+			return ajaxResult;
+ 		}
+		return AjaxResult.warn("Bạn chưa nhập đủ thông tin tìm kiếm.");
 	}
 }

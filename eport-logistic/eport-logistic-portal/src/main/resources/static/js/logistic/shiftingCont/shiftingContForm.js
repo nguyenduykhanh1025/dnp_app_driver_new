@@ -19,6 +19,7 @@ function closeForm() {
 }
 
 var index = 0;
+console.log(bayList);
 bayList.forEach(function(bay) {
     let level = 1;
     let str = '<div class="bayPosition">';

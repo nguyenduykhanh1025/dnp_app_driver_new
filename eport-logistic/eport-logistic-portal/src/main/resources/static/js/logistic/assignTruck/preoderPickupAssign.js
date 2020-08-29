@@ -80,16 +80,26 @@ function loadDriver(shipmentId){
 
 function loadRemarkFollowContainer(shipmentDetailId){
     $('#remark').val('');
+    $('#deliveryAddress').val('');
+    $('#deliveryPhoneNumber').val('');
+    $.modal.loading("Đang xử lý ...");
     $.ajax({
         url: prefix + "/remark/container/" + shipmentDetailId,
         method: "GET",
         success: function (data) {
+        	$.modal.closeLoading();
             if (data.code == 0) {
                 if(data.remark){
                     $('#remark').val(data.remark);
+                    $('#deliveryAddress').val(data.deliveryAddress);
+                    $('#deliveryPhoneNumber').val(data.deliveryPhoneNumber);
                 }
             }
-        }
+        },
+        error: function () {
+        	$.modal.closeLoading();
+            $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng liên hệ admin.");
+        },
     });
 }
 
@@ -161,6 +171,8 @@ function saveAssignPreorderPickup(){
             object.fullName = rows[i].fullName;
             object.phoneNumber = rows[i].mobileNumber;
             object.remark = $('#remark').val();
+            object.deliveryAddress = $('#deliveryAddress').val();
+            object.deliveryPhoneNumber = $('#deliveryPhoneNumber').val();
             pickupAssigns.push(object);
         }
     }
@@ -171,19 +183,22 @@ function saveAssignPreorderPickup(){
                 pickupAssigns.push(outsources[i])
             }
         }
+        $.modal.loading("Đang xử lý ...");
         $.ajax({
             url: prefix + "/savePickupAssignFollowContainer",
             method: "post",
             contentType: "application/json",
             data: JSON.stringify(pickupAssigns),
             success: function(result){
+            	$.modal.closeLoading();
                 if(result.code == 0){
                     $.modal.msgSuccess(result.msg);
                 }else{
                     $.modal.msgError(result.msg);
                 }
             },
-            error: function (result) {
+            error: function () {
+            	$.modal.closeLoading();
                 $.modal.alertError("Có lỗi trong quá trình lưu dữ liệu, vui lòng liên hệ admin.");
             },
         })
@@ -207,17 +222,23 @@ function finishAssignTruck(msg) {
  var config;
  var outsources = [];
  function loadOutSource(shipmentDetailId) {
+	$.modal.loading("Đang xử lý ...");
     $.ajax({
         url: prefix + "/out-source/container/" + shipmentDetailId,
         method: "GET",
         success: function (data) {
+        	$.modal.closeLoading();
             if (data.code == 0) {
                 hot.destroy();
                 hot = new Handsontable(dogrid, config);
                 hot.loadData(data.outSourceList);
                 hot.render();
             }
-        }
+        },
+        error: function () {
+        	$.modal.closeLoading();
+            $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng liên hệ admin.");
+        },
     });
 }
 // CONFIGURATE HANDSONTABLE
@@ -280,10 +301,12 @@ function onChange(changes, source) {
     }
     changes.forEach(function (change) {
         if (change[1] == "driverOwner" && change[3] != null && change[3] != '') {
+        	$.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/owner/"+ change[3] +"/driver-phone-list",
                 method: "GET",
                 success: function (data) {
+                	$.modal.closeLoading();
                     if (data.code == 0) {
                         hot.updateSettings({
                             cells: function (row, col, prop) {
@@ -295,19 +318,29 @@ function onChange(changes, source) {
                             }
                         });
                     }
-                }
+                },
+                error: function () {
+                	$.modal.closeLoading();
+                    $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng liên hệ admin.");
+                },
             });
         } else if (change[1] == "phoneNumber" && change[3] != null && change[3] != '') {
+        	$.modal.loading("Đang xử lý ...");
             $.ajax({
                 url: prefix + "/driver-phone/" + change[3] + "/infor",
                 method: "GET",
                 success: function (data) {
+                	$.modal.closeLoading();
                     if (data.code == 0) {
                         hot.setDataAtCell(change[0], 2, data.pickupAssign.fullName);
                         hot.setDataAtCell(change[0], 3, data.pickupAssign.truckNo);
                         hot.setDataAtCell(change[0], 4, data.pickupAssign.chassisNo);
                     }
-                }
+                },
+                error: function () {
+                	$.modal.closeLoading();
+                    $.modal.alertError("Có lỗi trong quá trình tải dữ liệu, vui lòng liên hệ admin.");
+                },
             });
         }
     });

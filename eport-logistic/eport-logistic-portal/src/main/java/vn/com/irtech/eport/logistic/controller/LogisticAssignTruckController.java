@@ -591,9 +591,13 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		PickupAssign pickupAssign = new PickupAssign();
 		pickupAssign.setShipmentId(shipmentId);
 		pickupAssign.setLogisticGroupId(getUser().getGroupId());
-		String remark = pickupAssignService.getRemarkFollowBatchByShipmentId(pickupAssign);
+		PickupAssign result = pickupAssignService.getRemarkFollowBatchByShipmentId(pickupAssign);
 		AjaxResult ajaxResult = success();
-		ajaxResult.put("remark", remark);
+		if(result != null) {
+			ajaxResult.put("remark", result.getRemark());
+			ajaxResult.put("deliveryAddress", result.getDeliveryAddress());
+			ajaxResult.put("deliveryPhoneNumber", result.getDeliveryPhoneNumber());
+		}
 		return ajaxResult;
 	}
 
@@ -607,9 +611,13 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 		PickupAssign pickupAssign = new PickupAssign();
 		pickupAssign.setShipmentDetailId(shipmentDetailId);
 		pickupAssign.setLogisticGroupId(getUser().getGroupId());
-		String remark = pickupAssignService.getRemarkFollowContainerByShipmentDetailId(pickupAssign);
+		PickupAssign result = pickupAssignService.getRemarkFollowContainerByShipmentDetailId(pickupAssign);
 		AjaxResult ajaxResult = success();
-		ajaxResult.put("remark", remark);
+		if(result != null) {
+			ajaxResult.put("remark", result.getRemark());
+			ajaxResult.put("deliveryAddress", result.getDeliveryAddress());
+			ajaxResult.put("deliveryPhoneNumber", result.getDeliveryPhoneNumber());
+		}
 		return ajaxResult;
 	}
 }

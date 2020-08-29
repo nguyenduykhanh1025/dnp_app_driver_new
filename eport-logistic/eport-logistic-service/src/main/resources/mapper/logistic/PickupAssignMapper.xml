@@ -18,13 +18,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="truckNo"    column="truck_no"    />
         <result property="chassisNo"    column="chassis_no"    />
         <result property="remark"    column="remark"    />
+        <result property="deliveryAddress"    column="delivery_address"    />
+        <result property="deliveryPhoneNumber"    column="delivery_phone_number"    />
         <result property="createBy"    column="create_by"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
     <sql id="selectPickupAssignVo">
-        select id, logistic_group_id, shipment_id, driver_id, shipment_detail_id, external_flg, external_secret_code, driver_owner, phone_number, full_name, truck_no, chassis_no, remark, create_by, create_time, update_by, update_time from pickup_assign
+        select id, logistic_group_id, shipment_id, driver_id, shipment_detail_id, external_flg, external_secret_code, driver_owner, phone_number, full_name, truck_no, chassis_no, remark, delivery_address, delivery_phone_number, create_by, create_time, update_by, update_time from pickup_assign
     </sql>
 
     <select id="selectPickupAssignList" parameterType="PickupAssign" resultMap="PickupAssignResult">
@@ -68,6 +70,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="truckNo != null  and truckNo != ''">truck_no,</if>
             <if test="chassisNo != null  and chassisNo != ''">chassis_no,</if>
             <if test="remark != null  and remark != ''">remark,</if>
+            <if test="deliveryAddress != null  and deliveryAddress != ''">delivery_address,</if>
+            <if test="deliveryPhoneNumber != null  and deliveryPhoneNumber != ''">delivery_phone_number,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
          </trim>
@@ -85,6 +89,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="truckNo != null  and truckNo != ''">#{truckNo},</if>
             <if test="chassisNo != null  and chassisNo != ''">#{chassisNo},</if>
             <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="deliveryAddress != null  and deliveryAddress != ''">#{deliveryAddress},</if>
+            <if test="deliveryPhoneNumber != null  and deliveryPhoneNumber != ''">#{deliveryPhoneNumber},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
          </trim>
@@ -105,6 +111,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="truckNo != null  and truckNo != ''">truck_no = #{truckNo},</if>
             <if test="chassisNo != null  and chassisNo != ''">chassis_no = #{chassisNo},</if>
             <if test="remark != null  and remark != ''">remark = #{remark},</if>
+            <if test="deliveryAddress != null  and deliveryAddress != ''">delivery_address = #{deliveryAddress},</if>
+            <if test="deliveryPhoneNumber != null  and deliveryPhoneNumber != ''">delivery_phone_number = #{deliveryPhoneNumber},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
         </trim>
@@ -187,9 +195,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         order by a.create_time desc
     </select>
 
-    <select id ="getRemarkFollowBatchByShipmentId" parameterType="PickupAssign" resultType="String">
-        select remark
-        from pickup_assign
+    <select id ="getRemarkFollowBatchByShipmentId" parameterType="PickupAssign" resultMap="PickupAssignResult">
+        <include refid="selectPickupAssignVo"/>
         <where>  
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
@@ -206,9 +213,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY
     </select>
 
-    <select id ="getRemarkFollowContainerByShipmentDetailId" parameterType="PickupAssign" resultType="String">
-        select remark
-        from pickup_assign
+    <select id ="getRemarkFollowContainerByShipmentDetailId" parameterType="PickupAssign" resultMap="PickupAssignResult">
+        <include refid="selectPickupAssignVo"/>
         <where>  
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>

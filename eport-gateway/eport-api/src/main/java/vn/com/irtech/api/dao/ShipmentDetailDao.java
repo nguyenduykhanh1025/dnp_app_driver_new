@@ -107,4 +107,12 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return String
 	 */
 	public String getTaxCodeBySnmGroupName(String consignee);
+	
+	/**
+	 * Get bl no by job order no 2
+	 * 
+	 * @param jobOrdNo2
+	 * @return String
+	 */
+	public String getblNoByJobOrderNo(String jobOrdNo2);
 }

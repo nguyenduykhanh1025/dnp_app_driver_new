@@ -37,7 +37,6 @@ public class GateDetectionController extends BaseController {
 	private MqttService mqttService;
 	
 	@PostMapping("/detection")
-	@ResponseBody
 	public AjaxResult submitDectionInfo(@Validated @RequestBody DetectionInfo detectionInfo) {
 		
 		String detectJson = new Gson().toJson(detectionInfo);
@@ -49,6 +48,9 @@ public class GateDetectionController extends BaseController {
 		MeasurementDataReq measurementDataReq = new MeasurementDataReq();
 		measurementDataReq.setTruckNo(detectionInfo.getTruckNo());
 		measurementDataReq.setChassisNo(detectionInfo.getChassisNo());
+		if (detectionInfo.getWgt() != null) {
+			measurementDataReq.setWeight(detectionInfo.getWgt().toString());
+		}
 		// If detect container 1
 		if (StringUtils.isNotEmpty(detectionInfo.getContainerNo1())) {
 			measurementDataReq.setContNo(detectionInfo.getContainerNo1());
@@ -61,6 +63,9 @@ public class GateDetectionController extends BaseController {
 			measurementDataReq2.setTruckNo(detectionInfo.getTruckNo());
 			measurementDataReq2.setChassisNo(detectionInfo.getChassisNo());
 			measurementDataReq2.setContNo(detectionInfo.getContainerNo2());
+			if (detectionInfo.getWgt() != null) {
+				measurementDataReq2.setWeight(detectionInfo.getWgt().toString());
+			}
 			measurementDataReqs.add(measurementDataReq2);
 		}
 		CheckinReq checkinReq = new CheckinReq();
