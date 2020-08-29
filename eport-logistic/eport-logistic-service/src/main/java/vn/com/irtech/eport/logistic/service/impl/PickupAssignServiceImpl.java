@@ -113,12 +113,12 @@ public class PickupAssignServiceImpl implements IPickupAssignService {
     }
 
     @Override
-    public String getRemarkFollowBatchByShipmentId(PickupAssign pickupAssign) {
+    public PickupAssign getRemarkFollowBatchByShipmentId(PickupAssign pickupAssign) {
         return pickupAssignMapper.getRemarkFollowBatchByShipmentId(pickupAssign);
     }
 
     @Override
-    public String getRemarkFollowContainerByShipmentDetailId(PickupAssign pickupAssign) {
+    public PickupAssign getRemarkFollowContainerByShipmentDetailId(PickupAssign pickupAssign) {
         return pickupAssignMapper.getRemarkFollowContainerByShipmentDetailId(pickupAssign);
     }
 
