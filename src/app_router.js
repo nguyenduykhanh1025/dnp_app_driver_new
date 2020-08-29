@@ -73,7 +73,7 @@ class AppAppContainer extends React.Component {
         this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
             const { title, body } = notificationOpen.notification;
             //console.log(notificationOpen.notification)
-            this.props.dispatch(setNoti(5))
+            //this.props.dispatch(setNoti(5))
             NavigationService.navigate(homeTab.notification)
         });
       
@@ -84,7 +84,6 @@ class AppAppContainer extends React.Component {
         }
       
         this.messageListener = firebase.messaging().onMessage((message) => {
-          console.log('121212');
         });
     }
 
@@ -125,7 +124,7 @@ class AppAppContainer extends React.Component {
         
             // (required) Called when a remote is received or opened, or local notification is opened
             onNotification: (notification) => {
-            this.props.dispatch(setNoti(5))
+            //this.props.dispatch(setNoti(5))
             //console.log("NOTIFICATION:", notification);
             //NavigationService.navigate(homeTab.notification)
         
