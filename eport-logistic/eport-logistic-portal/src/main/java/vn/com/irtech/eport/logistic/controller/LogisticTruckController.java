@@ -60,8 +60,11 @@ public class LogisticTruckController extends LogisticBaseController
      * AddLogisticTruck
      */
     @GetMapping("/add")
-    public String add()
+    public String add(ModelMap mmap)
     {
+        
+        String groupName = getGroup().getGroupName();
+        mmap.put("groupName", groupName);
         return prefix + "/add";
     }
 
@@ -87,6 +90,8 @@ public class LogisticTruckController extends LogisticBaseController
     {
         LogisticTruck logisticTruck = logisticTruckService.selectLogisticTruckById(id);
         mmap.put("logisticTruck", logisticTruck);
+        String groupName = getGroup().getGroupName();
+        mmap.put("groupName", groupName);
         return prefix + "/edit";
     }
 
