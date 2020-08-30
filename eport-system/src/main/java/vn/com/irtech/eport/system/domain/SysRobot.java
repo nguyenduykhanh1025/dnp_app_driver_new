@@ -65,6 +65,8 @@ public class SysRobot extends BaseEntity {
 	private Date responseTime;
 
 	private Integer serviceType;
+	
+	private Integer disabled;
 
 	public Long getId() {
 		return id;
@@ -184,6 +186,14 @@ public class SysRobot extends BaseEntity {
 
 	public void setServiceType(Integer serviceType) {
 		this.serviceType = serviceType;
+	}
+
+	public Integer getDisabled() {
+		return disabled;
+	}
+
+	public void setDisabled(Integer disabled) {
+		this.disabled = disabled;
 	}
 
 	@Override

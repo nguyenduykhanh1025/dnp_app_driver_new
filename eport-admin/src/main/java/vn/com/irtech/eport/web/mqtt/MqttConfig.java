@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.api.config;
+package vn.com.irtech.eport.web.mqtt;
 
 import java.util.Map;
 
@@ -85,11 +85,11 @@ public class MqttConfig {
 	private String getConnectClientId() {
 		Map<String, String> env = System.getenv();
 		if (env.containsKey("COMPUTERNAME"))
-			return "API-" + env.get("COMPUTERNAME");
+			return "Admin-" + env.get("COMPUTERNAME");
 		else if (env.containsKey("HOSTNAME"))
-			return "API-"+ env.get("HOSTNAME");
+			return "Admin-"+ env.get("HOSTNAME");
 		else
-			return "API-" + System.currentTimeMillis();
+			return "Admin-" + System.currentTimeMillis();
 	}
 
 	@Bean
