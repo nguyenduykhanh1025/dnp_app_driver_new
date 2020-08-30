@@ -10,6 +10,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,10 +59,28 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 	@Autowired
 	private ConfigService configService;
+	@Autowired
+	@Qualifier("threadPoolTaskExecutor")
+	private TaskExecutor executor;
 
 	@Override
-	@Transactional
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					processMessage(topic, message);
+				} catch (Exception e) {
+					logger.error("Error while process mq message", e);
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+
+	@Transactional
+	private void processMessage(String topic, MqttMessage message) throws Exception {
 		logger.info("Receive message subject : " + topic);
 		String messageContent = new String(message.getPayload());
 		logger.info("Receive message content : " + messageContent);
@@ -81,10 +101,8 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 		// Get status
 		String status = map.get("status") == null ? null : map.get("status").toString();
-
 		// Get ip
 		String ipAddress = map.get("ipAddress") == null ? null : map.get("ipAddress").toString();
-
 		// Get services robot support
 		Boolean isReceiveContFullOrder = "1".equals(
 				map.get("isReceiveContFullOrder") == null ? null : map.get("isReceiveContFullOrder").toString());

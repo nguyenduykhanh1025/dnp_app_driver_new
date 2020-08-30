@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.framework.config;
+package vn.com.irtech.eport.web.mqtt;
 
 import java.util.Map;
 

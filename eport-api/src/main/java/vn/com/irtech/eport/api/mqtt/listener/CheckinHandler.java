@@ -12,6 +12,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,15 +55,16 @@ public class CheckinHandler implements IMqttMessageListener {
 
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
-
 	@Autowired
 	private ISysRobotService robotService;
-
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
-
 	@Autowired
 	private ICatosApiService catosApiService;
+	@Autowired
+	@Qualifier("threadPoolTaskExecutor")
+	private TaskExecutor executor;
+	
 	// time wait mc input postion
 	private static final Long TIME_OUT_WAIT_MC = 2000L;
 	// loop for 2 minutes
@@ -69,9 +72,22 @@ public class CheckinHandler implements IMqttMessageListener {
 
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					processMessage(topic, message);
+				} catch (Exception e) {
+					logger.error("Error while process CheckIn message", e);
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	private void processMessage(String topic, MqttMessage message) throws Exception {
 		String messageContent = new String(message.getPayload());
 		logger.info(String.format("Receive message topic: [%s], content: %s", topic, messageContent));
-
 		CheckinReq checkinReq = null;
 		// extract gateId from toppic
 		String gateId = topic.replace(MqttConsts.BASE_TOPIC + "/gate/", "").replace("/request", "");
