@@ -28,7 +28,7 @@ public class MqttConfig {
 	private String password;
 	@Value("${mqtt.qos:0}")
 	private Integer qos;
-	@Value("${mqtt.clientId:''}")
+	@Value("${mqtt.clientId:}")
 	private String clientId;
 	// connection configuration
 	@Value("${mqtt.maxInFlight:10000}")
