@@ -68,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectProcessOrderVo">
         select id, shipment_id, logistic_group_id, service_type, invoice_no, pay_type, sztp, modee, consignee, truck_co, 
         tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, 
-        result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, post_process_id, runnable, order_no, domestic_flg, booking_create_mode, booking_index, process_data, fe, opr, pol, pod, cargo_type, from process_order
+        result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, post_process_id, runnable, order_no, domestic_flg, booking_create_mode, booking_index, process_data, fe, opr, pol, pod, cargo_type from process_order
     </sql>
 
     <select id="selectProcessOrderList" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
@@ -212,11 +212,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="processData != null and processData != ''">process_data,</if>
             <if test="domesticFlg != null">domestic_flg,</if>
             <if test="bookingCreateMode != null">booking_create_mode,</if>
-            <if test="fe != null || fe != ''">fe,</if>
-            <if test="opr != null || opr != ''">opr,</if>
-            <if test="pol != null || pol != ''">pol,</if>
-            <if test="pod != null || pod != ''">pod,</if>
-            <if test="cargoType != null || cargoType != ''">cargo_type,</if>
+            <if test="fe != null and fe != ''">fe,</if>
+            <if test="opr != null and opr != ''">opr,</if>
+            <if test="pol != null and pol != ''">pol,</if>
+            <if test="pod != null and pod != ''">pod,</if>
+            <if test="cargoType != null and cargoType != ''">cargo_type,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
          </trim>
@@ -253,11 +253,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="domesticFlg != null">#{domesticFlg},</if>
             <if test="bookingCreateMode != null">#{bookingCreateMode},</if>
             <if test="bookingIndex != null">#{bookingIndex},</if>
-            <if test="fe != null || fe != ''">#{fe},</if>
-            <if test="opr != null || opr != ''">#{opr},</if>
-            <if test="pol != null || pol != ''">#{pol},</if>
-            <if test="pod != null || pod != ''">#{pod},</if>
-            <if test="cargoType != null || cargoType != ''">#{cargoType},</if>
+            <if test="fe != null and fe != ''">#{fe},</if>
+            <if test="opr != null and opr != ''">#{opr},</if>
+            <if test="pol != null and pol != ''">#{pol},</if>
+            <if test="pod != null and pod != ''">#{pod},</if>
+            <if test="cargoType != null and cargoType != ''">#{cargoType},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
          </trim>
@@ -298,11 +298,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="domesticFlg != null">domestic_flg = #{domesticFlg},</if>
             <if test="bookingCreateMode != null">booking_create_mode = #{bookingCreateMode},</if>
             <if test="bookingIndex != null">booking_index = #{bookingIndex},</if>
-            <if test="fe != null || fe != ''">fe = #{fe},</if>
-            <if test="opr != null || opr != ''">opr = #{opr},</if>
-            <if test="pol != null || pol != ''">pol = #{pol},</if>
-            <if test="pod != null || pod != ''">pod = #{pod},</if>
-            <if test="cargoType != null || cargoType != ''">cargo_type = #{bookingIndex},</if>
+            <if test="fe != null and fe != ''">fe = #{fe},</if>
+            <if test="opr != null and opr != ''">opr = #{opr},</if>
+            <if test="pol != null and pol != ''">pol = #{pol},</if>
+            <if test="pod != null and pod != ''">pod = #{pod},</if>
+            <if test="cargoType != null and cargoType != ''">cargo_type = #{bookingIndex},</if>
             update_time = sysdate
         </trim>
         where id = #{id}
