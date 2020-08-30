@@ -190,6 +190,7 @@ function loadTable(msg) {
                   data: shipmentSearch
                 }),
                 success: function (data) {
+                    console.log(data);
                     success(data);
                     $("#dg").datagrid("hideColumn", "id");
                 },
