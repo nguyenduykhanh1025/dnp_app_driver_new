@@ -2,7 +2,6 @@ var prefix = ctx + "logistic/logisticTruck"
 $("#form-truck-add").validate({
     focusCleanup: true
 });
-
 function submitHandler() {
     if ($.validate.form()) {
         $.ajax({
@@ -46,3 +45,14 @@ function save(url, data) {
         }
     })
 }
+
+$( "#type" ).change(function() {
+    if($( "#type" ).val() == 1)
+    {
+        $( "#wgt" ).prop( "disabled", false );
+        $( "#gatepass" ).prop( "disabled", true ); 
+    }else {
+        $( "#wgt" ).prop( "disabled", true );
+        $( "#gatepass" ).prop( "disabled", false );
+    }
+});

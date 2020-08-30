@@ -120,7 +120,7 @@ function addTruck() {
     $(function() {
 	      var options = {
 	        createUrl: prefix + "/add",
-	        modalName: "Đội Xe"
+          modalName: "Đội Xe"
 	      };
 	      $.table.init(options);
 	    });
