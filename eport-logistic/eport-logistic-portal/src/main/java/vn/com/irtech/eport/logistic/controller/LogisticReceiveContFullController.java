@@ -36,8 +36,10 @@ import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
+import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
@@ -45,7 +47,9 @@ import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.listener.MqttService.NotificationCode;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -94,6 +98,12 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	
 	@Autowired
 	private IEdoHouseBillService edoHouseBillService;
+	
+	@Autowired
+	private IDriverAccountService driverAccountService;
+	
+	@Autowired
+	private IPickupAssignService pickupAssignService;
 	
 	@GetMapping()
 	public String receiveContFull(ModelMap mmap) {
@@ -216,6 +226,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 
 	@Log(title = "Thêm Lô Bốc Hàng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment")
+	@Transactional
 	@ResponseBody
 	public AjaxResult addShipment(Shipment shipment) {
 		//check MST 
@@ -244,6 +255,25 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		shipment.setStatus("1");
 		if (shipmentService.insertShipment(shipment) == 1) {
+			// assign driver default
+			PickupAssign pickupAssign = new PickupAssign();
+			pickupAssign.setLogisticGroupId(getUser().getGroupId());
+			pickupAssign.setShipmentId(shipment.getId());
+			//list driver
+			DriverAccount driverAccount = new DriverAccount();
+			driverAccount.setLogisticGroupId(getUser().getGroupId());
+			driverAccount.setDelFlag(false);
+			driverAccount.setStatus("0");
+			List<DriverAccount> driverAccounts = driverAccountService.selectDriverAccountList(driverAccount);
+			if(driverAccounts.size() > 0) {
+				for(DriverAccount i : driverAccounts) {
+					pickupAssign.setDriverId(i.getId());
+					pickupAssign.setFullName(i.getFullName());
+					pickupAssign.setPhoneNumber(i.getMobileNumber());
+					pickupAssign.setCreateBy(getUser().getFullName());
+					pickupAssignService.insertPickupAssign(pickupAssign);
+				}
+			}
 			return success("Thêm lô thành công");
 		}
 		return error("Thêm lô thất bại");
