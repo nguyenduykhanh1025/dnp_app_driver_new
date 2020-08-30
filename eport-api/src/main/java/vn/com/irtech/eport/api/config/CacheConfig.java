@@ -34,7 +34,6 @@ public class CacheConfig {
     /**
      * Cache manager implemented using Ehcache
      */
-//    @Bean
     public EhCacheManager getEhCacheManager()
     {
         net.sf.ehcache.CacheManager cacheManager = net.sf.ehcache.CacheManager.getCacheManager("eport");
@@ -81,8 +80,6 @@ public class CacheConfig {
      *
      * @return
      */
-//    @Bean
-//    @ConditionalOnMissingBean(name = "redisTemplate")
     public RedisCacheManager getRedisCacheManager()
     {
         RedisCacheManager redisCacheManager = new RedisCacheManager();

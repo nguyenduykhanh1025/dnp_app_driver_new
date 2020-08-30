@@ -1,40 +1,8 @@
-package vn.com.irtech.eport.quartz.task;
+package vn.com.irtech.eport.web.task;
 
-import vn.com.irtech.eport.carrier.domain.CarrierGroup;
-import vn.com.irtech.eport.carrier.domain.Edo;
-import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
-import vn.com.irtech.eport.carrier.domain.EdoHistory;
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
-import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
-import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
-import vn.com.irtech.eport.carrier.service.IEdoService;
-import vn.com.irtech.eport.common.core.domain.AjaxResult;
-import vn.com.irtech.eport.framework.firebase.service.FirebaseService;
-import vn.com.irtech.eport.framework.mail.service.MailService;
-import vn.com.irtech.eport.framework.web.service.ConfigService;
-import vn.com.irtech.eport.framework.web.service.MqttService;
-import vn.com.irtech.eport.framework.web.service.WebSocketService;
-import vn.com.irtech.eport.framework.web.service.MqttService.NotificationCode;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
-import vn.com.irtech.eport.logistic.service.IProcessOrderService;
-import vn.com.irtech.eport.system.domain.SysNotification;
-import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
-import vn.com.irtech.eport.system.domain.SysRobot;
-import vn.com.irtech.eport.system.domain.SysUserToken;
-import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
-import vn.com.irtech.eport.system.service.ISysNotificationService;
-import vn.com.irtech.eport.system.service.ISysRobotService;
-import vn.com.irtech.eport.system.service.ISysUserTokenService;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,19 +19,34 @@ import org.springframework.stereotype.Component;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 
+import vn.com.irtech.eport.carrier.domain.CarrierGroup;
+import vn.com.irtech.eport.carrier.domain.EdoHistory;
+import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
+import vn.com.irtech.eport.carrier.service.IEdoHistoryService;
+import vn.com.irtech.eport.common.core.domain.AjaxResult;
+import vn.com.irtech.eport.framework.firebase.service.FirebaseService;
+import vn.com.irtech.eport.framework.mail.service.MailService;
+import vn.com.irtech.eport.framework.web.service.ConfigService;
+import vn.com.irtech.eport.framework.web.service.WebSocketService;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
+import vn.com.irtech.eport.system.domain.SysNotification;
+import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
+import vn.com.irtech.eport.system.domain.SysRobot;
+import vn.com.irtech.eport.system.domain.SysUserToken;
+import vn.com.irtech.eport.system.service.ISysNotificationReceiverService;
+import vn.com.irtech.eport.system.service.ISysRobotService;
+import vn.com.irtech.eport.system.service.ISysUserTokenService;
+import vn.com.irtech.eport.web.mqtt.MqttService;
+import vn.com.irtech.eport.web.mqtt.MqttService.NotificationCode;
+
 @Component("eportTask")
 public class EportTask {
 
     private static final Logger logger = LoggerFactory.getLogger(EportTask.class);
 
     @Autowired
-    private IEdoService edoService;
-
-    @Autowired
     private IEdoHistoryService edoHistoryService;
-
-    @Autowired
-    private IEdoAuditLogService edoAuditLogService;
 
     @Autowired
     private ICarrierGroupService carrierGroupService;
@@ -93,88 +76,10 @@ public class EportTask {
     private ISysNotificationReceiverService sysNotificationReceiverService;
     
     @Autowired
-    private ISysNotificationService sysNotificationrService;
-    
-    @Autowired
     private ISysUserTokenService sysUserTokenService;
-
-    public void readFileFromFolder(String groupCode, String edoPath, String backupPath) throws IOException {
-        System.out.print("Đọc file EDI from folder .... " + groupCode);
-        CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupByGroupCode(groupCode);
-        if(carrierGroup == null)
-        {
-            return;
-            //TODO Return error 
-        }
-//        final File receiveFolder = new File(carrierGroup.getPathEdiReceive());
-        final File receiveFolder = new File(edoPath);
-        if (!receiveFolder.exists()) {
-            receiveFolder.mkdirs();
-        }
-        final File destinationFolder = edoService.getFolderUploadByTime(backupPath);
-        List<Edo> listEdo = new ArrayList<>();
-        for (final File fileEntry : receiveFolder.listFiles()) {
-            String path = fileEntry.getAbsolutePath();
-            String fileName = fileEntry.getName();
-            if(edoHistoryService.selectEdoHistoryByFileName(fileName) != null)
-            {
-                fileEntry.delete();
-                continue;
-            }
-            String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
-            content = content.replace("\n", "");
-            content = content.replace("\r", "");
-            String[] text = content.split("'");
-            EdoHistory edoHistory = new EdoHistory();
-            EdoAuditLog edoAuditLog = new EdoAuditLog();
-            Date timeNow = new Date();
-            listEdo = edoService.readEdi(text);
-            for (Edo edo : listEdo) {
-                edo.setCarrierId(carrierGroup.getId());
-                edo.setCreateSource("serverFSTP");
-                edoHistory.setBillOfLading(edo.getBillOfLading());
-                edoHistory.setOrderNumber(edo.getOrderNumber());
-                edoHistory.setCarrierCode(groupCode);
-                edoHistory.setCarrierId(carrierGroup.getId());
-                edoHistory.setEdiContent(content);
-                edoHistory.setFileName(fileName);
-                edoHistory.setCreateSource("serverFSTP");
-                edoHistory.setContainerNumber(edo.getContainerNumber());
-                edoHistory.setCreateBy(carrierGroup.getGroupCode());
-               
-                Edo edoCheck = edoService.checkContainerAvailable(edo.getContainerNumber(), edo.getBillOfLading());
-                if (edoCheck != null) {
-                    edo.setId(edoCheck.getId());
-                    edo.setUpdateTime(timeNow);
-                    edo.setUpdateBy(carrierGroup.getGroupCode());
-                    edoService.updateEdo(edo); // TODO
-                    edoHistory.setEdoId(edo.getId());
-                    edoHistory.setAction("update");
-                    edoHistoryService.insertEdoHistory(edoHistory);
-                    edoAuditLog.setEdoId(edo.getId());
-                    edoAuditLogService.updateAuditLog(edo);
-                } else {
-                    edo.setCreateTime(timeNow);
-                    edo.setCreateBy(carrierGroup.getGroupCode());
-                    edoService.insertEdo(edo);
-                    edoHistory.setEdoId(edo.getId());
-                    edoHistory.setAction("add");
-                    edoHistoryService.insertEdoHistory(edoHistory);
-                    edoAuditLog.setEdoId(edo.getId());
-                    edoAuditLogService.addAuditLogFirst(edo);
-                }
-            }
-            // Move file to distination folder
-            fileEntry.renameTo(new File(destinationFolder + File.separator + fileEntry.getName()));
-            fileEntry.delete();
-        }
-        System.out.print("Thành công .... " + groupCode);
-
-    }
 
     public void sendMailReportEdo(String groupCode) throws MessagingException
     {
-
         System.out.print("Send email  .... " + groupCode);
         CarrierGroup carrierGroup = carrierGroupService.selectCarrierGroupByGroupCode(groupCode);
         if(carrierGroup == null)
