@@ -18,7 +18,8 @@ function loadTable(msg) {
 	    singleSelect: true,
 	    collapsible: true,
 	    clientPaging: false,
-	    pagination: true,
+		pagination: true,
+		rownumbers: true,
 	    onClickRow: function () {
 	      getSelected();
 	    },
