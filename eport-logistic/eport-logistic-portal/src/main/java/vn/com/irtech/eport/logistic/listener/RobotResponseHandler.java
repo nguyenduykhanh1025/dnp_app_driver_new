@@ -1,6 +1,5 @@
 package vn.com.irtech.eport.logistic.listener;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -174,20 +173,17 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		processHistory.setRobotUuid(uuId);
 		processHistory.setStatus(2); // FINISH
 
-		ProcessOrder processOrder = new ProcessOrder();
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
+		if(processOrder == null) {
+			// Co loi bat thuong xay ra. order khong ton tai
+			throw new IllegalArgumentException("Process order not exist");
+		}
 
 		if ("success".equalsIgnoreCase(result)) {
 			// GET LIST SHIPMENT DETAIL BY PROCESS ORDER ID
 			ShipmentDetail shipmentDetail = new ShipmentDetail();
 			shipmentDetail.setProcessOrderId(Long.parseLong(receiptId));
 			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
-			
-			// GET PROCESS ORDER AND SET NEW STATUS TO UPDATE
-			try {
-				processOrder = processOrderService.selectProcessOrderById(id);
-			} catch (Exception e) {
-				logger.warn(e.getMessage());
-			}
 			
 			processOrder.setOrderNo(orderNo);
 			processOrder.setInvoiceNo(invoiceNo);
@@ -237,8 +233,6 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			}
 
 			// INIT PROCESS ORDER TO UPDATE
-			processOrder = new ProcessOrder();
-			processOrder.setId(id);
 			processOrder.setResult("F"); // RESULT FAILED
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
 			if (orderNo != null) {
@@ -253,7 +247,6 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				shipmentDetail2.setProcessStatus("E");
 				shipmentDetailService.updateShipmentDetail(shipmentDetail2);
 			}
-
 			// SET RESULT FOR HISTORY FAILED
 			processHistory.setResult("F");
 		}
@@ -387,9 +380,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 //			} catch (Exception e) {
 //				logger.warn(e.getMessage());
 //			}
-
 			// INIT PROCESS ORDER TO UPDATE
-			
 			processOrder = new ProcessOrder();
 			processOrder.setId(id);
 			processOrder.setResult("F"); // RESULT FAILED
@@ -456,8 +447,6 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			}
 
 			// INIT PROCESS ORDER TO UPDATE
-			processOrder = new ProcessOrder();
-			processOrder.setId(id);
 			processOrder.setResult("F"); // RESULT FAILED
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
 			processOrder.setRunnable(false);
@@ -499,8 +488,6 @@ public class RobotResponseHandler implements IMqttMessageListener{
 //			}
 
 			// INIT PROCESS ORDER TO UPDATE
-			processOrder = new ProcessOrder();
-			processOrder.setId(id);
 			processOrder.setResult("F"); // RESULT FAILED
 			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
 			processOrder.setRunnable(false);
