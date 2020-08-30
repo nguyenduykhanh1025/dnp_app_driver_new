@@ -144,6 +144,7 @@ public class LogisticTruckAssignController extends LogisticBaseController {
         ajaxResult.put("assignList", driverList);
 		return ajaxResult;
 	}
+
 	
 	
 	/**
