@@ -16,6 +16,7 @@ function loadTable(msg) {
       collapsible: true,
       clientPaging: false,
       pagination: true,
+      rownumbers: true,
       onClickRow: function () {
         getSelected();
       },
@@ -120,7 +121,7 @@ function addTruck() {
     $(function() {
 	      var options = {
 	        createUrl: prefix + "/add",
-	        modalName: "Đội Xe"
+          modalName: "Đội Xe"
 	      };
 	      $.table.init(options);
 	    });

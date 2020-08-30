@@ -65,4 +65,4 @@ logging:
 mqtt:
   username: admin2
   password: public
-  host-url: tcp://127.0.0.1:1883       #tcp://113.176.195.221:1883                      # The address and port of your own server need to be changed
+  host-url: tcp://113.176.195.221:1883       #tcp://127.0.0.1:1883                      # The address and port of your own server need to be changed
