@@ -27,8 +27,10 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.framework.web.service.DictService;
+import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -36,7 +38,9 @@ import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.listener.MqttService;
 import vn.com.irtech.eport.logistic.listener.MqttService.EServiceRobot;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
+import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
+import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -73,6 +77,12 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	
 	@Autowired
 	private ConfigService configService;
+	
+	@Autowired
+	private IDriverAccountService driverAccountService;
+	
+	@Autowired
+	private IPickupAssignService pickupAssignService;
 	
 	// @Autowired
 	// private CustomQueueService customQueueService;
@@ -138,6 +148,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 
 	@Log(title = "Tạo Lô Hạ Rỗng", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
 	@PostMapping("/shipment")
+	@Transactional
     @ResponseBody
     public AjaxResult addShipment(Shipment shipment) {
 		//check MST 
@@ -155,6 +166,25 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 		shipment.setServiceType(Constants.SEND_CONT_EMPTY);
 		shipment.setStatus("1");
 		if (shipmentService.insertShipment(shipment) == 1) {
+			// assign driver default
+			PickupAssign pickupAssign = new PickupAssign();
+			pickupAssign.setLogisticGroupId(getUser().getGroupId());
+			pickupAssign.setShipmentId(shipment.getId());
+			//list driver
+			DriverAccount driverAccount = new DriverAccount();
+			driverAccount.setLogisticGroupId(getUser().getGroupId());
+			driverAccount.setDelFlag(false);
+			driverAccount.setStatus("0");
+			List<DriverAccount> driverAccounts = driverAccountService.selectDriverAccountList(driverAccount);
+			if(driverAccounts.size() > 0) {
+				for(DriverAccount i : driverAccounts) {
+					pickupAssign.setDriverId(i.getId());
+					pickupAssign.setFullName(i.getFullName());
+					pickupAssign.setPhoneNumber(i.getMobileNumber());
+					pickupAssign.setCreateBy(getUser().getFullName());
+					pickupAssignService.insertPickupAssign(pickupAssign);
+				}
+			}
 			return success("Thêm lô thành công");
 		}
 		return error("Thêm lô thất bại");
