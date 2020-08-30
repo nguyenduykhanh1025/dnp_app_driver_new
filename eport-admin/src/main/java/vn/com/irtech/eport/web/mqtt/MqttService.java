@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 
 import vn.com.irtech.eport.common.utils.StringUtils;
-import vn.com.irtech.eport.framework.config.MqttConfig;
 import vn.com.irtech.eport.web.mqtt.listener.MCRequestHandler;
 import vn.com.irtech.eport.web.mqtt.listener.RobotResponseHandler;
 
