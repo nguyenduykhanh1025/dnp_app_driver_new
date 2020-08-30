@@ -170,6 +170,7 @@ $("#logistics").combobox({
 });
 
 function showYardPosition(bayList) {
+  $(".contListPosition").html('');
   var index = 0;
   console.log(bayList);
   bayList.forEach(function (bay) {

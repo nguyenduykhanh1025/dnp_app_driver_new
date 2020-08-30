@@ -368,6 +368,9 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			logger.debug("Call CATOS API :{}", url);
 			RestTemplate restTemplate = new RestTemplate();
 			Integer index = restTemplate.postForObject(url, shipmentDetail, Integer.class);
+			if (index == null || index == 0) {
+				index = 1;
+			}
 			return index;
 		} catch (Exception e) {
 			logger.error("Error while call CATOS Api", e);
@@ -482,6 +485,27 @@ public class CatosApiServiceImpl implements ICatosApiService {
 		}
 	}
 
+	/***
+	 * Check the number of container order for receive empty
+	 * 
+	 * check container amount have not ordered yet for receiveContEmpty
+	 * input: bookingNo, sztp
+	 */
+	@Override
+	public Integer checkTheNumberOfContainersOrderedForReceiveContEmpty(String bookingNo, String sztp) {
+		try {
+			String url = Global.getApiUrl() + "/shipmentDetail/receive-cont-empty/container-amount/booking-no/" + bookingNo + "/sztp/" + sztp + "/check/ordered";
+			logger.debug("Call CATOS API :{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			Integer rs = restTemplate.getForObject(url, Integer.class);
+			return rs;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api", e);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	@Override
 	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(String bookingNo, String sztp) {
 		try {

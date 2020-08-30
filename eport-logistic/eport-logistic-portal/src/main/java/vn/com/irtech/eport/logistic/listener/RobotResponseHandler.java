@@ -1,5 +1,6 @@
 package vn.com.irtech.eport.logistic.listener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -342,7 +343,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 					mqttService.publicMessageToDemandRobot(req, EServiceRobot.CHANGE_VESSEL, robot.getUuId());
 					break;
 				case 7:
-					mqttService.publicMessageToDemandRobot(req, EServiceRobot.CREATE_BOOKING, robot.getUuId());
+					mqttService.publicBookingOrderToDemandRobot(reqProcessOrder, EServiceRobot.CREATE_BOOKING, robot.getUuId());
 					break;
 				case 9:
 					mqttService.publicMessageToDemandRobot(req, EServiceRobot.EXTENSION_DATE, robot.getUuId());
@@ -417,7 +418,55 @@ public class RobotResponseHandler implements IMqttMessageListener{
 	}
 	
 	private void updateCreateBookingOrder(String result, String receiptId, String uuId) {
+		// INIT PROCESS HISTORY
+		Long id = Long.parseLong(receiptId);
+		ProcessHistory processHistory = new ProcessHistory();
+		processHistory.setProcessOrderId(id);
+		processHistory.setRobotUuid(uuId);
+		processHistory.setStatus(2); // FINISH
 		
+		ProcessOrder processOrder = processOrderService.selectProcessOrderById(id);
+		ProcessOrder receiveEmptyOrder = processOrderService.selectProcessOrderById(processOrder.getPostProcessId());
+		if ("success".equalsIgnoreCase(result)) {
+			ShipmentDetail shipmentDetail = new ShipmentDetail();
+			shipmentDetail.setProcessOrderId(receiveEmptyOrder.getId());
+			List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+			ServiceSendFullRobotReq serviceReceiveEmptyReq = new ServiceSendFullRobotReq(receiveEmptyOrder, shipmentDetails);
+			receiveEmptyOrder.setRunnable(true);
+			processOrderService.updateProcessOrder(receiveEmptyOrder);
+			try {
+				mqttService.publishMessageToRobot(serviceReceiveEmptyReq, EServiceRobot.RECEIVE_CONT_EMPTY);
+			} catch (MqttException e) {
+				logger.error("Error send order to robot when create booking success: " + e);
+			}
+			
+			processOrder.setStatus(2); // FINISH		
+			processOrder.setResult("S"); // RESULT SUCESS	
+			processOrderService.updateProcessOrder(processOrder);
+			processHistory.setResult("S");
+		} else {
+			// Send notification for om
+			receiveEmptyOrder.setResult("F");
+			processOrderService.updateProcessOrder(receiveEmptyOrder);
+			
+			try {
+				mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + receiveEmptyOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + receiveEmptyOrder.getId());
+			} catch (Exception e) {
+				logger.warn(e.getMessage());
+			}
+
+			// INIT PROCESS ORDER TO UPDATE
+			processOrder = new ProcessOrder();
+			processOrder.setId(id);
+			processOrder.setResult("F"); // RESULT FAILED
+			processOrder.setStatus(0); // BACK TO WAITING STATUS FOR OM HANDLE
+			processOrder.setRunnable(false);
+			processOrderService.updateProcessOrder(processOrder);
+
+			// SET RESULT FOR HISTORY FAILED
+			processHistory.setResult("F");
+		}
+		processHistoryService.insertProcessHistory(processHistory);
 	}
 	
 	private void updateExtensionDateOrder(String result, String receiptId, String uuId) {

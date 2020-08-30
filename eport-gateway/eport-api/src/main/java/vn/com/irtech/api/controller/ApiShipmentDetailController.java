@@ -203,6 +203,15 @@ public class ApiShipmentDetailController {
 		return result;
 	}
 	
+	@GetMapping("/shipmentDetail/receive-cont-empty/container-amount/booking-no/{bookingNo}/sztp/{sztp}/check/ordered")
+	public Integer checkTheNumberOfContainersOrderedForReceiveContEmpty(@PathVariable String bookingNo, @PathVariable String sztp) {
+		Integer result = shipmentDetailDao.checkTheNumberOfContainersOrderedForReceiveContEmpty(bookingNo, sztp);
+		if(result == null) {
+			return 0;
+		}
+		return result;
+	}
+	
 	@GetMapping("/shipmentDetail/send-cont-full/container-amount/booking-no/{bookingNo}/sztp/{sztp}/check/not-ordered")
 	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(@PathVariable String bookingNo, @PathVariable String sztp) {
 		Integer result = shipmentDetailDao.checkTheNumberOfContainersNotOrderedForSendContFull(bookingNo, sztp);

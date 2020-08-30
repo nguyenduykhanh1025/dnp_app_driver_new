@@ -37,6 +37,7 @@ import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
@@ -395,15 +396,24 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			}
 			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails, shipment, creditFlag);
 			
+			List<ProcessOrder> processOrders = shipmentDetailService.createBookingIfNeed(serviceRobotReqs);
+			
 			if (serviceRobotReqs != null) {
 				List<Long> processIds = new ArrayList<>();
 				boolean robotBusy = false;
 				// MAKE ORDER RECEIVE CONT EMPTY
 				try {
+					
+					for (ProcessOrder processOrder : processOrders) {
+						mqttService.publishBookingOrderToRobot(processOrder, EServiceRobot.CREATE_BOOKING);
+					}
+					
 					for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
 						processIds.add(serviceRobotReq.processOrder.getId());
-						if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_EMPTY)) {
-							robotBusy = true;
+						if (serviceRobotReq.processOrder.getRunnable()) {
+							if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_EMPTY)) {
+								robotBusy = true;
+							}
 						}
 					}
 					if (robotBusy) {

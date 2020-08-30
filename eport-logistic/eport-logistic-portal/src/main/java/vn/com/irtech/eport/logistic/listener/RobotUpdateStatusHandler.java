@@ -259,6 +259,9 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 						case 5:
 							mqttService.publicMessageToDemandRobot(req, EServiceRobot.SHIFTING_CONT, uuId);
 							break;
+						case 7:
+							mqttService.publicBookingOrderToDemandRobot(reqProcessOrder, EServiceRobot.CREATE_BOOKING, uuId);
+							break;
 						case 8:
 							sendGateInOrderToRobot(reqProcessOrder, sysRobot.getUuId());
 					}
