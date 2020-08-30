@@ -167,11 +167,7 @@ public class MqttService implements MqttCallback {
 
 	private void reconnect() throws MqttException {
 		if (!mqttClient.isConnected()) {
-//			this.connect(host, username, password);
-//			isReconnecting = false;
-			IMqttToken token = mqttClient.connect();
-			token.waitForCompletion();
-			subscribeToTopics();
+			connect();
 		}
 	}
 

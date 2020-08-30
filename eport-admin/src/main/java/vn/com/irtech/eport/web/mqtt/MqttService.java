@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.framework.web.service;
+package vn.com.irtech.eport.web.mqtt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +25,8 @@ import com.google.gson.Gson;
 
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.config.MqttConfig;
-import vn.com.irtech.eport.framework.mqtt.listener.MCRequestHandler;
-import vn.com.irtech.eport.framework.mqtt.listener.RobotResponseHandler;
+import vn.com.irtech.eport.web.mqtt.listener.MCRequestHandler;
+import vn.com.irtech.eport.web.mqtt.listener.RobotResponseHandler;
 
 @Component
 public class MqttService implements MqttCallback {
@@ -114,6 +114,7 @@ public class MqttService implements MqttCallback {
 		// Wait for subscribe complete
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
+			System.out.println("Subscribed: " + token.getTopics()[0]);
 		}
 	}
 
@@ -162,11 +163,7 @@ public class MqttService implements MqttCallback {
 
 	private void reconnect() throws MqttException {
 		if (!mqttClient.isConnected()) {
-//			this.connect(host, username, password);
-//			isReconnecting = false;
-			IMqttToken token = mqttClient.connect();
-			token.waitForCompletion();
-			subscribeToTopics();
+			connect();
 		}
 	}
 

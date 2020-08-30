@@ -13,8 +13,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -52,41 +53,44 @@ public class GatePassHandler implements IMqttMessageListener {
 	
 	@Autowired
 	private ISysRobotService robotService;
-	
 	@Autowired
 	private IProcessOrderService processOrderService;
-	
 	@Autowired
 	private IProcessHistoryService processHistoryService;
-	
 	@Autowired
 	private IPickupHistoryService pickupHistoryService;
-	
 	@Autowired
 	private MqttService mqttService;
-	
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
-	
 	@Autowired
 	private IShipmentService shipmentService;
-	
 	@Autowired
 	private ISysNotificationService sysNotificationService;
-	
 	@Autowired
 	private ISysNotificationReceiverService sysNotificationReceiverService;
-	
+	@Autowired
+	@Qualifier("threadPoolTaskExecutor")
+	private TaskExecutor executor;
+
 	// time wait mc input postion
 	private static final Long TIME_OUT_WAIT_MC = 2000L;
-	
 	private static final Integer RETRY_WAIT_MC = 60;
 	
 	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception {
-		logger.info("Receive message subject : " + topic);
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
+				processMessage(topic, message);
+			}
+		});
+	}
+	
+	private void processMessage(String topic, MqttMessage message) {
+//		logger.info("Receive message subject : " + topic);
 		String messageContent = new String(message.getPayload());
-		logger.info("Receive message content : " + messageContent);
+		logger.info("Receive message topic: {}, content : {}", topic, messageContent);
 		Map<String, Object> map = null;
 		try {
 			ObjectMapper mapper = new ObjectMapper();
