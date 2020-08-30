@@ -164,8 +164,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select count(*) from logistic_group g
         left join logistic_delegated d on g.id = d.logistic_group_id
         where  
-            g.mst = #{consigneeTaxCode}
-            and d.delegate_tax_code = #{logisticTaxCode}
+            g.mst = #{logisticTaxCode}
+            and d.delegate_tax_code = #{consigneeTaxCode}
             and d.valid_flg = 1
             and d.valid_from &lt;= sysdate
             and d.valid_until &gt;= sysdate
