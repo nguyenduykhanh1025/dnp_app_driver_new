@@ -114,6 +114,7 @@ public class MqttService implements MqttCallback {
 		// Wait for subscribe complete
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
+			System.out.println("Subscribed: " + token.getTopics()[0]);
 		}
 	}
 
@@ -162,11 +163,7 @@ public class MqttService implements MqttCallback {
 
 	private void reconnect() throws MqttException {
 		if (!mqttClient.isConnected()) {
-//			this.connect(host, username, password);
-//			isReconnecting = false;
-			IMqttToken token = mqttClient.connect();
-			token.waitForCompletion();
-			subscribeToTopics();
+			connect();
 		}
 	}
 
