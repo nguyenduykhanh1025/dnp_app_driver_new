@@ -1,11 +1,13 @@
 package vn.com.irtech.eport.logistic.listener;
 
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,27 +17,30 @@ import org.springframework.stereotype.Component;
  * @Created by bam
  */
 @Component
-@ConfigurationProperties("mqtt")
+@Configuration
 public class MqttConfig {
-
-	private static final Logger logger = LoggerFactory.getLogger(MqttConfig.class);
 	
-	@Autowired
-	private MqttService mqttService;
-
-	/**
-	 * User name
-	 */
-	private String username;
-	/**
-	 * Password
-	 */
-	private String password;
-	/**
-	 * Connection address
-	 */
+	@Value("${mqtt.host-url}")
 	private String hostUrl;
+	@Value("${mqtt.username}")
+	private String username;
+	@Value("${mqtt.password}")
+	private String password;
+	@Value("${mqtt.qos:0}")
+	private Integer qos;
+	@Value("${mqtt.clientId:''}")
+	private String clientId;
+	// connection configuration
+	@Value("${mqtt.maxInFlight:10000}")
+	private int maxInFlight;
 	
+	public String getHostUrl() {
+		return hostUrl;
+	}
+
+	public void setHostUrl(String hostUrl) {
+		this.hostUrl = hostUrl;
+	}
 
 	public String getUsername() {
 		return username;
@@ -53,17 +58,45 @@ public class MqttConfig {
 		this.password = password;
 	}
 
-	public String getHostUrl() {
-		return hostUrl;
+	public Integer getQos() {
+		return qos;
 	}
 
-	public void setHostUrl(String hostUrl) {
-		this.hostUrl = hostUrl;
+	public void setQos(Integer qos) {
+		this.qos = qos;
+	}
+
+	public String getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	public int getMaxInFlight() {
+		return maxInFlight;
+	}
+
+	public void setMaxInFlight(int maxInFlight) {
+		this.maxInFlight = maxInFlight;
+	}
+
+	private String getConnectClientId() {
+		Map<String, String> env = System.getenv();
+		if (env.containsKey("COMPUTERNAME"))
+			return "Logistic-" + env.get("COMPUTERNAME");
+		else if (env.containsKey("HOSTNAME"))
+			return "Logistic-"+ env.get("HOSTNAME");
+		else
+			return "Logistic-" + System.currentTimeMillis();
 	}
 
 	@Bean
-	public MqttAsyncClient getMqttPushClient() throws Exception {
-		mqttService.connect(hostUrl, username, password);
-		return mqttService.getMqttClient();
+	public MqttAsyncClient getMqttClient() throws Exception {
+		if(StringUtils.isBlank(clientId)) {
+			clientId = getConnectClientId();
+		}
+		return new MqttAsyncClient(hostUrl, clientId, new MemoryPersistence());
 	}
 }
