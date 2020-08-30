@@ -8,6 +8,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="id"    column="id"    />
         <result property="uuId"    column="uuid"    />
         <result property="status"    column="status"    />
+        <result property="disabled"    column="disabled"    />
         <result property="isReceiveContFullOrder"    column="is_receive_cont_full_order"    />
         <result property="isReceiveContEmptyOrder"    column="is_receive_cont_empty_order"    />
         <result property="isSendContFullOrder"    column="is_send_cont_full_order"    />
@@ -27,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectRobotVo">
-        select id, uuid, status, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, is_change_vessel_order, is_create_booking_order, is_extension_date_order, response_time from sys_robot
+        select id, uuid, status, disabled, is_receive_cont_full_order, is_receive_cont_empty_order, is_send_cont_full_order, is_send_cont_empty_order, is_gate_in_order, ip_address, create_by, create_time, update_by, update_time, remark, is_shifting_cont_order, is_change_vessel_order, is_create_booking_order, is_extension_date_order, response_time from sys_robot
     </sql>
 
     <select id="selectRobotList" parameterType="SysRobot" resultMap="RobotResult">
@@ -35,6 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="uuId != null  and uuId != ''"> and uuid like concat(concat('%', #{uuId}), '%')</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="disabled != null  and disabled != ''"> and disabled = #{disabled}</if>
             <if test="isReceiveContFullOrder != null"> and is_receive_cont_full_order = #{isReceiveContFullOrder}</if>
             <if test="isReceiveContEmptyOrder != null"> and is_receive_cont_empty_order = #{isReceiveContEmptyOrder}</if>
             <if test="isSendContFullOrder != null"> and is_send_cont_full_order = #{isSendContFullOrder}</if>
@@ -65,6 +67,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="uuId != null  and uuId != ''"> and uuid = #{uuId}</if>
             <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="disabled != null  and disabled != ''"> and disabled = #{disabled}</if>
             <if test="isReceiveContFullOrder != null"> and is_receive_cont_full_order = #{isReceiveContFullOrder}</if>
             <if test="isReceiveContEmptyOrder != null"> and is_receive_cont_empty_order = #{isReceiveContEmptyOrder}</if>
             <if test="isSendContFullOrder != null"> and is_send_cont_full_order = #{isSendContFullOrder}</if>
@@ -89,6 +92,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="id != null and id != 0">id,</if>
             <if test="uuId != null  and uuId != ''">uuid,</if>
             <if test="status != null  and status != ''">status,</if>
+            <if test="disabled != null  and disabled != ''">disabled,</if>
             <if test="isReceiveContFullOrder != null">is_receive_cont_full_order,</if>
             <if test="isReceiveContEmptyOrder != null">is_receive_cont_empty_order,</if>
             <if test="isSendContFullOrder != null">is_send_cont_full_order,</if>
@@ -108,6 +112,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="id != null">#{id},</if>
             <if test="uuId != null  and uuId != ''">#{uuId},</if>
             <if test="status != null  and status != ''">#{status},</if>
+            <if test="disabled != null  and disabled != ''">#{disabled},</if>
             <if test="isReceiveContFullOrder != null">#{isReceiveContFullOrder},</if>
             <if test="isReceiveContEmptyOrder != null">#{isReceiveContEmptyOrder},</if>
             <if test="isSendContFullOrder != null">#{isSendContFullOrder},</if>
@@ -130,6 +135,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <trim prefix="SET" suffixOverrides=",">
             <if test="uuId != null  and uuId != ''">uuid = #{uuId},</if>
             <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="disabled != null  and disabled != ''">disabled = #{disabled},</if>
             <if test="isReceiveContFullOrder != null">is_receive_cont_full_order = #{isReceiveContFullOrder},</if>
             <if test="isReceiveContEmptyOrder != null">is_receive_cont_empty_order = #{isReceiveContEmptyOrder},</if>
             <if test="isSendContFullOrder != null">is_send_cont_full_order = #{isSendContFullOrder},</if>
@@ -176,6 +182,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update sys_robot
         <trim prefix="SET" suffixOverrides=",">
             <if test="status != null  and status != ''">status = #{status},</if>
+            <if test="disabled != null  and disabled != ''">disabled = #{disabled},</if>
             <if test="isReceiveContFullOrder != null">is_receive_cont_full_order = #{isReceiveContFullOrder},</if>
             <if test="isReceiveContEmptyOrder != null">is_receive_cont_empty_order = #{isReceiveContEmptyOrder},</if>
             <if test="isSendContFullOrder != null">is_send_cont_full_order = #{isSendContFullOrder},</if>
@@ -201,7 +208,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectRobotListOnline" parameterType="SysRobot" resultMap="RobotResult">
         <include refid="selectRobotVo"/>
         <where>  
-            and status != '2'
+            and status != '2' and disabled == 0
             <if test="uuId != null  and uuId != ''"> and uuid = #{uuId}</if>
             <if test="isReceiveContFullOrder != null"> and is_receive_cont_full_order = #{isReceiveContFullOrder}</if>
             <if test="isReceiveContEmptyOrder != null"> and is_receive_cont_empty_order = #{isReceiveContEmptyOrder}</if>
