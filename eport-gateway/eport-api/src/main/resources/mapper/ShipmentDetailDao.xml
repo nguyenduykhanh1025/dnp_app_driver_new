@@ -357,6 +357,15 @@
 		WHERE BOOKING_NO = #{bookingNo} AND FE = 'E' AND SZTP2 = #{sztp} AND JOB_ODR_NO2 IS NOT NULL
 		GROUP BY BOOKING_NO
 	</select>
+
+	<select id="checkTheNumberOfContainersOrderedForReceiveContEmpty" resultType="Integer">
+		SELECT
+		    (SELECT BOOK_QTY FROM DNP_UAT.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}) - COUNT(*) AS RESULT
+		FROM DNP_UAT.TB_INVENTORY
+		WHERE BOOKING_NO = #{bookingNo} AND FE = 'E' AND SZTP2 = #{sztp}
+		GROUP BY BOOKING_NO
+	</select>
+
 	<select id="checkTheNumberOfContainersNotOrderedForSendContFull" resultType="Integer">
 		SELECT
 		    (SELECT BOOK_QTY FROM DNP_UAT.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}) - COUNT(*) AS RESULT

@@ -74,6 +74,15 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	
 	public Integer checkTheNumberOfContainersNotOrderedForReceiveContEmpty(@Param("bookingNo") String bookingNo, @Param("sztp") String sztp);
 	
+	/**
+	 * Check the number of container not order for receive emtpy
+	 * 
+	 * @param bookingNo
+	 * @param sztp
+	 * @return Integer
+	 */
+	public Integer checkTheNumberOfContainersOrderedForReceiveContEmpty(@Param("bookingNo") String bookingNo, @Param("sztp") String sztp);
+	
 	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(@Param("bookingNo") String bookingNo, @Param("sztp") String sztp);
 	
 	/**
