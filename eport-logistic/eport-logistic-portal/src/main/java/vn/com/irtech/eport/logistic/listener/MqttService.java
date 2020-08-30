@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -15,7 +16,6 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.gson.Gson;
 
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.service.IProcessOrderService;
@@ -35,100 +36,60 @@ public class MqttService implements MqttCallback {
 	private static final Logger logger = LoggerFactory.getLogger(MqttService.class);
 
 	private static final String BASE = "eport/robot";
-
 	private static final String RESPONSE_TOPIC = BASE + "/+/response";
-
 	private static final String REQUEST_TOPIC = BASE + "/+/request";
-
 	private static final String NOTIFICATION_OM_TOPIC = "eport/notification/om";
-
 	private static final String NOTIFICATION_IT_TOPIC = "eport/notification/it";
-
 	private static final String NOTIFICATION_CONT_TOPIC = "eport/notification/cont";
 
-	private static MqttService instance = null;
+	@Autowired
 	private MqttAsyncClient mqttClient;
+	@Autowired
+	private MqttConfig config;
 	private Object connectLock = new Object();
-	
-	// connection info
-	private String host;
-	private String username;
-	private String password;
 
 	@Autowired
 	private ISysRobotService robotService;
-
 	@Autowired
 	private IProcessOrderService processOrderService;
-	
-	// Handlers
 	@Autowired
 	private RobotResponseHandler robotResponseHandler;
 	@Autowired
 	private RobotUpdateStatusHandler robotUpdateStatusHandler; 
 
-	private Boolean isReconnecting = false;
-
-	public static MqttService getInstance() {
-		if (instance == null) {
-			instance = new MqttService();
-		}
-		return instance;
-	}
-
-	public MqttService() {
-	}
-
-	public MqttAsyncClient getMqttClient() {
-		return mqttClient;
-	}
-
-	public boolean isConnected() {
-		return mqttClient != null && mqttClient.isConnected();
-	}
-
-	/**
-	 * Connect to MQTT Server
-	 * 
-	 * @param host
-	 * @param username
-	 * @param password
-	 * @throws MqttException
-	 */
-	public void connect(String host, String username, String password) throws MqttException {
-		this.host = host;
-		this.username = username;
-		this.password = password;
-		
-		if (mqttClient == null) {
-			mqttClient = newMqttClient(host);
-		}
+	@PostConstruct
+	public void connect() throws MqttException {
 		// set callback
 		mqttClient.setCallback(this);
-
 		MqttConnectOptions clientOptions = new MqttConnectOptions();
 		clientOptions.setCleanSession(true);
-
+		clientOptions.setMaxInflight(config.getMaxInFlight()); // default is 10
+		if (StringUtils.isNotBlank(config.getUsername())) {
+			clientOptions.setUserName(config.getUsername());
+		}
+		if (StringUtils.isNotBlank(config.getPassword())) {
+			clientOptions.setPassword(config.getPassword().toCharArray());
+		}
 		// checkConnection
 		if (!mqttClient.isConnected()) {
 			synchronized (connectLock) {
 				while (!mqttClient.isConnected()) {
-					logger.info("Attent connect mqtt");
+					logger.debug("[{}] MQTT broker connection attempt!", mqttClient.getServerURI());
 					try {
 						mqttClient.connect(clientOptions, null, new IMqttActionListener() {
 							@Override
 							public void onSuccess(IMqttToken iMqttToken) {
-								logger.info("MQTT broker connection established!");
+								logger.info("[{}] MQTT broker connection established!", mqttClient.getServerURI());
 								try {
 									subscribeToTopics();
 								} catch (MqttException e) {
 									e.printStackTrace();
 								}
 							}
-
 							@Override
 							public void onFailure(IMqttToken iMqttToken, Throwable e) {
-								logger.info("MQTT broker connection faied!" + e.getMessage());
+								logger.warn("[{}] MQTT broker connection faied! {}", mqttClient.getServerURI(),
+										e.getMessage(), e);
 							}
 						}).waitForCompletion();
 					} catch (MqttException e) {
@@ -159,7 +120,6 @@ public class MqttService implements MqttCallback {
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
 		}
-		System.out.println("Subscribe topic completed!");
 	}
 
 	@PreDestroy
@@ -175,38 +135,21 @@ public class MqttService implements MqttCallback {
 		}
 	}
 
-	private MqttAsyncClient newMqttClient(String host) throws MqttException {
-		return new MqttAsyncClient(host, this.getComputerName(), new MemoryPersistence());
-	}
-
-	private String getComputerName() {
-		Map<String, String> env = System.getenv();
-		if (env.containsKey("COMPUTERNAME")) {
-			return "Logistic-" + env.get("COMPUTERNAME");
-		}
-		if (env.containsKey("HOSTNAME")) {
-			return "Logistic-" + env.get("HOSTNAME");
-		}
-		return "Logistic-" + System.currentTimeMillis();
-	}
-
 	@Override
 	public void connectionLost(Throwable cause) {
+		logger.warn("Lost connection to MQTT server", cause);
 		while (true) {
-			logger.info("Retry connect to Mqtt");
 			try {
-				if (!isReconnecting) {
-					this.isReconnecting = true;
-					reconnect();
-				}
+				logger.info("Attempting to reconnect to MQTT server");
+				reconnect();
+				logger.info("Reconnected to MQTT server, resuming");
 				return;
 			} catch (MqttException e) {
-				logger.error("Error while reconnect MQ", e);
+				logger.warn("Reconnect failed, retrying in 3 seconds", e);
 			}
 			try {
 				Thread.sleep(3000); // wait 3s before reconnect
 			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
 	}
@@ -224,11 +167,11 @@ public class MqttService implements MqttCallback {
 
 	private void reconnect() throws MqttException {
 		if (!mqttClient.isConnected()) {
-			this.connect(host, username, password);
-//			IMqttToken token = mqttClient.connect();
-//			token.waitForCompletion();
-//			subscribeToTopics();
-			isReconnecting = false;
+//			this.connect(host, username, password);
+//			isReconnecting = false;
+			IMqttToken token = mqttClient.connect();
+			token.waitForCompletion();
+			subscribeToTopics();
 		}
 	}
 
@@ -242,6 +185,7 @@ public class MqttService implements MqttCallback {
 
 				@Override
 				public void onFailure(IMqttToken iMqttToken, Throwable e) {
+					logger.debug("Failed to publish message to MQ", e);
 				}
 			});
 		} catch (MqttException e) {
