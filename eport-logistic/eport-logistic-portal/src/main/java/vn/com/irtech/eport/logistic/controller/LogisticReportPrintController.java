@@ -149,7 +149,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			        Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			        parameters.put("remark", (shipment.getRemark() != null) ? shipment.getRemark() : "");
 					try {
-						File file = new File("src/main/resources/static/img/logo_gray.jpeg");
+						File file = new File("target/classes/static/img/logo_gray.jpeg");
 						parameters.put("pathBackground", file.getPath());
 					} catch (Exception e) {
 						logger.error("Path background report error",e.getMessage());
@@ -223,7 +223,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			parameters.put("address", shipment.getAddress());
 			parameters.put("list", shipmentDetails);
 			try {
-				File file = new File("src/main/resources/static/img/logo_gray.jpeg");
+				File file = new File("target/classes/static/img/logo_gray.jpeg");
 				parameters.put("pathBackground", file.getPath());
 			} catch (Exception e) {
 				logger.error("Path background report error",e.getMessage());
@@ -286,7 +286,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		parameters.put("houseBillNo", houseBillList.get(0).getHouseBillNo());
 		parameters.put("fileCreateTime", houseBillList.get(0).getEdo().getFileCreateTime());
 		try {
-			File file = new File("src/main/resources/static/img/logo_gray.jpeg");
+			File file = new File("target/classes/static/img/logo_gray.jpeg");
 			parameters.put("pathBackground", file.getPath());
 		} catch (Exception e) {
 			logger.error("Path background report error",e.getMessage());
