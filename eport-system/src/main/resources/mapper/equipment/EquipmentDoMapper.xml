@@ -573,4 +573,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         ORDER BY create_time DESC
     </select>
+      <select id="selectOprCode" parameterType="EquipmentDo" resultType="String">
+    select distinct carrier_code
+    from equipment_do
+    <where>
+      <if test="carrierCode != null  and carrierCode != ''">and carrier_code like concat(concat('%', #{carrierCode}),
+        '%')
+      </if>
+    </where>
+  </select>
 </mapper>

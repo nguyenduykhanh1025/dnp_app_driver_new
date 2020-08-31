@@ -263,4 +263,9 @@ public class EquipmentDoServiceImpl implements IEquipmentDoService
     {
         return equipmentDoMapper.selectEdoListForReport(edo);
     }
+
+    public List<String> selectOprCode(EquipmentDo edo)
+    {
+        return equipmentDoMapper.selectOprCode(edo);
+    }
 }

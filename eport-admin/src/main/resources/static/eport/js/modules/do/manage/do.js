@@ -1,9 +1,10 @@
-const PREFIX = ctx + "edo";
+const PREFIX = ctx + "do/manage";
 var bill;
 var edo = new Object();
-$(function () {
-  $("#updateEdo").attr("disabled", true);
-  var onCheck = 0;
+var currentLeftWidth = $(".table-left").width();
+var currentRightWidth = $(".table-right").width();
+
+$(document).ready(function () {
   $("#btn-collapse").click(function () {
     handleCollapse(true);
   });
@@ -12,18 +13,16 @@ $(function () {
   });
   loadTable();
   loadTableByContainer();
-
-  $('#searchAll').keyup(function (event) {
+  $("#searchAll").keyup(function (event) {
     if (event.keyCode == 13) {
-      edo.containerNumber = $('#searchAll').val().toUpperCase();
-      edo.consignee = $('#searchAll').val().toUpperCase();
+      edo.containerNumber = $("#searchAll").val().toUpperCase();
+      edo.consignee = $("#searchAll").val().toUpperCase();
       loadTableByContainer(bill);
     }
-
   });
-  $('#searchBillNo').keyup(function (event) {
+  $("#searchBillNo").keyup(function (event) {
     if (event.keyCode == 13) {
-      billOfLading = $('#searchBillNo').val().toUpperCase();
+      billOfLading = $("#searchBillNo").val().toUpperCase();
       if (billOfLading == "") {
         loadTable(edo);
       }
@@ -71,6 +70,7 @@ function loadTable(edo) {
     singleSelect: true,
     height: $(document).height() - 60,
     clientPaging: true,
+    collapsible: true,
     pagination: true,
     pageSize: 20,
     onClickRow: function () {
@@ -78,7 +78,6 @@ function loadTable(edo) {
     },
     nowrap: false,
     striped: true,
-    rownumbers: true,
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
       if (!opts.url) return false;
@@ -104,8 +103,51 @@ function loadTable(edo) {
         },
       });
     },
-    error: function () {
-      error.apply(this, arguments);
+  });
+}
+
+function loadTableByContainer(billOfLading) {
+  edo.billOfLading = billOfLading;
+  $("#dgContainer").datagrid({
+    url: PREFIX + "/edo",
+    method: "POST",
+    singleSelect: true,
+    height: $(document).height() - 60,
+    clientPaging: true,
+    pagination: true,
+    pageSize: 20,
+    nowrap: false,
+    striped: true,
+    rownumbers: true,
+    loader: function (param, success, error) {
+      var opts = $(this).datagrid("options");
+      if (billOfLading == null) {
+        return false;
+      }
+      if (!opts.url) return false;
+      $.ajax({
+        type: opts.method,
+        url: opts.url,
+        contentType: "application/json",
+        accept: "text/plain",
+        dataType: "text",
+        data: JSON.stringify({
+          pageNum: param.page,
+          pageSize: param.rows,
+          orderByColumn: param.sort,
+          isAsc: param.order,
+          data: edo,
+        }),
+        success: function (data) {
+          success(JSON.parse(data));
+          let dataTotal = JSON.parse(data);
+          $("#countContainer").text("Số lượng container : " + dataTotal.total);
+          $("#showBillNo").text("Bill No : " + bill);
+        },
+        error: function () {
+          error.apply(this, arguments);
+        },
+      });
     },
   });
 }
@@ -130,25 +172,12 @@ function formatToYDM(date) {
   if (date == null || date == undefined) {
     return "-";
   }
-  return date.split("/").reverse().join("/");
-}
-
-function formatToYDMHMS(date) {
-  if (date == null || date == undefined) {
-    return "-";
-  }
-  let temp = date.substring(0, 10);
-  return temp.split("-").reverse().join("/") + date.substring(10, 19);
+  return date.split("-").reverse().join("-");
 }
 
 function formatAction(value, row, index) {
-  let actions = [];
-  let disabled = "";
-  if (row.status == '3') {
-    disabled = "disabled";
-  }
-  actions.push('<button ' + disabled + ' class="btn btn-success btn-xs btn-action mt5 mb5" id="updateEdo" onclick="viewUpdateCont(\'' + row.id + '\')"><i class="fa fa-pencil-square-o"></i> Cập Nhật</button>' + '<br>');
-  actions.push('<a class="btn btn-info btn-xs btn-xs btn-action mt5 mb5" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch Sử</a> ');
+  var actions = [];
+  actions.push('<a class="btn btn btn-info btn-xs" onclick="viewHistoryCont(\'' + row.id + '\')"><i class="fa fa-history"></i> Lịch sử</a> ');
   return actions.join("");
 }
 
@@ -156,57 +185,7 @@ function viewHistoryCont(id) {
   $.modal.openWithOneButton('Lịch sử thay đổi thông tin', PREFIX + "/history/" + id, 1000, 400);
 }
 
-function viewUpdateCont(id) {
-  $.modal.openOption("Cập nhật container", PREFIX + "/update/" + id, 500, 380);
-}
-
-function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading
-  $("#dgContainer").datagrid({
-    url: PREFIX + "/edo",
-    method: "POST",
-    singleSelect: false,
-    clientPaging: true,
-    height: $(document).height() - 60,
-    pagination: true,
-    pageSize: 20,
-    nowrap: false,
-    striped: true,
-    rownumbers: true,
-    loader: function (param, success, error) {
-      var opts = $(this).datagrid("options");
-      if (billOfLading == null) {
-        return false;
-      }
-      if (!opts.url) return false;
-      $.ajax({
-        type: opts.method,
-        url: opts.url,
-        contentType: "application/json",
-        accept: 'text/plain',
-        dataType: 'text',
-        data: JSON.stringify({
-          pageNum: param.page,
-          pageSize: param.rows,
-          orderByColumn: param.sort,
-          isAsc: param.order,
-          data: edo
-        }),
-        success: function (data) {
-          success(JSON.parse(data));
-        },
-
-        error: function () {
-          error.apply(this, arguments);
-        },
-      });
-    },
-  });
-}
-
 function getSelectedRow() {
-  onCheck = 0;
-  $("#updateEdo").attr("disabled", true);
   var row = $("#dg").datagrid("getSelected");
   if (row) {
     bill = row.billOfLading;
@@ -244,14 +223,6 @@ $.event.special.inputchange = {
   },
 };
 
-$('#searchAll').keyup(function (event) {
-  if (event.keyCode == 13) {
-    edo.containerNumber = $('#searchAll').val().toUpperCase();
-    edo.consignee = $('#searchAll').val().toUpperCase();
-    loadTableByContainer(bill);
-  }
-});
-
 function searchInfoEdo() {
   edo.fromDate = stringToDate($("#fromDate").val()).getTime();
   let toDate = stringToDate($("#toDate").val());
@@ -271,6 +242,14 @@ function searchInfoEdo() {
 }
 
 
+function formatToYDMHMS(date) {
+  if (date == null || date == undefined) {
+    return "-";
+  }
+  let temp = date.substring(0, 10);
+  return temp.split("-").reverse().join("/") + date.substring(10, 19);
+}
+
 function formatStatus(value) {
   switch (value) {
     case '1':
@@ -282,29 +261,18 @@ function formatStatus(value) {
   }
 }
 
-
-
-function multiUpdateEdo() {
-  let ids = [];
-  let rows = $('#dgContainer').datagrid('getSelections');
-  if (rows.length === 0) {
-    $.modal.alertWarning("Quý khách chưa chọn container để update <br>, vui lòng kiểm tra lại !");
-    return;
-  }
-  for (let i = 0; i < rows.length; i++) {
-    let row = rows[i];
-    if (row.status == '3') {
-      $.modal.alertError("Quý khách đã chọn container đã GATE-IN ra khỏi cảng, vui lòng kiểm tra lại dữ liệu!");
-      return;
-    }
-    ids.push(row.id);
-  }
-  $.modal.openOption("Cập nhật container", PREFIX + "/multiUpdate/" + ids, 500, 320);
-}
+laydate.render({
+  elem: '#toDate',
+  format: 'dd/MM/yyyy'
+});
+laydate.render({
+  elem: '#fromDate',
+  format: 'dd/MM/yyyy'
+});
 
 
 
-// SEARCH INFO VESSEL AREA
+
 $('.c-search-box-vessel').on('select2:open', function (e) {
   $('.c-search-box-vessel').text(null);
   $('.c-search-box-voy-no').text(null);
@@ -312,8 +280,8 @@ $('.c-search-box-vessel').on('select2:open', function (e) {
 });
 $(".c-search-box-vessel").select2({
   theme: "bootstrap",
+  placeholder: "Vessel",
   allowClear: true,
-  delay: 250,
   ajax: {
     url: PREFIX + "/getVessel",
     dataType: "json",
@@ -336,7 +304,37 @@ $(".c-search-box-vessel").select2({
       };
     },
   },
-  placeholder: "Vessel",
+});
+
+
+$(".c-search-box-voy-no").select2({
+  theme: "bootstrap",
+  placeholder: "Voy No",
+  allowClear: true,
+  ajax: {
+    url: PREFIX + "/getVoyNo",
+    dataType: "json",
+    method: "GET",
+    data: function (params) {
+      return {
+        keyString: params.term,
+        vessel: edo.vessel,
+      };
+    },
+    processResults: function (data) {
+      let results = []
+      data.forEach(function (element, i) {
+        let obj = {};
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
+
+      })
+      return {
+        results: results,
+      };
+    },
+  },
 });
 $('.c-search-box-vessel').on("select2:opening", function(e) {
   $('.c-search-box-vessel').text(null);
@@ -346,50 +344,47 @@ $('.c-search-box-vessel').on("select2:opening", function(e) {
 $('.c-search-box-voy-no').on('select2:open', function (e) {
       $(this).text(null);
 });
-  $(".c-search-box-voy-no").select2({
-    theme: "bootstrap",
-    allowClear: true,
-    delay: 250,
-    ajax: {
-      url: PREFIX + "/getVoyNo",
-      dataType: "json",
-      method: "GET",
-      data: function (params) {
-        return {
-          keyString: params.term,
-          vessel: edo.vessel,
-        };
-      },
-      processResults: function (data) {
-        let results = []
-        data.forEach(function (element, i) {
-          let obj = {};
-          obj.id = i;
-          obj.text = element;
-          results.push(obj);
-  
-        })
-        return {
-          results: results,
-        };
-      },
+$(".c-search-opr-code").select2({
+  theme: "bootstrap",
+  placeholder: "Mã vận hành",
+  allowClear: true,
+  ajax: {
+    url: PREFIX + "/getOprCode",
+    dataType: "json",
+    method: "GET",
+    data: function (params) {
+      return {
+        keyString: params.term,
+      };
     },
-    placeholder: "Voy No",
-  });
-  $('.c-search-box-voy-no').on("select2:opening", function(e) {
-      edo = new Object();
-      $(".c-search-box-voy-no").text(null);
-      edo.vessel = $(".c-search-box-vessel").text().trim();
-      loadTable(edo);
-      
-  });
+    processResults: function (data) {
+      let results = []
+      data.forEach(function (element, i) {
+        let obj = {};
+        obj.id = i;
+        obj.text = element;
+        results.push(obj);
 
+      })
+      return {
+        results: results,
+      };
+    },
+  },
+});
+
+$('.c-search-box-voy-no').on("select2:opening", function(e) {
+  edo = new Object();
+  $(".c-search-box-voy-no").text(null);
+  edo.vessel = $(".c-search-box-vessel").text().trim();
+  loadTable(edo);
+  
+});
 // For submit search
 $(".c-search-box-vessel").change(function () {
   edo = new Object();
   edo.vessel = $(this).text().trim();
   loadTable(edo);
- 
 });
 
 $(".c-search-box-voy-no").change(function () {
@@ -397,46 +392,25 @@ $(".c-search-box-voy-no").change(function () {
   loadTable(edo);
 });
 
-function generatePDF() {
-  if (!bill) {
-    $.modal.alertError("Bạn chưa chọn Bill!");
-    return
-  }
-  $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + bill);
-
-}
-
-$('#btnRefresh').click(function(){
-  $(".c-search-box-vessel").text(null);
-  $(".c-search-box-voy-no").text(null);
-  $("#fromDate").val(null);
-  $("#toDate").val(null);
-  $("#searchBillNo").val(null);
-  $("#searchContNo").val(null);
-  edo.vessel = null;
-  loadTable();
+$(".c-search-opr-code").change(function () {
+  edo.carrierCode = $(this).text().trim();
+  loadTable(edo);
+});
+$(".c-search-opr-code").on('select2:open', function (e) {
+  $(this).text(null);
+});
+$("#carrierCode").change(function () {
+  edo = new Object();
+  edo.carrierCode = $(this).text().trim();
+  loadTable(edo);
 });
 
 
+function generatePDF() {
+  if (!bill) {
+    $.modal.alertError("Bạn chưa chọn Lô!");
+    return
+  }
+  $.modal.openTab("In phiếu", ctx + "edo/print/bill/" + bill);
+}
 
-$('#dgContainer').datagrid({
-  onCheck: function(){
-    onCheck += 1;
-    $("#updateEdo").attr("disabled", false);
-  },
-  onCheckAll: function(index){
-    onCheck = index.length;
-    $("#updateEdo").attr("disabled", false);
-  },
-  onUncheck: function(){
-    onCheck = onCheck - 1;
-    if(onCheck == 0)
-    {
-      $("#updateEdo").attr("disabled", true);
-    }
-  },
-  onUncheckAll: function(){
-    onCheck = 0;
-    $("#updateEdo").attr("disabled", true);
-  },
-})
