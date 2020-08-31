@@ -1,4 +1,4 @@
-const PREFIX = ctx + "gate/test"
+const PREFIX = ctx + "gate/support"
 const WEB_SOCKET_TOPIC = "gate/detection/monitor";
 
 $(".main-body").height($(window).height() - 10);
@@ -19,12 +19,12 @@ $(".left-side__collapse").click(function () {
   }, 200);
 });
 
-$(".right-side__collapse").click(function() {
-  $('#right-layout').layout('collapse','south');
+$(".right-side__collapse").click(function () {
+  $('#right-layout').layout('collapse', 'south');
 })
 
 $('#dg').datagrid({
-  height: rightHeight - 60
+  height: rightHeight - 330,
 });
 
 connectToWebsocketServer();
@@ -74,12 +74,42 @@ function onError(error) {
   );
 }
 
-function loadYardPosition() {
+function loadYardPosition1() {
   let url = '';
-  if ($("#blNo").val()) {
-    url = PREFIX + "/blNo/" + $("#blNo").val() + "/yardPosition";
-  } else if ($("#refNo").val()) {
-    url = PREFIX + "/jobOrder/" + $("#refNo").val() + "/yardPosition";
+  if ($("#refNo1").val()) {
+    url = PREFIX + "/jobOrder/" + $("#refNo1").val() + "/yardPosition";
+  } 
+  if (url) {
+    $.ajax({
+      cache: true,
+      type: "GET",
+      url: url,
+      async: false,
+      error: function (request) {
+        $.modal.closeLoading();
+        $.modal.alertError("System error");
+      },
+      success: function (result) {
+        $.modal.closeLoading();
+        if (result.code == web_status.SUCCESS) {
+          $.modal.msgSuccess("Thành công!");
+          showYardPosition(result.bayList);
+        } else if (result.code == web_status.WARNING) {
+          $.modal.msgWarning(result.msg);
+        } else {
+          $.modal.msgError(result.msg);
+        }
+      },
+    });
+  } else {
+    $.modal.alertWarning("Bạn chưa nhập thông tin.");
+  }
+}
+
+function loadYardPosition2() {
+  let url = '';
+  if ($("#refNo2").val()) {
+    url = PREFIX + "/jobOrder/" + $("#refNo2").val() + "/yardPosition";
   }
   if (url) {
     $.ajax({
@@ -108,26 +138,25 @@ function loadYardPosition() {
   }
 }
 
-function gateIn() {
+function createGate() {
   let reqData = {
     truckNo: $('#truckNo').val(),
     chassisNo: $("#chassisNo").val(),
     gatePass: $("#gatePass").val(),
     weight: $("#wgt").val(),
+    loadableWgt: $("#loadableWgt").val(),
     containerSend1: $("#containerSend1").val(),
     containerSend2: $("#containerSend2").val(),
-    blNo: $("#blNo").val(),
-    refNo: $("#refNo").val(),
-    containerFlg: $('input[name="containerFlg"]:checked').val(),
+    refNo1: $("#refNo1").val(),
+    refNo2: $("#refNo2").val(),
     containerReceive1: $("#containerReceive1").val(),
     containerReceive2: $("#containerReceive2").val(),
-    containerAmount: $("#containerAmount").val(),
-    logisticGroupId: $("#logistics").val(),
-    driverId: $("#drivers").val(),
     sendOption: $("#sendOption").prop("checked"),
     receiveOption: $("#receiveOption").prop("checked"),
     yardPosition1: $("#yardPosition1").val(),
     yardPosition2: $("#yardPosition2").val(),
+    refFlg1: $('input[name="refFlg1"]:checked').val(),
+    refFlg2: $('input[name="refFlg2"]:checked').val()
   };
   $.modal.loading("Đang tạo dữ liệu mẫu gate-in...");
   $.ajax({
@@ -144,7 +173,7 @@ function gateIn() {
     success: function (result) {
       $.modal.closeLoading();
       if (result.code == web_status.SUCCESS) {
-        $.modal.alert("Thành công!");
+        $.modal.alertSuccess("Khởi tạo dữ liệu thành công.");
       } else if (result.code == web_status.WARNING) {
         $.modal.alertWarning(result.msg);
       } else {
@@ -170,6 +199,7 @@ $("#logistics").combobox({
 });
 
 function showYardPosition(bayList) {
+  $('.contListPosition').height(leftHeight/2-50);
   $(".contListPosition").html('');
   var index = 0;
   console.log(bayList);
@@ -201,7 +231,7 @@ function showYardPosition(bayList) {
 
             str += '<div style="background-color: #72ecea;" class="cellDiv">' + bay[row][col].containerNo + '</div>';
 
-          } 
+          }
         } else {
           str += '<div class="cellDivDisable"></div>';
         }
@@ -214,20 +244,21 @@ function showYardPosition(bayList) {
   });
 }
 
-function checkIn() {
+function gateIn() {
   let reqData = {
     gateId: $('#gateId').val(),
     truckNo: $('#truckNo').val(),
     chassisNo: $("#chassisNo").val(),
     containerNo1: $("#containerSend1").val(),
     containerNo2: $("#containerSend2").val(),
-    wgt : $("#wgt").val()
+    wgt: $("#wgt").val(),
+    loadableWgt: $("#loadableWgt").val()
   };
   $.modal.loading("Đang xử lý...");
   $.ajax({
     cache: true,
     type: "POST",
-    url: "http://app.danangport.com/api/gate/detection",
+    url: "http://192.168.1.70:7073/api/gate/detection",
     contentType: "application/json",
     data: JSON.stringify(reqData),
     async: false,
@@ -253,7 +284,7 @@ function loadTable() {
   $('#dg').datagrid({
     url: PREFIX + "/pickupList",
     method: "POST",
-    height: rightHeight - 60,
+    height: rightHeight - 330,
     singleSelect: true,
     collapsible: true,
     clientPaging: false,
@@ -276,6 +307,52 @@ function loadTable() {
         success: function (data) {
           if (data.code == 0) {
             success(data.pickupList);
+            let sendCont = 0;
+            let receiveCont = 0;
+            console.log(data.pickupList);
+            data.pickupList.rows.forEach(function(element) {
+              if (element && element.shipment && element.shipment.serviceType) {
+                $("#gatePass").textbox("setText", element.gatePass);
+                $("#chassisNo").textbox("setText", element.chassisNo);
+                if (element.loadableWgt) {
+                  $("#loadableWgt").textbox("setText", element.loadableWgt);
+                }
+                if (element.shipment.serviceType == 2 || element.shipment.serviceType == 4) {
+                  if (sendCont == 0) {
+                    $("#containerSend1").textbox("setText", element.containerNo);
+                    if (element.block && element.bay && element.row && element.tier) {
+                      $("#yardPosition1").textbox("setText", element.block+'-'+element.bay+'-'+element.line+'-'+element.tier);
+                    }
+                    sendCont++;
+                  } else {
+                    $("#containerSend2").textbox("setText", element.containerNo);
+                    if (element.block && element.bay && element.row && element.tier) {
+                      $("#yardPosition2").textbox("setText", element.block+'-'+element.bay+'-'+element.line+'-'+element.tier);
+                    }
+                  }
+                } else if (element.shipment.serviceType == 1) {
+                  if (receiveCont == 0) {
+                    if (element.jobOrderFlg) {
+                      $("#refNo1").textbox("setText", element.jobOrderNo);
+                      $('input[name="refFlg1"][value=1]').prop('checked', true);
+                      $('input[name="refFlg1"][value="1"]').prop('checked', true);
+                    } else {
+                      $("#containerReceive1").textbox("setText", element.containerNo);
+                      $('input[name="refFlg1"][value="0"]').prop('checked', true);
+                    }
+                    receiveCont++;
+                  } else {
+                    if (element.jobOrderFlg) {
+                      $("#refNo2").textbox("setText", element.jobOrderNo);
+                      $('input[name="refFlg2"][value="1"]').prop('checked', true);
+                    } else {
+                      $("#containerReceive2").textbox("setText", element.containerNo);
+                      $('input[name="refFlg2"][value="0"]').prop('checked', true);
+                    }
+                  }
+                }
+              }
+            }); 
           } else if (data.code == 301) {
             $.modal.alertWarning(data.msg);
           } else {
@@ -306,7 +383,21 @@ function formatServiceType(value, row) {
       case 4:
         return 'Hạ Hàng';
     }
-  } 
+  }
+  return '';
+}
+
+function formatYardPosition(value, row) {
+  if (row && row.block && row.bay && row.line && row.tier) {
+    return row.block+'-'+row.bay+'-'+row.line+'-'+row.tier;
+  }
+  return '';
+}
+
+function formatBlNo(value, row) {
+  if (row.shipment && row.shipment.blNo) {
+    return row.shipment.blNo;
+  }
   return '';
 }
 
@@ -314,11 +405,11 @@ function passDataDetection() {
   if ($("#truckNoDetection").text() && 'empty' != $("#truckNoDetection").text()) {
     $("#truckNo").textbox("setText", $("#truckNoDetection").text());
   }
-  
+
   if ($("#chassisNoDetection").text() && 'empty' != $("#chassisNoDetection").text()) {
     $("#chassisNo").textbox("setText", $("#chassisNoDetection").text());
   }
-  
+
   if ($("#container1").text() && 'empty' != $("#container1").text()) {
     $("#containerSend1").textbox("setText", $("#container1").text());
   }
@@ -327,3 +418,8 @@ function passDataDetection() {
     $("#containerSend2").textbox("setText", $("#container2").text());
   }
 }
+
+function printGate() {
+
+}
+

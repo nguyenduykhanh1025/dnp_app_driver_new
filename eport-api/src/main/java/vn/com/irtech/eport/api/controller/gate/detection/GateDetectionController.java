@@ -3,6 +3,7 @@ package vn.com.irtech.eport.api.controller.gate.detection;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
@@ -26,6 +27,8 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
+import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
 
 @RestController
 @RequestMapping("/gate")
@@ -35,6 +38,9 @@ public class GateDetectionController extends BaseController {
 	
 	@Autowired
 	private MqttService mqttService;
+	
+	@Autowired
+	private IPickupHistoryService pickupHistoryService;
 	
 	@PostMapping("/detection")
 	public AjaxResult submitDectionInfo(@Validated @RequestBody DetectionInfo detectionInfo) {
@@ -76,6 +82,22 @@ public class GateDetectionController extends BaseController {
 		} catch (MqttException e) {
 			logger.error("Error send detection info: " + e);
 		}
+		
+		if (detectionInfo.getLoadableWgt() != null) {
+			PickupHistory pickupHistory = new PickupHistory();
+			pickupHistory.setTruckNo(detectionInfo.getChassisNo());
+			pickupHistory.setChassisNo(detectionInfo.getChassisNo());
+			pickupHistory.setStatus(0);
+			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistory);
+			if (CollectionUtils.isNotEmpty(pickupHistories)) {
+				for (PickupHistory pickupHistory2 : pickupHistories) {
+					pickupHistory2.setLoadableWgt(detectionInfo.getLoadableWgt());
+					pickupHistoryService.updatePickupHistory(pickupHistory2);
+				}
+			}
+			
+		}
+		
 		return success();
 	}
 }

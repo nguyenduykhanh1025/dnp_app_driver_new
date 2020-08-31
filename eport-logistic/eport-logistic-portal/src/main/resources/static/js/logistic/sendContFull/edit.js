@@ -12,6 +12,7 @@ if (shipment != null) {
         $('#taxCodeNotDefault').prop('checked', true);
         $('#taxCode').val(shipment.taxCode);
     }
+    $("#opeCode").val(shipment.opeCode);
     $("#containerAmount").val(shipment.containerAmount);
     $("#groupName").val(shipment.groupName);
     $("#address").val(shipment.address);
@@ -22,7 +23,7 @@ if (shipment != null) {
     if (shipment.status > 2) {
         $('input:radio[name="taxCodeDefault"]').prop('disabled', true);
         $("#taxCode").prop('disabled', true);
-        $("#containerAmount").prop('disabled', true);
+        $("#opeCode").prop('disabled', true);
     }
 }
 
@@ -67,17 +68,23 @@ function loadGroupName() {
 
 async function submitHandler() {
     if ($.validate.form()) {
-        if ($("#groupName").val() != null && $("#groupName").val() != '') {
-            if ($("#bookingNo").val() != currentBooking) {
-                let res = await getBookingNoUnique();
-                if (res.code == 0) {
+        if ($("#opeCode option:selected").text() == 'Chọn OPR') {
+            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
+        } else if (!$("#containerAmount").val() || $("#containerAmount").val() < shipment.containerAmount) {
+            $.modal.alertWarning("Số lượng container quý khách muốn cập nhật không hợp lệ.");
+        } else {
+            if ($("#groupName").val() != null && $("#groupName").val() != '') {
+                if ($("#bookingNo").val() != currentBooking) {
+                    let res = await getBookingNoUnique();
+                    if (res.code == 0) {
+                        edit(prefix + "/shipment/" + $('#id').val(), $('#form-edit-shipment').serialize());
+                    }
+                } else {
                     edit(prefix + "/shipment/" + $('#id').val(), $('#form-edit-shipment').serialize());
                 }
             } else {
-                edit(prefix + "/shipment/" + $('#id').val(), $('#form-edit-shipment').serialize());
+                $.modal.alertError("Không tìm ra mã số thuế!<br>Quý khách vui lòng liên hệ đến bộ phận chăm sóc khách hàng 0933.157.159.");
             }
-        } else {
-            $.modal.alertError("Không tìm ra mã số thuế!<br>Quý khách vui lòng liên hệ đến bộ phận chăm sóc khách hàng 0933.157.159.");
         }
     }
 }

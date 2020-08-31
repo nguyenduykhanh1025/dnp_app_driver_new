@@ -1,6 +1,8 @@
 package vn.com.irtech.eport.api.form;
 
-public class MeasurementDataReq {
+import java.io.Serializable;
+
+public class MeasurementDataReq implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -43,4 +45,5 @@ public class MeasurementDataReq {
 	public void setChassisNo(String chassisNo) {
 		this.chassisNo = chassisNo;
 	}
+	
 }

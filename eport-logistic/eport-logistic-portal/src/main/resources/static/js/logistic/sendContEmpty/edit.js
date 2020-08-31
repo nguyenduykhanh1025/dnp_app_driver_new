@@ -15,10 +15,11 @@ if (shipment != null) {
     $("#groupName").val(shipment.groupName);
     $("#address").val(shipment.address);
     $("#remark").val(shipment.remark);
+    $('#opeCode').val(shipment.opeCode);
     if (shipment.status > 2) {
         $('input:radio[name="taxCodeDefault"]').prop('disabled', true);
         $("#taxCode").prop('disabled', true);
-        $("#containerAmount").prop('disabled', true);
+        $('#opeCode').prop('disabled', true);
     }
 }
 
@@ -63,7 +64,9 @@ function loadGroupName() {
 
 async function submitHandler() {
     if ($.validate.form()) {
-        if ($("#groupName").val() != null && $("#groupName").val() != '') {
+        if (!$("#containerAmount").val() || $("#containerAmount").val() < shipment.containerAmount) {
+            $.modal.alertWarning("Số lượng container quý khách muốn cập nhật không hợp lệ.");
+        } else if ($("#groupName").val() != null && $("#groupName").val() != '') {
             if ($("#blNo").val() != currentBill) {
                 let res = await getBillNoUnique();
                 if (res.code == 500) {
@@ -76,10 +79,10 @@ async function submitHandler() {
             } else {
             	edit(prefix + "/shipment/" + $('#id').val(), $('#form-edit-shipment').serialize());
             }
+        } else {
+            $.modal.alertError("Không tìm ra mã số thuế!<br>Quý khách vui lòng liên hệ đến bộ phận chăm sóc khách hàng 0933.157.159.");
         }
-    } else {
-        $.modal.alertError("Không tìm ra mã số thuế!<br>Quý khách vui lòng liên hệ đến bộ phận chăm sóc khách hàng 0933.157.159.");
-    }
+    } 
 }
 function getBillNoUnique() {
     return $.ajax({

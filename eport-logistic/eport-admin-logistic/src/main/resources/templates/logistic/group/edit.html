@@ -293,7 +293,7 @@
 			if ($('input[name=delegateTaxcode]').val() != null && $('input[name=delegateTaxcode]').val() != '') {
 				$('input[name=delegateTaxcode]').removeClass('error-input');
 				$.ajax({
-					url: PREFIX + "/company/" + $('input[name=delegateTaxcode]').val(),
+					url: PREFIX + "/consignee/" + $('input[name=delegateTaxcode]').val(),
 					method: "get"
 				}).done(function (result) {
 					if (result.code == 0) {

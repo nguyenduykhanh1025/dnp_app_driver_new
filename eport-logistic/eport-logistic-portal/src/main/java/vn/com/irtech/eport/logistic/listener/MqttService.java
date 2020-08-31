@@ -222,6 +222,22 @@ public class MqttService implements MqttCallback {
 		robotService.updateRobotStatusByUuId(sysRobot.getUuId(), "1");
 		return true;
 	}
+	
+	@Transactional
+	public boolean publishBookingOrderToRobot(ProcessOrder payLoad, EServiceRobot serviceRobot) throws MqttException {
+		SysRobot sysRobot = this.getAvailableRobot(serviceRobot);
+		if (sysRobot == null) {
+			return false;
+		}
+		String msg = new Gson().toJson(payLoad);
+		String topic = REQUEST_TOPIC.replace("+", sysRobot.getUuId());
+		publish(topic, new MqttMessage(msg.getBytes()));
+		payLoad.setRobotUuid(sysRobot.getUuId()); // robot uuid in charge of process order
+		payLoad.setStatus(1); // on progress
+		processOrderService.updateProcessOrder(payLoad);
+		robotService.updateRobotStatusByUuId(sysRobot.getUuId(), "1");
+		return true;
+	}
 
 	/**
 	 * 
@@ -242,6 +258,15 @@ public class MqttService implements MqttCallback {
 			processOrder.setRunnable(false);
 		}
 		processOrderService.updateProcessOrder(processOrder);
+	}
+	
+	public void publicBookingOrderToDemandRobot(ProcessOrder payLoad, EServiceRobot serviceRobot, String uuid) throws MqttException {
+		String msg = new Gson().toJson(payLoad);
+		String topic = REQUEST_TOPIC.replace("+", uuid);
+		publish(topic, new MqttMessage(msg.getBytes()));
+		payLoad.setRobotUuid(uuid); // robot uuid in charge of process order
+		payLoad.setStatus(1); // on progress
+		processOrderService.updateProcessOrder(payLoad);
 	}
 
 	/**

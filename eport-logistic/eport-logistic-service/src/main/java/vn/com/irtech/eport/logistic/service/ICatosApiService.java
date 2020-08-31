@@ -95,10 +95,20 @@ public interface ICatosApiService {
 	public Boolean checkContReserved(ShipmentDetail shipmentDetail);
 	
 	/***
+	 * Check the number of container not order for receive empty
+	 * 
 	 * check container amount have not ordered yet for receiveContEmpty
 	 * input: bookingNo, sztp
 	 */
 	public Integer checkTheNumberOfContainersNotOrderedForReceiveContEmpty(String bookingNo, String sztp);
+	
+	/***
+	 * Check the number of container order for receive empty
+	 * 
+	 * check container amount have not ordered yet for receiveContEmpty
+	 * input: bookingNo, sztp
+	 */
+	public Integer checkTheNumberOfContainersOrderedForReceiveContEmpty(String bookingNo, String sztp);
 	
 	/***
 	 * check container amount have not ordered yet for sendContFull
@@ -153,4 +163,26 @@ public interface ICatosApiService {
 	 * @return
 	 */
 	public String getBlNoByOrderJobNo(String jobOrder);
+	
+	/**
+	 * Get consignee name by tax code
+	 * 
+	 * @param taxCode
+	 * @return Shipment
+	 */
+	public Shipment getConsigneeNameByTaxCode(String taxCode);
+	
+	/**
+	 * Get opr code list
+	 * 
+	 * @return
+	 */
+	public List<String> getOprCodeList();
+	
+	/**
+	 * Select vessel voyage berth plan without ope code
+	 * 
+	 * @return
+	 */
+	public List<ShipmentDetail> selectVesselVoyageBerthPlanWithoutOpe();
 }

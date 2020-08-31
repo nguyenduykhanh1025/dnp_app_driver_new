@@ -149,6 +149,7 @@ function loadTable() {
         onClickRow: function () {
             getSelectedShipment();
         },
+        rownumbers:true,
         pageSize: 50,
         nowrap: false,
         striped: true,

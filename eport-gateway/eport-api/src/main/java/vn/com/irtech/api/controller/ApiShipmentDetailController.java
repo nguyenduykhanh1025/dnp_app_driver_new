@@ -203,6 +203,15 @@ public class ApiShipmentDetailController {
 		return result;
 	}
 	
+	@GetMapping("/shipmentDetail/receive-cont-empty/container-amount/booking-no/{bookingNo}/sztp/{sztp}/check/ordered")
+	public Integer checkTheNumberOfContainersOrderedForReceiveContEmpty(@PathVariable String bookingNo, @PathVariable String sztp) {
+		Integer result = shipmentDetailDao.checkTheNumberOfContainersOrderedForReceiveContEmpty(bookingNo, sztp);
+		if(result == null) {
+			return 0;
+		}
+		return result;
+	}
+	
 	@GetMapping("/shipmentDetail/send-cont-full/container-amount/booking-no/{bookingNo}/sztp/{sztp}/check/not-ordered")
 	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(@PathVariable String bookingNo, @PathVariable String sztp) {
 		Integer result = shipmentDetailDao.checkTheNumberOfContainersNotOrderedForSendContFull(bookingNo, sztp);
@@ -234,5 +243,21 @@ public class ApiShipmentDetailController {
 	@GetMapping("/jobOrder/{jobOrder}/blNo")
 	public String getblNoByJobOrderNo(@PathVariable("jobOrder") String jobOrder) {
 		return shipmentDetailDao.getblNoByJobOrderNo(jobOrder);
+	}
+	
+	@GetMapping("/shipmentDetail/getConsigneeNameByTaxCode/{taxCode}")
+	public ShipmentEntity getConsigneeByTaxCode(@PathVariable String taxCode) {
+		return shipmentDetailDao.getConsigneeByTaxCode(taxCode);
+	}
+	
+	@GetMapping("/opr/list")
+	public List<String> getOprCodeList() {
+		List<String> oprList = shipmentDetailDao.getOprCodeList();
+		return oprList;
+	}
+	
+	@GetMapping("/shipmentDetail/berthplan/vessel-voyage/list")
+	public List<ShipmentDetailEntity> selectVesselVoyageBerthPlanWithoutOpe(){
+		return shipmentDetailDao.selectVesselVoyageBerthPlanWithoutOpe();
 	}
 }
