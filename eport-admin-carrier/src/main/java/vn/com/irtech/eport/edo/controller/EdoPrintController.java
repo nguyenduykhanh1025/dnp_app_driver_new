@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.web.controller.edo;
+package vn.com.irtech.eport.edo.controller;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
@@ -27,7 +26,6 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.export.ExporterInputItem;
@@ -41,7 +39,6 @@ import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.web.controller.AdminBaseController;
 
 @Controller
 @RequestMapping("/edo/print")
