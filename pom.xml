@@ -253,6 +253,7 @@
 		<module>eport-logistic/eport-logistic-framework</module>
 		<module>eport-logistic/eport-logistic-service</module>
 		<module>eport-api</module>
+		<module>eport-gateway</module>
 	</modules>
 
 	<packaging>pom</packaging>
