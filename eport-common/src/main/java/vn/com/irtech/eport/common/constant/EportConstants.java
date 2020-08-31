@@ -16,6 +16,12 @@ public interface EportConstants {
 	public static final int SERVICE_DROP_FULL = 4;
 	/** Ha cont rong*/
 	public static final int SERVICE_DROP_EMPTY = 2;
+	/** Tao Booking*/
+	public static final int SERVICE_CREATE_BOOKING = 7;
+	/** Update booking*/
+	public static final int BOOKING_UPDATE = 1;
+	/** Update booking*/ 
+	public static final int BOOKING_CREATE = 2;
 	
 	
 }

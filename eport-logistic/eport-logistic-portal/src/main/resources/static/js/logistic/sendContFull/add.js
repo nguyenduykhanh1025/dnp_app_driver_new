@@ -16,16 +16,19 @@ $('input:radio[name="taxCodeDefault"]').change(function() {
         $("#taxCode").removeClass("error-input");
     }
 });
-
 async function submitHandler() {
     if ($.validate.form()) {
-        if ($("#groupName").val() != null && $("#groupName").val() != '') {
-            let res = await getBookingNoUnique();
-            if (res.code == 0) {
-                save(prefix + "/shipment", $('#form-add-shipment').serialize());
-            }
+        if ($("#opeCode option:selected").text() == 'Chọn OPR') {
+            $.modal.alertWarning("Quý khách chưa chọn mã OPR.");
         } else {
-            $.modal.alertError("Không tìm ra mã số thuế!<br>Quý khách vui lòng liên hệ đến bộ phận chăm sóc khách hàng 0933.157.159.");
+            if ($("#groupName").val() != null && $("#groupName").val() != '') {
+                let res = await getBookingNoUnique();
+                if (res.code == 0) {
+                    save(prefix + "/shipment", $('#form-add-shipment').serialize());
+                }
+            } else {
+                $.modal.alertError("Không tìm ra mã số thuế!<br>Quý khách vui lòng liên hệ đến bộ phận chăm sóc khách hàng 0933.157.159.");
+            }
         }
     }
 }

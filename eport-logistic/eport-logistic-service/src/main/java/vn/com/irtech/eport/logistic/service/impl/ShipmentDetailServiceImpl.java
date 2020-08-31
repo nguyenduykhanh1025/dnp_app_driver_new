@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.constant.Constants;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.text.Convert;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
@@ -566,6 +567,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setSztp(detail.getSztp());
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setShipmentId(shipment.getId());
+        processOrder.setRunnable(false);
         processOrder.setServiceType(3);
         processOrderService.insertProcessOrder(processOrder);
         for (ShipmentDetail shipmentDetail : shipmentDetails) {
@@ -617,6 +619,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(detail.getId().toString());
             shipmentDetail.setUserVerifyStatus("Y");
+            shipmentDetail.setOpeCode(shipment.getOpeCode());
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             if (processOrder.getServiceType() == 2) {
             	shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());
@@ -789,60 +792,6 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     public List<ShipmentDetail> selectShipmentDetailByProcessIds(String processOrderIds) {
         return shipmentDetailMapper.selectShipmentDetailByProcessIds(Convert.toStrArray(processOrderIds));
     }
-
-//    @Override
-//    public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo) {
-//        List<ShipmentDetail> listShip = new ArrayList<ShipmentDetail>();
-//        List<Edo> listEdo = edoMapper.selectEdoListByBlNo(blNo);
-//        if (listEdo != null) {
-//            for (Edo i : listEdo) {
-//                ShipmentDetail ship = new ShipmentDetail();
-//                ship.setContainerNo(i.getContainerNumber());
-//                ship.setExpiredDem(i.getExpiredDem());
-//                ship.setDetFreeTime(i.getDetFreeTime());
-//                ship.setEmptyDepot(i.getEmptyContainerDepot());
-//                ship.setOpeCode(i.getCarrierCode());
-//                ship.setVslNm(i.getVesselNo()+": "+i.getVessel());
-//                ship.setVslName(i.getVessel());
-//                ship.setVoyCarrier(i.getVoyNo());
-//                ship.setSztp(i.getSztp());
-//                ship.setLoadingPort(i.getPol());
-//                ship.setDischargePort(i.getPod());
-//                ship.setTaxCode(i.getTaxCode());
-//                ship.setConsigneeByTaxCode(i.getConsigneeByTaxCode());
-//                listShip.add(ship);
-//            }
-//            return listShip;
-//        }
-//        return null;
-//    }
-//    
-//    @Override
-//    public List<ShipmentDetail> getShipmentDetailFromHouseBill(String houseBl) {
-//    	 List<ShipmentDetail> shipmentDetails = new ArrayList<>();
-//    	 List<EdoHouseBill> edoHouseBills = edoHouseBillMapper.selectHouseBillForShipment(houseBl);
-//    	 if (CollectionUtils.isNotEmpty(edoHouseBills)) {
-//    		 for (EdoHouseBill edoHouseBill : edoHouseBills) {
-//    			 ShipmentDetail ship = new ShipmentDetail();
-//                 ship.setContainerNo(edoHouseBill.getContainerNumber());
-//                 ship.setExpiredDem(edoHouseBill.getEdo().getExpiredDem());
-//                 ship.setDetFreeTime(edoHouseBill.getEdo().getDetFreeTime());
-//                 ship.setEmptyDepot(edoHouseBill.getEdo().getEmptyContainerDepot());
-//                 ship.setOpeCode(edoHouseBill.getEdo().getCarrierCode());
-//                 ship.setVslNm(edoHouseBill.getEdo().getVesselNo()+": "+edoHouseBill.getEdo().getVessel());
-//                 ship.setVslName(edoHouseBill.getEdo().getVessel());
-//                 ship.setVoyCarrier(edoHouseBill.getEdo().getVoyNo());
-//                 ship.setSztp(edoHouseBill.getEdo().getSztp());
-//                 ship.setLoadingPort(edoHouseBill.getEdo().getPol());
-//                 ship.setDischargePort(edoHouseBill.getEdo().getPod());
-//                 ship.setTaxCode(edoHouseBill.getConsignee2TaxCode());
-//                 ship.setConsigneeByTaxCode(edoHouseBill.getConsignee2());
-//                 ship.setConsignee(edoHouseBill.getConsignee2());
-//                 shipmentDetails.add(ship);
-//    		 }
-//    	 }
-//    	 return shipmentDetails;
-//    }
 
     @Override
     public List<ShipmentDetail> getShipmentDetailListForAssign(ShipmentDetail shipmentDetail) {
@@ -1135,5 +1084,79 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 	 */
 	public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo) {
 		return shipmentDetailMapper.selectEdoListByBlNo(blNo);
+	}
+	
+	/**
+	 * Check and create booking if need
+	 * 
+	 * @param receiveEmptyReqs
+	 * @return List<ProcessOrder>
+	 */
+	@Override
+	public List<ProcessOrder> createBookingIfNeed(List<ServiceSendFullRobotReq> receiveEmptyReqs) {
+		List<ProcessOrder> processOrders = new ArrayList<>();
+		for (ServiceSendFullRobotReq receiveEmptyReq : receiveEmptyReqs) {
+			ProcessOrder processOrder = receiveEmptyReq.processOrder;
+			int bookingAvailableSize = catosApiService.checkTheNumberOfContainersNotOrderedForReceiveContEmpty(processOrder.getBookingNo(), processOrder.getSztp());
+			// Check booking size by sztp. If true then check to update booking if need, false then create new booking with sztp
+			if (bookingAvailableSize > 0) {
+				if (processOrder.getContNumber() > bookingAvailableSize) {
+					// Update booking size 
+					ProcessOrder bookingOrder = new ProcessOrder();
+					bookingOrder.setBookingCreateMode(EportConstants.BOOKING_UPDATE);
+					int bookingSize = catosApiService.checkTheNumberOfContainersOrderedForReceiveContEmpty(processOrder.getBookingNo(), processOrder.getSztp());
+					int bookingChangeSize = bookingSize  +processOrder.getContNumber() - bookingAvailableSize;
+					bookingOrder.setContNumber(bookingChangeSize);
+					bookingOrder.setBookingNo(processOrder.getBookingNo());
+					bookingOrder.setSztp(processOrder.getSztp());
+					bookingOrder.setPostProcessId(processOrder.getId());
+					bookingOrder.setVessel(processOrder.getVessel());
+					bookingOrder.setVoyage(processOrder.getVoyage());
+					bookingOrder.setBeforeAfter(processOrder.getBeforeAfter());
+					bookingOrder.setShipmentId(processOrder.getShipmentId());
+					bookingOrder.setYear(processOrder.getYear());
+					bookingOrder.setServiceType(EportConstants.SERVICE_CREATE_BOOKING);
+					bookingOrder.setLogisticGroupId(processOrder.getLogisticGroupId());
+					bookingOrder.setFe("E");
+					bookingOrder.setOpr(processOrder.getOpr());
+					bookingOrder.setPol(processOrder.getPol());
+					bookingOrder.setPod(processOrder.getPod());
+					bookingOrder.setCargoType(processOrder.getCargoType());
+					ShipmentDetail shipmentDetail = new ShipmentDetail();
+					shipmentDetail.setVslNm(processOrder.getVessel());
+					shipmentDetail.setVoyNo(processOrder.getVoyage());
+					shipmentDetail.setYear(processOrder.getYear());
+					bookingOrder.setBookingIndex(catosApiService.getIndexBooking(shipmentDetail));
+					processOrderService.insertProcessOrder(bookingOrder);
+					processOrders.add(bookingOrder);
+				} else {
+					processOrder.setRunnable(true);
+					processOrderService.updateProcessOrder(processOrder);
+				}
+			} else {
+				ProcessOrder bookingOrder = new ProcessOrder();
+				bookingOrder.setBookingCreateMode(EportConstants.BOOKING_CREATE);
+				bookingOrder.setContNumber(receiveEmptyReq.containers.size());
+				bookingOrder.setBookingNo(processOrder.getBookingNo());
+				bookingOrder.setVessel(processOrder.getVessel());
+				bookingOrder.setVoyage(processOrder.getVoyage());
+				bookingOrder.setShipmentId(processOrder.getShipmentId());
+				bookingOrder.setBeforeAfter(processOrder.getBeforeAfter());
+				bookingOrder.setYear(processOrder.getYear());
+				bookingOrder.setServiceType(EportConstants.SERVICE_CREATE_BOOKING);
+				bookingOrder.setLogisticGroupId(processOrder.getLogisticGroupId());
+				bookingOrder.setSztp(processOrder.getSztp());
+				bookingOrder.setBookingIndex(0);
+				bookingOrder.setPostProcessId(processOrder.getId());
+				bookingOrder.setFe("E");
+				bookingOrder.setOpr(processOrder.getOpr());
+				bookingOrder.setPol(processOrder.getPol());
+				bookingOrder.setPod(processOrder.getPod());
+				bookingOrder.setCargoType(processOrder.getCargoType());
+				processOrderService.insertProcessOrder(bookingOrder);
+				processOrders.add(bookingOrder);
+			}
+		}
+		return processOrders;
 	}
 }

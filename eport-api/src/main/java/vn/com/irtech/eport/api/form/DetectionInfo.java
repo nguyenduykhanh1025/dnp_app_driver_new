@@ -24,6 +24,8 @@ public class DetectionInfo implements Serializable {
 	private Integer wgt;
 	
 	private Boolean detectionFlg = true;
+	
+	private Integer loadableWgt;
 
 	public String getGateId() {
 		return gateId;
@@ -80,4 +82,13 @@ public class DetectionInfo implements Serializable {
 	public void setWgt(Integer wgt) {
 		this.wgt = wgt;
 	}
+
+	public Integer getLoadableWgt() {
+		return loadableWgt;
+	}
+
+	public void setLoadableWgt(Integer loadableWgt) {
+		this.loadableWgt = loadableWgt;
+	}
+	
 }

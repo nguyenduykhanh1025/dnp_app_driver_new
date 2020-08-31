@@ -44,8 +44,17 @@
         </div>
       </div>
       <div class="form-group row">
-        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4">Số Lượng Container</label>
-        <div class="col-md-10 col-sm-9 col-xs-7">
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Mã
+          Hãng Tàu (OPR)</label>
+        <div class="col-md-5 col-sm-4 col-xs-3">
+          <select class="form-control" id="opeCode" name="opeCode">
+            <option th:each="oprCode, iterator : ${oprCodeList}" th:value=${oprCode} th:text=${oprCode}>
+            </option>
+          </select>
+        </div>
+        <label style="margin-top: 9px;" for="" class="col-md-2 col-sm-3 col-xs-4"><span style="color: red;">*</span>Số
+          Lượng Container</label>
+        <div class="col-md-3 col-sm-2 col-xs-1">
           <input name="containerAmount" id="containerAmount" type="number" class="form-control" required />
         </div>
       </div>

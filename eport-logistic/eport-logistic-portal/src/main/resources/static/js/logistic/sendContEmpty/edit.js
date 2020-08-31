@@ -15,10 +15,12 @@ if (shipment != null) {
     $("#groupName").val(shipment.groupName);
     $("#address").val(shipment.address);
     $("#remark").val(shipment.remark);
+    $('#opeCode').val(shipment.opeCode);
     if (shipment.status > 2) {
         $('input:radio[name="taxCodeDefault"]').prop('disabled', true);
         $("#taxCode").prop('disabled', true);
         $("#containerAmount").prop('disabled', true);
+        $('#opeCode').prop('disabled', true);
     }
 }
 

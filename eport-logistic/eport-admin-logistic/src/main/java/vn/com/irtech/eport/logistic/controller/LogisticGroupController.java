@@ -266,6 +266,27 @@ public class LogisticGroupController extends BaseController
 		}
 		return ajaxResult;
     }
+    
+    @GetMapping("/consignee/{taxCode}")
+    @ResponseBody
+    public AjaxResult getConsigneeInfoByTaxcode(@PathVariable String taxCode) {
+        AjaxResult ajaxResult = AjaxResult.success();
+		if (taxCode == null || "".equals(taxCode)) {
+			return error();
+		}
+		Shipment shipment = catosApiService.getConsigneeNameByTaxCode(taxCode);
+		String groupName = shipment.getGroupName();
+		String address = shipment.getAddress();
+		if (address != null) {
+			ajaxResult.put("address", address);
+		}
+		if (groupName != null) {
+			ajaxResult.put("groupName", groupName);
+		} else {
+			ajaxResult = AjaxResult.error();
+		}
+		return ajaxResult;
+    }
    
     @GetMapping("/delegate/edit/{delegateId}")
     public String getDelegateEditForm(@PathVariable("delegateId") Long id, ModelMap mmap) {

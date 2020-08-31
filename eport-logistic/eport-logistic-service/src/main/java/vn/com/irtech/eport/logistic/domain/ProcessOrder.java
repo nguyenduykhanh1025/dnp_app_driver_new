@@ -145,7 +145,21 @@ public class ProcessOrder extends BaseEntity
     
     private Boolean domesticFlg;
 
+    private Integer bookingCreateMode;
+    
+    private Integer bookingIndex;
+    
     private String logisticName;
+    
+    private String fe;
+    
+    private String opr;
+    
+    private String pol;
+    
+    private String pod;
+    
+    private String cargoType;
 
     public String getLogisticName() {
 		return this.logisticName;
@@ -468,6 +482,63 @@ public class ProcessOrder extends BaseEntity
 	public void setDomesticFlg(Boolean domesticFlg) {
 		this.domesticFlg = domesticFlg;
 	}
+	
+
+	public Integer getBookingCreateMode() {
+		return bookingCreateMode;
+	}
+
+	public void setBookingCreateMode(Integer bookingCreateMode) {
+		this.bookingCreateMode = bookingCreateMode;
+	}
+
+	public Integer getBookingIndex() {
+		return bookingIndex;
+	}
+
+	public void setBookingIndex(Integer bookingIndex) {
+		this.bookingIndex = bookingIndex;
+	}
+	
+	public String getFe() {
+		return fe;
+	}
+
+	public void setFe(String fe) {
+		this.fe = fe;
+	}
+
+	public String getOpr() {
+		return opr;
+	}
+
+	public void setOpr(String opr) {
+		this.opr = opr;
+	}
+
+	public String getPol() {
+		return pol;
+	}
+
+	public void setPol(String pol) {
+		this.pol = pol;
+	}
+
+	public String getPod() {
+		return pod;
+	}
+
+	public void setPod(String pod) {
+		this.pod = pod;
+	}
+
+	public String getCargoType() {
+		return cargoType;
+	}
+
+	public void setCargoType(String cargoType) {
+		this.cargoType = cargoType;
+	}
 
 	@Override
     public String toString() {
@@ -510,6 +581,14 @@ public class ProcessOrder extends BaseEntity
             .append("paymentStatus", getPaymentStatus())
             .append("doStatus", getDoStatus())
             .append("logisticName", getLogisticName())
+            .append("domesticFlg", getDomesticFlg())
+            .append("bookingCreateMode", getBookingCreateMode())
+            .append("bookingIndex", getBookingIndex())
+            .append("fe", getFe())
+            .append("opr", getOpr())
+            .append("pol", getPol())
+            .append("pod", getPod())
+            .append("cargoType", getCargoType())
             .toString();
     }
 }

@@ -12,6 +12,7 @@ var shipmentSearch = new Object;
 shipmentSearch.serviceType = 3;
 var sizeList = [];
 var berthplanList;
+var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 //dictionary sizeList
 $.ajax({
     type: "GET",
@@ -410,6 +411,18 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
+    if (value != null && value != '') {
+        value = value.split(':')[0];
+        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
+            cellProperties.readOnly = 'true';
+            $(td).css("background-color", "rgb(232, 232, 232)");
+        }
+    }
+    $(td).html(value);
+    return td;
+}
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
     if (value != null && value != '') {
@@ -467,8 +480,10 @@ function configHandson() {
                 case 7:
                     return '<span>Tàu và Chuyến</span><span style="color: red;">(*)</span>';
                 case 8:
-                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                    return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
                 case 9:
+                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                case 10:
                     return "Ghi Chú";
             }
         },
@@ -531,6 +546,13 @@ function configHandson() {
 //                strict: true,
 //                renderer: voyNoRenderer
 //            },
+            {
+                data: "cargoType",
+                strict: true,
+                type: "autocomplete",
+                source: cargoTypeList,
+                renderer: cargoTypeRenderer
+            },
             {
                 data: "dischargePort",
                 type: "autocomplete",
@@ -631,7 +653,7 @@ function onChange(changes, source) {
                               if (data.code == 0) {
                                   hot.updateSettings({
                                       cells: function (row, col, prop) {
-                                          if (row == change[0] && col == 8) {
+                                          if (row == change[0] && col == 9) {
                                               let cellProperties = {};
                                               cellProperties.source = data.dischargePorts;
                                               return cellProperties;
@@ -969,6 +991,7 @@ function getDataFromTable(isValidate) {
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
+        shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetails.push(shipmentDetail);
         var now = new Date();
         now.setHours(0, 0, 0);

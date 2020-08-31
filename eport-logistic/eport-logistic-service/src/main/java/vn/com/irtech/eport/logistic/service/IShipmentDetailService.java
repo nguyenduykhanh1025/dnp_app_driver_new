@@ -230,4 +230,12 @@ public interface IShipmentDetailService
 	 * @return List<ShipmentDetail>
 	 */
 	public List<ShipmentDetail> getShipmentDetailsFromEDIByBlNo(String blNo);
+	
+	/**
+	 * Check and create booking if need
+	 * 
+	 * @param receiveEmptyReqs
+	 * @return List<ProcessOrder>
+	 */
+	public List<ProcessOrder> createBookingIfNeed(List<ServiceSendFullRobotReq> receiveEmptyReqs);
 }
