@@ -26,6 +26,7 @@ import vn.com.irtech.eport.common.constant.Constants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
+import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
@@ -95,6 +96,14 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	@GetMapping("/shipment/add")
 	public String add(ModelMap mmap) {
 		mmap.put("taxCode", getGroup().getMst());
+		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
+		if (oprCodeList == null) {
+			oprCodeList = catosApiService.getOprCodeList();
+			oprCodeList.add(0, "Chọn OPR");
+			CacheUtils.put("oprCodeList", oprCodeList);
+		}
+		
+		mmap.put("oprCodeList", oprCodeList);
 		return PREFIX + "/add";
 	}
 
@@ -105,6 +114,13 @@ public class LogisticSendContFullController extends LogisticBaseController {
 			mmap.put("shipment", shipment);
 			mmap.put("taxCode", getGroup().getMst());
 		}
+		List<String> oprCodeList = (List<String>) CacheUtils.get("oprCodeList");
+		if (oprCodeList == null) {
+			oprCodeList = catosApiService.getOprCodeList();
+			oprCodeList.add(0, "Chọn OPR");
+			CacheUtils.put("oprCodeList", oprCodeList);
+		}
+		mmap.put("oprCodeList", oprCodeList);
         return PREFIX + "/edit";
 	}
 
@@ -441,6 +457,23 @@ public class LogisticSendContFullController extends LogisticBaseController {
 	public AjaxResult getVesselVoyageList(@PathVariable String opeCode) {
 		AjaxResult ajaxResult = success();
 		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlan(opeCode);
+		if(berthplanList.size() > 0) {
+			List<String> vesselAndVoyages = new ArrayList<String>();
+			for(ShipmentDetail i : berthplanList) {
+				vesselAndVoyages.add(i.getVslAndVoy());
+			}
+			ajaxResult.put("berthplanList", berthplanList);
+			ajaxResult.put("vesselAndVoyages", vesselAndVoyages);
+			return ajaxResult;
+		}
+		return error();
+	}
+	
+	@GetMapping("/berthplan/vessel-voyage/list")
+	@ResponseBody
+	public AjaxResult getVesselVoyageListWithoutOpeCode() {
+		AjaxResult ajaxResult = success();
+		List<ShipmentDetail> berthplanList = catosApiService.selectVesselVoyageBerthPlanWithoutOpe();
 		if(berthplanList.size() > 0) {
 			List<String> vesselAndVoyages = new ArrayList<String>();
 			for(ShipmentDetail i : berthplanList) {

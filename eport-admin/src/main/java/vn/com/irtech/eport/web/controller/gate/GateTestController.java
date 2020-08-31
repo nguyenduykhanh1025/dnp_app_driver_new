@@ -49,7 +49,7 @@ public class GateTestController extends BaseController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GateTestController.class);
 
-	private final static String PREFIX = "gate/test";
+	private final static String PREFIX = "gate/support";
 	
 	@Autowired
 	private WebSocketService webSocketService;
@@ -77,7 +77,7 @@ public class GateTestController extends BaseController {
 	
 	@GetMapping()
 	public String getView() {
-		return PREFIX + "/test";
+		return PREFIX + "/index";
 	}
 	
 	@PostMapping("/detection")

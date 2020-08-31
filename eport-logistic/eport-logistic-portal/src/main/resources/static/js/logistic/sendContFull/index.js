@@ -23,7 +23,7 @@ $.ajax({
         }
     }
 })
-var consigneeList, opeCodeList, vslNmList, currentProcessId, currentSubscription;
+var consigneeList, vslNmList, currentProcessId, currentSubscription;
 
 $.ajax({
     url: ctx + "logistic/source/consignee",
@@ -34,13 +34,14 @@ $.ajax({
         }
     }
 });
-//get opeCodeList BerthPlan
+
 $.ajax({
-    url: prefix + "/berthplan/ope-code/list",
+    url: prefix + "/berthplan/vessel-voyage/list",
     method: "GET",
     success: function (data) {
         if (data.code == 0) {
-            opeCodeList = data.opeCodeList;
+            berthplanList = data.berthplanList;
+            vslNmList = data.vesselAndVoyages;
         }
     }
 });
@@ -190,7 +191,6 @@ function loadTable(msg) {
                   data: shipmentSearch
                 }),
                 success: function (data) {
-                    console.log(data);
                     success(data);
                     $("#dg").datagrid("hideColumn", "id");
                 },
@@ -364,17 +364,6 @@ function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) 
     }
     return td;
 }
-function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'opeCode' + row).addClass("htMiddle");
-    $(td).html(value);
-    if (value != null && value != '') {
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    }
-    return td;
-}
 function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'vslNm' + row).addClass("htMiddle");
     $(td).html(value);
@@ -386,17 +375,6 @@ function vslNmRenderer(instance, td, row, col, prop, value, cellProperties) {
     }
     return td;
 }
-//function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
-//    $(td).attr('id', 'voyNo' + row).addClass("htMiddle");
-//    $(td).html(value);
-//    if (value != null && value != '') {
-//        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-//            cellProperties.readOnly = 'true';
-//            $(td).css("background-color", "rgb(232, 232, 232)");
-//        }
-//    }
-//    return td;
-//}
 function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'sztp' + row).addClass("htMiddle");
     if (value != null && value != '') {
@@ -524,20 +502,18 @@ function configHandson() {
                 case 4:
                     return '<span>Chủ Hàng</span><span style="color: red;">(*)</span>';
                 case 5:
-                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
-                case 6:
                     return '<span>Tàu và Chuyến</span><span style="color: red;">(*)</span>';
-                case 7:
+                case 6:
                     return "Nhiệt Độ";
-                case 8:
-                    return "Chi tiết";
-                case 9:
+                // case 8:
+                //     return "Chi tiết";
+                case 7:
                     return '<span>Trọng Lượng</span><span style="color: red;">(*)</span>';
-                case 10:
+                case 8:
                     return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
-                case 11:
+                case 9:
                     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
-                case 12:
+                case 10:
                     return "Ghi Chú";
             }
         },
@@ -573,13 +549,6 @@ function configHandson() {
                 type: "autocomplete",
                 source: consigneeList,
                 renderer: consigneeRenderer
-              },
-            {
-                data: "opeCode",
-                type: "autocomplete",
-                source: opeCodeList,
-                strict: true,
-                renderer: opeCodeRenderer
             },
             {
                 data: "vslNm",
@@ -595,10 +564,10 @@ function configHandson() {
                 readonly: true,
                 renderer: temperatureRenderer
             },
-            {
-                data: "detailButton",
-                renderer: detailRenderer
-            },
+            // {
+            //     data: "detailButton",
+            //     renderer: detailRenderer
+            // },
             {
                 data: "wgt",
                 type: "numeric",
@@ -665,33 +634,9 @@ function onChange(changes, source) {
     }
     changes.forEach(function (change) {
 
-   	    // Trigger when opeCode no change, get list vessel-voyage by opeCode
-        if (change[1] == "opeCode" && change[3] != null && change[3] != '') {
-           //hot.setDataAtCell(change[0], 6, '');//vessel and voyage reset
-       	    $.modal.loading("Đang xử lý ...");
-            $.ajax({
-                url: prefix + "/berthplan/ope-code/"+ change[3].split(": ")[0] +"/vessel-voyage/list",
-                method: "GET",
-                success: function (data) {
-                    $.modal.closeLoading();
-                    if (data.code == 0) {
-                        hot.updateSettings({
-                            cells: function (row, col, prop) {
-                                if (row == change[0] && col == 6) {
-                                    let cellProperties = {};
-                                    berthplanList = data.berthplanList;
-                                    cellProperties.source = data.vesselAndVoyages;
-                                    return cellProperties;
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        } 
         // Trigger when vessel-voyage no change, get list discharge port by vessel, voy no
-        else if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
-            let vesselAndVoy = hot.getDataAtCell(change[0], 6);
+        if (change[1] == "vslNm" && change[3] != null && change[3] != '') {
+            let vesselAndVoy = hot.getDataAtCell(change[0], 5);
             //hot.setDataAtCell(change[0], 10, ''); // dischargePort reset
             if (vesselAndVoy) {
                 let shipmentDetail = new Object();
@@ -711,7 +656,7 @@ function onChange(changes, source) {
                                 if (data.code == 0) {
                                     hot.updateSettings({
                                         cells: function (row, col, prop) {
-                                            if (row == change[0] && col == 11) {
+                                            if (row == change[0] && col == 9) {
                                                 let cellProperties = {};
                                                 cellProperties.source = data.dischargePorts;
                                                 return cellProperties;
@@ -737,7 +682,7 @@ function onChange(changes, source) {
                 temperatureDisable[change[0]] = 0;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
-                        if (row == change[0] && col == 7) {
+                        if (row == change[0] && col == 6) {
                             let cellProperties = {};
                             cellProperties.readOnly = false;
                             return cellProperties;
@@ -748,7 +693,7 @@ function onChange(changes, source) {
                 temperatureDisable[change[0]] = 1;
                 hot.updateSettings({
                     cells: function (row, col, prop) {
-                        if (row == change[0] && col == 7) {
+                        if (row == change[0] && col == 6) {
                             let cellProperties = {};
                             cellProperties.readOnly = true;
                             $('#temperature' + row).css("background-color", "rgb(232, 232, 232)");
@@ -1034,7 +979,6 @@ function getDataFromTable(isValidate) {
     let consignee, opecode, vessel, voyage, pod;
     if (cleanedGridData.length > 0) {
         consignee = cleanedGridData[0].consignee;
-        opecode = cleanedGridData[0].opeCode;
         vessel = cleanedGridData[0].vslNm;
         voyage = cleanedGridData[0].voyNo;
         pod = cleanedGridData[0].dischargePort;
@@ -1052,10 +996,6 @@ function getDataFromTable(isValidate) {
                 return false;
             } else if (!object["consignee"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
-                errorFlg = true;
-                return false;
-            } else if (!object["opeCode"]) {
-                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn hãng tàu!");
                 errorFlg = true;
                 return false;
             } else if (!object["vslNm"]) {
@@ -1078,18 +1018,14 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Tên chủ hàng không được khác nhau!");
                 errorFlg = true;
                 return false;
-            } else if (opecode != object["opeCode"]) {
-                $.modal.alertError("Hãng tàu không được khác nhau!");
+            } else if (consignee != object["consignee"]) {
+                $.modal.alertError("Tên chủ hàng không được khác nhau!");
                 errorFlg = true;
                 return false;
            } else if (vessel != object["vslNm"]) {
                $.modal.alertError("Tàu và Chuyến không được khác nhau!");
                errorFlg = true;
                return false;
-//            } else if (voyage != object["voyNo"]) {
-//                $.modal.alertError("Số chuyến không được khác nhau!");
-//                errorFlg = true;
-//                return false;
             } else if (pod.split(": ")[0] != object["dischargePort"].split(": ")[0]) {
                 $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
                 errorFlg = true;
@@ -1097,9 +1033,7 @@ function getDataFromTable(isValidate) {
             }
         }
         consignee = object["consignee"];
-        opecode = object["opeCode"];
         vessel = object["vslNm"];
-//        voyage = object["voyNo"];
         pod = object["dischargePort"];
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.containerNo = object["containerNo"];
@@ -1107,9 +1041,6 @@ function getDataFromTable(isValidate) {
             conts += object["containerNo"] + ',';
         }
         contList.push(object["containerNo"]);
-        let carrier = object["opeCode"].split(": ");
-        shipmentDetail.opeCode = carrier[0];
-        shipmentDetail.carrierName = carrier[1];
         let sizeType = object["sztp"].split(": ");
         shipmentDetail.sztp = sizeType[0];
         shipmentDetail.sztpDefine = sizeType[1];
@@ -1127,11 +1058,11 @@ function getDataFromTable(isValidate) {
             	}
             }
         }
-        if (!shipmentDetail.vslNm || !shipmentDetail.voyNo || !shipmentDetail.year || !shipmentDetail.vslName || !shipmentDetail.voyCarrier) {
-            $.modal.alertError("Tàu chuyến không thuộc hãng tàu " + shipmentDetail.opeCode + ", quý <br>khách vui lòng chọn tàu chuyến hoặc hãng tàu chính xác.");
-            errorFlg = true;
-            return false;
-        }
+        // if (!shipmentDetail.vslNm || !shipmentDetail.voyNo || !shipmentDetail.year || !shipmentDetail.vslName || !shipmentDetail.voyCarrier) {
+        //     $.modal.alertError("Tàu chuyến không thuộc hãng tàu " + shipmentDetail.opeCode + ", quý <br>khách vui lòng chọn tàu chuyến hoặc hãng tàu chính xác.");
+        //     errorFlg = true;
+        //     return false;
+        // }
         shipmentDetail.dischargePort = object["dischargePort"].split(": ")[0];
         shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetail.remark = object["remark"];

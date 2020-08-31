@@ -244,4 +244,20 @@ public class ApiShipmentDetailController {
 	public String getblNoByJobOrderNo(@PathVariable("jobOrder") String jobOrder) {
 		return shipmentDetailDao.getblNoByJobOrderNo(jobOrder);
 	}
+	
+	@GetMapping("/shipmentDetail/getConsigneeNameByTaxCode/{taxCode}")
+	public ShipmentEntity getConsigneeByTaxCode(@PathVariable String taxCode) {
+		return shipmentDetailDao.getConsigneeByTaxCode(taxCode);
+	}
+	
+	@GetMapping("/opr/list")
+	public List<String> getOprCodeList() {
+		List<String> oprList = shipmentDetailDao.getOprCodeList();
+		return oprList;
+	}
+	
+	@GetMapping("/shipmentDetail/berthplan/vessel-voyage/list")
+	public List<ShipmentDetailEntity> selectVesselVoyageBerthPlanWithoutOpe(){
+		return shipmentDetailDao.selectVesselVoyageBerthPlanWithoutOpe();
+	}
 }

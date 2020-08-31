@@ -383,7 +383,7 @@ function emptyDepotRenderer(instance, td, row, col, prop, value, cellProperties)
   $(td).attr('id', 'emptyDepot' + row).addClass("htMiddle");
   $(td).html(value);
   if (value != null && value != '') {
-    if (hot.getDataAtCell(row, 1) != null) {
+    if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 2) {
       cellProperties.readOnly = 'true';
       $(td).css("background-color", "rgb(232, 232, 232)");
     }
@@ -545,7 +545,7 @@ function configHandson() {
         case 3:
           return '<span>Hạn Lệnh</span><span style="color: red;"> *</span>';
         case 4:
-          return '<span>Ngày Miễn<br>Lưu Bãi</span><span style="color: red;"> *</span>';
+          return 'Ngày Miễn<br>Lưu Bãi';
         case 5:
           return '<span>Chủ Hàng</span><span style="color: red;"> *</span>';
         case 6:
@@ -1058,10 +1058,10 @@ function getDataFromTable(isValidate) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập hạn lệnh!");
         errorFlg = true;
         return false;
-      } else if (!object["detFreeTime"]) {
-        $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập Ngày miễn lưu vỏ!");
-        errorFlg = true;
-        return false;
+      // } else if (!object["detFreeTime"]) {
+      //   $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa nhập Ngày miễn lưu vỏ!");
+      //   errorFlg = true;
+      //   return false;
       } else if (!object["consignee"]) {
         $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn chủ hàng!");
         errorFlg = true;

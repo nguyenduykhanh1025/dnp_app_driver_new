@@ -28,6 +28,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="planningDate" column="planning_date" />
 		<result property="processOrderId" column="process_order_id" />
 		<result property="gatePass" column="gate_pass" />
+		<result property="jobOrderNo" column="job_order_no" />
+		<result property="jobOrderFlg" column="job_order_flg" />
+		<result property="loadableWgt" column="loadable_wgt" />
 		<result property="remark" column="remark" />
 		<result property="createBy" column="create_by" />
 		<result property="createTime" column="create_time" />
@@ -167,6 +170,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="planningDate != null ">planning_date,</if>
 			<if test="processOrderId != null ">process_order_id,</if>
 			<if test="gatePass != null and gatePass != ''">gate_pass,</if>
+			<if test="jobOrderNo != null and jobOrderNo != ''">job_order_no,</if>
+			<if test="jobOrderFlg != null">job_order_flg,</if>
+			<if test="loadableWgt != null">loadable_wgt,</if>
 			<if test="remark != null  and remark != ''">remark,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
@@ -194,6 +200,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="planningDate != null ">#{planningDate},</if>
 			<if test="processOrderId != null ">#{processOrderId},</if>
 			<if test="gatePass != null and gatePass != ''">#{gatePass},</if>
+			<if test="jobOrderNo != null and jobOrderNo != ''">#{jobOrderNo},</if>
+			<if test="jobOrderFlg != null">#{jobOrderFlg},</if>
+			<if test="loadableWgt != null">#{loadableWgt},</if>
 			<if test="remark != null  and remark != ''">#{remark},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
@@ -224,6 +233,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="planningDate != null ">planning_date = #{planningDate},</if>
 			<if test="processOrderId != null ">process_order_id = #{processOrderId},</if>
 			<if test="gatePass != null and gatePass">gate_pass = #{gatePass},</if>
+			<if test="jobOrderNo != null and jobOrderNo != ''">job_order_no = #{jobOrderNo},</if>
+			<if test="jobOrderFlg != null">job_order_flg = #{jobOrderFlg},</if>
+			<if test="loadableWgt != null">loadableWgt = #{loadableWgt},</if>
 			<if test="remark != null  and remark != ''">remark = #{remark},</if>
             <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
             update_time = sysdate
