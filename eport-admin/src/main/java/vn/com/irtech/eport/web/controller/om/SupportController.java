@@ -73,7 +73,7 @@ public class SupportController extends BaseController{
         if (processOrder == null) {
             processOrder = new ProcessOrder();
         }
-        processOrder.setResult("F");
+		processOrder.setResult("F");
 		List<ProcessOrder> processOrders = processOrderService.selectProcessOrderListWithLogisticName(processOrder);
         TableDataInfo dataList = getDataTable(processOrders);
 		return dataList;
@@ -86,7 +86,7 @@ public class SupportController extends BaseController{
         ShipmentDetail shipmentDetail = param.getData();
         if (shipmentDetail == null) {
             shipmentDetail = new ShipmentDetail();
-        }
+		}
         List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
         TableDataInfo dataList = getDataTable(shipmentDetails);
 		return dataList;

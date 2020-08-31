@@ -78,6 +78,7 @@ function loadTable(edo) {
     },
     nowrap: false,
     striped: true,
+    rownumbers: true,
     loader: function (param, success, error) {
       var opts = $(this).datagrid("options");
       if (!opts.url) return false;
@@ -407,6 +408,8 @@ $('#btnRefresh').click(function(){
   $(".c-search-box-voy-no").text(null);
   $("#fromDate").val(null);
   $("#toDate").val(null)
+  $("#searchBillNo").val(null);
+  $("#searchContNo").val(null);
   edo.vessel = null;
   loadTable();
 });
