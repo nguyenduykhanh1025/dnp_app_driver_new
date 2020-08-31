@@ -425,4 +425,24 @@
 		WHERE PTNR_TYPE = 'CNS' 
 		AND REG_NO = #{taxCode} AND ROWNUM = 1
 	</select>
+
+	<select id="getOprCodeList" resultType	="String">
+		SELECT PTNR_CODE FROM DNP_UAT.TB_PTNR 
+		WHERE PTNR_TYPE = 'SHP' AND PTNR_CODE NOT IN ('000','OWN')
+	</select>
+
+	<select id="selectVesselVoyageBerthPlanWithoutOpe" resultType="vn.com.irtech.api.entity.ShipmentDetailEntity">
+		SELECT t.vsl_cd as vslNm,
+		       t.call_seq as voyNo,
+		       t.call_year as year,
+		       t.in_voy as voyCarrier,
+		       t.vsl_cd || ' - ' || (select vsl_nm FROM DNP_UAT.tb_vsl where vsl_cd = t.vsl_cd) ||' - '|| t.in_voy as vslAndVoy
+		 FROM DNP_UAT.tb_berthplan t
+		 where t.vsl_cd NOT IN ('DBO','EMPTY',
+			                            'STRG',
+			                            'TBA',
+			                            'DUMY')
+			       AND t.longterm_eta IS NOT NULL
+			       AND t.atc IS NULL
+	</select>
 </mapper>
