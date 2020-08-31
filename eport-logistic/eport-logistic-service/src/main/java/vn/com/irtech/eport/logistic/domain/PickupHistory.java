@@ -148,6 +148,12 @@ public class PickupHistory extends BaseEntity {
 	private Double x;
 	
 	private Double y;
+	
+	private String jobOrderNo;
+	
+	private Boolean jobOrderFlg;
+	
+	private Integer loadableWgt;
 
 	public void setId(Long id) {
 		this.id = id;
@@ -469,6 +475,30 @@ public class PickupHistory extends BaseEntity {
 		return y;
 	}
 
+	public String getJobOrderNo() {
+		return jobOrderNo;
+	}
+
+	public void setJobOrderNo(String jobOrderNo) {
+		this.jobOrderNo = jobOrderNo;
+	}
+
+	public Boolean getJobOrderFlg() {
+		return jobOrderFlg;
+	}
+
+	public void setJobOrderFlg(Boolean jobOrderFlg) {
+		this.jobOrderFlg = jobOrderFlg;
+	}
+
+	public Integer getLoadableWgt() {
+		return loadableWgt;
+	}
+
+	public void setLoadableWgt(Integer loadableWgt) {
+		this.loadableWgt = loadableWgt;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append("id", getId())
@@ -484,6 +514,8 @@ public class PickupHistory extends BaseEntity {
 				.append("voyNo", getVoyNo()).append("driverName", getDriverName())
 				.append("driverPhoneNumber", getDriverPhoneNumber()).append("logisticGroupName", getLogisticGroupName())
 				.append("processOrderId", getProcessOrderId()).append("gatePass",getGatePass())
+				.append("jobOrderNo", getJobOrderNo()).append("jobOrderFlg",getJobOrderFlg())
+				.append("loadableWgt", getLoadableWgt())
 				.toString();
 	}
 }

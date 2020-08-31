@@ -640,4 +640,19 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
+	
+	/**
+	 * Get consignee name by tax code
+	 * 
+	 * @param taxCode
+	 * @return Shipment
+	 */
+	@Override
+	public Shipment getConsigneeNameByTaxCode(String taxCode) {
+		String url = Global.getApiUrl() + "/shipmentDetail/getConsigneeNameByTaxCode/"+taxCode;
+		logger.debug("Call CATOS API :{}", url);
+		RestTemplate restTemplate = new RestTemplate();
+		Shipment shipment = restTemplate.getForObject(url, Shipment.class);
+		return  shipment;
+	}
 }

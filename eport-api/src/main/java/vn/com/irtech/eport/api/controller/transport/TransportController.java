@@ -32,6 +32,7 @@ import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.LogisticTruck;
 import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.form.Pickup;
@@ -39,6 +40,7 @@ import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 import vn.com.irtech.eport.logistic.service.ILogisticTruckService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
 import vn.com.irtech.eport.logistic.service.IPickupHistoryService;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 import vn.com.irtech.eport.system.domain.SysNotificationReceiver;
@@ -70,6 +72,9 @@ public class TransportController extends BaseController {
 	
 	@Autowired
 	private MqttService mqttService;
+	
+	@Autowired
+	private IProcessOrderService processOrderService;
 	
 	@Autowired
 	private ISysNotificationReceiverService sysNotificationReceiverService;
@@ -223,6 +228,15 @@ public class TransportController extends BaseController {
 		if (shipmentDetail != null) {
 			pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
 			pickupHistory.setShipmentDetailId(shipmentDetail.getId());
+		} else {
+			pickupHistory.setJobOrderFlg(true);
+		}
+		
+		ProcessOrder processOrder = new ProcessOrder();
+		processOrder.setShipmentId(pickupAssign.getShipmentId());
+		List<ProcessOrder> processOrders = processOrderService.selectProcessOrderList(processOrder);
+		if (CollectionUtils.isNotEmpty(processOrders)) {
+			pickupHistory.setJobOrderNo(processOrders.get(0).getOrderNo());
 		}
 		
 		// Check max pickup driver can pick

@@ -163,4 +163,12 @@ public interface ICatosApiService {
 	 * @return
 	 */
 	public String getBlNoByOrderJobNo(String jobOrder);
+	
+	/**
+	 * Get consignee name by tax code
+	 * 
+	 * @param taxCode
+	 * @return Shipment
+	 */
+	public Shipment getConsigneeNameByTaxCode(String taxCode);
 }

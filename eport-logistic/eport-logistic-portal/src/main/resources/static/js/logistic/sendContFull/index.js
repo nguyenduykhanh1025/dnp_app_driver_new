@@ -529,15 +529,15 @@ function configHandson() {
                     return '<span>Tàu và Chuyến</span><span style="color: red;">(*)</span>';
                 case 7:
                     return "Nhiệt Độ";
+                // case 8:
+                //     return "Chi tiết";
                 case 8:
-                    return "Chi tiết";
-                case 9:
                     return '<span>Trọng Lượng</span><span style="color: red;">(*)</span>';
-                case 10:
+                case 9:
                     return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
-                case 11:
+                case 10:
                     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
-                case 12:
+                case 11:
                     return "Ghi Chú";
             }
         },
@@ -595,10 +595,10 @@ function configHandson() {
                 readonly: true,
                 renderer: temperatureRenderer
             },
-            {
-                data: "detailButton",
-                renderer: detailRenderer
-            },
+            // {
+            //     data: "detailButton",
+            //     renderer: detailRenderer
+            // },
             {
                 data: "wgt",
                 type: "numeric",
@@ -711,7 +711,7 @@ function onChange(changes, source) {
                                 if (data.code == 0) {
                                     hot.updateSettings({
                                         cells: function (row, col, prop) {
-                                            if (row == change[0] && col == 11) {
+                                            if (row == change[0] && col == 10) {
                                                 let cellProperties = {};
                                                 cellProperties.source = data.dischargePorts;
                                                 return cellProperties;
@@ -1075,6 +1075,10 @@ function getDataFromTable(isValidate) {
                 errorFlg = true;
                 return false;
             } else if (consignee != object["consignee"]) {
+                $.modal.alertError("Tên chủ hàng không được khác nhau!");
+                errorFlg = true;
+                return false;
+            } else if (consignee != cargoType["consignee"]) {
                 $.modal.alertError("Tên chủ hàng không được khác nhau!");
                 errorFlg = true;
                 return false;

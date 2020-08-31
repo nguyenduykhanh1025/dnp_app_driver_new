@@ -232,24 +232,24 @@ public class CheckinHandler implements IMqttMessageListener {
 				if (pickupHistory.getShipmentDetailId() == null) {
 					// Auto pickup
 					// TODO cho nay logic ntn
-					shipmentDetail = shipmentDetailService.getContainerWithYardPosition(pickupHistory.getShipmentId());
-					pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
-					pickupHistory.setShipmentDetailId(shipmentDetail.getId());
-					pickupHistory.setSztp(shipmentDetail.getSztp());
-					pickupHistory.setBlock(shipmentDetail.getBlock());
-					pickupHistory.setBay(shipmentDetail.getBay());
-					pickupHistory.setLine(String.valueOf(shipmentDetail.getRow()));
-					pickupHistory.setTier(String.valueOf(shipmentDetail.getTier()));
-					pickupHistoryService.updatePickupHistory(pickupHistory);
+//					shipmentDetail = shipmentDetailService.getContainerWithYardPosition(pickupHistory.getShipmentId());
+//					pickupHistory.setContainerNo(shipmentDetail.getContainerNo());
+//					pickupHistory.setShipmentDetailId(shipmentDetail.getId());
+//					pickupHistory.setSztp(shipmentDetail.getSztp());
+//					pickupHistory.setBlock(shipmentDetail.getBlock());
+//					pickupHistory.setBay(shipmentDetail.getBay());
+//					pickupHistory.setLine(String.valueOf(shipmentDetail.getRow()));
+//					pickupHistory.setTier(String.valueOf(shipmentDetail.getTier()));
+//					pickupHistoryService.updatePickupHistory(pickupHistory);
 				}
 			}
 
 			DriverDataRes driverDataRes = new DriverDataRes();
 			driverDataRes.setPickupHistoryId(pickupHistory.getId());
-			driverDataRes.setContNo(pickupHistory.getContainerNo());
+//			driverDataRes.setContNo(pickupHistory.getContainerNo());
 			if (pickupHistory.getShipmentDetail() == null) {
-				driverDataRes.setSztp(shipmentDetail.getSztp());
-				driverDataRes.setFe(shipmentDetail.getFe());
+//				driverDataRes.setSztp(shipmentDetail.getSztp());
+//				driverDataRes.setFe(shipmentDetail.getFe());
 			} else {
 				driverDataRes.setSztp(pickupHistory.getShipmentDetail().getSztp());
 				driverDataRes.setFe(pickupHistory.getShipmentDetail().getFe());

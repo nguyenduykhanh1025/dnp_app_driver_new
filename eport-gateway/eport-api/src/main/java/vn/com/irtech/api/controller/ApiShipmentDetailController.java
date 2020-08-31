@@ -244,4 +244,9 @@ public class ApiShipmentDetailController {
 	public String getblNoByJobOrderNo(@PathVariable("jobOrder") String jobOrder) {
 		return shipmentDetailDao.getblNoByJobOrderNo(jobOrder);
 	}
+	
+	@GetMapping("/shipmentDetail/getConsigneeNameByTaxCode/{taxCode}")
+	public ShipmentEntity getConsigneeByTaxCode(@PathVariable String taxCode) {
+		return shipmentDetailDao.getConsigneeByTaxCode(taxCode);
+	}
 }
