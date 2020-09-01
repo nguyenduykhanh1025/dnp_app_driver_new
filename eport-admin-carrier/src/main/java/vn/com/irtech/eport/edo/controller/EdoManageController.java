@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.web.controller.edo;
+package vn.com.irtech.eport.edo.controller;
 
 import java.util.ArrayList;
 import java.util.List;

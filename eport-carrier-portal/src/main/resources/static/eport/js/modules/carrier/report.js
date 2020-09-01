@@ -47,6 +47,7 @@ function loadTable(edo) {
 
 $('#searchAll').keyup(function (event) {
   if (event.keyCode == 13) {
+    edo = new Object();
     edo.containerNumber = $('#searchAll').val().toUpperCase();
     edo.consignee = $('#searchAll').val().toUpperCase();
     edo.billOfLading = $('#searchAll').val().toUpperCase();
@@ -56,6 +57,7 @@ $('#searchAll').keyup(function (event) {
 });
 
 function searchInfoEdo() {
+  edo = new Object();
   edo.fromDate = stringToDate($("#fromDate").val()).getTime();
   let toDate = stringToDate($("#toDate").val());
   if ($("#fromDate").val() != "" && stringToDate($("#fromDate").val()).getTime() > toDate.getTime()) {
@@ -64,10 +66,10 @@ function searchInfoEdo() {
   } else {
     toDate.setHours(23, 59, 59);
     edo.toDate = toDate.getTime();
-    loadTable(edo)
   };
   edo.containerNumber = $('#searchAll').val().toUpperCase();
-  edo.voyNo = $('#searchAll').val().toUpperCase();
+  edo.consignee = $('#searchAll').val().toUpperCase();
+  edo.billOfLading = $('#searchAll').val().toUpperCase();
   loadTable(edo)
 }
 

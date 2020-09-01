@@ -130,4 +130,6 @@ public interface EquipmentDoMapper {
 
 	public List<EquipmentDo> selectEdoListForReport(EquipmentDo edo);
 
+	public List<String> selectOprCode(EquipmentDo edo);
+
 }
