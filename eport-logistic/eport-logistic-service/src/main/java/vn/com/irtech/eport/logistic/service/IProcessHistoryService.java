@@ -60,4 +60,14 @@ public interface IProcessHistoryService
     public int deleteProcessHistoryById(Long id);
 
     public List<ProcessHistory> selectRobotHistory(ProcessHistory processHistory);
+
+    /**
+     * Select process history that current processing by robot
+     * 
+     * @param processOrderId
+     * @param robotUuId
+     * @param serviceType
+     * @return
+     */
+	public ProcessHistory selectProcessingHistory(Long processOrderId, String robotUuId, Integer serviceType);
 }

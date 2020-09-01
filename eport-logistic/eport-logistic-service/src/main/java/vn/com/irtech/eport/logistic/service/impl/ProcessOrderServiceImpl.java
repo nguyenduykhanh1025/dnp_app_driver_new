@@ -1,19 +1,17 @@
 package vn.com.irtech.eport.logistic.service.impl;
 
 import java.util.List;
-import vn.com.irtech.eport.common.utils.DateUtils;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import vn.com.irtech.eport.logistic.mapper.ProcessOrderMapper;
-import vn.com.irtech.eport.logistic.domain.ProcessOrder;
-import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
-import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
-import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 import vn.com.irtech.eport.common.core.text.Convert;
+import vn.com.irtech.eport.common.utils.DateUtils;
+import vn.com.irtech.eport.logistic.domain.ProcessOrder;
+import vn.com.irtech.eport.logistic.mapper.ProcessOrderMapper;
+import vn.com.irtech.eport.logistic.service.IProcessOrderService;
 
 /**
  * Process orderService Business Processing
@@ -150,7 +148,7 @@ public class ProcessOrderServiceImpl implements IProcessOrderService
      * @param uuid
      * @return Process Order
      */
-    public List<ProcessOrder> getProcessOrderByUuid(String uuid) {
+    public List<ProcessOrder> getProcessingProcessOrderByUuid(String uuid) {
         return processOrderMapper.getProcessOrderByUuid(uuid);
     }
 

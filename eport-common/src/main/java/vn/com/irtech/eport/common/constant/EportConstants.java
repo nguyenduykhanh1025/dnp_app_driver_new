@@ -49,4 +49,18 @@ public interface EportConstants {
 	public static final String ROBOT_STATUS_BUSY = "1";
 	/** Robot is offline */
 	public static final String ROBOT_STATUS_OFFLINE = "2";
+	
+	// Process order status
+	public static final int PROCESS_ORDER_STATUS_NEW = 0;
+	public static final int PROCESS_ORDER_STATUS_PROCESSING = 1;
+	public static final int PROCESS_ORDER_STATUS_FINISHED = 2;
+	// Process order result
+	public static final String PROCESS_ORDER_RESULT_FAILED = "F";
+	public static final String PROCESS_ORDER_RESULT_SUCCESS = "S";
+	// process history
+	public static final int PROCESS_HISTORY_STATUS_START = 1;
+	public static final int PROCESS_HISTORY_STATUS_FINISHED = 2;
+	// process history result
+	public static final String PROCESS_HISTORY_RESULT_FAILED = "F";
+	public static final String PROCESS_HISTORY_RESULT_SUCCESS = "S";
 }
