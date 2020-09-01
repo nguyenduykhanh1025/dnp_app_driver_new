@@ -210,8 +210,7 @@ function formatDate(value) {
     let monthText = month < 10 ? "0" + month : month;
     let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
     let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-    let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-    return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes + ":" + seconds;
+    return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes;
 }
 
 // FORMAT REMARK FOR SHIPMENT LIST

@@ -40,10 +40,11 @@
               <tr>
                 <th data-options="field:'id', fixed:true" width="1"></th>
                 <th data-options="field:'blNo', halign:'center', fixed:true" sortable="true" width="100">B/L No</th>
+                <th data-options="field:'containerAmount', align:'center', halign:'center', fixed:true" width="40">SL</th>
+                <th data-options="field:'opeCode', align:'center', halign:'center', fixed:true" width="50" sortable="true">OPR</th>
+                <th data-options="field:'createTime', align:'center', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="110">Ngày Tạo</th>
                 <th data-options="field:'taxCode', halign:'center', fixed:true" sortable="true" width="100">MST</th>
-                <th data-options="field:'containerAmount', align:'right', halign:'center', fixed:true" sortable="true" width="70">Số Cont</th>
-                <th data-options="field:'createTime', align:'right', halign:'center', formatter: formatDate, fixed:true" sortable="true" width="150">Ngày tạo</th>
-                <th data-options="field:'remark',align:'right',halign:'center', formatter: formatRemark" sortable="true" width="150">Ghi chú</th>
+                <th data-options="field:'remark',align:'right',halign:'center', formatter: formatRemark" sortable="true" width="150">Ghi Chú</th>
               </tr>
             </thead>
           </table>
@@ -105,6 +106,6 @@
     <th:block th:include="include :: easyui-js" />
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: websocket" />
-    <script th:src="@{/js/logistic/sendContEmpty/index.js}"></script>
+    <script th:src="@{/js/logistic/sendContEmpty/index.js?v=20200901}"></script>
   </body>
 </html>
