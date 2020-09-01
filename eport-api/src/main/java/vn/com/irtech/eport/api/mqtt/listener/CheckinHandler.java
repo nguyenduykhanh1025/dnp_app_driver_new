@@ -428,6 +428,7 @@ public class CheckinHandler implements IMqttMessageListener {
 			SysRobot robot = new SysRobot();
 			robot.setStatus("0");
 			robot.setIsGateInOrder(true);
+			robot.setDisabled(false);
 			SysRobot sysRobot = robotService.findFirstRobot(robot);
 			if (sysRobot != null) {
 				processOrder.setStatus(1);

@@ -47,6 +47,13 @@ function loadListRobot() {
         },
       },
       {
+        title: 'Disabled',
+        align: 'center',
+        formatter: function (value, row, index) {
+          return disabledFormatter(value, row, index);
+        }
+      },
+      {
         field: "isReceiveContFullOrder",
         title: "Nhận container có hàng",
         align: "center",
@@ -152,6 +159,15 @@ function statusFormatter(value, row, index) {
   }
 }
 
+/* formatter for disabled status */
+function disabledFormatter(value, row, index) {
+  if (row.disabled == 0) {
+    return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="disable(\'' + row.id + '\',\'' + row.uuId + '\')"></i> ';
+  } else {
+    return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="enable(\'' + row.id + '\',\'' + row.uuId + '\')"></i> ';
+  }
+}
+
 /* formatter for ReceiveContFullOrder column */
 function isReceiveContFullOrderFormater(value, row, index) {
   if (row.isReceiveContFullOrder == true) {
@@ -233,3 +249,16 @@ function isGateInFormater(value, row, index) {
   }
 }
 
+/* disable robot */
+function disable(id, uuid) {
+  $.modal.confirm("Xác nhận vô hiệu hóa robot " + uuid + "？", function () {
+    $.operate.post(PREFIX + "/disabled/change", { "id": id, "disabled": 1 });
+  })
+}
+
+/* enable robot */
+function enable(id, uuid) {
+  $.modal.confirm("Xác nhận kích hoạt lại robot " + uuid + "？", function () {
+    $.operate.post(PREFIX + "/disabled/change", { "id": id, "disabled": 0 });
+  })
+}

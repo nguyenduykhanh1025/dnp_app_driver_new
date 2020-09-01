@@ -304,6 +304,7 @@ public class MqttService implements MqttCallback {
 			sysRobot.setIsExtensionDateOrder(true);
 			break;
 		}
+		sysRobot.setDisabled(false);
 		return robotService.findFirstRobot(sysRobot);
 	}
 

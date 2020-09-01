@@ -154,7 +154,7 @@
 	    SELECT 
         	PTNR_CODE || ': ' || ENG_SNM AS PTNR_CODE
 	    FROM DNP_UAT.TB_PTNR
-	    WHERE PTNR_TYPE = 'SHP'
+	    WHERE PTNR_TYPE = 'SHP' AND PTNR_CODE NOT IN ('000','OWN')
 	</select>
 	
 	<select id="getGroupNameByTaxCode" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentEntity">
@@ -372,6 +372,16 @@
 		FROM DNP_UAT.TB_RESERVE
 		WHERE BOOKING_NO = #{bookingNo} AND FE = 'F' AND SZTP2 = #{sztp} AND JOB_ODR_NO IS NOT NULL
 		GROUP BY BOOKING_NO
+	</select>
+
+	<select id="selectBookingQuantity" resultType="int"> 
+		SELECT BOOK_QTY FROM DNP_UAT.TB_BOOKING B WHERE B.BOOKING_NO = #{bookingNo} AND B.SZTP2 = #{sztp}
+	</select>
+
+	<select id="selectBookingOrderEmptyQuantity" resultType="int">
+		SELECT COUNT(*) 
+		FROM DNP_UAT.TB_INVENTORY
+		WHERE BOOKING_NO = #{bookingNo} AND FE = 'E' AND SZTP2 = #{sztp} AND JOB_ODR_NO2 IS NOT NULL
 	</select>
 	
 	<select id="selectConsigneeTaxCode" parameterType="ShipmentEntity" resultType="vn.com.irtech.api.entity.ShipmentEntity">

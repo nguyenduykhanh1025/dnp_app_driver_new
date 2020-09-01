@@ -395,8 +395,11 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 					shpDtl.setOpeCode(carrierGroup.getGroupCode());
 				}
 			}
+			
+			// Create list req for order receive cont empty
 			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails, shipment, creditFlag);
 			
+			// Check and create list process order create booking from list req receive empty
 			List<ProcessOrder> processOrders = shipmentDetailService.createBookingIfNeed(serviceRobotReqs);
 			
 			List<Long> processIds = new ArrayList<>();

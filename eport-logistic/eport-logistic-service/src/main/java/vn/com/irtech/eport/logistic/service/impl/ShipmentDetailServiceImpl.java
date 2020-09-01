@@ -34,6 +34,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
+import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
@@ -567,6 +568,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setSztp(detail.getSztp());
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setShipmentId(shipment.getId());
+        processOrder.setCargoType("MT");
+        processOrder.setPod(detail.getDischargePort());
+        processOrder.setOpr(detail.getOpeCode());
+        processOrder.setPol("VNDAD");
         processOrder.setRunnable(false);
         processOrder.setServiceType(3);
         processOrderService.insertProcessOrder(processOrder);
@@ -1097,64 +1102,96 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		List<ProcessOrder> processOrders = new ArrayList<>();
 		for (ServiceSendFullRobotReq receiveEmptyReq : receiveEmptyReqs) {
 			ProcessOrder processOrder = receiveEmptyReq.processOrder;
-			int bookingAvailableSize = catosApiService.checkTheNumberOfContainersNotOrderedForReceiveContEmpty(processOrder.getBookingNo(), processOrder.getSztp());
-			// Check booking size by sztp. If true then check to update booking if need, false then create new booking with sztp
-			if (bookingAvailableSize > 0) {
-				if (processOrder.getContNumber() > bookingAvailableSize) {
-					// Update booking size 
-					ProcessOrder bookingOrder = new ProcessOrder();
-					bookingOrder.setBookingCreateMode(EportConstants.BOOKING_UPDATE);
-					int bookingSize = catosApiService.checkTheNumberOfContainersOrderedForReceiveContEmpty(processOrder.getBookingNo(), processOrder.getSztp());
-					int bookingChangeSize = bookingSize  +processOrder.getContNumber() - bookingAvailableSize;
-					bookingOrder.setContNumber(bookingChangeSize);
-					bookingOrder.setBookingNo(processOrder.getBookingNo());
-					bookingOrder.setSztp(processOrder.getSztp());
-					bookingOrder.setPostProcessId(processOrder.getId());
-					bookingOrder.setVessel(processOrder.getVessel());
-					bookingOrder.setVoyage(processOrder.getVoyage());
-					bookingOrder.setBeforeAfter(processOrder.getBeforeAfter());
-					bookingOrder.setShipmentId(processOrder.getShipmentId());
-					bookingOrder.setYear(processOrder.getYear());
-					bookingOrder.setServiceType(EportConstants.SERVICE_CREATE_BOOKING);
-					bookingOrder.setLogisticGroupId(processOrder.getLogisticGroupId());
-					bookingOrder.setFe("E");
-					bookingOrder.setOpr(processOrder.getOpr());
-					bookingOrder.setPol(processOrder.getPol());
-					bookingOrder.setPod(processOrder.getPod());
-					bookingOrder.setCargoType(processOrder.getCargoType());
-					ShipmentDetail shipmentDetail = new ShipmentDetail();
-					shipmentDetail.setVslNm(processOrder.getVessel());
-					shipmentDetail.setVoyNo(processOrder.getVoyage());
-					shipmentDetail.setYear(processOrder.getYear());
-					bookingOrder.setBookingIndex(catosApiService.getIndexBooking(shipmentDetail));
-					processOrderService.insertProcessOrder(bookingOrder);
-					processOrders.add(bookingOrder);
-				} else {
-					processOrder.setRunnable(true);
-					processOrderService.updateProcessOrder(processOrder);
+			
+			// Get booking info from catos
+			List<BookingInfo> bookingInfos = catosApiService.getBookingInfo(processOrder.getBookingNo(), processOrder.getVessel() + processOrder.getVoyage());
+			
+			if (CollectionUtils.isNotEmpty(bookingInfos)) {
+				boolean hasBooking = false;
+				for (BookingInfo bookingInfo : bookingInfos) {
+					// check in list booking info has same sztp with process order of receive empty req 
+					if (processOrder.getSztp().equals(bookingInfo.getSztp())) {
+						hasBooking = true;
+						
+						// Check if sztp has enough quantity for order receive empty
+						// If not then update booking with extra amount for the number lacking of sztp
+						// first check if used booking quantity is null then set to 0 to make it calculatable
+						if (bookingInfo.getUsedQty() == null) bookingInfo.setUsedQty(0);
+						
+						// Calculate booking quantity need exclude the booking available currently
+						// If bookingQuantityNeed > 0 then need more booking to make order, need to update
+						Integer bookingQuantityNeed = processOrder.getContNumber() - (bookingInfo.getBookQty() - bookingInfo.getUsedQty());
+						if (bookingQuantityNeed > 0) {
+							// Update booking	
+							ProcessOrder bookingOrder = new ProcessOrder();
+							
+							// Set booking mode ( update or create new)
+							bookingOrder.setBookingCreateMode(EportConstants.BOOKING_UPDATE);
+							
+							// Set new cont number = quantity need + current quantity
+							bookingOrder.setContNumber(bookingInfo.getBookQty() + bookingQuantityNeed);
+							
+							// Set the other data mapping from receive cont empty order
+							bookingOrder.setBookingNo(processOrder.getBookingNo());
+							bookingOrder.setSztp(processOrder.getSztp());
+							bookingOrder.setPostProcessId(processOrder.getId());
+							bookingOrder.setVessel(processOrder.getVessel());
+							bookingOrder.setVoyage(processOrder.getVoyage());
+							bookingOrder.setBeforeAfter(processOrder.getBeforeAfter());
+							bookingOrder.setShipmentId(processOrder.getShipmentId());
+							bookingOrder.setYear(processOrder.getYear());
+							bookingOrder.setServiceType(EportConstants.SERVICE_CREATE_BOOKING);
+							bookingOrder.setLogisticGroupId(processOrder.getLogisticGroupId());
+							bookingOrder.setFe("E");
+							bookingOrder.setOpr(processOrder.getOpr());
+							bookingOrder.setPol(processOrder.getPol());
+							bookingOrder.setPod(processOrder.getPod());
+							bookingOrder.setCargoType(processOrder.getCargoType());
+							
+							// Get index line of booking in catos when update for robot
+							// Robot using index to determine which line need to be update
+							// Differentiate number of booking
+							ShipmentDetail shipmentDetail = new ShipmentDetail();
+							shipmentDetail.setVslNm(processOrder.getVessel());
+							shipmentDetail.setVoyNo(processOrder.getVoyage());
+							shipmentDetail.setYear(processOrder.getYear());
+							bookingOrder.setBookingIndex(catosApiService.getIndexBooking(shipmentDetail));
+							processOrderService.insertProcessOrder(bookingOrder);
+							processOrders.add(bookingOrder);
+						} else {
+							// No need to update booking, current booking has enought quantity to make order
+							processOrder.setRunnable(true);
+							processOrderService.updateProcessOrder(processOrder);
+						}
+					}
+					
+					// If has booking = false then there is no booking, need to create new booking with this sztp
+					if (!hasBooking) {
+						ProcessOrder bookingOrder = new ProcessOrder();
+						
+						// Set booking mode create new
+						bookingOrder.setBookingCreateMode(EportConstants.BOOKING_CREATE);
+						bookingOrder.setContNumber(receiveEmptyReq.containers.size());
+						bookingOrder.setBookingNo(processOrder.getBookingNo());
+						bookingOrder.setVessel(processOrder.getVessel());
+						bookingOrder.setVoyage(processOrder.getVoyage());
+						bookingOrder.setShipmentId(processOrder.getShipmentId());
+						bookingOrder.setBeforeAfter(processOrder.getBeforeAfter());
+						bookingOrder.setYear(processOrder.getYear());
+						bookingOrder.setServiceType(EportConstants.SERVICE_CREATE_BOOKING);
+						bookingOrder.setLogisticGroupId(processOrder.getLogisticGroupId());
+						bookingOrder.setSztp(processOrder.getSztp());
+						bookingOrder.setBookingIndex(0);
+						bookingOrder.setPostProcessId(processOrder.getId());
+						bookingOrder.setFe("E");
+						bookingOrder.setOpr(processOrder.getOpr());
+						bookingOrder.setPol(processOrder.getPol());
+						bookingOrder.setPod(processOrder.getPod());
+						bookingOrder.setCargoType(processOrder.getCargoType());
+						processOrderService.insertProcessOrder(bookingOrder);
+						processOrders.add(bookingOrder);
+					}
 				}
-			} else {
-				ProcessOrder bookingOrder = new ProcessOrder();
-				bookingOrder.setBookingCreateMode(EportConstants.BOOKING_CREATE);
-				bookingOrder.setContNumber(receiveEmptyReq.containers.size());
-				bookingOrder.setBookingNo(processOrder.getBookingNo());
-				bookingOrder.setVessel(processOrder.getVessel());
-				bookingOrder.setVoyage(processOrder.getVoyage());
-				bookingOrder.setShipmentId(processOrder.getShipmentId());
-				bookingOrder.setBeforeAfter(processOrder.getBeforeAfter());
-				bookingOrder.setYear(processOrder.getYear());
-				bookingOrder.setServiceType(EportConstants.SERVICE_CREATE_BOOKING);
-				bookingOrder.setLogisticGroupId(processOrder.getLogisticGroupId());
-				bookingOrder.setSztp(processOrder.getSztp());
-				bookingOrder.setBookingIndex(0);
-				bookingOrder.setPostProcessId(processOrder.getId());
-				bookingOrder.setFe("E");
-				bookingOrder.setOpr(processOrder.getOpr());
-				bookingOrder.setPol(processOrder.getPol());
-				bookingOrder.setPod(processOrder.getPod());
-				bookingOrder.setCargoType(processOrder.getCargoType());
-				processOrderService.insertProcessOrder(bookingOrder);
-				processOrders.add(bookingOrder);
 			}
 		}
 		return processOrders;

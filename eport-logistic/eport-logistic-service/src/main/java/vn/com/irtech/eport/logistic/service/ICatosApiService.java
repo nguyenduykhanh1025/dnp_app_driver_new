@@ -7,6 +7,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.form.BookingInfo;
 
 public interface ICatosApiService {
 
@@ -95,22 +96,6 @@ public interface ICatosApiService {
 	public Boolean checkContReserved(ShipmentDetail shipmentDetail);
 	
 	/***
-	 * Check the number of container not order for receive empty
-	 * 
-	 * check container amount have not ordered yet for receiveContEmpty
-	 * input: bookingNo, sztp
-	 */
-	public Integer checkTheNumberOfContainersNotOrderedForReceiveContEmpty(String bookingNo, String sztp);
-	
-	/***
-	 * Check the number of container order for receive empty
-	 * 
-	 * check container amount have not ordered yet for receiveContEmpty
-	 * input: bookingNo, sztp
-	 */
-	public Integer checkTheNumberOfContainersOrderedForReceiveContEmpty(String bookingNo, String sztp);
-	
-	/***
 	 * check container amount have not ordered yet for sendContFull
 	 * input: bookingNo, sztp
 	 */
@@ -185,4 +170,14 @@ public interface ICatosApiService {
 	 * @return
 	 */
 	public List<ShipmentDetail> selectVesselVoyageBerthPlanWithoutOpe();
+	
+	/**
+	 * Get booking info from catos by booking no
+	 * and user voy (ope code + voy no)
+	 * 
+	 * @param bookingNo
+	 * @param userVoy
+	 * @return List Booking info object
+	 */
+	public List<BookingInfo> getBookingInfo(String bookingNo, String userVoy);
 }

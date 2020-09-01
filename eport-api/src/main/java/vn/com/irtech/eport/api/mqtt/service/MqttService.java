@@ -242,6 +242,7 @@ public class MqttService implements MqttCallback {
 				sysRobot.setIsSendContEmptyOrder(true);
 				break;
 		}
+		sysRobot.setDisabled(false);
 		return robotService.findFirstRobot(sysRobot);
 	}
 }
