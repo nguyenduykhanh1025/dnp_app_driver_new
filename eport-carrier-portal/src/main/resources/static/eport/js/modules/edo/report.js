@@ -70,6 +70,8 @@ function searchInfoEdo() {
   edo.containerNumber = $('#searchAll').val().toUpperCase();
   edo.consignee = $('#searchAll').val().toUpperCase();
   edo.billOfLading = $('#searchAll').val().toUpperCase();
+  edo.vessel = $('.c-search-box-vessel').text().trim();
+  edo.voyNo = $(".c-search-box-voy-no").text().trim();
   loadTable(edo)
 }
 
@@ -93,11 +95,9 @@ laydate.render({
 
 
 // SEARCH INFO VESSEL AREA
-$('.c-search-box-vessel').on('select2:open', function (e) {
-  $(this).text(null);
-});
 $('.c-search-box-vessel').on("select2:opening", function(e) {
   $('.c-search-box-vessel').text(null);
+  $('.c-search-box-voy-no').text(null);
   edo = new Object();
   loadTable(edo);
 });
@@ -129,13 +129,10 @@ $(".c-search-box-vessel").select2({
   },
 });
 
-$('.c-search-box-voy-no').on('select2:open', function (e) {
-  $(this).text(null);
-});
 $('.c-search-box-voy-no').on("select2:opening", function(e) {
   edo = new Object();
-  $(".c-search-box-voy-no").text(null);
-  edo.vessel = $(".c-search-box-vessel").text().trim();
+  $(this).text(null);
+  edo.vessel = $('.c-search-box-vessel').text().trim();
   loadTable(edo);
 });
 $(".c-search-box-voy-no").select2({

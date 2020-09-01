@@ -194,8 +194,8 @@ function loadTableByContainer(billOfLading) {
         }),
         success: function (data) {
           success(JSON.parse(data));
+          edo = new Object();
         },
-
         error: function () {
           error.apply(this, arguments);
         },
@@ -205,16 +205,12 @@ function loadTableByContainer(billOfLading) {
 }
 
 function getSelectedRow() {
-  onCheck = 0;
-  $("#updateEdo").attr("disabled", true);
   var row = $("#dg").datagrid("getSelected");
   if (row) {
     bill = row.billOfLading;
-    edo = new Object();
     loadTableByContainer(row.billOfLading);
   }
 }
-
 function stringToDate(dateStr) {
   let dateParts = dateStr.split("/");
   return new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
@@ -305,10 +301,12 @@ function multiUpdateEdo() {
 
 
 // SEARCH INFO VESSEL AREA
-$('.c-search-box-vessel').on('select2:open', function (e) {
-  $('.c-search-box-vessel').text(null);
-  $('.c-search-box-voy-no').text(null);
+$('.c-search-box-vessel').on("select2:opening", function(e) {
+  $(".c-search-box-voy-no").text(null);
   $(this).text(null);
+  edo.vessel = null;
+  edo.voyNo = null;
+  loadTable(edo);
 });
 $(".c-search-box-vessel").select2({
   theme: "bootstrap",
@@ -338,13 +336,11 @@ $(".c-search-box-vessel").select2({
   },
   placeholder: "Vessel",
 });
-$('.c-search-box-vessel').on("select2:opening", function(e) {
-  $('.c-search-box-vessel').text(null);
+$('.c-search-box-voy-no').on("select2:opening", function(e) {
   edo = new Object();
+  $(this).text(null);
+  edo.vessel = $('.c-search-box-vessel').text().trim();
   loadTable(edo);
-});
-$('.c-search-box-voy-no').on('select2:open', function (e) {
-      $(this).text(null);
 });
   $(".c-search-box-voy-no").select2({
     theme: "bootstrap",
@@ -376,20 +372,13 @@ $('.c-search-box-voy-no').on('select2:open', function (e) {
     },
     placeholder: "Voy No",
   });
-  $('.c-search-box-voy-no').on("select2:opening", function(e) {
-      edo = new Object();
-      $(".c-search-box-voy-no").text(null);
-      edo.vessel = $(".c-search-box-vessel").text().trim();
-      loadTable(edo);
-      
-  });
+
 
 // For submit search
 $(".c-search-box-vessel").change(function () {
   edo = new Object();
   edo.vessel = $(this).text().trim();
   loadTable(edo);
- 
 });
 
 $(".c-search-box-voy-no").change(function () {
