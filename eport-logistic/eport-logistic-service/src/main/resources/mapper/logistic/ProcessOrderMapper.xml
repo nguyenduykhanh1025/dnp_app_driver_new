@@ -303,7 +303,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="opr != null and opr != ''">opr = #{opr},</if>
             <if test="pol != null and pol != ''">pol = #{pol},</if>
             <if test="pod != null and pod != ''">pod = #{pod},</if>
-            <if test="cargoType != null and cargoType != ''">cargo_type = #{bookingIndex},</if>
+            <if test="cargoType != null and cargoType != ''">cargo_type = #{cargoType},</if>
             update_time = sysdate
         </trim>
         where id = #{id}

@@ -1123,7 +1123,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 					bookingOrder.setServiceType(EportConstants.SERVICE_CREATE_BOOKING);
 					bookingOrder.setLogisticGroupId(processOrder.getLogisticGroupId());
 					bookingOrder.setFe("E");
-					bookingOrder.setOpr(processOrder.getOpr());
+					bookingOrder.setOpr(processOrder.getOpr());`
 					bookingOrder.setPol(processOrder.getPol());
 					bookingOrder.setPod(processOrder.getPod());
 					bookingOrder.setCargoType(processOrder.getCargoType());

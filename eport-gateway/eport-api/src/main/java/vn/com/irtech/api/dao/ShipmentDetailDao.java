@@ -146,4 +146,22 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List<ShipmentDetailEntity
 	 */
 	public List<ShipmentDetailEntity> selectVesselVoyageBerthPlanWithoutOpe();
+	
+	/**
+	 * Select booking quantity
+	 * 
+	 * @param bookingNo
+	 * @param sztp
+	 * @return int
+	 */
+	public int selectBookingQuantity(@Param("bookingNo") String bookingNo, @Param("sztp") String sztp);
+	
+	/**
+	 * Select booking order empty quantity
+	 * 
+	 * @param bookingNo
+	 * @param sztp
+	 * @return int
+	 */
+	public int selectBookingOrderEmptyQuantity(@Param("bookingNo") String bookingNo, @Param("sztp") String sztp);
 }

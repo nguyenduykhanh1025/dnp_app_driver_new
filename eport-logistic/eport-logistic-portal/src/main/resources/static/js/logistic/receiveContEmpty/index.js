@@ -963,7 +963,6 @@ function getDataFromTable(isValidate) {
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
-        shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetails.push(shipmentDetail);
         var now = new Date();
         now.setHours(0, 0, 0);
