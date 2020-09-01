@@ -567,6 +567,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setSztp(detail.getSztp());
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setShipmentId(shipment.getId());
+        processOrder.setCargoType("MT");
+        processOrder.setPod(detail.getDischargePort());
+        processOrder.setOpr(detail.getOpeCode());
+        processOrder.setPol("VNDAD");
         processOrder.setRunnable(false);
         processOrder.setServiceType(3);
         processOrderService.insertProcessOrder(processOrder);
@@ -1100,8 +1104,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			int bookingAvailableSize = catosApiService.checkTheNumberOfContainersNotOrderedForReceiveContEmpty(processOrder.getBookingNo(), processOrder.getSztp());
 			// Check booking size by sztp. If true then check to update booking if need, false then create new booking with sztp
 			if (bookingAvailableSize > 0) {
+				// The size of booking need to use greater than the current size: Need to update booking
 				if (processOrder.getContNumber() > bookingAvailableSize) {
-					// Update booking size 
+					// Update booking size, mapping data from receive cont empty order
 					ProcessOrder bookingOrder = new ProcessOrder();
 					bookingOrder.setBookingCreateMode(EportConstants.BOOKING_UPDATE);
 					int bookingSize = catosApiService.checkTheNumberOfContainersOrderedForReceiveContEmpty(processOrder.getBookingNo(), processOrder.getSztp());
@@ -1130,10 +1135,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 					processOrderService.insertProcessOrder(bookingOrder);
 					processOrders.add(bookingOrder);
 				} else {
+					
+					// Booking has already created, switch runnable status of receive empty order to true.
 					processOrder.setRunnable(true);
 					processOrderService.updateProcessOrder(processOrder);
 				}
 			} else {
+				// Create new booking for sztp that has not created in catos yet
+				// Mapping data from receive cont empty order
 				ProcessOrder bookingOrder = new ProcessOrder();
 				bookingOrder.setBookingCreateMode(EportConstants.BOOKING_CREATE);
 				bookingOrder.setContNumber(receiveEmptyReq.containers.size());

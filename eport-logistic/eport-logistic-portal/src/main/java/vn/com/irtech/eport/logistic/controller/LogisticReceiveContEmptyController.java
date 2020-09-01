@@ -394,8 +394,11 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 					}
 				}
 			}
+			
+			// Create list req for order receive cont empty
 			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails, shipment, creditFlag);
 			
+			// Check and create list process order create booking from list req receive empty
 			List<ProcessOrder> processOrders = shipmentDetailService.createBookingIfNeed(serviceRobotReqs);
 			
 			if (serviceRobotReqs != null) {
@@ -404,10 +407,12 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				// MAKE ORDER RECEIVE CONT EMPTY
 				try {
 					
+					// Send create booking order to robot
 					for (ProcessOrder processOrder : processOrders) {
 						mqttService.publishBookingOrderToRobot(processOrder, EServiceRobot.CREATE_BOOKING);
 					}
 					
+					// Check if receive empty req doesn't need to create booking then send robot
 					for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
 						processIds.add(serviceRobotReq.processOrder.getId());
 						if (serviceRobotReq.processOrder.getRunnable()) {
@@ -416,6 +421,8 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 							}
 						}
 					}
+					
+					// Warning when robot when not found any robot available for service
 					if (robotBusy) {
 						ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
 						ajaxResult.put("processIds", processIds);
@@ -425,6 +432,8 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 				} catch (Exception e) {
 					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
+				
+				// Case all req to make order is sent to robot
 				ajaxResult = AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
 				ajaxResult.put("processIds", processIds);
 				ajaxResult.put("orderNumber", serviceRobotReqs.size());

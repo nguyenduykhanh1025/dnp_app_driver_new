@@ -66,7 +66,7 @@ public class SysRobot extends BaseEntity {
 
 	private Integer serviceType;
 	
-	private Integer disabled;
+	private Boolean disabled;
 
 	public Long getId() {
 		return id;
@@ -188,11 +188,11 @@ public class SysRobot extends BaseEntity {
 		this.serviceType = serviceType;
 	}
 
-	public Integer getDisabled() {
+	public Boolean getDisabled() {
 		return disabled;
 	}
 
-	public void setDisabled(Integer disabled) {
+	public void setDisabled(Boolean disabled) {
 		this.disabled = disabled;
 	}
 

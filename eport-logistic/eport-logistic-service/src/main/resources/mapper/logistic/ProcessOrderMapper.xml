@@ -212,6 +212,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="processData != null and processData != ''">process_data,</if>
             <if test="domesticFlg != null">domestic_flg,</if>
             <if test="bookingCreateMode != null">booking_create_mode,</if>
+            <if test="bookingIndex != null">booking_index,</if>
             <if test="fe != null and fe != ''">fe,</if>
             <if test="opr != null and opr != ''">opr,</if>
             <if test="pol != null and pol != ''">pol,</if>

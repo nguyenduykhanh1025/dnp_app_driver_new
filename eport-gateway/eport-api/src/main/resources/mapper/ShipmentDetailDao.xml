@@ -154,7 +154,7 @@
 	    SELECT 
         	PTNR_CODE || ': ' || ENG_SNM AS PTNR_CODE
 	    FROM DNP_UAT.TB_PTNR
-	    WHERE PTNR_TYPE = 'SHP'
+	    WHERE PTNR_TYPE = 'SHP' AND PTNR_CODE NOT IN ('000','OWN')
 	</select>
 	
 	<select id="getGroupNameByTaxCode" parameterType="String" resultType="vn.com.irtech.api.entity.ShipmentEntity">
