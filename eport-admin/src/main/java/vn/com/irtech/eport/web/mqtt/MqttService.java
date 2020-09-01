@@ -105,9 +105,8 @@ public class MqttService implements MqttCallback {
 
 	private void subscribeToTopics() throws MqttException {
 		List<IMqttToken> tokens = new ArrayList<>();
-		tokens.add(mqttClient.subscribe(BASE + "/mc/plan/request", 0, mcRequestHandler));
-
-		tokens.add(mqttClient.subscribe(ROBOT_CONNECTION_RESPONSE, 0, robotResponseHandler));
+		tokens.add(mqttClient.subscribe(BASE + "/mc/plan/request", 1, mcRequestHandler));
+		tokens.add(mqttClient.subscribe(ROBOT_CONNECTION_RESPONSE, 1, robotResponseHandler));
 		// subscribe default topics when connect
 //		tokens.add(mqttClient.subscribe(BASE, 0, robotUpdateStatusHandler));
 		// Wait for subscribe complete
