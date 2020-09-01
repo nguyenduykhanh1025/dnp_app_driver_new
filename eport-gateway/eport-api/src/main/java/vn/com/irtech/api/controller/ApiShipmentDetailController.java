@@ -18,6 +18,7 @@ import vn.com.irtech.api.common.utils.StringUtils;
 import vn.com.irtech.api.dao.ShipmentDetailDao;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
 import vn.com.irtech.api.entity.ShipmentEntity;
+import vn.com.irtech.api.form.BookingInfo;
 
 @RestController
 @RequestMapping("/api")
@@ -194,24 +195,6 @@ public class ApiShipmentDetailController {
 		return false;
 	}
 	
-	@GetMapping("/shipmentDetail/receive-cont-empty/container-amount/booking-no/{bookingNo}/sztp/{sztp}/check/not-ordered")
-	public Integer checkTheNumberOfContainersNotOrderedForReceiveContEmpty(@PathVariable String bookingNo, @PathVariable String sztp) {
-		Integer result = shipmentDetailDao.checkTheNumberOfContainersNotOrderedForReceiveContEmpty(bookingNo, sztp);
-		if(result == null) {
-			return 0;
-		}
-		return result;
-	}
-	
-	@GetMapping("/shipmentDetail/receive-cont-empty/container-amount/booking-no/{bookingNo}/sztp/{sztp}/check/ordered")
-	public Integer checkTheNumberOfContainersOrderedForReceiveContEmpty(@PathVariable String bookingNo, @PathVariable String sztp) {
-		Integer result = shipmentDetailDao.checkTheNumberOfContainersOrderedForReceiveContEmpty(bookingNo, sztp);
-		if(result == null) {
-			return 0;
-		}
-		return result;
-	}
-	
 	@GetMapping("/shipmentDetail/send-cont-full/container-amount/booking-no/{bookingNo}/sztp/{sztp}/check/not-ordered")
 	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(@PathVariable String bookingNo, @PathVariable String sztp) {
 		Integer result = shipmentDetailDao.checkTheNumberOfContainersNotOrderedForSendContFull(bookingNo, sztp);
@@ -259,5 +242,10 @@ public class ApiShipmentDetailController {
 	@GetMapping("/shipmentDetail/berthplan/vessel-voyage/list")
 	public List<ShipmentDetailEntity> selectVesselVoyageBerthPlanWithoutOpe(){
 		return shipmentDetailDao.selectVesselVoyageBerthPlanWithoutOpe();
+	}
+	
+	@GetMapping("/booking-info/{bookingNo}/user-voy/{userVoy}")
+	public List<BookingInfo> getBookingInfo(@PathVariable("bookingNo") String bookingNo, @PathVariable("userVoy") String userVoy) {
+		return shipmentDetailDao.getBookingInfo(bookingNo, userVoy);
 	}
 }

@@ -17,6 +17,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessBill;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
 @Service
 public class CatosApiServiceImpl implements ICatosApiService {
@@ -469,42 +470,6 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			return null;
 		}
 	}
-
-	@Override
-	public Integer checkTheNumberOfContainersNotOrderedForReceiveContEmpty(String bookingNo, String sztp) {
-		try {
-			String url = Global.getApiUrl() + "/shipmentDetail/receive-cont-empty/container-amount/booking-no/" + bookingNo + "/sztp/" + sztp + "/check/not-ordered";
-			logger.debug("Call CATOS API :{}", url);
-			RestTemplate restTemplate = new RestTemplate();
-			Integer rs = restTemplate.getForObject(url, Integer.class);
-			return rs;
-		} catch (Exception e) {
-			logger.error("Error while call CATOS Api", e);
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/***
-	 * Check the number of container order for receive empty
-	 * 
-	 * check container amount have not ordered yet for receiveContEmpty
-	 * input: bookingNo, sztp
-	 */
-	@Override
-	public Integer checkTheNumberOfContainersOrderedForReceiveContEmpty(String bookingNo, String sztp) {
-		try {
-			String url = Global.getApiUrl() + "/shipmentDetail/receive-cont-empty/container-amount/booking-no/" + bookingNo + "/sztp/" + sztp + "/check/ordered";
-			logger.debug("Call CATOS API :{}", url);
-			RestTemplate restTemplate = new RestTemplate();
-			Integer rs = restTemplate.getForObject(url, Integer.class);
-			return rs;
-		} catch (Exception e) {
-			logger.error("Error while call CATOS Api", e);
-			e.printStackTrace();
-			return null;
-		}
-	}
 	
 	@Override
 	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(String bookingNo, String sztp) {
@@ -690,5 +655,23 @@ public class CatosApiServiceImpl implements ICatosApiService {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	/**
+	 * Get booking info from catos by booking no
+	 * and user voy (ope code + voy no)
+	 * 
+	 * @param bookingNo
+	 * @param userVoy
+	 * @return List Booking info object
+	 */
+	@Override
+	public List<BookingInfo> getBookingInfo(String bookingNo, String userVoy) {
+		String url = Global.getApiUrl() + "/booking-info/" + bookingNo + "/user-voy/" + userVoy;
+		logger.debug("Call CATOS API get booking info:{}", url);
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<BookingInfo>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<BookingInfo>>() {});
+		List<BookingInfo> bookingInfos = response.getBody();
+		return  bookingInfos;
 	}
 }

@@ -31,5 +31,22 @@ public interface EportConstants {
 	/** Update booking*/ 
 	public static final int BOOKING_CREATE = 2;
 	
+	// Shipment status
+	/** Lo duoc khoi tao*/
+	public static final String SHIPMENT_STATUS_DECLARE = "1";
+	/** Lo duoc khai bao chi tiet*/
+	public static final String SHIPMENT_STATUS_SAVE = "2";
+	/** Lo dang trong qua trinh lam lenh*/
+	public static final String SHIPMENT_STATUS_PROCESSING = "3";
+	/** Lo da hoan thanh toan bo container*/
+	public static final String SHIPMENT_STATUS_FINISH = "4";
 	
+	
+	// Robot Status
+	/** Robot is available */
+	public static final String ROBOT_STATUS_AVAILABLE = "0";
+	/** Robot is busy */
+	public static final String ROBOT_STATUS_BUSY = "1";
+	/** Robot is offline */
+	public static final String ROBOT_STATUS_OFFLINE = "2";
 }

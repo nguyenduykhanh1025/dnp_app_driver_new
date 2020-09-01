@@ -131,18 +131,22 @@ public class RobotResponseHandler implements IMqttMessageListener{
 		String invoiceNo = map.get("invoiceNo") == null ? "" : map.get("invoiceNo").toString(); 
 
 		if (receiptId != null) {
-			if ("0".equals(status)) {
-				if (serviceType == 1 || serviceType == 2 || serviceType == 3 || serviceType == 4 || serviceType == 5) {
+			if (EportConstants.ROBOT_STATUS_AVAILABLE.equals(status)) {
+				if (serviceType == EportConstants.SERVICE_PICKUP_FULL 
+						|| serviceType == EportConstants.SERVICE_DROP_EMPTY 
+						|| serviceType == EportConstants.SERVICE_PICKUP_EMPTY 
+						|| serviceType == EportConstants.SERVICE_PICKUP_FULL 
+						|| serviceType == EportConstants.SERVICE_SHIFTING) {
 					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId, orderNo, serviceType);
 				}	
 				switch (serviceType) {
-					case 6:
+					case EportConstants.SERVICE_CHANGE_VESSEL:
 						this.updateChangeVesselOrder(result, receiptId, uuId);
 						break;
-					case 7:
+					case EportConstants.SERVICE_CREATE_BOOKING:
 						this.updateCreateBookingOrder(result, receiptId, uuId);
 						break;
-					case 9:
+					case EportConstants.SERVICE_EXTEND_DATE:
 						this.updateExtensionDateOrder(result, receiptId, uuId);
 						break;
 					default:
@@ -150,7 +154,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				}
 				this.sendMessageWebsocket(result, receiptId);
 				status = this.assignNewProcessOrder(sysRobot);
-			} else if ("1".equals(status)) {
+			} else if (EportConstants.ROBOT_STATUS_BUSY.equals(status)) {
 				// SAVE HISTORY ROBOT START MAKE-ORDER
 				this.updateHistory(receiptId, uuId);
 			}
@@ -210,15 +214,15 @@ public class RobotResponseHandler implements IMqttMessageListener{
 			}
 
 			// UPDATE STATUS OF SHIPMENT DETAIL AFTER MAKE ORDER SUCCESS
-			if (processOrder.getServiceType() != 5) {
+			if (processOrder.getServiceType() != EportConstants.SERVICE_SHIFTING) {
 				shipmentDetailService.updateProcessStatus(shipmentDetails, "Y", invoiceNo, processOrder);
 				Shipment shipment = shipmentService.selectShipmentById(processOrder.getShipmentId());
-				if (processOrder.getServiceType() == 1 && "1".equals(shipment.getEdoFlg())) {
+				if (processOrder.getServiceType() == EportConstants.SERVICE_PICKUP_FULL && "1".equals(shipment.getEdoFlg())) {
 					for (ShipmentDetail shipmentDetail2 : shipmentDetails) {
 						Edo edo = new Edo();
 						edo.setBillOfLading(shipment.getBlNo());
 						edo.setContainerNumber(shipmentDetail2.getContainerNo());
-						edo.setStatus("2");
+						edo.setStatus("2"); // status process order has been made for this edo
 						edoService.updateEdoByBlCont(edo);
 					}
 				}

@@ -184,7 +184,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		sysRobot.setIsExtensionDateOrder(isExtensionDateOrder);
 
 		// if robot is busying
-		if ("1".equals(status)) {
+		if (EportConstants.ROBOT_STATUS_BUSY.equals(status)) {
 			try {
 				// Parsing process order id and save history time start of order
 				String receiptIdStr = map.get("receiptId") == null ? null : map.get("receiptId").toString();
@@ -196,7 +196,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			}
 			
 			// Robot is available
-		} else if ("0".equals(status)) {
+		} else if (EportConstants.ROBOT_STATUS_AVAILABLE.equals(status)) {
 			
 			// Get list process order has been assigned to robot to check if process order is failed when robot indicate available
 			List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(uuId);
@@ -290,7 +290,7 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 			}
 
 			// Case robot indicate offline need to check process order has been assigned to robot before
-		} else if ("2".equals(status)) {
+		} else if (EportConstants.ROBOT_STATUS_OFFLINE.equals(status)) {
 			List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(uuId);
 			
 			// If process order exists then there would be a error before, need to send notification to om

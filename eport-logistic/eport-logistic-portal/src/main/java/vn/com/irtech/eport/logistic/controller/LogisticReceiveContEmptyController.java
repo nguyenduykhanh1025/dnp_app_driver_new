@@ -27,6 +27,7 @@ import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
@@ -379,19 +380,19 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		if (!CollectionUtils.isEmpty(shipmentDetails)) {
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			if (!"3".equals(shipment.getStatus())) {
-				shipment.setStatus("3");
+			// Ne khong phai status la "Dang lam lenh" thi update thanh dang lam lenh
+			if (!EportConstants.SHIPMENT_STATUS_PROCESSING.equals(shipment.getStatus())) {
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
 				shipment.setUpdateTime(new Date());
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
 			}
-			//Đổi opeCode operateCode -> groupCode
+			//Đổi opeCode operateCode -> groupCode. VD Hang tau CMA: CMA,CNC,APL.. -> CMA
 			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipmentDetails.get(0).getOpeCode().toUpperCase());
+			// Chi convert thanh OPE cua hang tau CHA khi ton tai (neu khong ton tai -> skip)
 			if(carrierGroup != null) {
-				if(! shipmentDetails.get(0).getOpeCode().toUpperCase().equals(carrierGroup.getGroupCode())) {
-					for(ShipmentDetail i : shipmentDetails) {
-						i.setOpeCode(carrierGroup.getGroupCode());
-					}
+				for(ShipmentDetail shpDtl : shipmentDetails) {
+					shpDtl.setOpeCode(carrierGroup.getGroupCode());
 				}
 			}
 			
@@ -401,44 +402,36 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			// Check and create list process order create booking from list req receive empty
 			List<ProcessOrder> processOrders = shipmentDetailService.createBookingIfNeed(serviceRobotReqs);
 			
-			if (serviceRobotReqs != null) {
-				List<Long> processIds = new ArrayList<>();
-				boolean robotBusy = false;
-				// MAKE ORDER RECEIVE CONT EMPTY
-				try {
-					
-					// Send create booking order to robot
-					for (ProcessOrder processOrder : processOrders) {
-						mqttService.publishBookingOrderToRobot(processOrder, EServiceRobot.CREATE_BOOKING);
-					}
-					
-					// Check if receive empty req doesn't need to create booking then send robot
-					for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
-						processIds.add(serviceRobotReq.processOrder.getId());
-						if (serviceRobotReq.processOrder.getRunnable()) {
-							if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_EMPTY)) {
-								robotBusy = true;
-							}
-						}
-					}
-					
-					// Warning when robot when not found any robot available for service
-					if (robotBusy) {
-						ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
-						ajaxResult.put("processIds", processIds);
-						ajaxResult.put("orderNumber", serviceRobotReqs.size());
-						return ajaxResult;
-					}
-				} catch (Exception e) {
-					return error("Có lỗi xảy ra trong quá trình xác thực!");
+			List<Long> processIds = new ArrayList<>();
+			boolean robotBusy = false;
+			// MAKE ORDER RECEIVE CONT EMPTY
+			try {
+				
+				for (ProcessOrder processOrder : processOrders) {
+					mqttService.publishBookingOrderToRobot(processOrder, EServiceRobot.CREATE_BOOKING);
 				}
 				
-				// Case all req to make order is sent to robot
-				ajaxResult = AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
-				ajaxResult.put("processIds", processIds);
-				ajaxResult.put("orderNumber", serviceRobotReqs.size());
-				return ajaxResult;
+				for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
+					processIds.add(serviceRobotReq.processOrder.getId());
+					if (serviceRobotReq.processOrder.getRunnable()) {
+						if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_EMPTY)) {
+							robotBusy = true;
+						}
+					}
+				}
+				if (robotBusy) {
+					ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
+					ajaxResult.put("processIds", processIds);
+					ajaxResult.put("orderNumber", serviceRobotReqs.size());
+					return ajaxResult;
+				}
+			} catch (Exception e) {
+				return error("Có lỗi xảy ra trong quá trình xác thực!");
 			}
+			ajaxResult = AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
+			ajaxResult.put("processIds", processIds);
+			ajaxResult.put("orderNumber", serviceRobotReqs.size());
+			return ajaxResult;
 		}
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
