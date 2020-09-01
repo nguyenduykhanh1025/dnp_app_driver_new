@@ -5,8 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
-import vn.com.irtech.eport.logistic.dto.ServiceRobotReq;
-import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 
 /**
  * Process orderService Interface
@@ -94,12 +92,12 @@ public interface IProcessOrderService
     public Long getShipmentIdByProcessOrderId(Long id);
     
     /**
-     * Get process order by robot uuid
+     * Get processing process order that handling by robot uuid
      * 
      * @param uuid
      * @return Process Order
      */
-    public List<ProcessOrder> getProcessOrderByUuid(String uuid);
+    public List<ProcessOrder> getProcessingProcessOrderByUuid(String uuid);
 
     /**
      * Find process order for robot

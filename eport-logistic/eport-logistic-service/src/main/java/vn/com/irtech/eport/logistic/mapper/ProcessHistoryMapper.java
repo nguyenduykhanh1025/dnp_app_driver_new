@@ -1,6 +1,9 @@
 package vn.com.irtech.eport.logistic.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
 
 /**
@@ -9,8 +12,7 @@ import vn.com.irtech.eport.logistic.domain.ProcessHistory;
  * @author HieuNT
  * @date 2020-06-27
  */
-public interface ProcessHistoryMapper 
-{
+public interface ProcessHistoryMapper {
     /**
      * Get Process order history
      * 
@@ -60,5 +62,7 @@ public interface ProcessHistoryMapper
     public int deleteProcessHistoryByIds(String[] ids);
 
     public List<ProcessHistory> selectRobotHistory(ProcessHistory processHistory);
+
+    public ProcessHistory selectProcessingHistory(@Param("processOrderId") Long processOrderId, @Param("robotUuid") String robotUuid, @Param("serviceType") Integer serviceType);
 
 }

@@ -187,48 +187,42 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 		if (EportConstants.ROBOT_STATUS_BUSY.equals(status)) {
 			try {
 				// Parsing process order id and save history time start of order
-				String receiptIdStr = map.get("receiptId") == null ? null : map.get("receiptId").toString();
-				Long receiptId = Long.parseLong(receiptIdStr);
-				this.updateHistory(receiptId.toString(), uuId);
+				Long receiptId = map.get("receiptId") == null ? 0L : Long.parseLong(map.get("receiptId").toString());
+				ProcessOrder processOrder = processOrderService.selectProcessOrderById(receiptId);
+				if(processOrder != null) {
+					this.addProcessHistory(receiptId.toString(), uuId, processOrder.getServiceType());
+				}
 			} catch (Exception ex) {
 				logger.error("Error when update history for order when start: " + ex);
 				return;
 			}
-			
 			// Robot is available
 		} else if (EportConstants.ROBOT_STATUS_AVAILABLE.equals(status)) {
 			
 			// Get list process order has been assigned to robot to check if process order is failed when robot indicate available
-			List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(uuId);
+			List<ProcessOrder> processOrders = processOrderService.getProcessingProcessOrderByUuid(uuId);
 
 			// ProcessOrders is not empty -> there is error happen when robot indicate available
 			if (processOrders != null && !processOrders.isEmpty()) {
 				for (ProcessOrder processOrder : processOrders) {
-					
 					// Update status error for process was failed
-					if (processOrder != null) {
-						processOrder.setStatus(0);
-						processOrderService.updateProcessOrder(processOrder);
-						try {
-							// Update error status for shipment detail 
-							List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrder.getId().toString());
-							updateErrorShipmentDetail(shipmentDetails);
-						} catch (Exception e) {
-							logger.warn(e.getMessage());
-						}
-						
+					processOrder.setStatus(0); // TODO Vi sao update lai status=0? dung de chay lai?
+					processOrderService.updateProcessOrder(processOrder);
 
-						// Send notification to logistics
-						AjaxResult ajaxResult= null;
-						ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
-						webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
-		
-						// Send notification for OM
-						try {
-							mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
-						} catch (Exception e) {
-							logger.warn("Error when send notification error order for om: " + e);
-						}
+					// Update error status for shipment detail 
+					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrder.getId().toString());
+					updateErrorShipmentDetail(shipmentDetails);
+
+					// Send notification to logistics
+					AjaxResult ajaxResult= null;
+					ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
+					webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
+
+					// Send notification for OM
+					try {
+						mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
+					} catch (Exception e) {
+						logger.warn("Error when send notification error order for om: " + e);
 					}
 				}
 			}
@@ -242,21 +236,23 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 				robotService.updateRobotByUuId(sysRobot);
 			}
 
-			// Find process order for robot
+			// Find process order for this robot support serviceTypes
 			ProcessOrder reqProcessOrder = processOrderService.findProcessOrderForRobot(serviceTypes);
 			if (reqProcessOrder != null) {
-				reqProcessOrder.setStatus(1);
+				reqProcessOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_PROCESSING);
 				reqProcessOrder.setRobotUuid(sysRobot.getUuId());
+				// Update process order to processing
 				if (processOrderService.updateProcessOrder(reqProcessOrder) == 1) {
 					ShipmentDetail shipmentDetail = new ShipmentDetail();
 					shipmentDetail.setProcessOrderId(reqProcessOrder.getId());
+					// Get list of shipment details for current processOrder
 					List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
 					ServiceSendFullRobotReq req = new ServiceSendFullRobotReq(reqProcessOrder, shipmentDetails);
 
-					// update status of robot
-					sysRobot.setStatus("1");
+					// update status of robot to BUZY
+					sysRobot.setStatus(EportConstants.ROBOT_STATUS_BUSY);
 					robotService.updateRobotByUuId(sysRobot);
-
+					// Send message to robot
 					switch (reqProcessOrder.getServiceType()) {
 						case EportConstants.SERVICE_PICKUP_FULL:
 							mqttService.publicMessageToDemandRobot(req, EServiceRobot.RECEIVE_CONT_FULL, uuId);
@@ -291,28 +287,23 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 
 			// Case robot indicate offline need to check process order has been assigned to robot before
 		} else if (EportConstants.ROBOT_STATUS_OFFLINE.equals(status)) {
-			List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(uuId);
+			List<ProcessOrder> processOrders = processOrderService.getProcessingProcessOrderByUuid(uuId);
 			
 			// If process order exists then there would be a error before, need to send notification to om
 			if (processOrders != null && !processOrders.isEmpty()) {
 				for (ProcessOrder processOrder : processOrders) {
-					
-					// Update history for failed process order and shipment detail
+					// Update failed process order and shipment detail
 					if (processOrder != null) {
-						processOrder.setRobotUuid(null);
+						processOrder.setStatus(EportConstants.PROCESS_ORDER_STATUS_FINISHED);
+						processOrder.setResult(EportConstants.PROCESS_ORDER_RESULT_FAILED);
 						processOrderService.updateProcessOrder(processOrder);
-						try {
-							List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrder.getId().toString());
-							updateErrorShipmentDetail(shipmentDetails);
-						} catch (Exception e) {
-							logger.warn(e.getMessage());
-						}
-						
+						List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrder.getId().toString());
+						updateErrorShipmentDetail(shipmentDetails);
+
 						// Send notification to logistics
 						AjaxResult ajaxResult= null;
-						ajaxResult = AjaxResult.error("Làm lệnh thất bại, quý khách vui lòng liên hệ với bộ phận OM để được hỗ trợ thêm.");
+						ajaxResult = AjaxResult.error("Làm lệnh thất bại!");
 						webSocketService.sendMessage("/" + processOrder.getId() + "/response", ajaxResult);
-		
 						// Send notification for om
 						try {
 							mqttService.sendNotification(NotificationCode.NOTIFICATION_OM, "Lỗi lệnh số " + processOrder.getId(), configService.getKey("domain.admin.name") + "/om/executeCatos/detail/" + processOrder.getId());
@@ -322,14 +313,12 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 					}
 				}
 			}
-
 			// Something went wrong with robot bc offline Send notification for IT
 			try {
 				mqttService.sendNotification(NotificationCode.NOTIFICATION_IT, "Lỗi Robot " + sysRobot.getUuId(), configService.getKey("domain.admin.name") + "/system/robot/edit/" + sysRobot.getId());
 			} catch (Exception e) {
 				logger.warn(e.getMessage());
 			}
-			
 			// check robot exists in db
 			if (robotService.selectRobotByUuId(uuId) == null) {
 				// insert robot to db
@@ -347,13 +336,14 @@ public class RobotUpdateStatusHandler implements IMqttMessageListener {
 	 * @param receiptId
 	 * @param uuId
 	 */
-	private void updateHistory(String receiptId, String uuId) {
+	private void addProcessHistory(String receiptId, String uuId, int serviceType) {
 		Long id = Long.parseLong(receiptId);
 		ProcessHistory processHistory = new ProcessHistory();
 		processHistory.setProcessOrderId(id);
 		processHistory.setRobotUuid(uuId);
-		processHistory.setStatus(1); // START
-		processHistory.setResult("S"); // RESULT SUCCESS
+		processHistory.setServiceType(serviceType);
+		processHistory.setStatus(EportConstants.PROCESS_HISTORY_STATUS_START);
+		processHistory.setStartTime(new Date());
 		processHistory.setCreateTime(new Date());
 		processHistoryService.insertProcessHistory(processHistory);
 	}

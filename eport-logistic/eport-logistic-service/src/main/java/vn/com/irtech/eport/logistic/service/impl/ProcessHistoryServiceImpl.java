@@ -99,4 +99,11 @@ public class ProcessHistoryServiceImpl implements IProcessHistoryService
     public List<ProcessHistory> selectRobotHistory(ProcessHistory processHistory) {
         return processHistoryMapper.selectRobotHistory(processHistory);
     }
+
+	@Override
+	public ProcessHistory selectProcessingHistory(Long processOrderId, String robotUuid, Integer serviceType) {
+		return processHistoryMapper.selectProcessingHistory(processOrderId, robotUuid, serviceType);
+	}
+    
+    
 }
