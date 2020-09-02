@@ -470,7 +470,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
-            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode));
+            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
         } catch (Exception e) {
         	logger.error("Error when get company name with tax code: " + e);
         }
@@ -547,7 +547,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
-            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode));
+            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
         } catch (Exception e) {
         	logger.error("Error when get company name with tax code: " + e);
         }

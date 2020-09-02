@@ -1,7 +1,7 @@
 var prefix = ctx + "logistic/send-cont-full";
 var shipmentDetailIds = "";
 
-function confirm() {
+async function confirm() {
     if ($("#groupName").val() && $("#taxCode").val()) {
         if ($('#credit').prop('checked')) {
             let res = await getPaymentPermission();

@@ -1,7 +1,7 @@
 var prefix = ctx + "logistic/receive-cont-full";
 var shipmentDetailIds = "";
 
-function confirm() {
+async function confirm() {
     let isSendContEmpty = false;
     if (sendContEmpty && $('#yes').prop('checked')) {
         isSendContEmpty = true;
