@@ -6,6 +6,7 @@ eport:
   profile: D:/eport/upload
   addressEnabled: true
   cacheExpireTime: 3600
+  apiUrl: http://127.0.0.1:9090/api
   #EDO Monitor Folders
   edi:
      rootPath: D:/eport/upload/edo
