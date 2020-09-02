@@ -129,4 +129,9 @@ public class ShipmentServiceImpl implements IShipmentService {
 		return shipmentMapper.selectShipmentListForDriver(serviceType, driverId);
 	}
 
+	@Override
+	public List<Shipment> selectShipmentListForRegister(Shipment shipment) {
+		return shipmentMapper.selectShipmentListForRegister(shipment);
+	}
+
 }

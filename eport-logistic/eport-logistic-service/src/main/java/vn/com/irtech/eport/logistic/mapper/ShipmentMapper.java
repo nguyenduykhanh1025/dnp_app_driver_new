@@ -78,5 +78,8 @@ public interface ShipmentMapper
      */
     public List<ShipmentForm> selectShipmentListForDriver(@Param("serviceType") Integer serviceType, @Param("driverId") Long driverId);
     
-  
+    /**
+     * Select Shipment List For Register
+     */
+    public List<Shipment> selectShipmentListForRegister(Shipment shipment);
 }
