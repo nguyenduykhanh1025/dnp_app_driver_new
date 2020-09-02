@@ -628,7 +628,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(detail.getId().toString());
             shipmentDetail.setUserVerifyStatus("Y");
-            shipmentDetail.setOpeCode(shipment.getOpeCode());
+            if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_FULL) {
+            	shipmentDetail.setOpeCode(shipment.getOpeCode());
+            }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             if (processOrder.getServiceType() == 2) {
             	shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());
