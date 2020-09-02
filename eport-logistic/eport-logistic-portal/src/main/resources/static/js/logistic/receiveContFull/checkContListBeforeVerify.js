@@ -95,8 +95,8 @@ $('.confirm-send-empty').hide();
 
 function getPaymentPermission() {
     return $.ajax({
-        url: ctx + "/taxCode/" + $("#taxCode").val() + "/delegate/payment/permission",
+        url: ctx + "taxCode/" + $("#taxCode").val() + "/delegate/payment/permission",
         method: "GET",
-    })
+    });
 }
 
