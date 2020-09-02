@@ -84,7 +84,7 @@ $('input:radio[name="taxCodeDefault"]').change(function() {
 
 function getPaymentPermission() {
     return $.ajax({
-        url: ctx + "taxCode/" + $("#taxCode").val() + "/delegate/payment/permission",
+        url: ctx + "logistic/taxCode/" + $("#taxCode").val() + "/delegate/payment/permission",
         method: "GET",
     });
 }
