@@ -118,7 +118,7 @@ public class LogisticCommonController extends LogisticBaseController {
 		LogisticAccount user = getUser();
 		Shipment shipment = param.getData();
 		shipment.setLogisticGroupId(user.getGroupId());
-		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+		List<Shipment> shipments = shipmentService.selectShipmentListForRegister(shipment);
 		return getDataTable(shipments);
 	}
 	
