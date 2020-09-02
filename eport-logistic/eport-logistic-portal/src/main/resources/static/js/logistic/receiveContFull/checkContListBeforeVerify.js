@@ -7,8 +7,19 @@ function confirm() {
         isSendContEmpty = true;
     }
     if ($("#groupName").val() && $("#taxCode").val()) {
-        parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'), isSendContEmpty);
-        $.modal.close();
+        if ($('#credit').prop('checked')) {
+            let res = await getPaymentPermission();
+            if (res.code == 0) {
+                parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'), isSendContEmpty);
+                $.modal.close();
+            } else {
+                $.modal.alertWarning("Quý khách không có quyền xuất hóa đơn cho mã số thuế này.");
+            }
+        } else {
+            parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'), isSendContEmpty);
+            $.modal.close();
+        }
+        
     }
     if ($("#taxCode").val() == '') {
         $.modal.alertWarning("Quý khách vui lòng nhập mã số thuế trước <br>khi bấm xác nhận.");
@@ -80,4 +91,12 @@ $('.confirm-send-empty').hide();
 // if (!sendContEmpty) {
 //     $('.confirm-send-empty').hide();
 // }
+
+
+function getPaymentPermission() {
+    return $.ajax({
+        url: ctx + "/taxCode/" + $("#taxCode").val() + "/delegate/payment/permission",
+        method: "GET",
+    })
+}
 
