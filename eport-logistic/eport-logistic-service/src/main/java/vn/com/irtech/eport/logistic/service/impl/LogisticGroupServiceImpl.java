@@ -115,7 +115,7 @@ public class LogisticGroupServiceImpl implements ILogisticGroupService
      * @return	int
      */
     @Override
-    public int checkDelegatePermission(@Param("consigneeTaxCode") String consigneeTaxCode, @Param("logisticTaxCode") String logisticTaxCode) {
-    	return logisticGroupMapper.checkDelegatePermission(consigneeTaxCode, logisticTaxCode);
+    public int checkDelegatePermission(@Param("consigneeTaxCode") String consigneeTaxCode, @Param("logisticTaxCode") String logisticTaxCode, @Param("delegateType") String delegateType) {
+    	return logisticGroupMapper.checkDelegatePermission(consigneeTaxCode, logisticTaxCode, delegateType);
     }
 }

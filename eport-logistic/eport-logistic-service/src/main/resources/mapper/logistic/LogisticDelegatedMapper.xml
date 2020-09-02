@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="logisticGroupId"    column="logistic_group_id"    />
         <result property="delegateTaxCode"    column="delegate_tax_code"    />
         <result property="delegateCompany"    column="delegate_company"    />
+        <result property="delegateType"    column="delegate_type"    />
         <result property="validFrom"    column="valid_from"    />
         <result property="validUntil"    column="valid_until"    />
         <result property="validFlg"    column="valid_flg"    />
@@ -20,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectLogisticDelegatedVo">
-        select id, logistic_group_id, delegate_tax_code, delegate_company, valid_from, valid_until, valid_flg, del_flg, create_by, create_time, update_by, update_time from logistic_delegated
+        select id, logistic_group_id, delegate_tax_code, delegate_company, delegate_type, valid_from, valid_until, valid_flg, del_flg, create_by, create_time, update_by, update_time from logistic_delegated
     </sql>
 
     <select id="selectLogisticDelegatedList" parameterType="LogisticDelegated" resultMap="LogisticDelegatedResult">
@@ -29,6 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
             <if test="delegateTaxCode != null  and delegateTaxCode != ''"> and delegate_tax_code = #{delegateTaxCode}</if>
             <if test="delegateCompany != null  and delegateCompany != ''"> and delegate_company = #{delegateCompany}</if>
+            <if test="delegateType != null  and delegateType != ''"> and delegate_type = #{delegateType}</if>
             <if test="validFrom != null "> and valid_from = #{validFrom}</if>
             <if test="validUntil != null "> and valid_until = #{validUntil}</if>
             <if test="validFlg != null "> and valid_flg = #{validFlg}</if>
@@ -51,6 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null">logistic_group_id,</if>
             <if test="delegateTaxCode != null and delegateTaxCode != ''">delegate_tax_code,</if>
             <if test="delegateCompany != null and delegateCompany != ''">delegate_company,</if>
+            <if test="delegateType != null and delegateType != ''">delegate_type,</if>
             <if test="validFrom != null">valid_from,</if>
             <if test="validUntil != null">valid_until,</if>
             <if test="validFlg != null">valid_flg,</if>
@@ -63,6 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null">#{logisticGroupId},</if>
             <if test="delegateTaxCode != null and delegateTaxCode != ''">#{delegateTaxCode},</if>
             <if test="delegateCompany != null and delegateCompany != ''">#{delegateCompany},</if>
+            <if test="delegateType != null and delegateType != ''">#{delegateType},</if>
             <if test="validFrom != null">#{validFrom},</if>
             <if test="validUntil != null">#{validUntil},</if>
             <if test="validFlg != null">#{validFlg},</if>
@@ -78,6 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="logisticGroupId != null">logistic_group_id = #{logisticGroupId},</if>
             <if test="delegateTaxCode != null and delegateTaxCode != ''">delegate_tax_code = #{delegateTaxCode},</if>
             <if test="delegateCompany != null and delegateCompany != ''">delegate_company = #{delegateCompany},</if>
+            <if test="delegateType != null and delegateType != ''">delegate_type = #{delegateType},</if>
             <if test="validFrom != null">valid_from = #{validFrom},</if>
             <if test="validUntil != null">valid_until = #{validUntil},</if>
             <if test="validFlg != null">valid_flg = #{validFlg},</if>

@@ -28,6 +28,7 @@ import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.constant.SystemConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -720,7 +721,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		
 		// Check if logistic can make order for this shipment
-		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst()) > 0) {
+		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst(), EportConstants.DELEGATE_PERMISSION_PAYMENT) > 0) {
 			return success();
 		}
 		return error();
