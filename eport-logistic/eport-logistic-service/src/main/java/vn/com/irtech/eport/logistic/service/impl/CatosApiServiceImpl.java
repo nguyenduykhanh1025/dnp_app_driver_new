@@ -667,11 +667,16 @@ public class CatosApiServiceImpl implements ICatosApiService {
 	 */
 	@Override
 	public List<BookingInfo> getBookingInfo(String bookingNo, String userVoy) {
-		String url = Global.getApiUrl() + "/booking-info/" + bookingNo + "/user-voy/" + userVoy;
-		logger.debug("Call CATOS API get booking info:{}", url);
-		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<BookingInfo>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<BookingInfo>>() {});
-		List<BookingInfo> bookingInfos = response.getBody();
-		return  bookingInfos;
+		try {
+			String url = Global.getApiUrl() + "/booking-info/" + bookingNo + "/user-voy/" + userVoy;
+			logger.debug("Call CATOS API get booking info:{}", url);
+			RestTemplate restTemplate = new RestTemplate();
+			ResponseEntity<List<BookingInfo>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<BookingInfo>>() {});
+			List<BookingInfo> bookingInfos = response.getBody();
+			return  bookingInfos;
+		} catch (Exception e) {
+			logger.error("Error while call CATOS Api get booking info: ", e);
+			return null;
+		}
 	}
 }

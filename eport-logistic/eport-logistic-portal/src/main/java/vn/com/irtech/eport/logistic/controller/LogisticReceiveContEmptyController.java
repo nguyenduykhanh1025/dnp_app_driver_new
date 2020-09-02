@@ -50,6 +50,7 @@ import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
+import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -89,6 +90,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     
     @Autowired
     private IPickupAssignService pickupAssignService;
+    
+    @Autowired
+    private IProcessBillService processBillService;
 
     // VIEW RECEIVE CONT EMPTY
     @GetMapping()
@@ -165,9 +169,18 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// FORM SHOW BILL TO PAY
-	@GetMapping("paymentForm/{shipmentDetailIds}")
-	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+	@GetMapping("/payment/{processOrderIds}")
+	public String paymentForm(@PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
+		String shipmentDetailIds = "";
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderIds);
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetailIds += shipmentDetail.getId() + ",";
+		}
+		if (!"".equalsIgnoreCase(shipmentDetailIds)) {
+			shipmentDetailIds.substring(0, shipmentDetailIds.length()-1);
+		}
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
+		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
 	}
 
@@ -380,7 +393,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		if (!CollectionUtils.isEmpty(shipmentDetails)) {
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			// Ne khong phai status la "Dang lam lenh" thi update thanh dang lam lenh
+			// Neu khong phai status la "Dang lam lenh" thi update thanh dang lam lenh
 			if (!EportConstants.SHIPMENT_STATUS_PROCESSING.equals(shipment.getStatus())) {
 				shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
 				shipment.setUpdateTime(new Date());
