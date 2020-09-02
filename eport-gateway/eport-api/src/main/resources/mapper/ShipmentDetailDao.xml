@@ -470,13 +470,12 @@
 		        WHERE
 		            "A2"."BOOKING_NO" = "A1"."BOOKING_NO"
 		            AND "A2"."SZTP" = "A1"."SZTP"
-		            AND "A2"."JOB_ODR_NO" IS NOT NULL
+		            AND "A2"."JOB_ODR_NO2" IS NOT NULL
 		    ) usedQty
 		FROM
 		    "DNP_UAT"."TB_BOOKING" "A1"
 		WHERE
 		    "A1"."BOOKING_NO" = #{bookingNo}
 		    AND "A1"."USER_VOY" = #{userVoy}
-	    ;
     </select>
 </mapper>
