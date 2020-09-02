@@ -148,12 +148,12 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			        parameters.put("groupName", logisticGroup.getGroupName());
 			        Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
 			        parameters.put("remark", (shipment.getRemark() != null) ? shipment.getRemark() : "");
-					try {
-						File file = new File("target/classes/static/img/logo_gray.jpeg");
-						parameters.put("pathBackground", file.getPath());
-					} catch (Exception e) {
-						logger.error("Path background report error",e.getMessage());
-					}
+//					try {
+//						File file = new File("target/classes/static/img/logo_gray.jpeg");
+//						parameters.put("pathBackground", file.getPath());
+//					} catch (Exception e) {
+//						logger.error("Path background report error",e.getMessage());
+//					}
 			        if(shipment.getServiceType().intValue() == 1) {
 				        parameters.put("serviceType", "Truck Pickup");
 			        }
