@@ -13,7 +13,7 @@ async function confirm() {
                 parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'), isSendContEmpty);
                 $.modal.close();
             } else {
-                $.modal.alertWarning("Quý khách không có quyền xuất hóa đơn cho mã số thuế này.");
+                $.modal.alertWarning("Quý khách không có quyền trả sau cho mã số thuế đã chọn.");
             }
         } else {
             parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'), isSendContEmpty);
