@@ -5,10 +5,12 @@ var minutes = 0, seconds = 0;
 function confirm() {
     if ($("#otpInput").val() !=null && $("#otpInput").val() != "") {
         $.ajax({
-            url: prefix + "/otp/" + $("#otpInput").val() + "/verification/shipment-detail/" + shipmentDetailIds,
+            url: prefix + "/otp/" + $("#otpInput").val() + "/verification",
             method: "post",
             data: {
-                creditFlag: creditFlag
+                shipmentDetailIds: shipmentDetailIds,
+                creditFlag: creditFlag,
+                taxCode: taxCode
             },
             success: function (data) {
                 if (data.code != 0 && data.code != 301) {

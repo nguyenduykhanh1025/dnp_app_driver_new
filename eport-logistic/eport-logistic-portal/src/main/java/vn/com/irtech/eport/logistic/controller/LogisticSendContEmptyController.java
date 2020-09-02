@@ -112,17 +112,20 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		mmap.put("creditFlag", getGroup().getCreditFlag());
+		mmap.put("taxCode", getGroup().getMst());
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
 		return PREFIX + "/checkContListBeforeVerify";
 	}
 
-	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("creditFlag") boolean creditFlag, ModelMap mmap) {
+	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}")
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds,
+			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
 		mmap.put("creditFlag", creditFlag);
+		mmap.put("taxCode", taxCode);
 		return PREFIX + "/verifyOtp";
 	}
 
@@ -306,9 +309,9 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 	}
 
 	@Log(title = "Xác Nhận OTP", businessType = BusinessType.INSERT, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
+	@PostMapping("/otp/{otp}/verification")
 	@ResponseBody
-	public AjaxResult verifyOtp(@PathVariable("otp") String otp, @PathVariable("shipmentDetailIds") String shipmentDetailIds, boolean creditFlag) {
+	public AjaxResult verifyOtp(@PathVariable("otp") String otp, String shipmentDetailIds, String taxCode, boolean creditFlag) {
 		try {
 			Long.parseLong(otp);
 		} catch (Exception e) {
@@ -344,7 +347,7 @@ public class LogisticSendContEmptyController extends LogisticBaseController {
 					}
 				}
 			}
-			ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, creditFlag);
+			ProcessOrder processOrder = shipmentDetailService.makeOrderSendCont(shipmentDetails, shipment, taxCode, creditFlag);
 			if (processOrder != null) {
 				ServiceSendFullRobotReq serviceRobotReq = new ServiceSendFullRobotReq(processOrder, shipmentDetails);
 				try {
