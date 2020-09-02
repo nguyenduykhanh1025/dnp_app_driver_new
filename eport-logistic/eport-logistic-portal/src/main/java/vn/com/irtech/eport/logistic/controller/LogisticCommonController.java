@@ -538,6 +538,9 @@ public class LogisticCommonController extends LogisticBaseController {
 	@GetMapping("/taxCode/{taxCode}/delegate/payment/permission")
 	@ResponseBody
 	public AjaxResult checkDelegatePermission(@PathVariable("taxCode") String taxCode) {
+		if (taxCode.equalsIgnoreCase(getGroup().getMst())) {
+			return success();
+		}
 		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst(), EportConstants.DELEGATE_PERMISSION_PAYMENT) > 0) {
 			return success();
 		}
