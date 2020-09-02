@@ -153,6 +153,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		mmap.put("creditFlag", getGroup().getCreditFlag());
+		mmap.put("taxCode", getGroup().getMst());
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
@@ -160,11 +161,13 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// FORM TO VERIFY OTP
-	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("creditFlag") boolean creditFlag, ModelMap mmap) {
+	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}")
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, 
+			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
 		mmap.put("creditFlag", creditFlag);
+		mmap.put("taxCode", taxCode);
 		return PREFIX + "/verifyOtp";
 	}
 
@@ -370,9 +373,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 	// VALIDATE OTP IS CORRECT THEN MAKE ORDER TO ROBOT
 	@Log(title = "Xác Nhận OTP", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
+	@PostMapping("/otp/{otp}/verification")
 	@ResponseBody
-	public AjaxResult verifyOtp(@PathVariable("otp") String otp, @PathVariable("shipmentDetailIds") String shipmentDetailIds, boolean creditFlag) {
+	public AjaxResult verifyOtp(@PathVariable("otp") String otp, String shipmentDetailIds, String taxCode, boolean creditFlag) {
 		try {
 			Long.parseLong(otp);
 		} catch (Exception e) {
@@ -410,7 +413,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			}
 			
 			// Create list req for order receive cont empty
-			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails, shipment, creditFlag);
+			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails, shipment, taxCode, creditFlag);
 			
 			// Check and create list process order create booking from list req receive empty
 			List<ProcessOrder> processOrders = shipmentDetailService.createBookingIfNeed(serviceRobotReqs);

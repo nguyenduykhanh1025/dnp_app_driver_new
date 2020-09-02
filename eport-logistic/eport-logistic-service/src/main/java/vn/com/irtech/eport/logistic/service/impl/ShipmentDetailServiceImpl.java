@@ -430,13 +430,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails,
-            Shipment shipment, boolean creditFlag) {
+            Shipment shipment, String taxCode, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
             List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
             if (checkMakeOrderByBl(shipment.getBlNo(), shipmentDetails.size(),
                     "1".equalsIgnoreCase(shipment.getEdoFlg()))) {
                 serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
-                        shipmentDetails, shipment, creditFlag, true));
+                        shipmentDetails, shipment, taxCode, creditFlag, true));
             } else {
                 Collections.sort(shipmentDetails, new SztpComparator());
                 String sztp = shipmentDetails.get(0).getSztp();
@@ -444,13 +444,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 for (ShipmentDetail shipmentDetail : shipmentDetails) {
                     if (!sztp.equals(shipmentDetail.getSztp())) {
                         serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
-                                shipmentOrderList, shipment, creditFlag, false));
+                                shipmentOrderList, shipment, taxCode, creditFlag, false));
                         shipmentOrderList = new ArrayList<>();
                     }
                     shipmentOrderList.add(shipmentDetail);
                 }
                 serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
-                        shipmentOrderList, shipment, creditFlag, false));
+                        shipmentOrderList, shipment, taxCode, creditFlag, false));
             }
             return serviceRobotReq;
         }
@@ -459,7 +459,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Transactional
     private ServiceSendFullRobotReq groupShipmentDetailByReceiveContFullOrder(Long registerNo,
-            List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag, boolean orderByBl) {
+            List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag, boolean orderByBl) {
     	ShipmentDetail detail = shipmentDetails.get(0);
         ProcessOrder processOrder = new ProcessOrder();
         if (orderByBl) {
@@ -470,11 +470,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
-            processOrder.setTruckCo(shipment.getTaxCode() + " : " + getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName());
+            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode));
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error("Error when get company name with tax code: " + e);
         }
-        processOrder.setTaxCode(shipment.getTaxCode());
+        processOrder.setTaxCode(taxCode);
         if (creditFlag) {
             processOrder.setPayType("Credit");
         } else {
@@ -520,7 +520,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Transactional
-    public List<ServiceSendFullRobotReq> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
+    public List<ServiceSendFullRobotReq> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
             List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
             Collections.sort(shipmentDetails, new SztpComparator());
@@ -528,26 +528,30 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (!sztp.equals(shipmentDetail.getSztp())) {
-                    serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag));
+                    serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, taxCode, creditFlag));
                     shipmentOrderList = new ArrayList<>();
                 }
                 shipmentOrderList.add(shipmentDetail);
             }
-            serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag));
+            serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, taxCode, creditFlag));
             return serviceRobotReq;
         }
         return null;
     }
 
     @Transactional
-    private ServiceSendFullRobotReq groupShipmentDetailByReceiveContEmptyOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
+    private ServiceSendFullRobotReq groupShipmentDetailByReceiveContEmptyOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag) {
         ShipmentDetail detail = shipmentDetails.get(0);
     	ProcessOrder processOrder = new ProcessOrder();
         processOrder.setModee("Pickup By Booking");
         processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
-        processOrder.setTruckCo(shipment.getTaxCode()+" : "+shipment.getGroupName());
-        processOrder.setTaxCode(shipment.getTaxCode());
+        try {
+            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode));
+        } catch (Exception e) {
+        	logger.error("Error when get company name with tax code: " + e);
+        }
+        processOrder.setTaxCode(taxCode);
         if (creditFlag) {
             processOrder.setPayType("Credit");
         } else {
@@ -585,10 +589,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
+    public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag) {
         ShipmentDetail detail = shipmentDetails.get(0);
     	ProcessOrder processOrder = new ProcessOrder();
-        processOrder.setTaxCode(shipment.getTaxCode());
+        processOrder.setTaxCode(taxCode);
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setVessel(detail.getVslNm());
         processOrder.setVoyage(detail.getVoyNo());

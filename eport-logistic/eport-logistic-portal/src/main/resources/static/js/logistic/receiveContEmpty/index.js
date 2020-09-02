@@ -901,10 +901,6 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Tàu và chuyến!");
                 errorFlg = true;
                 return false;
-//            } else if (!object["voyNo"]) {
-//                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
-//                errorFlg = true;
-//                return false;
             } else if (!object["sztp"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
@@ -921,10 +917,6 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Tàu và Chuyến không được khác nhau!");
                 errorFlg = true;
                 return false;
-//            } else if (voyage != object["voyNo"]) {
-//                $.modal.alertError("Số chuyến không được khác nhau!");
-//                errorFlg = true;
-//                return false;
             } else if (pod.split(": ")[0] != object["dischargePort"].split(": ")[0]) {
                 $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
                 errorFlg = true;
@@ -933,7 +925,6 @@ function getDataFromTable(isValidate) {
         }
         opecode = object["opeCode"];
         vessel = object["vslNm"];
-//        voyage = object["voyNo"];
         pod = object["dischargePort"];
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
@@ -1066,14 +1057,14 @@ function deleteShipmentDetail() {
 function verify() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 400);
+        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 600);
     }
 }
 
-function verifyOtp(shipmentDtIds, creditFlag) {
+function verifyOtp(shipmentDtIds, taxCode, creditFlag) {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag, 600, 350);
+        $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + taxCode, 600, 350);
     }
 }
 

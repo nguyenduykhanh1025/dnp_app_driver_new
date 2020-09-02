@@ -20,18 +20,33 @@
 }
 
 .customTable {
-    height: calc(100% - 105px);
+    height: calc(100% - 170px);
     overflow-y: scroll;
     display: inline-block;
     width: 100%;
 }
 
 .payment-type-form {
-    display: flex;
     margin-bottom: 10px;
+    text-align: left;
 }
 
 .confirm-send-empty {
     display: flex;
     margin-bottom: 10px;
+}
+
+.form-group>label {
+    text-align: right;
+}
+
+.form-group {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.error-input {
+    background-color: #fbe2e2;
+    border-color: #c66161;
+    color: #c00;
 }

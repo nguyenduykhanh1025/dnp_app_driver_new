@@ -982,14 +982,14 @@ function deleteShipmentDetail() {
 function verify() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 500);
+        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 600);
     }
 }
 
-function verifyOtp(shipmentDtIds, creditFlag) {
+function verifyOtp(shipmentDtIds, taxCode, creditFlag) {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag, 600, 350);
+        $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + taxCode, 600, 350);
     }
 }
 

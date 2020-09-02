@@ -89,11 +89,11 @@ public interface IShipmentDetailService
     
     public List<ServiceSendFullRobotReq> calculateMovingCont(List<ShipmentDetail> coordinateOfList, List<ShipmentDetail> preorderPickupConts, List<ShipmentDetail> shipmentDetails, Shipment shipment, Boolean isCredit);
 
-    public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag);
+    public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag);
 
-    public List<ServiceSendFullRobotReq> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag);
+    public List<ServiceSendFullRobotReq> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag);
 
-    public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag);
+    public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag);
     
     public void updateProcessStatus(List<ShipmentDetail> shipmentDetail, String status, String invoiceNo, ProcessOrder processOrder);
 
