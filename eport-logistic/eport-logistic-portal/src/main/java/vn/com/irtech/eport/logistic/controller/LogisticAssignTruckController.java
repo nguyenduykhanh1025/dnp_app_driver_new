@@ -154,9 +154,10 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 					driverList.add(driverAccountService.selectDriverAccountById(i.getDriverId()));
 				}
 			}
-        } else {//TH:default assign ca doi xe , ko co cont chi dinh, ko thue ngoai
-			return driverAccountService.selectDriverAccountList(driverAccount);
-		}
+        }
+//        else {//TH:default assign ca doi xe , ko co cont chi dinh, ko thue ngoai
+//			return driverAccountService.selectDriverAccountList(driverAccount);
+//		}
         return driverList;
 	}
 	
