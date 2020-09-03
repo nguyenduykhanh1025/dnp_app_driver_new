@@ -17,10 +17,10 @@
           <div class="row">
             <div class="col-sm-12">
               <select class="shipment-type col-sm-5" style="font-size: small;" onchange="loadTable()" name="shipmentType" id="shipmentType">
-                <option value="1" selected>Nhận container có hàng</option>
-                <option value="2">Giao container rỗng</option>
-                <option value="3">Nhận container rỗng</option>
-                <option value="4">Giao container có hàng</option>
+                <option value="1" selected>Bốc container có hàng</option>
+                <option value="2">Hạ container rỗng</option>
+                <option value="3">Bốc container rỗng</option>
+                <option value="4">Hạ container có hàng</option>
               </select>
               <div class="col-sm-8" style="display: flex;height: 20px; margin-left: -20px;margin-right: -20px;">
                 <div class="form-group col-md-8 col-sm-8 col-xs-8">
@@ -37,16 +37,16 @@
         <hr />
         <span class="title">Danh sách lô đang thực hiện</span>
         <div class="table-content">
-          <table id="dg" style="width: 100%; height: calc(100% - 20px);" pageList="[20,50,100,150,200]" fitColumns="true">
+          <table id="dg" style="width: 100%; height: calc(100% - 20px);" pageList="[20,50,100,150,200]">
             <thead>
               <tr>
                 <th data-options="field:'id', fixed:true" sortable="true" width="60">Mã Lô</th>
-                <!-- <th data-options="field:'taxCode',halign:'center'" width="20%">MST</th> -->
-                <th data-options="field: 'blNo',halign: 'center', fixed:true" sortable="true" width="200">B/L No</th>
-                <th data-options="field: 'bookingNo',halign: 'center', fixed:true" sortable="true" width="200">Booking No</th>
-                <th data-options="field: 'containerAmount',halign: 'center', fixed:true" sortable="true" width="70">Số lượng</th>
-                <th data-options="field: 'opeCode',halign: 'center', fixed:true" sortable="true" width="50">OPR</th>
-                <th data-options="field:'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="100">Ngày tạo</th>
+                <th data-options="field: 'blNo',halign: 'center', fixed:true" sortable="true" width="120">B/L No</th>
+                <th data-options="field: 'bookingNo',halign: 'center', fixed:true" sortable="true" width="120">Booking No</th>
+                <th data-options="field: 'containerAmount', align:'center', halign: 'center', fixed:true" width="40">SL</th>
+                <th data-options="field: 'opeCode', align:'center', halign: 'center', fixed:true" sortable="true" width="50">OPR</th>
+                <th data-options="field: 'groupName',halign: 'center', fixed:true" sortable="true" width="150">Chủ Hàng</th>
+                <th data-options="field:'createTime',align:'right',halign:'center', formatter: formatDate" sortable="true" width="110">Ngày tạo</th>
               </tr>
             </thead>
           </table>
@@ -60,34 +60,6 @@
             <button id="containerBtn" style="width: 250px;; color: black; font-weight: bold"
               onclick="assignFollowContainerTab()">Điều Xe Theo Container</button>
           </div>
-          <!-- <div class="title-top">
-            <div class="left-info">
-              <div>
-                <span class="label-title">Mã Lô: </span>
-                <span id="batchCode"></span>
-              </div>
-              <div>
-                <span class="label-title">Mã Số Thuế: </span>
-                <span id="taxCode"></span>
-              </div>
-              <div id="blNoDiv">
-                <span class="label-title">B/L No: </span>
-                <span id="blNo"></span>
-              </div>
-              <div id="bookingNoDiv">
-                <span class="label-title">Booking No: </span>
-                <span id="bookingNo"></span>
-              </div>
-              <div>
-                <span class="label-title">DO: </span>
-                <span id="edoFlg"></span>
-              </div>
-              <div>
-                <span class="label-title">Số Lượng: </span>
-                <span id="quantity"></span>
-              </div>
-            </div>
-          </div> -->
           <div class="assignFollowBatch">
             <div class="content">
               <div class="left-button-bar col-sm-12" style="padding: 0 0 !important;">

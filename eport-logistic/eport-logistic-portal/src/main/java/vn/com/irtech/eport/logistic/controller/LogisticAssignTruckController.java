@@ -169,24 +169,24 @@ public class LogisticAssignTruckController extends LogisticBaseController{
 			return error();
 		}
 		int accountNumber = 0;
-		for(PickupAssign i :pickupAssigns){
-			if (i.getDriverId() != null) {
+		for(PickupAssign assign :pickupAssigns){
+			if (assign.getDriverId() != null) {
 				accountNumber++;
 			} else {
-				if (i.getPhoneNumber() == null || "".equals(i.getPhoneNumber().trim())) {
+				if (assign.getPhoneNumber() == null || "".equals(assign.getPhoneNumber().trim())) {
 					return error("Số điện thoại không được trống");
 				}
-				if (i.getFullName() == null || "".equals(i.getFullName().trim())) {
+				if (assign.getFullName() == null || "".equals(assign.getFullName().trim())) {
 					return error("Họ tên không được trống");
 				}
-				if (i.getTruckNo() == null || "".equals(i.getTruckNo().trim())) {
+				if (assign.getTruckNo() == null || "".equals(assign.getTruckNo().trim())) {
 					return error("Biển số xe đầu kéo không được trống");
 				}
-				if (i.getChassisNo() == null || "".equals(i.getChassisNo().trim())) {
+				if (assign.getChassisNo() == null || "".equals(assign.getChassisNo().trim())) {
 					return error("Biển số xe đầu rơ mooc không được trống");
 				}
 			}
-			i.setLogisticGroupId(getUser().getGroupId());
+			assign.setLogisticGroupId(getUser().getGroupId());
 		}
 		//check driverId of current logistic
 		if(accountNumber > 0){// co driver trong cty moi check

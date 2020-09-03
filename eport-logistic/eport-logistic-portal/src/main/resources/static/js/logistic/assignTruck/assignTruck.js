@@ -170,22 +170,19 @@ function loadTable() {
                 }),
                 success: function (data) {
                     success(data);
-                    if ($('#shipmentType').val() == 1) {
+                    if ($('#shipmentType').val() == 1 || $('#shipmentType').val() == 2) {
                         $("#dg").datagrid("hideColumn", "bookingNo");
                         $("#dg").datagrid("showColumn", "blNo");
-                        $("#dg").datagrid("showColumn", "opeCode");
                         $("#bookingNoDiv").hide();
                         $("#blNoDiv").show();
-                    } else if ($('#shipmentType').val() == 3) {
+                    } else if ($('#shipmentType').val() == 3 || $('#shipmentType').val() == 4) {
                         $("#dg").datagrid("hideColumn", "blNo");
                         $("#dg").datagrid("showColumn", "bookingNo");
-                        $("#dg").datagrid("hideColumn", "opeCode");
                         $("#bookingNoDiv").show();
                         $("#blNoDiv").hide();
                     } else {
                         $("#dg").datagrid("hideColumn", "blNo");
                         $("#dg").datagrid("hideColumn", "bookingNo");
-                        $("#dg").datagrid("hideColumn", "opeCode");
                         $("#bookingNoDiv").hide();
                         $("#blNoDiv").hide();
                     }
@@ -203,11 +200,13 @@ function formatQuantity(){
 }
 // FORMAT DATE FOR SHIPMENT LIST
 function formatDate(value) {
-    let date = new Date(value);
-    let day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-    let month = date.getMonth() + 1;
-    let monthText = month < 10 ? "0" + month : month;
-    return day + "/" + monthText + "/" + date.getFullYear();
+	var date = new Date(value);
+    var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+    var month = date.getMonth() + 1;
+    var monthText = month < 10 ? "0" + month : month;
+    let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+    let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+    return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes;
 }
 
 // HANDLE WHEN SELECT A SHIPMENT
