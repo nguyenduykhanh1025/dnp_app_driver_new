@@ -445,6 +445,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                     if (!sztp.equals(shipmentDetail.getSztp())) {
                         serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
                                 shipmentOrderList, shipment, taxCode, creditFlag, false));
+                        sztp = shipmentDetail.getSztp();
                         shipmentOrderList = new ArrayList<>();
                     }
                     shipmentOrderList.add(shipmentDetail);
@@ -529,6 +530,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (!sztp.equals(shipmentDetail.getSztp())) {
                     serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, taxCode, creditFlag));
+                    sztp = shipmentDetail.getSztp();
                     shipmentOrderList = new ArrayList<>();
                 }
                 shipmentOrderList.add(shipmentDetail);
