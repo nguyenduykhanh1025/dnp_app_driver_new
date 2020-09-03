@@ -222,12 +222,12 @@ public class LogisticReportPrintController extends LogisticBaseController {
 			parameters.put("shipmentId", shipment.getId());
 			parameters.put("address", shipment.getAddress());
 			parameters.put("list", shipmentDetails);
-			try {
-				File file = new File("target/classes/static/img/logo_gray.jpeg");
-				parameters.put("pathBackground", file.getPath());
-			} catch (Exception e) {
-				logger.error("Path background report error",e.getMessage());
-			}
+//			try {
+//				File file = new File("target/classes/static/img/logo_gray.jpeg");
+//				parameters.put("pathBackground", file.getPath());
+//			} catch (Exception e) {
+//				logger.error("Path background report error",e.getMessage());
+//			}
 	        if(shipment.getServiceType().intValue() == 1) {
 		        parameters.put("serviceType", "Nhận container có hàng từ Cảng");
 	        }
@@ -285,12 +285,12 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		parameters.put("masterBillNo", houseBillList.get(0).getMasterBillNo());
 		parameters.put("houseBillNo", houseBillList.get(0).getHouseBillNo());
 		parameters.put("fileCreateTime", houseBillList.get(0).getEdo().getFileCreateTime());
-		try {
-			File file = new File("target/classes/static/img/logo_gray.jpeg");
-			parameters.put("pathBackground", file.getPath());
-		} catch (Exception e) {
-			logger.error("Path background report error",e.getMessage());
-		}
+//		try {
+//			File file = new File("target/classes/static/img/logo_gray.jpeg");
+//			parameters.put("pathBackground", file.getPath());
+//		} catch (Exception e) {
+//			logger.error("Path background report error",e.getMessage());
+//		}
 		List<Edo> edoList = new ArrayList<Edo>();
 		for(EdoHouseBill i : houseBillList) {
 			edoList.add(i.getEdo());
