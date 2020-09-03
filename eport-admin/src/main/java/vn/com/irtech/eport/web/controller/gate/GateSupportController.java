@@ -124,319 +124,55 @@ public class GateSupportController extends BaseController {
 	@PostMapping("/gateIn")
 	@ResponseBody
 	public AjaxResult gateIn(@RequestBody GateInDataReq gateInDataReq) {
-		if (gateInDataReq.getSendOption()) {
-			if (StringUtils.isNotEmpty(gateInDataReq.getContainerSend1())) {
+		if (StringUtils.isNotEmpty(gateInDataReq.getTruckNo())) {
+			PickupHistory pickupHistory = new PickupHistory();
+			pickupHistory.setTruckNo(gateInDataReq.getTruckNo());
+			pickupHistory.setChassisNo(gateInDataReq.getChassisNo());
+			pickupHistory.setStatus(0);
+			logger.debug("Get pickup history info from " + gateInDataReq.getTruckNo() + " and chassisno " + gateInDataReq.getChassisNo());;
+			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistory);
+			if (CollectionUtils.isNotEmpty(pickupHistories)) {
+				// Check if having req option send container
+				if (gateInDataReq.getSendOption()) {
+					// Index of container to send (max = 1, min = 0)
+					for (PickupHistory pickupHistory2 : pickupHistories) {
+						if (StringUtils.isNotEmpty(gateInDataReq.getContainerSend1()) && gateInDataReq.getContainerSend1().equalsIgnoreCase(pickupHistory2.getContainerNo())) {
+							if (StringUtils.isNotEmpty(gateInDataReq.getYardPosition1())) {
+								String[] yardPositionArr = gateInDataReq.getYardPosition1().split("-");
+								if (yardPositionArr.length == 4) {
+									pickupHistory2.setBlock(yardPositionArr[0]);
+									pickupHistory2.setBay(yardPositionArr[1]);
+									pickupHistory2.setLine(yardPositionArr[2]);
+									pickupHistory2.setTier(yardPositionArr[3]);
+									pickupHistoryService.updatePickupHistory(pickupHistory2);
+								}
+							}
+						}
+						if (StringUtils.isNotEmpty(gateInDataReq.getContainerSend2()) && gateInDataReq.getContainerSend2().equalsIgnoreCase(pickupHistory2.getContainerNo())) {
+							if (StringUtils.isNotEmpty(gateInDataReq.getYardPosition2())) {
+								String[] yardPositionArr = gateInDataReq.getYardPosition1().split("-");
+								if (yardPositionArr.length == 4) {
+									pickupHistory2.setBlock(yardPositionArr[0]);
+									pickupHistory2.setBay(yardPositionArr[1]);
+									pickupHistory2.setLine(yardPositionArr[2]);
+									pickupHistory2.setTier(yardPositionArr[3]);
+									pickupHistoryService.updatePickupHistory(pickupHistory2);
+								}
+							}
+						}
+					}
+				}
 				
+				
+				// Check if have req option receive container
+				if (gateInDataReq.getReceiveOption()) {
+					// TODO : 
+				}
 			}
-		}
-		
-		if (gateInDataReq.getReceiveOption()) {
-			
-		}
+ 		}
 		return success();
 	}
 	
-//	@PostMapping("/gateIn")
-//	@Transactional
-//	@ResponseBody
-//	public AjaxResult gateIn(@Validated @RequestBody GateInTestDataReq gateInTestDataReq) {
-//		
-//		// Sample data
-//		Shipment shipment = new Shipment();
-//		shipment.setLogisticAccountId(1L);
-//		shipment.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-//		shipment.setTaxCode("3123123123");
-//		shipment.setContainerAmount(2L);
-//		
-//		ShipmentDetail shipmentDetail = new ShipmentDetail();
-//		shipmentDetail.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-//		shipmentDetail.setFe("F");
-//		shipmentDetail.setVslNm("test");
-//		shipmentDetail.setVoyNo("test");
-//		shipmentDetail.setOpeCode("test");
-//		shipmentDetail.setPaymentStatus("Y");
-//		shipmentDetail.setProcessStatus("Y");
-//		shipmentDetail.setUserVerifyStatus("Y");
-//		shipmentDetail.setStatus(4);
-//		shipmentDetail.setCustomStatus("Y");
-//		shipmentDetail.setDoReceivedTime(new Date());
-//		shipmentDetail.setDoStatus("Y");
-//		shipmentDetail.setSztp("22G0");
-//		
-//		if (gateInTestDataReq.getSendOption()) {
-//			if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerSend1())) {
-//				logger.debug("Drop container 1: " + gateInTestDataReq.getContainerSend1());
-//				Shipment shipment1 = new Shipment();
-//				BeanUtils.copyBeanProp(shipment1, shipment);
-//				shipment1.setBookingNo("test");
-//				shipment1.setServiceType(EportConstants.SERVICE_DROP_FULL);
-//				logger.debug("Create shipment for drop cont 1: " + new Gson().toJson(shipment1));
-//				shipmentService.insertShipment(shipment1);
-//				
-//				ShipmentDetail shipmentDetail1 = new ShipmentDetail();
-//				BeanUtils.copyBeanProp(shipmentDetail1, shipmentDetail);
-//				shipmentDetail1.setContainerNo(gateInTestDataReq.getContainerSend1());
-//				shipmentDetail1.setBookingNo("test");
-//				shipmentDetail1.setShipmentId(shipment1.getId());
-//				logger.debug("Create shipment detail for drop cont 1: " + new Gson().toJson(shipmentDetail1));
-//				shipmentDetailService.insertShipmentDetail(shipmentDetail1);
-//				
-//				PickupAssign pickupAssign1 = new PickupAssign();
-//				pickupAssign1.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-//				pickupAssign1.setShipmentId(shipment1.getId());
-//				pickupAssign1.setDriverId(gateInTestDataReq.getDriverId());
-//				pickupAssign1.setShipmentDetailId(shipmentDetail1.getId());
-//				pickupAssign1.setTruckNo(gateInTestDataReq.getTruckNo());
-//				pickupAssign1.setChassisNo(gateInTestDataReq.getChassisNo());
-//				logger.debug("Create pickup assign for drop cont 1: " + new Gson().toJson(pickupAssign1));
-//				pickupAssignService.insertPickupAssign(pickupAssign1);
-//				
-//				PickupHistory pickupHistory1 = new PickupHistory();
-//				pickupHistory1.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-//				pickupHistory1.setShipmentId(shipment1.getId());
-//				pickupHistory1.setDriverId(gateInTestDataReq.getDriverId());
-//				pickupHistory1.setPickupAssignId(pickupAssign1.getId());
-//				pickupHistory1.setTruckNo(gateInTestDataReq.getTruckNo());
-//				pickupHistory1.setChassisNo(gateInTestDataReq.getChassisNo());
-//				pickupHistory1.setContainerNo(gateInTestDataReq.getContainerSend1());
-//				pickupHistory1.setStatus(0);
-//				pickupHistory1.setShipmentDetailId(shipmentDetail1.getId());
-//				pickupHistory1.setGatePass(gateInTestDataReq.getGatePass());
-//				
-//				if (StringUtils.isNotEmpty(gateInTestDataReq.getYardPosition1())) {
-//					String[] positionArr = gateInTestDataReq.getYardPosition1().split("-");
-//					if (positionArr.length == 4) {
-//						pickupHistory1.setBlock(positionArr[0]);
-//						pickupHistory1.setBay(positionArr[1]);
-//						pickupHistory1.setLine(positionArr[2]);
-//						pickupHistory1.setTier(positionArr[3]);
-//					}
-//				}
-//				
-//				logger.debug("Create pickup history for drop cont 1: " + new Gson().toJson(pickupHistory1));
-//				pickupHistoryService.insertPickupHistory(pickupHistory1);
-//				
-//				logger.debug("Complete prepare data for drop container 1");
-//				if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerSend2())) {
-//					logger.debug("Drop full with container 2: " + gateInTestDataReq.getContainerSend2());
-//					ShipmentDetail shipmentDetail2 = new ShipmentDetail();
-//					BeanUtils.copyBeanProp(shipmentDetail2, shipmentDetail);
-//					shipmentDetail2.setContainerNo(gateInTestDataReq.getContainerSend2());
-//					shipmentDetail2.setShipmentId(shipment1.getId());
-//					shipmentDetail2.setBookingNo("test");
-//					logger.debug("Create shipment detail for drop cont 2: " + new Gson().toJson(shipmentDetail2));
-//					shipmentDetailService.insertShipmentDetail(shipmentDetail2);
-//					
-//					PickupAssign pickupAssign2 = new PickupAssign();
-//					BeanUtils.copyBeanProp(pickupAssign2, pickupAssign1);
-//					pickupAssign2.setShipmentDetailId(shipmentDetail2.getId());
-//					pickupAssign2.setId(null);
-//					logger.debug("Create pickup assign for drop cont 2: " + new Gson().toJson(pickupAssign2));
-//					pickupAssignService.insertPickupAssign(pickupAssign2);
-//					
-//					PickupHistory pickupHistory2 = new PickupHistory();
-//					BeanUtils.copyBeanProp(pickupHistory2, pickupHistory1);
-//					pickupHistory2.setShipmentDetailId(shipmentDetail2.getId());
-//					pickupHistory2.setId(null);
-//					pickupHistory2.setContainerNo(gateInTestDataReq.getContainerSend2());
-//					pickupHistory2.setPickupAssignId(pickupAssign2.getId());
-//					pickupHistory2.setGatePass(gateInTestDataReq.getGatePass());
-//					if (StringUtils.isNotEmpty(gateInTestDataReq.getYardPosition2())) {
-//						String[] positionArr = gateInTestDataReq.getYardPosition2().split("-");
-//						if (positionArr.length == 4) {
-//							pickupHistory2.setBlock(positionArr[0]);
-//							pickupHistory2.setBay(positionArr[1]);
-//							pickupHistory2.setLine(positionArr[2]);
-//							pickupHistory2.setTier(positionArr[3]);
-//						}
-//					} else {
-//						pickupHistory2.setBlock("");
-//						pickupHistory2.setBay("");
-//						pickupHistory2.setLine("");
-//						pickupHistory2.setTier("");
-//					}
-//					logger.debug("Create pickup history for drop cont 2: " + new Gson().toJson(pickupHistory2));
-//					pickupHistoryService.insertPickupHistory(pickupHistory2);
-//					
-//					logger.debug("Complete prepare data for drop container 2");
-//				}
-//			}
-//		}
-//		
-//		if (gateInTestDataReq.getReceiveOption()) {
-//			
-//			if (StringUtils.isEmpty(gateInTestDataReq.getBlNo())) {
-//				String blNo = catosApiService.getBlNoByOrderJobNo(gateInTestDataReq.getOrderJobNo());
-//				if (StringUtils.isNotEmpty(blNo)) {
-//					gateInTestDataReq.setBlNo(blNo);
-//				}
-//			}
-//			
-//			Shipment shipment2 = new Shipment();
-//			shipment2.setBlNo(gateInTestDataReq.getBlNo());
-//			shipment2.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-//			shipment2.setServiceType(EportConstants.SERVICE_PICKUP_FULL);
-//			
-//			
-//			Long contId1 = 0L;
-//			Long contId2 = 0L;
-//			Boolean shipmentFound = false;
-//			
-//			// Check shipment exists
-//			List<Shipment> shipments = shipmentService.selectShipmentList(shipment2);
-//			if (CollectionUtils.isNotEmpty(shipments)) {
-//				shipment2 = shipments.get(0);
-//				ShipmentDetail shipmentDetailParam = new ShipmentDetail();
-//				shipmentDetailParam.setShipmentId(shipment2.getId());
-//				List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetailParam);
-//				if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-//					for (ShipmentDetail shipmentDetail1 : shipmentDetails) {
-//						if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive1())) {
-//							if (shipmentDetail1.getContainerNo().equals(gateInTestDataReq.getContainerReceive1())) {
-//								contId1 = shipmentDetail1.getId();
-//							}
-//						}
-//						if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive2())) {
-//							if (shipmentDetail1.getContainerNo().equals(gateInTestDataReq.getContainerReceive2())) {
-//								contId2 = shipmentDetail1.getId();
-//							}
-//						}
-//					}
-//					shipmentFound = true;
-//				}
-//			}
-//			
-//			if (!shipmentFound) {
-//				shipment2.setTaxCode("3123123123");
-//				shipment2.setLogisticAccountId(1L);
-//				shipment2.setEdoFlg("0");
-//				logger.debug("Get container list by B/L No ");
-//				List<ShipmentDetail> shipmentDetails = catosApiService.selectShipmentDetailsByBLNo(gateInTestDataReq.getBlNo());
-//				shipment2.setContainerAmount(Long.valueOf(shipmentDetails.size()));
-//				shipmentService.insertShipment(shipment2);
-//				logger.debug("List container: " + new Gson().toJson(shipmentDetails));
-//				for (ShipmentDetail shipmentDetail1 : shipmentDetails) {
-//					shipmentDetail1.setContainerStatus("");
-//					shipmentDetail1.setOpeCode(shipmentDetail1.getOpeCode().substring(0, 3));
-//					ShipmentDetail shipmentDetail2 = new ShipmentDetail();
-//					BeanUtils.copyBeanProp(shipmentDetail2, shipmentDetail1);
-//					shipmentDetail2.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-//					shipmentDetail2.setFe("F");
-//					if (StringUtils.isEmpty(shipmentDetail2.getVslNm())) {
-//						shipmentDetail2.setVslNm("test");
-//					}
-//					
-//					if (StringUtils.isEmpty(shipmentDetail2.getVoyNo())) {
-//						shipmentDetail2.setVoyNo("test");
-//					}
-//					
-//					if (StringUtils.isEmpty(shipmentDetail2.getOpeCode())) {
-//						shipmentDetail2.setOpeCode("test");
-//					}
-//					
-//					if (StringUtils.isEmpty(shipmentDetail2.getSztp())) {
-//						shipmentDetail2.setSztp("22G0");
-//					}
-//					shipmentDetail2.setPaymentStatus("Y");
-//					shipmentDetail2.setProcessStatus("Y");
-//					shipmentDetail2.setUserVerifyStatus("Y");
-//					shipmentDetail2.setStatus(4);
-//					shipmentDetail2.setCustomStatus("Y");
-//					shipmentDetail2.setDoReceivedTime(new Date());
-//					shipmentDetail2.setPreorderPickup("Y");
-//					shipmentDetail2.setPrePickupPaymentStatus("Y");
-//					shipmentDetail2.setDoStatus("Y");
-//					shipmentDetail2.setBlNo(gateInTestDataReq.getBlNo());
-//					shipmentDetail2.setShipmentId(shipment2.getId());
-//					shipmentDetailService.insertShipmentDetail(shipmentDetail2);
-//					if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive1())) {
-//						if (shipmentDetail2.getContainerNo().equals(gateInTestDataReq.getContainerReceive1())) {
-//							contId1 = shipmentDetail2.getId();
-//						}
-//					}
-//					if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive2())) {
-//						if (shipmentDetail2.getContainerNo().equals(gateInTestDataReq.getContainerReceive2())) {
-//							contId2 = shipmentDetail2.getId();
-//						}
-//					}
-//				}
-//			}
-//			
-//			
-//			if ("1".equals(gateInTestDataReq.getContainerFlg())) {
-//				
-//				if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive1())) {
-//					logger.debug("Pick container 1: " + gateInTestDataReq.getContainerReceive1());
-//					
-//					PickupAssign pickupAssign1 = new PickupAssign();
-//					pickupAssign1.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-//					pickupAssign1.setShipmentId(shipment2.getId());
-//					pickupAssign1.setDriverId(gateInTestDataReq.getDriverId());
-//					pickupAssign1.setShipmentDetailId(contId1);
-//					pickupAssign1.setTruckNo(gateInTestDataReq.getTruckNo());
-//					pickupAssign1.setChassisNo(gateInTestDataReq.getChassisNo());
-//					
-//					pickupAssignService.insertPickupAssign(pickupAssign1);
-//					
-//					PickupHistory pickupHistory1 = new PickupHistory();
-//					pickupHistory1.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-//					pickupHistory1.setShipmentId(shipment2.getId());
-//					pickupHistory1.setDriverId(gateInTestDataReq.getDriverId());
-//					pickupHistory1.setPickupAssignId(pickupAssign1.getId());
-//					pickupHistory1.setTruckNo(gateInTestDataReq.getTruckNo());
-//					pickupHistory1.setChassisNo(gateInTestDataReq.getChassisNo());
-//					pickupHistory1.setContainerNo(gateInTestDataReq.getContainerReceive1());
-//					pickupHistory1.setStatus(0);
-//					pickupHistory1.setShipmentDetailId(contId1);
-//					pickupHistory1.setGatePass(gateInTestDataReq.getGatePass());
-//					pickupHistoryService.insertPickupHistory(pickupHistory1);
-//					
-//					logger.debug("Complete prepare data for pick container 1");
-//					if (StringUtils.isNotEmpty(gateInTestDataReq.getContainerReceive2())) {
-//						logger.debug("pick full with container 2: " + gateInTestDataReq.getContainerReceive2());
-//						PickupAssign pickupAssign2 = new PickupAssign();
-//						BeanUtils.copyBeanProp(pickupAssign2, pickupAssign1);
-//						pickupAssign2.setShipmentDetailId(contId2);
-//						pickupAssign2.setId(null);
-//						pickupAssignService.insertPickupAssign(pickupAssign2);
-//						
-//						PickupHistory pickupHistory2 = new PickupHistory();
-//						BeanUtils.copyBeanProp(pickupHistory2, pickupHistory1);
-//						pickupHistory2.setShipmentDetailId(contId2);
-//						pickupHistory2.setId(null);
-//						pickupHistory2.setContainerNo(gateInTestDataReq.getContainerReceive2());
-//						pickupHistory2.setPickupAssignId(pickupAssign2.getId());
-//						pickupHistoryService.insertPickupHistory(pickupHistory2);
-//						
-//						logger.debug("Complete prepare data for pick container 2");
-//					}
-//				}
-//			} else {
-//				for (int i=0; i<gateInTestDataReq.getContainerAmount(); i++) {
-//					PickupAssign pickupAssign1 = new PickupAssign();
-//					pickupAssign1.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-//					pickupAssign1.setShipmentId(shipment2.getId());
-//					pickupAssign1.setDriverId(gateInTestDataReq.getDriverId());
-//					pickupAssign1.setTruckNo(gateInTestDataReq.getTruckNo());
-//					pickupAssign1.setChassisNo(gateInTestDataReq.getChassisNo());
-//					
-//					pickupAssignService.insertPickupAssign(pickupAssign1);
-//					
-//					PickupHistory pickupHistory1 = new PickupHistory();
-//					pickupHistory1.setLogisticGroupId(gateInTestDataReq.getLogisticGroupId());
-//					pickupHistory1.setShipmentId(shipment2.getId());
-//					pickupHistory1.setDriverId(gateInTestDataReq.getDriverId());
-//					pickupHistory1.setPickupAssignId(pickupAssign1.getId());
-//					pickupHistory1.setTruckNo(gateInTestDataReq.getTruckNo());
-//					pickupHistory1.setChassisNo(gateInTestDataReq.getChassisNo());
-//					pickupHistory1.setStatus(0);
-//					pickupHistory1.setGatePass(gateInTestDataReq.getGatePass());
-//					pickupHistoryService.insertPickupHistory(pickupHistory1);
-//				}
-//			}
-//		}
-//		return success();
-//	}
 	
 	@GetMapping("/blNo/{blNo}/yardPosition")
 	@ResponseBody

@@ -309,7 +309,6 @@ function loadTable() {
             success(data.pickupList);
             let sendCont = 0;
             let receiveCont = 0;
-            console.log(data.pickupList);
             data.pickupList.rows.forEach(function(element) {
               if (element && element.shipment && element.shipment.serviceType) {
                 $("#gatePass").textbox("setText", element.gatePass);
