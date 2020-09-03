@@ -136,7 +136,7 @@ public class RobotResponseHandler implements IMqttMessageListener{
 				if (serviceType == EportConstants.SERVICE_PICKUP_FULL 
 						|| serviceType == EportConstants.SERVICE_DROP_EMPTY 
 						|| serviceType == EportConstants.SERVICE_PICKUP_EMPTY 
-						|| serviceType == EportConstants.SERVICE_PICKUP_FULL 
+						|| serviceType == EportConstants.SERVICE_DROP_FULL 
 						|| serviceType == EportConstants.SERVICE_SHIFTING) {
 					this.updateShipmentDetail(result, receiptId, invoiceNo, uuId, orderNo, serviceType);
 				}	

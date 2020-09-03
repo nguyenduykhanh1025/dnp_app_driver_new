@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSONObject;
 
 import vn.com.irtech.eport.common.annotation.Log;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
@@ -543,9 +544,16 @@ public class LogisticCommonController extends LogisticBaseController {
 		}
 		return error();
 	}
-//	@GetMapping("/abc")
-//	@ResponseBody
-//	public Integer abc(){
-//		return catosApiService.checkTheNumberOfContainersNotOrderedForReceiveContEmpty("071005N", "22G0");
-//	}
+	
+	@GetMapping("/taxCode/{taxCode}/delegate/payment/permission")
+	@ResponseBody
+	public AjaxResult checkDelegatePermission(@PathVariable("taxCode") String taxCode) {
+		if (taxCode.equalsIgnoreCase(getGroup().getMst())) {
+			return success();
+		}
+		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst(), EportConstants.DELEGATE_PERMISSION_PAYMENT) > 0) {
+			return success();
+		}
+		return error();
+	}
 }

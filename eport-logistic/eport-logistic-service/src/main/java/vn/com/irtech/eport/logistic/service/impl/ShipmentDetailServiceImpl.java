@@ -445,6 +445,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                     if (!sztp.equals(shipmentDetail.getSztp())) {
                         serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
                                 shipmentOrderList, shipment, taxCode, creditFlag, false));
+                        sztp = shipmentDetail.getSztp();
                         shipmentOrderList = new ArrayList<>();
                     }
                     shipmentOrderList.add(shipmentDetail);
@@ -470,7 +471,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
-            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode));
+            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
         } catch (Exception e) {
         	logger.error("Error when get company name with tax code: " + e);
         }
@@ -529,6 +530,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (!sztp.equals(shipmentDetail.getSztp())) {
                     serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, taxCode, creditFlag));
+                    sztp = shipmentDetail.getSztp();
                     shipmentOrderList = new ArrayList<>();
                 }
                 shipmentOrderList.add(shipmentDetail);
@@ -547,7 +549,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
-            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode));
+            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
         } catch (Exception e) {
         	logger.error("Error when get company name with tax code: " + e);
         }
@@ -628,7 +630,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(detail.getId().toString());
             shipmentDetail.setUserVerifyStatus("Y");
-            shipmentDetail.setOpeCode(shipment.getOpeCode());
+            if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_FULL) {
+            	shipmentDetail.setOpeCode(shipment.getOpeCode());
+            }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             if (processOrder.getServiceType() == 2) {
             	shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());

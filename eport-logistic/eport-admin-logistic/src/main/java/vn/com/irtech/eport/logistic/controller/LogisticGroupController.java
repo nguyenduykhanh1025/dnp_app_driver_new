@@ -30,6 +30,7 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.logistic.domain.LogisticDelegated;
 import vn.com.irtech.eport.logistic.domain.LogisticGroup;
 import vn.com.irtech.eport.logistic.domain.Shipment;
@@ -61,6 +62,9 @@ public class LogisticGroupController extends BaseController
 
     @Autowired
     private ICatosApiService catosApiService;
+    
+    @Autowired
+    private DictService dictService;
 
     @RequiresPermissions("logistic:group:view")
     @GetMapping()
@@ -103,8 +107,9 @@ public class LogisticGroupController extends BaseController
      * Add Logistic Group
      */
     @GetMapping("/add")
-    public String add()
+    public String add(ModelMap mmap)
     {
+    	mmap.put("delegateTypes", dictService.getType("delegate_type_list"));
         return prefix + "/add";
     }
 
@@ -159,6 +164,7 @@ public class LogisticGroupController extends BaseController
     {
         LogisticGroup logisticGroup = logisticGroupService.selectLogisticGroupById(id);
         mmap.put("logisticGroup", logisticGroup);
+        mmap.put("delegateTypes", dictService.getType("delegate_type_list"));
         return prefix + "/edit";
     }
 

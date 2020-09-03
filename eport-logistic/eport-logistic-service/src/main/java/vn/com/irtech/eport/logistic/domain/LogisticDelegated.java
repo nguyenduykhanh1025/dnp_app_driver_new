@@ -39,6 +39,10 @@ public class LogisticDelegated extends BaseEntity
     @Excel(name = "Ten Cty Duoc Uy Quen")
     @NotBlank
     private String delegateCompany;
+    
+    /** Loai Uy Quyen */
+    @Excel(name = "Loai Uy Quyen")
+    private String delegateType;
 
     /** Hieu Luc Tu Ngay */
     @Excel(name = "Hieu Luc Tu Ngay", width = 30, dateFormat = "yyyy-MM-dd")
@@ -94,7 +98,16 @@ public class LogisticDelegated extends BaseEntity
     {
         return delegateCompany;
     }
-    public void setValidFrom(Date validFrom) 
+    
+    public String getDelegateType() {
+		return delegateType;
+	}
+
+	public void setDelegateType(String delegateType) {
+		this.delegateType = delegateType;
+	}
+
+	public void setValidFrom(Date validFrom) 
     {
         this.validFrom = validFrom;
     }
@@ -137,6 +150,7 @@ public class LogisticDelegated extends BaseEntity
             .append("logisticGroupId", getLogisticGroupId())
             .append("delegateTaxCode", getDelegateTaxCode())
             .append("delegateCompany", getDelegateCompany())
+            .append("delegateType", getDelegateType())
             .append("validFrom", getValidFrom())
             .append("validUntil", getValidUntil())
             .append("validFlg", getValidFlg())

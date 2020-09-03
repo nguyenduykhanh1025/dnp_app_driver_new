@@ -1,10 +1,20 @@
 var prefix = ctx + "logistic/receive-cont-empty";
 var shipmentDetailIds = "";
 
-function confirm() {
+async function confirm() {
     if ($("#groupName").val() && $("#taxCode").val()) {
-        parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'));
-        $.modal.close();
+        if ($('#credit').prop('checked')) {
+            let res = await getPaymentPermission();
+            if (res.code == 0) {
+                parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'));
+                $.modal.close();
+            } else {
+                $.modal.alertWarning("Quý khách không có quyền trả sau cho mã số thuế đã chọn.");
+            }
+        } else {
+            parent.verifyOtp(shipmentDetailIds.substring(0, shipmentDetailIds.length-1), $("#taxCode").val(), $('#credit').prop('checked'));
+            $.modal.close();
+        }
     }
     if ($("#taxCode").val() == '') {
         $.modal.alertWarning("Quý khách vui lòng nhập mã số thuế trước <br>khi bấm xác nhận.");
@@ -71,3 +81,10 @@ $('input:radio[name="taxCodeDefault"]').change(function() {
         $("#taxCode").removeClass("error-input");
     }
 });
+
+function getPaymentPermission() {
+    return $.ajax({
+        url: ctx + "logistic/taxCode/" + $("#taxCode").val() + "/delegate/payment/permission",
+        method: "GET",
+    });
+}

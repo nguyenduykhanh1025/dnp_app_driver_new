@@ -19,10 +19,15 @@ $("#form-add-shipment").validate({
 
 async function submitHandler() {
     if ($.validate.form()) {
-        let res = await getBookingNoUnique();
-        if (res.code == 0) {
-            save(prefix + "/shipment", new FormData($('#form-add-shipment')[0]));
+        if (Array.from($("input#uploadFiles")[0].files).length > 0) {
+            let res = await getBookingNoUnique();
+            if (res.code == 0) {
+                save(prefix + "/shipment", new FormData($('#form-add-shipment')[0]));
+            }
+        } else {
+            $.modal.alertWarning("Quý khách chưa đính kèm hình ảnh booking hoặc lệnh cấp vỏ container.");
         }
+        
         // if ($("#groupName").val() != null && $("#groupName").val() != '') {
         //     let res = await getBookingNoUnique();
         //     if (res.code == 0) {

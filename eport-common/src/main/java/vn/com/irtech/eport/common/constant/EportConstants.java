@@ -63,4 +63,8 @@ public interface EportConstants {
 	// process history result
 	public static final String PROCESS_HISTORY_RESULT_FAILED = "F";
 	public static final String PROCESS_HISTORY_RESULT_SUCCESS = "S";
+	
+	// Delegate Permission
+	public static final String DELEGATE_PERMISSION_PROCESS = "P";
+	public static final String DELEGATE_PERMISSION_PAYMENT = "M";
 }

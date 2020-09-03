@@ -171,12 +171,26 @@
                 <div class="col-sm-2">
                   <input name="validUntil" class="form-control" type="text" readonly />
                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label class="col-sm-3 control-label">Loại ủy quyền：</label>
+                <div class="col-sm-3" style="display: relative;">
+                  <select class="form-control" id="delegateType">
+                    <option th:each="delegateType, iterator : ${delegateTypes}" th:value=${delegateType.dictValue}
+                      th:text=${delegateType.dictLabel}>
+                    </option>
+                  </select>
+                </div>
                 <div class="col-sm-2" style="margin-left: 20px; margin-top: 3px;">
                   <button id="addDelegatedBtn" class="btn btn-sm btn-success">Thêm Ủy Quyền</button>
                 </div>
               </div>
             </div>
-          </div>  
+          </div>
         </form>
         <div class="row">
           <table id="dg" style="width: 100%;" fitcolumns=true>
@@ -184,6 +198,7 @@
               <tr>
                   <th data-options="field:'delegateTaxCode', halign:'center', resizable:true">Mã Số Thuế</th>
                   <th data-options="field:'delegateCompany', align:'center', halign:'center', resizable:true">Tên Công Ty</th>
+                  <th data-options="field:'delegateType', align:'center', halign:'center', resizable:true, formatter:formatDelegateType">Loại Ủy Quyền</th>
                   <th data-options="field:'validFlg', align:'center', halign:'center', resizable:true, formatter: formatValidFlg">Trạng Thái</th>
                   <th data-options="field:'validFrom', halign:'center', resizable:true, formatter: formatDate">Từ Ngày</th>
                   <th data-options="field:'validUntil', align:'center', halign:'center', resizable:true, formatter: formatDate">Đến Ngày</th>
@@ -318,6 +333,17 @@
         return number < 10 ? "0" + number : number;
       }
 
+      function formatDelegateType(value) {
+        console.log(value);
+        switch (value) {
+          case 'P':
+            return 'Làm Lệnh';
+          case 'M':
+            return 'Thanh Toán';
+        }
+        return '';
+      }
+
       function formatValidFlg(value) {
         if (1 == value) {
           return '<span style="color: green">Hiệu lực</span>';
@@ -417,11 +443,16 @@
           $("input[name=delegateCompany]").addClass('error-input');
           errorFlg = true;
         }
+        if (!$("#delegateType option:selected").text() || $("#delegateType option:selected").text() == 'Chọn Loại Ủy Quyền') {
+          errorFlg = true;
+          $.modal.alertWarning("Bạn chưa chọn loại ủy quyền.");
+        }
 
         if (!errorFlg) {
           delegatedLogistic.delegateTaxCode = $("input[name=delegateTaxcode]").val();
           delegatedLogistic.delegateCompany = $("input[name=delegateCompany]").val();
           delegatedLogistic.validFlg = 1;
+          delegatedLogistic.delegateType = $("#delegateType option:selected").val();
           delegatedLogistics.push(delegatedLogistic);
           delegatedLogistic = new Object();
           $("input[name=validFrom]").val('');
