@@ -107,7 +107,7 @@ function loadTable(edo) {
 }
 
 function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading;
+  edo.billOfLading = billOfLading; 
   $("#dgContainer").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
@@ -136,11 +136,11 @@ function loadTableByContainer(billOfLading) {
           pageSize: param.rows,
           orderByColumn: param.sort,
           isAsc: param.order,
-          data: edo,
+          data: edo
         }),
         success: function (data) {
           success(JSON.parse(data));
-          edo = new Object();
+          edo.billOfLading = null;
         },
         error: function () {
           error.apply(this, arguments);
@@ -372,7 +372,6 @@ $(".c-search-opr-code").select2({
         obj.id = i;
         obj.text = element;
         results.push(obj);
-
       })
       return {
         results: results,

@@ -11,17 +11,7 @@
   <body class="bg-gray">
     <div class="col-sm-12">
         <div class="form-inline mt10 mb10" >
-        <div class="form-group">
-          <div class="input-group">
-            <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" />
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="input-group">
-            <input type="text" class="form-control" name="searchContNo" id="searchContNo" placeholder="Tìm kiếm Container" />
-          </div>
-        </div>
-        <div class="form-group">
+        <div class="form-group" >
           <label class="sr-only" for="OPR Code">Mã vận hành</label>
           <div class="input-group">
             <select class="c-search-opr-code">
@@ -46,6 +36,16 @@
           </div>
         </div>
         <div class="form-group" style="margin-left : 46px;">
+          <div class="input-group">
+            <input type="text" class="form-control" name="searchBillNo" id="searchBillNo" placeholder="Tìm kiếm Bill No" />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-group">
+            <input type="text" class="form-control" name="searchContNo" id="searchContNo" placeholder="Tìm kiếm Container" />
+          </div>
+        </div>
+        <div class="form-group" >
           <label class="sr-only" for="fromDate">From Date</label>
           <div class="input-group">
             <input class="form-control time-input" id="fromDate" name="fromDate" onchange="changeFromDate()" placeholder="Từ ngày" />

@@ -161,7 +161,7 @@ function viewUpdateCont(id) {
 }
 
 function loadTableByContainer(billOfLading) {
-  edo.billOfLading = billOfLading
+  edo.billOfLading = billOfLading; 
   $("#dgContainer").datagrid({
     url: PREFIX + "/edo",
     method: "POST",
@@ -194,7 +194,7 @@ function loadTableByContainer(billOfLading) {
         }),
         success: function (data) {
           success(JSON.parse(data));
-          edo = new Object();
+          edo.billOfLading = null;
         },
         error: function () {
           error.apply(this, arguments);

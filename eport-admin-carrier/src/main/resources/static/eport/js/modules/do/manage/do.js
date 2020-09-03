@@ -140,7 +140,7 @@ function loadTableByContainer(billOfLading) {
         }),
         success: function (data) {
           success(JSON.parse(data));
-          edo = new Object();
+          edo.billOfLading = null;
         },
         error: function () {
           error.apply(this, arguments);
