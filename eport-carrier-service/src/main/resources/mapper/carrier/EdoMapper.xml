@@ -363,6 +363,7 @@
           #{carrier_code}
         </foreach>
       </if>
+      <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
       <if test="vessel != null  and vessel != ''">and vessel like concat(concat('%', #{vessel}), '%')</if>
       <if test="voyNo != null  and voyNo != ''">and voy_no like concat(concat('%', #{voyNo}), '%')</if>
     </where>
@@ -402,6 +403,7 @@
           #{carrier_code}
         </foreach>
       </if>
+       <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
       <if test="vessel != null  and vessel != ''">and vessel like concat(concat('%', #{vessel}), '%')</if>
     </where>
   </select>

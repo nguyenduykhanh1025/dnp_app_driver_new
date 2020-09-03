@@ -90,18 +90,20 @@ public class DoManageController extends BaseController {
 
     @GetMapping("/getVoyNo")
     @ResponseBody
-    public List < String > listVoyNos(String keyString, String vessel) {
+    public List < String > listVoyNos(String keyString, String vessel, String oprCode) {
         EquipmentDo equipmentDo = new EquipmentDo();
         equipmentDo.setVoyNo(keyString);
         equipmentDo.setVessel(vessel);
+        equipmentDo.setCarrierCode(oprCode);
         return equipmentDoService.selectVoyNos(equipmentDo);
     }
 
     @GetMapping("/getVessel")
     @ResponseBody
-    public List < String > listVessels(String keyString) {
+    public List < String > listVessels(String keyString, String oprCode) {
         EquipmentDo equipmentDo = new EquipmentDo();
         equipmentDo.setVessel(keyString);
+        equipmentDo.setCarrierCode(oprCode);
         return equipmentDoService.selectVessels(equipmentDo);
     }
 

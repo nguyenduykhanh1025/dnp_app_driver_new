@@ -18,7 +18,7 @@ function submitHandler() {
 }
 
 $("input[name='registryExpiryDate']").datetimepicker({
-    format: "yyyy-mm-dd",
+    format: "dd-mm-yyyy",
     minView: "month",
     language: 'en',
     autoclose: true
@@ -49,10 +49,19 @@ function save(url, data) {
 $( "#type" ).change(function() {
     if($( "#type" ).val() == 1)
     {
-        $( "#wgt" ).prop( "disabled", false );
-        $( "#gatepass" ).prop( "disabled", true ); 
+        $( "#wgt" ).attr("type", "number");
+        $("#wgtTitle").removeClass("hidden");
     }else {
-        $( "#wgt" ).prop( "disabled", true );
-        $( "#gatepass" ).prop( "disabled", false );
+        $( "#wgt" ).attr("type", "hidden");
+        $("#wgtTitle").addClass("hidden");
     }
 });
+
+function setGatePass() {
+    let gatePass = $("#plateNumber").val();
+    if(gatePass.length > 7 && $( "#type" ).val() == 0)
+    {
+        gatePass = gatePass.substring(gatePass.length-4,gatePass.length)
+        $("#gatepass").val(gatePass);
+    }
+}

@@ -70,7 +70,9 @@ function searchInfoEdo() {
   edo.containerNumber = $('#searchAll').val().toUpperCase();
   edo.consignee = $('#searchAll').val().toUpperCase();
   edo.billOfLading = $('#searchAll').val().toUpperCase();
-  loadTable(edo)
+  edo.vessel = $('.c-search-box-vessel').text().trim();
+  edo.voyNo = $(".c-search-box-voy-no").text().trim();
+  loadTable(edo);
 }
 
 function stringToDate(dateStr) {
@@ -129,10 +131,10 @@ $(".c-search-box-vessel").select2({
 });
 
 $('.c-search-box-voy-no').on("select2:opening", function(e) {
-  $(".c-search-box-voy-no").text(null);
-  edo.vessel = $(".c-search-box-vessel").text().trim();
+  edo = new Object();
+  $(this).text(null);
+  edo.vessel = $('.c-search-box-vessel').text().trim();
   loadTable(edo);
-  
 });
 $(".c-search-box-voy-no").select2({
   theme: "bootstrap",

@@ -466,6 +466,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                  <foreach item="carrier_code" collection="params.groupCode" open="(" separator="," close=")">
                          #{carrier_code}
                 </foreach>
+                <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
                 <if test="vessel != null  and vessel != ''"> and vessel like concat(concat('%', #{vessel}), '%')</if> 
         </if> 
         </where> 
@@ -481,7 +482,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                          #{carrier_code}
                 </foreach>
             </if>
-           <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
+            <if test="carrierCode != null  and carrierCode != ''"> and carrier_code = #{carrierCode}</if>
+            <if test="vessel != null  and vessel != ''"> and vessel = #{vessel}</if>
             <if test="voyNo != null  and voyNo != ''"> and lower(voy_no) like concat(concat('%', #{voyNo}), '%')</if> 
          </where>
      </select>
@@ -573,7 +575,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
         ORDER BY create_time DESC
     </select>
-      <select id="selectOprCode" parameterType="EquipmentDo" resultType="String">
+    <select id="selectOprCode" parameterType="EquipmentDo" resultType="String">
     select distinct carrier_code
     from equipment_do
     <where>
