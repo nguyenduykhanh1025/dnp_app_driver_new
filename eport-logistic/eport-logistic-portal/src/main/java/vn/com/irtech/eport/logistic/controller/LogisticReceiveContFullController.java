@@ -236,25 +236,25 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		shipment.setServiceType(Constants.RECEIVE_CONT_FULL);
 		shipment.setStatus("1");
 		if (shipmentService.insertShipment(shipment) == 1) {
-			// assign driver default
-			PickupAssign pickupAssign = new PickupAssign();
-			pickupAssign.setLogisticGroupId(getUser().getGroupId());
-			pickupAssign.setShipmentId(shipment.getId());
-			//list driver
-			DriverAccount driverAccount = new DriverAccount();
-			driverAccount.setLogisticGroupId(getUser().getGroupId());
-			driverAccount.setDelFlag(false);
-			driverAccount.setStatus("0");
-			List<DriverAccount> driverAccounts = driverAccountService.selectDriverAccountList(driverAccount);
-			if(driverAccounts.size() > 0) {
-				for(DriverAccount i : driverAccounts) {
-					pickupAssign.setDriverId(i.getId());
-					pickupAssign.setFullName(i.getFullName());
-					pickupAssign.setPhoneNumber(i.getMobileNumber());
-					pickupAssign.setCreateBy(getUser().getFullName());
-					pickupAssignService.insertPickupAssign(pickupAssign);
-				}
-			}
+//			// assign driver default
+//			PickupAssign pickupAssign = new PickupAssign();
+//			pickupAssign.setLogisticGroupId(getUser().getGroupId());
+//			pickupAssign.setShipmentId(shipment.getId());
+//			//list driver
+//			DriverAccount driverAccount = new DriverAccount();
+//			driverAccount.setLogisticGroupId(getUser().getGroupId());
+//			driverAccount.setDelFlag(false);
+//			driverAccount.setStatus("0");
+//			List<DriverAccount> driverAccounts = driverAccountService.selectDriverAccountList(driverAccount);
+//			if(driverAccounts.size() > 0) {
+//				for(DriverAccount i : driverAccounts) {
+//					pickupAssign.setDriverId(i.getId());
+//					pickupAssign.setFullName(i.getFullName());
+//					pickupAssign.setPhoneNumber(i.getMobileNumber());
+//					pickupAssign.setCreateBy(getUser().getFullName());
+//					pickupAssignService.insertPickupAssign(pickupAssign);
+//				}
+//			}
 			return success("Thêm lô thành công");
 		}
 		return error("Thêm lô thất bại");

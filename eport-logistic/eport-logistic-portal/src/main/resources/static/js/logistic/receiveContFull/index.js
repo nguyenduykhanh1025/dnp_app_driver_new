@@ -173,7 +173,7 @@ function loadTable(msg) {
       getSelected();
     },
     pageSize: 50,
-    nowrap: true,
+    nowrap: false,
     striped: true,
     loadMsg: " Đang xử lý...",
     loader: function (param, success, error) {
