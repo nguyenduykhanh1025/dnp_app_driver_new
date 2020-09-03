@@ -28,6 +28,7 @@ import vn.com.irtech.eport.carrier.service.IEdoHouseBillService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.constant.Constants;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.constant.SystemConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
@@ -147,6 +148,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		mmap.put("creditFlag", getGroup().getCreditFlag());
+		mmap.put("taxCode", getGroup().getMst());
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
 			if (("Cảng Tiên Sa").equals(shipmentDetails.get(0).getEmptyDepot())) {
 				mmap.put("sendContEmpty", true);
@@ -158,36 +160,17 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		return PREFIX + "/checkContListBeforeVerify";
 	}
 
-	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{isSendContEmpty}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("creditFlag") boolean creditFlag, @PathVariable("isSendContEmpty") boolean isSendContEmpty, ModelMap mmap) {
+	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}/{isSendContEmpty}")
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, 
+			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("isSendContEmpty") boolean isSendContEmpty, 
+			@PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
 		mmap.put("creditFlag", creditFlag);
 		mmap.put("isSendContEmpty", isSendContEmpty);
+		mmap.put("taxCode", taxCode);
 		return PREFIX + "/verifyOtp";
 	}
-
-// 	@GetMapping("/cont-list/yard-position/{blNo}")
-// 	public String pickContOnDemand(@PathVariable("blNo") String blNo, ModelMap mmap) {
-// 		ShipmentDetail shipmentDt = new ShipmentDetail();
-// 		shipmentDt.setBlNo(blNo);
-// 		shipmentDt.setFe("F");
-// //		shipmentDt.setServiceType(Constants.RECEIVE_CONT_FULL);
-// 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDt);
-// 		//Get coordinate from catos test
-// 		List<ShipmentDetail> coordinateOfList = catosApiService.getCoordinateOfContainers(blNo);
-// 		List<ShipmentDetail[][]> bayList = new ArrayList<>();
-// 		try {
-// 			bayList = shipmentDetailService.getContPosition(coordinateOfList, shipmentDetails);
-// 		} catch (Exception e) {
-// 			logger.warn("Can't get container yard position!");
-// 		}
-// 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
-// 			mmap.put("bayList", bayList);
-// 		}
-// 		mmap.put("isCredit", "1".equals(getGroup().getCreditFlag()));
-// 		return PREFIX + "/pickContOnDemand";
-// 	}
 
 	@GetMapping("/payment/{processOrderIds}")
 	public String paymentForm(@PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
@@ -203,12 +186,6 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
 	}
-
-	// @GetMapping("/shipment/{shipmentId}/payment/shifting")
-	// public String paymentShiftingForm(@PathVariable Long shipmentId, ModelMap mmap) {
-	// 	mmap.put("billList", processBillService.getBillShiftingContByShipmentId(shipmentId, getUser().getGroupId()));
-	// 	return PREFIX + "/paymentShiftingForm";
-	// }
 
 	@GetMapping("/unique/bl-no/{blNo}")
 	@ResponseBody
@@ -498,9 +475,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	}
 
 	@Log(title = "Xác Nhận OTP", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
+	@PostMapping("/otp/{otp}/verification")
 	@ResponseBody
-	public AjaxResult verifyOtp(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("otp") String otp, boolean creditFlag, boolean isSendContEmpty) {
+	public AjaxResult verifyOtp(String shipmentDetailIds, @PathVariable("otp") String otp, String taxCode, boolean creditFlag, boolean isSendContEmpty) {
 		try {
 			Long.parseLong(otp);
 		} catch (Exception e) {
@@ -527,7 +504,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
 			}
-			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, creditFlag);
+			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, taxCode, creditFlag);
 			if (serviceRobotReqs != null) {
 				List<Long> processIds = new ArrayList<>();
 				boolean robotBusy = false;
@@ -744,7 +721,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		
 		// Check if logistic can make order for this shipment
-		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst()) > 0) {
+		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst(), EportConstants.DELEGATE_PERMISSION_PAYMENT) > 0) {
 			return success();
 		}
 		return error();

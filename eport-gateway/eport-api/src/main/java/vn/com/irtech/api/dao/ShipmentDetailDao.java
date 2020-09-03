@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import vn.com.irtech.api.entity.ProcessOrderEntity;
 import vn.com.irtech.api.entity.ShipmentDetailEntity;
 import vn.com.irtech.api.entity.ShipmentEntity;
+import vn.com.irtech.api.form.BookingInfo;
 @Mapper
 public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
     public List<ShipmentDetailEntity> selectShipmentDetailsByBLNo(String blNo);
@@ -71,17 +72,6 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	public List<String> getAreaList(String keyword);
 	
 	public ShipmentDetailEntity checkContReserved(ShipmentDetailEntity shipmentDetailEntity);
-	
-	public Integer checkTheNumberOfContainersNotOrderedForReceiveContEmpty(@Param("bookingNo") String bookingNo, @Param("sztp") String sztp);
-	
-	/**
-	 * Check the number of container not order for receive emtpy
-	 * 
-	 * @param bookingNo
-	 * @param sztp
-	 * @return Integer
-	 */
-	public Integer checkTheNumberOfContainersOrderedForReceiveContEmpty(@Param("bookingNo") String bookingNo, @Param("sztp") String sztp);
 	
 	public Integer checkTheNumberOfContainersNotOrderedForSendContFull(@Param("bookingNo") String bookingNo, @Param("sztp") String sztp);
 	
@@ -146,4 +136,14 @@ public interface ShipmentDetailDao extends BaseMapper<ShipmentDetailEntity> {
 	 * @return List<ShipmentDetailEntity
 	 */
 	public List<ShipmentDetailEntity> selectVesselVoyageBerthPlanWithoutOpe();
+	
+	/**
+	 * Get booking info by booking no and user voy (ope code + voyage)
+	 * Booking info include booking no, sztp, booking quantity(the number of sztp), booking quantity has been used to order
+	 * 
+	 * @param bookingNo
+	 * @param userVoy
+	 * @return List of booking info
+	 */
+	public List<BookingInfo> getBookingInfo(@Param("bookingNo") String bookingNo, @Param("userVoy") String userVoy);
 }

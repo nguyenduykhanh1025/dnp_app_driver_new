@@ -73,5 +73,5 @@ public interface LogisticGroupMapper
      * @param logisticTaxCode
      * @return	int
      */
-    public int checkDelegatePermission(@Param("consigneeTaxCode") String consigneeTaxCode, @Param("logisticTaxCode") String logisticTaxCode);
+    public int checkDelegatePermission(@Param("consigneeTaxCode") String consigneeTaxCode, @Param("logisticTaxCode") String logisticTaxCode, @Param("delegateType") String delegateType);
 }

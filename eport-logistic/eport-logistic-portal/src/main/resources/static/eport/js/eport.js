@@ -1214,22 +1214,22 @@ var table = {
 			// add shipment
             addShipment: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 520);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 460);
 			},
 			// add shipment
             addShipmentSendEmpty: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 420);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 350);
 			},
 			// add shipment
             addShipmentReceiveEmpty: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 480);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 425);
 			},
 			// add shipment
             addShipmentSendFull: function(id) {
             	table.set();
-            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 480);
+            	$.modal.open("Thêm " + table.options.modalName, $.operate.addUrl(id), null, 350);
             },
 			addDriverAccount: function(id) {
             	table.set();
@@ -1283,7 +1283,7 @@ var table = {
             editShipment: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 520);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 460);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
@@ -1292,7 +1292,7 @@ var table = {
             editShipmentSendEmpty: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 420);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 350);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
@@ -1301,7 +1301,7 @@ var table = {
             editShipmentReceiveEmpty: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 480);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 425);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}
@@ -1310,7 +1310,7 @@ var table = {
             editShipmentSendFull: function(id) {
 				table.set();
 				if (table.options.updateUrl != "0") {
-					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 480);
+					$.modal.open("Chỉnh Sửa " + table.options.modalName, table.options.updateUrl, null, 350);
 				} else {
 					$.modal.msgError("Hãy chọn lô muốn xem thông tin trước");
 				}

@@ -486,7 +486,6 @@ public class LogisticReceiveFController extends LogisticBaseController {
 		cal.setTime(now);
 		cal.add(Calendar.MINUTE, -5);
 		otpCode.setCreateTime(cal.getTime());
-		otpCode.setOtpCode(otp);
 		if (otpCodeService.verifyOtpCodeAvailable(otpCode) != 1) {
 			return error("Mã OTP không chính xác, hoặc đã hết hiệu lực!");
 		}
@@ -497,7 +496,7 @@ public class LogisticReceiveFController extends LogisticBaseController {
 			shipment.setUpdateTime(new Date());
 			shipmentService.updateShipment(shipment);
 		}
-		List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, creditFlag);
+		List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContFull(shipmentDetails, shipment, getLogisticGroup().getMst(), creditFlag);
 		if (serviceRobotReqs != null) {
 			
 			// MAKE ORDER RECEIVE CONT FULL

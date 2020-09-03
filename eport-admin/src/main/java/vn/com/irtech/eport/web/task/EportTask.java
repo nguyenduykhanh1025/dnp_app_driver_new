@@ -135,7 +135,7 @@ public class EportTask {
 
             for (SysRobot robot : robots) {
 
-                List<ProcessOrder> processOrders = processOrderService.getProcessOrderByUuid(robot.getUuId());
+                List<ProcessOrder> processOrders = processOrderService.getProcessingProcessOrderByUuid(robot.getUuId());
                 if (processOrders != null && !processOrders.isEmpty()) {
                     for (ProcessOrder processOrder : processOrders) {
                         processOrder.setStatus(0);

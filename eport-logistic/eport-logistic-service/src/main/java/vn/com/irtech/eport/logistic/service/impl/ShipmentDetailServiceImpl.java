@@ -34,6 +34,7 @@ import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.dto.ServiceSendFullRobotReq;
 import vn.com.irtech.eport.logistic.dto.ShipmentWaitExec;
+import vn.com.irtech.eport.logistic.form.BookingInfo;
 import vn.com.irtech.eport.logistic.form.PickupAssignForm;
 import vn.com.irtech.eport.logistic.mapper.ShipmentDetailMapper;
 import vn.com.irtech.eport.logistic.service.ICatosApiService;
@@ -429,13 +430,13 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     public List<ServiceSendFullRobotReq> makeOrderReceiveContFull(List<ShipmentDetail> shipmentDetails,
-            Shipment shipment, boolean creditFlag) {
+            Shipment shipment, String taxCode, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
             List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
             if (checkMakeOrderByBl(shipment.getBlNo(), shipmentDetails.size(),
                     "1".equalsIgnoreCase(shipment.getEdoFlg()))) {
                 serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
-                        shipmentDetails, shipment, creditFlag, true));
+                        shipmentDetails, shipment, taxCode, creditFlag, true));
             } else {
                 Collections.sort(shipmentDetails, new SztpComparator());
                 String sztp = shipmentDetails.get(0).getSztp();
@@ -443,13 +444,14 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
                 for (ShipmentDetail shipmentDetail : shipmentDetails) {
                     if (!sztp.equals(shipmentDetail.getSztp())) {
                         serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
-                                shipmentOrderList, shipment, creditFlag, false));
+                                shipmentOrderList, shipment, taxCode, creditFlag, false));
+                        sztp = shipmentDetail.getSztp();
                         shipmentOrderList = new ArrayList<>();
                     }
                     shipmentOrderList.add(shipmentDetail);
                 }
                 serviceRobotReq.add(groupShipmentDetailByReceiveContFullOrder(shipmentDetails.get(0).getId(),
-                        shipmentOrderList, shipment, creditFlag, false));
+                        shipmentOrderList, shipment, taxCode, creditFlag, false));
             }
             return serviceRobotReq;
         }
@@ -458,7 +460,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 
     @Transactional
     private ServiceSendFullRobotReq groupShipmentDetailByReceiveContFullOrder(Long registerNo,
-            List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag, boolean orderByBl) {
+            List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag, boolean orderByBl) {
     	ShipmentDetail detail = shipmentDetails.get(0);
         ProcessOrder processOrder = new ProcessOrder();
         if (orderByBl) {
@@ -469,11 +471,11 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
         try {
-            processOrder.setTruckCo(shipment.getTaxCode() + " : " + getGroupNameByTaxCode(shipment.getTaxCode()).getGroupName());
+            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
         } catch (Exception e) {
-            e.printStackTrace();
+        	logger.error("Error when get company name with tax code: " + e);
         }
-        processOrder.setTaxCode(shipment.getTaxCode());
+        processOrder.setTaxCode(taxCode);
         if (creditFlag) {
             processOrder.setPayType("Credit");
         } else {
@@ -519,7 +521,7 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Transactional
-    public List<ServiceSendFullRobotReq> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
+    public List<ServiceSendFullRobotReq> makeOrderReceiveContEmpty(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag) {
         if (shipmentDetails.size() > 0) {
             List<ServiceSendFullRobotReq> serviceRobotReq = new ArrayList<>();
             Collections.sort(shipmentDetails, new SztpComparator());
@@ -527,26 +529,31 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             List<ShipmentDetail> shipmentOrderList = new ArrayList<>();
             for (ShipmentDetail shipmentDetail : shipmentDetails) {
                 if (!sztp.equals(shipmentDetail.getSztp())) {
-                    serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag));
+                    serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, taxCode, creditFlag));
+                    sztp = shipmentDetail.getSztp();
                     shipmentOrderList = new ArrayList<>();
                 }
                 shipmentOrderList.add(shipmentDetail);
             }
-            serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, creditFlag));
+            serviceRobotReq.add(groupShipmentDetailByReceiveContEmptyOrder(shipmentDetails.get(0).getId(), shipmentOrderList, shipment, taxCode, creditFlag));
             return serviceRobotReq;
         }
         return null;
     }
 
     @Transactional
-    private ServiceSendFullRobotReq groupShipmentDetailByReceiveContEmptyOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
+    private ServiceSendFullRobotReq groupShipmentDetailByReceiveContEmptyOrder(Long registerNo, List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag) {
         ShipmentDetail detail = shipmentDetails.get(0);
     	ProcessOrder processOrder = new ProcessOrder();
         processOrder.setModee("Pickup By Booking");
         processOrder.setConsignee(detail.getConsignee());
         processOrder.setLogisticGroupId(shipment.getLogisticGroupId());
-        processOrder.setTruckCo(shipment.getTaxCode()+" : "+shipment.getGroupName());
-        processOrder.setTaxCode(shipment.getTaxCode());
+        try {
+            processOrder.setTruckCo(taxCode + " : " + getGroupNameByTaxCode(taxCode).getGroupName());
+        } catch (Exception e) {
+        	logger.error("Error when get company name with tax code: " + e);
+        }
+        processOrder.setTaxCode(taxCode);
         if (creditFlag) {
             processOrder.setPayType("Credit");
         } else {
@@ -567,6 +574,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
         processOrder.setSztp(detail.getSztp());
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setShipmentId(shipment.getId());
+        processOrder.setCargoType("MT");
+        processOrder.setPod(detail.getDischargePort());
+        processOrder.setOpr(detail.getOpeCode());
+        processOrder.setPol("VNDAD");
         processOrder.setRunnable(false);
         processOrder.setServiceType(3);
         processOrderService.insertProcessOrder(processOrder);
@@ -580,10 +591,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
     }
 
     @Override
-    public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, boolean creditFlag) {
+    public ProcessOrder makeOrderSendCont(List<ShipmentDetail> shipmentDetails, Shipment shipment, String taxCode, boolean creditFlag) {
         ShipmentDetail detail = shipmentDetails.get(0);
     	ProcessOrder processOrder = new ProcessOrder();
-        processOrder.setTaxCode(shipment.getTaxCode());
+        processOrder.setTaxCode(taxCode);
         processOrder.setContNumber(shipmentDetails.size());
         processOrder.setVessel(detail.getVslNm());
         processOrder.setVoyage(detail.getVoyNo());
@@ -619,7 +630,9 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
             shipmentDetail.setProcessOrderId(processOrder.getId());
             shipmentDetail.setRegisterNo(detail.getId().toString());
             shipmentDetail.setUserVerifyStatus("Y");
-            shipmentDetail.setOpeCode(shipment.getOpeCode());
+            if (processOrder.getServiceType() == EportConstants.SERVICE_DROP_FULL) {
+            	shipmentDetail.setOpeCode(shipment.getOpeCode());
+            }
             shipmentDetailMapper.updateShipmentDetail(shipmentDetail);
             if (processOrder.getServiceType() == 2) {
             	shipmentDetail.setRemark("Ha vo " + shipmentDetail.getEmptyDepotLocation());
@@ -1097,44 +1110,75 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 		List<ProcessOrder> processOrders = new ArrayList<>();
 		for (ServiceSendFullRobotReq receiveEmptyReq : receiveEmptyReqs) {
 			ProcessOrder processOrder = receiveEmptyReq.processOrder;
-			int bookingAvailableSize = catosApiService.checkTheNumberOfContainersNotOrderedForReceiveContEmpty(processOrder.getBookingNo(), processOrder.getSztp());
-			// Check booking size by sztp. If true then check to update booking if need, false then create new booking with sztp
-			if (bookingAvailableSize > 0) {
-				if (processOrder.getContNumber() > bookingAvailableSize) {
-					// Update booking size 
-					ProcessOrder bookingOrder = new ProcessOrder();
-					bookingOrder.setBookingCreateMode(EportConstants.BOOKING_UPDATE);
-					int bookingSize = catosApiService.checkTheNumberOfContainersOrderedForReceiveContEmpty(processOrder.getBookingNo(), processOrder.getSztp());
-					int bookingChangeSize = bookingSize  +processOrder.getContNumber() - bookingAvailableSize;
-					bookingOrder.setContNumber(bookingChangeSize);
-					bookingOrder.setBookingNo(processOrder.getBookingNo());
-					bookingOrder.setSztp(processOrder.getSztp());
-					bookingOrder.setPostProcessId(processOrder.getId());
-					bookingOrder.setVessel(processOrder.getVessel());
-					bookingOrder.setVoyage(processOrder.getVoyage());
-					bookingOrder.setBeforeAfter(processOrder.getBeforeAfter());
-					bookingOrder.setShipmentId(processOrder.getShipmentId());
-					bookingOrder.setYear(processOrder.getYear());
-					bookingOrder.setServiceType(EportConstants.SERVICE_CREATE_BOOKING);
-					bookingOrder.setLogisticGroupId(processOrder.getLogisticGroupId());
-					bookingOrder.setFe("E");
-					bookingOrder.setOpr(processOrder.getOpr());
-					bookingOrder.setPol(processOrder.getPol());
-					bookingOrder.setPod(processOrder.getPod());
-					bookingOrder.setCargoType(processOrder.getCargoType());
-					ShipmentDetail shipmentDetail = new ShipmentDetail();
-					shipmentDetail.setVslNm(processOrder.getVessel());
-					shipmentDetail.setVoyNo(processOrder.getVoyage());
-					shipmentDetail.setYear(processOrder.getYear());
-					bookingOrder.setBookingIndex(catosApiService.getIndexBooking(shipmentDetail));
-					processOrderService.insertProcessOrder(bookingOrder);
-					processOrders.add(bookingOrder);
-				} else {
-					processOrder.setRunnable(true);
-					processOrderService.updateProcessOrder(processOrder);
+			boolean hasBooking = false;
+			// Get booking info from catos
+			List<BookingInfo> bookingInfos = catosApiService.getBookingInfo(processOrder.getBookingNo(), processOrder.getVessel() + processOrder.getVoyage());
+			if (CollectionUtils.isNotEmpty(bookingInfos)) {
+				for (BookingInfo bookingInfo : bookingInfos) {
+					// check in list booking info has same sztp with process order of receive empty req 
+					if (processOrder.getSztp().equals(bookingInfo.getSztp())) {
+						hasBooking = true;
+						
+						// Check if sztp has enough quantity for order receive empty
+						// If not then update booking with extra amount for the number lacking of sztp
+						// first check if used booking quantity is null then set to 0 to make it calculatable
+						if (bookingInfo.getUsedQty() == null) bookingInfo.setUsedQty(0);
+						
+						// Calculate booking quantity need exclude the booking available currently
+						// If bookingQuantityNeed > 0 then need more booking to make order, need to update
+						Integer bookingQuantityNeed = processOrder.getContNumber() - (bookingInfo.getBookQty() - bookingInfo.getUsedQty());
+						if (bookingQuantityNeed > 0) {
+							// Update booking	
+							ProcessOrder bookingOrder = new ProcessOrder();
+							
+							// Set booking mode ( update or create new)
+							bookingOrder.setBookingCreateMode(EportConstants.BOOKING_UPDATE);
+							
+							// Set new cont number = quantity need + current quantity
+							bookingOrder.setContNumber(bookingInfo.getBookQty() + bookingQuantityNeed);
+							
+							// Set the other data mapping from receive cont empty order
+							bookingOrder.setBookingNo(processOrder.getBookingNo());
+							bookingOrder.setSztp(processOrder.getSztp());
+							bookingOrder.setPostProcessId(processOrder.getId());
+							bookingOrder.setVessel(processOrder.getVessel());
+							bookingOrder.setVoyage(processOrder.getVoyage());
+							bookingOrder.setBeforeAfter(processOrder.getBeforeAfter());
+							bookingOrder.setShipmentId(processOrder.getShipmentId());
+							bookingOrder.setYear(processOrder.getYear());
+							bookingOrder.setServiceType(EportConstants.SERVICE_CREATE_BOOKING);
+							bookingOrder.setLogisticGroupId(processOrder.getLogisticGroupId());
+							bookingOrder.setFe("E");
+							bookingOrder.setOpr(processOrder.getOpr());
+							bookingOrder.setPol(processOrder.getPol());
+							bookingOrder.setPod(processOrder.getPod());
+							bookingOrder.setCargoType(processOrder.getCargoType());
+							
+							// Get index line of booking in catos when update for robot
+							// Robot using index to determine which line need to be update
+							// Differentiate number of booking
+							ShipmentDetail shipmentDetail = new ShipmentDetail();
+							shipmentDetail.setVslNm(processOrder.getVessel());
+							shipmentDetail.setVoyNo(processOrder.getVoyage());
+							shipmentDetail.setYear(processOrder.getYear());
+							bookingOrder.setBookingIndex(catosApiService.getIndexBooking(shipmentDetail));
+							processOrderService.insertProcessOrder(bookingOrder);
+							processOrders.add(bookingOrder);
+						} else {
+							// No need to update booking, current booking has enought quantity to make order
+							processOrder.setRunnable(true);
+							processOrderService.updateProcessOrder(processOrder);
+						}
+					}
+					
+					
 				}
-			} else {
+			}
+			// If has booking = false then there is no booking, need to create new booking with this sztp
+			if (!hasBooking) {
 				ProcessOrder bookingOrder = new ProcessOrder();
+				
+				// Set booking mode create new
 				bookingOrder.setBookingCreateMode(EportConstants.BOOKING_CREATE);
 				bookingOrder.setContNumber(receiveEmptyReq.containers.size());
 				bookingOrder.setBookingNo(processOrder.getBookingNo());

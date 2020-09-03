@@ -12,7 +12,6 @@ var shipmentSearch = new Object;
 shipmentSearch.serviceType = 3;
 var sizeList = [];
 var berthplanList;
-var cargoTypeList = ["AK:Over Dimension", "BB:Break Bulk", "BN:Bundle", "DG:Dangerous", "DR:Reefer & DG", "DE:Dangerous Empty", "FR:Fragile", "GP:General", "MT:Empty", "RF:Reefer"];
 //dictionary sizeList
 $.ajax({
     type: "GET",
@@ -216,8 +215,7 @@ function formatDate(value) {
     var monthText = month < 10 ? "0" + month : month;
     let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
     let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-    let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-    return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes + ":" + seconds;
+    return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes;
 }
 
 // Handle add
@@ -411,18 +409,6 @@ function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
-function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    $(td).attr('id', 'cargoType' + row).addClass("htMiddle");
-    if (value != null && value != '') {
-        value = value.split(':')[0];
-        if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-            cellProperties.readOnly = 'true';
-            $(td).css("background-color", "rgb(232, 232, 232)");
-        }
-    }
-    $(td).html(value);
-    return td;
-}
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle");
     if (value != null && value != '') {
@@ -480,10 +466,8 @@ function configHandson() {
                 case 7:
                     return '<span>Tàu và Chuyến</span><span style="color: red;">(*)</span>';
                 case 8:
-                    return '<span>Loại Hàng</span><span style="color: red;">(*)</span>';
-                case 9:
                     return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
-                case 10:
+                case 9:
                     return "Ghi Chú";
             }
         },
@@ -539,19 +523,6 @@ function configHandson() {
                 type: "autocomplete",
                 strict: true,
                 renderer: vslNmRenderer
-            },
-//            {
-//                data: "voyNo",
-//                type: "autocomplete",
-//                strict: true,
-//                renderer: voyNoRenderer
-//            },
-            {
-                data: "cargoType",
-                strict: true,
-                type: "autocomplete",
-                source: cargoTypeList,
-                renderer: cargoTypeRenderer
             },
             {
                 data: "dischargePort",
@@ -653,7 +624,7 @@ function onChange(changes, source) {
                               if (data.code == 0) {
                                   hot.updateSettings({
                                       cells: function (row, col, prop) {
-                                          if (row == change[0] && col == 9) {
+                                          if (row == change[0] && col == 8) {
                                               let cellProperties = {};
                                               cellProperties.source = data.dischargePorts;
                                               return cellProperties;
@@ -930,10 +901,6 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn Tàu và chuyến!");
                 errorFlg = true;
                 return false;
-//            } else if (!object["voyNo"]) {
-//                $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
-//                errorFlg = true;
-//                return false;
             } else if (!object["sztp"]) {
                 $.modal.alertError("Hàng " + (index + 1) + ": Quý khách chưa chọn kích thước!");
                 errorFlg = true;
@@ -950,10 +917,6 @@ function getDataFromTable(isValidate) {
                 $.modal.alertError("Tàu và Chuyến không được khác nhau!");
                 errorFlg = true;
                 return false;
-//            } else if (voyage != object["voyNo"]) {
-//                $.modal.alertError("Số chuyến không được khác nhau!");
-//                errorFlg = true;
-//                return false;
             } else if (pod.split(": ")[0] != object["dischargePort"].split(": ")[0]) {
                 $.modal.alertError("Cảng dỡ hàng không được khác nhau!");
                 errorFlg = true;
@@ -962,7 +925,6 @@ function getDataFromTable(isValidate) {
         }
         opecode = object["opeCode"];
         vessel = object["vslNm"];
-//        voyage = object["voyNo"];
         pod = object["dischargePort"];
         var expiredDem = new Date(object["expiredDem"].substring(6, 10) + "/" + object["expiredDem"].substring(3, 5) + "/" + object["expiredDem"].substring(0, 2));
         shipmentDetail.containerNo = object["containerNo"];
@@ -991,7 +953,6 @@ function getDataFromTable(isValidate) {
         shipmentDetail.bookingNo = shipmentSelected.bookingNo;
         shipmentDetail.shipmentId = shipmentSelected.id;
         shipmentDetail.id = object["id"];
-        shipmentDetail.cargoType = object["cargoType"].substring(0,2);
         shipmentDetails.push(shipmentDetail);
         var now = new Date();
         now.setHours(0, 0, 0);
@@ -1096,14 +1057,14 @@ function deleteShipmentDetail() {
 function verify() {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 400);
+        $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 600);
     }
 }
 
-function verifyOtp(shipmentDtIds, creditFlag) {
+function verifyOtp(shipmentDtIds, taxCode, creditFlag) {
     getDataSelectedFromTable(true);
     if (shipmentDetails.length > 0) {
-        $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag, 600, 350);
+        $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + taxCode, 600, 350);
     }
 }
 

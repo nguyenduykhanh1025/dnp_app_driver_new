@@ -76,4 +76,8 @@ public interface IShipmentService {
 		 * @return List<ShipmentForm>
 		 */
 		public List<ShipmentForm> selectShipmentListForDriver(Integer serviceType, Long driverId);
+    /**
+     * Select Shipment List For Register
+     */
+    public List<Shipment> selectShipmentListForRegister(Shipment shipment);
 }

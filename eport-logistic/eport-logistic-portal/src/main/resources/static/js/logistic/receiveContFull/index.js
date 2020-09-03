@@ -211,8 +211,7 @@ function formatDate(value) {
   let monthText = month < 10 ? "0" + month : month;
   let hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
   let minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-  let seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-  return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes + ":" + seconds;
+  return day + "/" + monthText + "/" + date.getFullYear() + " " + hours + ":" + minutes;
 }
 
 function formatBlNo(value, row) {
@@ -1298,7 +1297,7 @@ function verify() {
       if (res.code == 0) {
         getDataSelectedFromTable(true, true);
         if (shipmentDetails.length > 0) {
-          $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 600, 500);
+          $.modal.openCustomForm("Xác nhận làm lệnh", prefix + "/otp/cont-list/confirmation/" + shipmentDetailIds, 700, 600);
         }
       } else {
         $.modal.alertWarning("Quý khách chưa có ủy quyền từ chủ hàng để thực hiện lô hàng này <br>Hãy liên hệ với Cảng để thêm ủy quyền.");
@@ -1310,10 +1309,10 @@ function verify() {
   });
 }
 
-function verifyOtp(shipmentDtIds, creditFlag, isSendContEmpty) {
+function verifyOtp(shipmentDtIds, taxCode, creditFlag, isSendContEmpty) {
   getDataSelectedFromTable(true, false);
   if (shipmentDetails.length > 0) {
-    $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + isSendContEmpty, 600, 350);
+    $.modal.openCustomForm("Xác thực OTP", prefix + "/otp/verification/" + shipmentDtIds + "/" + creditFlag + "/" + taxCode + "/" + isSendContEmpty, 600, 350);
   }
 }
 

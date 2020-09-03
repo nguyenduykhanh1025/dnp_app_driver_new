@@ -114,8 +114,8 @@ public class MqttService implements MqttCallback {
 
 	private void subscribeToTopics() throws MqttException {
 		List<IMqttToken> tokens = new ArrayList<>();
-		tokens.add(mqttClient.subscribe(MqttConsts.SMART_GATE_REQ_TOPIC, 0, checkinHandler));
-		tokens.add(mqttClient.subscribe(MqttConsts.GATE_ROBOT_RES_TOPIC, 0, gatePassHandler));
+		tokens.add(mqttClient.subscribe(MqttConsts.SMART_GATE_REQ_TOPIC, 1, checkinHandler));
+		tokens.add(mqttClient.subscribe(MqttConsts.GATE_ROBOT_RES_TOPIC, 1, gatePassHandler));
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
 		}
@@ -242,6 +242,7 @@ public class MqttService implements MqttCallback {
 				sysRobot.setIsSendContEmptyOrder(true);
 				break;
 		}
+		sysRobot.setDisabled(false);
 		return robotService.findFirstRobot(sysRobot);
 	}
 }

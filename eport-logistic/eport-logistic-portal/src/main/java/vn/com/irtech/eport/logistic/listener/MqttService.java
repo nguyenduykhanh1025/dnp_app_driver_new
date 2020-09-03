@@ -113,9 +113,9 @@ public class MqttService implements MqttCallback {
 		List<IMqttToken> tokens = new ArrayList<>();
 		// subscribe default topics when connect
 		logger.debug("Subsribe Topic: " + BASE);
-		tokens.add(mqttClient.subscribe(BASE, 0, robotUpdateStatusHandler));
+		tokens.add(mqttClient.subscribe(BASE, 1, robotUpdateStatusHandler));
 		logger.debug("Subsribe Topic: " + RESPONSE_TOPIC);
-		tokens.add(mqttClient.subscribe(RESPONSE_TOPIC, 0, robotResponseHandler));
+		tokens.add(mqttClient.subscribe(RESPONSE_TOPIC, 1, robotResponseHandler));
 		// Wait for subscribe complete
 		for (IMqttToken token : tokens) {
 			token.waitForCompletion();
@@ -215,6 +215,7 @@ public class MqttService implements MqttCallback {
 		processOrder.setId(payLoad.processOrder.getId());
 		processOrder.setRobotUuid(sysRobot.getUuId()); // robot uuid in charge of process order
 		processOrder.setStatus(1); // on progress
+		// TODO
 		if (serviceRobot.equals(EServiceRobot.CHANGE_VESSEL) || serviceRobot.equals(EServiceRobot.EXTENSION_DATE)) {
 			processOrder.setRunnable(false);
 		}
@@ -304,6 +305,7 @@ public class MqttService implements MqttCallback {
 			sysRobot.setIsExtensionDateOrder(true);
 			break;
 		}
+		sysRobot.setDisabled(false);
 		return robotService.findFirstRobot(sysRobot);
 	}
 

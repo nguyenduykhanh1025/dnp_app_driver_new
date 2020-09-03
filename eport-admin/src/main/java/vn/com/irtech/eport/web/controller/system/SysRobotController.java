@@ -123,4 +123,11 @@ public class SysRobotController extends BaseController {
 		robot.setUpdateBy(ShiroUtils.getLoginName());
 		return toAjax(robotService.updateRobot(robot));
 	}
+	
+	@PostMapping("/disabled/change")
+	@ResponseBody
+	public AjaxResult changeDisabledStatus(SysRobot robot) {
+		robot.setUpdateBy(ShiroUtils.getLoginName());
+		return toAjax(robotService.updateRobot(robot));
+	}
 }

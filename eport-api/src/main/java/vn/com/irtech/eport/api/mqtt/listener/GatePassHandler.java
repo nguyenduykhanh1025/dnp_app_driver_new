@@ -28,6 +28,7 @@ import vn.com.irtech.eport.api.form.DriverRes;
 import vn.com.irtech.eport.api.form.GateInFormData;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.logistic.domain.PickupHistory;
 import vn.com.irtech.eport.logistic.domain.ProcessHistory;
@@ -138,10 +139,12 @@ public class GatePassHandler implements IMqttMessageListener {
 		processOrder.setStatus(2);
 		
 		// Declare process history to save history
-		ProcessHistory processHistory = new ProcessHistory();
-		processHistory.setProcessOrderId(gateInFormData.getReceiptId());
-		processHistory.setRobotUuid(gateInFormData.getGateId());
-		processHistory.setStatus(2); // FINISH
+		ProcessHistory history = new ProcessHistory();
+		history.setProcessOrderId(gateInFormData.getReceiptId());
+		history.setRobotUuid(gateInFormData.getGateId());
+		history.setServiceType(EportConstants.SERVICE_GATE_IN);
+		history.setStatus(EportConstants.PROCESS_HISTORY_STATUS_FINISHED);
+		history.setStartTime(new Date());
 		
 		// If Robot return success
 		if ("success".equalsIgnoreCase(result)) {
@@ -227,7 +230,7 @@ public class GatePassHandler implements IMqttMessageListener {
 			driverRes.setMsg(MessageHelper.getMessage(MessageConsts.E0021));
 			driverRes.setResult(BusinessConsts.PASS);;
 			processOrder.setResult("S");
-			processHistory.setResult("S");
+			history.setResult("S");
 			try {
 				if (StringUtils.isNotEmpty(gateInFormData.getSessionId())) {
 					responseDriver(driverRes, gateInFormData.getSessionId());
@@ -349,7 +352,7 @@ public class GatePassHandler implements IMqttMessageListener {
 				logger.error("Error send result gate in for smart app: " + e);
 			}
 			processOrder.setResult("F");
-			processHistory.setResult("F");
+			history.setResult("F");
 			robotService.updateRobotStatusByUuId(uuId, status);
 		}
 		
@@ -357,7 +360,7 @@ public class GatePassHandler implements IMqttMessageListener {
 		processOrderService.updateProcessOrder(processOrder);
 		
 		// Update History robot
-		processHistoryService.insertProcessHistory(processHistory);
+		processHistoryService.insertProcessHistory(history);
 	}
 	
 	

@@ -2,10 +2,11 @@ package vn.com.irtech.eport.logistic.domain;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 
@@ -38,12 +39,20 @@ public class ProcessHistory extends BaseEntity
     @Excel(name = "Kết Quả (S:Success, F:Failed)")
     private String result;
 
-    /** Status (1: start, 2: finish) */
-    @Excel(name = "Status (1: start, 2: finish)")
-    private Integer status;
-
+    @Excel(name = "Service Type")
     private Integer serviceType;
 
+    @Excel(name = "Status")
+    private Integer status;
+    
+    /** Create time */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date startTime;
+    
+    /** Create time */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date finishTime;
+    
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date fromDate;
 
@@ -98,15 +107,15 @@ public class ProcessHistory extends BaseEntity
         return result;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
     public Integer getStatus() {
-        return status;
-    }
+		return status;
+	}
 
-    public void setServiceType(Integer serviceType) {
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public void setServiceType(Integer serviceType) {
         this.serviceType = serviceType;
     }
 
@@ -114,7 +123,23 @@ public class ProcessHistory extends BaseEntity
         return serviceType;
     }
 
-    public void setFromDate(Date fromDate) {
+    public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getFinishTime() {
+		return finishTime;
+	}
+
+	public void setFinishTime(Date finishTime) {
+		this.finishTime = finishTime;
+	}
+
+	public void setFromDate(Date fromDate) {
         this.fromDate = fromDate;
     }
 
@@ -151,11 +176,9 @@ public class ProcessHistory extends BaseEntity
             .append("createTime", getCreateTime())
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
-            .append("status", getStatus())
             .append("serviceType", getServiceType())
-            .append("fromDate", getFromDate())
-            .append("toDate", getToDate())
-            .append("processOrder", getProcessOrder())
+            .append("startTime", getStartTime())
+            .append("finishTime", getFinishTime())
             .toString();
     }
 }

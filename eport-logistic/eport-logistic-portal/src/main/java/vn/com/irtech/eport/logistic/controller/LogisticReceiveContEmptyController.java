@@ -27,6 +27,7 @@ import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.Constants;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.enums.BusinessType;
 import vn.com.irtech.eport.common.enums.OperatorType;
@@ -49,6 +50,7 @@ import vn.com.irtech.eport.logistic.service.ICatosApiService;
 import vn.com.irtech.eport.logistic.service.IDriverAccountService;
 import vn.com.irtech.eport.logistic.service.IOtpCodeService;
 import vn.com.irtech.eport.logistic.service.IPickupAssignService;
+import vn.com.irtech.eport.logistic.service.IProcessBillService;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
 import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
@@ -88,6 +90,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
     
     @Autowired
     private IPickupAssignService pickupAssignService;
+    
+    @Autowired
+    private IProcessBillService processBillService;
 
     // VIEW RECEIVE CONT EMPTY
     @GetMapping()
@@ -148,6 +153,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	public String checkContListBeforeVerify(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		mmap.put("creditFlag", getGroup().getCreditFlag());
+		mmap.put("taxCode", getGroup().getMst());
 		if (shipmentDetails.size() > 0 && verifyPermission(shipmentDetails.get(0).getLogisticGroupId())) {
 			mmap.put("shipmentDetails", shipmentDetails);
 		}
@@ -155,18 +161,29 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	}
 
 	// FORM TO VERIFY OTP
-	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}")
-	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, @PathVariable("creditFlag") boolean creditFlag, ModelMap mmap) {
+	@GetMapping("/otp/verification/{shipmentDetailIds}/{creditFlag}/{taxCode}")
+	public String verifyOtpForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, 
+			@PathVariable("creditFlag") boolean creditFlag, @PathVariable("taxCode") String taxCode, ModelMap mmap) {
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
 		mmap.put("numberPhone", getGroup().getMobilePhone());
 		mmap.put("creditFlag", creditFlag);
+		mmap.put("taxCode", taxCode);
 		return PREFIX + "/verifyOtp";
 	}
 
 	// FORM SHOW BILL TO PAY
-	@GetMapping("paymentForm/{shipmentDetailIds}")
-	public String paymentForm(@PathVariable("shipmentDetailIds") String shipmentDetailIds, ModelMap mmap) {
+	@GetMapping("/payment/{processOrderIds}")
+	public String paymentForm(@PathVariable("processOrderIds") String processOrderIds, ModelMap mmap) {
+		String shipmentDetailIds = "";
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByProcessIds(processOrderIds);
+		for (ShipmentDetail shipmentDetail : shipmentDetails) {
+			shipmentDetailIds += shipmentDetail.getId() + ",";
+		}
+		if (!"".equalsIgnoreCase(shipmentDetailIds)) {
+			shipmentDetailIds.substring(0, shipmentDetailIds.length()-1);
+		}
 		mmap.put("shipmentDetailIds", shipmentDetailIds);
+		mmap.put("processBills", processBillService.selectProcessBillListByProcessOrderIds(processOrderIds));
 		return PREFIX + "/paymentForm";
 	}
 
@@ -356,9 +373,9 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 
 	// VALIDATE OTP IS CORRECT THEN MAKE ORDER TO ROBOT
 	@Log(title = "Xác Nhận OTP", businessType = BusinessType.UPDATE, operatorType = OperatorType.LOGISTIC)
-	@PostMapping("/otp/{otp}/verification/shipment-detail/{shipmentDetailIds}")
+	@PostMapping("/otp/{otp}/verification")
 	@ResponseBody
-	public AjaxResult verifyOtp(@PathVariable("otp") String otp, @PathVariable("shipmentDetailIds") String shipmentDetailIds, boolean creditFlag) {
+	public AjaxResult verifyOtp(@PathVariable("otp") String otp, String shipmentDetailIds, String taxCode, boolean creditFlag) {
 		try {
 			Long.parseLong(otp);
 		} catch (Exception e) {
@@ -379,57 +396,58 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		if (!CollectionUtils.isEmpty(shipmentDetails)) {
 			AjaxResult ajaxResult = null;
 			Shipment shipment = shipmentService.selectShipmentById(shipmentDetails.get(0).getShipmentId());
-			if (!"3".equals(shipment.getStatus())) {
-				shipment.setStatus("3");
+			// Neu khong phai status la "Dang lam lenh" thi update thanh dang lam lenh
+			if (!EportConstants.SHIPMENT_STATUS_PROCESSING.equals(shipment.getStatus())) {
+				shipment.setStatus(EportConstants.SHIPMENT_STATUS_PROCESSING);
 				shipment.setUpdateTime(new Date());
 				shipment.setUpdateBy(getUser().getFullName());
 				shipmentService.updateShipment(shipment);
 			}
-			//Đổi opeCode operateCode -> groupCode
+			//Đổi opeCode operateCode -> groupCode. VD Hang tau CMA: CMA,CNC,APL.. -> CMA
 			CarrierGroup carrierGroup = carrierService.getCarrierGroupByOpeCode(shipmentDetails.get(0).getOpeCode().toUpperCase());
+			// Chi convert thanh OPE cua hang tau CHA khi ton tai (neu khong ton tai -> skip)
 			if(carrierGroup != null) {
-				if(! shipmentDetails.get(0).getOpeCode().toUpperCase().equals(carrierGroup.getGroupCode())) {
-					for(ShipmentDetail i : shipmentDetails) {
-						i.setOpeCode(carrierGroup.getGroupCode());
-					}
+				for(ShipmentDetail shpDtl : shipmentDetails) {
+					shpDtl.setOpeCode(carrierGroup.getGroupCode());
 				}
 			}
-			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails, shipment, creditFlag);
 			
+			// Create list req for order receive cont empty
+			List<ServiceSendFullRobotReq> serviceRobotReqs = shipmentDetailService.makeOrderReceiveContEmpty(shipmentDetails, shipment, taxCode, creditFlag);
+			
+			// Check and create list process order create booking from list req receive empty
 			List<ProcessOrder> processOrders = shipmentDetailService.createBookingIfNeed(serviceRobotReqs);
 			
-			if (serviceRobotReqs != null) {
-				List<Long> processIds = new ArrayList<>();
-				boolean robotBusy = false;
-				// MAKE ORDER RECEIVE CONT EMPTY
-				try {
-					
-					for (ProcessOrder processOrder : processOrders) {
-						mqttService.publishBookingOrderToRobot(processOrder, EServiceRobot.CREATE_BOOKING);
-					}
-					
-					for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
-						processIds.add(serviceRobotReq.processOrder.getId());
-						if (serviceRobotReq.processOrder.getRunnable()) {
-							if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_EMPTY)) {
-								robotBusy = true;
-							}
+			List<Long> processIds = new ArrayList<>();
+			boolean robotBusy = false;
+			// MAKE ORDER RECEIVE CONT EMPTY
+			try {
+				
+				for (ProcessOrder processOrder : processOrders) {
+					mqttService.publishBookingOrderToRobot(processOrder, EServiceRobot.CREATE_BOOKING);
+				}
+				
+				for (ServiceSendFullRobotReq serviceRobotReq : serviceRobotReqs) {
+					processIds.add(serviceRobotReq.processOrder.getId());
+					if (serviceRobotReq.processOrder.getRunnable()) {
+						if (!mqttService.publishMessageToRobot(serviceRobotReq, EServiceRobot.RECEIVE_CONT_EMPTY)) {
+							robotBusy = true;
 						}
 					}
-					if (robotBusy) {
-						ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
-						ajaxResult.put("processIds", processIds);
-						ajaxResult.put("orderNumber", serviceRobotReqs.size());
-						return ajaxResult;
-					}
-				} catch (Exception e) {
-					return error("Có lỗi xảy ra trong quá trình xác thực!");
 				}
-				ajaxResult = AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
-				ajaxResult.put("processIds", processIds);
-				ajaxResult.put("orderNumber", serviceRobotReqs.size());
-				return ajaxResult;
+				if (robotBusy) {
+					ajaxResult = AjaxResult.warn("Yêu cầu đang được chờ xử lý, quý khách vui lòng đợi trong giây lát.");
+					ajaxResult.put("processIds", processIds);
+					ajaxResult.put("orderNumber", serviceRobotReqs.size());
+					return ajaxResult;
+				}
+			} catch (Exception e) {
+				return error("Có lỗi xảy ra trong quá trình xác thực!");
 			}
+			ajaxResult = AjaxResult.success("Yêu cầu của quý khách đang được xử lý, quý khách vui lòng đợi trong giây lát.");
+			ajaxResult.put("processIds", processIds);
+			ajaxResult.put("orderNumber", serviceRobotReqs.size());
+			return ajaxResult;
 		}
 		return error("Có lỗi xảy ra trong quá trình xác thực!");
 	}
