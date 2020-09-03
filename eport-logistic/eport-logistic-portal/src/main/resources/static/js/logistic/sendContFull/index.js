@@ -1399,3 +1399,35 @@ function openDetail(id, containerNo, sztp) {
     }
     $.modal.openCustomForm("Khai báo chi tiết", prefix + "/shipment-detail/" + id + "/cont/" + containerNo + "/sztp/" + sztp + "/detail", 800, 460);
 }
+
+function removeShipmentSendFull(){
+	if (!shipmentSelected) {
+		$.modal.alertError("Bạn chưa chọn Lô!");
+		return
+	}else {
+		//1- chua khai bao cont, 2- khai bao nhung chua lam cac buoc tiep theo
+		if(shipmentSelected.status == '1' || shipmentSelected.status == '2'){
+			$.modal.confirmShipment("Xác nhận thực hiện xóa Lô " + shipmentSelected.id + "  ?", function() {
+				$.modal.loading("Đang xử lý...");
+			    $.ajax({
+			        url: ctx + 'logistic/remove/',
+			        type: 'POST',
+			        data: {
+			            id: shipmentSelected.id,
+			        }
+			    }).done(function(rs) {
+			    	$.modal.closeLoading();
+			        if(rs.code  == 0){
+			        	$.modal.msgSuccess(rs.msg);
+			        	loadTable();
+			        }
+			        else{
+			        	$.modal.msgError(rs.msg)
+			        }
+			    });
+			});
+		} else {
+			$.modal.msgError("Không thể xóa Lô " + shipmentSelected.id);
+		}
+	}
+}

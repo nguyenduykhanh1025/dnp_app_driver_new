@@ -747,6 +747,16 @@ var table = {
         	        callBack(true);
         	    });
             },
+			confirmShipment: function (content, callBack) {
+            	layer.confirm(content, {
+        	        icon: 2,
+        	        title: "Xác Nhận",
+        	        btn: ['Đồng Ý', 'Hủy Bỏ']
+        	    }, function (index) {
+        	    	layer.close(index);
+        	        callBack(true);
+        	    });
+            },
             // 弹出层指定宽度
             open: function (title, url, width, height, callback) {
             	//如果是移动端，就使用自适应大小弹窗
