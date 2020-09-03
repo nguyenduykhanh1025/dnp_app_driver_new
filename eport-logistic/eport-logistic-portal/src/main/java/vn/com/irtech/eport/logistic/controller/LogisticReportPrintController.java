@@ -90,7 +90,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 	public void jasperReport(@PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
 		// First check permission for this shipmentId
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
-		if(shipment == null || shipment.getLogisticGroupId() == null || shipment.getLogisticGroupId().equals(getUser().getLogisticGroup().getId()))
+		if(shipment == null || shipment.getLogisticGroupId() == null || !shipment.getLogisticGroupId().equals(getUser().getGroupId()))
 		{
 			logger.error("Error when print Order for shipment: " + shipmentId);
 			return;
@@ -192,7 +192,7 @@ public class LogisticReportPrintController extends LogisticBaseController {
 	public void receipt(@PathVariable("shipmentId") Long shipmentId, HttpServletResponse response) {
 		// First check permission for this shipmentId
 		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
-		if(shipment == null || shipment.getLogisticGroupId() == null || shipment.getLogisticGroupId().equals(getUser().getLogisticGroup().getId()))
+		if(shipment == null || shipment.getLogisticGroupId() == null || !shipment.getLogisticGroupId().equals(getUser().getGroupId()))
 		{
 			logger.error("Error when print Receipt for shipment: " + shipmentId);
 			return;
@@ -232,13 +232,13 @@ public class LogisticReportPrintController extends LogisticBaseController {
 		        parameters.put("serviceType", "Nhận container có hàng từ Cảng");
 	        }
 	        if(shipment.getServiceType().intValue() == 2) {
-		        parameters.put("serviceType", "Hạ container rỗng tại Cảng");
+		        parameters.put("serviceType", "Hạ container rỗng vào Cảng");
 	        }
 	        if(shipment.getServiceType().intValue() == 3) {
 		        parameters.put("serviceType", "Nhận container rỗng từ Cảng");
 	        }
 	        if(shipment.getServiceType().intValue() == 4) {
-		        parameters.put("serviceType", "Hạ container có hàng từ Cảng");
+		        parameters.put("serviceType", "Hạ container có hàng vào Cảng");
 	        }
 	        final JasperPrint print = JasperFillManager.fillReport(report, parameters, new JREmptyDataSource());
 	        JasperExportManager.exportReportToPdfStream(print, out);

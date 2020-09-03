@@ -2,9 +2,7 @@ package vn.com.irtech.eport.edo.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import com.alibaba.fastjson.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,16 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import vn.com.irtech.eport.carrier.domain.Edo;
 import vn.com.irtech.eport.carrier.domain.EdoAuditLog;
-import vn.com.irtech.eport.carrier.service.ICarrierGroupService;
 import vn.com.irtech.eport.carrier.service.IEdoAuditLogService;
 import vn.com.irtech.eport.carrier.service.IEdoService;
-import vn.com.irtech.eport.common.annotation.Log;
 import vn.com.irtech.eport.common.core.controller.BaseController;
-import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
-import vn.com.irtech.eport.common.enums.BusinessType;
-import vn.com.irtech.eport.common.utils.poi.ExcelUtil;
+
 
 @Controller
 @RequestMapping("/edo/manage")
@@ -115,18 +109,20 @@ public class EdoManageController extends BaseController {
 
   @GetMapping("/getVoyNo")
 	@ResponseBody
-	public List<String> listVoyNos(String keyString,String vessel) {
+	public List<String> listVoyNos(String keyString, String vessel, String oprCode) {
     Edo edo = new Edo();
     edo.setVoyNo(keyString);
     edo.setVessel(vessel);
+    edo.setCarrierCode(oprCode);
 		return edoService.selectVoyNos(edo);
 	}
 
 	@GetMapping("/getVessel")
 	@ResponseBody
-	public List<String> listVessels(String keyString) {
+	public List<String> listVessels(String keyString, String oprCode) {
 		Edo edo = new Edo();
-		edo.setVessel(keyString);
+    edo.setVessel(keyString);
+    edo.setCarrierCode(oprCode);
 		return edoService.selectVessels(edo);
 	}
 }
