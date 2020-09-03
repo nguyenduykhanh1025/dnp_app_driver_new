@@ -36,6 +36,7 @@ import vn.com.irtech.eport.common.enums.OperatorType;
 import vn.com.irtech.eport.common.utils.CacheUtils;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.custom.queue.listener.CustomQueueService;
+import vn.com.irtech.eport.framework.web.service.DictService;
 import vn.com.irtech.eport.framework.web.service.WebSocketService;
 import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
@@ -105,6 +106,9 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 	
 	@Autowired
 	private IPickupAssignService pickupAssignService;
+	
+	@Autowired
+	private DictService dictService;
 	
 	@GetMapping()
 	public String receiveContFull(ModelMap mmap) {
@@ -389,6 +393,10 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 						shipmentDetail.setCustomStatus("N");
 						shipmentDetail.setFe("E");
 						shipmentDetail.setCargoType("MT");
+						shipmentDetail.setDischargePort("VNDAD");
+						shipmentDetail.setVslNm("EMTY");
+						shipmentDetail.setVoyNo("0000");
+						shipmentDetail.setEmptyDepotLocation(getEmptyDepotLocation(shipmentDetail.getSztp(), shipmentDetail.getOpeCode()));
 						shipmentDetail.setStatus(1);
 						shipmentDetailService.insertShipmentDetail(shipmentDetail);
 					}
@@ -736,6 +744,29 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 			logger.error("Gửi thông báo lỗi hải quan cho om: " + e);
 		}
 		return success();
+	}
+	
+	/**
+	 * Get empty depot location base on sztp and opr in dictionary
+	 * 
+	 * @param sztp
+	 * @param opr
+	 * @return empty depot location string (DANALOG 01, DANALOG 02, Tiên Sa)
+	 */
+	private String getEmptyDepotLocation(String sztp, String opr) {
+		String emptyDepotRule = dictService.getLabel("empty_depot_location", opr);
+		if (StringUtils.isNotEmpty((emptyDepotRule))) {
+			String[] emptyDepotArr = emptyDepotRule.split(",");
+			int length = emptyDepotArr.length;
+			for (int i = 0; i < length; i++) {
+				if (sztp.equalsIgnoreCase(emptyDepotArr[i])) {
+					String emptyDepotLocation = emptyDepotArr[length - 1];
+					return emptyDepotLocation;
+				}
+			}
+		}
+		String danangDepotName = configService.selectConfigByKey("danang.depot.name");
+		return danangDepotName;
 	}
 }
 
