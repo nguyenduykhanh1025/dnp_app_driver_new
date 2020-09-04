@@ -2,11 +2,12 @@ package vn.com.irtech.eport.web.controller.container.supplier;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,10 +20,14 @@ import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
+import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
+import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
+import vn.com.irtech.eport.logistic.domain.ShipmentImage;
 import vn.com.irtech.eport.logistic.service.IShipmentDetailService;
+import vn.com.irtech.eport.logistic.service.IShipmentImageService;
 import vn.com.irtech.eport.logistic.service.IShipmentService;
 
 @Controller
@@ -36,7 +41,13 @@ public class ContainerSupplierController extends BaseController {
 	
 	@Autowired
 	private IShipmentDetailService shipmentDetailService;
+	
+	@Autowired
+	private IShipmentImageService shipmentImageService;
 
+	@Autowired
+    private ConfigService configService;
+	
 	@GetMapping()
 	public String getContSupplier() {
 		return PREFIX + "/index";
@@ -51,7 +62,7 @@ public class ContainerSupplierController extends BaseController {
 			shipment = new Shipment();
 		}
 		shipment.setServiceType(3);
-		List<Shipment> shipments = shipmentService.selectShipmentList(shipment);
+		List<Shipment> shipments = shipmentService.getShipmentListForContSupply(shipment);
 		return getDataTable(shipments);
 	}
 
@@ -75,19 +86,24 @@ public class ContainerSupplierController extends BaseController {
 	@ResponseBody
 	public AjaxResult saveShipmentDetail(@PathVariable Long shipmentId, @RequestBody List<ShipmentDetail> shipmentDetails) {
 		if (shipmentDetails != null) {
-			boolean allUpdate = false;
+			boolean allUpdate = true;
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				if (shipmentDetail.getContainerNo() == null || "".equals(shipmentDetail.getContainerNo())) {
-					allUpdate = true;
+				if (StringUtils.isEmpty(shipmentDetail.getContainerNo()) || 
+						EportConstants.CONTAINER_SUPPLY_STATUS_REQ.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
+					allUpdate = false;
+				} else if (!EportConstants.CONTAINER_SUPPLY_STATUS_HOLD.equalsIgnoreCase(shipmentDetail.getContSupplyStatus())) {
+					shipmentDetail.setContainerStatus(EportConstants.CONTAINER_SUPPLY_STATUS_FINISH);
+					// Set container is qualified to verify otp to make order with status = 2
+					shipmentDetail.setStatus(2);
 				}
 				if (shipmentDetailService.updateShipmentDetail(shipmentDetail) != 1) {
 					return error("Cấp container thất bại từ container: " + shipmentDetail.getContainerNo());
 				}
 			}
-			if (!allUpdate) {
+			if (allUpdate) {
 				Shipment shipment = new Shipment();
 				shipment.setId(shipmentId);
-				shipment.setContSupplyStatus(1);
+				shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_FINISH);
 				shipment.setUpdateTime(new Date());
 				shipment.setUpdateBy(ShiroUtils.getSysUser().getUserName());
 				shipmentService.updateShipment(shipment);
@@ -113,5 +129,29 @@ public class ContainerSupplierController extends BaseController {
 		shipmentDetail.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
 		List<ShipmentDetail> dataList = shipmentDetailService.selectShipmentDetailListReport(shipmentDetail);
 		return getDataTable(dataList);
+	}
+	
+	// VIEW RECEIVE CONT EMPTY ATTACH IMAGE
+    @GetMapping("/shipments/{shipmentId}/shipment-images")
+    public String receiveContEmptyAttachImage(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
+
+        List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImagesByShipmentId(shipmentId);
+        if (!CollectionUtils.isEmpty(shipmentImages)) {
+            shipmentImages.forEach(image -> image.setPath(configService.getKey("domain.logistic.name") + image.getPath()));
+            mmap.put("shipmentImages", shipmentImages);
+        }
+
+        return PREFIX + "/shipmentImage";
+    }
+
+	// COUNT SHIPMENT IMAGE BY SHIPMENT ID
+	@GetMapping("/shipments/{shipmentId}/shipment-images/count")
+	@ResponseBody
+	public AjaxResult countShipmentImage(@PathVariable("shipmentId") Long shipmentId) {
+		AjaxResult ajaxResult = AjaxResult.success();
+		Shipment shipment = shipmentService.selectShipmentById(shipmentId);
+		int numberOfShipmentImage = shipmentImageService.countShipmentImagesByShipmentId(shipment.getId());
+		ajaxResult.put("numberOfShipmentImage", numberOfShipmentImage);
+		return ajaxResult;
 	}
 }

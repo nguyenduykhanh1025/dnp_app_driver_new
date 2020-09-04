@@ -329,6 +329,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setUserVerifyStatus("N");
+					shipmentDetail.setContSupplyStatus("N");
 					shipmentDetail.setFe("E");
 					shipmentDetail.setFinishStatus("N");
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
@@ -458,7 +459,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		if (!CollectionUtils.isEmpty(shipmentDetails)) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setStatus(3);
+				shipmentDetail.setStatus(4);
 				shipmentDetail.setPaymentStatus("Y");
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
@@ -521,8 +522,18 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 	public AjaxResult reqSupplyContainer(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
-			
+			Shipment shipment = new Shipment();
+			shipment.setId(shipmentDetails.get(0).getShipmentId());
+			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_WAITING);
+			shipmentService.updateShipment(shipment);
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
+				shipmentDetail.setStatus(1);
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+			return success("Đã yêu cầu cấp container, quý khách vui lòng đợi bộ phận cấp container xử lý.");
 		}
-		return error("Yêu cầu cấp container thất bại.");
+		
+		return error("Yêu cầu cấp rỗng thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
 	}
 }

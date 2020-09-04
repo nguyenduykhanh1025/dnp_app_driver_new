@@ -1,0 +1,61 @@
+#carousel-custom {
+    margin: 2% 20%;
+}
+
+#carousel-custom .carousel-indicators {
+    margin: 10px 0 0;
+    overflow: auto;
+    position: static;
+    white-space: nowrap;
+    width: 100%;
+}
+
+#carousel-custom .carousel-inner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 50rem !important;
+}
+
+#carousel-custom .carousel-inner img {
+    margin: auto;
+    cursor: pointer;
+}
+
+#carousel-custom .carousel-indicators li {
+    background-color: transparent;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    display: inline-block;
+    margin: 1rem;
+    position: relative;
+    overflow: hidden;
+    width: 8rem;
+    height: 8rem;
+}
+
+#carousel-custom .carousel-indicators li img {
+    width: 100%;
+    margin: auto;
+    display: block;
+    opacity: 0.5;
+}
+
+#carousel-custom .carousel-indicators li.active img {
+    opacity: 1;
+}
+
+#carousel-custom .carousel-indicators li:hover img {
+    opacity: 0.75;
+}
+
+#carousel-custom .carousel-outer {
+    position: relative;
+}
+
+#zoomImage {
+    max-width : 100%;
+    margin-left: auto!important;
+    margin-right: auto!important;
+    display: block!important;
+}

@@ -771,9 +771,6 @@ function updateLayout() {
         let cellStatus = hot.getDataAtCell(i, 1);
         if (cellStatus != null) {
             if (checkList[i] == 1) {
-                if (shipmentSelected.contSupplyStatus == 0) {
-                    contNull = true;
-                }
                 if(cellStatus == 2 && 'Y' == sourceData[i].userVerifyStatus) {
                     verify = true;
                 }
@@ -797,7 +794,7 @@ function updateLayout() {
     } else {
         $("#deleteBtn").prop("disabled", true);
     }
-    if (diff || contNull) {
+    if (diff) {
         status = 1;
     } else {
         status++;
@@ -1158,11 +1155,11 @@ function deleteShipmentDetail() {
 
 // Handling logic
 function requestContSupply() {
-    $.modal.confirm("Xác nhận yêu cầu cấp rỗng những container này?", function () {
+    $.modal.confirmShipment("Xác nhận yêu cầu cấp rỗng những container này?", function () {
         getDataSelectedFromTable(true);
         if (shipmentDetails.length > 0) {
             $.ajax({
-                url: prefix + "/cont-req/shipment/" + shipmentSelected.id,
+                url: prefix + "/cont-req/shipment-detail/" + shipmentDetailIds,
                 method: "POST",
                 success: function (result) {
                     if (result.code == 0) {
@@ -1210,9 +1207,11 @@ function exportBill() {
 // Handling UI STATUS
 function setLayoutRegisterStatus() {
     $("#registerStatus").removeClass("label-primary disable").addClass("active");
+    $("#contSupplyStatus").removeClass("label-primary active").addClass("disable");
     $("#verifyStatus").removeClass("label-primary active").addClass("disable");
     $("#paymentStatus").removeClass("label-primary active").addClass("disable");
     $("#finishStatus").removeClass("label-primary active").addClass("disable");
+    $("#contSupplyBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
@@ -1228,15 +1227,17 @@ function setLayoutSupplyContReq() {
     $("#contSupplyBtn").prop("disabled", false);
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", true);
-    $("#exportBillBtn").prop("disabled", false);
-    $("#exportReceiptBtn").prop("disabled", false);
+    $("#exportBillBtn").prop("disabled", true);
+    $("#exportReceiptBtn").prop("disabled", true);
 }
 
 function setLayoutVerifyUserStatus() {
     $("#registerStatus").removeClass("active disable").addClass("label-primary");
+    $("#contSupplyStatus").removeClass("active disable").addClass("label-primary");
     $("#verifyStatus").removeClass("label-primary disable").addClass("active");
     $("#paymentStatus").removeClass("active label-primary").addClass("disable");
     $("#finishStatus").removeClass("active label-primary").addClass("disable");
+    $("#contSupplyBtn").prop("disabled", false);
     $("#verifyBtn").prop("disabled", false);
     $("#payBtn").prop("disabled", true);
     $("#exportBillBtn").prop("disabled", true);
@@ -1245,9 +1246,11 @@ function setLayoutVerifyUserStatus() {
 
 function setLayoutPaymentStatus() {
     $("#registerStatus").removeClass("active disable").addClass("label-primary");
+    $("#contSupplyStatus").removeClass("active disable").addClass("label-primary");
     $("#verifyStatus").removeClass("active disable").addClass("label-primary");
     $("#paymentStatus").removeClass("label-primary disable").addClass("active");
     $("#finishStatus").removeClass("active label-primary").addClass("disable");
+    $("#contSupplyBtn").prop("disabled", true);
     $("#deleteBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", false);
@@ -1257,9 +1260,11 @@ function setLayoutPaymentStatus() {
 
 function setLayoutFinishStatus() {
     $("#registerStatus").removeClass("active disable").addClass("label-primary");
+    $("#contSupplyStatus").removeClass("active disable").addClass("label-primary");
     $("#verifyStatus").removeClass("active disable").addClass("label-primary");
     $("#paymentStatus").removeClass("active disable").addClass("label-primary");
     $("#finishStatus").removeClass("label-primary disable").addClass("active");
+    $("#contSupplyBtn").prop("disabled", true);
     $("#deleteBtn").prop("disabled", true);
     $("#verifyBtn").prop("disabled", true);
     $("#payBtn").prop("disabled", true);

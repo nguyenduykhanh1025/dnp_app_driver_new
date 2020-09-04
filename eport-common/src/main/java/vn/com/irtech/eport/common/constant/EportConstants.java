@@ -41,7 +41,6 @@ public interface EportConstants {
 	/** Lo da hoan thanh toan bo container*/
 	public static final String SHIPMENT_STATUS_FINISH = "4";
 	
-	
 	// Robot Status
 	/** Robot is available */
 	public static final String ROBOT_STATUS_AVAILABLE = "0";
@@ -68,9 +67,18 @@ public interface EportConstants {
 	public static final String DELEGATE_PERMISSION_PROCESS = "P";
 	public static final String DELEGATE_PERMISSION_PAYMENT = "M";
 	
-	// Container supply status
-	/** Container supply status waiting for supply cont */
-	public static final Integer CONT_SUPPLY_STATUS_WAITING = 0;
+	// Shipment supply status
+	/** Shipment supply status waiting for supply cont */
+	public static final Integer SHIPMENT_SUPPLY_STATUS_WAITING = 0;
 	/** Finish supply container */
-	public static final Integer CONT_SUPPLY_STATUS_FINISH = 1;
+	public static final Integer SHIPMENT_SUPPLY_STATUS_FINISH = 1;
+	
+	// Container supply status
+	/** Container supply status init */
+	public static final String CONTAINER_SUPPLY_STATUS_HOLD = "N";
+	/** Container supply status request */
+	public static final String CONTAINER_SUPPLY_STATUS_REQ = "R";
+	/** Container supply status request accepted */
+	public static final String CONTAINER_SUPPLY_STATUS_FINISH = "Y";
+	
 }
