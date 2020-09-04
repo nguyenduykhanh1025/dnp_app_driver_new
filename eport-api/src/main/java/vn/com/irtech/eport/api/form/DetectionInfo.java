@@ -26,6 +26,10 @@ public class DetectionInfo implements Serializable {
 	private Boolean detectionFlg = true;
 	
 	private Integer loadableWgt;
+	
+	private String yardPosition1;
+	
+	private String yardPosition2;
 
 	public String getGateId() {
 		return gateId;
@@ -89,6 +93,22 @@ public class DetectionInfo implements Serializable {
 
 	public void setLoadableWgt(Integer loadableWgt) {
 		this.loadableWgt = loadableWgt;
+	}
+
+	public String getYardPosition1() {
+		return yardPosition1;
+	}
+
+	public void setYardPosition1(String yardPosition1) {
+		this.yardPosition1 = yardPosition1;
+	}
+
+	public String getYardPosition2() {
+		return yardPosition2;
+	}
+
+	public void setYardPosition2(String yardPosition2) {
+		this.yardPosition2 = yardPosition2;
 	}
 	
 }
