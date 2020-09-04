@@ -171,6 +171,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             and d.valid_until &gt;= sysdate
             and del_flg = 0 
             and g.del_flag = '0'
-            and d.delegate_type = 'P'
+            and d.delegate_type = #{delegateType}
     </select>
 </mapper>
