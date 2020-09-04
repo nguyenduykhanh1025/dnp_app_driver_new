@@ -474,4 +474,32 @@
       and b.order_number = #{orderNumber}
     ORDER BY create_time DESC
   </select>
+   
+
+   <select id="getReportByCarrierGroup" parameterType="String" resultType="hashmap">
+		SELECT 
+			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do where carrier_code in 
+		        <foreach item="id" collection="array" open="(" separator="," close=")">
+		            #{id}
+		        </foreach>
+        		) AS totalBl,
+			(SELECT COUNT(container_number) FROM equipment_do where carrier_code in 
+		        <foreach item="id" collection="array" open="(" separator="," close=")">
+		            #{id}
+		        </foreach>
+		        ) AS totalCont,
+			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do  where carrier_code in 
+		        <foreach item="id" collection="array" open="(" separator="," close=")">
+		            #{id}
+		        </foreach>
+		        AND process_status = 0) AS waitingBl,
+			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do where carrier_code in 
+		        <foreach item="id" collection="array" open="(" separator="," close=")">
+		            #{id}
+		        </foreach>
+		        AND process_status = 1) AS completedBl
+            from equipment_do
+            FETCH NEXT 1 ROWS ONLY
+	</select>
+
 </mapper>
