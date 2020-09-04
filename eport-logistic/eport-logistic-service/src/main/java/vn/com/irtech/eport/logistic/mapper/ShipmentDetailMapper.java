@@ -149,5 +149,7 @@ public interface ShipmentDetailMapper
 	 * @param blNo
 	 * @return List<ShipmentDetail>
 	 */
-	public List<ShipmentDetail> selectEdoListByBlNo(String blNo);
+    public List<ShipmentDetail> selectEdoListByBlNo(String blNo);
+    
+    public List<ShipmentDetail> selectShipmentDetailListReport(ShipmentDetail shipmentDetail);
 }

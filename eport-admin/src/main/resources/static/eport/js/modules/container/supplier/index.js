@@ -183,6 +183,18 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     return td;
 }
 
+function formatUpdateTime(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'remark' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    let updateTime = new Date(value);
+    let now = new Date();
+    let offset = now.getTime() - updateTime.getTime();
+    let totalMinutes = Math.round(offset / 1000 / 60);
+    value = totalMinutes;
+    $(td).html(value);
+    return td;
+  }
+
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
     config = {
@@ -204,22 +216,36 @@ function configHandson() {
                 case 0:
                     return "Container No";
                 case 1:
-                    return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+                    return "Số phút";
                 case 2:
-                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+                    return "Hãng tàu";
                 case 3:
-                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
+                    return "Size / Type";
                 case 4:
-                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
+                    return "Loại hàng";
                 case 5:
-                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+                    return "Số book";
                 case 6:
-                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                    return "'Yêu cầu chất <br> lượng vỏ";
                 case 7:
-                    return "Ghi Chú";
+                    return "Chủ hàng";
+                case 8:
+                    return "SĐT liên hệ";
+                case 9:
+                    return "Dự kiến <br> Thời gian bốc";
+                case 10:
+                    return "Ngày yêu cầu";
+                case 11:
+                    return "Tên tàu";
+                case 12:
+                    return "Chuyến";
+                case 13:
+                    return "Cảng dỡ";
+                case 14:
+                    return "Ghi chú";
             }
         },
-        colWidths: [100, 100, 120, 100, 100, 100, 150, 200],
+        colWidths: [ 100, 100, 100, 120, 100, 100, 100, 150, 100, 120, 100, 80, 80, 80, 150],
         filter: "true",
         columns: [
             {
@@ -227,12 +253,37 @@ function configHandson() {
                 renderer: containerNoRenderer
             },
             {
-                data: "expiredDem",
-                renderer: expiredDemRenderer
+                data: "updateTime",
+                renderer: formatUpdateTime
             },
             {
                 data: "opeCode",
                 renderer: opeCodeRenderer
+            },
+            {
+                data: "sztp",
+                renderer: sizeRenderer
+            },
+            {
+                data: "cargoType",
+            },
+            {
+                data: "bookingNo",
+            },
+            {
+                data: "shellQuality", // chat luong vo
+            },
+            {
+                data: "consignee",
+            },
+            {
+                data: "phoneNumber", // Số điện thoại liên hệ
+            },
+            {
+                data: "takeTime", // Thời gian dự kiến bốc
+            },
+            {
+                data: "createTime", // Ngày yêu cầu
             },
             {
                 data: "vslNm",
@@ -241,10 +292,6 @@ function configHandson() {
             {
                 data: "voyNo",
                 renderer: voyNoRenderer
-            },
-            {
-                data: "sztp",
-                renderer: sizeRenderer
             },
             {
                 data: "dischargePort",
@@ -353,5 +400,7 @@ function saveInput() {
         }
     }
 }
+
+
 
     
