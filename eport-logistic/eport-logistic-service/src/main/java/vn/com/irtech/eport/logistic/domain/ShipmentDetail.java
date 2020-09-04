@@ -235,6 +235,20 @@ public class ShipmentDetail extends BaseEntity
     /** info for robot to know the index of record in catos */
     private Integer index;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date fromDate;
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date toDate;
+    
+    public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getFromDate() {
+		return fromDate;
+	}
+
     public void setId(Long id) {
         this.id = id;
     }

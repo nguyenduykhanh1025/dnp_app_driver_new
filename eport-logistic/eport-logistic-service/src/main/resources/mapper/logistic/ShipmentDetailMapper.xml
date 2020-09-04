@@ -162,6 +162,62 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </where>
        
     </select>
+
+    <select id="selectShipmentDetailListReport" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
+        <include refid="selectShipmentDetailVo"/>
+        <where>  
+            <if test="shipmentId != null "> and shipment_id = #{shipmentId}</if>
+            <if test="logisticGroupId != null "> and logistic_group_id = #{logisticGroupId}</if>
+            <if test="processOrderId != null"> and process_order_id = #{processOrderId}</if>
+            <if test="registerNo != null  and registerNo != ''"> and register_no = #{registerNo}</if>
+            <if test="containerStatus != null  and containerStatus != ''"> and container_status = #{containerStatus}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="temperature != null "> and temperature = #{temperature}</if>
+            <if test="fe != null  and fe != ''"> and fe = #{fe}</if>
+            <if test="sealNo != null  and sealNo != ''"> and seal_no = #{sealNo}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="expiredDem != null "> and expired_dem = #{expiredDem}</if>
+            <if test="detFreeTime != null "> and det_free_time = #{detFreeTime}</if>
+            <if test="emptyExpiredDem != null "> and empty_expired_dem = #{emptyExpiredDem}</if>
+            <if test="wgt != null "> and wgt = #{wgt}</if>
+            <if test="vslName != null  and vslName != ''"> and vsl_name = #{vslName}</if>
+            <if test="vslNm != null  and vslNm != ''"> and vsl_nm = #{vslNm}</if>
+            <if test="voyNo != null  and voyNo != ''"> and voy_no = #{voyNo}</if>
+            <if test="voyCarrier != null  and voyCarrier != ''"> and voy_carrier = #{voyCarrier}</if>
+            <if test="opeCode != null  and opeCode != ''"> and ope_code = #{opeCode}</if>
+            <if test="carrierName != null  and carrierName != ''"> and carrier_name = #{carrierName}</if>
+            <if test="loadingPort != null  and loadingPort != ''"> and loading_port = #{loadingPort}</if>
+            <if test="dischargePort != null  and dischargePort != ''"> and discharge_port = #{dischargePort}</if>
+            <if test="transportType != null  and transportType != ''"> and transport_type = #{transportType}</if>
+            <if test="emptyDepot != null  and emptyDepot != ''"> and empty_depot = #{emptyDepot}</if>
+            <if test="emptyDepotLocation != null  and emptyDepotLocation != ''"> and empty_depot_location = #{emptyDepotLocation}</if>
+            <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="vgmChk != null "> and vgm_chk = #{vgmChk}</if>
+            <if test="vgm != null  and vgm != ''"> and vgm = #{vgm}</if>
+            <if test="vgmPersonInfo != null  and vgmPersonInfo != ''"> and vgm_person_info = #{vgmPersonInfo}</if>
+            <if test="preorderPickup != null  and preorderPickup != ''"> and preorder_pickup = #{preorderPickup}</if>
+            <if test="prePickupPaymentStatus != null"> and pre_pickup_payment_status = #{prePickupPaymentStatus}</if>
+            <if test="customStatus != null  and customStatus != ''"> and custom_status = #{customStatus}</if>
+            <if test="paymentStatus != null  and paymentStatus != ''"> and payment_status = #{paymentStatus}</if>
+            <if test="processStatus != null  and processStatus != ''"> and process_status = #{processStatus}</if>
+            <if test="doStatus != null  and doStatus != ''"> and do_status = #{doStatus}</if>
+            <if test="doReceivedTime != null  and doReceivedTime != ''"> and do_received_time = #{doReceivedTime}</if>
+            <if test="userVerifyStatus != null  and userVerifyStatus != ''"> and user_verify_status = #{userVerifyStatus}</if>
+            <if test="finishStatus != null  and finishStatus != ''"> and finish_status = #{finishStatus}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="fromDate != null ">and (create_time = #{fromDate} OR create_time > #{fromDate})</if>
+            <if test="toDate != null ">and (create_time = #{toDate} OR create_time &lt; #{toDate})</if>
+            <if test="bookingNo != null  and bookingNo != ''">and (upper(booking_no) like concat(concat('%', #{bookingNo}),
+                '%')
+            </if>
+            <if test="blNo != null  and blNo != ''">or upper(bl_no) like concat(concat('%', #{blNo}), '%'))</if>
+            <if test="containerNo != null  and containerNo != ''">or upper(container_no) like concat(concat('%',
+                #{containerNo}), '%')
+            </if>
+        </where>
+       
+    </select>
+
     <select id="getShipmentDetailList" parameterType="ShipmentDetail" resultMap="ShipmentDetailResult">
         select id, shipment_id, logistic_group_id, process_order_id, register_no, container_no, empty_expired_dem, empty_depot_location,
         	container_status, sztp, sztp_define, temperature, fe, booking_no, bl_no, seal_no, consignee, expired_dem, det_free_time, wgt, vsl_name,

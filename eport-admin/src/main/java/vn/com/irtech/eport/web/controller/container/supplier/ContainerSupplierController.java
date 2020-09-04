@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.core.page.PageAble;
@@ -95,5 +96,23 @@ public class ContainerSupplierController extends BaseController {
 			return success("Cấp container thành công");
 		}
 		return error("Cấp container thất bại");
+	}
+	
+	@GetMapping("/report")
+	public String getReport() {
+		return PREFIX + "/report";
+	}
+	
+	@PostMapping("/supplierReport")
+	@ResponseBody
+	public TableDataInfo supplierReport(@RequestBody PageAble<ShipmentDetail> param) {
+		startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+		ShipmentDetail shipmentDetail = param.getData();
+		if (shipmentDetail == null) {
+			shipmentDetail = new ShipmentDetail();
+		}
+		shipmentDetail.setServiceType(EportConstants.SERVICE_PICKUP_EMPTY);
+		List<ShipmentDetail> dataList = shipmentDetailService.selectShipmentDetailListReport(shipmentDetail);
+		return getDataTable(dataList);
 	}
 }

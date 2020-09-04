@@ -1202,5 +1202,10 @@ public class ShipmentDetailServiceImpl implements IShipmentDetailService {
 			}
 		}
 		return processOrders;
-	}
+    }
+    
+    @Override
+    public List<ShipmentDetail> selectShipmentDetailListReport(ShipmentDetail shipmentDetail) {
+        return shipmentDetailMapper.selectShipmentDetailListReport(shipmentDetail);
+    }
 }
