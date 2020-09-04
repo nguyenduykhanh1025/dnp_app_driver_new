@@ -159,7 +159,7 @@ function formatLogistic(value, row, index) {
 }
 
 function logisticInfo(id, logistics) {
-  $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function () {
+  $.modal.openLogisticInfo("Thông tin: " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function () {
     $.modal.close();
   });
 }
@@ -167,11 +167,11 @@ function logisticInfo(id, logistics) {
 function formatCustomStatus(value, row) {
   switch (value) {
     case 'R':
-      return '<span class="badge badge-success">Yes</span>';
+      return '<span class="badge badge-success">Thông Quan</span>';
     case 'Y':
-      return '<span class="badge badge-danger">No</span>';
+      return '<span class="badge badge-danger">Chưa Thông Quan</span>';
     case 'N':
-      return '<span class="badge badge-danger">No</span>';
+      return '<span class="badge badge-danger">Chưa Kiểm Tra</span>';
     default:
       return '-';
   }

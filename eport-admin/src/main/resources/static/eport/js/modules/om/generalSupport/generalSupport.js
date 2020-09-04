@@ -175,7 +175,6 @@ function loadTable() {
           data: shipment,
         }),
         success: function (data) {
-          console.log(JSON.parse(data));
           success(JSON.parse(data));
           $("#dg").datagrid("hideColumn", "id");
         },
