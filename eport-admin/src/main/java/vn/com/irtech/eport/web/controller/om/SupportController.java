@@ -92,7 +92,7 @@ public class SupportController extends BaseController{
 		return dataList;
     }
 	
-	@Log(title = "Đồng bộ trạng thái Hải Quan", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
+	@Log(title = "Đồng bộ Hải Quan", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/customStatus")
 	@ResponseBody
 	public AjaxResult updateCustomStatus(String processOrderId) {
@@ -137,7 +137,7 @@ public class SupportController extends BaseController{
         return PREFIX + "/receiveDo";
     }
 
-	@Log(title = "Đồng bộ trạng thái nộp DO gốc", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
+	@Log(title = "Xác nhận thu DO gốc", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/doStatus")
 	@ResponseBody
 	public AjaxResult updateDoStatus(String processOrderId) {
@@ -152,7 +152,7 @@ public class SupportController extends BaseController{
 		return success();
 	}
 
-	@Log(title = "Đồng bộ trạng thái Container", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
+	@Log(title = "Đồng bộ làm lệnh", businessType = BusinessType.UPDATE, operatorType = OperatorType.MANAGE)
     @PostMapping("/containerStatus")
 	@ResponseBody
 	public AjaxResult updateContainerStatus(String processOrderId) {
