@@ -67,4 +67,10 @@ public interface EportConstants {
 	// Delegate Permission
 	public static final String DELEGATE_PERMISSION_PROCESS = "P";
 	public static final String DELEGATE_PERMISSION_PAYMENT = "M";
+	
+	// Container supply status
+	/** Container supply status waiting for supply cont */
+	public static final Integer CONT_SUPPLY_STATUS_WAITING = 0;
+	/** Finish supply container */
+	public static final Integer CONT_SUPPLY_STATUS_FINISH = 1;
 }
