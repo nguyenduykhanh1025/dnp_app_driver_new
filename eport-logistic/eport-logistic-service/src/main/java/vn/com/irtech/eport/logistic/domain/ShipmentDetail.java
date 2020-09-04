@@ -207,6 +207,22 @@ public class ShipmentDetail extends BaseEntity
     /** Consignee By Tax Code */
     @Excel(name = "Customs Numbers")
     private String customsNo;
+    
+    /** Container supply status */
+    @Excel(name = "Cont Supply Status")
+    private String contSupplyStatus;
+    
+    /** Planning date */
+    @Excel(name = "Planning Date", width = 30, dateFormat = "yyyy-MM-dd")
+    private Date planningDate;
+    
+    /** Quality requirement */
+    @Excel(name = "Quality Requirement")
+    private String qualityRequirement;
+    
+    /** Container supply remark */
+    @Excel(name = "Cont Supply Remark")
+    private String contSupplyRemark;
 
     private String block;
 
@@ -735,6 +751,38 @@ public class ShipmentDetail extends BaseEntity
 	public void setCustomsNo(String customsNo) {
 		this.customsNo = customsNo;
 	}
+	
+	public String getContSupplyStatus() {
+		return contSupplyStatus;
+	}
+
+	public void setContSupplyStatus(String contSupplyStatus) {
+		this.contSupplyStatus = contSupplyStatus;
+	}
+
+	public Date getPlanningDate() {
+		return planningDate;
+	}
+
+	public void setPlanningDate(Date planningDate) {
+		this.planningDate = planningDate;
+	}
+
+	public String getQualityRequirement() {
+		return qualityRequirement;
+	}
+
+	public void setQualityRequirement(String qualityRequirement) {
+		this.qualityRequirement = qualityRequirement;
+	}
+
+	public String getContSupplyRemark() {
+		return contSupplyRemark;
+	}
+
+	public void setContSupplyRemark(String contSupplyRemark) {
+		this.contSupplyRemark = contSupplyRemark;
+	}
 
 	@Override
     public String toString() {
@@ -802,6 +850,10 @@ public class ShipmentDetail extends BaseEntity
             .append("taxCode", getTaxCode())
             .append("consigneeByTaxCode", getConsigneeByTaxCode())
             .append("customsNo", getCustomsNo())
+            .append("contSupplyStatus", getContSupplyStatus())
+            .append("planningDate", getPlanningDate())
+            .append("qualityRequirement", getQualityRequirement())
+            .append("contSupplyRemark", getContSupplyRemark())
             .toString();
     }
 }

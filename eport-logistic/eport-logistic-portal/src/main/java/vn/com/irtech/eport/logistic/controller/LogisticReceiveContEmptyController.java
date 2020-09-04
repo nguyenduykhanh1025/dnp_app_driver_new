@@ -7,11 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,11 +35,9 @@ import vn.com.irtech.eport.common.exception.file.InvalidExtensionException;
 import vn.com.irtech.eport.common.utils.DateUtils;
 import vn.com.irtech.eport.common.utils.file.FileUploadUtils;
 import vn.com.irtech.eport.common.utils.file.MimeTypeUtils;
-import vn.com.irtech.eport.logistic.domain.DriverAccount;
 import vn.com.irtech.eport.logistic.domain.LogisticAccount;
 import vn.com.irtech.eport.logistic.domain.OtpCode;
 import vn.com.irtech.eport.logistic.domain.ProcessOrder;
-import vn.com.irtech.eport.logistic.domain.PickupAssign;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
@@ -331,6 +329,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 					shipmentDetail.setPaymentStatus("N");
 					shipmentDetail.setProcessStatus("N");
 					shipmentDetail.setUserVerifyStatus("N");
+					shipmentDetail.setContSupplyStatus("N");
 					shipmentDetail.setFe("E");
 					shipmentDetail.setFinishStatus("N");
 					if (shipmentDetailService.insertShipmentDetail(shipmentDetail) != 1) {
@@ -460,7 +459,7 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
 		if (!CollectionUtils.isEmpty(shipmentDetails)) {
 			for (ShipmentDetail shipmentDetail : shipmentDetails) {
-				shipmentDetail.setStatus(3);
+				shipmentDetail.setStatus(4);
 				shipmentDetail.setPaymentStatus("Y");
 				shipmentDetailService.updateShipmentDetail(shipmentDetail);
 			}
@@ -516,5 +515,25 @@ public class LogisticReceiveContEmptyController extends LogisticBaseController {
 			return ajaxResult;
 		}
 		return error();
+	}
+	
+	@PostMapping("/cont-req/shipment-detail/{shipmentDetailIds}")
+	@ResponseBody
+	public AjaxResult reqSupplyContainer(@PathVariable("shipmentDetailIds") String shipmentDetailIds) {
+		List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailByIds(shipmentDetailIds, getUser().getGroupId());
+		if (CollectionUtils.isNotEmpty(shipmentDetails)) {
+			Shipment shipment = new Shipment();
+			shipment.setId(shipmentDetails.get(0).getShipmentId());
+			shipment.setContSupplyStatus(EportConstants.SHIPMENT_SUPPLY_STATUS_WAITING);
+			shipmentService.updateShipment(shipment);
+			for (ShipmentDetail shipmentDetail : shipmentDetails) {
+				shipmentDetail.setContSupplyStatus(EportConstants.CONTAINER_SUPPLY_STATUS_REQ);
+				shipmentDetail.setStatus(1);
+				shipmentDetailService.updateShipmentDetail(shipmentDetail);
+			}
+			return success("Đã yêu cầu cấp container, quý khách vui lòng đợi bộ phận cấp container xử lý.");
+		}
+		
+		return error("Yêu cầu cấp rỗng thất bại, quý khách vui lòng liên hệ bộ phận thủ tục để được hỗ trợ thêm.");
 	}
 }

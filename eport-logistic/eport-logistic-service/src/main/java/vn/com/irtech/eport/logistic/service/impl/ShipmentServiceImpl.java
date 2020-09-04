@@ -134,4 +134,14 @@ public class ShipmentServiceImpl implements IShipmentService {
 		return shipmentMapper.selectShipmentListForRegister(shipment);
 	}
 
+	/**
+     * Get shipment list with logistic name for cont supplier
+     * 
+     * @param shipment
+     * @return List shipment
+     */
+	@Override
+    public List<Shipment> getShipmentListForContSupply(Shipment shipment) {
+		return shipmentMapper.getShipmentListForContSupply(shipment);
+	}
 }
