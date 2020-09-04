@@ -9,6 +9,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,7 @@ import vn.com.irtech.eport.api.form.CheckinReq;
 import vn.com.irtech.eport.api.form.DetectionInfo;
 import vn.com.irtech.eport.api.form.MeasurementDataReq;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
+import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
 import vn.com.irtech.eport.common.utils.CacheUtils;
@@ -44,6 +46,12 @@ public class GateDetectionController extends BaseController {
 	
 	@PostMapping("/detection")
 	public AjaxResult submitDectionInfo(@Validated @RequestBody DetectionInfo detectionInfo) {
+		
+		try {
+			updateData(detectionInfo);
+		} catch (Exception e) {
+			logger.error("Error when update data from gate: " + e);
+		}
 		
 		String detectJson = new Gson().toJson(detectionInfo);
 		logger.debug(">>>> Receive detection info:" + detectJson);
@@ -82,23 +90,44 @@ public class GateDetectionController extends BaseController {
 		} catch (MqttException e) {
 			logger.error("Error send detection info: " + e);
 		}
-		
-		if (detectionInfo.getLoadableWgt() != null) {
-			PickupHistory pickupHistory = new PickupHistory();
-			pickupHistory.setTruckNo(detectionInfo.getChassisNo());
-			pickupHistory.setChassisNo(detectionInfo.getChassisNo());
-			pickupHistory.setStatus(0);
-			List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistory);
-			if (CollectionUtils.isNotEmpty(pickupHistories)) {
-				for (PickupHistory pickupHistory2 : pickupHistories) {
-					pickupHistory2.setLoadableWgt(detectionInfo.getLoadableWgt());
-					pickupHistoryService.updatePickupHistory(pickupHistory2);
-				}
-			}
-			
-		}
-		
 		return success();
+	}
+	
+	@Transactional
+	private void updateData(DetectionInfo detectionInfo) {
+		PickupHistory pickupHistory = new PickupHistory();
+		pickupHistory.setTruckNo(detectionInfo.getChassisNo());
+		pickupHistory.setChassisNo(detectionInfo.getChassisNo());
+		pickupHistory.setStatus(0);
+		List<PickupHistory> pickupHistories = pickupHistoryService.selectPickupHistoryList(pickupHistory);
+		if (CollectionUtils.isNotEmpty(pickupHistories)) {
+			for (PickupHistory pickupHistory2 : pickupHistories) {
+				if (detectionInfo.getLoadableWgt() != null) {
+					if (pickupHistory2.getShipment().getServiceType() == EportConstants.SERVICE_PICKUP_FULL) {
+						pickupHistory2.setLoadableWgt(detectionInfo.getLoadableWgt());
+					}
+				}
+				if (StringUtils.isNotEmpty(detectionInfo.getYardPosition1())) {
+					if (detectionInfo.getContainerNo1().equalsIgnoreCase(pickupHistory2.getContainerNo())) {
+						String[] yardPositionArr1 = detectionInfo.getYardPosition1().split("-");
+						pickupHistory2.setBlock(yardPositionArr1[0]);
+						pickupHistory2.setBay(yardPositionArr1[1]);
+						pickupHistory2.setLine(yardPositionArr1[2]);
+						pickupHistory2.setTier(yardPositionArr1[3]);
+					}
+				}
+				if (StringUtils.isNotEmpty(detectionInfo.getYardPosition2())) {
+					if (detectionInfo.getContainerNo2().equalsIgnoreCase(pickupHistory2.getContainerNo())) {
+						String[] yardPositionArr2 = detectionInfo.getYardPosition2().split("-");
+						pickupHistory2.setBlock(yardPositionArr2[0]);
+						pickupHistory2.setBay(yardPositionArr2[1]);
+						pickupHistory2.setLine(yardPositionArr2[2]);
+						pickupHistory2.setTier(yardPositionArr2[3]);
+					}
+				}
+				pickupHistoryService.updatePickupHistory(pickupHistory2);
+			}
+		}
 	}
 }
  

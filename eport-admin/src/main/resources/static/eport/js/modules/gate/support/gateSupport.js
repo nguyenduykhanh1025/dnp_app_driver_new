@@ -251,6 +251,8 @@ function gateIn() {
     chassisNo: $("#chassisNo").val(),
     containerNo1: $("#containerSend1").val(),
     containerNo2: $("#containerSend2").val(),
+    yardPosition1: $("#yardPosition1").val(),
+    yardPosition2: $("#yardPosition2").val(),
     wgt: $("#wgt").val(),
     loadableWgt: $("#loadableWgt").val()
   };
@@ -258,7 +260,7 @@ function gateIn() {
   $.ajax({
     cache: true,
     type: "POST",
-    url: "http://192.168.1.70:7073/api/gate/detection",
+    url: "http://app.danangport.com/api/gate/detection",
     contentType: "application/json",
     data: JSON.stringify(reqData),
     async: false,
