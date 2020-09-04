@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.carrier.mapper.BookingDetailMapper">
+    
+    <resultMap type="BookingDetail" id="BookingDetailResult">
+        <result property="id"    column="id"    />
+        <result property="carrierGroupId"    column="carrier_group_id"    />
+        <result property="bookingId"    column="booking_id"    />
+        <result property="containerNo"    column="container_no"    />
+        <result property="sztp"    column="sztp"    />
+        <result property="userVoy"    column="user_voy"    />
+        <result property="pol"    column="pol"    />
+        <result property="pod"    column="pod"    />
+        <result property="cargoType"    column="cargo_type"    />
+        <result property="yardPosition"    column="yard_position"    />
+        <result property="releaseDate"    column="release_date"    />
+        <result property="expiredDate"    column="expired_date"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectBookingDetailVo">
+        select id, carrier_group_id, booking_id, container_no, sztp, user_voy, pol, pod, cargo_type, yard_position, release_date, expired_date, remark, create_time, create_by, update_time, update_by from booking_detail
+    </sql>
+
+    <select id="selectBookingDetailList" parameterType="BookingDetail" resultMap="BookingDetailResult">
+        <include refid="selectBookingDetailVo"/>
+        <where>  
+            <if test="carrierGroupId != null "> and carrier_group_id = #{carrierGroupId}</if>
+            <if test="bookingId != null "> and booking_id = #{bookingId}</if>
+            <if test="containerNo != null  and containerNo != ''"> and container_no = #{containerNo}</if>
+            <if test="sztp != null  and sztp != ''"> and sztp = #{sztp}</if>
+            <if test="userVoy != null  and userVoy != ''"> and user_voy = #{userVoy}</if>
+            <if test="pol != null  and pol != ''"> and pol = #{pol}</if>
+            <if test="pod != null  and pod != ''"> and pod = #{pod}</if>
+            <if test="cargoType != null  and cargoType != ''"> and cargo_type = #{cargoType}</if>
+            <if test="yardPosition != null  and yardPosition != ''"> and yard_position = #{yardPosition}</if>
+            <if test="releaseDate != null "> and release_date = #{releaseDate}</if>
+            <if test="expiredDate != null "> and expired_date = #{expiredDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectBookingDetailById" parameterType="Long" resultMap="BookingDetailResult">
+        <include refid="selectBookingDetailVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBookingDetail" parameterType="BookingDetail">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT seq_booking_detail.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into booking_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="carrierGroupId != null">carrier_group_id,</if>
+            <if test="bookingId != null">booking_id,</if>
+            <if test="containerNo != null and containerNo != ''">container_no,</if>
+            <if test="sztp != null and sztp != ''">sztp,</if>
+            <if test="userVoy != null">user_voy,</if>
+            <if test="pol != null">pol,</if>
+            <if test="pod != null">pod,</if>
+            <if test="cargoType != null">cargo_type,</if>
+            <if test="yardPosition != null">yard_position,</if>
+            <if test="releaseDate != null">release_date,</if>
+            <if test="expiredDate != null">expired_date,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="carrierGroupId != null">#{carrierGroupId},</if>
+            <if test="bookingId != null">#{bookingId},</if>
+            <if test="containerNo != null and containerNo != ''">#{containerNo},</if>
+            <if test="sztp != null and sztp != ''">#{sztp},</if>
+            <if test="userVoy != null">#{userVoy},</if>
+            <if test="pol != null">#{pol},</if>
+            <if test="pod != null">#{pod},</if>
+            <if test="cargoType != null">#{cargoType},</if>
+            <if test="yardPosition != null">#{yardPosition},</if>
+            <if test="releaseDate != null">#{releaseDate},</if>
+            <if test="expiredDate != null">#{expiredDate},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBookingDetail" parameterType="BookingDetail">
+        update booking_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="carrierGroupId != null">carrier_group_id = #{carrierGroupId},</if>
+            <if test="bookingId != null">booking_id = #{bookingId},</if>
+            <if test="containerNo != null and containerNo != ''">container_no = #{containerNo},</if>
+            <if test="sztp != null and sztp != ''">sztp = #{sztp},</if>
+            <if test="userVoy != null">user_voy = #{userVoy},</if>
+            <if test="pol != null">pol = #{pol},</if>
+            <if test="pod != null">pod = #{pod},</if>
+            <if test="cargoType != null">cargo_type = #{cargoType},</if>
+            <if test="yardPosition != null">yard_position = #{yardPosition},</if>
+            <if test="releaseDate != null">release_date = #{releaseDate},</if>
+            <if test="expiredDate != null">expired_date = #{expiredDate},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBookingDetailById" parameterType="Long">
+        delete from booking_detail where id = #{id}
+    </delete>
+
+    <delete id="deleteBookingDetailByIds" parameterType="String">
+        delete from booking_detail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
