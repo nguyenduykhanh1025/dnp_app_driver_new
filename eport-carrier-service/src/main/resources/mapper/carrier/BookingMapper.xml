@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vn.com.irtech.eport.carrier.mapper.BookingMapper">
+    
+    <resultMap type="Booking" id="BookingResult">
+        <result property="id"    column="id"    />
+        <result property="carrierGroupId"    column="carrier_group_id"    />
+        <result property="carrierAccountId"    column="carrier_account_id"    />
+        <result property="opr"    column="opr"    />
+        <result property="bookingNo"    column="booking_no"    />
+        <result property="bookQty"    column="book_qty"    />
+        <result property="consignee"    column="consignee"    />
+        <result property="consigneeTaxcode"    column="consignee_taxcode"    />
+        <result property="bookStatus"    column="book_status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+    </resultMap>
+
+    <sql id="selectBookingVo">
+        select id, carrier_group_id, carrier_account_id, opr, booking_no, book_qty, consignee, consignee_taxcode, book_status, create_time, create_by, update_time, update_by from booking
+    </sql>
+
+    <select id="selectBookingList" parameterType="Booking" resultMap="BookingResult">
+        <include refid="selectBookingVo"/>
+        <where>  
+            <if test="carrierGroupId != null "> and carrier_group_id = #{carrierGroupId}</if>
+            <if test="carrierAccountId != null "> and carrier_account_id = #{carrierAccountId}</if>
+            <if test="opr != null  and opr != ''"> and opr = #{opr}</if>
+            <if test="bookingNo != null  and bookingNo != ''"> and booking_no = #{bookingNo}</if>
+            <if test="bookQty != null "> and book_qty = #{bookQty}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="consigneeTaxcode != null  and consigneeTaxcode != ''"> and consignee_taxcode = #{consigneeTaxcode}</if>
+            <if test="bookStatus != null  and bookStatus != ''"> and book_status = #{bookStatus}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+        </where>
+    </select>
+    
+    <select id="selectBookingById" parameterType="Long" resultMap="BookingResult">
+        <include refid="selectBookingVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBooking" parameterType="Booking">
+        <selectKey keyProperty="id" resultType="long" order="BEFORE">
+            SELECT seq_booking.NEXTVAL as id FROM DUAL
+        </selectKey>
+        insert into booking
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="carrierGroupId != null">carrier_group_id,</if>
+            <if test="carrierAccountId != null">carrier_account_id,</if>
+            <if test="opr != null and opr != ''">opr,</if>
+            <if test="bookingNo != null and bookingNo != ''">booking_no,</if>
+            <if test="bookQty != null">book_qty,</if>
+            <if test="consignee != null">consignee,</if>
+            <if test="consigneeTaxcode != null">consignee_taxcode,</if>
+            <if test="bookStatus != null and bookStatus != ''">book_status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="updateBy != null">update_by,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="carrierGroupId != null">#{carrierGroupId},</if>
+            <if test="carrierAccountId != null">#{carrierAccountId},</if>
+            <if test="opr != null and opr != ''">#{opr},</if>
+            <if test="bookingNo != null and bookingNo != ''">#{bookingNo},</if>
+            <if test="bookQty != null">#{bookQty},</if>
+            <if test="consignee != null">#{consignee},</if>
+            <if test="consigneeTaxcode != null">#{consigneeTaxcode},</if>
+            <if test="bookStatus != null and bookStatus != ''">#{bookStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBooking" parameterType="Booking">
+        update booking
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="carrierGroupId != null">carrier_group_id = #{carrierGroupId},</if>
+            <if test="carrierAccountId != null">carrier_account_id = #{carrierAccountId},</if>
+            <if test="opr != null and opr != ''">opr = #{opr},</if>
+            <if test="bookingNo != null and bookingNo != ''">booking_no = #{bookingNo},</if>
+            <if test="bookQty != null">book_qty = #{bookQty},</if>
+            <if test="consignee != null">consignee = #{consignee},</if>
+            <if test="consigneeTaxcode != null">consignee_taxcode = #{consigneeTaxcode},</if>
+            <if test="bookStatus != null and bookStatus != ''">book_status = #{bookStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBookingById" parameterType="Long">
+        delete from booking where id = #{id}
+    </delete>
+
+    <delete id="deleteBookingByIds" parameterType="String">
+        delete from booking where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
