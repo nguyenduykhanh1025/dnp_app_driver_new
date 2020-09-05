@@ -215,8 +215,16 @@ function formatDate(value) {
     return day + "/" + monthText + "/" + date.getFullYear();
 }
 
-function formatRemark(value) {
-    return '<div class="easyui-tooltip" title="'+ ((value!=null&&value!="")?value:"không có ghi chú") +'" style="width: 80; text-align: center;"><span>'+ (value!=null?value:"") +'</span></div>';
+function formatStatus(value) {
+    if(value == 'R')
+    {
+        return "Chưa phát hành";
+    }
+    if(value == 'H')
+    {
+        return "Đã phát hành";
+    }
+    return "Không xác định"
 }
 
 function pickupContainer(id) {

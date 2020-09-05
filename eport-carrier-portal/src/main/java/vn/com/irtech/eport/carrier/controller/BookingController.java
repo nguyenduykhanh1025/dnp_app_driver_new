@@ -106,6 +106,10 @@ public class BookingController extends CarrierBaseController
     @ResponseBody
     public AjaxResult releaseBooking(Long id)
     {  
+        if(bookingDetailService.selectBookingDetailByBookingNo(id) == null)
+        {
+            return error("Vui lòng điền đầy đủ thông tin booking <br> và lưu booking trước khi phát hành!");
+        }
         if(!bookingService.selectBookingById(id).getCarrierAccountId().equals(super.getUserId()))
         {
             return error("Bạn không có quyền phát hành Booking này <br> vui lòng kiểm tra lại dữ liệu!");
@@ -113,7 +117,8 @@ public class BookingController extends CarrierBaseController
         Booking booking = new Booking();
         booking.setId(id);
         booking.setBookStatus('R');
-        return toAjax(bookingService.updateBooking(booking));
+        bookingService.updateBooking(booking);
+        return success();
     }
 
     /**
