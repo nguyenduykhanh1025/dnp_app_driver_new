@@ -22,4 +22,5 @@ public interface UnitBillDao extends BaseMapper<UnitBillDao>{
 	
 	public List<UnitBillEntity> getUnitBillByShipmentDetailsForSendSSR(ShipmentDetailEntity shipmentDetailEntity);
 
+	public String getInvoiceNoByOrderNo(String orderNo);
 }

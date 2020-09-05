@@ -105,7 +105,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectProcessOrderListWithLogisticName" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
-        select id, shipment_id, logistic_group_id, service_type, invoice_no, pay_type, sztp, modee, consignee, truck_co, 
+        select id, shipment_id, logistic_group_id, service_type, invoice_no, pay_type, sztp, modee, consignee, truck_co, opr,
         tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, 
         result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, post_process_id, runnable, order_no, process_data, (select l.group_name from logistic_group l where l.id = s.logistic_group_id FETCH NEXT 1 ROWS ONLY) as logistic_name from process_order s
         <where>  

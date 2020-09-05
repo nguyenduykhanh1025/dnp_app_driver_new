@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+  <head>
+    <th:block th:include="include :: header('List Exchange Delivery Order')" />
+    <th:block th:include="include :: easyui-css" />
+    <link th:href="@{/ajax/libs/select2/select2.min.css}" rel="stylesheet"/>
+    <link th:href="@{/ajax/libs/select2/select2-bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/eport/css/eport.css}" rel="stylesheet"/>
+    <link th:href="@{/eport/css/edo/manage/edo.css}" rel="stylesheet" />
+  </head>
+  <body class="bg-gray">
+    <div class="col-sm-12">
+        <div class="form-inline mt10 mb10" >
+        <div class="form-group">
+          <div class="input-group">
+            <input type="text" class="form-control" name="searchInfoProcessOrder" id="searchInfoProcessOrder" placeholder="Tìm kiếm" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="sr-only" for="logistic">Logistic</label>
+          <div class="input-group">
+            <select class="form-control" id="logistic">
+              <option th:each="logistic, iterator : ${logisticsGroups}" th:value=${logistic.id} th:text=${logistic.groupName}>
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-left: 70px;">
+          <a class="btn btn-primary btn-rounded btn-sm" onclick="searchDo()" id="searchInfoProcessOrder"><i
+            class="glyphicon glyphicon-search"></i> Tìm Kiếm</a>
+        </div>
+        <div class="form-group margin-input">
+            <label class="sr-only"> Đồng Bộ Hải Quan</label>
+            <div class="input-group">
+              <button class="btn btn-success btn-sm" id="checkCustomStatusByProcessOrderId" onclick="checkCustomStatusByProcessOrderId() "><i
+                  class="fa fa-pencil-square-o"></i> Đồng Bộ Hải Quan</button>
+            </div>
+          </div>
+          <div class="form-group margin-input">
+            <label class="sr-only">Đồng Bộ Trạng Thái Làm Lệnh</label>
+            <div class="input-group">
+              <button class="btn btn-success btn-sm" id="checkProcessStatusByProcessOrderId" onclick="checkProcessStatusByProcessOrderId() "><i
+                  class="fa fa-pencil-square-o"></i> Đồng Bộ Trạng Thái Làm Lệnh</button>
+            </div>
+          </div>
+      </div> <!-- //end form -->
+    </div>
+    <div class="col-sm-12 container-fluid wrapper">
+    <section class="left">
+      <div class="fixed" id="btn-collapse"><i class="fa fa-caret-left"></i></div>
+      <div class="fixed" id="btn-uncollapse"><i class="fa fa-caret-right"></i></div>
+      <table id="dg">
+        <thead>
+            <tr>
+              <th data-options="field:'updateTime',align:'center', formatter: formatUpdateTime" width="70">
+                Số phút
+              </th>
+              <th data-options="field:'orderNo',align:'center'" width="120">
+                Số lệnh
+              </th>
+              <th data-options="field: 'logisticName', halign: 'center', resizable: true, formatter: formatLogistic" width="120" sortable="true">
+                Logistics
+              </th>
+              <th data-options="field: 'blNo', halign: 'center', resizable:true" width="110">
+                B/L No
+              </th>
+              <th data-options="field:'contNumber',align:'center'" width="40">
+                SL
+              </th>
+              <th data-options="field:'createTime',align:'left'" width="150">
+                Ngày tạo
+              </th>
+            </tr>
+        </thead>
+      </table>
+    </section>
+    <section class="right ml10">
+      <table id="dgContainer">
+        <thead frozen="true">
+          <tr>
+            <th data-options="field:'containerNo',align:'left'" width="120">
+              Số container
+            </th>
+          </tr>
+      </thead>
+        <thead>
+            <th data-options="field:'sztp',align:'left'" width="50">
+              Sztp
+            </th>
+            <th data-options="field:'customStatus',align:'center',formatter: formatCustomStatus" width="100">
+              Trại thái <br> hải quan
+            </th>
+            <th data-options="field:'processStatus',align:'center', formatter: formatStatus" width="100">
+                Trại thái <br> làm lệnh
+            </th>
+            <th data-options="field:'consignee',align:'left'" width="230">
+              Chủ hàng
+            </th>
+            <th data-options="field:'detFreeTime',align:'center'" width="80">
+              Hạn lệnh
+            </th>
+            <th data-options="field:'vessel',align:'left',formatter: formatVessel" width="215">
+                Tàu / Chuyến
+            </th>
+            <th data-options="field:'emptyDepot',align:'left'" width="110">
+                Nơi trả vỏ
+            </th>
+            <th data-options="field:'loadingPort',align:'left'" width="90">
+                Cảng xếp
+            </th>
+          </tr>
+        </thead>
+      </table>
+    </section>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: easyui-js" />
+    <script th:src="@{/ajax/libs/select2/select2.min.js}"></script>
+    <script th:src="@{/eport/js/modules/om/support/sendEmpty.js}"></script>
+  </body>
+
+</html>

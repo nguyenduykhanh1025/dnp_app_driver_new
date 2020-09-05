@@ -45,4 +45,8 @@ public class ApiUnitBillController {
 		return unitBillDao.getUnitBillByShipmentDetailsForReceiveSSR(shipmentDetailEntity);
 	}
 
+	@GetMapping("/order-no/{orderNo}/get/invoice-no")
+	public String getInvoiceNoByOrderNo(@PathVariable("orderNo") String orderNo) {
+		return unitBillDao.getInvoiceNoByOrderNo(orderNo);
+	}
 }

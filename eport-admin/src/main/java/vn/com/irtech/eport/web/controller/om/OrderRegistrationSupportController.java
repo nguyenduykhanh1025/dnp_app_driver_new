@@ -84,6 +84,12 @@ public class OrderRegistrationSupportController extends AdminBaseController {
     return PREFIX + "/logisticsInfo";
   }
 
+  @GetMapping("shipment/{shipmentId}/shipmentDetails/info")
+  public String getShipmentDetailsInfo(@PathVariable("shipmentId") Long shipmentId, ModelMap mmap) {
+    mmap.put("shipmentId", shipmentId);
+    return PREFIX + "/shipmentDetailsInfor";
+  }
+  
   @GetMapping("/custom/{shipmentId}")
   public String getCustomSupport(@PathVariable Long shipmentId, ModelMap mmap) {
     ShipmentDetail shipmentDetail = new ShipmentDetail();
@@ -125,7 +131,7 @@ public class OrderRegistrationSupportController extends AdminBaseController {
     mmap.put("orderList", processOrderService.selectOrderListForOmSupport(processOrder));
     return PREFIX + "/verificationSupport";
   }
-
+  
   @PostMapping("/shipments")
   @ResponseBody
   public TableDataInfo getShipmentList(@RequestBody PageAble<Shipment> param) {
@@ -137,7 +143,20 @@ public class OrderRegistrationSupportController extends AdminBaseController {
     List<Shipment> shipments = shipmentService.selectShipmentListForOm(shipment);
     return getDataTable(shipments);
   }
-
+  
+  @PostMapping("/shipmentDetailsInfor")
+  @ResponseBody
+  public TableDataInfo getshipmentDetails(@RequestBody PageAble<ShipmentDetail> param) {
+      startPage(param.getPageNum(), param.getPageSize(), param.getOrderBy());
+      ShipmentDetail shipmentDetail = param.getData();
+      if (shipmentDetail == null) {
+          shipmentDetail = new ShipmentDetail();
+		}
+      List<ShipmentDetail> shipmentDetails = shipmentDetailService.selectShipmentDetailList(shipmentDetail);
+      TableDataInfo dataList = getDataTable(shipmentDetails);
+		return dataList;
+  }
+  
   @PostMapping("/custom")
   @ResponseBody
   public AjaxResult syncCustomStatus(@RequestBody List<ShipmentDetail> shipmentDetails) {

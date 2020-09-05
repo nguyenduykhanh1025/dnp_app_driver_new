@@ -478,4 +478,32 @@
 		    "A1"."BOOKING_NO" = #{bookingNo}
 		    AND "A1"."USER_VOY" = #{userVoy}
     </select>
+    <select id="getOrderNoInInventoryByShipmentDetail" parameterType="ShipmentDetailEntity" resultType="String">
+	    SELECT JOB_ODR_NO2
+	    FROM DNP_UAT.TB_INVENTORY
+	    <where>
+	       <if test="containerNo != null  and containerNo != ''"> and CNTR_NO = #{containerNo}</if>
+	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
+	       <if test="fe != null  and fe != ''"> and FE = #{fe}</if>
+	       <if test="bookingNo != null  and bookingNo != ''"> and BOOKING_NO = #{bookingNo}</if>
+	       <if test="blNo != null  and blNo != ''"> and BL_NO = #{blNo}</if>
+	       <if test="vslNm != null  and vslNm != ''"> and VSL_CD = #{vslNm}</if>
+	       <if test="voyNo != null  and voyNo != ''"> and CALL_SEQ = #{voyNo}</if>
+	       <if test="opeCode != null  and opeCode != ''"> and PTNR_CODE = #{opeCode}</if>
+	   </where>
+    </select>
+    <select id="getOrderNoInReserveByShipmentDetail" parameterType="ShipmentDetailEntity" resultType="String">
+	    SELECT JOB_ODR_NO
+	    FROM DNP_UAT.TB_RESERVE
+	    <where>
+	       <if test="containerNo != null  and containerNo != ''"> and CNTR_NO = #{containerNo}</if>
+	       <if test="sztp != null  and sztp != ''"> and SZTP2 = #{sztp}</if>
+	       <if test="fe != null  and fe != ''"> and FE = #{fe}</if>
+	       <if test="bookingNo != null  and bookingNo != ''"> and BOOKING_NO = #{bookingNo}</if>
+	       <if test="blNo != null  and blNo != ''"> and BL_NO = #{blNo}</if>
+	       <if test="vslNm != null  and vslNm != ''"> and VSL_CD = #{vslNm}</if>
+	       <if test="voyNo != null  and voyNo != ''"> and CALL_SEQ = #{voyNo}</if>
+	       <if test="opeCode != null  and opeCode != ''"> and PTNR_CODE = #{opeCode}</if>
+	   </where>
+    </select>
 </mapper>
