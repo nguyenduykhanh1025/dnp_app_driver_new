@@ -237,5 +237,7 @@ public interface IShipmentDetailService
 	 * @param receiveEmptyReqs
 	 * @return List<ProcessOrder>
 	 */
-	public List<ProcessOrder> createBookingIfNeed(List<ServiceSendFullRobotReq> receiveEmptyReqs);
+    public List<ProcessOrder> createBookingIfNeed(List<ServiceSendFullRobotReq> receiveEmptyReqs);
+    
+    public List<ShipmentDetail> selectShipmentDetailListReport(ShipmentDetail shipmentDetail);
 }

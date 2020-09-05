@@ -1187,7 +1187,7 @@ function removeShipmentSendEmpty(){
 			$.modal.confirmShipment("Xác nhận thực hiện xóa Lô " + shipmentSelected.id + "  ?", function() {
 				$.modal.loading("Đang xử lý...");
 			    $.ajax({
-			        url: ctx + 'logistic/remove/',
+			        url: ctx + 'logistic/shipment/remove',
 			        type: 'POST',
 			        data: {
 			            id: shipmentSelected.id,

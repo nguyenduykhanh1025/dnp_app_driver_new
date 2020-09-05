@@ -9,6 +9,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import vn.com.irtech.eport.carrier.domain.CarrierAccount;
+import vn.com.irtech.eport.carrier.service.IEdoService;
 import vn.com.irtech.eport.common.config.Global;
 import vn.com.irtech.eport.equipment.service.IEquipmentDoService;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
@@ -25,8 +26,9 @@ public class CarrierIndexController extends CarrierBaseController {
 	private ISysConfigService configService;
 	@Autowired
 	private IEquipmentDoService doService;
-//	@Autowired
-//	private ICarrierGroupService groupService;
+
+	@Autowired
+	private IEdoService edoService;
 
 	@GetMapping("/index")
 	public String index(ModelMap mmap) {
@@ -58,7 +60,6 @@ public class CarrierIndexController extends CarrierBaseController {
 	@GetMapping("/main")
 	public String main(ModelMap mmap) {
 		CarrierAccount user = ShiroUtils.getSysUser();
-//		String opeCodes = groupService.selectCarrierGroupById(user.getGroupId()).getOperateCode();
 		Map<String, String> report = doService.getReportByCarrierGroup(super.getGroupCodes().toString().split(","));
 		if (report == null) {
 			report = new HashMap<>();

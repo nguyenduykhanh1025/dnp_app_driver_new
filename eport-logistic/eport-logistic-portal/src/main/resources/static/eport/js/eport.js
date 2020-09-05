@@ -749,7 +749,7 @@ var table = {
             },
 			confirmShipment: function (content, callBack) {
             	layer.confirm(content, {
-        	        icon: 2,
+        	        icon: 3,
         	        title: "Xác Nhận",
         	        btn: ['Đồng Ý', 'Hủy Bỏ']
         	    }, function (index) {

@@ -121,17 +121,22 @@ public class LogisticCommonController extends LogisticBaseController {
 		List<Shipment> shipments = shipmentService.selectShipmentListForRegister(shipment);
 		return getDataTable(shipments);
 	}
-    @Log(title = "Xóa Lô", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
-    @PostMapping( "/remove")
-    @ResponseBody
-    public AjaxResult remove(Long id)
-    {
-    	Shipment shipment = shipmentService.selectShipmentById(id);
-    	if(shipment != null && shipment.getLogisticGroupId().equals(getUser().getGroupId())) {
-            return toAjax(shipmentService.deleteShipmentById(id));
-    	}
-    	return error();
-    }
+
+	@Log(title = "Xóa Lô", businessType = BusinessType.DELETE, operatorType = OperatorType.LOGISTIC)
+	@PostMapping("/shipment/remove")
+	@ResponseBody
+	public AjaxResult remove(Long id) {
+		Shipment shipment = shipmentService.selectShipmentById(id);
+		if (shipment != null && shipment.getLogisticGroupId().equals(getUser().getGroupId())) {
+			if(shipment.getStatus() != null && Integer.parseInt(shipment.getStatus()) < Integer
+						.parseInt(EportConstants.SHIPMENT_STATUS_PROCESSING)) {
+				return toAjax(shipmentService.deleteShipmentById(id));
+			} else {
+				return error("Không thể xóa lô đang làm lệnh");
+			}
+		}
+		return error();
+	}
 	@GetMapping("/otp/{shipmentDetailIds}")
 	@ResponseBody
 	public AjaxResult sendOTP(@PathVariable String shipmentDetailIds) {

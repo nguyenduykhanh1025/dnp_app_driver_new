@@ -1,8 +1,11 @@
 const PREFIX = ctx + "container/supplier";
 var dogrid = document.getElementById("container-grid"), hot;
 var rowAmount = 0;
+var allChecked = false;
+var checkList = [];
 var shipment = new Object();
 var shipmentSelected;
+var sourceData;
 
 // HANDLE COLLAPSE SHIPMENT LIST
 $(document).ready(function () {
@@ -13,6 +16,15 @@ $(document).ready(function () {
     });
     $("#btn-uncollapse").click(function () {
         handleCollapse(false);
+    });
+
+    $("#attachIcon").on("click", function () {
+        let shipmentId = $(this).data("shipment-id");
+        if (!shipmentId) {
+            return;
+        }
+        let url = $(this).data("url");
+        $.modal.openTab(`Đính kèm - Cont [${shipmentId}]`, url.replace("{shipmentId}", shipmentId));
     });
 });
 
@@ -48,6 +60,7 @@ function loadTable() {
         collapsible: true,
         clientPaging: false,
         pagination: true,
+        rownumbers:true,
         onClickRow: function () {
             getSelected();
         },
@@ -82,7 +95,10 @@ function loadTable() {
         },
     });
 }
-
+// FORMATTER
+function formatLogistic(value, row, index) {
+    return '<a onclick="logisticInfo(' + row.logisticGroupId + "," + "'" + value + "')\"> " + value + "</a>";
+}
 // FORMAT REMARK FOR SHIPMENT LIST
 function formatRemark(value) {
     return '<div class="easyui-tooltip" title="'+ ((value!=null&&value!="")?value:"không có ghi chú") +'" style="width: 80; text-align: center;"><span>'+ (value!=null?value:"") +'</span></div>';
@@ -97,6 +113,15 @@ function formatDate(value) {
     return day + "/" + monthText + "/" + date.getFullYear();
 }
 
+function formatSpecificContFlg(value) {
+    switch (value) {
+        case 1:
+            return 'Hãng Tàu Cấp';
+        case 0:
+            return 'Cảng Cấp';
+    }
+}
+
 function handleRefresh() {
     loadTable();
 }
@@ -106,13 +131,38 @@ function getSelected() {
     var row = $("#dg").datagrid("getSelected");
     if (row) {
         $("#loCode").text(row.id);
-        $("#taxCode").text(row.taxCode);
         $("#quantity").text(row.containerAmount);
         $("#bookingNo").text(row.bookingNo);
         rowAmount = row.containerAmount;
         shipmentSelected = row;
+        checkList = Array(rowAmount).fill(0);
+        allChecked = false;
+        if (row.specificContFlg == 0) {
+            $("#saveShipmentDetailBtn").html("Xác Nhận Cấp Container");
+        } else {
+            $("#saveShipmentDetailBtn").html("Duyệt Cấp Container");
+        }
         loadShipmentDetail(row.id);
+        toggleAttachIcon(row.id);
     }
+}
+
+function toggleAttachIcon(shipmentId) {
+    $.ajax({
+        type: "GET",
+        url: PREFIX + "/shipments/" + shipmentId + "/shipment-images/count",
+        contentType: "application/json",
+        success: function (data) {
+            let $attachIcon = $("a#attachIcon");
+            if (data.numberOfShipmentImage && data.numberOfShipmentImage > 0) {
+                $attachIcon.data("shipment-id", shipmentId);
+                $attachIcon.removeClass("hidden");
+            } else {
+                $attachIcon.removeData("shipment-id");
+                $attachIcon.addClass("hidden");
+            }
+        }
+    });
 }
 
 function changeBatchStatus() {
@@ -121,20 +171,41 @@ function changeBatchStatus() {
 }
 
 // FORMAT HANDSONTABLE COLUMN
+function checkBoxRenderer(instance, td, row, col, prop, value, cellProperties) {
+    let content = '';
+    if (checkList[row] == 1) {
+        content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')" checked></div>';
+    } else {
+        content += '<div><input type="checkbox" id="check' + row + '" onclick="check(' + row + ')"></div>';
+    }
+    $(td).attr('id', 'checkbox' + row).addClass("htCenter").addClass("htMiddle").html(content);
+    return td;
+}
 function containerNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).attr('id', 'containerNo' + row).addClass("htMiddle");
     $(td).html(value);
-    // if (value != null && value != '') {
-    //     if (hot.getDataAtCell(row, 1) != null && hot.getDataAtCell(row, 1) > 1) {
-    //         cellProperties.readOnly = 'true';
-    //         $(td).css("background-color", "rgb(232, 232, 232)");
-    //     }
-    // }
     return td;
 }
-function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties) {
+function contSupplyRemarkRenderer(instance, td, row, col, prop, value, cellProperties) {
+    $(td).attr('id', 'contSupplyRemark' + row).addClass("htMiddle");
+    $(td).html(value);
+    return td;
+}
+function sztpRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'expiredDem' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'sztp' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).html(value);
+    return td;
+}
+function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'opeCode' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).html(value);
+    return td;
+}
+function planningDateRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'planningDate' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     if (value != null && value != '') {
         if (value.substring(2, 3) != "/") {
@@ -146,9 +217,21 @@ function expiredDemRenderer(instance, td, row, col, prop, value, cellProperties)
     }
     return td;
 }
-function opeCodeRenderer(instance, td, row, col, prop, value, cellProperties) {
+function cargoTypeRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
-    $(td).attr('id', 'opeCode' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).attr('id', 'cargoType' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).html(value);
+    return td;
+}
+function qualityRequirementRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'qualityRequirement' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+    $(td).html(value);
+    return td;
+}
+function consigneeRenderer(instance, td, row, col, prop, value, cellProperties) {
+    cellProperties.readOnly = 'true';
+    $(td).attr('id', 'consignee' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
     $(td).html(value);
     return td;
 }
@@ -164,12 +247,6 @@ function voyNoRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
-function sizeRenderer(instance, td, row, col, prop, value, cellProperties) {
-    cellProperties.readOnly = 'true';
-    $(td).attr('id', 'sztp' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
-    $(td).html(value);
-    return td;
-}
 function dischargePortRenderer(instance, td, row, col, prop, value, cellProperties) {
     cellProperties.readOnly = 'true';
     $(td).attr('id', 'dischargePort' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
@@ -182,6 +259,18 @@ function remarkRenderer(instance, td, row, col, prop, value, cellProperties) {
     $(td).html(value);
     return td;
 }
+
+// function formatUpdateTime(instance, td, row, col, prop, value, cellProperties) {
+//     cellProperties.readOnly = 'true';
+//     $(td).attr('id', 'remark' + row).addClass("htMiddle").css("background-color", "rgb(232, 232, 232)");
+//     let updateTime = new Date(value);
+//     let now = new Date();
+//     let offset = now.getTime() - updateTime.getTime();
+//     let totalMinutes = Math.round(offset / 1000 / 60);
+//     value = totalMinutes;
+//     $(td).html(value);
+//     return td;
+//   }
 
 // CONFIGURATE HANDSONTABLE
 function configHandson() {
@@ -202,37 +291,76 @@ function configHandson() {
         colHeaders: function (col) {
             switch (col) {
                 case 0:
-                    return "Container No";
+                    var txt = "<input type='checkbox' class='checker' ";
+                    txt += "onclick='checkAll()' ";
+                    txt += ">";
+                    return txt;
                 case 1:
-                    return '<span>Hạn Lệnh</span><span style="color: red;">(*)</span>';
+                    return "Số Container";
                 case 2:
-                    return '<span>Hãng Tàu</span><span style="color: red;">(*)</span>';
+                    return "Ghi Chú <br>Cấp/Duyệt Container";
                 case 3:
-                    return '<span>Tàu</span><span style="color: red;">(*)</span>';
+                    return "Sztp";
                 case 4:
-                    return '<span>Chuyến</span><span style="color: red;">(*)</span>';
+                    return "Hãng Tàu";
                 case 5:
-                    return '<span>Kích Thước</span><span style="color: red;">(*)</span>';
+                    return "Thời Gian <br>Dự Kiến Bốc";
                 case 6:
-                    return '<span>Cảng Dỡ Hàng</span><span style="color: red;">(*)</span>';
+                    return "Loại Hàng";
                 case 7:
-                    return "Ghi Chú";
+                    return "Yêu Cầu Chất <br>Lượng Vỏ";
+                case 8:
+                    return "Chủ hàng";
+                case 9:
+                    return "Tên Tàu";
+                case 10:
+                    return "Chuyến";
+                case 11:
+                    return "Cảng Dỡ";
+                case 12:
+                    return "Logistics Ghi Chú";
             }
         },
-        colWidths: [100, 100, 120, 100, 100, 100, 150, 200],
+        // colWidths: [ 100, 100, 100, 120, 100, 100, 100, 150, 100, 120, 100, 80, 80, 80, 150],
         filter: "true",
         columns: [
+            {
+                data: "active",
+                type: "checkbox",
+                className: "htCenter",
+                renderer: checkBoxRenderer
+            },
             {
                 data: "containerNo",
                 renderer: containerNoRenderer
             },
             {
-                data: "expiredDem",
-                renderer: expiredDemRenderer
+                data: "contSupplyRemark",
+                renderer: contSupplyRemarkRenderer
+            },
+            {
+                data: "sztp",
+                renderer: sztpRenderer
             },
             {
                 data: "opeCode",
                 renderer: opeCodeRenderer
+            },
+            {
+                data: "planningDate",
+                renderer: planningDateRenderer
+            },
+            {
+                data: "cargoType",
+                renderer: cargoTypeRenderer
+            },
+            {
+                data: "qualityRequirement",
+                renderer: qualityRequirementRenderer
+            },
+            {
+                data: "consignee",
+                renderer: consigneeRenderer
             },
             {
                 data: "vslNm",
@@ -243,24 +371,88 @@ function configHandson() {
                 renderer: voyNoRenderer
             },
             {
-                data: "sztp",
-                renderer: sizeRenderer
-            },
-            {
                 data: "dischargePort",
                 renderer: dischargePortRenderer
             },
             {
                 data: "remark",
                 renderer: remarkRenderer
-            },
+            }
         ],
+        beforeKeyDown: function (e) {
+            let selected = hot.getSelected()[0];
+            switch (e.keyCode) {
+                // Arrow Left
+                case 37:
+                    if (selected[3] == 0) {
+                        e.stopImmediatePropagation();
+                    }
+                    break;
+                // Arrow Up
+                case 38:
+                    if (selected[2] == 0) {
+                        e.stopImmediatePropagation();
+                    }
+                    break;
+                // Arrow Right
+                case 39:
+                    if (selected[3] == 12) {
+                        e.stopImmediatePropagation();
+                    }
+                    break
+                // Arrow Down
+                case 40:
+                    if (selected[2] == rowAmount - 1) {
+                        e.stopImmediatePropagation();
+                    }
+                    break
+                default:
+                    break;
+            }
+        },
     };
 }
 configHandson();
 
 // RENDER HANSONTABLE FIRST TIME
 hot = new Handsontable(dogrid, config);
+
+// TRIGGER CHECK ALL SHIPMENT DETAIL
+function checkAll() {
+    if (!allChecked) {
+        allChecked = true
+        checkList = Array(rowAmount).fill(0);
+        for (let i=0; i<checkList.length; i++) {
+            if (hot.getDataAtCell(i, 1) == null) {
+                break;
+            }
+            checkList[i] = 1;
+            $('#check'+i).prop('checked', true);
+        }
+    } else {
+        allChecked = false;
+        checkList = Array(rowAmount).fill(0);
+        for (let i=0; i<checkList.length; i++) {
+            $('#check'+i).prop('checked', false);
+        }
+    }
+    let tempCheck = allChecked;
+    hot.render();
+    allChecked = tempCheck;
+    $('.checker').prop('checked', tempCheck);
+}
+function check(id) {
+    if (sourceData[id].id != null) {
+        if (checkList[id] == 0) {
+            $('#check'+id).prop('checked', true);
+            checkList[id] = 1;
+        } else {
+            $('#check'+id).prop('checked', false);
+            checkList[id] = 0;
+        }
+        hot.render();
+    }
+}
 
 function loadShipmentDetail(id) {
     $.ajax({
@@ -283,8 +475,12 @@ function getDataFromTable() {
     let myTableData = hot.getSourceData();
     let errorFlg = false;
     let cleanedGridData = [];
+    console.log(checkList);
     for (let i = 0; i < myTableData.length; i++) {
         if (myTableData[i].id != null) {
+            if (checkList[i] == 1) {
+                myTableData[i].contSupplyStatus = 'S';
+            }
             cleanedGridData.push(myTableData[i]);
         }
     }
@@ -298,6 +494,8 @@ function getDataFromTable() {
         }
         shipmentDetail.containerNo = object["containerNo"];
         contList.push(object["containerNo"]);
+        shipmentDetail.contSupplyRemark = object["contSupplyRemark"];
+        shipmentDetail.contSupplyStatus = object["contSupplyStatus"];
         shipmentDetail.id = object["id"];
         shipmentDetails.push(shipmentDetail);
     });
@@ -306,7 +504,7 @@ function getDataFromTable() {
         contList.sort();
         let contTemp = "";
         $.each(contList, function (index, cont) {
-            if (cont != "" && cont == contTemp) {
+            if (cont && cont == contTemp) {
                 $.modal.alertError("Số container không được giống nhau!");
                 errorFlg = true;
                 return false;
@@ -324,34 +522,60 @@ function getDataFromTable() {
 
 function saveInput() {
     if (getDataFromTable()) {
-        if (shipmentDetails.length == shipmentSelected.containerAmount) {
-            $.modal.loading("Đang xử lý...");
-            $.ajax({
-                url: PREFIX + "/shipment/" + shipmentSelected.id + "/shipment-detail",
-                method: "post",
-                contentType: "application/json",
-                accept: 'text/plain',
-                data: JSON.stringify(shipmentDetails),
-                dataType: 'text',
-                success: function (data) {
-                    var result = JSON.parse(data);
-                    if (result.code == 0) {
-                        $.modal.msgSuccess(result.msg);
-                        loadShipmentDetail(shipmentSelected.id);
-                    } else {
-                        $.modal.msgError(result.msg);
-                    }
-                    $.modal.closeLoading();
-                },
-                error: function (result) {
-                    $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
-                    $.modal.closeLoading();
-                },
+        let contAmount = 0;
+        let containers = '';
+        console.log(shipmentDetails);
+        $.each(shipmentDetails, function (index, object) {
+            if (object['contSupplyStatus'] == 'S') {
+                contAmount++;
+                containers += object['containerNo'] + ',';
+            }
+        });
+        if (contAmount > 0) {
+            containers = containers.substring(0, containers.length-1);
+            $.modal.confirm("Xác nhận cấp " + contAmount + " container: " + containers + "?", function() {
+                saveData()
             });
         } else {
-            $.modal.alertError("Bạn chưa nhập đủ container yêu cầu.");
+            $.modal.confirm("Xác nhận lưu thông tin, chưa chỉ định <br>container nào cho logistic?", function() {
+                saveData()
+            });
         }
     }
 }
+
+function logisticInfo(id, logistics) {
+    $.modal.openLogisticInfo("Thông tin liên lạc " + logistics, ctx + "om/support/logistics/" + id + "/info", null, 470, function() {
+        $.modal.close();
+    });
+}
+
+function saveData() {
+    $.modal.loading("Đang xử lý...");
+    $.ajax({
+        url: PREFIX + "/shipment/" + shipmentSelected.id + "/shipment-detail",
+        method: "post",
+        contentType: "application/json",
+        accept: 'text/plain',
+        data: JSON.stringify(shipmentDetails),
+        dataType: 'text',
+        success: function (data) {
+            var result = JSON.parse(data);
+            if (result.code == 0) {
+                $.modal.msgSuccess(result.msg);
+                loadShipmentDetail(shipmentSelected.id);
+            } else {
+                $.modal.msgError(result.msg);
+            }
+            $.modal.closeLoading();
+        },
+        error: function (result) {
+            $.modal.alertError("Có lỗi trong quá trình thêm dữ liệu, vui lòng liên hệ admin.");
+            $.modal.closeLoading();
+        },
+    });
+}
+
+
 
     
