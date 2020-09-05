@@ -151,15 +151,29 @@ public class ProcessOrder extends BaseEntity
     
     private String logisticName;
     
+    /** FE */
+    @Excel(name = "FE")
     private String fe;
     
+    /** Operation Code */
+    @Excel(name = "Operation Code")
     private String opr;
     
+    /** Loading Port */
+    @Excel(name = "Loading Port")
     private String pol;
     
+    /** Discharge Port */
+    @Excel(name = "Discharge Port")
     private String pod;
     
+    /** Cargo Type */
+    @Excel(name = "Cargo Type")
     private String cargoType;
+    
+    /** Trucker */
+    @Excel(name = "Trucker")
+    private String trucker;
 
     public String getLogisticName() {
 		return this.logisticName;
@@ -540,6 +554,14 @@ public class ProcessOrder extends BaseEntity
 		this.cargoType = cargoType;
 	}
 
+	public String getTrucker() {
+		return trucker;
+	}
+
+	public void setTrucker(String trucker) {
+		this.trucker = trucker;
+	}
+
 	@Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -589,6 +611,7 @@ public class ProcessOrder extends BaseEntity
             .append("pol", getPol())
             .append("pod", getPod())
             .append("cargoType", getCargoType())
+            .append("trucker", getTrucker())
             .toString();
     }
 }
