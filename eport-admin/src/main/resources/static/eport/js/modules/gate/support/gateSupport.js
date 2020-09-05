@@ -140,21 +140,21 @@ function loadYardPosition2() {
 
 function createGate() {
   let reqData = {
-    truckNo: $('#truckNo').val(),
-    chassisNo: $("#chassisNo").val(),
-    gatePass: $("#gatePass").val(),
-    weight: $("#wgt").val(),
-    loadableWgt: $("#loadableWgt").val(),
-    containerSend1: $("#containerSend1").val(),
-    containerSend2: $("#containerSend2").val(),
-    refNo1: $("#refNo1").val(),
-    refNo2: $("#refNo2").val(),
-    containerReceive1: $("#containerReceive1").val(),
-    containerReceive2: $("#containerReceive2").val(),
+    truckNo: $('#truckNo').textbox("getText"),
+    chassisNo: $("#chassisNo").textbox("getText"),
+    gatePass: $("#gatePass").textbox("getText"),
+    weight: $("#wgt").textbox("getText"),
+    loadableWgt: $("#loadableWgt").textbox("getText"),
+    containerSend1: $("#containerSend1").textbox("getText"),
+    containerSend2: $("#containerSend2").textbox("getText"),
+    refNo1: $("#refNo1").textbox("getText"),
+    refNo2: $("#refNo2").textbox("getText"),
+    containerReceive1: $("#containerReceive1").textbox("getText"),
+    containerReceive2: $("#containerReceive2").textbox("getText"),
     sendOption: $("#sendOption").prop("checked"),
     receiveOption: $("#receiveOption").prop("checked"),
-    yardPosition1: $("#yardPosition1").val(),
-    yardPosition2: $("#yardPosition2").val(),
+    yardPosition1: $("#yardPosition1").textbox("getText"),
+    yardPosition2: $("#yardPosition2").textbox("getText"),
     refFlg1: $('input[name="refFlg1"]:checked').val(),
     refFlg2: $('input[name="refFlg2"]:checked').val()
   };
@@ -246,21 +246,22 @@ function showYardPosition(bayList) {
 
 function gateIn() {
   let reqData = {
-    gateId: $('#gateId').val(),
-    truckNo: $('#truckNo').val(),
-    chassisNo: $("#chassisNo").val(),
-    containerNo1: $("#containerSend1").val(),
-    containerNo2: $("#containerSend2").val(),
-    yardPosition1: $("#yardPosition1").val(),
-    yardPosition2: $("#yardPosition2").val(),
-    wgt: $("#wgt").val(),
-    loadableWgt: $("#loadableWgt").val()
+    gateId: $('#gateId').textbox("getText"),
+    truckNo: $('#truckNo').textbox("getText"),
+    chassisNo: $("#chassisNo").textbox("getText"),
+    containerNo1: $("#containerSend1").textbox("getText"),
+    containerNo2: $("#containerSend2").textbox("getText"),
+    yardPosition1: $("#yardPosition1").textbox("getText"),
+    yardPosition2: $("#yardPosition2").textbox("getText"),
+    wgt: $("#wgt").textbox("getText"),
+    loadableWgt: $("#loadableWgt").textbox("getText")
   };
+  console.log(reqData);
   $.modal.loading("Đang xử lý...");
   $.ajax({
     cache: true,
     type: "POST",
-    url: "http://app.danangport.com/api/gate/detection",
+    url: "http://192.168.1.70:7073/api/gate/detection",
     contentType: "application/json",
     data: JSON.stringify(reqData),
     async: false,

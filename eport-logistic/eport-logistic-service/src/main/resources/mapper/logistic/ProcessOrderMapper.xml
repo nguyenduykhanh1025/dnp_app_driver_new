@@ -50,6 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="pol"    column="pol"    />
         <result property="pod"    column="pod"    />
         <result property="cargoType"    column="cargo_type"    />
+        <result property="trucker"    column="trucker"    />
         <association property="shipmentDetail"    column="id" javaType="ShipmentDetail" resultMap="ShipmentDetailResult" />
     </resultMap>
 
@@ -68,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectProcessOrderVo">
         select id, shipment_id, logistic_group_id, service_type, invoice_no, pay_type, sztp, modee, consignee, truck_co, 
         tax_code, bl_no, booking_no, pickup_date, vessel, voyage, before_after, year, cont_number, status, 
-        result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, post_process_id, runnable, order_no, domestic_flg, booking_create_mode, booking_index, process_data, fe, opr, pol, pod, cargo_type from process_order
+        result, data, create_by, create_time, update_by, update_time, robot_uuid, ssr_code, sys_user_id, post_process_id, runnable, order_no, domestic_flg, booking_create_mode, booking_index, process_data, fe, opr, pol, pod, cargo_type, trucker from process_order
     </sql>
 
     <select id="selectProcessOrderList" parameterType="ProcessOrder" resultMap="ProcessOrderResult">
@@ -218,6 +219,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pol != null and pol != ''">pol,</if>
             <if test="pod != null and pod != ''">pod,</if>
             <if test="cargoType != null and cargoType != ''">cargo_type,</if>
+            <if test="trucker != null and trucker != ''">trucker,</if>
             <if test="createBy != null  and createBy != ''">create_by,</if>
             create_time
          </trim>
@@ -259,6 +261,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pol != null and pol != ''">#{pol},</if>
             <if test="pod != null and pod != ''">#{pod},</if>
             <if test="cargoType != null and cargoType != ''">#{cargoType},</if>
+            <if test="trucker != null and trucker != ''">#{trucker},</if>
             <if test="createBy != null  and createBy != ''">#{createBy},</if>
             sysdate
          </trim>
@@ -304,6 +307,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="pol != null and pol != ''">pol = #{pol},</if>
             <if test="pod != null and pod != ''">pod = #{pod},</if>
             <if test="cargoType != null and cargoType != ''">cargo_type = #{cargoType},</if>
+            <if test="trucker != null and trucker != ''">trucker = #{trucker},</if>
             update_time = sysdate
         </trim>
         where id = #{id}
