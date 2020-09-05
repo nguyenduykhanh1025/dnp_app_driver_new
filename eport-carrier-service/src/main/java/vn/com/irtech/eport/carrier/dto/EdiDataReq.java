@@ -25,7 +25,7 @@ public class EdiDataReq implements Serializable {
 	private String consigneeTaxcode;
 
 	@NotBlank
-	private String orderNumber;
+	private String secureCode;
 
 	@NotBlank
 	private String containerNo;
@@ -78,12 +78,12 @@ public class EdiDataReq implements Serializable {
 		this.consigneeTaxcode = consigneeTaxcode;
 	}
 
-	public String getOrderNumber() {
-		return orderNumber;
+	public String getSecureCode() {
+		return secureCode;
 	}
 
-	public void setOrderNumber(String orderNumber) {
-		this.orderNumber = orderNumber;
+	public void setSecureCode(String secureCode) {
+		this.secureCode = secureCode;
 	}
 
 	public String getContainerNo() {

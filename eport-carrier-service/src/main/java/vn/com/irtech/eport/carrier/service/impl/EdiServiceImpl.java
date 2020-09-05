@@ -133,8 +133,8 @@ public class EdiServiceImpl implements IEdiService {
 		edo.setCarrierCode(partnerCode);
 		edo.setBusinessUnit(ediDataReq.getLineOper());
 		edo.setConsignee(ediDataReq.getConsignee());
-		edo.setSecureCode(ediDataReq.getOrderNumber());
-		edo.setOrderNumber(ediDataReq.getOrderNumber());
+		edo.setSecureCode(ediDataReq.getSecureCode());
+		edo.setOrderNumber(ediDataReq.getSecureCode());
 		edo.setContainerNumber(ediDataReq.getContainerNo());
 		edo.setReleaseNo(ediDataReq.getReleaseNo());
 		edo.setDetFreeTime(ediDataReq.getDetFreeDays());
