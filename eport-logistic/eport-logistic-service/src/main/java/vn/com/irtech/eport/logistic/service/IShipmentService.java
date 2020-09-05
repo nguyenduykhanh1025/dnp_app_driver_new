@@ -80,4 +80,12 @@ public interface IShipmentService {
      * Select Shipment List For Register
      */
     public List<Shipment> selectShipmentListForRegister(Shipment shipment);
+    
+    /**
+     * Get shipment list with logistic name for cont supplier
+     * 
+     * @param shipment
+     * @return List shipment
+     */
+    public List<Shipment> getShipmentListForContSupply(Shipment shipment);
 }
