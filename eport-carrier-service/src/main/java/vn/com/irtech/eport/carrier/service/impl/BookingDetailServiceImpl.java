@@ -94,4 +94,9 @@ public class BookingDetailServiceImpl implements IBookingDetailService
     {
         return bookingDetailMapper.deleteBookingDetailById(id);
     }
+    @Override
+    public BookingDetail selectBookingDetailByBookingNo(Long bookingId)
+    {
+        return bookingDetailMapper.selectBookingDetailByBookingNo(bookingId);
+    }
 }

@@ -477,28 +477,28 @@
    
 
    <select id="getReportByCarrierGroup" parameterType="String" resultType="hashmap">
-		SELECT 
-			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do where carrier_code in 
-		        <foreach item="id" collection="array" open="(" separator="," close=")">
-		            #{id}
+    SELECT 
+			(SELECT COUNT(DISTINCT bill_of_lading) FROM edo where carrier_code in 
+		        <foreach item="carrier_code" collection="array" open="(" separator="," close=")">
+		            #{carrier_code}
 		        </foreach>
         		) AS totalBl,
-			(SELECT COUNT(container_number) FROM equipment_do where carrier_code in 
-		        <foreach item="id" collection="array" open="(" separator="," close=")">
-		            #{id}
+			(SELECT COUNT(container_number) FROM edo where carrier_code in 
+		        <foreach item="carrier_code" collection="array" open="(" separator="," close=")">
+		            #{carrier_code}
 		        </foreach>
 		        ) AS totalCont,
-			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do  where carrier_code in 
-		        <foreach item="id" collection="array" open="(" separator="," close=")">
-		            #{id}
+			(SELECT COUNT(DISTINCT bill_of_lading) FROM edo  where carrier_code in 
+		        <foreach item="carrier_code" collection="array" open="(" separator="," close=")">
+		            #{carrier_code}
 		        </foreach>
-		        AND process_status = 0) AS waitingBl,
-			(SELECT COUNT(DISTINCT bill_of_lading) FROM equipment_do where carrier_code in 
-		        <foreach item="id" collection="array" open="(" separator="," close=")">
-		            #{id}
+		        AND status = 0) AS waitingBl,
+			(SELECT COUNT(DISTINCT bill_of_lading) FROM edo where carrier_code in 
+		        <foreach item="carrier_code" collection="array" open="(" separator="," close=")">
+		            #{carrier_code}
 		        </foreach>
-		        AND process_status = 1) AS completedBl
-            from equipment_do
+		        AND status = 1) AS completedBl
+            from edo
             FETCH NEXT 1 ROWS ONLY
 	</select>
 

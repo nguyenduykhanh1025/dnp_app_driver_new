@@ -1,11 +1,13 @@
 package vn.com.irtech.eport.carrier.domain;
 
-
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import vn.com.irtech.eport.common.annotation.Excel;
 import vn.com.irtech.eport.common.core.domain.BaseEntity;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 
 /**
  * Booking Detail Object booking_detail
@@ -57,11 +59,13 @@ public class BookingDetail extends BaseEntity
     private String yardPosition;
 
     /** Release Date */
-    @Excel(name = "Release Date", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "Release Date", width = 30, dateFormat = "dd/MM/yyyy")
+    @JsonFormat(pattern="dd/MM/yyyy")
     private Date releaseDate;
 
     /** Expired Date */
-    @Excel(name = "Expired Date", width = 30, dateFormat = "yyyy-MM-dd")
+    @Excel(name = "Expired Date", width = 30, dateFormat = "dd/MM/yyyy")
+    @JsonFormat(pattern="dd/MM/yyyy")
     private Date expiredDate;
 
     public void setId(Long id) 
