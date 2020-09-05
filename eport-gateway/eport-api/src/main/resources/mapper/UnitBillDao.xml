@@ -96,4 +96,11 @@
 				</where> 
 	        GROUP BY JOB_ODR_NO)
 	</select>
+	<select id="getInvoiceNoByOrderNo" parameterType="String" resultType="String">
+		SELECT 
+		    INV_NO AS INVOICE_NO,
+		FROM DNP_UAT.TB_INVOICE_UNIT
+		WHERE ORDER_NO = #{orderNo} AND INV_NO NOT LIKE 'TEMP%'
+	    GROUP BY INV_NO
+	</select>
 </mapper>
