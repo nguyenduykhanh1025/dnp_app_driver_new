@@ -729,7 +729,7 @@ public class LogisticReceiveContFullController extends LogisticBaseController {
 		}
 		
 		// Check if logistic can make order for this shipment
-		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst(), EportConstants.DELEGATE_PERMISSION_PAYMENT) > 0) {
+		if (logisticGroupService.checkDelegatePermission(taxCode, getGroup().getMst(), EportConstants.DELEGATE_PERMISSION_PROCESS) > 0) {
 			return success();
 		}
 		return error();
