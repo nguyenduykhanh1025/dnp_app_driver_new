@@ -55,6 +55,13 @@
                 </div>
             </div>
             <div class="form-group">
+                <input type="hidden" name="bookingFlag" th:field="*{bookingFlag}" id="bookingFlag">
+                <label class="col-sm-2 col-xs-3 col-md-1 control-label">Booking Container</label>
+                <div id="bookingContainer" class="col-sm-9 col-xs-8 col-md-10">
+                    <i class="fa fa-toggle-on text-info fa-2x" onclick="bookingContainer()"></i>
+                </div>
+            </div>
+            <div class="form-group">
                 <input type="hidden" name="apiFlag" th:field="*{apiFlag}" id="apiFlag">
                 <label class="col-sm-2 col-xs-3 col-md-1 control-label">Sử dụng API</label>
                 <div id="apiToggle" class="col-sm-9 col-xs-8 col-md-10">
@@ -96,6 +103,11 @@
             } else {
                 document.getElementById("apiToggle").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="clickToggleApiFlag()"></i>';
             }
+            if ($("#bookingFlag").val() == 1) {
+                document.getElementById("bookingContainer").innerHTML = '<i class="fa fa-toggle-on text-info fa-2x" onclick="bookingContainer()"></i>';
+            } else {
+                document.getElementById("bookingContainer").innerHTML = '<i class="fa fa-toggle-off text-info fa-2x" onclick="bookingContainer()"></i>';
+            }
         }, 200);
 
         $("#form-account-edit").validate({
@@ -135,6 +147,16 @@
             } else {
                 document.getElementById("apiToggle").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="clickToggleApiFlag()"></span>';
                 $("#apiFlag").val(1);
+            }
+        }
+
+        function bookingContainer() {
+            if ($("#bookingFlag").val() == 1) {
+                document.getElementById("bookingContainer").innerHTML = '<span class="fa fa-toggle-off text-info fa-2x" onclick="bookingContainer()"></span>';
+                $("#bookingFlag").val(0);
+            } else {
+                document.getElementById("bookingContainer").innerHTML = '<span class="fa fa-toggle-on text-info fa-2x" onclick="bookingContainer()"></span>';
+                $("#bookingFlag").val(1);
             }
         }
     </script>

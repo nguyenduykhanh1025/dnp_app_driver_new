@@ -58,4 +58,6 @@ public interface IBookingService
      * @return result
      */
     public int deleteBookingById(Long id);
+
+    public Booking selectBookingByBookingNo(String bookingNo);
 }

@@ -49,6 +49,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectBookingDetailVo"/>
         where id = #{id}
     </select>
+
+     <select id="selectBookingDetailByBookingNo" parameterType="Long" resultMap="BookingDetailResult">
+        <include refid="selectBookingDetailVo"/>
+        where booking_id = #{bookingId}
+        FETCH NEXT 1 ROWS ONLY
+    </select>
         
     <insert id="insertBookingDetail" parameterType="BookingDetail">
         <selectKey keyProperty="id" resultType="long" order="BEFORE">

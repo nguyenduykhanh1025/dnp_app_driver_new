@@ -1,4 +1,4 @@
-package vn.com.irtech.eport.api.mqtt.listener;
+																																																																																																																																																																					package vn.com.irtech.eport.api.mqtt.listener;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +19,8 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import java.lang.reflect.Type;
+import com.google.gson.reflect.TypeToken;
 
 import vn.com.irtech.eport.api.consts.BusinessConsts;
 import vn.com.irtech.eport.api.consts.MessageConsts;
@@ -26,6 +28,7 @@ import vn.com.irtech.eport.api.consts.MqttConsts;
 import vn.com.irtech.eport.api.form.DriverDataRes;
 import vn.com.irtech.eport.api.form.DriverRes;
 import vn.com.irtech.eport.api.form.GateInFormData;
+import vn.com.irtech.eport.api.form.PickupRobotResult;
 import vn.com.irtech.eport.api.message.MessageHelper;
 import vn.com.irtech.eport.api.mqtt.service.MqttService;
 import vn.com.irtech.eport.common.constant.EportConstants;
@@ -115,10 +118,12 @@ public class GatePassHandler implements IMqttMessageListener {
 		String status = map.get("status") == null ? null : map.get("status").toString();
 		String result = map.get("result") == null ? null : map.get("result").toString();
 		String dataString = map.get("data") == null ? null : new Gson().toJson(map.get("data"));
+		String pickupInResult = map.get("pickupInResult") == null ? null : new Gson().toJson(map.get("pickupInResult"));
+		String pickupOutResult = map.get("pickupOutResult") == null ? null : new Gson().toJson(map.get("pickupOutResult"));
 		
 		GateInFormData gateInFormData = new Gson().fromJson(dataString, GateInFormData.class);
 		if (gateInFormData != null && gateInFormData.getReceiptId() != null) {
-			this.updatePickupHistory(gateInFormData, result, uuId, status);
+			this.updatePickupHistory(gateInFormData, result, uuId, status, pickupInResult, pickupOutResult);
 		}
 	}
 	
@@ -128,7 +133,7 @@ public class GatePassHandler implements IMqttMessageListener {
 	 * @param gateInFormData
 	 * @param result
 	 */
-	private void updatePickupHistory(GateInFormData gateInFormData, String result, String uuId, String status) {
+	private void updatePickupHistory(GateInFormData gateInFormData, String result, String uuId, String status, String pickupInResult, String pickupOutResult) {
 		// List data response for driver
 		List<DriverDataRes> driverDataRes = new ArrayList<>();
 		DriverRes driverRes = new DriverRes();
@@ -153,7 +158,14 @@ public class GatePassHandler implements IMqttMessageListener {
 				
 				// Iterate pickup in list
 				for (PickupHistory pickupHistory : gateInFormData.getPickupIn()) {
-					
+					if (pickupInResult != null) {
+						try {
+							List<PickupRobotResult> pickupRobotResults = getListRobotResultPickupFromString(pickupInResult);
+							pickupHistory = setYardPosition(pickupRobotResults, pickupHistory);
+						} catch (Exception e) {
+							logger.error("Error when parsing pickup result from robot: " + pickupInResult);;
+						}
+					}
 					pickupHistory.setGateinDate(new Date());
 					pickupHistory.setStatus(1);
 					pickupHistoryService.updatePickupHistory(pickupHistory);
@@ -197,6 +209,14 @@ public class GatePassHandler implements IMqttMessageListener {
 				
 				// Iterate pickup out list
 				for (PickupHistory pickupHistory : gateInFormData.getPickupOut()) {
+					if (pickupInResult != null) {
+						try {
+							List<PickupRobotResult> pickupRobotResults = getListRobotResultPickupFromString(pickupOutResult);
+							pickupHistory = setYardPosition(pickupRobotResults, pickupHistory);
+						} catch (Exception e) {
+							logger.error("Error when parsing pickup result from robot: " + pickupOutResult);;
+						}
+					}
 					pickupHistory.setStatus(1);
 					pickupHistory.setGateinDate(new Date());
 					pickupHistoryService.updatePickupHistory(pickupHistory);
@@ -427,5 +447,28 @@ public class GatePassHandler implements IMqttMessageListener {
 			}
 		logger.debug("No position for pickup: " + pickupHistory.getContainerNo());
 		return false;
+	}
+	
+	private PickupHistory setYardPosition(List<PickupRobotResult> pickupRobotResults, PickupHistory pickupHistory) {
+		for (PickupRobotResult pickupRobotResult: pickupRobotResults) {
+			if (pickupRobotResult.getId().equals(pickupHistory.getId())) {
+				if (StringUtils.isNotEmpty(pickupRobotResult.getYardPosition())) {
+					String[] yardPositionArr = pickupRobotResult.getYardPosition().split("-");
+					if (yardPositionArr.length > 3) {
+						pickupHistory.setBlock(yardPositionArr[0]);
+						pickupHistory.setBay(yardPositionArr[1]);
+						pickupHistory.setLine(yardPositionArr[2]);
+						pickupHistory.setTier(yardPositionArr[3]);
+					}
+				}
+			}
+		}
+		return pickupHistory;
+	}
+	
+	private List<PickupRobotResult> getListRobotResultPickupFromString(String pickupResult) {                        
+		Type listType = new TypeToken<ArrayList<PickupRobotResult>>() {}.getType();
+		ArrayList<PickupRobotResult> pickupRobotResults = new Gson().fromJson(pickupResult , listType);
+		return pickupRobotResults;
 	}
 }

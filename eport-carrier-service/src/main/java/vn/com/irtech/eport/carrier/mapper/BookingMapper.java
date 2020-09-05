@@ -58,4 +58,6 @@ public interface BookingMapper
      * @return result
      */
     public int deleteBookingByIds(String[] ids);
+
+    public Booking selectBookingByBookingNo(String bookingNo);
 }

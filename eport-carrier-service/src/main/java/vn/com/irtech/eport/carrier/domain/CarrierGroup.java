@@ -44,6 +44,17 @@ public class CarrierGroup extends BaseEntity {
 	/** Edo Permission */
 
 	private String edoFlag;
+
+	/** bookingFlag Permission */
+	private String bookingFlag;
+
+	public String getBookingFlag() {
+		return this.bookingFlag;
+	}
+
+	public void setBookingFlag(String bookingFlag) {
+		this.bookingFlag = bookingFlag;
+	};
 	
 	private String apiFlag;
 

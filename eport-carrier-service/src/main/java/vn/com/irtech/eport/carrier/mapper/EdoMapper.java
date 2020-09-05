@@ -1,6 +1,7 @@
 package vn.com.irtech.eport.carrier.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -128,5 +129,7 @@ public interface EdoMapper
 	 * @param edo
 	 * @return List<Edo>
 	 */
-	public List<Edo> selectListEdoWithHouseBill(EdoWithoutHouseBillReq edo); 
+    public List<Edo> selectListEdoWithHouseBill(EdoWithoutHouseBillReq edo); 
+    
+    public Map<String, String> getReportByCarrierGroup(String[] codes);
 }
