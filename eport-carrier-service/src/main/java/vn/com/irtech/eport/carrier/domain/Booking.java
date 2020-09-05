@@ -49,7 +49,7 @@ public class Booking extends BaseEntity
 
     /** Status */
     @Excel(name = "Status")
-    private String bookStatus;
+    private char bookStatus;
 
     public void setId(Long id) 
     {
@@ -123,12 +123,12 @@ public class Booking extends BaseEntity
     {
         return consigneeTaxcode;
     }
-    public void setBookStatus(String bookStatus) 
+    public void setBookStatus(char bookStatus) 
     {
         this.bookStatus = bookStatus;
     }
 
-    public String getBookStatus() 
+    public char getBookStatus() 
     {
         return bookStatus;
     }

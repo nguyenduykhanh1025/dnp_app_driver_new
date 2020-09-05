@@ -60,7 +60,7 @@ public class CarrierIndexController extends CarrierBaseController {
 	@GetMapping("/main")
 	public String main(ModelMap mmap) {
 		CarrierAccount user = ShiroUtils.getSysUser();
-		Map<String, String> report = doService.getReportByCarrierGroup(super.getGroupCodes().toString().split(","));
+		Map<String, String> report = edoService.getReportByCarrierGroup(super.getGroupCodes().toString().split(","));
 		if (report == null) {
 			report = new HashMap<>();
 			report.put("totalBl", "0");

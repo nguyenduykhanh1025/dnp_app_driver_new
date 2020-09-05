@@ -58,4 +58,6 @@ public interface BookingDetailMapper
      * @return result
      */
     public int deleteBookingDetailByIds(String[] ids);
+
+    public BookingDetail selectBookingDetailByBookingNo(Long bookingId);
 }

@@ -37,11 +37,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="bookStatus != null  and bookStatus != ''"> and book_status = #{bookStatus}</if>
             <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
         </where>
+         ORDER BY create_time DESC
     </select>
     
     <select id="selectBookingById" parameterType="Long" resultMap="BookingResult">
         <include refid="selectBookingVo"/>
         where id = #{id}
+    </select>
+
+    <select id="selectBookingByBookingNo" parameterType="String" resultMap="BookingResult">
+        <include refid="selectBookingVo"/>
+        where booking_no = #{bookingNo}
     </select>
         
     <insert id="insertBooking" parameterType="Booking">
