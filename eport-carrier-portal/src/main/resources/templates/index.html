@@ -166,6 +166,11 @@
         } else {
           $(".edoTab").hide();
         }  
+        if ([[${bookingPermission}]]) {
+          $(".booking").show();
+        } else {
+          $(".booking").hide();
+        }  
       });
 
       if($.common.isNotEmpty(skin)){

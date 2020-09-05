@@ -47,4 +47,9 @@ public abstract class CarrierBaseController extends BaseController {
 		CarrierGroup userGroup = getUserGroup();
 		return (userGroup != null && "1".equals(userGroup.getEdoFlag()));
 	}
+
+	public boolean hasBookingPermission() {
+		CarrierGroup userGroup = getUserGroup();
+		return (userGroup != null && "1".equals(userGroup.getBookingFlag()));
+	}
 }
