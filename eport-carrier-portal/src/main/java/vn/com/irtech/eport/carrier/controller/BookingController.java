@@ -44,6 +44,9 @@ public class BookingController extends CarrierBaseController
     @GetMapping()
     public String booking()
     {
+        if (!hasBookingPermission()) {
+			return "error/404";
+		}
         return prefix + "/booking";
     }
 
@@ -90,6 +93,9 @@ public class BookingController extends CarrierBaseController
     @ResponseBody
     public AjaxResult addSave(Booking booking)
     {   
+        if (!hasBookingPermission()) {
+			return error("error/404");
+		}
         if(bookingService.selectBookingByBookingNo(booking.getBookingNo()) != null)
         {
             return error("Booking "+ booking.getBookingNo() + " đã tồn tại");

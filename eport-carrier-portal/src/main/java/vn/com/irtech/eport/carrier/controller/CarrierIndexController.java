@@ -49,6 +49,11 @@ public class CarrierIndexController extends CarrierBaseController {
 		} else {
 			mmap.put("edoPermission", false);
 		}
+		if (hasBookingPermission()) {
+			mmap.put("bookingPermission", true);
+		} else {
+			mmap.put("bookingPermission", false);
+		}
 		return "index";
 	}
 
