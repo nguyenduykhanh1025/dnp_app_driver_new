@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vn.com.irtech.eport.common.config.ServerConfig;
 import vn.com.irtech.eport.common.constant.EportConstants;
 import vn.com.irtech.eport.common.core.controller.BaseController;
 import vn.com.irtech.eport.common.core.domain.AjaxResult;
@@ -22,7 +23,6 @@ import vn.com.irtech.eport.common.core.page.PageAble;
 import vn.com.irtech.eport.common.core.page.TableDataInfo;
 import vn.com.irtech.eport.common.utils.StringUtils;
 import vn.com.irtech.eport.framework.util.ShiroUtils;
-import vn.com.irtech.eport.framework.web.service.ConfigService;
 import vn.com.irtech.eport.logistic.domain.Shipment;
 import vn.com.irtech.eport.logistic.domain.ShipmentDetail;
 import vn.com.irtech.eport.logistic.domain.ShipmentImage;
@@ -46,7 +46,7 @@ public class ContainerSupplierController extends BaseController {
 	private IShipmentImageService shipmentImageService;
 
 	@Autowired
-    private ConfigService configService;
+    private ServerConfig serverConfig;
 	
 	@GetMapping()
 	public String getContSupplier() {
@@ -137,7 +137,7 @@ public class ContainerSupplierController extends BaseController {
 
         List<ShipmentImage> shipmentImages = shipmentImageService.selectShipmentImagesByShipmentId(shipmentId);
         if (!CollectionUtils.isEmpty(shipmentImages)) {
-            shipmentImages.forEach(image -> image.setPath(configService.getKey("domain.logistic.name") + image.getPath()));
+            shipmentImages.forEach(image -> image.setPath(serverConfig.getUrl() + image.getPath()));
             mmap.put("shipmentImages", shipmentImages);
         }
 
